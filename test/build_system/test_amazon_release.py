@@ -55,9 +55,9 @@ class ArtifactTests(unittest.TestCase):
 
 
 class FakeAPI:
-    def __init__(self, active=None, old_code=1, fail_replace=False):
+    def __init__(self, active=None, old_code=1, fail_replace=False, fail_listing=False):
         self.active, self.old_code = active, old_code
-        self.fail_replace = fail_replace
+        self.fail_replace, self.fail_listing = fail_replace, fail_listing
         self.calls = []
 
     def request(self, method, path, data=None, headers=None):
@@ -70,9 +70,14 @@ class FakeAPI:
         if path.endswith('/apks/apk-1') and method == 'GET': return {'id': 'apk-1'}, 'apk-etag'
         if path.endswith('/replace'):
             if self.fail_replace: raise ValueError('upload failed')
+            self.old_code = release.version_code()
             return {'versionCode': release.version_code()}, None
-        if path.endswith('/listings/en_US') and method == 'GET': return {'language': 'en_US', 'title': 'Globulation 2'}, 'listing-etag'
-        if path.endswith('/listings/en_US') and method == 'PUT': return {'recentChanges': 'New maps'}, None
+        if path.endswith('/listings') and method == 'GET':
+            return {'listings': {'de-DE': {}, 'en-US': {'language': 'en-US'}}}, None
+        if path.endswith('/listings/en-US') and method == 'GET':
+            if self.fail_listing: raise ValueError('listing unavailable')
+            return {'language': 'en-US', 'title': 'Globulation 2'}, 'listing-etag'
+        if path.endswith('/listings/en-US') and method == 'PUT': return {'recentChanges': 'New maps'}, None
         if path.endswith('/validate'): return {'id': 'edit-42'}, None
         if path == '/edits/edit-42' and method == 'GET': return {'id': 'edit-42'}, 'edit-etag'
         if path == '/edits/edit-42' and method == 'DELETE':
@@ -101,7 +106,9 @@ class PublisherTests(ArtifactTests):
         api = FakeAPI(active={'id': 'someone-elses-edit'})
         with self.assertRaisesRegex(ValueError, 'open edit'):
             self.run_publish(api)
-        self.assertEqual([call[:2] for call in api.calls], [('GET', '/edits')])
+        # Only reads: the edit list and the open edit's APK version.
+        self.assertEqual([call[:2] for call in api.calls],
+                         [('GET', '/edits'), ('GET', '/edits/someone-elses-edit/apks')])
 
     def test_refuses_nonincreasing_version_before_upload(self):
         api = FakeAPI(old_code=release.version_code())
@@ -116,7 +123,7 @@ class PublisherTests(ArtifactTests):
         result = self.run_publish(api)
         self.assertEqual(result['edit_id'], 'edit-42')
         self.assertEqual([call[1].split('/')[-1] for call in api.calls[-4:]],
-                         ['en_US', 'validate', 'edit-42', 'commit'])
+                         ['en-US', 'validate', 'edit-42', 'commit'])
         self.assertEqual(api.calls[-1][3], {'If-Match': 'edit-etag'})
         self.assertEqual(json.loads(api.calls[-4][2])['recentChanges'], 'New maps')
 
@@ -127,8 +134,28 @@ class PublisherTests(ArtifactTests):
         previous = len(api.calls)
         with self.assertRaisesRegex(ValueError, 'already has an open edit'):
             self.run_publish(api)
-        self.assertEqual(api.calls[previous:][0][:2], ('GET', '/edits'))
-        self.assertEqual(len(api.calls), previous + 1)
+        # The retry only reads; an interrupted upload is never resumed.
+        self.assertEqual([call[:2] for call in api.calls[previous:]],
+                         [('GET', '/edits'), ('GET', '/edits/edit-42/apks')])
+
+    def test_resumes_own_edit_after_a_later_step_failed(self):
+        api = FakeAPI(fail_listing=True)
+        with self.assertRaisesRegex(ValueError, 'remains open: listing unavailable'):
+            self.run_publish(api)
+        api.fail_listing = False
+        previous = len(api.calls)
+        result = self.run_publish(api)
+        self.assertEqual(result['edit_id'], 'edit-42')
+        self.assertNotIn(('POST', '/edits'), [call[:2] for call in api.calls[previous:]])
+        self.assertNotIn('DELETE', [call[0] for call in api.calls[previous:]])
+        self.assertEqual(api.calls[-1][1], '/edits/edit-42/commit')
+
+    def test_listing_language_falls_back_to_en_us(self):
+        class NoIndex(FakeAPI):
+            def request(self, method, path, data=None, headers=None):
+                if path.endswith('/listings') and method == 'GET': raise ValueError('HTTP 404')
+                return super().request(method, path, data, headers)
+        self.assertEqual(release.english_listing_language(NoIndex(), '/edits/edit-42'), 'en-US')
 
 
 if __name__ == '__main__':

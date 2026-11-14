@@ -153,6 +153,20 @@ class AmazonAPI:
             raise ValueError(f'Amazon API {method} {urllib.parse.urlsplit(url).path} returned HTTP {error.code}') from None
 
 
+def english_listing_language(api, base):
+    """The edit's US English listing key; Amazon names languages like en-US."""
+    try:
+        index, _ = api.request('GET', base + '/listings')
+    except Exception:
+        index = None
+    if isinstance(index, dict):
+        listings = index.get('listings', index)
+        for language in (listings if isinstance(listings, dict) else {}):
+            if str(language).lower().replace('_', '-') == 'en-us':
+                return str(language)
+    return 'en-US'
+
+
 def publish(api, apk, manifest, sdk, notes):
     from developer_apk import build_tools, java_environment
     metadata = json.loads(manifest.read_text())
@@ -176,9 +190,18 @@ def publish(api, apk, manifest, sdk, notes):
     if apk.stat().st_size > 300 * 1024 * 1024:
         raise ValueError('APK exceeds the simple-upload limit; use Amazon large-APK upload')
     active, _ = api.request('GET', '/edits')
+    resumed = False
     if active and active.get('id'):
-        raise ValueError('Amazon already has an open edit; reconcile it in the console before publishing')
-    edit, _ = api.request('POST', '/edits', b'')
+        # Resume only this release's own interrupted submission: an open edit
+        # whose single APK already carries this version code (the upload
+        # finished, a later step failed). Anything else needs the console.
+        apks, _ = api.request('GET', '/edits/' + urllib.parse.quote(str(active['id']), safe='') + '/apks')
+        if not (isinstance(apks, list) and len(apks) == 1
+                and int(apks[0].get('versionCode', -1)) == metadata['version_code']):
+            raise ValueError('Amazon already has an open edit; reconcile it in the console before publishing')
+        edit, resumed = active, True
+    else:
+        edit, _ = api.request('POST', '/edits', b'')
     if not edit or not edit.get('id'):
         raise ValueError('Amazon did not return an edit ID')
     edit_id = urllib.parse.quote(str(edit['id']), safe='')
@@ -189,7 +212,7 @@ def publish(api, apk, manifest, sdk, notes):
         if not isinstance(apks, list) or len(apks) != 1:
             raise ValueError('Expected exactly one existing APK; inspect Amazon device targeting')
         old = apks[0]
-        if int(old['versionCode']) >= metadata['version_code']:
+        if int(old['versionCode']) >= metadata['version_code'] and not resumed:
             _, edit_etag = api.request('GET', base)
             if not edit_etag:
                 raise ValueError('Amazon versionCode is not higher and the new edit has no ETag for cleanup')
@@ -204,11 +227,12 @@ def publish(api, apk, manifest, sdk, notes):
             {'Content-Type': 'application/octet-stream', 'If-Match': etag, 'fileName': apk.name})
         if not uploaded or int(uploaded.get('versionCode', -1)) != metadata['version_code']:
             raise ValueError('Amazon returned a different APK version')
-        listing, etag = api.request('GET', base + '/listings/en_US')
+        language = urllib.parse.quote(english_listing_language(api, base), safe='')
+        listing, etag = api.request('GET', base + '/listings/' + language)
         if not isinstance(listing, dict) or not etag:
             raise ValueError('Amazon English listing or ETag is missing')
         listing['recentChanges'] = notes.strip()
-        api.request('PUT', base + '/listings/en_US', json.dumps(listing).encode(),
+        api.request('PUT', base + '/listings/' + language, json.dumps(listing).encode(),
                     {'Content-Type': 'application/json', 'If-Match': etag})
         api.request('POST', base + '/validate', b'')
         _, etag = api.request('GET', base)

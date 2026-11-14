@@ -154,6 +154,9 @@ jobs:
     needs: [preflight, package]
     timeout-minutes: 180
     runs-on: windows-2022
+    permissions:
+      contents: read
+      actions: read
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -165,10 +168,15 @@ jobs:
           sparse-checkout-cone-mode: false
           path: fixture
           persist-credentials: false
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-        with:
-          name: epic-windows-${{ needs.preflight.outputs.source_sha }}
-          path: ${{ runner.temp }}/epic-candidate
+      # download-artifact v4.3 under the runner's forced Node 24 fails to
+      # stream-extract this 21k-file candidate on Windows ("Artifact download
+      # failed after 5 retries"); gh downloads the same run artifact intact.
+      - name: Download the candidate
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT: epic-windows-${{ needs.preflight.outputs.source_sha }}
+        run: gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$ARTIFACT" --dir "$RUNNER_TEMP/epic-candidate"
       - name: Run staged game without build tools
         shell: pwsh
         env:
@@ -203,15 +211,21 @@ jobs:
     environment: epic-dev
     permissions:
       contents: read
+      actions: read
     steps:
       - name: Reject BPT secret stored as a variable
         if: ${{ vars.EPIC_BPT_CLIENT_SECRET != '' }}
         shell: pwsh
         run: throw 'EPIC_BPT_CLIENT_SECRET must be an epic-dev environment secret, never a variable'
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-        with:
-          name: epic-windows-${{ needs.preflight.outputs.source_sha }}
-          path: ${{ runner.temp }}/epic-candidate
+      # download-artifact v4.3 under the runner's forced Node 24 fails to
+      # stream-extract this 21k-file candidate on Windows ("Artifact download
+      # failed after 5 retries"); gh downloads the same run artifact intact.
+      - name: Download the candidate
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT: epic-windows-${{ needs.preflight.outputs.source_sha }}
+        run: gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$ARTIFACT" --dir "$RUNNER_TEMP/epic-candidate"
       - name: Verify complete staged manifest
         shell: pwsh
         run: |
