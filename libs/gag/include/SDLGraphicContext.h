@@ -19,6 +19,7 @@
 #include <array>
 #include <functional>
 #include <map>
+#include <span>
 #include <utility>
 #include <vector>
 #include <string>
@@ -239,6 +240,10 @@ namespace GAGCore
         std::uint64_t contentRevision() const { return pixelRevision; }
         virtual void prepareDraw() {}
         void markPixelsChanged() { ++pixelRevision; }
+        //! Marks raw writes confined to `dirty` (surface pixel rectangles). The
+        //! portable renderer then updates only those rectangles of a texture
+        //! holding the previous revision; other backends upload as usual.
+        void markPixelsChanged(std::span<const SDL_Rect> dirty);
         bool hasOpaquePixels();
 		static size_t allocatedTextureBytes();
 

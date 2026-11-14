@@ -302,6 +302,91 @@ class SDLRenderBackend final : public RenderBackend
 	{
 		textureFor(key, pixels, revision, linear);
 	}
+	// Animated terrain pages rewrite a few cells per frame. Update only those
+	// rectangles of a texture that holds the immediately preceding revision.
+	// Mobile tiled GPUs penalize every mid-frame upload, so smaller is better.
+	void prepareTextureRegions(const void *key, SDL_Surface *pixels, std::uint64_t revision,
+							   std::uint64_t previous, std::span<const SDL_Rect> dirty,
+							   bool linear = false) override
+	{
+		auto found = textures.find(key);
+		if (!pixels || found == textures.end() || found->second.revision != previous ||
+			found->second.linear != linear || found->second.width != pixels->w ||
+			found->second.height != pixels->h || found->second.format != pixels->format ||
+			pixels->format != SDL_PIXELFORMAT_ARGB8888 || SDL_SurfaceHasColorKey(pixels) ||
+			SDL_GetNumberProperty(SDL_GetTextureProperties(found->second.handle),
+								  SDL_PROP_TEXTURE_FORMAT_NUMBER, 0) != SDL_PIXELFORMAT_ARGB8888)
+		{
+			textureFor(key, pixels, revision, linear);
+			return;
+		}
+		auto &entry = found->second;
+		const SDL_Rect whole{0, 0, pixels->w, pixels->h};
+		std::vector<Uint32> premultiplied;
+		if (!SDL_LockSurface(pixels))
+			throw std::runtime_error(SDL_GetError());
+		struct Unlock
+		{
+			SDL_Surface *surface;
+			~Unlock() { SDL_UnlockSurface(surface); }
+		} unlock{pixels};
+		for (SDL_Rect rect : dirty)
+		{
+			if (!SDL_GetRectIntersection(&rect, &whole, &rect))
+				continue;
+			const auto *first = static_cast<const Uint8 *>(pixels->pixels) + rect.y * pixels->pitch + rect.x * 4;
+			const auto bytes = std::uint64_t(rect.w) * rect.h * 4;
+			if (!linear)
+				check(SDL_UpdateTexture(entry.handle, &rect, first, pixels->pitch));
+			else if (!entry.gpu)
+			{
+				// The same integer premultiplication as a complete CPU upload.
+				premultiplied.resize(std::size_t(rect.w) * rect.h);
+				for (int y = 0; y < rect.h; ++y)
+				{
+					const auto *row = reinterpret_cast<const Uint32 *>(first + y * pixels->pitch);
+					for (int x = 0; x < rect.w; ++x)
+					{
+						const Uint32 p = row[x], a = p >> 24;
+						premultiplied[std::size_t(y) * rect.w + x] = (a << 24) |
+							(((((p >> 16) & 255) * a + 127) / 255) << 16) |
+							(((((p >> 8) & 255) * a + 127) / 255) << 8) | (((p & 255) * a + 127) / 255);
+					}
+				}
+				counts.cpuPremultipliedBytes += bytes;
+				check(SDL_UpdateTexture(entry.handle, &rect, premultiplied.data(), rect.w * 4));
+			}
+			else
+			{
+				// GPU premultiplication: stage the rectangle, clear its target
+				// area and draw it with the blend that prepared the whole page.
+				if (!uploadTexture || uploadTexture->w != pixels->w || uploadTexture->h != pixels->h)
+				{
+					textureFor(key, pixels, revision, linear);
+					return;
+				}
+				check(SDL_UpdateTexture(uploadTexture, &rect, first, pixels->pitch));
+				lastTexture = nullptr;
+				auto *target = SDL_GetRenderTarget(renderer);
+				SDL_FColor color;
+				SDL_BlendMode blend;
+				check(SDL_GetRenderDrawColorFloat(renderer, &color.r, &color.g, &color.b, &color.a) &&
+					  SDL_GetRenderDrawBlendMode(renderer, &blend));
+				check(SDL_SetRenderTarget(renderer, entry.handle));
+				const SDL_FRect area{float(rect.x), float(rect.y), float(rect.w), float(rect.h)};
+				const bool drawn = SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE) &&
+					SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0) && SDL_RenderFillRect(renderer, &area) &&
+					SDL_RenderTexture(renderer, uploadTexture, &area, &area);
+				check(SDL_SetRenderTarget(renderer, target) &&
+					  SDL_SetRenderDrawColorFloat(renderer, color.r, color.g, color.b, color.a) &&
+					  SDL_SetRenderDrawBlendMode(renderer, blend) && drawn);
+				++counts.gpuPreparedUploads;
+			}
+			++counts.textureUploads;
+			counts.textureUploadBytes += bytes;
+		}
+		entry.revision = revision;
+	}
 	void triangles(std::span<const SDL_Vertex> vertices, const void *key, SDL_Surface *pixels,
 				   std::uint64_t revision) override
 	{

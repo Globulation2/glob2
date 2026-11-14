@@ -50,6 +50,14 @@ class RenderBackend
                               const SDL_FRect &, Uint8) { return false; }
 	virtual void fill(const SDL_FRect &rect, SDL_Color color) = 0;
     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
+    // Like prepareTexture, after writes confined to `dirty` (pixel rectangles of
+    // the surface). A backend whose cached texture holds exactly `previous` may
+    // update only those rectangles; every other state prepares the whole surface.
+    virtual void prepareTextureRegions(const void *key, SDL_Surface *pixels, std::uint64_t revision,
+                                       std::uint64_t /*previous*/, std::span<const SDL_Rect> /*dirty*/,
+                                       bool linear = false) {
+        prepareTexture(key, pixels, revision, linear);
+    }
 	virtual RenderOperations operations() const { return {}; }
 	// Zero means the backend does not impose or report a texture limit.
 	virtual int maximumTextureSize() const { return 0; }
