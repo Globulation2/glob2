@@ -659,9 +659,9 @@ static int run(int argc, char **argv)
                 {
                     const auto geometry = batch->geometryCache().stats();
                     const auto textures = batch->stats();
-                    std::printf("STEADY_CACHE pending=%zu attempts=%llu promotions=%llu array_bytes=%zu geometry_bytes=%zu builds=%llu deferred=%llu\n",
+                    std::printf("STEADY_CACHE pending=%zu attempts=%llu promotions=%llu array_bytes=%zu geometry_bytes=%zu builds=%llu deferred=%llu stale_artwork=%llu\n",
                         textures.pendingTextures, static_cast<unsigned long long>(textures.warmAttempts), static_cast<unsigned long long>(textures.warmPromotions),
-                        textures.textureBytes, geometry.bytes, geometry.builds, geometry.deferred);
+                        textures.textureBytes, geometry.bytes, geometry.builds, geometry.deferred, geometry.staleArtwork);
                 }
                 PerformanceTelemetry::collector().write(std::cout, "BENCH_SCOPE", 0, false);
                 assert(discoveryCrossing || gui.game.checkSum(nullptr, nullptr, nullptr, true) == initialChecksum);

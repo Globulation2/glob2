@@ -259,4 +259,108 @@ TEST_CASE("map cache bounds frame builds while retaining hits and fallback pixel
     REQUIRE(after.hits == before.hits + 1);
     REQUIRE(after.entries <= 17);
 }
+TEST_CASE("map cache replays older artwork until a build slot re-records it [display]")
+{
+    SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "1");
+    glob2test::ToolkitScope toolkit;
+    auto *gfx = GAGCore::Toolkit::initGraphic(320, 240,
+        GAGCore::GraphicContext::USEGPU, "artwork revision swap");
+    auto *batch = gfx->getRenderBatch();
+    REQUIRE(batch);
+    auto& cache = batch->geometryCache();
+    std::vector<int> frames(1, 0);
+    GAGCore::DrawableSurface native(16, 16), detailed(16, 16);
+    native.drawFilledRect(0, 0, 16, 16, GAGCore::Color(71, 157, 223));
+    detailed.drawFilledRect(0, 0, 16, 16, GAGCore::Color(223, 157, 71));
+    gfx->drawSurface(0, 0, &native);
+    gfx->drawSurface(0, 0, &detailed);
+    const GAGCore::MapGeometryCache::Key row{&frames, 0, 0, 0, 1, 1};
+    const auto never = [] { FAIL("re-recorded without a build slot"); };
+    REQUIRE(cache.draw(row, frames, [&] { gfx->drawSurface(0, 0, &native); }, -1, -1, 0, 0, 7, 1));
+    // Spends `count` builds of the current frame on unrelated rows.
+    int nextTile = 1;
+    const auto spend = [&](GAGCore::MapGeometryCache::Layer &layer, int count)
+    {
+        for (int built = 0; built < count; ++built, ++nextTile)
+            if (!cache.draw({&frames, 0, nextTile, 0, 1, 1}, frames, [&] { gfx->drawSurface(0, 0, &native); }))
+                layer.prepareFallback();
+    };
+
+    // Newer artwork gets only the first half of a frame's builds; past it the
+    // entry replays as recorded, and does not count as a deferred miss.
+    {
+        GAGCore::FrameDrawBatch frame(gfx);
+        GAGCore::MapGeometryCache::Layer layer(cache);
+        spend(layer, 8);
+        const auto before = cache.stats();
+        REQUIRE(cache.draw(row, frames, never, -1, -1, 0, 0, 7, 2));
+        CHECK(cache.stats().staleArtwork == before.staleArtwork + 1);
+        CHECK(cache.stats().hits == before.hits + 1);
+        CHECK(cache.stats().deferred == before.deferred);
+    }
+
+    // A capture that uploads a texture is rejected; the stale entry stands in
+    // for it, and the next attempt records the new artwork.
+    {
+        GAGCore::DrawableSurface fresh(16, 16); // Never drawn: uploads inside the capture.
+        fresh.drawFilledRect(0, 0, 16, 16, GAGCore::Color(157, 223, 71));
+        GAGCore::FrameDrawBatch frame(gfx);
+        GAGCore::MapGeometryCache::Layer layer(cache);
+        const auto before = cache.stats();
+        REQUIRE(cache.draw(row, frames, [&] { gfx->drawSurface(0, 0, &fresh); }, -1, -1, 0, 0, 7, 2));
+        CHECK(cache.stats().builds == before.builds + 1);
+        CHECK(cache.stats().staleArtwork == before.staleArtwork + 1);
+        CHECK(cache.stats().entries == before.entries);
+    }
+    {
+        // A fresh frame, so the rejected capture's time cannot spend the share.
+        GAGCore::FrameDrawBatch frame(gfx);
+        GAGCore::MapGeometryCache::Layer layer(cache);
+        bool emitted = false;
+        REQUIRE(cache.draw(row, frames, [&] { emitted = true; gfx->drawSurface(0, 0, &detailed); },
+            -1, -1, 0, 0, 7, 2));
+        CHECK(emitted);
+        REQUIRE(cache.draw(row, frames, [] { FAIL("current artwork re-recorded"); }, -1, -1, 0, 0, 7, 2));
+    }
+
+    // An entry whose texture changed is gone, stale artwork or not: with the
+    // budget spent it is a deferred miss, never a replay of the old texture.
+    {
+        GAGCore::FrameDrawBatch frame(gfx);
+        GAGCore::MapGeometryCache::Layer layer(cache);
+        detailed.drawFilledRect(0, 0, 16, 16, GAGCore::Color(29, 73, 171));
+        gfx->drawSurface(0, 0, &detailed); // Re-uploads, invalidating the row.
+        spend(layer, 16);
+        const auto before = cache.stats();
+        REQUIRE_FALSE(cache.draw(row, frames, never, -1, -1, 0, 0, 7, 3));
+        layer.prepareFallback();
+        CHECK(cache.stats().staleArtwork == before.staleArtwork);
+        CHECK(cache.stats().deferred == before.deferred + 1);
+    }
+    REQUIRE(cache.draw(row, frames, [&] { gfx->drawSurface(0, 0, &detailed); }, -1, -1, 0, 0, 7, 3));
+
+    // A capture that would fail every time (here a translucent draw, which the
+    // cache never records) drops the stale entry rather than pinning it.
+    {
+        GAGCore::FrameDrawBatch frame(gfx);
+        GAGCore::MapGeometryCache::Layer layer(cache);
+        const auto before = cache.stats();
+        REQUIRE_FALSE(cache.draw(row, frames, [&] { gfx->drawSurface(0, 0, &detailed, 128); },
+            -1, -1, 0, 0, 7, 4));
+        layer.prepareFallback();
+        CHECK(cache.stats().entries == before.entries - 1);
+        CHECK(cache.stats().staleArtwork == before.staleArtwork);
+    }
+    REQUIRE(cache.draw(row, frames, [&] { gfx->drawSurface(0, 0, &detailed); }, -1, -1, 0, 0, 7, 4));
+
+    // Changed frames never replay stale geometry either.
+    {
+        GAGCore::FrameDrawBatch frame(gfx);
+        GAGCore::MapGeometryCache::Layer layer(cache);
+        spend(layer, 16);
+        REQUIRE_FALSE(cache.draw(row, frames, never, -1, -1, 0, 0, 8, 5));
+        layer.prepareFallback();
+    }
+    REQUIRE(glGetError() == GL_NO_ERROR);
+}
 #endif

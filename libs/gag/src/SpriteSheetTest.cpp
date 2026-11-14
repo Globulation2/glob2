@@ -238,10 +238,17 @@ TEST_CASE("deferred HD frames that leave their window stay decoded within a budg
         };
         const std::array<unsigned, 3> wide{1, 2, 3};
         const std::array<unsigned, 1> narrow{2};
+        CHECK(sprite.highResolutionRevision() == 0);
         sprite.setHighResolutionFrames(wide);
         wait();
         REQUIRE(resident() == 3);
         CHECK(GAGCore::Sprite::retiredHighResolutionBytes() == 0);
+        // Each published frame names the sprite revision it moved to; frames
+        // without an HD layer stay at 0.
+        const auto published = sprite.highResolutionRevision();
+        CHECK(published >= 3);
+        CHECK(sprite.highResolutionRevision(0) == 0);
+        for (unsigned frame : wide) CHECK(sprite.highResolutionRevision(frame) > 0);
         const auto *kept = sprite.baseFrame(1);
         const auto decodes = GAGCore::AssetLoader::decodeTotals().images;
 
@@ -256,6 +263,8 @@ TEST_CASE("deferred HD frames that leave their window stay decoded within a budg
         CHECK(GAGCore::Sprite::retiredHighResolutionBytes() == 0);
         CHECK(sprite.baseFrame(1) == kept);
         CHECK(GAGCore::AssetLoader::decodeTotals().images == decodes);
+        // Retiring and returning changed no layer: nothing to re-record.
+        CHECK(sprite.highResolutionRevision() == published);
 
         // Over budget, the oldest retired frame goes first.
         sprite.setHighResolutionFrames(std::array<unsigned, 2>{2, 3}); // retires 1
@@ -265,6 +274,8 @@ TEST_CASE("deferred HD frames that leave their window stay decoded within a budg
         CHECK(resident() == 2);
         CHECK(sprite.baseFrame(1) == sprite.nativeFrame(1));
         CHECK(sprite.baseFrame(3) != sprite.nativeFrame(3));
+        // Eviction deletes a layer; its texture's invalidation covers geometry.
+        CHECK(sprite.highResolutionRevision() == published);
 
         // Past its lifetime a retired frame goes at the next poll.
         GAGCore::Sprite::setRetiredHighResolutionBudget({1024 * 1024, 0});
@@ -274,8 +285,13 @@ TEST_CASE("deferred HD frames that leave their window stay decoded within a budg
 
         // A destroyed sprite takes its retired frames out of the budget.
         GAGCore::Sprite::setRetiredHighResolutionBudget({1024 * 1024, 3'600'000'000'000});
+        const auto stayed = sprite.highResolutionRevision(2);
         sprite.setHighResolutionFrames(wide);
         wait();
+        // Decoding the evicted frames again moves only theirs.
+        CHECK(sprite.highResolutionRevision(2) == stayed);
+        CHECK(sprite.highResolutionRevision(1) > published);
+        CHECK(sprite.highResolutionRevision(3) > published);
         sprite.setHighResolutionFrames(narrow);
         CHECK(GAGCore::Sprite::retiredHighResolutionBytes() > 0);
     }

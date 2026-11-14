@@ -30,6 +30,10 @@ public:
         std::vector<int> animated;
         std::uint64_t revision = 0;
         unsigned visibleFrames = 0;
+        // The newest HD revision among the layer's frames (Sprite::
+        // highResolutionRevision(frame)): the artwork its geometry records.
+        // Rescanned only when the frames or the sprite's revision move.
+        std::uint64_t artwork = 0, artworkFrames = 0, artworkSprite = 0;
     };
     struct Row
     {

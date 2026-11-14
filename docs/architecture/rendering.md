@@ -26,11 +26,26 @@ sources under a soft 2 ms budget. Original textures draw while preparation is
 pending, and mutation/deletion cancels pending IDs. A texture
 upload or deletion must flush commands referring to the old pixels and invalidate
 array views before the driver can reuse a texture name. Cached geometry must also
-be invalidated selectively when its source texture or array page changes; unrelated
-uploads must preserve reusable entries. A mutation serial rejects interrupted
-captures but does not globally clear the cache. These are
+be invalidated selectively when its source texture or array page changes;
+unrelated uploads must preserve reusable entries. A mutation serial rejects
+interrupted captures but does not globally clear the cache. These are
 presentation caches owned by the graphics context, released while that context
 is current; they are neither saved nor consulted by simulation code.
+
+Cached map rows record each frame's HD or native layer as it stands when they
+are captured. Streamed HD frames (decor only above 32 pixels a cell) arrive
+later without changing any row's frames or touching a native texture, so each
+resource, decor and overlay row also passes the newest
+`Sprite::highResolutionRevision(frame)` among its frames as the entry's artwork
+revision. An entry whose frames match but whose artwork is older stays
+drawable: it is re-recorded within half of the frame's build budget, and until
+then, or while a capture is rejected for uploading a new HD texture, it replays
+at the previous resolution rather than falling back to a direct draw. A capture
+that fails for any other reason drops the old entry, so the row draws the new
+artwork directly instead of keeping the old for good. Deleting an HD layer needs
+no revision: a standalone layer's texture goes with it, which invalidates the
+entries that recorded it, and an atlas page stays alive until the atlas is
+replaced, which invalidates them then.
 
 High-resolution sprite layers are shared by gameplay, editors and background
 scenes. Changing screens preserves published layers and pending reload work.

@@ -22,6 +22,13 @@ struct MapVertex { float x, y, u, v, layer; };
 static_assert(sizeof(MapVertex) == 20);
 constexpr std::size_t byteLimit = 32 * 1024 * 1024;
 constexpr std::size_t entryLimit = 4096;
+// Cold builds a scene may attempt per frame. Re-recording an entry whose
+// artwork changed (its frames did not) is an upgrade the old entry stands in
+// for, so it takes only the first share and leaves the rest to entries that
+// cannot draw at all without a build.
+constexpr unsigned FrameBuildLimit = 16, StaleArtworkBuildLimit = 8;
+constexpr auto FrameBuildTime = std::chrono::milliseconds(2);
+constexpr auto StaleArtworkBuildTime = std::chrono::milliseconds(1);
 struct KeyHash
 {
     std::size_t operator()(const MapGeometryCache::Key& key) const
@@ -43,7 +50,7 @@ struct Run
 struct Entry
 {
     std::vector<int> frames;
-    std::uint64_t frameRevision = 0;
+    std::uint64_t frameRevision = 0, artworkRevision = 0;
     std::vector<Run> runs;
     unsigned buffer = 0;
     std::size_t bytes = 0;
@@ -272,25 +279,52 @@ MapGeometryCache::Stats MapGeometryCache::stats() const
 }
 
 bool MapGeometryCache::draw(const Key& key, const std::vector<int>& frames,
-    const std::function<void()>& emit, int firstTile, int lastTile, float translateX, float translateY, std::uint64_t frameRevision)
+    const std::function<void()>& emit, int firstTile, int lastTile, float translateX, float translateY, std::uint64_t frameRevision,
+    std::uint64_t artworkRevision)
 {
 #if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
     auto& cache = *impl;
     if (cache.batch->active()) return false;
     MatrixScope matrix(translateX, translateY);
     auto found = cache.entries.find(key);
-    if (found != cache.entries.end() && (frameRevision ? found->second.frameRevision == frameRevision :
-                                         found->second.frames == frames))
+    const bool sameFrames = found != cache.entries.end() &&
+        (frameRevision ? found->second.frameRevision == frameRevision : found->second.frames == frames);
+    const bool stale = sameFrames && found->second.artworkRevision != artworkRevision;
+    const auto replayEntry = [&](Entry& entry)
     {
-        found->second.frameRevision = frameRevision;
-        found->second.touched = ++cache.clock;
+        entry.frameRevision = frameRevision;
+        entry.touched = ++cache.clock;
         ++cache.counters.hits;
-        cache.replay(found->second, firstTile, lastTile);
+        if (entry.artworkRevision != artworkRevision) ++cache.counters.staleArtwork;
+        cache.replay(entry, firstTile, lastTile);
         return true;
-    }
+    };
+    // Newer artwork for the same frames is re-recorded only within the share
+    // of the frame's budget left to it; until then, and while a capture is
+    // rejected for uploading a texture, the entry draws the textures it was
+    // recorded with. Those are still alive: changing or deleting one erases
+    // the entries that reference it.
+    if (sameFrames && (!stale || (cache.frame && (cache.frameBuilds >= StaleArtworkBuildLimit ||
+                                                  cache.frameBuildTime >= StaleArtworkBuildTime))))
+        return replayEntry(found->second);
+    // The capture may have invalidated or trimmed the stale entry: look again.
+    const auto replayStale = [&]
+    {
+        if (!stale) return false;
+        auto kept = cache.entries.find(key);
+        return kept != cache.entries.end() && replayEntry(kept->second);
+    };
+    // Any other failure would recur on every attempt: drop the stale entry so
+    // the caller draws the current artwork instead of keeping the old for good.
+    const auto fail = [&]
+    {
+        if (stale)
+            if (auto kept = cache.entries.find(key); kept != cache.entries.end()) cache.erase(kept);
+        return false;
+    };
     cache.resetLayout(); // Capturing/fallback paths require ordinary GL state.
     ++cache.counters.misses;
-    if (cache.frame && (cache.frameBuilds >= 16 || cache.frameBuildTime >= std::chrono::milliseconds(2)))
+    if (cache.frame && (cache.frameBuilds >= FrameBuildLimit || cache.frameBuildTime >= FrameBuildTime))
     {
         ++cache.counters.deferred;
         return false;
@@ -303,7 +337,9 @@ bool MapGeometryCache::draw(const Key& key, const std::vector<int>& frames,
         std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
         ~BuildTimer() { if (cache.frame) cache.frameBuildTime += std::chrono::steady_clock::now() - start; }
     } timer{cache};
-    if (found != cache.entries.end()) cache.erase(found);
+    // A changed-frames entry can never draw again; a stale-artwork one stays
+    // until its replacement is installed, as the fallback for a failed capture.
+    if (found != cache.entries.end() && !stale) cache.erase(found);
     const auto captureGeneration = cache.batch->textureGeneration();
     Entry entry;
     std::vector<MapVertex> vertices;
@@ -312,6 +348,7 @@ bool MapGeometryCache::draw(const Key& key, const std::vector<int>& frames,
     {
         entry.frames = frames;
         entry.frameRevision = frameRevision;
+        entry.artworkRevision = artworkRevision;
         cache.batch->beginCapture([&](const QueueKey& drawKey, const std::vector<QueueVertex>& input)
         {
             // This cache accepts static sprite quads only. Reject rather than
@@ -333,15 +370,17 @@ bool MapGeometryCache::draw(const Key& key, const std::vector<int>& frames,
         emit();
         cache.batch->endCapture();
         entry.bytes = vertices.size() * sizeof(MapVertex);
-        if (cache.batch->textureGeneration() != captureGeneration) valid = false;
-        if (!valid || entry.bytes > byteLimit || vertices.size() > std::size_t(std::numeric_limits<int>::max())) return false;
+        if (!valid || entry.bytes > byteLimit || vertices.size() > std::size_t(std::numeric_limits<int>::max())) return fail();
+        // The first draw of a texture uploads it, which a capture rejects. The
+        // next attempt finds it resident, so until then the stale entry stands in.
+        if (cache.batch->textureGeneration() != captureGeneration) return replayStale();
         std::sort(entry.references.begin(), entry.references.end());
         entry.references.erase(std::unique(entry.references.begin(), entry.references.end()), entry.references.end());
         cache.trim(entry.bytes);
         if (entry.bytes)
         {
             glGenBuffers(1, &entry.buffer);
-            if (!entry.buffer) return false;
+            if (!entry.buffer) return fail();
             glBindBuffer(GL_ARRAY_BUFFER, entry.buffer);
             glBufferData(GL_ARRAY_BUFFER, entry.bytes, vertices.data(), GL_STATIC_DRAW);
             // Query actual allocation instead of consuming an unrelated GL error
@@ -352,9 +391,10 @@ bool MapGeometryCache::draw(const Key& key, const std::vector<int>& frames,
             if (allocated != static_cast<GLint>(entry.bytes))
             {
                 glDeleteBuffers(1, &entry.buffer);
-                return false;
+                return fail();
             }
         }
+        if (auto replaced = cache.entries.find(key); replaced != cache.entries.end()) cache.erase(replaced);
         entry.touched = ++cache.clock;
         auto inserted = cache.entries.emplace(key, std::move(entry));
         entry.buffer = 0; // The installed entry now owns the buffer, including on index failure.
@@ -368,7 +408,7 @@ bool MapGeometryCache::draw(const Key& key, const std::vector<int>& frames,
     {
         cache.batch->abortCapture();
         if (entry.buffer) glDeleteBuffers(1, &entry.buffer);
-        return false;
+        return fail();
     }
     catch (...)
     {

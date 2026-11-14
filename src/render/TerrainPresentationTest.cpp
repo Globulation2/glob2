@@ -34,6 +34,7 @@
 #include <SDL3_image/SDL_image.h>
 #include <RenderBackend.h>
 #include <RenderBatch.h>
+#include <MapGeometryCache.h>
 #include <RenderDevice.h>
 #include <RendererSelection.h>
 #include <RenderStateScope.h>
@@ -2652,6 +2653,103 @@ TEST_SUITE("TerrainValidation")
 			for (int x = 0; x < 16; ++x)
 				CHECK(render.resourceRows->rows[y].overlay.frames[x] ==
 					  compositor.overlayFrame(scene, x, y, render.animationTime));
+	}
+
+	GLOB2_TEST_CASE("cached decor rows adopt HD frames that arrive after they were recorded",
+					"[display][isolated][writes-preferences]")
+	{
+		// Decor HD frames stream only above 32 pixels a cell, so the rows of a
+		// view seen at ordinary zoom are recorded with native frames. Zooming in
+		// streams the HD frames without changing any row's frame indices; the
+		// cached rows must still draw them, as the uncached path does.
+		glob2test::HeadlessGlobals globals(
+			{.display = true, .width = 512, .height = 512,
+			 .screenFlags = Uint32(GAGCore::GraphicContext::USEGPU),
+			 .beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::LegacyGL; }});
+		auto &gfx = *globals->gfx;
+		if (!gfx.isLegacyGLScreen())
+		{
+			MESSAGE("Row cache coverage omitted: legacy GL unavailable");
+			return;
+		}
+		glob2test::HeadlessGame fixture({.wDec = 4, .hDec = 4, .discovered = true});
+		auto &map = fixture.game.map;
+		for (int y = 0; y < 16; ++y)
+			for (int x = 0; x < 16; ++x)
+				map.setVertexTerrain(x, y, (x / 4 + y / 4) % 2 ? RIDGE_ROCK : OUTCROP);
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		GAGCore::Sprite::setHighResolution(true);
+		struct Restore { ~Restore() { GAGCore::Sprite::setHighResolution(false); } } restore;
+		auto &compositor = globals->terrainCompositor();
+		auto *decor = compositor.decorSprite();
+		REQUIRE(decor);
+		MapRenderState render;
+		const auto draw = [&](bool whole, float zoom)
+		{
+			{
+				GAGCore::FrameDrawBatch frameBatch(&gfx);
+				REQUIRE(gfx.getRenderBatch());
+				gfx.setClipRect();
+				gfx.drawFilledRect(0, 0, 512, 512, 17, 29, 41);
+				gfx.beginMapTransform(zoom, 0, 0, 0, 0, 512, 512);
+				MapDrawer::drawMapResources(0, 0, 15, 15, 0, 0, 0, whole ? Game::DRAW_WHOLE_MAP : 0, scene,
+											whole ? &render : nullptr);
+				GAGCore::Sprite::flushBatches(&gfx);
+				gfx.endMapTransform();
+			}
+			auto pixels = terrainPixels(true);
+			gfx.nextFrame();
+			return pixels;
+		};
+		const auto decorRevisions = [&]
+		{
+			std::vector<std::uint64_t> out;
+			for (const auto &row : render.resourceRows->rows)
+				for (const auto &layer : row.decor) out.push_back(layer.revision);
+			return out;
+		};
+		// Native frames only: record every row, and warm them.
+		compositor.declareVisible(0, scene, 0, 0, 15, 15, false);
+		const auto nativeRevision = decor->highResolutionRevision();
+		const auto ordinaryNative = draw(false, 1);
+		for (int warm = 0; warm < 4; ++warm) draw(true, 1);
+		CHECK(draw(true, 1) == ordinaryNative);
+		REQUIRE(render.resourceRows);
+		unsigned visibleDecor = 0;
+		for (const auto &row : render.resourceRows->rows)
+			for (const auto &layer : row.decor) visibleDecor += layer.visibleFrames;
+		REQUIRE(visibleDecor > 0);
+
+		// Zoomed in, the decor's HD frames stream and are published. Nothing has
+		// drawn them yet, so their textures upload during the rows' captures.
+		compositor.declareVisible(0, scene, 0, 0, 15, 15, true);
+		GAGCore::Sprite::finishHighResolution();
+		REQUIRE(decor->highResolutionRevision() != nativeRevision);
+		// The row frames did not change, only the artwork they resolve to: rows
+		// keep their revisions and re-record within the per-frame geometry
+		// budget, replaying the previous resolution until then and never
+		// dropping to a direct draw. A slow host may need many frames.
+		auto &cache = gfx.getRenderBatch()->geometryCache();
+		const auto recorded = decorRevisions();
+		const auto before = cache.stats();
+		bool settled = false;
+		for (int frame = 0; frame < 256 && !settled; ++frame)
+		{
+			const auto start = cache.stats();
+			draw(true, 4);
+			const auto end = cache.stats();
+			settled = end.builds == start.builds && end.staleArtwork == start.staleArtwork;
+		}
+		REQUIRE(settled);
+		const auto after = cache.stats();
+		CHECK(after.deferred == before.deferred);
+		CHECK(after.staleArtwork > before.staleArtwork);
+		CHECK(after.builds > before.builds);
+		CHECK(decorRevisions() == recorded);
+		const auto ordinaryHd = draw(false, 4);
+		CHECK(draw(true, 4) == ordinaryHd);
+		CHECK(cache.stats().builds == after.builds);
 	}
 
 	TEST_CASE("raised cliffs corners strips a hole and their walls [display][artifacts]")
