@@ -112,6 +112,10 @@ namespace GAGCore
 		//! Legacy fonts default to code points; shaped fonts override this contract.
 		virtual std::vector<std::size_t> getStringClusterEnds(const std::string &text);
 
+		//! Changes whenever measurements of the same text and style may change
+		//! (reload, script language). Callers memoize layout by this value.
+		virtual std::uint64_t metricsRevision() const { return 0; }
+
 		// width and height
 		virtual int getStringWidth(const std::string string) = 0;
 		virtual int getStringWidth(const std::string string, int len);

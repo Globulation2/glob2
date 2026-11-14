@@ -109,7 +109,10 @@ python3 tools/software_render_benchmark.py --renderer sdl [--render-driver softw
   --output artifacts/portable-sdl/comparison
 ```
 
-`--candidate` may be omitted to measure one binary. `--memory-probe` adds one
+`--candidate` may be omitted to measure one binary. The runner clears inherited
+`PROFILE_*` options; pass workload options to both variants with repeatable
+`--profile-env`, for example `--profile-env PROFILE_PAUSED=1 --profile-env
+PROFILE_SELECT=building` for a static GUI scene with a selection panel. `--memory-probe` adds one
 boundary-stopped run per variant that samples RSS and, with NVIDIA drivers, the
 process's GPU framebuffer memory from `nvidia-smi`; its timing is never used. Measured
 frames run inside `profiledFrame`, so Callgrind can skip warmup with
