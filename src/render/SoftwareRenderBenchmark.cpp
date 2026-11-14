@@ -458,6 +458,10 @@ static void interactiveBenchmark()
 			double c0 = 0;
 			double freq = SDL_GetPerformanceFrequency();
 			const auto checksum = gui.game.checkSum(nullptr, nullptr, nullptr, true);
+			// SDL_Renderer output never reaches the CPU surface; read the last
+			// measured frame back before presentation instead.
+			std::shared_ptr<SDL_Surface> portableCapture;
+			std::string portableCaptureError;
 			for (int i = -warmup; i < frames || (seconds > 0 && (i < 0 || (SDL_GetPerformanceCounter()-measuredStart)/freq < seconds)); i++)
 			{
 				SDL_PumpEvents();
@@ -497,6 +501,9 @@ static void interactiveBenchmark()
                                          nullptr, nullptr, gui.gamePaused);
 				}
 				b = SDL_GetPerformanceCounter();
+				if (portable && i == frames - 1 && getenv("PROFILE_CAPTURE") && !portableCapture)
+					gfx->requestMemoryCapture([&](auto image, auto, auto why) {
+						portableCapture = std::move(image); portableCaptureError = why; });
 				if (!getenv("PROFILE_NO_PRESENT"))
 					gfx->nextFrame();
 				c = SDL_GetPerformanceCounter();
@@ -639,7 +646,12 @@ static void interactiveBenchmark()
 			PerformanceTelemetry::collector().write(std::cout, "profile", gui.game.stepCounter,
 													false);
 			if (const char *p = getenv("PROFILE_CAPTURE"))
-				SDL_SaveBMP(gfx->getSDLSurface(), p);
+			{
+				if (portable && !portableCapture)
+					throw std::runtime_error("Portable capture failed: " + portableCaptureError);
+				if (!SDL_SaveBMP(portable ? portableCapture.get() : gfx->getSDLSurface(), p))
+					throw std::runtime_error(SDL_GetError());
+			}
 		}
 		delete globalContainer;
 		globalContainer = nullptr;
