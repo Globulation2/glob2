@@ -104,17 +104,24 @@ class Coordinator:
         return cls(directory)
 
     def repair_exports(self):
+        """Write any export a crash left missing. Reads every record, so it runs at startup."""
         for row in self.db.execute('SELECT id,record FROM attempts WHERE record IS NOT NULL'):
-            record = json.loads(row['record'])
-            path = self.root / 'attempts' / (row['id'] + '.json')
-            if not path.exists():
-                atomic_json(path, record)
-            if record['category'] != 'success':
-                path = self.root / 'failures' / (row['id'] + '.json')
-                if not path.exists(): atomic_json(path, record)
+            self.export_attempt(row['id'], json.loads(row['record']))
         for row in self.db.execute('SELECT j.id,a.record FROM jobs j JOIN attempts a ON j.accepted=a.id'):
             path = self.root / 'results' / (row['id'] + '.json')
             if not path.exists(): atomic_json(path, json.loads(row['record']))
+
+    def export_attempt(self, identity, record, job_id=None):
+        """The exports of one committed attempt; job_id names the job it was accepted for."""
+        path = self.root / 'attempts' / (identity + '.json')
+        if not path.exists():
+            atomic_json(path, record)
+        if record['category'] != 'success':
+            path = self.root / 'failures' / (identity + '.json')
+            if not path.exists(): atomic_json(path, record)
+        if job_id is not None:
+            path = self.root / 'results' / (job_id + '.json')
+            if not path.exists(): atomic_json(path, record)
 
     @property
     def mode(self):
@@ -382,11 +389,25 @@ class Coordinator:
                 self.db.execute("UPDATE jobs SET accepted=?,active=NULL,state='completed' WHERE id=?", (row['id'], job['id']))
             elif current:
                 self._retry_or_fail(job['id'], record['category'])
-        self.repair_exports()
+        # Only this attempt's exports: rescanning every record on each acceptance
+        # parsed the whole experiment again per result, quadratic in its size.
+        self.export_attempt(row['id'], committed, job['id'] if accepted else None)
         return bool(accepted)
 
     def host_status(self, name, status=None, error=None):
         self.db.execute('INSERT OR REPLACE INTO hosts VALUES (?,?,?,?)', (name, time.time(), canonical(status).decode() if status else None, error))
+
+    def set_lane_error(self, name, error):
+        """The latest failed input or result transfer for a host, or None once one succeeds.
+
+        Kept apart from the host row, which every control poll rewrites.
+        """
+        key = 'lane_error:' + name
+        with transaction(self.db):
+            if error is None:
+                self.db.execute('DELETE FROM settings WHERE key=?', (key,))
+            else:
+                self.db.execute('INSERT OR REPLACE INTO settings VALUES (?,?)', (key, canonical(error).decode()))
 
     def status(self):
         measurements = {}
@@ -404,7 +425,13 @@ class Coordinator:
                 'jobs': dict(self.db.execute('SELECT state,count(*) FROM jobs GROUP BY state').fetchall()),
                 'attempts': dict(self.db.execute('SELECT state,count(*) FROM attempts GROUP BY state').fetchall()),
                 'failures': [dict(row) for row in self.db.execute('SELECT host,category,count(*) AS count FROM attempts WHERE category IS NOT NULL AND category!=\'success\' GROUP BY host,category')],
-                'hosts': [dict(row) | {'status': json.loads(row['status']) if row['status'] else None} for row in self.db.execute('SELECT * FROM hosts ORDER BY name')]}
+                'hosts': [dict(row) | {'status': json.loads(row['status']) if row['status'] else None,
+                                       'last_transfer_error': self.lane_error(row['name'])}
+                          for row in self.db.execute('SELECT * FROM hosts ORDER BY name')]}
+
+    def lane_error(self, name):
+        row = self.db.execute('SELECT value FROM settings WHERE key=?', ('lane_error:' + name,)).fetchone()
+        return json.loads(row['value']) if row else None
 
     def archive_bundle(self, identity):
         path = self.root / 'transfers' / (identity + '.zip')
