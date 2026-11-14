@@ -8,7 +8,8 @@ Catalog terrain materials use original procedural 8×8 blocks with shared bounda
 
 | Source category | Frames |
 | --- | ---: |
-| AI upscale with constrained finishing | 115 |
+| AI upscale with constrained finishing | 105 |
+| AI upscale with constrained finishing, then sharpened | 10 |
 | Generated material with deterministic tiling | 16 |
 | Hand-authored vector | 8 |
 | Non-AI mask resampling | 38 |
@@ -273,16 +274,16 @@ Total: **13953 frames**. Source/output SHA-256 hashes, native sizes and selected
 | `ressource28` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
 | `ressource29` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
 | `ressource3` | Recovered original | 36×39 | 128×140 ([source](../../../content-src/gfx/originals/resources/tree/trees_4_1.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
-| `ressource30` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource31` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource32` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource33` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource34` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource35` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource36` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource37` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource38` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource39` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource30` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource31` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource32` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource33` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource34` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource35` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource36` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource37` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource38` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource39` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
 | `ressource4` | Recovered original | 40×44 | 128×140 ([source](../../../content-src/gfx/originals/resources/tree/trees_4_1.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource40` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
 | `ressource41` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
