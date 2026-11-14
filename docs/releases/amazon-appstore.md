@@ -105,6 +105,10 @@ versions, screenshots, logs, saves and replay/checksum evidence under
 After the first version is live, run one controlled API update and check that a
 store-delivered update retains local saves. API review status and rejected
 submissions require console follow-up; the workflow deliberately leaves an
-open edit untouched if a submission fails.
+open edit untouched if a submission fails. A later `publish` of the same tag
+resumes only its own edit, one whose single APK already carries this release's
+version code (the upload finished and a later step failed); any other open
+edit, including one interrupted mid-upload, must be reconciled in the console.
+The English listing is addressed by the language key Amazon reports (`en-US`).
 
 [Release index](README.md) · [Documentation index](../README.md).
