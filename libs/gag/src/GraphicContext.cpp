@@ -114,9 +114,30 @@ int GraphicContext::maximumTextureSize() const
 
 		// A single normalized texture target supports both legacy atlases and HD mipmaps.
 		isTextureSRectangle = false;
-		hasS3TCCompression = (strstr(glExtensions, "GL_EXT_texture_compression_s3tc") != NULL)
-			&& !std::getenv("GLOB2_DISABLE_S3TC");
-		AssetImage::compressHighResolution = hasS3TCCompression;
+		// S3TC where the device has it, as desktop GPUs do. ETC2 otherwise, where
+		// the context promises OpenGL ES 3 formats: GPUs without S3TC decode it
+		// natively, while desktop GPUs with S3TC would only expand it to RGBA.
+		// GLOB2_TEXTURE_COMPRESSION=bc3|etc2|none overrides the choice for tests
+		// (GLOB2_DISABLE_S3TC remains as none).
+		const bool s3tc = strstr(glExtensions, "GL_EXT_texture_compression_s3tc") != NULL;
+		const bool etc2 = strstr(glExtensions, "GL_ARB_ES3_compatibility") != NULL;
+		blockCompression = s3tc ? AssetImage::BlockCompression::BC3
+			: etc2 ? AssetImage::BlockCompression::ETC2 : AssetImage::BlockCompression::Uncompressed;
+		if (const char *wanted = std::getenv("GLOB2_TEXTURE_COMPRESSION"))
+		{
+			const std::string choice(wanted);
+			if (choice == "bc3" && s3tc) blockCompression = AssetImage::BlockCompression::BC3;
+			else if (choice == "etc2" && etc2) blockCompression = AssetImage::BlockCompression::ETC2;
+			else blockCompression = AssetImage::BlockCompression::Uncompressed;
+		}
+		if (std::getenv("GLOB2_DISABLE_S3TC")) blockCompression = AssetImage::BlockCompression::Uncompressed;
+#ifdef GLOB2_WEBGL2
+		// The browser path uploads RGBA; see uploadToTexture.
+		blockCompression = AssetImage::BlockCompression::Uncompressed;
+#endif
+		blockCompressionFormat = blockCompression == AssetImage::BlockCompression::BC3 ? 0x83F3 // COMPRESSED_RGBA_S3TC_DXT5_EXT
+			: blockCompression == AssetImage::BlockCompression::ETC2 ? 0x9278 : 0; // COMPRESSED_RGBA8_ETC2_EAC
+		AssetImage::highResolutionCompression = blockCompression;
 		const char *glVendor = (const char *)glGetString(GL_VENDOR);
 		if (strstr(glVendor, "ATI"))
 			useATIWorkaround = true; // ugly temporary bug fix for bug 13823. We think it is an ATI driver bug

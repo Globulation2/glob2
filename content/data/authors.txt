@@ -15,6 +15,7 @@ Further programming
 
 Ahmad Sayed <ahmadsayed83 at yahoo dot com> (bidi text support)
 Andrew Sayers <globulation2 at pileofstuff dot org> (Miscellaneous bugfixes)
+Bartosz Taudul <wolf at nereid dot pl> (etcpak texture compression)
 Bradley Arsenault <genixpro at gmail dot com> (AI's, Map Editor, new YOG, bugfixes)
 Emmanuel Eckard <emmanuel dot eckard at epfl dot ch> (CreditScreen JJ)
 Hein-Pieter van Braam <hp at syntomax dot com> (IRC patch, debugging)

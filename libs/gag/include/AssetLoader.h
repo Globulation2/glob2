@@ -21,18 +21,28 @@ struct PackedSpriteFrame;
 
 // CPU data only: destroying this object never calls a rendering API.
 struct AssetImage {
-    // compressed: BC3 (DXT5) blocks of the level, prepared on the worker when
-    // the graphics context compresses high-resolution artwork; empty below
-    // 4x4 or when compression is off.
+    // Block formats workers encode high-resolution levels into (etcpak, see
+    // third_party/README.md). Both store 16 bytes for each 4x4 pixels: BC3 for
+    // desktop GPUs with S3TC, ETC2 with EAC alpha for GPUs without it, which
+    // every OpenGL ES 3 device decodes.
+    enum class BlockCompression : unsigned char { Uncompressed, BC3, ETC2 };
+    // compressed: the level's blocks in the image's compression, prepared on
+    // the worker; empty below 4x4 or without compression.
     struct Mip { int width, height; std::vector<unsigned char> pixels, compressed; };
-    // Whether workers prepare compressed levels. On by default on desktop GL,
-    // so artwork decoded before the graphics context exists has them too; the
-    // context turns it off when the device lacks S3TC.
+    // The format workers prepare. BC3 by default on desktop, so artwork decoded
+    // before the graphics context exists has blocks too; the context then
+    // names what its device decodes, or Uncompressed.
 #if !defined(GLOB2_WEBGL2) && SDL_BYTEORDER == SDL_LIL_ENDIAN
-    inline static std::atomic<bool> compressHighResolution{true};
+    inline static std::atomic<BlockCompression> highResolutionCompression{BlockCompression::BC3};
 #else
-    inline static std::atomic<bool> compressHighResolution{false};
+    inline static std::atomic<BlockCompression> highResolutionCompression{BlockCompression::Uncompressed};
 #endif
+    //! The blocks of a level's pixels, 16 bytes each in row order; empty for
+    //! Uncompressed or a level under 4x4. bgra tells the pixels' byte order from RGBA.
+    static std::vector<unsigned char> compressBlocks(const unsigned char *pixels, int width, int height,
+                                                     BlockCompression format, bool bgra);
+    //! The format of mips[].compressed.
+    mutable BlockCompression compression = BlockCompression::Uncompressed;
     mutable SDL_Surface *surface = nullptr;
     mutable std::vector<unsigned char> uploadPixels;
     mutable std::vector<Mip> mips;

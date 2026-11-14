@@ -42,11 +42,13 @@ TEST_CASE("worker-prepared BC3 levels decode close to their pixels") {
         p[2] = x < 32 ? 90 + (x + y) * 2 : (cell ? 40 : 170);
         p[3] = x < 48 ? 255 : (y * 8) % 256;
     }
-    const bool previous = GAGCore::AssetImage::compressHighResolution.exchange(true);
-    struct Restore { bool value; ~Restore() { GAGCore::AssetImage::compressHighResolution = value; } } restore{previous};
+    using Compression = GAGCore::AssetImage::BlockCompression;
+    const auto previous = GAGCore::AssetImage::highResolutionCompression.exchange(Compression::BC3);
+    struct Restore { Compression value; ~Restore() { GAGCore::AssetImage::highResolutionCompression = value; } } restore{previous};
     GAGCore::AssetImage image(surface);
     image.prepareUpload(true);
     REQUIRE(image.mips.size() > 3);
+    CHECK(image.compression == Compression::BC3);
     const auto expand = [](unsigned c, int bits) { return int((c << (8 - bits)) | (c >> (2 * bits - 8))); };
     for (const auto &level : image.mips) {
         CAPTURE(level.width);
@@ -86,6 +88,35 @@ TEST_CASE("worker-prepared BC3 levels decode close to their pixels") {
     }
 }
 #endif
+TEST_CASE("block compression follows the requested format and skips what it cannot encode") {
+    using Compression = GAGCore::AssetImage::BlockCompression;
+    std::vector<unsigned char> pixels(8 * 4 * 4, 200);
+    CHECK(GAGCore::AssetImage::compressBlocks(pixels.data(), 8, 4, Compression::Uncompressed, true).empty());
+    CHECK(GAGCore::AssetImage::compressBlocks(pixels.data(), 2, 2, Compression::BC3, true).empty());
+#if SDL_BYTEORDER == SDL_LIL_ENDIAN
+    const auto bc3 = GAGCore::AssetImage::compressBlocks(pixels.data(), 8, 4, Compression::BC3, true);
+    const auto etc2 = GAGCore::AssetImage::compressBlocks(pixels.data(), 8, 4, Compression::ETC2, true);
+    // Sixteen bytes for each 4x4 pixels in both formats.
+    CHECK(bc3.size() == 32);
+    CHECK(etc2.size() == 32);
+    CHECK(bc3 != etc2);
+    // A flat opaque block: BC3 stores its alpha endpoints first.
+    CHECK(bc3[0] == 200);
+    // The prepared image records the format its levels hold.
+    const auto previous = GAGCore::AssetImage::highResolutionCompression.exchange(Compression::ETC2);
+    struct Restore { Compression value; ~Restore() { GAGCore::AssetImage::highResolutionCompression = value; } } restore{previous};
+    auto *surface = SDL_CreateSurface(8, 8, SDL_PIXELFORMAT_ARGB8888);
+    REQUIRE(surface != nullptr);
+    SDL_FillSurfaceRect(surface, nullptr, 0xff336699u);
+    GAGCore::AssetImage image(surface);
+    image.prepareUpload(true);
+#if !defined(GLOB2_WEBGL2)
+    CHECK(image.compression == Compression::ETC2);
+    REQUIRE_FALSE(image.mips.empty());
+    CHECK(image.mips.front().compressed.size() == 4 * 16);
+#endif
+#endif
+}
 TEST_CASE("prepared image adoption separates shared pixels and transfers exclusive pixels") {
     auto *pixels = SDL_CreateSurface(2, 1, SDL_PIXELFORMAT_ARGB8888);
     REQUIRE(pixels != nullptr);

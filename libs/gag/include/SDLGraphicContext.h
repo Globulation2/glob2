@@ -168,6 +168,7 @@ namespace GAGCore
 		// its own uploaded revision; raw pixel writes must call markPixelsChanged().
 		std::vector<unsigned char> preparedUploadPixels;
         std::vector<AssetImage::Mip> preparedMips;
+        AssetImage::BlockCompression preparedCompression = AssetImage::BlockCompression::Uncompressed;
         std::uint64_t preparedUploadRevision = 0;
 		std::uint64_t glUploadedRevision = 0; // Revision uploaded to this surface's legacy GL texture.
         std::uint64_t pixelRevision = 1, opacityRevision = 0;

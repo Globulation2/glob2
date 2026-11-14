@@ -100,6 +100,7 @@ namespace GAGCore
     {
         if (exclusive) { preparedUploadPixels = std::move(image.uploadPixels); preparedMips = std::move(image.mips); }
         else { preparedUploadPixels = image.uploadPixels; preparedMips = image.mips; }
+        preparedCompression = image.compression;
         preparedUploadRevision = pixelRevision;
     }
     void DrawableSurface::prepareTexture()
@@ -405,11 +406,14 @@ namespace GAGCore
                     // render thread for those updates.
                     // Only blocks a worker prepared: the driver never encodes on
                     // this thread. Anything else uploads uncompressed.
-                    const bool compress=glState.hasS3TCCompression &&
+                    // And only in the format this context decodes: artwork decoded
+                    // before the context existed may hold another.
+                    const bool compress=glState.blockCompression != AssetImage::BlockCompression::Uncompressed &&
+                        preparedCompression == glState.blockCompression &&
                         preparedUploadRevision == pixelRevision && !preparedMips.empty() &&
                         !preparedMips.front().compressed.empty();
 #endif
-                    const GLenum internalFormat=compress?GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:GL_RGBA;
+                    const GLenum internalFormat=compress?GLenum(glState.blockCompressionFormat):GL_RGBA;
                     for (size_t mip = 0; mip < levels->size(); ++mip) {
                         const auto &level = (*levels)[mip];
                         const int w = level.width, h = level.height;

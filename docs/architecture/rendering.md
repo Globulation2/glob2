@@ -839,6 +839,19 @@ mip chains keep their existing upload and compression path. Unsupported contexts
 (including older contexts without integer shaders), non-power-of-two surfaces and failed pipeline
 creation retain CPU preparation. Native scratch textures and shaders are released
 before their owning context is destroyed.
+
+Asset workers also compress each authored level into 4x4 blocks with the
+vendored etcpak encoders (`AssetImage::compressBlocks`,
+[inventory](../../third_party/README.md#texture-block-compression)), so the
+graphics thread uploads blocks and the driver never encodes. Desktop legacy
+OpenGL picks the format at context creation: BC3 where the device has S3TC, as
+desktop GPUs do, otherwise ETC2 with EAC alpha where the context promises the
+OpenGL ES 3 formats (`GL_ARB_ES3_compatibility`), which GPUs without S3TC decode
+natively; both take 16 bytes for 16 pixels, a quarter of RGBA. A level whose
+blocks are in another format than the context's (artwork decoded before the
+context existed) uploads uncompressed. `GLOB2_TEXTURE_COMPRESSION=bc3|etc2|none`
+overrides the choice for tests. The browser path and the device renderers still
+upload RGBA, so ETC2 on phones awaits a renderer that takes compressed blocks.
 On little-endian desktop OpenGL, the CPU fallback for tightly packed,
 power-of-two ARGB surfaces uploads the original pixels directly and reuses
 one scratch buffer for the smaller levels.

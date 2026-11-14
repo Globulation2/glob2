@@ -866,7 +866,7 @@ set(GLOB2_STRICT_CXXFLAGS
     -ffp-contract=off
 )
 
-# buildsys/sources.py GAG_SOURCES.
+# buildsys/sources.py GAG_SOURCES and ETCPAK_SOURCES.
 set(GLOB2_GAG_SOURCES
     libs/gag/src/AssetLoader.cpp
     libs/gag/src/AssetVideo.cpp
@@ -947,6 +947,10 @@ set(GLOB2_GAG_SOURCES
     libs/gag/src/ui/Containers.cpp
     libs/gag/src/ui/Controls.cpp
     libs/gag/src/ui/Screen.cpp
+    third_party/etcpak/etcpak/ProcessDxtc.cpp
+    third_party/etcpak/etcpak/ProcessRGB.cpp
+    third_party/etcpak/etcpak/Tables.cpp
+    third_party/etcpak/etcpak/Dither.cpp
 )
 
 # buildsys/sources.py mobile_sources("android"): libmain.so (cmake/mobile.cmake).
@@ -1718,6 +1722,10 @@ set(GLOB2_ANDROID_SOURCES
     libs/gag/src/ui/Containers.cpp
     libs/gag/src/ui/Controls.cpp
     libs/gag/src/ui/Screen.cpp
+    third_party/etcpak/etcpak/ProcessDxtc.cpp
+    third_party/etcpak/etcpak/ProcessRGB.cpp
+    third_party/etcpak/etcpak/Tables.cpp
+    third_party/etcpak/etcpak/Dither.cpp
     libs/usl/src/code.cpp
     libs/usl/src/debug.cpp
     libs/usl/src/interpreter.cpp
@@ -2509,6 +2517,10 @@ set(GLOB2_IOS_SOURCES
     libs/gag/src/ui/Containers.cpp
     libs/gag/src/ui/Controls.cpp
     libs/gag/src/ui/Screen.cpp
+    third_party/etcpak/etcpak/ProcessDxtc.cpp
+    third_party/etcpak/etcpak/ProcessRGB.cpp
+    third_party/etcpak/etcpak/Tables.cpp
+    third_party/etcpak/etcpak/Dither.cpp
     libs/usl/src/code.cpp
     libs/usl/src/debug.cpp
     libs/usl/src/interpreter.cpp
@@ -3453,6 +3465,10 @@ set(GLOB2_WEB_SOURCES
     libs/gag/src/ui/Containers.cpp
     libs/gag/src/ui/Controls.cpp
     libs/gag/src/ui/Screen.cpp
+    third_party/etcpak/etcpak/ProcessDxtc.cpp
+    third_party/etcpak/etcpak/ProcessRGB.cpp
+    third_party/etcpak/etcpak/Tables.cpp
+    third_party/etcpak/etcpak/Dither.cpp
     libs/usl/src/code.cpp
     libs/usl/src/debug.cpp
     libs/usl/src/interpreter.cpp
@@ -4227,6 +4243,7 @@ set(GLOB2_INCLUDE_DIRECTORIES
     src/net/message
     src/scripting/sgsl
     third_party/nlohmann-json/include
+    third_party/etcpak
 )
 
 # buildsys/javascript.py QUICKJS_SOURCES and openlibm_sources().

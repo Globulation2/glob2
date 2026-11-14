@@ -59,8 +59,8 @@ def content():
         _list('GLOB2_GUARDED_NUMERIC_SOURCES', guarded,
               'Client sources whose objects the numeric symbol guard checks (javascript.guarded_numeric_source).'),
         _list('GLOB2_STRICT_CXXFLAGS', javascript.STRICT_CXXFLAGS, 'javascript.STRICT_CXXFLAGS.'),
-        _list('GLOB2_GAG_SOURCES', ['libs/gag/src/' + name for name in sources.GAG_SOURCES],
-              'buildsys/sources.py GAG_SOURCES.'),
+        _list('GLOB2_GAG_SOURCES', ['libs/gag/src/' + name for name in sources.GAG_SOURCES] +
+              list(sources.ETCPAK_SOURCES), 'buildsys/sources.py GAG_SOURCES and ETCPAK_SOURCES.'),
         _list('GLOB2_ANDROID_SOURCES', sources.mobile_sources('android'),
               'buildsys/sources.py mobile_sources("android"): libmain.so (cmake/mobile.cmake).'),
         _list('GLOB2_IOS_SOURCES', sources.mobile_sources('ios'),

@@ -17,6 +17,30 @@ messages, REST bodies, match setup), never for simulation state, saves or
 replays. To update, replace both headers and the licence from a new release and
 record the new tag, commit and hashes here.
 
+## Texture block compression
+
+etcpak 2.1 (BSD 3-Clause), from https://github.com/wolfpld/etcpak (tag `2.1`,
+commit `7f15da4739cc5f8562311bdbb800436986d268ca`). `etcpak/etcpak/` holds only
+the block encoders and what they include: `ProcessDxtc`, `ProcessRGB`, `Tables`
+and `Dither` (`.cpp` and `.hpp`), `ForceInline.hpp`, `Math.hpp`, `Vector.hpp`
+and `ProcessCommon.hpp`, with the upstream `LICENSE.txt` and `AUTHORS.txt`
+beside it. The command-line tool, image loading, decoders, threading and the
+BC7 encoder are left out. The sources are unmodified except
+`patches/etcpak-0001-no-bc7.patch`, which removes `CompressBc7` and its
+`bc7enc.h` include from `ProcessDxtc`, so `bc7enc` need not be vendored.
+
+`buildsys/sources.py` compiles the four sources into libgag on every platform
+(`ETCPAK_SOURCES`) and puts `third_party/etcpak` on the include path; include
+the encoders as `<etcpak/ProcessDxtc.hpp>` and `<etcpak/ProcessRGB.hpp>`.
+`AssetImage::compressBlocks` (`libs/gag/src/AssetLoader.cpp`) is the only
+caller: asset workers encode high-resolution texture levels to BC3, or to ETC2
+with EAC alpha for GPUs without S3TC. The encoders pick SSE4.1, AVX2 or NEON
+paths from the compiler's target macros; builds for the baseline x86-64 target
+use the portable path. The notice ships as `content/data/etcpak-license.txt`.
+To update, replace the listed files from a new tag, reapply the patch, record
+the tag and commit here, and rerun the `ImageAssets` and `GpuTexturePreparation`
+suites, which decode both formats.
+
 ## Scripting runtime
 
 
