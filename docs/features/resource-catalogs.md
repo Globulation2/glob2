@@ -85,10 +85,14 @@ Each level has one or more weighted sprite variants. `sprite` is a canonical
 `content/data/`-relative sprite prefix; traversal and absolute paths are rejected.
 Optional `animationFrames`, `animationStride` and `animationTicks` default to one.
 All effective frame indices must fit 0–65535. `minimap` is the one colour the
-minimap, map thumbnails and zoomed-out overview paint a deposit in; derive it from
-the sprite frames' visible mean (alpha-weighted, linear light, black drop-shadow
-pixels excluded) so the dot reads like the art. Like every catalog field it is
-part of the registry checksum, so changing it bumps `SIM_REVISION`.
+minimap, map thumbnails and zoomed-out overview paint a deposit in. Take its hue
+from the sprite's identifying colour (the dominant hue of its lit pixels, or the
+fruit on a fruit tree), not from an average of every pixel: a mean takes in the
+shading, outlines and opposing hues and comes out dark and muddy. Then set its
+lightness well above the terrain the resource grows on (OKLab L about 0.6–0.95
+for the classic set) and keep it distinct from resources that grow beside it.
+Like every catalog field it is part of the registry checksum, so changing it
+bumps `SIM_REVISION`.
 Installed artwork is loaded through
 the normal asset system. Themed set sheets use map-owned artwork bundles instead,
 so transferring those maps includes their custom sprite files.
