@@ -18,7 +18,7 @@ struct RenderOperations
     std::uint64_t rasterSourceReuses = 0, rasterSourceRetainedBytes = 0;
     std::uint64_t rasterSnapshotBytes = 0, rasterPeakRetainedBytes = 0, rasterFallbacks = 0;
     // SDL_Renderer (portable) submission counters; cumulative like the above.
-    std::uint64_t vertices = 0, textureSwitches = 0, transformCopies = 0;
+    std::uint64_t vertices = 0, textureSwitches = 0;
     // SDL_RenderGeometry calls after merging compatible consecutive submissions.
     std::uint64_t geometryBatches = 0;
     std::uint64_t textureUploads = 0, textureUploadBytes = 0, gpuPreparedUploads = 0;
@@ -28,7 +28,8 @@ struct RenderOperations
     // the owners' CPU surfaces that stay alive beside each cached texture.
     std::uint64_t textureCount = 0, textureBytes = 0, peakTextureBytes = 0;
     std::uint64_t sourceSurfaceBytes = 0, sharedSourceTextures = 0, gpuPreparedTextures = 0;
-    std::uint64_t stagingTextureBytes = 0, transformedCapacityBytes = 0;
+    // Vertex and index storage the batcher keeps allocated between frames.
+    std::uint64_t stagingTextureBytes = 0, batchCapacityBytes = 0;
 };
 
 class RenderBackend

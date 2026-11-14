@@ -572,11 +572,10 @@ static void interactiveBenchmark()
                 const double n = double(draw.size());
                 const auto per = [&](std::uint64_t now, std::uint64_t then) { return (now - then) / n; };
                 printf("portable_frame geometry_calls=%.1f vertices=%.1f texture_switches=%.1f "
-                       "transform_copies=%.1f texture_uploads=%.2f upload_bytes=%.0f gpu_prepared_uploads=%.2f "
+                       "texture_uploads=%.2f upload_bytes=%.0f gpu_prepared_uploads=%.2f "
                        "texture_creates=%.2f texture_destroys=%.2f cpu_premultiplied_bytes=%.0f geometry_batches=%.1f\n",
                        per(ops.triangles, initialOps.triangles), per(ops.vertices, initialOps.vertices),
                        per(ops.textureSwitches, initialOps.textureSwitches),
-                       per(ops.transformCopies, initialOps.transformCopies),
                        per(ops.textureUploads, initialOps.textureUploads),
                        per(ops.textureUploadBytes, initialOps.textureUploadBytes),
                        per(ops.gpuPreparedUploads, initialOps.gpuPreparedUploads),
@@ -590,12 +589,12 @@ static void interactiveBenchmark()
                        (unsigned long long)initialOps.textureCreates);
                 printf("portable_memory textures=%llu texture_bytes=%llu peak_texture_bytes=%llu "
                        "gpu_prepared_textures=%llu source_surface_bytes=%llu shared_source_textures=%llu "
-                       "staging_texture_bytes=%llu transformed_capacity_bytes=%llu frame_surface_bytes=%llu\n",
+                       "staging_texture_bytes=%llu batch_capacity_bytes=%llu frame_surface_bytes=%llu\n",
                        (unsigned long long)ops.textureCount, (unsigned long long)ops.textureBytes,
                        (unsigned long long)ops.peakTextureBytes, (unsigned long long)ops.gpuPreparedTextures,
                        (unsigned long long)ops.sourceSurfaceBytes, (unsigned long long)ops.sharedSourceTextures,
                        (unsigned long long)ops.stagingTextureBytes,
-                       (unsigned long long)ops.transformedCapacityBytes,
+                       (unsigned long long)ops.batchCapacityBytes,
                        (unsigned long long)(gfx->getSDLSurface() ? std::uint64_t(gfx->getSDLSurface()->h) * gfx->getSDLSurface()->pitch : 0));
             }
 			printf("terrain_cache bytes=%zu mask_bytes=%zu hits=%llu rebuilds=%llu\n",

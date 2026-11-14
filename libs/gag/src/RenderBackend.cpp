@@ -23,7 +23,10 @@ bool update(SDL_Texture *texture, SDL_Surface *pixels)
 	return result;
 }
 // Exactly (channel * alpha + 127) / 255 per channel, red and blue sharing one
-// multiply; opaque and transparent pixels, most of the artwork, skip it.
+// multiply; opaque and transparent pixels, most of the artwork, skip it. With
+// t = channel * alpha + 128, (t + (t >> 8)) >> 8 is that rounded division for
+// every product up to 255 * 255, so whole and region uploads (and the GPU
+// blend that exactPremultiplication accepts) all store the same bytes.
 void premultiplyRow(Uint32 *row, int width)
 {
 	for (int x = 0; x < width; ++x)
@@ -75,13 +78,18 @@ class SDLRenderBackend final : public RenderBackend
 		// Sequence of the newest pending run drawing this texture, if any.
 		std::uint32_t newestRun = 0;
 	};
-	// Submissions sharing a texture, its blend and scale modes and SDL's per-call
-	// wrap choice merge into one SDL_RenderGeometry call. A draw may join an
-	// earlier compatible run only when no later pending run touches any grid
-	// cell its output bounds cover, so overlapping draws keep painter order
-	// whatever their blending. Every state change that SDL would capture at
-	// queue time (clip, render scale, target, texture contents) submits all
-	// pending runs first.
+	// Geometry batching. Each SDL_RenderGeometry call costs a driver draw (and,
+	// on GLES, state validation), and a frame interleaves sprites from dozens
+	// of textures, so plain consecutive merging finds few neighbours. Instead,
+	// submissions sharing a texture, its blend and scale modes and SDL's
+	// per-call wrap choice accumulate in up to MaximumRuns pending runs, and a
+	// draw may join an earlier compatible run, moving ahead of later runs,
+	// only when none of those later runs touches any grid cell its output
+	// bounds cover. Overlapping draws therefore keep painter order whatever
+	// their blending, and the output is the pixels separate calls would give.
+	// Every state change that SDL would capture at queue time (clip, render
+	// scale, target, texture contents or destruction) submits all pending runs
+	// first; so must any texture upload or render-target switch.
 	struct BatchState
 	{
 		Texture *texture = nullptr;
@@ -104,11 +112,17 @@ class SDLRenderBackend final : public RenderBackend
 	// Each cell holds the sequence of the newest run drawn over it. Sequences
 	// below the oldest pending run's belong to submitted runs and constrain
 	// nothing, so the grid never needs clearing. Coordinates beyond the grid
-	// clamp to its edge cells, which stays conservative.
+	// clamp to its edge cells, which stays conservative. Sixteen pixels is
+	// about a small sprite: finer cells cost more marking per draw, coarser
+	// ones see false overlaps between neighbouring sprites. 256 cells cover a
+	// 4096-pixel output.
 	static constexpr int GridCell = 16, GridColumns = 256, GridRows = 256;
 	std::vector<std::uint32_t> occupancy = std::vector<std::uint32_t>(GridColumns * GridRows, 0);
 	std::uint32_t nextSequence = 1, untexturedRun = 0, opaqueFillRun = 0;
 	mutable int maximumTexture = 0;
+	// MaximumRuns bounds the pending state (a full set submits its older
+	// half); DirectSubmissionVertices is where a single list is large enough
+	// that merging saves nothing and copying it would cost.
 	static constexpr std::size_t MaximumBatchVertices = 16384, MaximumRuns = 64, RetainedRunVertices = 2048,
 								 DirectSubmissionVertices = 384;
 	std::vector<SDL_Vertex> direct;
@@ -279,16 +293,19 @@ class SDLRenderBackend final : public RenderBackend
 		}
 		return SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND) && result;
 	}
+	// One SDL draw call in `state`. Indices are given only for indexedBatches.
+	bool render(const BatchState &state, std::span<const SDL_Vertex> vertices, std::span<const int> indices)
+	{
+		SDL_Texture *texture = applyModes(state);
+		++counts.geometryBatches;
+		if (!texture && state.blend == SDL_BLENDMODE_NONE)
+			return submitOpaqueFills(vertices);
+		return SDL_RenderGeometry(renderer, texture, vertices.data(), int(vertices.size()),
+								  indices.empty() ? nullptr : indices.data(), int(indices.size()));
+	}
 	void submitRun(Run &run)
 	{
-		SDL_Texture *texture = applyModes(run.state);
-		++counts.geometryBatches;
-		const bool result =
-			!texture && run.state.blend == SDL_BLENDMODE_NONE
-				? submitOpaqueFills(run.vertices)
-				: SDL_RenderGeometry(renderer, texture, run.vertices.data(), int(run.vertices.size()),
-									 indexedBatches ? run.indices.data() : nullptr,
-									 indexedBatches ? int(run.indices.size()) : 0);
+		const bool result = render(run.state, run.vertices, run.indices);
 		run.vertices.clear();
 		run.indices.clear();
 		// Reused slots keep ordinary sprite runs allocation-free; an occasional
@@ -324,13 +341,21 @@ class SDLRenderBackend final : public RenderBackend
 		}
 		runCount = 0;
 	}
+	// Recomputed whenever the mapping from queued coordinates to output pixels
+	// changes (logical size, native scale, target scissor, window size).
 	void refreshBoundsMargin()
 	{
-		// Logical units per output pixel in each mode; SDL's software renderer
-		// rounds rectangle edges, so a whole pixel separates reordered draws.
+		if (!indexedBatches)
+		{
+			boundsMargin = 0;
+			return;
+		}
+		// Output pixels per queued unit. Under a target scissor vertices are
+		// already in output pixels; otherwise SDL scales them by the logical
+		// presentation or the native render scale.
+		float pixelScale = 1;
 		int outputW = 0, outputH = 0, logicalW = 0, logicalH = 0;
 		SDL_RendererLogicalPresentation mode = SDL_LOGICAL_PRESENTATION_DISABLED;
-		float pixelScale = 1;
 		if (physicalClip)
 			pixelScale = 1;
 		else if (SDL_GetRenderOutputSize(renderer, &outputW, &outputH) &&
@@ -339,7 +364,10 @@ class SDLRenderBackend final : public RenderBackend
 			pixelScale = std::min(float(outputW) / logicalW, float(outputH) / logicalH);
 		else
 			pixelScale = std::min(nativeX, nativeY);
-		boundsMargin = indexedBatches ? 1 + (pixelScale > 0 && pixelScale < 1 ? 1 / pixelScale : 1) : 0;
+		// SDL's software renderer rounds rectangle edges, so a draw can reach
+		// into the next output pixel: between draws that reorder keep one queued
+		// unit plus the larger of one unit and one whole output pixel.
+		boundsMargin = 1 + (pixelScale > 0 && pixelScale < 1 ? 1 / pixelScale : 1);
 	}
 	static bool sameVertex(const SDL_Vertex &a, const SDL_Vertex &b, bool textured)
 	{
@@ -436,40 +464,10 @@ class SDLRenderBackend final : public RenderBackend
 				state.wrapV |= vertex.tex_coord.y < 0.0f || vertex.tex_coord.y > 1.0f;
 			}
 		}
+		// Vertices are mapped once, at queue time, by the UI transform and (under
+		// a target scissor, where SDL's render scale is 1) the native scale.
 		const bool translate = applyTransform && (scale != 1 || offsetX != 0 || offsetY != 0);
 		const bool native = physicalClip.has_value();
-		if (vertices.size() >= DirectSubmissionVertices)
-		{
-			// Large lists (terrain, bars) gain nothing from merging: they follow
-			// all pending runs as one unindexed call, as before batching, and
-			// are copied only when they need mapping.
-			submitBatch();
-			auto *source = vertices.data();
-			if (translate || native)
-			{
-				direct.assign(vertices.begin(), vertices.end());
-				for (auto &vertex : direct)
-				{
-					if (translate)
-					{
-						vertex.position.x = vertex.position.x * scale + offsetX;
-						vertex.position.y = vertex.position.y * scale + offsetY;
-					}
-					if (native)
-					{
-						vertex.position.x *= nativeX;
-						vertex.position.y *= nativeY;
-					}
-				}
-				source = direct.data();
-			}
-			applyModes(state);
-			++counts.geometryBatches;
-			check(!texture && state.blend == SDL_BLENDMODE_NONE
-					  ? submitOpaqueFills({source, vertices.size()})
-					  : SDL_RenderGeometry(renderer, texture, source, int(vertices.size()), nullptr, 0));
-			return;
-		}
 		const auto map = [&](float &x, float &y)
 		{
 			if (translate)
@@ -483,6 +481,22 @@ class SDLRenderBackend final : public RenderBackend
 				y *= nativeY;
 			}
 		};
+		if (vertices.size() >= DirectSubmissionVertices)
+		{
+			// Large lists (terrain, bars) gain nothing from merging: they follow
+			// all pending runs as one unindexed call, as before batching, and
+			// are copied only when they need mapping.
+			submitBatch();
+			if (translate || native)
+			{
+				direct.assign(vertices.begin(), vertices.end());
+				for (auto &vertex : direct)
+					map(vertex.position.x, vertex.position.y);
+				vertices = direct;
+			}
+			check(render(state, vertices, {}));
+			return;
+		}
 		// The mapping is increasing and float rounding is monotonic, so mapping
 		// the source extremes gives exactly the extremes of the mapped vertices.
 		Bounds bounds{std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity(),
@@ -522,7 +536,7 @@ class SDLRenderBackend final : public RenderBackend
 			{
 				const int *previous = run.indices.data() + first + (i / 3 - 1) * 3;
 				for (int j = 0; j < 3; ++j)
-					if (sameVertex(run.vertices[previous[j]], run.vertices[index], entry))
+					if (sameVertex(run.vertices[previous[j]], run.vertices[index], entry != nullptr))
 					{
 						index = previous[j];
 						break;
@@ -696,9 +710,34 @@ class SDLRenderBackend final : public RenderBackend
 	{
 		textureFor(key, pixels, revision, linear);
 	}
+	// Redraws `rect` of a GPU-prepared texture from the same rectangle of the
+	// staging texture, exactly as premultiply() prepared the whole: clear to
+	// transparent black, then blend the straight-alpha texels over it, which
+	// writes colour times alpha (verified bit-exact by exactPremultiplication).
+	void premultiplyStagedRegion(SDL_Texture *texture, const SDL_Rect &rect)
+	{
+		lastTexture = nullptr; // A target switch breaks SDL's draw batch.
+		auto *target = SDL_GetRenderTarget(renderer);
+		SDL_FColor color;
+		SDL_BlendMode blend;
+		check(SDL_GetRenderDrawColorFloat(renderer, &color.r, &color.g, &color.b, &color.a) &&
+			  SDL_GetRenderDrawBlendMode(renderer, &blend));
+		check(SDL_SetRenderTarget(renderer, texture));
+		const SDL_FRect area{float(rect.x), float(rect.y), float(rect.w), float(rect.h)};
+		const bool drawn = SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE) &&
+			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0) && SDL_RenderFillRect(renderer, &area) &&
+			SDL_RenderTexture(renderer, uploadTexture, &area, &area);
+		check(SDL_SetRenderTarget(renderer, target) &&
+			  SDL_SetRenderDrawColorFloat(renderer, color.r, color.g, color.b, color.a) &&
+			  SDL_SetRenderDrawBlendMode(renderer, blend) && drawn);
+		++counts.gpuPreparedUploads;
+	}
 	// Animated terrain pages rewrite a few cells per frame. Update only those
-	// rectangles of a texture that holds the immediately preceding revision.
+	// rectangles of a texture that holds the immediately preceding revision
+	// (`previous`): any other cached state may differ outside the rectangles.
 	// Mobile tiled GPUs penalize every mid-frame upload, so smaller is better.
+	// Linear (premultiplied) textures get the same bytes a whole upload would:
+	// premultiplyRow on the CPU, or the verified GPU blend.
 	void prepareTextureRegions(const void *key, SDL_Surface *pixels, std::uint64_t revision,
 							   std::uint64_t previous, std::span<const SDL_Rect> dirty,
 							   bool linear = false) override
@@ -752,29 +791,15 @@ class SDLRenderBackend final : public RenderBackend
 			}
 			else
 			{
-				// GPU premultiplication: stage the rectangle, clear its target
-				// area and draw it with the blend that prepared the whole page.
+				// A GPU-prepared page stages the rectangle in the shared
+				// straight-alpha texture, which must match the page's size.
 				if (!uploadTexture || uploadTexture->w != pixels->w || uploadTexture->h != pixels->h)
 				{
 					textureFor(key, pixels, revision, linear);
 					return;
 				}
 				check(SDL_UpdateTexture(uploadTexture, &rect, first, pixels->pitch));
-				lastTexture = nullptr;
-				auto *target = SDL_GetRenderTarget(renderer);
-				SDL_FColor color;
-				SDL_BlendMode blend;
-				check(SDL_GetRenderDrawColorFloat(renderer, &color.r, &color.g, &color.b, &color.a) &&
-					  SDL_GetRenderDrawBlendMode(renderer, &blend));
-				check(SDL_SetRenderTarget(renderer, entry.handle));
-				const SDL_FRect area{float(rect.x), float(rect.y), float(rect.w), float(rect.h)};
-				const bool drawn = SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE) &&
-					SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0) && SDL_RenderFillRect(renderer, &area) &&
-					SDL_RenderTexture(renderer, uploadTexture, &area, &area);
-				check(SDL_SetRenderTarget(renderer, target) &&
-					  SDL_SetRenderDrawColorFloat(renderer, color.r, color.g, color.b, color.a) &&
-					  SDL_SetRenderDrawBlendMode(renderer, blend) && drawn);
-				++counts.gpuPreparedUploads;
+				premultiplyStagedRegion(entry.handle, rect);
 			}
 			++counts.textureUploads;
 			counts.textureUploadBytes += bytes;
@@ -894,9 +919,9 @@ class SDLRenderBackend final : public RenderBackend
 		for (const auto &[source, uses] : sources)
 			result.sharedSourceTextures += uses > 1 ? uses : 0;
 		result.stagingTextureBytes = storageBytes(uploadTexture);
-		result.transformedCapacityBytes = direct.capacity() * sizeof(SDL_Vertex);
+		result.batchCapacityBytes = direct.capacity() * sizeof(SDL_Vertex);
 		for (const auto &run : runs)
-			result.transformedCapacityBytes += run.vertices.capacity() * sizeof(SDL_Vertex) +
+			result.batchCapacityBytes += run.vertices.capacity() * sizeof(SDL_Vertex) +
 											   run.indices.capacity() * sizeof(int);
 		return result;
 	}
