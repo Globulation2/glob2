@@ -1036,6 +1036,7 @@ namespace GAGCore
         void appendHighResolutionFrame(size_t index, Sprite& target,
             HighResolutionInputs& inputs);
         void releaseHighResolution();
+        void queueHighResolutionReload(bool retainPublishedOnFailure);
 
 	public:
 		//! Opt into batching variable-size frames; callers must finishDrawingSprite.

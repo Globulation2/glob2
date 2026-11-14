@@ -253,11 +253,7 @@ namespace GAGCore
         loadedSprites.insert(this);
         if ((!highResolutionOnDemand() || demandedHighResolutionNames.contains(fileName)) &&
             highResolutionNeedsAsyncLoad(fileName, images.size())) {
-            auto prepared = std::make_unique<Sprite>();
-            prepared->fileName = fileName;
-            prepared->dynamicTeamColor = dynamicTeamColor;
-            pendingHighResolution.insert_or_assign(this, HighResolutionReload{
-                prefetchHighResolutionIncremental(fileName, images.size()), std::move(prepared), 0, true});
+            queueHighResolutionReload(true);
         }
         for (std::size_t index=0;index<images.size();++index) if(images[index]) {
             images[index]->spriteSource=this; images[index]->spriteFrame=index;
@@ -755,11 +751,7 @@ namespace GAGCore
             auto *sprite = bandReloadQueue.front();
             bandReloadQueue.pop_front();
             if (!loadedSprites.contains(sprite)) continue;
-            auto prepared = std::make_unique<Sprite>();
-            prepared->fileName = sprite->fileName;
-            prepared->dynamicTeamColor = sprite->dynamicTeamColor;
-            pendingHighResolution.insert_or_assign(sprite, HighResolutionReload{
-                prefetchHighResolutionIncremental(sprite->fileName, sprite->images.size()), std::move(prepared), 0, true});
+            sprite->queueHighResolutionReload(true);
             bandReloading = sprite;
             return;
         }
@@ -920,12 +912,7 @@ namespace GAGCore
                 sprite->releaseRetiredHighResolution(true);
                 sprite->setHighResolutionFrames(wanted);
             } else if (!requestedHighResolutionOnDemand || demandedHighResolutionNames.contains(spriteName)) {
-                auto prepared = std::make_unique<Sprite>();
-                prepared->fileName = sprite->fileName;
-                prepared->dynamicTeamColor = sprite->dynamicTeamColor;
-                pendingHighResolution.insert_or_assign(sprite, HighResolutionReload{
-                    prefetchHighResolutionIncremental(spriteName, sprite->images.size()),
-                    std::move(prepared), 0, true});
+                sprite->queueHighResolutionReload(true);
             }
         }
         // The application invalidated the file cache for this installation.
@@ -979,11 +966,7 @@ namespace GAGCore
                 sprite->releaseHighResolution();
                 continue;
             }
-            auto prepared = std::make_unique<Sprite>();
-            prepared->fileName = sprite->fileName;
-            prepared->dynamicTeamColor = sprite->dynamicTeamColor;
-            pendingHighResolution.emplace(sprite, HighResolutionReload{
-                prefetchHighResolutionIncremental(sprite->fileName, sprite->images.size()), std::move(prepared), 0, retainPublishedOnFailure});
+            sprite->queueHighResolutionReload(retainPublishedOnFailure);
         }
     }
     bool Sprite::demandHighResolution()
@@ -999,12 +982,19 @@ namespace GAGCore
             return false;
         const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
         if ((!highResolutionEnabled && !overrideDir) || !highResolutionFramesSupported()) return false;
+        queueHighResolutionReload(true);
+        return true;
+    }
+    // Every reload, whatever started it, decodes into a fresh sprite that is
+    // published frame by frame. Replaces a reload already queued for it.
+    void Sprite::queueHighResolutionReload(bool retainPublishedOnFailure)
+    {
         auto prepared = std::make_unique<Sprite>();
         prepared->fileName = fileName;
         prepared->dynamicTeamColor = dynamicTeamColor;
-        pendingHighResolution.emplace(this, HighResolutionReload{
-            prefetchHighResolutionIncremental(fileName, images.size()), std::move(prepared), 0, true});
-        return true;
+        pendingHighResolution.insert_or_assign(this, HighResolutionReload{
+            prefetchHighResolutionIncremental(fileName, images.size()), std::move(prepared), 0,
+            retainPublishedOnFailure});
     }
     void Sprite::releaseHighResolutionDemand()
     {
@@ -1084,12 +1074,7 @@ namespace GAGCore
         // Reload what a context rebuild discarded, under the renderer now active.
         for (auto *sprite : lostHighResolution) {
             if (pendingHighResolution.contains(sprite) || highResolutionDeferred(sprite->fileName)) continue;
-            auto prepared = std::make_unique<Sprite>();
-            prepared->fileName = sprite->fileName;
-            prepared->dynamicTeamColor = sprite->dynamicTeamColor;
-            pendingHighResolution.insert_or_assign(sprite, HighResolutionReload{
-                prefetchHighResolutionIncremental(sprite->fileName, sprite->images.size()),
-                std::move(prepared), 0, true});
+            sprite->queueHighResolutionReload(true);
         }
         lostHighResolution.clear();
         const std::chrono::steady_clock::time_point deadline(std::chrono::duration_cast<std::chrono::steady_clock::duration>(std::chrono::nanoseconds(deadlineNanoseconds)));
