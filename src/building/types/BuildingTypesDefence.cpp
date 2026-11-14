@@ -100,10 +100,12 @@ extern const std::size_t g_buildingTypesDefenceTowerCount =
 BuildingType g_buildingTypesStoneWall[] = {
 	// 47: stonewall0c
 	// SIM 152 raised walls from 180 HP for 1 stone (unchanged since 2008, when
-	// building armor fell from 18 to 10) to 750 HP for 2 stone: a trained
-	// warrior hits a wall for strength 16 - armor 10 = 6, so wall HP is tuned
-	// against that difference. This frozen table changed with the shipped JSON
-	// so maps without an embedded catalog get the same wall.
+	// building armor fell from 18 to 10) to 750 HP for 2 stone; after
+	// playtesting, SIM 159 set them to 500 HP for 4 stone so wall HP is no
+	// longer cheap to throw up. A trained warrior hits a wall for strength
+	// 16 - armor 10 = 6, so wall HP is tuned against that difference. This
+	// frozen table changes with the shipped JSON so maps without an embedded
+	// catalog get the same wall.
 	// In the data file the parser sees "hueImage 1;" — the trailing semicolon
 	// is silently dropped by std::istringstream when reading int, so this is
 	// equivalent to "hueImage 1". The duplicate "miniSpriteImage" line
@@ -114,9 +116,9 @@ BuildingType g_buildingTypesStoneWall[] = {
 	  .hueImage = 1,
 	  .fillable = 1,
 	  .width = 1, .height = 1,
-	  .maxMaterial = { /*wood*/0, /*wheat*/0, /*papyrus*/0, /*stone*/2 },
+	  .maxMaterial = { /*wood*/0, /*wheat*/0, /*papyrus*/0, /*stone*/4 },
 	  .maxUnitWorking = 1,
-	  .hpInit = 1, .hpMax = 750, .hpInc = 375,
+	  .hpInit = 1, .hpMax = 500, .hpInc = 125,
 	  .level = 0, .shortTypeNum = 11, .isBuildingSite = 1 },
 
 	// 48: stonewall0
@@ -127,7 +129,7 @@ BuildingType g_buildingTypesStoneWall[] = {
 	  .hueImage = 1,
 	  .crossConnectMultiImage = 1,
 	  .width = 1, .height = 1,
-	  .hpInit = 750, .hpMax = 750,
+	  .hpInit = 500, .hpMax = 500,
 	  .armor = 10,
 	  .level = 0, .shortTypeNum = 11 },
 };
