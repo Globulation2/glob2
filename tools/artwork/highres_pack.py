@@ -9,6 +9,7 @@ that generate world art at 4x (terrain synthesis, material and trail exports)
 call `register_frames` to write each frame into both, upsert its manifest
 entry and `frames.txt` row, and refresh the production index hashes, so
 `package_runtime.py --check` stays green without a separate capture step.
+Tools that replace `ressource<N>` frames then call `rebuild_resource_atlas`.
 
 Pure Python 3 plus Pillow; no numpy.
 """
@@ -52,10 +53,12 @@ def _encode(image, path):
 
 
 def register_frames(frames, category, root=ROOT):
-    """Write and register frames: [{id, image, recipe, sources}] at 4x.
+    """Write and register frames: [{id, image, recipe, sources, source_sha256?}] at 4x.
 
     `id` is the native sprite frame name (for example `terrain-shale3`); its
-    classic `content/data/gfx/<id>.png` must already exist at the logical size. Existing
+    classic `content/data/gfx/<id>.png` must already exist at the logical size. A
+frame refined from an earlier HD image passes that image's hash as
+`source_sha256`; otherwise it defaults to the frame's own hash. Existing
     entries with the same id are replaced in place; new ones are appended.
     """
     production = root / PRODUCTION
@@ -91,7 +94,7 @@ def register_frames(frames, category, root=ROOT):
                 "file": name,
                 "role": "base",
                 "sha256": digest,
-                "source_sha256": digest,
+                "source_sha256": frame.get("source_sha256", digest),
                 "logical_width": width,
                 "logical_height": height,
                 "original_sha256": file_sha(native),
@@ -121,6 +124,58 @@ def register_frames(frames, category, root=ROOT):
                 old.unlink()
         record["sha256"] = digest
     _save_metadata(manifest, rows, index, root)
+
+
+RESOURCE_FRAMES = 65
+
+
+def rebuild_resource_atlas(root=ROOT):
+    """Rebuild the padded resource atlas mips from the `ressource<N>` HD frames.
+
+    Each frame sits in a 256 px slot (8 columns), surrounded by a 32 px border
+    that repeats its edge pixels; every mip halves the slot, border and a
+    Lanczos-resized frame. validate_runtime.py checks the same layout.
+    """
+    production = root / PRODUCTION
+    runtime = root / RUNTIME
+    manifest_path = production / "pack-metadata/manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    atlas = manifest["resource_atlas"]
+    slot, border, columns, rows = atlas["slot"], atlas["border"], atlas["columns"], atlas["rows"]
+    tiles = []
+    for i in range(RESOURCE_FRAMES):
+        with Image.open(runtime / f"ressource{i}.png") as tile:
+            tiles.append(tile.convert("RGBA"))
+    index = json.loads((production / "package.json").read_text())
+    records = {record["runtime"]: record for record in index["files"]}
+    for level, record in enumerate(atlas["levels"]):
+        size, pad = slot >> level, border >> level
+        image = Image.new("RGBA", (columns * size, rows * size), (0, 0, 0, 0))
+        for i, tile in enumerate(tiles):
+            tile = tile.resize((tile.width >> level, tile.height >> level), Image.Resampling.LANCZOS)
+            image.paste(_edge_padded(tile, pad), ((i % columns) * size, (i // columns) * size))
+        name = record["file"]
+        _encode(image, production / records[name]["source"])
+        (runtime / name).write_bytes((production / records[name]["source"]).read_bytes())
+        record["sha256"] = records[name]["sha256"] = file_sha(runtime / name)
+    rows_index = _read_rows(production / "pack-metadata/frames.txt")
+    _save_metadata(manifest, rows_index, index, root)
+
+
+def _edge_padded(tile, pad):
+    """Extend `tile` by `pad` pixels on every side, repeating its edge pixels."""
+    width, height = tile.size
+    wide = Image.new("RGBA", (width + 2 * pad, height))
+    wide.paste(tile.crop((0, 0, 1, height)).resize((pad, height), Image.Resampling.NEAREST), (0, 0))
+    wide.paste(tile, (pad, 0))
+    wide.paste(tile.crop((width - 1, 0, width, height)).resize((pad, height), Image.Resampling.NEAREST),
+               (pad + width, 0))
+    out = Image.new("RGBA", (width + 2 * pad, height + 2 * pad))
+    out.paste(wide.crop((0, 0, wide.width, 1)).resize((wide.width, pad), Image.Resampling.NEAREST), (0, 0))
+    out.paste(wide, (0, pad))
+    out.paste(wide.crop((0, height - 1, wide.width, height)).resize((wide.width, pad), Image.Resampling.NEAREST),
+              (0, pad + height))
+    return out
 
 
 def unregister_frames(frame_ids, root=ROOT):
