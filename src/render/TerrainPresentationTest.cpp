@@ -639,14 +639,15 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::observeMap(map,scene);
 		auto &compositor = globals->terrainCompositor();
 		compositor.prepare(false, 0);
-		constexpr int samples = TerrainVisual::Compositor::OverviewSamples;
+		// A cell of this 1:1 view spans 32 pixels, so the overview takes many samples.
+		constexpr int samples = OverviewTerrainCache::ManySamples;
 		GAGCore::DrawableSurface overview(16 * samples, 16 * samples);
 		for (int y = 0; y < 16; ++y)
 			for (int x = 0; x < 16; ++x)
 			{
 				const auto recipe = compositor.describe(scene, x, y);
 				compositor.composeOverview(recipe, overview.getSDLSurface(), x * samples,
-										   y * samples);
+										   y * samples, samples);
 				const TerrainVisual::PreparedCoverage coverage(compositor.catalog(), recipe);
 				for (int sy = 0; sy < samples; ++sy)
 					for (int sx = 0; sx < samples; ++sx)
@@ -679,7 +680,8 @@ TEST_SUITE("TerrainPresentation")
 		const TerrainVisual::Compositor::CornerColors customCorners{&customColor, &customColor,
 																   &customColor, &customColor};
 		GAGCore::DrawableSurface customOverview(samples, samples);
-		compositor.composeOverview(custom, customOverview.getSDLSurface(), 0, 0, &customCorners);
+		compositor.composeOverview(custom, customOverview.getSDLSurface(), 0, 0, samples,
+								   &customCorners);
 		for (int y = 0; y < samples; ++y)
 			for (int x = 0; x < samples; ++x)
 				CHECK(reinterpret_cast<const Uint32 *>(
@@ -688,11 +690,15 @@ TEST_SUITE("TerrainPresentation")
 		MapRenderState render;
 		render.detail.terrainOverview = .5f;
 		map.setResourceByIndex(9, 9, WHEAT, 1);
+		map.setResourceAmount(map.coordToIndex(9, 9), 2);
 		glob2test::observeMap(map,scene);
 		MapDrawer::drawMapOverview(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, render);
 		REQUIRE(render.overview->getW() == overview.getW());
 		REQUIRE(render.overview->getH() == overview.getH());
 		const auto& tint = map.resourceRegistry().presentation(static_cast<ResourceId>(WHEAT)).minimap;
+		// Two of five wheat: a 3x3 square in the cell's top-left corner over unchanged ground.
+		const int square = OverviewTerrainCache::resourceSquare(2, 5, samples);
+		REQUIRE(square == 3);
 		for (int y = 0; y < 16 * samples; ++y)
 			for (int x = 0; x < 16 * samples; ++x)
 			{
@@ -703,10 +709,10 @@ TEST_SUITE("TerrainPresentation")
 						static_cast<const Uint8 *>(surface->pixels) + y * surface->pitch)[x];
 				};
 				const auto ground = pixelAt(overview), actual = pixelAt(*render.overview);
-				if (x / samples == 9 && y / samples == 9)
-					for (int k = 0; k < 3; ++k)
-						CHECK(((actual >> (16 - 8 * k)) & 255) ==
-							  (((ground >> (16 - 8 * k)) & 255) + 3 * tint[k]) / 4);
+				if (x / samples == 9 && y / samples == 9 && x % samples < square &&
+					y % samples < square)
+					CHECK(actual == (0xFF000000u | Uint32(tint[0]) << 16 | Uint32(tint[1]) << 8 |
+									 tint[2]));
 				else
 					CHECK(actual == ground);
 			}
@@ -1009,16 +1015,16 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::observeMap(map, scene);
 		auto &compositor = globals->terrainCompositor();
 		compositor.prepare(false, 0);
-		constexpr int samples = TerrainVisual::Compositor::OverviewSamples;
+		constexpr int samples = OverviewTerrainCache::FewSamples;
 		GAGCore::DrawableSurface actual(40 * samples, 24 * samples), expected(40 * samples, 24 * samples);
 		OverviewTerrainCache cache;
 		const auto check = [&](int vx, int vy, bool wholeMap = true)
 		{
-			cache.update(scene, -3, -2, 36, 21, vx, vy, fixture.team->me, wholeMap, actual);
+			cache.update(scene, -3, -2, 36, 21, vx, vy, fixture.team->me, wholeMap, samples, actual);
 			for (int y = -2; y <= 21; ++y)
 				for (int x = -3; x <= 36; ++x)
 					compositor.composeOverview(compositor.describe(scene, x + vx, y + vy),
-						expected.getSDLSurface(), (x + 3) * samples, (y + 2) * samples);
+						expected.getSDLSurface(), (x + 3) * samples, (y + 2) * samples, samples);
 			CHECK(std::memcmp(actual.getSDLSurface()->pixels, expected.getSDLSurface()->pixels,
 				actual.getSDLSurface()->pitch * actual.getH()) == 0);
 		};
@@ -1046,7 +1052,7 @@ TEST_SUITE("TerrainPresentation")
 		const auto seeded = cache.composedCells();
 		map.setResourceByIndex(9, 9, WHEAT, 1);
 		glob2test::observeMap(map, scene);
-		cache.update(scene, -3, -2, 36, 21, 29, 30, fixture.team->me, false, actual);
+		cache.update(scene, -3, -2, 36, 21, 29, 30, fixture.team->me, false, samples, actual);
 		CHECK(cache.composedCells() == seeded + 1);
 		CHECK(std::memcmp(actual.getSDLSurface()->pixels, expected.getSDLSurface()->pixels,
 			actual.getSDLSurface()->pitch * actual.getH()) != 0);
@@ -1056,7 +1062,7 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::observeMap(map, scene);
 		check(29, 30, false);
 		CHECK(cache.composedCells() == seeded + 2);
-		cache.update(scene, -3, -2, 36, 21, 29, 30, fixture.team->me, true, actual);
+		cache.update(scene, -3, -2, 36, 21, 29, 30, fixture.team->me, true, samples, actual);
 		CHECK(cache.composedCells() == seeded + 3);
 		map.setNoResource(9, 9, 1);
 		glob2test::observeMap(map, scene);
@@ -1067,12 +1073,85 @@ TEST_SUITE("TerrainPresentation")
 		// same page builds one newly exposed column and reuses the overlap.
 		OverviewTerrainCache partial;
 		GAGCore::DrawableSurface small(4 * samples, 4 * samples);
-		partial.update(scene, 0, 0, 3, 3, 0, 0, fixture.team->me, true, small);
+		partial.update(scene, 0, 0, 3, 3, 0, 0, fixture.team->me, true, samples, small);
 		CHECK(partial.composedCells() == 16);
-		partial.update(scene, 0, 0, 3, 3, 1, 0, fixture.team->me, true, small);
+		partial.update(scene, 0, 0, 3, 3, 1, 0, fixture.team->me, true, samples, small);
 		CHECK(partial.composedCells() == 20);
-		partial.update(scene, 0, 0, 3, 3, 0, 0, fixture.team->me, true, small);
+		partial.update(scene, 0, 0, 3, 3, 0, 0, fixture.team->me, true, samples, small);
 		CHECK(partial.composedCells() == 20);
+	}
+
+	TEST_CASE("overview resource squares grow from the corner with stock and follow screen density")
+	{
+		using Cache = OverviewTerrainCache;
+		// Rounded down: only full stock reaches three quarters of the cell.
+		for (const auto &[stock, few, many] :
+			 {std::tuple{0u, 1, 1}, {1u, 1, 2}, {2u, 1, 3}, {3u, 2, 4}, {4u, 2, 5}, {5u, 3, 6},
+			  {9u, 3, 6}})
+		{
+			CAPTURE(stock);
+			CHECK(Cache::resourceSquare(stock, 5, Cache::FewSamples) == few);
+			CHECK(Cache::resourceSquare(stock, 5, Cache::ManySamples) == many);
+		}
+		CHECK(Cache::resourceSquare(3, 4, Cache::ManySamples) == 4);
+		CHECK(Cache::resourceSquare(4, 4, Cache::ManySamples) == 6);
+		CHECK(Cache::resourceSquare(0, 0, Cache::ManySamples) == 6);
+		// Many samples from six device pixels per cell, kept down to five.
+		CHECK(Cache::samplesFor(3.5, 0) == Cache::FewSamples);
+		CHECK(Cache::samplesFor(5.5, Cache::FewSamples) == Cache::FewSamples);
+		CHECK(Cache::samplesFor(6, Cache::FewSamples) == Cache::ManySamples);
+		CHECK(Cache::samplesFor(5.5, Cache::ManySamples) == Cache::ManySamples);
+		CHECK(Cache::samplesFor(4.9, Cache::ManySamples) == Cache::FewSamples);
+	}
+
+	TEST_CASE("overview pages recompose a resource cell when its stock changes the square [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256});
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
+		auto &map = fixture.game.map;
+		map.setResourceByIndex(9, 9, WHEAT, 1);
+		REQUIRE(map.getResource(9, 9).type == WHEAT);
+		SceneMap scene;
+		auto &compositor = globals->terrainCompositor();
+		compositor.prepare(false, 0);
+		const auto &tint = map.resourceRegistry().presentation(static_cast<ResourceId>(WHEAT)).minimap;
+		const Uint32 wheat = 0xFF000000u | Uint32(tint[0]) << 16 | Uint32(tint[1]) << 8 | tint[2];
+		for (const int samples : {OverviewTerrainCache::FewSamples, OverviewTerrainCache::ManySamples})
+		{
+			CAPTURE(samples);
+			OverviewTerrainCache cache;
+			GAGCore::DrawableSurface image(16 * samples, 16 * samples);
+			const auto squareSide = [&]
+			{
+				const auto *surface = image.getSDLSurface();
+				int side = 0;
+				while (side < samples &&
+					   reinterpret_cast<const Uint32 *>(static_cast<const Uint8 *>(surface->pixels) +
+														(9 * samples + side) * surface->pitch)[9 * samples + side] == wheat)
+					++side;
+				return side;
+			};
+			std::uint64_t composed = 0;
+			for (const Uint32 stock : {1u, 3u, 5u, 4u, 2u})
+			{
+				CAPTURE(stock);
+				map.setResourceAmount(map.coordToIndex(9, 9), stock);
+				glob2test::observeMap(map, scene);
+				const auto before = cache.composedCells();
+				cache.update(scene, 0, 0, 15, 15, 0, 0, fixture.team->me, true, samples, image);
+				CHECK(squareSide() == OverviewTerrainCache::resourceSquare(stock, 5, samples));
+				if (composed)
+					CHECK(cache.composedCells() - before <= 1);
+				composed = cache.composedCells();
+			}
+			// Changing density replaces every page rather than mixing resolutions.
+			const auto before = cache.composedCells();
+			const int other = samples == OverviewTerrainCache::FewSamples ? OverviewTerrainCache::ManySamples : OverviewTerrainCache::FewSamples;
+			GAGCore::DrawableSurface resized(16 * other, 16 * other);
+			cache.update(scene, 0, 0, 15, 15, 0, 0, fixture.team->me, true, other, resized);
+			CHECK(cache.samples() == other);
+			CHECK(cache.composedCells() - before == 256);
+		}
 	}
 #if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
 
