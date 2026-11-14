@@ -178,6 +178,8 @@ namespace GAGCore
 		//! texture index if GPU (GL) is used
 		unsigned int texture=0;
 		size_t gpuBytes=0;
+		//! The size of the pixels releasePixels() freed.
+		int releasedW = 0, releasedH = 0;
 		//! texture divisor
 		float texMultX, texMultY;
 		
@@ -232,10 +234,19 @@ namespace GAGCore
 		virtual void shiftHSV(float hue, float sat, float lum);
 		
 		// accessors
-		virtual int getW(void) { if (textureInfo) return textureInfo->w; return sdlsurface->w; }
-		virtual int getH(void) { if (textureInfo) return textureInfo->h; return sdlsurface->h; }
-		//! The raw software surface, e.g. to hand off to an SDL API that wants one directly
+		virtual int getW(void) { if (textureInfo) return textureInfo->w; return sdlsurface ? sdlsurface->w : releasedW; }
+		virtual int getH(void) { if (textureInfo) return textureInfo->h; return sdlsurface ? sdlsurface->h : releasedH; }
+		//! The raw software surface, e.g. to hand off to an SDL API that wants one directly.
+		//! Null once releasePixels() succeeded.
 		SDL_Surface *getSDLSurface(void) { return sdlsurface; }
+		//! Whether the decoded pixels are still in memory.
+		bool hasPixels() const { return sdlsurface != nullptr; }
+		//! Frees the decoded pixels of a surface whose desktop legacy OpenGL texture
+		//! holds its current content: the texture is then the only copy, which a
+		//! context rebuild loses, so the owner must be able to load the surface
+		//! again. Only drawing it and reading its size and opacity stay valid.
+		//! Returns false and changes nothing where the pixels are still needed.
+		bool releasePixels();
         std::uint64_t lifetimeIdentity() const { return surfaceIdentity; }
         std::uint64_t contentRevision() const { return pixelRevision; }
         virtual void prepareDraw() {}
@@ -1026,6 +1037,10 @@ namespace GAGCore
         static void setRetiredHighResolutionBudget(RetiredHighResolutionBudget budget);
         static size_t retiredHighResolutionBytes();
         static void refreshHighResolutionForRenderer();
+        //! Called when legacy OpenGL textures are freed: HD frames whose pixels
+        //! were released have nothing left, so their sprites drop back to
+        //! native artwork and reload HD in the background at the next poll.
+        static void discardUnbackedHighResolution();
         static bool pollHighResolution(unsigned budgetMs = 2);
         static bool pollHighResolutionUntil(std::int64_t deadlineNanoseconds); // GAGCore::steadyClockNanoseconds() clock
         // Blocks until every requested HD frame, deferred windows included, is published.

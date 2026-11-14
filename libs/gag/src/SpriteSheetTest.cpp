@@ -9,6 +9,7 @@
 #include "ScopedEnvironment.h"
 #include "SpriteHighResolution.h"
 #include <AssetLoader.h>
+#include <RenderMemory.h>
 #include <FileManager.h>
 #include <GraphicContext.h>
 #include <Toolkit.h>
@@ -489,6 +490,57 @@ TEST_CASE("lava HD look-ahead keeps streamed animation endpoints resident [displ
     evidence << "asset_peak_working_bytes " << GAGCore::Toolkit::assets().metrics().peakWorkingBytes << '\n';
 }
 
+#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
+TEST_CASE("the unit sheet keeps no HD pixels after upload and reloads once its textures are lost [display]") {
+    glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", "");
+    glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+    glob2test::ToolkitScope toolkit;
+    auto *context = GAGCore::Toolkit::initGraphic(64, 64, GAGCore::GraphicContext::USEGPU, "unit HD pixels");
+    REQUIRE(context->hasUnitShader());
+    struct RestoreNativeArt { ~RestoreNativeArt() { GAGCore::Sprite::setHighResolution(false); } } restoreNativeArt;
+    GAGCore::Sprite::setHighResolution(true);
+    GAGCore::Sprite units;
+    REQUIRE(units.load("data/gfx/unit"));
+    GAGCore::Sprite::finishHighResolution();
+    unsigned index = 0;
+    while (index < units.experimentImages.size() && !(units.experimentImages[index] && units.experimentRotated[index])) ++index;
+    REQUIRE(index < units.experimentImages.size());
+    const auto requireReleased = [&] {
+        for (auto *layer : {units.experimentImages[index], units.experimentRotated[index]->orig}) {
+            REQUIRE(layer);
+            CHECK_FALSE(layer->hasPixels());
+            CHECK(layer->texture != 0);
+            CHECK(layer->getW() == GAGCore::Sprite::highResolutionTextureSize);
+            CHECK(layer->getH() == GAGCore::Sprite::highResolutionTextureSize);
+        }
+        std::size_t pixels = 1, textures = 0;
+        for (const auto &usage : GAGCore::RenderMemory::sprites())
+            if (usage.name == "data/gfx/unit") { pixels = usage.highResolutionCpuBytes; textures = usage.gpuBytes; }
+        CHECK(pixels == 0);
+        CHECK(textures > 0);
+    };
+    requireReleased();
+    // The shader draws both layers from their textures alone.
+    context->drawSprite(0, 0, &units, index);
+    context->nextFrame();
+    CHECK(units.baseFrame(index) == units.experimentImages[index]);
+
+    // A context rebuild frees every texture. Frames without pixels have nothing
+    // left: the sheet draws native artwork at once and reloads HD from disk.
+    GAGCore::GraphicContext::releaseSurfaceTextures();
+    CHECK(units.experimentImages[index] == nullptr);
+    CHECK(units.experimentRotated[index] == nullptr);
+    REQUIRE(units.baseFrame(index) == units.images[index]);
+    CHECK(units.baseFrame(index)->hasPixels());
+    GAGCore::GraphicContext::restoreSurfaceTextures();
+    context->drawSprite(0, 0, &units, index);
+    context->nextFrame();
+    GAGCore::Sprite::finishHighResolution();
+    requireReleased();
+    context->drawSprite(0, 0, &units, index);
+    context->nextFrame();
+}
+#endif
 TEST_CASE("portable HD uses standalone frames without requesting GL atlases [display]") {
     glob2test::TempDir scratch("portable-hd");
     const auto artwork = scratch.path / "data/gfx";

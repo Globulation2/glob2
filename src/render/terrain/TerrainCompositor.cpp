@@ -172,26 +172,41 @@ Compositor::MaterialPixels Compositor::nativeMaterialPixels(MaterialId id, unsig
     prepareMaterial(id, false, phase, prepared, &wanted);
     return std::move(prepared[variant].pixels);
 }
-Compositor::PhaseSource Compositor::phaseSource(MaterialId id, unsigned variant, unsigned phase) const
+Compositor::PhaseSource Compositor::phaseSource(MaterialId id, unsigned variant, unsigned phase, bool native) const
 {
     const auto &material = definitions.materials.at(id);
     const auto frame = material.variants.at(variant).frame + phase * material.animationStride;
-    auto *source = sprites.at(id)->baseFrame(frame);
+    auto *sprite = sprites.at(id);
+    const auto frameOf = [&](unsigned index) { return native ? sprite->nativeFrame(index) : sprite->baseFrame(index); };
+    auto *source = frameOf(frame);
     if (!source) throw std::runtime_error("Missing animated terrain source");
-    auto *edge = material.periodicEdges ? nullptr : sprites.at(id)->baseFrame(
+    auto *edge = material.periodicEdges ? nullptr : frameOf(
         material.variants.front().frame + phase * material.animationStride);
     return {source->lifetimeIdentity(), source->contentRevision(), source->getW(),
         edge ? edge->lifetimeIdentity() : 0, edge ? edge->contentRevision() : 0};
 }
-Compositor::MaterialPixels Compositor::phasePixels(MaterialId id, unsigned variant, unsigned phase)
+Compositor::MaterialPixels Compositor::phasePixels(MaterialId id, unsigned variant, unsigned phase, bool native)
 {
     const auto count = definitions.materials.at(id).variants.size();
     std::vector<Texture> prepared(count);
     std::vector<unsigned char> wanted(count);
     wanted.at(variant) = 1;
     wanted.front() = 1;
-    prepareMaterial(id, true, phase, prepared, &wanted);
+    prepareMaterial(id, !native, phase, prepared, &wanted);
     return std::move(prepared[variant].pixels);
+}
+const SDL_Surface *Compositor::phaseSurface(MaterialId id, unsigned variant, unsigned phase, bool native) const
+{
+    const auto &material = definitions.materials.at(id);
+    // Other art takes its border from variant zero, which prepareMaterial blends in.
+    if (!material.periodicEdges) return nullptr;
+    const auto frame = material.variants.at(variant).frame + phase * material.animationStride;
+    auto *source = native ? sprites.at(id)->nativeFrame(frame) : sprites.at(id)->baseFrame(frame);
+    const auto *pixels = source ? source->getSDLSurface() : nullptr;
+    if (!pixels || pixels->format != SDL_PIXELFORMAT_ARGB8888 || pixels->w != pixels->h ||
+        pixels->w < 32 || pixels->w > 512 || pixels->pitch != pixels->w * 4)
+        return nullptr;
+    return pixels;
 }
 std::size_t Compositor::sourceBytes() const
 {

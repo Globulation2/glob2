@@ -576,6 +576,14 @@ static int run(int argc, char **argv)
                 bool crossedDiscovery = false;
                 bool switchedBackend = false;
                 measure(clouds ? "2D clouds" : "2D no clouds", [&](int cameraFrame) {
+                    // GLOB2_BENCH_SETTLE_FRAMES first holds one view, as a game does
+                    // before the player moves: background work such as the whole-map
+                    // base mask finishes before the camera motion. It is the motion's
+                    // sixtieth frame, the closest zoom of the cycle, because the
+                    // farthest draws the overview and prepares no terrain.
+                    static const int settleFrames = std::max(0, std::getenv("GLOB2_BENCH_SETTLE_FRAMES")
+                        ? std::atoi(std::getenv("GLOB2_BENCH_SETTLE_FRAMES")) : 0);
+                    cameraFrame = cameraFrame < settleFrames ? 60 : cameraFrame - settleFrames;
                     if (discoveryCrossing && !crossedDiscovery && cameraFrame >= 4)
                     {
                         gui.game.map.setMapDiscovered(15, 15, 1);

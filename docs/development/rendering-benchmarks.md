@@ -179,12 +179,28 @@ mobile and in the browser) or have gone unused for 20 seconds, so panning or
 zooming back decodes nothing. `image_decodes` in the
 [memory report](#renderer-memory) shows what a camera path still decodes.
 
+Below that threshold the pass filters from the native frame even while an HD
+frame is still resident, and shipped materials are sampled in place, without a
+converted copy; only art that takes its border from another variant is
+prepared first.
+
 The atlases give memory back too. The coverage atlas a zoom retires stays as a
 spare, so a run of zooms allocates nothing, and is freed once the view has been
-still for ten seconds. A density change takes the 2048-texel coverage atlas
-again when the view fits it twice over. The terrain sheet's HD atlas is not
-built on desktop legacy GL, where only the menu backdrop draws that sheet, from
-its standalone frames.
+still for ten seconds. A density change takes the 2048-texel coverage or
+artwork atlas again when the view fits it twice over. Once the whole-map base
+mask is complete it does more than cover for missing masks: at its own density
+(eight texels a cell on maps up to 256 cells) the view draws from it alone and
+keeps no coverage atlas, and while a cell is under 32 pixels wide, cells that do
+not fit the 2048-texel atlas draw the base instead of growing the atlas to 4096
+texels. The terrain sheet's HD atlas is not built on desktop legacy GL, where
+only the menu backdrop draws that sheet, from its standalone frames.
+
+The unit sheet, the largest HD family, keeps no decoded pixels on desktop
+legacy GL once its frames are uploaded: the team-colour shader draws both
+layers from their textures. A context rebuild (a renderer switch) loses those
+textures, so the sheet draws native frames at once and reloads HD from disk on
+the asset workers. Without the shader the pixels stay, because team colours
+are then cloned from them.
 
 Pages serve the software and programmable-device renderers, and the
 browser's WebGL2 renderer: it drives Legacy GL through Emscripten's WebGL2 bridge,
@@ -258,7 +274,10 @@ overhead on top.
 
 Streaming is asynchronous, so unpaced frames outrun the asset workers and show
 almost no churn. `GLOB2_BENCH_FRAME_INTERVAL_MS=16` pauses between frames,
-outside the timed interval; the scenario sets it. Camera motion applies to the
+outside the timed interval; the scenario sets it. `GLOB2_BENCH_SETTLE_FRAMES=600`
+first holds one view (the closest zoom of the cycle) for that many frames, as a
+game does before the player moves, so background work such as the whole-map
+base mask finishes; a camera that never rests starves that work. Camera motion applies to the
 flat pass, so a saved-game memory run needs `GLOB2_BENCH_FLAT=1` as well as
 `GLOB2_BENCH_GAME`.
 

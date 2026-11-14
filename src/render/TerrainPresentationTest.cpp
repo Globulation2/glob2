@@ -1260,6 +1260,69 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(frame(1.6f) == reference);
 	}
 
+	TEST_CASE("Legacy GL draws a zoomed-out view from the base mask alone once it covers the map [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
+			.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU),
+			.beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::LegacyGL; }});
+		auto &gfx = *globals->gfx;
+		REQUIRE(gfx.isLegacyGLScreen());
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .terrain = WATER, .discovered = true});
+		const TerrainType kinds[] = {WATER, GRASS, SAND};
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 64; ++x)
+				fixture.game.map.setVertexTerrain(x, y, kinds[((x / 3) * 7 + (y / 3) * 5) % 3]);
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		DirectTerrain atlas;
+		const auto prepare = [&](float scale, int right, int bottom)
+		{
+			gfx.beginMapTransform(scale, 0, 0, 0, 0, 640, 480);
+			const bool ready = atlas.prepare(gfx, scene, 0, 0, right, bottom, 0, 0, fixture.team->me, true, 0);
+			gfx.endMapTransform();
+			return ready && !atlas.preparing() && !atlas.pendingHdMasks();
+		};
+		const auto frame = [&](float scale)
+		{
+			gfx.beginMapTransform(scale, 0, 0, 0, 0, 640, 480);
+			gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
+			atlas.drawPrepared(gfx, 0, 0, true, 0);
+			auto pixels = terrainPixels(true);
+			gfx.endMapTransform();
+			return pixels;
+		};
+		// Eight texels a cell, the base mask's own density: until the base
+		// covers the map, the view builds an atlas of its own.
+		for (int attempt = 0; attempt < 4000 && !prepare(.24f, 63, 31); ++attempt) SDL_Delay(1);
+		REQUIRE_FALSE(atlas.pendingHdMasks());
+		const auto fromAtlas = frame(.24f);
+		const auto withAtlas = atlas.textureBytes();
+		for (int attempt = 0; attempt < 8000 && atlas.pendingBaseMasks(); ++attempt)
+		{
+			prepare(.24f, 63, 31);
+			SDL_Delay(1);
+		}
+		REQUIRE_FALSE(atlas.pendingBaseMasks());
+		REQUIRE(prepare(.24f, 63, 31));
+		// The same masks now come from the base; the atlas is gone.
+		CHECK(atlas.textureBytes() + 20u * 1024 * 1024 < withAtlas);
+		const auto fromBase = frame(.24f);
+		std::size_t differing = 0;
+		for (std::size_t i = 0; i + 3 < fromBase.size(); i += 4)
+		{
+			int largest = 0;
+			for (int k = 0; k < 3; ++k) largest = std::max(largest, std::abs(int(fromBase[i + k]) - int(fromAtlas[i + k])));
+			differing += largest > 48;
+		}
+		const double share = double(differing) / double(fromBase.size() / 4);
+		CAPTURE(share);
+		CHECK(share < .01);
+		// Zooming in builds an atlas at the new density again.
+		for (int attempt = 0; attempt < 4000 && !prepare(.76f, 26, 19); ++attempt) SDL_Delay(1);
+		CHECK_FALSE(atlas.pendingHdMasks());
+		CHECK(atlas.textureBytes() > 20u * 1024 * 1024);
+	}
+
 	TEST_CASE("Legacy GL cells never seen draw their whole-map base mask until their own lands [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,

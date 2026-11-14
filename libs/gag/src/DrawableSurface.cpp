@@ -40,7 +40,7 @@ namespace GAGCore
 
     bool DrawableSurface::hasOpaquePixels()
     {
-        if (opacityRevision != pixelRevision)
+        if (sdlsurface && opacityRevision != pixelRevision)
         {
             opaquePixels = SurfaceRaster::opaque(sdlsurface);
             opacityRevision = pixelRevision;
@@ -138,8 +138,31 @@ namespace GAGCore
         return total;
     }
 
+    bool DrawableSurface::releasePixels()
+    {
+#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
+        // Device, software and browser renderers read the pixels on draw or
+        // after a context loss; an atlas frame has no texture of its own.
+        if (!sdlsurface || this == _gc || textureInfo || !texture || glUploadedRevision != pixelRevision ||
+            !_gc || !(_gc->optionFlags & GraphicContext::USEGPU) || _gc->renderDevice() ||
+            _gc->backendSwitchStatus().active != RendererBackend::LegacyGL)
+            return false;
+        hasOpaquePixels(); // Answered from the pixels one last time, then from the cache.
+        releasedW = sdlsurface->w;
+        releasedH = sdlsurface->h;
+        SDL_DestroySurface(sdlsurface);
+        sdlsurface = nullptr;
+        std::vector<unsigned char>().swap(preparedUploadPixels);
+        std::vector<AssetImage::Mip>().swap(preparedMips);
+        return true;
+#else
+        return false;
+#endif
+    }
+
 	DrawableSurface *DrawableSurface::clone(void)
 	{
+		assert(sdlsurface);
 		auto copy=new DrawableSurface(sdlsurface);
 		copy->highResolutionSampling=highResolutionSampling;
 		return copy;
@@ -227,6 +250,7 @@ namespace GAGCore
 
 	void DrawableSurface::uploadToTexture(void)
 	{
+		if (!sdlsurface) return; // Released pixels: the texture is the only copy.
 		if (!textureInfo && _gc && _gc->renderBatch)
 			_gc->renderBatch->textureChanged(texture);
 		#ifdef HAVE_OPENGL
@@ -589,6 +613,8 @@ void GraphicContext::releaseSurfaceTextures()
 #ifdef HAVE_OPENGL
     for (auto *surface : liveSurfaces)
         if (surface != _gc) surface->freeGPUTexture();
+    // Frames whose pixels were released had only their textures.
+    Sprite::discardUnbackedHighResolution();
 #endif
 }
 void GraphicContext::restoreSurfaceTextures()

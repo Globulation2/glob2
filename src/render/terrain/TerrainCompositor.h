@@ -180,8 +180,14 @@ class Compositor
         std::uint64_t edgeIdentity, edgeRevision;
         bool operator==(const PhaseSource &) const = default;
     };
-    PhaseSource phaseSource(MaterialId id, unsigned variant, unsigned phase) const;
-    MaterialPixels phasePixels(MaterialId id, unsigned variant, unsigned phase);
+    // native: sample the native frame even while an HD frame is resident, as a
+    // view at 32 pixels a cell or fewer does.
+    PhaseSource phaseSource(MaterialId id, unsigned variant, unsigned phase, bool native = false) const;
+    MaterialPixels phasePixels(MaterialId id, unsigned variant, unsigned phase, bool native = false);
+    // The frame's own pixels (square, 32-bit ARGB), when they need no shared
+    // variant edges applied and so can be sampled in place of phasePixels();
+    // null otherwise. Valid until the next stream window declaration.
+    const SDL_Surface *phaseSurface(MaterialId id, unsigned variant, unsigned phase, bool native = false) const;
     struct CpuScratch
     {
         CellMask mask;

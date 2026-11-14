@@ -71,6 +71,9 @@ namespace GAGCore
         bool retainPublishedOnFailure = false;
     };
     static std::map<Sprite*, HighResolutionReload> pendingHighResolution;
+    // Sprites whose HD frames were discarded with their textures; see
+    // discardUnbackedHighResolution().
+    static std::set<Sprite*> lostHighResolution;
     static std::set<std::string> deferredHighResolutionNames;
     static std::set<std::string> atlasSkippedHighResolutionNames;
     // Whether legacy OpenGL packs this sprite's HD frames into one atlas.
@@ -628,10 +631,11 @@ namespace GAGCore
         HighResolutionStats stats;
         for(auto sprite:loadedSprites)
         {
-            for(auto s:sprite->experimentImages)if(s)stats.cpuBytes+=s->getW()*s->getH()*4;
+            // Frames whose pixels were released after upload hold no CPU bytes.
+            for(auto s:sprite->experimentImages)if(s&&s->hasPixels())stats.cpuBytes+=s->getW()*s->getH()*4;
             for(auto r:sprite->experimentRotated)if(r)
             {
-                stats.cpuBytes+=r->orig->getW()*r->orig->getH()*4;
+                if(r->orig->hasPixels())stats.cpuBytes+=r->orig->getW()*r->orig->getH()*4;
                 for(auto entry:r->rotationMap){stats.cpuBytes+=entry.second->getW()*entry.second->getH()*4;++stats.coloredFrames;}
             }
             // dynamicTeamColor sprites (the unit sprite) never populate the
@@ -867,6 +871,29 @@ namespace GAGCore
         }
         requestHighResolution(highResolutionEnabled);
     }
+    void Sprite::discardUnbackedHighResolution()
+    {
+        const auto unbacked = [](const Sprite &sprite) {
+            for (const auto *image : sprite.experimentImages)
+                if (image && !image->hasPixels()) return true;
+            for (const auto *rotated : sprite.experimentRotated)
+                if (rotated && !rotated->orig->hasPixels()) return true;
+            return false;
+        };
+        for (auto *sprite : loadedSprites) {
+            const auto pending = pendingHighResolution.find(sprite);
+            const bool staged = pending != pendingHighResolution.end() && pending->second.prepared &&
+                unbacked(*pending->second.prepared);
+            if (!staged && !unbacked(*sprite)) continue;
+            // A half-built replacement lost its textures too: start it again.
+            if (pending != pendingHighResolution.end()) pendingHighResolution.erase(pending);
+            for (auto *&image : sprite->experimentImages) { delete image; image = nullptr; }
+            for (auto *&image : sprite->experimentRotated) { delete image; image = nullptr; }
+            sprite->clearTeamColorCache();
+            sprite->recomputeBlockCompleteHD();
+            lostHighResolution.insert(sprite);
+        }
+    }
     bool Sprite::pollHighResolution(unsigned budgetMs)
     {
         return pollHighResolutionUntil(GAGCore::steadyClockNanoseconds() + std::int64_t(budgetMs) * 1000000);
@@ -874,6 +901,17 @@ namespace GAGCore
     bool Sprite::pollHighResolutionUntil(std::int64_t deadlineNanoseconds)
     {
         evictRetiredHighResolution();
+        // Reload what a context rebuild discarded, under the renderer now active.
+        for (auto *sprite : lostHighResolution) {
+            if (pendingHighResolution.contains(sprite) || highResolutionDeferred(sprite->fileName)) continue;
+            auto prepared = std::make_unique<Sprite>();
+            prepared->fileName = sprite->fileName;
+            prepared->dynamicTeamColor = sprite->dynamicTeamColor;
+            pendingHighResolution.insert_or_assign(sprite, HighResolutionReload{
+                prefetchHighResolutionIncremental(sprite->fileName, sprite->images.size()),
+                std::move(prepared), 0, true});
+        }
+        lostHighResolution.clear();
         const std::chrono::steady_clock::time_point deadline(std::chrono::duration_cast<std::chrono::steady_clock::duration>(std::chrono::nanoseconds(deadlineNanoseconds)));
         for (auto it = pendingHighResolution.begin(); it != pendingHighResolution.end();) {
             if (std::chrono::steady_clock::now() >= deadline) break;
@@ -1198,6 +1236,10 @@ namespace GAGCore
             // Deferred terrain feeds CPU composition; only composed pages need
             // GPU textures. A direct draw can still upload this source lazily.
             if (!deferred) result->prepareTexture();
+            // The unit sheet is the largest HD family and, with the team-colour
+            // shader, is only ever drawn from its textures: keep no second copy
+            // of its pixels. Without the shader, team colours clone these pixels.
+            if (!deferred && dynamicTeamColor && _gc->hasUnitShader()) result->releasePixels();
             return result.release();
         };
         auto *normal = load(entry.base, images[index]);
@@ -1215,7 +1257,8 @@ namespace GAGCore
 		DrawableSurface *surface;
 		if (teamColor)
 		{
-			if (experiment && experimentRotated[index])
+			// A recolour clones the layer's pixels; a released HD layer has none.
+			if (experiment && experimentRotated[index] && experimentRotated[index]->orig->hasPixels())
 				surface = getColoredSurface(index, true);
 			else if (rotated[index])
 				surface = getColoredSurface(index, false);
@@ -1243,6 +1286,7 @@ namespace GAGCore
         // Private reload staging sprites were never published. Their destruction
         // must not re-enter the pending map while it destroys its own entries.
         releaseRetiredHighResolution(false);
+        lostHighResolution.erase(this);
         deferredHighResolution.erase(this);
         if (deferredHighResolutionCursor == this) deferredHighResolutionCursor = nullptr;
         if (loadedSprites.erase(this)) pendingHighResolution.erase(this);

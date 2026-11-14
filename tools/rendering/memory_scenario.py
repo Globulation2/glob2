@@ -2,7 +2,8 @@
 """Run the renderer memory scenario and report peak memory by owner.
 
 The scenario is torus-render-benchmark loading a saved game and cycling the
-camera through pan and zoom, paced like a display so asset streaming keeps up.
+camera through pan and zoom, paced like a display so asset streaming keeps up,
+after a few seconds at the starting view.
 The benchmark prints the renderer's tracked bytes each frame
 (FRAME_RENDER_MEMORY); this runner adds what the renderer cannot see: the
 process's resident memory and, on Linux, the GPU driver's per-process memory.
@@ -98,7 +99,8 @@ def run(args, directory):
     environment.update({
         'GLOB2_USER_DATA_DIR': str(directory / 'profile'),
         'GLOB2_BENCH_GAME': str(Path(args.save).resolve()),
-        'GLOB2_BENCH_FRAMES': str(args.frames),
+        'GLOB2_BENCH_FRAMES': str(args.frames + args.settle_frames),
+        'GLOB2_BENCH_SETTLE_FRAMES': str(args.settle_frames),
         'GLOB2_BENCH_FRAME_INTERVAL_MS': str(args.interval_ms),
         'GLOB2_BENCH_FLAT': '1',
         'GLOB2_BENCH_CAMERA_MOTION': '1',
@@ -192,6 +194,9 @@ def main():
     parser.add_argument('--zoom', type=float,
                         help='Start of the zoom cycle, which reaches four times this (default: the minimum zoom)')
     parser.add_argument('--capture', action='store_true', help='Save the last frame as final.ppm')
+    parser.add_argument('--settle-frames', type=int, default=600,
+                        help='Frames at the starting view before the camera moves, as a game starts: '
+                             'background work such as the whole-map base mask finishes')
     parser.add_argument('--interval-ms', type=int, default=16, help='Pause between frames so streaming keeps pace')
     args = parser.parse_args()
     if args.prepare and not Path(args.save).exists():
@@ -203,7 +208,7 @@ def main():
     binary, command, log, samples = run(args, directory)
     summary = summarize(log, samples)
     summary.update(binary=str(binary), command=command, save=str(args.save), frames_requested=args.frames,
-                   interval_ms=args.interval_ms, zoom=args.zoom)
+                   interval_ms=args.interval_ms, zoom=args.zoom, settle_frames=args.settle_frames)
     (directory / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
     (directory / 'samples.json').write_text(json.dumps(samples) + '\n')
     baseline = None
