@@ -141,7 +141,7 @@ code it compiled.
 
 `perf=1` is a native client build in `build/<toolchain>/client/perf` (`perf/o3`
 with `opt=3`). It keeps the full client profile, lossless development assets and
-`-g1` symbols, and does not strip or use `-fwhole-program`, so a profiler can
+`-g1` symbols, and does not strip or use LTO, so a profiler can
 attribute samples and every performance claim is reproducible from one command.
 `tools/dev_build.py perf=1` builds it with the managed compiler cache, through
 the CMake `perf` and `perf-o3` presets' identities.
@@ -261,7 +261,7 @@ it builds the Windows client (`build/mingw/...`) with `WIN32` and
 libraries and `-mwindows` for the client and harnesses but not the console test
 programs. On macOS it builds `build/darwin/...` with Homebrew's (else MacPorts')
 libraries, Apple's frameworks and Objective-C++ sources; release builds keep `-g`
-and skip `-fwhole-program` and `-s`. Its `bundle` target makes `Glob2.app`
+and skip LTO and `-s`. Its `bundle` target makes `Glob2.app`
 (assets, libraries, MoltenVK and a dSYM, through `buildsys/bundle.py`) and
 `package` also `Glob2-<version>.dmg`; `tools/dev_build.py` sets
 `GLOB2_MAC_BUNDLE` for them, which links the pinned PNG/JPEG SDL_image.
@@ -299,10 +299,17 @@ was built last; `--build-dir` or `GLOB2_BUILD_DIR` picks one explicitly.
 
 Tier flags: `GLOB2_CXXFLAGS` and `GLOB2_LINKFLAGS` (`CXXFLAGS=` and
 `LINKFLAGS=` of `tools/dev_build.py`, default `-g`; distributions pass their
-optflags) come first; `dev_fast` replaces every `-g`/`-O` with `-O0 -g1`; `perf=1` compiles
+optflags) come first. Native objects are compiled with `-fPIE`: every target is
+an executable over static archives, and `-fPIC` would make GCC treat each global
+function as interposable and stop inlining it. `dev_fast` replaces every `-g`/`-O` with `-O0 -g1`; `perf=1` compiles
 C++ with `-O2 -g1` (`-O3` with `opt=3`) and links at the same level; `release=1`
-adds `-O3`, links with `-O3 -fwhole-program` and strips with `-s` (test binaries
-keep their symbols) unless `retain_symbols=1`. QuickJS and openlibm compile at
+adds `-O3`, links with `-O3` and strips with `-s` (test binaries
+keep their symbols) unless `retain_symbols=1`. Release builds also optimize
+the C++ across files at link time: GCC (Linux, MinGW) with `-flto=auto`, clang with
+`-flto=thin` (on Linux only when `ld.lld` is installed, which then links; on macOS
+with `-object_path_lto` so the dSYM keeps its debug information), archiving with the
+compiler's own `ar` when CMake finds one. Perf builds leave LTO out, so they measure
+a few percent slower than shipped binaries. QuickJS and openlibm compile at
 `-O2` in the optimized tiers and `-O0` otherwise. When ccache is installed it is
 the compiler launcher, with the managed cache directory and settings, and
 `-fdebug-prefix-map=<checkout>=.` makes objects relocatable. `linker=auto` links
