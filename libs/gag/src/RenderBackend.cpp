@@ -251,12 +251,12 @@ class SDLRenderBackend final : public RenderBackend
 	// computes, without reading the target: SDL's software renderer fills
 	// rectangles directly instead of blending each pixel, and tiled GPUs skip
 	// the destination read.
-	bool submitOpaqueFills(const Run &run)
+	bool submitOpaqueFills(std::span<const SDL_Vertex> vertices)
 	{
 		bool result = SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
 		if (!indexedBatches)
-			result = result && SDL_RenderGeometry(renderer, nullptr, run.vertices.data(),
-												  int(run.vertices.size()), nullptr, 0);
+			result = result && SDL_RenderGeometry(renderer, nullptr, vertices.data(),
+												  int(vertices.size()), nullptr, 0);
 		else
 		{
 			// SDL_SW_RenderGeometryRaw turns each quad into this exact rectangle
@@ -264,9 +264,9 @@ class SDLRenderBackend final : public RenderBackend
 			SDL_FColor previous;
 			result = result && SDL_GetRenderDrawColorFloat(renderer, &previous.r, &previous.g,
 														   &previous.b, &previous.a);
-			for (std::size_t i = 0; result && i + 6 <= run.vertices.size(); i += 6)
+			for (std::size_t i = 0; result && i + 6 <= vertices.size(); i += 6)
 			{
-				const SDL_Vertex &topLeft = run.vertices[i], &bottomRight = run.vertices[i + 2];
+				const SDL_Vertex &topLeft = vertices[i], &bottomRight = vertices[i + 2];
 				const SDL_FRect rect{topLeft.position.x, topLeft.position.y,
 									 bottomRight.position.x - topLeft.position.x,
 									 bottomRight.position.y - topLeft.position.y};
@@ -285,7 +285,7 @@ class SDLRenderBackend final : public RenderBackend
 		++counts.geometryBatches;
 		const bool result =
 			!texture && run.state.blend == SDL_BLENDMODE_NONE
-				? submitOpaqueFills(run)
+				? submitOpaqueFills(run.vertices)
 				: SDL_RenderGeometry(renderer, texture, run.vertices.data(), int(run.vertices.size()),
 									 indexedBatches ? run.indices.data() : nullptr,
 									 indexedBatches ? int(run.indices.size()) : 0);
@@ -465,7 +465,9 @@ class SDLRenderBackend final : public RenderBackend
 			}
 			applyModes(state);
 			++counts.geometryBatches;
-			check(SDL_RenderGeometry(renderer, texture, source, int(vertices.size()), nullptr, 0));
+			check(!texture && state.blend == SDL_BLENDMODE_NONE
+					  ? submitOpaqueFills({source, vertices.size()})
+					  : SDL_RenderGeometry(renderer, texture, source, int(vertices.size()), nullptr, 0));
 			return;
 		}
 		const auto map = [&](float &x, float &y)
@@ -700,9 +702,35 @@ class SDLRenderBackend final : public RenderBackend
 		if (vertices.empty())
 			return;
 		if (!key)
-			return queue(vertices, nullptr, SDL_BLENDMODE_BLEND, SDL_SCALEMODE_NEAREST, true);
+			return queue(vertices, nullptr,
+						 opaqueRectangles(vertices) ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND,
+						 SDL_SCALEMODE_NEAREST, true);
 		auto &entry = textureFor(key, pixels, revision);
 		queue(vertices, &entry, SDL_BLENDMODE_BLEND, SDL_SCALEMODE_NEAREST, true);
+	}
+	// Untextured lists made only of opaque, uniformly coloured, axis-aligned
+	// quads in fill()'s corner order (OpaqueRectangleBatch, bars) can replace
+	// instead of blend.
+	static bool opaqueRectangles(std::span<const SDL_Vertex> vertices)
+	{
+		if (vertices.size() % 6)
+			return false;
+		const auto same = [](const SDL_Vertex &a, const SDL_Vertex &b)
+		{ return std::memcmp(&a, &b, sizeof(a)) == 0; };
+		const auto color = [](const SDL_Vertex &a, const SDL_Vertex &b)
+		{ return std::memcmp(&a.color, &b.color, sizeof(a.color)) == 0; };
+		for (std::size_t i = 0; i < vertices.size(); i += 6)
+		{
+			const auto *q = vertices.data() + i;
+			if (q[0].color.a != 1.0f || !same(q[3], q[0]) || !same(q[4], q[2]) ||
+				!color(q[1], q[0]) || !color(q[2], q[0]) || !color(q[5], q[0]) ||
+				q[1].position.y != q[0].position.y || q[2].position.x != q[1].position.x ||
+				q[5].position.x != q[0].position.x || q[5].position.y != q[2].position.y ||
+				!(q[0].position.x < q[1].position.x) || !(q[0].position.y < q[2].position.y) ||
+				!std::isfinite(q[2].position.x + q[2].position.y + q[0].position.x + q[0].position.y))
+				return false;
+		}
+		return true;
 	}
 	void screenTriangles(std::span<const SDL_Vertex> vertices) override
 	{
