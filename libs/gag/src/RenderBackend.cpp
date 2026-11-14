@@ -72,6 +72,8 @@ class SDLRenderBackend final : public RenderBackend
 		// Modes last applied to the SDL texture; additive draws borrow it.
 		SDL_BlendMode blend = SDL_BLENDMODE_BLEND;
 		SDL_ScaleMode scaleMode = SDL_SCALEMODE_NEAREST;
+		// Sequence of the newest pending run drawing this texture, if any.
+		std::uint32_t newestRun = 0;
 	};
 	// Submissions sharing a texture, its blend and scale modes and SDL's per-call
 	// wrap choice merge into one SDL_RenderGeometry call. A draw may join an
@@ -105,8 +107,11 @@ class SDLRenderBackend final : public RenderBackend
 	// clamp to its edge cells, which stays conservative.
 	static constexpr int GridCell = 16, GridColumns = 256, GridRows = 256;
 	std::vector<std::uint32_t> occupancy = std::vector<std::uint32_t>(GridColumns * GridRows, 0);
-	std::uint32_t nextSequence = 1;
-	static constexpr std::size_t MaximumBatchVertices = 16384, MaximumRuns = 64, RetainedRunVertices = 2048;
+	std::uint32_t nextSequence = 1, untexturedRun = 0, opaqueFillRun = 0;
+	mutable int maximumTexture = 0;
+	static constexpr std::size_t MaximumBatchVertices = 16384, MaximumRuns = 64, RetainedRunVertices = 2048,
+								 DirectSubmissionVertices = 384;
+	std::vector<SDL_Vertex> direct;
 	// runs[0, runCount) are pending in submission order; later slots keep their
 	// storage for reuse.
 	std::vector<Run> runs;
@@ -224,27 +229,66 @@ class SDLRenderBackend final : public RenderBackend
     }
 	RenderOperations counts;
 
+	SDL_Texture *applyModes(const BatchState &state)
+	{
+		auto *entry = state.texture;
+		if (!entry)
+			return nullptr;
+		if (entry->blend != state.blend)
+		{
+			check(SDL_SetTextureBlendMode(entry->handle, state.blend));
+			entry->blend = state.blend;
+		}
+		if (entry->scaleMode != state.scaleMode)
+		{
+			check(SDL_SetTextureScaleMode(entry->handle, state.scaleMode));
+			entry->scaleMode = state.scaleMode;
+		}
+		return entry->handle;
+	}
+	// Opaque fill runs (untextured, SDL_BLENDMODE_NONE) hold whole quads in
+	// fill()'s vertex order. Replacing a source of alpha 1 is what blending it
+	// computes, without reading the target: SDL's software renderer fills
+	// rectangles directly instead of blending each pixel, and tiled GPUs skip
+	// the destination read.
+	bool submitOpaqueFills(const Run &run)
+	{
+		bool result = SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+		if (!indexedBatches)
+			result = result && SDL_RenderGeometry(renderer, nullptr, run.vertices.data(),
+												  int(run.vertices.size()), nullptr, 0);
+		else
+		{
+			// SDL_SW_RenderGeometryRaw turns each quad into this exact rectangle
+			// fill, only with blending forced on.
+			SDL_FColor previous;
+			result = result && SDL_GetRenderDrawColorFloat(renderer, &previous.r, &previous.g,
+														   &previous.b, &previous.a);
+			for (std::size_t i = 0; result && i + 6 <= run.vertices.size(); i += 6)
+			{
+				const SDL_Vertex &topLeft = run.vertices[i], &bottomRight = run.vertices[i + 2];
+				const SDL_FRect rect{topLeft.position.x, topLeft.position.y,
+									 bottomRight.position.x - topLeft.position.x,
+									 bottomRight.position.y - topLeft.position.y};
+				result = SDL_SetRenderDrawColorFloat(renderer, topLeft.color.r, topLeft.color.g,
+													 topLeft.color.b, topLeft.color.a) &&
+						 SDL_RenderFillRect(renderer, &rect);
+			}
+			result = SDL_SetRenderDrawColorFloat(renderer, previous.r, previous.g, previous.b,
+												 previous.a) && result;
+		}
+		return SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND) && result;
+	}
 	void submitRun(Run &run)
 	{
-		SDL_Texture *texture = nullptr;
-		if (auto *entry = run.state.texture)
-		{
-			texture = entry->handle;
-			if (entry->blend != run.state.blend)
-			{
-				check(SDL_SetTextureBlendMode(texture, run.state.blend));
-				entry->blend = run.state.blend;
-			}
-			if (entry->scaleMode != run.state.scaleMode)
-			{
-				check(SDL_SetTextureScaleMode(texture, run.state.scaleMode));
-				entry->scaleMode = run.state.scaleMode;
-			}
-		}
+		SDL_Texture *texture = applyModes(run.state);
 		++counts.geometryBatches;
-		const bool result = SDL_RenderGeometry(
-			renderer, texture, run.vertices.data(), int(run.vertices.size()),
-			indexedBatches ? run.indices.data() : nullptr, indexedBatches ? int(run.indices.size()) : 0);
+		const bool result =
+			!texture && run.state.blend == SDL_BLENDMODE_NONE
+				? submitOpaqueFills(run)
+				: SDL_RenderGeometry(renderer, texture, run.vertices.data(), int(run.vertices.size()),
+									 indexedBatches ? run.indices.data() : nullptr,
+									 indexedBatches ? int(run.indices.size()) : 0);
 		run.vertices.clear();
 		run.indices.clear();
 		// Reused slots keep ordinary sprite runs allocation-free; an occasional
@@ -314,6 +358,9 @@ class SDLRenderBackend final : public RenderBackend
 		{
 			submitBatch();
 			std::fill(occupancy.begin(), occupancy.end(), 0);
+			for (auto &[key, texture] : textures)
+				texture.newestRun = 0;
+			untexturedRun = opaqueFillRun = 0;
 			nextSequence = 1;
 		}
 		// Half-open bounds: draws that only share an edge occupy distinct cells
@@ -328,27 +375,34 @@ class SDLRenderBackend final : public RenderBackend
 			for (int x = left; x <= right; ++x)
 				latest = std::max(latest, row[x]);
 		}
+		// Pending sequences are contiguous, so a texture's newest run is found
+		// without scanning; a run with other modes for it starts a new run.
 		Run *target = nullptr;
-		for (std::size_t i = runCount; i-- > 0 && runs[i].sequence >= latest;)
-			if (runs[i].state == state && runs[i].vertices.size() + vertices <= MaximumBatchVertices)
-			{
-				target = &runs[i];
-				break;
-			}
+		std::uint32_t &newest = state.texture ? state.texture->newestRun
+								: state.blend == SDL_BLENDMODE_NONE ? opaqueFillRun : untexturedRun;
+		if (runCount && newest >= runs[0].sequence && newest >= latest)
+		{
+			Run &run = runs[newest - runs[0].sequence];
+			if (run.state == state && run.vertices.size() + vertices <= MaximumBatchVertices)
+				target = &run;
+		}
 		if (!target)
 		{
 			if (runCount == MaximumRuns)
 			{
-				// The oldest run precedes everything still pending.
-				submitRun(runs[0]);
-				std::rotate(runs.begin(), runs.begin() + 1, runs.begin() + runCount);
-				--runCount;
+				// The oldest runs precede everything still pending.
+				constexpr std::size_t released = MaximumRuns / 2;
+				for (std::size_t i = 0; i < released; ++i)
+					submitRun(runs[i]);
+				std::rotate(runs.begin(), runs.begin() + released, runs.begin() + runCount);
+				runCount -= released;
 			}
 			if (runs.size() == runCount)
 				runs.emplace_back();
 			target = &runs[runCount++];
 			target->state = state;
 			target->sequence = nextSequence++;
+			newest = target->sequence;
 		}
 		for (int y = top; y <= bottom; ++y)
 		{
@@ -384,27 +438,62 @@ class SDLRenderBackend final : public RenderBackend
 		}
 		const bool translate = applyTransform && (scale != 1 || offsetX != 0 || offsetY != 0);
 		const bool native = physicalClip.has_value();
-		Bounds bounds{std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity(),
-					  -std::numeric_limits<float>::infinity(), -std::numeric_limits<float>::infinity()};
-		thread_local std::vector<SDL_Vertex> mapped;
-		mapped.assign(vertices.begin(), vertices.end());
-		for (auto &vertex : mapped)
+		if (vertices.size() >= DirectSubmissionVertices)
+		{
+			// Large lists (terrain, bars) gain nothing from merging: they follow
+			// all pending runs as one unindexed call, as before batching, and
+			// are copied only when they need mapping.
+			submitBatch();
+			auto *source = vertices.data();
+			if (translate || native)
+			{
+				direct.assign(vertices.begin(), vertices.end());
+				for (auto &vertex : direct)
+				{
+					if (translate)
+					{
+						vertex.position.x = vertex.position.x * scale + offsetX;
+						vertex.position.y = vertex.position.y * scale + offsetY;
+					}
+					if (native)
+					{
+						vertex.position.x *= nativeX;
+						vertex.position.y *= nativeY;
+					}
+				}
+				source = direct.data();
+			}
+			applyModes(state);
+			++counts.geometryBatches;
+			check(SDL_RenderGeometry(renderer, texture, source, int(vertices.size()), nullptr, 0));
+			return;
+		}
+		const auto map = [&](float &x, float &y)
 		{
 			if (translate)
 			{
-				vertex.position.x = vertex.position.x * scale + offsetX;
-				vertex.position.y = vertex.position.y * scale + offsetY;
+				x = x * scale + offsetX;
+				y = y * scale + offsetY;
 			}
 			if (native)
 			{
-				vertex.position.x *= nativeX;
-				vertex.position.y *= nativeY;
+				x *= nativeX;
+				y *= nativeY;
 			}
+		};
+		// The mapping is increasing and float rounding is monotonic, so mapping
+		// the source extremes gives exactly the extremes of the mapped vertices.
+		Bounds bounds{std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity(),
+					  -std::numeric_limits<float>::infinity(), -std::numeric_limits<float>::infinity()};
+		for (const auto &vertex : vertices)
+		{
 			bounds.left = std::min(bounds.left, vertex.position.x);
 			bounds.top = std::min(bounds.top, vertex.position.y);
 			bounds.right = std::max(bounds.right, vertex.position.x);
 			bounds.bottom = std::max(bounds.bottom, vertex.position.y);
 		}
+		map(bounds.left, bounds.top);
+		map(bounds.right, bounds.bottom);
 		// Non-finite or inverted bounds never reorder.
 		if (!(bounds.left <= bounds.right && bounds.top <= bounds.bottom) ||
 			!std::isfinite(bounds.left + bounds.right + bounds.top + bounds.bottom))
@@ -413,15 +502,18 @@ class SDLRenderBackend final : public RenderBackend
 		else
 			bounds = {bounds.left - boundsMargin, bounds.top - boundsMargin,
 					  bounds.right + boundsMargin, bounds.bottom + boundsMargin};
-		Run &run = runFor(state, bounds, mapped.size());
+		Run &run = runFor(state, bounds, vertices.size());
 		const std::size_t base = run.vertices.size();
-		run.vertices.insert(run.vertices.end(), mapped.begin(), mapped.end());
+		run.vertices.insert(run.vertices.end(), vertices.begin(), vertices.end());
+		if (translate || native)
+			for (auto vertex = run.vertices.begin() + base; vertex != run.vertices.end(); ++vertex)
+				map(vertex->position.x, vertex->position.y);
 		if (!indexedBatches)
 			return;
 		// Mirrors SDL_SW_RenderGeometryRaw's remapping of an unindexed call: a
 		// vertex equal to one of the previous triangle's reuses its index.
 		const std::size_t first = run.indices.size();
-		for (std::size_t i = 0; i < mapped.size(); ++i)
+		for (std::size_t i = 0; i < vertices.size(); ++i)
 		{
 			int index = int(base + i);
 			if (i >= 3)
@@ -455,8 +547,11 @@ class SDLRenderBackend final : public RenderBackend
 	}
 	int maximumTextureSize() const override
 	{
-		return int(SDL_GetNumberProperty(SDL_GetRendererProperties(renderer),
-										 SDL_PROP_RENDERER_MAX_TEXTURE_SIZE_NUMBER, 0));
+		// Fixed for the renderer's lifetime; callers ask on every sprite draw.
+		if (!maximumTexture)
+			maximumTexture = int(SDL_GetNumberProperty(SDL_GetRendererProperties(renderer),
+													   SDL_PROP_RENDERER_MAX_TEXTURE_SIZE_NUMBER, 0));
+		return maximumTexture;
 	}
 	void transform(float factor, float x, float y, const SDL_Rect *output) override
 	{
@@ -663,7 +758,12 @@ class SDLRenderBackend final : public RenderBackend
 			d{{rect.x, rect.y + rect.h}, c, {0, 0}},
 			e{{rect.x + rect.w, rect.y + rect.h}, c, {0, 0}};
 		const SDL_Vertex vertices[] = {a, b, e, a, e, d};
-		queue(vertices, nullptr, SDL_BLENDMODE_BLEND, SDL_SCALEMODE_NEAREST, true);
+		// Only positive, finite rectangles keep fill()'s corner order after
+		// mapping, which the opaque path relies on.
+		const bool opaque = color.a == 255 && rect.w > 0 && rect.h > 0 &&
+							std::isfinite(rect.x + rect.y + rect.w + rect.h);
+		queue(vertices, nullptr, opaque ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND,
+			  SDL_SCALEMODE_NEAREST, true);
 	}
 	RenderOperations operations() const override
 	{
@@ -681,6 +781,7 @@ class SDLRenderBackend final : public RenderBackend
 		for (const auto &[source, uses] : sources)
 			result.sharedSourceTextures += uses > 1 ? uses : 0;
 		result.stagingTextureBytes = storageBytes(uploadTexture);
+		result.transformedCapacityBytes = direct.capacity() * sizeof(SDL_Vertex);
 		for (const auto &run : runs)
 			result.transformedCapacityBytes += run.vertices.capacity() * sizeof(SDL_Vertex) +
 											   run.indices.capacity() * sizeof(int);
