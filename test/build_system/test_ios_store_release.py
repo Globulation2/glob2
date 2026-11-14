@@ -206,6 +206,48 @@ class IOSStoreTests(unittest.TestCase):
         self.assertFalse(any(method=='POST' for method,_,_ in api.calls))
         self.assertIn(('PATCH','/v1/reviewSubmissions/review-1',store.resource('reviewSubmissions','review-1',{'submitted':True})),api.calls)
 
+    def test_submit_fills_only_missing_whats_new_after_metadata_checks(self):
+        class NotesAPI(MetadataAPI):
+            def collect(self,path):
+                if path.endswith('/appStoreVersionLocalizations'):
+                    return [{'id':'locale-1','attributes':{'locale':'en-US','description':'Verified game','supportUrl':'https://example.com/support'}},
+                            {'id':'locale-2','attributes':{'locale':'fr-FR','description':'Jeu','supportUrl':'https://example.com/support','whatsNew':'Notes'}}]
+                return super().collect(path)
+        api=NotesAPI();store.run(api,'submit',provenance(),whats_new='New landscapes')
+        patches=[(path,body) for method,path,body in api.calls if method=='PATCH' and 'Localizations' in path]
+        self.assertEqual(patches,[('/v1/appStoreVersionLocalizations/locale-1',
+            store.resource('appStoreVersionLocalizations','locale-1',{'whatsNew':'New landscapes'}))])
+
+    def test_submission_reuses_empty_review_left_by_interrupted_attempt(self):
+        class EmptyAPI(MetadataAPI):
+            def collect(self,path):
+                if '/reviewSubmissions?' in path:
+                    return [{'id':'review-9','attributes':{'state':'READY_FOR_REVIEW'}}]
+                if '/reviewSubmissions/review-9/items' in path: return []
+                return super().collect(path)
+        api=EmptyAPI();store.run(api,'submit',provenance())
+        self.assertNotIn('/v1/reviewSubmissions',[path for method,path,_ in api.calls if method=='POST'])
+        item=[body for method,path,body in api.calls if method=='POST' and path=='/v1/reviewSubmissionItems'][0]
+        self.assertEqual(item['data']['relationships']['reviewSubmission']['data']['id'],'review-9')
+        self.assertIn(('PATCH','/v1/reviewSubmissions/review-9',store.resource('reviewSubmissions','review-9',{'submitted':True})),api.calls)
+
+    def test_release_notes_read_the_tagged_appstream_entry(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as root:
+            meta=Path(root)/'data/org.globulation2.Globulation2.metainfo.xml'; meta.parent.mkdir(parents=True)
+            meta.write_text('<component><releases><release version="0.11.4.0"><description><p>Better\n   maps.</p></description></release></releases></component>')
+            self.assertEqual(store.release_notes('0.11.4.0',Path(root)),'Better maps.')
+            self.assertEqual(store.release_notes('0.11.5.0',Path(root)),'')
+
+    def test_api_errors_report_codes_and_pointers_without_detail_text(self):
+        import io
+        from urllib.error import HTTPError
+        body=b'{"errors":[{"code":"ENTITY_ERROR.ATTRIBUTE.REQUIRED","detail":"secret text","source":{"pointer":"/data/attributes/whatsNew"}}]}'
+        error=HTTPError('https://api.appstoreconnect.apple.com/v1/x',409,'Conflict',{},io.BytesIO(body))
+        reasons=store.api_error_reasons(error)
+        self.assertEqual(reasons,' (ENTITY_ERROR.ATTRIBUTE.REQUIRED at /data/attributes/whatsNew)')
+        self.assertNotIn('secret',reasons)
+
     def test_missing_metadata_blocks_submission_writes(self):
         api=FakeAPI()
         with patch.object(store,'check_metadata',side_effect=ValueError('Missing screenshots')),self.assertRaises(ValueError): store.run(api,'submit',provenance())

@@ -228,9 +228,9 @@ void MapOverlayQueue::flush(GraphicContext &gfx, GAGCore::Sprite *icons, GAGCore
 			}
 		}
 		// Status badges: a disc in the status's colour carrying its icon. They
-		// stay small beside a unit and shrink with the other overlays; on a
-		// HiDPI display the icon keeps about 12 pixels.
-		constexpr double BadgePoints = 9, SmallestBadgePoints = 8;
+		// sit beside a unit and shrink with the other overlays; the icon keeps
+		// about 12 pixels on a standard display and 24 on a HiDPI one.
+		constexpr double BadgePoints = 18, SmallestBadgePoints = 16;
 		// Icon frames per status icon, by edge length in target pixels
 		// (tools/icons/export_map_icons.py).
 		static const int statusSizes[] = {8, 10, 12, 16, 20, 24, 32};

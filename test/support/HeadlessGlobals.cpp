@@ -2,6 +2,7 @@
 #include "HeadlessGlobals.h"
 
 #include "FileManager.h"
+#include <GraphicContext.h>
 #include "GameGUIKeyActions.h"
 #include "IntBuildingType.h"
 #include "MapEditKeyActions.h"
@@ -24,6 +25,12 @@ namespace glob2test
 		globals.settings.screenWidth = options.width;
 		globals.settings.screenHeight = options.height;
 		globals.settings.screenFlags = options.screenFlags;
+		// Fixtures choose their renderer through the window flags; pin it so that the
+		// desktop Auto policy (Legacy GL) does not replace a requested Software surface.
+		globals.settings.rendererBackend =
+			(options.screenFlags & GAGCore::GraphicContext::PORTABLEGPU) ? GAGCore::RendererBackend::PortableSDL :
+			(options.screenFlags & GAGCore::GraphicContext::USEGPU) ? GAGCore::RendererBackend::LegacyGL :
+			GAGCore::RendererBackend::Software;
 		// Tests read English text unless they choose otherwise, whatever the host's locale.
 		if (globals.settings.language.empty())
 			globals.settings.language = "en";

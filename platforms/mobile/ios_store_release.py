@@ -47,6 +47,42 @@ def jwt_token(key, key_id, issuer):
     return payload+'.'+base64.urlsafe_b64encode(r.to_bytes(32,'big')+s.to_bytes(32,'big')).rstrip(b'=').decode()
 
 
+def api_error_reasons(error):
+    """Apple's error codes and source pointers, without detail text."""
+    try:
+        errors=json.loads(error.read(65536) or b'{}').get('errors',[])
+    except Exception:
+        return ''
+    reasons=[]
+    for item in errors[:10] if isinstance(errors,list) else []:
+        code=str(item.get('code',''))
+        pointer=str((item.get('source') or {}).get('pointer',''))
+        if re.fullmatch(r'[A-Z0-9_.]{1,120}',code):
+            reasons.append(code+(' at '+pointer if re.fullmatch(r'[A-Za-z0-9_/]{1,120}',pointer) else ''))
+    return ' ('+'; '.join(reasons)+')' if reasons else ''
+
+
+def release_notes(version, root=Path('.')):
+    """The AppStream release note the tagged source ships for this version."""
+    import xml.etree.ElementTree as ET
+    for path in ('content/data/org.globulation2.Globulation2.metainfo.xml','data/org.globulation2.Globulation2.metainfo.xml'):
+        if not (root/path).is_file(): continue
+        for release in ET.parse(root/path).getroot().iter('release'):
+            if release.get('version')==version:
+                text=' '.join(' '.join(''.join(p.itertext()).split()) for p in release.iter('p'))
+                return text[:4000]
+    return ''
+
+
+def fill_whats_new(api, version, notes):
+    """Set What's New on localizations that have none; Apple requires it on updates."""
+    if not notes: return
+    for locale in api.collect(f"/v1/appStoreVersions/{version['id']}/appStoreVersionLocalizations"):
+        if not str(locale['attributes'].get('whatsNew') or '').strip():
+            api.request('PATCH',f"/v1/appStoreVersionLocalizations/{locale['id']}",
+                        resource('appStoreVersionLocalizations',locale['id'],{'whatsNew':notes}))
+
+
 class Client:
     def __init__(self, token): self.token=token
     def request(self, method, path, body=None):
@@ -59,9 +95,11 @@ class Client:
             with urlopen(request,timeout=60) as response:
                 data=response.read(); return json.loads(data) if data else {}
         except HTTPError as error:
-            # No token, private key, review contacts or server body is logged.
+            # No token, private key, review contacts or server text is logged;
+            # only Apple's error codes and the fields they point at.
+            reasons=api_error_reasons(error)
             error.close()
-            raise ValueError(f'App Store API rejected {method} {urlsplit(url).path}: HTTP {error.code}. Resolve store metadata, agreements or review requirements before retrying.') from None
+            raise ValueError(f'App Store API rejected {method} {urlsplit(url).path}: HTTP {error.code}{reasons}. Resolve store metadata, agreements or review requirements before retrying.') from None
     def collect(self,path):
         result=[]; visited=set()
         while path:
@@ -137,7 +175,7 @@ def check_draft_replacement(version, attached, expected_build_id, selected_build
         raise ValueError('Draft build no longer matches the explicitly selected replacement identity')
 
 
-def run(api, stage, provenance, draft_version_id='', replace_draft_build_id=''):
+def run(api, stage, provenance, draft_version_id='', replace_draft_build_id='', whats_new=''):
     if draft_version_id and (stage!='prepare' or not re.fullmatch('[A-Za-z0-9-]{1,128}',draft_version_id)):
         raise ValueError('An explicit draft ID is valid only for prepare')
     if replace_draft_build_id and (stage != 'prepare' or not draft_version_id or
@@ -196,8 +234,9 @@ def run(api, stage, provenance, draft_version_id='', replace_draft_build_id=''):
             if state(version) not in ('PREPARE_FOR_SUBMISSION','READY_FOR_REVIEW','REJECTED','METADATA_REJECTED','DEVELOPER_REJECTED'):
                 raise ValueError('App Store version cannot be submitted from its current state')
             check_metadata(api,app,version)
+            fill_whats_new(api,version,whats_new)
             submissions=api.collect(f"/v1/apps/{app['id']}/reviewSubmissions?"+urlencode({'filter[platform]':'IOS'}))
-            pending=[]
+            pending=[];empty=[]
             for submission in submissions:
                 if submission['attributes']['state']=='COMPLETE': continue
                 items=api.collect(f"/v1/reviewSubmissions/{submission['id']}/items?include=appStoreVersion")
@@ -205,11 +244,13 @@ def run(api, stage, provenance, draft_version_id='', replace_draft_build_id=''):
                 if ids and ids!=[version['id']]: raise ValueError('An unrelated review submission is open; resolve it first')
                 if ids==[version['id']]: pending.append(submission)
                 elif submission['attributes']['state']!='READY_FOR_REVIEW': raise ValueError('An unrelated review submission is pending')
+                else: empty.append(submission)  # left empty by an interrupted attempt
             if pending:
                 submission=one(pending,'matching review submission')
                 if submission['attributes']['state']!='READY_FOR_REVIEW': raise ValueError('Selected review submission is already pending or has unresolved issues')
             else:
-                submission=api.request('POST','/v1/reviewSubmissions',resource('reviewSubmissions',attributes={'platform':'IOS'},relationships={'app':relation('apps',app['id'])}))['data']
+                if empty: submission=one(empty,'empty review submission')
+                else: submission=api.request('POST','/v1/reviewSubmissions',resource('reviewSubmissions',attributes={'platform':'IOS'},relationships={'app':relation('apps',app['id'])}))['data']
                 api.request('POST','/v1/reviewSubmissionItems',resource('reviewSubmissionItems',relationships={
                     'reviewSubmission':relation('reviewSubmissions',submission['id']),'appStoreVersion':relation('appStoreVersions',version['id'])}))
             api.request('PATCH',f"/v1/reviewSubmissions/{submission['id']}",resource('reviewSubmissions',submission['id'],{'submitted':True}))
@@ -226,7 +267,8 @@ def main():
     for name in ('tag','source-commit','run-id'): parser.add_argument('--'+name,required=True)
     args=parser.parse_args();record=validate_provenance(json.loads(args.provenance.read_text()),args.tag,args.source_commit,args.run_id)
     token=jwt_token(base64.b64decode(os.environ['IOS_ASC_KEY_P8_BASE64'],validate=True),os.environ['IOS_ASC_KEY_ID'],os.environ['IOS_ASC_ISSUER_ID'])
-    result=run(Client(token),args.stage,record,args.draft_version_id,args.replace_draft_build_id);print(json.dumps(result,sort_keys=True))
+    notes=release_notes(args.tag.removeprefix('v')) if args.stage=='submit' else ''
+    result=run(Client(token),args.stage,record,args.draft_version_id,args.replace_draft_build_id,notes);print(json.dumps(result,sort_keys=True))
 
 
 if __name__=='__main__':main()
