@@ -43,6 +43,7 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 	for (const auto &m : definitions.materials)
 	{
 		if (m.variantBlocks > 1) GAGCore::Sprite::deferHighResolution(m.sprite);
+		GAGCore::Sprite::keepHighResolutionPixels(m.sprite); // prepareMaterial reads them.
         auto *sprite = customSprites.resolve(m.sprite);
 		if (!sprite)
 			throw std::runtime_error("Missing terrain material sprite: " + m.sprite);

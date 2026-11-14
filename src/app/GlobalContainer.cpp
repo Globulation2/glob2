@@ -455,6 +455,7 @@ void GlobalContainer::requestGameGraphics()
 	for (const auto &material : TerrainVisual::loadCatalog().materials)
 	{
 		if (material.variantBlocks > 1) Sprite::deferHighResolution(material.sprite);
+		Sprite::keepHighResolutionPixels(material.sprite); // The compositor samples them.
 		Toolkit::requestSprite(material.sprite);
 		if (!material.decor.sprite.empty())
 		{

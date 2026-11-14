@@ -195,12 +195,16 @@ not fit the 2048-texel atlas draw the base instead of growing the atlas to 4096
 texels. The terrain sheet's HD atlas is not built on desktop legacy GL, where
 only the menu backdrop draws that sheet, from its standalone frames.
 
-The unit sheet, the largest HD family, keeps no decoded pixels on desktop
-legacy GL once its frames are uploaded: the team-colour shader draws both
-layers from their textures. A context rebuild (a renderer switch) loses those
-textures, so the sheet draws native frames at once and reloads HD from disk on
-the asset workers. Without the shader the pixels stay, because team colours
-are then cloned from them.
+Standalone HD frames keep no decoded pixels on desktop legacy GL once they are
+uploaded: the texture is the only copy. That covers the unit sheet, the
+largest HD family, whose two layers the team-colour shader draws from their
+textures, and the base layers of buildings, effects and the cloud. The
+exceptions are read as pixels later: frames an atlas is built from, terrain
+materials, which the compositor samples (`Sprite::keepHighResolutionPixels`),
+and team layers that a CPU recolour clones, which is every team layer but the
+unit sheet's, and the unit sheet's too without the shader. A context rebuild (a
+renderer switch) loses the textures, so those sprites draw native frames at
+once and reload HD from disk on the asset workers.
 
 Pages serve the software and programmable-device renderers, and the
 browser's WebGL2 renderer: it drives Legacy GL through Emscripten's WebGL2 bridge,

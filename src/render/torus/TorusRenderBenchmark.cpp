@@ -491,7 +491,7 @@ static int run(int argc, char **argv)
                 static_cast<unsigned long long>(initialCoverage.prepares),
                 static_cast<unsigned long long>(initialCoverage.fallbacks));
             std::printf("RENDER_MEMORY mode=%s %s\n", label, RenderMemoryReport::fields(gui.view.render).c_str());
-            std::fputs(RenderMemoryReport::spriteLines("RENDER_MEMORY_SPRITE", 16).c_str(), stdout);
+            std::fputs(RenderMemoryReport::spriteLines("RENDER_MEMORY_SPRITE", 48).c_str(), stdout);
             std::sort(times.begin(), times.end());
             std::printf("%s median=%.3f ms p95=%.3f ms\n", label, times[times.size()/2], times[(times.size()*95+99)/100-1]);
             std::printf("%s p99=%.3f ms max=%.3f ms\n", label,

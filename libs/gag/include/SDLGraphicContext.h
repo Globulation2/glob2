@@ -1026,6 +1026,9 @@ namespace GAGCore
         // bulk, so no atlas is decoded, kept in memory or uploaded for it.
         static void skipHighResolutionAtlas(const std::string& name);
         static void deferHighResolution(const std::string& name);
+        // The caller reads this sprite's HD frames as pixels (terrain materials
+        // feed CPU sampling), so they are never released after upload.
+        static void keepHighResolutionPixels(const std::string& name);
         static bool highResolutionDeferred(const std::string& name);
         void setHighResolutionFrames(std::span<const unsigned> indices);
         //! Deferred frames that left their window stay decoded, most recently

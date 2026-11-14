@@ -75,7 +75,7 @@ namespace GAGCore
     // discardUnbackedHighResolution().
     static std::set<Sprite*> lostHighResolution;
     static std::set<std::string> deferredHighResolutionNames;
-    static std::set<std::string> atlasSkippedHighResolutionNames;
+    static std::set<std::string> atlasSkippedHighResolutionNames, pixelSampledHighResolutionNames;
     // Whether legacy OpenGL packs this sprite's HD frames into one atlas.
     static bool highResolutionAtlasWanted(const std::string& name)
     {
@@ -660,6 +660,10 @@ namespace GAGCore
     {
         atlasSkippedHighResolutionNames.insert(name);
     }
+    void Sprite::keepHighResolutionPixels(const std::string& name)
+    {
+        pixelSampledHighResolutionNames.insert(name);
+    }
     void Sprite::deferHighResolution(const std::string& name)
     {
         deferredHighResolutionNames.insert(name);
@@ -1221,7 +1225,15 @@ namespace GAGCore
         if (entry.width != getW(index) || entry.height != getH(index) || entry.scale != (dynamicTeamColor ? 0 : 4)) return;
         const bool deferred = highResolutionDeferred(fileName);
         const bool mipmaps = _gc->rendererCapabilities().textureMipmaps && !deferred;
-        auto load = [&](const std::string& name, DrawableSurface *original) -> DrawableSurface* {
+        // Desktop legacy OpenGL draws a standalone HD layer from its texture
+        // alone, so its pixels go once uploaded (releasePixels refuses on every
+        // other renderer). The exceptions read pixels later: frames an atlas is
+        // built from, sprites a caller samples, and team layers, which a CPU
+        // recolour clones unless the team-colour shader draws them.
+        const bool releaseBase = !deferred && !highResolutionAtlasWanted(fileName) &&
+            !pixelSampledHighResolutionNames.contains(fileName);
+        const bool releaseTeam = releaseBase && dynamicTeamColor && _gc->hasUnitShader();
+        auto load = [&](const std::string& name, DrawableSurface *original, bool release) -> DrawableSurface* {
             if (!validHighResolutionFile(name)) return nullptr;
             // A partial pack may have no usable prepacked atlas. Every accepted
             // layer needs a ready standalone texture for that fallback.
@@ -1236,14 +1248,12 @@ namespace GAGCore
             // Deferred terrain feeds CPU composition; only composed pages need
             // GPU textures. A direct draw can still upload this source lazily.
             if (!deferred) result->prepareTexture();
-            // The unit sheet is the largest HD family and, with the team-colour
-            // shader, is only ever drawn from its textures: keep no second copy
-            // of its pixels. Without the shader, team colours clone these pixels.
-            if (!deferred && dynamicTeamColor && _gc->hasUnitShader()) result->releasePixels();
+            if (release) result->releasePixels();
             return result.release();
         };
-        auto *normal = load(entry.base, images[index]);
-        auto *colored = load(entry.team, rotated[index] ? rotated[index]->orig : nullptr);
+        // A unit's base layer is recoloured with its team layer without the shader.
+        auto *normal = load(entry.base, images[index], dynamicTeamColor ? releaseTeam : releaseBase);
+        auto *colored = load(entry.team, rotated[index] ? rotated[index]->orig : nullptr, releaseTeam);
         if ((entry.base != "-" && !normal) || (entry.team != "-" && !colored) ||
             (images[index] && entry.base == "-") || (rotated[index] && entry.team == "-")) {
             delete normal; delete colored; return;
