@@ -8,7 +8,7 @@ ground and under raised decor (the `overlay` block of the material's catalog fil
 not an animated ground texture: fertile land covers large areas, and an
 overlay never invalidates the cached terrain pages.
 
-Each layout is one mote at its own spot inside a cell, drawn at four
+Each layout is one mote at its own spot and size inside a cell, drawn at four
 brightness levels: rising, peak (a four-pointed star with short diagonal
 rays), falling and fading. A layout's cycle lights those four frames and then
 stays dark, so the runtime draws nothing for most steps. The runtime picks the
@@ -54,15 +54,18 @@ HD_PREFIX = "content/data/highres/v1/terrain-glint"
 HD_CATEGORY = "procedural-materials"
 HD_RECIPE = "procedural terrain glints v1"
 FERTILE = ["loam", "moss", "spring_meadow"]
-LAYOUTS = 8
+LAYOUTS = 24          # enough spots that a glint's size does not follow its spot
 LEVELS = 4            # rising, peak, falling, fading
 CYCLE = 12            # steps per cycle; the rest after the lit levels are dark
 TICKS = 5             # scene ticks per step (30 per second): a 2 s cycle
-DENSITY_Q8 = 64       # a quarter of fertile cells glint at all
+DENSITY_Q8 = 160      # five eighths of fertile cells glint at all
 CORE = (255, 250, 222)
 RAY = (255, 226, 150)
 # Per level: core radius, ray length, diagonal ray length, peak alpha (all HD).
 LEVEL_SHAPES = [(8, 26, 0, 120), (13, 56, 22, 180), (10, 40, 12, 150), (6, 18, 0, 84)]
+# Q8 size of each layout, cycled across layouts: mostly smaller than the full
+# shape, a few at it and one step above. Smaller glints are slightly dimmer.
+SIZES_Q8 = [256, 154, 205, 282, 179, 230, 141, 256, 192, 166, 218, 128]
 
 
 def layout_centre(layout):
@@ -75,7 +78,10 @@ def layout_centre(layout):
 
 def render_hd(layout, level):
     cx, cy = layout_centre(layout)
+    size = SIZES_Q8[layout % len(SIZES_Q8)]
     core, ray, diagonal, peak = LEVEL_SHAPES[level]
+    core, ray, diagonal = (max(1, v * size // 256) if v else 0 for v in (core, ray, diagonal))
+    peak = peak * (128 + min(size, 256) // 2) // 256
     pixels = []
     for y in range(S):
         dy = y - cy
@@ -150,7 +156,7 @@ def write(frames, root):
         "generator": "tools/artwork/terrain_glints.py",
         "method": "procedural",
         "generator_sha256": generator_sha(),
-        "description": "Twinkling motes over fertile ground: one mote per layout at four brightness levels.",
+        "description": "Twinkling motes over fertile ground: one mote per layout, at its own size, at four brightness levels.",
         "seed": 'fnv1a32("glint:<layout>")',
         "native_size": NATIVE,
         "render_size": S,
