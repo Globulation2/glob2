@@ -914,7 +914,13 @@ state is restored before drawing resumes. A bounded 256×256 startup probe check
 all byte colour/alpha pairs against the CPU integer result. Drivers whose blend
 units differ retain CPU conversion and log their conformance mismatch count.
 Software renderers and unsupported target/blend combinations also keep CPU
-conversion. Preparation uses the existing
+conversion. Region updates (`RenderBackend::prepareTextureRegions`, used by
+terrain pages that rewrote a few cells) patch only the dirty rectangles of a
+texture holding the immediately preceding revision, with the same bytes a whole
+upload stores: the CPU path premultiplies each rectangle with the same integer
+rounding, and GPU-prepared textures clear and re-blend just those rectangles from
+the staging texture. A region update keeps the sampling mode the texture's last
+draw chose, and pending batched draws are submitted before it. Preparation uses the existing
 SDL renderer APIs across OpenGL ES, Metal and other accelerated SDL backends.
 
 For a native preparation comparison, set
