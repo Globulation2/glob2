@@ -34,6 +34,7 @@ TRANSFORMS = {
     'log': lambda x, total: math.log1p(max(x, 0.0)),
     'sqrt': lambda x, total: math.sqrt(max(x, 0.0)),
     'square': lambda x, total: x * x,
+    'pow25': lambda x, total: max(x, 0.0) ** 0.25,
     'share': lambda x, total: (x / total) if total > 0 else 0.0,
     'decay24': lambda x, total: math.exp(-max(x, 0.0) / 24.0),
 }

@@ -5048,6 +5048,10 @@ AI 원격 측정
 명성
 [stat prestige about]
 최고 레벨 건물로 얻는 식민지의 명성입니다. 명성 목표가 있는 경기는 목표에 도달하면 끝납니다.
+[stat prestige needed]
+Prestige needed to win
+[stat prestige needed about]
+The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
 [stat band combat]
 전투
 [stat band starvation]

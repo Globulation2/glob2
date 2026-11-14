@@ -24,18 +24,27 @@ moves the odds (coefficient times the within-contest standard deviation):
 
 | Term | Reads | Coefficient | Typical gap's effect |
 | --- | --- | ---: | ---: |
-| `barracks_levels` | warrior training buildings and their sites, weighted from 1 (a level-1 site) to 6 (a finished level-3 building) | +0.0364 | 0.32 |
-| `explorers` (sqrt) | living explorers | +0.205 | 0.27 |
-| `attack` (share) | its share of all attack strength | +0.904 | 0.25 |
-| `feeding` (sqrt) | units eating at an inn | +0.161 | 0.24 |
-| `delivered_window` (share) | its share of resources delivered over the last 2,048 ticks | +0.851 | 0.21 |
-| `swarm_filling_window` (sqrt) | worker-ticks spent filling swarms over the last 2,048 ticks | +0.0024 | 0.17 |
-| `inn_walk_distance_window` (share) | its share of the distance walked to inns over the last 2,048 ticks | +0.268 | 0.08 |
+| `attack` (share) | its share of all attack strength | +0.907 | 0.27 |
+| `barracks_levels` | warrior training buildings and their sites, weighted from 1 (a level-1 site) to 6 (a finished level-3 building) | +0.0244 | 0.23 |
+| `delivered_window` (share) | its share of resources delivered over the last 2,048 ticks | +0.950 | 0.23 |
+| `feeding` (sqrt) | units eating at an inn | +0.139 | 0.19 |
+| `prestige_needed` (log1p) | prestige it would still have to add to win by prestige | −3.70 | 0.17 (1.15 where it differs) |
+| `swarm_filling_window` (sqrt) | worker-ticks spent filling swarms over the last 2,048 ticks | +0.0025 | 0.16 |
+| `explorers` (sqrt) | living explorers | +0.107 | 0.15 |
+| `inn_walk_distance_window` (share) | its share of the distance walked to inns over the last 2,048 ticks | +0.186 | 0.06 |
 
-Every coefficient is positive. Military investment (barracks, attack), scouting
-and a fed, working economy each carry weight; no single term dominates. The
-windowed terms describe what a colony has been doing recently rather than what
-it owns, which the previous model, reading only current counts, could not see.
+Military investment (barracks, attack), scouting and a fed, working economy each
+carry weight; no single term dominates. The windowed terms describe what a colony
+has been doing recently rather than what it owns.
+
+`prestige_needed` is the larger of two distances: what the match's combined
+prestige still lacks to reach the prestige goal, and what the colony needs to pass
+every other surviving colony (`WinProbability::prestigeNeeded`; an alliance takes
+its closest member). Its coefficient is the only negative one, because the
+distance shrinks as a colony closes in. It is the same for every side until
+someone earns prestige, so it cancels in about 98% of samples; where it does
+differ it is the strongest term. Its job is smoothness: without it the model can
+favour one colony right up to the moment another wins by prestige.
 
 ### What the fitness does and does not mean
 
@@ -51,12 +60,13 @@ symptom rather than a cause.
 
 ## Where the coefficients come from
 
-1,716 games, sampled every 512 ticks, giving 690,277 training samples, played at
-SIM revision 155. The games are a random draw over all eight AIs, three formats
+501 games, sampled every 512 ticks, giving 218,109 training samples, played at
+SIM revision 159 with the prestige-needed statistic recorded. The games are a random draw over all eight AIs, three formats
 (1v1, 2v2, and free-for-all with 4 or 8 colonies), every playable map generator
 and both 128x128 and 256x256 maps. They ran with `--win-probability 0` to a
 180,000-tick cap, twice the default, so that most games reach a real result:
-13% hit the cap and are labelled by adjudication.
+18% hit the cap and are labelled by adjudication. Nine (1.8%) ended in a prestige
+victory and 210 earned some prestige.
 
 Each 512-tick sample is one contest: the surviving competitors are its entries,
 their live state is the evidence, and the finishing order the game eventually
@@ -75,9 +85,13 @@ Three choices matter:
   views of one outcome; splitting them across folds would let the fit see its own
   test set and report an accuracy nobody could reproduce.
 
-Cross-validated, grouped by game: McFadden R² 0.384, top-1 accuracy 75.0%
-against 41.2% for guessing. On the same games the previous six-term model scored
-0.351 unchanged and 0.375 refitted.
+Cross-validated, grouped by game: McFadden R² 0.306, top-1 accuracy 72.2%
+against 41.9% for guessing. The seven terms without `prestige_needed`, refitted on
+the same games, score 0.306 and 72.2%: the new term is not meant to move the
+average, and does not. The previous coefficients, fitted on 1,716 games at
+revision 155, score 0.315 on these games. Refitting on fewer current games costs a
+little overall fit; the full refit was preferred over keeping those coefficients
+and adding one term, so the model is one consistent fit on the current simulation.
 
 ### How the terms were chosen
 
@@ -90,6 +104,19 @@ and adding new ones, until no change improved cross-validated fit by 0.0005. The
 refinement replaced worker share, which had come in with a negative sign, by
 attack share, and total hit points by units eating.
 
+`prestige_needed` was added afterwards by design rather than by selection, to
+remove the late swings in games won by prestige. Its transform was chosen among
+identity, square root, log1p, x^0.25, x^0.75 and the square by how much each
+removed those swings without costing overall fit. The concave transforms did
+best: log1p cut the mean end-of-game jump in prestige-won games from 0.146 to
+0.085 (fitted without those games), against 0.121 for identity and 0.135 for the
+square, and the earlier campaign's games showed the same order. The two
+prestige-won games it does not change were true coin flips, both sides one
+school short of the goal. Wherever one side needs strictly less than every
+other it went on to win every time in this campaign, so the coefficient is held
+back by the fit's ridge penalty rather than by the data; a larger one would turn
+each prestige award into a jump.
+
 A gradient-boosted model on every candidate reaches about 0.42, so there is
 headroom, but it cannot be evaluated in integer arithmetic. A learning curve on a
 fixed held-out set shows the seven-term model is flat from about 100 training
@@ -101,13 +128,15 @@ at 1,373.
 A winning condition needs the number to mean what it says, not merely to rank
 correctly. Held out by game, predicted and observed win rates:
 
-| Predicted | 0.010 | 0.035 | 0.063 | 0.096 | 0.131 | 0.179 | 0.250 | 0.361 | 0.508 | 0.687 | 0.858 | 0.968 |
+| Predicted | 0.019 | 0.056 | 0.088 | 0.117 | 0.149 | 0.199 | 0.276 | 0.384 | 0.516 | 0.672 | 0.826 | 0.949 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Observed | 0.007 | 0.022 | 0.039 | 0.066 | 0.119 | 0.173 | 0.266 | 0.375 | 0.533 | 0.714 | 0.864 | 0.966 |
+| Observed | 0.024 | 0.046 | 0.054 | 0.084 | 0.139 | 0.204 | 0.287 | 0.411 | 0.545 | 0.707 | 0.819 | 0.931 |
 
-The top bucket, where the threshold lives, reads 0.968 predicted against 0.966
-observed. Mid-range predictions are slightly cautious and the lowest buckets
-slightly overstate a losing side's chances; neither affects a call at 95%.
+The top bucket, where the threshold lives, reads 0.949 predicted against 0.931
+observed: slightly overconfident, unlike the previous fit (0.968 against 0.966).
+The seven-term refit on the same games is the same, so this reflects the current
+simulation rather than the new term. Mid-range predictions are slightly cautious
+and the low buckets overstate a losing side's chances.
 
 ## Why the arithmetic is all integers
 
@@ -119,10 +148,13 @@ come from the platform's library.
 
 So there is no floating point in the decision path:
 
-- Selection was restricted to transforms with exact integer forms — identity, a
-  division (`share`) and a square root. `log1p` is excluded, and the emitter
-  refuses to emit any transform it cannot do exactly rather than quietly falling
-  back on an approximation.
+- Transforms have exact integer forms — identity, a division (`share`) and a
+  square root. A measurement with a hard upper bound may use any transform
+  through a lookup table: `prestige_needed` cannot exceed the largest prestige
+  goal (150 × 16 teams = 2,400), so the emitter writes `log1p` of every integer
+  up to it into the header in fixed point (`TABLE_SHIFT`), and the engine and the
+  fitter read the same table. The emitter refuses any other transform it cannot
+  do exactly rather than quietly falling back on an approximation.
 - Coefficients are emitted twice — as a `double` for display and reporting, and
   as a fixed-point integer rounded **at generation time**, so the rounding is the
   fit's rather than a compiler's.
@@ -133,8 +165,10 @@ So there is no floating point in the decision path:
   inputs, which avoids 128-bit arithmetic and the portability question with it.
 
 The features are values the simulation computes at fixed sample deadlines:
-`TeamStat` (explorers, attack) and the published gameplay measurements (everything
-else). `WinProbability::teamInputs` reads the latest retained periodic measurement
+`TeamStat` (explorers, attack), live prestige (`prestige_needed`, read after
+`prestigeSyncStep` on the decision tick and recorded with it) and the published
+gameplay measurements (everything else). In a match without a prestige goal,
+`prestige_needed` is 0 for every side and cancels. `WinProbability::teamInputs` reads the latest retained periodic measurement
 sample and the one `ACTIVITY_WINDOW_SAMPLES` (4) samples earlier. A sample is
 published after its source tick, so at a decision tick T the latest is the sample
 for T − 512; the fitter joins that same sample to the decision. Readings are taken
@@ -235,11 +269,11 @@ The threshold is the only dial:
 
 | Threshold | Compute saved | Calls on the wrong side |
 | --- | ---: | ---: |
-| **95% (tournament default)** | **25.7%** | **1.7%** (18 of 1,090) |
-| 97% | 18.8% | 1.6% (13 of 814) |
-| 99% | 8.4% | 0.5% (2 of 376) |
+| **95% (tournament default)** | **18.8%** | **3.8%** (10 of 265) |
+| 97% | 12.8% | 2.2% (4 of 180) |
+| 99% | 4.6% | 0% (0 of 77) |
 
-Measured over the 1,716 games, cross-fitted so no game is scored by a model that
+Measured over the 501 games, cross-fitted so no game is scored by a model that
 saw it, with three consecutive qualifying samples required. Errors sit below
 what each threshold implies; the confirmation requirement removes most one-sample
 swings.
@@ -251,7 +285,7 @@ swings.
 - It is fitted on the whole random draw, so it describes the average game across
   every generator and size rather than any particular map. Per-generator
   behaviour has not been broken out.
-- It reads seven numbers. Position, terrain, who is adjacent to whom and what is
+- It reads eight numbers. Position, terrain, who is adjacent to whom and what is
   about to happen are all invisible to it, which is part of why a close game
   stays close in its eyes.
 - The windowed terms see 2,048 ticks of activity. A colony that has just lost its
@@ -267,7 +301,7 @@ swings.
 - [The fairness model](../../map-generators/fairness-model.md) — the same estimator, on
   starting positions.
 - [Gameplay statistics](../gameplay-statistics.md) — the measurements five of the
-  terms are read from.
+  terms are read from, and the prestige-needed chart.
 - [AI telemetry](../telemetry.md) — per-AI internals, likewise excluded.
 - [Distributed tournaments](../../tools/tournaments.md) — where the calibration games come from.
 - [Headless runs](../../development/headless-replays.md#probability-based-early-victory) — enable the rule with `--win-probability`.

@@ -1,20 +1,40 @@
-GLOB2_WINPROB alliance=0 tick=0 alive=1 permille=500 feeding=0 explorers=0 barracksLevels=0 delivered=0 innWalkDistance=0 swarmFilling=0 attack=0
-GLOB2_WINPROB alliance=1 tick=0 alive=1 permille=500 feeding=0 explorers=0 barracksLevels=0 delivered=0 innWalkDistance=0 swarmFilling=0 attack=0
-GLOB2_WINPROB alliance=0 tick=512 alive=1 permille=500 feeding=0 explorers=0 barracksLevels=0 delivered=0 innWalkDistance=0 swarmFilling=0 attack=0
-GLOB2_WINPROB alliance=1 tick=512 alive=1 permille=500 feeding=0 explorers=0 barracksLevels=0 delivered=0 innWalkDistance=0 swarmFilling=0 attack=0
-GLOB2_WINPROB alliance=0 tick=6144 alive=1 permille=788 feeding=2 explorers=1 barracksLevels=2 delivered=95 innWalkDistance=1529 swarmFilling=13580 attack=916
-GLOB2_WINPROB alliance=1 tick=6144 alive=1 permille=211 feeding=0 explorers=1 barracksLevels=0 delivered=54 innWalkDistance=0 swarmFilling=7722 attack=312
-GLOB2_WINPROB alliance=0 tick=8704 alive=1 permille=744 feeding=3 explorers=1 barracksLevels=5 delivered=74 innWalkDistance=5421 swarmFilling=19662 attack=1432
-GLOB2_WINPROB alliance=1 tick=8704 alive=1 permille=255 feeding=1 explorers=2 barracksLevels=0 delivered=55 innWalkDistance=120 swarmFilling=8367 attack=624
-GLOB2_WINPROB alliance=0 tick=12288 alive=1 permille=279 feeding=0 explorers=0 barracksLevels=6 delivered=80 innWalkDistance=0 swarmFilling=8311 attack=3026
-GLOB2_WINPROB alliance=1 tick=12288 alive=1 permille=720 feeding=5 explorers=6 barracksLevels=2 delivered=137 innWalkDistance=194437 swarmFilling=9410 attack=1608
-GLOB2_WINPROB alliance=0 tick=15872 alive=1 permille=256 feeding=2 explorers=1 barracksLevels=7 delivered=52 innWalkDistance=8767 swarmFilling=7934 attack=4116
-GLOB2_WINPROB alliance=1 tick=15872 alive=1 permille=743 feeding=4 explorers=9 barracksLevels=5 delivered=165 innWalkDistance=223554 swarmFilling=16010 attack=2930
-GLOB2_WINPROB alliance=0 tick=19456 alive=1 permille=114 feeding=1 explorers=1 barracksLevels=8 delivered=70 innWalkDistance=1090 swarmFilling=14758 attack=2772
-GLOB2_WINPROB alliance=1 tick=19456 alive=1 permille=885 feeding=13 explorers=9 barracksLevels=8 delivered=346 innWalkDistance=91529 swarmFilling=20027 attack=6170
-GLOB2_WINPROB alliance=0 tick=23040 alive=1 permille=53 feeding=0 explorers=1 barracksLevels=9 delivered=41 innWalkDistance=0 swarmFilling=10980 attack=1608
-GLOB2_WINPROB alliance=1 tick=23040 alive=1 permille=946 feeding=13 explorers=11 barracksLevels=8 delivered=527 innWalkDistance=193868 swarmFilling=37190 attack=9716
-GLOB2_WINPROB alliance=0 tick=26624 alive=1 permille=29 feeding=0 explorers=0 barracksLevels=9 delivered=31 innWalkDistance=0 swarmFilling=7678 attack=1468
-GLOB2_WINPROB alliance=1 tick=26624 alive=1 permille=970 feeding=15 explorers=12 barracksLevels=11 delivered=646 innWalkDistance=249755 swarmFilling=56309 attack=11008
-GLOB2_WINPROB alliance=0 tick=30208 alive=1 permille=6 feeding=0 explorers=0 barracksLevels=9 delivered=9 innWalkDistance=0 swarmFilling=0 attack=396
-GLOB2_WINPROB alliance=1 tick=30208 alive=1 permille=993 feeding=22 explorers=52 barracksLevels=12 delivered=682 innWalkDistance=111944 swarmFilling=100465 attack=13694
+GLOB2_WINPROB alliance=0 tick=0 alive=1 permille=250 feeding=0 explorers=0 barracksLevels=0 delivered=0 innWalkDistance=0 swarmFilling=0 attack=0 prestigeNeeded=600
+GLOB2_WINPROB alliance=1 tick=0 alive=1 permille=250 feeding=0 explorers=0 barracksLevels=0 delivered=0 innWalkDistance=0 swarmFilling=0 attack=0 prestigeNeeded=600
+GLOB2_WINPROB alliance=2 tick=0 alive=1 permille=250 feeding=0 explorers=0 barracksLevels=0 delivered=0 innWalkDistance=0 swarmFilling=0 attack=0 prestigeNeeded=600
+GLOB2_WINPROB alliance=3 tick=0 alive=1 permille=250 feeding=0 explorers=0 barracksLevels=0 delivered=0 innWalkDistance=0 swarmFilling=0 attack=0 prestigeNeeded=600
+GLOB2_WINPROB alliance=0 tick=512 alive=1 permille=195 feeding=0 explorers=1 barracksLevels=0 delivered=0 innWalkDistance=0 swarmFilling=0 attack=0 prestigeNeeded=600
+GLOB2_WINPROB alliance=1 tick=512 alive=1 permille=434 feeding=0 explorers=0 barracksLevels=0 delivered=0 innWalkDistance=0 swarmFilling=0 attack=156 prestigeNeeded=600
+GLOB2_WINPROB alliance=2 tick=512 alive=1 permille=175 feeding=0 explorers=0 barracksLevels=0 delivered=0 innWalkDistance=0 swarmFilling=0 attack=0 prestigeNeeded=600
+GLOB2_WINPROB alliance=3 tick=512 alive=1 permille=195 feeding=0 explorers=1 barracksLevels=0 delivered=0 innWalkDistance=0 swarmFilling=0 attack=0 prestigeNeeded=600
+GLOB2_WINPROB alliance=0 tick=6144 alive=1 permille=273 feeding=0 explorers=1 barracksLevels=2 delivered=111 innWalkDistance=433 swarmFilling=13760 attack=2144 prestigeNeeded=600
+GLOB2_WINPROB alliance=1 tick=6144 alive=1 permille=220 feeding=0 explorers=5 barracksLevels=1 delivered=103 innWalkDistance=612 swarmFilling=9838 attack=624 prestigeNeeded=600
+GLOB2_WINPROB alliance=2 tick=6144 alive=1 permille=356 feeding=1 explorers=4 barracksLevels=2 delivered=131 innWalkDistance=189 swarmFilling=17515 attack=1988 prestigeNeeded=600
+GLOB2_WINPROB alliance=3 tick=6144 alive=1 permille=149 feeding=0 explorers=2 barracksLevels=0 delivered=75 innWalkDistance=0 swarmFilling=10003 attack=0 prestigeNeeded=600
+GLOB2_WINPROB alliance=0 tick=15872 alive=1 permille=108 feeding=0 explorers=1 barracksLevels=6 delivered=163 innWalkDistance=441 swarmFilling=31982 attack=5672 prestigeNeeded=600
+GLOB2_WINPROB alliance=1 tick=15872 alive=1 permille=371 feeding=6 explorers=13 barracksLevels=18 delivered=350 innWalkDistance=633489 swarmFilling=33924 attack=8452 prestigeNeeded=600
+GLOB2_WINPROB alliance=2 tick=15872 alive=1 permille=386 feeding=8 explorers=10 barracksLevels=9 delivered=417 innWalkDistance=597041 swarmFilling=60384 attack=9992 prestigeNeeded=600
+GLOB2_WINPROB alliance=3 tick=15872 alive=1 permille=134 feeding=3 explorers=4 barracksLevels=0 delivered=306 innWalkDistance=637782 swarmFilling=28587 attack=1760 prestigeNeeded=600
+GLOB2_WINPROB alliance=0 tick=30208 alive=1 permille=31 feeding=0 explorers=1 barracksLevels=6 delivered=150 innWalkDistance=101456 swarmFilling=53611 attack=4704 prestigeNeeded=500
+GLOB2_WINPROB alliance=1 tick=30208 alive=1 permille=614 feeding=38 explorers=20 barracksLevels=40 delivered=1201 innWalkDistance=819597 swarmFilling=77178 attack=37528 prestigeNeeded=500
+GLOB2_WINPROB alliance=2 tick=30208 alive=1 permille=272 feeding=10 explorers=40 barracksLevels=28 delivered=724 innWalkDistance=297309 swarmFilling=88649 attack=24338 prestigeNeeded=500
+GLOB2_WINPROB alliance=3 tick=30208 alive=1 permille=81 feeding=17 explorers=9 barracksLevels=0 delivered=685 innWalkDistance=1729131 swarmFilling=44274 attack=10480 prestigeNeeded=500
+GLOB2_WINPROB alliance=0 tick=53248 alive=1 permille=5 feeding=3 explorers=1 barracksLevels=6 delivered=130 innWalkDistance=10343 swarmFilling=68810 attack=5252 prestigeNeeded=251
+GLOB2_WINPROB alliance=1 tick=53248 alive=1 permille=590 feeding=47 explorers=27 barracksLevels=87 delivered=1137 innWalkDistance=2246156 swarmFilling=53845 attack=29082 prestigeNeeded=200
+GLOB2_WINPROB alliance=2 tick=53248 alive=1 permille=381 feeding=41 explorers=74 barracksLevels=41 delivered=876 innWalkDistance=505239 swarmFilling=128279 attack=55924 prestigeNeeded=200
+GLOB2_WINPROB alliance=3 tick=53248 alive=1 permille=22 feeding=15 explorers=11 barracksLevels=0 delivered=389 innWalkDistance=1498182 swarmFilling=49302 attack=9042 prestigeNeeded=201
+GLOB2_WINPROB alliance=0 tick=56320 alive=1 permille=1 feeding=0 explorers=1 barracksLevels=6 delivered=119 innWalkDistance=12744 swarmFilling=64290 attack=3280 prestigeNeeded=251
+GLOB2_WINPROB alliance=1 tick=56320 alive=1 permille=574 feeding=54 explorers=23 barracksLevels=78 delivered=957 innWalkDistance=2655746 swarmFilling=68407 attack=33434 prestigeNeeded=150
+GLOB2_WINPROB alliance=2 tick=56320 alive=1 permille=417 feeding=39 explorers=80 barracksLevels=41 delivered=919 innWalkDistance=252985 swarmFilling=134098 attack=51068 prestigeNeeded=150
+GLOB2_WINPROB alliance=3 tick=56320 alive=1 permille=6 feeding=6 explorers=6 barracksLevels=0 delivered=395 innWalkDistance=955691 swarmFilling=44324 attack=10506 prestigeNeeded=201
+GLOB2_WINPROB alliance=0 tick=59392 alive=1 permille=0 feeding=1 explorers=2 barracksLevels=6 delivered=143 innWalkDistance=25501 swarmFilling=59200 attack=1604 prestigeNeeded=251
+GLOB2_WINPROB alliance=1 tick=59392 alive=1 permille=507 feeding=54 explorers=22 barracksLevels=74 delivered=1347 innWalkDistance=1655485 swarmFilling=48925 attack=34964 prestigeNeeded=100
+GLOB2_WINPROB alliance=2 tick=59392 alive=1 permille=490 feeding=52 explorers=78 barracksLevels=41 delivered=980 innWalkDistance=828200 swarmFilling=125757 attack=53696 prestigeNeeded=100
+GLOB2_WINPROB alliance=3 tick=59392 alive=1 permille=1 feeding=4 explorers=5 barracksLevels=0 delivered=531 innWalkDistance=916523 swarmFilling=57672 attack=7288 prestigeNeeded=201
+GLOB2_WINPROB alliance=0 tick=62464 alive=1 permille=0 feeding=3 explorers=1 barracksLevels=6 delivered=179 innWalkDistance=49066 swarmFilling=66899 attack=2436 prestigeNeeded=251
+GLOB2_WINPROB alliance=1 tick=62464 alive=1 permille=574 feeding=67 explorers=27 barracksLevels=72 delivered=1153 innWalkDistance=1846462 swarmFilling=57698 attack=38542 prestigeNeeded=100
+GLOB2_WINPROB alliance=2 tick=62464 alive=1 permille=423 feeding=42 explorers=73 barracksLevels=42 delivered=1001 innWalkDistance=656853 swarmFilling=129208 attack=52072 prestigeNeeded=100
+GLOB2_WINPROB alliance=3 tick=62464 alive=1 permille=1 feeding=7 explorers=4 barracksLevels=0 delivered=259 innWalkDistance=1005716 swarmFilling=57257 attack=4906 prestigeNeeded=201
+GLOB2_WINPROB alliance=0 tick=65536 alive=1 permille=0 feeding=4 explorers=0 barracksLevels=6 delivered=105 innWalkDistance=9632 swarmFilling=70040 attack=3840 prestigeNeeded=301
+GLOB2_WINPROB alliance=1 tick=65536 alive=1 permille=945 feeding=58 explorers=21 barracksLevels=73 delivered=1155 innWalkDistance=1536941 swarmFilling=57474 attack=41420 prestigeNeeded=50
+GLOB2_WINPROB alliance=2 tick=65536 alive=1 permille=54 feeding=40 explorers=59 barracksLevels=42 delivered=1037 innWalkDistance=1054593 swarmFilling=134504 attack=49596 prestigeNeeded=101
+GLOB2_WINPROB alliance=3 tick=65536 alive=1 permille=0 feeding=8 explorers=5 barracksLevels=0 delivered=317 innWalkDistance=849683 swarmFilling=53449 attack=1552 prestigeNeeded=251

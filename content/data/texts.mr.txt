@@ -5016,6 +5016,10 @@ JavaScript AI आयात करा
 प्रतिष्ठा
 [stat prestige about]
 उच्च-स्तरीय इमारती उभारून मिळवलेली वसाहतीची प्रतिष्ठा. प्रतिष्ठेचे ध्येय असलेला सामना ते ध्येय गाठल्यावर संपतो.
+[stat prestige needed]
+Prestige needed to win
+[stat prestige needed about]
+The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
 [stat band combat]
 लढाई
 [stat band starvation]

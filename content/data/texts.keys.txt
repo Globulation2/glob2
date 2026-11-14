@@ -2507,6 +2507,8 @@
 [stat win probability about]
 [stat prestige]
 [stat prestige about]
+[stat prestige needed]
+[stat prestige needed about]
 [stat band combat]
 [stat band starvation]
 [stat band clearing]

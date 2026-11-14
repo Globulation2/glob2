@@ -446,3 +446,7 @@ static constexpr int FILE_FORMAT_VERSION_MAXIMA_COALESCED_REVIEWS = 215;
 //! Built-in steppe grass and moor grass (Grass): TERRAIN_COUNT grew from 64 to 66, so
 //! earlier files carry custom terrain IDs starting at 64 that the loader renumbers.
 static constexpr int FILE_FORMAT_VERSION_STEPPE_GRASS = 216;
+
+//! Team statistics save the prestige-needed-to-win history (PrestigeNeededSample).
+//! Earlier files load with an empty history; the model reads live state.
+static constexpr int FILE_FORMAT_VERSION_PRESTIGE_NEEDED = 217;

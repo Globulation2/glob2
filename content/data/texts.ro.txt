@@ -5048,6 +5048,10 @@ Probabilitatea victoriei
 Prestigiu
 [stat prestige about]
 Prestigiul coloniei, obținut prin clădirile de nivel maxim. Un meci cu obiectiv de prestigiu se încheie când acesta este atins.
+[stat prestige needed]
+Prestige needed to win
+[stat prestige needed about]
+The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
 [stat band combat]
 Luptă
 [stat band starvation]

@@ -980,18 +980,26 @@ void Engine::printTeamTimeline()
 		std::cout << "GLOB2_TIMELINE team=" << t << " ai=" << aiLabel[t]
 			<< " result=" << (team->hasWon ? "won" : team->hasLost ? "lost" : "alive")
 			<< " samples=" << hist.size() << std::endl;
+		const std::vector<PrestigeNeededSample>& needed = team->stats.getPrestigeNeededHistory();
+		size_t nextNeeded = 0;
 		for (size_t i = 0; i < hist.size(); i++)
 		{
 			const EndOfGameStat& s = hist[i];
+			const Uint32 tick = Uint32(i * (END_OF_GAME_STAT_INTERVAL_MASK + 1));
+			while (nextNeeded < needed.size() && needed[nextNeeded].tick < tick)
+				++nextNeeded;
 			std::cout << "GLOB2_TL team=" << t
-				<< " tick=" << (i * (END_OF_GAME_STAT_INTERVAL_MASK + 1))
+				<< " tick=" << tick
 				<< " units=" << s.value[EndOfGameStat::TYPE_UNITS]
 				<< " bld=" << s.value[EndOfGameStat::TYPE_BUILDINGS]
 				<< " prestige=" << s.value[EndOfGameStat::TYPE_PRESTIGE]
 				<< " hp=" << s.value[EndOfGameStat::TYPE_HP]
 				<< " atk=" << s.value[EndOfGameStat::TYPE_ATTACK]
-				<< " def=" << s.value[EndOfGameStat::TYPE_DEFENSE]
-				<< std::endl;
+				<< " def=" << s.value[EndOfGameStat::TYPE_DEFENSE];
+			// Only recorded while prestige can end the game.
+			if (nextNeeded < needed.size() && needed[nextNeeded].tick == tick)
+				std::cout << " prestigeNeeded=" << needed[nextNeeded].value;
+			std::cout << std::endl;
 		}
 
 		team->stats.printMeasurements(t, true);

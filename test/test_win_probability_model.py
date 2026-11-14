@@ -231,7 +231,7 @@ class Engine(unittest.TestCase):
         for name, transform in W.FINAL_FEATURES:
             kind, expressions, _ = W.cpp_kind(name, transform)
             self.assertTrue(all(expressions), (name, transform))
-            self.assertIn(kind, ('identity', 'share', 'sqrt', 'ratio'))
+            self.assertIn(kind, ('identity', 'share', 'sqrt', 'ratio', 'table'))
 
 
 class Emission(unittest.TestCase):
@@ -279,6 +279,46 @@ class Emission(unittest.TestCase):
         def body(value):
             return [line for line in value.splitlines() if not line.startswith('//')]
         self.assertEqual(body(produced), body(text))
+
+
+class Tables(unittest.TestCase):
+    """Bounded measurements may use any transform, through a generated table."""
+
+    def test_the_shift_agrees_with_the_engine(self):
+        header = (ROOT / 'src' / 'team' / 'stats' / 'WinProbability.h').read_text()
+        self.assertEqual(int(re.search(r'TABLE_SHIFT = (\d+);', header)[1]), W.TABLE_SHIFT)
+
+    def test_tables_hold_the_rounded_transform_and_clamp_at_the_bound(self):
+        for transform, function in W.TABLE_TRANSFORMS.items():
+            table = W.table_of(W.PRESTIGE_NEEDED, transform)
+            self.assertEqual(len(table), W.TABLE_BOUNDS[W.PRESTIGE_NEEDED] + 1)
+            for value in (0, 1, 50, 499, 2400):
+                self.assertEqual(table[value], round(function(value) * (1 << W.TABLE_SHIFT)))
+        self.assertEqual(W.table_index(W.PRESTIGE_NEEDED, 10 ** 6), W.TABLE_BOUNDS[W.PRESTIGE_NEEDED])
+        self.assertEqual(W.table_index(W.PRESTIGE_NEEDED, -5), 0)
+
+    def test_a_table_term_tracks_the_float_model(self):
+        model = {'intercept': 0.0, 'features': [{'name': W.PRESTIGE_NEEDED, 'transform': 'log', 'coefficient': -3.0}]}
+        for value in (0, 50, 350, 1200):
+            fixed = W.fixed_term(model, [{W.PRESTIGE_NEEDED: value}], 0, 0) / W.FITNESS_ONE
+            self.assertAlmostEqual(fixed, -3.0 * math.log1p(value), places=5)
+
+    def test_only_bounded_measurements_can_be_tabulated(self):
+        self.assertEqual(W.cpp_kind(W.PRESTIGE_NEEDED, 'log')[0], 'table')
+        with self.assertRaises(ValueError):
+            W.cpp_kind('attack', 'pow25')
+
+    def test_the_emitted_header_carries_the_table(self):
+        model, _ = published()
+        model['features'].append({'name': W.PRESTIGE_NEEDED, 'transform': 'log', 'coefficient': -3.0})
+        model['games'], model['samples'] = 1, 1
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'WinProbabilityModel.h'
+            W.emit_header(model, path, ['fitted for a test'])
+            text = path.read_text()
+        self.assertIn('WIN_PROBABILITY_PRESTIGE_NEEDED_LOG_TABLE[2401]', text)
+        self.assertIn('#include <algorithm>', text)
+        self.assertIn('WIN_PROBABILITY_PRESTIGE_NEEDED_LOG_TABLE_LIMIT)]) >> TABLE_SHIFT', text)
 
 
 class Labels(unittest.TestCase):
@@ -350,6 +390,21 @@ class GameplayInputs(unittest.TestCase):
         self.assertEqual(values['feeding'], 4)
         self.assertEqual(values['delivered_window'], 2 * 10 * W.WINDOW_SAMPLES)
         self.assertEqual(W.measurements_of(pair)['feeding'], 0)
+
+    def test_prestige_needed_is_read_when_recorded_and_zero_otherwise(self):
+        pair = {'tl': {}, 'econ': {'food': '0/0', 'fooded': '0/0'}}
+        for which, field in W.TIMELINE_FIELDS.values():
+            pair[which][field] = 1
+        self.assertEqual(W.measurements_of(pair)[W.PRESTIGE_NEEDED], 0)
+        pair['tl']['prestigeNeeded'] = 37
+        self.assertEqual(W.measurements_of(pair)[W.PRESTIGE_NEEDED], 37)
+
+    def test_allies_sum_amounts_but_take_their_closest_prestige_distance(self):
+        grouped = W.group_allies({0: {'attack': 3.0, W.PRESTIGE_NEEDED: 40.0},
+                                  1: {'attack': 5.0, W.PRESTIGE_NEEDED: 12.0},
+                                  2: {'attack': 1.0, W.PRESTIGE_NEEDED: 90.0}}, {0: 'a', 1: 'a', 2: 'b'})
+        self.assertEqual(dict(grouped['a']), {'attack': 8.0, W.PRESTIGE_NEEDED: 12.0})
+        self.assertEqual(dict(grouped['b']), {'attack': 1.0, W.PRESTIGE_NEEDED: 90.0})
 
     def test_only_the_fields_the_engine_reads_are_kept(self):
         line = ('GLOB2_MEASURE team=1 tick=2048 final=0 feeding=7 meals=99 '

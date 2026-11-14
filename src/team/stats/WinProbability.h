@@ -53,6 +53,10 @@ namespace WinProbability
 	const int FITNESS_SHIFT = 32;
 	const int FRACTION_SHIFT = 20;
 	const int ROOT_SHIFT = 10;
+	/// Fractional bits of a generated lookup-table transform (a bounded
+	/// measurement under log or a fractional power). Kept in step with
+	/// TABLE_SHIFT in tools/win_probability_model.py.
+	const int TABLE_SHIFT = 20;
 	const Sint64 FITNESS_ONE = (Sint64)1 << FITNESS_SHIFT;
 	const Sint64 FRACTION_ONE = (Sint64)1 << FRACTION_SHIFT;
 
@@ -86,10 +90,11 @@ namespace WinProbability
 		Sint32 innWalkDistance;  ///< distance hungry workers walked to inns over the window
 		Sint32 swarmFilling;     ///< worker-ticks spent filling swarms over the window
 		Sint32 attack;           ///< total attack power
+		Sint32 prestigeNeeded;   ///< prestige still needed to win (Game::prestigeNeeded), prestigeNeeded() of the alliance's closest member; 0 for everyone when prestige cannot end the game
 		bool alive;              ///< still a competitor; eliminated sides are excluded
 
 		Slot() : feeding(0), explorers(0), barracksLevels(0), delivered(0),
-		         innWalkDistance(0), swarmFilling(0), attack(0), alive(false) {}
+		         innWalkDistance(0), swarmFilling(0), attack(0), prestigeNeeded(0), alive(false) {}
 	};
 
 	/// The retained measurement samples the model reads for one team: the latest
@@ -156,6 +161,14 @@ namespace WinProbability
 	/// screen shows and the number the winning condition compares, so what a
 	/// player reads is exactly what decided the game.
 	std::vector<int> permille(const std::vector<Slot> &slots);
+
+	/// Whether prestige can end this game (a WCPrestige winning condition).
+	bool prestigeCounts(const Game &game);
+
+	/// Prestige the team would still have to add to win by prestige: enough to
+	/// trip the shared threshold and to lead every other surviving team outright.
+	/// Reads live prestige; game.totalPrestige must be current (prestigeSyncStep).
+	int prestigeNeeded(const Game &game, int team);
 
 	/// The slots for a game, one per alliance, summed over its teams.
 	///

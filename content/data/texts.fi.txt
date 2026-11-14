@@ -5048,6 +5048,10 @@ Arvioitu todennäköisyys liittoumasi voitolle, mitattuna koko ottelun ajan. Lii
 Maine
 [stat prestige about]
 Siirtokunnan maine, jota ylimmän tason rakennukset tuottavat. Ottelu, jossa on mainetavoite, päättyy, kun se saavutetaan.
+[stat prestige needed]
+Prestige needed to win
+[stat prestige needed about]
+The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
 [stat band combat]
 Taistelu
 [stat band starvation]

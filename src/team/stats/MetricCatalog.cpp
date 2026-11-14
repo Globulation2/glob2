@@ -461,6 +461,7 @@ std::vector<Metric> build()
 
 	// Score
 	add({.id = "prestige", .group = Group::Score, .unitKey = "[stat unit prestige]", .sampled = EndOfGameStat::TYPE_PRESTIGE});
+    add({.id = "prestige needed", .group = Group::Score, .unitKey = "[stat unit prestige]"}).prestigeNeeded = true;
     add({.id = "win probability", .group = Group::Score}).winProbability = true;
 	return all;
 }
@@ -647,6 +648,21 @@ Chart chartOf(const Metric &metric, const View &view, const std::vector<TeamHist
             chart.teams.push_back(std::move(series));
             continue;
         }
+        if (metric.prestigeNeeded)
+        {
+            TeamSeries series;
+            series.team = history.team;
+            series.values.emplace_back();
+            for (const auto &sample : history.prestigeNeeded)
+            {
+                series.ticks.push_back(sample.tick);
+                series.values[0].push_back(sample.value);
+            }
+            // Zero is meaningful here too: that team had the prestige to win.
+            chart.any |= !series.ticks.empty();
+            chart.teams.push_back(std::move(series));
+            continue;
+        }
 		const Samples samples(metric, view, history);
 		TeamSeries series;
 		series.team = history.team;
@@ -806,6 +822,7 @@ TeamHistory historyOf(int team, const TeamStats &stats)
 	history.extendedCoverageStartTick = stats.extendedCoverageStartTick;
 	history.labourCoverageStartTick = stats.labourCoverageStartTick;
     history.winProbability = stats.getWinProbabilityHistory();
+    history.prestigeNeeded = stats.getPrestigeNeededHistory();
 	const auto &sampled = stats.getEndOfGameStats();
 	const auto &measured = stats.measurementHistory;
 	// Both are appended every sample interval, but measurements may start later

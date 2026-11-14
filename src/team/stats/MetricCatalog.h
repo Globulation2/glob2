@@ -120,6 +120,9 @@ struct Metric
 	bool percentByDefault = false;
     //! Alliance probability has its own explicit ticks, independent of delayed statistics.
     bool winProbability = false;
+    //! Prestige still needed to win, likewise recorded with its own ticks, and
+    //! only while prestige can end the game (TeamStats::prestigeNeededHistory).
+    bool prestigeNeeded = false;
 	//! Text key of the control that splits it into its bands ("By material").
 	const char *splitKey = "[stat view split]";
 
@@ -186,6 +189,7 @@ struct TeamHistory
 	//! The same for worker time use and what was added with it (Metric::labour).
 	Uint32 labourCoverageStartTick = 0;
     std::vector<WinProbabilitySample> winProbability;
+    std::vector<PrestigeNeededSample> prestigeNeeded;
 };
 //! A team's sampled values and measurements joined by tick. The pointers refer
 //! into `stats`, which must outlive the history and not record meanwhile.
