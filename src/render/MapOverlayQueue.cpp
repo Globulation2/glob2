@@ -246,23 +246,27 @@ void MapOverlayQueue::flush(GraphicContext &gfx, GAGCore::Sprite *icons, GAGCore
 			if (statusSizes[i] <= room)
 				frameSize = i;
 		const float drawn = std::min(float(statusSizes[frameSize]), room) / raster;
+		// Centre the frame on whole target pixels, so it is drawn pixel for pixel.
+		const float inset = std::round((size - drawn) * raster / 2) / raster;
 		for (const Pip &pip : pips)
 		{
+			if (!statusIcons)
+				break;
 			// Beside its point, the badge's lower left corner just meets it.
 			const int overlap = pip.beside ? size / 6 : size / 2;
-			const int left = int(std::lround(pip.screenX)) - overlap;
-			const int top = int(std::lround(pip.screenY)) - (pip.beside ? size - overlap : size / 2);
-			if (!statusIcons)
-				continue;
-			const float x = left + (size - drawn) / 2, y = top + (size - drawn) / 2;
+			const float x = int(std::lround(pip.screenX)) - overlap + inset;
+			const float y = int(std::lround(pip.screenY)) - (pip.beside ? size - overlap : size / 2) + inset;
 			const unsigned frame = unsigned(pip.icon) * StatusSizeCount + frameSize;
-			// Identical shapes: red over yellow at the severity blends the colour
-			// exactly, with nothing showing through between the two.
+			// Yellow, then red over it. With the badge at opacity a and severity s,
+			// red at a*s over yellow at a*(1-s)/(1-a*s) gives a*((1-s)*yellow +
+			// s*red) over the ground: the blend, faded as a whole, at any opacity.
+			const float a = pip.alpha / 255.f, s = pip.severity / 255.f;
 			if (pip.severity < 255)
-				gfx.drawSprite(x, y, drawn, drawn, statusIcons, frame, pip.alpha);
+				gfx.drawSprite(x, y, drawn, drawn, statusIcons, frame,
+							   Uint8(std::lround(255 * a * (1 - s) / (1 - a * s))));
 			if (pip.severity > 0)
 				gfx.drawSprite(x, y, drawn, drawn, statusIcons, variantFrames + frame,
-							   pip.severity == 255 ? pip.alpha : Uint8(pip.alpha * pip.severity / 255));
+							   Uint8(std::lround(255 * a * s)));
 		}
 		if (statusIcons && !pips.empty())
 			gfx.finishDrawingSprite(statusIcons, 255);

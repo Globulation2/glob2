@@ -9,20 +9,24 @@
 //! without a renderer. A severity is only meaningful while its predicate holds.
 namespace StatusSeverity
 {
+	//! Clamps to [0, 1]; anything not a number, as from a zero maximum, is 0.
 	inline float clamp01(double value)
 	{
-		return value <= 0 ? 0.f : value >= 1 ? 1.f : float(value);
+		return !(value > 0) ? 0.f : value >= 1 ? 1.f : float(value);
 	}
 
-	//! A unit is hungry once its food shows 1 bar of 10 or fewer.
+	//! The food bar has 10 bars; a unit is hungry once it shows this many or fewer.
+	constexpr int HungryFoodBars = 1;
+	//! A unit is hungry once its food bar shows HungryFoodBars or fewer.
 	inline bool unitHungry(int hungry, int foodCapacity)
 	{
-		return (long long)hungry * 10 / foodCapacity <= 1;
+		return foodCapacity > 0 && (long long)hungry * 10 / foodCapacity <= HungryFoodBars;
 	}
-	//! Yellow where hunger begins, red once the food is gone and the unit starves.
+	//! Yellow where hunger begins, just under HungryFoodBars + 1 bars, red once
+	//! the food is gone and the unit starves.
 	inline float unitHunger(int hungry, int foodCapacity)
 	{
-		return clamp01(1 - hungry / (2.0 * foodCapacity / 10));
+		return clamp01(1 - hungry / ((HungryFoodBars + 1) * double(foodCapacity) / 10));
 	}
 
 	//! A unit is hurt at 60% of its hit points or fewer.
@@ -52,9 +56,10 @@ namespace StatusSeverity
 	//! as 0 of 1 or 0 of 2, rounds down to yellow.
 	inline float buildingStaffing(int working, int slots)
 	{
-		const int firstShortfall = slots / 2 + 1;
-		if (slots <= firstShortfall)
+		// Workers missing when buildingUnderstaffed first holds.
+		const int missingAtFirstShortfall = slots / 2 + 1;
+		if (slots <= missingAtFirstShortfall)
 			return 0;
-		return clamp01(double(slots - working - firstShortfall) / (slots - firstShortfall));
+		return clamp01(double(slots - working - missingAtFirstShortfall) / (slots - missingAtFirstShortfall));
 	}
 }

@@ -66,9 +66,31 @@ TEST_SUITE("StatusSeverity")
 		CHECK(StatusSeverity::buildingStaffing(0, 3) == 1.f);
 	}
 
+	TEST_CASE("A zero maximum gives no severity rather than a broken one")
+	{
+		CHECK_FALSE(StatusSeverity::unitHungry(0, 0));
+		CHECK(StatusSeverity::unitHunger(0, 0) == 0.f);
+		CHECK(StatusSeverity::unitInjury(0, 0) == 0.f);
+		CHECK(StatusSeverity::buildingDamage(0, 0) == 0.f);
+	}
+
 	TEST_CASE("Severity never falls as a condition worsens")
 	{
 		float last = 0;
+		for (int hp = 60; hp >= 0; --hp)
+		{
+			const float now = StatusSeverity::unitInjury(hp, 100);
+			CHECK(now >= last);
+			last = now;
+		}
+		last = 0;
+		for (int hp = 1000; hp >= 0; hp -= 10)
+		{
+			const float now = StatusSeverity::buildingDamage(hp, 1000);
+			CHECK(now >= last);
+			last = now;
+		}
+		last = 0;
 		for (int hungry = 199; hungry >= -100; --hungry)
 		{
 			const float now = StatusSeverity::unitHunger(hungry, 1000);
