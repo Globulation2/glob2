@@ -15404,16 +15404,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource30.png",
           "role": "base",
-          "sha256": "ffd2f40af4f279815baf49922f13a341edae530567edd17642563fb65ecec3b8",
+          "sha256": "1581290859b469e439bdcd93d082bfe9c2133af97ab9c6da5a5382ebb7bf0e0a",
           "source_sha256": "ffd2f40af4f279815baf49922f13a341edae530567edd17642563fb65ecec3b8",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "69df46fad0fd96b646a6c56ce97da00330bb990c08e1ef9e46ba1ac9312a99f2"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_resources.py",
+          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
         }
       ]
     },
@@ -15422,16 +15428,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource31.png",
           "role": "base",
-          "sha256": "92d0d53fe34da732d6b1873a26c2fa4920bd16f28dee11fb88839b62c360961f",
+          "sha256": "79b76c7a2d9de2bcde3f2226b2f5bc30c6929cd85b131678083c2be0407acbe2",
           "source_sha256": "92d0d53fe34da732d6b1873a26c2fa4920bd16f28dee11fb88839b62c360961f",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "e5ae3a858aaa7b3d465bb5a65c8948d1c924c9a7c1f540fb18cc98a3ea64446c"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_resources.py",
+          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
         }
       ]
     },
@@ -15440,16 +15452,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource32.png",
           "role": "base",
-          "sha256": "61dd8377b927399f0dc12655886f08969bec36694faaeea4eda97bb53913be7a",
+          "sha256": "6c2b30db76b5ef8ed1fa244661be73b5ce8253b80aa2e6f7a78ccbeb1ac5185a",
           "source_sha256": "61dd8377b927399f0dc12655886f08969bec36694faaeea4eda97bb53913be7a",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "df8f3ced7653206960b710bde6bb090bdc8d47106bcd2c740e90fee44c06cc4e"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_resources.py",
+          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
         }
       ]
     },
@@ -15458,16 +15476,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource33.png",
           "role": "base",
-          "sha256": "6b43ee2349111eb5e6816f683332a51b0a83d38989b129f66d0b0dbe6ebdf2f3",
+          "sha256": "e0a6c25d4939433fa217859d0a113a89ea78d69898e317371a64e9e39f4ef5da",
           "source_sha256": "6b43ee2349111eb5e6816f683332a51b0a83d38989b129f66d0b0dbe6ebdf2f3",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "92462eb7dd6b035187ff1c51f1b561cd48976f894a85fee2f7c6c5e538182cc1"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_resources.py",
+          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
         }
       ]
     },
@@ -15476,16 +15500,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource34.png",
           "role": "base",
-          "sha256": "2e584c0db3a3361c58593a32f8cac2d6a08dd444e4e781c4ab3bce5a708dc3a8",
+          "sha256": "0143ce1236f824710792f33c57c23ea60976dc710b359d8dd05135edd5ae602b",
           "source_sha256": "2e584c0db3a3361c58593a32f8cac2d6a08dd444e4e781c4ab3bce5a708dc3a8",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "5d9f6e212f88d3855753ff3e14cc90d6ab7696454ca577c06ca187bba860405d"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_resources.py",
+          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
         }
       ]
     },
@@ -15494,16 +15524,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource35.png",
           "role": "base",
-          "sha256": "19ee4ed0370ce4ec4287ece26d6392385cb1c1f863bc95693d9c1eeb26311c98",
+          "sha256": "f79882c9aa90073563d6a4087951a9cfeec99359fff6a9920ef01b12ecd88589",
           "source_sha256": "19ee4ed0370ce4ec4287ece26d6392385cb1c1f863bc95693d9c1eeb26311c98",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "fc171fec423a25d936d570083ce3a7eda26a492c1976718af5e68fe6fd2098f3"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_resources.py",
+          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
         }
       ]
     },
@@ -15512,16 +15548,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource36.png",
           "role": "base",
-          "sha256": "3cd497abf27d2584258dfd109dc2e12cc348e5d4b5bad3d1fc2c3a0cf34fe19c",
+          "sha256": "a2c96bd747eef91a2c807d3f6b0e99d3a70df553f667ed4eac47f6950ef882ce",
           "source_sha256": "3cd497abf27d2584258dfd109dc2e12cc348e5d4b5bad3d1fc2c3a0cf34fe19c",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "548db13233ec155325e485e0d281c8ea26cd1fc92cae73f2bdcf7e9558e96e66"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_resources.py",
+          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
         }
       ]
     },
@@ -15530,16 +15572,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource37.png",
           "role": "base",
-          "sha256": "569227f25935f2edb35fe119d48b15655a618cd8d963936976f3c849941d7891",
+          "sha256": "19d6af1e566770bead070628298425a777cfe45ff13ea5124fa20eb22ef0e574",
           "source_sha256": "569227f25935f2edb35fe119d48b15655a618cd8d963936976f3c849941d7891",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "0ce4dd2758e41226c37df4e2abc0deba198888fe2c4d8c4fc6219af44331d648"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_resources.py",
+          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
         }
       ]
     },
@@ -15548,16 +15596,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource38.png",
           "role": "base",
-          "sha256": "e84c6d808a511056b43893fe993ee8087cfedf7c80bd220aa56fc315c42b81fe",
+          "sha256": "b5fc4f97801125f2aadbed54105c5a6adfef285be2374fbb42fe211b3d507ff4",
           "source_sha256": "e84c6d808a511056b43893fe993ee8087cfedf7c80bd220aa56fc315c42b81fe",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "c829c13a6f83312dbb7f8adfda75aefc87633b4a7df5ac655d30b2a6404fccbf"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_resources.py",
+          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
         }
       ]
     },
@@ -15566,16 +15620,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource39.png",
           "role": "base",
-          "sha256": "3e4c23535eb829688057d78df353e8f01a68d96fd6e8408178f73c026ffde1ee",
+          "sha256": "92d9b3716821fc9e9dfaecbb084be7ee64e8d30f2601fb786009131bf0a2c2cd",
           "source_sha256": "3e4c23535eb829688057d78df353e8f01a68d96fd6e8408178f73c026ffde1ee",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "d01f6350c77bf0e1104e03f04593a3121975b08a7c0b0bcc431da26d4a77d59d"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_resources.py",
+          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
         }
       ]
     },
@@ -1058264,19 +1058324,19 @@
     "levels": [
       {
         "file": "ressource-atlas-mip0.png",
-        "sha256": "fead5d18b96fcf1e5330525d740dc21768a9020418cf8eaf61f66aefae56dd05"
+        "sha256": "db2eb6d6014b4e81e7992bfde2d03ea306a003d85e4eaaf092ddc207bc8c57d1"
       },
       {
         "file": "ressource-atlas-mip1.png",
-        "sha256": "f5f561d2bbd6250615948d4cce9e2bc7aecb04721bff1854f70d9646506c9716"
+        "sha256": "be7adcb27be483bb4b88915fe211ada51fd1392c7e67094cbc06c52451f2b048"
       },
       {
         "file": "ressource-atlas-mip2.png",
-        "sha256": "252a756c1b52c468df61d946088986a2b57aa0e03f5f460610b7649d6703165b"
+        "sha256": "25ce4ec0f30864bf4fb2f3e295b15cff211f357e737b354279c801a9e6460331"
       },
       {
         "file": "ressource-atlas-mip3.png",
-        "sha256": "ecdbe9d44302cf81185dbe1b00b9814885a1cd48bb6a552314e430663707960f"
+        "sha256": "3ec9f8595be1b24a1f25c053e25ca0076518d8b482fa3d6e3b9b8bce35f1edaa"
       }
     ]
   }

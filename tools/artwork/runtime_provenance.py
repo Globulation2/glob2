@@ -12,6 +12,7 @@ sys.path.insert(0, str(ROOT))
 from tools.artwork.package_runtime import AI, MATERIALS, ORIGINAL_MATERIALS, require
 OUTPUT = ROOT / 'docs/assets/high-resolution/ASSET-PROVENANCE.md'
 CATEGORIES = {recipe: 'AI upscale with constrained finishing' for recipe in AI}
+CATEGORIES['resource constrained; crisp edges and sharpening v1'] = 'AI upscale with constrained finishing, then sharpened'
 CATEGORIES.update({recipe: 'Generated material with deterministic tiling' for recipe in MATERIALS})
 CATEGORIES.update({recipe: 'Original-based terrain with deterministic grain and tiling'
                    for recipe in ORIGINAL_MATERIALS})

@@ -12,6 +12,8 @@ import numpy as np
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from sharpen_resources import RECIPE as SHARPENED_RESOURCE, crisp_alpha  # noqa: E402
 WORLD_FRAME = re.compile(r'(terrain|ressource|water|cloud|black|shade|area-clearing|area-forbidden|area-guard|bullet|explosion|magiceffect|particle)\d+r?\.png')
 RECOVERED_RESOURCES = set(range(14)) | set(range(15, 19)) | set(range(20, 25))
 
@@ -109,6 +111,8 @@ def validate_resources(root, pack, manifest, frames):
         else:
             original = rgba(root / 'content/data/gfx' / (name + '.png'))
             alpha = original.getchannel('A').resize(tile.size, Image.Resampling.BILINEAR)
+            if frames[name]['recipe'] == SHARPENED_RESOURCE:
+                alpha = Image.fromarray(crisp_alpha(alpha))
             require(tile.getchannel('A').tobytes() == alpha.tobytes(), f'Constrained resource alpha: {name}')
         tiles.append(tile)
     for level, record in enumerate(levels):

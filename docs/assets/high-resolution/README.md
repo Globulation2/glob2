@@ -26,6 +26,10 @@ The HD terrain atlas covers 272 legacy connected tiles. The catalogue materials
 production folder; `tools/artwork/terrain_synth.py` writes and registers them
 together with the classic tiles. Catalog ice now has procedural HD artwork;
 the old connected ice frames and legacy cobblestone sprites retain native fallback.
+The rocks frames (`ressource30`-`ressource39`) take their AI-upscaled finals
+through `tools/artwork/sharpen_resources.py`, which crisps the soft outline
+and sharpens the shading, then rebuilds the resource atlas; it reads its inputs
+from Git, so rerunning it reproduces the committed pixels.
 AI candidates are generated into fresh staging directories only; see the
 [candidate pipeline](../../../tools/artwork/ai/README.md). Production packaging
 reproduces the committed reviewed finals without model inference.
