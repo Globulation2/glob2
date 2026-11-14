@@ -105,6 +105,8 @@ def main():
     parser.add_argument("--visible", action="store_true")
     parser.add_argument("--memory-probe", action="store_true",
                         help="add one boundary-stopped run per variant sampling RSS and NVIDIA per-process GPU memory")
+    parser.add_argument("--hd-complete", action="store_true",
+                        help="finish streaming optional HD layers before measuring (PROFILE_HD_COMPLETE)")
     parser.add_argument("--no-terrain-cache", action="store_true", help="isolate the primitive optimization")
     parser.add_argument("--baseline-no-terrain-cache", action="store_true",
                         help="compare the same executable with uncached baseline terrain")
@@ -146,6 +148,8 @@ def main():
             env["PROFILE_NO_PRESENT"] = "1"
         if args.visible:
             env["PROFILE_VISIBLE"] = "1"
+        if args.hd_complete:
+            env["PROFILE_HD_COMPLETE"] = "1"
         if args.no_terrain_cache or (variant == "baseline" and args.baseline_no_terrain_cache):
             env["PROFILE_TERRAIN_CACHE"] = "0"
         if variant == "baseline" and args.baseline_preserve_frame:

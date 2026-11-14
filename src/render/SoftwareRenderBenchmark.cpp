@@ -378,6 +378,13 @@ static void interactiveBenchmark()
 				gui.viewportX = gui.camera.tileX();
 				gui.viewportY = gui.camera.tileY();
 			}
+			// Games poll asset work every frame, so optional HD layers finish
+			// streaming. PROFILE_HD_COMPLETE=1 measures that steady state instead
+			// of the partially prefetched layers this frame loop never publishes:
+			// layers requested by any warmup frame finish before measurement.
+			const bool completeHighResolution = getenv("PROFILE_HD_COMPLETE") && atoi(getenv("PROFILE_HD_COMPLETE"));
+			if (completeHighResolution)
+				GAGCore::Sprite::finishHighResolution();
 			int units = 0, buildings = 0;
 			for (int t = 0; t < gui.game.mapHeader.getNumberOfTeams(); t++)
 			{
@@ -461,6 +468,8 @@ static void interactiveBenchmark()
 			for (int i = -warmup; i < frames || (seconds > 0 && (i < 0 || (SDL_GetPerformanceCounter()-measuredStart)/freq < seconds)); i++)
 			{
 				SDL_PumpEvents();
+				if (completeHighResolution && i <= 0)
+					GAGCore::Sprite::finishHighResolution();
 				if (i == 0)
 				{
                     printMemory("memory_begin", processMemory());
