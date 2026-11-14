@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "TrueTypeFont.h"
+#include <atomic>
 #include "GraphicContextPrivate.h"
 #include <Toolkit.h>
 #include <SupportFunctions.h>
@@ -234,6 +235,7 @@ bool TrueTypeFont::load(const std::string filename, unsigned size)
 	if (font)
 		TTF_CloseFont(font);
 	font = replacement;
+	scriptLanguageFont = nullptr; // The new font has no language property yet.
 	fontFilename = filename;
 	baseSize = size;
 	renderFont = font;
@@ -257,6 +259,7 @@ bool TrueTypeFont::reload(void)
 	rasterFonts.clear();
 	TTF_CloseFont(font);
 	font = replacement;
+	scriptLanguageFont = nullptr; // The new font has no language property yet.
 	renderFont = font;
 	renderScale = 1.0f;
 	applyStyle();
@@ -355,6 +358,13 @@ bool TrueTypeFont::needsScriptLayout(const std::string &text) const
 void TrueTypeFont::refreshScriptLanguage()
 {
 	const auto *strings = Toolkit::getStringTable();
+	const std::uint64_t revision = strings ? strings->revision() : 0;
+	if (font && font == scriptLanguageFont && strings == scriptLanguageStrings &&
+		revision == scriptLanguageRevision)
+		return;
+	scriptLanguageFont = font;
+	scriptLanguageStrings = strings;
+	scriptLanguageRevision = revision;
 	const std::string code = strings && strings->doesStringExist("[language-code]")
 		? strings->getString("[language-code]") : std::string();
 	std::string wanted;
@@ -543,6 +553,8 @@ void TrueTypeFont::clearMetrics()
 	metricsCache.clear();
 	metricsAge.clear();
 	metricsTextBytes = 0;
+	static std::atomic<std::uint64_t> generations{0};
+	metricsGeneration = ++generations;
 }
 
 std::pair<int, int> TrueTypeFont::measureString(const std::string &text)

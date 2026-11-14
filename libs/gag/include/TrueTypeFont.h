@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #pragma once
+#include <cstdint>
 
 #include <GAGSys.h>
 #include "GraphicContext.h"
@@ -45,6 +46,7 @@ namespace GAGCore
 		//! Whether every character of this UTF-8 string has a glyph in the loaded font
 		virtual bool hasGlyphsFor(const std::string &utf8Text);
 		std::vector<std::size_t> getStringClusterEnds(const std::string &text) override;
+		std::uint64_t metricsRevision() const override { return metricsGeneration; }
 
 		//! Whether the linked SDL3_ttf moves the pen for kerned pairs. Builds without
 		//! HarfBuzz and without buildsys/vcpkg-ports/sdl3-ttf/kerning-moves-pen.patch shift
@@ -73,6 +75,8 @@ namespace GAGCore
 		std::map<MetricsKey, MetricsData> metricsCache;
 		std::list<MetricsKey> metricsAge;
 		size_t metricsTextBytes = 0;
+		//! Unique across fonts; replaced whenever cached metrics are dropped.
+		std::uint64_t metricsGeneration = 0;
 
 		struct CacheKey
 		{
@@ -128,6 +132,11 @@ namespace GAGCore
 		std::string shapeText(const std::string &text) const;
 		bool needsScriptLayout(const std::string &text) const;
 		void refreshScriptLanguage();
+		//! The font and string table revision refreshScriptLanguage last examined;
+		//! measuring and drawing skip the language lookup until either changes.
+		const TTF_Font *scriptLanguageFont = nullptr;
+		const void *scriptLanguageStrings = nullptr;
+		std::uint64_t scriptLanguageRevision = 0;
 		bool useScriptArabic = false;
 		std::string activeScript;
 		TTF_Font *scriptFont(const std::string &script, unsigned size, TTF_Font *fallback);

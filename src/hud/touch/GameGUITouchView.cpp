@@ -583,34 +583,38 @@ int GameGUITouch::navigationLabelLineHeight(const std::vector<std::string> &line
 }
 const GameGUITouch::NavigationMeasurement &GameGUITouch::measureNavigation(double width) const
 {
+	// layout() asks for this many times per frame. Every input that can change
+	// the captions or their metrics has a revision, so a hit compares numbers
+	// only: the font (reload, script language), the string table (language,
+	// reload), replay captions, width, density and the text-size preference.
 	const auto unit = globalContainer->gfx->logicalUnitsPerPoint();
 	auto *font = globalContainer->standardFont;
-	InGameTouchTheme::TextStyle style(font);
+	const auto *strings = Toolkit::getStringTable();
 	NavigationMeasurement next;
 	next.font = font;
+	next.fontRevision = font->metricsRevision();
+	next.strings = strings;
+	next.stringsRevision = strings ? strings->revision() : 0;
 	next.width = width;
 	next.unit = unit;
 	next.growth = InGameTouchTheme::textGrowth();
-	next.language = Toolkit::getStringTable()->getLang();
 	next.replay = globalContainer->replaying;
-	next.lineHeight = std::max(font->getStringHeight(""), font->getStringHeight("Ag"));
-	// Whole-label metrics use the font's bounded metrics cache. Probe them
-	// before reusing the last layout so reloading the same font object also
-	// invalidates wrapping when its advances or line metrics change.
-	for (int i = 0; i < 6; ++i)
-	{
-		next.labels[i] = navigationLabel(i);
-		next.metrics[i] = {font->getStringWidth(next.labels[i]), font->getStringHeight(next.labels[i])};
-	}
 	if (navigationMeasurement)
 	{
 		const auto &last = *navigationMeasurement;
-		if (last.font == next.font && last.width == next.width && last.unit == next.unit &&
-			last.growth == next.growth && last.language == next.language &&
-			last.replay == next.replay && last.lineHeight == next.lineHeight &&
-			last.labels == next.labels && last.metrics == next.metrics)
+		if (last.font == next.font && last.fontRevision == next.fontRevision &&
+			last.strings == next.strings && last.stringsRevision == next.stringsRevision &&
+			last.width == next.width && last.unit == next.unit && last.growth == next.growth &&
+			last.replay == next.replay)
 			return last;
 	}
+	InGameTouchTheme::TextStyle style(font);
+	next.lineHeight = std::max(font->getStringHeight(""), font->getStringHeight("Ag"));
+	for (int i = 0; i < 6; ++i)
+		next.labels[i] = navigationLabel(i);
+	// Measuring may refresh the font's script language, which replaces its
+	// revision; record the revision the measurements below actually used.
+	next.fontRevision = font->metricsRevision();
 	// Measure whole words only when the bounded layout cache changes. Keep
 	// normal captions in one row; use balanced rows before splitting words.
 	double wordWidth = 0;

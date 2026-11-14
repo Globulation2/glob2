@@ -298,11 +298,13 @@ class GameGUITouch
 	struct NavigationMeasurement
 	{
 		const GAGCore::Font *font = nullptr;
+		std::uint64_t fontRevision = 0;
+		const void *strings = nullptr;
+		std::uint64_t stringsRevision = 0;
 		double width = 0, unit = 0, growth = 0, height = 0;
-		int language = -1, lineHeight = 0, columns = 6;
+		int lineHeight = 0, columns = 6;
 		bool replay = false;
 		std::array<std::string, 6> labels;
-		std::array<std::pair<int, int>, 6> metrics;
 	};
 	const NavigationMeasurement &measureNavigation(double width) const;
 	GAGCore::ViewRect navigationButtonRect(const GAGCore::MobileLayout &ui, int index) const;
