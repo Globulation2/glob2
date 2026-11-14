@@ -72,11 +72,25 @@ namespace GAGCore
     };
     static std::map<Sprite*, HighResolutionReload> pendingHighResolution;
     static std::set<std::string> deferredHighResolutionNames;
+    struct RetiredHighResolution { Sprite *sprite; unsigned frame; size_t bytes; std::int64_t retiredAt; };
+    // Front = most recently retired.
+    static std::list<RetiredHighResolution> retiredHighResolution;
+    static size_t retiredHighResolutionTotal = 0;
+    // Room for the material variants of a view near the zoom where HD frames
+    // start to matter, so crossing it back and forth decodes nothing.
+    static Sprite::RetiredHighResolutionBudget retiredBudget{
+#if defined(GLOB2_MOBILE) || defined(__ANDROID__) || defined(__EMSCRIPTEN__)
+        32u * 1024 * 1024,
+#else
+        192u * 1024 * 1024,
+#endif
+        20'000'000'000};
     struct DeferredHighResolution {
         std::set<unsigned> wanted, completed, active;
         std::map<unsigned, HighResolutionInputs> pending;
         std::deque<unsigned> queued;
         std::vector<unsigned> order;
+        std::map<unsigned, std::list<RetiredHighResolution>::iterator> retired;
     };
     static std::map<Sprite*, DeferredHighResolution> deferredHighResolution;
     static Sprite *deferredHighResolutionCursor = nullptr;
@@ -633,6 +647,43 @@ namespace GAGCore
     {
         deferredHighResolutionNames.insert(name);
     }
+    Sprite::RetiredHighResolutionBudget Sprite::retiredHighResolutionBudget() { return retiredBudget; }
+    void Sprite::setRetiredHighResolutionBudget(RetiredHighResolutionBudget budget)
+    {
+        retiredBudget = budget;
+        evictRetiredHighResolution();
+    }
+    size_t Sprite::retiredHighResolutionBytes() { return retiredHighResolutionTotal; }
+    void Sprite::evictRetiredHighResolution()
+    {
+        std::set<Sprite *> changed;
+        const auto expired = GAGCore::steadyClockNanoseconds() - retiredBudget.lifetimeNanoseconds;
+        while (!retiredHighResolution.empty() && (retiredHighResolutionTotal > retiredBudget.bytes ||
+                                                 retiredHighResolution.back().retiredAt <= expired)) {
+            const auto oldest = retiredHighResolution.back();
+            retiredHighResolution.pop_back();
+            retiredHighResolutionTotal -= oldest.bytes;
+            deferredHighResolution[oldest.sprite].retired.erase(oldest.frame);
+            auto &sprite = *oldest.sprite;
+            delete sprite.experimentImages[oldest.frame]; sprite.experimentImages[oldest.frame] = nullptr;
+            delete sprite.experimentRotated[oldest.frame]; sprite.experimentRotated[oldest.frame] = nullptr;
+            changed.insert(&sprite);
+        }
+        for (auto *sprite : changed) sprite->recomputeBlockCompleteHD();
+    }
+    void Sprite::releaseRetiredHighResolution(bool destroy)
+    {
+        const auto found = deferredHighResolution.find(this);
+        if (found == deferredHighResolution.end()) return;
+        for (const auto &[frame, entry] : found->second.retired) {
+            retiredHighResolutionTotal -= entry->bytes;
+            retiredHighResolution.erase(entry);
+            if (!destroy) continue;
+            delete experimentImages[frame]; experimentImages[frame] = nullptr;
+            delete experimentRotated[frame]; experimentRotated[frame] = nullptr;
+        }
+        found->second.retired.clear();
+    }
     void Sprite::setHighResolutionFrames(std::span<const unsigned> indices)
     {
         if (!highResolutionDeferred(fileName)) return;
@@ -650,13 +701,29 @@ namespace GAGCore
         std::erase_if(stream.queued, [&](unsigned frame) { return !stream.wanted.contains(frame); });
         experimentImages.resize(images.size(), nullptr);
         experimentRotated.resize(images.size(), nullptr);
-        // Readers own copied pixels, never a borrowed pointer across this declaration.
+        // Frames leaving the window are retired, not deleted, and a frame that
+        // returns is simply wanted again. Readers own copied pixels, never a
+        // borrowed pointer across this declaration: eviction below may delete
+        // any sprite's retired frames.
+        const auto surfaceBytes = [](DrawableSurface *surface) {
+            return surface ? size_t(surface->getW()) * surface->getH() * 4 + surface->gpuBytes : size_t(0);
+        };
         for (unsigned frame = 0; frame < images.size(); ++frame) {
-            if (!stream.wanted.contains(frame)) {
-                delete experimentImages[frame]; experimentImages[frame] = nullptr;
-                delete experimentRotated[frame]; experimentRotated[frame] = nullptr;
+            const auto retired = stream.retired.find(frame);
+            if (stream.wanted.contains(frame)) {
+                if (retired == stream.retired.end()) continue;
+                retiredHighResolutionTotal -= retired->second->bytes;
+                retiredHighResolution.erase(retired->second);
+                stream.retired.erase(retired);
+            } else if (retired == stream.retired.end() && (experimentImages[frame] || experimentRotated[frame])) {
+                const auto bytes = surfaceBytes(experimentImages[frame]) +
+                    (experimentRotated[frame] ? surfaceBytes(experimentRotated[frame]->orig) : 0);
+                retiredHighResolution.push_front({this, frame, bytes, GAGCore::steadyClockNanoseconds()});
+                stream.retired[frame] = retiredHighResolution.begin();
+                retiredHighResolutionTotal += bytes;
             }
         }
+        evictRetiredHighResolution();
         recomputeBlockCompleteHD();
         const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
         if ((!highResolutionEnabled && !overrideDir) || !highResolutionFramesSupported()) return;
@@ -704,6 +771,7 @@ namespace GAGCore
                 stream.queued.clear();
                 stream.completed.clear();
                 stream.wanted.clear();
+                sprite->releaseRetiredHighResolution(true);
                 sprite->setHighResolutionFrames(wanted);
             } else {
                 auto prepared = std::make_unique<Sprite>();
@@ -748,6 +816,7 @@ namespace GAGCore
                 auto wanted = stream.order;
                 stream.pending.clear(); stream.completed.clear(); stream.wanted.clear();
                 stream.active.clear(); stream.queued.clear();
+                sprite->releaseRetiredHighResolution(false);
                 for (auto *&image : sprite->experimentImages) { delete image; image = nullptr; }
                 for (auto *&image : sprite->experimentRotated) { delete image; image = nullptr; }
                 sprite->highResolutionAtlas.reset();
@@ -791,6 +860,7 @@ namespace GAGCore
     }
     bool Sprite::pollHighResolutionUntil(std::int64_t deadlineNanoseconds)
     {
+        evictRetiredHighResolution();
         const std::chrono::steady_clock::time_point deadline(std::chrono::duration_cast<std::chrono::steady_clock::duration>(std::chrono::nanoseconds(deadlineNanoseconds)));
         for (auto it = pendingHighResolution.begin(); it != pendingHighResolution.end();) {
             if (std::chrono::steady_clock::now() >= deadline) break;
@@ -1160,6 +1230,7 @@ namespace GAGCore
 	{
         // Private reload staging sprites were never published. Their destruction
         // must not re-enter the pending map while it destroys its own entries.
+        releaseRetiredHighResolution(false);
         deferredHighResolution.erase(this);
         if (deferredHighResolutionCursor == this) deferredHighResolutionCursor = nullptr;
         if (loadedSprites.erase(this)) pendingHighResolution.erase(this);

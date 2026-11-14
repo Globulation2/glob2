@@ -349,11 +349,52 @@ void Compositor::requestMapTerrain(const SceneMap& map)
 void Compositor::prepareVisible(bool hd, int time, const SceneMap &map,
                                 int left, int top, int right, int bottom, bool nativeComposition)
 {
-    Usage usage;
-    for (const auto &m : definitions.materials) usage.emplace_back(m.variants.size(), 0);
 #ifdef __EMSCRIPTEN__
     if (hd && GAGCore::Sprite::highResolutionRequested()) requestMapTerrain(map);
 #endif
+    const auto usage = visibleUsage(map, left, top, right, bottom);
+    prepareSelected(hd, time, &usage, nativeComposition);
+}
+void Compositor::declareVisible(int time, const SceneMap &map, int left, int top, int right, int bottom,
+                                bool materials)
+{
+    auto usage = visibleUsage(map, left, top, right, bottom);
+    includeBoundarySources(usage);
+    declareWindows(materials, true, time, &usage);
+    releasePreparedTextures();
+}
+void Compositor::releasePreparedTextures()
+{
+    if (!texturesPrepared) return;
+    texturesPrepared = false;
+    // Keep only source stamps, as eviction does.
+    const auto release = [](auto &set) {
+        for (auto &texture : set)
+        {
+            texture.pixels = MaterialPixels{};
+            texture.size = 0;
+        }
+    };
+    for (auto &set : textures) release(set);
+    for (auto &animation : animationTextures)
+    {
+        release(animation.current);
+        release(animation.next);
+    }
+    publishedCpu.reset();
+    for (auto &published : publishedPixels) published.pixels.clear();
+}
+void Compositor::includeBoundarySources(Usage &usage) const
+{
+    for (unsigned id = 0; id < usage.size(); ++id)
+        if (!definitions.materials[id].periodicEdges &&
+            std::any_of(usage[id].begin(), usage[id].end(), [](auto v) { return v != 0; }))
+            usage[id][0] = 1;
+}
+Compositor::Usage Compositor::visibleUsage(const SceneMap &map, int left, int top, int right, int bottom) const
+{
+    Usage usage;
+    for (const auto &m : definitions.materials) usage.emplace_back(m.variants.size(), 0);
     const int width = std::min(map.getW(), std::max(0, right - left + 1));
     const int height = std::min(map.getH(), std::max(0, bottom - top + 1));
     const auto seed = map.terrainSeed();
@@ -388,21 +429,10 @@ void Compositor::prepareVisible(bool hd, int time, const SceneMap &map,
                         usage[id][definitions.variantIndex(id, wx, wy, seed)] = 1;
             }
         }
-    prepareSelected(hd, time, &usage, nativeComposition);
+    return usage;
 }
-void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool nativeComposition)
+void Compositor::declareWindows(bool materials, bool decor, int time, const Usage *requested)
 {
-    // Nonperiodic custom art uses variant zero as its shared boundary source.
-    Usage normalized;
-    if (requested)
-    {
-        normalized = *requested;
-        for (unsigned id = 0; id < normalized.size(); ++id)
-            if (!definitions.materials[id].periodicEdges &&
-                std::any_of(normalized[id].begin(), normalized[id].end(), [](auto v) { return v != 0; }))
-                normalized[id][0] = 1;
-        requested = &normalized;
-    }
     // A sprite can back several materials: declare the union before any reads.
     std::map<GAGCore::Sprite *, std::vector<unsigned>> windows;
     // Streamed animations keep later phases resident within a shared budget,
@@ -413,9 +443,9 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool
     {
         const auto &m = definitions.materials[id];
         auto &window = windows[sprites[id]];
-        if (!hd) continue;
+        if (!materials && !decor) continue;
 #ifdef __EMSCRIPTEN__
-        if (requested && GAGCore::Sprite::highResolutionRequested() && m.sprite.starts_with("data/gfx/terrain-") &&
+        if (materials && requested && GAGCore::Sprite::highResolutionRequested() && m.sprite.starts_with("data/gfx/terrain-") &&
             std::any_of((*requested)[id].begin(), (*requested)[id].end(), [](auto v) { return v != 0; }))
             requestTerrainPackage("hd-" + m.sprite.substr(9));
 #endif
@@ -426,13 +456,14 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool
             if (!requested || (*requested)[id][i])
             {
                 ++count;
+                if (!materials) continue;
                 window.push_back(m.variants[i].frame + phase * m.animationStride);
                 if (animated)
                     window.push_back(m.variants[i].frame + (phase + 1) % m.animationFrames * m.animationStride);
             }
         // Decor (spires, masses, terraces) streams per material in view too:
         // the shared sheet is far larger than any one map needs.
-        if (count && decorSprites[id])
+        if (decor && count && decorSprites[id])
         {
             auto &decorWindow = windows[decorSprites[id]];
             for (const auto &frames : {m.decor.full, m.decor.edge, m.decor.connected, m.decor.connectedInterior,
@@ -440,7 +471,7 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool
                 for (int frame : frames)
                     if (frame >= 0) decorWindow.push_back(unsigned(frame));
         }
-        if (!animated || !count || !GAGCore::Sprite::highResolutionDeferred(m.sprite)) continue;
+        if (!materials || !animated || !count || !GAGCore::Sprite::highResolutionDeferred(m.sprite)) continue;
         constexpr std::size_t frameBytes = 128 * 128 * 4; // A 32-pixel cell at HD scale 4.
         const unsigned extra = unsigned(std::min<std::size_t>(m.animationFrames - 2,
                                                               lookaheadBytes / (count * frameBytes)));
@@ -451,6 +482,18 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool
                     window.push_back(m.variants[i].frame + (phase + ahead) % m.animationFrames * m.animationStride);
     }
     for (auto &[sprite, window] : windows) sprite->setHighResolutionFrames(window);
+}
+void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool nativeComposition)
+{
+    Usage normalized;
+    if (requested)
+    {
+        normalized = *requested;
+        includeBoundarySources(normalized);
+        requested = &normalized;
+    }
+    declareWindows(hd, hd, time, requested);
+    texturesPrepared = true;
 
     // Keep the existing stream window ready for the next zoom level while
     // reduced pages compose from the smaller native inputs.

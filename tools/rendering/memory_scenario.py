@@ -105,6 +105,10 @@ def run(args, directory):
         'GLOB2_BENCH_FRAME_TIMES': '1',
         'GLOB2_BENCH_MODE': '2D no clouds',
     })
+    if args.zoom:
+        environment['GLOB2_BENCH_ZOOM'] = str(args.zoom)
+    if args.capture:
+        environment['GLOB2_BENCH_CAPTURE'] = str(directory / 'final.ppm')
     command = [str(binary), '--renderer', args.renderer, '--no-fullscreen', '--mute', '--window-size', args.window_size]
     samples = []
     log = directory / 'benchmark.log'
@@ -185,6 +189,9 @@ def main():
     parser.add_argument('--renderer', default='legacy-gl')
     parser.add_argument('--window-size', default='1920x1080')
     parser.add_argument('--frames', type=int, default=3600, help='Measured frames; 120 make one zoom cycle')
+    parser.add_argument('--zoom', type=float,
+                        help='Start of the zoom cycle, which reaches four times this (default: the minimum zoom)')
+    parser.add_argument('--capture', action='store_true', help='Save the last frame as final.ppm')
     parser.add_argument('--interval-ms', type=int, default=16, help='Pause between frames so streaming keeps pace')
     args = parser.parse_args()
     if args.prepare and not Path(args.save).exists():
@@ -196,7 +203,7 @@ def main():
     binary, command, log, samples = run(args, directory)
     summary = summarize(log, samples)
     summary.update(binary=str(binary), command=command, save=str(args.save), frames_requested=args.frames,
-                   interval_ms=args.interval_ms)
+                   interval_ms=args.interval_ms, zoom=args.zoom)
     (directory / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
     (directory / 'samples.json').write_text(json.dumps(samples) + '\n')
     baseline = None

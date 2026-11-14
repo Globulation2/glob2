@@ -164,7 +164,21 @@ its whole-map base mask; `DIRECT_TERRAIN_BASE` reports when the base covers
 the map, and only cells without a base mask yet draw a straight split between their corners. `FRAME_HD` reports the
 visible mixed cells still waiting. The editor and captures complete the view
 first: they build every visible mask in parallel and wait for streamed HD
-artwork. Pages serve the software and programmable-device renderers, and the
+artwork.
+
+The pass filters its atlas tiles from the sprite frames themselves, so it only
+declares the view's HD stream window to the material compositor and keeps none
+of the compositor's CPU textures. HD material frames are requested only above
+32 pixels a cell: the native 32-pixel frames are those frames reduced, and a
+zoomed-out view, which shows the most variants, would otherwise decode them all
+to filter them back down. Decor frames stream at every zoom. Frames that leave
+a stream window are retired, not deleted: they stay decoded, most recently
+retired first, until they exceed a shared budget (192 MiB on desktop, 32 MiB on
+mobile and in the browser) or have gone unused for 20 seconds, so panning or
+zooming back decodes nothing. `image_decodes` in the
+[memory report](#renderer-memory) shows what a camera path still decodes.
+
+Pages serve the software and programmable-device renderers, and the
 browser's WebGL2 renderer: it drives Legacy GL through Emscripten's WebGL2 bridge,
 which the direct pass does not support. There pages draw native artwork until the
 view's `hd-terrain-*` families download, then HD.

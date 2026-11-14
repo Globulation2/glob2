@@ -50,6 +50,12 @@ class Compositor
     // with native sources as fallback until each requested frame is available.
     void prepareVisible(bool hd, int time, const SceneMap &, int left, int top, int right, int bottom,
                         bool nativeComposition = false);
+    // The same view for a caller that filters its own tiles through
+    // phasePixels(), as direct terrain does: only the HD stream window is
+    // declared and no CPU textures are kept here. Without materials the view
+    // samples native material art and streams only its decor; HD material
+    // frames add nothing at 32 pixels a cell or fewer.
+    void declareVisible(int time, const SceneMap &, int left, int top, int right, int bottom, bool materials);
 	Recipe describe(const SceneMap &, int x, int y) const;
 	Recipe describeOverview(const SceneMap &, int x, int y) const;
 	// Coverage of one mixed cell at one sampling scale. It depends on the cell's
@@ -286,6 +292,13 @@ class Compositor
     std::vector<std::string> requestedTerrainPackages;
 #endif
     void prepareSelected(bool hd, int time, const Usage *usage, bool nativeComposition = false);
+    Usage visibleUsage(const SceneMap &, int left, int top, int right, int bottom) const;
+    // Nonperiodic custom art uses variant zero as its shared boundary source.
+    void includeBoundarySources(Usage &usage) const;
+    void declareWindows(bool materials, bool decor, int time, const Usage *requested);
+    void releasePreparedTextures();
+    // Whether prepareSelected may have left CPU textures to release.
+    bool texturesPrepared = true;
     Usage recipeUsage(std::span<const Recipe> recipes) const;
     std::size_t cpuMaterialBytesSelected(std::span<const MaterialId>, const Usage *) const;
     std::shared_ptr<const CpuMaterials> cpuMaterialsSelected(std::span<const MaterialId>, const Usage *);

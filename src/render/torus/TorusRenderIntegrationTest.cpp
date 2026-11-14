@@ -101,7 +101,9 @@ static void tiledCapture(bool hd = false)
     int vx = 17, vy = 21; // Initial capture origin is (0,0), boundaries are at cells 30 and 60.
     const unsigned options = Game::DRAW_AREA;
     REQUIRE(view.draw(glob2test::sceneOf(game),game.gui, 0, options, vx, vy, 960, 720));
-    if (hd) REQUIRE(globalContainer->terrainCompositor().scale() == 4);
+    // The direct pass samples native material frames at this density (32
+    // pixels a cell), where HD frames add nothing; it prepares no pages either.
+    REQUIRE(globalContainer->terrainCompositor().scale() == 1);
     REQUIRE(view.tiles.size() == 9);
     REQUIRE(view.pixelsPerCell == 32);
     REQUIRE(view.standaloneRender.animationTime == 1);

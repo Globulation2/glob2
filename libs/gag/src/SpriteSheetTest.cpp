@@ -8,12 +8,14 @@
 #include "SpritePatternFixture.h"
 #include "ScopedEnvironment.h"
 #include "SpriteHighResolution.h"
+#include <AssetLoader.h>
 #include <FileManager.h>
 #include <GraphicContext.h>
 #include <Toolkit.h>
 #include <RenderDevice.h>
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
+#include <array>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
@@ -105,6 +107,98 @@ TEST_CASE("sheet tiles load as the frames they were packed from") {
 	}
 }
 
+namespace {
+// Restores the process-wide retirement budget a test replaces.
+struct RetiredBudget {
+    const GAGCore::Sprite::RetiredHighResolutionBudget saved = GAGCore::Sprite::retiredHighResolutionBudget();
+    explicit RetiredBudget(GAGCore::Sprite::RetiredHighResolutionBudget budget) {
+        GAGCore::Sprite::setRetiredHighResolutionBudget(budget);
+    }
+    ~RetiredBudget() { GAGCore::Sprite::setRetiredHighResolutionBudget(saved); }
+};
+}
+TEST_CASE("deferred HD frames that leave their window stay decoded within a budget and a lifetime [display]") {
+    glob2test::TempDir scratch("retired-terrain-hd");
+    const auto artwork = scratch.path / "data/gfx";
+    const auto hd = scratch.path / "data/highres/v1";
+    std::filesystem::create_directories(artwork);
+    std::filesystem::create_directories(hd);
+    std::filesystem::copy_file(glob2test::sourceRoot() / "test/fixtures/image-assets/native-sheet.webp",
+        artwork / "native-sheet.webp");
+    std::ofstream(artwork / "retired-terrain.sheet") << "native-sheet.webp image 0 16 4 2\n";
+    std::ofstream frame(hd / "frame.webp", std::ios::binary);
+    frame.write(reinterpret_cast<const char*>(lossyAlphaFixture::webp), sizeof(lossyAlphaFixture::webp));
+    frame.close();
+    std::ofstream index(hd / "frames.txt");
+    index << "GLOB2_HIGHRES 1\n";
+    for (unsigned i = 0; i < 16; ++i) index << "retired-terrain" << i << " 4 2 4 frame.webp -\n";
+    index.close();
+    glob2test::ScopedEnvironment assets("GLOB2_ASSET_DIR", scratch.path.string().c_str());
+    glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
+    glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+    glob2test::ScopedEnvironment cooperative("GLOB2_ASSET_THREADS", "0");
+    glob2test::ToolkitScope toolkit;
+    GAGCore::Toolkit::initGraphic(64, 64, GAGCore::GraphicContext::PORTABLEGPU, "retired terrain HD");
+    GAGCore::Sprite::setHighResolution(true);
+    GAGCore::Sprite::deferHighResolution("data/gfx/retired-terrain");
+    const RetiredBudget roomy({1024 * 1024, 3'600'000'000'000});
+    {
+        GAGCore::Sprite sprite;
+        REQUIRE(sprite.load("data/gfx/retired-terrain"));
+        const auto wait = [&] {
+            const auto deadline = SDL_GetTicks() + 10000;
+            while (!GAGCore::Toolkit::pollAssets(2) && SDL_GetTicks() < deadline) SDL_Delay(1);
+            REQUIRE(GAGCore::Sprite::pollHighResolution(1));
+        };
+        const auto resident = [&] {
+            return std::count_if(sprite.experimentImages.begin(), sprite.experimentImages.end(),
+                [](auto *image) { return image != nullptr; });
+        };
+        const std::array<unsigned, 3> wide{1, 2, 3};
+        const std::array<unsigned, 1> narrow{2};
+        sprite.setHighResolutionFrames(wide);
+        wait();
+        REQUIRE(resident() == 3);
+        CHECK(GAGCore::Sprite::retiredHighResolutionBytes() == 0);
+        const auto *kept = sprite.baseFrame(1);
+        const auto decodes = GAGCore::AssetLoader::decodeTotals().images;
+
+        // Leaving the window retires a frame; it still draws and returns without a decode.
+        sprite.setHighResolutionFrames(narrow);
+        CHECK(resident() == 3);
+        CHECK(sprite.baseFrame(1) == kept);
+        const auto retired = GAGCore::Sprite::retiredHighResolutionBytes();
+        CHECK(retired > 0);
+        sprite.setHighResolutionFrames(wide);
+        wait();
+        CHECK(GAGCore::Sprite::retiredHighResolutionBytes() == 0);
+        CHECK(sprite.baseFrame(1) == kept);
+        CHECK(GAGCore::AssetLoader::decodeTotals().images == decodes);
+
+        // Over budget, the oldest retired frame goes first.
+        sprite.setHighResolutionFrames(std::array<unsigned, 2>{2, 3}); // retires 1
+        sprite.setHighResolutionFrames(narrow);                        // then 3
+        CHECK(resident() == 3);
+        GAGCore::Sprite::setRetiredHighResolutionBudget({retired / 2, 3'600'000'000'000});
+        CHECK(resident() == 2);
+        CHECK(sprite.baseFrame(1) == sprite.nativeFrame(1));
+        CHECK(sprite.baseFrame(3) != sprite.nativeFrame(3));
+
+        // Past its lifetime a retired frame goes at the next poll.
+        GAGCore::Sprite::setRetiredHighResolutionBudget({1024 * 1024, 0});
+        GAGCore::Sprite::pollHighResolution(1);
+        CHECK(resident() == 1);
+        CHECK(GAGCore::Sprite::retiredHighResolutionBytes() == 0);
+
+        // A destroyed sprite takes its retired frames out of the budget.
+        GAGCore::Sprite::setRetiredHighResolutionBudget({1024 * 1024, 3'600'000'000'000});
+        sprite.setHighResolutionFrames(wide);
+        wait();
+        sprite.setHighResolutionFrames(narrow);
+        CHECK(GAGCore::Sprite::retiredHighResolutionBytes() > 0);
+    }
+    CHECK(GAGCore::Sprite::retiredHighResolutionBytes() == 0);
+}
 TEST_CASE("deferred terrain HD loads native first and bounds frame windows across toggles [display]") {
     glob2test::TempDir scratch("deferred-terrain-hd");
     const auto artwork = scratch.path / "data/gfx";
@@ -147,6 +241,8 @@ TEST_CASE("deferred terrain HD loads native first and bounds frame windows acros
     for (unsigned i = 0; i < 16; ++i) CHECK(sprite.baseFrame(i) == sprite.nativeFrame(i));
     const std::array<unsigned, 2> both{1, 14};
     const std::array<unsigned, 1> one{14};
+    // No retirement here: a frame outside the window is deleted at once.
+    const RetiredBudget strict({0, 0});
     sprite.setHighResolutionFrames(both);
     CHECK(sprite.baseFrame(1) == sprite.nativeFrame(1));
     // Queue without executing the cooperative decoder, then advance the window.
@@ -185,6 +281,8 @@ static void checkShippedWaterHD(bool programmable) {
     glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", "");
     glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
     glob2test::ToolkitScope toolkit;
+    // The window alone decides what is resident here.
+    const RetiredBudget strict({0, 0});
     auto *context = GAGCore::Toolkit::initGraphic(64, 64, GAGCore::GraphicContext::PORTABLEGPU, "shipped terrain HD window");
 #ifdef HAVE_OPENGL
     if (programmable) {
@@ -289,6 +387,8 @@ TEST_CASE("shipped water HD keeps up with moving full-variant animation windows 
     glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
     glob2test::ToolkitScope toolkit;
     GAGCore::Toolkit::initGraphic(64, 64, GAGCore::GraphicContext::PORTABLEGPU, "water HD cadence");
+    // Measures decoding against the window alone, without retired frames.
+    const RetiredBudget strict({0, 0});
     GAGCore::Sprite::setHighResolution(true);
     GAGCore::Sprite::deferHighResolution("data/gfx/terrain-water");
     GAGCore::Sprite sprite;
@@ -338,6 +438,8 @@ TEST_CASE("lava HD look-ahead keeps streamed animation endpoints resident [displ
     glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
     glob2test::ToolkitScope toolkit;
     GAGCore::Toolkit::initGraphic(64, 64, GAGCore::GraphicContext::PORTABLEGPU, "lava HD cadence");
+    // Measures decoding against the window alone, without retired frames.
+    const RetiredBudget strict({0, 0});
     GAGCore::Sprite::setHighResolution(true);
     GAGCore::Sprite::deferHighResolution("data/gfx/terrain-lava");
     std::ofstream evidence(glob2test::artifactDir() / "lava-hd-cadence.txt");

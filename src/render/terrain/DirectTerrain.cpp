@@ -896,18 +896,26 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
     // two passes would evict and decode the fringe variants every frame.
     constexpr int pageTiles = SoftwareTerrainCache::ChunkTiles;
     const auto page = [](int cell) { return int(std::floor(double(cell) / pageTiles)); };
-    compositor.prepareVisible(true, animationTime, map,
-        page(left + viewportX) * pageTiles, page(top + viewportY) * pageTiles,
-        (page(right + viewportX) + 1) * pageTiles - 1,
-        (page(bottom + viewportY) + 1) * pageTiles - 1);
+    // Artwork is sampled near the display density, 8 to 128 pixels a cell.
+    // Native frames are the HD frames reduced to 32 pixels, so HD material
+    // frames only help above that: a zoomed-out view, which shows the most
+    // variants, streams none of them.
+    int pixels = 8;
+    const double density = gfx.mapTransformScale() * gfx.getRasterScale();
+    while (pixels < 128 && pixels < 32 * density) pixels *= 2;
+    const bool materialFrames = pixels > 32;
+    const auto declare = [&] {
+        compositor.declareVisible(animationTime, map,
+            page(left + viewportX) * pageTiles, page(top + viewportY) * pageTiles,
+            (page(right + viewportX) + 1) * pageTiles - 1,
+            (page(bottom + viewportY) + 1) * pageTiles - 1, materialFrames);
+    };
+    declare();
     // A complete draw is shown once, so it waits for streamed HD artwork.
     if (complete)
     {
         GAGCore::Sprite::finishHighResolution();
-        compositor.prepareVisible(true, animationTime, map,
-            page(left + viewportX) * pageTiles, page(top + viewportY) * pageTiles,
-            (page(right + viewportX) + 1) * pageTiles - 1,
-            (page(bottom + viewportY) + 1) * pageTiles - 1);
+        declare();
     }
     const auto &catalog = compositor.catalog();
     std::set<unsigned> wanted;
@@ -932,11 +940,7 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
     }
     if (wanted.empty()) return true;
 
-    // Two endpoints per visible material variant, sampled near the display
-    // density (8 to 128 pixels a cell), in one 16 MiB atlas.
-    int pixels = 8;
-    const double density = gfx.mapTransformScale() * gfx.getRasterScale();
-    while (pixels < 128 && pixels < 32 * density) pixels *= 2;
+    // Two endpoints per visible material variant at that density, in one 16 MiB atlas.
     if (out.size < State::MaxAtlasSize && wanted.size() * 2 > std::size_t(out.size / pixels) * (out.size / pixels))
     {
         // Grow: the atlas and its variant table start again at the new size.

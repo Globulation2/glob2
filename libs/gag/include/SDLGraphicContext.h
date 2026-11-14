@@ -1014,12 +1014,25 @@ namespace GAGCore
         static void deferHighResolution(const std::string& name);
         static bool highResolutionDeferred(const std::string& name);
         void setHighResolutionFrames(std::span<const unsigned> indices);
+        //! Deferred frames that left their window stay decoded, most recently
+        //! retired first, so a view that pans or zooms back reuses them without
+        //! reading the file. The oldest go when they exceed this shared byte
+        //! budget or have been unused for the lifetime.
+        struct RetiredHighResolutionBudget { size_t bytes; std::int64_t lifetimeNanoseconds; };
+        static RetiredHighResolutionBudget retiredHighResolutionBudget();
+        static void setRetiredHighResolutionBudget(RetiredHighResolutionBudget budget);
+        static size_t retiredHighResolutionBytes();
         static void refreshHighResolutionForRenderer();
         static bool pollHighResolution(unsigned budgetMs = 2);
         static bool pollHighResolutionUntil(std::int64_t deadlineNanoseconds); // GAGCore::steadyClockNanoseconds() clock
         // Blocks until every requested HD frame, deferred windows included, is published.
         static void finishHighResolution();
 		static void flushBatches(GraphicContext *gc);
+    private:
+        //! Forget this sprite's retired frames; destroy also deletes them.
+        void releaseRetiredHighResolution(bool destroy);
+        static void evictRetiredHighResolution();
+    public:
 		//! Constructor
 		Sprite() : fileName("not loaded yet") { }
 		//! Destructor
