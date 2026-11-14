@@ -121,6 +121,23 @@ namespace GAGCore
 #endif
     }
 
+    DrawableSurface::ResidentPixels DrawableSurface::residentPixels()
+    {
+        ResidentPixels total;
+        for (const auto *surface : liveSurfaces)
+        {
+            if (surface->sdlsurface && surface->sdlsurface->pixels)
+            {
+                ++total.surfaces;
+                total.surfaceBytes += size_t(surface->sdlsurface->pitch) * surface->sdlsurface->h;
+            }
+            total.preparedBytes += surface->preparedUploadPixels.capacity();
+            for (const auto &mip : surface->preparedMips)
+                total.preparedBytes += mip.pixels.capacity() + mip.compressed.capacity();
+        }
+        return total;
+    }
+
 	DrawableSurface *DrawableSurface::clone(void)
 	{
 		auto copy=new DrawableSurface(sdlsurface);

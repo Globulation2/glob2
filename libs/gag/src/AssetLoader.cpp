@@ -61,8 +61,11 @@ size_t imageWorkingBytes(const WebPBitstreamFeatures& info, bool highResolution)
     }
     return bytes;
 }
+std::atomic<std::uint64_t> decodedImages{0}, decodedImageBytes{0};
 std::shared_ptr<const AssetImage> decodeImage(std::shared_ptr<const AssetLoader::Bytes> input, bool highResolution = false) {
     const auto info = features(*input);
+    decodedImages.fetch_add(1, std::memory_order_relaxed);
+    decodedImageBytes.fetch_add(std::uint64_t(info.width) * info.height * 4, std::memory_order_relaxed);
     std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> surface(
         SDL_CreateSurface(info.width, info.height, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
     if (!surface) throw std::runtime_error(SDL_GetError());
@@ -730,6 +733,9 @@ size_t AssetLoader::sourceGeneration() {
 }
 void AssetLoader::invalidate() {
     impl->checkOwner(); std::lock_guard lock(impl->mutex); impl->generation = nextSourceGeneration.fetch_add(1); impl->cache.clear();
+}
+AssetLoader::DecodeTotals AssetLoader::decodeTotals() {
+    return {decodedImages.load(std::memory_order_relaxed), decodedImageBytes.load(std::memory_order_relaxed)};
 }
 AssetLoader::Metrics AssetLoader::metrics() const {
     std::lock_guard lock(impl->mutex);

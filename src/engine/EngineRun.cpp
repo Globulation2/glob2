@@ -59,6 +59,7 @@
 #include "Building.h"
 #include "MapScript.h"
 #include "render/MapRenderState.h"
+#include "render/RenderMemoryReport.h"
 #ifdef __EMSCRIPTEN__
 #include "AIJavaScript.h"
 #endif
@@ -415,10 +416,27 @@ void Engine::drawFrame(MainLoopState& st, bool everyFrame, const PresentationFra
 			perf.renderGeneration = device->generation();
 			perf.record(PerformanceTelemetry::Id::RenderMemory, counters.resourceBytes);
 		}
-		else if (perf.renderDevice)
+		else
 		{
-			perf.windowFlags |= PerformanceTelemetry::RendererChanged;
-			perf.renderDevice = 0;
+			if (perf.renderDevice)
+			{
+				perf.windowFlags |= PerformanceTelemetry::RendererChanged;
+				perf.renderDevice = 0;
+			}
+			// Without a device the renderer's own tracked bytes are the gauge.
+			if (!globalContainer->runNoX)
+			{
+				perf.record(PerformanceTelemetry::Id::RenderMemory,
+							RenderMemoryReport::trackedGpuBytes(gui.renderState()));
+				const auto now = perf.clock();
+				if (perf.output && now - st.renderMemoryReported >= 1000000000ULL)
+				{
+					st.renderMemoryReported = now;
+					std::cout << "GLOB2_RENDER_MEMORY session=" << perf.session
+							  << " elapsed_ns=" << now - perf.started << ' '
+							  << RenderMemoryReport::fields(gui.renderState()) << '\n';
+				}
+			}
 		}
 		if (globalContainer->gfx->presentedDeviceFrame())
 		{

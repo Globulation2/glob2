@@ -75,6 +75,9 @@ public:
         std::uint64_t readNs = 0, prepareNs = 0;
         unsigned cpuThreads = 0, ioThreads = 0;
     };
+    //! Images decoded by every loader since launch, and the pixel bytes produced.
+    struct DecodeTotals { std::uint64_t images = 0, bytes = 0; };
+    static DecodeTotals decodeTotals();
     struct Result {
         std::atomic<State> state{State::Pending};
         std::atomic<unsigned> consumers{0};

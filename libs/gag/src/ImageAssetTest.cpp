@@ -5,6 +5,7 @@
 #include <FileManager.h>
 #include <GraphicContext.h>
 #include <AssetLoader.h>
+#include <RenderMemory.h>
 #include <stdexcept>
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
@@ -103,6 +104,26 @@ TEST_CASE("prepared image adoption separates shared pixels and transfers exclusi
     CHECK(static_cast<Uint32*>(exclusive->getSDLSurface()->pixels)[1] == 0x80445566u);
     GAGCore::AssetImage missing(nullptr);
     CHECK_THROWS_AS(GAGCore::DrawableSurface::fromAssetImage(missing, true, false), std::runtime_error);
+}
+TEST_CASE("the renderer memory report counts the decoded pixels surfaces hold") {
+    const auto before = GAGCore::DrawableSurface::residentPixels();
+    auto *pixels = SDL_CreateSurface(8, 4, SDL_PIXELFORMAT_ARGB8888);
+    REQUIRE(pixels != nullptr);
+    const auto bytes = size_t(pixels->pitch) * pixels->h;
+    GAGCore::AssetImage image(pixels);
+    {
+        auto surface = GAGCore::DrawableSurface::fromAssetImage(image, true, false);
+        const auto held = GAGCore::DrawableSurface::residentPixels();
+        CHECK(held.surfaces == before.surfaces + 1);
+        CHECK(held.surfaceBytes == before.surfaceBytes + bytes);
+        const auto report = GAGCore::RenderMemory::report();
+        CHECK(report.cpuSurfaceBytes == held.surfaceBytes);
+        CHECK(GAGCore::RenderMemory::fields(report).find(
+            "cpu_surface_bytes=" + std::to_string(held.surfaceBytes) + " ") != std::string::npos);
+    }
+    const auto released = GAGCore::DrawableSurface::residentPixels();
+    CHECK(released.surfaces == before.surfaces);
+    CHECK(released.surfaceBytes == before.surfaceBytes);
 }
 TEST_CASE("mip preparation preserves padded alpha weighted integer filtering") {
     for (const auto size : {std::pair<int, int>{7, 5}, {1, 9}, {9, 1}, {8, 8}}) for (int alphaMode : {0, 1, 2}) {

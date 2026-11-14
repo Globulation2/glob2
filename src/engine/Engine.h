@@ -336,6 +336,7 @@ private:
 		Uint64 startTime;
 		bool wasReadyLastTick;
 		bool adjustableGameSpeed; ///< Speed presets apply; live network games stay at GAME_TICK_MS
+		Uint64 renderMemoryReported = 0; ///< Telemetry clock of the last GLOB2_RENDER_MEMORY line
 	};
 
 	void updateTickSpeedAndDrawCadence(MainLoopState& st, Uint64 now);

@@ -18,6 +18,7 @@
 #include <SteadyClock.h>
 #include <chrono>
 #include <AssetLoader.h>
+#include <RenderMemory.h>
 #ifdef __EMSCRIPTEN__
 #include <ApplicationHost.h>
 #endif
@@ -562,6 +563,42 @@ namespace GAGCore
 		}
 		return ds;
 	}
+
+    void Sprite::memoryUsage(std::vector<RenderMemory::SpriteUsage> &usage)
+    {
+        for (const auto *sprite : loadedSprites)
+        {
+            RenderMemory::SpriteUsage entry;
+            entry.name = sprite->fileName;
+            const auto add = [&entry](const DrawableSurface *surface, bool highResolution)
+            {
+                if (!surface) return;
+                ++entry.frames;
+                entry.gpuBytes += surface->gpuBytes;
+                if (!surface->sdlsurface || !surface->sdlsurface->pixels) return;
+                const auto bytes = size_t(surface->sdlsurface->pitch) * surface->sdlsurface->h;
+                (highResolution ? entry.highResolutionCpuBytes : entry.nativeCpuBytes) += bytes;
+            };
+            const auto addRotated = [&add](const RotatedImage *rotated, bool highResolution)
+            {
+                if (!rotated) return;
+                add(rotated->orig, highResolution);
+                for (const auto &colored : rotated->rotationMap) add(colored.second, highResolution);
+            };
+            const auto addSprite = [&](const Sprite &source, bool highResolution)
+            {
+                for (const auto *image : source.images) add(image, highResolution);
+                for (const auto *rotated : source.rotated) addRotated(rotated, highResolution);
+                for (const auto *image : source.experimentImages) add(image, true);
+                for (const auto *rotated : source.experimentRotated) addRotated(rotated, true);
+                for (const auto &node : source.teamColorList) add(node.surface.get(), node.key.experiment);
+                add(source.atlas.get(), highResolution);
+            };
+            addSprite(*sprite, false);
+            if (sprite->highResolutionAtlas) addSprite(*sprite->highResolutionAtlas, true);
+            usage.push_back(std::move(entry));
+        }
+    }
 
     Sprite::HighResolutionStats Sprite::highResolutionStats()
     {

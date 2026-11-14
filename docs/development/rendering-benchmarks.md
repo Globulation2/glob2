@@ -193,6 +193,58 @@ path is not an untouched-master baseline.
 
 See [skin rendering](skin-rendering.md) for production sprite export and skin preview diagnostics.
 
+## Renderer memory
+
+`tools/rendering/memory_scenario.py` runs the standard memory scenario and reports
+peak memory by owner. It loads a mid-game save of a 256×256 Honeycomb Isles map
+in `torus-render-benchmark`, draws the flat game view on legacy OpenGL with HD
+artwork, and pans while cycling the zoom between the minimum and four times
+that. Build the perf tier first; `--prepare` generates the save (map seed 7,
+four AIs, tick 30000) under `artifacts/render-memory/`.
+
+```sh
+python3 tools/dev_build.py perf=1 glob2 torus-render-benchmark
+python3 tools/rendering/memory_scenario.py --prepare --label master
+python3 tools/rendering/memory_scenario.py --label change --compare master
+```
+
+The table it prints goes in the pull request. Peak process resident memory and,
+on Linux, the GPU driver's per-process memory (`drm-memory-*` in
+`/proc/<pid>/fdinfo`) come from sampling the process; an integrated GPU's driver
+memory is system RAM. The remaining rows are the renderer's own tracked bytes,
+which the benchmark prints as `FRAME_RENDER_MEMORY` with `GLOB2_BENCH_FRAME_TIMES`
+and as `RENDER_MEMORY` when a pass ends:
+
+| Field | Meaning |
+| --- | --- |
+| `cpu_surface_bytes`, `cpu_surfaces` | Decoded pixels that live surfaces still hold, and how many surfaces hold some |
+| `cpu_high_resolution_bytes` | The HD artwork share of those pixels |
+| `cpu_prepared_bytes` | Upload staging not yet released: converted pixels, mip chains, compressed blocks |
+| `cpu_compositor_bytes` | The terrain compositor's own copies of material pixels |
+| `gpu_surface_bytes` | Sprite and atlas textures |
+| `gpu_array_bytes` | Texture-array pages, which duplicate their source textures |
+| `gpu_direct_terrain_bytes`, `gpu_terrain_page_bytes` | Direct terrain atlases and composed terrain pages |
+| `gpu_frame_cache_bytes`, `gpu_skin_atlas_bytes`, `gpu_view_tile_bytes` | Render targets no surface owns |
+| `image_decodes`, `image_decoded_bytes` | Image decodes since launch and the pixels they produced; growth during camera motion is streaming churn |
+| `peak_rss_bytes` | The process's peak resident set (zero on Windows and in the browser) |
+
+`RENDER_MEMORY_SPRITE` lists the sixteen largest sprites with their native and
+HD pixel bytes and texture bytes. Tracked bytes are what the renderer asked for,
+not what the driver or the allocator holds: compare them with the sampled
+process and driver figures, and expect the default framebuffer and driver
+overhead on top.
+
+Streaming is asynchronous, so unpaced frames outrun the asset workers and show
+almost no churn. `GLOB2_BENCH_FRAME_INTERVAL_MS=16` pauses between frames,
+outside the timed interval; the scenario sets it. Camera motion applies to the
+flat pass, so a saved-game memory run needs `GLOB2_BENCH_FLAT=1` as well as
+`GLOB2_BENCH_GAME`.
+
+In the game client, legacy OpenGL records the same tracked GPU total as the
+`render.resource_bytes` gauge, and `GLOB2_TEAM_TIMELINE=1` adds a
+`GLOB2_RENDER_MEMORY` line with these fields once a second
+([performance telemetry](performance-telemetry.md#rendering-and-gpu-timing)).
+
 ## CPU presentation batches
 
 Build `software-render-benchmark` and `torus-render-benchmark` with `perf=1`.

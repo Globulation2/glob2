@@ -390,6 +390,7 @@ void MapDrawer::drawSceneMapRegion(const PresentationFrame& scene, int sx, int s
     const auto textureBytes = (atlas ? atlas->textureBytes() : 0) +
         (pages ? pages->residentTextureBytes() : 0);
     view.render.peakTerrainTextureBytes = std::max(view.render.peakTerrainTextureBytes, textureBytes);
+    view.render.terrainCompositorDrawn = globalContainer->terrainCompositorOwner(scene.map.frozenAssetBundle());
 
 	// Pass adapters keep the two coordinate conventions in one place. Individual
 	// layers still own their visibility decisions and their original draw order.

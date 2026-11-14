@@ -196,6 +196,7 @@ set(GLOB2_CLIENT_SOURCES
     src/render/OverviewTerrainCache.cpp
     src/render/MapOverlayQueue.cpp
     src/render/MapRenderState.cpp
+    src/render/RenderMemoryReport.cpp
     src/render/UnitEffectArt.cpp
     src/render/FogFade.cpp
     src/render/scene/SceneMap.cpp
@@ -915,6 +916,7 @@ set(GLOB2_GAG_SOURCES
     libs/gag/src/SkinShapeModel.cpp
     libs/gag/src/MapGeometryCache.cpp
     libs/gag/src/RenderBatch.cpp
+    libs/gag/src/RenderMemory.cpp
     libs/gag/src/DrawableSurface.cpp
     libs/gag/src/DrawableSurfaceDraw.cpp
     libs/gag/src/DrawableSurfaceCompound.cpp
@@ -1142,6 +1144,7 @@ set(GLOB2_ANDROID_SOURCES
     src/render/OverviewTerrainCache.cpp
     src/render/MapOverlayQueue.cpp
     src/render/MapRenderState.cpp
+    src/render/RenderMemoryReport.cpp
     src/render/UnitEffectArt.cpp
     src/render/FogFade.cpp
     src/render/scene/SceneMap.cpp
@@ -1684,6 +1687,7 @@ set(GLOB2_ANDROID_SOURCES
     libs/gag/src/SkinShapeModel.cpp
     libs/gag/src/MapGeometryCache.cpp
     libs/gag/src/RenderBatch.cpp
+    libs/gag/src/RenderMemory.cpp
     libs/gag/src/DrawableSurface.cpp
     libs/gag/src/DrawableSurfaceDraw.cpp
     libs/gag/src/DrawableSurfaceCompound.cpp
@@ -1928,6 +1932,7 @@ set(GLOB2_IOS_SOURCES
     src/render/OverviewTerrainCache.cpp
     src/render/MapOverlayQueue.cpp
     src/render/MapRenderState.cpp
+    src/render/RenderMemoryReport.cpp
     src/render/UnitEffectArt.cpp
     src/render/FogFade.cpp
     src/render/scene/SceneMap.cpp
@@ -2473,6 +2478,7 @@ set(GLOB2_IOS_SOURCES
     libs/gag/src/SkinShapeModel.cpp
     libs/gag/src/MapGeometryCache.cpp
     libs/gag/src/RenderBatch.cpp
+    libs/gag/src/RenderMemory.cpp
     libs/gag/src/DrawableSurface.cpp
     libs/gag/src/DrawableSurfaceDraw.cpp
     libs/gag/src/DrawableSurfaceCompound.cpp
@@ -2881,6 +2887,7 @@ set(GLOB2_WEB_SOURCES
     src/render/OverviewTerrainCache.cpp
     src/render/MapOverlayQueue.cpp
     src/render/MapRenderState.cpp
+    src/render/RenderMemoryReport.cpp
     src/render/UnitEffectArt.cpp
     src/render/FogFade.cpp
     src/render/scene/SceneMap.cpp
@@ -3416,6 +3423,7 @@ set(GLOB2_WEB_SOURCES
     libs/gag/src/SkinShapeModel.cpp
     libs/gag/src/MapGeometryCache.cpp
     libs/gag/src/RenderBatch.cpp
+    libs/gag/src/RenderMemory.cpp
     libs/gag/src/DrawableSurface.cpp
     libs/gag/src/DrawableSurfaceDraw.cpp
     libs/gag/src/DrawableSurfaceCompound.cpp

@@ -53,6 +53,7 @@ namespace GAGCore
     struct RenderOperations;
 	
 	class Sprite;
+	namespace RenderMemory { struct SpriteUsage; }
 	
 	//! Font with a given foundry, shape and color
 	class Font
@@ -241,6 +242,9 @@ namespace GAGCore
         void markPixelsChanged() { ++pixelRevision; }
         bool hasOpaquePixels();
 		static size_t allocatedTextureBytes();
+		//! Decoded pixels and upload staging that live surfaces hold in memory.
+		struct ResidentPixels { size_t surfaces = 0, surfaceBytes = 0, preparedBytes = 0; };
+		static ResidentPixels residentPixels();
 
 		virtual int getTexX(void) { if (textureInfo) { return textureInfo->texX; } return 0; }
 		virtual int getTexY(void) { if (textureInfo) { return textureInfo->texY; } return 0; }
@@ -999,6 +1003,8 @@ namespace GAGCore
         bool createDeviceTextureAtlas(int maximumTextureSize, bool variableSizes);
 		struct HighResolutionStats {size_t cpuBytes=0, coloredFrames=0;};
 		static HighResolutionStats highResolutionStats();
+		//! Resident pixel and texture bytes of each loaded sprite, for RenderMemory::sprites().
+		static void memoryUsage(std::vector<RenderMemory::SpriteUsage> &usage);
 		static void setHighResolution(bool enabled);
         static void requestHighResolution(bool enabled);
         static bool highResolutionRequested();
