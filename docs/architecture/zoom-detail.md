@@ -42,8 +42,8 @@ it is saved, checksummed or read by the simulation.
   10 or less; red once it is starving) before hurt (60% health or less; red as it
   nears death), beside its top right so the badge, larger on screen than a unit
   this far out, does not cover it. A building shows, at its top right and in this
-  order of precedence, damaged (red as it nears destruction; never on a
-  construction site), a tower without ammunition, an inn without food (the hungry
+  order of precedence, damaged (a repair wrench, red as it nears destruction; never
+  on a construction site), a tower without ammunition, an inn without food (the hungry
   icon) and under half its workers (red with nobody working; a building too small
   for a step between the first shortfall and none stays yellow). The tower and
   inn badges are yellow. Badges are a constant 14 points across, 28 pixels on a
