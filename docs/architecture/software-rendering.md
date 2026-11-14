@@ -88,12 +88,17 @@ unchanged mixed cell, an animation step recomposes only the samples its changed
 textures or advanced surf can reach (`Compositor::Refresh`); the page keeps that
 list beside the cell's coverage mask and every other sample's pixels. GPU pages
 then upload only their rewritten cells (`DrawableSurface::markPixelsChanged(dirty)`,
-`RenderBackend::prepareTextureRegions`). On native device pages (no HD scale or
+`RenderBackend::prepareTextureRegions`). A region update keeps the sampling mode
+the page's last draw used, and a texture it cannot patch in place (a missed revision
+or a changed size) waits for its next draw to upload whole. On native device pages (no HD scale or
 reduction) uniform cells of an animated opaque material draw from one shared tile
 per variant over their page, which keeps an earlier frame underneath, so open water
 recomposes and uploads one small atlas per step. Composition at native scale reads
 HD sources through compact per-variant copies of the texels it samples. All of
-these produce the same pixels as composing every cell again. Pages store
+these produce the same page pixels as composing every cell again. Drawn output is
+identical too except where the shared water tiles are sampled linearly (zoomed out on
+an accelerated SDL renderer): there the different texture coordinates round up to two
+levels differently along the water. Pages store
 raw color/alpha. Map replacement (a new `Map::identity()`) clears the cache;
 editor terrain changes, wrapped neighbors and visible-team changes are detected
 during preparation. Resources, actors, fog and overlays keep their existing

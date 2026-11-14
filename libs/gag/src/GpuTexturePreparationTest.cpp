@@ -205,9 +205,19 @@ TEST_SUITE("GpuTexturePreparation")
 				REQUIRE(complete != nullptr);
 				REQUIRE(partial->pitch == complete->pitch);
 				CHECK(std::memcmp(partial->pixels, complete->pixels, std::size_t(partial->pitch) * partial->h) == 0);
-				// A texture at any other revision uploads the whole surface.
+				// A refresh asking for the other sampling keeps the mode the
+				// texture was drawn with and patches it in place.
+				const auto crossed = backend->operations();
+				backend->prepareTextureRegions(edited.get(), edited.get(), 3, 2, dirty, !linear);
+				CHECK(backend->operations().textureCreates == crossed.textureCreates);
+				CHECK(backend->operations().textureDestroys == crossed.textureDestroys);
+				CHECK(backend->operations().textureUploads - crossed.textureUploads == dirty.size());
+				// A texture at any other revision waits for its next draw to
+				// upload the whole surface.
 				const auto stale = backend->operations();
-				backend->prepareTextureRegions(edited.get(), edited.get(), 4, 3, dirty, linear);
+				backend->prepareTextureRegions(edited.get(), edited.get(), 5, 4, dirty, linear);
+				CHECK(backend->operations().textureUploadBytes == stale.textureUploadBytes);
+				draw(edited.get(), 5);
 				CHECK(backend->operations().textureUploadBytes - stale.textureUploadBytes == 256u * 256u * 4u);
 			}
 	}

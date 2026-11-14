@@ -703,17 +703,20 @@ class SDLRenderBackend final : public RenderBackend
 							   std::uint64_t previous, std::span<const SDL_Rect> dirty,
 							   bool linear = false) override
 	{
+		// Draws choose a texture's sampling; a refresh keeps the mode the last
+		// draw used. Forcing the surface's preferred mode here made pages that
+		// draw nearest alternate between two full re-creations per frame.
+		// Anything this cannot patch in place is left for the next draw to
+		// upload whole, as before region updates existed.
 		auto found = textures.find(key);
 		if (!pixels || found == textures.end() || found->second.revision != previous ||
-			found->second.linear != linear || found->second.width != pixels->w ||
+			found->second.width != pixels->w ||
 			found->second.height != pixels->h || found->second.format != pixels->format ||
 			pixels->format != SDL_PIXELFORMAT_ARGB8888 || SDL_SurfaceHasColorKey(pixels) ||
 			SDL_GetNumberProperty(SDL_GetTextureProperties(found->second.handle),
 								  SDL_PROP_TEXTURE_FORMAT_NUMBER, 0) != SDL_PIXELFORMAT_ARGB8888)
-		{
-			textureFor(key, pixels, revision, linear);
 			return;
-		}
+		linear = found->second.linear;
 		// Queued draws sample the previous revision; submit them first.
 		submitBatch();
 		auto &entry = found->second;
