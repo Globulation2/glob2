@@ -550,12 +550,13 @@ static void interactiveBenchmark()
 				   (unsigned long long)(ops.triangles - initialOps.triangles));
             if (portable)
             {
-                // Per-frame submission costs; each `triangles` call is one SDL_RenderGeometry.
+                // Per-frame submission costs: `triangles` counts logical submissions and
+                // `geometryBatches` the SDL_RenderGeometry calls they were merged into.
                 const double n = double(draw.size());
                 const auto per = [&](std::uint64_t now, std::uint64_t then) { return (now - then) / n; };
                 printf("portable_frame geometry_calls=%.1f vertices=%.1f texture_switches=%.1f "
                        "transform_copies=%.1f texture_uploads=%.2f upload_bytes=%.0f gpu_prepared_uploads=%.2f "
-                       "texture_creates=%.2f texture_destroys=%.2f cpu_premultiplied_bytes=%.0f\n",
+                       "texture_creates=%.2f texture_destroys=%.2f cpu_premultiplied_bytes=%.0f geometry_batches=%.1f\n",
                        per(ops.triangles, initialOps.triangles), per(ops.vertices, initialOps.vertices),
                        per(ops.textureSwitches, initialOps.textureSwitches),
                        per(ops.transformCopies, initialOps.transformCopies),
@@ -564,7 +565,8 @@ static void interactiveBenchmark()
                        per(ops.gpuPreparedUploads, initialOps.gpuPreparedUploads),
                        per(ops.textureCreates, initialOps.textureCreates),
                        per(ops.textureDestroys, initialOps.textureDestroys),
-                       per(ops.cpuPremultipliedBytes, initialOps.cpuPremultipliedBytes));
+                       per(ops.cpuPremultipliedBytes, initialOps.cpuPremultipliedBytes),
+                       per(ops.geometryBatches, initialOps.geometryBatches));
                 printf("portable_warmup texture_uploads=%llu upload_bytes=%llu texture_creates=%llu\n",
                        (unsigned long long)initialOps.textureUploads,
                        (unsigned long long)initialOps.textureUploadBytes,
