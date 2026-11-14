@@ -134,9 +134,11 @@ it is saved, checksummed or read by the simulation.
   only when necessary. Narrow edge tiles reuse the same sampling density and warm
   pages. Streaming fallback follows the same density choice.
   Overview palette samples are cached in canonical CPU pages independently of
-  zoom and animation. Terrain vertices (including the contour halo), the terrain
-  seed, registry/asset replacement and resource visibility invalidate those pages;
-  camera movement and blend opacity do not resample unchanged contours.
+  animation, and of zoom while the samples per cell stay the same. Terrain
+  vertices (including the contour halo), the terrain seed, registry/asset
+  replacement and a change of samples per cell invalidate those pages; a cell is
+  recomposed when its resource visibility, type or square size changes. Camera
+  movement and blend opacity do not resample unchanged contours.
 
 When tuning, capture the same save across zooms with `SoftwareRenderBenchmark`
 (`PROFILE_ZOOM`, `PROFILE_CAPTURE`); `PROFILE_ADAPTIVE_ZOOM=0` draws uniform scaling

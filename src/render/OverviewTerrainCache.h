@@ -7,6 +7,7 @@
 #include <memory>
 #include <optional>
 #include <unordered_map>
+#include <vector>
 
 namespace GAGCore { class DrawableSurface; }
 class SceneMap;
@@ -27,8 +28,9 @@ class OverviewTerrainCache
 	//! Samples per cell axis for a cell covering `pixelsPerCell` device pixels:
 	//! many once a cell is large enough to show every stock size, few otherwise.
 	//! `current` (0 for none) adds hysteresis so a zoom near the threshold does
-	//! not recompose every page back and forth.
-	static int samplesFor(double pixelsPerCell, int current);
+	//! not recompose every page back and forth. Many samples also need the image,
+	//! `cells` long on its longer side, to fit `maximumTexture` (0 for no limit).
+	static int samplesFor(double pixelsPerCell, int current, int cells, int maximumTexture);
 	//! Side of the resource square, in samples: 1 at the lowest stock, rounding
 	//! down to 3/4 of the cell only at full stock. Zero capacity counts as full.
 	static int resourceSquare(unsigned stock, unsigned capacity, int samples);
@@ -67,6 +69,8 @@ class OverviewTerrainCache
 	Uint64 mapIdentity = 0;
 	std::shared_ptr<const TerrainRegistry> terrain;
 	std::shared_ptr<const ResourceRegistry> resources;
+	// Total yield capacity per resource type of `resources`, built on first use.
+	std::vector<unsigned> capacities;
 	std::shared_ptr<const MapAssetBundle> assets;
 	std::uint64_t use = 0, compositions = 0;
 	int pageSamples = 0;

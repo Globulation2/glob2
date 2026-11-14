@@ -1097,11 +1097,15 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(Cache::resourceSquare(4, 4, Cache::ManySamples) == 6);
 		CHECK(Cache::resourceSquare(0, 0, Cache::ManySamples) == 6);
 		// Many samples from six device pixels per cell, kept down to five.
-		CHECK(Cache::samplesFor(3.5, 0) == Cache::FewSamples);
-		CHECK(Cache::samplesFor(5.5, Cache::FewSamples) == Cache::FewSamples);
-		CHECK(Cache::samplesFor(6, Cache::FewSamples) == Cache::ManySamples);
-		CHECK(Cache::samplesFor(5.5, Cache::ManySamples) == Cache::ManySamples);
-		CHECK(Cache::samplesFor(4.9, Cache::ManySamples) == Cache::FewSamples);
+		CHECK(Cache::samplesFor(3.5, 0, 100, 0) == Cache::FewSamples);
+		CHECK(Cache::samplesFor(5.5, Cache::FewSamples, 100, 0) == Cache::FewSamples);
+		CHECK(Cache::samplesFor(6, Cache::FewSamples, 100, 0) == Cache::ManySamples);
+		CHECK(Cache::samplesFor(5.5, Cache::ManySamples, 100, 0) == Cache::ManySamples);
+		CHECK(Cache::samplesFor(4.9, Cache::ManySamples, 100, 0) == Cache::FewSamples);
+		// Never more than the device can hold in one texture.
+		CHECK(Cache::samplesFor(32, 0, 512, 4096) == Cache::ManySamples);
+		CHECK(Cache::samplesFor(32, Cache::ManySamples, 513, 4096) == Cache::FewSamples);
+		CHECK(Cache::samplesFor(32, 0, 513, 0) == Cache::ManySamples);
 	}
 
 	TEST_CASE("overview pages recompose a resource cell when its stock changes the square [display]")
@@ -1114,24 +1118,33 @@ TEST_SUITE("TerrainPresentation")
 		SceneMap scene;
 		auto &compositor = globals->terrainCompositor();
 		compositor.prepare(false, 0);
-		const auto &tint = map.resourceRegistry().presentation(static_cast<ResourceId>(WHEAT)).minimap;
+		const auto &registry = map.resourceRegistry();
+		const auto &tint = registry.presentation(static_cast<ResourceId>(WHEAT)).minimap;
 		const Uint32 wheat = 0xFF000000u | Uint32(tint[0]) << 16 | Uint32(tint[1]) << 8 | tint[2];
+		unsigned capacity = 0;
+		for (const auto &yield : registry.yields(static_cast<ResourceId>(WHEAT)))
+			capacity += yield.capacity;
+		REQUIRE(capacity == 5);
 		for (const int samples : {OverviewTerrainCache::FewSamples, OverviewTerrainCache::ManySamples})
 		{
 			CAPTURE(samples);
 			OverviewTerrainCache cache;
 			GAGCore::DrawableSurface image(16 * samples, 16 * samples);
-			const auto squareSide = [&]
+			// Every sample of the cell is wheat inside the corner square and ground outside it.
+			const auto checkSquare = [&](int side)
 			{
 				const auto *surface = image.getSDLSurface();
-				int side = 0;
-				while (side < samples &&
-					   reinterpret_cast<const Uint32 *>(static_cast<const Uint8 *>(surface->pixels) +
-														(9 * samples + side) * surface->pitch)[9 * samples + side] == wheat)
-					++side;
-				return side;
+				for (int y = 0; y < samples; ++y)
+					for (int x = 0; x < samples; ++x)
+					{
+						const auto pixel = reinterpret_cast<const Uint32 *>(
+							static_cast<const Uint8 *>(surface->pixels) +
+							(9 * samples + y) * surface->pitch)[9 * samples + x];
+						CHECK((pixel == wheat) == (x < side && y < side));
+					}
 			};
 			std::uint64_t composed = 0;
+			// Each step changes the square, so each recomposes just this cell.
 			for (const Uint32 stock : {1u, 3u, 5u, 4u, 2u})
 			{
 				CAPTURE(stock);
@@ -1139,9 +1152,9 @@ TEST_SUITE("TerrainPresentation")
 				glob2test::observeMap(map, scene);
 				const auto before = cache.composedCells();
 				cache.update(scene, 0, 0, 15, 15, 0, 0, fixture.team->me, true, samples, image);
-				CHECK(squareSide() == OverviewTerrainCache::resourceSquare(stock, 5, samples));
+				checkSquare(OverviewTerrainCache::resourceSquare(stock, capacity, samples));
 				if (composed)
-					CHECK(cache.composedCells() - before <= 1);
+					CHECK(cache.composedCells() - before == 1);
 				composed = cache.composedCells();
 			}
 			// Changing density replaces every page rather than mixing resolutions.

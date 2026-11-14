@@ -12,10 +12,13 @@
 #include <limits>
 #include <stdexcept>
 
-int OverviewTerrainCache::samplesFor(double pixelsPerCell, int current)
+int OverviewTerrainCache::samplesFor(double pixelsPerCell, int current, int cells,
+									int maximumTexture)
 {
 	// Many samples show five distinct stock sizes; below about six device
 	// pixels per cell they would only quadruple the image for no visible gain.
+	if (maximumTexture > 0 && std::int64_t(cells) * ManySamples > maximumTexture)
+		return FewSamples;
 	return pixelsPerCell >= (current == ManySamples ? 5.0 : 6.0) ? ManySamples : FewSamples;
 }
 
@@ -72,12 +75,21 @@ void OverviewTerrainCache::copy(const SceneMap &map, int left, int top, int righ
 		resources != map.frozenResourceRegistry() || assets != map.frozenAssetBundle())
 	{
 		pages.clear();
+		capacities.clear();
 		mapIdentity = map.identity();
 		terrain = map.frozenTerrainRegistry();
 		resources = map.frozenResourceRegistry();
 		assets = map.frozenAssetBundle();
 	}
 	auto &compositor = globalContainer->terrainCompositor(assets);
+	if (capacities.empty())
+	{
+		const auto &registry = map.resourceRegistry();
+		capacities.resize(registry.size());
+		for (unsigned id = 0; id < registry.size(); ++id)
+			for (const auto &yield : registry.yields(static_cast<ResourceId>(id)))
+				capacities[id] += yield.capacity;
+	}
 	const int Samples = pageSamples;
 	const int Pixels = Tiles * Samples;
 	constexpr std::size_t Budget = 32u * 1024u * 1024u;
@@ -137,13 +149,9 @@ void OverviewTerrainCache::copy(const SceneMap &map, int left, int top, int righ
 							: NO_RES_TYPE;
 					int square = 0;
 					if (type != NO_RES_TYPE)
-					{
-						unsigned capacity = 0;
-						for (const auto &yield :
-							 map.resourceRegistry().yields(static_cast<ResourceId>(type)))
-							capacity += yield.capacity;
-						square = resourceSquare(resource.amount, capacity, Samples);
-					}
+						square = resourceSquare(
+							resource.amount,
+							unsigned(type) < capacities.size() ? capacities[type] : 0, Samples);
 					// The type and square size identify everything composed for the cell.
 					const int composed = type == NO_RES_TYPE ? -1 : type << 4 | square;
 					if (page->resources[i] == composed)
@@ -189,4 +197,17 @@ void OverviewTerrainCache::copy(const SceneMap &map, int left, int top, int righ
 								(x0 - cx * Tiles) * Samples * 4,
 							(x1 - x0) * Samples * 4);
 		}
+	// A view larger than the budget leaves its pages behind. Once the view is
+	// smaller again, return to the budget by dropping the least recently drawn.
+	if (pages.size() > pageLimit)
+	{
+		std::vector<std::pair<std::uint64_t, std::size_t>> ages;
+		ages.reserve(pages.size());
+		for (const auto &[key, page] : pages)
+			ages.emplace_back(page.used, key);
+		const auto excess = pages.size() - pageLimit;
+		std::nth_element(ages.begin(), ages.begin() + excess, ages.end());
+		for (std::size_t i = 0; i < excess; ++i)
+			pages.erase(ages[i].second);
+	}
 }

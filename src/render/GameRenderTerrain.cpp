@@ -434,7 +434,8 @@ void MapDrawer::drawMapOverview(int left, int top, int right, int bot, int viewp
 		render.overviewCache = std::make_unique<OverviewTerrainCache>();
 	// Size the image to what the screen can show: a cell's device pixels.
 	const double pixelsPerCell = 32 * globalContainer->gfx->mapTransformScale() * globalContainer->gfx->getRasterScale();
-	const int samples = OverviewTerrainCache::samplesFor(pixelsPerCell, render.overviewCache->samples());
+	const int samples = OverviewTerrainCache::samplesFor(pixelsPerCell, render.overviewCache->samples(),
+		std::max(columns, rows), globalContainer->gfx->maximumTextureSize());
 	if (!render.overview)
 		render.overview = std::make_unique<GAGCore::DrawableSurface>(columns*samples, rows*samples);
 	else if (render.overview->getW()!=columns*samples || render.overview->getH()!=rows*samples)

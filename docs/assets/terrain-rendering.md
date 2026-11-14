@@ -545,16 +545,18 @@ Only a view whose CPU pages and one upload cannot fit uses composition streaming
 First-time composition still evaluates native terrain before reduction; this
 policy removes repeated work on warm frames, not the cost of a cold frame.
 
-Overview palette samples have a separate 32 MiB CPU page cache, which grows to
-hold at least the whole view. Its pages keep canonical world coordinates across
-viewport movement, atlas tiles and zooms. Vertex windows include the contextual
+Overview palette samples have a separate 32 MiB CPU page cache. A view larger
+than that keeps all its pages, and the cache drops back to the budget once the
+view is smaller again. Its pages keep canonical world coordinates across
+viewport movement, atlas tiles and zooms that keep the same samples per cell. Vertex windows include the contextual
 contour halo; terrain seeds, immutable terrain/resource registries and map asset
 bundles also invalidate the samples. Texture animation and blend opacity do not
 change the overview palette.
 
 A cell takes 8×8 samples once it covers at least six device pixels on screen and
 4×4 below that (switching back below five), so the image never holds much more
-detail than the display can show. A density change replaces every page.
+detail than the display can show. A view whose 8×8 image would exceed the
+device's maximum texture size uses 4×4. A density change replaces every page.
 
 A resource leaves the terrain colour visible and adds a square in its minimap
 colour that grows from the cell's top-left corner with the cell's stock out of
