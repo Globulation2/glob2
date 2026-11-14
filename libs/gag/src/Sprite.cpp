@@ -18,6 +18,9 @@
 #include <SteadyClock.h>
 #include <chrono>
 #include <AssetLoader.h>
+#ifdef __GLIBC__
+#include <malloc.h>
+#endif
 #include <RenderMemory.h>
 #ifdef __EMSCRIPTEN__
 #include <ApplicationHost.h>
@@ -74,6 +77,20 @@ namespace GAGCore
     // Sprites whose HD frames were discarded with their textures; see
     // discardUnbackedHighResolution().
     static std::set<Sprite*> lostHighResolution;
+    // The detail band (mip levels left out) frames are loaded at, and since when
+    // the view has wanted a lower one (steady clock nanoseconds, 0 when not).
+    static unsigned highResolutionSkip = 0;
+    static bool highResolutionSkipChosen = false;
+    static std::int64_t lowerDetailDelay = 10'000'000'000;
+    static unsigned detailSkipFor(double density) { return density > 2 ? 0 : density > 1 ? 1 : 2; }
+    static std::int64_t lowerDetailWantedSince = 0;
+    // A band change re-decodes every banded sprite on the asset workers; once
+    // the last is published, their freed buffers go back to the system.
+    static bool trimAfterBandReload = false;
+    // Band reloads run one sprite at a time, each with the ordinary eight-frame
+    // decode window: all at once they hold hundreds of MiB of decoded levels.
+    static std::deque<Sprite*> bandReloadQueue;
+    static Sprite *bandReloading = nullptr;
     static std::set<std::string> deferredHighResolutionNames;
     static std::set<std::string> atlasSkippedHighResolutionNames, pixelSampledHighResolutionNames;
     // Whether legacy OpenGL packs this sprite's HD frames into one atlas.
@@ -226,6 +243,8 @@ namespace GAGCore
         for (std::size_t index=0;index<images.size();++index) if(images[index]) {
             images[index]->spriteSource=this; images[index]->spriteFrame=index;
         }
+        // HD frames appended while loading already cover their native frames.
+        releaseCoveredNativeTextures();
     }
     void Sprite::adoptLoaded(Sprite& prepared)
     {
@@ -601,6 +620,7 @@ namespace GAGCore
                 if (!surface) return;
                 ++entry.frames;
                 entry.gpuBytes += surface->gpuBytes;
+                if (highResolution) entry.highResolutionGpuBytes += surface->gpuBytes;
                 if (!surface->sdlsurface || !surface->sdlsurface->pixels) return;
                 const auto bytes = size_t(surface->sdlsurface->pitch) * surface->sdlsurface->h;
                 (highResolution ? entry.highResolutionCpuBytes : entry.nativeCpuBytes) += bytes;
@@ -659,6 +679,94 @@ namespace GAGCore
     void Sprite::skipHighResolutionAtlas(const std::string& name)
     {
         atlasSkippedHighResolutionNames.insert(name);
+    }
+    // Bands apply where standalone frames upload their prepared levels and draw
+    // only through their textures: desktop legacy GL, never device renderers,
+    // which restore from full levels, or atlases and CPU-sampled banks.
+    static bool highResolutionBanded(const std::string& name)
+    {
+#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
+        return _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU) && !_gc->renderDevice() &&
+            _gc->backendSwitchStatus().active == RendererBackend::LegacyGL &&
+            !Sprite::highResolutionDeferred(name) && !highResolutionAtlasWanted(name) &&
+            !pixelSampledHighResolutionNames.contains(name);
+#else
+        (void)name;
+        return false;
+#endif
+    }
+    unsigned Sprite::highResolutionDetailSkip() { return highResolutionSkip; }
+    void Sprite::setHighResolutionDetailDelay(std::int64_t nanoseconds) { lowerDetailDelay = nanoseconds; }
+    void Sprite::setHighResolutionDensity(double density)
+    {
+        // HD frames hold four texels for each logical pixel; each band halves that.
+        const unsigned wanted = detailSkipFor(density);
+        highResolutionSkipChosen = true;
+        const auto now = GAGCore::steadyClockNanoseconds();
+        if (wanted >= highResolutionSkip) {
+            if (wanted == highResolutionSkip) { lowerDetailWantedSince = 0; return; }
+            if (!lowerDetailWantedSince) lowerDetailWantedSince = now;
+            if (now - lowerDetailWantedSince < lowerDetailDelay) return;
+        }
+        lowerDetailWantedSince = 0;
+        highResolutionSkip = wanted;
+        if (!highResolutionEnabled || !highResolutionFramesSupported()) return;
+        trimAfterBandReload = true;
+        bandReloadQueue.clear();
+        for (auto *sprite : loadedSprites) {
+            if (!highResolutionBanded(sprite->fileName)) continue;
+            const bool loaded = std::any_of(sprite->experimentImages.begin(), sprite->experimentImages.end(),
+                [](const DrawableSurface *image) { return image != nullptr; });
+            // A reload in flight was prepared for the previous band.
+            if (loaded || pendingHighResolution.contains(sprite)) bandReloadQueue.push_back(sprite);
+        }
+        // The largest first: the unit sheet holds most of the banded textures.
+        std::stable_sort(bandReloadQueue.begin(), bandReloadQueue.end(),
+            [](const Sprite *a, const Sprite *b) { return a->images.size() > b->images.size(); });
+        if (bandReloading && pendingHighResolution.contains(bandReloading)) bandReloadQueue.push_front(bandReloading);
+        bandReloading = nullptr;
+    }
+    // Starts the next queued band reload once the previous one is published.
+    void Sprite::advanceBandReload()
+    {
+        if (bandReloading && pendingHighResolution.contains(bandReloading)) return;
+        if (bandReloading) {
+            // Each sprite's decodes leave freed buffers in the workers' arenas:
+            // hand them back before the next sprite's decodes, not at the end.
+#ifdef __GLIBC__
+            malloc_trim(0);
+#endif
+        }
+        bandReloading = nullptr;
+        while (!bandReloadQueue.empty()) {
+            auto *sprite = bandReloadQueue.front();
+            bandReloadQueue.pop_front();
+            if (!loadedSprites.contains(sprite)) continue;
+            auto prepared = std::make_unique<Sprite>();
+            prepared->fileName = sprite->fileName;
+            prepared->dynamicTeamColor = sprite->dynamicTeamColor;
+            pendingHighResolution.insert_or_assign(sprite, HighResolutionReload{
+                prefetchHighResolutionIncremental(sprite->fileName, sprite->images.size()), std::move(prepared), 0, true});
+            bandReloading = sprite;
+            return;
+        }
+    }
+    void Sprite::releaseCoveredNativeTextures()
+    {
+        // Native frames are the floor drawn while HD loads. Once a frame's HD
+        // layers are published its native textures are no longer drawn there:
+        // free them, keeping the pixels, and a draw that falls back (an
+        // incomplete unit action, a renderer without the team shader) uploads
+        // them again. Only where HD layers draw from textures alone.
+        if (!highResolutionBanded(fileName)) return;
+        for (size_t i = 0; i < images.size(); ++i) {
+            const bool hd = i < experimentImages.size() && experimentImages[i];
+            const bool hdTeam = i < experimentRotated.size() && experimentRotated[i];
+            if (dynamicTeamColor && !blockHasCompleteHD(unsigned(i))) continue;
+            if (hd && images[i] && images[i]->hasPixels()) images[i]->freeGPUTexture();
+            if (hdTeam && i < rotated.size() && rotated[i] && rotated[i]->orig->hasPixels())
+                rotated[i]->orig->freeGPUTexture();
+        }
     }
     void Sprite::keepHighResolutionPixels(const std::string& name)
     {
@@ -905,6 +1013,7 @@ namespace GAGCore
     bool Sprite::pollHighResolutionUntil(std::int64_t deadlineNanoseconds)
     {
         evictRetiredHighResolution();
+        advanceBandReload();
         // Reload what a context rebuild discarded, under the renderer now active.
         for (auto *sprite : lostHighResolution) {
             if (pendingHighResolution.contains(sprite) || highResolutionDeferred(sprite->fileName)) continue;
@@ -947,7 +1056,16 @@ namespace GAGCore
             sprite->experimentImages.swap(reload.prepared->experimentImages);
             sprite->experimentRotated.swap(reload.prepared->experimentRotated);
             sprite->recomputeBlockCompleteHD();
+            sprite->releaseCoveredNativeTextures();
             it = pendingHighResolution.erase(it);
+        }
+        if (trimAfterBandReload && pendingHighResolution.empty() && bandReloadQueue.empty()) {
+            trimAfterBandReload = false;
+            // glibc keeps memory the worker threads freed in their own arenas;
+            // thousands of decodes otherwise leave hundreds of MiB resident.
+#ifdef __GLIBC__
+            malloc_trim(0);
+#endif
         }
         bool streamed = true;
         auto streamIt = deferredHighResolution.upper_bound(deferredHighResolutionCursor);
@@ -1233,6 +1351,13 @@ namespace GAGCore
         const bool releaseBase = !deferred && !highResolutionAtlasWanted(fileName) &&
             !pixelSampledHighResolutionNames.contains(fileName);
         const bool releaseTeam = releaseBase && _gc->hasUnitShader();
+        const bool banded = highResolutionBanded(fileName);
+        // Before any map view chooses a band, the display's scale does: the
+        // interface draws sprites at their logical size.
+        if (banded && !highResolutionSkipChosen) {
+            highResolutionSkip = detailSkipFor(_gc->getRasterScale());
+            highResolutionSkipChosen = true;
+        }
         auto load = [&](const std::string& name, DrawableSurface *original, bool release) -> DrawableSurface* {
             if (!validHighResolutionFile(name)) return nullptr;
             // A partial pack may have no usable prepacked atlas. Every accepted
@@ -1245,6 +1370,7 @@ namespace GAGCore
             if (surface->w != width || surface->h != height) return nullptr;
             auto result = DrawableSurface::fromAssetImage(*image.value, image.exclusive, !deferred);
             result->highResolutionSampling = true;
+            if (banded) result->uploadSkipLevels = std::uint8_t(highResolutionSkip);
             // Deferred terrain feeds CPU composition; only composed pages need
             // GPU textures. A direct draw can still upload this source lazily.
             if (!deferred) result->prepareTexture();
@@ -1297,6 +1423,8 @@ namespace GAGCore
         // must not re-enter the pending map while it destroys its own entries.
         releaseRetiredHighResolution(false);
         lostHighResolution.erase(this);
+        std::erase(bandReloadQueue, this);
+        if (bandReloading == this) bandReloading = nullptr;
         deferredHighResolution.erase(this);
         if (deferredHighResolutionCursor == this) deferredHighResolutionCursor = nullptr;
         if (loadedSprites.erase(this)) pendingHighResolution.erase(this);

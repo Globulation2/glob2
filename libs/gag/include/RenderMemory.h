@@ -42,7 +42,7 @@ std::string fields(const Report &report);
 struct SpriteUsage
 {
 	std::string name;
-	std::size_t frames = 0, nativeCpuBytes = 0, highResolutionCpuBytes = 0, gpuBytes = 0;
+	std::size_t frames = 0, nativeCpuBytes = 0, highResolutionCpuBytes = 0, gpuBytes = 0, highResolutionGpuBytes = 0;
 };
 //! Loaded sprites, largest first. Private sprites still loading are left out.
 std::vector<SpriteUsage> sprites();
