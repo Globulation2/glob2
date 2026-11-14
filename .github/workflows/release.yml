@@ -419,7 +419,7 @@ jobs:
 
   windows-package:
     needs: preflight
-    timeout-minutes: 180
+    timeout-minutes: 330
     runs-on: windows-latest
     defaults:
       run:
