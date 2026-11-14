@@ -230,11 +230,11 @@ void MapOverlayQueue::flush(GraphicContext &gfx, GAGCore::Sprite *icons, GAGCore
 		// when the condition has just begun, to red at its worst: the red frame is
 		// drawn over the yellow one at the pip's severity. Badges keep one size in
 		// points; they show only once the bars have faded, so shrinking them with
-		// the map would leave them too small to read. On HiDPI that is 20 pixels.
-		constexpr double BadgePoints = 10;
+		// the map would leave them too small to read. On HiDPI that is 28 pixels.
+		constexpr double BadgePoints = 14;
 		// Icon frames per status icon, by edge length in target pixels
 		// (tools/icons/export_map_icons.py).
-		static const int statusSizes[] = {8, 10, 12, 16, 20, 24, 32};
+		static const int statusSizes[] = {8, 10, 14, 16, 20, 28, 32};
 		constexpr int StatusSizeCount = int(sizeof(statusSizes) / sizeof(statusSizes[0]));
 		const int size = std::max(5, int(std::lround(BadgePoints * unitsPerPoint)));
 		// Frames hold every icon's yellow variant, then every icon's red one.
