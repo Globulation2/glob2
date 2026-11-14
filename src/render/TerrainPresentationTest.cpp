@@ -1207,6 +1207,59 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(share < .03);
 	}
 
+	TEST_CASE("Legacy GL frees the spare mask atlas once the view has been still [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
+			.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU),
+			.beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::LegacyGL; }});
+		auto &gfx = *globals->gfx;
+		REQUIRE(gfx.isLegacyGLScreen());
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .terrain = WATER, .discovered = true});
+		const TerrainType kinds[] = {WATER, GRASS, SAND};
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 64; ++x)
+				fixture.game.map.setVertexTerrain(x, y, kinds[((x / 3) * 7 + (y / 3) * 5) % 3]);
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		DirectTerrain atlas;
+		const auto settle = [&](float scale, int right, int bottom)
+		{
+			gfx.beginMapTransform(scale, 0, 0, 0, 0, 640, 480);
+			for (int attempt = 0; attempt < 2000; ++attempt)
+			{
+				const bool ready = atlas.prepare(gfx, scene, 0, 0, right, bottom, 0, 0, fixture.team->me, true, 0);
+				if (ready && !atlas.preparing() && !atlas.pendingHdMasks()) break;
+				SDL_Delay(1);
+			}
+			REQUIRE_FALSE(atlas.pendingHdMasks());
+			gfx.endMapTransform();
+		};
+		const auto frame = [&](float scale)
+		{
+			gfx.beginMapTransform(scale, 0, 0, 0, 0, 640, 480);
+			gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
+			atlas.drawPrepared(gfx, 0, 0, true, 0);
+			auto pixels = terrainPixels(true);
+			gfx.endMapTransform();
+			return pixels;
+		};
+		settle(.76f, 26, 19);
+		const auto single = atlas.textureBytes();
+		// A zoom retires the first atlas; complete, it stays allocated as the spare.
+		settle(1.6f, 12, 9);
+		const auto withSpare = atlas.textureBytes();
+		CHECK(withSpare > single);
+		const auto reference = frame(1.6f);
+		atlas.spareLifetimeMs = 0;
+		settle(1.6f, 12, 9);
+		CHECK(atlas.textureBytes() < withSpare);
+		CHECK(frame(1.6f) == reference);
+		// The next zoom allocates its atlas again and completes.
+		settle(.76f, 26, 19);
+		settle(1.6f, 12, 9);
+		CHECK(frame(1.6f) == reference);
+	}
+
 	TEST_CASE("Legacy GL cells never seen draw their whole-map base mask until their own lands [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,

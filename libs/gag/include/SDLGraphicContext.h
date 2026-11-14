@@ -1011,6 +1011,9 @@ namespace GAGCore
         // An empty name refreshes sprites from the shared HD package.
         static void refreshHighResolutionSprite(const std::string &name);
         // Large terrain banks retain native frames and stream only the caller's HD window.
+        // Leave a sprite's HD frames standalone where nothing draws them in
+        // bulk, so no atlas is decoded, kept in memory or uploaded for it.
+        static void skipHighResolutionAtlas(const std::string& name);
         static void deferHighResolution(const std::string& name);
         static bool highResolutionDeferred(const std::string& name);
         void setHighResolutionFrames(std::span<const unsigned> indices);

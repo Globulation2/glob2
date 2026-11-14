@@ -168,15 +168,23 @@ artwork.
 
 The pass filters its atlas tiles from the sprite frames themselves, so it only
 declares the view's HD stream window to the material compositor and keeps none
-of the compositor's CPU textures. HD material frames are requested only above
-32 pixels a cell: the native 32-pixel frames are those frames reduced, and a
-zoomed-out view, which shows the most variants, would otherwise decode them all
-to filter them back down. Decor frames stream at every zoom. Frames that leave
+of the compositor's CPU textures. HD material and decor frames are requested
+only above 32 pixels a cell: the native frames are those frames reduced by
+four, which `tools/artwork` guarantees when it renders both, and a zoomed-out
+view, which shows the most variants, would otherwise decode them all to filter
+them back down. Frames that leave
 a stream window are retired, not deleted: they stay decoded, most recently
 retired first, until they exceed a shared budget (192 MiB on desktop, 32 MiB on
 mobile and in the browser) or have gone unused for 20 seconds, so panning or
 zooming back decodes nothing. `image_decodes` in the
 [memory report](#renderer-memory) shows what a camera path still decodes.
+
+The atlases give memory back too. The coverage atlas a zoom retires stays as a
+spare, so a run of zooms allocates nothing, and is freed once the view has been
+still for ten seconds. A density change takes the 2048-texel coverage atlas
+again when the view fits it twice over. The terrain sheet's HD atlas is not
+built on desktop legacy GL, where only the menu backdrop draws that sheet, from
+its standalone frames.
 
 Pages serve the software and programmable-device renderers, and the
 browser's WebGL2 renderer: it drives Legacy GL through Emscripten's WebGL2 bridge,

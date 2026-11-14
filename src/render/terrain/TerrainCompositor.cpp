@@ -356,11 +356,11 @@ void Compositor::prepareVisible(bool hd, int time, const SceneMap &map,
     prepareSelected(hd, time, &usage, nativeComposition);
 }
 void Compositor::declareVisible(int time, const SceneMap &map, int left, int top, int right, int bottom,
-                                bool materials)
+                                bool frames)
 {
     auto usage = visibleUsage(map, left, top, right, bottom);
     includeBoundarySources(usage);
-    declareWindows(materials, true, time, &usage);
+    declareWindows(frames, frames, time, &usage);
     releasePreparedTextures();
 }
 void Compositor::releasePreparedTextures()

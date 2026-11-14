@@ -52,10 +52,11 @@ class Compositor
                         bool nativeComposition = false);
     // The same view for a caller that filters its own tiles through
     // phasePixels(), as direct terrain does: only the HD stream window is
-    // declared and no CPU textures are kept here. Without materials the view
-    // samples native material art and streams only its decor; HD material
-    // frames add nothing at 32 pixels a cell or fewer.
-    void declareVisible(int time, const SceneMap &, int left, int top, int right, int bottom, bool materials);
+    // declared and no CPU textures are kept here. Without frames the view
+    // draws native material and decor art and streams nothing: the native
+    // frames are the HD frames reduced, so HD adds nothing at 32 pixels a cell
+    // or fewer.
+    void declareVisible(int time, const SceneMap &, int left, int top, int right, int bottom, bool frames);
 	Recipe describe(const SceneMap &, int x, int y) const;
 	Recipe describeOverview(const SceneMap &, int x, int y) const;
 	// Coverage of one mixed cell at one sampling scale. It depends on the cell's

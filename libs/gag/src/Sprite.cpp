@@ -72,6 +72,15 @@ namespace GAGCore
     };
     static std::map<Sprite*, HighResolutionReload> pendingHighResolution;
     static std::set<std::string> deferredHighResolutionNames;
+    static std::set<std::string> atlasSkippedHighResolutionNames;
+    // Whether legacy OpenGL packs this sprite's HD frames into one atlas.
+    static bool highResolutionAtlasWanted(const std::string& name)
+    {
+        const auto prefix = name.substr(name.find_last_of('/') + 1);
+        return _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU) &&
+            (prefix == "terrain" || prefix == "ressource") &&
+            !atlasSkippedHighResolutionNames.contains(name);
+    }
     struct RetiredHighResolution { Sprite *sprite; unsigned frame; size_t bytes; std::int64_t retiredAt; };
     // Front = most recently retired.
     static std::list<RetiredHighResolution> retiredHighResolution;
@@ -643,6 +652,10 @@ namespace GAGCore
     {
         return deferredHighResolutionNames.contains(name);
     }
+    void Sprite::skipHighResolutionAtlas(const std::string& name)
+    {
+        atlasSkippedHighResolutionNames.insert(name);
+    }
     void Sprite::deferHighResolution(const std::string& name)
     {
         deferredHighResolutionNames.insert(name);
@@ -968,6 +981,7 @@ namespace GAGCore
         // Portable renderers retain standalone HD sources. Never query GL or
         // allocate its atlas without a current OpenGL rendering context.
         if (!_gc || !(_gc->getOptionFlags() & GraphicContext::USEGPU)) return;
+        if (!highResolutionAtlasWanted(fileName)) return;
         const bool resources=fileName=="data/gfx/ressource";
         if(!resources && fileName!="data/gfx/terrain")return;
         int count=0;
@@ -1098,8 +1112,7 @@ namespace GAGCore
                 add(directory + '/' + file, mipmaps);
             }
         }
-        if ((_gc->getOptionFlags() & GraphicContext::USEGPU) &&
-            (prefix == "terrain" || prefix == "ressource"))
+        if (highResolutionAtlasWanted(name))
             for (int mip = 0; mip < 4; ++mip)
                 add(directory + '/' + prefix + "-atlas-mip" + std::to_string(mip) + ".webp", false);
         if (incremental && firstFrame < frames) highResolutionFrameReady(name, firstFrame, inputs);
@@ -1140,8 +1153,7 @@ namespace GAGCore
     bool highResolutionAtlasReady(const std::string& name, HighResolutionInputs& inputs)
     {
         const auto prefix = name.substr(name.find_last_of('/') + 1);
-        if (!_gc || !(_gc->getOptionFlags() & GraphicContext::USEGPU) ||
-            (prefix != "terrain" && prefix != "ressource")) return true;
+        if (!highResolutionAtlasWanted(name)) return true;
         const char* overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
         bool ready = true;
