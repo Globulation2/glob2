@@ -15,6 +15,13 @@
 #include <Toolkit.h>
 #include <RenderDevice.h>
 #include <SDL3/SDL.h>
+#ifdef HAVE_OPENGL
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
+#include <epoxy/gl.h>
+#endif
+#endif
 #include <SDL3_image/SDL_image.h>
 #include <array>
 #include <cstring>
@@ -539,6 +546,46 @@ TEST_CASE("the unit sheet keeps no HD pixels after upload and reloads once its t
     requireReleased();
     context->drawSprite(0, 0, &units, index);
     context->nextFrame();
+}
+#endif
+#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
+TEST_CASE("team-coloured buildings draw through the shader without recoloured copies [display]") {
+    glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", "");
+    glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+    glob2test::ToolkitScope toolkit;
+    auto *context = GAGCore::Toolkit::initGraphic(256, 256, GAGCore::GraphicContext::USEGPU, "building team shader");
+    REQUIRE(context->hasUnitShader());
+    struct RestoreNativeArt { ~RestoreNativeArt() { GAGCore::Sprite::setHighResolution(false); } } restoreNativeArt;
+    GAGCore::Sprite::setHighResolution(true);
+    GAGCore::Sprite building;
+    REQUIRE(building.load("data/gfx/swarm0b"));
+    GAGCore::Sprite::finishHighResolution();
+    REQUIRE_FALSE(building.isDynamicTeamColor());
+    unsigned index = 0;
+    while (index < building.rotated.size() && !building.rotated[index]) ++index;
+    REQUIRE(index < building.rotated.size());
+    const auto capture = [&](const GAGCore::Color &team) {
+        building.setBaseColor(team);
+        context->drawFilledRect(0, 0, 256, 256, 20, 30, 40);
+        context->drawSprite(8, 8, &building, index);
+        context->drawSprite(8, 8, 96, 96, &building, index); // The sized overload takes the same path.
+        context->finishDrawingSprite(&building, 255);
+        glFinish();
+        std::vector<unsigned char> pixels(256 * 256 * 4);
+        glReadPixels(0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+        context->nextFrame();
+        return pixels;
+    };
+    const auto red = capture(GAGCore::Color(220, 30, 30)), blue = capture(GAGCore::Color(30, 30, 220));
+    // The team layer took each colour, and no recoloured copy was made for it.
+    CHECK(red != blue);
+    CHECK(std::count_if(red.begin(), red.end(), [](unsigned char c) { return c > 60; }) > 500);
+    CHECK(building.rotated[index]->rotationMap.empty());
+    if (index < building.experimentRotated.size() && building.experimentRotated[index]) {
+        CHECK(building.experimentRotated[index]->rotationMap.empty());
+        // With the shader drawing it, the HD team layer keeps no pixels either.
+        CHECK_FALSE(building.experimentRotated[index]->orig->hasPixels());
+    }
 }
 #endif
 TEST_CASE("portable HD uses standalone frames without requesting GL atlases [display]") {

@@ -1228,11 +1228,11 @@ namespace GAGCore
         // Desktop legacy OpenGL draws a standalone HD layer from its texture
         // alone, so its pixels go once uploaded (releasePixels refuses on every
         // other renderer). The exceptions read pixels later: frames an atlas is
-        // built from, sprites a caller samples, and team layers, which a CPU
-        // recolour clones unless the team-colour shader draws them.
+        // built from, sprites a caller samples, and, without the team-colour
+        // shader, team layers, which a CPU recolour then clones.
         const bool releaseBase = !deferred && !highResolutionAtlasWanted(fileName) &&
             !pixelSampledHighResolutionNames.contains(fileName);
-        const bool releaseTeam = releaseBase && dynamicTeamColor && _gc->hasUnitShader();
+        const bool releaseTeam = releaseBase && _gc->hasUnitShader();
         auto load = [&](const std::string& name, DrawableSurface *original, bool release) -> DrawableSurface* {
             if (!validHighResolutionFile(name)) return nullptr;
             // A partial pack may have no usable prepacked atlas. Every accepted

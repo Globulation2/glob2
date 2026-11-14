@@ -293,6 +293,8 @@ namespace GAGCore
 		virtual void drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
 		
 		void drawSprite(int x, int y, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
+		//! Draws a frame's base and team layers as one team-colour shader quad; false when it cannot.
+		bool drawTeamShaderSprite(float x, float y, float w, float h, Sprite *sprite, unsigned index, Uint8 alpha);
 		void drawSprite(float x, float y, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
 		
 		void drawSprite(int x, int y, int w, int h, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);

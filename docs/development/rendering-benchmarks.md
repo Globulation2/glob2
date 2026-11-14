@@ -197,12 +197,13 @@ only the menu backdrop draws that sheet, from its standalone frames.
 
 Standalone HD frames keep no decoded pixels on desktop legacy GL once they are
 uploaded: the texture is the only copy. That covers the unit sheet, the
-largest HD family, whose two layers the team-colour shader draws from their
-textures, and the base layers of buildings, effects and the cloud. The
-exceptions are read as pixels later: frames an atlas is built from, terrain
-materials, which the compositor samples (`Sprite::keepHighResolutionPixels`),
-and team layers that a CPU recolour clones, which is every team layer but the
-unit sheet's, and the unit sheet's too without the shader. A context rebuild (a
+largest HD family, and buildings, effects and the cloud. The team-colour
+shader draws every frame that has a team layer, units and buildings alike, as
+one quad from the two layers' textures, so no recoloured copy of a team layer
+exists in memory or on the GPU for each team. The exceptions are read as
+pixels later: frames an atlas is built from, terrain materials, which the
+compositor samples (`Sprite::keepHighResolutionPixels`), and, without the
+shader, team layers, which a CPU recolour then clones. A context rebuild (a
 renderer switch) loses the textures, so those sprites draw native frames at
 once and reload HD from disk on the asset workers.
 
