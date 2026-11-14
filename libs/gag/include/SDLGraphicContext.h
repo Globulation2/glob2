@@ -898,6 +898,7 @@ namespace GAGCore
 		std::vector <RotatedImage *> rotated;
 		std::unique_ptr<Sprite> highResolutionAtlas;
 		void createHighResolutionAtlas(HighResolutionInputs& inputs);
+		bool highResolutionDemanded = false;
 		std::vector <DrawableSurface *> experimentImages;
 		std::vector <RotatedImage *> experimentRotated;
 
@@ -971,10 +972,19 @@ namespace GAGCore
         // The uncolored layer may be retained beneath replacement geometry
         // (unit sheets store their ground shadows here). The caller sizes it
         // to the native logical canvas, even when an HD surface is returned.
+        // Asking for a base frame demands the sprite's HD layers (see
+        // demandHighResolution), so the first answers can be native frames.
         DrawableSurface *baseFrame(unsigned index)
         {
-            return checkBound(index) ? prepareDrawSurface(index, false, true) : nullptr;
+            if (!checkBound(index)) return nullptr;
+            if (!highResolutionDemanded) demandHighResolution();
+            return prepareDrawSurface(index, false, true);
         }
+        //! Only legacy OpenGL draws sprite frames from their HD layers; other
+        //! backends sample them solely through baseFrame (terrain composition,
+        //! skin shadows, editor swatches). There, a sprite loads its HD layers
+        //! once something demands them. Returns true when this queued a reload.
+        bool demandHighResolution();
 
         //! The frame's shape filled with one colour, for effects drawn over the
         //! sprite at its logical size: opaque wherever either layer is, or only
@@ -1000,6 +1010,7 @@ namespace GAGCore
 		DrawableSurface *prepareDrawSurface(unsigned index, bool teamColor, bool experiment);
         void appendHighResolutionFrame(size_t index, Sprite& target,
             HighResolutionInputs& inputs);
+        void releaseHighResolution();
 
 	public:
 		//! Opt into batching variable-size frames; callers must finishDrawingSprite.
@@ -1020,8 +1031,9 @@ namespace GAGCore
         static void refreshHighResolutionForRenderer();
         static bool pollHighResolution(unsigned budgetMs = 2);
         static bool pollHighResolutionUntil(std::int64_t deadlineNanoseconds); // GAGCore::steadyClockNanoseconds() clock
-        // Blocks until every requested HD frame, deferred windows included, is published.
-        static void finishHighResolution();
+        // Blocks until every requested HD frame, deferred windows included, is
+        // published; with a sprite, only until that sprite's reload is.
+        static void finishHighResolution(const Sprite *only = nullptr);
 		static void flushBatches(GraphicContext *gc);
 		//! Constructor
 		Sprite() : fileName("not loaded yet") { }

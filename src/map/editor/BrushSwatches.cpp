@@ -236,6 +236,9 @@ std::unique_ptr<DrawableSurface> BrushSwatches::composeResource(ResourceId id, T
 	{
 		// The fullest stage, the look an author expects of a freshly painted deposit.
 		const unsigned frame = presentation.frame(presentation.levels.back().stock, 0, 0, 0);
+		// Swatches are cached: wait for layers this request just demanded.
+		if (sprite->demandHighResolution())
+			GAGCore::Sprite::finishHighResolution(sprite);
 		auto *source = sprite->baseFrame(frame);
 		if (!source || !source->getSDLSurface())
 			source = sprite->nativeFrame(frame);

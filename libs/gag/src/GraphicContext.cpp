@@ -26,6 +26,9 @@
 #ifndef _WIN32
 #include <dlfcn.h>
 #endif
+#if !defined(_WIN32) && !defined(__EMSCRIPTEN__)
+#include <sys/mman.h>
+#endif
 #include <iostream>
 #include <memory>
 #include <string>
@@ -40,6 +43,41 @@ extern "C" void glob2_gl_restore_texture_units(int previous);
 
 namespace GAGCore
 {
+	SDL_Surface *createFrameSurface(int w, int h, SDL_PixelFormat format)
+	{
+#if !defined(_WIN32) && !defined(__EMSCRIPTEN__)
+		// SDL_CreateSurface clears its pixels, making every page resident.
+		// Anonymous mappings start zeroed without touching them.
+		const int pitch = w > 0 ? w * SDL_BYTESPERPIXEL(format) : 0;
+		const size_t bytes = size_t(pitch) * size_t(std::max(h, 0));
+		if (pitch > 0 && bytes >= 256 * 1024 && SDL_BYTESPERPIXEL(format) == 4)
+		{
+			void *pixels = mmap(nullptr, bytes, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+			if (pixels != MAP_FAILED)
+			{
+				struct Mapping { void *pixels; size_t bytes; };
+				SDL_Surface *surface = SDL_CreateSurfaceFrom(w, h, format, pixels, pitch);
+				if (!surface)
+				{
+					munmap(pixels, bytes);
+					return nullptr;
+				}
+				// SDL runs the cleanup itself if storing the property fails.
+				if (SDL_SetPointerPropertyWithCleanup(SDL_GetSurfaceProperties(surface),
+						"glob2.frame.mapping", new Mapping{pixels, bytes}, [](void *, void *value) {
+							auto *owned = static_cast<Mapping *>(value);
+							munmap(owned->pixels, owned->bytes);
+							delete owned;
+						}, nullptr))
+					return surface;
+				SDL_DestroySurface(surface);
+				return nullptr;
+			}
+		}
+#endif
+		return SDL_CreateSurface(w, h, format);
+	}
+
 namespace
 {
 // GLOB2_TEST_HIDDEN_WINDOWS=1 (set by test/run_tests.py for [display] cases and by
@@ -554,7 +592,7 @@ int GraphicContext::maximumTextureSize() const
 		if (((optionFlags & RESIZABLE) || (optionFlags & FULLSCREEN) || scaleChanged)
 			&& (getW() != logicalW || getH() != logicalH))
 		{
-			SDL_Surface *resized = SDL_CreateSurface(logicalW, logicalH, SDL_PIXELFORMAT_ARGB8888);
+			SDL_Surface *resized = createFrameSurface(logicalW, logicalH);
 			if (!resized) return;
 			if (!(optionFlags & FULLSCREEN)) {
 				requestedW = windowW;
@@ -808,7 +846,7 @@ int GraphicContext::maximumTextureSize() const
         const int logicalW = std::max(1, static_cast<int>(w / uiScale + 0.5f));
         const int logicalH = std::max(1, static_cast<int>(h / uiScale + 0.5f));
         if (w == windowW && h == windowH && logicalW == getW() && logicalH == getH()) return true;
-        SDL_Surface* replacement = SDL_CreateSurface(logicalW, logicalH, SDL_PIXELFORMAT_ARGB8888);
+        SDL_Surface* replacement = createFrameSurface(logicalW, logicalH);
         if (!replacement) return false;
         // This API updates presentation immediately; SDL3 resize requests can
         // otherwise still be pending when we read the window geometry below.
@@ -997,7 +1035,7 @@ int GraphicContext::maximumTextureSize() const
         }
 		applyWindowMinimumSize();
 		// Own the drawing surface: SDL invalidates its window surface during resizing.
-		sdlsurface = SDL_CreateSurface(logicalW, logicalH, SDL_PIXELFORMAT_ARGB8888);
+		sdlsurface = createFrameSurface(logicalW, logicalH);
 		ownsSurface = true;
 		if (!sdlsurface)
 		{

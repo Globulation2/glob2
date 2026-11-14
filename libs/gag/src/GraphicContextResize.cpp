@@ -53,7 +53,7 @@ namespace GAGCore
 		if (changed)
 		{
 			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> replacement(
-				SDL_CreateSurface(surfaceW, surfaceH, sdlsurface->format), SDL_DestroySurface);
+				createFrameSurface(surfaceW, surfaceH, sdlsurface->format), SDL_DestroySurface);
 			if (!replacement) return false;
 			std::unique_ptr<RenderBackend> backend;
 			try
