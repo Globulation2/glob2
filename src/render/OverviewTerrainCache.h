@@ -19,8 +19,8 @@ class MapAssetBundle;
 // depends on HD artwork or animation phase.
 //
 // Each cell is `samples` x `samples` palette samples. A visible resource adds a
-// square in its minimap colour, growing from the cell's top-left corner with its
-// stock, so the terrain under it stays readable.
+// square in its minimap colour, centred in the cell and growing with its stock,
+// so the terrain around it stays readable.
 class OverviewTerrainCache
 {
   public:
@@ -32,7 +32,7 @@ class OverviewTerrainCache
 	//! `cells` long on its longer side, to fit `maximumTexture` (0 for no limit).
 	static int samplesFor(double pixelsPerCell, int current, int cells, int maximumTexture);
 	//! Side of the resource square, in samples: 1 at the lowest stock, rounding
-	//! down to 3/4 of the cell only at full stock. Zero capacity counts as full.
+	//! down to half the cell only at full stock. Zero capacity counts as full.
 	static int resourceSquare(unsigned stock, unsigned capacity, int samples);
 
 	void update(const SceneMap &, int left, int top, int right, int bottom, int vx, int vy,

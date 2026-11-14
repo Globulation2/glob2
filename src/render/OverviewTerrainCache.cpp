@@ -24,7 +24,7 @@ int OverviewTerrainCache::samplesFor(double pixelsPerCell, int current, int cell
 
 int OverviewTerrainCache::resourceSquare(unsigned stock, unsigned capacity, int samples)
 {
-	const int largest = samples * 3 / 4;
+	const int largest = samples / 2;
 	if (!capacity)
 		return largest;
 	return 1 + int((largest - 1) * std::min(stock, capacity) / capacity);
@@ -179,7 +179,9 @@ void OverviewTerrainCache::copy(const SceneMap &map, int left, int top, int righ
 												.minimap;
 						const Uint32 packed = 0xFF000000u | Uint32(color[0]) << 16 |
 											  Uint32(color[1]) << 8 | color[2];
-						SDL_Rect area{x * Samples, y * Samples, square, square};
+						// Centred, with any odd sample left over below and to the right.
+						const int inset = (Samples - square) / 2;
+						SDL_Rect area{x * Samples + inset, y * Samples + inset, square, square};
 						SDL_FillSurfaceRect(pixels, &area, packed);
 					}
 					page->resources[i] = composed;

@@ -66,8 +66,8 @@ it is saved, checksummed or read by the simulation.
 - In the cross-fade `MapDrawer::drawMapOverview` fades in terrain palette colours sampled
   from the detailed compositor's material coverage of each cell's corners. Four or eight samples per tile axis,
   chosen from the cell's size in device pixels, keep coastlines aligned during the
-  fade; each resource draws a square in its minimap colour from the cell's
-  top-left corner, sized by its stock, over that ground
+  fade; each resource draws a square in its minimap colour centred in the
+  cell, sized by its stock, over that ground
   ([caches and compatibility](../assets/terrain-rendering.md#caches-and-compatibility)). In the overview this replaces the water, terrain and resource passes.
   The reusable image stretches over the map in a single draw, avoiding thousands
   of translucent fills. A stationary view reuses the image and its texture

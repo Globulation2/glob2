@@ -559,10 +559,13 @@ detail than the display can show. A view whose 8×8 image would exceed the
 device's maximum texture size uses 4×4. A density change replaces every page.
 
 A resource leaves the terrain colour visible and adds a square in its minimap
-colour that grows from the cell's top-left corner with the cell's stock out of
-the resource's total yield capacity. Its side is 1 sample at the lowest stock and
-rounds down, so only full stock reaches three quarters of the cell: 1, 1, 2, 2, 3
-samples at 4×4 and 2, 3, 4, 5, 6 at 8×8 for stocks 1 to 5 of 5. A cell is
+colour, centred in the cell, that grows with the cell's stock out of the
+resource's total yield capacity. Its side is 1 sample at the lowest stock and
+rounds down, so only full stock reaches half the cell: 1, 1, 1, 1, 2 samples at
+4×4 and 1, 2, 2, 3, 4 at 8×8 for stocks 1 to 5 of 5. An odd leftover sample
+falls below and to the right of the square, so a 1-sample square sits just
+above and left of the centre and the gap between neighbouring squares is half
+a cell at full stock. A cell is
 recomposed when its resource type, square size or discovery changes.
 
 The `TerrainPresentation` tests cover zoomed-out cache admission and warm reuse,

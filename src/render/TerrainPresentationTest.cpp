@@ -696,9 +696,10 @@ TEST_SUITE("TerrainPresentation")
 		REQUIRE(render.overview->getW() == overview.getW());
 		REQUIRE(render.overview->getH() == overview.getH());
 		const auto& tint = map.resourceRegistry().presentation(static_cast<ResourceId>(WHEAT)).minimap;
-		// Two of five wheat: a 3x3 square in the cell's top-left corner over unchanged ground.
+		// Two of five wheat: a 2x2 square centred in the cell over unchanged ground.
 		const int square = OverviewTerrainCache::resourceSquare(2, 5, samples);
-		REQUIRE(square == 3);
+		REQUIRE(square == 2);
+		const int inset = (samples - square) / 2;
 		for (int y = 0; y < 16 * samples; ++y)
 			for (int x = 0; x < 16 * samples; ++x)
 			{
@@ -709,8 +710,9 @@ TEST_SUITE("TerrainPresentation")
 						static_cast<const Uint8 *>(surface->pixels) + y * surface->pitch)[x];
 				};
 				const auto ground = pixelAt(overview), actual = pixelAt(*render.overview);
-				if (x / samples == 9 && y / samples == 9 && x % samples < square &&
-					y % samples < square)
+				if (x / samples == 9 && y / samples == 9 && x % samples >= inset &&
+					x % samples < inset + square && y % samples >= inset &&
+					y % samples < inset + square)
 					CHECK(actual == (0xFF000000u | Uint32(tint[0]) << 16 | Uint32(tint[1]) << 8 |
 									 tint[2]));
 				else
@@ -1081,21 +1083,21 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(partial.composedCells() == 20);
 	}
 
-	TEST_CASE("overview resource squares grow from the corner with stock and follow screen density")
+	TEST_CASE("overview resource squares grow from the centre with stock and follow screen density")
 	{
 		using Cache = OverviewTerrainCache;
-		// Rounded down: only full stock reaches three quarters of the cell.
+		// Rounded down: only full stock reaches half the cell.
 		for (const auto &[stock, few, many] :
-			 {std::tuple{0u, 1, 1}, {1u, 1, 2}, {2u, 1, 3}, {3u, 2, 4}, {4u, 2, 5}, {5u, 3, 6},
-			  {9u, 3, 6}})
+			 {std::tuple{0u, 1, 1}, {1u, 1, 1}, {2u, 1, 2}, {3u, 1, 2}, {4u, 1, 3}, {5u, 2, 4},
+			  {9u, 2, 4}})
 		{
 			CAPTURE(stock);
 			CHECK(Cache::resourceSquare(stock, 5, Cache::FewSamples) == few);
 			CHECK(Cache::resourceSquare(stock, 5, Cache::ManySamples) == many);
 		}
-		CHECK(Cache::resourceSquare(3, 4, Cache::ManySamples) == 4);
-		CHECK(Cache::resourceSquare(4, 4, Cache::ManySamples) == 6);
-		CHECK(Cache::resourceSquare(0, 0, Cache::ManySamples) == 6);
+		CHECK(Cache::resourceSquare(3, 4, Cache::ManySamples) == 3);
+		CHECK(Cache::resourceSquare(4, 4, Cache::ManySamples) == 4);
+		CHECK(Cache::resourceSquare(0, 0, Cache::ManySamples) == 4);
 		// Many samples from six device pixels per cell, kept down to five.
 		CHECK(Cache::samplesFor(3.5, 0, 100, 0) == Cache::FewSamples);
 		CHECK(Cache::samplesFor(5.5, Cache::FewSamples, 100, 0) == Cache::FewSamples);
@@ -1130,9 +1132,10 @@ TEST_SUITE("TerrainPresentation")
 			CAPTURE(samples);
 			OverviewTerrainCache cache;
 			GAGCore::DrawableSurface image(16 * samples, 16 * samples);
-			// Every sample of the cell is wheat inside the corner square and ground outside it.
+			// Every sample of the cell is wheat inside the centred square and ground outside it.
 			const auto checkSquare = [&](int side)
 			{
+				const int inset = (samples - side) / 2;
 				const auto *surface = image.getSDLSurface();
 				for (int y = 0; y < samples; ++y)
 					for (int x = 0; x < samples; ++x)
@@ -1140,7 +1143,8 @@ TEST_SUITE("TerrainPresentation")
 						const auto pixel = reinterpret_cast<const Uint32 *>(
 							static_cast<const Uint8 *>(surface->pixels) +
 							(9 * samples + y) * surface->pitch)[9 * samples + x];
-						CHECK((pixel == wheat) == (x < side && y < side));
+						CHECK((pixel == wheat) == (x >= inset && x < inset + side && y >= inset &&
+												   y < inset + side));
 					}
 			};
 			std::uint64_t composed = 0;
