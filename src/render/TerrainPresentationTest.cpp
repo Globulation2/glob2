@@ -36,6 +36,7 @@
 #include <RenderBatch.h>
 #include <RenderDevice.h>
 #include <RendererSelection.h>
+#include <RenderStateScope.h>
 #ifdef HAVE_OPENGL
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -1499,11 +1500,15 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::observeMap(fixture.game.map,scene);
 		// An independently sized strip fits HD pages, unlike its whole capture.
 		SoftwareTerrainCache independent;
-		// Interactive pages show native art until the declared HD window streams.
-		independent.prepare(scene, *globals->terrain, 0, 0, 6, 63, 0, 0, fixture.team->me, true);
-		GAGCore::Sprite::finishHighResolution();
-		REQUIRE(independent.prepare(scene, *globals->terrain, 0, 0, 6, 63, 0, 0, fixture.team->me,
-									true));
+		{
+			// Portable views compose HD only zoomed in past a pixel per pixel.
+			const GAGCore::MapTransformScope zoomed(*globals->gfx, 2, 0, 0, {0, 0, 256, 256});
+			// Interactive pages show native art until the declared HD window streams.
+			independent.prepare(scene, *globals->terrain, 0, 0, 6, 63, 0, 0, fixture.team->me, true);
+			GAGCore::Sprite::finishHighResolution();
+			REQUIRE(independent.prepare(scene, *globals->terrain, 0, 0, 6, 63, 0, 0, fixture.team->me,
+										true));
+		}
 		CHECK(globals->terrainCompositor().scale() == 4);
 		CHECK(independent.resolution == 2);
 		SoftwareTerrainCache tiled;
@@ -1536,6 +1541,8 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::observeMap(fixture.game.map,scene);
 		ScopedTerrainDeviceLimit device(*globals->gfx);
 		auto &backend = device.backend();
+		// Portable views compose HD only zoomed in past a pixel per pixel.
+		const GAGCore::MapTransformScope zoomed(*globals->gfx, 2, 0, 0, {0, 0, 256, 256});
 		for (int limit : {1024, 512, 128, 32})
 		{
 			CAPTURE(limit);
@@ -1905,6 +1912,102 @@ TEST_SUITE("TerrainPresentation")
 			CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
 			CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget);
 		}
+	}
+	TEST_CASE("portable pages compose HD frames only above one screen pixel per logical pixel [display]")
+	{
+		glob2test::ScopedEnvironment hdPath("GLOB2_EXPERIMENT_TEXTURE_DIR",
+			highResolutionFixture().string().c_str());
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
+			.screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		REQUIRE(globals->gfx->backendSwitchStatus().active == GAGCore::RendererBackend::PortableSDL);
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
+		auto &map = fixture.game.map;
+		for (int y = 0; y < map.getH(); ++y)
+			for (int x = 0; x < map.getW(); ++x)
+				map.paintCell(x, y, x < 3 ? WATER : ((x + y) % 3 ? ICE : GRASS));
+		struct Restore
+		{
+			const std::int64_t delay = GAGCore::Sprite::highResolutionDetailDelay();
+			const GAGCore::Sprite::RetiredHighResolutionBudget budget =
+				GAGCore::Sprite::retiredHighResolutionBudget();
+			~Restore()
+			{
+				GAGCore::Sprite::setHighResolution(false);
+				GAGCore::Sprite::setHighResolutionDetailDelay(delay);
+				GAGCore::Sprite::setRetiredHighResolutionBudget(budget);
+			}
+		} restore;
+		GAGCore::Sprite::setHighResolution(true);
+		GAGCore::Sprite::setHighResolutionDetailDelay(3'600'000'000'000);
+		GAGCore::Sprite::setRetiredHighResolutionBudget({64u * 1024 * 1024, 3'600'000'000'000});
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		auto &compositor = globals->terrainCompositor(map.frozenAssetBundle());
+		SoftwareTerrainCache cache;
+		const auto draw = [&](float zoom)
+		{
+			globals->gfx->drawFilledRect(0, 0, 256, 256, 17, 29, 41);
+			globals->gfx->beginMapTransform(zoom, 0, 0, 0, 0, 256, 256);
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 7, 7, 0, 0, fixture.team->me, true));
+			cache.draw(*globals->gfx);
+			globals->gfx->endMapTransform();
+		};
+		// HD layers resident on the material and decor sprites the view uses.
+		const auto resident = [&](bool decor)
+		{
+			std::set<GAGCore::Sprite *> sprites;
+			for (const auto &material : compositor.catalog().materials)
+				if (const auto &name = decor ? material.decor.sprite : material.sprite; !name.empty())
+					if (auto *sprite = GAGCore::Toolkit::getSprite(name)) sprites.insert(sprite);
+			std::size_t frames = 0;
+			for (auto *sprite : sprites)
+				frames += std::count_if(sprite->experimentImages.begin(), sprite->experimentImages.end(),
+					[](auto *image) { return image != nullptr; });
+			return frames;
+		};
+		const auto settle = [&](float zoom)
+		{
+			draw(zoom);
+			GAGCore::Sprite::finishHighResolution();
+			draw(zoom);
+		};
+
+		// A view at one screen pixel per logical pixel composes native frames
+		// and asks for no HD frame.
+		settle(1);
+		CHECK(compositor.scale() == 1);
+		CHECK(cache.samplingResolution() == 1);
+		CHECK(resident(false) == 0);
+
+		// Zooming in takes HD frames at once; decor still draws native sprites.
+		settle(2);
+		CHECK(compositor.scale() == 4);
+		CHECK(cache.samplingResolution() > 1);
+		CHECK(resident(false) > 0);
+		CHECK(resident(true) == 0);
+
+		// Zooming back out keeps them until the view has wanted less for the delay.
+		draw(1);
+		CHECK(compositor.scale() == 4);
+		CHECK(cache.samplingResolution() > 1);
+
+		// Then pages compose native frames, HD pages go and frames retire.
+		GAGCore::Sprite::setHighResolutionDetailDelay(0);
+		draw(1);
+		CHECK(compositor.scale() == 1);
+		CHECK(cache.samplingResolution() == 1);
+		CHECK(std::all_of(cache.chunks.begin(), cache.chunks.end(),
+			[](const auto &chunk) { return chunk->scale == 1; }));
+		CHECK(GAGCore::Sprite::retiredHighResolutionBytes() > 0);
+		GAGCore::Sprite::setRetiredHighResolutionBudget({64u * 1024 * 1024, 0});
+		GAGCore::Sprite::pollHighResolution(1);
+		CHECK(resident(false) == 0);
+		CHECK(GAGCore::Sprite::retiredHighResolutionBytes() == 0);
+
+		// And zooming in again raises detail on the next frame.
+		settle(1.25f);
+		CHECK(compositor.scale() == 4);
+		CHECK(resident(false) > 0);
 	}
 	TEST_CASE("offscreen terrain density follows the target and stays stable across capture tiles "
 			  "[display]")

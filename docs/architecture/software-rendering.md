@@ -68,6 +68,10 @@ Terrain, discovery and material revisions are checked when an old zoom level
 returns. Kept coverage masks for mixed cells beside animated materials add at
 most 16 MiB in software mode or 32 MiB in GPU mode. Native and
 HD rendering share CPU composition; GPU backends upload the resulting pages.
+The portable SDL renderer composes HD pages only above one screen pixel per
+logical pixel and returns to native pages ten seconds after the view zooms out
+past it, discarding its HD pages then
+([rendering](rendering.md#batching-and-geometry-cache-invariants)).
 The [terrain authoring guide](../assets/terrain-materials.md) describes the catalog,
 boundary resolver, source preparation, budgets and asset pipeline.
 Its deterministic world-space displacement continues contours across tiles at

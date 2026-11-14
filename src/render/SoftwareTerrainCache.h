@@ -160,6 +160,7 @@ class SoftwareTerrainCache
 	int resolution = 1;
 	int downsample = 1;
 	bool gpu = false;
+	bool composedHighResolution = false; // Whether the last view composed HD material frames.
     std::shared_ptr<GpuTerrainPageCache> gpuPages;
     std::uint64_t gpuPageGeneration = 0;
 

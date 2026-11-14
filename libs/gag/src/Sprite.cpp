@@ -16,6 +16,7 @@
 #include <cstring>
 #include <SpriteLoad.h>
 #include <SteadyClock.h>
+#include <DetailHysteresis.h>
 #include <chrono>
 #include <AssetLoader.h>
 #ifdef __GLIBC__
@@ -79,11 +80,10 @@ namespace GAGCore
     static std::set<Sprite*> lostHighResolution;
     // The detail band (mip levels left out) frames are loaded at, and since when
     // the view has wanted a lower one (steady clock nanoseconds, 0 when not).
-    static unsigned highResolutionSkip = 0;
+    static DetailHysteresis highResolutionSkip;
     static bool highResolutionSkipChosen = false;
     static std::int64_t lowerDetailDelay = 10'000'000'000;
     static unsigned detailSkipFor(double density) { return density > 2 ? 0 : density > 1 ? 1 : 2; }
-    static std::int64_t lowerDetailWantedSince = 0;
     // A band change re-decodes every banded sprite on the asset workers; once
     // the last is published, their freed buffers go back to the system.
     static bool trimAfterBandReload = false;
@@ -713,21 +713,15 @@ namespace GAGCore
         return false;
 #endif
     }
-    unsigned Sprite::highResolutionDetailSkip() { return highResolutionSkip; }
+    unsigned Sprite::highResolutionDetailSkip() { return highResolutionSkip.level(); }
     void Sprite::setHighResolutionDetailDelay(std::int64_t nanoseconds) { lowerDetailDelay = nanoseconds; }
+    std::int64_t Sprite::highResolutionDetailDelay() { return lowerDetailDelay; }
     void Sprite::setHighResolutionDensity(double density)
     {
         // HD frames hold four texels for each logical pixel; each band halves that.
         const unsigned wanted = detailSkipFor(density);
         highResolutionSkipChosen = true;
-        const auto now = GAGCore::steadyClockNanoseconds();
-        if (wanted >= highResolutionSkip) {
-            if (wanted == highResolutionSkip) { lowerDetailWantedSince = 0; return; }
-            if (!lowerDetailWantedSince) lowerDetailWantedSince = now;
-            if (now - lowerDetailWantedSince < lowerDetailDelay) return;
-        }
-        lowerDetailWantedSince = 0;
-        highResolutionSkip = wanted;
+        if (!highResolutionSkip.update(wanted, GAGCore::steadyClockNanoseconds(), lowerDetailDelay)) return;
         if (!highResolutionEnabled || !highResolutionFramesSupported()) return;
         trimAfterBandReload = true;
         bandReloadQueue.clear();
@@ -1010,6 +1004,15 @@ namespace GAGCore
         pendingHighResolution.emplace(this, HighResolutionReload{
             prefetchHighResolutionIncremental(fileName, images.size()), std::move(prepared), 0, true});
         return true;
+    }
+    void Sprite::releaseHighResolutionDemand()
+    {
+        if (!highResolutionDemanded || !requestedHighResolutionOnDemand || highResolutionDeferred(fileName)) return;
+        highResolutionDemanded = false;
+        demandedHighResolutionNames.erase(fileName);
+        pendingHighResolution.erase(this);
+        lostHighResolution.erase(this);
+        releaseHighResolution();
     }
     void Sprite::releaseHighResolution()
     {
@@ -1414,7 +1417,7 @@ namespace GAGCore
         // Before any map view chooses a band, the display's scale does: the
         // interface draws sprites at their logical size.
         if (banded && !highResolutionSkipChosen) {
-            highResolutionSkip = detailSkipFor(_gc->getRasterScale());
+            highResolutionSkip = DetailHysteresis(detailSkipFor(_gc->getRasterScale()));
             highResolutionSkipChosen = true;
         }
         auto load = [&](const std::string& name, DrawableSurface *original, bool release) -> DrawableSurface* {
@@ -1429,7 +1432,7 @@ namespace GAGCore
             if (surface->w != width || surface->h != height) return nullptr;
             auto result = DrawableSurface::fromAssetImage(*image.value, image.exclusive, !deferred);
             result->highResolutionSampling = true;
-            if (banded) result->uploadSkipLevels = std::uint8_t(highResolutionSkip);
+            if (banded) result->uploadSkipLevels = std::uint8_t(highResolutionSkip.level());
             // Deferred terrain feeds CPU composition; only composed pages need
             // GPU textures. On-demand backends reach HD layers through baseFrame,
             // mostly for CPU composition too. A direct draw uploads lazily.

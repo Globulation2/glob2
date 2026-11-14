@@ -1005,6 +1005,11 @@ namespace GAGCore
         //! skin shadows, editor swatches). There, a sprite loads its HD layers
         //! once something demands them. Returns true when this queued a reload.
         bool demandHighResolution();
+        //! On those backends, drops the HD layers a demand loaded (or cancels
+        //! their reload) until the next baseFrame demands them again. Deferred
+        //! banks retire frames through their windows instead; elsewhere this
+        //! does nothing.
+        void releaseHighResolutionDemand();
 
         //! The frame's shape filled with one colour, for effects drawn over the
         //! sprite at its logical size: opaque wherever either layer is, or only
@@ -1077,6 +1082,9 @@ namespace GAGCore
         static unsigned highResolutionDetailSkip();
         //! How long the view must want less detail before the band drops (tests shorten it).
         static void setHighResolutionDetailDelay(std::int64_t nanoseconds);
+        //! The same delay, for other views that lower their detail on its clock
+        //! (the portable renderer's terrain pages).
+        static std::int64_t highResolutionDetailDelay();
         //! Called when legacy OpenGL textures are freed: HD frames whose pixels
         //! were released have nothing left, so their sprites drop back to
         //! native artwork and reload HD in the background at the next poll.

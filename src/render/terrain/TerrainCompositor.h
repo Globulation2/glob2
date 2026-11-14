@@ -7,6 +7,7 @@
 #include "map/MapAssetBundle.h"
 #include "render/MapAssetSprites.h"
 #include <SDLGraphicContext.h>
+#include <DetailHysteresis.h>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -50,8 +51,19 @@ class Compositor
     void prepareForRecipes(bool hd, int time, std::span<const Recipe> recipes);
     // Inclusive world-cell bounds, wrapped to the map. HD streams asynchronously
     // with native sources as fallback until each requested frame is available.
+    // Without decor, only material frames stream: a renderer that draws decor
+    // sprites from their native frames alone (the portable SDL renderer) has
+    // no use for HD decor.
     void prepareVisible(bool hd, int time, const SceneMap &, int left, int top, int right, int bottom,
-                        bool nativeComposition = false);
+                        bool nativeComposition = false, bool decor = true);
+    // Whether the portable renderer's pages compose HD material frames for a
+    // view at `density` screen pixels per logical pixel (map scale times raster
+    // scale). Native frames are the HD frames reduced by four, so at one or
+    // fewer an HD page holds texels nothing shows. More detail is taken at
+    // once; native frames only once the view has wanted them for
+    // Sprite::highResolutionDetailDelay(), so zooming across the threshold and
+    // back recomposes nothing. Call once a frame.
+    bool highResolutionPages(double density);
     // The same view for a caller that filters its own tiles through
     // phasePixels(), as direct terrain does: only the HD stream window is
     // declared and no CPU textures are kept here. Without frames the view
@@ -332,7 +344,8 @@ class Compositor
     Uint64 requestedMapIdentity = 0;
     std::vector<std::string> requestedTerrainPackages;
 #endif
-    void prepareSelected(bool hd, int time, const Usage *usage, bool nativeComposition = false);
+    void prepareSelected(bool hd, int time, const Usage *usage, bool nativeComposition = false,
+                         bool decor = true);
     Usage visibleUsage(const SceneMap &, int left, int top, int right, int bottom) const;
     // Nonperiodic custom art uses variant zero as its shared boundary source.
     void includeBoundarySources(Usage &usage) const;
@@ -349,6 +362,8 @@ class Compositor
 	std::vector<std::uint64_t> textureRevisions;
 	std::vector<int> highResolutionSizes; // Largest source size seen per material.
 	HighResolutionCoverage coverage;
+    // Detail level of portable pages: 0 HD, 1 native. A view starts native.
+    GAGCore::DetailHysteresis pageDetail{1};
 	int resolution = 1;
 	unsigned preparedTime = 0;
 };

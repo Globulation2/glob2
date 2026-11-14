@@ -253,6 +253,21 @@ void retireTexture(SoftwareTerrainCache::Chunk &chunk)
 	chunk.parked.reset(chunk.image->takePixels());
 	chunk.image.reset();
 }
+bool portableRenderer()
+{
+	return globalContainer->gfx->backendSwitchStatus().active == GAGCore::RendererBackend::PortableSDL;
+}
+// Whether this view's pages compose HD material frames. Accelerated renderers
+// do, except the portable SDL renderer at one screen pixel per logical pixel
+// or fewer (Compositor::highResolutionPages), where HD pages only cost.
+// Captures draw once at their own density and keep HD.
+bool composeHighResolution(TerrainVisual::Compositor &compositor, bool tiledCapture)
+{
+	auto &gfx = *globalContainer->gfx;
+	if (!gfx.rendererCapabilities().accelerated) return false;
+	if (tiledCapture || !portableRenderer()) return true;
+	return compositor.highResolutionPages(double(gfx.mapTransformScale()) * gfx.getRasterScale());
+}
 struct SamplingPlan
 {
 	int resolution;
@@ -886,20 +901,22 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 	// materials for the interactive Legacy OpenGL view.
 	const bool reducedLegacyView = gfx.isLegacyGLScreen() && !tiledCapture && !preferredDownsample &&
 		samplingPlan(map, left, top, right, bottom, vx, vy, 1).downsample > 1;
+	const bool portable = portableRenderer();
+	const bool highResolution = composeHighResolution(compositor, tiledCapture);
     {
         PERF_SCOPE_TIME(TerrainMaterials);
 	// CPU and device composition can rebuild complete pages beyond the
 	// viewport, so prepare every cell in those pages before collecting jobs.
 	const auto prepareMaterials = [&] {
-		compositor.prepareVisible(nextGPU, time, map,
+		compositor.prepareVisible(highResolution, time, map,
 			chunkOf(left + vx) * ChunkTiles, chunkOf(top + vy) * ChunkTiles,
 			(chunkOf(right + vx) + 1) * ChunkTiles - 1,
-			(chunkOf(bottom + vy) + 1) * ChunkTiles - 1, reducedLegacyView);
+			(chunkOf(bottom + vy) + 1) * ChunkTiles - 1, reducedLegacyView, !portable);
 	};
 	prepareMaterials();
 	// A capture is drawn once, so it waits for streamed HD rather than
 	// keeping the native fallback that interactive frames replace later.
-	if (tiledCapture && nextGPU)
+	if (tiledCapture && highResolution)
 	{
 		GAGCore::Sprite::finishHighResolution();
 		prepareMaterials();
@@ -928,6 +945,15 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 	resolution = nextResolution;
 	gpu = nextGPU;
 	downsample = plan.downsample;
+	// Once a portable view has settled back on native frames, its HD pages are
+	// stale (their materials' revisions moved on) and only hold memory.
+	if (portable && composedHighResolution && !highResolution)
+		std::erase_if(chunks, [&](const auto &chunk) {
+			if (chunk->scale == 1) return false;
+			if (gpuPages) gpuPages->erase(*chunk);
+			return true;
+		});
+	composedHighResolution = highResolution;
 	const auto storage = pageStorage(resolution, false, downsample);
 	const auto uploadReserve = gpu ? pageStorage(resolution, true, downsample) - storage : 0;
     const auto *device = gfx.renderDevice();
@@ -1396,15 +1422,15 @@ void SoftwareTerrainCache::drawUncached(const SceneMap &map, GAGCore::Sprite &sp
 										FallbackMode mode, bool tiledCapture)
 {
 	auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
-	const bool gpu = globalContainer->gfx->rendererCapabilities().accelerated;
+	const bool highResolution = composeHighResolution(compositor, tiledCapture);
 	const auto prepareMaterials = [&] {
-		compositor.prepareVisible(gpu, time, map,
+		compositor.prepareVisible(highResolution, time, map,
 			chunkOf(left + vx) * ChunkTiles, chunkOf(top + vy) * ChunkTiles,
 			(chunkOf(right + vx) + 1) * ChunkTiles - 1,
-			(chunkOf(bottom + vy) + 1) * ChunkTiles - 1);
+			(chunkOf(bottom + vy) + 1) * ChunkTiles - 1, false, !portableRenderer());
 	};
 	prepareMaterials();
-	if (tiledCapture && gpu)
+	if (tiledCapture && highResolution)
 	{
 		GAGCore::Sprite::finishHighResolution();
 		prepareMaterials();

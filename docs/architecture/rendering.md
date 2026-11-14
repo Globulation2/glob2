@@ -46,6 +46,21 @@ window first asks for them, and uploads them on the first direct draw. The first
 answers can be native frames, as with any streamed layer. Switching to legacy
 OpenGL reloads every sprite; switching away releases layers nothing asked for.
 
+The portable SDL renderer's terrain pages ask for HD material frames only where
+they show: above one screen pixel per logical pixel (map scale times raster
+scale, 32 pixels a cell on a 1x display), the threshold legacy OpenGL's direct
+terrain uses. Native frames are the HD frames reduced by four, so at or below it
+an HD page holds four times the texels, composed and uploaded for nothing. A
+view starts on native frames and takes HD at once when it zooms in, but drops back
+only after it has wanted native frames for ten seconds (`GAGCore::DetailHysteresis`
+on the clock of the legacy OpenGL sprite bands), so zooming across the threshold
+and back recomposes nothing. Then pages compose from native frames, the HD pages
+are discarded, the streamed banks' frames retire into the shared budget for
+[retired frames](../development/rendering-benchmarks.md#direct-terrain) and whole sheets a page demanded through `Sprite::baseFrame`
+release their layers until the next demand. Decor HD frames never stream there,
+since the portable renderer draws decor sprites from their native frames.
+Captures keep their own density and HD artwork.
+
 Terrain uses the shared CPU material compositor and bounded 16 by 16 cell pages
 on software and GPU backends; see [terrain materials](../assets/terrain-materials.md).
 [Direct terrain](../development/rendering-benchmarks.md#direct-terrain)

@@ -8,10 +8,12 @@
 #include "TerrainPresentation.h"
 #include "render/scene/SceneMap.h"
 #include <Toolkit.h>
+#include <SteadyClock.h>
 #ifdef __EMSCRIPTEN__
 #include <ApplicationHost.h>
 #include <bitset>
 #endif
+#include <set>
 #include <algorithm>
 #include <cassert>
 #include <stdexcept>
@@ -363,13 +365,25 @@ void Compositor::requestMapTerrain(const SceneMap& map)
 }
 #endif
 void Compositor::prepareVisible(bool hd, int time, const SceneMap &map,
-                                int left, int top, int right, int bottom, bool nativeComposition)
+                                int left, int top, int right, int bottom, bool nativeComposition,
+                                bool decor)
 {
 #ifdef __EMSCRIPTEN__
     if (hd && GAGCore::Sprite::highResolutionRequested()) requestMapTerrain(map);
 #endif
     const auto usage = visibleUsage(map, left, top, right, bottom);
-    prepareSelected(hd, time, &usage, nativeComposition);
+    prepareSelected(hd, time, &usage, nativeComposition, decor);
+}
+bool Compositor::highResolutionPages(double density)
+{
+    if (pageDetail.update(density > 1 ? 0 : 1, GAGCore::steadyClockNanoseconds(),
+                          GAGCore::Sprite::highResolutionDetailDelay()) &&
+        pageDetail.level())
+        // Deferred banks retire their frames when the next window declares
+        // none; whole sheets that a baseFrame demanded drop theirs here.
+        for (auto *sprite : std::set<GAGCore::Sprite *>(sprites.begin(), sprites.end()))
+            if (sprite) sprite->releaseHighResolutionDemand();
+    return pageDetail.level() == 0;
 }
 void Compositor::declareVisible(int time, const SceneMap &map, int left, int top, int right, int bottom,
                                 bool frames)
@@ -499,7 +513,8 @@ void Compositor::declareWindows(bool materials, bool decor, int time, const Usag
     }
     for (auto &[sprite, window] : windows) sprite->setHighResolutionFrames(window);
 }
-void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool nativeComposition)
+void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool nativeComposition,
+                                 bool decor)
 {
     Usage normalized;
     if (requested)
@@ -508,7 +523,13 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool
         includeBoundarySources(normalized);
         requested = &normalized;
     }
-    declareWindows(hd, hd, time, requested);
+    declareWindows(hd, hd && decor, time, requested);
+    // A renderer that never draws HD decor also drops windows declared before
+    // it took over (a switch from legacy OpenGL), retiring their frames.
+    if (!decor)
+        for (auto *sprite : decorSprites)
+            if (sprite && std::find(sprites.begin(), sprites.end(), sprite) == sprites.end())
+                sprite->setHighResolutionFrames({});
     texturesPrepared = true;
 
     // Keep the existing stream window ready for the next zoom level while
