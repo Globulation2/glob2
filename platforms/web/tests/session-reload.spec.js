@@ -30,12 +30,12 @@ async function startAndSave(page) {
   await expect.poll(async()=>(await state(page)).screenClass).toContain('GameSessionScreen');
   return (await page.evaluate(()=>glob2Diagnostics.saves())).find(name=>name.startsWith('Reload_regression_'));
 }
-async function loadSaved(page,replay=false,observeLoading=true) {
+async function loadSaved(page,replay=false,observeLoading=true,listTimeout=30000) {
   await page.locator('#canvas').press('Escape',{delay:80});
   await clickControl(page,'load');
   // Game loads retain the last saved name; the first row may be an autosave.
   // The imported replay is selected explicitly because it has a different name.
-  if(replay) await clickListRow(page,'files',/^AAA Replay/);
+  if(replay) await clickListRow(page,'files',/^AAA Replay/,{timeout:listTimeout});
   // Start observing before the click so a fast cooperative load is not missed.
   const loading=observeLoading ? page.waitForFunction(()=>glob2Diagnostics.snapshot().screenClass.includes('GameLoadScreen')) : Promise.resolve();
   await clickControl(page,'ok');await loading;
@@ -100,7 +100,9 @@ test(`an active replay can be loaded again through the scheduled loader (${mode}
   await expect.poll(async()=>(await state(page)).screen,{timeout:loadTimeout}).toContain('match');
   const original=(await state(page)).tick;
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(original+25);
-  await loadSaved(page,true);
+  // The serial build answers the in-game load dialog slowly under software WebGL2
+  // while the replay runs; give its file list the load budget too.
+  await loadSaved(page,true,true,loadTimeout);
   await expect.poll(async()=>(await state(page)).screen,{timeout:loadTimeout}).toContain('match');
   const loaded=(await state(page)).tick;
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(loaded+25);
