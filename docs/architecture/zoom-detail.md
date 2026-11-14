@@ -42,8 +42,8 @@ it is saved, checksummed or read by the simulation.
   badge, larger on screen than a unit this far out, does not cover it. A building
   shows, at its top right and in this order of precedence, damaged, a tower without
   ammunition, an inn without food (the hungry icon) and under half its workers.
-  Badges are 9 points across, shrinking with the other overlays to no less than 8;
-  on a HiDPI display the icon keeps about 12 pixels.
+  Badges are 18 points across, shrinking with the other overlays to no less than
+  16; the icon keeps about 12 pixels on a standard display and 24 on a HiDPI one.
   Their icons (`MapOverlayQueue::StatusIcon`) come from the SVGs in
   `content-src/icons/status/`, rasterised by the same script as the map icons into
   `content/data/gfx/statusicon*.png` at sizes from 8 pixels.
