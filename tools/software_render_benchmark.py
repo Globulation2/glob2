@@ -96,6 +96,8 @@ def main():
     parser.add_argument("--output", type=Path, default=Path("artifacts/software-renderer"))
     parser.add_argument("--renderer", choices=["software", "sdl"], default="software",
                         help="sdl measures the portable SDL_Renderer backend and always presents")
+    parser.add_argument("--profile-env", action="append", default=[], metavar="PROFILE_NAME=VALUE",
+                        help="extra PROFILE_* workload option for both variants (PROFILE_MODE=gui, PROFILE_PAUSED=1...)")
     parser.add_argument("--render-driver", help="SDL_RENDER_DRIVER for --renderer sdl (opengl, vulkan, gpu, software...)")
     parser.add_argument("--resolution", default="1280x800")
     parser.add_argument("--frames", type=int, default=240)
@@ -119,6 +121,8 @@ def main():
         parser.error("resolution must be WxH")
     if args.render_driver and args.renderer != "sdl":
         parser.error("--render-driver requires --renderer sdl")
+    if any(not option.startswith("PROFILE_") or "=" not in option for option in args.profile_env):
+        parser.error("--profile-env takes PROFILE_NAME=VALUE")
     variants = ("baseline", "candidate") if args.candidate else ("baseline",)
     args.output.mkdir(parents=True, exist_ok=True)
     results = {"hardware": platform.platform(), "processor": platform.processor(), "machine": platform.machine(),
@@ -140,6 +144,9 @@ def main():
                    PROFILE_WARMUP=str(args.warmup), PROFILE_CPU_SCOPES="1")
         if args.render_driver:
             env["SDL_RENDER_DRIVER"] = args.render_driver
+        for option in args.profile_env:
+            name, _, value = option.partition("=")
+            env[name] = value
         if fractional:
             env["PROFILE_FRACTION"] = "1"
         if not args.present and args.renderer != "sdl":
