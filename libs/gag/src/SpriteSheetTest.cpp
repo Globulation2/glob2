@@ -143,6 +143,11 @@ TEST_CASE("detail hysteresis raises detail at once and lowers it after the delay
     CHECK(detail.level() == 1);
     CHECK(detail.update(2, 400, 0));
     CHECK(detail.level() == 2);
+    // A clock reading of zero starts the wait like any other time.
+    GAGCore::DetailHysteresis fromZero(0);
+    CHECK_FALSE(fromZero.update(1, 0, 50));
+    CHECK_FALSE(fromZero.update(1, 49, 50));
+    CHECK(fromZero.update(1, 50, 50));
 }
 TEST_CASE("an on-demand HD sheet releases its layers until a base frame demands them again [display]") {
     glob2test::TempDir scratch("released-demand-hd");

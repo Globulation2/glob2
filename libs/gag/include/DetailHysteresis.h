@@ -14,20 +14,26 @@ class DetailHysteresis
   public:
 	explicit DetailHysteresis(unsigned level = 0) : current(level) {}
 	//! Returns whether the level changed. `now` and `delay` are steady clock
-	//! nanoseconds.
+	//! nanoseconds. The wait runs from the first frame wanting any lower
+	//! detail, and the level then drops to whatever the latest frame wants; a
+	//! frame wanting the current level restarts it.
 	bool update(unsigned wanted, std::int64_t now, std::int64_t delay)
 	{
 		if (wanted >= current)
 		{
 			if (wanted == current)
 			{
-				lowerWantedSince = 0;
+				waiting = false;
 				return false;
 			}
-			if (!lowerWantedSince) lowerWantedSince = now;
+			if (!waiting)
+			{
+				waiting = true;
+				lowerWantedSince = now;
+			}
 			if (now - lowerWantedSince < delay) return false;
 		}
-		lowerWantedSince = 0;
+		waiting = false;
 		current = wanted;
 		return true;
 	}
@@ -35,6 +41,9 @@ class DetailHysteresis
 
   private:
 	unsigned current;
-	std::int64_t lowerWantedSince = 0; // 0 while the view wants no less detail.
+	// Whether every frame since lowerWantedSince has wanted less detail. A
+	// separate flag, so a clock reading of zero is an ordinary time.
+	bool waiting = false;
+	std::int64_t lowerWantedSince = 0;
 };
 } // namespace GAGCore
