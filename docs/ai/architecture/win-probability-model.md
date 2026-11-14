@@ -205,9 +205,11 @@ so it says how the match is going without itemising any opponent.
 
 The end-game metric picker includes **Win probability**, on a fixed 0–100% axis.
 Its history is sampled every 512 ticks and includes a final partial interval.
-Allies share one prediction. An early victory retains the probability that
-triggered the rule, rather than showing a manufactured 100% after its losses are
-assigned. Saved games preserve the trace; saves predating format 190 show only
+Allies share one prediction. The trace only ever holds the model's own
+predictions: the final point, and any sample after prestige, conquest or a script
+has decided the game, repeats the last periodic prediction rather than
+re-evaluating with the losers removed, which would manufacture a sudden 100%. An
+early victory retains the probability that triggered the rule. Saved games preserve the trace; saves predating format 190 show only
 the newly observed portion after loading.
 
 Headless results automatically include the trace and an exact integer

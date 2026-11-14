@@ -159,6 +159,61 @@ TEST_SUITE("WinProbability")
         CHECK(game.teams[1]->stats.winProbabilityHistory.back().permille == expected[1]);
     }
 
+    TEST_CASE("a prestige victory keeps the last prediction instead of jumping to certainty")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams=2, .header=true});
+        auto &game = world.game;
+        game.stepCounter = WinProbability::MINIMUM_DECISION_TICK;
+        retainBarracks(game, game.teams[0], 3);
+        game.winProbabilitySyncStep();
+        const int before[2] = {game.teams[0]->stats.winProbabilityHistory.back().permille,
+                               game.teams[1]->stats.winProbabilityHistory.back().permille};
+        REQUIRE(before[0] < 1000);
+        REQUIRE(before[1] > 0);
+
+        game.gameHeader.getWinningConditions().clear();
+        WinningCondition::setPrestigeWinCondition(game.gameHeader.getWinningConditions(), true);
+        game.teams[0]->prestige = 10;
+        game.teams[1]->prestige = 9;
+        game.totalPrestige = 19;
+        game.prestigeToReach = 19;
+        game.stepCounter += 512;
+        game.wonSyncStep();
+        REQUIRE(game.isGameEnded);
+        REQUIRE(game.teams[1]->hasLost);
+        game.winProbabilitySyncStep(); // a periodic tick after the decision
+        game.stepCounter += 100;
+        game.winProbabilitySyncStep(true); // the reported terminal point
+        for (int t = 0; t < 2; ++t)
+        {
+            const auto &history = game.teams[t]->stats.winProbabilityHistory;
+            REQUIRE(history.size() == 3);
+            CHECK(history[1].permille == before[t]);
+            CHECK(history[2].permille == before[t]);
+            CHECK(history.back().tick == game.stepCounter);
+        }
+    }
+
+    TEST_CASE("a reporting point between samples repeats the last prediction")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams=3, .header=true});
+        auto &game = world.game;
+        game.stepCounter = 512;
+        game.winProbabilitySyncStep();
+        const int before = game.teams[2]->stats.winProbabilityHistory.back().permille;
+        REQUIRE(before > 0);
+        // An elimination between samples must not reshape the trace at the end.
+        game.teams[0]->isAlive = false;
+        game.stepCounter = 700;
+        game.winProbabilitySyncStep(true);
+        CHECK(game.teams[2]->stats.winProbabilityHistory.back().tick == 700);
+        CHECK(game.teams[2]->stats.winProbabilityHistory.back().permille == before);
+        CHECK(game.teams[0]->stats.winProbabilityHistory.back().permille ==
+              game.teams[0]->stats.winProbabilityHistory.front().permille);
+    }
+
     TEST_CASE("model inputs come from the latest gameplay sample, with per-team activity windows")
     {
         glob2test::HeadlessGlobals globals;
