@@ -801,12 +801,51 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
             page.opaque[result.index] = result.opaque;
             page.empty[result.index] = result.empty;
             if (dirty) (*dirty)[result.index] = true;
+            page.overlay[result.index] = false;
         }
         first += count;
     }
     return true;
 }
 
+SoftwareTerrainCache::AnimatedTiles *SoftwareTerrainCache::animatedTile(TerrainVisual::Compositor &compositor,
+                                                                       const TerrainVisual::Recipe &recipe,
+                                                                       SDL_Rect &source)
+{
+    const auto id = recipe.corners[0];
+    const auto &material = compositor.catalog().materials[id];
+    if (material.animationFrames <= 1 || material.variants.empty()) return nullptr;
+    animatedTiles.resize(compositor.catalog().materials.size());
+    auto &set = animatedTiles[id];
+    const int variants = int(material.variants.size());
+    if (!set.atlas)
+    {
+        set.columns = int(std::ceil(std::sqrt(double(variants))));
+        const int rows = (variants + set.columns - 1) / set.columns;
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
+            SDL_CreateSurface(set.columns * NativeTilePixels, rows * NativeTilePixels, SDL_PIXELFORMAT_ARGB8888),
+            SDL_DestroySurface);
+        if (!pixels) throw std::bad_alloc();
+        set.atlas = std::make_unique<TerrainVisual::Surface>(pixels.get(), false);
+        pixels.release();
+        set.revisions.assign(variants, 0);
+        set.opaque.assign(variants, 0);
+    }
+    const unsigned variant = compositor.catalog().variantIndex(id, recipe.x, recipe.y, recipe.seed);
+    source = {int(variant) % set.columns * NativeTilePixels, int(variant) / set.columns * NativeTilePixels,
+              NativeTilePixels, NativeTilePixels};
+    const auto revision = compositor.textureRevision(id) + 1;
+    if (set.revisions[variant] != revision)
+    {
+        // A uniform, uncalmed cell's pixels depend only on its material and variant.
+        auto *pixels = set.atlas->getSDLSurface();
+        compositor.compose(recipe, pixels, source.x, source.y, 1);
+        set.opaque[variant] = allAlpha<255>(*pixels, source);
+        set.revisions[variant] = revision;
+        set.changed = true;
+    }
+    return set.opaque[variant] ? &set : nullptr;
+}
 bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Sprite &, int left,
 											   int top, int right, int bottom, int vx, int vy,
 											   Uint32 visibleTeams, bool wholeMap, int time,
@@ -818,6 +857,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
         chunks.clear();
         gpuPages.reset();
         cpuMaterialLease.reset();
+        animatedTiles.clear();
 		registry = map.frozenTerrainRegistry();
         assets = map.frozenAssetBundle();
 	}
@@ -839,6 +879,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
     }
 	paintBounds = {left * 32, top * 32, (right - left + 1) * 32, (bottom - top + 1) * 32};
 	auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
+	overlayCompositor = &compositor;
 	auto &gfx = *globalContainer->gfx;
 	const bool nextGPU = gfx.rendererCapabilities().accelerated;
 	// When even native-size pages need reduction, avoid preparing HD
@@ -1192,6 +1233,14 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 						for (int x = 0; x < ChunkTiles; ++x)
 						{
 							const int i = y * ChunkTiles + x, n = 32 * resolution / downsample;
+							// Native device pages draw uniform animated cells from
+							// shared tiles; the page keeps an earlier frame below.
+							SDL_Rect tileSource;
+							const bool overlay = gpu && resolution == 1 && downsample == 1 && tiles[i].discovered &&
+								tiles[i].recipe.uniform() && !tiles[i].recipe.calmed() &&
+								animatedTile(compositor, tiles[i].recipe, tileSource);
+							if (wasValid && overlay && entry->overlay[i] && entry->tiles[i] == tiles[i])
+								continue;
 							if (wasValid && entry->tiles[i] == tiles[i] &&
 								(!tiles[i].discovered ||
 								 std::none_of(tiles[i].recipe.corners.begin(),
@@ -1199,6 +1248,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
                                  !tileSurfChanged(tiles[i].recipe, entry->surfTime, compositor)))
 								continue;
 							dirty[i] = true;
+							entry->overlay[i] = overlay;
 							auto &held = entry->masks[i];
 							const auto &recipe = tiles[i].recipe;
 							const int maskScale = downsample > 1 ? 1 : resolution;
@@ -1319,6 +1369,12 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				if (native) native->used = nativeUsed;
 				copies.push_back({entry, (cx * ChunkTiles - vx) * 32, (cy * ChunkTiles - vy) * 32});
 			}
+		for (auto &set : animatedTiles)
+			if (set.changed)
+			{
+				set.atlas->markPixelsChanged();
+				set.changed = false;
+			}
 		if (gpu && !gpuPages &&
 			std::any_of(copies.begin(), copies.end(), [](const auto &copy) { return !copy.chunk->image; }) &&
 			!makeRoom(uploadReserve))
@@ -1435,6 +1491,23 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 						rect.w * resolution / downsample, rect.h * resolution / downsample);
 				};
                 draw(visible);
+				// Uniform animated cells over the page, from their shared tiles.
+				if (overlayCompositor && copy.chunk->scale == 1 && copy.chunk->downsample == 1)
+					for (int i = 0; i < ChunkTiles * ChunkTiles; ++i)
+					{
+						if (!copy.chunk->overlay[i]) continue;
+						SDL_Rect cell{copy.x + i % ChunkTiles * 32, copy.y + i / ChunkTiles * 32, 32, 32}, shown, source;
+						if (!SDL_GetRectIntersection(&cell, &paintBounds, &shown)) continue;
+						auto *set = animatedTile(*overlayCompositor, copy.chunk->tiles[i].recipe, source);
+						if (!set) continue;
+						if (set->changed)
+						{
+							set->atlas->markPixelsChanged();
+							set->changed = false;
+						}
+						target.drawSurface(shown.x, shown.y, shown.w, shown.h, set->atlas.get(),
+							source.x + shown.x - cell.x, source.y + shown.y - cell.y, shown.w, shown.h);
+					}
 			}
 			continue;
 		}
