@@ -70,6 +70,9 @@
 #include "render/scene/SceneExtract.h"
 #include "GameGUIToolManager.h"
 
+// Every frame these tests paint also checks the per-frame touch layout memo.
+[[maybe_unused]] static const bool verifyTouchLayoutFrames = (GameGUITouch::verifyLayoutFrames = true);
+
 static void require(bool condition, const char *message)
 {
 	GLOB2_REQUIRE(condition, message);

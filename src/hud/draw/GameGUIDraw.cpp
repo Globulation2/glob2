@@ -797,6 +797,7 @@ void GameGUI::drawAll(int team)
 	globalContainer->gfx->setClipRect();
 	globalContainer->gfx->drawFilledRect(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH(),0,0,32);
     if (touch) touch->prepareDraw();
+	GameGUITouch::LayoutFrame touchLayout(touch.get());
 	prepareHudOwnership();
 	HudControlPaint controls(*this);
     const int sidebar=touch->usesHUD() ? 0 : RIGHT_MENU_WIDTH;

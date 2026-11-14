@@ -54,6 +54,24 @@ class GameGUITouch
 	void dismissMapPanels();
 	bool scrollAnimating() const;
 	void prepareDraw();
+	//! Holds layout() fixed while one frame is painted. Painting and control
+	//! description resolve it dozens of times per frame from state that only
+	//! input, prepareDraw() and the next scene change. Open it after
+	//! prepareDraw(); nested frames share the outer result.
+	class LayoutFrame
+	{
+	  public:
+		explicit LayoutFrame(GameGUITouch *touch);
+		~LayoutFrame();
+		LayoutFrame(const LayoutFrame &) = delete;
+		LayoutFrame &operator=(const LayoutFrame &) = delete;
+
+	  private:
+		GameGUITouch *touch;
+	};
+	//! Tests set this to recompute layout() on every call inside a LayoutFrame
+	//! and fail when painting changed one of its inputs.
+	static inline bool verifyLayoutFrames = false;
 	// Share the cached prestige (school book) and win chance (trophy) artwork
 	// with the compact desktop statistics bar.
 	void drawPrestigeIcon(GAGCore::ViewPoint center, double logicalSize);
@@ -333,6 +351,9 @@ class GameGUITouch
 	void prepareScenarioMessage();
 	void drawScenarioMessage();
 	GAGCore::MobileLayout layout() const;
+	GAGCore::MobileLayout computeLayout() const;
+	int layoutFrames = 0;
+	mutable std::optional<GAGCore::MobileLayout> frameLayout;
 	// Edge-hugging controls the host is asked to keep free of system gestures;
 	// synchronised only when the set changes.
 	std::vector<GAGCore::ViewRect> gestureExclusion;
