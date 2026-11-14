@@ -479,6 +479,7 @@ struct TerrainCellResult
     Uint8 *pixels = nullptr;
     std::optional<TerrainVisual::Compositor::CellMask> mask;
     const TerrainVisual::Compositor::CellMask *reused = nullptr;
+    std::optional<TerrainVisual::Compositor::Refresh> refresh;
     bool opaque = false, empty = false, keepMask = false;
 };
 // The first alpha selects one constant predicate: opaque and empty cells need
@@ -538,7 +539,8 @@ void buildTerrainJob(std::span<TerrainCellResult> results,
                               scratch,
                               result.reused ? result.reused
                               : result.mask ? &*result.mask
-                                            : nullptr);
+                                            : nullptr,
+                              downsample > 1 || !result.refresh ? nullptr : &*result.refresh);
             if (downsample > 1)
                 reduceTile(&nativeTile, &output, 0, 0, downsample);
             std::tie(result.opaque, result.empty) =
@@ -602,6 +604,49 @@ bool surfStepChanged(TerrainVisual::MaterialId id, unsigned previousTime,
     return surf.period && previousTime / surf.ticks != compositor.surfTime() / surf.ticks;
 }
 
+// An unchanged mixed cell recomposes only the samples its changed textures
+// and advanced surf reach; the page keeps every other sample's pixels.
+template <class Changed>
+TerrainVisual::Compositor::Refresh cellRefresh(const TerrainVisual::Recipe &recipe, Changed materialChanged,
+                                               unsigned previousTime, const TerrainVisual::Compositor &compositor)
+{
+    TerrainVisual::Compositor::Refresh refresh;
+    std::array<TerrainVisual::MaterialId, 4> palette;
+    for (unsigned slot = 0, count = recipe.palette(palette); slot < count; ++slot)
+    {
+        refresh.textures |= unsigned(materialChanged(palette[slot])) << slot;
+        refresh.surf |= unsigned(surfStepChanged(palette[slot], previousTime, compositor)) << slot;
+    }
+    return refresh;
+}
+// Rectangles covering a page's recomposed cells: runs along each row, joined
+// with identical runs directly below them.
+std::vector<SDL_Rect> dirtyRects(const std::array<bool, SoftwareTerrainCache::ChunkTiles * SoftwareTerrainCache::ChunkTiles> &dirty,
+                                 int cellPixels)
+{
+    constexpr int tiles = SoftwareTerrainCache::ChunkTiles;
+    std::vector<SDL_Rect> rects;
+    for (int y = 0; y < tiles; ++y)
+        for (int x = 0; x < tiles;)
+        {
+            if (!dirty[y * tiles + x])
+            {
+                ++x;
+                continue;
+            }
+            const int start = x;
+            while (x < tiles && dirty[y * tiles + x])
+                ++x;
+            const SDL_Rect rect{start * cellPixels, y * cellPixels, (x - start) * cellPixels, cellPixels};
+            auto above = std::find_if(rects.begin(), rects.end(), [&](const SDL_Rect &run)
+                { return run.x == rect.x && run.w == rect.w && run.y + run.h == rect.y; });
+            if (above == rects.end())
+                rects.push_back(rect);
+            else
+                above->h += rect.h;
+        }
+    return rects;
+}
 bool tileSurfChanged(const TerrainVisual::Recipe &recipe, unsigned previousTime,
                      const TerrainVisual::Compositor &compositor)
 {
@@ -615,7 +660,8 @@ bool tileSurfChanged(const TerrainVisual::Recipe &recipe, unsigned previousTime,
 bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
                                         const std::array<Tile, ChunkTiles * ChunkTiles> &tiles,
                                         TerrainVisual::Compositor &compositor, SDL_Surface *target,
-                                        bool wasValid, std::size_t budget, bool nativeAvailable)
+                                        bool wasValid, std::size_t budget, bool nativeAvailable,
+                                        std::array<bool, ChunkTiles * ChunkTiles> *dirty)
 {
     // Reduced pages compose native cells and filter them; a retained native
     // page is already that input, so the serial path reduces it directly.
@@ -711,6 +757,8 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
             if (tiles[i].discovered && held && held->mask.recipe == recipe &&
                 held->mask.scale == resolution)
                 result.reused = &held->mask;
+            if (wasValid && page.tiles[i] == tiles[i] && tiles[i].discovered && !recipe.uniform())
+                result.refresh = cellRefresh(recipe, materialChanged, page.surfTime, compositor);
             std::array<TerrainVisual::MaterialId, 4> palette;
             const unsigned paletteCount = recipe.palette(palette);
             result.keepMask = tiles[i].discovered && !recipe.uniform() &&
@@ -752,6 +800,7 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
                 held = std::make_unique<HeldMask>(std::move(*result.mask), maskTotal);
             page.opaque[result.index] = result.opaque;
             page.empty[result.index] = result.empty;
+            if (dirty) (*dirty)[result.index] = true;
         }
         first += count;
     }
@@ -1122,6 +1171,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				{
 					auto *target = entry->image ? entry->image->getSDLSurface() : entry->parked.get();
 					const bool wasValid = entry->valid;
+					// Cells written by this rebuild; an uploaded page updates only those.
+					std::array<bool, ChunkTiles * ChunkTiles> dirty{};
 					entry->valid = false;
 					entry->opaqueRuns.clear();
                     if (gpuPages) {
@@ -1132,7 +1183,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
                             copies.clear();return false;
                         }
                     }
-                    else if (!tryBuildCpuPage(*entry, tiles, compositor, target, wasValid, budget, native != nullptr))
+                    else if (!tryBuildCpuPage(*entry, tiles, compositor, target, wasValid, budget, native != nullptr,
+                                              &dirty))
                     {
                         ++workMetrics.serialPages;
                         PERF_SCOPE_TIME(TerrainBatch);
@@ -1146,6 +1198,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 											  tiles[i].recipe.corners.end(), materialChanged) &&
                                  !tileSurfChanged(tiles[i].recipe, entry->surfTime, compositor)))
 								continue;
+							dirty[i] = true;
 							auto &held = entry->masks[i];
 							const auto &recipe = tiles[i].recipe;
 							const int maskScale = downsample > 1 ? 1 : resolution;
@@ -1198,8 +1251,20 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 									}
 								}
 								else
+								{
+									// The page already holds this cell's previous composition.
+									std::optional<TerrainVisual::Compositor::Refresh> refresh;
+									if (wasValid && entry->tiles[i] == tiles[i] && cellMask)
+									{
+										refresh = cellRefresh(recipe, materialChanged, entry->surfTime, compositor);
+										// An animation step visits only the samples it can change.
+										if (held && cellMask == &held->mask &&
+											!((refresh->textures | refresh->surf) & ~compositor.animatedSlots(held->mask)))
+											refresh->samples = &held->animatedSamples(compositor);
+									}
 									compositor.compose(recipe, target, x * n, y * n, resolution,
-													   cellMask);
+													   cellMask, refresh ? &*refresh : nullptr);
+								}
 							}
 							else
 							{
@@ -1214,7 +1279,13 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							}
 						}
                     }
-					if (entry->image && !gpuPages) entry->image->markPixelsChanged();
+					if (entry->image && !gpuPages)
+					{
+						if (!wasValid || std::all_of(dirty.begin(), dirty.end(), [](bool cell) { return cell; }))
+							entry->image->markPixelsChanged();
+						else if (std::any_of(dirty.begin(), dirty.end(), [](bool cell) { return cell; }))
+							entry->image->markPixelsChanged(dirtyRects(dirty, ChunkPixels * resolution / downsample / ChunkTiles));
+					}
 					entry->tiles = tiles;
 					entry->materialRevisions.clear();
 					entry->surfTime = compositor.surfTime();
