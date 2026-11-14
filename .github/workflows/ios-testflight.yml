@@ -114,6 +114,19 @@ jobs:
           ref: ${{ needs.credentials.outputs.commit }}
           fetch-depth: 0
           persist-credentials: false
+      # The runner image's default Xcode moves ahead of the pin; select the
+      # tagged source's pinned Xcode when the image still has it.
+      - name: Select the pinned Xcode
+        run: |
+          set -euo pipefail
+          xcode=$(python3 -c 'import json; print(json.load(open("platforms/mobile/toolchain.json"))["ios"]["xcode"])')
+          developer="/Applications/Xcode_${xcode}.app/Contents/Developer"
+          if [ -d "$developer" ]; then
+            echo "DEVELOPER_DIR=$developer" >> "$GITHUB_ENV"
+            echo "Selected Xcode $xcode at $developer"
+          else
+            echo "::warning::Xcode $xcode is not installed at $developer; using the runner default"
+          fi
       - name: Validate exact public release tag
         env:
           RELEASE_TAG: ${{ inputs.tag }}
@@ -212,6 +225,19 @@ jobs:
           repository: Globulation2/glob2
           ref: ${{ needs.build.outputs.commit }}
           persist-credentials: false
+      # The runner image's default Xcode moves ahead of the pin; select the
+      # tagged source's pinned Xcode when the image still has it.
+      - name: Select the pinned Xcode
+        run: |
+          set -euo pipefail
+          xcode=$(python3 -c 'import json; print(json.load(open("platforms/mobile/toolchain.json"))["ios"]["xcode"])')
+          developer="/Applications/Xcode_${xcode}.app/Contents/Developer"
+          if [ -d "$developer" ]; then
+            echo "DEVELOPER_DIR=$developer" >> "$GITHUB_ENV"
+            echo "Selected Xcode $xcode at $developer"
+          else
+            echo "::warning::Xcode $xcode is not installed at $developer; using the runner default"
+          fi
       - name: Check requested App Store eligibility
         env:
           AUDIENCE: ${{ inputs.audience }}
