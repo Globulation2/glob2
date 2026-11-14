@@ -7102,3 +7102,7 @@ Tik %0: %1 ms kloktijd
 AI voor alle computergestuurde kolonies
 [tundra]
 Toendrabodem
+[replay stopped %0]
+
+[replay stopped help]
+

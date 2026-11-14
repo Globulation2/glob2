@@ -7102,3 +7102,7 @@ Ciclo %0: %1 ms de tiempo real
 IA para todas las colonias controladas por ordenador
 [tundra]
 Suelo de tundra
+[replay stopped %0]
+
+[replay stopped help]
+

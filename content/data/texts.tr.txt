@@ -7102,3 +7102,7 @@ Adım %0: %1 ms gerçek süre
 Bilgisayar kontrollü tüm koloniler için yapay zekâ
 [tundra]
 Tundra toprağı
+[replay stopped %0]
+
+[replay stopped help]
+

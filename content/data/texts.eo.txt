@@ -7102,3 +7102,7 @@ Takto %0: %1 ms reala tempo
 AI por ĉiuj komputile regataj kolonioj
 [tundra]
 Tundra grundo
+[replay stopped %0]
+
+[replay stopped help]
+

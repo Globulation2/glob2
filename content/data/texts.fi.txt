@@ -7102,3 +7102,7 @@ Askel %0: %1 ms seinäkelloaikaa
 Tekoäly kaikille tietokoneen ohjaamille siirtokunnille
 [tundra]
 Tundramaa
+[replay stopped %0]
+
+[replay stopped help]
+

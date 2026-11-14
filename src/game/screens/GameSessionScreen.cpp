@@ -12,6 +12,7 @@
 #include "SettingsScreen.h"
 #include <Toolkit.h>
 #include <StringTable.h>
+#include <ios>
 #include <stdexcept>
 #include <ApplicationHost.h>
 
@@ -47,23 +48,39 @@ void GameSessionScreen::updateExecution(Uint32 tick)
 	catch (const Script::SessionFailure &failure)
 	{
         GAGCore::ApplicationHost::studioError(failure.what());
-		engine->abortSession();
-		engine->restoreCursor();
-		started = false;
-		finished = true;
-		cancelScreenInputReceipt(); input.clear();
-		if (globalContainer->mix)
-			globalContainer->mix->setNextTrack(MusicTrack::Menu, true);
 		const std::string raw = failure.what();
 		Glob2UI::DiagnosticText presenter;
-		const auto message = Glob2UI::bulgarianErrorLocale()
+		stopSession(Glob2UI::bulgarianErrorLocale()
 			? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[game stopped %0]", "Game stopped: %0"), {presenter(raw)}) + "\n" +
 				Glob2UI::nativeSurfaceText("[game stopped script help]", "Review the embedded JavaScript and its resource use before restarting this game.")
-			: "Game stopped: " + raw + "\nReview the embedded JavaScript and its resource use before restarting this game.";
-		stack.push(std::make_unique<MessageScreen>(message,
-			std::vector<std::string>{Glob2UI::bulgarianErrorLocale() ? Glob2UI::nativeSurfaceText("[ok]", "Ok") : "OK"}),
-			[this](GAGGUI::Screen &, int) { endExecute(0); });
+			: "Game stopped: " + raw + "\nReview the embedded JavaScript and its resource use before restarting this game.");
 	}
+	catch (const std::ios_base::failure &failure)
+	{
+		// Replay playback reports a snapshot checksum mismatch (a replay from a
+		// different simulation version) or a damaged file this way. Leaving it
+		// uncaught tore down the session and, in the browser, stopped the main
+		// loop on the last frame; stop the replay and explain instead.
+		if (!globalContainer->replaying) throw;
+		Glob2UI::DiagnosticText presenter;
+		const std::string raw = presenter(failure.what());
+		stopSession(Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[replay stopped %0]", "Replay stopped: %0"), {raw}) + "\n" +
+			Glob2UI::nativeSurfaceText("[replay stopped help]", "The replay was recorded by a different version of the game or is damaged, so it cannot be played back."));
+	}
+}
+
+void GameSessionScreen::stopSession(const std::string &message)
+{
+	engine->abortSession();
+	engine->restoreCursor();
+	started = false;
+	finished = true;
+	cancelScreenInputReceipt(); input.clear();
+	if (globalContainer->mix)
+		globalContainer->mix->setNextTrack(MusicTrack::Menu, true);
+	stack.push(std::make_unique<MessageScreen>(message,
+		std::vector<std::string>{Glob2UI::bulgarianErrorLocale() ? Glob2UI::nativeSurfaceText("[ok]", "Ok") : "OK"}),
+		[this](GAGGUI::Screen &, int) { endExecute(0); });
 }
 
 bool GameSessionScreen::hasPendingExecutionInput() const

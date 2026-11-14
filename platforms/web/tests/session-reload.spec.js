@@ -90,7 +90,7 @@ test(`an active replay can be loaded again through the scheduled loader (${mode}
   expect((await state(page)).executionMode).toBe(mode);
   const replay=await require('node:fs/promises').readFile(path.resolve(__dirname,'fixtures/cross-replay.replay'));
   expect(replay.subarray(4,16).toString()).toBe('replayHeader');
-  expect(replay.readUInt32BE(20)).toBe(213);
+  expect(replay.readUInt32BE(20)).toBe(216);
   await clickMainMenu(page,'load');await screen(page,'ChooseMapScreen');await clickControl(page,'switch');
   const chooser=page.waitForEvent('filechooser');await clickControl(page,'import');
   await (await chooser).setFiles({name:'AAA Replay.replay',mimeType:'application/octet-stream',
@@ -107,3 +107,24 @@ test(`an active replay can be loaded again through the scheduled loader (${mode}
   expect(errors).toEqual([]);
 });
 }
+
+test('a replay from another simulation version stops with an explanation and the game keeps running',{tag:'@webgl2-reload-c'},async({page})=>{
+  const loadTimeout=process.env.GLOB2_TEST_RENDERER==='webgl2'?180000:30000;
+  if(process.env.GLOB2_TEST_RENDERER==='webgl2') test.setTimeout(420000);
+  const errors=[];page.on('pageerror',error=>errors.push(String(error)));
+  // The serial runtime is the one whose main loop stopped on the uncaught failure.
+  const url=new URL(gameURL(),'http://localhost');url.searchParams.set('threads','serial');
+  await page.goto(url.pathname+url.search);await screen(page,'MainMenuScreen');
+  // Recorded before SIM 154: its snapshot checksums stop matching after tick 200.
+  const replay=await require('node:fs/promises').readFile(path.resolve(__dirname,'fixtures/other-sim-version.replay'));
+  await clickMainMenu(page,'load');await screen(page,'ChooseMapScreen');await clickControl(page,'switch');
+  const chooser=page.waitForEvent('filechooser');await clickControl(page,'import');
+  await (await chooser).setFiles({name:'BBB Other version.replay',mimeType:'application/octet-stream',buffer:replay});
+  await expect.poll(async()=>(await state(page)).import).toBe('succeeded');
+  await clickListRow(page,'files',/^BBB Other version/);await clickControl(page,'ok');
+  await expect.poll(async()=>(await state(page)).screen,{timeout:loadTimeout}).toContain('match');
+  await expect.poll(async()=>(await state(page)).screen,{timeout:loadTimeout}).toContain('MessageScreen');
+  const loop=(await state(page)).loop;
+  await expect.poll(async()=>(await state(page)).loop).toBeGreaterThan(loop+5);
+  expect(errors).toEqual([]);
+});

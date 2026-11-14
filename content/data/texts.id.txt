@@ -7102,3 +7102,7 @@ Langkah %0: %1 ms waktu nyata
 AI untuk semua koloni yang dikendalikan komputer
 [tundra]
 Tanah tundra
+[replay stopped %0]
+
+[replay stopped help]
+

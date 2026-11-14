@@ -916,7 +916,10 @@ void GameGUI::drawAll(int team)
 	minimap.draw(drawnScene(), localTeamNo, viewportX, viewportY, int(std::ceil(camera.visibleW()/32)), int(std::ceil(camera.visibleH()/32)) );
 
 	// draw the progress bar if this is a replay
-	if (globalContainer->replaying && !touch->usesHUD()) drawReplayProgressBar();
+	// A replay stopped by a failed checksum or damaged file has no valid reader
+	// while its message screen is shown over the last frame.
+	if (globalContainer->replaying && globalContainer->replayReader && globalContainer->replayReader->isValid()
+		&& !touch->usesHUD()) drawReplayProgressBar();
 
 	// draw the top bar and other infos
 	globalContainer->gfx->setClipRect();

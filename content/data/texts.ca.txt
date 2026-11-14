@@ -7102,3 +7102,7 @@ Cicle %0: %1 ms de temps real
 IA per a totes les colònies controlades per l’ordinador
 [tundra]
 Sòl de tundra
+[replay stopped %0]
+
+[replay stopped help]
+

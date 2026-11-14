@@ -7102,3 +7102,7 @@ MCP сървър
 ИИ за всички компютърни колонии
 [tundra]
 Тундрова почва
+[replay stopped %0]
+
+[replay stopped help]
+

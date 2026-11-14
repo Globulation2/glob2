@@ -7102,3 +7102,7 @@ Ciclo %0: %1 ms de tempo real
 IA evit an holl drevadennoù meret gant an urzhiataer
 [tundra]
 Solo de tundra
+[replay stopped %0]
+
+[replay stopped help]
+

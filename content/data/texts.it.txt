@@ -7102,3 +7102,7 @@ Tick %0: %1 ms di tempo reale
 IA per tutte le colonie controllate dal computer
 [tundra]
 Terreno di tundra
+[replay stopped %0]
+
+[replay stopped help]
+

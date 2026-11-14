@@ -7102,3 +7102,7 @@ Korak %0: %1 ms dejanskega časa
 Umetna inteligenca za vse računalniško vodene kolonije
 [tundra]
 Tundrska tla
+[replay stopped %0]
+
+[replay stopped help]
+

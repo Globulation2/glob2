@@ -2,12 +2,15 @@
 
 ## Replay import
 
-`cross-replay.replay` is an import/playback fixture recorded at file format 213
-from the repository's unchanged `content/games/cross-replay.game.gz` (seed 42), for 1,500
-ticks. The replay reader's current minimum accepted format is 213
+`cross-replay.replay` is an import/playback fixture recorded at file format 216
+(SIM 160) from the repository's unchanged `content/games/cross-replay.game.gz` (seed 42),
+for 1,500 ticks. The replay reader's current minimum accepted format is 213
 (`FILE_FORMAT_VERSION_RESOURCE_CLAIMS`).
 
-Re-record when the accepted replay floor changes, using an isolated profile:
+Playback verifies the recorded snapshot checksums, so a simulation change that alters
+this game stops the replay at its first differing checkpoint ("Replay stopped" in the
+browser tests). Re-record it with any `SIM_REVISION` bump that changes the game, and when
+the accepted replay floor changes, using an isolated profile:
 
 ```sh
 GLOB2_USER_DATA_DIR="$PWD/artifacts/browser-fixture-profile" \
@@ -18,6 +21,11 @@ SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy \
 ```
 
 Use the corresponding native build path on other platforms.
+
+`other-sim-version.replay` is the same game recorded at file format 213 before SIM 154.
+Its checksums no longer match after tick 200, so `session-reload.spec.js` uses it to
+check that a replay from another simulation version stops with an explanation and the
+game keeps running. Do not re-record it.
 
 ## Studio native/browser checksums
 

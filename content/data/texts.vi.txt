@@ -7102,3 +7102,7 @@ Nhịp %0: %1 ms thời gian thực
 AI cho mọi thuộc địa do máy tính điều khiển
 [tundra]
 Đất lãnh nguyên
+[replay stopped %0]
+
+[replay stopped help]
+

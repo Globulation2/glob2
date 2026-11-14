@@ -7102,3 +7102,7 @@ Tik %0: %1 ms vægurstid
 AI for alle computerstyrede kolonier
 [tundra]
 Tundrajord
+[replay stopped %0]
+
+[replay stopped help]
+

@@ -7102,3 +7102,7 @@ Detik %0: %1 ms masa berlalu
 Kemas kini arahan tetap gagal. Arahan anda dijeda secara setempat; cuba semula melalui kawalan berkenaan.
 [tundra]
 Tanah tundra
+[replay stopped %0]
+
+[replay stopped help]
+
