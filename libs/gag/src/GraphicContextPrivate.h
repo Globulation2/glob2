@@ -57,6 +57,11 @@ namespace GAGCore
 	bool prepareNativeMipmaps(unsigned texture, SDL_Surface *surface);
 	void releaseNativeMipmaps(SDL_GLContext context);
 
+	// A zeroed frame surface whose pixel pages become resident only when
+	// written. Accelerated backends keep it as a dimension facade they never
+	// draw into; CPU backends touch every page anyway.
+	SDL_Surface *createFrameSurface(int w, int h, SDL_PixelFormat format = SDL_PIXELFORMAT_ARGB8888);
+
 	// The active graphic context. Set by GraphicContext::setRes.
 	extern GraphicContext *_gc;
 	// SDL pixel format used for GL uploads. Configured by GraphicContext::setRes.

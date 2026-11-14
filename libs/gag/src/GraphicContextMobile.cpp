@@ -89,7 +89,7 @@ namespace GAGCore {
         }
         responsiveViewport = enabled;
         if (getW() == width && getH() == height) return enabled;
-        SDL_Surface* replacement = SDL_CreateSurface(width, height, sdlsurface->format);
+        SDL_Surface* replacement = createFrameSurface(width, height, sdlsurface->format);
         if (!replacement) throw std::runtime_error(SDL_GetError());
         if (renderer) renderer->logicalSize(width, height);
         freeOwnedSurface();
