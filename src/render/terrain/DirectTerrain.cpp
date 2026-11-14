@@ -38,6 +38,8 @@
 #include <deque>
 #include <condition_variable>
 #include <mutex>
+#include <atomic>
+#include <functional>
 #include <thread>
 #include <cmath>
 #include <optional>
@@ -726,6 +728,26 @@ struct DirectTerrain::State
 
     // The fallback has nothing left to show. Its textures stay as the spare
     // for the next zoom, so a run of zooms allocates nothing.
+    // Runs job(0..count-1) on this thread and, for a large batch, on helper
+    // threads, returning when all are done. Only density changes and the first
+    // view build large batches, so helpers are started for them alone.
+    static void filterTiles(std::size_t count, const std::function<void(std::size_t)> &job)
+    {
+        constexpr std::size_t JobsPerHelper = 32;
+        const std::size_t cores = std::max(1u, std::thread::hardware_concurrency());
+        const std::size_t helpers = std::min({cores - 1, std::size_t(7), count / JobsPerHelper});
+        std::atomic<std::size_t> next{0};
+        const auto run = [&]
+        {
+            for (std::size_t i; (i = next.fetch_add(1, std::memory_order_relaxed)) < count;)
+                job(i);
+        };
+        std::vector<std::thread> threads;
+        threads.reserve(helpers);
+        for (std::size_t i = 0; i < helpers; ++i) threads.emplace_back(run);
+        run();
+        for (auto &thread : threads) thread.join();
+    }
     void retirePreviousHdAtlas()
     {
         hd.previous.tile = 0;
@@ -1078,10 +1100,24 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
             for (unsigned pair = pairs; pair > 0; --pair) out.freePairs.push_back(pair - 1);
             out.pixels = pixels;
         }
+        // Three passes: claim atlas pairs and gather each tile's source here,
+        // box-filter the tiles on worker threads, then upload them here. A
+        // density change refilters every visible variant (over a thousand
+        // tiles from 128-pixel HD frames), which one thread took 110 ms for.
+        struct TileJob
+        {
+            State::Animation::Entry *entry;
+            unsigned parity, phase;
+            TerrainVisual::Compositor::PhaseSource stamp;
+            const Uint32 *surfacePixels; // The frame's own pixels, or null and:
+            TerrainVisual::Compositor::MaterialPixels input; // a prepared copy.
+            std::vector<Pixel> tile;
+        };
+        std::vector<TileJob> jobs;
+        std::vector<std::pair<unsigned, State::Animation::Entry *>> added;
         for (auto slot : wanted)
         {
             auto it = out.entries.find(slot);
-            const bool added = it == out.entries.end();
             if (it == out.entries.end())
             {
                 if (out.freePairs.empty())
@@ -1094,6 +1130,7 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
                 const auto pair = out.freePairs.back();
                 out.freePairs.pop_back();
                 it = out.entries.emplace(slot, State::Animation::Entry{pair}).first;
+                added.push_back({slot, &it->second});
             }
             auto &entry = it->second;
             const auto source = state->palette.sources[slot];
@@ -1122,61 +1159,75 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
                 }
                 else if (surface->w != stamp.size)
                     throw std::runtime_error("Animated terrain source changed dimensions");
-                const auto *surfacePixels = surface ? static_cast<const Uint32 *>(surface->pixels) : nullptr;
-                // Box-filter each block in premultiplied colour. Point samples at a
-                // block's corner would read a tile's two edges asymmetrically, so
-                // neighbouring variants, blended to meet at their borders, would not.
-                std::vector<Pixel> tile(std::size_t(pixels) * pixels);
-                const int block = std::max(1, stamp.size / pixels);
-                for (int y = 0; y < pixels; ++y)
-                    for (int x = 0; x < pixels; ++x)
-                    {
-                        unsigned sum[4] = {};
-                        for (int dy = 0; dy < block; ++dy)
-                            for (int dx = 0; dx < block; ++dx)
+                jobs.push_back({&entry, parity, phase, stamp,
+                                surface ? static_cast<const Uint32 *>(surface->pixels) : nullptr, std::move(input), {}});
+            }
+        }
+        // Box-filter each block in premultiplied colour. Point samples at a
+        // block's corner would read a tile's two edges asymmetrically, so
+        // neighbouring variants, blended to meet at their borders, would not.
+        // Workers only read the gathered sources and write their own tiles.
+        const auto filter = [pixels](TileJob &job)
+        {
+            const int size = job.stamp.size;
+            job.tile.resize(std::size_t(pixels) * pixels);
+            const int block = std::max(1, size / pixels);
+            for (int y = 0; y < pixels; ++y)
+                for (int x = 0; x < pixels; ++x)
+                {
+                    unsigned sum[4] = {};
+                    for (int dy = 0; dy < block; ++dy)
+                        for (int dx = 0; dx < block; ++dx)
+                        {
+                            const auto index = std::size_t(y * size / pixels + dy) * size + x * size / pixels + dx;
+                            std::array<unsigned char, 4> p;
+                            if (job.surfacePixels)
                             {
-                                const auto index = std::size_t(y * stamp.size / pixels + dy) * stamp.size +
-                                                   x * stamp.size / pixels + dx;
-                                std::array<unsigned char, 4> p;
-                                if (surfacePixels)
-                                {
-                                    const Uint32 argb = surfacePixels[index];
-                                    p = {Uint8(argb >> 16), Uint8(argb >> 8), Uint8(argb), Uint8(argb >> 24)};
-                                }
-                                else
-                                    p = input[index];
-                                for (int k = 0; k < 3; ++k) sum[k] += unsigned(p[k]) * p[3];
-                                sum[3] += p[3];
+                                const Uint32 argb = job.surfacePixels[index];
+                                p = {Uint8(argb >> 16), Uint8(argb >> 8), Uint8(argb), Uint8(argb >> 24)};
                             }
-                        auto &out = tile[y * pixels + x];
-                        const unsigned count = unsigned(block * block);
-                        for (int k = 0; k < 3; ++k) out[k] = Uint8(sum[3] ? (sum[k] + sum[3] / 2) / sum[3] : 0);
-                        out[3] = Uint8((sum[3] + count / 2) / count);
-                    }
-                const unsigned index = entry.pair * 2 + parity;
-                const int columns = atlasSize / pixels;
-                glActiveTexture(GL_TEXTURE0 + State::Art);
-                glBindTexture(GL_TEXTURE_2D, out.art);
-                glTexSubImage2D(GL_TEXTURE_2D, 0, (index % columns) * pixels,
-                    (index / columns) * pixels, pixels, pixels, GL_RGBA, GL_UNSIGNED_BYTE, tile.data());
-                state->uploaded += tile.size() * sizeof(Pixel);
-                entry.phases[parity] = phase;
-                entry.stamps[parity] = stamp;
-            }
-            if (added)
-            {
-                const auto recordIndex = slot * DirectTerrainData::VariantRecords;
-                auto &record = state->palette.variants[recordIndex];
-                record[0] = Uint16(entry.pair * 2);
-                // Parity addresses the streamed current/next endpoints independently
-                // of the material's original loop length, including odd-length loops.
-                record[1] = Uint16(endpoints);
-                glActiveTexture(GL_TEXTURE0 + State::Variants);
-                glBindTexture(GL_TEXTURE_2D, out.variants);
-                glTexSubImage2D(GL_TEXTURE_2D, 0, recordIndex % DirectTerrainData::VariantWidth,
-                    recordIndex / DirectTerrainData::VariantWidth, 1, 1, GL_RGBA, GL_UNSIGNED_SHORT, record.data());
-                state->uploaded += sizeof(Record);
-            }
+                            else
+                                p = job.input[index];
+                            for (int k = 0; k < 3; ++k) sum[k] += unsigned(p[k]) * p[3];
+                            sum[3] += p[3];
+                        }
+                    auto &out = job.tile[y * pixels + x];
+                    const unsigned count = unsigned(block * block);
+                    for (int k = 0; k < 3; ++k) out[k] = Uint8(sum[3] ? (sum[k] + sum[3] / 2) / sum[3] : 0);
+                    out[3] = Uint8((sum[3] + count / 2) / count);
+                }
+        };
+        state->filterTiles(jobs.size(), [&](std::size_t i) { filter(jobs[i]); });
+        const int columns = atlasSize / pixels;
+        glActiveTexture(GL_TEXTURE0 + State::Art);
+        glBindTexture(GL_TEXTURE_2D, out.art);
+        for (auto &job : jobs)
+        {
+            const unsigned index = job.entry->pair * 2 + job.parity;
+            glTexSubImage2D(GL_TEXTURE_2D, 0, (index % columns) * pixels,
+                (index / columns) * pixels, pixels, pixels, GL_RGBA, GL_UNSIGNED_BYTE, job.tile.data());
+            state->uploaded += job.tile.size() * sizeof(Pixel);
+            job.entry->phases[job.parity] = job.phase;
+            job.entry->stamps[job.parity] = job.stamp;
+        }
+        if (!added.empty())
+        {
+            glActiveTexture(GL_TEXTURE0 + State::Variants);
+            glBindTexture(GL_TEXTURE_2D, out.variants);
+        }
+        for (const auto &[slot, entry] : added)
+        {
+            const auto source = state->palette.sources[slot];
+            const auto &material = catalog.materials[source.material];
+            const auto recordIndex = slot * DirectTerrainData::VariantRecords;
+            auto &record = state->palette.variants[recordIndex];
+            record[0] = Uint16(entry->pair * 2);
+            // Parity addresses the streamed current/next endpoints independently
+            // of the material's original loop length, including odd-length loops.
+            record[1] = Uint16(material.animationFrames > 1 ? 2 : 1);
+            glTexSubImage2D(GL_TEXTURE_2D, 0, recordIndex % DirectTerrainData::VariantWidth,
+                recordIndex / DirectTerrainData::VariantWidth, 1, 1, GL_RGBA, GL_UNSIGNED_SHORT, record.data());
+            state->uploaded += sizeof(Record);
         }
         if (glGetError() != GL_NO_ERROR)
             throw std::runtime_error("Animated terrain source upload failed");

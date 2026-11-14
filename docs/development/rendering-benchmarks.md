@@ -182,7 +182,10 @@ zooming back decodes nothing. `image_decodes` in the
 Below that threshold the pass filters from the native frame even while an HD
 frame is still resident, and shipped materials are sampled in place, without a
 converted copy; only art that takes its border from another variant is
-prepared first.
+prepared first. A density change re-filters every visible variant at once
+(over a thousand tiles when it crosses to HD frames): the render thread gathers
+each tile's source and uploads the results, and helper threads, started only
+for batches of 32 tiles or more, do the box filtering in between.
 
 The atlases give memory back too. The coverage atlas a zoom retires stays as a
 spare, so a run of zooms allocates nothing, and is freed once the view has been
