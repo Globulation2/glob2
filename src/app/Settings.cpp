@@ -297,7 +297,7 @@ void Settings::load(std::string filename)
         // Stock JSON now omits production costs to inherit the unit catalog.
         // This exact known identity shares the frozen stock's preference slots;
         // arbitrary installed/custom catalog identities are never migration targets.
-        constexpr std::string_view inheritedStock = "a4ef27ada2fb3359504894901b56b9d7eefd7a053de4efdbe0c5b92fcec4928e";
+        constexpr std::string_view inheritedStock = "2a338464ec4d8e3baf3aef32e48ca85df536c7161538f47439b3eb3611099481";
         if(savedVersion>=2)
         {
             for(const auto& [key,text]:parsed)
@@ -317,6 +317,10 @@ void Settings::load(std::string filename)
             // variant key, so their preferences carry to the current identities.
             constexpr std::string_view priorFrozenStock = "b7c9b811ca4f519c5d1040219ec6c32cf888b1f0fbbeb63022c573bcc20c6803";
             constexpr std::string_view priorInheritedStock = "2c785bf450d48ee267480a599a0fcad53b3ca26f89758793f68ef90657734f71";
+            // From SIM 152 until SIM 159 set walls to 500 HP for 4 stone, the
+            // identities were these; that change also kept every variant key.
+            constexpr std::string_view sim152FrozenStock = "6b9c36f61e8a9978f44384541827f2cfd86bb4b8b186b3a11fa515bb93ff5fd7";
+            constexpr std::string_view sim152InheritedStock = "a4ef27ada2fb3359504894901b56b9d7eefd7a053de4efdbe0c5b92fcec4928e";
             BuildingsTypes stock; stock.initLegacy();
             const auto currentStock = stock.fingerprint();
             // Each step copies one identity's preferences to the next; explicit
@@ -324,8 +328,11 @@ void Settings::load(std::string filename)
             const std::pair<std::string_view, std::string_view> steps[] = {
                 {priorStock, priorFrozenStock},
                 {priorFrozenStock, priorInheritedStock},
-                {priorFrozenStock, currentStock},
-                {priorInheritedStock, inheritedStock},
+                {priorFrozenStock, sim152FrozenStock},
+                {priorInheritedStock, sim152InheritedStock},
+                {sim152FrozenStock, sim152InheritedStock},
+                {sim152FrozenStock, currentStock},
+                {sim152InheritedStock, inheritedStock},
                 {currentStock, inheritedStock},
             };
             for (std::size_t i=0; i<stock.size(); ++i)
