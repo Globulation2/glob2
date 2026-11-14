@@ -59,7 +59,10 @@ copyright, localized descriptions and HTTPS support links, primary-locale
 privacy policy, fully uploaded iPhone and iPad screenshots, and review contact
 information plus demo credentials when required. Apple validates additional
 agreements, ratings and review requirements; failures remain blocking.
-`submit` requests Apple review without public distribution. Only `publish`,
+`submit` requests Apple review without public distribution. After the metadata checks it fills
+an empty "What's New" on each version localization from the tagged source's AppStream release
+note (text entered in App Store Connect is kept), and reuses an empty review submission left by an
+interrupted attempt. API failures report Apple's error codes and field pointers, never detail text. Only `publish`,
 after Apple returns `PENDING_DEVELOPER_RELEASE` for the same manually released
 version and build, requests public distribution. An accepted upload or pending
 review never counts as production availability for the website launch gate.
