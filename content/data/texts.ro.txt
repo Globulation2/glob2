@@ -7102,3 +7102,7 @@ Pasul %0: %1 ms timp real
 IA pentru toate coloniile controlate de calculator
 [tundra]
 Sol de tundră
+[replay stopped %0]
+
+[replay stopped help]
+

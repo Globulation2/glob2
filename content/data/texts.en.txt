@@ -7102,3 +7102,7 @@ Required waits: %0 ms; owner joins: %1 ms; locks: %2 ms
 Tick %0: %1 ms wall
 [hive standing order update failed]
 Standing order update failed. Your order is paused locally; retry the control.
+[replay stopped %0]
+Replay stopped: %0
+[replay stopped help]
+The replay was recorded by a different version of the game or is damaged, so it cannot be played back.

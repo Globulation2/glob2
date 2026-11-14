@@ -7102,3 +7102,7 @@ Krok %0: %1 ms skutečného času
 AI pro všechny počítačem řízené kolonie
 [tundra]
 Tundrová půda
+[replay stopped %0]
+
+[replay stopped help]
+

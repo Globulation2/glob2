@@ -7102,3 +7102,7 @@ Hatua %0: %1 ms muda halisi
 Usasishaji wa amri inayoendelea umeshindwa. Amri yako imesitishwa kwa muda kwenye kifaa hiki; jaribu tena kwa kutumia kidhibiti husika.
 [tundra]
 Ardhi ya tundra
+[replay stopped %0]
+
+[replay stopped help]
+

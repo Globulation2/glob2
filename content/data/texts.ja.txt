@@ -7102,3 +7102,7 @@ AI
 すべてのコンピューター操作コロニーのAI
 [tundra]
 ツンドラ地帯
+[replay stopped %0]
+
+[replay stopped help]
+

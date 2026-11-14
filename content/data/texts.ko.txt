@@ -7102,3 +7102,7 @@ AI
 모든 컴퓨터 제어 식민지의 AI
 [tundra]
 툰드라 지형
+[replay stopped %0]
+
+[replay stopped help]
+

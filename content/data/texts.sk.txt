@@ -7102,3 +7102,7 @@ Krok %0: %1 ms skutočného času
 UI pre všetky kolónie ovládané počítačom
 [tundra]
 Tundrová pôda
+[replay stopped %0]
+
+[replay stopped help]
+

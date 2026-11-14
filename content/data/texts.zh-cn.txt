@@ -7102,3 +7102,7 @@ AI
 所有电脑控制殖民地的 AI
 [tundra]
 苔原地面
+[replay stopped %0]
+
+[replay stopped help]
+

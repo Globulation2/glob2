@@ -7102,3 +7102,7 @@ Takt %0: %1 ms czasu rzeczywistego
 SI dla wszystkich kolonii sterowanych przez komputer
 [tundra]
 Gleba tundrowa
+[replay stopped %0]
+
+[replay stopped help]
+

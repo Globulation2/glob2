@@ -7102,3 +7102,7 @@ Tic %0 : %1 ms en temps réel
 IA de toutes les colonies contrôlées par l’ordinateur
 [tundra]
 Sol de toundra
+[replay stopped %0]
+
+[replay stopped help]
+

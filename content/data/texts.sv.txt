@@ -7102,3 +7102,7 @@ Steg %0: %1 ms väggtid
 AI för alla datorstyrda kolonier
 [tundra]
 Tundramark
+[replay stopped %0]
+
+[replay stopped help]
+

@@ -3550,3 +3550,5 @@
 [engine performance waits %0 joins %1 locks %2]
 [engine performance phase %0 wall %1]
 [engine performance tick %0 wall %1]
+[replay stopped %0]
+[replay stopped help]

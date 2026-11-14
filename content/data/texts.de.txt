@@ -7102,3 +7102,7 @@ Tick %0: %1 ms Echtzeit
 KI für alle computergesteuerten Kolonien
 [tundra]
 Tundraboden
+[replay stopped %0]
+
+[replay stopped help]
+

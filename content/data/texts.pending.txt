@@ -1,0 +1,2 @@
+[replay stopped %0]
+[replay stopped help]

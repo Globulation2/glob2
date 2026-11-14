@@ -6,6 +6,7 @@
 #include <ScreenStack.h>
 #include "FrontendTheme.h"
 #include <memory>
+#include <string>
 #include <vector>
 class Engine;
 
@@ -39,6 +40,8 @@ class GameSessionScreen : public GAGGUI::Screen
 
   private:
     void updateExecutionImpl(Uint32 tick);
+    // Ends the session after a failure and shows message, then returns to the menu.
+    void stopSession(const std::string &message);
 	FrontendScope theme{false};
 	GAGGUI::ScreenStack &stack;
 	std::unique_ptr<Engine> engine;

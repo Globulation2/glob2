@@ -7102,3 +7102,7 @@ Spillsteg %0: %1 ms forløpt tid
 Kunne ikke lagre skriptet i %0
 [tundra]
 Tundramark
+[replay stopped %0]
+
+[replay stopped help]
+
