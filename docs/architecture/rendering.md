@@ -38,6 +38,13 @@ Preference changes, a new asset source generation or a different pack directory
 start a reload; unchanged requests do not. Explicit synchronous reloads used by
 tools still refresh unchanged artwork. Disabling the preference releases the
 optional layers through asset polling, rather than through screen destruction.
+Only desktop legacy OpenGL draws sprite frames from their HD layers. The portable
+SDL renderer and the presentation devices reach them solely through
+`Sprite::baseFrame` (terrain composition, skin shadows and editor swatches), so
+there a sprite loads only its uncolored base layers, once `baseFrame` or an HD
+window first asks for them, and uploads them on the first direct draw. The first
+answers can be native frames, as with any streamed layer. Switching to legacy
+OpenGL reloads every sprite; switching away releases layers nothing asked for.
 
 Terrain uses the shared CPU material compositor and bounded 16 by 16 cell pages
 on software and GPU backends; see [terrain materials](../assets/terrain-materials.md).
