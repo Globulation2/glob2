@@ -246,8 +246,8 @@ a crisp bright crest over a short lavender lee shadow, with quiet flats and fain
 ripples between. Its ridges are a plane wave with whole wave numbers on the block, so
 only the smooth warps and drift heights vary between layouts. The helpers keep the block contract: geometry comes from
 the shared stream at the block edge, interiors vary, and any normalisation or
-lighting uses the common reference. Obstacles are lit from the top left and cast
-onto grass, and void casts onto every neighbour. Feature sizes are judged
+lighting uses the common reference. Obstacles are lit from the top left, the
+[canonical sun](lighting.md), and cast onto grass, and void casts onto every neighbour. Feature sizes are judged
 against the globs, not against a photograph: a tile is about a glob across, so
 a brick, a cobble, a sand ripple or a crack in the ice should be the size it
 would be beside a glob standing on it, and nothing but broad tone should span
@@ -364,7 +364,7 @@ three-quarter view:
 - Boulders are tall: 128×128 frames whose stones are a faceted, lit top on a
   front face extruded down to the ground, flaring slightly toward it. The
   largest stand most of a cell above their own. Each stone's footprint, swept
-  along a low sun to the lower right, gives a long shadow that fades with
+  along the sun to the lower right, gives a long shadow that fades with
   distance and lies on the ground under every stone.
 
 Hedge and thicket use connected canopy surfaces rather than shaded bushes
@@ -380,8 +380,8 @@ strokes and soft crowns. Thicket has sparser olive foliage with visible branches
 Hedge rises sixteen native pixels above its ground material and thicket
 fourteen; both sample one continuous canopy texture across a 4×4 block of
 cells. Their front wall shows the foliage just behind the rim above it, and the
-raised mass casts a long shadow straight down the screen into the 16 pixels
-below its cell, fading to nothing; where the canopy continues, the next row's
+raised mass casts a long shadow down the screen, drifting a little to the right,
+into the 16 pixels below its cell, fading to nothing; where the canopy continues, the next row's
 frame covers it. Thicket has broader
 boundary irregularity and woody gaps between crowns. The other sets are faceted boulders and rubble, clusters of faceted crags along
 a shared grain, and broad stepped bedrock blocks with sparse lichen. Ridge and

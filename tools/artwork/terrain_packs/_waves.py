@@ -93,8 +93,10 @@ def wave_fields(phase, phases=WAVE_PHASES, layout=0):
             values += (amplitude / total) * table[(kx * xw + ky * yw + ph - cycles * phase * (size // phases)) % size]
         out.append(values.ravel())
     swell_values = out[0].reshape(size, size)
-    front = (np.roll(swell_values, 2, axis=1) + np.roll(swell_values, 1, axis=0)
-             - np.roll(swell_values, -2, axis=1) - np.roll(swell_values, -1, axis=0)) * 6
+    # Positive on faces that rise toward the lower right, which turn up-left
+    # toward the sun.
+    front = (np.roll(swell_values, -2, axis=1) + np.roll(swell_values, -1, axis=0)
+             - np.roll(swell_values, 2, axis=1) - np.roll(swell_values, 1, axis=0)) * 6
     out.append(front.ravel())
     for values in out:
         values.setflags(write=False)
@@ -126,7 +128,7 @@ def wave_layers(ctx):
 
 
 def render_waves(ctx, palette, swell_weight, chop_weight, glint, front):
-    """Swell bands lit on their leading face, with glints where chop crests
+    """Swell bands lit on the faces turned toward the sun, with glints where chop crests
     ride swell crests."""
     s, c, f = wave_layers(ctx)
     t = 0.5 + swell_weight * s + chop_weight * c

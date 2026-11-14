@@ -10,6 +10,7 @@
 #include "GlobalContainer.h"
 #include "Team.h"
 #include "TorusGeometry.h"
+#include "render/Sunlight.h"
 #include <GraphicContext.h>
 #include <RenderStateScope.h>
 #include <algorithm>
@@ -690,9 +691,9 @@ bool TorusView::drawLegacy(const PresentationFrame& frame,GameGUI* gui, int team
         glUseProgram(material);
         glUniform1i(glGetUniformLocation(material, "world"), 0);
         glUniform2f(glGetUniformLocation(material, "mapOffset"), 0, 0);
-        // A low sun far to the left and a little above; the eye looks along +z.
-        // The highlight sits where the normal bisects the two, on the left flank.
-        float lx = -1.0f, ly = 0.25f, lz = 0.15f;
+        // A low sun from the canonical upper left; the eye looks along +z.
+        // The highlight sits where the normal bisects the two, on the upper-left flank.
+        float lx = Sunlight::glancingX, ly = Sunlight::glancingY, lz = Sunlight::glancingZ;
         const float ll = std::sqrt(lx * lx + ly * ly + lz * lz);
         lx /= ll, ly /= ll, lz = lz / ll + 1;
         const float hl = std::sqrt(lx * lx + ly * ly + lz * lz);

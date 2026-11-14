@@ -32,7 +32,9 @@ namespace MapDrawer
 		BOTTOM_TO_TOP
 	};
 
-	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene);
+	//! With flightShadowOnly, draws only a flying unit's ground shadow, so a
+	//! pass of shadows can lie under every flyer's body.
+	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene, bool flightShadowOnly = false);
 	// Prepare one immutable presentation frame for several offscreen regions.
 	void finishMapCapture(ViewState &view, Uint32 options, bool paused);
 	void finishMapCapture(MapRenderState &render, Uint32 options, bool paused);

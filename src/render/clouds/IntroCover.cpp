@@ -691,12 +691,13 @@ void IntroCover::drawTitle(DrawableSurface &gfx, int w, const TitleLayout &layou
 	if (!titleFont || title.map.empty())
 		return;
 	const Uint8 a = Uint8(std::lround(255 * alpha));
-	// Soft white letters: a wide, faint shadow stands in for a blur.
+	// Soft white letters: a wide, faint shadow stands in for a blur, thrown to
+	// the lower right like every shadow under the sun (render/Sunlight.h).
 	const auto shadowed = [&](Font *font, int x, int y, const std::string &text, Uint8 textAlpha)
 	{
 		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 10, 16, 28));
-		for (auto [dx, dy] : {std::pair{0, 1}, std::pair{1, 2}, std::pair{-1, 2}, std::pair{0, 3}, std::pair{2, 3},
-		                      std::pair{-2, 3}, std::pair{0, 4}})
+		for (auto [dx, dy] : {std::pair{1, 1}, std::pair{2, 2}, std::pair{0, 2}, std::pair{2, 3}, std::pair{4, 3},
+		                      std::pair{0, 3}, std::pair{3, 4}})
 			gfx.drawString(x + dx, y + dy, font, text, 0, Uint8(textAlpha / 5));
 		font->popStyle();
 		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 255, 255));

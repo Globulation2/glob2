@@ -5,6 +5,7 @@
 #include "CloudField.h"
 #include "GlobalContainer.h"
 #include "GraphicContext.h"
+#include "render/Sunlight.h"
 #include <PresentationWork.h>
 
 void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int viewPortWidth,
@@ -35,6 +36,10 @@ void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int 
     // Rows are independent samples of one immutable field: spread them over
     // the presentation workers instead of the graphics thread alone.
     const float magnification = std::max(.01f, cloudHeight);
+    // The shadow is the same cloud field, thrown along the sun to the lower
+    // right by a distance that grows with the cloud's height.
+    const int shadowX = int(std::lround(Sunlight::shadowX * Sunlight::cloudShadowThrow * magnification));
+    const int shadowY = int(std::lround(Sunlight::shadowY * Sunlight::cloudShadowThrow * magnification));
     constexpr int RowsPerJob = 4;
     GAGCore::executePresentationJobs(std::size_t((hGrid + RowsPerJob - 1) / RowsPerJob), [&](std::size_t job)
     {
@@ -42,7 +47,7 @@ void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int 
             for (int x = 0; x < wGrid; ++x)
             {
                 int wx = startX + x * renderCellSize, wy = startY + y * renderCellSize;
-                alphaMap[y * wGrid + x] = field.opacity(wx, wy);
+                alphaMap[y * wGrid + x] = field.opacity(wx - shadowX, wy - shadowY, magnification);
                 if (includeCloudLayer)
                     cloudMap[y * wGrid + x] = field.opacity(wx, wy, magnification);
             }

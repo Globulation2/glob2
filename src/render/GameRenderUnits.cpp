@@ -36,6 +36,7 @@
 #include "unit/render/UnitSkin.h"
 #include "scene/Scene.h"
 #include "UnitEffectArt.h"
+#include "Sunlight.h"
 #include "Utilities.h"
 #include "GameGUI.h"
 #include <SDL3/SDL.h>
@@ -52,7 +53,7 @@
 // Unit rendering. Split from Game_render.cpp.
 
 
-void MapDrawer::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene)
+void MapDrawer::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene, bool flightShadowOnly)
 {
 	MapRenderState* drawnRender = globalContainer->settings.adaptiveZoomDetail ? &view.render : nullptr;
 	const SceneEntities &entities = scene.entities;
@@ -176,6 +177,21 @@ void MapDrawer::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY,
 	const bool swimming = (unit->action == STOP_SWIM || unit->action == SWIM || pronePhase >= 0) &&
 						  detail.unitSprite > 0;
 	const float reach = meshClass == WARRIOR ? SWIM_REACH_WARRIOR : SWIM_REACH_WORKER;
+	// Walkers carry their ground shadow in the sprite; a flyer's falls on the
+	// ground below it, thrown along the sun by its height (render/Sunlight.h).
+	// drawMapAirUnits draws every flyer's shadow first, over the ground units and
+	// buildings but under all flyers.
+	if (flightShadowOnly)
+	{
+		if (detail.unitSprite > 0 && map.getAirUnit(unit->posX, unit->posY) == gid)
+			if (DrawableSurface *shade = unitSprite->silhouette(imgid, Color(0, 0, 0)))
+				globalContainer->gfx->drawSurface(
+					float(px - decX) + Sunlight::shadowX * Sunlight::flightHeight,
+					float(py - decY) + Sunlight::shadowY * Sunlight::flightHeight,
+					float(unitSprite->getW(imgid)), float(unitSprite->getH(imgid)), shade,
+					faded(Sunlight::flightShadowAlpha));
+		return;
+	}
 	{
 		const GAGCore::RadialFadeScope fade(*globalContainer->gfx,
 			swimming ? swimmerFade(px, py, reach) : GAGCore::RadialFade{});
@@ -357,6 +373,16 @@ void MapDrawer::drawMapAirUnits(int left, int top, int right, int bot, int sw, i
 {
 	PERF_SCOPE_TIME(AirUnits);
     GAGCore::UnitDrawBatch unitBatch(globalContainer->gfx);
+	// Shadows a flyer's height away can come from a unit above or left of the
+	// visible rows, so the shadow pass reaches a little further.
+	const int reach = int(Sunlight::flightHeight) / 32 + 1;
+	for (int y=top-1-reach; y<=bot; y++)
+		for (int x=left-1-reach; x<=right; x++)
+		{
+			Uint16 gid=scene.map.getAirUnit(x+viewportX, y+viewportY);
+			if (gid!=NOGUID)
+				drawUnit(x, y, gid, viewportX, viewportY, (sw>>5), (sh>>5), localTeam, drawOptions, view, scene, true);
+		}
 	for (int y=top-1; y<=bot; y++)
 		for (int x=left-1; x<=right; x++)
 		{
