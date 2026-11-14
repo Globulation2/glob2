@@ -101,7 +101,10 @@ vector's capacity and the CPU frame surface). On Linux every run also prints
 where the driver exposes it. The frame loop never polls asset work, so optional HD
 layers stay partially prefetched; `PROFILE_HD_COMPLETE=1` (`--hd-complete` in the
 runner) finishes the layers requested by startup and warmup frames before measuring,
-matching the steady state of a game. Desktop GL numbers do not transfer directly to mobile
+matching the steady state of a game. `sprite_hd` reports the HD sprite layers
+resident at the end (decoded and texture bytes, sprites holding any) and the
+retired frames kept decoded; `PROFILE_SPRITE_HD=1` lists them per sprite. A view
+at one screen pixel per logical pixel or less holds none on the portable renderer. Desktop GL numbers do not transfer directly to mobile
 GLES drivers: per-call driver overhead, upload bandwidth and tiled-GPU costs differ.
 
 ```sh

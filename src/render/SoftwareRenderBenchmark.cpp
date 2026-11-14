@@ -17,6 +17,7 @@
 #include <RenderBackend.h>
 #include <RendererSelection.h>
 #include <SpriteRenderAtlas.h>
+#include <RenderMemory.h>
 #include <PresentationWork.h>
 #include <GameplayRecording.h>
 #include <stdexcept>
@@ -606,6 +607,22 @@ static void interactiveBenchmark()
             printf("artwork_memory terrain_compositor_bytes=%zu sprite_atlas_bytes=%zu drawable_texture_bytes=%zu\n",
                    compositor.sourceBytes(), GAGCore::spriteAtlasMemoryBytes(),
                    GAGCore::DrawableSurface::allocatedTextureBytes());
+            // HD sprite layers resident at the end (decoded pixels and textures),
+            // and the deferred frames kept decoded after leaving their windows.
+            {
+                std::size_t cpu = 0, gpu = 0, holders = 0;
+                for (const auto &usage : GAGCore::RenderMemory::sprites())
+                {
+                    cpu += usage.highResolutionCpuBytes;
+                    gpu += usage.highResolutionGpuBytes;
+                    holders += usage.highResolutionCpuBytes + usage.highResolutionGpuBytes > 0;
+                    if (getenv("PROFILE_SPRITE_HD") && usage.highResolutionCpuBytes + usage.highResolutionGpuBytes)
+                        printf("sprite_hd_usage name=%s cpu_bytes=%zu gpu_bytes=%zu\n", usage.name.c_str(),
+                               usage.highResolutionCpuBytes, usage.highResolutionGpuBytes);
+                }
+                printf("sprite_hd cpu_bytes=%zu gpu_bytes=%zu sprites=%zu retired_bytes=%zu\n", cpu, gpu, holders,
+                       GAGCore::Sprite::retiredHighResolutionBytes());
+            }
             // Streaming fallback: a prepared view drew native art for a material
             // whose HD frames had already appeared. Warmup is reported separately.
             const auto coverage = compositor.highResolutionCoverage();

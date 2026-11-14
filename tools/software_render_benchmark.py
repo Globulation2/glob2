@@ -29,9 +29,11 @@ METRICS = {
     "textures": r"portable_memory textures=([0-9]+)",
     "texture_mib": r"portable_memory textures=[0-9]+ texture_bytes=([0-9]+)",
     "source_surface_mib": r"portable_memory .* source_surface_bytes=([0-9]+)",
+    "sprite_hd_mib": r"^sprite_hd cpu_bytes=([0-9]+)",
+    "terrain_cache_mib": r"^terrain_cache bytes=([0-9]+)",
 }
 SCALE = {"peak_rss_mib": 2**20, "steady_rss_mib": 2**20, "texture_mib": 2**20,
-         "source_surface_mib": 2**20, "upload_kib": 1024}
+         "source_surface_mib": 2**20, "sprite_hd_mib": 2**20, "terrain_cache_mib": 2**20, "upload_kib": 1024}
 
 
 def parse(log):
