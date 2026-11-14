@@ -549,6 +549,66 @@ TEST_CASE("the unit sheet keeps no HD pixels after upload and reloads once its t
 }
 #endif
 #if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
+TEST_CASE("HD sprite textures follow the zoom's detail band and free covered native textures [display]") {
+    glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", "");
+    glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+    glob2test::ToolkitScope toolkit;
+    auto *context = GAGCore::Toolkit::initGraphic(64, 64, GAGCore::GraphicContext::USEGPU, "HD detail bands");
+    REQUIRE(context->hasUnitShader());
+    struct Restore {
+        ~Restore() {
+            GAGCore::Sprite::setHighResolutionDetailDelay(10'000'000'000);
+            GAGCore::Sprite::setHighResolution(false);
+        }
+    } restore;
+    GAGCore::Sprite::setHighResolution(true);
+    GAGCore::Sprite units;
+    REQUIRE(units.load("data/gfx/unit"));
+    // Before any map view, the display's scale picks the band: one screen pixel
+    // for each logical pixel needs the 32-texel level of a 128-texel frame.
+    GAGCore::Sprite::finishHighResolution();
+    unsigned index = 0;
+    while (index < units.experimentImages.size() && !units.experimentImages[index]) ++index;
+    REQUIRE(index < units.experimentImages.size());
+    const auto levelZero = [&] {
+        auto *hd = units.experimentImages[index];
+        REQUIRE(hd);
+        REQUIRE(hd->texture != 0);
+        GLint width = 0;
+        glBindTexture(GL_TEXTURE_2D, hd->texture);
+        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+        return width;
+    };
+    CHECK(GAGCore::Sprite::highResolutionDetailSkip() == 2);
+    CHECK(levelZero() == 32);
+    // HD frames cover the native frames, whose textures go; their pixels stay.
+    CHECK(units.images[index]->texture == 0);
+    CHECK(units.images[index]->hasPixels());
+    const auto settle = [&] {
+        for (int frame = 0; frame < 2000 && !GAGCore::Sprite::pollHighResolution(4); ++frame)
+            GAGCore::Toolkit::pollAssets(4);
+        REQUIRE(GAGCore::Sprite::pollHighResolution(0));
+    };
+    // More detail loads at once; the old textures draw until it is published.
+    auto *before = units.experimentImages[index];
+    GAGCore::Sprite::setHighResolutionDensity(4);
+    CHECK(GAGCore::Sprite::highResolutionDetailSkip() == 0);
+    CHECK(units.experimentImages[index] == before);
+    settle();
+    CHECK(levelZero() == 128);
+    // Less detail waits until the view has wanted it for the delay.
+    GAGCore::Sprite::setHighResolutionDensity(1);
+    CHECK(GAGCore::Sprite::highResolutionDetailSkip() == 0);
+    GAGCore::Sprite::setHighResolutionDetailDelay(0);
+    GAGCore::Sprite::setHighResolutionDensity(1);
+    CHECK(GAGCore::Sprite::highResolutionDetailSkip() == 2);
+    settle();
+    CHECK(levelZero() == 32);
+    // A native frame drawn again (here, as a fallback) uploads its pixels again.
+    context->drawSurface(0, 0, units.images[index]);
+    context->nextFrame();
+    CHECK(units.images[index]->texture != 0);
+}
 TEST_CASE("team-coloured buildings draw through the shader without recoloured copies [display]") {
     glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", "");
     glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");

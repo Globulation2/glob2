@@ -210,6 +210,20 @@ shader, team layers, which a CPU recolour then clones. A context rebuild (a
 renderer switch) loses the textures, so those sprites draw native frames at
 once and reload HD from disk on the asset workers.
 
+Those textures also follow the zoom. HD frames hold four texels for each
+logical pixel, more than a zoomed-out view samples, so a detail band leaves out
+their largest mip levels: full detail where a logical pixel covers more than two
+screen pixels, the 64-texel level above one, the 32-texel level otherwise. The
+display's scale is the floor, since the interface draws sprites at their
+logical size, and it picks the band before any map is drawn. More detail loads
+at once and less only after the view has wanted it for ten seconds; either way
+the sprites reload one at a time on the asset workers while their current
+textures keep drawing, and the allocator returns the decode buffers afterwards
+(`malloc_trim` on glibc). Once a frame's HD layers are published its native
+textures are freed too: their pixels stay as the floor, and a draw that falls
+back to them uploads them again. `hd_gpu_bytes` in `RENDER_MEMORY_SPRITE`
+separates HD from native texture bytes.
+
 Pages serve the software and programmable-device renderers, and the
 browser's WebGL2 renderer: it drives Legacy GL through Emscripten's WebGL2 bridge,
 which the direct pass does not support. There pages draw native artwork until the

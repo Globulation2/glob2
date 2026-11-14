@@ -414,15 +414,20 @@ namespace GAGCore
                         !preparedMips.front().compressed.empty();
 #endif
                     const GLenum internalFormat=compress?GLenum(glState.blockCompressionFormat):GL_RGBA;
-                    for (size_t mip = 0; mip < levels->size(); ++mip) {
+                    // A detail band leaves out the largest levels: the texture's
+                    // level zero is a smaller prepared level, sampled through the
+                    // same normalized coordinates. Blocks need 4x4 levels.
+                    size_t first = std::min<size_t>(uploadSkipLevels, levels->empty() ? 0 : levels->size() - 1);
+                    while (compress && first > 0 && ((*levels)[first].width < 4 || (*levels)[first].height < 4)) --first;
+                    for (size_t mip = first; mip < levels->size(); ++mip) {
                         const auto &level = (*levels)[mip];
-                        const int w = level.width, h = level.height;
-                        if (compress && (w < 4 || h < 4)) { glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, int(mip) - 1); break; }
+                        const int w = level.width, h = level.height, glLevel = int(mip - first);
+                        if (compress && (w < 4 || h < 4)) { glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, glLevel - 1); break; }
                         if (compress)
-                            glCompressedTexImage2D(GL_TEXTURE_2D, int(mip), internalFormat, w, h, 0,
+                            glCompressedTexImage2D(GL_TEXTURE_2D, glLevel, internalFormat, w, h, 0,
                                 GLsizei(level.compressed.size()), level.compressed.data());
                         else
-                            glTexImage2D(GL_TEXTURE_2D, int(mip), internalFormat, w, h, 0, pixelFormat, GL_UNSIGNED_BYTE, level.pixels.data());
+                            glTexImage2D(GL_TEXTURE_2D, glLevel, internalFormat, w, h, 0, pixelFormat, GL_UNSIGNED_BYTE, level.pixels.data());
                         const size_t bytes = compress ? size_t((w + 3) / 4) * ((h + 3) / 4) * 16 : size_t(w) * h * 4;
                         gpuBytes += bytes; glState.allocatedTextureBytes += bytes;
                     }
@@ -451,6 +456,8 @@ namespace GAGCore
 			glState.allocatedTextureBytes-=gpuBytes;gpuBytes=0;
 			if(glState._texture==static_cast<GLint>(texture))glState._texture=-1;
 			texture=0;
+			// Nothing is uploaded now: a later draw uploads the pixels again.
+			glUploadedRevision=0;
 
 			// The next line causes a desynchronization between _doScissors and glIsEnabled(GL_SCISSOR_TEST),
 			// which causes the setClipRect() functions to not reset the clipping the way it should,  so many

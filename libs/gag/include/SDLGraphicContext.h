@@ -181,6 +181,8 @@ namespace GAGCore
 		size_t gpuBytes=0;
 		//! The size of the pixels releasePixels() freed.
 		int releasedW = 0, releasedH = 0;
+		//! Prepared mip levels left out of the legacy GL upload (a detail band).
+		std::uint8_t uploadSkipLevels = 0;
 		//! texture divisor
 		float texMultX, texMultY;
 		
@@ -1043,6 +1045,18 @@ namespace GAGCore
         static void setRetiredHighResolutionBudget(RetiredHighResolutionBudget budget);
         static size_t retiredHighResolutionBytes();
         static void refreshHighResolutionForRenderer();
+        //! Detail bands for standalone HD frames drawn at map scale on desktop
+        //! legacy GL: from the screen pixels a logical pixel covers at the
+        //! current zoom (or the display's scale, for interface drawing, if
+        //! larger), the mip levels a texture needs. More detail is loaded at
+        //! once; less only after the view has wanted it for ten seconds. Each
+        //! change reloads the sprites in the background, and their current
+        //! textures draw until the new ones are published. Call once a frame.
+        static void setHighResolutionDensity(double screenPixelsPerLogicalPixel);
+        //! Levels the current band leaves out: 0 for full detail, up to 2.
+        static unsigned highResolutionDetailSkip();
+        //! How long the view must want less detail before the band drops (tests shorten it).
+        static void setHighResolutionDetailDelay(std::int64_t nanoseconds);
         //! Called when legacy OpenGL textures are freed: HD frames whose pixels
         //! were released have nothing left, so their sprites drop back to
         //! native artwork and reload HD in the background at the next poll.
@@ -1056,6 +1070,8 @@ namespace GAGCore
         //! Forget this sprite's retired frames; destroy also deletes them.
         void releaseRetiredHighResolution(bool destroy);
         static void evictRetiredHighResolution();
+        static void advanceBandReload();
+        void releaseCoveredNativeTextures();
     public:
 		//! Constructor
 		Sprite() : fileName("not loaded yet") { }

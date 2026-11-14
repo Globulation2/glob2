@@ -38,7 +38,8 @@ std::string spriteLines(const char *prefix, std::size_t limit)
 		text += std::string(prefix) + " sprite=" + usage[i].name + " frames=" + std::to_string(usage[i].frames) +
 			" native_cpu_bytes=" + std::to_string(usage[i].nativeCpuBytes) +
 			" hd_cpu_bytes=" + std::to_string(usage[i].highResolutionCpuBytes) +
-			" gpu_bytes=" + std::to_string(usage[i].gpuBytes) + "\n";
+			" gpu_bytes=" + std::to_string(usage[i].gpuBytes) +
+			" hd_gpu_bytes=" + std::to_string(usage[i].highResolutionGpuBytes) + "\n";
 	return text;
 }
 } // namespace RenderMemoryReport
