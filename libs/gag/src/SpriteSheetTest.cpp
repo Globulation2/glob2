@@ -516,6 +516,8 @@ void checkModernStandaloneHD(GAGCore::RendererBackend backend, bool switchDuring
     auto inputs = GAGCore::Sprite::prefetchHighResolution("data/gfx/terrain", 16);
     REQUIRE(inputs.size() == (initialLegacy ? 20 : 16)); // optional legacy atlas files are absent
     if (publishBeforeSwitch) {
+        // Outside legacy GL, layers load once something samples them.
+        sprite.demandHighResolution();
         GAGCore::Sprite::setHighResolution(true);
         REQUIRE(sprite.experimentImages[0]);
         CHECK(sprite.experimentImages[0]->preparedMips.empty());
