@@ -23,6 +23,7 @@ METRICS = {
     "steady_rss_mib": r"^memory_end rss_bytes=([0-9]+)",
     "geometry_calls": r"portable_frame geometry_calls=([0-9.]+)",
     "texture_switches": r"portable_frame .* texture_switches=([0-9.]+)",
+    "geometry_batches": r"portable_frame .* geometry_batches=([0-9.]+)",
     "texture_uploads": r"portable_frame .* texture_uploads=([0-9.]+)",
     "upload_kib": r"portable_frame .* upload_bytes=([0-9.]+)",
     "textures": r"portable_memory textures=([0-9]+)",
@@ -105,6 +106,8 @@ def main():
     parser.add_argument("--repeat", type=int, default=7)
     parser.add_argument("--present", action="store_true")
     parser.add_argument("--visible", action="store_true")
+    parser.add_argument("--paused", action="store_true",
+                        help="pause the simulation so frames isolate static-scene submission cost")
     parser.add_argument("--memory-probe", action="store_true",
                         help="add one boundary-stopped run per variant sampling RSS and NVIDIA per-process GPU memory")
     parser.add_argument("--hd-complete", action="store_true",
@@ -157,6 +160,8 @@ def main():
             env["PROFILE_VISIBLE"] = "1"
         if args.hd_complete:
             env["PROFILE_HD_COMPLETE"] = "1"
+        if args.paused:
+            env["PROFILE_PAUSED"] = "1"
         if args.no_terrain_cache or (variant == "baseline" and args.baseline_no_terrain_cache):
             env["PROFILE_TERRAIN_CACHE"] = "0"
         if variant == "baseline" and args.baseline_preserve_frame:

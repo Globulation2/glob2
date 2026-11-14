@@ -19,6 +19,8 @@ struct RenderOperations
     std::uint64_t rasterSnapshotBytes = 0, rasterPeakRetainedBytes = 0, rasterFallbacks = 0;
     // SDL_Renderer (portable) submission counters; cumulative like the above.
     std::uint64_t vertices = 0, textureSwitches = 0, transformCopies = 0;
+    // SDL_RenderGeometry calls after merging compatible consecutive submissions.
+    std::uint64_t geometryBatches = 0;
     std::uint64_t textureUploads = 0, textureUploadBytes = 0, gpuPreparedUploads = 0;
     std::uint64_t textureCreates = 0, textureDestroys = 0, cpuPremultipliedBytes = 0;
     // SDL_Renderer texture-cache gauges: current values, not deltas. Bytes are

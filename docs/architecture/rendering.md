@@ -73,6 +73,23 @@ a covered pixel arbitrarily close to a frame edge; the nearest-sampling tie
 bias must land in that frame's border rather than a neighboring frame. Keep
 the border copy unblended so transparent edges retain their original RGBA.
 
+The portable SDL renderer merges its blits, fills and triangle lists into
+`SDL_RenderGeometry` runs keyed by texture, blend mode, scale mode and SDL's
+per-call clamp or wrap choice. A draw may join an earlier compatible run only
+when no later pending run covers any cell of a coarse 16-unit occupancy grid
+under its output bounds, so overlapping draws keep painter order whatever their
+blending. Draws that only share an edge may reorder on accelerated renderers,
+whose fill rules rasterize a shared edge once; SDL's software renderer keeps a
+whole output pixel between them because it rounds rectangle edges. At most 64
+runs are pending; clip, render scale and target changes, texture uploads or
+destruction, readback, flush and present submit them first. Lists of 384 or
+more vertices (terrain, bars) follow the pending runs as their own call. On
+SDL's software renderer each run carries indices that reproduce SDL's per-call
+duplicate-vertex detection, so triangle pairs still become the same rectangle
+copies. Fully opaque fills replace the target instead of blending (alpha 255
+gives the same pixels): accelerated renderers draw them with
+`SDL_BLENDMODE_NONE`, and the software renderer fills their rectangles directly.
+
 Native array/cache optimizations require supported desktop OpenGL features.
 Software, portable SDL and unsupported native contexts retain their existing
 rendering paths. Desktop measurements must not be presented as phone performance.
@@ -463,7 +480,8 @@ additively blended blit:
 
 - **Device renderers** (SDL GPU, programmable GL, WebGPU): a `DrawPacket` blit with
   `Blend::Additive`.
-- **Portable SDL renderer:** `SDL_BLENDMODE_ADD` on the texture for that draw only.
+- **Portable SDL renderer:** `SDL_BLENDMODE_ADD` on the texture for that run only;
+  additive draws batch separately from ordinary draws of the same texture.
 - **Legacy GL:** an immediate quad with `GL_SRC_ALPHA, GL_ONE`.
 
 The software renderer draws the surface normally. A backend opts in through

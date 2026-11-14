@@ -22,6 +22,26 @@ bool update(SDL_Texture *texture, SDL_Surface *pixels)
 	SDL_UnlockSurface(pixels);
 	return result;
 }
+// Exactly (channel * alpha + 127) / 255 per channel, red and blue sharing one
+// multiply; opaque and transparent pixels, most of the artwork, skip it.
+void premultiplyRow(Uint32 *row, int width)
+{
+	for (int x = 0; x < width; ++x)
+	{
+		const Uint32 p = row[x], a = p >> 24;
+		if (a == 255)
+			continue;
+		if (a == 0)
+		{
+			row[x] = 0;
+			continue;
+		}
+		Uint32 rb = (p & 0xff00ff) * a + 0x800080, g = ((p >> 8) & 255) * a + 128;
+		rb = ((rb + ((rb >> 8) & 0xff00ff)) >> 8) & 0xff00ff;
+		g = ((g + (g >> 8)) >> 8) & 255;
+		row[x] = (a << 24) | rb | (g << 8);
+	}
+}
 void check(bool result)
 {
 	if (!result)
@@ -39,7 +59,6 @@ class SDLRenderBackend final : public RenderBackend
     float nativeX = 1, nativeY = 1;
     std::optional<SDL_Rect> physicalClip;
 	std::optional<SDL_Rect> bounds;
-	std::vector<SDL_Vertex> transformed;
 	struct Texture
 	{
 		SDL_Texture *handle;
@@ -50,7 +69,63 @@ class SDLRenderBackend final : public RenderBackend
 		// Accounting only: never dereferenced.
 		const SDL_Surface *source = nullptr;
 		std::uint64_t bytes = 0, sourceBytes = 0;
+		// Modes last applied to the SDL texture; additive draws borrow it.
+		SDL_BlendMode blend = SDL_BLENDMODE_BLEND;
+		SDL_ScaleMode scaleMode = SDL_SCALEMODE_NEAREST;
+		// Sequence of the newest pending run drawing this texture, if any.
+		std::uint32_t newestRun = 0;
 	};
+	// Submissions sharing a texture, its blend and scale modes and SDL's per-call
+	// wrap choice merge into one SDL_RenderGeometry call. A draw may join an
+	// earlier compatible run only when no later pending run touches any grid
+	// cell its output bounds cover, so overlapping draws keep painter order
+	// whatever their blending. Every state change that SDL would capture at
+	// queue time (clip, render scale, target, texture contents) submits all
+	// pending runs first.
+	struct BatchState
+	{
+		Texture *texture = nullptr;
+		SDL_BlendMode blend = SDL_BLENDMODE_BLEND;
+		SDL_ScaleMode scaleMode = SDL_SCALEMODE_NEAREST;
+		bool wrapU = false, wrapV = false;
+		bool operator==(const BatchState &) const = default;
+	};
+	struct Bounds
+	{
+		float left, top, right, bottom;
+	};
+	struct Run
+	{
+		BatchState state;
+		std::uint32_t sequence = 0;
+		std::vector<SDL_Vertex> vertices;
+		std::vector<int> indices;
+	};
+	// Each cell holds the sequence of the newest run drawn over it. Sequences
+	// below the oldest pending run's belong to submitted runs and constrain
+	// nothing, so the grid never needs clearing. Coordinates beyond the grid
+	// clamp to its edge cells, which stays conservative.
+	static constexpr int GridCell = 16, GridColumns = 256, GridRows = 256;
+	std::vector<std::uint32_t> occupancy = std::vector<std::uint32_t>(GridColumns * GridRows, 0);
+	std::uint32_t nextSequence = 1, untexturedRun = 0, opaqueFillRun = 0;
+	mutable int maximumTexture = 0;
+	static constexpr std::size_t MaximumBatchVertices = 16384, MaximumRuns = 64, RetainedRunVertices = 2048,
+								 DirectSubmissionVertices = 384;
+	std::vector<SDL_Vertex> direct;
+	// runs[0, runCount) are pending in submission order; later slots keep their
+	// storage for reuse.
+	std::vector<Run> runs;
+	std::size_t runCount = 0;
+	// Accelerated renderers rasterize shared edges once, so touching draws may
+	// reorder; SDL's software renderer rounds rectangle edges and keeps at least
+	// one output pixel (in logical units) between them.
+	float boundsMargin = 0;
+	// SDL's software renderer turns triangle pairs into rectangle copies; explicit
+	// indices reproduce its per-call duplicate-vertex detection so a merged batch
+	// pairs exactly the triangles separate calls would have.
+	bool indexedBatches = false;
+	std::optional<SDL_Rect> appliedClip;
+	bool clipKnown = false;
 	std::unordered_map<const void *, Texture> textures;
 	SDL_Texture *uploadTexture = nullptr;
 	bool gpuPreparation;
@@ -66,6 +141,7 @@ class SDLRenderBackend final : public RenderBackend
 	}
 	void erase(std::unordered_map<const void *, Texture>::iterator found)
 	{
+		submitBatch();
 		textureBytes -= found->second.bytes;
 		++counts.textureDestroys;
 		textures.erase(found);
@@ -153,10 +229,314 @@ class SDLRenderBackend final : public RenderBackend
     }
 	RenderOperations counts;
 
+	SDL_Texture *applyModes(const BatchState &state)
+	{
+		auto *entry = state.texture;
+		if (!entry)
+			return nullptr;
+		if (entry->blend != state.blend)
+		{
+			check(SDL_SetTextureBlendMode(entry->handle, state.blend));
+			entry->blend = state.blend;
+		}
+		if (entry->scaleMode != state.scaleMode)
+		{
+			check(SDL_SetTextureScaleMode(entry->handle, state.scaleMode));
+			entry->scaleMode = state.scaleMode;
+		}
+		return entry->handle;
+	}
+	// Opaque fill runs (untextured, SDL_BLENDMODE_NONE) hold whole quads in
+	// fill()'s vertex order. Replacing a source of alpha 1 is what blending it
+	// computes, without reading the target: SDL's software renderer fills
+	// rectangles directly instead of blending each pixel, and tiled GPUs skip
+	// the destination read.
+	bool submitOpaqueFills(std::span<const SDL_Vertex> vertices)
+	{
+		bool result = SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+		if (!indexedBatches)
+			result = result && SDL_RenderGeometry(renderer, nullptr, vertices.data(),
+												  int(vertices.size()), nullptr, 0);
+		else
+		{
+			// SDL_SW_RenderGeometryRaw turns each quad into this exact rectangle
+			// fill, only with blending forced on.
+			SDL_FColor previous;
+			result = result && SDL_GetRenderDrawColorFloat(renderer, &previous.r, &previous.g,
+														   &previous.b, &previous.a);
+			for (std::size_t i = 0; result && i + 6 <= vertices.size(); i += 6)
+			{
+				const SDL_Vertex &topLeft = vertices[i], &bottomRight = vertices[i + 2];
+				const SDL_FRect rect{topLeft.position.x, topLeft.position.y,
+									 bottomRight.position.x - topLeft.position.x,
+									 bottomRight.position.y - topLeft.position.y};
+				result = SDL_SetRenderDrawColorFloat(renderer, topLeft.color.r, topLeft.color.g,
+													 topLeft.color.b, topLeft.color.a) &&
+						 SDL_RenderFillRect(renderer, &rect);
+			}
+			result = SDL_SetRenderDrawColorFloat(renderer, previous.r, previous.g, previous.b,
+												 previous.a) && result;
+		}
+		return SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND) && result;
+	}
+	void submitRun(Run &run)
+	{
+		SDL_Texture *texture = applyModes(run.state);
+		++counts.geometryBatches;
+		const bool result =
+			!texture && run.state.blend == SDL_BLENDMODE_NONE
+				? submitOpaqueFills(run.vertices)
+				: SDL_RenderGeometry(renderer, texture, run.vertices.data(), int(run.vertices.size()),
+									 indexedBatches ? run.indices.data() : nullptr,
+									 indexedBatches ? int(run.indices.size()) : 0);
+		run.vertices.clear();
+		run.indices.clear();
+		// Reused slots keep ordinary sprite runs allocation-free; an occasional
+		// large triangle list does not pin its storage in every slot.
+		if (run.vertices.capacity() > RetainedRunVertices)
+		{
+			std::vector<SDL_Vertex>().swap(run.vertices);
+			std::vector<int>().swap(run.indices);
+		}
+		check(result);
+	}
+	void submitBatch()
+	{
+		std::size_t submitted = 0;
+		try
+		{
+			for (; submitted < runCount; ++submitted)
+				submitRun(runs[submitted]);
+		}
+		catch (...)
+		{
+			discardRuns();
+			throw;
+		}
+		runCount = 0;
+	}
+	void discardRuns() noexcept
+	{
+		for (std::size_t i = 0; i < runCount; ++i)
+		{
+			runs[i].vertices.clear();
+			runs[i].indices.clear();
+		}
+		runCount = 0;
+	}
+	void refreshBoundsMargin()
+	{
+		// Logical units per output pixel in each mode; SDL's software renderer
+		// rounds rectangle edges, so a whole pixel separates reordered draws.
+		int outputW = 0, outputH = 0, logicalW = 0, logicalH = 0;
+		SDL_RendererLogicalPresentation mode = SDL_LOGICAL_PRESENTATION_DISABLED;
+		float pixelScale = 1;
+		if (physicalClip)
+			pixelScale = 1;
+		else if (SDL_GetRenderOutputSize(renderer, &outputW, &outputH) &&
+				 SDL_GetRenderLogicalPresentation(renderer, &logicalW, &logicalH, &mode) &&
+				 mode != SDL_LOGICAL_PRESENTATION_DISABLED && logicalW > 0 && logicalH > 0)
+			pixelScale = std::min(float(outputW) / logicalW, float(outputH) / logicalH);
+		else
+			pixelScale = std::min(nativeX, nativeY);
+		boundsMargin = indexedBatches ? 1 + (pixelScale > 0 && pixelScale < 1 ? 1 / pixelScale : 1) : 0;
+	}
+	static bool sameVertex(const SDL_Vertex &a, const SDL_Vertex &b, bool textured)
+	{
+		return a.position.x == b.position.x && a.position.y == b.position.y &&
+			   (!textured || (a.tex_coord.x == b.tex_coord.x && a.tex_coord.y == b.tex_coord.y)) &&
+			   std::memcmp(&a.color, &b.color, sizeof(a.color)) == 0;
+	}
+	static int gridIndex(float value, int count)
+	{
+		const float cell = std::floor(value / GridCell);
+		return cell < 0 ? 0 : cell >= count ? count - 1 : int(cell);
+	}
+	Run &runFor(const BatchState &state, const Bounds &bounds, std::size_t vertices)
+	{
+		if (nextSequence == std::numeric_limits<std::uint32_t>::max())
+		{
+			submitBatch();
+			std::fill(occupancy.begin(), occupancy.end(), 0);
+			for (auto &[key, texture] : textures)
+				texture.newestRun = 0;
+			untexturedRun = opaqueFillRun = 0;
+			nextSequence = 1;
+		}
+		// Half-open bounds: draws that only share an edge occupy distinct cells
+		// when the edge lies on a cell boundary.
+		const int left = gridIndex(bounds.left, GridColumns), top = gridIndex(bounds.top, GridRows);
+		const int right = gridIndex(std::nextafter(bounds.right, -std::numeric_limits<float>::infinity()), GridColumns);
+		const int bottom = gridIndex(std::nextafter(bounds.bottom, -std::numeric_limits<float>::infinity()), GridRows);
+		std::uint32_t latest = 0;
+		for (int y = top; y <= bottom; ++y)
+		{
+			const auto *row = occupancy.data() + y * GridColumns;
+			for (int x = left; x <= right; ++x)
+				latest = std::max(latest, row[x]);
+		}
+		// Pending sequences are contiguous, so a texture's newest run is found
+		// without scanning; a run with other modes for it starts a new run.
+		Run *target = nullptr;
+		std::uint32_t &newest = state.texture ? state.texture->newestRun
+								: state.blend == SDL_BLENDMODE_NONE ? opaqueFillRun : untexturedRun;
+		if (runCount && newest >= runs[0].sequence && newest >= latest)
+		{
+			Run &run = runs[newest - runs[0].sequence];
+			if (run.state == state && run.vertices.size() + vertices <= MaximumBatchVertices)
+				target = &run;
+		}
+		if (!target)
+		{
+			if (runCount == MaximumRuns)
+			{
+				// The oldest runs precede everything still pending.
+				constexpr std::size_t released = MaximumRuns / 2;
+				for (std::size_t i = 0; i < released; ++i)
+					submitRun(runs[i]);
+				std::rotate(runs.begin(), runs.begin() + released, runs.begin() + runCount);
+				runCount -= released;
+			}
+			if (runs.size() == runCount)
+				runs.emplace_back();
+			target = &runs[runCount++];
+			target->state = state;
+			target->sequence = nextSequence++;
+			newest = target->sequence;
+		}
+		for (int y = top; y <= bottom; ++y)
+		{
+			auto *row = occupancy.data() + y * GridColumns;
+			for (int x = left; x <= right; ++x)
+				row[x] = std::max(row[x], target->sequence);
+		}
+		return *target;
+	}
+	void queue(std::span<const SDL_Vertex> vertices, Texture *entry, SDL_BlendMode blend,
+			   SDL_ScaleMode scaleMode, bool applyTransform)
+	{
+		if (vertices.empty())
+			return;
+		++counts.triangles;
+		if (vertices.size() % 3 ||
+			vertices.size() > static_cast<size_t>(std::numeric_limits<int>::max()))
+			throw std::invalid_argument("Invalid triangle batch size");
+		SDL_Texture *texture = entry ? entry->handle : nullptr;
+		counts.vertices += vertices.size();
+		counts.textureSwitches += texture != lastTexture;
+		lastTexture = texture;
+		BatchState state;
+		if (entry)
+		{
+			// SDL picks clamp or wrap per call from the coordinates it receives.
+			state = {entry, blend, scaleMode, false, false};
+			for (const auto &vertex : vertices)
+			{
+				state.wrapU |= vertex.tex_coord.x < 0.0f || vertex.tex_coord.x > 1.0f;
+				state.wrapV |= vertex.tex_coord.y < 0.0f || vertex.tex_coord.y > 1.0f;
+			}
+		}
+		const bool translate = applyTransform && (scale != 1 || offsetX != 0 || offsetY != 0);
+		const bool native = physicalClip.has_value();
+		if (vertices.size() >= DirectSubmissionVertices)
+		{
+			// Large lists (terrain, bars) gain nothing from merging: they follow
+			// all pending runs as one unindexed call, as before batching, and
+			// are copied only when they need mapping.
+			submitBatch();
+			auto *source = vertices.data();
+			if (translate || native)
+			{
+				direct.assign(vertices.begin(), vertices.end());
+				for (auto &vertex : direct)
+				{
+					if (translate)
+					{
+						vertex.position.x = vertex.position.x * scale + offsetX;
+						vertex.position.y = vertex.position.y * scale + offsetY;
+					}
+					if (native)
+					{
+						vertex.position.x *= nativeX;
+						vertex.position.y *= nativeY;
+					}
+				}
+				source = direct.data();
+			}
+			applyModes(state);
+			++counts.geometryBatches;
+			check(!texture && state.blend == SDL_BLENDMODE_NONE
+					  ? submitOpaqueFills({source, vertices.size()})
+					  : SDL_RenderGeometry(renderer, texture, source, int(vertices.size()), nullptr, 0));
+			return;
+		}
+		const auto map = [&](float &x, float &y)
+		{
+			if (translate)
+			{
+				x = x * scale + offsetX;
+				y = y * scale + offsetY;
+			}
+			if (native)
+			{
+				x *= nativeX;
+				y *= nativeY;
+			}
+		};
+		// The mapping is increasing and float rounding is monotonic, so mapping
+		// the source extremes gives exactly the extremes of the mapped vertices.
+		Bounds bounds{std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity(),
+					  -std::numeric_limits<float>::infinity(), -std::numeric_limits<float>::infinity()};
+		for (const auto &vertex : vertices)
+		{
+			bounds.left = std::min(bounds.left, vertex.position.x);
+			bounds.top = std::min(bounds.top, vertex.position.y);
+			bounds.right = std::max(bounds.right, vertex.position.x);
+			bounds.bottom = std::max(bounds.bottom, vertex.position.y);
+		}
+		map(bounds.left, bounds.top);
+		map(bounds.right, bounds.bottom);
+		// Non-finite or inverted bounds never reorder.
+		if (!(bounds.left <= bounds.right && bounds.top <= bounds.bottom) ||
+			!std::isfinite(bounds.left + bounds.right + bounds.top + bounds.bottom))
+			bounds = {-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(),
+					  std::numeric_limits<float>::max(), std::numeric_limits<float>::max()};
+		else
+			bounds = {bounds.left - boundsMargin, bounds.top - boundsMargin,
+					  bounds.right + boundsMargin, bounds.bottom + boundsMargin};
+		Run &run = runFor(state, bounds, vertices.size());
+		const std::size_t base = run.vertices.size();
+		run.vertices.insert(run.vertices.end(), vertices.begin(), vertices.end());
+		if (translate || native)
+			for (auto vertex = run.vertices.begin() + base; vertex != run.vertices.end(); ++vertex)
+				map(vertex->position.x, vertex->position.y);
+		if (!indexedBatches)
+			return;
+		// Mirrors SDL_SW_RenderGeometryRaw's remapping of an unindexed call: a
+		// vertex equal to one of the previous triangle's reuses its index.
+		const std::size_t first = run.indices.size();
+		for (std::size_t i = 0; i < vertices.size(); ++i)
+		{
+			int index = int(base + i);
+			if (i >= 3)
+			{
+				const int *previous = run.indices.data() + first + (i / 3 - 1) * 3;
+				for (int j = 0; j < 3; ++j)
+					if (sameVertex(run.vertices[previous[j]], run.vertices[index], entry))
+					{
+						index = previous[j];
+						break;
+					}
+			}
+			run.indices.push_back(index);
+		}
+	}
+
   public:
 	explicit SDLRenderBackend(SDL_Renderer *renderer)
 		: renderer(renderer), gpuPreparation(gpuPreparationEnabled(renderer))
 	{
+		indexedBatches = std::strcmp(SDL_GetRendererName(renderer), "software") == 0;
         if (gpuPreparation) {
             gpuPreparation = exactPremultiplication();
             if (!gpuPreparation) { SDL_DestroyTexture(uploadTexture); uploadTexture = nullptr; }
@@ -169,8 +549,11 @@ class SDLRenderBackend final : public RenderBackend
 	}
 	int maximumTextureSize() const override
 	{
-		return int(SDL_GetNumberProperty(SDL_GetRendererProperties(renderer),
-										 SDL_PROP_RENDERER_MAX_TEXTURE_SIZE_NUMBER, 0));
+		// Fixed for the renderer's lifetime; callers ask on every sprite draw.
+		if (!maximumTexture)
+			maximumTexture = int(SDL_GetNumberProperty(SDL_GetRendererProperties(renderer),
+													   SDL_PROP_RENDERER_MAX_TEXTURE_SIZE_NUMBER, 0));
+		return maximumTexture;
 	}
 	void transform(float factor, float x, float y, const SDL_Rect *output) override
 	{
@@ -197,14 +580,29 @@ class SDLRenderBackend final : public RenderBackend
 		}
 		if (result && (result->w <= 0 || result->h <= 0))
 			result = SDL_Rect{};
-		check(SDL_SetRenderClipRect(renderer, physicalClip ? &*physicalClip : result ? &*result : nullptr));
+		const std::optional<SDL_Rect> applied = physicalClip ? physicalClip : result;
+		if (clipKnown && applied.has_value() == appliedClip.has_value() &&
+			(!applied || SDL_RectsEqual(&*applied, &*appliedClip)))
+			return;
+		submitBatch();
+		check(SDL_SetRenderClipRect(renderer, applied ? &*applied : nullptr));
+		appliedClip = applied;
+		clipKnown = true;
 	}
-	SDL_Texture *textureFor(const void *key, SDL_Surface *pixels, std::uint64_t revision,
-							bool linear = false)
+	Texture &textureFor(const void *key, SDL_Surface *pixels, std::uint64_t revision,
+						bool linear = false)
 	{
 		if (!pixels)
 			throw std::invalid_argument("Texture has no CPU pixels");
 		auto found = textures.find(key);
+		if (found != textures.end() && found->second.revision == revision &&
+			found->second.linear == linear && found->second.width == pixels->w &&
+			found->second.height == pixels->h && found->second.format == pixels->format &&
+			!(found->second.gpu && SDL_SurfaceHasColorKey(pixels)))
+			return found->second;
+		// Uploads, render-target switches and destruction must follow the queued
+		// draws that sample the previous pixels.
+		submitBatch();
 		if (found != textures.end() &&
 			(found->second.linear != linear || found->second.width != pixels->w ||
 			 found->second.height != pixels->h ||
@@ -215,7 +613,7 @@ class SDLRenderBackend final : public RenderBackend
 			found = textures.end();
 		}
 		if (found != textures.end() && found->second.revision == revision)
-			return found->second.handle;
+			return found->second;
 		SDL_Texture *texture = found == textures.end() ? nullptr : found->second.handle;
 		bool gpu = found != textures.end() && found->second.gpu;
 		if (linear && (gpuPreparation || gpu) && pixels->format == SDL_PIXELFORMAT_ARGB8888 &&
@@ -252,15 +650,9 @@ class SDLRenderBackend final : public RenderBackend
 				if (!converted || !SDL_LockSurface(converted.get()))
 					throw std::runtime_error(SDL_GetError());
 				for (int y = 0; y < converted->h; ++y)
-					for (int x = 0; x < converted->w; ++x)
-					{
-						auto &p = reinterpret_cast<Uint32 *>(
-							static_cast<Uint8 *>(converted->pixels) + y * converted->pitch)[x];
-						const Uint32 a = p >> 24;
-						p = (a << 24) | (((((p >> 16) & 255) * a + 127) / 255) << 16) |
-							(((((p >> 8) & 255) * a + 127) / 255) << 8) |
-							(((p & 255) * a + 127) / 255);
-					}
+					premultiplyRow(reinterpret_cast<Uint32 *>(
+									   static_cast<Uint8 *>(converted->pixels) + y * converted->pitch),
+								   converted->w);
 				SDL_UnlockSurface(converted.get());
 				counts.cpuPremultipliedBytes += std::uint64_t(converted->w) * converted->h * 4;
 			}
@@ -292,10 +684,12 @@ class SDLRenderBackend final : public RenderBackend
 		auto &entry = textures[key];
 		textureBytes -= entry.bytes;
 		entry = {texture, revision, linear, gpu, pixels->w, pixels->h, pixels->format, pixels,
-				 storageBytes(texture), std::uint64_t(pixels->h) * pixels->pitch};
+				 storageBytes(texture), std::uint64_t(pixels->h) * pixels->pitch,
+				 linear ? SDL_BLENDMODE_BLEND_PREMULTIPLIED : SDL_BLENDMODE_BLEND,
+				 linear ? SDL_SCALEMODE_LINEAR : SDL_SCALEMODE_NEAREST};
 		textureBytes += entry.bytes;
 		peakTextureBytes = std::max(peakTextureBytes, textureBytes);
-		return texture;
+		return entry;
 	}
 	void prepareTexture(const void *key, SDL_Surface *pixels, std::uint64_t revision,
 						bool linear = false) override
@@ -390,72 +784,73 @@ class SDLRenderBackend final : public RenderBackend
 	void triangles(std::span<const SDL_Vertex> vertices, const void *key, SDL_Surface *pixels,
 				   std::uint64_t revision) override
 	{
-		submit(vertices, key, pixels, revision, true);
+		if (vertices.empty())
+			return;
+		if (!key)
+			return queue(vertices, nullptr,
+						 opaqueRectangles(vertices) ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND,
+						 SDL_SCALEMODE_NEAREST, true);
+		auto &entry = textureFor(key, pixels, revision);
+		queue(vertices, &entry, SDL_BLENDMODE_BLEND, SDL_SCALEMODE_NEAREST, true);
+	}
+	// Untextured lists made only of opaque, uniformly coloured, axis-aligned
+	// quads in fill()'s corner order (OpaqueRectangleBatch, bars) can replace
+	// instead of blend.
+	static bool opaqueRectangles(std::span<const SDL_Vertex> vertices)
+	{
+		if (vertices.size() % 6)
+			return false;
+		const auto same = [](const SDL_Vertex &a, const SDL_Vertex &b)
+		{ return std::memcmp(&a, &b, sizeof(a)) == 0; };
+		const auto color = [](const SDL_Vertex &a, const SDL_Vertex &b)
+		{ return std::memcmp(&a.color, &b.color, sizeof(a.color)) == 0; };
+		for (std::size_t i = 0; i < vertices.size(); i += 6)
+		{
+			const auto *q = vertices.data() + i;
+			if (q[0].color.a != 1.0f || !same(q[3], q[0]) || !same(q[4], q[2]) ||
+				!color(q[1], q[0]) || !color(q[2], q[0]) || !color(q[5], q[0]) ||
+				q[1].position.y != q[0].position.y || q[2].position.x != q[1].position.x ||
+				q[5].position.x != q[0].position.x || q[5].position.y != q[2].position.y ||
+				!(q[0].position.x < q[1].position.x) || !(q[0].position.y < q[2].position.y) ||
+				!std::isfinite(q[2].position.x + q[2].position.y + q[0].position.x + q[0].position.y))
+				return false;
+		}
+		return true;
 	}
 	void screenTriangles(std::span<const SDL_Vertex> vertices) override
 	{
-		submit(vertices, nullptr, nullptr, false, false);
+		queue(vertices, nullptr, SDL_BLENDMODE_BLEND, SDL_SCALEMODE_NEAREST, false);
 	}
-	void submit(std::span<const SDL_Vertex> vertices, const void *key, SDL_Surface *pixels,
-				std::uint64_t revision, bool applyTransform, bool linear = false)
+	static void quad(SDL_Vertex (&vertices)[6], const SDL_Surface *pixels, const SDL_Rect &src,
+					 const SDL_FRect &dst, SDL_FColor c)
 	{
-		if (vertices.empty())
-			return;
-		++counts.triangles;
-		if (vertices.size() % 3 ||
-			vertices.size() > static_cast<size_t>(std::numeric_limits<int>::max()))
-			throw std::invalid_argument("Invalid triangle batch size");
-		SDL_Texture *texture = nullptr;
-		if (key)
-			texture = textureFor(key, pixels, revision, linear);
-		counts.vertices += vertices.size();
-		counts.textureSwitches += texture != lastTexture;
-		lastTexture = texture;
-		if ((applyTransform && (scale != 1 || offsetX != 0 || offsetY != 0)) || physicalClip)
-		{
-			++counts.transformCopies;
-			transformed.assign(vertices.begin(), vertices.end());
-			for (auto &vertex : transformed)
-			{
-                if (applyTransform) {
-                    vertex.position.x = vertex.position.x * scale + offsetX;
-                    vertex.position.y = vertex.position.y * scale + offsetY;
-                }
-                if (physicalClip) { vertex.position.x *= nativeX; vertex.position.y *= nativeY; }
-			}
-			vertices = transformed;
-		}
-		check(SDL_RenderGeometry(renderer, texture, vertices.data(),
-								 static_cast<int>(vertices.size()), nullptr, 0));
+		const float u0 = float(src.x) / pixels->w, v0 = float(src.y) / pixels->h;
+		const float u1 = float(src.x + src.w) / pixels->w, v1 = float(src.y + src.h) / pixels->h;
+		const SDL_Vertex a{{dst.x, dst.y}, c, {u0, v0}}, b{{dst.x + dst.w, dst.y}, c, {u1, v0}},
+			d{{dst.x, dst.y + dst.h}, c, {u0, v1}}, e{{dst.x + dst.w, dst.y + dst.h}, c, {u1, v1}};
+		vertices[0] = a; vertices[1] = b; vertices[2] = e;
+		vertices[3] = a; vertices[4] = e; vertices[5] = d;
 	}
 	void blit(const void *key, SDL_Surface *pixels, std::uint64_t revision, bool,
 			  const SDL_Rect &src, const SDL_FRect &dst, Uint8 alpha) override
 	{
 		++counts.blits;
-		const SDL_FColor c{1, 1, 1, alpha / 255.0f};
-		const float u0 = float(src.x) / pixels->w, v0 = float(src.y) / pixels->h;
-		const float u1 = float(src.x + src.w) / pixels->w, v1 = float(src.y + src.h) / pixels->h;
-		const SDL_Vertex a{{dst.x, dst.y}, c, {u0, v0}}, b{{dst.x + dst.w, dst.y}, c, {u1, v0}},
-			d{{dst.x, dst.y + dst.h}, c, {u0, v1}}, e{{dst.x + dst.w, dst.y + dst.h}, c, {u1, v1}};
-		const SDL_Vertex vertices[] = {a, b, e, a, e, d};
-		submit(vertices, key, pixels, revision, true);
+		SDL_Vertex vertices[6];
+		quad(vertices, pixels, src, dst, {1, 1, 1, alpha / 255.0f});
+		auto &entry = textureFor(key, pixels, revision);
+		queue(vertices, &entry, SDL_BLENDMODE_BLEND, SDL_SCALEMODE_NEAREST, true);
 	}
 	bool blitAdditive(const void *key, SDL_Surface *pixels, std::uint64_t revision,
 					  const SDL_Rect &src, const SDL_FRect &dst, Uint8 alpha) override
 	{
 		// The straight-alpha texture with SDL's additive mode adds colour times
-		// alpha. A texture keeps its own blend and scale modes, so restore them.
-		SDL_Texture *texture = textureFor(key, pixels, revision, false);
-		SDL_BlendMode blend = SDL_BLENDMODE_BLEND;
-		SDL_ScaleMode scaleMode = SDL_SCALEMODE_NEAREST;
-		check(SDL_GetTextureBlendMode(texture, &blend));
-		check(SDL_GetTextureScaleMode(texture, &scaleMode));
-		check(SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_ADD));
-		check(SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_LINEAR));
-		lastTexture = nullptr; // A blend change breaks SDL's draw batch.
-		blit(key, pixels, revision, false, src, dst, alpha);
-		check(SDL_SetTextureBlendMode(texture, blend));
-		check(SDL_SetTextureScaleMode(texture, scaleMode));
+		// alpha. The batch applies these modes to the shared texture when it is
+		// submitted; ordinary draws of the texture restore its own modes.
+		++counts.blits;
+		SDL_Vertex vertices[6];
+		quad(vertices, pixels, src, dst, {1, 1, 1, alpha / 255.0f});
+		auto &entry = textureFor(key, pixels, revision, false);
+		queue(vertices, &entry, SDL_BLENDMODE_ADD, SDL_SCALEMODE_LINEAR, true);
 		return true;
 	}
 	void blitLinear(const void *key, SDL_Surface *pixels, std::uint64_t revision,
@@ -463,13 +858,10 @@ class SDLRenderBackend final : public RenderBackend
 	{
 		++counts.blits;
 		const float opacity = alpha / 255.f;
-		const SDL_FColor c{opacity, opacity, opacity, opacity};
-		const float u0 = float(src.x) / pixels->w, v0 = float(src.y) / pixels->h;
-		const float u1 = float(src.x + src.w) / pixels->w, v1 = float(src.y + src.h) / pixels->h;
-		const SDL_Vertex a{{dst.x, dst.y}, c, {u0, v0}}, b{{dst.x + dst.w, dst.y}, c, {u1, v0}},
-			d{{dst.x, dst.y + dst.h}, c, {u0, v1}}, e{{dst.x + dst.w, dst.y + dst.h}, c, {u1, v1}};
-		const SDL_Vertex vertices[] = {a, b, e, a, e, d};
-		submit(vertices, key, pixels, revision, true, true);
+		SDL_Vertex vertices[6];
+		quad(vertices, pixels, src, dst, {opacity, opacity, opacity, opacity});
+		auto &entry = textureFor(key, pixels, revision, true);
+		queue(vertices, &entry, SDL_BLENDMODE_BLEND_PREMULTIPLIED, SDL_SCALEMODE_LINEAR, true);
 	}
 	void fill(const SDL_FRect &rect, SDL_Color color) override
 	{
@@ -479,7 +871,12 @@ class SDLRenderBackend final : public RenderBackend
 			d{{rect.x, rect.y + rect.h}, c, {0, 0}},
 			e{{rect.x + rect.w, rect.y + rect.h}, c, {0, 0}};
 		const SDL_Vertex vertices[] = {a, b, e, a, e, d};
-		submit(vertices, nullptr, nullptr, 0, true);
+		// Only positive, finite rectangles keep fill()'s corner order after
+		// mapping, which the opaque path relies on.
+		const bool opaque = color.a == 255 && rect.w > 0 && rect.h > 0 &&
+							std::isfinite(rect.x + rect.y + rect.w + rect.h);
+		queue(vertices, nullptr, opaque ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND,
+			  SDL_SCALEMODE_NEAREST, true);
 	}
 	RenderOperations operations() const override
 	{
@@ -497,7 +894,10 @@ class SDLRenderBackend final : public RenderBackend
 		for (const auto &[source, uses] : sources)
 			result.sharedSourceTextures += uses > 1 ? uses : 0;
 		result.stagingTextureBytes = storageBytes(uploadTexture);
-		result.transformedCapacityBytes = transformed.capacity() * sizeof(SDL_Vertex);
+		result.transformedCapacityBytes = direct.capacity() * sizeof(SDL_Vertex);
+		for (const auto &run : runs)
+			result.transformedCapacityBytes += run.vertices.capacity() * sizeof(SDL_Vertex) +
+											   run.indices.capacity() * sizeof(int);
 		return result;
 	}
 	void forget(const void *key) override
@@ -505,12 +905,14 @@ class SDLRenderBackend final : public RenderBackend
 		auto found = textures.find(key);
 		if (found != textures.end())
 		{
+			submitBatch();
 			SDL_DestroyTexture(found->second.handle);
 			erase(found);
 		}
 	}
 	void reset() override
 	{
+		submitBatch();
 		for (auto [key, texture] : textures)
 			SDL_DestroyTexture(texture.handle);
 		counts.textureDestroys += textures.size();
@@ -528,17 +930,21 @@ class SDLRenderBackend final : public RenderBackend
 	}
 	void logicalSize(int width, int height) override
 	{
+		submitBatch();
 		check(SDL_SetRenderLogicalPresentation(renderer, width, height,
 											   SDL_LOGICAL_PRESENTATION_LETTERBOX));
+		refreshBoundsMargin();
 		clear();
 	}
 	void nativeLogicalSize(int width, int height) override
 	{
 		int pixelsW, pixelsH;
 		outputSize(pixelsW, pixelsH);
+		submitBatch();
 		check(SDL_SetRenderLogicalPresentation(renderer, 0, 0, SDL_LOGICAL_PRESENTATION_DISABLED));
 		nativeX = float(pixelsW) / width; nativeY = float(pixelsH) / height;
         check(SDL_SetRenderScale(renderer, physicalClip ? 1 : nativeX, physicalClip ? 1 : nativeY));
+		refreshBoundsMargin();
 		// Lazy CPU geometry may be created after direct writes. Scale setup
 		// must not clear the borrowed target or overwrite earlier layers.
 	}
@@ -550,12 +956,24 @@ class SDLRenderBackend final : public RenderBackend
         physicalClip = rect ? std::optional<SDL_Rect>(*rect) : std::nullopt;
         check(SDL_SetRenderScale(renderer, physicalClip ? 1 : nativeX, physicalClip ? 1 : nativeY));
         check(SDL_SetRenderClipRect(renderer, rect));
+        clipKnown = false;
+        refreshBoundsMargin();
     }
-	void flush() override { check(SDL_FlushRenderer(renderer)); }
+	void flush() override
+	{
+		submitBatch();
+		check(SDL_FlushRenderer(renderer));
+	}
+	void discardFrame() noexcept override
+	{
+		discardRuns();
+	}
 	void present() override
 	{
+		submitBatch();
 		lastTexture = nullptr;
 		SDL_RenderPresent(renderer);
+		refreshBoundsMargin(); // The window may have been resized.
 		clear();
 	}
 	void outputSize(int &width, int &height) override
@@ -564,6 +982,7 @@ class SDLRenderBackend final : public RenderBackend
 	}
 	SDL_Surface *capture() override
 	{
+		submitBatch();
 		SDL_Surface *pixels = SDL_RenderReadPixels(renderer, nullptr);
 		if (!pixels)
 			throw std::runtime_error(SDL_GetError());
