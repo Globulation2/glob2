@@ -81,11 +81,12 @@
       "width": 64,
       "height": 64,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "inn0b0.png",
           "role": "base",
-          "sha256": "aeedf6307218f5a35616de59d88d3f30540672e085a3c038b81f3e1f7f6c682c",
+          "sha256": "8a17bfeb813666d01a5a0c3bebe12e635f28e097e71abb6b322459a7e0704c3d",
           "source_sha256": "aeedf6307218f5a35616de59d88d3f30540672e085a3c038b81f3e1f7f6c682c",
           "logical_width": 64,
           "logical_height": 64,
@@ -101,54 +102,72 @@
           "original_sha256": "a8f701e70a3b5399487b51dc7c772600267dbdb2a04ed97c3e341184c71e3a8d"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "inn0b1",
       "width": 64,
       "height": 64,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "inn0b1.png",
           "role": "base",
-          "sha256": "295d4555eea86689ec1980d10451e00a7f2f4386e5e070d232cad6bb023f0984",
+          "sha256": "ad3ae5a9ac4bcb34a99b3afa867aad45792a0a26b97d094078374a1c188256cc",
           "source_sha256": "295d4555eea86689ec1980d10451e00a7f2f4386e5e070d232cad6bb023f0984",
           "logical_width": 64,
           "logical_height": 64,
           "original_sha256": "131e05b6ab3c10ff25f73004884415ab9411aea0946b656c71280471a69b8d5d"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "inn0c0",
       "width": 64,
       "height": 64,
       "scale": 4,
+      "recipe": "painted_repair; colour sharpening v1",
       "layers": [
         {
           "file": "inn0c0.png",
           "role": "base",
-          "sha256": "a517e6e2ed33e01990a0731a521b267878f39cd211c6414fa88ea85a7c50ca99",
+          "sha256": "eef0f51ea2de613d54cb28a4114e3a63891f5a841eb375623db43d05e75baba1",
           "source_sha256": "a517e6e2ed33e01990a0731a521b267878f39cd211c6414fa88ea85a7c50ca99",
           "logical_width": 64,
           "logical_height": 64,
           "original_sha256": "3999094ce67209228933f83f5f14bf3b290676004088f43d55c45fd20064abf2"
         }
       ],
-      "recipe": "painted_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "inn1b0",
       "width": 64,
       "height": 69,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "inn1b0.png",
           "role": "base",
-          "sha256": "2ebe77357d6eca07cc3b391a1b7ee0cb045e8635f26afa6d62ff1a3a09d6b22a",
+          "sha256": "5724330289e20602943dfde5cab178dfb1963ac398b43bcda69e6333aca076df",
           "source_sha256": "2ebe77357d6eca07cc3b391a1b7ee0cb045e8635f26afa6d62ff1a3a09d6b22a",
           "logical_width": 64,
           "logical_height": 69,
@@ -164,18 +183,24 @@
           "original_sha256": "fb80127f693e00669d35cfd02aef69b90291cdfdaf7c2a6ecee676d164a34ebb"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "inn1b1",
       "width": 64,
       "height": 69,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "inn1b1.png",
           "role": "base",
-          "sha256": "95363fa0cbc56d2f282f6a87ec82854039ab98509101be2ebe03c81f9b83ffd1",
+          "sha256": "1dae8851d892a499ac53ed1fe8510ce711d468ef92368f9b5e88a7450b3e8e1c",
           "source_sha256": "95363fa0cbc56d2f282f6a87ec82854039ab98509101be2ebe03c81f9b83ffd1",
           "logical_width": 64,
           "logical_height": 69,
@@ -191,36 +216,48 @@
           "original_sha256": "f7ce4471af582675e3313776e8116ece2b374080b3a7d743d891d0bec84b1f51"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "inn1c0",
       "width": 64,
       "height": 64,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "inn1c0.png",
           "role": "base",
-          "sha256": "8900963b84bd34c44b613e3aafdc182fe6be9dd6ddd65b1506c8a1312f06a29a",
+          "sha256": "10caf0353ab07ca054fab17c4abc43b7a4e8870d4c08b28a2c2f2576debb40de",
           "source_sha256": "8900963b84bd34c44b613e3aafdc182fe6be9dd6ddd65b1506c8a1312f06a29a",
           "logical_width": 64,
           "logical_height": 64,
           "original_sha256": "58dd3ce7ff90e0e6385c9fc6a0b1a1c6fba974f9ad306afeedb22fd6f39f87d0"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "inn2b0",
       "width": 96,
       "height": 96,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "inn2b0.png",
           "role": "base",
-          "sha256": "23a39cde6b74365afe029f56b518fe107f8210a0994b18da806101cf1f43ff59",
+          "sha256": "165938d335882812ee992bf07084e9fcc5566cbd21d0bec9130d0e10e2837c62",
           "source_sha256": "23a39cde6b74365afe029f56b518fe107f8210a0994b18da806101cf1f43ff59",
           "logical_width": 96,
           "logical_height": 96,
@@ -236,36 +273,48 @@
           "original_sha256": "31c3779b1919d2aae99f4bf11d63385b819eb9e14527e5ce7d61b4ee043bcdf7"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "inn2c0",
       "width": 96,
       "height": 96,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "inn2c0.png",
           "role": "base",
-          "sha256": "58b75b1a88b4a5c16b08777cb4a8d31757830fc51102a46b364fe80b2be85db1",
+          "sha256": "d36d8944db0fcd958511d653bfc3c8ca048586ff9a0419bc9d04fc0da7cd959c",
           "source_sha256": "58b75b1a88b4a5c16b08777cb4a8d31757830fc51102a46b364fe80b2be85db1",
           "logical_width": 96,
           "logical_height": 96,
           "original_sha256": "2cfc52fcf9390aec9d178a8b54592ac60b3b306ba0c7ce60e29f0b4ce45df018"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "hosp0b0",
       "width": 64,
       "height": 64,
       "scale": 4,
+      "recipe": "painted_repair; colour sharpening v1",
       "layers": [
         {
           "file": "hosp0b0.png",
           "role": "base",
-          "sha256": "25fd4b4e4d80dd1a2a5265c74c3d566f1e4c1168b30de7fdbf286f91c20d6f92",
+          "sha256": "afda1f2099ca3094936401cd7afb62eceab86e1b4cf574ff82a7f31c6c48699c",
           "source_sha256": "25fd4b4e4d80dd1a2a5265c74c3d566f1e4c1168b30de7fdbf286f91c20d6f92",
           "logical_width": 64,
           "logical_height": 64,
@@ -281,54 +330,72 @@
           "original_sha256": "997951ed821b4ff56a664066f9cc0d339bfbbab0bf5462f9e5ccb1e81b4962d8"
         }
       ],
-      "recipe": "painted_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "hosp0b1",
       "width": 64,
       "height": 64,
       "scale": 4,
+      "recipe": "painted_repair; colour sharpening v1",
       "layers": [
         {
           "file": "hosp0b1.png",
           "role": "base",
-          "sha256": "d0ca283a5246e93bb54d08de243935e37c611144d2e09400deb2e03eed10e812",
+          "sha256": "0e48cd34d5799b8816c5713880769d92e95a4c13089bc65ed4c93d05e8163853",
           "source_sha256": "d0ca283a5246e93bb54d08de243935e37c611144d2e09400deb2e03eed10e812",
           "logical_width": 64,
           "logical_height": 64,
           "original_sha256": "3fe460541bd8c387e2f5843f8c84891b36dc064db9b43a4c15b514dc4aad0ccf"
         }
       ],
-      "recipe": "painted_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "hosp0c0",
       "width": 64,
       "height": 64,
       "scale": 4,
+      "recipe": "painted_repair; colour sharpening v1",
       "layers": [
         {
           "file": "hosp0c0.png",
           "role": "base",
-          "sha256": "ad85ed3fab7dd0355d12e797ced728c6f059f856423d5b655a0c4b60d849446a",
+          "sha256": "37cef2f75a1cd27e39efce0afc90121db43ffbd204260131c87a5f618f9e16ca",
           "source_sha256": "ad85ed3fab7dd0355d12e797ced728c6f059f856423d5b655a0c4b60d849446a",
           "logical_width": 64,
           "logical_height": 64,
           "original_sha256": "c2f847e85df250dade90c901c3b62ab8f9827052ac1cda27b9f04b0ab1108f53"
         }
       ],
-      "recipe": "painted_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "hosp1b0",
       "width": 64,
       "height": 76,
       "scale": 4,
+      "recipe": "painted_repair; colour sharpening v1",
       "layers": [
         {
           "file": "hosp1b0.png",
           "role": "base",
-          "sha256": "c02d0e88207160a61ea731b1b44b4e53481e65791e3b70ad7ce7beba69be1ff6",
+          "sha256": "b98457d7217c36709fc8f658989cf6457b6abb87d90a3203c49b4a2216698be8",
           "source_sha256": "c02d0e88207160a61ea731b1b44b4e53481e65791e3b70ad7ce7beba69be1ff6",
           "logical_width": 64,
           "logical_height": 76,
@@ -344,36 +411,48 @@
           "original_sha256": "1678d27e4f1c7b905e192d70443edb58ea4c4ccbe21e900f8208af7643a9e0e7"
         }
       ],
-      "recipe": "painted_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "hosp1c0",
       "width": 64,
       "height": 64,
       "scale": 4,
+      "recipe": "painted_repair; colour sharpening v1",
       "layers": [
         {
           "file": "hosp1c0.png",
           "role": "base",
-          "sha256": "c4ada2ca1418365954444bb6f272f59be5b8cd308b74f53ad6978b6fd1a71de5",
+          "sha256": "51940ae57220ea3bfec1c2c7240094876cec56b245b328700e8c3cdcb3140ed1",
           "source_sha256": "c4ada2ca1418365954444bb6f272f59be5b8cd308b74f53ad6978b6fd1a71de5",
           "logical_width": 64,
           "logical_height": 64,
           "original_sha256": "4d2c2b23550b3c2aca24ac297b3c44dba32029fd9ae56e8860aee4bbef95e723"
         }
       ],
-      "recipe": "painted_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "hosp2b0",
       "width": 64,
       "height": 77,
       "scale": 4,
+      "recipe": "painted_repair; colour sharpening v1",
       "layers": [
         {
           "file": "hosp2b0.png",
           "role": "base",
-          "sha256": "0775015cfd828933a0be768f37041012ca1df7a43b46f8523cc321d6433acff5",
+          "sha256": "b6f24d033e176c803f5d23bbdc59faec0a3e9883294b93b0b7a20d312e43fc27",
           "source_sha256": "0775015cfd828933a0be768f37041012ca1df7a43b46f8523cc321d6433acff5",
           "logical_width": 64,
           "logical_height": 77,
@@ -389,25 +468,36 @@
           "original_sha256": "393db0bfc5c86718a7473e87f1240eb81371aa4880b82ba53911b37ab2d44e03"
         }
       ],
-      "recipe": "painted_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "hosp2c0",
       "width": 64,
       "height": 77,
       "scale": 4,
+      "recipe": "painted_repair; colour sharpening v1",
       "layers": [
         {
           "file": "hosp2c0.png",
           "role": "base",
-          "sha256": "f44540e82261f8edfbad0cf1c6d6e59e04b37a17b1cf000c25cad922b00d38c7",
+          "sha256": "a72e3050330a2f2b4c6d0f3eec1d30c3cf77f48945b49703fa70b5c69542313a",
           "source_sha256": "f44540e82261f8edfbad0cf1c6d6e59e04b37a17b1cf000c25cad922b00d38c7",
           "logical_width": 64,
           "logical_height": 77,
           "original_sha256": "66d2dfe74461912ce296bf7dd05c08a1609840216fd32fd3043ea64493ede924"
         }
       ],
-      "recipe": "painted_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "racetrack0b0",
@@ -516,11 +606,12 @@
       "width": 128,
       "height": 128,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "racetrack0b1.png",
           "role": "base",
-          "sha256": "084ced3a0f91fba443043e6abbc3e3011f32f4dc0f623de7eacb89773be5d528",
+          "sha256": "bfe97507542d93b9242eeabf72432918d1c00d4cbc00883ba198702d6b401c96",
           "source_sha256": "084ced3a0f91fba443043e6abbc3e3011f32f4dc0f623de7eacb89773be5d528",
           "logical_width": 128,
           "logical_height": 128,
@@ -536,18 +627,24 @@
           "original_sha256": "fe7ab8950fe88bcdd8477ae254ccff50b0ca47a6ddc2384d9e8493895a78bcb8"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "racetrack0b2",
       "width": 128,
       "height": 128,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "racetrack0b2.png",
           "role": "base",
-          "sha256": "5fb7d3c0c6e687e7367745e2ed16b96b676d265fdac70dc3589702f7d39ca93a",
+          "sha256": "525ba665070ae1f492c890882c471241f58c964257344358c4310fa024de74ed",
           "source_sha256": "5fb7d3c0c6e687e7367745e2ed16b96b676d265fdac70dc3589702f7d39ca93a",
           "logical_width": 128,
           "logical_height": 128,
@@ -563,18 +660,24 @@
           "original_sha256": "b9816a27595a209957075639890da1d5d6e685bd4ee8468b740d38b19769e14a"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "racetrack0c0",
       "width": 128,
       "height": 128,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "racetrack0c0.png",
           "role": "base",
-          "sha256": "da9ae0b0ea39b16fcf6190004893d7a35b5b1d62563054fb2c7646a103d1644d",
+          "sha256": "3324fcf203c4ca1f7d27cb20aa33e2097e50a43ceb71464cc4e8d251c7b5afc4",
           "source_sha256": "da9ae0b0ea39b16fcf6190004893d7a35b5b1d62563054fb2c7646a103d1644d",
           "logical_width": 128,
           "logical_height": 128,
@@ -590,7 +693,12 @@
           "original_sha256": "776c10bfcc4b3458636ac973bd62b9c22605ff2d1e150675d1b7bd4a19921d29"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "racetrack1b0",
@@ -709,11 +817,12 @@
       "width": 192,
       "height": 192,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "racetrack1b1.png",
           "role": "base",
-          "sha256": "c95af9ab7e6c8e46e2003ae6b42d1a17b9307cca40b0a0bb33cd066a7d97e89d",
+          "sha256": "407280710894309deab75a6a8383a38011c614921d4c838181d89cc9223f00d5",
           "source_sha256": "c95af9ab7e6c8e46e2003ae6b42d1a17b9307cca40b0a0bb33cd066a7d97e89d",
           "logical_width": 192,
           "logical_height": 192,
@@ -729,18 +838,24 @@
           "original_sha256": "dc668875ba4172752f8a89f33ff8447b03839755be3fd49bdeb3a3930667c19d"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "racetrack1b2",
       "width": 192,
       "height": 192,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "racetrack1b2.png",
           "role": "base",
-          "sha256": "5a3e24d46a03f1a0dc601fc092e19f9960af9a07612fde0bdff84e2320735a98",
+          "sha256": "f19340f4d3fa36b7572180f56ade8bd0408f4ec58d1b5341ed66ff2a6b691b53",
           "source_sha256": "5a3e24d46a03f1a0dc601fc092e19f9960af9a07612fde0bdff84e2320735a98",
           "logical_width": 192,
           "logical_height": 192,
@@ -756,18 +871,24 @@
           "original_sha256": "9aeacc9028f7b38f6249b5aeb0a41b441297afd0c82e21d92221aaf819218a09"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "racetrack2b0",
       "width": 192,
       "height": 192,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "racetrack2b0.png",
           "role": "base",
-          "sha256": "db1cf926f1c59e7b93bebf049721cc0115427c3b666b840f0f1e41381a03b7d5",
+          "sha256": "cf0afbd9d5b65fadffe4c3114c39691b80ba95f38052109e401b77c21d802ec4",
           "source_sha256": "db1cf926f1c59e7b93bebf049721cc0115427c3b666b840f0f1e41381a03b7d5",
           "logical_width": 192,
           "logical_height": 192,
@@ -783,18 +904,24 @@
           "original_sha256": "e4e6c40c3532b05b6a8fcca1a462cbcc126a654adb117c8d6540ed1b8171efcd"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "pool0b0",
       "width": 128,
       "height": 128,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "pool0b0.png",
           "role": "base",
-          "sha256": "9bd3c6b853bea569de87114d3edbcba8390fb0d8668fd17061c024958d1238d2",
+          "sha256": "555361dcbe4f9989e98aed1d4867f95ec8bb49726b3ff66d74458e27da41a7e8",
           "source_sha256": "9bd3c6b853bea569de87114d3edbcba8390fb0d8668fd17061c024958d1238d2",
           "logical_width": 128,
           "logical_height": 128,
@@ -810,18 +937,24 @@
           "original_sha256": "a64dcc7fbff5bd60a9e32a018513adaac3fbad7e4dae337ad8e8ff6868420564"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "pool0b1",
       "width": 128,
       "height": 128,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "pool0b1.png",
           "role": "base",
-          "sha256": "93ab026acec7eadd39ec32f05e4ec9afbfb05a056064c382649e4ca4157f9ea0",
+          "sha256": "c15e17a52234dbe01d127efa7c4c0daf8400be9eb9ad0ba3f4d4268f97c9452c",
           "source_sha256": "93ab026acec7eadd39ec32f05e4ec9afbfb05a056064c382649e4ca4157f9ea0",
           "logical_width": 128,
           "logical_height": 128,
@@ -837,36 +970,48 @@
           "original_sha256": "1338025b7847c1acf27711599bc5c15bc92bc15fcdbb7442328182fac33bbe69"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "pool0c0",
       "width": 128,
       "height": 128,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "pool0c0.png",
           "role": "base",
-          "sha256": "aa585a095c045271430debd79aec01dc1ed08c7c1f19e10dd74473d10a2622dd",
+          "sha256": "85ccf8a32adb5b7957a7a5a004c1b368da81b471ceabf101949a2b12f53ff673",
           "source_sha256": "aa585a095c045271430debd79aec01dc1ed08c7c1f19e10dd74473d10a2622dd",
           "logical_width": 128,
           "logical_height": 128,
           "original_sha256": "9d5da96a448094e07caef79f287480e730660881e3966d5b356a9297e58f4273"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "pool1b0",
       "width": 192,
       "height": 174,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "pool1b0.png",
           "role": "base",
-          "sha256": "40c9ff892659be81ff011825ed28944900054a9ce47fabff3a78bcd679ce29c7",
+          "sha256": "40231b71c6b35cc8aba77d866705c4560893f7aad98042e2c221bbe85bc9631d",
           "source_sha256": "40c9ff892659be81ff011825ed28944900054a9ce47fabff3a78bcd679ce29c7",
           "logical_width": 192,
           "logical_height": 174,
@@ -882,18 +1027,24 @@
           "original_sha256": "ee33f518e9811b43ec296d67b6b25f088a139b36390bbde100ecb20432511a2b"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "pool2b0",
       "width": 192,
       "height": 203,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "pool2b0.png",
           "role": "base",
-          "sha256": "7ce016866a238bb703a9303de25e042e8d4c48105adb72985a6c8d53db98cc7e",
+          "sha256": "9cb6594269fb791fae54a9bdd91702d639b79f3e9a4b4187348943f50357f549",
           "source_sha256": "7ce016866a238bb703a9303de25e042e8d4c48105adb72985a6c8d53db98cc7e",
           "logical_width": 192,
           "logical_height": 203,
@@ -909,18 +1060,24 @@
           "original_sha256": "6696c078146e559774116a94dcbea75ecc1cac6fbdaf031e0e0a4ee46ce959ab"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "barracks0b0",
       "width": 128,
       "height": 128,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "barracks0b0.png",
           "role": "base",
-          "sha256": "85eae2dc0b354f9b9385b798ab735946d9155c4efec58a88f55ab232b261318c",
+          "sha256": "310aea97260311325cbc4a9ffb0db240fd3075213fc71699a0241ecf961206f6",
           "source_sha256": "85eae2dc0b354f9b9385b798ab735946d9155c4efec58a88f55ab232b261318c",
           "logical_width": 128,
           "logical_height": 128,
@@ -936,18 +1093,24 @@
           "original_sha256": "7ca0c9b9caef4ff964b61327d02e286725045f53b3fe592a1781de505738aba6"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "barracks1b0",
       "width": 128,
       "height": 138,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "barracks1b0.png",
           "role": "base",
-          "sha256": "b099eff662520487872b770494316fbdfc172b86393733a1e08c1ab6b7950796",
+          "sha256": "cb8e5b5ed67bf6b9fcbd33afaef5a7e26f760e1bed9c7bb5678ce9a2988dc2e5",
           "source_sha256": "b099eff662520487872b770494316fbdfc172b86393733a1e08c1ab6b7950796",
           "logical_width": 128,
           "logical_height": 138,
@@ -963,18 +1126,24 @@
           "original_sha256": "ce45dbca8db1e5b5fecb377d8f37194f27fd98e09a1e1303e7a61333e502204d"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "barracks2b0",
       "width": 128,
       "height": 128,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "barracks2b0.png",
           "role": "base",
-          "sha256": "1fa0c306f3146685cc9aa32b7c39a32bfb69a94c41fd7bfc8e19402c0ffa31b2",
+          "sha256": "c69f1e387afd0b92585d15e301b0c44762303df459d9b74bdce843682ef244c6",
           "source_sha256": "1fa0c306f3146685cc9aa32b7c39a32bfb69a94c41fd7bfc8e19402c0ffa31b2",
           "logical_width": 128,
           "logical_height": 128,
@@ -990,43 +1159,60 @@
           "original_sha256": "a967b18b61cb597075c15718560b26b6bb71435e0b6932d53e100ab0f0b3cea3"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "school0b0",
       "width": 64,
       "height": 64,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "school0b0.png",
           "role": "base",
-          "sha256": "43f194b235fb4350f094fb605dc77f190e1ee117aba1bec8f2ed6801635c2fde",
+          "sha256": "7c45ad70340d76a0a6852652f06366e28120a165b13817fb683aa5ed1c3f2306",
           "source_sha256": "43f194b235fb4350f094fb605dc77f190e1ee117aba1bec8f2ed6801635c2fde",
           "logical_width": 64,
           "logical_height": 64,
           "original_sha256": "fda16342c8270fcca7483c400d20896d5e4863628f44cabc78e94549ac7a84f9"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "school0b1",
       "width": 64,
       "height": 64,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "school0b1.png",
           "role": "base",
-          "sha256": "9449d0a4ae30a73bc2e7816c2fad4e5b66e8f0104b617d06322fd3ae38c809f6",
+          "sha256": "00c7458a0cc29f51a12f4fd2a8bb6bd526545a06bf6b3b83ff5ee085d9e131ee",
           "source_sha256": "9449d0a4ae30a73bc2e7816c2fad4e5b66e8f0104b617d06322fd3ae38c809f6",
           "logical_width": 64,
           "logical_height": 64,
           "original_sha256": "e2c8f86c715f4d46c8906e3816a41c3343b6daf1b3db8c2dc05da557c2993597"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "school1b0",
@@ -1222,11 +1408,12 @@
       "width": 64,
       "height": 70,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "school1b1.png",
           "role": "base",
-          "sha256": "40e09dcf3aa733e1ab7f4c0e4910fe5d57480edb6b828b44675ca347c1e593f6",
+          "sha256": "8271afb1693111b0855d9392d538e572188fd1c18dda3d3a3acf0148d31e460f",
           "source_sha256": "40e09dcf3aa733e1ab7f4c0e4910fe5d57480edb6b828b44675ca347c1e593f6",
           "logical_width": 64,
           "logical_height": 70,
@@ -1242,18 +1429,24 @@
           "original_sha256": "f0c79291a0e3f9a63c41d046d1d2513d03d72576c6170817ef17df6d526b845b"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "school1b2",
       "width": 64,
       "height": 70,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "school1b2.png",
           "role": "base",
-          "sha256": "ae4429183e61838cb58bad3c5ec8a0ca62ffe61ca42ed239a12a82f3ce65946e",
+          "sha256": "94467141d089a33c26918a9dbb69ae5e139a409cd22fd77f2fddaa2e81d0ce4c",
           "source_sha256": "ae4429183e61838cb58bad3c5ec8a0ca62ffe61ca42ed239a12a82f3ce65946e",
           "logical_width": 64,
           "logical_height": 70,
@@ -1269,18 +1462,24 @@
           "original_sha256": "01ab4d6013f1ff642602148e40df156256c3e7cbfdeb77864fae9f9212df7c37"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "school1c0",
       "width": 59,
       "height": 70,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "school1c0.png",
           "role": "base",
-          "sha256": "14050d9006e2b86e5fcd57f04ffee2779ebc947b6742ba8003a5f71517592553",
+          "sha256": "33000c8d58ae5fb9765e0185763e1d0bcb68031006a7ec117c121c73d342d1e5",
           "source_sha256": "14050d9006e2b86e5fcd57f04ffee2779ebc947b6742ba8003a5f71517592553",
           "logical_width": 59,
           "logical_height": 70,
@@ -1296,18 +1495,24 @@
           "original_sha256": "ec6a33286277dc48468bda2d8510bb921137908e13d8b8e8011db3587c4371d2"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "school2b0",
       "width": 64,
       "height": 64,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "school2b0.png",
           "role": "base",
-          "sha256": "e0e972f3296111acd0b048ae9352616b88d81271b7cf9e31934ac03aedd0623a",
+          "sha256": "f96c1f990ca064786e81af67b7dc56dd2456aad9ce37ff7ca398397283449f77",
           "source_sha256": "e0e972f3296111acd0b048ae9352616b88d81271b7cf9e31934ac03aedd0623a",
           "logical_width": 64,
           "logical_height": 64,
@@ -1323,18 +1528,24 @@
           "original_sha256": "d37542939b64bc3f64e5046652ee111600430966c072f510f75a5bc1d00efcac"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "defencetower0b0",
       "width": 68,
       "height": 59,
       "scale": 4,
+      "recipe": "painted_repair; colour sharpening v1",
       "layers": [
         {
           "file": "defencetower0b0.png",
           "role": "base",
-          "sha256": "a7e514fe094219416f68f008b20e2e4566ae3517d58a07d807edece69f4289f0",
+          "sha256": "ee8e1a1950f589eb22368de601b9b2a343e73a9dca18f3c096086f55de3e6849",
           "source_sha256": "a7e514fe094219416f68f008b20e2e4566ae3517d58a07d807edece69f4289f0",
           "logical_width": 68,
           "logical_height": 59,
@@ -1350,18 +1561,24 @@
           "original_sha256": "cdd7201463f03180512b1d4b6edd7836ce464375e595e1ae816567069d09b871"
         }
       ],
-      "recipe": "painted_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "defencetower1b0",
       "width": 64,
       "height": 108,
       "scale": 4,
+      "recipe": "crystal_repair; colour sharpening v1",
       "layers": [
         {
           "file": "defencetower1b0.png",
           "role": "base",
-          "sha256": "eb389a1efdd139ab8105c9408c48c3974d3d7da2ed0359802eba7fc73786e323",
+          "sha256": "2725a8405294c01b7e0ef93ed8ff885009a4bbecb3fe1cb20f510e12dc94a30e",
           "source_sha256": "eb389a1efdd139ab8105c9408c48c3974d3d7da2ed0359802eba7fc73786e323",
           "logical_width": 64,
           "logical_height": 108,
@@ -1377,18 +1594,24 @@
           "original_sha256": "de7126e39c9fc952c341e485262efb58f06185bed3d6ffeecc8ed8c4885e3620"
         }
       ],
-      "recipe": "crystal_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "defencetower1b1",
       "width": 64,
       "height": 108,
       "scale": 4,
+      "recipe": "crystal_repair; colour sharpening v1",
       "layers": [
         {
           "file": "defencetower1b1.png",
           "role": "base",
-          "sha256": "a3e4f34c8f0deed73edee70aafd313e9cae1157c135625e41bdc28c10abcb9fe",
+          "sha256": "b48c80bde05e233f6d21755a9b2b34dca6b325fb8e91edfd84a811016d104cc2",
           "source_sha256": "a3e4f34c8f0deed73edee70aafd313e9cae1157c135625e41bdc28c10abcb9fe",
           "logical_width": 64,
           "logical_height": 108,
@@ -1404,18 +1627,24 @@
           "original_sha256": "a38024981ddb6a55a1b7ca7fcb802aa64b67326a986fcdbbc609cdc60799053c"
         }
       ],
-      "recipe": "crystal_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "defencetower1b2",
       "width": 64,
       "height": 108,
       "scale": 4,
+      "recipe": "crystal_repair; colour sharpening v1",
       "layers": [
         {
           "file": "defencetower1b2.png",
           "role": "base",
-          "sha256": "f189eadede1c52448a89439cee3fcd618779577e644ca144f2fc4a98874161f3",
+          "sha256": "b9a05f92015d430cbf4f4f529db5064a6a788b711e3ef79e7b6da5b3a9a48f6d",
           "source_sha256": "f189eadede1c52448a89439cee3fcd618779577e644ca144f2fc4a98874161f3",
           "logical_width": 64,
           "logical_height": 108,
@@ -1431,18 +1660,24 @@
           "original_sha256": "dffb6dda71fd9ca442113f60a73907eef1baf87079bebda7d84559c3ac42ecfa"
         }
       ],
-      "recipe": "crystal_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "defencetower2b0",
       "width": 64,
       "height": 64,
       "scale": 4,
+      "recipe": "painted_repair; colour sharpening v1",
       "layers": [
         {
           "file": "defencetower2b0.png",
           "role": "base",
-          "sha256": "56290d108e214ea5de60dd21bdc60820ba2c2e0eb0bc9ae83697d45a7a7598e8",
+          "sha256": "a8bf8f86dc404c788158343dd7cf45d6b48c09e24fc9eae068ce1048cfcb0d76",
           "source_sha256": "56290d108e214ea5de60dd21bdc60820ba2c2e0eb0bc9ae83697d45a7a7598e8",
           "logical_width": 64,
           "logical_height": 64,
@@ -1458,18 +1693,24 @@
           "original_sha256": "a8a111ff5011522d3312ed8a525e524e99ec2a8063bc32b9b68b59c10d2b7d34"
         }
       ],
-      "recipe": "painted_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "market0b0",
       "width": 96,
       "height": 115,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "market0b0.png",
           "role": "base",
-          "sha256": "a4d71a1483a60494eddcb5b0bc22969eb97f74c63b1b348c8a2d7b9288c6b4e7",
+          "sha256": "878d7dae8aae967802dd65a8aa0ec08e05c3d274a437a05a420f848abeac2d53",
           "source_sha256": "a4d71a1483a60494eddcb5b0bc22969eb97f74c63b1b348c8a2d7b9288c6b4e7",
           "logical_width": 96,
           "logical_height": 115,
@@ -1485,18 +1726,24 @@
           "original_sha256": "9b52cfa446050afcac3ff268cd8d927046cd7a278b0303f7a7a68dcf1393a1f2"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "wall0",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "wall0.png",
           "role": "base",
-          "sha256": "f9ffa721c3842833bd9dd3c34498ed67ebe05c80e3993abb80afe2f0372570c9",
+          "sha256": "be19756a23460410b4d39efca0dbb9d014f76f7790f1a3448e566824bfb0fd92",
           "source_sha256": "f9ffa721c3842833bd9dd3c34498ed67ebe05c80e3993abb80afe2f0372570c9",
           "logical_width": 32,
           "logical_height": 32,
@@ -1512,18 +1759,24 @@
           "original_sha256": "86a023a6bfd7f138b7178542c21f5769f08d24878a09504b1bcacbe90bb54468"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "wall1",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "wall1.png",
           "role": "base",
-          "sha256": "3fb4635e8e0e42ccb0ccdd62a548cc8355c90aadbab80d0d1af11b8d4abda742",
+          "sha256": "25549e770524e8d74d885e61ad0f6b6aa705b566645833472659a0ae4fa07325",
           "source_sha256": "3fb4635e8e0e42ccb0ccdd62a548cc8355c90aadbab80d0d1af11b8d4abda742",
           "logical_width": 32,
           "logical_height": 32,
@@ -1539,18 +1792,24 @@
           "original_sha256": "f0023602d9ff6034d93294d4e8bd3f71266dfdc355c241baee022eba89d3ec4c"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "wall2",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "wall2.png",
           "role": "base",
-          "sha256": "c7b8ae99164a48907fa3a637d3a9f96cc6146adbfaf0531ca14374ab3933933a",
+          "sha256": "0d2d5388100f9bb959e80403af805bb7f2b6e84772c79925561262944f3a67bd",
           "source_sha256": "c7b8ae99164a48907fa3a637d3a9f96cc6146adbfaf0531ca14374ab3933933a",
           "logical_width": 32,
           "logical_height": 32,
@@ -1566,18 +1825,24 @@
           "original_sha256": "de63fd5e939eb9586297f5330d68847fb9aa2b8d1001493a5e490d8d4988b109"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "wall3",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "wall3.png",
           "role": "base",
-          "sha256": "99898db873a759187a178223f84cc71f3e3976aff213ea26f660210a1aaecd06",
+          "sha256": "a93483265a02a5ce88fa8be170503d1b8fd3f75d9c5d9be971142422687897f5",
           "source_sha256": "99898db873a759187a178223f84cc71f3e3976aff213ea26f660210a1aaecd06",
           "logical_width": 32,
           "logical_height": 32,
@@ -1593,18 +1858,24 @@
           "original_sha256": "6568227200392d9950852204e05103fd9fbd4bf6ec7c517b02e787ad80c7be45"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "wall4",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "wall4.png",
           "role": "base",
-          "sha256": "c0a011e9ac1f7776b57be14baa7d1081adea559ee42b287e59ba8d548860dff2",
+          "sha256": "68cf227974a08b7fbeeaa6c692e0481a1839622fcd33aace0f69cf4bb97e70d2",
           "source_sha256": "c0a011e9ac1f7776b57be14baa7d1081adea559ee42b287e59ba8d548860dff2",
           "logical_width": 32,
           "logical_height": 32,
@@ -1620,18 +1891,24 @@
           "original_sha256": "1c94956b90e12931e726e367bd60ba57dc11c37c93abf70d84560f035cc82673"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "wall5",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "wall5.png",
           "role": "base",
-          "sha256": "80f1e0694b4448e150604c13f0f1e5cc9a83c85cc5b5ba5ef24256c75517b86c",
+          "sha256": "3031dfb35fc02b82bd2980fbde2a7d244154858b3d49980dcaf54db07dcb0d57",
           "source_sha256": "80f1e0694b4448e150604c13f0f1e5cc9a83c85cc5b5ba5ef24256c75517b86c",
           "logical_width": 32,
           "logical_height": 32,
@@ -1647,18 +1924,24 @@
           "original_sha256": "c1afec98f5f20c425adebfbd89716bdb912a4c68df3da146287755f6cd68cf05"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "wall6",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "wall6.png",
           "role": "base",
-          "sha256": "4e52bd7aa2a3dcc66d9a8315a5413d5ea39a1aded22f08b3e27f2ef37a710ca0",
+          "sha256": "c7246e318b3f161a8c148181607584d6729d6dc78cbfca7db815fbabdbb1bea6",
           "source_sha256": "4e52bd7aa2a3dcc66d9a8315a5413d5ea39a1aded22f08b3e27f2ef37a710ca0",
           "logical_width": 32,
           "logical_height": 32,
@@ -1674,18 +1957,24 @@
           "original_sha256": "2564341afbb88f7ac977961262eb9c171dfa433748be8b31ffee9adce8f98ab8"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "wall7",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "wall7.png",
           "role": "base",
-          "sha256": "01802145482137b14a5fef61748a91c746b8c2bca7af703df7ee68f00f662406",
+          "sha256": "448af9c749afce65861b47ef28421a39186cd2b1c5c13feae1238c55b9e51126",
           "source_sha256": "01802145482137b14a5fef61748a91c746b8c2bca7af703df7ee68f00f662406",
           "logical_width": 32,
           "logical_height": 32,
@@ -1701,18 +1990,24 @@
           "original_sha256": "cfc8a94a2dbaf9031f01df5dff850334053734e42ace39184a191f089e92345f"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "wall8",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "wall8.png",
           "role": "base",
-          "sha256": "220fcd63aaa899ad33f5a07e7013609ea6f9e6f974788f100443953e031526ee",
+          "sha256": "20b41028c861232ae2e84ba446377e501ac07f134dfc458d5dc33d964679bdbd",
           "source_sha256": "220fcd63aaa899ad33f5a07e7013609ea6f9e6f974788f100443953e031526ee",
           "logical_width": 32,
           "logical_height": 32,
@@ -1728,18 +2023,24 @@
           "original_sha256": "9cf40bb9da40642cb542bf89c505bda7bcbeb4c762f86951a0d0cf83bdae159e"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "wall9",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "wall9.png",
           "role": "base",
-          "sha256": "160910c260803c905703508538d60faaf07cb7caf4e90149e6132bc97f1a76c4",
+          "sha256": "273c3ea84e15bd1ba7c91c5cd30d47d096aed1134baf1d5efacecef0aa6a2d0d",
           "source_sha256": "160910c260803c905703508538d60faaf07cb7caf4e90149e6132bc97f1a76c4",
           "logical_width": 32,
           "logical_height": 32,
@@ -1755,18 +2056,24 @@
           "original_sha256": "f04d789a286607d738d734858197a978c4691a51302dd3c3eaa022590014d504"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "wall10",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "wall10.png",
           "role": "base",
-          "sha256": "b3c204100d53c40df9bffd282e7ee13de549d005897eb49162ecabe0e80348f4",
+          "sha256": "afa44630db432defb98baff84e1b2b56946b907abc9b9bdccd6ccdd4b6721575",
           "source_sha256": "b3c204100d53c40df9bffd282e7ee13de549d005897eb49162ecabe0e80348f4",
           "logical_width": 32,
           "logical_height": 32,
@@ -1782,18 +2089,24 @@
           "original_sha256": "5f0d9ba6b72d5a1bb33a5aebe9610d12f74f04c5894c1f6602b2de11c5b17f4e"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "wall11",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "wall11.png",
           "role": "base",
-          "sha256": "9cbf6bc9d63836057c2b98715ef7bb16821a84cc0d738aea57a9b192709d0c8f",
+          "sha256": "a8440763c5780e21642f10ef04b8218747b095d884eccb9acc274bdd0d93aaa3",
           "source_sha256": "9cbf6bc9d63836057c2b98715ef7bb16821a84cc0d738aea57a9b192709d0c8f",
           "logical_width": 32,
           "logical_height": 32,
@@ -1809,18 +2122,24 @@
           "original_sha256": "e9bea9993e5f1596e26528be268c68dba8f5db5a77a445a596fb6640f642aa24"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "wall12",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "wall12.png",
           "role": "base",
-          "sha256": "7e847fcbf130fe37d4e292aea6bf0a9555d631c489bf730786fbadc91ad89ec0",
+          "sha256": "3a9de6bb4a303c21d25befc95e904560b4343fdcf3197f74889bc8188d266ebb",
           "source_sha256": "7e847fcbf130fe37d4e292aea6bf0a9555d631c489bf730786fbadc91ad89ec0",
           "logical_width": 32,
           "logical_height": 32,
@@ -1836,18 +2155,24 @@
           "original_sha256": "763f2ee8d30253c183381b9d66d31c602e4427b35ad257a10381b8f26678f7f2"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "wall13",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "wall13.png",
           "role": "base",
-          "sha256": "e20c1740f5f6ff79d7247f1733469be68a8219c94e58006af170f072365fb8fc",
+          "sha256": "1b989ea7f490eca245a81035dfa66ab71ab66ab4f32b936e3f8d4f9ec7834e5d",
           "source_sha256": "e20c1740f5f6ff79d7247f1733469be68a8219c94e58006af170f072365fb8fc",
           "logical_width": 32,
           "logical_height": 32,
@@ -1863,18 +2188,24 @@
           "original_sha256": "7ee99da53d0567b154a7af0388bee8ef8acc0f53851b7406ed83915dcc509c49"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "wall14",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "wall14.png",
           "role": "base",
-          "sha256": "b8789ca8c0173a6cb306cb24e2ec4a40af8ded8563267206e8da6db3323dcaf5",
+          "sha256": "771dcd6b1ab5b9788ed880a127a3f6b7d09b82fa703d823ebb508439bbb1d426",
           "source_sha256": "b8789ca8c0173a6cb306cb24e2ec4a40af8ded8563267206e8da6db3323dcaf5",
           "logical_width": 32,
           "logical_height": 32,
@@ -1890,18 +2221,24 @@
           "original_sha256": "d29ceaeea0fbc47a44d9cf6e1a5147c01ee47637cc3a00b759212ee05e3b81c9"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "wall15",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "wall15.png",
           "role": "base",
-          "sha256": "b88377b3bd82053e96accfae72370970ca60aa94bb0c6264047e816551cb2fe5",
+          "sha256": "66b3aadc929bdbd0618ecbc129957792c8d0704d7b1dc83bbe3e63be30f84028",
           "source_sha256": "b88377b3bd82053e96accfae72370970ca60aa94bb0c6264047e816551cb2fe5",
           "logical_width": 32,
           "logical_height": 32,
@@ -1917,18 +2254,24 @@
           "original_sha256": "b0f9b876b5393c81c7cf59e3cf6572562cd63b05ceb5f1ea27e9982aa6f680ff"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "wallc0",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "current; colour sharpening v1",
       "layers": [
         {
           "file": "wallc0.png",
           "role": "base",
-          "sha256": "03b9ab3fbbf9eba71ddc299684be913449201fbda1f2a655d37b5ed6bcc0202a",
+          "sha256": "45709f50664cddbe1cb9defd98c88670ddc3a85bf775fb840d3776dca8096bc4",
           "source_sha256": "03b9ab3fbbf9eba71ddc299684be913449201fbda1f2a655d37b5ed6bcc0202a",
           "logical_width": 32,
           "logical_height": 32,
@@ -1944,25 +2287,36 @@
           "original_sha256": "276ff832cff0832d28e1347654c21eca1e470a5d9765e81e071701848a3f4fad"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "buildingsite0",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "buildingsite0.png",
           "role": "base",
-          "sha256": "6281995bd57b1843df03c122756e7a8d4b14d933f1849a891bb47606e515b2be",
+          "sha256": "cd345adbe41dbbc4c0acfd4d07fdc0bd9ec1cbf7dba18e66fc93b31c8d43d7bc",
           "source_sha256": "6281995bd57b1843df03c122756e7a8d4b14d933f1849a891bb47606e515b2be",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "e996483ddd7c59467b2c1491eecba1e471f7a3d5e1b716bfbad51011780c44ba"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "buildingsite4",
@@ -2260,18 +2614,24 @@
       "width": 96,
       "height": 96,
       "scale": 4,
+      "recipe": "outline_repair; colour sharpening v1",
       "layers": [
         {
           "file": "inn3c0.png",
           "role": "base",
-          "sha256": "58b75b1a88b4a5c16b08777cb4a8d31757830fc51102a46b364fe80b2be85db1",
+          "sha256": "d36d8944db0fcd958511d653bfc3c8ca048586ff9a0419bc9d04fc0da7cd959c",
           "source_sha256": "58b75b1a88b4a5c16b08777cb4a8d31757830fc51102a46b364fe80b2be85db1",
           "logical_width": 96,
           "logical_height": 96,
           "original_sha256": "2cfc52fcf9390aec9d178a8b54592ac60b3b306ba0c7ce60e29f0b4ce45df018"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
+      ]
     },
     {
       "id": "terrain0",
@@ -15358,16 +15718,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource25.png",
           "role": "base",
-          "sha256": "b0b167991fe7b94e2685bace1764744176001a93477abcff031277102a9cedda",
+          "sha256": "0543a5341a5954d0ae21b00ff888b61d7a0b43dec872b9111ac2040169a0ed65",
           "source_sha256": "b0b167991fe7b94e2685bace1764744176001a93477abcff031277102a9cedda",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "23b41a0698a9fc090093123e772b2861e0545397f5a428fa6e5360b496f850bf"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15376,16 +15742,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource26.png",
           "role": "base",
-          "sha256": "56708605a696edb19db70bbe915bcd86b811cd036d30cf39fe3c78691911ecd6",
+          "sha256": "8d2afa403fbc5cddf19193b6e3cc34cd2ffc9406bc3868cb2dc9d6536ae821f9",
           "source_sha256": "56708605a696edb19db70bbe915bcd86b811cd036d30cf39fe3c78691911ecd6",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "e2f4d9a721d29519a57eea978bbcae6175456587fa81ef3204d37b34db9dfac6"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15394,16 +15766,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource27.png",
           "role": "base",
-          "sha256": "3eeda0d565a952895aedd288d604c71d81d0ba502d21fae051f0f707e02b544b",
+          "sha256": "405a6a4337018572bce9e276f0f87cbafd0fb2f72c825f39a9f59777db84cc30",
           "source_sha256": "3eeda0d565a952895aedd288d604c71d81d0ba502d21fae051f0f707e02b544b",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "9a8d704baa8ad7125ef95a1d7877c8f0a57570051f10c1dbdb846b79a2b74e65"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15412,16 +15790,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource28.png",
           "role": "base",
-          "sha256": "9c193e0ec6d5ffbbb04575b266930851a514b915231fff52a1c975d7edc30a79",
+          "sha256": "d124c85f67ceb95f8ed388ca14254e40287b30bd222db5c8d329aadb30a343bf",
           "source_sha256": "9c193e0ec6d5ffbbb04575b266930851a514b915231fff52a1c975d7edc30a79",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "9d84569752f94fc4d171682d120d3e60311ce0906f6f4eaa67bc606b272d7371"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15430,16 +15814,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource29.png",
           "role": "base",
-          "sha256": "e005a87c9254699300dde28e8b364a1b0b6e5435e57c3e2692d1e5c5eccc0455",
+          "sha256": "a3c5d69723424c16b00c244f70a0f32046595fc954f6649448e7021399c7b48a",
           "source_sha256": "e005a87c9254699300dde28e8b364a1b0b6e5435e57c3e2692d1e5c5eccc0455",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "e1538aa0054a8a3abe00e28a7cf9cbbc07b73fc4ea6e3a65bfbce9724c6b682d"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15462,8 +15852,8 @@
       ],
       "sources": [
         {
-          "path": "tools/artwork/sharpen_resources.py",
-          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15486,8 +15876,8 @@
       ],
       "sources": [
         {
-          "path": "tools/artwork/sharpen_resources.py",
-          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15510,8 +15900,8 @@
       ],
       "sources": [
         {
-          "path": "tools/artwork/sharpen_resources.py",
-          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15534,8 +15924,8 @@
       ],
       "sources": [
         {
-          "path": "tools/artwork/sharpen_resources.py",
-          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15558,8 +15948,8 @@
       ],
       "sources": [
         {
-          "path": "tools/artwork/sharpen_resources.py",
-          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15582,8 +15972,8 @@
       ],
       "sources": [
         {
-          "path": "tools/artwork/sharpen_resources.py",
-          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15606,8 +15996,8 @@
       ],
       "sources": [
         {
-          "path": "tools/artwork/sharpen_resources.py",
-          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15630,8 +16020,8 @@
       ],
       "sources": [
         {
-          "path": "tools/artwork/sharpen_resources.py",
-          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15654,8 +16044,8 @@
       ],
       "sources": [
         {
-          "path": "tools/artwork/sharpen_resources.py",
-          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15678,8 +16068,8 @@
       ],
       "sources": [
         {
-          "path": "tools/artwork/sharpen_resources.py",
-          "sha256": "594c3dc1cfcd2867e6418298a180e0eff4a8f18f43117fe9fcd6b4b15a00a98f"
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15688,16 +16078,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource40.png",
           "role": "base",
-          "sha256": "964be9399170ac71259aaf74cda8c3939d144040af6fd3aaf522a4a1388e0557",
+          "sha256": "000529eb5f35e0c4c19e5df7a8d19f7442642a27dcee349c6543fcbceb690620",
           "source_sha256": "964be9399170ac71259aaf74cda8c3939d144040af6fd3aaf522a4a1388e0557",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "c51e7a84eaf2436e6f0d18c7bd132331a3ac111db0fb9a6c7260b42f4414933e"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15706,16 +16102,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource41.png",
           "role": "base",
-          "sha256": "0c4e8518f470e05ad207bc578e79edfec89c8feb74837f79702126c563e31874",
+          "sha256": "5d054c98dc701d522fe36fd04c3f248be0a4e42ee59fd328797c18aa6d1a73b1",
           "source_sha256": "0c4e8518f470e05ad207bc578e79edfec89c8feb74837f79702126c563e31874",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "28a919fdbd118723c5ef9aa348276fe69d782b925f176965b304a09be0f14564"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15724,16 +16126,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource42.png",
           "role": "base",
-          "sha256": "25a55c4b825cd8ba139d3e64d298dd02027ed593b449eb2630ae35cfa2e39b3a",
+          "sha256": "13a6222a8d211b9e472c0a2338b32ab667969529eab577769e3e506925805888",
           "source_sha256": "25a55c4b825cd8ba139d3e64d298dd02027ed593b449eb2630ae35cfa2e39b3a",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "9008f33c49cea09f27be9892e10fa78f801a501b63827f9b239ed54ee48ccf79"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15742,16 +16150,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource43.png",
           "role": "base",
-          "sha256": "f4dd1cdc213f22aecb2a1801c35b171c9482bdfba76fec6d23fb801842c41268",
+          "sha256": "01e58ac7d5a537e4fcca3e88367a4f4315441b9164591fe5ae4ab8f4a06fc1a2",
           "source_sha256": "f4dd1cdc213f22aecb2a1801c35b171c9482bdfba76fec6d23fb801842c41268",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "83ed9ab2c5bf611074f68ed95bc4b900d69d643d745519ceb04bd0b260727881"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15760,16 +16174,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource44.png",
           "role": "base",
-          "sha256": "cf21b91007ea9e3d8a1c31d21eda1b7004443b6b00b4648b4ecaa4fdb00690a1",
+          "sha256": "3733d35a82faf40e5cf6eee26c8a94a0a3d504c904d2e4cde854a83f1a2960aa",
           "source_sha256": "cf21b91007ea9e3d8a1c31d21eda1b7004443b6b00b4648b4ecaa4fdb00690a1",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "5faac9b6236e5613734e0bbbbaf1a3bafbb20a226a13201bb870d0880bce30d1"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15778,16 +16198,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource45.png",
           "role": "base",
-          "sha256": "647772229a42a31fe56e1628e42cc05d02983b73c1a47f3d0894fb50316566d8",
+          "sha256": "7cbbd436f96c2f417287526dfb2f6936aadd16837a6c86104b19cdad4bd26442",
           "source_sha256": "647772229a42a31fe56e1628e42cc05d02983b73c1a47f3d0894fb50316566d8",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "97ba897368b74b73788fae4e34108bd34c42cbf97396bd0e31464c1f9cf5dde7"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15796,16 +16222,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource46.png",
           "role": "base",
-          "sha256": "f11bb7b7e2f2e6989d9eb7fc35c10aa504cd213d6ae87263a3daaac926c1583f",
+          "sha256": "a28f6a92a0de5875a6e371fcf8178797728fab775e406bc83132c0295bb7807d",
           "source_sha256": "f11bb7b7e2f2e6989d9eb7fc35c10aa504cd213d6ae87263a3daaac926c1583f",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "5871c2384edbe76cb9862a3cff1c80f7853a9bc9ed975dc0b99b4ed6ab9b9f4f"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15814,16 +16246,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource47.png",
           "role": "base",
-          "sha256": "1174f616a5277151d605ea20b5afecac463f17a70a7f45ae66e9870c603c8a96",
+          "sha256": "f1d71a039320f073a9114c643a37078c06ffaea757773f3d1836f34c8ff071bb",
           "source_sha256": "1174f616a5277151d605ea20b5afecac463f17a70a7f45ae66e9870c603c8a96",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "fdf080d6485dab775857ca989d68b6554f8cb7862793df7bfb4ada27e0e989d1"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15832,16 +16270,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource48.png",
           "role": "base",
-          "sha256": "94ac44e9ecee7b8f28c2e0bf09917d523dce402fbf087d2f45c7c3f13cf71196",
+          "sha256": "788ceccd6df73031febb4a6f02d6a11ed949d297a2e6fbf8bf2cce0c5e478ddc",
           "source_sha256": "94ac44e9ecee7b8f28c2e0bf09917d523dce402fbf087d2f45c7c3f13cf71196",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "41274aef39f11e1ca248467f8e6f9dff40c578ef97ba218723cb9bf56fb3b9b6"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15850,16 +16294,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource49.png",
           "role": "base",
-          "sha256": "b982e75086f51e9957f0c677d522d7c915939f5c53fef95fa97b75d98b618fbe",
+          "sha256": "172623181cf4da9661b99099723fb84be7175b76708292ed8347f6747d835e64",
           "source_sha256": "b982e75086f51e9957f0c677d522d7c915939f5c53fef95fa97b75d98b618fbe",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "4bed3febb0f5b4ee258de50a30700edad7d36d5f948aeaae88e81c9a4b78f090"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15868,16 +16318,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource50.png",
           "role": "base",
-          "sha256": "63cb21a6b652db763aaf6f94054869dd6e87d534c78c3bbcbd8bcb90804a7d29",
+          "sha256": "3a89493130599efe0fbd265f3a5786cb452fa3212a51d29f891d397130cb6d2c",
           "source_sha256": "63cb21a6b652db763aaf6f94054869dd6e87d534c78c3bbcbd8bcb90804a7d29",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "aa67c87304b905564424e66baafa9bda99b07e53587d76b091f09e72f7d7fb7c"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15886,16 +16342,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource51.png",
           "role": "base",
-          "sha256": "1d9b78755e12af30b27a422f4d9f87f9bd5ec742398c5a4182f53e673b3df252",
+          "sha256": "1ad6c58b3bc41ff69ec1cc51ab223f9d67b031b30d0ceaff60320f47dd423b7a",
           "source_sha256": "1d9b78755e12af30b27a422f4d9f87f9bd5ec742398c5a4182f53e673b3df252",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "aa93f882a1778d7cce71babe5c42cba042e9ad833551b3c5fbf248c81aecffd7"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15904,16 +16366,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource52.png",
           "role": "base",
-          "sha256": "5a43024d4911175fe807ba31311fe0045abb2b23729a48ad360b0725610a7202",
+          "sha256": "22ee8f92195c2d47628b9a137710a1e31cba2d4644078d7c6e7d9f3d97a409af",
           "source_sha256": "5a43024d4911175fe807ba31311fe0045abb2b23729a48ad360b0725610a7202",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "48ac0dd7adbd7faeedf57b30ba892ed3a5bd7765c29e3cbc59d7115c588107fb"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15922,16 +16390,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource53.png",
           "role": "base",
-          "sha256": "06ebde3acdc06e83b33e5887941e05f5420fb0d272023aa9e4e2805282262986",
+          "sha256": "57fadcb866a7805ccee8218af39c7bf13c6168da5959b0a6e90ac968ffcf8835",
           "source_sha256": "06ebde3acdc06e83b33e5887941e05f5420fb0d272023aa9e4e2805282262986",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "c46acc6c68caf833cc73d273a08bd1117ac7ba86a10a2d5e3e73bd6dfd9eb912"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15940,16 +16414,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource54.png",
           "role": "base",
-          "sha256": "fcb06ba4afd2da739b8868c77e2cdb312928e6c29f20caa5ec09825e2bfd0da8",
+          "sha256": "6813fcd72e65a5dbb547528e8ca629fc2a14603230603e511a8eaec92258f870",
           "source_sha256": "fcb06ba4afd2da739b8868c77e2cdb312928e6c29f20caa5ec09825e2bfd0da8",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "904ac9b37dc519751da8732181f45c76d8dd6ca6ab726bad11fc5e0d6c1bf931"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15958,16 +16438,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource55.png",
           "role": "base",
-          "sha256": "63cb21a6b652db763aaf6f94054869dd6e87d534c78c3bbcbd8bcb90804a7d29",
+          "sha256": "3a89493130599efe0fbd265f3a5786cb452fa3212a51d29f891d397130cb6d2c",
           "source_sha256": "63cb21a6b652db763aaf6f94054869dd6e87d534c78c3bbcbd8bcb90804a7d29",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "aa67c87304b905564424e66baafa9bda99b07e53587d76b091f09e72f7d7fb7c"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15976,16 +16462,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource56.png",
           "role": "base",
-          "sha256": "7e872984ef3c93671b172d821fce04f87a718792405cd387c59d167faf035d90",
+          "sha256": "c8bedcb8ebbc5655b905308ca7b4a88f06b1b936c9a87b359fa67315dbbfd803",
           "source_sha256": "7e872984ef3c93671b172d821fce04f87a718792405cd387c59d167faf035d90",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "5b5d50a5476ca199b924be586bfe50a14d9074ca4288e31e9b039bfb9e4458ed"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -15994,16 +16486,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource57.png",
           "role": "base",
-          "sha256": "38b1924597a0ad1b14af9e9f87eb7f44a3c4236d2a9e31e60a2ee4abfa52688d",
+          "sha256": "02c8f13577c60cd3409b3538368d56aaf4e4f6de70e638d0ca0215baabc2414e",
           "source_sha256": "38b1924597a0ad1b14af9e9f87eb7f44a3c4236d2a9e31e60a2ee4abfa52688d",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "fcc43fa005ee4e70bb59840403fc59b920b04d3f5942049750e9785ae9bf3fc5"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -16012,16 +16510,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource58.png",
           "role": "base",
-          "sha256": "814452b158feda9c9d951f8060842c5d49845d3e0eefabc686bb193f34e7332d",
+          "sha256": "2e07af60ac01be87b35ace8af5ff56cfdafc433f88d09ebe9446deaaf94a7102",
           "source_sha256": "814452b158feda9c9d951f8060842c5d49845d3e0eefabc686bb193f34e7332d",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "5ec9165296a68dfaa29561af46eeacb94e6a538ef9b212f7a3d90331f04f00a7"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -16030,16 +16534,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource59.png",
           "role": "base",
-          "sha256": "485bcc61f8a05de1af9026112a5296dcc957835f58afcac8d812f82acf9ce444",
+          "sha256": "60ee1d0e9ce23f6005e6642b95756d2faa3d3b524bb4234176da20bdf706b627",
           "source_sha256": "485bcc61f8a05de1af9026112a5296dcc957835f58afcac8d812f82acf9ce444",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "3bdb6b438668e7ddb1651eb6dfd931b00224cf19391bb4efdd3226a495e0a3ec"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -16048,16 +16558,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource60.png",
           "role": "base",
-          "sha256": "63cb21a6b652db763aaf6f94054869dd6e87d534c78c3bbcbd8bcb90804a7d29",
+          "sha256": "3a89493130599efe0fbd265f3a5786cb452fa3212a51d29f891d397130cb6d2c",
           "source_sha256": "63cb21a6b652db763aaf6f94054869dd6e87d534c78c3bbcbd8bcb90804a7d29",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "3e108a049b41d7925f75234c650d20c5ad864983f6ac402ca0d75a318eee96b2"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -16066,16 +16582,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource61.png",
           "role": "base",
-          "sha256": "f4a949d8f216e2edd4d1e045989c8adac43a3466ca8488b2dbee61b943670d7a",
+          "sha256": "962c3009e4286082d0693dada2915ff81aaa8c536c27890700a7be6c4e3185bd",
           "source_sha256": "f4a949d8f216e2edd4d1e045989c8adac43a3466ca8488b2dbee61b943670d7a",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "37adc6ed22c8e3f7119ae55bd2e1b43234c75c35e9d30c28727df076b29d6b0a"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -16084,16 +16606,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource62.png",
           "role": "base",
-          "sha256": "b2e0765d2b315f00bb23e0eb9fdd544176557f74d42e5679056c501a72dd5345",
+          "sha256": "9172cda4210fa7f14e630ce0cdbcc3cdaa1d9655f63d8180fea3ee71473196d2",
           "source_sha256": "b2e0765d2b315f00bb23e0eb9fdd544176557f74d42e5679056c501a72dd5345",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "84c945f7ad82443461599d3bbf91b60513dd4ceb173cd16646e389f5960d0ae0"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -16102,16 +16630,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource63.png",
           "role": "base",
-          "sha256": "05696be5d192994b88e82bda1bc75e0e1bf890a51868851574ae68f9aca2687e",
+          "sha256": "cf7695819b2e5bf3fb9f7a87204f9367dd99a410abd5f5436036a7e30029c240",
           "source_sha256": "05696be5d192994b88e82bda1bc75e0e1bf890a51868851574ae68f9aca2687e",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "00c9553357e2f4c04e641973bc4c8d127a8c82be9b84e8edcf362d0052e5b8d1"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -16120,16 +16654,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "resource constrained; crisp edges and sharpening v1",
       "layers": [
         {
           "file": "ressource64.png",
           "role": "base",
-          "sha256": "2361bddf2a8c1a289cdb9bc4d002e699e62702e4ec33408a0c2f8b3902364632",
+          "sha256": "482a7af2a5b30ecd06d9f7fdacb3b1dbcc873a79b76797042a36cafe07598a16",
           "source_sha256": "2361bddf2a8c1a289cdb9bc4d002e699e62702e4ec33408a0c2f8b3902364632",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "72e978831e4038c1d77f4c2ee608ed16a044559ec0399606586b6a84d3517658"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -17098,16 +17638,22 @@
       "width": 8,
       "height": 8,
       "scale": 4,
-      "recipe": "world constrained",
+      "recipe": "world constrained; colour sharpening v1",
       "layers": [
         {
           "file": "bullet0.png",
           "role": "base",
-          "sha256": "2feed6a205fc4760e66f8c45d7c10989e40cc80701ebe8318f940ea1d4aa2174",
+          "sha256": "ce0d64afa2b7122c89fe359abb7accc4d01eb30ffc830b7a4391c9c22051acfa",
           "source_sha256": "2feed6a205fc4760e66f8c45d7c10989e40cc80701ebe8318f940ea1d4aa2174",
           "logical_width": 8,
           "logical_height": 8,
           "original_sha256": "64ca0ad4dd34777129f0b2b49085b337bc152854050f4375100afd3de264fbce"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -17116,16 +17662,22 @@
       "width": 8,
       "height": 8,
       "scale": 4,
-      "recipe": "world constrained",
+      "recipe": "world constrained; colour sharpening v1",
       "layers": [
         {
           "file": "bullet1.png",
           "role": "base",
-          "sha256": "7dd5ee4034d181d1f8115ce1b33e853a8e17a561e9d7b61931d5329063b903c6",
+          "sha256": "49114796f9b5ef11edb72f28598051e54e4454d37ec8ca3d453b06cc0af9f847",
           "source_sha256": "7dd5ee4034d181d1f8115ce1b33e853a8e17a561e9d7b61931d5329063b903c6",
           "logical_width": 8,
           "logical_height": 8,
           "original_sha256": "1ca2cea3fecc312d7b7692a9557836c67f337010f14e49852ac561b3fb5f3e28"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -17152,16 +17704,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "world constrained",
+      "recipe": "world constrained; colour sharpening v1",
       "layers": [
         {
           "file": "explosion0.png",
           "role": "base",
-          "sha256": "a896147826c61ecc967fc2ac397f249bc9902a1bcb4277691afe94d015c216d3",
+          "sha256": "dc203aa97bb38307581bade41fdcb4b15846e4f5081b965d87682fad5d55c28b",
           "source_sha256": "a896147826c61ecc967fc2ac397f249bc9902a1bcb4277691afe94d015c216d3",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "2757786ca012de81e5ff7c7958a85dadf91c59026edc4d9335d8f593f92467b8"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -17170,16 +17728,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "world constrained",
+      "recipe": "world constrained; colour sharpening v1",
       "layers": [
         {
           "file": "explosion1.png",
           "role": "base",
-          "sha256": "d0047335490c68d2666f257f83c48115b3e84e54b238846ca23c0ec1ba80f9a3",
+          "sha256": "14a3f0d2f7684195b7fc56a89c7bc601b0f07cfac6936ab46c96d629d56f24a8",
           "source_sha256": "d0047335490c68d2666f257f83c48115b3e84e54b238846ca23c0ec1ba80f9a3",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "1cf22f10fbe435c0941afe0bf6bc6baeb56a5c3aafbcc1e7ea3cff133be4d0f9"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -17188,16 +17752,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "world constrained",
+      "recipe": "world constrained; colour sharpening v1",
       "layers": [
         {
           "file": "explosion2.png",
           "role": "base",
-          "sha256": "4d9bfd6fd276d97c79f20c96ddfc6178b13dc20af4986c1fc0e0c2e6e9684b7c",
+          "sha256": "6c53f33c89993c776c671371dbde930a552bae546d69dbc920e00862981c2f99",
           "source_sha256": "4d9bfd6fd276d97c79f20c96ddfc6178b13dc20af4986c1fc0e0c2e6e9684b7c",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "2e38469aa4969d2af60c911b7a3554355d4e51524ad9994e074526d16907a51c"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -17206,16 +17776,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "world constrained",
+      "recipe": "world constrained; colour sharpening v1",
       "layers": [
         {
           "file": "explosion3.png",
           "role": "base",
-          "sha256": "fc47c2a0ced00e8f63be7ae89bb87e4c44532da5104ae3db2674de3d911e5f4e",
+          "sha256": "758c7954e3f835a05bb060cb4504e3b616cb971d9739443e88c6454af997200e",
           "source_sha256": "fc47c2a0ced00e8f63be7ae89bb87e4c44532da5104ae3db2674de3d911e5f4e",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "647b200def7bb86a1417b877c88b4546731093c312f0fe1ea88627a77f568d89"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -17224,16 +17800,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "world constrained",
+      "recipe": "world constrained; colour sharpening v1",
       "layers": [
         {
           "file": "explosion4.png",
           "role": "base",
-          "sha256": "c06619173289779f2f99054f10cb8ef05e0984182e857ef42b71f91dd322a255",
+          "sha256": "fd0d466c1df6abcae116b9b982b4cd1a348ff053e437cc49e5877e913cd10833",
           "source_sha256": "c06619173289779f2f99054f10cb8ef05e0984182e857ef42b71f91dd322a255",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "6b001a0472f490fc6588b3860a39cb667a788fc3d41ad005dfd71bc34d90459c"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -17242,16 +17824,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "world constrained",
+      "recipe": "world constrained; colour sharpening v1",
       "layers": [
         {
           "file": "explosion5.png",
           "role": "base",
-          "sha256": "0faf1ffd91377d2ea4a58858f610c33e0e01efb7ecb118fbfc789f11c1e74942",
+          "sha256": "5d173edf6fae8d6d0bda9a2e21de249d641dbf95c1b792051f01e4742e3d191e",
           "source_sha256": "0faf1ffd91377d2ea4a58858f610c33e0e01efb7ecb118fbfc789f11c1e74942",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "654cae7ab17feaecd0fdbea7f239bdaa2681522a19787f069d1362b799928560"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -17260,12 +17848,12 @@
       "width": 256,
       "height": 256,
       "scale": 4,
-      "recipe": "world constrained",
+      "recipe": "world constrained; colour sharpening v1",
       "layers": [
         {
           "file": "magiceffect0.png",
           "role": "base",
-          "sha256": "54f0d8798ade6d699eeba476098656967a7bd82940783a213dfd28946bb81cf9",
+          "sha256": "318fae79966d7b989318ff7dee9b47ef00f2bd57be9ba2178e53a2127dfe4218",
           "source_sha256": "54f0d8798ade6d699eeba476098656967a7bd82940783a213dfd28946bb81cf9",
           "logical_width": 256,
           "logical_height": 256,
@@ -17280,6 +17868,12 @@
           "logical_height": 256,
           "original_sha256": "3e56d814fe628759e7c60ffba7c018343dce8dc73cb33e1b3de27ac526d4a22b"
         }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
       ]
     },
     {
@@ -17287,12 +17881,12 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "world constrained",
+      "recipe": "world constrained; colour sharpening v1",
       "layers": [
         {
           "file": "particle0.png",
           "role": "base",
-          "sha256": "7f9265b7b14a2dba9ab84f1dffb196abae0427c5492a04aeca7ad3a91049e5ae",
+          "sha256": "070e4a83cd8f6a07a391921aeb04b84bc8ff978d0a16f751e43508095074d999",
           "source_sha256": "7f9265b7b14a2dba9ab84f1dffb196abae0427c5492a04aeca7ad3a91049e5ae",
           "logical_width": 32,
           "logical_height": 32,
@@ -17307,6 +17901,12 @@
           "logical_height": 40,
           "original_sha256": "6e6db9238e5272cff68dc13c71185313d779cf824271c3478ef57951c1665e7f"
         }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
       ]
     },
     {
@@ -17314,12 +17914,12 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "world constrained",
+      "recipe": "world constrained; colour sharpening v1",
       "layers": [
         {
           "file": "particle1.png",
           "role": "base",
-          "sha256": "ec751dd7bdababd67968080181e39c6a4ecb4a64fbb0bd68a72859c91de79cfc",
+          "sha256": "5334baa41fcf11db46c8d5cd474dfb0f6dd237318ee431eb320ef526fda50a96",
           "source_sha256": "ec751dd7bdababd67968080181e39c6a4ecb4a64fbb0bd68a72859c91de79cfc",
           "logical_width": 32,
           "logical_height": 32,
@@ -17334,6 +17934,12 @@
           "logical_height": 32,
           "original_sha256": "8c0f05c9c154f975c54b9e853f26c5e691751d168041e077b6c3d4902586faae"
         }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
       ]
     },
     {
@@ -17341,12 +17947,12 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "world constrained",
+      "recipe": "world constrained; colour sharpening v1",
       "layers": [
         {
           "file": "particle2.png",
           "role": "base",
-          "sha256": "ec32fe4e12b72737020de0bcacba9d36e6c51f7da68d5338853cb144a287185e",
+          "sha256": "416d42172722d44be207363f14b7d6cd0ffd7837e59989ff58ea636a02364370",
           "source_sha256": "ec32fe4e12b72737020de0bcacba9d36e6c51f7da68d5338853cb144a287185e",
           "logical_width": 32,
           "logical_height": 32,
@@ -17361,6 +17967,12 @@
           "logical_height": 32,
           "original_sha256": "e63520b17646ca5370dd8cde2a2b54345d3e206cd78bc3f71c2134c991c0eb62"
         }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
+        }
       ]
     },
     {
@@ -17368,16 +17980,22 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "world constrained",
+      "recipe": "world constrained; colour sharpening v1",
       "layers": [
         {
           "file": "particle3.png",
           "role": "base",
-          "sha256": "6b5ad70c75929829d61812481745c5fd1cbb34d7e4a176ca80700393985354c9",
+          "sha256": "d18b032eb6dbb55e7e2bc3b90893f76ab43fdfc3db823722aacba9ce539540df",
           "source_sha256": "6b5ad70c75929829d61812481745c5fd1cbb34d7e4a176ca80700393985354c9",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "3b161c487d91d0f08a740102deda6a45e5555d13f9567989bb64a2ebd581a0c7"
+        }
+      ],
+      "sources": [
+        {
+          "path": "tools/artwork/sharpen_upscales.py",
+          "sha256": "bb27e9b99152def7f0006f1e24a44f11c7cc69f42bf0f90d4bd2195668fd644a"
         }
       ]
     },
@@ -1058368,19 +1058986,19 @@
     "levels": [
       {
         "file": "ressource-atlas-mip0.png",
-        "sha256": "6c0c7cdbe0b5bfd051748ab804fb59a43543095ad3d9b961f32508b8dd6ab438"
+        "sha256": "ddf70937908dc64509ee9fd6f8950573706295e042bdfd130902edb3bcddc545"
       },
       {
         "file": "ressource-atlas-mip1.png",
-        "sha256": "42a42e7ca7e7d1024b3cdf355b843c921df896be77daee650f89b1cc85224e4b"
+        "sha256": "aeb60d5eea86c5f422ca4ebf9043e84636d4467cc9ac3be527ace42e5256adec"
       },
       {
         "file": "ressource-atlas-mip2.png",
-        "sha256": "325a0aea1c3f592a7794718fd92d29f989e657a8d4ff00e9affd3379782d6c89"
+        "sha256": "329fd2f006102913fd2d1f46d1a7310ce0f2f50301b38d4f948c2e6a7b09d61d"
       },
       {
         "file": "ressource-atlas-mip3.png",
-        "sha256": "9f678051a0a521b9e5f21897358ff5e62c7806247d96b75255d2248aed66b735"
+        "sha256": "8165bdb0e48f786264de9858d7a2a45e90ff672320be1db42d49012ed72b7878"
       }
     ]
   }

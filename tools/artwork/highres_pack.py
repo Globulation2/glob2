@@ -58,7 +58,8 @@ def register_frames(frames, category, root=ROOT):
     `id` is the native sprite frame name (for example `terrain-shale3`); its
     classic `content/data/gfx/<id>.png` must already exist at the logical size. A
 frame refined from an earlier HD image passes that image's hash as
-`source_sha256`; otherwise it defaults to the frame's own hash. Existing
+`source_sha256`; otherwise it defaults to the frame's own hash. Only the base
+layer is written; an existing team layer is kept unchanged. Existing
     entries with the same id are replaced in place; new ones are appended.
     """
     production = root / PRODUCTION
@@ -102,11 +103,15 @@ frame refined from an earlier HD image passes that image's hash as
             "sources": frame.get("sources", []),
         }
         if frame_id in by_id:
+            # Only the base layer is regenerated; keep a registered team layer as is.
+            entry["layers"] += [layer for layer in manifest["frames"][by_id[frame_id]]["layers"]
+                                if layer["role"] == "team"]
             manifest["frames"][by_id[frame_id]] = entry
         else:
             by_id[frame_id] = len(manifest["frames"])
             manifest["frames"].append(entry)
-        row = [frame_id, str(width), str(height), str(SCALE), name, "-"]
+        team = next((layer["file"] for layer in entry["layers"] if layer["role"] == "team"), "-")
+        row = [frame_id, str(width), str(height), str(SCALE), name, team]
         if frame_id in row_index:
             rows[row_index[frame_id]] = row
         else:

@@ -13,7 +13,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from sharpen_resources import RECIPE as SHARPENED_RESOURCE, crisp_alpha  # noqa: E402
+from sharpen_upscales import RECIPE as SHARPENED_RESOURCE, crisp_alpha  # noqa: E402
 import ripen_wheat  # noqa: E402
 WORLD_FRAME = re.compile(r'(terrain|ressource|water|cloud|black|shade|area-clearing|area-forbidden|area-guard|bullet|explosion|magiceffect|particle)\d+r?\.png')
 RECOVERED_RESOURCES = set(range(14)) | set(range(15, 19)) | set(range(20, 25))

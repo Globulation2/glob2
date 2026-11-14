@@ -16,8 +16,10 @@ ROOT = Path(__file__).resolve().parents[2]
 PRODUCTION = ROOT / 'content-src/gfx/production'
 RUNTIME = ROOT / 'content/data/highres/v1'
 AI = {'current', 'outline_repair', 'painted_repair', 'crystal_repair',
-      'resource constrained', 'world constrained',
-      'resource constrained; crisp edges and sharpening v1'}
+      'resource constrained', 'world constrained'}
+# tools/artwork/sharpen_upscales.py: crisp resource edges, colour sharpening elsewhere.
+AI |= {'resource constrained; crisp edges and sharpening v1'} | {
+    recipe + '; colour sharpening v1' for recipe in AI - {'resource constrained'}}
 MATERIALS = {'shared-material rugged corner masks v5; quiet flat grass',
              'quiet ripples; periodic material v3'}
 ORIGINAL_MATERIALS = {'original-based grass and sand v1; retained rugged corner masks'}
