@@ -14,6 +14,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from sharpen_resources import RECIPE as SHARPENED_RESOURCE, crisp_alpha  # noqa: E402
+import ripen_wheat  # noqa: E402
 WORLD_FRAME = re.compile(r'(terrain|ressource|water|cloud|black|shade|area-clearing|area-forbidden|area-guard|bullet|explosion|magiceffect|particle)\d+r?\.png')
 RECOVERED_RESOURCES = set(range(14)) | set(range(15, 19)) | set(range(20, 25))
 
@@ -101,7 +102,14 @@ def validate_resources(root, pack, manifest, frames):
     for i in range(65):
         name = f'ressource{i}'
         tile = rgba(pack / (name + '.png'))
-        if i in RECOVERED_RESOURCES:
+        if i in ripen_wheat.RIPE:
+            require(frames[name]['recipe'] == ripen_wheat.RECIPE, f'Resource recipe: {name}')
+            stage4 = f'ressource{ripen_wheat.RIPE[i]}'
+            expected = ripen_wheat.ripen(rgba(pack / (stage4 + '.png')),
+                                         rgba(root / 'content/data/gfx' / (stage4 + '.png')),
+                                         rgba(root / 'content/data/gfx' / (name + '.png')))
+            require(tile.tobytes() == expected.tobytes(), f'Ripe wheat pixels: {name}')
+        elif i in RECOVERED_RESOURCES:
             frame = frames[name]
             require(frame['recipe'].startswith(('recovered original tree:', 'recovered original wheat:',
                                                'recovered original papyrus:')), f'Resource recipe: {name}')
@@ -126,7 +134,7 @@ def validate_resources(root, pack, manifest, frames):
             require(np.array_equal(atlas[y:y + height, x - 1], tile[:, 0]) and
                     np.array_equal(atlas[y:y + height, x + width], tile[:, -1]),
                     f'Resource border: {level}/{i}')
-    print('PASS: 65 resource frames, recovered pixels/constrained alpha and four padded atlas levels')
+    print('PASS: 65 resource frames, recovered/ripened pixels, constrained alpha and four padded atlas levels')
 
 
 def topology(root):

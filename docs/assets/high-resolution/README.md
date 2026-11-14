@@ -7,7 +7,8 @@ rigs. The pack also includes reviewed AI-enhanced sprites, original-based terrai
 resampled masks, and complete padded resource/terrain mip atlases.
 All overlapping original-derived frames remain byte-identical.
 
-World artwork includes both hives, 3 flags, 5 construction frames, 10 trees, 8 wheat, 5 papyrus,
+World artwork includes both hives, 3 flags, 5 construction frames, 10 trees, 10 wheat (two ripe frames recoloured from stage 4 by
+`tools/artwork/ripen_wheat.py`), 5 papyrus,
 completed middle school, first two racetracks and 24 area markers, plus the
 hand-authored farm-area marker (8 frames drawn as SVG in `content-src/gfx/authored`).
 

@@ -14535,16 +14535,38 @@
       "width": 34,
       "height": 34,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "recovered original wheat, ripe recolour: stage-4 GIMP layers with the classic stage-5 dot colours",
       "layers": [
         {
           "file": "ressource14.png",
           "role": "base",
-          "sha256": "cb608dd129e7a4fe242cc1e2f5b38a47024b9f4b3285d2107459cc698af927ff",
-          "source_sha256": "cb608dd129e7a4fe242cc1e2f5b38a47024b9f4b3285d2107459cc698af927ff",
+          "sha256": "00d0ef88506571db5cb16dcd727389ecfc7d3452bbab9d071b21c0132dd6cf5b",
+          "source_sha256": "dd9261e9f4b79fb0175d728ee1da6cd19653d194c83b7bfe31e39d24226c74d9",
           "logical_width": 34,
           "logical_height": 34,
           "original_sha256": "859dce3a523ceae2e4afdf31ab7eff1db653c97b23702541ad24717a4a17b38f"
+        }
+      ],
+      "sources": [
+        {
+          "path": "content-src/gfx/derived/wheat-native/wheat_4_1.png",
+          "sha256": "8779186a30e68764b90815ad8ae580fffb45e85224fc796439194e31e7ff9c71",
+          "native_size": [
+            128,
+            128
+          ]
+        },
+        {
+          "path": "content/data/gfx/ressource13.png",
+          "sha256": "dfb2c4fbafb66fd3e09411d7923b0d912ff5aa7ab29cbb6ec716063f8998ee32"
+        },
+        {
+          "path": "content/data/gfx/ressource14.png",
+          "sha256": "859dce3a523ceae2e4afdf31ab7eff1db653c97b23702541ad24717a4a17b38f"
+        },
+        {
+          "path": "tools/artwork/ripen_wheat.py",
+          "sha256": "bd4eeffed9cb2c74baa93b819fd1c13efe85c50ea623140ee644a4ba23d15016"
         }
       ]
     },
@@ -14826,16 +14848,38 @@
       "width": 34,
       "height": 34,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "recovered original wheat, ripe recolour: stage-4 GIMP layers with the classic stage-5 dot colours",
       "layers": [
         {
           "file": "ressource19.png",
           "role": "base",
-          "sha256": "868a4a2b05e40a6f8d7a7ce9d4062abc959f52c58ff7f351f3d217db9581ebef",
-          "source_sha256": "868a4a2b05e40a6f8d7a7ce9d4062abc959f52c58ff7f351f3d217db9581ebef",
+          "sha256": "e2fb4389d013d2ce3d8b1d525c5fd8ee61a500570abbddc86a47372cbb20bbc0",
+          "source_sha256": "c82b9144b8f4602305e22ae1e778a2a476653bd5478c20bb557cf1dbf8f80f28",
           "logical_width": 34,
           "logical_height": 34,
           "original_sha256": "1f6e8bf90f241e8ef0012aca736de58c9da422473694816b26c1254c3a8536dd"
+        }
+      ],
+      "sources": [
+        {
+          "path": "content-src/gfx/derived/wheat-native/wheat_4_2.png",
+          "sha256": "80f58ec2190c01593154f67241c207874cc867b84df9490fb89e3ca2d0e26f6a",
+          "native_size": [
+            128,
+            128
+          ]
+        },
+        {
+          "path": "content/data/gfx/ressource18.png",
+          "sha256": "fbc4fe81136e0c2317424162835c8ae3f6a9427f536c1cd41f04ed6d8d03c4ee"
+        },
+        {
+          "path": "content/data/gfx/ressource19.png",
+          "sha256": "1f6e8bf90f241e8ef0012aca736de58c9da422473694816b26c1254c3a8536dd"
+        },
+        {
+          "path": "tools/artwork/ripen_wheat.py",
+          "sha256": "bd4eeffed9cb2c74baa93b819fd1c13efe85c50ea623140ee644a4ba23d15016"
         }
       ]
     },
@@ -1058324,19 +1058368,19 @@
     "levels": [
       {
         "file": "ressource-atlas-mip0.png",
-        "sha256": "db2eb6d6014b4e81e7992bfde2d03ea306a003d85e4eaaf092ddc207bc8c57d1"
+        "sha256": "6c0c7cdbe0b5bfd051748ab804fb59a43543095ad3d9b961f32508b8dd6ab438"
       },
       {
         "file": "ressource-atlas-mip1.png",
-        "sha256": "be7adcb27be483bb4b88915fe211ada51fd1392c7e67094cbc06c52451f2b048"
+        "sha256": "42a42e7ca7e7d1024b3cdf355b843c921df896be77daee650f89b1cc85224e4b"
       },
       {
         "file": "ressource-atlas-mip2.png",
-        "sha256": "25ce4ec0f30864bf4fb2f3e295b15cff211f357e737b354279c801a9e6460331"
+        "sha256": "325a0aea1c3f592a7794718fd92d29f989e657a8d4ff00e9affd3379782d6c89"
       },
       {
         "file": "ressource-atlas-mip3.png",
-        "sha256": "3ec9f8595be1b24a1f25c053e25ca0076518d8b482fa3d6e3b9b8bce35f1edaa"
+        "sha256": "9f678051a0a521b9e5f21897358ff5e62c7806247d96b75255d2248aed66b735"
       }
     ]
   }

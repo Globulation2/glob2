@@ -131,11 +131,14 @@ native alpha. Premultiplied-alpha Lanczos resizing fits the existing 136 × 136
 runtime canvases. These are the colorful resource dots currently used by the game;
 the separate historical corn-stalk style is not substituted.
 
-**Missing source variants:** `ressource14` and `ressource19` have different final
-ripe colors. Their historical PNGs are only 34 × 34, and the recovered XCFs have
-no hidden layers for that color state. Those two frames retain their existing
-upscales. We have not invented a recoloring recipe or mistaken the fourth stage
-for the fifth.
+**Ripe frames:** `ressource14` and `ressource19` (wheat at full stock) have no
+larger source: their historical PNGs are only 34 × 34, and the recovered XCFs
+have no hidden layers for that colour state. The classic ripe sprites share
+stage 4's alpha exactly and change only the dot colours, so
+`tools/artwork/ripen_wheat.py` recolours the recovered stage-4 HD frames dot by
+dot to the classic ripe colours, keeping each pixel's shading, shadows and
+highlights. This is a deterministic recolour, not a recovered colour layer;
+`validate_runtime.py` recomputes its pixels.
 
 Reproduce with GIMP 2.10 from the repository root, then the Python export:
 
@@ -268,8 +271,7 @@ Five stages overlap classic silhouettes by 83.6–95.7%, with centers within
 
 This brings original-source world-art coverage to **60 of 487 frames**, separate
 from the 1,792 unit animation poses described below.
-The other 42 resource frames lack verified matching larger sources: wheat ripe
-states 14/19, alternative papyrus 25–29, stones 30–39, algae 40–49 and fruit
+The other 40 resource frames lack verified matching larger sources: alternative papyrus 25–29, stones 30–39, algae 40–49 and fruit
 50–64. The older corn-stalk sources are an alternative style, not replacements
 for the current colorful wheat dots.
 

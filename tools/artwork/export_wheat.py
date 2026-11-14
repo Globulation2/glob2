@@ -8,7 +8,7 @@ from PIL import Image
 ROOT=Path(__file__).resolve().parents[2]
 NATIVE=ROOT/'content-src/gfx/derived/wheat-native'
 OUTPUT=ROOT/'content-src/gfx/derived/wheat-v1'
-# Final ripe color states 14/19 are not in these sources; retain their fallback.
+# Final ripe color states 14/19 are not in these sources; ripen_wheat.py recolours stage 4.
 SOURCE_NAMES={10:'wheat_1_1',11:'wheat_2_1',12:'wheat_3_1',13:'wheat_4_1',
               15:'wheat_1_2',16:'wheat_2_2',17:'wheat_3_2',18:'wheat_4_2'}
 def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -31,6 +31,6 @@ def main():
                      dict(path=str(native.relative_to(ROOT)),sha256=src['sha256'],native_size=src['native_size'])],
             layers=[dict(file=filename,role='base',sha256=sha(OUTPUT/filename))]))
     (OUTPUT/'manifest.json').write_text(json.dumps(dict(version=1,frames=frames),indent=2)+'\n')
-    print('Exported 8 wheat frames from 8 original GIMP sources; ripe frames 14/19 retain fallback; no AI')
+    print('Exported 8 wheat frames from 8 original GIMP sources; ripe frames 14/19 come from ripen_wheat.py; no AI')
 
 if __name__=='__main__': main()
