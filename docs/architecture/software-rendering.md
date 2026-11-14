@@ -83,7 +83,17 @@ transparent holes. Views are destroyed before their backing page.
 Each page validates the canonical terrain neighborhood, discovery decisions and
 revisions of the materials its recipes use. Animation or source changes in unrelated
 materials do not invalidate it; a phase change of an animated material (water,
-deep water, lava, ember field) recomposes only the pages that use it. Pages store
+deep water, lava, ember field) recomposes only the pages that use it. Within an
+unchanged mixed cell, an animation step recomposes only the samples its changed
+textures or advanced surf can reach (`Compositor::Refresh`); the page keeps that
+list beside the cell's coverage mask and every other sample's pixels. GPU pages
+then upload only their rewritten cells (`DrawableSurface::markPixelsChanged(dirty)`,
+`RenderBackend::prepareTextureRegions`). On native device pages (no HD scale or
+reduction) uniform cells of an animated opaque material draw from one shared tile
+per variant over their page, which keeps an earlier frame underneath, so open water
+recomposes and uploads one small atlas per step. Composition at native scale reads
+HD sources through compact per-variant copies of the texels it samples. All of
+these produce the same pixels as composing every cell again. Pages store
 raw color/alpha. Map replacement (a new `Map::identity()`) clears the cache;
 editor terrain changes, wrapped neighbors and visible-team changes are detected
 during preparation. Resources, actors, fog and overlays keep their existing
@@ -120,6 +130,10 @@ share composition and regional pixel kernels, so shared kernel improvements also
 benefit immediate drawing. There is no automatic selection policy. The former `auto`
 spelling remains an alias for `immediate` for existing launch scripts. CPU execution
 selection is independent of renderer backend selection (`--renderer`).
+Animated water is slower in parallel groups than in immediate mode: every
+crossfade step publishes a new `CpuMaterials` snapshot of the full HD variants, which
+jobs then sample with a stride, and groups recompose uniform animated cells into
+their pages rather than drawing them from shared tiles.
 These are development overrides, not gameplay settings; set them before launch. The
 recorder reads execution mode when its backend is created. `GLOB2_RENDER_WORKERS=N`
 accepts 1–64 and caps admitted scene/graphics concurrency at the smaller of the
