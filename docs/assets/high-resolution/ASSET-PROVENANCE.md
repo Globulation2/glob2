@@ -8,8 +8,7 @@ Catalog terrain materials use original procedural 8×8 blocks with shared bounda
 
 | Source category | Frames |
 | --- | ---: |
-| AI upscale with constrained finishing | 103 |
-| AI upscale with constrained finishing, then sharpened | 10 |
+| AI upscale with constrained finishing, then sharpened | 113 |
 | Generated material with deterministic tiling | 16 |
 | Hand-authored vector | 8 |
 | Non-AI mask resampling | 38 |
@@ -54,9 +53,9 @@ Total: **13953 frames**. Source/output SHA-256 hashes, native sizes and selected
 | `area-guard5` | Recovered original | 32×32 | 128×128 ([source](../../../content-src/gfx/reference-exports/overlays/g5-archive-2026.png)) | recovered original area marker: native RGBA; original eight-frame sequence |
 | `area-guard6` | Recovered original | 32×32 | 128×128 ([source](../../../content-src/gfx/reference-exports/overlays/g6-archive-2026.png)) | recovered original area marker: native RGBA; original eight-frame sequence |
 | `area-guard7` | Recovered original | 32×32 | 128×128 ([source](../../../content-src/gfx/reference-exports/overlays/g7-archive-2026.png)) | recovered original area marker: native RGBA; original eight-frame sequence |
-| `barracks0b0` | AI upscale with constrained finishing | 128×128 | — | outline_repair |
-| `barracks1b0` | AI upscale with constrained finishing | 128×138 | — | outline_repair |
-| `barracks2b0` | AI upscale with constrained finishing | 128×128 | — | outline_repair |
+| `barracks0b0` | AI upscale with constrained finishing, then sharpened | 128×128 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
+| `barracks1b0` | AI upscale with constrained finishing, then sharpened | 128×138 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
+| `barracks2b0` | AI upscale with constrained finishing, then sharpened | 128×128 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
 | `black0` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
 | `black1` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
 | `black10` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
@@ -73,63 +72,63 @@ Total: **13953 frames**. Source/output SHA-256 hashes, native sizes and selected
 | `black7` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
 | `black8` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
 | `black9` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
-| `buildingsite0` | AI upscale with constrained finishing | 32×32 | — | outline_repair |
+| `buildingsite0` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
 | `buildingsite1` | Recovered original | 64×64 | 256×256 ([source](../../../content-src/gfx/reference-exports/buildings/construction/Construction64c.png)) | recovered original: native matching construction matte; white-background unpremultiplication |
 | `buildingsite2` | Recovered original | 96×96 | 384×384 ([source](../../../content-src/gfx/reference-exports/buildings/construction/Construction96c.png)) | recovered original: native matching construction matte; white-background unpremultiplication |
 | `buildingsite3` | Recovered original | 128×128 | 512×512 ([source](../../../content-src/gfx/reference-exports/buildings/construction/Construction128c.png)) | recovered original: native matching construction matte; white-background unpremultiplication |
 | `buildingsite4` | Recovered original | 192×192 | 384×384 ([source](../../../content-src/gfx/reference-exports/buildings/construction/Construction192c.png)) | recovered original: native matching construction matte; white-background unpremultiplication |
 | `buildingsite5` | Recovered original | 196×196 | 512×512 ([source](../../../content-src/gfx/reference-exports/buildings/construction/Construction256c.png)) | recovered original: native matching construction matte; white-background unpremultiplication |
-| `bullet0` | AI upscale with constrained finishing | 8×8 | — | world constrained |
-| `bullet1` | AI upscale with constrained finishing | 8×8 | — | world constrained |
+| `bullet0` | AI upscale with constrained finishing, then sharpened | 8×8 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | world constrained; colour sharpening v1 |
+| `bullet1` | AI upscale with constrained finishing, then sharpened | 8×8 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | world constrained; colour sharpening v1 |
 | `clearingflag0` | Recovered original | 32×32 | 128×128 ([source](../../../content-src/gfx/reference-exports/buildings/flags/RemoveFlag.png)) | recovered original: native white-matte removal; green team / neutral shadow separation |
 | `cloud0` | Non-AI mask resampling | 512×512 | — | soft mask resampling |
-| `defencetower0b0` | AI upscale with constrained finishing | 68×59 | — | painted_repair |
-| `defencetower1b0` | AI upscale with constrained finishing | 64×108 | — | crystal_repair |
-| `defencetower1b1` | AI upscale with constrained finishing | 64×108 | — | crystal_repair |
-| `defencetower1b2` | AI upscale with constrained finishing | 64×108 | — | crystal_repair |
-| `defencetower2b0` | AI upscale with constrained finishing | 64×64 | — | painted_repair |
+| `defencetower0b0` | AI upscale with constrained finishing, then sharpened | 68×59 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | painted_repair; colour sharpening v1 |
+| `defencetower1b0` | AI upscale with constrained finishing, then sharpened | 64×108 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | crystal_repair; colour sharpening v1 |
+| `defencetower1b1` | AI upscale with constrained finishing, then sharpened | 64×108 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | crystal_repair; colour sharpening v1 |
+| `defencetower1b2` | AI upscale with constrained finishing, then sharpened | 64×108 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | crystal_repair; colour sharpening v1 |
+| `defencetower2b0` | AI upscale with constrained finishing, then sharpened | 64×64 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | painted_repair; colour sharpening v1 |
 | `explorationflag0` | Recovered original | 32×32 | 128×128 ([source](../../../content-src/gfx/reference-exports/buildings/flags/ExploFlag.png)) | recovered original: native white-matte removal; green team / neutral shadow separation |
-| `explosion0` | AI upscale with constrained finishing | 32×32 | — | world constrained |
-| `explosion1` | AI upscale with constrained finishing | 32×32 | — | world constrained |
-| `explosion2` | AI upscale with constrained finishing | 32×32 | — | world constrained |
-| `explosion3` | AI upscale with constrained finishing | 32×32 | — | world constrained |
-| `explosion4` | AI upscale with constrained finishing | 32×32 | — | world constrained |
-| `explosion5` | AI upscale with constrained finishing | 32×32 | — | world constrained |
-| `hosp0b0` | AI upscale with constrained finishing | 64×64 | — | painted_repair |
-| `hosp0b1` | AI upscale with constrained finishing | 64×64 | — | painted_repair |
-| `hosp0c0` | AI upscale with constrained finishing | 64×64 | — | painted_repair |
-| `hosp1b0` | AI upscale with constrained finishing | 64×76 | — | painted_repair |
-| `hosp1c0` | AI upscale with constrained finishing | 64×64 | — | painted_repair |
-| `hosp2b0` | AI upscale with constrained finishing | 64×77 | — | painted_repair |
-| `hosp2c0` | AI upscale with constrained finishing | 64×77 | — | painted_repair |
-| `inn0b0` | AI upscale with constrained finishing | 64×64 | — | outline_repair |
-| `inn0b1` | AI upscale with constrained finishing | 64×64 | — | outline_repair |
-| `inn0c0` | AI upscale with constrained finishing | 64×64 | — | painted_repair |
-| `inn1b0` | AI upscale with constrained finishing | 64×69 | — | outline_repair |
-| `inn1b1` | AI upscale with constrained finishing | 64×69 | — | outline_repair |
-| `inn1c0` | AI upscale with constrained finishing | 64×64 | — | outline_repair |
-| `inn2b0` | AI upscale with constrained finishing | 96×96 | — | outline_repair |
-| `inn2c0` | AI upscale with constrained finishing | 96×96 | — | outline_repair |
-| `inn3c0` | AI upscale with constrained finishing | 96×96 | — | outline_repair |
-| `magiceffect0` | AI upscale with constrained finishing | 256×256 | — | world constrained |
-| `market0b0` | AI upscale with constrained finishing | 96×115 | — | outline_repair |
-| `particle0` | AI upscale with constrained finishing | 32×32 | — | world constrained |
-| `particle1` | AI upscale with constrained finishing | 32×32 | — | world constrained |
-| `particle2` | AI upscale with constrained finishing | 32×32 | — | world constrained |
-| `particle3` | AI upscale with constrained finishing | 32×32 | — | world constrained |
-| `pool0b0` | AI upscale with constrained finishing | 128×128 | — | current |
-| `pool0b1` | AI upscale with constrained finishing | 128×128 | — | current |
-| `pool0c0` | AI upscale with constrained finishing | 128×128 | — | current |
-| `pool1b0` | AI upscale with constrained finishing | 192×174 | — | current |
-| `pool2b0` | AI upscale with constrained finishing | 192×203 | — | current |
+| `explosion0` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | world constrained; colour sharpening v1 |
+| `explosion1` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | world constrained; colour sharpening v1 |
+| `explosion2` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | world constrained; colour sharpening v1 |
+| `explosion3` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | world constrained; colour sharpening v1 |
+| `explosion4` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | world constrained; colour sharpening v1 |
+| `explosion5` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | world constrained; colour sharpening v1 |
+| `hosp0b0` | AI upscale with constrained finishing, then sharpened | 64×64 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | painted_repair; colour sharpening v1 |
+| `hosp0b1` | AI upscale with constrained finishing, then sharpened | 64×64 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | painted_repair; colour sharpening v1 |
+| `hosp0c0` | AI upscale with constrained finishing, then sharpened | 64×64 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | painted_repair; colour sharpening v1 |
+| `hosp1b0` | AI upscale with constrained finishing, then sharpened | 64×76 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | painted_repair; colour sharpening v1 |
+| `hosp1c0` | AI upscale with constrained finishing, then sharpened | 64×64 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | painted_repair; colour sharpening v1 |
+| `hosp2b0` | AI upscale with constrained finishing, then sharpened | 64×77 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | painted_repair; colour sharpening v1 |
+| `hosp2c0` | AI upscale with constrained finishing, then sharpened | 64×77 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | painted_repair; colour sharpening v1 |
+| `inn0b0` | AI upscale with constrained finishing, then sharpened | 64×64 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
+| `inn0b1` | AI upscale with constrained finishing, then sharpened | 64×64 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
+| `inn0c0` | AI upscale with constrained finishing, then sharpened | 64×64 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | painted_repair; colour sharpening v1 |
+| `inn1b0` | AI upscale with constrained finishing, then sharpened | 64×69 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
+| `inn1b1` | AI upscale with constrained finishing, then sharpened | 64×69 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
+| `inn1c0` | AI upscale with constrained finishing, then sharpened | 64×64 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
+| `inn2b0` | AI upscale with constrained finishing, then sharpened | 96×96 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
+| `inn2c0` | AI upscale with constrained finishing, then sharpened | 96×96 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
+| `inn3c0` | AI upscale with constrained finishing, then sharpened | 96×96 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
+| `magiceffect0` | AI upscale with constrained finishing, then sharpened | 256×256 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | world constrained; colour sharpening v1 |
+| `market0b0` | AI upscale with constrained finishing, then sharpened | 96×115 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
+| `particle0` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | world constrained; colour sharpening v1 |
+| `particle1` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | world constrained; colour sharpening v1 |
+| `particle2` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | world constrained; colour sharpening v1 |
+| `particle3` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | world constrained; colour sharpening v1 |
+| `pool0b0` | AI upscale with constrained finishing, then sharpened | 128×128 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `pool0b1` | AI upscale with constrained finishing, then sharpened | 128×128 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `pool0c0` | AI upscale with constrained finishing, then sharpened | 128×128 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `pool1b0` | AI upscale with constrained finishing, then sharpened | 192×174 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `pool2b0` | AI upscale with constrained finishing, then sharpened | 192×203 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
 | `racetrack0b0` | Recovered original | 128×128 | 192×192 ([source](../../../content-src/gfx/originals/buildings/racetrack/level-1/building3r.xcf)) | recovered original building: selected GIMP base/team groups; saved opacity and native alpha |
-| `racetrack0b1` | AI upscale with constrained finishing | 128×128 | — | outline_repair |
-| `racetrack0b2` | AI upscale with constrained finishing | 128×128 | — | outline_repair |
-| `racetrack0c0` | AI upscale with constrained finishing | 128×128 | — | outline_repair |
+| `racetrack0b1` | AI upscale with constrained finishing, then sharpened | 128×128 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
+| `racetrack0b2` | AI upscale with constrained finishing, then sharpened | 128×128 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
+| `racetrack0c0` | AI upscale with constrained finishing, then sharpened | 128×128 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
 | `racetrack1b0` | Recovered original | 192×192 | 256×256 ([source](../../../content-src/gfx/originals/buildings/racetrack/level-2/building10.xcf)) | recovered original building: selected GIMP base/team groups; saved opacity and native alpha |
-| `racetrack1b1` | AI upscale with constrained finishing | 192×192 | — | outline_repair |
-| `racetrack1b2` | AI upscale with constrained finishing | 192×192 | — | outline_repair |
-| `racetrack2b0` | AI upscale with constrained finishing | 192×192 | — | outline_repair |
+| `racetrack1b1` | AI upscale with constrained finishing, then sharpened | 192×192 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
+| `racetrack1b2` | AI upscale with constrained finishing, then sharpened | 192×192 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
+| `racetrack2b0` | AI upscale with constrained finishing, then sharpened | 192×192 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
 | `resource-ancient-debris0` | Procedural resource painting | 32×32 | — ([source](../../../tools/artwork/paint_landscape.py)) | procedural resource painter v1: ancient-debris |
 | `resource-ancient-debris1` | Procedural resource painting | 32×32 | — ([source](../../../tools/artwork/paint_landscape.py)) | procedural resource painter v1: ancient-debris |
 | `resource-ancient-debris2` | Procedural resource painting | 32×32 | — ([source](../../../tools/artwork/paint_landscape.py)) | procedural resource painter v1: ancient-debris |
@@ -268,60 +267,60 @@ Total: **13953 frames**. Source/output SHA-256 hashes, native sizes and selected
 | `ressource22` | Recovered original | 32×32 | 199×199 ([source](../../../content-src/gfx/originals/terrain/papyrus.xcf)) | recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize |
 | `ressource23` | Recovered original | 32×32 | 199×199 ([source](../../../content-src/gfx/originals/terrain/papyrus.xcf)) | recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize |
 | `ressource24` | Recovered original | 32×32 | 199×199 ([source](../../../content-src/gfx/originals/terrain/papyrus.xcf)) | recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize |
-| `ressource25` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource26` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource27` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource28` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource29` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource25` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource26` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource27` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource28` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource29` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
 | `ressource3` | Recovered original | 36×39 | 128×140 ([source](../../../content-src/gfx/originals/resources/tree/trees_4_1.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
-| `ressource30` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
-| `ressource31` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
-| `ressource32` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
-| `ressource33` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
-| `ressource34` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
-| `ressource35` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
-| `ressource36` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
-| `ressource37` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
-| `ressource38` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
-| `ressource39` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_resources.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource30` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource31` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource32` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource33` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource34` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource35` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource36` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource37` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource38` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource39` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
 | `ressource4` | Recovered original | 40×44 | 128×140 ([source](../../../content-src/gfx/originals/resources/tree/trees_4_1.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
-| `ressource40` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource41` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource42` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource43` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource44` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource45` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource46` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource47` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource48` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource49` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource40` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource41` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource42` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource43` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource44` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource45` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource46` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource47` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource48` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource49` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
 | `ressource5` | Recovered original | 32×32 | 128×128 ([source](../../../content-src/gfx/originals/resources/tree/trees_1_2.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
-| `ressource50` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource51` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource52` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource53` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource54` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource55` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource56` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource57` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource58` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource59` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource50` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource51` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource52` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource53` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource54` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource55` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource56` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource57` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource58` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource59` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
 | `ressource6` | Recovered original | 34×34 | 128×128 ([source](../../../content-src/gfx/originals/resources/tree/trees_2_1.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
-| `ressource60` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource61` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource62` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource63` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
-| `ressource64` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource60` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource61` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource62` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource63` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
+| `ressource64` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | resource constrained; crisp edges and sharpening v1 |
 | `ressource7` | Recovered original | 36×39 | 128×140 ([source](../../../content-src/gfx/originals/resources/tree/trees_3_1.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource8` | Recovered original | 36×39 | 128×140 ([source](../../../content-src/gfx/originals/resources/tree/trees_4_1.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource9` | Recovered original | 40×44 | 128×140 ([source](../../../content-src/gfx/originals/resources/tree/trees_4_1.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
-| `school0b0` | AI upscale with constrained finishing | 64×64 | — | outline_repair |
-| `school0b1` | AI upscale with constrained finishing | 64×64 | — | outline_repair |
+| `school0b0` | AI upscale with constrained finishing, then sharpened | 64×64 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
+| `school0b1` | AI upscale with constrained finishing, then sharpened | 64×64 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
 | `school1b0` | Recovered original | 64×70 | 512×562 ([source](../../../content-src/gfx/originals/buildings/school/level-2/science.xcf)) | recovered original building: selected GIMP base/team groups; saved opacity and native alpha |
-| `school1b1` | AI upscale with constrained finishing | 64×70 | — | current |
-| `school1b2` | AI upscale with constrained finishing | 64×70 | — | current |
-| `school1c0` | AI upscale with constrained finishing | 59×70 | — | outline_repair |
-| `school2b0` | AI upscale with constrained finishing | 64×64 | — | outline_repair |
+| `school1b1` | AI upscale with constrained finishing, then sharpened | 64×70 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `school1b2` | AI upscale with constrained finishing, then sharpened | 64×70 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `school1c0` | AI upscale with constrained finishing, then sharpened | 59×70 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
+| `school2b0` | AI upscale with constrained finishing, then sharpened | 64×64 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | outline_repair; colour sharpening v1 |
 | `shade0` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
 | `shade1` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
 | `shade10` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
@@ -13957,21 +13956,21 @@ Total: **13953 frames**. Source/output SHA-256 hashes, native sizes and selected
 | `unit997` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
 | `unit998` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
 | `unit999` | Recovered original | 38×38 | — ([source](../../../content-src/gfx/originals/units/glob-worker-harvest.blend)) | recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction |
-| `wall0` | AI upscale with constrained finishing | 32×32 | — | current |
-| `wall1` | AI upscale with constrained finishing | 32×32 | — | current |
-| `wall10` | AI upscale with constrained finishing | 32×32 | — | current |
-| `wall11` | AI upscale with constrained finishing | 32×32 | — | current |
-| `wall12` | AI upscale with constrained finishing | 32×32 | — | current |
-| `wall13` | AI upscale with constrained finishing | 32×32 | — | current |
-| `wall14` | AI upscale with constrained finishing | 32×32 | — | current |
-| `wall15` | AI upscale with constrained finishing | 32×32 | — | current |
-| `wall2` | AI upscale with constrained finishing | 32×32 | — | current |
-| `wall3` | AI upscale with constrained finishing | 32×32 | — | current |
-| `wall4` | AI upscale with constrained finishing | 32×32 | — | current |
-| `wall5` | AI upscale with constrained finishing | 32×32 | — | current |
-| `wall6` | AI upscale with constrained finishing | 32×32 | — | current |
-| `wall7` | AI upscale with constrained finishing | 32×32 | — | current |
-| `wall8` | AI upscale with constrained finishing | 32×32 | — | current |
-| `wall9` | AI upscale with constrained finishing | 32×32 | — | current |
-| `wallc0` | AI upscale with constrained finishing | 32×32 | — | current |
+| `wall0` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `wall1` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `wall10` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `wall11` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `wall12` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `wall13` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `wall14` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `wall15` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `wall2` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `wall3` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `wall4` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `wall5` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `wall6` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `wall7` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `wall8` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `wall9` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
+| `wallc0` | AI upscale with constrained finishing, then sharpened | 32×32 | — ([source](../../../tools/artwork/sharpen_upscales.py)) | current; colour sharpening v1 |
 | `warflag0` | Recovered original | 32×32 | 128×128 ([source](../../../content-src/gfx/reference-exports/buildings/flags/WarFlag.png)) | recovered original: native white-matte removal; green team / neutral shadow separation |
