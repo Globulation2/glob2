@@ -31,7 +31,7 @@ ICONS = ["hive", "inn", "hospital", "racetrack", "pool", "barracks", "school", "
 SIZES = [10, 12, 16, 20, 24, 32, 48]
 # In MapOverlayQueue::StatusIcon order. A badge is small, so the sizes start lower.
 STATUS_ICONS = ["hurt", "hungry", "damaged", "workers", "unarmed"]
-STATUS_SIZES = [8, 10, 12, 16, 20, 24, 32]
+STATUS_SIZES = [8, 10, 14, 16, 20, 28, 32]
 # The two variants replacing the sources' white: yellow when a condition has just
 # begun, red at its worst.
 STATUS_VARIANTS = ["#f7d21e", "#e22d2d"]

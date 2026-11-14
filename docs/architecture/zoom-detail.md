@@ -46,7 +46,7 @@ it is saved, checksummed or read by the simulation.
   construction site), a tower without ammunition, an inn without food (the hungry
   icon) and under half its workers (red with nobody working; a building too small
   for a step between the first shortfall and none stays yellow). The tower and
-  inn badges are yellow. Badges are a constant 10 points across, 20 pixels on a
+  inn badges are yellow. Badges are a constant 14 points across, 28 pixels on a
   HiDPI display: they appear only once the bars have faded, where shrinking them
   with the map would make them illegible.
   Their icons (`MapOverlayQueue::StatusIcon`) come from the SVGs in
