@@ -84,6 +84,37 @@ alone mechanically reduce summed queue time. Interactive benchmarks use their
 external FPS schedule as the sole pacer and retain the ordinary render admission
 boundary, so two independent pacers cannot skip measurement opportunities.
 
+## Portable SDL renderer
+
+The same harness measures the portable `SDL_Renderer` backend with `--renderer sdl`;
+the software default is unchanged. Portable runs always present (an unpresented
+`SDL_Renderer` queues commands without bound), and `SDL_RENDER_DRIVER` forces the
+driver (`opengl`, `vulkan`, `gpu`, or `software` as a weak-device proxy). The
+`RENDERER` line reports the backend, the SDL render driver actually created and vsync.
+Portable runs add per-frame submission counters (`portable_frame`: one
+`SDL_RenderGeometry` per `geometry_calls`, texture switches, vertex transform copies,
+texture uploads and bytes), warmup uploads, and texture-cache gauges
+(`portable_memory`: cached textures and their estimated driver bytes, the CPU source
+surfaces kept beside them, the GPU-preparation staging texture, the transform
+vector's capacity and the CPU frame surface). On Linux every run also prints
+`memory_begin`/`memory_end` RSS, anonymous and file RSS and DRM fdinfo GPU memory
+where the driver exposes it. Desktop GL numbers do not transfer directly to mobile
+GLES drivers: per-call driver overhead, upload bandwidth and tiled-GPU costs differ.
+
+```sh
+python3 tools/software_render_benchmark.py --renderer sdl [--render-driver software] \
+  --baseline artifacts/portable-sdl/baseline/SoftwareRenderBenchmark \
+  --candidate build/linux/client/perf/test/SoftwareRenderBenchmark \
+  --save artifacts/portable-sdl/fixtures/early.game.gz --repeat 6 --memory-probe \
+  --output artifacts/portable-sdl/comparison
+```
+
+`--candidate` may be omitted to measure one binary. `--memory-probe` adds one
+boundary-stopped run per variant that samples RSS and, with NVIDIA drivers, the
+process's GPU framebuffer memory from `nvidia-smi`; its timing is never used. Measured
+frames run inside `profiledFrame`, so Callgrind can skip warmup with
+`--collect-atstart=no --toggle-collect='*profiledFrame*'`.
+
 ## Camera and profiler boundaries
 
 The standalone harness extracts the initial scene before establishing camera bounds.

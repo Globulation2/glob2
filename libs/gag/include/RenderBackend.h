@@ -17,6 +17,16 @@ struct RenderOperations
     std::uint64_t rasterJobs = 0;
     std::uint64_t rasterSourceReuses = 0, rasterSourceRetainedBytes = 0;
     std::uint64_t rasterSnapshotBytes = 0, rasterPeakRetainedBytes = 0, rasterFallbacks = 0;
+    // SDL_Renderer (portable) submission counters; cumulative like the above.
+    std::uint64_t vertices = 0, textureSwitches = 0, transformCopies = 0;
+    std::uint64_t textureUploads = 0, textureUploadBytes = 0, gpuPreparedUploads = 0;
+    std::uint64_t textureCreates = 0, textureDestroys = 0, cpuPremultipliedBytes = 0;
+    // SDL_Renderer texture-cache gauges: current values, not deltas. Bytes are
+    // width*height*bytes-per-pixel estimates of driver storage; source bytes are
+    // the owners' CPU surfaces that stay alive beside each cached texture.
+    std::uint64_t textureCount = 0, textureBytes = 0, peakTextureBytes = 0;
+    std::uint64_t sourceSurfaceBytes = 0, sharedSourceTextures = 0, gpuPreparedTextures = 0;
+    std::uint64_t stagingTextureBytes = 0, transformedCapacityBytes = 0;
 };
 
 class RenderBackend

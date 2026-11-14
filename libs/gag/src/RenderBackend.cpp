@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <RenderBackend.h>
+#include <algorithm>
 #include <limits>
 #include <cstdlib>
 #include <cstring>
@@ -46,10 +47,29 @@ class SDLRenderBackend final : public RenderBackend
 		bool linear, gpu;
 		int width, height;
 		SDL_PixelFormat format;
+		// Accounting only: never dereferenced.
+		const SDL_Surface *source = nullptr;
+		std::uint64_t bytes = 0, sourceBytes = 0;
 	};
 	std::unordered_map<const void *, Texture> textures;
 	SDL_Texture *uploadTexture = nullptr;
 	bool gpuPreparation;
+	const SDL_Texture *lastTexture = nullptr;
+	std::uint64_t textureBytes = 0, peakTextureBytes = 0;
+	static std::uint64_t storageBytes(SDL_Texture *texture)
+	{
+		if (!texture) return 0;
+		const auto format = SDL_PixelFormat(SDL_GetNumberProperty(
+			SDL_GetTextureProperties(texture), SDL_PROP_TEXTURE_FORMAT_NUMBER, 0));
+		const int bytes = SDL_BYTESPERPIXEL(format);
+		return std::uint64_t(texture->w) * texture->h * (bytes ? bytes : 4);
+	}
+	void erase(std::unordered_map<const void *, Texture>::iterator found)
+	{
+		textureBytes -= found->second.bytes;
+		++counts.textureDestroys;
+		textures.erase(found);
+	}
 
 	// A single straight-alpha staging texture is reused; retained linear
 	// textures contain premultiplied pixels. No CPU copy or pixel loop is needed.
@@ -70,6 +90,10 @@ class SDLRenderBackend final : public RenderBackend
 		}
 		if (!update(uploadTexture, pixels))
 			return false;
+		++counts.textureUploads;
+		++counts.gpuPreparedUploads;
+		counts.textureUploadBytes += std::uint64_t(pixels->w) * pixels->h * 4;
+		lastTexture = nullptr; // A target switch breaks SDL's draw batch.
 		auto *previous = SDL_GetRenderTarget(renderer);
 		SDL_FColor color;
 		if (!SDL_GetRenderDrawColorFloat(renderer, &color.r, &color.g, &color.b, &color.a))
@@ -198,8 +222,11 @@ class SDLRenderBackend final : public RenderBackend
 			!SDL_SurfaceHasColorKey(pixels) && (!texture || gpu))
 		{
 			if (!texture)
+			{
 				texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
 											SDL_TEXTUREACCESS_TARGET, pixels->w, pixels->h);
+				++counts.textureCreates;
+			}
 			if (texture && SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND_PREMULTIPLIED) &&
 				SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_LINEAR) &&
 				premultiply(texture, pixels))
@@ -207,7 +234,7 @@ class SDLRenderBackend final : public RenderBackend
 			else
 			{
 				if (found != textures.end())
-					textures.erase(found);
+					erase(found);
 				SDL_DestroyTexture(texture);
 				texture = nullptr;
 				// Unsupported target/blend combinations retain the CPU path.
@@ -235,6 +262,7 @@ class SDLRenderBackend final : public RenderBackend
 							(((p & 255) * a + 127) / 255);
 					}
 				SDL_UnlockSurface(converted.get());
+				counts.cpuPremultipliedBytes += std::uint64_t(converted->w) * converted->h * 4;
 			}
 			auto *source = linear ? converted.get() : pixels;
 			if (texture &&
@@ -248,15 +276,25 @@ class SDLRenderBackend final : public RenderBackend
 			if (texture)
 				check(update(texture, source));
 			else
+			{
 				texture = SDL_CreateTextureFromSurface(renderer, source);
+				++counts.textureCreates;
+			}
 			if (!texture)
 				throw std::runtime_error(SDL_GetError());
+			++counts.textureUploads;
+			counts.textureUploadBytes += std::uint64_t(source->h) * source->pitch;
 			check(SDL_SetTextureBlendMode(texture, linear ? SDL_BLENDMODE_BLEND_PREMULTIPLIED
 														  : SDL_BLENDMODE_BLEND));
 			check(SDL_SetTextureScaleMode(texture,
 										  linear ? SDL_SCALEMODE_LINEAR : SDL_SCALEMODE_NEAREST));
 		}
-		textures[key] = {texture, revision, linear, gpu, pixels->w, pixels->h, pixels->format};
+		auto &entry = textures[key];
+		textureBytes -= entry.bytes;
+		entry = {texture, revision, linear, gpu, pixels->w, pixels->h, pixels->format, pixels,
+				 storageBytes(texture), std::uint64_t(pixels->h) * pixels->pitch};
+		textureBytes += entry.bytes;
+		peakTextureBytes = std::max(peakTextureBytes, textureBytes);
 		return texture;
 	}
 	void prepareTexture(const void *key, SDL_Surface *pixels, std::uint64_t revision,
@@ -285,8 +323,12 @@ class SDLRenderBackend final : public RenderBackend
 		SDL_Texture *texture = nullptr;
 		if (key)
 			texture = textureFor(key, pixels, revision, linear);
+		counts.vertices += vertices.size();
+		counts.textureSwitches += texture != lastTexture;
+		lastTexture = texture;
 		if ((applyTransform && (scale != 1 || offsetX != 0 || offsetY != 0)) || physicalClip)
 		{
+			++counts.transformCopies;
 			transformed.assign(vertices.begin(), vertices.end());
 			for (auto &vertex : transformed)
 			{
@@ -325,6 +367,7 @@ class SDLRenderBackend final : public RenderBackend
 		check(SDL_GetTextureScaleMode(texture, &scaleMode));
 		check(SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_ADD));
 		check(SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_LINEAR));
+		lastTexture = nullptr; // A blend change breaks SDL's draw batch.
 		blit(key, pixels, revision, false, src, dst, alpha);
 		check(SDL_SetTextureBlendMode(texture, blend));
 		check(SDL_SetTextureScaleMode(texture, scaleMode));
@@ -353,21 +396,42 @@ class SDLRenderBackend final : public RenderBackend
 		const SDL_Vertex vertices[] = {a, b, e, a, e, d};
 		submit(vertices, nullptr, nullptr, 0, true);
 	}
-	RenderOperations operations() const override { return counts; }
+	RenderOperations operations() const override
+	{
+		RenderOperations result = counts;
+		result.textureCount = textures.size();
+		result.textureBytes = textureBytes;
+		result.peakTextureBytes = peakTextureBytes;
+		std::unordered_map<const SDL_Surface *, unsigned> sources;
+		for (const auto &[key, texture] : textures)
+		{
+			result.sourceSurfaceBytes += texture.sourceBytes;
+			result.gpuPreparedTextures += texture.gpu;
+			++sources[texture.source];
+		}
+		for (const auto &[source, uses] : sources)
+			result.sharedSourceTextures += uses > 1 ? uses : 0;
+		result.stagingTextureBytes = storageBytes(uploadTexture);
+		result.transformedCapacityBytes = transformed.capacity() * sizeof(SDL_Vertex);
+		return result;
+	}
 	void forget(const void *key) override
 	{
 		auto found = textures.find(key);
 		if (found != textures.end())
 		{
 			SDL_DestroyTexture(found->second.handle);
-			textures.erase(found);
+			erase(found);
 		}
 	}
 	void reset() override
 	{
 		for (auto [key, texture] : textures)
 			SDL_DestroyTexture(texture.handle);
+		counts.textureDestroys += textures.size();
 		textures.clear();
+		textureBytes = 0;
+		lastTexture = nullptr;
 		SDL_DestroyTexture(uploadTexture);
 		uploadTexture = nullptr;
 		gpuPreparation = gpuPreparationEnabled(renderer);
@@ -405,6 +469,7 @@ class SDLRenderBackend final : public RenderBackend
 	void flush() override { check(SDL_FlushRenderer(renderer)); }
 	void present() override
 	{
+		lastTexture = nullptr;
 		SDL_RenderPresent(renderer);
 		clear();
 	}
