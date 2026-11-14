@@ -22,16 +22,17 @@ struct MapOverlayQueue
 		Uint8 r, g, b, r2, g2, b2;
 	};
 	//! What a status badge says needs attention. Indexes the frames of
-	//! GlobalContainer::statusIcons (tools/icons/export_map_icons.py) and
-	//! picks the badge's colour: red for harm, amber for a missing supply.
+	//! GlobalContainer::statusIcons (tools/icons/export_map_icons.py), which
+	//! come in a yellow and a red variant of every icon.
 	enum StatusIcon : Uint8 { Hurt, Hungry, Damaged, Understaffed, Unarmed, StatusIconCount };
-	//! A disc in the status's colour carrying its icon, with a dark rim.
+	//! The status's icon, drawn bare with a dark outline, blended from yellow
+	//! (`severity` 0, the condition has just begun) to red (255, at its worst).
 	//! Centred on its point, or `beside` it: up and to the right, so it
 	//! does not hide a unit far smaller on screen than the badge.
 	struct Pip
 	{
 		float screenX, screenY;
-		Uint8 icon, alpha, beside;
+		Uint8 icon, alpha, beside, severity;
 	};
 
 	//! A unit seen from too far to draw: a team-coloured shape with a dark rim.
@@ -66,8 +67,9 @@ struct MapOverlayQueue
 	void bar(int mapX, int mapY, bool vertical, bool reversed, int maxLength, int actLength,
 			 int secondActLength, Uint8 r, Uint8 g, Uint8 b, Uint8 r2, Uint8 g2, Uint8 b2,
 			 int barWidth);
-	void pip(GAGCore::GraphicContext &gfx, int mapX, int mapY, StatusIcon icon, float opacity,
-			 bool beside = false);
+	//! `severity` runs from 0 (yellow) to 1 (red).
+	void pip(GAGCore::GraphicContext &gfx, int mapX, int mapY, StatusIcon icon, float severity,
+			 float opacity, bool beside = false);
 
 	void marker(GAGCore::GraphicContext &gfx, int mapX, int mapY, MarkerShape shape,
 				float sizePoints, Uint8 r, Uint8 g, Uint8 b, float opacity);

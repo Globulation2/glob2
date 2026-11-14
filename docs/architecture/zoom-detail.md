@@ -36,17 +36,23 @@ it is saved, checksummed or read by the simulation.
   the map point a bar keeps fixed while its size changes.
 - Bars hold their 100% size from 48 down to 20 points per tile and change slowly
   outside that. Between 20 and 16 points every bar fades together. From there down
-  to the overview a status badge marks what needs attention: a disc, red for harm
-  and amber for a missing supply, carrying an icon of the problem. A unit shows
-  hurt (60% health or less) before hungry (starving), beside its top right so the
-  badge, larger on screen than a unit this far out, does not cover it. A building
-  shows, at its top right and in this order of precedence, damaged, a tower without
-  ammunition, an inn without food (the hungry icon) and under half its workers.
-  Badges are 18 points across, shrinking with the other overlays to no less than
-  16; the icon keeps about 12 pixels on a standard display and 24 on a HiDPI one.
+  to the overview a status badge marks what needs attention: an icon of the
+  problem, drawn bare with a dark outline and blended from yellow, when the
+  condition has just begun, to red at its worst. A unit shows hungry (food at 1 in
+  10 or less; red once it is starving) before hurt (60% health or less; red as it
+  nears death), beside its top right so the badge, larger on screen than a unit
+  this far out, does not cover it. A building shows, at its top right and in this
+  order of precedence, damaged (red as it nears destruction; never on a
+  construction site), a tower without ammunition, an inn without food (the hungry
+  icon) and under half its workers (red with nobody working; a building too small
+  for a step between the first shortfall and none stays yellow). The tower and
+  inn badges are yellow. Badges are a constant 10 points across, 20 pixels on a
+  HiDPI display: they appear only once the bars have faded, where shrinking them
+  with the map would make them illegible.
   Their icons (`MapOverlayQueue::StatusIcon`) come from the SVGs in
   `content-src/icons/status/`, rasterised by the same script as the map icons into
-  `content/data/gfx/statusicon*.png` at sizes from 8 pixels.
+  `content/data/gfx/statusicon*.png` at sizes from 8 pixels, every icon in a yellow
+  and a red variant.
 - Zones cross-fade from pattern sprites with an outline to a flat translucent tint
   without one: an area keeps its shape at any scale where a one-pixel line cannot.
   `GraphicContext::drawMapFill` snaps fill edges to target pixels so translucent

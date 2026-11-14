@@ -328,6 +328,7 @@ UNIT_TESTS = [
     '#src/net/message/MessageRecipientsTest.cpp',
     '#src/render/overlay/OverlayFillTest.cpp',
     '#src/render/ZoomDetailTest.cpp',
+    '#src/render/StatusSeverityTest.cpp',
     '#src/render/AnimationClockTest.cpp',
     '#src/render/FogFadeTest.cpp',
     '#src/render/UnitEffectsTest.cpp',

@@ -34,6 +34,7 @@
 #include "UnitEffectArt.h"
 #include "IntBuildingType.h"
 #include "Building.h"
+#include "StatusSeverity.h"
 
 
 // Building rendering. Split from Game_render.cpp.
@@ -162,8 +163,9 @@ void MapDrawer::drawMapBuilding(int x, int y, int gid, int viewportX, int viewpo
 
 		// Attention outlasts the bars when zoomed out, as a status badge: damage, a tower
 		// without ammunition, an inn without food, a building with under half its workers.
-		const bool damaged = type->hpMax && building->hp!=building->maxHp;
-		const bool understaffed = building->maxUnitWorking>0 && building->working.count*2<building->maxUnitWorking;
+		// A construction site is short of hit points by design, so it gets no damage badge.
+		const bool damaged = type->hpMax && building->hp!=building->maxHp && !type->isBuildingSite;
+		const bool understaffed = StatusSeverity::buildingUnderstaffed(building->working.count, building->maxUnitWorking);
 		const bool unfed = buildingFeedingUnfunded(*type, entities.materials(*building));
 		const bool unarmed = type->shootingRange>0 && type->shootRhythm>0 && building->bullets==0;
 		anchorBars(x+type->width*32, y, drawnRender);
@@ -180,14 +182,18 @@ void MapDrawer::drawMapBuilding(int x, int y, int gid, int viewportX, int viewpo
 		anchorBars(x, y, drawnRender);
 		if (type->maxBullets)
 			drawBuildingResourceBar(x+1, y+1, type, type->maxBullets, building->bullets, 200, 200, 200, drawnRender);
+		// StatusSeverity says how red damage and missing workers are; an empty
+		// tower or an inn without food is on or off, so its badge stays yellow.
 		if (damaged)
-			drawStatusPip(x+type->width*32-4, y+4, MapOverlayQueue::Damaged, drawnRender);
+			drawStatusPip(x+type->width*32-4, y+4, MapOverlayQueue::Damaged,
+				StatusSeverity::buildingDamage(building->hp, building->maxHp), drawnRender);
 		else if (unarmed)
-			drawStatusPip(x+type->width*32-4, y+4, MapOverlayQueue::Unarmed, drawnRender);
+			drawStatusPip(x+type->width*32-4, y+4, MapOverlayQueue::Unarmed, 0, drawnRender);
 		else if (unfed)
-			drawStatusPip(x+type->width*32-4, y+4, MapOverlayQueue::Hungry, drawnRender);
+			drawStatusPip(x+type->width*32-4, y+4, MapOverlayQueue::Hungry, 0, drawnRender);
 		else if (understaffed)
-			drawStatusPip(x+type->width*32-4, y+4, MapOverlayQueue::Understaffed, drawnRender);
+			drawStatusPip(x+type->width*32-4, y+4, MapOverlayQueue::Understaffed,
+				StatusSeverity::buildingStaffing(building->working.count, building->maxUnitWorking), drawnRender);
 	}
 
 	if (drawOptions & Game::DRAW_ACCESSIBILITY)
