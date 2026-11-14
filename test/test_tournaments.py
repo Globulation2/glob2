@@ -690,7 +690,14 @@ class WorkerIntegration(unittest.TestCase):
             self.assertEqual(state['jobs'],{'failed':1})
             self.assertEqual(c.db.execute("SELECT count(*) FROM attempts WHERE category='timeout'").fetchone()[0],2)
         finally:
-            Transport(host,c.root/'worker.pyz').rpc('stop');c.close()
+            transport=Transport(host,c.root/'worker.pyz')
+            transport.rpc('stop')
+            # Let the daemon exit before tearDown removes its directory; it can
+            # still be writing there just after the stop request (Ubuntu 22.04).
+            for _ in range(20):
+                if not transport.rpc('status')['daemon_running']: break
+                time.sleep(.1)
+            c.close()
 
     def test_real_worker_protocol_and_lost_ack(self):
         from tools.tournaments.transport import Transport
