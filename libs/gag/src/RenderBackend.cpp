@@ -714,6 +714,8 @@ class SDLRenderBackend final : public RenderBackend
 			textureFor(key, pixels, revision, linear);
 			return;
 		}
+		// Queued draws sample the previous revision; submit them first.
+		submitBatch();
 		auto &entry = found->second;
 		const SDL_Rect whole{0, 0, pixels->w, pixels->h};
 		std::vector<Uint32> premultiplied;
@@ -738,14 +740,9 @@ class SDLRenderBackend final : public RenderBackend
 				premultiplied.resize(std::size_t(rect.w) * rect.h);
 				for (int y = 0; y < rect.h; ++y)
 				{
-					const auto *row = reinterpret_cast<const Uint32 *>(first + y * pixels->pitch);
-					for (int x = 0; x < rect.w; ++x)
-					{
-						const Uint32 p = row[x], a = p >> 24;
-						premultiplied[std::size_t(y) * rect.w + x] = (a << 24) |
-							(((((p >> 16) & 255) * a + 127) / 255) << 16) |
-							(((((p >> 8) & 255) * a + 127) / 255) << 8) | (((p & 255) * a + 127) / 255);
-					}
+					auto *row = premultiplied.data() + std::size_t(y) * rect.w;
+					std::memcpy(row, first + y * pixels->pitch, std::size_t(rect.w) * 4);
+					premultiplyRow(row, rect.w);
 				}
 				counts.cpuPremultipliedBytes += bytes;
 				check(SDL_UpdateTexture(entry.handle, &rect, premultiplied.data(), rect.w * 4));
