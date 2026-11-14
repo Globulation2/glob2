@@ -78,8 +78,9 @@ namespace GAGCore
     // Sprites whose HD frames were discarded with their textures; see
     // discardUnbackedHighResolution().
     static std::set<Sprite*> lostHighResolution;
-    // The detail band (mip levels left out) frames are loaded at, and since when
-    // the view has wanted a lower one (steady clock nanoseconds, 0 when not).
+    // The detail band (mip levels left out) frames are loaded at. A view takes
+    // a sharper band at once and a coarser one only after wanting it for
+    // lowerDetailDelay, so zooming across a band edge does not re-decode.
     static DetailHysteresis highResolutionSkip;
     static bool highResolutionSkipChosen = false;
     static std::int64_t lowerDetailDelay = 10'000'000'000;
@@ -1010,8 +1011,12 @@ namespace GAGCore
         if (!highResolutionDemanded || !requestedHighResolutionOnDemand || highResolutionDeferred(fileName)) return;
         highResolutionDemanded = false;
         demandedHighResolutionNames.erase(fileName);
+        // Cancel every route that would load the layers again: a queued or
+        // running reload, a band change and a lost-texture reload.
         pendingHighResolution.erase(this);
         lostHighResolution.erase(this);
+        std::erase(bandReloadQueue, this);
+        if (bandReloading == this) bandReloading = nullptr;
         releaseHighResolution();
     }
     void Sprite::releaseHighResolution()
