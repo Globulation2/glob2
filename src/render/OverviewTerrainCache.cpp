@@ -10,16 +10,44 @@
 #include <cstring>
 #include <new>
 #include <limits>
+#include <stdexcept>
+
+int OverviewTerrainCache::samplesFor(double pixelsPerCell, int current, int cells,
+									int maximumTexture)
+{
+	// Many samples show five distinct stock sizes; below about six device
+	// pixels per cell they would only quadruple the image for no visible gain.
+	if (maximumTexture > 0 && std::int64_t(cells) * ManySamples > maximumTexture)
+		return FewSamples;
+	return pixelsPerCell >= (current == ManySamples ? 5.0 : 6.0) ? ManySamples : FewSamples;
+}
+
+int OverviewTerrainCache::resourceSquare(unsigned stock, unsigned capacity, int samples)
+{
+	const int largest = samples * 3 / 4;
+	if (!capacity)
+		return largest;
+	return 1 + int((largest - 1) * std::min(stock, capacity) / capacity);
+}
 
 void OverviewTerrainCache::update(const SceneMap &map, int left, int top, int right, int bottom,
-								  int vx, int vy, Uint32 visibleTeams, bool wholeMap,
+								  int vx, int vy, Uint32 visibleTeams, bool wholeMap, int samples,
 								  GAGCore::DrawableSurface &target)
 {
+	if (samples != FewSamples && samples != ManySamples)
+		throw std::invalid_argument("Overview samples must be 4 or 8 per cell");
+	if (samples != pageSamples)
+	{
+		pages.clear();
+		output.reset();
+		pageSamples = samples;
+	}
 	Output next{
 		.x = (left + vx) & map.getMaskW(),
 		.y = (top + vy) & map.getMaskH(),
 		.columns = right - left + 1,
 		.rows = bottom - top + 1,
+		.samples = samples,
 		.seed = map.terrainSeed(),
 		.visibleTeams = wholeMap ? 0u : visibleTeams,
 		.wholeMap = wholeMap,
@@ -47,26 +75,41 @@ void OverviewTerrainCache::copy(const SceneMap &map, int left, int top, int righ
 		resources != map.frozenResourceRegistry() || assets != map.frozenAssetBundle())
 	{
 		pages.clear();
+		capacities.clear();
 		mapIdentity = map.identity();
 		terrain = map.frozenTerrainRegistry();
 		resources = map.frozenResourceRegistry();
 		assets = map.frozenAssetBundle();
 	}
 	auto &compositor = globalContainer->terrainCompositor(assets);
-	constexpr int Samples = TerrainVisual::Compositor::OverviewSamples;
-	constexpr int Pixels = Tiles * Samples;
+	if (capacities.empty())
+	{
+		const auto &registry = map.resourceRegistry();
+		capacities.resize(registry.size());
+		for (unsigned id = 0; id < registry.size(); ++id)
+			for (const auto &yield : registry.yields(static_cast<ResourceId>(id)))
+				capacities[id] += yield.capacity;
+	}
+	const int Samples = pageSamples;
+	const int Pixels = Tiles * Samples;
 	constexpr std::size_t Budget = 32u * 1024u * 1024u;
-	constexpr std::size_t PageBytes = sizeof(Page) + Pixels * Pixels * 4;
+	const std::size_t PageBytes = sizeof(Page) + std::size_t(Pixels) * Pixels * 4;
 	const auto chunkOf = [](int tile) { return int(std::floor(double(tile) / Tiles)); };
-	for (int cy = chunkOf(top + vy); cy <= chunkOf(bottom + vy); ++cy)
-		for (int cx = chunkOf(left + vx); cx <= chunkOf(right + vx); ++cx)
+	const int cy0 = chunkOf(top + vy), cy1 = chunkOf(bottom + vy);
+	const int cx0 = chunkOf(left + vx), cx1 = chunkOf(right + vx);
+	// The budget always admits the whole view, so a frame never evicts a page it
+	// is about to draw and recomposes it every frame.
+	const std::size_t pageLimit = std::max(Budget / PageBytes,
+										   std::size_t(cy1 - cy0 + 1) * std::size_t(cx1 - cx0 + 1));
+	for (int cy = cy0; cy <= cy1; ++cy)
+		for (int cx = cx0; cx <= cx1; ++cx)
 		{
 			const int wx = (cx * Tiles) & map.getMaskW(), wy = (cy * Tiles) & map.getMaskH();
 			const auto key = std::size_t(wy) * map.getW() + wx;
 			auto found = pages.find(key);
 			if (found == pages.end())
 			{
-				if ((pages.size() + 1) * PageBytes > Budget)
+				if (pages.size() + 1 > pageLimit)
 					pages.erase(std::min_element(pages.begin(), pages.end(),
 												 [](const auto &a, const auto &b)
 												 { return a.second.used < b.second.used; }));
@@ -104,7 +147,14 @@ void OverviewTerrainCache::copy(const SceneMap &map, int left, int top, int righ
 																		  my + 1, visibleTeams))
 							? resource.type
 							: NO_RES_TYPE;
-					if (page->resources[i] == type)
+					int square = 0;
+					if (type != NO_RES_TYPE)
+						square = resourceSquare(
+							resource.amount,
+							unsigned(type) < capacities.size() ? capacities[type] : 0, Samples);
+					// The type and square size identify everything composed for the cell.
+					const int composed = type == NO_RES_TYPE ? -1 : type << 4 | square;
+					if (page->resources[i] == composed)
 						continue;
 					const auto corners = map.cellCorners(mx, my);
 					std::array<std::array<unsigned char, 3>, 4> colors{};
@@ -120,28 +170,19 @@ void OverviewTerrainCache::copy(const SceneMap &map, int left, int top, int righ
 						}
 					auto *pixels = page->pixels.get();
 					compositor.composeOverview(compositor.describeOverview(map, mx, my), pixels,
-											   x * Samples, y * Samples,
+											   x * Samples, y * Samples, Samples,
 											   anyCustom ? &custom : nullptr);
 					if (type != NO_RES_TYPE)
 					{
 						const auto &color = map.resourceRegistry()
 												.presentation(static_cast<ResourceId>(type))
 												.minimap;
-						for (int py = y * Samples; py < (y + 1) * Samples; ++py)
-						{
-							auto *row = reinterpret_cast<Uint32 *>(
-								static_cast<Uint8 *>(pixels->pixels) + py * pixels->pitch);
-							for (int px = x * Samples; px < (x + 1) * Samples; ++px)
-							{
-								const auto ground = row[px];
-								row[px] = 0xFF000000u |
-										  (((((ground >> 16) & 255) + 3 * color[0]) / 4) << 16) |
-										  (((((ground >> 8) & 255) + 3 * color[1]) / 4) << 8) |
-										  ((ground & 255) + 3 * color[2]) / 4;
-							}
-						}
+						const Uint32 packed = 0xFF000000u | Uint32(color[0]) << 16 |
+											  Uint32(color[1]) << 8 | color[2];
+						SDL_Rect area{x * Samples, y * Samples, square, square};
+						SDL_FillSurfaceRect(pixels, &area, packed);
 					}
-					page->resources[i] = type;
+					page->resources[i] = composed;
 					++compositions;
 				}
 			page->vertices = vertices;
@@ -156,4 +197,17 @@ void OverviewTerrainCache::copy(const SceneMap &map, int left, int top, int righ
 								(x0 - cx * Tiles) * Samples * 4,
 							(x1 - x0) * Samples * 4);
 		}
+	// A view larger than the budget leaves its pages behind. Once the view is
+	// smaller again, return to the budget by dropping the least recently drawn.
+	if (pages.size() > pageLimit)
+	{
+		std::vector<std::pair<std::uint64_t, std::size_t>> ages;
+		ages.reserve(pages.size());
+		for (const auto &[key, page] : pages)
+			ages.emplace_back(page.used, key);
+		const auto excess = pages.size() - pageLimit;
+		std::nth_element(ages.begin(), ages.begin() + excess, ages.end());
+		for (std::size_t i = 0; i < excess; ++i)
+			pages.erase(ages[i].second);
+	}
 }

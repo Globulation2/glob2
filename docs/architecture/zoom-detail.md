@@ -64,9 +64,11 @@ it is saved, checksummed or read by the simulation.
   leaves hairline seams.
   The outline stroke stops thickening at two points.
 - In the cross-fade `MapDrawer::drawMapOverview` fades in terrain palette colours sampled
-  from the detailed compositor's material coverage of each cell's corners. Four samples per tile axis keep coastlines aligned
-  during the fade; resource minimap colours tint their gameplay cells over that
-  ground. In the overview this replaces the water, terrain and resource passes.
+  from the detailed compositor's material coverage of each cell's corners. Four or eight samples per tile axis,
+  chosen from the cell's size in device pixels, keep coastlines aligned during the
+  fade; each resource draws a square in its minimap colour from the cell's
+  top-left corner, sized by its stock, over that ground
+  ([caches and compatibility](../assets/terrain-rendering.md#caches-and-compatibility)). In the overview this replaces the water, terrain and resource passes.
   The reusable image stretches over the map in a single draw, avoiding thousands
   of translucent fills. A stationary view reuses the image and its texture
   while its terrain, resources and discovery inputs are unchanged.
@@ -132,9 +134,11 @@ it is saved, checksummed or read by the simulation.
   only when necessary. Narrow edge tiles reuse the same sampling density and warm
   pages. Streaming fallback follows the same density choice.
   Overview palette samples are cached in canonical CPU pages independently of
-  zoom and animation. Terrain vertices (including the contour halo), the terrain
-  seed, registry/asset replacement and resource visibility invalidate those pages;
-  camera movement and blend opacity do not resample unchanged contours.
+  animation, and of zoom while the samples per cell stay the same. Terrain
+  vertices (including the contour halo), the terrain seed, registry/asset
+  replacement and a change of samples per cell invalidate those pages; a cell is
+  recomposed when its resource visibility, type or square size changes. Camera
+  movement and blend opacity do not resample unchanged contours.
 
 When tuning, capture the same save across zooms with `SoftwareRenderBenchmark`
 (`PROFILE_ZOOM`, `PROFILE_CAPTURE`); `PROFILE_ADAPTIVE_ZOOM=0` draws uniform scaling

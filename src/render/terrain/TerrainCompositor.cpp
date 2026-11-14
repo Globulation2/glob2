@@ -1924,7 +1924,7 @@ void Compositor::buildMask(const Catalog &definitions, const StoneMaps &stones, 
 		}
 }
 void Compositor::composeOverview(const Recipe &r, SDL_Surface *target, int ox, int oy,
-								 const CornerColors *cornerColors) const
+								 int samples, const CornerColors *cornerColors) const
 {
 	if (target->format != SDL_PIXELFORMAT_ARGB8888)
 		throw std::runtime_error("Terrain overview requires ARGB8888");
@@ -1943,16 +1943,15 @@ void Compositor::composeOverview(const Recipe &r, SDL_Surface *target, int ox, i
 	if (std::all_of(r.corners.begin(), r.corners.end(),
 					[&](auto id) { return id == r.corners[0]; }))
 	{
-		SDL_Rect area{ox, oy, OverviewSamples, OverviewSamples};
+		SDL_Rect area{ox, oy, samples, samples};
 		SDL_FillSurfaceRect(target, &area, packed(colorOf(r.corners[0])));
 		return;
 	}
 	const PreparedCoverage prepared(definitions, r, PreparedCoverage::Detail::Weights);
-	for (int y = 0; y < OverviewSamples; ++y)
-		for (int x = 0; x < OverviewSamples; ++x)
+	for (int y = 0; y < samples; ++y)
+		for (int x = 0; x < samples; ++x)
 		{
-			const auto mask = prepared.at((x * 8192 + 4096) / OverviewSamples,
-										 (y * 8192 + 4096) / OverviewSamples);
+			const auto mask = prepared.at((x * 8192 + 4096) / samples, (y * 8192 + 4096) / samples);
 			std::array<unsigned, 3> color{};
 			for (int i = 0; i < 4; ++i)
 				for (int k = 0; k < 3; ++k)

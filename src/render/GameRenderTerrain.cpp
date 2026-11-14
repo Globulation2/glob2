@@ -429,16 +429,19 @@ void MapDrawer::drawMapOverview(int left, int top, int right, int bot, int viewp
 	PERF_SCOPE_TIME(Terrain);
 	Uint32 visibleTeams = Team::teamNumberToMask(localTeam);
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
-	constexpr int samples = TerrainVisual::Compositor::OverviewSamples;
 	const int columns = right-left+1, rows = bot-top+1;
+	if (!render.overviewCache)
+		render.overviewCache = std::make_unique<OverviewTerrainCache>();
+	// Size the image to what the screen can show: a cell's device pixels.
+	const double pixelsPerCell = 32 * globalContainer->gfx->mapTransformScale() * globalContainer->gfx->getRasterScale();
+	const int samples = OverviewTerrainCache::samplesFor(pixelsPerCell, render.overviewCache->samples(),
+		std::max(columns, rows), globalContainer->gfx->maximumTextureSize());
 	if (!render.overview)
 		render.overview = std::make_unique<GAGCore::DrawableSurface>(columns*samples, rows*samples);
 	else if (render.overview->getW()!=columns*samples || render.overview->getH()!=rows*samples)
 		render.overview->setRes(columns*samples, rows*samples);
-	if (!render.overviewCache)
-		render.overviewCache = std::make_unique<OverviewTerrainCache>();
 	render.overviewCache->update(sceneMap, left, top, right, bot, viewportX, viewportY,
-								 visibleTeams, drawOptions & Game::DRAW_WHOLE_MAP, *render.overview);
+								 visibleTeams, drawOptions & Game::DRAW_WHOLE_MAP, samples, *render.overview);
 	globalContainer->gfx->drawSurface(left*32, top*32, columns*32, rows*32, render.overview.get(), alpha);
 }
 
