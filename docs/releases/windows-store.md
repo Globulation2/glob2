@@ -14,7 +14,10 @@ release there manually. The mirror's `master` tracks public `master` exactly; se
 [the release mirror](releasing.md#the-release-mirror). The workflow builds the existing MinGW x64
 client, stages its runtime DLLs, game assets and GPL license, creates
 `MicrosoftGame.config`, shell logos and a 1920×1080 splash image, then
-uses the Microsoft GDK to produce an MSIXVC package. With `upload: false`, it
+uses a pinned Microsoft GDK to produce an MSIXVC package. The payload has no
+embedded GDK version, so the validator judges the packaging tools' GDK; raise the
+GDK pin together with the validator pin once a validation passes on the new pair.
+With `upload: false`, it
 creates an installable test-signed package and retains the package and validator
 report as a publicly accessible GitHub Actions artifact. With `upload: true`, it
 creates a submission-encrypted package and sends it with its encryption key blob

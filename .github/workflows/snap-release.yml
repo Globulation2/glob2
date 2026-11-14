@@ -96,7 +96,10 @@ jobs:
         with:
           repository: Globulation2/glob2
           ref: ${{ inputs.tag }}
-          fetch-depth: 0
+          # Shallow, like release.yml: snapcraft copies the whole source tree
+          # (.git included) into its build, and full history no longer fits
+          # the runner's disk. The tag check below needs only rev-parse.
+          fetch-depth: 1
       - name: Verify public tag checkout
         env:
           TAG: ${{ inputs.tag }}
