@@ -751,6 +751,11 @@ if(darwin)
   list(APPEND GLOB2_GAG_SOURCES ${GLOB2_GAG_DARWIN_SOURCES})
 endif()
 add_library(gag STATIC ${GLOB2_GAG_SOURCES})
+# A second build of etcpak's block encoders with SSE4.1, chosen at run time when
+# the CPU has it; the portable build stays for older x86-64 processors.
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(x86_64|AMD64|amd64|i[3-6]86|x86)$" AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  set_source_files_properties("${GLOB2_ROOT}/libs/gag/src/EtcpakSse41.cpp" TARGET_DIRECTORY gag PROPERTIES COMPILE_OPTIONS "-msse4.1")
+endif()
 
 # QuickJS and openlibm: the interpreter's strict numeric contract, per source
 # exactly as buildsys/javascript.py compiles them.

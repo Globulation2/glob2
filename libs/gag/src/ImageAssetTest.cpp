@@ -5,6 +5,9 @@
 #include <FileManager.h>
 #include <GraphicContext.h>
 #include <AssetLoader.h>
+#include "EtcpakSse41.h"
+#include <etcpak/ProcessDxtc.hpp>
+#include <etcpak/ProcessRGB.hpp>
 #include <RenderMemory.h>
 #include <stdexcept>
 #include <SDL3/SDL.h>
@@ -116,6 +119,30 @@ TEST_CASE("block compression follows the requested format and skips what it cann
     CHECK(image.mips.front().compressed.size() == 4 * 16);
 #endif
 #endif
+}
+TEST_CASE("the SSE4.1 encoders match the portable ones where the CPU runs them") {
+    const auto simd = GAGCore::EtcpakSse41::available();
+#if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__)) && !defined(__EMSCRIPTEN__) && !defined(GLOB2_MOBILE)
+    if (__builtin_cpu_supports("sse4.1")) CHECK(simd.bc3 != nullptr);
+#endif
+    if (!simd.bc3) { CHECK(simd.etc2Rgba == nullptr); return; }
+    REQUIRE(simd.etc2Rgba != nullptr);
+    // Flat 4x4 blocks of distinct colours and alphas: one exact encoding each.
+    constexpr int width = 16, height = 8;
+    std::vector<std::uint32_t> pixels(width * height);
+    for (int y = 0; y < height; ++y)
+        for (int x = 0; x < width; ++x) {
+            const unsigned block = (y / 4) * (width / 4) + x / 4;
+            pixels[y * width + x] = (255u - block * 20) << 24 | (block * 31 % 256) << 16 | (block * 57 % 256) << 8 | (block * 89 % 256);
+        }
+    const std::uint32_t count = (width / 4) * (height / 4);
+    std::vector<std::uint64_t> portable(count * 2), sse(count * 2);
+    CompressBc3(pixels.data(), portable.data(), count, width);
+    simd.bc3(pixels.data(), sse.data(), count, width);
+    CHECK(portable == sse);
+    CompressEtc2Rgba(pixels.data(), portable.data(), count, width, true);
+    simd.etc2Rgba(pixels.data(), sse.data(), count, width);
+    CHECK(portable == sse);
 }
 TEST_CASE("prepared image adoption separates shared pixels and transfers exclusive pixels") {
     auto *pixels = SDL_CreateSurface(2, 1, SDL_PIXELFORMAT_ARGB8888);

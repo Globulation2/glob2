@@ -838,6 +838,7 @@ ETCPAK_SOURCES = ('third_party/etcpak/etcpak/ProcessDxtc.cpp', 'third_party/etcp
 
 GAG_SOURCES = (
     'AssetLoader.cpp',
+    'EtcpakSse41.cpp',
     'AssetVideo.cpp',
     'AssetVideoDecoder.cpp',
     'PackedSpriteFrame.cpp',

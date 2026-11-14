@@ -869,6 +869,7 @@ set(GLOB2_STRICT_CXXFLAGS
 # buildsys/sources.py GAG_SOURCES and ETCPAK_SOURCES.
 set(GLOB2_GAG_SOURCES
     libs/gag/src/AssetLoader.cpp
+    libs/gag/src/EtcpakSse41.cpp
     libs/gag/src/AssetVideo.cpp
     libs/gag/src/AssetVideoDecoder.cpp
     libs/gag/src/PackedSpriteFrame.cpp
@@ -1644,6 +1645,7 @@ set(GLOB2_ANDROID_SOURCES
     src/online/UserDirectoryStorage.cpp
     src/app/CompileProfile.cpp
     libs/gag/src/AssetLoader.cpp
+    libs/gag/src/EtcpakSse41.cpp
     libs/gag/src/AssetVideo.cpp
     libs/gag/src/AssetVideoDecoder.cpp
     libs/gag/src/PackedSpriteFrame.cpp
@@ -2439,6 +2441,7 @@ set(GLOB2_IOS_SOURCES
     platforms/mobile/ios/LaunchLinks.mm
     platforms/mobile/ios/CertificateTrust.cpp
     libs/gag/src/AssetLoader.cpp
+    libs/gag/src/EtcpakSse41.cpp
     libs/gag/src/AssetVideo.cpp
     libs/gag/src/AssetVideoDecoder.cpp
     libs/gag/src/PackedSpriteFrame.cpp
@@ -3390,6 +3393,7 @@ set(GLOB2_WEB_SOURCES
     src/online/UserDirectoryStorage.cpp
     src/app/CompileProfile.cpp
     libs/gag/src/AssetLoader.cpp
+    libs/gag/src/EtcpakSse41.cpp
     libs/gag/src/AssetVideo.cpp
     libs/gag/src/AssetVideoDecoder.cpp
     libs/gag/src/PackedSpriteFrame.cpp

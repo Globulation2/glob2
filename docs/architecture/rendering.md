@@ -847,7 +847,8 @@ graphics thread uploads blocks and the driver never encodes. Desktop legacy
 OpenGL picks the format at context creation: BC3 where the device has S3TC, as
 desktop GPUs do, otherwise ETC2 with EAC alpha where the context promises the
 OpenGL ES 3 formats (`GL_ARB_ES3_compatibility`), which GPUs without S3TC decode
-natively; both take 16 bytes for 16 pixels, a quarter of RGBA. A level whose
+natively; both take 16 bytes for 16 pixels, a quarter of RGBA. On x86 processors
+with SSE4.1 the workers use a second build of the encoders compiled for it. A level whose
 blocks are in another format than the context's (artwork decoded before the
 context existed) uploads uncompressed. `GLOB2_TEXTURE_COMPRESSION=bc3|etc2|none`
 overrides the choice for tests. The browser path and the device renderers still

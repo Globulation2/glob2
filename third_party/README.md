@@ -35,8 +35,13 @@ the encoders as `<etcpak/ProcessDxtc.hpp>` and `<etcpak/ProcessRGB.hpp>`.
 `AssetImage::compressBlocks` (`libs/gag/src/AssetLoader.cpp`) is the only
 caller: asset workers encode high-resolution texture levels to BC3, or to ETC2
 with EAC alpha for GPUs without S3TC. The encoders pick SSE4.1, AVX2 or NEON
-paths from the compiler's target macros; builds for the baseline x86-64 target
-use the portable path. The notice ships as `content/data/etcpak-license.txt`.
+paths from the compiler's target macros, so the baseline x86-64 build of these
+four sources is the portable path. `libs/gag/src/EtcpakSse41.cpp` compiles them
+a second time inside a namespace, with `-msse4.1` for that file alone on x86
+GCC and Clang builds (`CMakeLists.txt`), and the encoders use that copy when
+`__builtin_cpu_supports("sse4.1")` says the processor runs it: about three
+times faster, and identical blocks on the cases the `ImageAssets` suite checks.
+NEON builds (ARM) take the fast path directly. The notice ships as `content/data/etcpak-license.txt`.
 To update, replace the listed files from a new tag, reapply the patch, record
 the tag and commit here, and rerun the `ImageAssets` and `GpuTexturePreparation`
 suites, which decode both formats.
