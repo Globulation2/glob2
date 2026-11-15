@@ -5017,9 +5017,9 @@ AI टेलीमेट्री
 [stat prestige about]
 सर्वोच्च स्तर की इमारतों से मिली बस्ती की प्रतिष्ठा। प्रतिष्ठा लक्ष्य वाला मैच लक्ष्य पूरा होने पर समाप्त होता है।
 [stat prestige needed]
-Prestige needed to win
+जीत के लिए आवश्यक प्रतिष्ठा
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+वह प्रतिष्ठा जो बस्ती को प्रतिष्ठा से जीतने के लिए अभी और अर्जित करनी होगी: इतनी कि मैच की कुल प्रतिष्ठा लक्ष्य तक पहुँचे, और बची हुई हर दूसरी बस्ती से आगे निकल जाए। केवल तभी दर्ज होती है जब मैच में प्रतिष्ठा लक्ष्य हो।
 [stat band combat]
 युद्ध
 [stat band starvation]

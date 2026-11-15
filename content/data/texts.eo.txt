@@ -5049,9 +5049,9 @@ Prestiĝo
 [stat prestige about]
 La prestiĝo de la kolonio, gajnita per plej altnivelaj konstruaĵoj. Matĉo kun prestiĝa celo finiĝas kiam ĝi estas atingita.
 [stat prestige needed]
-Prestige needed to win
+Prestiĝo bezonata por venki
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+La prestiĝo, kiun la kolonio ankoraŭ devus gajni por venki per prestiĝo: sufiĉe por ke la kuna prestiĝo de la matĉo atingu la celon, kaj por superi ĉiun alian pluvivantan kolonion. Registrata nur kiam la matĉo havas prestiĝan celon.
 [stat band combat]
 Batalo
 [stat band starvation]

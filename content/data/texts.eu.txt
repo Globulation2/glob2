@@ -5049,9 +5049,9 @@ Ospea
 [stat prestige about]
 Koloniaren ospea, goi-mailako eraikinekin irabazia. Ospe-helburua duen partida helburua lortzean amaitzen da.
 [stat prestige needed]
-Prestige needed to win
+Irabazteko behar den ospea
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+Koloniak ospearen bidez irabazteko oraindik lortu beharko lukeen ospea: partidako ospe osoa helburura iristeko eta bizirik dauden gainerako kolonia guztiak gainditzeko adina. Partidak ospe-helburua duenean bakarrik erregistratzen da.
 [stat band combat]
 Borroka
 [stat band starvation]

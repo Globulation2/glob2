@@ -5017,9 +5017,9 @@ FFmpeg ไม่​พร้อม​ใช้งาน ดังนั้น​
 [stat prestige about]
 เกียรติยศ​ของ​อาณานิคม​จาก​อาคาร​ระดับ​สูงสุด แมตช์​ที่​ตั้งเป้า​เกียรติยศ​จะ​จบ​เมื่อ​ถึง​เป้า
 [stat prestige needed]
-Prestige needed to win
+เกียรติยศ​ที่​ต้อง​ใช้​เพื่อ​ชนะ
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+เกียรติยศ​ที่​อาณานิคม​ยัง​ต้อง​ได้​เพิ่ม​เพื่อ​ชนะ​ด้วย​เกียรติยศ คือ​มาก​พอ​ให้​เกียรติยศ​รวม​ของ​แมตช์​ถึง​เป้า​และ​แซง​อาณานิคม​อื่น​ทุก​แห่ง​ที่​ยัง​อยู่​รอด บันทึก​เฉพาะ​เมื่อ​แมตช์​ตั้งเป้า​เกียรติยศ
 [stat band combat]
 การต่อสู้
 [stat band starvation]

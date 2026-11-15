@@ -5035,9 +5035,9 @@ Prestij
 [stat prestige about]
 Prestij koloni, yang diperoleh melalui bangunan tahap tertinggi. Perlawanan dengan sasaran prestij tamat apabila sasaran itu dicapai.
 [stat prestige needed]
-Prestige needed to win
+Prestij yang diperlukan untuk menang
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+Prestij yang masih perlu diperoleh koloni untuk menang melalui prestij: cukup supaya jumlah prestij perlawanan mencapai sasaran, dan untuk mengatasi setiap koloni lain yang masih bertahan. Direkodkan hanya apabila perlawanan mempunyai sasaran prestij.
 [stat band combat]
 Pertempuran
 [stat band starvation]

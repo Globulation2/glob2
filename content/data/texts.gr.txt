@@ -5049,9 +5049,9 @@ CPU %0%
 [stat prestige about]
 Το κύρος της αποικίας, που κερδίζεται από κτίρια ανώτατου επιπέδου. Ένας αγώνας με στόχο κύρους τελειώνει όταν αυτός επιτευχθεί.
 [stat prestige needed]
-Prestige needed to win
+Κύρος που χρειάζεται για νίκη
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+Το κύρος που θα έπρεπε ακόμη να κερδίσει η αποικία για να νικήσει με κύρος: αρκετό ώστε το συνολικό κύρος του αγώνα να φτάσει τον στόχο και να ξεπεράσει κάθε άλλη αποικία που επιβιώνει. Καταγράφεται μόνο όταν ο αγώνας έχει στόχο κύρους.
 [stat band combat]
 Μάχη
 [stat band starvation]

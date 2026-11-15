@@ -1211,6 +1211,9 @@ def cpp_transform(transform, expression, total=None):
         return f'std::sqrt(std::max({expression}, 0.0))'
     if transform == 'square':
         return f'({expression}) * ({expression})'
+    if transform == 'pow25':
+        # Two correctly rounded square roots, so every platform computes the same value.
+        return f'std::sqrt(std::sqrt(std::max({expression}, 0.0)))'
     if transform == 'decay24':
         return f'std::exp(-std::max({expression}, 0.0) / 24.0)'
     if transform == 'share':

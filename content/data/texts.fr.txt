@@ -5049,9 +5049,9 @@ Prestige
 [stat prestige about]
 Le prestige de la colonie, gagné grâce aux bâtiments de niveau maximal. Une partie avec un objectif de prestige se termine quand il est atteint.
 [stat prestige needed]
-Prestige needed to win
+Prestige requis pour gagner
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+Le prestige que la colonie devrait encore gagner pour l'emporter au prestige : assez pour que le prestige cumulé de la partie atteigne l'objectif, et pour dépasser toutes les autres colonies survivantes. Enregistré seulement quand la partie a un objectif de prestige.
 [stat band combat]
 Combats
 [stat band starvation]

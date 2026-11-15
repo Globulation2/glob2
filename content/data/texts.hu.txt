@@ -5049,9 +5049,9 @@ Presztízs
 [stat prestige about]
 A kolónia presztízse, amelyet a legmagasabb szintű épületek hoznak. A presztízscélú mérkőzés a cél elérésekor véget ér.
 [stat prestige needed]
-Prestige needed to win
+A győzelemhez szükséges presztízs
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+Az a presztízs, amelyet a kolóniának még meg kellene szereznie a presztízsgyőzelemhez: elég ahhoz, hogy a mérkőzés összesített presztízse elérje a célt, és hogy megelőzzön minden más túlélő kolóniát. Csak akkor rögzül, ha a mérkőzésnek van presztízscélja.
 [stat band combat]
 Harc
 [stat band starvation]

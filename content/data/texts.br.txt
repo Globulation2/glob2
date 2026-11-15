@@ -5049,9 +5049,9 @@ Prestígio
 [stat prestige about]
 O prestígio da colônia, obtido com construções de nível máximo. Uma partida com meta de prestígio termina quando ela é alcançada.
 [stat prestige needed]
-Prestige needed to win
+Prestígio necessário para vencer
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+O prestígio que a colônia ainda precisaria obter para vencer por prestígio: o suficiente para que o prestígio somado da partida alcance a meta e para superar todas as outras colônias sobreviventes. Registrado apenas quando a partida tem meta de prestígio.
 [stat band combat]
 Combate
 [stat band starvation]

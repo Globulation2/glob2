@@ -5017,9 +5017,9 @@ JavaScript AI आयात करा
 [stat prestige about]
 उच्च-स्तरीय इमारती उभारून मिळवलेली वसाहतीची प्रतिष्ठा. प्रतिष्ठेचे ध्येय असलेला सामना ते ध्येय गाठल्यावर संपतो.
 [stat prestige needed]
-Prestige needed to win
+जिंकण्यासाठी आवश्यक प्रतिष्ठा
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+प्रतिष्ठेने जिंकण्यासाठी वसाहतीला अजून मिळवावी लागणारी प्रतिष्ठा: सामन्याची एकूण प्रतिष्ठा ध्येयापर्यंत पोहोचेल आणि टिकून राहिलेल्या प्रत्येक इतर वसाहतीला मागे टाकता येईल इतकी. सामन्याला प्रतिष्ठेचे ध्येय असेल तेव्हाच नोंदवली जाते.
 [stat band combat]
 लढाई
 [stat band starvation]

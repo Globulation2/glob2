@@ -5017,9 +5017,9 @@ AI టెలిమెట్రీ
 [stat prestige about]
 అగ్రశ్రేణి భవనాల ద్వారా కాలనీ ప్రతిష్ట లభిస్తుంది. ప్రతిష్ట లక్ష్యాన్ని చేరుకున్నప్పుడు, ఆ మ్యాచ్ ముగుస్తుంది.
 [stat prestige needed]
-Prestige needed to win
+గెలవడానికి అవసరమైన ప్రతిష్ట
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+ప్రతిష్టతో గెలవడానికి కాలనీ ఇంకా సంపాదించాల్సిన ప్రతిష్ట: మ్యాచ్ మొత్తం ప్రతిష్ట లక్ష్యాన్ని చేరేంత, మిగిలి ఉన్న ప్రతి ఇతర కాలనీని అధిగమించేంత. మ్యాచ్‌కు ప్రతిష్ట లక్ష్యం ఉన్నప్పుడు మాత్రమే నమోదు అవుతుంది.
 [stat band combat]
 పోరాటం
 [stat band starvation]

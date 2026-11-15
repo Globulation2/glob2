@@ -5059,9 +5059,9 @@ Prestihiyo
 [stat prestige about]
 Prestihiyo ng kolonya na nakukuha mula sa mga gusaling nasa pinakamataas na antas. Matatapos ang laban kapag naabot ang layuning prestihiyo nito.
 [stat prestige needed]
-Prestige needed to win
+Prestihiyong kailangan para manalo
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+Ang prestihiyong kailangan pang makuha ng kolonya para manalo sa prestihiyo: sapat para maabot ng pinagsamang prestihiyo ng laban ang layunin, at para malampasan ang bawat iba pang kolonyang nakaligtas. Itinatala lamang kapag may layuning prestihiyo ang laban.
 [stat band combat]
 Labanan
 [stat band starvation]

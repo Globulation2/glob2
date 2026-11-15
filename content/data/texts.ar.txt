@@ -5049,9 +5049,9 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 [stat prestige about]
 هيبة المستعمرة، المكتسبة من المباني ذات المستوى الأعلى. تنتهي المباراة ذات هدف الهيبة عند بلوغه.
 [stat prestige needed]
-Prestige needed to win
+الهيبة اللازمة للفوز
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+الهيبة التي لا يزال على المستعمرة كسبها للفوز بالهيبة: ما يكفي لتبلغ الهيبة المجمّعة في المباراة الهدف، ولتتجاوز كل مستعمرة أخرى باقية. تُسجَّل فقط عندما يكون للمباراة هدف هيبة.
 [stat band combat]
 القتال
 [stat band starvation]

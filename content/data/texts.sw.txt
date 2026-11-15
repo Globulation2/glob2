@@ -5017,9 +5017,9 @@ Heshima
 [stat prestige about]
 Heshima ya makazi, inayopatikana kwa majengo ya kiwango cha juu kabisa. Mechi yenye lengo la heshima huisha likifikiwa.
 [stat prestige needed]
-Prestige needed to win
+Heshima inayohitajika kushinda
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+Heshima ambayo makazi bado yangehitaji kupata ili kushinda kwa heshima: ya kutosha ili heshima ya jumla ya mechi ifikie lengo, na kupita kila makazi mengine yaliyosalia. Hurekodiwa tu wakati mechi ina lengo la heshima.
 [stat band combat]
 Mapigano
 [stat band starvation]
