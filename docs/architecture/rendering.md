@@ -947,9 +947,10 @@ published images when mip preparation or CPU restoration requirements change.
 The previous artwork remains visible until publication, and failed upgrades keep
 a valid existing layer. Its linear textures need
 premultiplied alpha: accelerated SDL renderers prepare them by blending a
-straight-alpha staging texture onto a transparent target. The staging texture is
-shared by the renderer, and compatible cached textures are updated in place when
-pixels change. SDL's per-target viewport, clip, scale and logical presentation
+straight-alpha staging texture onto a transparent target. The renderer keeps up
+to four staging textures, one per texture size, since pages, HD sprite frames and
+animated tiles of different sizes upload in the same frame; compatible cached
+textures are updated in place when pixels change. SDL's per-target viewport, clip, scale and logical presentation
 state is restored before drawing resumes. A bounded 256×256 startup probe checks
 all byte colour/alpha pairs against the CPU integer result. Drivers whose blend
 units differ retain CPU conversion and log their conformance mismatch count.

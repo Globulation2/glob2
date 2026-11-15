@@ -497,9 +497,12 @@ compose a page inside the frame. A cold page is described from the scene on the
 graphics thread and composed by the shared presentation workers
 (`render/BackgroundWork.h`) from an immutable material snapshot. Until it
 arrives the view draws the same page at its nearest other density, or the
-overview beneath where none exists. An animation or surf step of a valid page
-queues its changed cells the same way while the view keeps drawing the current
-pixels; finished cells upload as dirty rectangles. Each frame describes at most
+overview beneath where none exists. Uniform animated cells (open water) draw over
+their page from one shared tile per material variant at the page's density, so
+an animation step recomposes and uploads those few tiles, not the pages. Any
+other animation or surf step of a valid page (shorelines) queues its changed
+cells the same way while the view keeps drawing the current pixels; finished
+cells upload as dirty rectangles. Each frame describes at most
 1024 cells for launches, reduces at most four pages from retained native pages,
 and installs at most four finished pages; pages nearest the view centre go
 first, and work for pages the view left is cancelled. Missing pages take build
