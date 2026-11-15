@@ -18,13 +18,16 @@ public:
     DirectTerrain();
     ~DirectTerrain();
 
-    // Programmable devices: one native direct-terrain packet for the view.
+    // Programmable devices without streamed textures: one native direct-terrain
+    // packet for the view.
     bool draw(GAGCore::GraphicContext &, const SceneMap &, int left, int top,
               int right, int bottom, int viewportX, int viewportY,
               Uint32 visibleTeams, bool wholeMap, int animationTime);
     bool preparing() const;
     // A device or budget limit stopped direct terrain for this map.
     bool failed() const;
+    // failed(), for this map: another map starts again.
+    bool failedFor(const SceneMap &) const;
     // Legacy GL, at every zoom: artwork near the display density and a
     // coverage mask per visible mixed cell, built in the background (a mixed
     // cell draws a straight split between its corners until its mask lands). Returns false
@@ -46,6 +49,9 @@ public:
     // GL through Emscripten's WebGL2 bridge, which it does not support; their
     // Legacy GL views compose pages instead.
     static bool legacyPassAvailable();
+    // Whether this graphics context's device draws the same streamed pass
+    // (prepare/drawPrepared) through streamed textures: SDL GPU.
+    static bool streamedPassAvailable(GAGCore::GraphicContext &);
     // Nothing of this map can draw yet: show the overview.
     bool needsBackdrop(GAGCore::GraphicContext &, const SceneMap &) const;
     std::size_t textureBytes() const;

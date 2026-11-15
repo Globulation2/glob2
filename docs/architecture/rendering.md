@@ -99,11 +99,26 @@ Terrain uses the shared CPU material compositor and bounded 16 by 16 cell pages
 on software and GPU backends; see [terrain materials](../assets/terrain-materials.md).
 [Direct terrain](../development/rendering-benchmarks.md#direct-terrain)
 uses map-space atlases for Original artwork on desktop legacy OpenGL, programmable
-OpenGL, SDL GPU, and WebGPU; desktop legacy OpenGL also draws HD artwork with it. SDL GPU and WebGPU use offline shader assets. The atlas builder packs terrain data independently of the device. The
+OpenGL, SDL GPU, and WebGPU; desktop legacy OpenGL and SDL GPU also draw HD artwork with it. SDL GPU and WebGPU use offline shader assets. The atlas builder packs terrain data independently of the device. The
 camera transforms a terrain quad while its fragment shader blends material
-variants, coverage and shoreline effects. The page renderer handles HD artwork on
-the other backends, backends without direct terrain, tiled captures outside legacy
-OpenGL, and the browser's WebGL2 renderer (legacy OpenGL through Emscripten's WebGL2
+variants, coverage and shoreline effects.
+
+SDL GPU draws legacy OpenGL's streamed pass rather than the whole-map native
+atlas: the same per-cell tables, artwork streamed at the display density, coverage
+masks built by background workers at that density, the retired atlas a zoom
+keeps, the whole-map base masks and the corner split, through the
+`terrain-direct-hd` shader. Its textures are `StreamedTexture`s
+(`libs/gag/include/RenderFrame.h`): device textures written in place with no CPU
+copy of their pixels. Writes queue on the texture until a submitted frame applies
+them, all before that frame draws; a dropped frame leaves them queued. A device
+that advertises `directTerrainStreaming` takes this pass at every zoom, with HD
+artwork on or off; its atlases stay at 2048 square, so a view that needs more
+takes coarser tiles. When the device loses a streamed texture (reset, or over its
+budget) or its writes stop draining, the view falls back to pages for that map.
+
+The page renderer handles HD artwork on
+programmable OpenGL and WebGPU, backends without direct terrain, tiled captures outside legacy
+OpenGL and SDL GPU, SDL GPU views whose streamed pass failed, and the browser's WebGL2 renderer (legacy OpenGL through Emscripten's WebGL2
 bridge), where pages draw native artwork until the view's HD families arrive.
 Interactive page and overview views never compose on the graphics thread and
 never block on it: until wanted terrain arrives they draw the best real terrain

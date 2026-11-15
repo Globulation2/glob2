@@ -5,6 +5,8 @@
 #include <optional>
 #include <span>
 #include <array>
+#include <deque>
+#include <vector>
 
 namespace GAGCore
 {
@@ -104,6 +106,26 @@ inline std::array<std::int32_t,56> surfUniforms(const WeightedComposeData &data)
     }
     return values;
 }
+// An RGBA8 device texture its owner writes in place, with no CPU copy of its
+// pixels. Writes queue here until a submitted frame applies them, in order and
+// before that frame draws; a frame that is dropped leaves them queued. The
+// device marks the texture lost when it no longer holds what was applied
+// (reset, or over its budget); the owner then starts again.
+struct StreamedTexture
+{
+    int width = 0, height = 0;
+    bool linear = false;
+    struct Write { SDL_Rect rect; std::vector<std::uint8_t> rgba; };
+    std::deque<Write> writes;
+    std::size_t queuedBytes = 0;
+    std::uint64_t applied = 0; // Writes applied by the device, ever.
+    bool lost = false;
+    void write(SDL_Rect rect, std::vector<std::uint8_t> rgba)
+    {
+        queuedBytes += rgba.size();
+        writes.push_back({rect, std::move(rgba)});
+    }
+};
 struct DirectTerrainDraw
 {
     enum Texture { Cells, MaskIndex, Art, Coverage, Edges, Variants, Discovery, ShoreCalm, Count };
@@ -112,6 +134,20 @@ struct DirectTerrainDraw
     std::array<TextureSnapshot, Count> textures;
     float animationTime = 0;
     bool wholeMap = false;
+    // Streamed draws (devices with directTerrainStreaming) use the terrain-direct-hd
+    // shader: artwork and coverage masks streamed at the display density, as
+    // Legacy GL draws them. Every texture is then streamed; Coverage and Edges
+    // hold the whole-map base masks, MaskIndex is unused, and a null entry
+    // (no fallback or base atlas) binds a placeholder.
+    enum HdTexture { HdIndex = Count, HdCoverage, HdEdges, HdPreviousIndex, HdPreviousCoverage, HdPreviousEdges, StreamedCount };
+    std::array<std::shared_ptr<StreamedTexture>, StreamedCount> streamed;
+    // Logical sizes for the streamed shader: scalar and record textures are packed.
+    struct HdUniforms
+    {
+        float mapSize[2]{}, artSize[2]{}, variantSize[2]{}, hdCoverageSize[2]{}, hdPreviousSize[2]{}, hdBaseSize[2]{};
+        float artTilePixels = 32, hdTilePixels = 0, hdPreviousTile = 0, hdBaseTile = 0;
+    } hd;
+    bool isStreamed() const { return streamed[Cells] != nullptr; }
 };
 struct DrawPacket
 {
