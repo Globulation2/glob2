@@ -454,6 +454,13 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
                 if (renderer->blitCached(surface, SDL_Rect{sx,sy,sw,sh}, SDL_FRect{x,y,w,h}, alpha)) ++drawCalls;
                 return;
             }
+            if (!pixels && surface->deviceReleased() && renderer == deviceRenderer.get())
+            {
+                // The device adapter retains its snapshot; resets restore from it.
+                if (spriteBatch.owner == this) spriteBatch.flush();
+                if (renderer->blitCached(surface, SDL_Rect{sx,sy,sw,sh}, SDL_FRect{x,y,w,h}, alpha)) ++drawCalls;
+                return;
+            }
             if (!pixels || pixels->w <= 0 || pixels->h <= 0) return;
             if (radialFade.active()) {
                 const DrawableSurface *uploadSource=surface;

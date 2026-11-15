@@ -63,6 +63,7 @@ Report report()
 	{
 		if (auto *device = _gc->renderDevice()) result.deviceResourceBytes = device->telemetry().resourceBytes;
 		if (auto *resources = _gc->renderResources()) result.deviceSnapshotBytes = resources->retainedBytes();
+		result.deviceRetainedBytes = _gc->retainedDeviceSnapshotBytes();
 	}
 	const auto decodes = AssetLoader::decodeTotals();
 	result.imageDecodes = decodes.images;
@@ -77,11 +78,12 @@ std::string fields(const Report &report)
 		" cpu_surface_bytes=" + std::to_string(report.cpuSurfaceBytes) +
 		" cpu_prepared_bytes=" + std::to_string(report.cpuPreparedBytes) +
 		" gpu_surface_bytes=" + std::to_string(report.gpuSurfaceBytes) +
-		" gpu_array_bytes=" + std::to_string(report.gpuArrayBytes);
+		" gpu_array_bytes=" + std::to_string(report.gpuArrayBytes) +
+		" device_snapshot_bytes=" + std::to_string(report.deviceSnapshotBytes) +
+		" device_retained_bytes=" + std::to_string(report.deviceRetainedBytes);
 	for (unsigned i = 0; i < unsigned(Auxiliary::Count); ++i)
 		text += std::string(" ") + auxiliaryNames[i] + "=" + std::to_string(report.gpuAuxiliaryBytes[i]);
-	text += " device_resource_bytes=" + std::to_string(report.deviceResourceBytes) +
-		" device_snapshot_bytes=" + std::to_string(report.deviceSnapshotBytes);
+	text += " device_resource_bytes=" + std::to_string(report.deviceResourceBytes);
 	text += " image_decodes=" + std::to_string(report.imageDecodes) +
 		" image_decoded_bytes=" + std::to_string(report.imageDecodedBytes) +
 		" peak_rss_bytes=" + std::to_string(report.peakResidentBytes);

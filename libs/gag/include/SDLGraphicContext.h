@@ -187,6 +187,7 @@ namespace GAGCore
 		//! The size of the pixels releasePixels() freed.
 		int releasedW = 0, releasedH = 0;
 		bool releasedOnPortable = false;
+		bool releasedOnDevice = false;
 		//! Prepared mip levels left out of the legacy GL upload (a detail band).
 		std::uint8_t uploadSkipLevels = 0;
 		//! texture divisor
@@ -265,6 +266,17 @@ namespace GAGCore
 		//! Released, and the portable renderer no longer holds its texture (a
 		//! reset or a backend change took it): nothing can draw it any more.
 		bool portableTextureLost() const;
+		//! The presentation devices' counterpart (SDL GPU, programmable GL,
+		//! WebGPU): frees the CPU pixels and upload staging once the device
+		//! adapter holds a restoration snapshot of this revision, which it then
+		//! keeps (device resets and context recovery restore from it). Draws use
+		//! that snapshot. A few per frame; false where the pixels stay.
+		bool releaseDevicePixels();
+		//! Pixels released by releaseDevicePixels.
+		bool deviceReleased() const { return releasedOnDevice; }
+		//! Released on a device whose adapter still holds the snapshot: false
+		//! after a backend switch, so the owner must reload the surface.
+		bool deviceBacked() const;
         std::uint64_t lifetimeIdentity() const { return surfaceIdentity; }
         std::uint64_t contentRevision() const { return pixelRevision; }
         virtual void prepareDraw() {}
@@ -412,6 +424,8 @@ namespace GAGCore
     public:
         RenderDevice *renderDevice() const { return renderer == deviceRenderer.get() ? presentationDevice.get() : nullptr; }
         RenderResources *renderResources() const { return deviceResources.get(); }
+        //! Snapshots the device adapter retains for surfaces whose pixels it released.
+        std::size_t retainedDeviceSnapshotBytes() const;
         std::shared_ptr<RenderResources> renderResourceOwner() const { return deviceResources; }
         bool beginDeviceTarget(TextureSnapshot target, float logicalWidth, float logicalHeight);
         void endDeviceTarget();
@@ -618,6 +632,8 @@ namespace GAGCore
         std::unique_ptr<RenderDevice> presentationDevice;
         std::shared_ptr<RenderResources> deviceResources;
         std::unique_ptr<RenderBackend> deviceRenderer;
+        //! DrawableSurface::releaseDevicePixels calls this frame (reset in nextFrame).
+        unsigned deviceReleasesThisFrame = 0;
         RendererBackend configuredBackend = RendererBackend::Software;
         std::shared_ptr<DeviceSkinState> deviceSkinState;
         struct DeviceTargetState { SDL_Rect clip; float scale; bool offscreen, map, ui; };
@@ -1045,8 +1061,9 @@ namespace GAGCore
             if (!highResolutionDemanded) demandHighResolution();
             return prepareDrawSurface(index, false, true);
         }
-        //! After a portable draw: frees frame `index`'s HD base pixels, which
-        //! only its texture then holds, unless the CPU may sample them.
+        //! After a portable or presentation-device draw: frees frame `index`'s
+        //! HD base pixels, which only its texture (portable) or the device's
+        //! retained snapshot then holds, unless the CPU may sample them.
         void releaseDrawnHighResolution(unsigned index);
         //! After a portable draw of frame `index`'s recoloured HD team layer
         //! (in the current colour): frees the cached copy's pixels, which its

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <RenderResources.h>
+#include <algorithm>
 #include <limits>
 #include <stdexcept>
 #include <array>
@@ -178,6 +179,12 @@ bool RenderResources::erase(TextureHandle handle)
 }
 std::size_t RenderResources::retainedBytes() const { return budget->bytes; }
 std::size_t RenderResources::byteLimit() const { return budget->limit; }
+std::size_t RenderResources::classLimit(TextureDescriptor::BudgetClass category) const
+{
+    const auto index = std::size_t(category);
+    if (index >= Budget::classLimits.size()) throw std::invalid_argument("Invalid texture budget class");
+    return std::min(Budget::classLimits[index], budget->limit);
+}
 BufferHandle RenderResources::createGeometry(GeometryLayout layout, std::span<const std::byte> vertices,
                                              std::span<const std::uint32_t> indices, std::uint64_t revision)
 {

@@ -36,6 +36,8 @@ GAUGES = (
     ('team_color_frames', 'CPU team recolours (frames)'),
     ('cpu_compositor_bytes', 'Terrain compositor copies'),
     ('cpu_prepared_bytes', 'Upload staging'),
+    ('device_snapshot_bytes', 'Device restoration snapshots'),
+    ('device_retained_bytes', '  of which retained for released pixels'),
     ('gpu_surface_bytes', 'GPU sprite and atlas textures'),
     ('gpu_array_bytes', 'GPU texture-array pages'),
     ('gpu_direct_terrain_bytes', 'GPU direct terrain'),
@@ -46,7 +48,6 @@ GAUGES = (
     ('gpu_view_tile_bytes', 'GPU view tiles'),
     ('gpu_backend_texture_bytes', 'Portable renderer textures'),
     ('device_resource_bytes', 'Render device resources'),
-    ('device_snapshot_bytes', 'Render device CPU snapshots'),
 )
 
 

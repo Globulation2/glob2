@@ -370,6 +370,57 @@ TEST_SUITE("RenderDevice")
             }
         }
     }
+    TEST_CASE("retained snapshots draw released sources across eviction, reset and recovery")
+    {
+        auto target = surface(); auto red = surface(); REQUIRE(target); REQUIRE(red);
+        std::array<Surface, 3> others{surface(), surface(), surface()};
+        paint(red.get(), 255, 0, 0);
+        for (std::size_t i = 0; i < others.size(); ++i) { REQUIRE(others[i]); paint(others[i].get(), 0, Uint8(80 * (i + 1)), 0); }
+        // Room for three 8-byte snapshots; at most half of the class is retained.
+        RenderResources resources(24, 8); auto device = makeSoftwareRenderDevice(target.get());
+        auto backend = makeDeviceRenderBackend(*device, resources, 2, 1);
+        const int key = 0; const SDL_Rect src{0, 0, 1, 1};
+        CHECK_FALSE(retainDeviceTexture(*backend, &key, 1)); // No snapshot yet.
+        backend->blit(&key, red.get(), 1, true, src, {0, 0, 1, 1}, 255);
+        CHECK_FALSE(retainDeviceTexture(*backend, &key, 2)); // Another revision.
+        REQUIRE(retainDeviceTexture(*backend, &key, 1));
+        CHECK(retainedDeviceTextureBytes(*backend) == 8);
+        red.reset(); // The owner frees its pixels.
+        backend->blit(others[0].get(), others[0].get(), 1, true, src, {0, 0, 1, 1}, 255);
+        CHECK_FALSE(retainDeviceTexture(*backend, others[0].get(), 1)); // Over half the class.
+        const auto drawsRed = [&](RenderBackend &adapter) {
+            REQUIRE(adapter.blitCached(&key, src, {1, 0, 1, 1}, 255));
+            adapter.present();
+            CHECK(pixel(target.get(), 1).r == 255);
+            CHECK(pixel(target.get(), 1).g == 0);
+        };
+        // Pressure evicts only the snapshots their owners can re-create.
+        for (int cycle = 0; cycle < 6; ++cycle)
+            for (auto &other : others) {
+                backend->blit(other.get(), other.get(), 1, true, src, {0, 0, 1, 1}, 255);
+                CHECK(resources.retainedBytes() <= 24);
+                CHECK(backend->hasTexture(&key, 1));
+            }
+        drawsRed(*backend);
+        backend->reset(); // Device reset: GPU copies go, snapshots stay.
+        drawsRed(*backend);
+        // Context recovery: a replacement adapter adopts every snapshot.
+        auto replacementDevice = makeSoftwareRenderDevice(target.get());
+        auto replacement = makeDeviceRenderBackend(*replacementDevice, resources, 2, 1);
+        CHECK_FALSE(replacement->hasTexture(&key, 1));
+        adoptDeviceTextures(*backend, *replacement);
+        CHECK_FALSE(backend->hasTexture(&key, 1));
+        const auto held = resources.retainedBytes();
+        backend.reset(); device.reset();
+        CHECK(resources.retainedBytes() == held);
+        CHECK(retainedDeviceTextureBytes(*replacement) == 8);
+        drawsRed(*replacement);
+        replacement->forget(&key);
+        CHECK_FALSE(replacement->blitCached(&key, src, {1, 0, 1, 1}, 255));
+        CHECK(retainedDeviceTextureBytes(*replacement) == 0);
+        replacement.reset();
+        CHECK(resources.retainedBytes() == 0);
+    }
     TEST_CASE("transient source views with no asset identity cannot reuse old pixels")
     {
         auto source = surface(); auto target = surface(); REQUIRE(source); REQUIRE(target);

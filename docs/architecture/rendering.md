@@ -833,6 +833,26 @@ restored from logical CPU snapshots, while preserving in-flight work, unfinished
 uploads and externally owned rendered targets. Actual pressure can reduce density,
 rather than a fixed low pixel cap.
 
+On the presentation devices (SDL GPU, programmable GL, WebGPU), a surface's CPU
+pixels and upload staging can go once the device adapter holds a restoration
+snapshot of its current revision (`DrawableSurface::releaseDevicePixels`, the
+counterpart of the portable renderer's release). The adapter then *retains* that
+snapshot: it leaves the least-recently-used eviction list (an intrusive list, so
+admission evicts in constant time) and draws with `blitCached` in the sampling it
+was recorded with. Retained snapshots are capped at half of each budget class, so
+ordinary admission always has room, and at most 16 surfaces are released a frame.
+A device reset keeps them, and context recovery moves every snapshot to the
+replacement adapter (`adoptDeviceTextures`), so neither reloads anything. A backend
+switch or a failed recovery drops them; `Sprite::discardUnbackedHighResolution`
+then drops the HD layers that had only those snapshots, which draw native frames
+until their background reload publishes. HD base layers are released this way
+after a direct draw (`Sprite::releaseDrawnHighResolution`: skin shadows through
+`Sprite::drawFrame`), never when the CPU samples them: a released layer that
+`Sprite::baseFrame` reaches answers with its native frame and queues a background
+reload with pixels, while the released layer keeps drawing until it publishes.
+Terrain materials and decor, which CPU page composition samples, keep their pixels.
+Offscreen CPU exports cannot draw a device-released surface.
+
 The command adapter preserves adjacent painter order and flushes at 4096 commands.
 Cloud alpha maps retain complete cell fans in painter order, submitting at most
 4092 vertices per chunk instead of allocating a packet for each cell (the
