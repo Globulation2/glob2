@@ -379,12 +379,20 @@ void MapDrawer::drawSceneMapRegion(const PresentationFrame& scene, int sx, int s
 		catch (const std::bad_alloc &)
 		{ /* Keep the uncached renderer available under memory pressure. */ }
 	}
+	// Interactive views draw stand-ins while workers compose missing pages; the
+	// editor, captures and complete draws still finish every page first.
+	if (pagesForView)
+		pagesForView->deferBuilds = !scene.editor &&
+			!(frame.options & (Game::DRAW_TILED_CAPTURE | Game::DRAW_COMPLETE_TERRAIN));
 	const bool cached = pagesForView && pagesForView->prepare(scene.map, frame.terrain,
 		frame.left, frame.top, frame.right, frame.bottom, frame.viewportX, frame.viewportY,
 		frame.visibleTeams, frame.options & Game::DRAW_WHOLE_MAP, time,
 		frame.options & Game::DRAW_TILED_CAPTURE);
 	if (cached)
 	{
+		// Pages still composing show the overview until they arrive.
+		if (!pagesForView->complete() && !terrainBackdrop)
+			drawBackdrop();
 		PERF_SCOPE_TIME(Terrain);
 		pagesForView->draw(frame.target);
 	}

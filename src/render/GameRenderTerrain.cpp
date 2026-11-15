@@ -457,13 +457,12 @@ void MapDrawer::drawMapOverview(int left, int top, int right, int bot, int viewp
 	const double pixelsPerCell = 32 * globalContainer->gfx->mapTransformScale() * globalContainer->gfx->getRasterScale();
 	const int samples = OverviewTerrainCache::samplesFor(pixelsPerCell, render.overviewCache->samples(),
 		std::max(columns, rows), globalContainer->gfx->maximumTextureSize());
-	if (!render.overview)
-		render.overview = std::make_unique<GAGCore::DrawableSurface>(columns*samples, rows*samples);
-	else if (render.overview->getW()!=columns*samples || render.overview->getH()!=rows*samples)
-		render.overview->setRes(columns*samples, rows*samples);
-	render.overviewCache->update(sceneMap, left, top, right, bot, viewportX, viewportY,
-								 visibleTeams, drawOptions & Game::DRAW_WHOLE_MAP, samples, *render.overview);
-	globalContainer->gfx->drawSurface(left*32, top*32, columns*32, rows*32, render.overview.get(), alpha);
+	// Each page is its own texture: panning and zooming draw cached pages, and
+	// interactive views compose missing cells on background workers.
+	const bool complete = drawOptions & (Game::DRAW_TILED_CAPTURE | Game::DRAW_COMPLETE_TERRAIN);
+	render.overview.reset();
+	render.overviewCache->draw(sceneMap, left, top, right, bot, viewportX, viewportY, visibleTeams,
+							   drawOptions & Game::DRAW_WHOLE_MAP, samples, *globalContainer->gfx, alpha, complete);
 }
 
 void MapDrawer::drawMapTerritory(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const PresentationFrame& scene, float opacity)

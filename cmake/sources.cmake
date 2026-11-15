@@ -194,6 +194,7 @@ set(GLOB2_CLIENT_SOURCES
     src/render/terrain/TerrainCompiledPack.cpp
     src/render/SoftwareTerrainCache.cpp
     src/render/OverviewTerrainCache.cpp
+    src/render/BackgroundWork.cpp
     src/render/MapOverlayQueue.cpp
     src/render/MapRenderState.cpp
     src/render/RenderMemoryReport.cpp
@@ -1152,6 +1153,7 @@ set(GLOB2_ANDROID_SOURCES
     src/render/terrain/TerrainCompiledPack.cpp
     src/render/SoftwareTerrainCache.cpp
     src/render/OverviewTerrainCache.cpp
+    src/render/BackgroundWork.cpp
     src/render/MapOverlayQueue.cpp
     src/render/MapRenderState.cpp
     src/render/RenderMemoryReport.cpp
@@ -1945,6 +1947,7 @@ set(GLOB2_IOS_SOURCES
     src/render/terrain/TerrainCompiledPack.cpp
     src/render/SoftwareTerrainCache.cpp
     src/render/OverviewTerrainCache.cpp
+    src/render/BackgroundWork.cpp
     src/render/MapOverlayQueue.cpp
     src/render/MapRenderState.cpp
     src/render/RenderMemoryReport.cpp
@@ -2905,6 +2908,7 @@ set(GLOB2_WEB_SOURCES
     src/render/terrain/TerrainCompiledPack.cpp
     src/render/SoftwareTerrainCache.cpp
     src/render/OverviewTerrainCache.cpp
+    src/render/BackgroundWork.cpp
     src/render/MapOverlayQueue.cpp
     src/render/MapRenderState.cpp
     src/render/RenderMemoryReport.cpp

@@ -546,6 +546,15 @@ lattice when zooming out to half size or smaller. Patches retain at most their c
 time remain unchanged, but distant clouds have less fine detail. The torus view
 retains its separate sampling budget.
 
+Renderers without a cloud shader, including the portable SDL renderer, sample
+the shadow and cloud lattices on the CPU. A cloud thread of its own samples the
+next lattices, with a margin of three cells around the view, while frames draw;
+the graphics thread draws the newest finished lattices at their world position
+and samples on the graphics thread (with a few helper threads) only when none
+covers the view, as on the first frame or after a jump. The portable SDL
+renderer draws each alpha map as one small lattice texture stretched with linear
+filtering, texel centres on lattice points, instead of four triangles per cell.
+
 Point bars batch opaque fills within each bar using bounded OpenGL or SDL geometry
 submissions. OpenGL outlines and translucent fills preserve their original order;
 software surfaces retain their existing path. Full-map terrain and resource passes
@@ -701,7 +710,8 @@ rather than a fixed low pixel cap.
 
 The command adapter preserves adjacent painter order and flushes at 4096 commands.
 Cloud alpha maps retain complete cell fans in painter order, submitting at most
-4092 vertices per chunk instead of allocating a packet for each cell. Legacy GL
+4092 vertices per chunk instead of allocating a packet for each cell (the
+portable SDL renderer uses its lattice texture instead). Legacy GL
 float alpha maps also group complete fans into bounded submissions, retaining
 their integer centers and existing clamped colors. Software nearest blits use
 direct coordinate offsets on unscaled axes; scaled axes retain the original

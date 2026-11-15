@@ -47,6 +47,44 @@ void recordAlphaMap(RenderBackend &backend, std::span<const Alpha> map,
     }
     if (!batch.empty()) backend.triangles(batch);
 }
+// The portable renderer draws an alpha map as one small texture of its
+// lattice, stretched with linear filtering so each texel centre lands on its
+// lattice point. One upload and one quad replace four triangles per cell.
+void drawAlphaMapTexture(RenderBackend &backend, std::span<const unsigned char> map, int mapW, int mapH,
+                         int x, int y, int cellW, int cellH, const Color &color)
+{
+    struct Slot
+    {
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels{nullptr, SDL_DestroySurface};
+        Uint32 rgb = 0;
+        std::uint64_t used = 0;
+    };
+    static Slot slots[4];
+    static std::uint64_t clock = 0, revision = 0;
+    const Uint32 rgb = Uint32(color.r) << 16 | Uint32(color.g) << 8 | color.b;
+    Slot *slot = nullptr;
+    for (auto &candidate : slots)
+        if (candidate.pixels && candidate.rgb == rgb)
+            slot = &candidate;
+    if (!slot)
+        slot = &*std::min_element(std::begin(slots), std::end(slots),
+                                  [](const Slot &a, const Slot &b) { return a.used < b.used; });
+    slot->used = ++clock;
+    slot->rgb = rgb;
+    if (!slot->pixels || slot->pixels->w != mapW || slot->pixels->h != mapH)
+    {
+        slot->pixels.reset(SDL_CreateSurface(mapW, mapH, SDL_PIXELFORMAT_ARGB8888));
+        if (!slot->pixels) throw std::bad_alloc();
+    }
+    for (int j = 0; j < mapH; ++j)
+    {
+        auto *row = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(slot->pixels->pixels) + j * slot->pixels->pitch);
+        for (int i = 0; i < mapW; ++i)
+            row[i] = Uint32(map[size_t(j) * mapW + i]) << 24 | rgb;
+    }
+    backend.blitLinear(slot, slot->pixels.get(), ++revision, SDL_Rect{0, 0, mapW, mapH},
+                       SDL_FRect{x - cellW * .5f, y - cellH * .5f, float(mapW * cellW), float(mapH * cellH)}, 255);
+}
 struct SpriteBatchState
 {
 	static constexpr size_t maxQuads = 4096;
@@ -753,7 +791,11 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 			renderBatch->barrier();
 		if (renderer) prepareDraw();
         if (renderer) {
-            recordAlphaMap(*renderer,map,mapW,mapH,x,y,cellW,cellH,color,255.0f);
+            if (renderer == portableRenderer.get() && mapW >= 2 && mapH >= 2 &&
+                size_t(mapW) * size_t(mapH) <= map.size())
+                drawAlphaMapTexture(*renderer,map,mapW,mapH,x,y,cellW,cellH,color);
+            else
+                recordAlphaMap(*renderer,map,mapW,mapH,x,y,cellW,cellH,color,255.0f);
             return;
         }
 	#ifdef HAVE_OPENGL

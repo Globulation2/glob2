@@ -6,6 +6,7 @@
 #include "Settings.h"
 #include <algorithm>
 #include <cmath>
+#include <memory>
 #include <vector>
 
 namespace GAGCore
@@ -52,9 +53,15 @@ class DynamicClouds
 	int wGrid;
 	/// screen height/granularity+1
 	int hGrid;
-	///cloud/shadow density
-	std::vector<unsigned char> alphaMap, cloudMap;
-    int renderOffsetX, renderOffsetY, renderCellSize;
+	///cloud/shadow density, world-anchored lattices drawn this frame
+public:
+	struct Frame;
+	struct Worker;
+private:
+	std::shared_ptr<const Frame> current;
+	// Samples the next lattices on a thread of its own while frames draw.
+	std::shared_ptr<Worker> worker;
+    int renderOffsetX = 0, renderOffsetY = 0, renderCellSize = 1;
 public:
 	 ///render() distinguishes between CLOUD and SHADOW
 	enum Layer {
@@ -85,7 +92,7 @@ public:
 		cloudSize=settings->cloudSize;
 		cloudHeight=(float)settings->cloudHeight/100.0f;
 	}
-	virtual ~DynamicClouds() { }
+	virtual ~DynamicClouds();
 	/**
 	 * updates alphaMap
 	 * @param viewPortX x-coordinate of the viewport

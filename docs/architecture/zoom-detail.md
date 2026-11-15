@@ -69,9 +69,14 @@ it is saved, checksummed or read by the simulation.
   fade; each resource draws a square in its minimap colour centred in the
   cell, sized by its stock, over that ground
   ([caches and compatibility](../assets/terrain-rendering.md#caches-and-compatibility)). In the overview this replaces the water, terrain and resource passes.
-  The reusable image stretches over the map in a single draw, avoiding thousands
-  of translucent fills. A stationary view reuses the image and its texture
-  while its terrain, resources and discovery inputs are unchanged.
+  Each 16 by 16 cell overview page is its own texture and draws as one quad,
+  avoiding thousands of translucent fills; panning and zooming draw the cached
+  pages and upload only cells that changed. Interactive views check pages and
+  describe missing cells within a fixed graphics-thread budget per frame;
+  background workers compose those cells and the graphics thread copies a
+  bounded number into their pages each frame. Until a page is complete it draws
+  over its other density where that exists. Tiled captures and complete draws
+  compose every visible cell first.
   When detailed resources come into view, installed resource sprites are
   requested on demand through the asset loader. The resource marker is used
   while its sprite is pending. Tiled captures and cached editor swatches wait
@@ -134,10 +139,12 @@ it is saved, checksummed or read by the simulation.
   only when necessary. Narrow edge tiles reuse the same sampling density and warm
   pages. Streaming fallback follows the same density choice.
   Overview palette samples are cached in canonical CPU pages independently of
-  animation, and of zoom while the samples per cell stay the same. Terrain
-  vertices (including the contour halo), the terrain seed, registry/asset
-  replacement and a change of samples per cell invalidate those pages; a cell is
-  recomposed when its resource visibility, type or square size changes. Camera
+  animation and zoom. Pages of both sample densities stay within a shared
+  48 MiB allowance (CPU pixels and their textures), always keeping the current
+  view's pages, so crossing the density threshold recomposes nothing already
+  seen. Terrain vertices (including the contour halo), the terrain seed and
+  registry/asset replacement invalidate those pages; a cell is recomposed when
+  its resource visibility, type or square size changes. Camera
   movement and blend opacity do not resample unchanged contours.
 
 When tuning, capture the same save across zooms with `SoftwareRenderBenchmark`

@@ -14,6 +14,7 @@ class SceneMap;
 class TerrainRegistry;
 class MapAssetBundle;
 class GpuTerrainPageCache;
+struct TerrainPendingPage;
 // Shared presentation page cache. The historical name remains for existing view
 // controls/benchmarks; software and GPU consume the same composed coverage.
 class SoftwareTerrainCache
@@ -104,6 +105,11 @@ class SoftwareTerrainCache
 		std::vector<std::pair<TerrainVisual::MaterialId, std::uint64_t>> materialRevisions;
 		std::uint64_t used = 0;
 		std::uint64_t textureUsed = 0;
+		// The discovery state `tiles` was checked against, so unchanged frames
+		// skip checking every cell.
+		Uint64 discoveryRevision = 0;
+		Uint32 discoveryTeams = 0;
+		bool discoveryWhole = false, discoveryStamped = false;
 	};
 	static constexpr std::size_t ChunkStorageBytes =
 		ChunkPixels * ChunkPixels * 4 + sizeof(Chunk) +
@@ -163,6 +169,10 @@ class SoftwareTerrainCache
 	bool composedHighResolution = false; // Whether the last view composed HD material frames.
     std::shared_ptr<GpuTerrainPageCache> gpuPages;
     std::uint64_t gpuPageGeneration = 0;
+	// Pages composed by background workers while the view draws stand-ins.
+	std::vector<std::shared_ptr<TerrainPendingPage>> pending;
+	bool incomplete = false;
+	void cancelPending();
 
   public:
     struct WorkMetrics
@@ -185,6 +195,14 @@ class SoftwareTerrainCache
 							 int animationTime = 0, FallbackMode mode = FallbackMode::StreamPages,
 							 bool tiledCapture = false);
 	bool enabled = true;
+	// Interactive views on accelerated page renderers compose missing pages on
+	// background workers instead of within the frame. Until a page arrives the
+	// view draws the same page at another density, or nothing, and complete()
+	// is false so the caller can draw the overview beneath. Captures, the
+	// editor and other complete draws leave this off.
+	bool deferBuilds = false;
+	bool complete() const { return !incomplete; }
+	std::size_t pendingPages() const { return pending.size(); }
 	// Benchmark override for comparing stable page density with adaptive sampling.
 	int benchmarkDownsample = 0;
 	bool prepare(const SceneMap &, GAGCore::Sprite &, int left, int top, int right, int bottom,

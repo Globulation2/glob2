@@ -15,6 +15,7 @@
 #endif
 #include <set>
 #include <algorithm>
+#include <cmath>
 #include <cassert>
 #include <stdexcept>
 #include <cstring>
@@ -421,44 +422,75 @@ void Compositor::includeBoundarySources(Usage &usage) const
             std::any_of(usage[id].begin(), usage[id].end(), [](auto v) { return v != 0; }))
             usage[id][0] = 1;
 }
+const std::vector<std::uint32_t> &Compositor::pageUsage(const SceneMap &map, int px, int py) const
+{
+    constexpr int Page = 16;
+    const auto key = std::uint64_t(unsigned(py)) << 32 | unsigned(px);
+    if (auto found = usagePages.find(key); found != usagePages.end())
+        return found->second;
+    std::vector<std::uint32_t> entries;
+    const auto seed = map.terrainSeed();
+    const auto use = [&](MaterialId id, int wx, int wy)
+    {
+        entries.push_back(std::uint32_t(id) << 16 | definitions.variantIndex(id, wx, wy, seed));
+    };
+    for (int y = 0; y < Page; ++y)
+        for (int x = 0; x < Page; ++x)
+        {
+            const int wx = (px + x) & map.getMaskW(), wy = (py + y) & map.getMaskH();
+            // Variant selection only needs corner materials and canonical
+            // coordinates. Shoreline and halo data are needed at composition.
+            for (const auto corner : map.cellCorners(wx, wy))
+                use(materialFor(map, corner), wx, wy);
+            // A stone border also draws stones reaching in from neighbouring
+            // cells, other paths' stone layers and the ground a dropped stone
+            // reveals, none of which need be a corner here. describeStones reads
+            // them from the cell's 6x6 vertex window (-2..3), so near a stone
+            // path prepare every material of that window at this cell's variant.
+            std::array<MaterialId, 36> window;
+            bool stone = false;
+            for (int dy = -2; dy <= 3; ++dy)
+                for (int dx = -2; dx <= 3; ++dx)
+                {
+                    const auto id = materialFor(map, map.vertexTerrainAt(wx + dx, wy + dy));
+                    window[(dy + 2) * 6 + dx + 2] = id;
+                    stone |= stoneMaps->has(id);
+                }
+            if (stone)
+                for (const auto id : window)
+                    use(id, wx, wy);
+        }
+    std::sort(entries.begin(), entries.end());
+    entries.erase(std::unique(entries.begin(), entries.end()), entries.end());
+    entries.shrink_to_fit();
+    return usagePages.emplace(key, std::move(entries)).first->second;
+}
 Compositor::Usage Compositor::visibleUsage(const SceneMap &map, int left, int top, int right, int bottom) const
 {
     Usage usage;
     for (const auto &m : definitions.materials) usage.emplace_back(m.variants.size(), 0);
     const int width = std::min(map.getW(), std::max(0, right - left + 1));
     const int height = std::min(map.getH(), std::max(0, bottom - top + 1));
-    const auto seed = map.terrainSeed();
-    for (int y = 0; y < height; ++y)
-        for (int x = 0; x < width; ++x)
-        {
-            const int wx = (left + x) & map.getMaskW(), wy = (top + y) & map.getMaskH();
-            // Variant selection only needs corner materials and canonical
-            // coordinates. Shoreline and halo data are needed at composition.
-            for (const auto corner : map.cellCorners(wx, wy))
-            {
-                const auto id = materialFor(map, corner);
-                usage[id][definitions.variantIndex(id, wx, wy, seed)] = 1;
-            }
-            // A stone border also draws stones reaching in from neighbouring
-            // cells, other paths' stone layers and the ground a dropped stone
-            // reveals, none of which need be a corner here. describeStones reads
-            // them from the cell's 6x6 vertex window (-2..3), so near a stone
-            // path prepare every material of that window at this cell's variant.
-            {
-                std::array<MaterialId, 36> window;
-                bool stone = false;
-                for (int dy = -2; dy <= 3; ++dy)
-                    for (int dx = -2; dx <= 3; ++dx)
-                    {
-                        const auto id = materialFor(map, map.vertexTerrainAt(wx + dx, wy + dy));
-                        window[(dy + 2) * 6 + dx + 2] = id;
-                        stone |= stoneMaps->has(id);
-                    }
-                if (stone)
-                    for (const auto id : window)
-                        usage[id][definitions.variantIndex(id, wx, wy, seed)] = 1;
-            }
-        }
+    if (!width || !height)
+        return usage;
+    if (usageIdentity != map.identity() || usageRevision != map.terrainRevision() || usageSeed != map.terrainSeed())
+    {
+        usagePages.clear();
+        usageIdentity = map.identity();
+        usageRevision = map.terrainRevision();
+        usageSeed = map.terrainSeed();
+    }
+    // Whole pages: a page partly in view prepares a few more variants than the
+    // cells shown need, which composition of its page needs anyway.
+    constexpr int Page = 16;
+    const auto pageOf = [](int tile) { return int(std::floor(double(tile) / Page)); };
+    const int px0 = pageOf(left), px1 = pageOf(left + width - 1);
+    const int py0 = pageOf(top), py1 = pageOf(top + height - 1);
+    const int pagesX = std::max(1, map.getW() / Page), pagesY = std::max(1, map.getH() / Page);
+    for (int py = py0; py <= std::min(py1, py0 + pagesY - 1); ++py)
+        for (int px = px0; px <= std::min(px1, px0 + pagesX - 1); ++px)
+            for (const auto entry : pageUsage(map, (px * Page) & map.getMaskW(), (py * Page) & map.getMaskH()))
+                usage[entry >> 16][entry & 0xFFFF] = 1;
     return usage;
 }
 void Compositor::declareWindows(bool materials, bool decor, int time, const Usage *requested)
@@ -1926,6 +1958,12 @@ void Compositor::buildMask(const Catalog &definitions, const StoneMaps &stones, 
 void Compositor::composeOverview(const Recipe &r, SDL_Surface *target, int ox, int oy,
 								 int samples, const CornerColors *cornerColors) const
 {
+	composeOverview(definitions, r, target, ox, oy, samples, cornerColors);
+}
+
+void Compositor::composeOverview(const Catalog &definitions, const Recipe &r, SDL_Surface *target,
+								 int ox, int oy, int samples, const CornerColors *cornerColors)
+{
 	if (target->format != SDL_PIXELFORMAT_ARGB8888)
 		throw std::runtime_error("Terrain overview requires ARGB8888");
 	const auto packed = [](const auto &color)
@@ -1943,8 +1981,11 @@ void Compositor::composeOverview(const Recipe &r, SDL_Surface *target, int ox, i
 	if (std::all_of(r.corners.begin(), r.corners.end(),
 					[&](auto id) { return id == r.corners[0]; }))
 	{
-		SDL_Rect area{ox, oy, samples, samples};
-		SDL_FillSurfaceRect(target, &area, packed(colorOf(r.corners[0])));
+		// A plain fill, so presentation workers can compose disjoint cells of one page.
+		const Uint32 color = packed(colorOf(r.corners[0]));
+		for (int y = 0; y < samples; ++y)
+			std::fill_n(reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(target->pixels) + (oy + y) * target->pitch) + ox,
+						samples, color);
 		return;
 	}
 	const PreparedCoverage prepared(definitions, r, PreparedCoverage::Detail::Weights);
