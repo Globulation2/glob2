@@ -23,6 +23,8 @@ struct RenderDeviceCapabilities
         return format == TextureCompression::Uncompressed || (format == TextureCompression::BC3 && bc3Textures) ||
             (format == TextureCompression::ASTC4x4 && astc4x4Textures);
     }
+    // DrawPacket::Material::TeamColor blits, so team layers need no CPU recolour.
+    bool teamColor = false;
 };
 struct RenderSubmission
 {

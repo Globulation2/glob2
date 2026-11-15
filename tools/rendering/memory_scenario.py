@@ -32,6 +32,8 @@ PLAYERS = ('castor', 'cortex', 'castor', 'cortex')
 GAUGES = (
     ('cpu_surface_bytes', 'Decoded pixels held by surfaces'),
     ('cpu_high_resolution_bytes', '  of which HD artwork'),
+    ('cpu_team_color_bytes', 'CPU team recolours'),
+    ('team_color_frames', 'CPU team recolours (frames)'),
     ('cpu_compositor_bytes', 'Terrain compositor copies'),
     ('cpu_prepared_bytes', 'Upload staging'),
     ('gpu_surface_bytes', 'GPU sprite and atlas textures'),
@@ -174,8 +176,10 @@ def table(summary, baseline=None):
     before = baseline or {}
     lines.append(row('Process resident memory', summary['peak_rss_bytes'], before.get('peak_rss_bytes')))
     lines.append(row('GPU driver memory', summary['peak_gpu_driver_bytes'], before.get('peak_gpu_driver_bytes')))
+    count = lambda value: 'n/a' if value is None else str(value)
     for key, name in GAUGES:
-        lines.append(row(name, summary['peaks'][key], before.get('peaks', {}).get(key)))
+        lines.append(row(name, summary['peaks'][key], before.get('peaks', {}).get(key),
+                         count if key.endswith('_frames') else mib))
     lines.append(row('Image decodes (count)', summary['image_decodes'], before.get('image_decodes'), str))
     lines.append(row('Image decode output', summary['image_decoded_bytes'], before.get('image_decoded_bytes')))
     for key in ('frame_median_ms', 'frame_p95_ms', 'frame_p99_ms', 'frame_max_ms'):

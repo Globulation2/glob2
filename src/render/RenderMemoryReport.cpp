@@ -29,6 +29,8 @@ std::string fields(const MapRenderState &render)
 		: std::pair<std::uint64_t, std::uint64_t>{};
 	return GAGCore::RenderMemory::fields(GAGCore::RenderMemory::report()) +
 		" cpu_high_resolution_bytes=" + std::to_string(GAGCore::Sprite::highResolutionStats().cpuBytes) +
+		" cpu_team_color_bytes=" + std::to_string(GAGCore::Sprite::teamColorStats().cpuBytes) +
+		" team_color_frames=" + std::to_string(GAGCore::Sprite::teamColorStats().frames) +
 		" cpu_compositor_bytes=" + std::to_string(compositorBytes) +
 		" cpu_terrain_page_bytes=" + std::to_string(pages ? pages->bytes() : 0) +
 		" gpu_terrain_page_bytes=" + std::to_string(pages ? pages->residentTextureBytes() : 0) +

@@ -51,6 +51,17 @@ class RenderBackend
     // and the caller then draws normally.
     virtual bool blitAdditive(const void *, SDL_Surface *, std::uint64_t, const SDL_Rect &,
                               const SDL_FRect &, Uint8) { return false; }
+    // Draws a sprite's team layer recoloured on the GPU by `hue` degrees,
+    // exactly as DrawableSurface::shiftHSV would recolour a copy; mipLevels as
+    // blitMipmapped, empty for nearest sampling. Returns false, drawing
+    // nothing, when the backend has no team-colour shader: the caller then
+    // draws a CPU-recoloured copy instead.
+    virtual bool blitTeamColor(const void *, SDL_Surface *, std::uint64_t, std::span<const RenderMipLevel>,
+                               const SDL_Rect &, const SDL_FRect &, Uint8, float) { return false; }
+    // Textured triangles (a radial fade's grid) whose texels take the same
+    // recolour; vertex colours carry tint and opacity as in triangles().
+    virtual bool trianglesTeamColor(std::span<const SDL_Vertex>, const void *, SDL_Surface *, std::uint64_t, float)
+    { return false; }
 	virtual void fill(const SDL_FRect &rect, SDL_Color color) = 0;
     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
     // Like prepareTexture, after writes confined to `dirty` (pixel rectangles of
