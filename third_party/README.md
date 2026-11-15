@@ -65,25 +65,16 @@ out. The sources are unmodified.
 (`ASTCENC_SOURCES`) and puts `third_party/astcenc` on the include path; include
 the API as `<astcenc/astcenc.h>`. The browser build leaves them out with
 `AstcEncoder.cpp` (it renders through WebGL 2, never SDL GPU).
-`libs/gag/src/AstcEncoder.cpp` is the only caller, through
-`AstcencCodec.inl`: asset workers encode premultiplied high-resolution levels
+`libs/gag/src/AstcEncoder.cpp` is the only caller: asset workers encode premultiplied high-resolution levels
 (`AssetImage::BlockCompression::PremultipliedASTC4x4`) with a trimmed fastest
 preset into 4x4 LDR blocks, each worker thread through its own child context sharing
 one root context's tables. astcenc picks its SIMD back end from the compiler's
 target macros: NEON on arm64 (Android `arm64-v8a`, iOS), SSE4.2 and POPCNT on
 Android `x86_64` (that ABI's baseline), SSE2 on desktop x86-64, and the scalar
-path on 32-bit ARM. `libs/gag/src/AstcencSse41.cpp` and
-`AstcencSse41Physical.cpp` compile the sources a second time inside a namespace,
-with `-msse4.1` and `GLOB2_SSE41_COPY` on native x86 GCC and Clang builds
-(`CMakeLists.txt`), as `EtcpakSse41.cpp` does for etcpak; the encoder uses that
-copy when `__builtin_cpu_supports("sse4.1")`. Two files, because two upstream
-sources define file-local helpers with the same names; the copy renames the C
-API with macros so its definitions stay apart from the portable build's.
-astcenc's invariant build (its default) gives both copies identical blocks.
-The notice ships as `content/data/astcenc-license.txt`. To update, replace the
-listed files from a new tag, record the tag and commit here, check
-`AstcencSse41.cpp` still lists every core source but
-`astcenc_symbolic_physical.cpp`, and rerun the `ImageAssets`, `RenderDevice` and
+path on 32-bit ARM. Unlike etcpak there is no second, run-time-selected
+SSE4.1 build: desktops sample BC3, so the SSE2 build is only their fallback,
+and a copy would add about 275 KB for about 10% faster encoding. The notice ships as `content/data/astcenc-license.txt`. To update, replace the
+listed files from a new tag, record the tag and commit here, and rerun the `ImageAssets`, `RenderDevice` and
 `SDLGPUDevice` suites, which encode, decode and sample the blocks.
 
 ## Scripting runtime

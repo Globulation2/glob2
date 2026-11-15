@@ -9,9 +9,6 @@
 #include "EtcpakSse41.h"
 #if !defined(GLOB2_WEBGL2)
 #include "AstcEncoder.h"
-#include "AstcencSse41.h"
-#include <astcenc/astcenc.h>
-#include "AstcencCodec.inl"
 #endif
 #include <etcpak/ProcessDxtc.hpp>
 #include <etcpak/ProcessRGB.hpp>
@@ -252,32 +249,6 @@ TEST_CASE("premultiplied ASTC 4x4 blocks keep flat translucent colour and alpha"
             for (int c = 0; c < 4; ++c) CHECK(std::abs(int(decoded[i + c]) - expected[c]) <= 1);
     }
 }
-TEST_CASE("the SSE4.1 ASTC encoder matches the portable one where the CPU runs it") {
-    const auto simd = GAGCore::AstcencSse41::available();
-#if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__)) && !defined(GLOB2_MOBILE)
-    if (__builtin_cpu_supports("sse4.1")) CHECK(simd.encode != nullptr);
-#endif
-    CHECK(GAGCore::AstcEncoder::usesSse41() == (simd.encode != nullptr));
-    if (!simd.encode) return;
-    REQUIRE(simd.decode != nullptr);
-    // Gradients, edges and alpha in every block: astcenc's invariant build
-    // (the default) produces the same blocks on every instruction set.
-    constexpr int width = 32, height = 16;
-    std::vector<unsigned char> rgba(width * height * 4);
-    for (int y = 0; y < height; ++y)
-        for (int x = 0; x < width; ++x) {
-            auto *p = rgba.data() + (y * width + x) * 4;
-            p[0] = (x * 37 + y * 11) % 256; p[1] = ((x / 3) * 70) % 256; p[2] = (y * 23) % 256; p[3] = 255 - (x + y) * 5;
-        }
-    std::vector<unsigned char> portable((width / 4) * (height / 4) * 16), sse(portable.size());
-    REQUIRE(astcenc_glob2::encode(rgba.data(), width, height, portable.data()));
-    REQUIRE(simd.encode(rgba.data(), width, height, sse.data()));
-    CHECK(portable == sse);
-    std::vector<unsigned char> portableTexels(rgba.size()), sseTexels(rgba.size());
-    REQUIRE(astcenc_glob2::decode(portable.data(), width, height, portableTexels.data()));
-    REQUIRE(simd.decode(portable.data(), width, height, sseTexels.data()));
-    CHECK(portableTexels == sseTexels);
-}
 TEST_CASE("HD frame block encoding timing [artifacts][benchmark]") {
     // Every stride-th shipped HD frame (GLOB2_BLOCK_BENCH_STRIDE, default 32),
     // prepared as asset workers do; times each format's encode of the chain.
@@ -289,7 +260,7 @@ TEST_CASE("HD frame block encoding timing [artifacts][benchmark]") {
     const char *strideText = std::getenv("GLOB2_BLOCK_BENCH_STRIDE");
     const unsigned stride = strideText ? unsigned(std::max(1, std::atoi(strideText))) : 32u;
     struct Totals { double seconds = 0, worst = 0; };
-    std::array<Totals, 3> totals{}; // BC3, ASTC (chosen build), ASTC (portable build)
+    std::array<Totals, 2> totals{}; // BC3, ASTC
     std::uint64_t sampled = 0, all = 0, sampledPixels = 0;
     std::string line;
     for (unsigned index = 0; std::getline(frames, line);) {
@@ -308,25 +279,17 @@ TEST_CASE("HD frame block encoding timing [artifacts][benchmark]") {
         for (const auto &level : image.mips) sampledPixels += std::uint64_t(level.width) * level.height;
         for (size_t format = 0; format < totals.size(); ++format) {
             const auto start = Clock::now();
-            for (const auto &level : image.mips) {
-                if (format == 2) {
-                    if (level.width < 4 || level.height < 4) continue;
-                    std::vector<unsigned char> blocks(size_t(level.width / 4) * (level.height / 4) * 16);
-                    CHECK(astcenc_glob2::encode(level.pixels.data(), level.width, level.height, blocks.data()));
-                } else {
-                    GAGCore::AssetImage::compressBlocks(level.pixels.data(), level.width, level.height,
-                        format == 0 ? Compression::PremultipliedBC3 : Compression::PremultipliedASTC4x4, true);
-                }
-            }
+            for (const auto &level : image.mips)
+                GAGCore::AssetImage::compressBlocks(level.pixels.data(), level.width, level.height,
+                    format == 0 ? Compression::PremultipliedBC3 : Compression::PremultipliedASTC4x4, true);
             const double seconds = std::chrono::duration<double>(Clock::now() - start).count();
             totals[format].seconds += seconds; totals[format].worst = std::max(totals[format].worst, seconds);
         }
     }
     REQUIRE(sampled > 0);
-    const char *names[] = {"premultiplied BC3 (etcpak)", "premultiplied ASTC 4x4 (astcenc, chosen build)",
-                           "ASTC 4x4 (astcenc, portable build)"};
+    const char *names[] = {"premultiplied BC3 (etcpak)", "premultiplied ASTC 4x4 (astcenc)"};
     MESSAGE("HD frames: " << sampled << " of " << all << " sampled, " << sampledPixels / 1e6
-            << " Mpx of chains; ASTC SSE4.1 copy " << (GAGCore::AstcEncoder::usesSse41() ? "in use" : "absent"));
+            << " Mpx of chains");
     for (size_t format = 0; format < totals.size(); ++format) {
         const double perFrame = totals[format].seconds / sampled;
         MESSAGE(std::string(names[format]) << ": " << perFrame * 1e3 << " ms per frame (worst " << totals[format].worst * 1e3
