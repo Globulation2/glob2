@@ -794,8 +794,10 @@ TEST_SUITE("EngineSession")
 		constexpr std::size_t presentationReserve = 384 * 1024;
 		const auto nonHistory = 4 * sizeof(PerformanceTelemetry::Collector) + mainMaximum +
 								decorative + presentationReserve;
-		CHECK(nonHistory <= 4 * 1024 * 1024);
-		CHECK(sizeof(PerformanceTelemetry::History) + nonHistory <= 16 * 1024 * 1024);
+		// Twelve compute producers since Claims got its own (#1667): 4.24 MiB
+		// non-history, 16.2 MiB with history. Each producer adds about 240 KiB.
+		CHECK(nonHistory <= 4608 * 1024);
+		CHECK(sizeof(PerformanceTelemetry::History) + nonHistory <= 17 * 1024 * 1024);
 		colony.draw(800, 600);
         CHECK(colony.game->snapshots().metrics.captures == afterStep);
     }

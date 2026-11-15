@@ -3192,7 +3192,7 @@ bool RandomUpgradeRepairModule::updatePendingConstruction(void)
 				ai.diagnosticStream<<"AICabino: updatePendingConstruction: The "<<AIEngine::ObservationQueries::buildingType(*ai.game,*b).key<<" was found that it is no longer pending construction, I am assigning number of requested units, "<<assigned<<", to it."<<std::endl;
 			active_construction.push_back(u);
 			i=pending_construction.erase(i);
-			ai.enqueueOrder(std::shared_ptr<Order>(new OrderModifyBuilding(b->identity.gid, assigned)));
+			// The launching construction order already carried this staffing.
 			ai.getUnitModule()->unreserve("RandomUpgradeRepairModule", WORKER, BUILD, u.requiredLevel+1, u.assigned);
 			ai.getUnitModule()->request("RandomUpgradeRepairModule", WORKER, BUILD, u.requiredLevel+1, assigned, b->identity.gid);
 			continue;
@@ -3362,7 +3362,11 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
   constructionRecord record;
   record.building=building->identity.gid; record.assigned=assigned; record.original=building->maxUnitWorking; record.is_repair=candidate.repair; record.requiredLevel=candidate.level;
   pending_construction.push_back(record);
-  ai.enqueueOrder(AIEngine::ObservationQueries::constructionOrder(*ai.game, *building,1,1));
+  // Staff the construction in the order that launches it. A separate staffing
+  // order sent once the site is observed raced completion: a short repair can
+  // finish within the AI order delay, leaving a site limit on a building with
+  // a smaller one (a level 0 barracks accepts none).
+  ai.enqueueOrder(AIEngine::ObservationQueries::constructionOrder(*ai.game, *building,int(assigned),int(record.original)));
   ai.getUnitModule()->reserve("RandomUpgradeRepairModule",WORKER,BUILD,candidate.level+1,assigned);
   reduce(freeWorkers.data(),candidate.level,assigned);
   countBuilding(*building);

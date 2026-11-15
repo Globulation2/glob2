@@ -227,7 +227,8 @@ class CliSmoke(unittest.TestCase):
         rows = [json.loads(line) for line in (output / "ai-decisions.jsonl").read_text().splitlines()]
         gated = [row for row in rows if row["gate_pause_ns"]]
         self.assertEqual(len(gated), 1)
-        self.assertEqual((gated[0]["player"], gated[0]["observed_tick"], gated[0]["scheduled_tick"]), (1, 16, 24))
+        # A decision observed at tick 16 is due DEFAULT_AI_ORDER_DELAY (14) ticks later.
+        self.assertEqual((gated[0]["player"], gated[0]["observed_tick"], gated[0]["scheduled_tick"]), (1, 16, 30))
         self.assertGreaterEqual(gated[0]["gate_pause_ns"], 40000000)
         for row in rows:
             self.assertEqual(sum(p["self_ns"] for p in row["phases"].values()) + row["unattributed_wall_ns"], row["wall_ns"])
