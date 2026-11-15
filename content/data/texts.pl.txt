@@ -5049,9 +5049,9 @@ Prestiż
 [stat prestige about]
 Prestiż kolonii, zdobywany dzięki budynkom najwyższego poziomu. Mecz z celem prestiżu kończy się po jego osiągnięciu.
 [stat prestige needed]
-Prestige needed to win
+Prestiż potrzebny do zwycięstwa
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+Prestiż, który kolonia musiałaby jeszcze zdobyć, aby wygrać prestiżem: tyle, by łączny prestiż meczu osiągnął cel i by wyprzedzić każdą inną ocalałą kolonię. Rejestrowany tylko wtedy, gdy mecz ma cel prestiżu.
 [stat band combat]
 Walka
 [stat band starvation]

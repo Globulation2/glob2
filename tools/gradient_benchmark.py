@@ -16,6 +16,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import re
 import shlex
 import shutil
 import statistics
@@ -108,9 +109,11 @@ def baseline_travel_header(source):
 
 def real_registry():
     """The built-in terrain count, which dispatch and strategic modes require."""
-    text = (ROOT / 'src/map/TerrainType.h').read_text()
-    start = text.index('TERRAIN_COUNT=') + len('TERRAIN_COUNT=')
-    return int(text[start:text.index(',', start)])
+    text = (ROOT / 'src/map/TerrainBuiltins.h').read_text()
+    match = re.search(r'TERRAIN_COUNT\s*=\s*TerrainType\((\d+)\)', text)
+    if not match:
+        raise ValueError('TERRAIN_COUNT not found in src/map/TerrainBuiltins.h')
+    return int(match.group(1))
 
 
 def cases(suite):

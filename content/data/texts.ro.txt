@@ -5049,9 +5049,9 @@ Prestigiu
 [stat prestige about]
 Prestigiul coloniei, obținut prin clădirile de nivel maxim. Un meci cu obiectiv de prestigiu se încheie când acesta este atins.
 [stat prestige needed]
-Prestige needed to win
+Prestigiu necesar pentru victorie
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+Prestigiul pe care colonia ar mai trebui să-l obțină pentru a câștiga prin prestigiu: suficient pentru ca prestigiul cumulat al meciului să atingă obiectivul și pentru a depăși orice altă colonie supraviețuitoare. Se înregistrează doar când meciul are un obiectiv de prestigiu.
 [stat band combat]
 Luptă
 [stat band starvation]

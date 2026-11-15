@@ -5017,9 +5017,9 @@ AI தொலை அளவீடு
 [stat prestige about]
 அதிகபட்ச நிலைக் கட்டிடங்கள் மூலம் குடியிருப்பு பெற்ற கௌரவம். கௌரவ இலக்கு உள்ள ஆட்டத்தில் அந்த இலக்கை அடைந்ததும் ஆட்டம் முடியும்.
 [stat prestige needed]
-Prestige needed to win
+வெல்லத் தேவையான கௌரவம்
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+கௌரவத்தால் வெல்ல குடியிருப்பு இன்னும் ஈட்ட வேண்டிய கௌரவம்: ஆட்டத்தின் மொத்தக் கௌரவம் இலக்கை அடையவும், எஞ்சியிருக்கும் மற்ற எல்லாக் குடியிருப்புகளையும் முந்தவும் போதுமான அளவு. ஆட்டத்தில் கௌரவ இலக்கு இருக்கும்போது மட்டுமே பதிவாகும்.
 [stat band combat]
 போர்
 [stat band starvation]

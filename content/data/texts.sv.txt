@@ -5049,9 +5049,9 @@ Prestigevärde
 [stat prestige about]
 Kolonins prestige, som tjänas in av byggnader på högsta nivå. En match med ett prestigemål slutar när det nås.
 [stat prestige needed]
-Prestige needed to win
+Prestige som krävs för att vinna
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+Den prestige kolonin fortfarande skulle behöva tjäna in för att vinna på prestige: tillräckligt för att matchens sammanlagda prestige ska nå målet, och för att gå om varje annan överlevande koloni. Registreras bara när matchen har ett prestigemål.
 [stat band combat]
 Strid
 [stat band starvation]

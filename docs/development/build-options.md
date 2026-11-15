@@ -304,11 +304,12 @@ an executable over static archives, and `-fPIC` would make GCC treat each global
 function as interposable and stop inlining it. `dev_fast` replaces every `-g`/`-O` with `-O0 -g1`; `perf=1` compiles
 C++ with `-O2 -g1` (`-O3` with `opt=3`) and links at the same level; `release=1`
 adds `-O3`, links with `-O3` and strips with `-s` (test binaries
-keep their symbols) unless `retain_symbols=1`. Release builds also optimize
-the C++ across files at link time: GCC (Linux, MinGW) with `-flto=auto`, clang with
-`-flto=thin` (on Linux only when `ld.lld` is installed, which then links; on macOS
-with `-object_path_lto` so the dSYM keeps its debug information), archiving with the
-compiler's own `ar` when CMake finds one. Perf builds leave LTO out, so they measure
+keep their symbols) unless `retain_symbols=1`. Linux release builds also optimize
+the C++ across files at link time: GCC with `-flto=auto`, clang with `-flto=thin`
+(only when `ld.lld` is installed, which then links), archiving with the compiler's
+own `ar` when CMake finds one. MinGW and macOS release builds do not use LTO: under
+it the MinGW test binaries crashed and macOS ThinLTO links failed with undefined
+symbols. Perf builds leave LTO out, so they measure
 a few percent slower than shipped binaries. QuickJS and openlibm compile at
 `-O2` in the optimized tiers and `-O0` otherwise. When ccache is installed it is
 the compiler launcher, with the managed cache directory and settings, and

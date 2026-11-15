@@ -570,20 +570,17 @@ if(GLOB2_MODE STREQUAL "perf")
 elseif(GLOB2_MODE STREQUAL "release")
   list(APPEND cxxflags -O3)
   list(APPEND linkflags -O3)
-  # Release builds optimize the C++ across files at link time: GCC (Linux, MinGW)
-  # with full LTO, clang with ThinLTO. QuickJS and openlibm stay out (their objects
+  # Linux release builds optimize the C++ across files at link time: GCC with full
+  # LTO, clang with ThinLTO through lld. QuickJS and openlibm stay out (their objects
   # take only CFLAGS). The archives hold LTO objects, so they are written with the
-  # compiler's own archiver where CMake found one (macOS's ar reads bitcode itself).
+  # compiler's own archiver where CMake found one. MinGW and macOS stay without LTO:
+  # under it the MinGW unit tests overflowed their stack and lost toolkit type
+  # identities, and macOS ThinLTO links left promoted string constants undefined.
   find_program(GLOB2_LLD_PROGRAM ld.lld)
   set(release_lto)
-  if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT darwin)
+  if(GLOB2_PLATFORM STREQUAL "linux" AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(release_lto -flto=auto)
-  elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND darwin)
-    set(release_lto -flto=thin)
-    # The dSYM reads its debug information from these objects.
-    file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/lto-objects")
-    list(APPEND linkflags "-Wl,-object_path_lto,${CMAKE_BINARY_DIR}/lto-objects")
-  elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND GLOB2_LLD_PROGRAM)
+  elseif(GLOB2_PLATFORM STREQUAL "linux" AND CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND GLOB2_LLD_PROGRAM)
     # GNU ld cannot read LLVM bitcode without a plugin; lld always can.
     set(release_lto -flto=thin)
     list(APPEND linkflags -fuse-ld=lld)

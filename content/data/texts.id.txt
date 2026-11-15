@@ -5049,9 +5049,9 @@ Prestise
 [stat prestige about]
 Prestise koloni, diperoleh dari bangunan tingkat tertinggi. Pertandingan dengan target prestise berakhir saat target tercapai.
 [stat prestige needed]
-Prestige needed to win
+Prestise yang dibutuhkan untuk menang
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+Prestise yang masih harus diperoleh koloni untuk menang lewat prestise: cukup agar gabungan prestise pertandingan mencapai target, dan untuk melampaui setiap koloni lain yang masih bertahan. Hanya dicatat jika pertandingan memiliki target prestise.
 [stat band combat]
 Pertempuran
 [stat band starvation]

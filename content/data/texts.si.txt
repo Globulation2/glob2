@@ -5049,9 +5049,9 @@ Ugled
 [stat prestige about]
 Ugled kolonije, pridobljen z zgradbami najvišje stopnje. Tekma s ciljem ugleda se konča, ko je cilj dosežen.
 [stat prestige needed]
-Prestige needed to win
+Ugled, potreben za zmago
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+Ugled, ki bi ga morala kolonija še pridobiti za zmago z ugledom: dovolj, da skupni ugled tekme doseže cilj, in da prehiti vsako drugo preživelo kolonijo. Beleži se le, če ima tekma cilj ugleda.
 [stat band combat]
 Boj
 [stat band starvation]

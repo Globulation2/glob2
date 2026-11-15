@@ -32,7 +32,7 @@ Prefer a forward declaration or a small leaf header over including a wide one, a
 keep simulation headers (`src/map`, `src/unit`, `src/building`, `src/team`,
 `src/game`, `src/engine/sim`, `src/resource`, `src/field`) free of rendering, HUD,
 UI and the full SDL umbrella. Hot per-cell accessors stay inline in their headers:
-only native release builds use LTO, so dev, perf, mobile and browser builds
+only Linux release builds use LTO, so every other build
 inline only what a translation unit can see.
 
 Team, building and unit code reaches its game through `Team::ctx`

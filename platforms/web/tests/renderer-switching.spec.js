@@ -18,8 +18,13 @@ async function choose(page,label) {
   if(label==='Programmable GL')await requirePresentationWebGL(page);
   await settingsPersisted(page);
   const before={generation:await generation(page),loop:(await state(page)).loop};
-  await clickControl(page,'graphics.renderer');
-  await clickByLabel(page,/popup/,label);
+  // A click that lands while the settings list is still settling can leave the
+  // popup closed; open it again rather than wait out the label poll.
+  for(let attempt=0;;attempt++) {
+    await clickControl(page,'graphics.renderer');
+    try {await clickByLabel(page,/popup/,label,{timeout:15000});break;}
+    catch(error){if(attempt>=2)throw error;}
+  }
   // In threaded builds FS belongs to the application worker. The requested
   // choice alone is also insufficient: a failed switch retains that choice.
   // Surface generation advances only after successful transaction commit.
