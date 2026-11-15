@@ -1,6 +1,7 @@
 const {waitForMainMenu}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const {clickMainMenu,gameURL,clickCustomGameStart,clickControl,controlBox}=require('./main-menu');
+const {comparePresentedRGB}=require('./pixels');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>(await state(page)).screen).toContain(name);
 
@@ -54,6 +55,12 @@ test('desktop right-click cancels a selection and cycles sidebar views without a
   await clickMainMenu(page,'custom');await screen(page,'CustomGameScreen');
   await clickCustomGameStart(page);
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(25);
+  // Take the panel reference only once streamed artwork has stopped upgrading
+  // the building sprites the comparisons below look at.
+  await expect.poll(async()=>{
+    const s=await state(page);
+    return s.artworkReady&&!Object.values(s.assets||{}).some(v=>v==='pending'||v==='downloading');
+  },{timeout:120000}).toBe(true);
   await page.evaluate(()=>{
     window.canvasContextMenus=[];
     document.addEventListener('contextmenu',event=>{
@@ -63,20 +70,25 @@ test('desktop right-click cancels a selection and cycles sidebar views without a
   const panel={x:1042,y:185,width:150,height:240};
   await page.mouse.move(400,350);
   const construction=await page.screenshot({clip:panel});
+  // Another view repaints most of the panel and a selected tool rings one icon
+  // (several percent); presentation can still shift a few pixels between frames.
+  const showsConstruction=async()=>{
+    const {affectedPixels}=await comparePresentedRGB(page,construction,await page.screenshot({clip:panel}));
+    return affectedPixels<panel.width*panel.height/100;
+  };
   await page.mouse.click(400,350,{button:'right',delay:80});
-  await expect.poll(async()=>(await page.screenshot({clip:panel})).equals(construction)).toBe(false);
+  await expect.poll(showsConstruction).toBe(false);
   const flags=await page.screenshot({clip:panel});
-  expect(flags.equals(construction)).toBe(false);
   await info.attach('right-click-flags',{body:flags,contentType:'image/png'});
   for(let i=0;i<3;i++)await page.mouse.click(400,350,{button:'right',delay:80});
-  await expect.poll(async()=>(await page.screenshot({clip:panel})).equals(construction)).toBe(true);
+  await expect.poll(showsConstruction).toBe(true);
   // Select the first building tool, then cancel it with a secondary click.
   await page.locator('#canvas').click({position:{x:1075,y:205},delay:80});
   // Confirm the tool is visibly selected before sending the cancelling click.
   // Input processing and screenshot capture can land on different frames.
-  await expect.poll(async()=>(await page.screenshot({clip:panel})).equals(construction)).toBe(false);
+  await expect.poll(showsConstruction).toBe(false);
   await page.mouse.click(400,350,{button:'right',delay:80});
-  await expect.poll(async()=>(await page.screenshot({clip:panel})).equals(construction)).toBe(true);
+  await expect.poll(showsConstruction).toBe(true);
   const menus=await page.evaluate(()=>window.canvasContextMenus);
   expect(menus.length).toBeGreaterThan(0);
   expect(menus.every(Boolean)).toBe(true);
