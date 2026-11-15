@@ -835,13 +835,24 @@ RELAY_TEST_SOURCES = ('relay/RelayTestMain.cpp', 'relay/RelayTicketTest.cpp', 'r
 
 # Vendored texture block encoders, compiled into libgag; see third_party/README.md.
 # The SSE4.1 copy of them, which native x86 builds compile with -msse4.1 (CMakeLists.txt).
-SSE41_SOURCES = ('libs/gag/src/EtcpakSse41.cpp',)
+SSE41_SOURCES = ('libs/gag/src/EtcpakSse41.cpp', 'libs/gag/src/AstcencSse41.cpp', 'libs/gag/src/AstcencSse41Physical.cpp')
 ETCPAK_SOURCES = ('third_party/etcpak/etcpak/ProcessDxtc.cpp', 'third_party/etcpak/etcpak/ProcessRGB.cpp',
                   'third_party/etcpak/etcpak/Tables.cpp', 'third_party/etcpak/etcpak/Dither.cpp')
+# ARM's ASTC encoder (astcenc's core library), for render devices that sample
+# ASTC 4x4. The browser build leaves it out with AstcEncoder.cpp.
+ASTCENC_SOURCES = tuple('third_party/astcenc/astcenc/astcenc_' + name + '.cpp' for name in (
+    'averages_and_directions', 'block_sizes', 'color_quantize', 'color_unquantize', 'compress_symbolic',
+    'compute_variance', 'decompress_symbolic', 'diagnostic_trace', 'entry', 'find_best_partitioning',
+    'ideal_endpoints_and_weights', 'image', 'integer_sequence', 'mathlib', 'mathlib_softfloat', 'partition_tables',
+    'percentile_tables', 'pick_best_endpoint_format', 'quantization', 'symbolic_physical', 'weight_align',
+    'weight_quant_xfer_tables'))
 
 GAG_SOURCES = (
     'AssetLoader.cpp',
     'EtcpakSse41.cpp',
+    'AstcEncoder.cpp',
+    'AstcencSse41.cpp',
+    'AstcencSse41Physical.cpp',
     'AssetVideo.cpp',
     'AssetVideoDecoder.cpp',
     'PackedSpriteFrame.cpp',
@@ -945,6 +956,7 @@ def mobile_sources(target):
         files += IOS_SOURCES
     files += ['libs/gag/src/' + name for name in GAG_SOURCES]
     files += ETCPAK_SOURCES
+    files += ASTCENC_SOURCES
     files += ['libs/usl/src/' + name for name in USL_SOURCES]
     files += MOBILE_SOURCES
     if target == 'android':
@@ -956,7 +968,9 @@ def mobile_sources(target):
 # without native transports and recording, plus the browser platform layer.
 WEB_EXCLUDED_CLIENT_SOURCES = ('audio/VoiceRecorder.cpp', 'net/NetTransport.cpp', 'net/TcpTransport.cpp',
                                'net/WssTransport.cpp', 'net/LanIdentity.cpp', 'online/HttpFetch.cpp')
-WEB_EXCLUDED_GAG_SOURCES = ('ApplicationHost.cpp', 'RecordingEncoder.cpp', 'RecordingSession.cpp')
+# The browser renders through WebGL 2, never SDL GPU, so it needs no ASTC encoder.
+WEB_EXCLUDED_GAG_SOURCES = ('ApplicationHost.cpp', 'RecordingEncoder.cpp', 'RecordingSession.cpp',
+                            'AstcEncoder.cpp', 'AstcencSse41.cpp', 'AstcencSse41Physical.cpp')
 WEB_SOURCES = ('platforms/web/HiveBrowserHost.cpp', 'platforms/web/VoiceRecorder.cpp',
                'platforms/web/ApplicationHost.cpp', 'platforms/web/RecordingPlatform.cpp',
                'platforms/web/NetTransport.cpp', 'platforms/web/Launcher.cpp', 'platforms/web/HttpFetch.cpp',
@@ -1071,4 +1085,5 @@ INCLUDE_DIRECTORIES = (
     'src/scripting/sgsl',
     'third_party/nlohmann-json/include',
     'third_party/etcpak',
+    'third_party/astcenc',
 )

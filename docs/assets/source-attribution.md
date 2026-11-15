@@ -35,6 +35,10 @@ Texture block compression (BC3 and ETC2 encoding of high-resolution textures):
 etcpak 2.1 by Bartosz Taudul and contributors (BSD 3-Clause).
 See content/data/etcpak-license.txt and third_party/README.md.
 
+ASTC texture compression (ASTC 4x4 encoding of high-resolution textures for phones):
+astcenc 5.7.1 by Arm Limited (Apache License 2.0).
+See content/data/astcenc-license.txt and third_party/README.md.
+
 Runtime image codecs:
 SDL_image (zlib license) and libwebp (BSD license and patent grant).
 See content/data/image-codec-licenses.txt for notices shipped with runtime assets.

@@ -383,8 +383,9 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
                 // the RGBA levels; a chain that kept only blocks is prepared
                 // again for a device that cannot sample them.
                 const auto blocksFor = [this](AssetImage::BlockCompression prepared) {
-                    const auto format = prepared == AssetImage::BlockCompression::PremultipliedBC3
-                        ? TextureCompression::BC3 : TextureCompression::Uncompressed;
+                    const auto format = prepared == AssetImage::BlockCompression::PremultipliedBC3 ? TextureCompression::BC3
+                        : prepared == AssetImage::BlockCompression::PremultipliedASTC4x4 ? TextureCompression::ASTC4x4
+                        : TextureCompression::Uncompressed;
                     return presentationDevice->capabilities().supports(format) ? format : TextureCompression::Uncompressed;
                 };
                 auto blockFormat = surface->preparedMips.empty() || surface->preparedMips.front().compressed.empty()
@@ -395,7 +396,9 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
                     AssetImage prepared(nullptr);
                     prepared.surface = SDL_ConvertSurface(pixels, SDL_PIXELFORMAT_ARGB8888);
                     if (!prepared.surface) throw std::runtime_error(SDL_GetError());
-                    prepared.prepareUpload(true);
+                    // RGBA levels only: block encoding (ASTC especially) belongs
+                    // on asset workers, never here on the render thread.
+                    prepared.prepareUpload(true, false);
                     surface->preparedUploadPixels = std::move(prepared.uploadPixels);
                     surface->preparedMips = std::move(prepared.mips);
                     surface->preparedCompression = prepared.compression;
