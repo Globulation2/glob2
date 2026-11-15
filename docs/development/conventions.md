@@ -17,6 +17,12 @@ Diagnostics use `std::cerr`; there is no logging facility to target.
 Windows headers define `near`, `far` and `small` as macros, so never name an identifier
 after one: mingw expands `int near[3]` to `int [3]`, which then fails as a structured
 binding declaration, and the error points at the syntax rather than at the macro.
+Two libstdc++ traps surfaced under MinGW release LTO. `std::regex` compiles a counted
+repeat such as `[0-9a-f]{64}` into that many copies and recurses once per copy, which can
+overflow Windows' 2 MiB main stack; check fixed-shape identifiers with
+`libs/gag/include/TextShape.h` instead. Without merged typeinfo names, `std::type_index`
+ordering is not a strict weak order between anonymous-namespace and other types, so key
+type tables with `std::unordered_map`, never `std::map` or `std::set`.
 
 For unused-include cleanup, generate `compile_commands.json` and use
 `tools/remove-unused-includes.py`; do not apply blind bulk fixes. Rebuild client,
@@ -32,7 +38,7 @@ Prefer a forward declaration or a small leaf header over including a wide one, a
 keep simulation headers (`src/map`, `src/unit`, `src/building`, `src/team`,
 `src/game`, `src/engine/sim`, `src/resource`, `src/field`) free of rendering, HUD,
 UI and the full SDL umbrella. Hot per-cell accessors stay inline in their headers:
-only Linux and macOS release builds use LTO, so every other build
+only native release builds use LTO, so every other build
 inline only what a translation unit can see.
 
 Team, building and unit code reaches its game through `Team::ctx`
