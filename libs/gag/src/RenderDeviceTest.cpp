@@ -31,9 +31,9 @@ class DelayedDevice final : public RenderDevice
     struct Pending { RenderSubmission submission; RenderFrame frame; };
     std::deque<Pending> pending;
     std::uint64_t epoch = 1, issued = 0, completed = 0;
-    bool failSubmission=false, offscreen=false, bc3=false;
+    bool failSubmission=false, offscreen=false, bc3=false, astc=false;
     std::vector<CaptureRequest> captureRequests;
-    RenderDeviceCapabilities capabilities() const override { RenderDeviceCapabilities c;c.offscreenTargets=offscreen;c.bc3Textures=bc3;return c; }
+    RenderDeviceCapabilities capabilities() const override { RenderDeviceCapabilities c;c.offscreenTargets=offscreen;c.bc3Textures=bc3;c.astc4x4Textures=astc;return c; }
     RenderSubmission submit(RenderFrame frame) override
     {
         if(failSubmission)throw std::runtime_error("Injected device loss");
@@ -176,12 +176,15 @@ TEST_SUITE("RenderDevice")
 
     TEST_CASE("compressed revisions keep only the blocks of levels at least 4x4 and charge them")
     {
+      // BC3 and ASTC 4x4 share the 16-byte 4x4 block size and these rules.
+      for(const auto format:{TextureCompression::BC3,TextureCompression::ASTC4x4}) {
+        CAPTURE(int(format));
         auto source=surface(6,8);paint(source.get(),255,0,0);
         // An 8x16 chain: 8x16, 4x8 carry blocks; 2x4 and 1x2 cannot, and 1x1 ends it.
         std::array<std::vector<std::byte>,5> blocks{std::vector<std::byte>(128,std::byte{1}),std::vector<std::byte>(32,std::byte{2}),{},{},{}};
         std::array<RenderMipLevel,5> levels{{{8,16},{4,8},{2,4},{1,2},{1,1}}};
-        for(std::size_t i=0;i<levels.size();++i){levels[i].compression=TextureCompression::BC3;levels[i].blocks=blocks[i];}
-        TextureDescriptor descriptor;descriptor.compression=TextureCompression::BC3;
+        for(std::size_t i=0;i<levels.size();++i){levels[i].compression=format;levels[i].blocks=blocks[i];}
+        TextureDescriptor descriptor;descriptor.compression=format;
         RenderResources resources(160);auto handle=resources.create(source.get(),3,descriptor,levels);REQUIRE(handle);
         auto revision=resources.snapshot(handle);REQUIRE(revision);
         CHECK_FALSE(revision->pixels);CHECK(revision->mips.empty());REQUIRE(revision->blocks.size()==2);
@@ -194,25 +197,38 @@ TEST_SUITE("RenderDevice")
         blocks[1].pop_back();levels[1].blocks=blocks[1];
         CHECK_THROWS_AS(resources.create(source.get(),3,descriptor,levels),std::invalid_argument);
         CHECK(resources.retainedBytes()==0);
+        // A level in the other block format cannot join the chain.
+        blocks[1].push_back(std::byte{2});levels[1].blocks=blocks[1];
+        levels[1].compression=format==TextureCompression::BC3?TextureCompression::ASTC4x4:TextureCompression::BC3;
+        CHECK_THROWS_AS(resources.create(source.get(),3,descriptor,levels),std::invalid_argument);
+      }
     }
 
     TEST_CASE("device adapters store prepared blocks only for devices that sample them")
     {
         auto original=surface(4,4);paint(original.get(),255,0,0);
         std::vector<std::byte> base(64,std::byte{255}),half(16,std::byte{255}),last(4,std::byte{255}),blocks(16,std::byte{7});
-        std::array<RenderMipLevel,3> levels{{{4,4,SDL_PIXELFORMAT_RGBA32,base,TextureCompression::BC3,blocks},
-            {2,2,SDL_PIXELFORMAT_RGBA32,half},{1,1,SDL_PIXELFORMAT_RGBA32,last}}};
-        for(const bool bc3:{false,true}) {
-            CAPTURE(bc3);DelayedDevice device;device.bc3=bc3;RenderResources resources;
+        for(const auto format:{TextureCompression::BC3,TextureCompression::ASTC4x4}) {
+          std::array<RenderMipLevel,3> levels{{{4,4,SDL_PIXELFORMAT_RGBA32,base,format,blocks},
+              {2,2,SDL_PIXELFORMAT_RGBA32,half},{1,1,SDL_PIXELFORMAT_RGBA32,last}}};
+          // Neither format, the other one only, the chain's one, and both.
+          for(const auto [bc3,astc]:{std::pair{false,false},{true,false},{false,true},{true,true}}) {
+            CAPTURE(int(format));CAPTURE(bc3);CAPTURE(astc);
+            DelayedDevice device;device.bc3=bc3;device.astc=astc;RenderResources resources;
+            const bool sampled=format==TextureCompression::BC3?bc3:astc;
             auto backend=makeDeviceRenderBackend(device,resources,2,1);
             backend->blitMipmapped(original.get(),original.get(),1,levels,{0,0,4,4},{0,0,2,1},255);backend->present();
             REQUIRE(device.pending.size()==1);const auto &texture=device.pending.front().frame.packets.at(0).texture;
-            CHECK(texture->descriptor.compression==(bc3?TextureCompression::BC3:TextureCompression::Uncompressed));
-            CHECK(bool(texture->pixels)==!bc3);CHECK(texture->blocks.size()==(bc3?1u:0u));
-            CHECK(texture->bytes==(bc3?16u:84u));
+            CHECK(texture->descriptor.compression==(sampled?format:TextureCompression::Uncompressed));
+            CHECK(bool(texture->pixels)==!sampled);CHECK(texture->blocks.size()==(sampled?1u:0u));
+            CHECK(texture->bytes==(sampled?16u:84u));
+          }
         }
-        // A chain that kept only its blocks cannot reach a device without them.
-        levels[0].pixels={};DelayedDevice device;RenderResources resources;
+        std::array<RenderMipLevel,3> levels{{{4,4,SDL_PIXELFORMAT_RGBA32,base,TextureCompression::ASTC4x4,blocks},
+            {2,2,SDL_PIXELFORMAT_RGBA32,half},{1,1,SDL_PIXELFORMAT_RGBA32,last}}};
+        // A chain that kept only its ASTC blocks cannot reach a device without
+        // them, even one that samples BC3.
+        levels[0].pixels={};DelayedDevice device;device.bc3=true;RenderResources resources;
         auto backend=makeDeviceRenderBackend(device,resources,2,1);
         CHECK_THROWS_AS(backend->blitMipmapped(original.get(),original.get(),1,levels,{0,0,4,4},{0,0,2,1},255),std::invalid_argument);
     }
