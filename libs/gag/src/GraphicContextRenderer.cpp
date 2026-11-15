@@ -513,6 +513,7 @@ void GraphicContext::recoverPresentationDevice()
 #else
     else presentationDevice = makeWebGPURenderDevice(window);
 #endif
+    selectDeviceBlockCompression(*presentationDevice);
     deviceRenderer = makeDeviceRenderBackend(*presentationDevice, *deviceResources, getW(), getH());
     renderer = deviceRenderer.get(); renderer->clip(&clipRect); resetRenderPacing();
 }

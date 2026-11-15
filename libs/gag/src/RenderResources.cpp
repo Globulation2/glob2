@@ -34,6 +34,39 @@ TextureSnapshot RenderResources::copy(TextureHandle handle, SDL_Surface *source,
     std::vector<OwnedRenderMipLevel> mips;
     std::shared_ptr<SDL_Surface> authoredBase;
     std::size_t mipBytes = 0;
+    if (descriptor.compression != TextureCompression::Uncompressed) {
+        // Keep only the blocks: a quarter of the RGBA chain, and the device
+        // restores its texture from them after trimming or context loss.
+        if (mipLevels.empty() || mipLevels.size() > 32) throw std::invalid_argument("Compressed texture requires authored levels");
+        const int baseW = mipLevels.front().width, baseH = mipLevels.front().height;
+        if (baseW < source->w || baseH < source->h) throw std::invalid_argument("Authored base does not cover source pixels");
+        std::vector<std::vector<std::byte>> blocks;
+        std::size_t bytes = 0;
+        int expectedW = baseW, expectedH = baseH;
+        for (const auto &level : mipLevels) {
+            if (level.width < 4 || level.height < 4) break;
+            if (level.width != expectedW || level.height != expectedH || level.compression != descriptor.compression ||
+                level.blocks.size() != compressedLevelBytes(level.width, level.height))
+                throw std::invalid_argument("Invalid compressed level dimensions or blocks");
+            bytes += level.blocks.size();
+            expectedW = std::max(1, expectedW / 2); expectedH = std::max(1, expectedH / 2);
+        }
+        if (bytes == 0) throw std::invalid_argument("Compressed texture requires a 4x4 base level");
+        if (bytes > Budget::classLimits[category] - budget->classes[category] || bytes > budget->limit - budget->bytes) return {};
+        for (const auto &level : mipLevels) {
+            if (level.width < 4 || level.height < 4) break;
+            blocks.emplace_back(level.blocks.begin(), level.blocks.end());
+        }
+        descriptor.width = baseW; descriptor.height = baseH; descriptor.format = SDL_PIXELFORMAT_RGBA32;
+        descriptor.mips = TextureDescriptor::Mips::Generated; descriptor.alpha = TextureDescriptor::Alpha::Premultiplied;
+        auto accounting = budget;
+        budget->bytes += bytes; budget->classes[category] += bytes;
+        // Without pixels, the revision's own lifetime releases its charge.
+        return TextureSnapshot(new TextureRevision{handle, descriptor, revision, nullptr, bytes, {}, std::move(blocks)},
+            [accounting, bytes, category](const TextureRevision *value) {
+                accounting->bytes -= bytes; accounting->classes[category] -= bytes; delete value;
+            });
+    }
     if (!mipLevels.empty()) {
         if (mipLevels.size() > 32) throw std::invalid_argument("Too many authored mip levels");
         int expectedW = mipLevels.front().width, expectedH = mipLevels.front().height;

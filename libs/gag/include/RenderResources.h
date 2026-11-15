@@ -22,12 +22,25 @@ struct BufferHandle
     explicit operator bool() const { return generation != 0; }
     bool operator==(const BufferHandle &) const = default;
 };
+// GPU block formats a device may sample directly. Both store 16 bytes for
+// each 4x4 texels; blocks hold premultiplied colour.
+enum class TextureCompression : unsigned char { Uncompressed, BC3, ASTC4x4 };
+//! Bytes of one level's 4x4 blocks.
+constexpr std::size_t compressedLevelBytes(int width, int height)
+{
+    return std::size_t((width + 3) / 4) * std::size_t((height + 3) / 4) * 16;
+}
 // Borrowed tightly packed CPU-authored mip data, including level zero.
 struct RenderMipLevel
 {
     int width = 0, height = 0;
     SDL_PixelFormat format = SDL_PIXELFORMAT_RGBA32;
     std::span<const std::byte> pixels;
+    // Optional: the level's premultiplied 4x4 blocks in `compression`. A chain
+    // whose leading levels all carry blocks (each level at least 4x4) may be
+    // stored compressed; pixels may then be empty for those levels.
+    TextureCompression compression = TextureCompression::Uncompressed;
+    std::span<const std::byte> blocks;
 };
 struct OwnedRenderMipLevel
 {
@@ -51,6 +64,9 @@ struct TextureDescriptor
     bool depthAttachment = false;
     enum class BudgetClass { General, SkinAtlas, TerrainPage, TerrainMask };
     BudgetClass budgetClass = BudgetClass::General;
+    // Not Uncompressed: the revision holds blocks instead of pixels (always
+    // Alpha::Premultiplied, Mips::Generated, never a render target).
+    TextureCompression compression = TextureCompression::Uncompressed;
 };
 enum class GeometryLayout { Primitive32, World48, Skin40, SkinRig72 };
 struct GeometryRevision
@@ -75,6 +91,9 @@ struct TextureRevision
     std::size_t bytes = 0;
     // Levels one and higher; pixels owns the padded RGBA32 level zero.
     std::vector<OwnedRenderMipLevel> mips;
+    // Compressed revisions only, with null pixels and no mips: each level's
+    // blocks, level zero first, ending before the first level under 4x4.
+    std::vector<std::vector<std::byte>> blocks;
 };
 using TextureSnapshot = std::shared_ptr<const TextureRevision>;
 

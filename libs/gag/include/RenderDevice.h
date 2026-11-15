@@ -14,6 +14,13 @@ struct RenderDeviceCapabilities
     int maximumTextureSize = 0;
     bool mesh3D = false, torus = false, skinMaterials = false, terrainComposition = false;
     bool directTerrain = false;
+    // Block formats the device samples directly (see TextureCompression).
+    bool bc3Textures = false, astc4x4Textures = false;
+    bool supports(TextureCompression format) const
+    {
+        return format == TextureCompression::Uncompressed || (format == TextureCompression::BC3 && bc3Textures) ||
+            (format == TextureCompression::ASTC4x4 && astc4x4Textures);
+    }
 };
 struct RenderSubmission
 {

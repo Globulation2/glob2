@@ -138,6 +138,13 @@ int GraphicContext::maximumTextureSize() const
 	// Storage for the static globals declared in graphic_context_private.h.
 	GraphicContext *_gc = NULL;
 	SDL_PixelFormatDetails _glFormat = *SDL_GetPixelFormatDetails(SDL_PIXELFORMAT_ARGB8888);
+	void selectDeviceBlockCompression(const RenderDevice &device)
+	{
+		// The device honours GLOB2_TEXTURE_COMPRESSION when it reports formats.
+		// No ASTC encoder exists yet, so ASTC-only devices sample RGBA.
+		AssetImage::highResolutionCompression = device.capabilities().bc3Textures
+			? AssetImage::BlockCompression::PremultipliedBC3 : AssetImage::BlockCompression::Uncompressed;
+	}
 	const bool EXPERIMENTAL = false;
 
 #ifdef HAVE_OPENGL
@@ -1113,6 +1120,7 @@ int GraphicContext::maximumTextureSize() const
 #else
                     else presentationDevice = makeSDLGPUDevice(window, drawableW, drawableH, rendererShaderDirectory());
 #endif
+                    selectDeviceBlockCompression(*presentationDevice);
                     deviceResources = std::make_unique<RenderResources>();
                     deviceRenderer = makeDeviceRenderBackend(*presentationDevice, *deviceResources, logicalW, logicalH);
                     renderer = deviceRenderer.get();

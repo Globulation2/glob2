@@ -344,6 +344,10 @@ namespace GAGCore
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+                    // A render device may have kept only premultiplied blocks,
+                    // which this context never uploads: prepare the chain again.
+                    if (!preparedMips.empty() && preparedMips.front().pixels.empty())
+                        std::vector<AssetImage::Mip>().swap(preparedMips);
                     if ((preparedUploadRevision != pixelRevision || preparedMips.empty()) &&
                         sdlsurface->w > 0 && sdlsurface->h > 0 &&
                         sdlsurface->pitch == sdlsurface->w * 4 &&
