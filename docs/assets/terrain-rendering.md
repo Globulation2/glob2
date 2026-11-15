@@ -570,7 +570,10 @@ for recipes and bookkeeping plus density-dependent pixel storage. Increasing it
 can retain more detail but does not remove the need to handle oversized views.
 If the complete view cannot retain all of its textures simultaneously, but its
 CPU pages and one texture upload fit, the cache keeps those CPU pages and retires
-textures in drawing order as needed. This preserves the selected sampling and
+textures in drawing order as needed. Before retiring a texture the frame draws,
+an upload retires idle textures and then drops idle pages that hold only pixels
+(such as HD pages parked before a zoom out); when every remaining page is drawn
+this frame, the page waits for a later frame instead of failing it. This preserves the selected sampling and
 avoids repeated boundary composition near page-alignment budget thresholds.
 Only a view whose CPU pages and one upload cannot fit uses composition streaming.
 First-time composition still evaluates native terrain before reduction; this
