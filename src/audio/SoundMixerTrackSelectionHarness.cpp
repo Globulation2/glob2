@@ -388,9 +388,12 @@ TEST_SUITE("SoundMixerTrackSelection")
 		glob2test::ToolkitScope toolkit;
 		GAGCore::Toolkit::getFileManager()->addDir(glob2test::sourceRoot().string());
 		REQUIRE(SDL_InitSubSystem(SDL_INIT_AUDIO));
+		// The case plays music for a fixed wall-clock time. Unattended runs (the
+		// perf lane) take a short sample that fits the runner's hang guard; the
+		// documented ten-minute soak sets GLOB2_AUDIO_STRESS_SECONDS=600.
 		const char *duration = std::getenv("GLOB2_AUDIO_STRESS_SECONDS");
 		const unsigned seconds =
-			duration ? unsigned(std::clamp(std::atoi(duration), 1, 3600)) : 600;
+			duration ? unsigned(std::clamp(std::atoi(duration), 1, 3600)) : 30;
 		{
 			SoundMixer mixer(255, 255, false);
 			REQUIRE(mixer.enabled());

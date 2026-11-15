@@ -55,7 +55,9 @@ not establish that an audio track contains music. Use distinct Playwright
 `--output` directories for concurrent runs.
 
 For a native ten-minute supply run, use the benchmark directly (the ordinary test
-runner excludes `[benchmark]` cases). `GLOB2_AUDIO_THREAD_PRIORITY=0` disables the
+runner excludes `[benchmark]` cases). Without `GLOB2_AUDIO_STRESS_SECONDS` the case
+plays a 30-second sample, which is what the perf lane measures; set it for a longer
+soak. `GLOB2_AUDIO_THREAD_PRIORITY=0` disables the
 best-effort priority promotion. The test chooses moods every two seconds and emits
 `AUDIO_STRESS` queue, starvation, render, callback and response measurements:
 

@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include "Building.h"
+#include "GradientFixture.h"
 
 namespace {
 using Clock = std::chrono::steady_clock;
@@ -73,7 +74,7 @@ TEST_CASE("unused definitions do not enlarge simulation work [benchmark]")
 TEST_CASE("private stock routing measures warm fields invalidation and working sets [benchmark]")
 {
     glob2test::HeadlessGlobals globals;
-    std::printf("catalog_routes,width,budget_fields,working_fields,repeat,phase,ns,cell_bytes,digest\n");
+    std::printf("catalog_routes,width,budget_fields,working_fields,repeat,phase,ns,cell_bytes,digest,pending\n");
     for (int shift : {7,9}) for (int multiple : {1,2,4,8})
     {
         glob2test::HeadlessGame world({.wDec=shift,.hDec=shift,.loadDefaultRace=true,.header=true});
@@ -98,23 +99,43 @@ TEST_CASE("private stock routing measures warm fields invalidation and working s
             b->setMaterial(WOOD, 10); consumers.push_back(b);
         }
         world.team->createLists();
+        // Fields publish through the gradient pipeline: a cold or evicted read
+        // enrolls a request and returns null until a later boundary publishes
+        // it. Advance just past the header's delay so requests made by one
+        // pass serve the next one, well inside the 128-tick age refresh.
+        const unsigned settleBoundaries=world.game.gameHeader.getBuildingGradientDelay()+2;
+        const auto settle=[&] {
+            for(unsigned boundary=0;boundary<settleBoundaries;++boundary) {
+                ++world.game.stepCounter;
+                map.routing().advanceGradientPipeline();
+                map.routing().stagePeriodicGradientPreparation();
+                glob2test::prepareGradientBoundary(world.game);
+            }
+        };
+        for(auto* consumer : consumers) map.routing().getMaterialGradientSlot(0,WOOD,MovementAccess::Land,false,consumer);
+        settle();
         for (int repeat=0;repeat<3;++repeat) for (int phase=0;phase<3;++phase)
         {
-            // A revision models depletion/replenishment. Warm passes use the
-            // same tick so age expiry does not obscure working-set effects.
+            // A revision models depletion/replenishment. All passes fit in
+            // one age window so expiry does not obscure working-set effects.
             if(phase==0 || phase==2) map.routing().dirtyMarketGradientsSlot(0,WOOD);
             if(phase==2) consumers.front()->setMaterial(WOOD, 0);
-            Uint64 digest=0; const auto start=Clock::now();
+            Uint64 digest=0; int pending=0; const auto start=Clock::now();
             for(auto* consumer : consumers)
             {
                 const auto* field=map.routing().getMaterialGradientSlot(0,WOOD,MovementAccess::Land,false,consumer);
+                if(!field) { ++pending; continue; }
                 digest+=field[map.coordToIndex(consumer->posX,consumer->posY)];
             }
             const auto duration=elapsed(start);
             CHECK(map.routing().materialRoutingCacheBytes()<=fieldBytes*budgetFields);
-            std::printf("catalog_routes,%d,%d,%d,%d,%d,%lld,%llu,%llu\n",map.getW(),budgetFields,fields,repeat,phase,duration,
-                static_cast<unsigned long long>(map.routing().materialRoutingCacheBytes()),static_cast<unsigned long long>(digest));
+            // Working sets within the budget stay warm; larger ones evict and
+            // report their cold reads as pending.
+            if(fields<=budgetFields) CHECK(pending==0);
+            std::printf("catalog_routes,%d,%d,%d,%d,%d,%lld,%llu,%llu,%d\n",map.getW(),budgetFields,fields,repeat,phase,duration,
+                static_cast<unsigned long long>(map.routing().materialRoutingCacheBytes()),static_cast<unsigned long long>(digest),pending);
             if(phase==2) consumers.front()->setMaterial(WOOD, 10);
+            settle();
         }
     }
 }

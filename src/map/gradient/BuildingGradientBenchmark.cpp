@@ -9,6 +9,7 @@
 #include "Version.h"
 #include "MapInternal.h"
 #include "GlobalContainer.h"
+#include "GradientFixture.h"
 #include <chrono>
 #include <cstdio>
 #include <vector>
@@ -44,7 +45,9 @@ TEST_CASE("building and resource preparation kernels [benchmark][pathfinding]")
         for(int swim : {0,3}) for(int kind=0;kind<5;++kind)
         {
             auto* building=kind==0 ? inn : kind==1 ? clear : combat;
-            if(kind<3) REQUIRE(map.routing().buildingGradient(building,movementAccessFromLegacy(swim)));
+            // Building fields publish through the gradient pipeline; drive its
+            // boundaries until the first generation is ready (awaitGradient).
+            if(kind<3) glob2test::awaitGradient(world.game,[&] { return map.routing().buildingGradient(building,movementAccessFromLegacy(swim)); });
             const auto prepare=[&] {
                 if(kind<3) map.routing().updateGlobalGradient(building,movementAccessFromLegacy(swim));
                 else map.routing().seedMaterialGradient(0,WHEAT,swim,resource.data(),kind==4);
@@ -161,8 +164,9 @@ TEST_CASE("footprint preparation diagnostic phases [benchmark][pathfinding]")
         const int iterations=std::max(8,1048576/size);
         for(int swim : {0,3})
         {
-            REQUIRE(map.routing().buildingGradient(inn,movementAccessFromLegacy(swim)));
-            Uint16* gradient=inn->globalGradient[swim];
+            // The published field lives in the inn's route slot for this access.
+            Uint16* gradient=const_cast<Uint16*>(glob2test::awaitGradient(world.game,
+                [&] { return map.routing().buildingGradient(inn,movementAccessFromLegacy(swim)); }));
             const Uint16 gid=inn->gid;
             const Uint32 teamMask=inn->owner->me;
             BuildingGradientSearch search;

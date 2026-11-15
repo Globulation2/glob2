@@ -833,7 +833,13 @@ TEST_SUITE("EngineSession")
 
     TEST_CASE("external replay retains recorded simulation checksums [benchmark][artifacts]")
     {
-        const char* path=SDL_getenv_unsafe("GLOB2_REFERENCE_REPLAY");REQUIRE(path);
+        // An opt-in measurement: GLOB2_REFERENCE_REPLAY names the replay to
+        // verify. Without one there is nothing to measure.
+        const char* path=SDL_getenv_unsafe("GLOB2_REFERENCE_REPLAY");
+        if(!path || !*path) {
+            MESSAGE("GLOB2_REFERENCE_REPLAY is unset; no external replay was verified");
+            return;
+        }
         glob2test::HeadlessGlobals globals({.loadStrings=true});
         REQUIRE(NET_Init());
         struct NetworkScope {~NetworkScope(){NET_Quit();}} network;
