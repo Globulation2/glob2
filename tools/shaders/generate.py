@@ -435,6 +435,46 @@ def generate(output, compiler=None, root=ROOT, naga=None, spirv_cross=None, dxc=
     return meta
 
 
+# The trusted Apple tool lock (platforms/mobile/metal-tool-lock.json for iOS
+# device builds) holds exactly these keys; tools/shaders/metal_tool_lock.py
+# writes and checks it with observe_metal_tools below.
+METAL_TOOL_LOCK_KEYS = ('xcodeVersion', 'sdk', 'sdkVersion', 'metalSha256', 'metallibSha256')
+METAL_TOOL_LOCK_REMEDY = ('If the runner image or Xcode changed, run the "iOS Metal tool lock" workflow '
+                          '(.github/workflows/ios-metal-tool-lock.yml) on the pinned Xcode runner, review its '
+                          'artifact and update platforms/mobile/metal-tool-lock.json in a pull request '
+                          '(docs/mobile/ios.md, "SDL GPU Metal shaders").')
+
+
+def observe_metal_tools(sdk, root=ROOT, developer_dir=None):
+    """Return the tool lock the selected Xcode would produce, and the resolved binaries.
+
+    Refuses any Xcode other than the repository pin in platforms/mobile/toolchain.json.
+    """
+    xcode_pin = json.loads((Path(root) / 'platforms/mobile/toolchain.json').read_text())['ios']['xcode']
+    prefix = ['/usr/bin/env', 'DEVELOPER_DIR=' + developer_dir] if developer_dir else []
+    xcrun = prefix + ['xcrun', '--sdk', sdk]
+    xcode = subprocess.check_output(prefix + ['xcodebuild', '-version'], text=True).strip()
+    if not xcode or xcode.splitlines()[0] != 'Xcode ' + xcode_pin:
+        raise ValueError('Metal requires the repository-pinned Xcode ' + xcode_pin + ' (found ' +
+                         repr(xcode.splitlines()[0] if xcode else '') + '); select it with DEVELOPER_DIR')
+    observed = {'xcodeVersion': xcode, 'sdk': sdk,
+                'sdkVersion': subprocess.check_output(xcrun + ['--show-sdk-version'], text=True).strip()}
+    binaries = {}
+    for name in ('metal', 'metallib'):
+        binary = Path(subprocess.check_output(xcrun + ['--find', name], text=True).strip())
+        observed[name + 'Sha256'] = hashlib.sha256(binary.read_bytes()).hexdigest()
+        binaries[name] = binary
+    return observed, binaries
+
+
+def metal_tool_lock_differences(lock, observed):
+    """(key, locked, observed) for every lock field that differs; unknown keys count too."""
+    if not isinstance(lock, dict):
+        return [('<lock>', lock, 'a JSON object')]
+    keys = list(METAL_TOOL_LOCK_KEYS) + sorted(set(lock) - set(METAL_TOOL_LOCK_KEYS))
+    return [(key, lock.get(key), observed.get(key)) for key in keys if lock.get(key) != observed.get(key)]
+
+
 def compile_metal(output, sdk, tool_lock, root=ROOT, developer_dir=None):
     """Compile translated sources using an explicitly verified Apple tool lock.
 
@@ -442,22 +482,21 @@ def compile_metal(output, sdk, tool_lock, root=ROOT, developer_dir=None):
     binaries fail closed; source translation alone never advertises Metal.
     """
     lock = json.loads(Path(tool_lock).read_text())
-    xcode_pin = json.loads((root / 'platforms/mobile/toolchain.json').read_text())['ios']['xcode']
+    observed, binaries = observe_metal_tools(sdk, root, developer_dir)
+    differences = metal_tool_lock_differences(lock, observed)
+    if differences:
+        keys = [key for key, _, _ in differences]
+        if 'xcodeVersion' in keys:
+            reason = 'Metal requires the repository-pinned Xcode and verified build version'
+        elif 'sdk' in keys or 'sdkVersion' in keys:
+            reason = 'Metal SDK does not match verified tool lock'
+        elif keys[0] in ('metalSha256', 'metallibSha256'):
+            reason = 'Metal tool binary does not match verified lock: ' + keys[0][:-len('Sha256')]
+        else:
+            reason = 'Metal tool lock has unexpected fields'
+        raise ValueError(reason + ' (' + str(tool_lock) + ': ' + ', '.join(keys) + '). ' + METAL_TOOL_LOCK_REMEDY)
     prefix = ['/usr/bin/env', 'DEVELOPER_DIR=' + developer_dir] if developer_dir else []
     xcrun = prefix + ['xcrun', '--sdk', sdk]
-    xcode = subprocess.check_output(prefix + ['xcodebuild', '-version'], text=True).strip()
-    if xcode.splitlines()[0] != 'Xcode ' + xcode_pin or lock['xcodeVersion'] != xcode:
-        raise ValueError('Metal requires the repository-pinned Xcode and verified build version')
-    sdk_version = subprocess.check_output(xcrun + ['--show-sdk-version'], text=True).strip()
-    if lock['sdk'] != sdk or lock['sdkVersion'] != sdk_version:
-        raise ValueError('Metal SDK does not match verified tool lock')
-    binaries = {}
-    for name in ('metal', 'metallib'):
-        binary = Path(subprocess.check_output(xcrun + ['--find', name], text=True).strip())
-        digest = hashlib.sha256(binary.read_bytes()).hexdigest()
-        if digest != lock[name + 'Sha256']:
-            raise ValueError('Metal tool binary does not match verified lock: ' + name)
-        binaries[name] = binary
     metadata_path = output / 'metadata.json'
     meta = json.loads(metadata_path.read_text())
     sources = meta.get('nativeTranslationReceipt', {}).get('metalSources')

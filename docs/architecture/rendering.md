@@ -872,6 +872,11 @@ source and library hashes with the entrypoint. Failed or incomplete builds leave
 Metal unavailable. A verified Apple tool lock and actual SDK compilation are
 required before producing release libraries; mock tests verify invocation and
 receipt handling only.
+iOS device packages use the committed lock `platforms/mobile/metal-tool-lock.json`,
+which `tools/shaders/metal_tool_lock.py` writes on the pinned Xcode and checks
+(`--check`) against a local toolchain; a lock that differs in any field, or carries
+unknown fields, fails compilation. Generating, reviewing and bumping it is described
+in [SDL GPU Metal shaders](../mobile/ios.md#sdl-gpu-metal-shaders).
 
 
 Native skin shaders convert GL clip depth to Vulkan's 0..w range;
