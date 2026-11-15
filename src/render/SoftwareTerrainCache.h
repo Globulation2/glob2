@@ -167,6 +167,14 @@ class SoftwareTerrainCache
 	// Visible cold pages drawn from another density, and those with none, where
 	// the overview shows through; counted once a frame each, for benchmarks.
 	std::uint64_t standIns = 0, uncovered = 0;
+	// This frame's visible cells by source, and the pages (world tile origins)
+	// with nothing to draw, where the overview must show beneath.
+	struct FrameCoverage
+	{
+		std::uint64_t pageCells = 0, standInCells = 0, backdropCells = 0, fadingCells = 0;
+	};
+	FrameCoverage coverage;
+	std::vector<SDL_Point> uncoveredPages;
 	// Bytes of every chunk's kept masks; shared so a mask outliving the cache is safe.
 	std::shared_ptr<std::atomic<std::size_t>> maskTotal = std::make_shared<std::atomic<std::size_t>>(0);
 	SDL_Rect paintBounds{};
@@ -237,6 +245,11 @@ class SoftwareTerrainCache
 	std::uint64_t cacheReductions() const { return reductions; }
 	std::uint64_t cacheStandIns() const { return standIns; }
 	std::uint64_t cacheUncovered() const { return uncovered; }
+	//! The last prepare's visible cells by source (see TerrainFallbackMetrics).
+	const FrameCoverage &frameCoverage() const { return coverage; }
+	//! World tile origins of the last prepare's pages with nothing to draw:
+	//! the only places the overview backdrop shows.
+	const std::vector<SDL_Point> &backdropPages() const { return uncoveredPages; }
 	std::size_t maskBytes() const { return *maskTotal; }
 	// A torus visits every page each frame. Keep its complete terrain working
 	// set resident instead of selecting density independently for each tile.

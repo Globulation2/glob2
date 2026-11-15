@@ -1014,6 +1014,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 	}
 	copies.clear();
 	incomplete = false;
+	coverage = {};
+	uncoveredPages.clear();
 	++frame;
 	if (left > right || top > bottom) return true;
     if (!enabled)
@@ -1572,6 +1574,11 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				const int cx = x0 + int(i % columns), cy = y0 + int(i / columns);
 				const int wx = (cx * ChunkTiles) & map.getMaskW();
 				const int wy = (cy * ChunkTiles) & map.getMaskH();
+				// The page's cells this view shows.
+				const std::uint64_t shownCells =
+					std::uint64_t(std::min(right + vx + 1, (cx + 1) * ChunkTiles) - std::max(left + vx, cx * ChunkTiles)) *
+					(std::min(bottom + vy + 1, (cy + 1) * ChunkTiles) - std::max(top + vy, cy * ChunkTiles));
+				coverage.pageCells += shownCells;
 				Chunk *entry = findPage(cx, cy);
 				// Animation and artwork revisions change pixels but keep their
 				// recipes. The terrain revision avoids scanning the vertex
@@ -1716,11 +1723,14 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 						substitute->used = frame;
 						copies.push_back({substitute, (cx * ChunkTiles - vx) * 32, (cy * ChunkTiles - vy) * 32});
 						++standIns;
+						coverage.standInCells += shownCells;
 					}
 					else
 					{
 						incomplete = true;
 						++uncovered;
+						coverage.backdropCells += shownCells;
+						uncoveredPages.push_back({wx, wy});
 					}
 					continue;
 				}

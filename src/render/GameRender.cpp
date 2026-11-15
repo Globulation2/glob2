@@ -313,10 +313,14 @@ void MapDrawer::drawSceneMapRegion(const PresentationFrame& scene, int sx, int s
 	bool direct = false;
 	bool terrainBackdrop = false;
 	const bool hdArtwork = globalContainer->settings.highResolutionArtwork;
-	const auto drawBackdrop = [&]
+	view.render.fallback = {};
+	// The overview beneath terrain that is not ready; `shownPages` limits it to
+	// the detailed pages missing from the view.
+	const auto drawBackdrop = [&](const std::vector<SDL_Point> *shownPages = nullptr)
 	{
 		const auto alpha = view.render.detail.terrainOverview;
 		view.render.detail.terrainOverview = 1;
+		view.render.overviewBackdropPages = shownPages;
 		try
 		{
 			drawMapOverview(frame.left, frame.top, frame.right, frame.bottom,
@@ -324,9 +328,11 @@ void MapDrawer::drawSceneMapRegion(const PresentationFrame& scene, int sx, int s
 		}
 		catch (const std::bad_alloc &)
 		{
+			view.render.overviewBackdropPages = nullptr;
 			view.render.detail.terrainOverview = alpha;
 			return;
 		}
+		view.render.overviewBackdropPages = nullptr;
 		view.render.detail.terrainOverview = alpha;
 		terrainBackdrop = true;
 	};
@@ -391,8 +397,13 @@ void MapDrawer::drawSceneMapRegion(const PresentationFrame& scene, int sx, int s
 	if (cached)
 	{
 		// Pages still composing show the overview until they arrive.
+		const auto &coverage = pagesForView->frameCoverage();
+		view.render.fallback.pageCells = coverage.pageCells;
+		view.render.fallback.standInCells = coverage.standInCells;
+		view.render.fallback.backdropCells = coverage.backdropCells;
+		view.render.fallback.fadingCells = coverage.fadingCells;
 		if (!pagesForView->complete() && !terrainBackdrop)
-			drawBackdrop();
+			drawBackdrop(&pagesForView->backdropPages());
 		PERF_SCOPE_TIME(Terrain);
 		pagesForView->draw(frame.target);
 	}

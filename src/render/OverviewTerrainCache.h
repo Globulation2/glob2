@@ -43,9 +43,18 @@ class OverviewTerrainCache
 	//! its own texture, so panning and zooming upload nothing new. Unless
 	//! `complete`, cold pages compose within a per-frame budget; until they are
 	//! ready a page draws its other density, or nothing.
+	//! `shownPages`, when given, lists the world tile origins (multiples of 16)
+	//! of the only pages whose drawing shows, such as a backdrop beneath missing
+	//! detailed pages; metrics count only those.
 	void draw(const SceneMap &, int left, int top, int right, int bottom, int vx, int vy,
 			  Uint32 visibleTeams, bool wholeMap, int samples, GAGCore::DrawableSurface &target,
-			  Uint8 alpha, bool complete);
+			  Uint8 alpha, bool complete, const std::vector<SDL_Point> *shownPages = nullptr);
+	//! Visible cells of the last draw by source (see TerrainFallbackMetrics).
+	struct DrawMetrics
+	{
+		std::uint64_t cells = 0, other = 0, base = 0, holes = 0, fading = 0;
+	};
+	const DrawMetrics &drawMetrics() const { return metrics; }
 	//! Composes the whole map at few samples in the background, within the same
 	//! per-frame budget, so a first zoom out finds every page ready. Call every
 	//! frame from the start of a game; it stops once the map is done, and skips
@@ -121,6 +130,7 @@ class OverviewTerrainCache
 	std::vector<unsigned> capacities;
 	std::shared_ptr<const MapAssetBundle> assets;
 	std::uint64_t use = 0, compositions = 0;
+	DrawMetrics metrics;
 	std::size_t pageBytes = 0;
 	int pageSamples = 0;
 	std::size_t prewarmCursor = 0; // Next page of the map to prewarm.

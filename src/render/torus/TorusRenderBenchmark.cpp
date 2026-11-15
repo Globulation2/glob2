@@ -62,6 +62,49 @@
 GlobalContainer *globalContainer = nullptr;
 class TorusRenderBenchmark
 {
+    // The camera script's event on the frame being measured (FRAME_FALLBACK).
+    static inline const char *cameraEvent = nullptr;
+    static inline Uint64 benchmarkStart = 0;
+    struct ScriptedCamera
+    {
+        double zoom;
+        double x, y; // Top-left corner, in map pixels.
+        const char *event;
+    };
+    // GLOB2_BENCH_CAMERA_SCRIPT=fallback: what a player does, in cycles of
+    // eight seconds at 60 frames a second, each from a new place on the map,
+    // starting with the game: a jump (as a minimap click), a hold, a pan at
+    // fifteen tiles a second, six wheel steps out to the overview, a hold, six
+    // steps back in and a hold.
+    static ScriptedCamera scriptedCamera(int frame, double zoom, int mapW, int mapH)
+    {
+        constexpr int Cycle = 480;
+        const int cycle = frame / Cycle, t = frame % Cycle;
+        // Places spread over the map, far apart from one cycle to the next.
+        const double placeX = std::fmod(0.13 + cycle * 0.618034, 1.0) * mapW * 32;
+        const double placeY = std::fmod(0.29 + cycle * 0.414214, 1.0) * mapH * 32;
+        ScriptedCamera camera{zoom, placeX, placeY, nullptr};
+        if (t == 0)
+            camera.event = cycle ? "jump" : "start";
+        const int pan = std::clamp(t - 120, 0, 120);
+        camera.x += pan * 8.0;
+        camera.y += pan * 4.0;
+        if (t == 120)
+            camera.event = "pan";
+        int steps = 0;
+        if (t >= 240 && t < 360)
+            steps = std::min(6, (t - 240) / 10 + 1);
+        else if (t >= 360 && t < 420)
+            steps = 6 - std::min(6, (t - 360) / 10 + 1);
+        if (t >= 240 && t < 300 && (t - 240) % 10 == 0)
+            camera.event = "zoom_out";
+        if (t >= 360 && t < 420 && (t - 360) % 10 == 0)
+            camera.event = "zoom_in";
+        // Wheel steps keep the view's centre where it was.
+        const double scale = std::pow(0.7, steps);
+        camera.zoom = zoom * scale;
+        return camera;
+    }
     static void prepareScene(GameGUI &gui)
     {
         gui.game.snapshots().invalidateBoundary(); // Synthetic fixtures edit public records.
@@ -385,6 +428,7 @@ static int run(int argc, char **argv)
             // so memory measurements pace frames like a display would.
             const int frameIntervalMs = std::max(0, std::getenv("GLOB2_BENCH_FRAME_INTERVAL_MS")
                 ? std::atoi(std::getenv("GLOB2_BENCH_FRAME_INTERVAL_MS")) : 0);
+            benchmarkStart = SDL_GetPerformanceCounter();
             for (int i = -warmupFrames; i < frames; ++i)
             {
                 if (i == 0) initialCoverage = compositor.highResolutionCoverage();
@@ -469,6 +513,24 @@ static int run(int argc, char **argv)
                     if (gui.view.render.overviewCache)
                         std::printf("FRAME_OVERVIEW frame=%d composed_cells=%llu\n", i,
                             static_cast<unsigned long long>(gui.view.render.overviewCache->composedCells()));
+                    {
+                        const auto &fallback = gui.view.render.fallback;
+                        std::printf("FRAME_FALLBACK frame=%d time_ms=%.3f event=%s page_cells=%llu stand_in_cells=%llu "
+                            "backdrop_cells=%llu fading_cells=%llu overview_cells=%llu overview_other_cells=%llu "
+                            "overview_base_cells=%llu overview_hole_cells=%llu overview_fading_cells=%llu\n",
+                            i, 1000.0 * (SDL_GetPerformanceCounter() - benchmarkStart) / SDL_GetPerformanceFrequency(),
+                            cameraEvent ? cameraEvent : "-",
+                            static_cast<unsigned long long>(fallback.pageCells),
+                            static_cast<unsigned long long>(fallback.standInCells),
+                            static_cast<unsigned long long>(fallback.backdropCells),
+                            static_cast<unsigned long long>(fallback.fadingCells),
+                            static_cast<unsigned long long>(fallback.overviewCells),
+                            static_cast<unsigned long long>(fallback.overviewOtherCells),
+                            static_cast<unsigned long long>(fallback.overviewBaseCells),
+                            static_cast<unsigned long long>(fallback.overviewHoleCells),
+                            static_cast<unsigned long long>(fallback.overviewFadingCells));
+                        cameraEvent = nullptr;
+                    }
                 }
                 if (i < 0 && i >= -warmupFrames && i < -warmupFrames + 8)
                     std::printf("WARMUP frame=%d elapsed_ms=%.3f process_cpu_ms=%.3f\n", i + warmupFrames, ms,
@@ -652,6 +714,30 @@ static int run(int argc, char **argv)
                         : sweep ? (cameraFrame*37)%gui.game.map.getW() : fixedPanX;
                     const int panY = pan ? (fixedPanY + cameraFrame / 16)%gui.game.map.getH()
                         : sweep ? (cameraFrame*19)%gui.game.map.getH() : fixedPanY;
+                    if (const char *script = std::getenv("GLOB2_BENCH_CAMERA_SCRIPT"))
+                    {
+                        if (std::string_view(script) != "fallback")
+                            throw std::invalid_argument("GLOB2_BENCH_CAMERA_SCRIPT supports only fallback");
+                        static const double scriptZoom = std::getenv("GLOB2_BENCH_ZOOM") ? camera.zoom : 1.0;
+                        auto scripted = scriptedCamera(cameraFrame, scriptZoom, gui.game.map.getW(), gui.game.map.getH());
+                        scripted.zoom = std::max(scripted.zoom, camera.minimumZoom());
+                        cameraEvent = scripted.event;
+                        // The centre stays put across zoom steps.
+                        const double centreX = scripted.x + width / scriptZoom / 2, centreY = scripted.y + height / scriptZoom / 2;
+                        const double left = centreX - width / scripted.zoom / 2, top = centreY - height / scripted.zoom / 2;
+                        const double mapPixelsW = gui.game.map.getW() * 32.0, mapPixelsH = gui.game.map.getH() * 32.0;
+                        const double wrappedX = left - std::floor(left / mapPixelsW) * mapPixelsW;
+                        const double wrappedY = top - std::floor(top / mapPixelsH) * mapPixelsH;
+                        const int tileX = int(wrappedX / 32), tileY = int(wrappedY / 32);
+                        const float fractionX = float(wrappedX - tileX * 32.0), fractionY = float(wrappedY - tileY * 32.0);
+                        const int scriptW = int(std::ceil(width / scripted.zoom)) + 32, scriptH = int(std::ceil(height / scripted.zoom)) + 32;
+                        globalContainer->gfx->beginMapTransform(scripted.zoom, -fractionX * scripted.zoom,
+                            -fractionY * scripted.zoom, 0, 0, width, height);
+                        MapDrawer::drawMap(0, 0, scriptW, scriptH, 0, 0, tileX, tileY, 0, gui.view, frameOptions,
+                            nullptr, nullptr, false, detailForZoom(gui.game, scripted.zoom));
+                        globalContainer->gfx->endMapTransform();
+                        return;
+                    }
                     int drawW = int(std::ceil(width/zoom)), drawH = int(std::ceil(height/zoom));
                     if (!sweep && std::getenv("GLOB2_BENCH_FULL_MAP"))
                     {

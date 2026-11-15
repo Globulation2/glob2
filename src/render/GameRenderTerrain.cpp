@@ -482,7 +482,14 @@ void MapDrawer::drawMapOverview(int left, int top, int right, int bot, int viewp
 	// interactive views compose missing cells on background workers.
 	render.overview.reset();
 	render.overviewCache->draw(sceneMap, left, top, right, bot, viewportX, viewportY, visibleTeams,
-							   drawOptions & Game::DRAW_WHOLE_MAP, samples, *globalContainer->gfx, alpha, false);
+							   drawOptions & Game::DRAW_WHOLE_MAP, samples, *globalContainer->gfx, alpha, false,
+							   render.overviewBackdropPages);
+	const auto &drawn = render.overviewCache->drawMetrics();
+	render.fallback.overviewCells += drawn.cells;
+	render.fallback.overviewOtherCells += drawn.other;
+	render.fallback.overviewBaseCells += drawn.base;
+	render.fallback.overviewHoleCells += drawn.holes;
+	render.fallback.overviewFadingCells += drawn.fading;
 }
 
 void MapDrawer::drawMapTerritory(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const PresentationFrame& scene, float opacity)

@@ -463,8 +463,9 @@ void OverviewTerrainCache::update(const SceneMap &map, int left, int top, int ri
 
 void OverviewTerrainCache::draw(const SceneMap &map, int left, int top, int right, int bottom, int vx, int vy,
 								Uint32 visibleTeams, bool wholeMap, int samples, GAGCore::DrawableSurface &target,
-								Uint8 alpha, bool complete)
+								Uint8 alpha, bool complete, const std::vector<SDL_Point> *shownPages)
 {
+	metrics = {};
 	if (samples != FewSamples && samples != ManySamples)
 		throw std::invalid_argument("Overview samples must be 4 or 8 per cell");
 	pageSamples = samples;
@@ -502,13 +503,34 @@ void OverviewTerrainCache::draw(const SceneMap &map, int left, int top, int righ
 		}
 		if (!complete)
 			shown = shown && covers(*page, wx, wy, region);
+		const bool counted = !shownPages ||
+			std::any_of(shownPages->begin(), shownPages->end(),
+						[&](const SDL_Point &origin) { return origin.x == wx && origin.y == wy; });
+		if (counted)
+			metrics.cells += std::uint64_t(region.x1 - region.x0) * (region.y1 - region.y0);
+		const Page *otherPage = nullptr;
 		if (!shown)
 		{
 			// The other density, if it already shows this part, stands in beneath.
 			auto found = pages.find(pageKey(other, wx, wy));
 			if (found != pages.end() && found->second.valid && found->second.seed == map.terrainSeed())
+			{
+				otherPage = &found->second;
 				drawPage(found->second, wx, wy, region, screenX, screenY, target, alpha);
+			}
 		}
+		if (!shown && counted)
+			for (int my = region.y0; my < region.y1; ++my)
+				for (int mx = region.x0; mx < region.x1; ++mx)
+				{
+					const int i = (my - wy) * Tiles + (mx - wx);
+					if (page->resources[i] != Uncomposed)
+						continue;
+					if (otherPage && otherPage->resources[i] != Uncomposed)
+						++metrics.other;
+					else
+						++metrics.holes;
+				}
 		drawPage(*page, wx, wy, region, screenX, screenY, target, alpha);
 	});
 	if (!jobs.empty())
