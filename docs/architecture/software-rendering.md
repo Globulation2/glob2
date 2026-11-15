@@ -171,9 +171,9 @@ CPU terrain preparation separates owner planning, disjoint cell composition and 
 metadata installation. Published materials contain only immutable composition pixels for the
 changed cells' referenced materials and catalog definitions. Planning finds changed
 cells before acquiring material snapshots, so a sparse edit does not copy unchanged
-materials. Unchanged material revisions share storage; the compositor keeps bounded weak
-records per material revision, allowing reuse while any snapshot still owns unchanged
-pixels. Each cache charges its retained lease against subsequent admission. Current-page
+materials. Snapshots share the compositor's prepared pixels rather than copying them,
+and a prepare that rewrites pixels a snapshot holds writes a fresh copy, so unchanged
+material revisions share storage with the compositor and every snapshot. Each cache charges its retained lease against subsequent admission. Current-page
 masks remain protected until the synchronous group finishes. Hidden cells release
 obsolete discovery masks during canonical installation. The owner locks the unpublished
 cache page once and supplies disjoint cell pointers and its pitch to workers. Workers

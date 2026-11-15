@@ -2782,12 +2782,15 @@ TEST_CASE("owned prepared materials survive animation and share unchanged revisi
                           static_cast<Uint8 *>(original->pixels) + y * original->pitch,
                           32*samplingScale*4) == 0);
     }
-    // Expiring the last publication must not retain unused immutable buffers.
+    // Publications share the compositor's prepared pixels instead of copying
+    // them: expiring the last one leaves those, which the next shares again,
+    // and retains no buffer of its own.
     std::weak_ptr<const TerrainVisual::Compositor::MaterialPixels> released =
         retained->textures[c.find("sand")][0].pixels;
     std::weak_ptr<const TerrainVisual::Catalog> releasedCatalog = retained->definitions;
     retained.reset();
-    CHECK(released.expired());
+    CHECK(released.use_count() == 1);
+    CHECK(compositor.cpuMaterials()->textures[c.find("sand")][0].pixels == released.lock());
     CHECK(releasedCatalog.expired());
 }
 TEST_CASE(
