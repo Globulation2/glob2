@@ -138,12 +138,21 @@ int GraphicContext::maximumTextureSize() const
 	// Storage for the static globals declared in graphic_context_private.h.
 	GraphicContext *_gc = NULL;
 	SDL_PixelFormatDetails _glFormat = *SDL_GetPixelFormatDetails(SDL_PIXELFORMAT_ARGB8888);
-	void selectDeviceBlockCompression(const RenderDevice &device)
+	AssetImage::BlockCompression preferredDeviceBlockCompression(const RenderDeviceCapabilities &capabilities)
 	{
 		// The device honours GLOB2_TEXTURE_COMPRESSION when it reports formats.
-		// No ASTC encoder exists yet, so ASTC-only devices sample RGBA.
-		AssetImage::highResolutionCompression = device.capabilities().bc3Textures
-			? AssetImage::BlockCompression::PremultipliedBC3 : AssetImage::BlockCompression::Uncompressed;
+		// BC3 wherever it is sampled (desktop): etcpak encodes it several times
+		// faster than astcenc does ASTC. ASTC 4x4 where only it is (phones), at
+		// the same 16 bytes per block. The browser build has no ASTC encoder.
+		if (capabilities.bc3Textures) return AssetImage::BlockCompression::PremultipliedBC3;
+#ifndef GLOB2_WEBGL2
+		if (capabilities.astc4x4Textures) return AssetImage::BlockCompression::PremultipliedASTC4x4;
+#endif
+		return AssetImage::BlockCompression::Uncompressed;
+	}
+	void selectDeviceBlockCompression(const RenderDevice &device)
+	{
+		AssetImage::highResolutionCompression = preferredDeviceBlockCompression(device.capabilities());
 	}
 	const bool EXPERIMENTAL = false;
 

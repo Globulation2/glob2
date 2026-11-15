@@ -760,19 +760,48 @@ are rebuilt after switching or recovery.
 SDL GPU samples block-compressed HD artwork where the device reports the format
 (`RenderDeviceCapabilities::bc3Textures`, `astc4x4Textures`). On entering the device,
 asset workers prepare each HD chain as premultiplied BC3 (`PremultipliedBC3`,
-etcpak); the draw passes the blocks with the RGBA levels, and the adapter stores a
+etcpak) where the device samples BC3 (desktop GPUs), otherwise as premultiplied
+ASTC 4x4 (`PremultipliedASTC4x4`, astcenc) where it samples ASTC (phones), and
+otherwise not at all (`preferredDeviceBlockCompression`); the draw passes the
+blocks with the RGBA levels, and the adapter stores a
 compressed `TextureRevision` holding only the blocks of the levels at least 4x4,
 charged at their size. The device uploads them unchanged into a
-`BC3_RGBA_UNORM` texture, a quarter of the RGBA chain on the GPU and in the
+`BC3_RGBA_UNORM` or `ASTC_4x4_UNORM` texture, a quarter of the RGBA chain on the GPU and in the
 restoration snapshot, and restores trimmed or lost textures from them. Workers
 keep only the blocks of those levels, and a chain prepared earlier releases its
 RGBA levels once the blocks reach the device; a device that
 cannot sample them (or legacy OpenGL, which never uploads premultiplied blocks)
-prepares the chain again from the surface pixels. Devices without BC3 sample RGBA.
-ASTC 4x4 uploads take the same path, but no ASTC encoder exists, so ASTC-only
-devices (most phones) still sample RGBA. `GLOB2_TEXTURE_COMPRESSION=none|bc3|astc`
-restricts the formats SDL GPU reports, for comparisons. The class budgets stay
+prepares the chain again from the surface pixels, as RGBA. Devices with neither
+format sample RGBA. Only asset workers encode blocks: a chain the draw must
+prepare itself (mutated content, or released pixels on a device without the
+blocks' format) gets RGBA levels and no blocks, so the render thread never runs
+an encoder and never waits for one; the HD loader keeps drawing the native
+frame until the worker's chain arrives. `GLOB2_TEXTURE_COMPRESSION=none|bc3|astc`
+restricts the formats SDL GPU reports, for comparisons (`astc` exercises the
+phone path on a desktop GPU that samples ASTC, such as Mesa's lavapipe). The class budgets stay
 byte budgets, so the same budget holds about four times as much compressed artwork.
+
+ASTC encoding uses the vendored astcenc
+([inventory](../../third_party/README.md#astc-texture-compression)) with its
+fastest preset trimmed further (one partition, one candidate, one refinement
+pass: about 1.6 times faster than the plain preset for about 1.3 dB of PSNR at
+about 50 dB on the shipped frames), the same premultiply rounding as the BC3
+path, and one child codec context per worker thread sharing one table set. The
+`ImageAssets` case `HD frame block encoding timing [artifacts][benchmark]`
+measures every 32nd shipped HD frame's chain. On a desktop x86-64 core (perf
+build) ASTC takes about 6 to 7 ms per frame (worst about 200 ms for the largest
+padded chains), about 200 s for all 31,541 shipped frames on one thread, while
+etcpak's BC3 takes about 0.6 ms per frame; that tenfold gap is why BC3 stays the
+choice wherever it is sampled. Phones encode with NEON on slower cores, so expect
+a few times the desktop time per frame on each asset worker; the HD loader
+requests only visible frames and a short lookahead, and keeps drawing the native
+frame meanwhile. The added code is about 205 KB on Android `arm64-v8a` and
+`armeabi-v7a` and 230 KB on `x86_64` (stripped, `-O2`), and about 500 to 535 KB
+on desktop x86-64 Linux and Windows (`-O3`), half of it the SSE4.1 copy, which
+encodes only about 10% faster than the SSE2 build. Coverage: native Linux,
+Windows and macOS builds and Android and iOS compile the encoder (NEON on arm64,
+SSE4.2 on Android x86_64, SSE2 plus a run-time SSE4.1 copy on desktop x86,
+scalar on 32-bit ARM); the browser build leaves it out.
 
 Native texture restoration uses bounded upload slices when a full authored mip
 chain cannot coexist with retained depth atlases and its transfer buffer. Upload-only
