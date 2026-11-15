@@ -80,17 +80,27 @@ class FrameRecorder:
         self.layer = None
 
     def find_layer(self):
-        layers = self.adb('shell', 'dumpsys', 'SurfaceFlinger', '--list').splitlines()
+        layers = [self.layer_name(line) for line in
+                  self.adb('shell', 'dumpsys', 'SurfaceFlinger', '--list').splitlines()]
         # SDL renders into a SurfaceView; prefer its buffer layer over the window.
         candidates = [name.strip() for name in layers if PACKAGE in name and 'SurfaceView' in name]
-        buffered = [name for name in candidates if 'BLAST' in name or 'Background' not in name]
-        self.layer = (buffered or candidates or [None])[-1]
+        buffered = [name for name in candidates if 'BLAST' in name]
+        plain = [name for name in candidates if not name.startswith('Background')]
+        self.layer = (buffered or plain or candidates or [None])[-1]
         return self.layer
+
+    @staticmethod
+    def layer_name(line):
+        # Android 15 lists "RequestedLayerState{NAME parentId=...}"; --latency wants NAME.
+        line = line.strip()
+        wrapped = re.fullmatch(r'RequestedLayerState\{(.*?)(?: parentId=.*)?\}', line)
+        return wrapped.group(1) if wrapped else line
 
     def sample(self):
         if not self.layer and not self.find_layer():
             return
-        output = self.adb('shell', 'dumpsys', 'SurfaceFlinger', '--latency', self.layer, check=False)
+        # adb shell joins arguments; quote the layer name (it holds brackets and parentheses).
+        output = self.adb('shell', "dumpsys SurfaceFlinger --latency '" + self.layer + "'", check=False)
         rows = output.splitlines()[1:]
         if not rows:
             self.find_layer()
@@ -104,6 +114,10 @@ class FrameRecorder:
 
     def record(self, seconds, action=None, interval=0.25):
         """Sample while running ``action`` (called repeatedly) for ``seconds``."""
+        # The history still holds frames from before this phase; leave them out.
+        self.presents.clear()
+        self.sample()
+        before = set(self.presents)
         self.presents.clear()
         deadline = time.monotonic() + seconds
         while time.monotonic() < deadline:
@@ -112,7 +126,7 @@ class FrameRecorder:
             self.sample()
             time.sleep(interval)
         self.sample()
-        times = sorted(self.presents)
+        times = sorted(self.presents - before)
         return [(b - a) / 1e6 for a, b in zip(times, times[1:])]
 
 
@@ -133,12 +147,13 @@ def device_identity(adb):
         identity['vulkan'] = []
         for device in devices:
             properties = device.get('properties', {})
-            version = properties.get('apiVersion', 0)
+            # vkjson writes every number as a JSON float.
+            version = int(properties.get('apiVersion', 0))
             identity['vulkan'].append({'device': properties.get('deviceName'),
                                        'api': f'{version >> 22}.{(version >> 12) & 0x3ff}.{version & 0xfff}',
-                                       'driver_version': properties.get('driverVersion'),
-                                       'vendor_id': properties.get('vendorID')})
-    except (ValueError, AttributeError):
+                                       'driver_version': int(properties.get('driverVersion', 0)),
+                                       'vendor_id': hex(int(properties.get('vendorID', 0)))})
+    except (ValueError, AttributeError, TypeError):
         identity['vulkan'] = []
         identity['vulkan_report'] = vulkan.strip()[:400]
     return identity
@@ -232,6 +247,8 @@ def main():
         png = adb('exec-out', 'screencap', '-p', binary=True)
         if png[:8] == b'\x89PNG\r\n\x1a\n':
             (output / (name + '.png')).write_bytes(png)
+            return int.from_bytes(png[16:20], 'big'), int.from_bytes(png[20:24], 'big')
+        return 0, 0
 
     frames = FrameRecorder(adb)
     all_intervals = []
@@ -301,7 +318,7 @@ def main():
         phase('resume', args.phase_seconds)
         resumed = logs()
         summary['resume_log'] = [line for line in resumed.splitlines()
-                                 if re.search(r'Graphics device recovery|Glob2 renderer active|SDL GPU|surface', line, re.I)][-20:]
+                                 if re.search(r'Graphics device recovery|Glob2 renderer active| SDL(/APP)? *:', line)][-20:]
         if renderer_lines():
             require_renderer('after resume')
         screenshot('resumed')
@@ -316,18 +333,27 @@ def main():
 
         # 5. Rotation: a resize of the presentation surface.
         adb('shell', 'settings', 'put', 'system', 'accelerometer_rotation', '0')
-        rotations = iter(['1', '0'])
+        rotation_seconds = max(args.phase_seconds, 8.0)
+        began = time.monotonic()
+        orientation = {'value': None, 'landscape': None}
 
         def rotate():
-            value = next(rotations, None)
-            if value is not None:
+            # Hold landscape for the first half of the phase, then return to portrait.
+            value = '1' if time.monotonic() - began < rotation_seconds / 2 else '0'
+            if value != orientation['value']:
                 adb('shell', 'settings', 'put', 'system', 'user_rotation', value)
-        phase('rotation', max(args.phase_seconds, 8.0), rotate)
+                orientation['value'] = value
+            elif value == '1' and orientation['landscape'] is None and time.monotonic() - began > 2:
+                width, height = screenshot('rotated-landscape')
+                orientation['landscape'] = width > height
+        phase('rotation', rotation_seconds, rotate)
         if pid() != game_pid or not foreground():
             raise RuntimeError('Rotation lost the foreground process')
+        if not orientation['landscape']:
+            raise RuntimeError('Display did not rotate to landscape')
         if renderer_lines():
             require_renderer('after rotation')
-        screenshot('rotated')
+        screenshot('rotated-back')
         summary['checks'].append('rotation/resize')
         summary['overall'] = summarize(all_intervals, args.hitch_ms)
         hitches = summary['overall'].get('hitches_over_' + str(int(args.hitch_ms)) + 'ms', 0)

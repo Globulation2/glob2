@@ -25,13 +25,15 @@ class FrameSummaryTests(unittest.TestCase):
         class FakeAdb:
             def __call__(self, *command, **kwargs):
                 if '--list' in command:
-                    return 'SurfaceView[org.globulation2.glob2/org.globulation2.glob2.Glob2Activity](BLAST)#7\n'
+                    return ('RequestedLayerState{Background for SurfaceView[org.globulation2.glob2/x]#8 parentId=6 z=-2}\n'
+                            'RequestedLayerState{SurfaceView[org.globulation2.glob2/org.globulation2.glob2.Glob2Activity](BLAST)#7 parentId=6}\n'
+                            'RequestedLayerState{SurfaceView[org.globulation2.glob2/x]#6 parentId=5 relativeParentId=4 z=-2}\n')
                 pending = str((1 << 63) - 1)
                 return '16666666\n1 1000000 1\n2 17666666 2\n3 ' + pending + ' 3\n0 0 0\n'
         recorder = sdl_gpu_smoke.FrameRecorder(FakeAdb())
         recorder.sample()
         self.assertEqual(sorted(recorder.presents), [1000000, 17666666])
-        self.assertIn('BLAST', recorder.layer)
+        self.assertEqual(recorder.layer, 'SurfaceView[org.globulation2.glob2/org.globulation2.glob2.Glob2Activity](BLAST)#7')
 
 
 if __name__ == '__main__':
