@@ -872,8 +872,6 @@ set(GLOB2_GAG_SOURCES
     libs/gag/src/AssetLoader.cpp
     libs/gag/src/EtcpakSse41.cpp
     libs/gag/src/AstcEncoder.cpp
-    libs/gag/src/AstcencSse41.cpp
-    libs/gag/src/AstcencSse41Physical.cpp
     libs/gag/src/AssetVideo.cpp
     libs/gag/src/AssetVideoDecoder.cpp
     libs/gag/src/PackedSpriteFrame.cpp
@@ -984,8 +982,6 @@ set(GLOB2_GAG_SOURCES
 # buildsys/sources.py SSE41_SOURCES: libgag sources native x86 builds compile with -msse4.1.
 set(GLOB2_SSE41_SOURCES
     libs/gag/src/EtcpakSse41.cpp
-    libs/gag/src/AstcencSse41.cpp
-    libs/gag/src/AstcencSse41Physical.cpp
 )
 
 # buildsys/sources.py mobile_sources("android"): libmain.so (cmake/mobile.cmake).
@@ -1682,8 +1678,6 @@ set(GLOB2_ANDROID_SOURCES
     libs/gag/src/AssetLoader.cpp
     libs/gag/src/EtcpakSse41.cpp
     libs/gag/src/AstcEncoder.cpp
-    libs/gag/src/AstcencSse41.cpp
-    libs/gag/src/AstcencSse41Physical.cpp
     libs/gag/src/AssetVideo.cpp
     libs/gag/src/AssetVideoDecoder.cpp
     libs/gag/src/PackedSpriteFrame.cpp
@@ -2505,8 +2499,6 @@ set(GLOB2_IOS_SOURCES
     libs/gag/src/AssetLoader.cpp
     libs/gag/src/EtcpakSse41.cpp
     libs/gag/src/AstcEncoder.cpp
-    libs/gag/src/AstcencSse41.cpp
-    libs/gag/src/AstcencSse41Physical.cpp
     libs/gag/src/AssetVideo.cpp
     libs/gag/src/AssetVideoDecoder.cpp
     libs/gag/src/PackedSpriteFrame.cpp

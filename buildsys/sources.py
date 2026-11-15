@@ -835,7 +835,7 @@ RELAY_TEST_SOURCES = ('relay/RelayTestMain.cpp', 'relay/RelayTicketTest.cpp', 'r
 
 # Vendored texture block encoders, compiled into libgag; see third_party/README.md.
 # The SSE4.1 copy of them, which native x86 builds compile with -msse4.1 (CMakeLists.txt).
-SSE41_SOURCES = ('libs/gag/src/EtcpakSse41.cpp', 'libs/gag/src/AstcencSse41.cpp', 'libs/gag/src/AstcencSse41Physical.cpp')
+SSE41_SOURCES = ('libs/gag/src/EtcpakSse41.cpp',)
 ETCPAK_SOURCES = ('third_party/etcpak/etcpak/ProcessDxtc.cpp', 'third_party/etcpak/etcpak/ProcessRGB.cpp',
                   'third_party/etcpak/etcpak/Tables.cpp', 'third_party/etcpak/etcpak/Dither.cpp')
 # ARM's ASTC encoder (astcenc's core library), for render devices that sample
@@ -851,8 +851,6 @@ GAG_SOURCES = (
     'AssetLoader.cpp',
     'EtcpakSse41.cpp',
     'AstcEncoder.cpp',
-    'AstcencSse41.cpp',
-    'AstcencSse41Physical.cpp',
     'AssetVideo.cpp',
     'AssetVideoDecoder.cpp',
     'PackedSpriteFrame.cpp',
@@ -971,7 +969,7 @@ WEB_EXCLUDED_CLIENT_SOURCES = ('audio/VoiceRecorder.cpp', 'net/NetTransport.cpp'
                                'net/WssTransport.cpp', 'net/LanIdentity.cpp', 'online/HttpFetch.cpp')
 # The browser renders through WebGL 2, never SDL GPU, so it needs no ASTC encoder.
 WEB_EXCLUDED_GAG_SOURCES = ('ApplicationHost.cpp', 'RecordingEncoder.cpp', 'RecordingSession.cpp',
-                            'AstcEncoder.cpp', 'AstcencSse41.cpp', 'AstcencSse41Physical.cpp')
+                            'AstcEncoder.cpp')
 WEB_SOURCES = ('platforms/web/HiveBrowserHost.cpp', 'platforms/web/VoiceRecorder.cpp',
                'platforms/web/ApplicationHost.cpp', 'platforms/web/RecordingPlatform.cpp',
                'platforms/web/NetTransport.cpp', 'platforms/web/Launcher.cpp', 'platforms/web/HttpFetch.cpp',

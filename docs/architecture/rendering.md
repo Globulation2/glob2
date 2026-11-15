@@ -796,12 +796,11 @@ choice wherever it is sampled. Phones encode with NEON on slower cores, so expec
 a few times the desktop time per frame on each asset worker; the HD loader
 requests only visible frames and a short lookahead, and keeps drawing the native
 frame meanwhile. The added code is about 205 KB on Android `arm64-v8a` and
-`armeabi-v7a` and 230 KB on `x86_64` (stripped, `-O2`), and about 500 to 535 KB
-on desktop x86-64 Linux and Windows (`-O3`), half of it the SSE4.1 copy, which
-encodes only about 10% faster than the SSE2 build. Coverage: native Linux,
-Windows and macOS builds and Android and iOS compile the encoder (NEON on arm64,
-SSE4.2 on Android x86_64, SSE2 plus a run-time SSE4.1 copy on desktop x86,
-scalar on 32-bit ARM); the browser build leaves it out.
+`armeabi-v7a` and 230 KB on `x86_64` (stripped, `-O2`), and about 225 to 260 KB
+on desktop x86-64 Linux and Windows (`-O3`). Coverage: native Linux, Windows and
+macOS builds and Android and iOS compile the encoder (NEON on arm64, SSE4.2 on
+Android x86_64, SSE2 on desktop x86, where BC3 is chosen anyway, scalar on
+32-bit ARM); the browser build leaves it out.
 
 Native texture restoration uses bounded upload slices when a full authored mip
 chain cannot coexist with retained depth atlases and its transfer buffer. Upload-only
