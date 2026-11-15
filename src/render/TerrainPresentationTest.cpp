@@ -46,6 +46,8 @@
 #endif
 #endif
 #include <algorithm>
+#include <chrono>
+#include <thread>
 #include <set>
 #include <cstdio>
 #include <filesystem>
@@ -2191,6 +2193,72 @@ TEST_SUITE("TerrainPresentation")
 		draw();
 		CHECK(page.valid);
 		CHECK(chunkPixels(page) != nullptr);
+	}
+	TEST_CASE("an interactive portable view reduces native pages on workers to the synchronous pixels [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
+			.screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		REQUIRE(globals->gfx->backendSwitchStatus().active == GAGCore::RendererBackend::PortableSDL);
+		glob2test::HeadlessGame fixture({.wDec = 7, .hDec = 7, .discovered = true});
+		auto &map = fixture.game.map;
+		for (int y = 0; y < map.getH(); ++y)
+			for (int x = 0; x < map.getW(); ++x)
+				// Mixed cells in the page under test; plain grass keeps the rest cheap.
+				map.paintCell(x, y, x >= 16 || y >= 16 ? GRASS : x < 3 ? WATER : ((x + y) % 3 ? ICE : GRASS));
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		struct Reduced
+		{
+			std::vector<Uint32> pixels;
+			std::uint64_t reductions = 0;
+		};
+		const auto reduce = [&](bool interactive)
+		{
+			SoftwareTerrainCache cache;
+			cache.deferBuilds = interactive;
+			// An interactive view composes on workers: draw until nothing waits.
+			const auto settle = [&](float zoom, int right, int bottom)
+			{
+				for (int attempt = 0; attempt < 5000; ++attempt)
+				{
+					globals->gfx->beginMapTransform(zoom, 0, 0, 0, 0, 256, 256);
+					REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, right, bottom, 0, 0, fixture.team->me, true));
+					cache.draw(*globals->gfx);
+					globals->gfx->endMapTransform();
+					if (cache.pendingPages() == 0 && cache.complete() &&
+						std::all_of(cache.copies.begin(), cache.copies.end(), [&](const auto &copy)
+							{ return copy.chunk->downsample == cache.samplingReduction(); }))
+						return;
+					std::this_thread::sleep_for(std::chrono::milliseconds(1));
+				}
+				FAIL("the interactive view never completed");
+			};
+			settle(1, 7, 7);
+			REQUIRE(cache.samplingReduction() == 1);
+			// The whole map exceeds the page budget at native density.
+			settle(.25f, 127, 127);
+			REQUIRE(cache.samplingReduction() > 1);
+			Reduced result;
+			result.reductions = cache.cacheReductions();
+			for (const auto &chunk : cache.chunks)
+				if (chunk->x == 0 && chunk->y == 0 && chunk->downsample > 1)
+				{
+					const auto *pixels = chunkPixels(*chunk);
+					REQUIRE(pixels);
+					for (int y = 0; y < pixels->h; ++y)
+					{
+						const auto *row = reinterpret_cast<const Uint32 *>(
+							static_cast<const Uint8 *>(pixels->pixels) + y * pixels->pitch);
+						result.pixels.insert(result.pixels.end(), row, row + pixels->w);
+					}
+				}
+			return result;
+		};
+		const Reduced synchronous = reduce(false), interactive = reduce(true);
+		REQUIRE(!synchronous.pixels.empty());
+		CHECK(synchronous.reductions > 0);
+		CHECK(interactive.reductions > 0);
+		CHECK(interactive.pixels == synchronous.pixels);
 	}
 	TEST_CASE("offscreen terrain density follows the target and stays stable across capture tiles "
 			  "[display]")

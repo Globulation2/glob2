@@ -495,7 +495,14 @@ Interactive views on accelerated page renderers without device composition (the
 portable SDL renderer, and browser legacy OpenGL composing HD pages) never
 compose a page inside the frame. A cold page is described from the scene on the
 graphics thread and composed by the shared presentation workers
-(`render/BackgroundWork.h`) from an immutable material snapshot. Until it
+(`render/BackgroundWork.h`) from an immutable material snapshot; a page at a
+reduced density whose native page is retained is reduced on the workers from a
+copy of that page instead. There are half as many workers as logical CPUs,
+between two and four: at normal game speed the simulation needs about one core,
+and in the pan-and-zoom benchmark more than four workers neither filled missing
+pages faster nor kept frames shorter, because the graphics thread's per-frame
+launch and install budgets set the pace. `GLOB2_BACKGROUND_RENDER_WORKERS=N` (1 to 64)
+overrides the count for measurements. Until it
 arrives the view draws the same page at its nearest other density, or the
 overview beneath where none exists. Uniform animated cells (open water) draw over
 their page from one shared tile per material variant at the page's density, so
@@ -503,7 +510,7 @@ an animation step recomposes and uploads those few tiles, not the pages. Any
 other animation or surf step of a valid page (shorelines) queues its changed
 cells the same way while the view keeps drawing the current pixels; finished
 cells upload as dirty rectangles. Each frame describes at most
-1024 cells for launches, reduces at most four pages from retained native pages,
+1024 cells for launches (a native page copied for a reduction counts as 64),
 keeps at most 64 MiB of page buffers in flight, and installs at most four
 finished pages within 8 MiB; pages nearest the view centre go
 first, and work for pages the view left is cancelled. Missing pages take build

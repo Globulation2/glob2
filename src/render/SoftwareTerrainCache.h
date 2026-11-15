@@ -164,6 +164,9 @@ class SoftwareTerrainCache
 								int scale, int reduction);
 	std::uint64_t frame = 0, hits = 0, rebuilds = 0;
 	std::uint64_t textureUse = 0, reductions = 0;
+	// Visible cold pages drawn from another density, and those with none, where
+	// the overview shows through; counted once a frame each, for benchmarks.
+	std::uint64_t standIns = 0, uncovered = 0;
 	// Bytes of every chunk's kept masks; shared so a mask outliving the cache is safe.
 	std::shared_ptr<std::atomic<std::size_t>> maskTotal = std::make_shared<std::atomic<std::size_t>>(0);
 	SDL_Rect paintBounds{};
@@ -229,6 +232,8 @@ class SoftwareTerrainCache
 	std::uint64_t cacheHits() const { return hits; }
 	std::uint64_t cacheRebuilds() const { return rebuilds; }
 	std::uint64_t cacheReductions() const { return reductions; }
+	std::uint64_t cacheStandIns() const { return standIns; }
+	std::uint64_t cacheUncovered() const { return uncovered; }
 	std::size_t maskBytes() const { return *maskTotal; }
 	// A torus visits every page each frame. Keep its complete terrain working
 	// set resident instead of selecting density independently for each tile.

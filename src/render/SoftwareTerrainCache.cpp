@@ -548,7 +548,8 @@ std::pair<bool, bool> classifyAlpha(const SDL_Surface &surface, SDL_Rect rect)
 // job-local tile and box-filters it into the page, as the serial path does.
 void buildTerrainJob(std::span<TerrainCellResult> results,
                      const TerrainVisual::Compositor::CpuMaterials &materials, int samplingScale,
-                     int downsample, int pitch, std::size_t cellsPerJob, std::size_t job)
+                     int downsample, int pitch, std::size_t cellsPerJob, std::size_t job,
+                     const Uint32 *nativePage = nullptr)
 {
     TerrainVisual::Compositor::CpuScratch scratch;
     std::vector<Uint32> native;
@@ -569,7 +570,20 @@ void buildTerrainJob(std::span<TerrainCellResult> results,
         output.w = output.h = 32 * samplingScale / downsample;
         output.pitch = pitch;
         output.pixels = result.pixels;
-        if (result.input.discovered)
+        if (result.input.discovered && nativePage)
+        {
+            // A retained native page already holds this cell's composition.
+            SDL_Surface tile{};
+            tile.format = SDL_PIXELFORMAT_ARGB8888;
+            tile.w = tile.h = NativeTilePixels;
+            tile.pitch = SoftwareTerrainCache::ChunkPixels * 4;
+            tile.pixels = const_cast<Uint32 *>(nativePage) +
+                std::size_t(result.index / SoftwareTerrainCache::ChunkTiles) * NativeTilePixels * SoftwareTerrainCache::ChunkPixels +
+                std::size_t(result.index % SoftwareTerrainCache::ChunkTiles) * NativeTilePixels;
+            reduceTile(&tile, &output, 0, 0, downsample);
+            std::tie(result.opaque, result.empty) = classifyAlpha(output, {0, 0, output.w, output.h});
+        }
+        else if (result.input.discovered)
         {
             if (!result.reused && result.keepMask)
                 result.mask = materials.mask(result.input.recipe, samplingScale);
@@ -615,6 +629,9 @@ struct TerrainPendingPage
     // its changed cells into cellPixels, one cell after another.
     std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels{nullptr, SDL_DestroySurface};
     std::vector<Uint32> cellPixels;
+    // A reduced page from a retained native page: a copy of its pixels, which
+    // workers reduce instead of composing the cells again.
+    std::vector<Uint32> native;
     bool refresh = false;
     int pitch = 0;
     Uint64 discoveryRevision = 0;
@@ -640,7 +657,8 @@ void submitPage(const std::shared_ptr<TerrainPendingPage> &page)
                 try
                 {
                     buildTerrainJob(page->results, *page->materials, page->scale, page->downsample,
-                                    page->pitch, page->cellsPerJob, job);
+                                    page->pitch, page->cellsPerJob, job,
+                                    page->native.empty() ? nullptr : page->native.data());
                 }
                 catch (...)
                 {
@@ -1326,6 +1344,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					if (tile.discovered)
 						fresh->hasShoreline |= hasShoreline(tile.recipe, compositor);
 				fresh->parked = std::move(page->pixels);
+				if (!page->native.empty()) ++reductions;
 				fresh->discoveryRevision = page->discoveryRevision;
 				fresh->discoveryTeams = page->discoveryTeams;
 				fresh->discoveryWhole = page->discoveryWhole;
@@ -1446,7 +1465,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 			return changed.size();
 		};
 		const auto launch = [&](int wx, int wy, const std::array<Tile, ChunkTiles * ChunkTiles> &tiles,
-								const std::array<Uint32, SourceSpan * SourceSpan> &sources)
+								const std::array<Uint32, SourceSpan * SourceSpan> &sources,
+								const SDL_Surface *nativePixels = nullptr)
 		{
 			auto page = std::make_shared<TerrainPendingPage>();
 			page->x = wx;
@@ -1478,6 +1498,14 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 			auto *base = static_cast<Uint8 *>(page->pixels->pixels);
 			const int pitch = page->pixels->pitch;
 			page->pitch = pitch;
+			if (nativePixels)
+			{
+				page->native.resize(std::size_t(ChunkPixels) * ChunkPixels);
+				for (int row = 0; row < ChunkPixels; ++row)
+					std::memcpy(page->native.data() + std::size_t(row) * ChunkPixels,
+								static_cast<const Uint8 *>(nativePixels->pixels) + std::size_t(row) * nativePixels->pitch,
+								std::size_t(ChunkPixels) * 4);
+			}
 			page->results.reserve(tiles.size());
 			for (unsigned i = 0; i < tiles.size(); ++i)
 			{
@@ -1487,7 +1515,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				result.pixels = base + (i / ChunkTiles) * n * pitch + (i % ChunkTiles) * n * 4;
 				std::array<TerrainVisual::MaterialId, 4> palette;
 				const unsigned paletteCount = tiles[i].recipe.palette(palette);
-				result.keepMask = tiles[i].discovered && !tiles[i].recipe.uniform() &&
+				result.keepMask = !nativePixels && tiles[i].discovered && !tiles[i].recipe.uniform() &&
 					std::any_of(palette.begin(), palette.begin() + paletteCount,
 								[&](auto id) { return compositor.animated(id); });
 				page->results.push_back(std::move(result));
@@ -1499,12 +1527,11 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 			pending.push_back(page);
 			submitPage(page);
 		};
-		// Graphics-thread work this frame for the workers: cells described or
-		// gathered for launches, and reductions from native pages.
+		// Graphics-thread work this frame for the workers: cells described for
+		// launches, and native pages copied for reductions, a quarter as costly.
 		constexpr std::size_t LaunchUnitsPerFrame = 1024;
-		constexpr int MaxReductionsPerFrame = 4;
+		constexpr std::size_t ReductionUnits = ChunkTiles * ChunkTiles / 4;
 		std::size_t launchUnits = 0;
-		int reductionsThisFrame = 0;
 		const std::size_t pendingLimit = std::size_t(std::max(1u, BackgroundWork::workers())) * 2 + 2;
 		// In-flight buffers are bounded in bytes too: at four times density a
 		// page is 16 MiB. One launch always goes when nothing is in flight.
@@ -1513,8 +1540,9 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 		{
 			std::size_t total = 0;
 			for (const auto &page : pending)
-				total += page->pixels ? std::size_t(page->pixels->pitch) * page->pixels->h
-									  : page->cellPixels.size() * sizeof(Uint32);
+				total += (page->pixels ? std::size_t(page->pixels->pitch) * page->pixels->h
+									   : page->cellPixels.size() * sizeof(Uint32)) +
+						 page->native.size() * sizeof(Uint32);
 			return total;
 		};
 		const auto roomFor = [&](std::size_t bytes) { return pending.empty() || pendingBytes() + bytes <= PendingBytes; };
@@ -1618,7 +1646,6 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 						{entry, (cx * ChunkTiles - vx) * 32, (cy * ChunkTiles - vy) * 32});
 					continue;
 				}
-				Chunk *reductionSource = nullptr;
 				const auto describeTiles = [&](std::array<Tile, ChunkTiles * ChunkTiles> &tiles)
 				{
 					if (sameTerrain && discoveryCurrent)
@@ -1646,13 +1673,14 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							return page.get();
 					return nullptr;
 				};
-				// A cold page in an interactive view: a retained native page reduces
-				// here, a few per frame; otherwise workers compose it, launched within
-				// the frame's budget, and the view draws a stand-in meanwhile.
+				// A cold page in an interactive view: workers compose it, or reduce it
+				// from a copy of a retained native page, launched within the frame's
+				// budget, and the view draws a stand-in meanwhile.
 				if (deferring && (!entry || !entry->valid))
 				{
-					reductionSource = nullptr;
-					if (downsample > 1 && reductionsThisFrame < MaxReductionsPerFrame)
+					const SDL_Surface *nativePixels = nullptr;
+					const Chunk *nativeSource = nullptr;
+					if (downsample > 1)
 						for (auto &c : chunks)
 							if (c->x == wx && c->y == wy && c->scale == 1 && c->downsample == 1 && c->valid &&
 								c->seed == map.terrainSeed() && c->recipeTerrainRevision == terrainRevision &&
@@ -1660,39 +1688,44 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 								(wholeMap || (c->discoveryRevision == map.discoveryRevision() &&
 											  c->discoveryTeams == visibleTeams)) &&
 								!pageChanged(*c))
-								reductionSource = c.get();
-					if (reductionSource)
-						++reductionsThisFrame;
-					else
+								if (auto *pixels = c->image ? c->image->getSDLSurface() : c->parked.get())
+								{
+									nativeSource = c.get();
+									nativePixels = pixels;
+								}
+					const std::size_t units = nativeSource ? ReductionUnits : ChunkTiles * ChunkTiles;
+					if (auto *queued = pendingFor(resolution, downsample))
+						queued->wanted = frame;
+					else if (launchUnits + units <= LaunchUnitsPerFrame && pending.size() < pendingLimit &&
+							 roomFor(pageBytes + (nativeSource ? std::size_t(ChunkPixels) * ChunkPixels * 4 : 0)))
 					{
-						if (auto *queued = pendingFor(resolution, downsample))
-							queued->wanted = frame;
-						else if (launchUnits + ChunkTiles * ChunkTiles <= LaunchUnitsPerFrame &&
-								 pending.size() < pendingLimit && roomFor(pageBytes))
+						if (nativeSource)
+							launch(wx, wy, nativeSource->tiles, sources, nativePixels);
+						else
 						{
 							std::array<Tile, ChunkTiles * ChunkTiles> tiles{};
 							describeTiles(tiles);
 							launch(wx, wy, tiles, sources);
-							launchUnits += ChunkTiles * ChunkTiles;
 						}
-						else
-							waiting = true;
-						if (Chunk *substitute = standIn(wx, wy))
-						{
-							substitute->used = frame;
-							copies.push_back({substitute, (cx * ChunkTiles - vx) * 32, (cy * ChunkTiles - vy) * 32});
-						}
-						else
-							incomplete = true;
-						continue;
+						launchUnits += units;
 					}
+					else
+						waiting = true;
+					if (Chunk *substitute = standIn(wx, wy))
+					{
+						substitute->used = frame;
+						copies.push_back({substitute, (cx * ChunkTiles - vx) * 32, (cy * ChunkTiles - vy) * 32});
+						++standIns;
+					}
+					else
+					{
+						incomplete = true;
+						++uncovered;
+					}
+					continue;
 				}
 				std::array<Tile, ChunkTiles * ChunkTiles> tiles{};
-				// A reduction's native page already holds this view's current tiles.
-				if (reductionSource)
-					tiles = reductionSource->tiles;
-				else
-					describeTiles(tiles);
+				describeTiles(tiles);
 				// Reduced pages average native composition. A retained native
 				// page is already that exact input, including coverage and alpha;
 				// do not sample every contour again just to change zoom density.
