@@ -429,9 +429,21 @@ static int run(int argc, char **argv)
             const int frameIntervalMs = std::max(0, std::getenv("GLOB2_BENCH_FRAME_INTERVAL_MS")
                 ? std::atoi(std::getenv("GLOB2_BENCH_FRAME_INTERVAL_MS")) : 0);
             benchmarkStart = SDL_GetPerformanceCounter();
+            // A low-memory trim at one measured frame (GLOB2_BENCH_TRIM_AT=frame).
+            const int trimAt = std::getenv("GLOB2_BENCH_TRIM_AT") ? std::atoi(std::getenv("GLOB2_BENCH_TRIM_AT")) : -1;
             for (int i = -warmupFrames; i < frames; ++i)
             {
                 if (i == 0) initialCoverage = compositor.highResolutionCoverage();
+                const auto snapshotBytes = [&] { return gfx->renderResources() ? gfx->renderResources()->retainedBytes() : 0; };
+                const auto deviceBytes = [&] { return gfx->renderDevice() ? gfx->renderDevice()->telemetry().resourceBytes : 0; };
+                if (i == trimAt) {
+                    std::printf("PRESENTATION_TRIM frame=%d reason=low-memory snapshot_bytes=%zu device_bytes=%zu\n", i,
+                        snapshotBytes(), deviceBytes());
+                    gfx->trimPresentationMemory(GAGCore::PresentationTrim::LowMemory);
+                }
+                if (trimAt >= 0 && i > trimAt && i <= trimAt + 60 && (i - trimAt) % 10 == 0)
+                    std::printf("PRESENTATION_TRIM_AFTER frame=%d frames=%d pending=%d snapshot_bytes=%zu device_bytes=%zu\n", i,
+                        i - trimAt, int(gfx->presentationTrimPending()), snapshotBytes(), deviceBytes());
                 if(!finishRendering())ContextAccess::backend(*gfx)->present();
                 const auto telemetryBefore=gfx->renderDevice()?gfx->renderDevice()->telemetry():GAGCore::RenderTelemetry{};
                 const auto scopesBefore = PerformanceTelemetry::collector().window;

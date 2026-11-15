@@ -160,18 +160,24 @@ class DeviceRenderBackend final : public RenderBackend
         bool retained = false;
         std::size_t retainedBytes = 0;
         TextureDescriptor::BudgetClass category = TextureDescriptor::BudgetClass::General;
+        // Presentations counted when it was last drawn (trim's idle test).
+        std::uint64_t lastFrame = 0;
     };
     std::unordered_map<const void *, TextureEntry> textures;
     std::list<const void *> recent;
     std::array<std::size_t, 4> retainedBytes{};
+    std::uint64_t presentedFrames = 0;
     using TextureIterator = std::unordered_map<const void *, TextureEntry>::iterator;
     TextureIterator insertEntry(const void *key, TextureHandle handle)
     {
         recent.push_back(key);
-        return textures.emplace(key, TextureEntry{handle, std::prev(recent.end())}).first;
+        auto found = textures.emplace(key, TextureEntry{handle, std::prev(recent.end())}).first;
+        found->second.lastFrame = presentedFrames;
+        return found;
     }
     void touch(TextureEntry &entry)
     {
+        entry.lastFrame = presentedFrames;
         if (!entry.retained) recent.splice(recent.end(), recent, entry.recentPosition);
     }
     TextureIterator eraseEntry(TextureIterator it)
@@ -471,6 +477,8 @@ class DeviceRenderBackend final : public RenderBackend
         for (auto it = textures.begin(); it != textures.end();) it = eraseEntry(it);
         textures = std::move(previous.textures); recent = std::move(previous.recent);
         retainedBytes = previous.retainedBytes;
+        // Adopted entries keep their idle age for trim.
+        presentedFrames = std::max(presentedFrames, previous.presentedFrames);
         previous.textures.clear(); previous.recent.clear(); previous.retainedBytes = {};
     }
     bool blitCached(const void *key, const SDL_Rect &src, const SDL_FRect &dst, Uint8 alpha) override
@@ -491,7 +499,25 @@ class DeviceRenderBackend final : public RenderBackend
         return true;
     }
     void reset() override { recorder.cancel(); device.reset(); submittedFrameIdentity=presentedFrameIdentity=0;aborted=false;lastPresented=false;intentionalDefer=lastIntentionalDefer=false;fatalReason.clear(); }
-    void present() override { flush();lastPresented=false;lastIntentionalDefer=intentionalDefer;
+    // Erases up to `limit` cached snapshots not drawn in the last `idleFrames`
+    // presentations (zero: any not drawn since the last one); their owners keep
+    // the pixels to re-create them on a draw.
+    // Queued and submitted work keep the revisions they reference. Returns how
+    // many went: fewer than `limit` means none is left to trim.
+    // Walks the least-recently-used list from its oldest end, so each step is
+    // constant time: the first entry drawn too recently ends the walk. Retained
+    // entries are not on it; their owners released the pixels.
+    std::size_t trim(std::size_t limit, std::uint64_t idleFrames)
+    {
+        std::size_t erased = 0;
+        while (erased < limit && !recent.empty()) {
+            const auto found = textures.find(recent.front());
+            if (found->second.lastFrame + idleFrames >= presentedFrames) break;
+            eraseEntry(found); ++erased;
+        }
+        return erased;
+    }
+    void present() override { ++presentedFrames;flush();lastPresented=false;lastIntentionalDefer=intentionalDefer;
         if(!fatalReason.empty())throw std::runtime_error(fatalReason);
         if(aborted){device.discardFrame();submittedFrameIdentity=presentedFrameIdentity;}else{device.present();presentedFrameIdentity=submittedFrameIdentity;lastPresented=true;}
         aborted=false;intentionalDefer=false;recorder.begin(++frameIdentity,width,height); }
@@ -543,6 +569,11 @@ void adoptDeviceTextures(RenderBackend &previous, RenderBackend &replacement)
     auto *to = dynamic_cast<DeviceRenderBackend *>(&replacement);
     if (!from || !to) throw std::invalid_argument("Device textures move between device adapters only");
     to->adopt(*from);
+}
+std::size_t trimDeviceTextures(RenderBackend &backend, std::size_t limit, std::uint64_t idleFrames)
+{
+    auto *device = dynamic_cast<DeviceRenderBackend *>(&backend);
+    return device ? device->trim(limit, idleFrames) : 0;
 }
 bool pushDeviceTarget(RenderBackend &backend, TextureSnapshot target, float width, float height)
 {
