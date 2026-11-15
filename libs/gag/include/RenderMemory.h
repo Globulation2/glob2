@@ -28,6 +28,10 @@ struct Report
 	//! Texture-array pages, which duplicate their source textures.
 	std::size_t gpuArrayBytes = 0;
 	std::array<std::size_t, unsigned(Auxiliary::Count)> gpuAuxiliaryBytes{};
+	//! A RenderDevice's own accounting, zero without one: the device's resident
+	//! textures, depth, geometry and staging (RenderTelemetry::resourceBytes), and
+	//! the logical CPU snapshots RenderResources keeps to restore them.
+	std::size_t deviceResourceBytes = 0, deviceSnapshotBytes = 0;
 	//! Image decodes since launch, and the pixels they produced.
 	std::uint64_t imageDecodes = 0, imageDecodedBytes = 0;
 	//! The process's peak resident set, or zero where it is not measured.

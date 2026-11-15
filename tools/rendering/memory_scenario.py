@@ -45,6 +45,8 @@ GAUGES = (
     ('gpu_skin_atlas_bytes', 'GPU skin atlas'),
     ('gpu_view_tile_bytes', 'GPU view tiles'),
     ('gpu_backend_texture_bytes', 'Portable renderer textures'),
+    ('device_resource_bytes', 'Render device resources'),
+    ('device_snapshot_bytes', 'Render device CPU snapshots'),
 )
 
 
@@ -178,7 +180,7 @@ def table(summary, baseline=None):
     lines.append(row('GPU driver memory', summary['peak_gpu_driver_bytes'], before.get('peak_gpu_driver_bytes')))
     count = lambda value: 'n/a' if value is None else str(value)
     for key, name in GAUGES:
-        lines.append(row(name, summary['peaks'][key], before.get('peaks', {}).get(key),
+        lines.append(row(name, summary['peaks'].get(key), before.get('peaks', {}).get(key),
                          count if key.endswith('_frames') else mib))
     lines.append(row('Image decodes (count)', summary['image_decodes'], before.get('image_decodes'), str))
     lines.append(row('Image decode output', summary['image_decoded_bytes'], before.get('image_decoded_bytes')))
