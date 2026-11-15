@@ -1775,6 +1775,17 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				if (!entry->valid || sourcesChanged || entry->tiles != tiles || (gpuPages && !gpuPages->find(*entry)))
 				{
 					auto *target = entry->image ? entry->image->getSDLSurface() : entry->parked.get();
+					// A page retired after the portable renderer released its pixels
+					// keeps neither an image nor parked pixels: compose into new ones.
+					if (!target)
+					{
+						entry->valid = false;
+						entry->image.reset();
+						const int side = ChunkPixels * entry->scale / entry->downsample;
+						entry->parked.reset(SDL_CreateSurface(side, side, SDL_PIXELFORMAT_ARGB8888));
+						if (!entry->parked) throw std::bad_alloc();
+						target = entry->parked.get();
+					}
 					const bool wasValid = entry->valid;
 					// Cells written by this rebuild; an uploaded page updates only those.
 					std::array<bool, ChunkTiles * ChunkTiles> dirty{};

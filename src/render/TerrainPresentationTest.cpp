@@ -2164,6 +2164,34 @@ TEST_SUITE("TerrainPresentation")
 			[](const auto &chunk) { return chunk->scale == 4; })) < added);
 		CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
 	}
+	TEST_CASE("a portable page retired after its pixels were released composes again [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
+			.screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		REQUIRE(globals->gfx->backendSwitchStatus().active == GAGCore::RendererBackend::PortableSDL);
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		SoftwareTerrainCache cache;
+		const auto draw = [&]
+		{
+			globals->gfx->beginMapTransform(1, 0, 0, 0, 0, 256, 256);
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 7, 7, 0, 0, fixture.team->me, true));
+			cache.draw(*globals->gfx);
+			globals->gfx->endMapTransform();
+		};
+		draw();
+		REQUIRE(!cache.chunks.empty());
+		// What retiring a texture leaves when the portable renderer had already
+		// released the page's pixels: takePixels() has nothing to park.
+		auto &page = *cache.chunks.front();
+		page.image.reset();
+		page.parked.reset();
+		page.valid = false;
+		draw();
+		CHECK(page.valid);
+		CHECK(chunkPixels(page) != nullptr);
+	}
 	TEST_CASE("offscreen terrain density follows the target and stays stable across capture tiles "
 			  "[display]")
 	{
