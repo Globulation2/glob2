@@ -1,0 +1,20 @@
+{
+  "version": "15.1.0",
+  "commit": "1062752a891c95b2bfeed9e356562d88f9df84ac",
+  "license": "See LICENSE.txt in the pinned source (BSD-3-Clause and compatible licences); build-only, not distributed",
+  "purpose": "Build-only offline SPIR-V compiler for the SDL GPU (Vulkan) and WebGPU shader artifacts; never shipped or linked.",
+  "source": {
+    "url": "https://github.com/KhronosGroup/glslang/archive/refs/tags/15.1.0.tar.gz",
+    "sha256": "4bdcd8cdb330313f0d4deed7be527b0ac1c115ff272e492853a6e98add61b4bc",
+    "directory": "glslang-15.1.0"
+  },
+  "cmake_options": [
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DENABLE_OPT=OFF",
+    "-DENABLE_GLSLANG_BINARIES=ON",
+    "-DENABLE_HLSL=OFF",
+    "-DGLSLANG_TESTS=OFF",
+    "-DBUILD_TESTING=OFF",
+    "-DBUILD_SHARED_LIBS=OFF"
+  ]
+}

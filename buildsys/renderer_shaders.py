@@ -4,6 +4,7 @@ import hashlib
 import importlib.util
 import json
 import os
+import sys
 
 
 def inputs(root):
@@ -51,7 +52,11 @@ def prepare(root, output):
         return directory
     if metal_sdk:
         raise ValueError('Apple offline compilation requires verified GLOB2_RENDER_SHADER_INPUT')
-    compiler = os.environ.get('GLOB2_GLSLANG')
+    # GLOB2_GLSLANG overrides (empty disables); otherwise use the pinned compiler
+    # that buildsys/glslang_tool.py provisioned, so dev builds get Vulkan SPIR-V.
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import glslang_tool
+    compiler = glslang_tool.resolve_for_build()
     naga = os.environ.get('GLOB2_NAGA')
     spirv_cross = os.environ.get('GLOB2_SPIRV_CROSS')
     dxc = os.environ.get('GLOB2_DXC')
@@ -87,3 +92,51 @@ def verify_compute(root):
     spec.loader.exec_module(rules)
     rules.verify()
 
+
+
+# SDL GPU driver family each mobile target needs, and the artifact format the
+# runtime accepts for it (libs/gag/src/SDLGPUDevice.cpp sdlGPUUnavailableReason).
+MOBILE_SDL_GPU = {'android': ('vulkan', 'spirv', '.spv'), 'ios': ('metal', 'metallib', '.metallib')}
+
+
+def missing_sdl_gpu_shaders(directory, target):
+    """Problems that would leave SDL GPU unavailable in a mobile package; empty when complete."""
+    family, format_name, suffix = MOBILE_SDL_GPU[target]
+    directory = Path(directory)
+    try:
+        meta = json.loads((directory / 'metadata.json').read_text())
+    except (OSError, ValueError) as error:
+        return ['renderer shader metadata unreadable: ' + str(error)]
+    variants = meta.get('variants', [])
+    artifacts = meta.get('shaderArtifacts', {}).get(family, {})
+    problems = []
+    if not artifacts:
+        return ['no ' + family + ' (' + format_name + ') shader artifacts in ' + str(directory)]
+    for variant in variants:
+        for stage in ('vertex', 'fragment'):
+            receipt = artifacts.get(variant, {}).get(stage)
+            if not receipt:
+                problems.append('missing ' + family + ' ' + variant + ' ' + stage + ' receipt')
+                continue
+            path = directory / receipt.get('path', '')
+            if receipt.get('format') != format_name or path.suffix != suffix or not path.is_file():
+                problems.append('missing or mismatched ' + receipt.get('path', '?'))
+            elif hashlib.sha256(path.read_bytes()).hexdigest() != receipt.get('sha256'):
+                problems.append('hash mismatch for ' + receipt['path'])
+            elif format_name == 'spirv' and path.read_bytes()[:4] != bytes.fromhex('03022307'):
+                problems.append('not SPIR-V: ' + receipt['path'])
+            elif format_name == 'metallib' and not path.read_bytes().startswith(b'MTLB'):
+                problems.append('not a Metal library: ' + receipt['path'])
+    return problems
+
+
+def require_sdl_gpu_shaders(directory, target):
+    """Fail packaging loudly instead of shipping a mobile build without SDL GPU."""
+    problems = missing_sdl_gpu_shaders(directory, target)
+    if problems:
+        remedy = ('Provision pinned glslang with python3 buildsys/glslang_tool.py (or set GLOB2_GLSLANG) '
+                  'and rebuild.' if target == 'android' else
+                  'Set GLOB2_RENDER_SHADER_INPUT to a verified translated bundle plus GLOB2_METAL_SDK and '
+                  'GLOB2_METAL_TOOL_LOCK (docs/architecture/rendering.md, "Portable shader build artifacts").')
+        raise ValueError('SDL GPU shaders are missing for ' + target + ' packaging: ' + '; '.join(problems[:6]) +
+                         ('; ...' if len(problems) > 6 else '') + '. ' + remedy)

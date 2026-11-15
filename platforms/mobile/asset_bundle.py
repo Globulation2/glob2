@@ -72,3 +72,52 @@ def verify_apk_assets(package_path, prefix='assets/glob2-bundle/'):
             digest.update(name.encode() + b'\0' + hashlib.sha256(contents).digest())
         if digest.hexdigest() != lines[0]:
             raise ValueError('Packaged assets do not match their indexed identity')
+
+
+# Driver family, artifact format and magic the native SDL GPU factory accepts
+# per mobile platform (libs/gag/src/SDLGPUDevice.cpp sdlGPUUnavailableReason).
+SDL_GPU_SHADERS = {'android': ('vulkan', 'spirv', bytes.fromhex('03022307')),
+                   'ios': ('metal', 'metallib', b'MTLB')}
+
+
+def verify_sdl_gpu_shaders(read, target):
+    """Check a package holds every SDL GPU shader its metadata advertises.
+
+    ``read(relative)`` returns the bytes of a file below the packaged shader
+    directory, raising KeyError or OSError when it is absent. Returns the
+    number of verified shader binaries; raises ValueError naming what is
+    missing so a package without SDL GPU never passes as complete.
+    """
+    import json
+    family, format_name, magic = SDL_GPU_SHADERS[target]
+    try:
+        meta = json.loads(read('metadata.json'))
+    except (KeyError, OSError, ValueError) as error:
+        raise ValueError('Package lacks readable renderer shader metadata') from error
+    variants = meta.get('variants') or []
+    artifacts = meta.get('shaderArtifacts', {}).get(family)
+    if not variants or not artifacts:
+        raise ValueError('Package has no SDL GPU ' + family + ' shaders; the game would report SDL GPU unavailable')
+    count = 0
+    for variant in variants:
+        for stage in ('vertex', 'fragment'):
+            receipt = artifacts.get(variant, {}).get(stage)
+            if not receipt or receipt.get('format') != format_name:
+                raise ValueError('Package lacks SDL GPU ' + family + ' ' + variant + ' ' + stage + ' shader')
+            relative = PurePosixPath(receipt['path'])
+            if relative.is_absolute() or '..' in relative.parts:
+                raise ValueError('Invalid packaged shader path: ' + receipt['path'])
+            try:
+                contents = read(relative.as_posix())
+            except (KeyError, OSError) as error:
+                raise ValueError('Package is missing SDL GPU shader ' + receipt['path']) from error
+            if not contents.startswith(magic) or hashlib.sha256(contents).hexdigest() != receipt.get('sha256'):
+                raise ValueError('Packaged SDL GPU shader does not match its receipt: ' + receipt['path'])
+            count += 1
+    return count
+
+
+def verify_apk_sdl_gpu(package_path, prefix='assets/glob2-bundle/'):
+    """Verify the Vulkan SPIR-V set inside an APK or AAB."""
+    with zipfile.ZipFile(package_path) as package:
+        return verify_sdl_gpu_shaders(lambda relative: package.read(prefix + 'shaders/' + relative), 'android')

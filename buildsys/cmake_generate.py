@@ -85,7 +85,13 @@ def shaders(args):
 
 def shader_inputs(args):
     import renderer_shaders
-    print(';'.join(path.as_posix() for path in renderer_shaders.inputs(ROOT)))
+    import glslang_tool
+    paths = list(renderer_shaders.inputs(ROOT))
+    # Regenerate SPIR-V when the provisioned compiler appears or changes.
+    compiler = glslang_tool.resolve_for_build()
+    if compiler and Path(compiler).is_file():
+        paths.append(Path(compiler).resolve())
+    print(';'.join(path.as_posix() for path in paths))
 
 
 def hive_api(args):

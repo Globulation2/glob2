@@ -476,7 +476,7 @@ glob2_bridge(shader_inputs shader-inputs)
 add_custom_command(OUTPUT "${stamps}/shaders"
   BYPRODUCTS "${GLOB2_OUT}/shaders/RendererShaderLayouts.h"
   COMMAND ${bridge} shaders --builddir "${GLOB2_OUT}" --stamp "${stamps}/shaders"
-  DEPENDS "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/buildsys/renderer_shaders.py" ${shader_inputs}
+  DEPENDS "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/buildsys/renderer_shaders.py" "${GLOB2_ROOT}/buildsys/glslang_tool.py" ${shader_inputs}
           "${GLOB2_ROOT}/tools/shaders/gradient_compute.py" "${GLOB2_ROOT}/tools/shaders/gradient_preparation_rules.py"
   WORKING_DIRECTORY "${GLOB2_ROOT}" COMMENT "Generating renderer shader assets" VERBATIM)
 
