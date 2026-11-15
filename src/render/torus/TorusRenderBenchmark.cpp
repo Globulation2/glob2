@@ -196,6 +196,20 @@ class TorusRenderBenchmark
             if(!image.good())throw std::runtime_error("Benchmark capture write failed");
             return;
         }
+        if(gfx->backendSwitchStatus().active==GAGCore::RendererBackend::PortableSDL) {
+            // SDL's renderer can leave a render-target texture bound, so read
+            // its window through the backend rather than the current GL framebuffer.
+            auto *backend=ContextAccess::backend(*gfx);
+            backend->flush();
+            std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> original(backend->capture(),SDL_DestroySurface);
+            std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> pixels(
+                original?SDL_ConvertSurface(original.get(),SDL_PIXELFORMAT_RGB24):nullptr,SDL_DestroySurface);
+            if(!pixels)throw std::runtime_error("Benchmark portable capture failed");
+            std::ofstream image(path,std::ios::binary);image<<"P6\n"<<pixels->w<<" "<<pixels->h<<"\n255\n";
+            for(int y=0;y<pixels->h;++y)image.write(static_cast<const char *>(pixels->pixels)+y*pixels->pitch,pixels->w*3);
+            if(!image.good())throw std::runtime_error("Benchmark capture write failed");
+            return;
+        }
 #ifdef HAVE_OPENGL
         GLint viewport[4];
         glGetIntegerv(GL_VIEWPORT, viewport);
