@@ -69,6 +69,10 @@ namespace GAGCore
 	// EXPERIMENTAL is a bit buggy and "not EXPERIMENTAL" is bugfree but slow
 	// when rendering clouds or other density layers (GraphicContext::drawAlphaMap).
 	extern const bool EXPERIMENTAL;
+	class RenderDevice;
+	// Asset workers prepare HD chains in the block format this device samples
+	// (premultiplied BC3 on SDL GPU), or none. Call whenever a device replaces another.
+	void selectDeviceBlockCompression(const RenderDevice &device);
 
 #ifdef HAVE_OPENGL
 	// Cache for GL state, call gl only if necessary. GL optimisations.
