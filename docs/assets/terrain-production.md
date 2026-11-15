@@ -682,9 +682,11 @@ current and next only. Unused variants, phases and HD sources are retired as the
 selection changes; offscreen materials do not advance their prepared revisions
 merely because the visual clock changes.
 
-Published CPU material snapshots own their RGBA pixels. Retiring a source or
-changing the active selection therefore leaves a retained snapshot usable by
-an in-flight composition batch. CPU jobs snapshot only the recipes in each
+Published CPU material snapshots share ownership of their RGBA pixels with the
+compositor's prepared textures, which copy them before writing while a
+snapshot holds them, so a snapshot of unchanged textures holds no second copy.
+Retiring a source or changing the active selection therefore leaves a retained
+snapshot usable by an in-flight composition batch. CPU jobs snapshot only the recipes in each
 bounded group, reducing the group size when necessary to stay within the existing
 4 MiB in-flight reservation. Reloading unchanged native sources after eviction
 does not invalidate already composed pages. Compiled-pack data and catalog metadata remain
