@@ -1192,6 +1192,12 @@ int GraphicContext::maximumTextureSize() const
 			}
             backendStatus.active = presentationDevice ? configuredBackend : (optionFlags & USEGPU) ? RendererBackend::LegacyGL :
                 (optionFlags & PORTABLEGPU) ? RendererBackend::PortableSDL : RendererBackend::Software;
+            // Device smoke harnesses (platforms/mobile/sdl_gpu_smoke.py) read this
+            // line to tell the requested backend from a silent fallback.
+            SDL_Log("Glob2 renderer active: %s (requested %s)%s%s",
+                    std::string(rendererBackendName(backendStatus.active)).c_str(),
+                    std::string(rendererBackendName(backendStatus.requested)).c_str(),
+                    backendStatus.reason.empty() ? "" : "; ", backendStatus.reason.c_str());
 			return true;
 		}
 	}

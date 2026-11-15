@@ -93,6 +93,31 @@ public final class Glob2Activity extends SDLActivity {
         keepLaunchLink(intent);
     }
 
+    // Device validation (platforms/mobile/sdl_gpu_smoke.py) selects the renderer
+    // and an AI demo game on a bundled map through launch extras. Only these
+    // whitelisted values become native arguments; anything else is ignored.
+    static final String EXTRA_RENDERER = "org.globulation2.glob2.extra.RENDERER";
+    static final String EXTRA_DEMO_MAP = "org.globulation2.glob2.extra.DEMO_MAP";
+    static final String EXTRA_DEMO_TICKS = "org.globulation2.glob2.extra.DEMO_TICKS";
+    @Override
+    protected String[] getArguments() {
+        android.content.Intent intent = getIntent();
+        java.util.ArrayList<String> arguments = new java.util.ArrayList<>();
+        if (intent == null) return new String[0];
+        String map = intent.getStringExtra(EXTRA_DEMO_MAP);
+        if (map != null && map.matches("[A-Za-z0-9_]{1,64}")) {
+            int ticks = Math.max(100, Math.min(intent.getIntExtra(EXTRA_DEMO_TICKS, 20000), 200000));
+            java.util.Collections.addAll(arguments, "dev", "random-games", "--display", "--runs", "1",
+                "--ticks", Integer.toString(ticks), "--map", map);
+        }
+        String renderer = intent.getStringExtra(EXTRA_RENDERER);
+        if (renderer != null && java.util.Arrays.asList("auto", "sdl-gpu", "programmable-gl", "portable-sdl", "software").contains(renderer)) {
+            if (arguments.isEmpty()) arguments.add("play");
+            java.util.Collections.addAll(arguments, "--renderer", renderer);
+        }
+        return arguments.toArray(new String[0]);
+    }
+
     @Override
     protected void onCreate(Bundle state) {
         keepLaunchLink(getIntent());

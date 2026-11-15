@@ -31,6 +31,62 @@ compatibility must be checked with the shared replay-verification workflow befor
 shipping a mobile client.
 
 
+## SDL GPU smoke and hardware validation
+
+`platforms/mobile/sdl_gpu_smoke.py` runs the installed package on one named
+emulator or device with SDL GPU selected through launch extras (renderer and an
+AI demo game on a bundled map; `Glob2Activity` accepts only whitelisted values).
+It checks that the installed APK carries the verified Vulkan SPIR-V, that the
+game logs `Glob2 renderer active: sdl-gpu` rather than a fallback, then drives
+panning and zooming over the map with HD artwork, background/foreground (surface
+loss and recovery), a low-memory trim event and a rotation. Frame presentation
+times come from SurfaceFlinger, outside the game: each phase reports p50/p90/p99,
+maximum and the five worst frames, and counts frames over `--hitch-ms` (50 ms).
+`--max-hitches N` turns the count into a failure. Results, screenshots, logcat and
+meminfo go to `build/mobile-smoke-sdl-gpu/`.
+
+```sh
+python3 platforms/mobile/android.py build --arch arm64-v8a --release
+python3 platforms/mobile/android.py sign --arch arm64-v8a --release
+python3 platforms/mobile/android.py install --arch arm64-v8a --release --serial SERIAL
+python3 platforms/mobile/sdl_gpu_smoke.py --serial SERIAL --hardware      # physical device
+python3 platforms/mobile/sdl_gpu_smoke.py --serial emulator-5580 --adb-port 15037
+python3 platforms/mobile/sdl_gpu_smoke.py --serial SERIAL --hardware --renderer portable-sdl \
+  --output build/mobile-smoke-portable                                    # baseline
+```
+
+An emulator (`emulator.py run --gpu swiftshader|host`) is a smoke test of the
+packaging and lifecycle paths, never hardware validation; the x86_64 emulator
+needs KVM access. Physical devices need `--hardware`; the run never uninstalls the
+app or clears its data. Installing over a store build signed with another key
+fails, and replacing it means uninstalling, which deletes that profile.
+
+### Hardware checklist (Android Vulkan and iOS Metal)
+
+Run on at least one recent and one low-end Android Vulkan device (Mali and
+Adreno if available) and one iPhone or iPad, using release builds:
+
+1. Record the device model, OS version, GPU and Vulkan API version (the smoke
+   run's `result.json` `device` block, from `cmd gpu vkjson`), or the iOS model
+   and OS version.
+2. SDL GPU is the active backend at startup and in game, with no fallback line;
+   on iOS check the same `Glob2 renderer active` line in the device console.
+3. Pan and zoom a large map with HD artwork on: no frame over 50 ms after the
+   first second, p99 at or below the portable SDL baseline on the same device, and
+   lower-resolution or stale art while HD loads, never a stall waiting for it.
+4. Background for 30 seconds and return, and lock and unlock the screen: the same
+   process resumes, the picture returns within a second, no black or corrupt frames
+   and no `Graphics device recovery` loop in the log.
+5. Send a low-memory event (Android `am send-trim-memory org.globulation2.glob2
+   RUNNING_CRITICAL`; iOS Xcode Debug > Simulate Memory Warning): the game keeps
+   rendering, memory drops in `dumpsys meminfo` or Xcode's gauge, HD art reloads.
+6. Rotate portrait and landscape twice and, on tablets, use split screen or
+   Stage Manager to resize: the picture matches the new size with no stretching.
+7. Play ten minutes: no crash, ANR or thermal throttling warning; note battery
+   drain against the portable SDL baseline.
+8. Attach `result.json`, the screenshots and the frame summaries to the PR or
+   release notes; anything failing blocks making SDL GPU the mobile default.
+
 ## Focused iOS localization qualification
 
 The existing `ci-macos.yml` manual workflow offers `ios_localization=true` and

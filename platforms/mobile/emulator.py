@@ -26,12 +26,15 @@ def main():
     parser.add_argument('--port',type=int,default=5580)
     parser.add_argument('--adb-port',type=int,default=15037)
     parser.add_argument('--window',action='store_true')
+    parser.add_argument('--android-sdk',help='Explicit pinned SDK (default: the managed mobile tools SDK)')
+    parser.add_argument('--gpu',default='swiftshader',choices=['swiftshader','host'],
+                        help='Emulator GPU: swiftshader (default, deterministic) or host (host Vulkan/GL)')
     args=parser.parse_args()
     if args.port%2 or not 5554<=args.port<=5682: raise ValueError('Emulator --port must be even, between 5554 and 5682')
     if not 1024<=args.adb_port<=65535 or args.adb_port in (5037,args.port,args.port+1):
         raise ValueError('Choose a separate unprivileged ADB port, outside the emulator console/transport ports')
     lock=json.loads((ROOT/'platforms/mobile/emulator.json').read_text())
-    tools=ROOT/'build/mobile-tools';sdk=android_sdk(ROOT)
+    tools=ROOT/'build/mobile-tools';sdk=android_sdk(ROOT,args.android_sdk)
     env=java_environment(ROOT)
     env.pop('ADB_SERVER_SOCKET',None)
     env.pop('ANDROID_SERIAL',None)
@@ -67,7 +70,22 @@ def main():
             print('Existing task-local AVD:',avd);return
         package='system-images;android-'+str(lock['api'])+';'+lock['tag']+';'+args.arch
         subprocess.run(android_java_command(sdk,'avdmanager',env)+['create','avd','--name',name,
-            '--package',package,'--path',str(avd)],input='no\n',text=True,env=env,check=True)
+            '--package',package,'--path',str(avd)],input='no\n',text=True,env=env)
+        if not (avd/'config.ini').is_file():
+            if not image.is_symlink():
+                raise ValueError('avdmanager did not create '+str(avd))
+            # avdmanager does not list system images that the shared development
+            # store links in; describe the same pinned image to the emulator directly.
+            avd.mkdir(parents=True,exist_ok=True)
+            (tools/'avd'/(name+'.ini')).write_text('avd.ini.encoding=UTF-8\npath='+str(avd)+'\n'
+                'path.rel=avd/'+avd.name+'\ntarget=android-'+str(lock['api'])+'\n')
+            cpu='arm64' if args.arch=='arm64-v8a' else 'x86_64'
+            (avd/'config.ini').write_text(''.join(key+'='+value+'\n' for key,value in {
+                'AvdId':name,'avd.ini.displayname':name,'abi.type':args.arch,'hw.cpu.arch':cpu,
+                'image.sysdir.1':'system-images/android-'+str(lock['api'])+'/'+lock['tag']+'/'+args.arch+'/',
+                'tag.id':lock['tag'],'tag.display':'Default Android System Image',
+                'PlayStore.enabled':'false','hw.ramSize':'2048','disk.dataPartition.size':'6G',
+                'hw.gpu.enabled':'yes','hw.gpu.mode':'auto'}.items()))
         # A small deterministic surface avoids spending hosted CPU rendering a
         # default high-density handset before the startup checks can run.
         config = avd/'config.ini'
@@ -81,7 +99,7 @@ def main():
     emulator=str(sdk/'emulator/emulator')
     command=[emulator,'-avd',name,'-port',str(args.port),'-no-audio','-no-boot-anim','-no-snapshot',
         '-no-metrics','-crash-report-mode','disabled','-datadir',str(avd),'-data',str(avd/'userdata-qemu.img'),
-        '-gpu','swiftshader','-memory','2048','-cores','2']
+        '-gpu',args.gpu,'-memory','2048','-cores','2']
     if not args.window: command.append('-no-window')
     os.execvpe(emulator,command,env)
 
