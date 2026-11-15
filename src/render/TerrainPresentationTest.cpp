@@ -2111,6 +2111,59 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(compositor.scale() == 4);
 		CHECK(resident(false) > 0);
 	}
+	TEST_CASE("a portable page uploads past idle parked pages over the budget [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
+			.screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		REQUIRE(globals->gfx->backendSwitchStatus().active == GAGCore::RendererBackend::PortableSDL);
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
+		auto &map = fixture.game.map;
+		for (int y = 0; y < map.getH(); ++y)
+			for (int x = 0; x < map.getW(); ++x)
+				map.paintCell(x, y, (x + y) % 3 ? ICE : GRASS);
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		SoftwareTerrainCache cache;
+		const auto prepare = [&]
+		{
+			globals->gfx->drawFilledRect(0, 0, 256, 256, 17, 29, 41);
+			globals->gfx->beginMapTransform(1, 0, 0, 0, 0, 256, 256);
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 7, 7, 0, 0, fixture.team->me, true));
+		};
+		const auto finish = [&]
+		{
+			cache.draw(*globals->gfx);
+			globals->gfx->endMapTransform();
+		};
+		prepare();
+		finish();
+		prepare();
+		auto visible = std::find_if(cache.chunks.begin(), cache.chunks.end(),
+			[&](const auto &chunk) { return chunk->used == cache.frame && chunk->image; });
+		REQUIRE(visible != cache.chunks.end());
+		// The visible page lost its texture, its pixels parked, while pages of an
+		// earlier zoom that this frame does not draw (HD, 2048 pixels square)
+		// fill the budget and hold no texture to retire.
+		auto *page = visible->get();
+		page->parked.reset(page->image->takePixels());
+		page->image.reset();
+		std::size_t added = 0;
+		while (cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget)
+		{
+			auto idle = std::make_unique<SoftwareTerrainCache::Chunk>();
+			idle->x = 1024 + int(added++) * SoftwareTerrainCache::ChunkTiles;
+			idle->scale = 4;
+			idle->valid = true;
+			cache.chunks.push_back(std::move(idle));
+		}
+		// Uploading it again evicts idle pages instead of failing the frame.
+		REQUIRE_NOTHROW(finish());
+		CHECK(page->image);
+		CHECK(!page->parked);
+		CHECK(std::size_t(std::count_if(cache.chunks.begin(), cache.chunks.end(),
+			[](const auto &chunk) { return chunk->scale == 4; })) < added);
+		CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
+	}
 	TEST_CASE("offscreen terrain density follows the target and stays stable across capture tiles "
 			  "[display]")
 	{

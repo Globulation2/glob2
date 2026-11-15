@@ -2051,6 +2051,7 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 			{
 				const auto needed = pageStorage(copy.chunk->scale, true, copy.chunk->downsample) -
 					pageStorage(copy.chunk->scale, false, copy.chunk->downsample);
+				bool room = true;
 				while (bytes() + needed > GPUCacheBudget || residentTextureBytes() + needed > GPUBudget)
 				{
 					Chunk *oldest = nullptr;
@@ -2060,9 +2061,32 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 							((chunk->used == frame) == (oldest->used == frame) &&
 							 chunk->textureUsed < oldest->textureUsed)))
 							oldest = chunk.get();
-					if (!oldest) throw std::bad_alloc();
-					retireTexture(*oldest);
+					if (oldest && oldest->used != frame)
+					{
+						retireTexture(*oldest);
+						continue;
+					}
+					// Pages this frame does not draw that hold only pixels, such as
+					// HD pages parked before a zoom out, go before a drawn texture.
+					auto idle = chunks.end();
+					if (bytes() + needed > GPUCacheBudget)
+						for (auto it = chunks.begin(); it != chunks.end(); ++it)
+							if ((*it)->used != frame && !(*it)->image &&
+								(idle == chunks.end() || (*it)->used < (*idle)->used))
+								idle = it;
+					if (idle != chunks.end())
+						chunks.erase(idle);
+					else if (oldest)
+						retireTexture(*oldest);
+					else
+					{
+						room = false;
+						break;
+					}
 				}
+				// Every remaining page is drawn this frame: this one waits.
+				if (!room)
+					continue;
 				copy.chunk->image = std::make_unique<TerrainVisual::Surface>(copy.chunk->parked.get(),
 					copy.chunk->scale > 1 || copy.chunk->downsample > 1);
 				copy.chunk->parked.release();
