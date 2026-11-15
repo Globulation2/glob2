@@ -5,7 +5,6 @@
 #include "SoftwareTerrainCache.h"
 #include "terrain/DirectTerrain.h"
 #include "terrain/TerrainCompositor.h"
-#include <RenderBackend.h>
 #include <RenderMemory.h>
 #include <SDLGraphicContext.h>
 #include <algorithm>
@@ -24,10 +23,10 @@ std::string fields(const MapRenderState &render)
 	const std::size_t compositorBytes = compositor ? compositor->sourceBytes() : 0;
 	const auto *direct = render.existingDirectTerrain();
 	const auto *pages = render.existingTerrainCache();
-	// Textures of the portable SDL renderer (or software rasterizer), which no
-	// DrawableSurface accounts for: on phones they share the process's memory.
-	const auto backend = globalContainer && globalContainer->gfx ? globalContainer->gfx->backendOperations()
-		: GAGCore::RenderOperations{};
+	// Textures of the portable SDL renderer, which no DrawableSurface accounts
+	// for: on phones they share the process's memory.
+	const auto backend = globalContainer && globalContainer->gfx ? globalContainer->gfx->portableTextureMemory()
+		: std::pair<std::uint64_t, std::uint64_t>{};
 	return GAGCore::RenderMemory::fields(GAGCore::RenderMemory::report()) +
 		" cpu_high_resolution_bytes=" + std::to_string(GAGCore::Sprite::highResolutionStats().cpuBytes) +
 		" cpu_compositor_bytes=" + std::to_string(compositorBytes) +
@@ -35,8 +34,8 @@ std::string fields(const MapRenderState &render)
 		" gpu_terrain_page_bytes=" + std::to_string(pages ? pages->residentTextureBytes() : 0) +
 		" gpu_direct_terrain_bytes=" + std::to_string(direct ? direct->textureBytes() : 0) +
 		" cpu_terrain_page_pixel_bytes=" + std::to_string(pages ? pages->pixelBytes() : 0) +
-		" gpu_backend_texture_bytes=" + std::to_string(backend.textureBytes) +
-		" gpu_backend_peak_texture_bytes=" + std::to_string(backend.peakTextureBytes);
+		" gpu_backend_texture_bytes=" + std::to_string(backend.first) +
+		" gpu_backend_peak_texture_bytes=" + std::to_string(backend.second);
 }
 
 std::string spriteLines(const char *prefix, std::size_t limit)

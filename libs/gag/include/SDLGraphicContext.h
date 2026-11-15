@@ -777,6 +777,8 @@ namespace GAGCore
         void beginFrame(FrameMode mode = FrameMode::PreserveContent);
         void discardFrame() noexcept;
         RenderOperations backendOperations() const;
+        //! The portable SDL renderer's texture bytes, resident and peak, in constant time.
+        std::pair<std::uint64_t, std::uint64_t> portableTextureMemory() const;
         SDL_Surface* completedFrame() const;
         virtual void nextFrame(void);
 		//! This function does not work for GraphicContext
