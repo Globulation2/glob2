@@ -6,6 +6,7 @@
 #include <atomic>
 #include <array>
 #include <cstdint>
+#include <map>
 #include <memory>
 #include <span>
 #include <tuple>
@@ -142,9 +143,10 @@ class SoftwareTerrainCache
 	std::shared_ptr<const TerrainRegistry> registry;
     std::shared_ptr<const MapAssetBundle> assets;
 	std::vector<Copy> copies;
-	// One composed tile per variant of each animated opaque material, shared by
-	// every uniform cell of it on native device pages. An animation step then
-	// recomposes and uploads one small atlas instead of each page's water.
+	// One composed tile per variant of each animated opaque material at each
+	// page density, shared by every uniform cell of it on device pages. An
+	// animation step then recomposes and uploads one small atlas instead of
+	// each page's water.
 	struct AnimatedTiles
 	{
 		std::unique_ptr<TerrainVisual::Surface> atlas;
@@ -153,11 +155,12 @@ class SoftwareTerrainCache
 		int columns = 0;
 		bool changed = false;
 	};
-	std::vector<AnimatedTiles> animatedTiles;
+	std::map<std::tuple<unsigned, int, int>, AnimatedTiles> animatedTiles; // By material, scale and reduction.
 	TerrainVisual::Compositor *overlayCompositor = nullptr; // Set by prepare for draw.
 	// The overlay tile of a uniform cell, composed for the current revision.
 	// Null when its material does not animate or its tile is not opaque.
-	AnimatedTiles *animatedTile(TerrainVisual::Compositor &, const TerrainVisual::Recipe &, SDL_Rect &source);
+	AnimatedTiles *animatedTile(TerrainVisual::Compositor &, const TerrainVisual::Recipe &, SDL_Rect &source,
+								int scale, int reduction);
 	std::uint64_t frame = 0, hits = 0, rebuilds = 0;
 	std::uint64_t textureUse = 0, reductions = 0;
 	// Bytes of every chunk's kept masks; shared so a mask outliving the cache is safe.
