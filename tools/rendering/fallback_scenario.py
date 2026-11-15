@@ -11,8 +11,8 @@ overview cells drawn from the other density, the whole-map base or nothing
 (transparent). This runner sums them and times how long after each camera
 event the view settles with no fallback at all.
 
-    python3 tools/rendering/fallback_scenario.py --label master --renderer portable
-    python3 tools/rendering/fallback_scenario.py --label change --renderer portable --compare master
+    python3 tools/rendering/fallback_scenario.py --label master --renderer portable-sdl
+    python3 tools/rendering/fallback_scenario.py --label change --renderer portable-sdl --compare master
 
 The default save is the memory scenario's (tools/rendering/memory_scenario.py
 --prepare makes it). Results go to artifacts/render-fallback/<label>/.
@@ -62,12 +62,12 @@ def run(args, directory):
         'GLOB2_BENCH_FRAME_TIMES': '1',
         'GLOB2_BENCH_MODE': '2D no clouds',
     })
-    if args.map:
-        environment['GLOB2_BENCH_MAP'] = str(Path(args.map).resolve())
-    else:
-        environment['GLOB2_BENCH_GAME'] = str(Path(args.save).resolve())
+    environment['GLOB2_BENCH_GAME'] = str(Path(args.save).resolve())
     if args.workers:
         environment['GLOB2_BACKGROUND_RENDER_WORKERS'] = str(args.workers)
+    if args.capture_frames:
+        environment['GLOB2_BENCH_CAPTURE_FRAMES'] = args.capture_frames
+        environment['GLOB2_BENCH_CAPTURE_PREFIX'] = str(directory / 'frame')
     if args.hd:
         environment['GLOB2_BENCH_TERRAIN_SWITCH'] = 'hd'
     command = [str(binary), '--renderer', args.renderer, '--no-fullscreen', '--mute', '--window-size', args.window_size]
@@ -163,22 +163,22 @@ def main():
     parser.add_argument('--label', required=True, help='Result name under artifacts/render-fallback/')
     parser.add_argument('--compare', help='Label of an earlier result to print beside this one')
     parser.add_argument('--save', default=str(SAVE), help='Saved game to load')
-    parser.add_argument('--map', help='Map to load instead of a saved game, such as a large generated one')
     parser.add_argument('--binary', help='torus-render-benchmark to run (default: the newest build)')
-    parser.add_argument('--renderer', default='portable')
+    parser.add_argument('--renderer', default='portable-sdl')
     parser.add_argument('--window-size', default='1920x1080')
     parser.add_argument('--frames', type=int, default=1920, help='Measured frames; 480 make one cycle')
     parser.add_argument('--interval-ms', type=int, default=16, help='Pause between frames, as a display paces them')
     parser.add_argument('--workers', type=int, help='Presentation workers (GLOB2_BACKGROUND_RENDER_WORKERS)')
-    parser.add_argument('--hd', action='store_true', help='Switch HD terrain artwork on at the first jump')
+    parser.add_argument('--capture-frames', help='Comma-separated frames to save as frame-<n>.ppm')
+    parser.add_argument('--hd', action='store_true', help='Switch HD terrain artwork on after about a second (frame 68)')
     args = parser.parse_args()
-    if not args.map and not Path(args.save).exists():
+    if not Path(args.save).exists():
         raise SystemExit(f'{args.save} is missing; run tools/rendering/memory_scenario.py --prepare first')
     directory = OUTPUT / args.label
     directory.mkdir(parents=True, exist_ok=True)
     binary, command, log = run(args, directory)
     summary = summarize(log)
-    summary.update(binary=str(binary), command=command, save=args.map or str(args.save), renderer=args.renderer,
+    summary.update(binary=str(binary), command=command, save=str(args.save), renderer=args.renderer,
                    interval_ms=args.interval_ms, workers=args.workers)
     (directory / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
     baseline = json.loads((OUTPUT / args.compare / 'summary.json').read_text()) if args.compare else None

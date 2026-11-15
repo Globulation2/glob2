@@ -454,10 +454,20 @@ void MapDrawer::drawMapOverview(int left, int top, int right, int bot, int viewp
 	const bool complete = (drawOptions & (Game::DRAW_TILED_CAPTURE | Game::DRAW_COMPLETE_TERRAIN)) ||
 		globalContainer->gfx->drawingOffscreen();
 	// Fill the zoomed-out overview in the background from the first frame (under
-	// the opening cloud bank), so the first zoom out finds its pages ready. A
-	// one-shot draw has no later frames to fill.
+	// the opening cloud bank), around the view and at the density the farthest
+	// zoom draws, so a zoom out finds its pages ready. A one-shot draw has no
+	// later frames to fill.
 	if (!complete)
-		render.overviewCache->prewarm(sceneMap, visibleTeams, drawOptions & Game::DRAW_WHOLE_MAP);
+	{
+		const double farCell = 32 * render.minimumZoom * globalContainer->gfx->getRasterScale();
+		const int farSamples = render.minimumZoom > 0
+			? OverviewTerrainCache::samplesFor(farCell, 0,
+				int(std::max(globalContainer->gfx->getW(), globalContainer->gfx->getH()) / (32 * render.minimumZoom)) + 1,
+				globalContainer->gfx->maximumTextureSize())
+			: OverviewTerrainCache::FewSamples;
+		render.overviewCache->prewarm(sceneMap, visibleTeams, drawOptions & Game::DRAW_WHOLE_MAP,
+			(left + right) / 2 + viewportX, (top + bot) / 2 + viewportY, farSamples);
+	}
 	if (!alpha)
 		return;
 	// Size the image to what the screen can show: a cell's device pixels.

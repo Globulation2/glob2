@@ -114,6 +114,9 @@ class SoftwareTerrainCache
 		Uint64 discoveryRevision = 0;
 		Uint32 discoveryTeams = 0;
 		bool discoveryWhole = false, discoveryStamped = false;
+		// When (SDL_GetTicks) a page arrived where the view had drawn a stand-in
+		// or the overview; it fades in over FadeMs. Zero once settled.
+		Uint64 arrived = 0;
 	};
 	static constexpr std::size_t ChunkStorageBytes =
 		ChunkPixels * ChunkPixels * 4 + sizeof(Chunk) +
@@ -125,7 +128,10 @@ class SoftwareTerrainCache
 	{
 		Chunk *chunk;
 		int x, y;
+		Uint8 alpha = 255; // Below opaque while a page fades in.
 	};
+	//! How long a page that arrives over a fallback takes to fade in.
+	static constexpr Uint64 FadeMs = 150;
 
   private:
     bool tryBuildCpuPage(Chunk&, const std::array<Tile, ChunkTiles*ChunkTiles>&,
@@ -196,6 +202,11 @@ class SoftwareTerrainCache
 	std::uint64_t resetGeneration = 0; // GraphicContext::renderResetGeneration last seen.
 	// A missing page found no build slot last frame, so animation refreshes wait.
 	bool coldBacklog = false;
+	// The camera's recent motion, in tiles per prepared frame, smoothed, and
+	// the view's growth (a zoom out): pages ahead of it compose in advance.
+	double motionX = 0, motionY = 0, growth = 0, lastCentreX = 0, lastCentreY = 0;
+	int lastSpan = 0;
+	bool motionKnown = false;
 	void cancelPending();
 
   public:

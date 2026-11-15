@@ -55,12 +55,22 @@ class OverviewTerrainCache
 		std::uint64_t cells = 0, other = 0, base = 0, holes = 0, fading = 0;
 	};
 	const DrawMetrics &drawMetrics() const { return metrics; }
-	//! Composes the whole map at few samples in the background, within the same
-	//! per-frame budget, so a first zoom out finds every page ready. Call every
-	//! frame from the start of a game; it stops once the map is done, and skips
-	//! maps whose pages would take more than half the cache allowance.
-	void prewarm(const SceneMap &, Uint32 visibleTeams, bool wholeMap);
+	//! Composes pages at `samples` in the background, nearest the world tile
+	//! (centreX, centreY) first and spiralling outward, at worker priority
+	//! behind visible work, so a zoom out or a jump finds its pages ready. Call
+	//! every frame from the start of a game; it stops once the map is done or
+	//! its pages would take three quarters of the cache allowance (less what the view
+	//! holds), and starts again around a new centre after a jump or a pan.
+	//! It also keeps the whole-map base current (see drawBase).
+	void prewarm(const SceneMap &, Uint32 visibleTeams, bool wholeMap, int centreX, int centreY, int samples);
+	//! Fades a page in over this long once its first cells arrive where the view
+	//! showed the base or the other density.
+	static constexpr Uint64 FadeMs = 150;
 	std::uint64_t composedCells() const { return compositions; }
+	//! Whether the whole-map base, one sample per cell composed by a worker as
+	//! the map loads, is ready. It draws beneath cells not composed yet, so the
+	//! overview never shows a transparent patch.
+	bool baseReady() const { return bool(base); }
 	//! Samples per cell axis of the last update or draw, or 0 before the first.
 	int samples() const { return pageSamples; }
 	~OverviewTerrainCache();
@@ -81,8 +91,14 @@ class OverviewTerrainCache
 		// Per cell: resource type and square size last composed, -1 for none, or
 		// the minimum for a cell not composed yet; and the code being composed.
 		std::array<int, Tiles * Tiles> resources{}, inFlight{};
+		int uncomposed = Tiles * Tiles; // Cells of `resources` still Uncomposed.
 		std::unique_ptr<TerrainVisual::Surface> image;
+		// Drawn with nothing composed in view; its first cells then fade in from
+		// fadeStart (SDL_GetTicks).
+		bool shownEmpty = false;
+		Uint64 fadeStart = 0;
 	};
+	struct BaseJob;
 	struct CellJob;
 	struct Batch;
 	struct Region
@@ -108,7 +124,9 @@ class OverviewTerrainCache
 	bool validate(const SceneMap &, Page &, int wx, int wy, const Region &, Uint32 visibleTeams, bool wholeMap,
 				  std::vector<CellJob> &jobs, std::size_t jobLimit);
 	void composeNow(std::vector<CellJob> &jobs);
-	void submit(std::vector<CellJob> &jobs);
+	void submit(std::vector<CellJob> &jobs, bool ahead = false);
+	void updateBase(const SceneMap &);
+	void drawBase(int wx, int wy, const Region &, int screenX, int screenY, GAGCore::DrawableSurface &, Uint8 alpha);
 	void collect();
 	void installCell(Page &, const CellJob &, const Uint32 *pixels, int pitch);
 	bool covers(const Page &, int wx, int wy, const Region &) const;
@@ -118,7 +136,7 @@ class OverviewTerrainCache
 	void forEachPage(const SceneMap &, int left, int top, int right, int bottom, int vx, int vy, bool centreFirst,
 					 Visit visit);
 	void trim(std::size_t keepBytes);
-	std::size_t queuedCells() const;
+	std::size_t queuedCells(bool ahead) const;
 	std::unordered_map<std::uint64_t, Page> pages;
 	std::vector<std::shared_ptr<Batch>> batches;
 	std::optional<Output> output;
@@ -133,6 +151,16 @@ class OverviewTerrainCache
 	DrawMetrics metrics;
 	std::size_t pageBytes = 0;
 	int pageSamples = 0;
-	std::size_t prewarmCursor = 0; // Next page of the map to prewarm.
+	// The prewarm spiral: its centre page, ring and step within the ring, and
+	// pages visited; done once it has covered the map or its allowance.
+	int prewarmX = 0, prewarmY = 0, prewarmSamples = 0, prewarmRing = 0, prewarmStep = 0;
+	std::size_t prewarmVisited = 0;
 	bool prewarmDone = false;
+	std::size_t viewBytes = 0; // Page storage the last interactive draw kept.
+	// The whole-map base and the worker composing its next version.
+	std::unique_ptr<TerrainVisual::Surface> base;
+	int baseReduction = 1;
+	Uint64 baseTerrainRevision = 0;
+	Uint32 baseSeed = 0;
+	std::shared_ptr<BaseJob> baseJob;
 };

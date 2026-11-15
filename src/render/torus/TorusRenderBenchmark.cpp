@@ -531,6 +531,18 @@ static int run(int argc, char **argv)
                             static_cast<unsigned long long>(fallback.overviewFadingCells));
                         cameraEvent = nullptr;
                     }
+                    // GLOB2_BENCH_CAPTURE_FRAMES lists frames (comma separated) to save
+                    // as <GLOB2_BENCH_CAPTURE_PREFIX>-<frame>.ppm, for frame sequences.
+                    if (const char *list = std::getenv("GLOB2_BENCH_CAPTURE_FRAMES"))
+                    {
+                        const std::string wanted = std::string(",") + list + ",";
+                        if (wanted.find("," + std::to_string(i) + ",") != std::string::npos)
+                        {
+                            const char *prefix = std::getenv("GLOB2_BENCH_CAPTURE_PREFIX");
+                            const std::string path = std::string(prefix ? prefix : "frame") + "-" + std::to_string(i) + ".ppm";
+                            captureFramebuffer(path.c_str());
+                        }
+                    }
                 }
                 if (i < 0 && i >= -warmupFrames && i < -warmupFrames + 8)
                     std::printf("WARMUP frame=%d elapsed_ms=%.3f process_cpu_ms=%.3f\n", i + warmupFrames, ms,
