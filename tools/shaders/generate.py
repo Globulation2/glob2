@@ -32,7 +32,7 @@ def align(value, alignment):
 
 def metadata(root=ROOT):
     manifest = json.loads((root / MANIFEST).read_text())
-    if manifest['version'] != 1 or manifest['variants'] != ['skin', 'skin-rig', 'primitive', 'world', 'cloud', 'point', 'terrain-direct', 'terrain-compose', 'terrain-reduce']:
+    if manifest['version'] != 1 or manifest['variants'] != ['skin', 'skin-rig', 'primitive', 'world', 'cloud', 'point', 'terrain-direct', 'terrain-direct-hd', 'terrain-compose', 'terrain-reduce']:
         raise ValueError('unsupported renderer manifest version or variants')
     registry = skin_materials.load_registry(root)
     skin_materials.check_shader(root, registry)
@@ -84,7 +84,8 @@ def declarations(block, native):
     return '\n'.join('uniform ' + line for line in members.splitlines()) + '\n'
 
 
-def direct_terrain_sources(root, meta, dialect, split=False):
+def direct_terrain_sources(root, meta, dialect, split=False, hd=False):
+    """Direct terrain; hd adds streamed artwork and display-density masks (Legacy GL's pass)."""
     native = dialect == 'vulkan'
     version = {'webgl2': '#version 300 es\nprecision highp float;\nprecision highp int;\nprecision highp sampler2D;\n',
                'desktop-gl': '#version 330 core\n', 'vulkan': '#version 450\n'}[dialect]
@@ -95,24 +96,33 @@ def direct_terrain_sources(root, meta, dialect, split=False):
     vertex = (version + attributes + declarations(meta['uniformBlocks']['terrain-direct'], native) +
               varying + 'out vec2 world;\n' +
               'void main(){world=texcoord;gl_Position=vec4(position/viewport*vec2(2,-2)+vec2(-1,1),0,1);}')
+    textures = meta['terrainDirectTextures'] + (meta['terrainDirectHdTextures'] if hd else [])
+    # The whole-map base masks take the native coverage and edge bindings, unused here.
+    defines = ''
+    if hd:
+        defines = '#define DIRECT_TERRAIN_ANIMATION\n#define DIRECT_TERRAIN_HD_MASKS\n'
+        defines += ('#define hdBaseCoverageTexture coverageTexture\n#define hdBaseCoverageSampler coverageSampler\n'
+                    '#define hdBaseEdgesTexture edgesTexture\n' if split else
+                    '#define hdBaseCoverage coverage\n#define hdBaseEdges edges\n')
     samplers = ''
     if split:
         version += '#extension GL_EXT_samplerless_texture_functions : require\n'
-        for texture in meta['terrainDirectTextures']:
+        for texture in textures:
             name, binding = texture['name'], texture['binding'] * 2
             samplers += 'layout(set=2,binding=%d) uniform texture2D %sTexture;\n' % (binding, name)
-            if name in ('art', 'coverage', 'shoreCalm'):
+            if name in ('art', 'coverage', 'shoreCalm', 'hdCoverage', 'hdPreviousCoverage'):
                 samplers += 'layout(set=2,binding=%d) uniform sampler %sSampler;\n' % (binding + 1, name)
         samplers += ('#define DIRECT_TERRAIN_SAMPLE(image, uv) textureLod(sampler2D(image ## Texture, image ## Sampler), uv, 0.0)\n'
                      '#define DIRECT_TERRAIN_FETCH(image, xy) texelFetch(image ## Texture, xy, 0)\n')
     else:
-        for texture in meta['terrainDirectTextures']:
+        for texture in textures:
             binding = 'layout(set=%d,binding=%d) ' % (texture['set'], texture['binding']) if native else ''
             samplers += binding + 'uniform sampler2D %s;\n' % texture['name']
     source = (root / meta['passSources']['terrain-directFragment']).read_text()
     shared_code = '#ifndef DIRECT_TERRAIN_SAMPLE'
     body = shared_code + source.split(shared_code, 1)[1].rsplit(')"', 1)[0]
-    fragment = (version + samplers + declarations(meta['uniformBlocks']['terrain-direct-fragment'], native) +
+    block = meta['uniformBlocks']['terrain-direct-hd-fragment' if hd else 'terrain-direct-fragment']
+    fragment = (version + defines + samplers + declarations(block, native) +
                 varying + 'in vec2 world;\nlayout(location=0) out vec4 terrainColor;\n' +
                 '#define DIRECT_TERRAIN_PACKED\n'
                 '#define wholeMap (wholeMapValue > 0.5)\n' + body)
@@ -120,8 +130,8 @@ def direct_terrain_sources(root, meta, dialect, split=False):
 
 
 def sources(root, meta, dialect, variant):
-    if variant == 'terrain-direct':
-        return direct_terrain_sources(root, meta, dialect)
+    if variant in ('terrain-direct', 'terrain-direct-hd'):
+        return direct_terrain_sources(root, meta, dialect, hd=variant == 'terrain-direct-hd')
     native = dialect == 'vulkan'
     version = {'webgl2': '#version 300 es\nprecision highp float;\nprecision highp int;\n',
                'desktop-gl': '#version 330 core\n', 'vulkan': '#version 450\n'}[dialect]
@@ -205,8 +215,8 @@ def webgpu_sources(root, meta, variant):
     Material code remains verbatim; the atlas sampling wrapper is extracted
     from that same source, with constructors placed directly at texture calls.
     """
-    if variant == 'terrain-direct':
-        return direct_terrain_sources(root, meta, 'vulkan', split=True)
+    if variant in ('terrain-direct', 'terrain-direct-hd'):
+        return direct_terrain_sources(root, meta, 'vulkan', split=True, hd=variant == 'terrain-direct-hd')
     result = sources(root, meta, 'vulkan', variant)
     fragment = result['frag']
     if variant in ('skin', 'skin-rig'):
@@ -265,7 +275,7 @@ def layout_header(meta):
             lines.append('inline constexpr std::uint32_t %s_%s = %d;' % (key, field, block[field]))
         for member in block['members']:
             lines.append('inline constexpr std::uint32_t %s_%s_offset = %d;' % (key, member['name'], member['offset']))
-    for texture in meta['textures'] + [meta['primitiveTexture'], meta['worldTexture']] + meta['terrainDirectTextures'] + meta['terrainComposeTextures'] + [meta['terrainReduceTexture']]:
+    for texture in meta['textures'] + [meta['primitiveTexture'], meta['worldTexture']] + meta['terrainDirectTextures'] + meta['terrainDirectHdTextures'] + meta['terrainComposeTextures'] + [meta['terrainReduceTexture']]:
         for field in ('set', 'binding'):
             lines.append('inline constexpr std::uint32_t %s_%s = %d;' % (texture.get('layoutName', texture['name']), field, texture[field]))
     return '\n'.join(lines + ['}']) + '\n'

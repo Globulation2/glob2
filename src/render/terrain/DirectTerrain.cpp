@@ -109,7 +109,27 @@ GLuint compile(GLenum type, const char *source)
     }
     return shader;
 }
+#else
+struct RestoreGL {};
 #endif
+
+// A texture of the streamed pass: a Legacy GL texture name, or a device
+// StreamedTexture written in place. Scalars, records and discovery bytes are
+// packed into RGBA8 texels on devices, as the packed shader reads them.
+enum class Format { Rgba8, Scalar16, Record16, Luminance8 };
+struct Surface
+{
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+    GLuint name = 0;
+#endif
+    std::shared_ptr<GAGCore::StreamedTexture> streamed;
+    int width = 0, height = 0;
+    Format format = Format::Rgba8;
+    // Device scalar textures written a cell at a time keep their values, to
+    // rewrite the texel each pair of cells shares.
+    std::vector<Uint16> mirror;
+    explicit operator bool() const { return width > 0; }
+};
 
 }
 
@@ -126,11 +146,13 @@ struct DirectTerrain::State
     Uint32 seed = 0;
     std::shared_ptr<const MapAssetBundle> assets;
     std::shared_ptr<const TerrainRegistry> registry;
-#ifdef DIRECT_TERRAIN_LEGACY_GL
+    // The streamed pass: Legacy GL, or a device with streamed textures
+    // (streaming), which draws the same pass through terrain-direct-hd.
+    bool streaming = false;
     // Per-cell tables, built once per map in slices and then edited in place.
     std::optional<DirectTerrainData::Build> building;
     bool tablesReady = false;
-    std::array<GLuint, Count> textures{};
+    std::array<Surface, Count> textures{};
     std::vector<Record> cells;
     std::vector<Pixel> calm;
     // Variant records and their sources; art indices fill in as the art atlas
@@ -141,8 +163,9 @@ struct DirectTerrain::State
     // Vertex terrain the tables describe, to find what an edit changed.
     std::vector<Uint32> vertices;
     // Both atlases start at 2048 and grow once to 4096 when a view needs more
-    // tiles at its density, rather than drawing coarser.
-    static constexpr int MaxAtlasSize = 4096;
+    // tiles at its density, rather than drawing coarser. Devices stay at 2048,
+    // within their texture budgets: a view that needs more takes coarser tiles.
+    int maxAtlasSize = 4096;
     struct Animation {
         int size = 2048;
         struct Entry {
@@ -150,7 +173,7 @@ struct DirectTerrain::State
             std::array<unsigned, 2> phases{~0u, ~0u};
             std::array<TerrainVisual::Compositor::PhaseSource, 2> stamps{};
         };
-        GLuint art = 0, variants = 0;
+        Surface art, variants;
         std::size_t bytes = 0, variantBytes = 0; // bytes includes the variant table's.
         int pixels = 0;
         bool failed = false;
@@ -163,14 +186,16 @@ struct DirectTerrain::State
     struct Hd {
         int size = 2048;
         static constexpr unsigned FirstUnit = Count;
-        GLuint program = 0, index = 0, coverage = 0, edges = 0;
-        std::array<GLint, 13> uniforms{};
+        unsigned program = 0;      // Legacy GL program; devices use terrain-direct-hd.
+        bool ready = false;
+        Surface index, coverage, edges;
+        std::array<int, 13> uniforms{};
         int tile = 0;              // Texels per cell side; 0 before the first prepare.
         // The atlas a density change or growth retired. A cell whose new mask
         // has not landed draws its old one, so a zoom never drops a cell back
         // to its corner split; the atlas goes once the view is complete.
         struct Previous {
-            GLuint index = 0, coverage = 0, edges = 0;
+            Surface index, coverage, edges;
             int size = 0, tile = 0;   // tile is 0 when there is none; the textures stay as a spare.
             std::size_t bytes = 0;
             Uint64 retiredAt = 0;     // SDL ticks when the spare last had nothing to show.
@@ -181,7 +206,7 @@ struct DirectTerrain::State
         // with no mask at this density or the previous one draws its base
         // mask, so it keeps its borders anywhere on the map.
         struct Base {
-            GLuint coverage = 0, edges = 0;
+            Surface coverage, edges;
             int tile = 0;                // Texels per cell side; 0 before creation or on huge maps.
             std::size_t bytes = 0, remaining = 0;
             std::vector<Uint8> built;    // Per map cell.
@@ -289,7 +314,6 @@ struct DirectTerrain::State
         }
     } hd;
     std::vector<Uint16> cellMasks; // PendingCorners code for mixed cells, zero for uniform ones.
-#endif
     int width = 0, height = 0;
     std::size_t bytes = 0, uploaded = 0;
     unsigned frames = 0;
@@ -320,44 +344,228 @@ struct DirectTerrain::State
                 }
     }
 
+    std::array<Surface *, 10 + Count> surfaces()
+    {
+        std::array<Surface *, 10 + Count> all{&animation.art, &animation.variants, &hd.index, &hd.coverage, &hd.edges,
+            &hd.previous.index, &hd.previous.coverage, &hd.previous.edges, &hd.base.coverage, &hd.base.edges};
+        for (unsigned i = 0; i < Count; ++i) all[10 + i] = &textures[i];
+        return all;
+    }
+
+    // Legacy GL deletes its names only while their context is current; a
+    // retired context owns its old names.
+    void releaseSurfaces()
+    {
+        for (auto *surface : surfaces()) drop(*surface);
+    }
+
     ~State()
     {
-#ifdef DIRECT_TERRAIN_LEGACY_GL
         hd.stopWorkers();
-        if (context && context == SDL_GL_GetCurrentContext()) {
-            glDeleteTextures(1, &animation.art);
-            glDeleteTextures(1, &animation.variants);
-            glDeleteTextures(1, &hd.index);
-            glDeleteTextures(1, &hd.coverage);
-            glDeleteTextures(1, &hd.edges);
-            glDeleteTextures(1, &hd.previous.index);
-            glDeleteTextures(1, &hd.previous.coverage);
-            glDeleteTextures(1, &hd.previous.edges);
-            glDeleteTextures(1, &hd.base.coverage);
-            glDeleteTextures(1, &hd.base.edges);
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+        if (!streaming && context && context == SDL_GL_GetCurrentContext())
+        {
+            releaseSurfaces();
             if (hd.program) glDeleteProgram(hd.program);
-            glDeleteTextures(Count, textures.data());
         }
 #endif
         releaseDeviceTextures();
     }
 
-#ifdef DIRECT_TERRAIN_LEGACY_GL
-    void upload(Draw::Texture id, int w, int h, GLint internal, GLenum format,
-                GLenum type, const void *pixels, std::size_t size, GLint filter)
+    // Texels of a surface's backing texture: devices pack scalars two to a
+    // texel, records into two texels and discovery bytes four to a texel.
+    static int packedWidth(Format format, int w)
     {
-        glActiveTexture(GL_TEXTURE0 + id);
-        glBindTexture(GL_TEXTURE_2D, textures[id]);
+        switch (format)
+        {
+        case Format::Scalar16: return (w + 1) / 2;
+        case Format::Record16: return w * 2;
+        case Format::Luminance8: return (w + 3) / 4;
+        default: return w;
+        }
+    }
+
+    // A surface of w x h values; Legacy GL binds it to unit while setting it up.
+    // Initial values are optional; a device texture starts cleared to zero.
+    void create(Surface &surface, unsigned unit, int w, int h, Format format, bool linear,
+                const void *initial = nullptr, bool mirror = false)
+    {
+        drop(surface);
+        surface.width = w;
+        surface.height = h;
+        surface.format = format;
+        if (streaming)
+        {
+            surface.streamed = std::make_shared<GAGCore::StreamedTexture>();
+            surface.streamed->width = packedWidth(format, w);
+            surface.streamed->height = h;
+            surface.streamed->linear = linear;
+            if (mirror) surface.mirror.assign(std::size_t(w) * h, 0);
+            if (initial) write(surface, unit, 0, 0, w, h, initial);
+            return;
+        }
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+        glGenTextures(1, &surface.name);
+        glActiveTexture(GL_TEXTURE0 + unit);
+        glBindTexture(GL_TEXTURE_2D, surface.name);
+        const GLint filter = linear ? GL_LINEAR : GL_NEAREST;
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexImage2D(GL_TEXTURE_2D, 0, internal, w, h, 0, format, type, pixels);
-        bytes += size;
-        uploaded += size;
+        const auto [internal, layout, type] = glFormat(format);
+        glTexImage2D(GL_TEXTURE_2D, 0, internal, w, h, 0, layout, type, initial);
+        if (initial) uploaded += std::size_t(w) * h * valueBytes(format);
+#else
+        (void)unit; (void)linear; (void)initial; (void)mirror;
+        throw std::logic_error("Legacy GL terrain surface without OpenGL");
+#endif
     }
 
+    static std::size_t valueBytes(Format format)
+    {
+        switch (format)
+        {
+        case Format::Scalar16: return 2;
+        case Format::Record16: return 8;
+        case Format::Luminance8: return 1;
+        default: return 4;
+        }
+    }
+
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+    static std::tuple<GLint, GLenum, GLenum> glFormat(Format format)
+    {
+        switch (format)
+        {
+        case Format::Scalar16: return {GL_LUMINANCE16, GL_LUMINANCE, GL_UNSIGNED_SHORT};
+        case Format::Record16: return {GL_RGBA16, GL_RGBA, GL_UNSIGNED_SHORT};
+        case Format::Luminance8: return {GL_LUMINANCE8, GL_LUMINANCE, GL_UNSIGNED_BYTE};
+        default: return {GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE};
+        }
+    }
 #endif
+
+    // Writes w x h values (in the surface's own format) at x, y.
+    void write(Surface &surface, unsigned unit, int x, int y, int w, int h, const void *data)
+    {
+        if (!surface || w <= 0 || h <= 0) return;
+        uploaded += std::size_t(w) * h * valueBytes(surface.format);
+        if (!streaming)
+        {
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+            glActiveTexture(GL_TEXTURE0 + unit);
+            glBindTexture(GL_TEXTURE_2D, surface.name);
+            const auto [internal, layout, type] = glFormat(surface.format);
+            glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, w, h, layout, type, data);
+#else
+            (void)unit;
+#endif
+            return;
+        }
+        auto &target = *surface.streamed;
+        std::vector<std::uint8_t> rgba;
+        switch (surface.format)
+        {
+        case Format::Rgba8:
+        {
+            const auto *bytes = static_cast<const std::uint8_t *>(data);
+            rgba.assign(bytes, bytes + std::size_t(w) * h * 4);
+            target.write({x, y, w, h}, std::move(rgba));
+            return;
+        }
+        case Format::Record16:
+        {
+            const auto *records = static_cast<const Record *>(data);
+            rgba.resize(std::size_t(w) * h * 8);
+            for (std::size_t i = 0; i < std::size_t(w) * h; ++i)
+                for (unsigned channel = 0; channel < 4; ++channel)
+                {
+                    rgba[i * 8 + channel] = Uint8(records[i][channel]);
+                    rgba[i * 8 + 4 + channel] = Uint8(records[i][channel] >> 8);
+                }
+            target.write({x * 2, y, w * 2, h}, std::move(rgba));
+            return;
+        }
+        case Format::Luminance8:
+        {
+            // Discovery is written whole.
+            if (x || w != surface.width)
+                throw std::logic_error("Packed discovery is written in whole rows");
+            const auto *values = static_cast<const Uint8 *>(data);
+            const int packed = packedWidth(surface.format, w);
+            rgba.assign(std::size_t(packed) * h * 4, 0);
+            for (int row = 0; row < h; ++row)
+                for (int column = 0; column < w; ++column)
+                    rgba[(std::size_t(row) * packed + column / 4) * 4 + column % 4] = values[std::size_t(row) * w + column];
+            target.write({0, y, packed, h}, std::move(rgba));
+            return;
+        }
+        case Format::Scalar16:
+        {
+            const auto *values = static_cast<const Uint16 *>(data);
+            // A write that does not cover whole texels takes its neighbours from the mirror.
+            int first = x, last = x + w; // Columns [first, last).
+            const Uint16 *source = values;
+            int sourceX = x, sourceWidth = w;
+            if (!surface.mirror.empty())
+            {
+                for (int row = 0; row < h; ++row)
+                    std::copy_n(values + std::size_t(row) * w, w,
+                                surface.mirror.begin() + std::size_t(y + row) * surface.width + x);
+                first &= ~1;
+                last = std::min(surface.width, (last + 1) & ~1);
+                source = surface.mirror.data() + std::size_t(y) * surface.width;
+                sourceX = 0;
+                sourceWidth = surface.width;
+            }
+            else if ((x & 1) || ((w & 1) && last != surface.width))
+                throw std::logic_error("Packed scalar write splits a texel");
+            const int texels = (last - first + 1) / 2;
+            rgba.assign(std::size_t(texels) * h * 4, 0);
+            for (int row = 0; row < h; ++row)
+                for (int column = first; column < last; ++column)
+                {
+                    const Uint16 value = source[std::size_t(row) * sourceWidth + (column - sourceX)];
+                    auto *texel = &rgba[(std::size_t(row) * texels + (column - first) / 2) * 4 + ((column - first) & 1) * 2];
+                    texel[0] = Uint8(value);
+                    texel[1] = Uint8(value >> 8);
+                }
+            target.write({first / 2, y, texels, h}, std::move(rgba));
+            return;
+        }
+        }
+    }
+
+    void drop(Surface &surface)
+    {
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+        if (surface.name) glDeleteTextures(1, &surface.name);
+        surface.name = 0;
+#endif
+        surface.streamed.reset();
+        surface.mirror.clear();
+        surface.width = surface.height = 0;
+    }
+
+    // A device dropped a streamed texture, or its writes stopped draining.
+    bool streamLost() const
+    {
+        std::size_t queued = 0;
+        for (auto *surface : const_cast<State *>(this)->surfaces())
+            if (surface->streamed)
+            {
+                if (surface->streamed->lost) return true;
+                queued += surface->streamed->queuedBytes;
+            }
+        return queued > (std::size_t(96) << 20);
+    }
+
+    void upload(Draw::Texture id, int w, int h, Format format, const void *pixels, std::size_t size)
+    {
+        create(textures[id], id, w, h, format, false, pixels);
+        bytes += size;
+    }
 
     void uploadDevice(Draw::Texture slot, int w, int h, const std::vector<Pixel> &pixels)
     {
@@ -436,21 +644,33 @@ struct DirectTerrain::State
         uploadDevice(ShoreCalm, width, height, data.calm);
     }
 
+    bool glFailed() const
+    {
 #ifdef DIRECT_TERRAIN_LEGACY_GL
+        return !streaming && glGetError() != GL_NO_ERROR;
+#else
+        return false;
+#endif
+    }
+
     void initialize(const SceneMap &map, DirectTerrainData &data)
     {
-        GLint units = 0;
-        glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &units);
         width = map.getW();
         height = map.getH();
-        if (units < int(Hd::FirstUnit) + 6)
-            throw std::runtime_error("Direct terrain requires fourteen texture units");
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+        if (!streaming)
+        {
+            GLint units = 0;
+            glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &units);
+            if (units < int(Hd::FirstUnit) + 6)
+                throw std::runtime_error("Direct terrain requires fourteen texture units");
+        }
+#endif
         const auto count = data.cells.size();
         visibility.resize(count);
-        glGenTextures(Count, textures.data());
-        upload(Cells, width, height, GL_RGBA16, GL_RGBA, GL_UNSIGNED_SHORT, data.cells.data(), count * sizeof(Record), GL_NEAREST);
-        upload(Discovery, width, height, GL_LUMINANCE8, GL_LUMINANCE, GL_UNSIGNED_BYTE, visibility.data(), count, GL_NEAREST);
-        upload(ShoreCalm, width, height, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, data.calm.data(), data.calm.size() * sizeof(Pixel), GL_NEAREST);
+        upload(Cells, width, height, Format::Record16, data.cells.data(), count * sizeof(Record));
+        upload(Discovery, width, height, Format::Luminance8, visibility.data(), count);
+        upload(ShoreCalm, width, height, Format::Rgba8, data.calm.data(), data.calm.size() * sizeof(Pixel));
         cells = std::move(data.cells);
         calm = std::move(data.calm);
         cellMasks = std::move(data.masks);
@@ -460,7 +680,7 @@ struct DirectTerrain::State
             for (int x = 0; x < width; ++x)
                 vertices[std::size_t(y) * width + x] = map.vertexTerrainAt(x, y);
         tablesReady = true;
-        if (glGetError() != GL_NO_ERROR)
+        if (glFailed())
             throw std::runtime_error("Direct terrain texture setup failed");
     }
 
@@ -499,16 +719,12 @@ struct DirectTerrain::State
                 if (record != cells[i])
                 {
                     cells[i] = record;
-                    glActiveTexture(GL_TEXTURE0 + Cells);
-                    glBindTexture(GL_TEXTURE_2D, textures[Cells]);
-                    glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, 1, 1, GL_RGBA, GL_UNSIGNED_SHORT, record.data());
+                    write(textures[Cells], Cells, x, y, 1, 1, record.data());
                 }
                 if (quiet != calm[i])
                 {
                     calm[i] = quiet;
-                    glActiveTexture(GL_TEXTURE0 + ShoreCalm);
-                    glBindTexture(GL_TEXTURE_2D, textures[ShoreCalm]);
-                    glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, quiet.data());
+                    write(textures[ShoreCalm], ShoreCalm, x, y, 1, 1, quiet.data());
                 }
                 // Any edit near a mixed cell can move its contours: rebuild it.
                 cellMasks[i] = mask;
@@ -526,24 +742,20 @@ struct DirectTerrain::State
                 {
                     hd.previous.slotOf[i] = 0;
                     const Uint16 pending = mask;
-                    glActiveTexture(GL_TEXTURE0 + Hd::FirstUnit + 3);
-                    glBindTexture(GL_TEXTURE_2D, hd.previous.index);
-                    glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, 1, 1, GL_LUMINANCE, GL_UNSIGNED_SHORT, &pending);
+                    write(hd.previous.index, Hd::FirstUnit + 3, x, y, 1, 1, &pending);
                 }
                 masksChanged = true;
             }
         // Results already queued were built from the old recipes.
         if (masksChanged) ++hd.generation;
-        if (glGetError() != GL_NO_ERROR)
+        if (glFailed())
             throw std::runtime_error("Direct terrain edit upload failed");
     }
 
     void setHdIndex(int cell, Uint16 value)
     {
         hd.slotOf[cell] = value >= DirectTerrainData::PendingCorners ? 0 : value;
-        glActiveTexture(GL_TEXTURE0 + Hd::FirstUnit);
-        glBindTexture(GL_TEXTURE_2D, hd.index);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, cell % width, cell / width, 1, 1, GL_LUMINANCE, GL_UNSIGNED_SHORT, &value);
+        write(hd.index, Hd::FirstUnit, cell % width, cell / width, 1, 1, &value);
     }
 
     // A new mask atlas at another density or size. The old one becomes the
@@ -566,39 +778,15 @@ struct DirectTerrain::State
             old.tile = hd.tile;
             old.slotOf = std::move(hd.slotOf);
         }
-        const auto make = [&](GLuint &texture, unsigned unit, GLint filter)
-        {
-            glGenTextures(1, &texture);
-            glActiveTexture(GL_TEXTURE0 + unit);
-            glBindTexture(GL_TEXTURE_2D, texture);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        };
-        if (!hd.index)
-        {
-            make(hd.index, Hd::FirstUnit, GL_NEAREST);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE16, width, height, 0, GL_LUMINANCE, GL_UNSIGNED_SHORT, nullptr);
-        }
         // Every mixed cell starts pending; uniform cells need no mask.
-        glActiveTexture(GL_TEXTURE0 + Hd::FirstUnit);
-        glBindTexture(GL_TEXTURE_2D, hd.index);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_LUMINANCE, GL_UNSIGNED_SHORT, cellMasks.data());
-        if (!hd.coverage)
+        if (!hd.index)
+            create(hd.index, Hd::FirstUnit, width, height, Format::Scalar16, false, cellMasks.data(), true);
+        else
+            write(hd.index, Hd::FirstUnit, 0, 0, width, height, cellMasks.data());
+        if (!hd.coverage || hd.size != size)
         {
-            make(hd.coverage, Hd::FirstUnit + 1, GL_LINEAR);
-            make(hd.edges, Hd::FirstUnit + 2, GL_NEAREST);
-            hd.size = 0;
-        }
-        if (hd.size != size)
-        {
-            glActiveTexture(GL_TEXTURE0 + Hd::FirstUnit + 1);
-            glBindTexture(GL_TEXTURE_2D, hd.coverage);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, size, size, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-            glActiveTexture(GL_TEXTURE0 + Hd::FirstUnit + 2);
-            glBindTexture(GL_TEXTURE_2D, hd.edges);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE16, size, size, 0, GL_LUMINANCE, GL_UNSIGNED_SHORT, nullptr);
+            create(hd.coverage, Hd::FirstUnit + 1, size, size, Format::Rgba8, true);
+            create(hd.edges, Hd::FirstUnit + 2, size, size, Format::Scalar16, false);
             hd.size = size;
         }
         bytes -= hd.bytes;
@@ -627,15 +815,10 @@ struct DirectTerrain::State
     // which the shader resolves to the base.
     void suspendHdAtlas()
     {
-        glActiveTexture(GL_TEXTURE0 + Hd::FirstUnit);
-        glBindTexture(GL_TEXTURE_2D, hd.index);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_LUMINANCE, GL_UNSIGNED_SHORT, cellMasks.data());
+        write(hd.index, Hd::FirstUnit, 0, 0, width, height, cellMasks.data());
         auto &old = hd.previous;
-        for (GLuint *texture : {&hd.coverage, &hd.edges, &old.index, &old.coverage, &old.edges})
-        {
-            glDeleteTextures(1, texture);
-            *texture = 0;
-        }
+        for (Surface *texture : {&hd.coverage, &hd.edges, &old.index, &old.coverage, &old.edges})
+            drop(*texture);
         bytes -= hd.bytes + old.bytes;
         hd.bytes = cellMasks.size() * sizeof(Uint16);
         bytes += hd.bytes;
@@ -663,29 +846,22 @@ struct DirectTerrain::State
         auto &b = hd.base;
         int tile = 8;
         while (tile > 2 && std::max(width, height) * tile > 2048) tile /= 2;
-        if (std::max(width, height) * tile > State::MaxAtlasSize) return;
+        if (std::max(width, height) * tile > maxAtlasSize) return;
         b.tile = tile;
         const int w = width * tile, h = height * tile;
-        // Cleared in strips: one map-sized buffer of zeros would be 16 MiB.
-        constexpr int StripRows = 64;
-        const std::vector<Uint8> zeros(std::size_t(w) * StripRows * 4, 0);
-        for (GLuint *texture : {&b.coverage, &b.edges})
+        create(b.coverage, Coverage, w, h, Format::Rgba8, true);
+        create(b.edges, Edges, w, h, Format::Scalar16, false);
+        // Device textures start cleared; Legacy GL clears in strips, since
+        // one map-sized buffer of zeros would be 16 MiB.
+        if (!streaming)
         {
-            glGenTextures(1, texture);
-            glActiveTexture(GL_TEXTURE0 + (texture == &b.coverage ? Coverage : Edges));
-            glBindTexture(GL_TEXTURE_2D, *texture);
-            const GLint filter = texture == &b.coverage ? GL_LINEAR : GL_NEAREST;
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            const bool coverage = texture == &b.coverage;
-            glTexImage2D(GL_TEXTURE_2D, 0, coverage ? GL_RGBA8 : GL_LUMINANCE16, w, h, 0,
-                         coverage ? GL_RGBA : GL_LUMINANCE, coverage ? GL_UNSIGNED_BYTE : GL_UNSIGNED_SHORT, nullptr);
+            constexpr int StripRows = 64;
+            const std::vector<Uint8> zeros(std::size_t(w) * StripRows * 4, 0);
             for (int y = 0; y < h; y += StripRows)
-                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, y, w, std::min(StripRows, h - y),
-                                coverage ? GL_RGBA : GL_LUMINANCE, coverage ? GL_UNSIGNED_BYTE : GL_UNSIGNED_SHORT,
-                                zeros.data());
+            {
+                write(b.coverage, Coverage, 0, y, w, std::min(StripRows, h - y), zeros.data());
+                write(b.edges, Edges, 0, y, w, std::min(StripRows, h - y), zeros.data());
+            }
         }
         b.bytes = std::size_t(w) * h * 6;
         bytes += b.bytes;
@@ -716,18 +892,12 @@ struct DirectTerrain::State
             b.built[cell] = 0;
             ++b.remaining;
             const std::vector<Uint8> zeros(std::size_t(b.tile) * b.tile * 4, 0);
-            glActiveTexture(GL_TEXTURE0 + Coverage);
-            glBindTexture(GL_TEXTURE_2D, b.coverage);
-            glTexSubImage2D(GL_TEXTURE_2D, 0, x * b.tile, y * b.tile, b.tile, b.tile, GL_RGBA, GL_UNSIGNED_BYTE, zeros.data());
-            glActiveTexture(GL_TEXTURE0 + Edges);
-            glBindTexture(GL_TEXTURE_2D, b.edges);
-            glTexSubImage2D(GL_TEXTURE_2D, 0, x * b.tile, y * b.tile, b.tile, b.tile, GL_LUMINANCE, GL_UNSIGNED_SHORT, zeros.data());
+            write(b.coverage, Coverage, x * b.tile, y * b.tile, b.tile, b.tile, zeros.data());
+            write(b.edges, Edges, x * b.tile, y * b.tile, b.tile, b.tile, zeros.data());
         }
         if (cellMasks[cell]) b.redo.push_back(cell);
     }
 
-    // The fallback has nothing left to show. Its textures stay as the spare
-    // for the next zoom, so a run of zooms allocates nothing.
     // Runs job(0..count-1) on this thread and, for a large batch, on helper
     // threads, returning when all are done. Only density changes and the first
     // view build large batches, so helpers are started for them alone.
@@ -748,6 +918,8 @@ struct DirectTerrain::State
         run();
         for (auto &thread : threads) thread.join();
     }
+    // The fallback has nothing left to show. Its textures stay as the spare
+    // for the next zoom, so a run of zooms allocates nothing.
     void retirePreviousHdAtlas()
     {
         hd.previous.tile = 0;
@@ -760,16 +932,13 @@ struct DirectTerrain::State
     {
         auto &old = hd.previous;
         if (old.tile || !old.coverage || SDL_GetTicks() - old.retiredAt < lifetimeMs) return;
-        glDeleteTextures(1, &old.index);
-        glDeleteTextures(1, &old.coverage);
-        glDeleteTextures(1, &old.edges);
-        old.index = old.coverage = old.edges = 0;
+        drop(old.index);
+        drop(old.coverage);
+        drop(old.edges);
         bytes -= old.bytes;
         old.bytes = 0;
         old.size = 0;
     }
-
-#endif
 
     void updateDiscovery(const SceneMap &map, Uint32 teams)
     {
@@ -788,19 +957,15 @@ struct DirectTerrain::State
                 changed |= value != pixel;
                 pixel = value;
             }
-        if (changed && resources)
+        if (!changed) return;
+        if (resources && !streaming)
             uploadDeviceVisibility();
-#ifdef DIRECT_TERRAIN_LEGACY_GL
-        else if (changed)
+        else
         {
-            glActiveTexture(GL_TEXTURE0 + Discovery);
-            glBindTexture(GL_TEXTURE_2D, textures[Discovery]);
-            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_LUMINANCE, GL_UNSIGNED_BYTE, visibility.data());
-            if (glGetError() != GL_NO_ERROR)
+            write(textures[Discovery], Discovery, 0, 0, width, height, visibility.data());
+            if (glFailed())
                 throw std::runtime_error("Direct terrain discovery upload failed");
-            uploaded += visibility.size();
         }
-#endif
     }
 };
 
@@ -832,19 +997,17 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
     const auto resources = capabilities.directTerrain ? gfx.renderResourceOwner() : nullptr;
     if (!resources && !legacy)
         return false;
+    // Devices with streamed textures draw Legacy GL's streamed pass.
+    const bool streaming = resources && capabilities.directTerrainStreaming;
     const auto generation = gfx.getGLContextGeneration();
     const auto assets = map.frozenAssetBundle();
     const auto registry = map.frozenTerrainRegistry();
     const bool sameContext = state && state->context == (resources ? nullptr : context) &&
-        state->resources == resources && state->generation == generation;
-#ifdef DIRECT_TERRAIN_LEGACY_GL
-    // Legacy GL edits its tables in place; anything else about the map, or
-    // the context, starts again.
-    const bool edited = legacy && sameContext && state->tablesReady && state->sameMapSource(map) &&
+        state->resources == resources && state->generation == generation && state->streaming == streaming;
+    // The streamed pass edits its tables in place; anything else about the
+    // map, or the context, starts again.
+    const bool edited = (legacy || streaming) && sameContext && state->tablesReady && state->sameMapSource(map) &&
         state->revision != map.terrainRevision();
-#else
-    constexpr bool edited = false;
-#endif
     if (!edited && (!sameContext || !state->matchesMap(map)))
     {
         if (state && !sameContext)
@@ -858,11 +1021,13 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
         state->seed = map.terrainSeed();
         state->assets = assets;
         state->registry = registry;
+        state->streaming = streaming;
+        if (streaming) state->maxAtlasSize = 2048;
     }
     if (state->failed)
         return false;
 
-    if (resources)
+    if (resources && !streaming)
     {
         if (prepareOnly) return false;
         try
@@ -905,23 +1070,40 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
         return true;
     }
 
+    // The streamed pass draws through prepare/drawPrepared; here it only
+    // builds and edits the per-cell tables. A complete draw (editor, capture)
+    // builds them at once.
+    std::optional<RestoreGL> restore;
 #ifdef DIRECT_TERRAIN_LEGACY_GL
-    // Legacy GL draws through prepare/draw; here it only builds and edits the
-    // per-cell tables. A complete draw (editor, capture) builds them at once.
-    GAGCore::Sprite::flushBatches(&gfx);
-    if (auto *batch = gfx.getRenderBatch())
-        batch->stateChange();
-    RestoreGL restore;
+    if (!streaming)
+    {
+        GAGCore::Sprite::flushBatches(&gfx);
+        if (auto *batch = gfx.getRenderBatch())
+            batch->stateChange();
+        restore.emplace();
+    }
+#endif
     constexpr auto slice = std::chrono::milliseconds(3);
     const auto deadline = std::chrono::steady_clock::now() + slice;
     try
     {
+        if (streaming && state->streamLost())
+            throw std::runtime_error("Streamed direct terrain textures were lost or stopped draining");
         if (!state->tablesReady)
         {
             if (!state->building)
             {
-                GLint maxSize = 0;
-                glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxSize);
+                int maxSize = capabilities.maximumTextureSize;
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+                if (!streaming)
+                {
+                    GLint glMax = 0;
+                    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &glMax);
+                    maxSize = glMax;
+                }
+#endif
+                if (streaming && map.getW() * 2 > maxSize)
+                    throw std::runtime_error("Packed direct terrain tables exceed the device texture dimensions");
                 state->building.emplace(DirectTerrainData::begin(
                     map, globalContainer->terrainCompositorOwner(assets), maxSize, DirectTerrainData::Mode::Tables));
             }
@@ -948,24 +1130,20 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
         std::fprintf(stderr, "DIRECT_TERRAIN_FALLBACK %s\n", error.what());
         state->failed = true;
         state->building.reset();
-        glDeleteTextures(State::Count, state->textures.data());
-        state->textures.fill(0);
+        state->hd.stopWorkers();
+        state->releaseSurfaces();
         state->tablesReady = false;
         state->bytes = 0;
         return false;
     }
     return prepareOnly;
-#else
-    return false;
-#endif
 }
 
 bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
     int left, int top, int right, int bottom, int viewportX, int viewportY,
     Uint32 visibleTeams, bool wholeMap, int animationTime, bool complete)
 {
-#ifdef DIRECT_TERRAIN_LEGACY_GL
-    if (!gfx.isLegacyGLScreen() || left > right || top > bottom) return false;
+    if (left > right || top > bottom) return false;
     if (!drawInternal(gfx, map, left, top, right, bottom, viewportX, viewportY,
                       visibleTeams, wholeMap, animationTime, complete, true))
         return false;
@@ -1025,10 +1203,9 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
     const auto restartAtlas = [&](int size)
     {
         // The atlas and its variant table start again at the new size.
-        glDeleteTextures(1, &out.art);
-        glDeleteTextures(1, &out.variants);
+        state->drop(out.art);
+        state->drop(out.variants);
         state->bytes -= out.bytes;
-        out.art = out.variants = 0;
         out.bytes = out.variantBytes = 0;
         out.size = size;
         out.entries.clear();
@@ -1042,34 +1219,27 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
     // when the view fits it twice over, so a pan does not grow it straight back.
     if (out.size > SmallAtlasSize && out.pixels != pixels && wanted.size() * 4 <= pairsAt(SmallAtlasSize))
         restartAtlas(SmallAtlasSize);
-    if (out.size < State::MaxAtlasSize && wanted.size() * 2 > pairsAt(out.size))
-        restartAtlas(State::MaxAtlasSize); // Grow.
+    if (out.size < state->maxAtlasSize && wanted.size() * 2 > pairsAt(out.size))
+        restartAtlas(state->maxAtlasSize); // Grow.
     const int atlasSize = out.size;
     while (pixels > 8 && wanted.size() * 2 > std::size_t(atlasSize / pixels) * (atlasSize / pixels))
         pixels /= 2;
     const unsigned pairs = (atlasSize / pixels) * (atlasSize / pixels) / 2;
     if (wanted.size() > pairs) { out.regions.clear(); return false; }
-    GAGCore::Sprite::flushBatches(&gfx);
-    if (auto *batch = gfx.getRenderBatch()) batch->stateChange();
-    RestoreGL restore;
+    std::optional<RestoreGL> restore;
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+    if (!state->streaming)
+    {
+        GAGCore::Sprite::flushBatches(&gfx);
+        if (auto *batch = gfx.getRenderBatch()) batch->stateChange();
+        restore.emplace();
+    }
+#endif
     try
     {
         if (!out.art)
         {
-            glGenTextures(1, &out.art);
-            glActiveTexture(GL_TEXTURE0 + State::Art);
-            glBindTexture(GL_TEXTURE_2D, out.art);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, atlasSize, atlasSize, 0,
-                         GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-            glGenTextures(1, &out.variants);
-            glActiveTexture(GL_TEXTURE0 + State::Variants);
-            glBindTexture(GL_TEXTURE_2D, out.variants);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            state->create(out.art, State::Art, atlasSize, atlasSize, Format::Rgba8, true);
             out.bytes = std::size_t(atlasSize) * atlasSize * sizeof(Pixel);
             out.variantBytes = 0;
             state->bytes += out.bytes;
@@ -1081,17 +1251,14 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
             const int rows = int((variants.size() + DirectTerrainData::VariantWidth - 1) / DirectTerrainData::VariantWidth);
             std::vector<Record> padded(variants);
             padded.resize(std::size_t(rows) * DirectTerrainData::VariantWidth);
-            glActiveTexture(GL_TEXTURE0 + State::Variants);
-            glBindTexture(GL_TEXTURE_2D, out.variants);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16, DirectTerrainData::VariantWidth, rows, 0,
-                GL_RGBA, GL_UNSIGNED_SHORT, padded.data());
+            state->create(out.variants, State::Variants, DirectTerrainData::VariantWidth, rows, Format::Record16,
+                          false, padded.data());
             const auto variantBytes = padded.size() * sizeof(Record);
             state->bytes += variantBytes - out.variantBytes;
             out.bytes += variantBytes - out.variantBytes;
             out.variantBytes = variantBytes;
             state->variantRows = rows;
             state->uploadedVariants = variants.size();
-            state->uploaded += padded.size() * sizeof(Record);
         }
         if (out.pixels != pixels)
         {
@@ -1199,21 +1366,13 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
         };
         state->filterTiles(jobs.size(), [&](std::size_t i) { filter(jobs[i]); });
         const int columns = atlasSize / pixels;
-        glActiveTexture(GL_TEXTURE0 + State::Art);
-        glBindTexture(GL_TEXTURE_2D, out.art);
         for (auto &job : jobs)
         {
             const unsigned index = job.entry->pair * 2 + job.parity;
-            glTexSubImage2D(GL_TEXTURE_2D, 0, (index % columns) * pixels,
-                (index / columns) * pixels, pixels, pixels, GL_RGBA, GL_UNSIGNED_BYTE, job.tile.data());
-            state->uploaded += job.tile.size() * sizeof(Pixel);
+            state->write(out.art, State::Art, int(index % columns) * pixels, int(index / columns) * pixels,
+                         pixels, pixels, job.tile.data());
             job.entry->phases[job.parity] = job.phase;
             job.entry->stamps[job.parity] = job.stamp;
-        }
-        if (!added.empty())
-        {
-            glActiveTexture(GL_TEXTURE0 + State::Variants);
-            glBindTexture(GL_TEXTURE_2D, out.variants);
         }
         for (const auto &[slot, entry] : added)
         {
@@ -1225,11 +1384,10 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
             // Parity addresses the streamed current/next endpoints independently
             // of the material's original loop length, including odd-length loops.
             record[1] = Uint16(material.animationFrames > 1 ? 2 : 1);
-            glTexSubImage2D(GL_TEXTURE_2D, 0, recordIndex % DirectTerrainData::VariantWidth,
-                recordIndex / DirectTerrainData::VariantWidth, 1, 1, GL_RGBA, GL_UNSIGNED_SHORT, record.data());
-            state->uploaded += sizeof(Record);
+            state->write(out.variants, State::Variants, int(recordIndex % DirectTerrainData::VariantWidth),
+                         int(recordIndex / DirectTerrainData::VariantWidth), 1, 1, record.data());
         }
-        if (glGetError() != GL_NO_ERROR)
+        if (state->glFailed())
             throw std::runtime_error("Animated terrain source upload failed");
         // Masks for every visible mixed cell at the display density.
         if (state->hd.failed) { out.regions.clear(); return false; }
@@ -1242,45 +1400,34 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
     catch (const std::exception &error)
     {
         std::fprintf(stderr, "ANIMATED_TERRAIN_FALLBACK %s\n", error.what());
-        glDeleteTextures(1, &out.art);
-        glDeleteTextures(1, &out.variants);
+        state->drop(out.art);
+        state->drop(out.variants);
         state->bytes -= out.bytes;
         out = {};
         out.failed = true;
         out.regions.clear();
         return false;
     }
-#else
-    return false;
-#endif
 }
 
 std::size_t DirectTerrain::pendingHdMasks() const
 {
-#ifdef DIRECT_TERRAIN_LEGACY_GL
     return state ? state->hd.pending : 0;
-#else
-    return 0;
-#endif
 }
 
 std::size_t DirectTerrain::pendingBaseMasks() const
 {
-#ifdef DIRECT_TERRAIN_LEGACY_GL
     if (!state || !state->hd.base.tile) return 0;
     return state->hd.base.remaining + state->hd.base.redo.size();
-#else
-    return 0;
-#endif
 }
 
 void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int right, int bottom,
     int viewportX, int viewportY, Uint32 visibleTeams, bool wholeMap, int tile, bool complete)
 {
-#ifdef DIRECT_TERRAIN_LEGACY_GL
     auto &hd = state->hd;
     const int width = state->width, height = state->height;
-    if (!hd.program)
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+    if (!state->streaming && !hd.program)
     {
         hd.program = glCreateProgram();
         const auto attach = [&](GLenum type, const char *source) {
@@ -1323,6 +1470,8 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
         glUniform2f(hd.uniforms[0], float(width), float(height));
         glUniform2f(hd.uniforms[2], DirectTerrainData::AtlasWidth, 1.f); // Native masks are not used.
     }
+#endif
+    hd.ready = true;
     // Back to pending: the cell draws its old mask, or else its base mask or
     // corner split, until a new mask lands.
     const auto release = [&](int cell) { state->setHdIndex(cell, state->cellMasks[cell]); };
@@ -1363,8 +1512,8 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
         // atlas, or coarser tiles for every cell.
         const bool baseTakesOverflow = hd.base.tile && tile <= 4 * hd.base.tile &&
             !hd.base.remaining && hd.base.redo.empty();
-        if (size < State::MaxAtlasSize && !fits(size) && !baseTakesOverflow)
-            size = State::MaxAtlasSize; // Grow once rather than draw coarser.
+        if (size < state->maxAtlasSize && !fits(size) && !baseTakesOverflow)
+            size = state->maxAtlasSize; // Grow once rather than draw coarser.
         while (tile > 8 && !fits(size) && !baseTakesOverflow)
             tile /= 2;
         if (hd.tile != tile || hd.size != size || !hd.coverage)
@@ -1496,15 +1645,9 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
             // Built from the recipe before an edit: build it again.
             if (result.generation != base.version[result.cell]) { base.redo.push_back(result.cell); continue; }
             const int ox = (result.cell % width) * base.tile, oy = (result.cell / width) * base.tile;
-            glActiveTexture(GL_TEXTURE0 + State::Coverage);
-            glBindTexture(GL_TEXTURE_2D, base.coverage);
-            glTexSubImage2D(GL_TEXTURE_2D, 0, ox, oy, base.tile, base.tile, GL_RGBA, GL_UNSIGNED_BYTE, result.weights.data());
-            glActiveTexture(GL_TEXTURE0 + State::Edges);
-            glBindTexture(GL_TEXTURE_2D, base.edges);
-            glTexSubImage2D(GL_TEXTURE_2D, 0, ox, oy, base.tile, base.tile, GL_LUMINANCE, GL_UNSIGNED_SHORT, result.edges.data());
-            const auto bytes = result.weights.size() * sizeof(Pixel) + result.edges.size() * sizeof(Uint16);
-            uploaded += bytes;
-            state->uploaded += bytes;
+            state->write(base.coverage, State::Coverage, ox, oy, base.tile, base.tile, result.weights.data());
+            state->write(base.edges, State::Edges, ox, oy, base.tile, base.tile, result.edges.data());
+            uploaded += result.weights.size() * sizeof(Pixel) + result.edges.size() * sizeof(Uint16);
             ++baseUploads;
             base.built[result.cell] = 1;
             if (base.remaining) --base.remaining;
@@ -1533,15 +1676,9 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
             release(hd.cellOf[slot]);
         }
         const int ox = int(slot % columns) * tile, oy = int(slot / columns) * tile;
-        glActiveTexture(GL_TEXTURE0 + State::Hd::FirstUnit + 1);
-        glBindTexture(GL_TEXTURE_2D, hd.coverage);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, ox, oy, tile, tile, GL_RGBA, GL_UNSIGNED_BYTE, result.weights.data());
-        glActiveTexture(GL_TEXTURE0 + State::Hd::FirstUnit + 2);
-        glBindTexture(GL_TEXTURE_2D, hd.edges);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, ox, oy, tile, tile, GL_LUMINANCE, GL_UNSIGNED_SHORT, result.edges.data());
-        const auto bytes = result.weights.size() * sizeof(Pixel) + result.edges.size() * sizeof(Uint16);
-        uploaded += bytes;
-        state->uploaded += bytes;
+        state->write(hd.coverage, State::Hd::FirstUnit + 1, ox, oy, tile, tile, result.weights.data());
+        state->write(hd.edges, State::Hd::FirstUnit + 2, ox, oy, tile, tile, result.edges.data());
+        uploaded += result.weights.size() * sizeof(Pixel) + result.edges.size() * sizeof(Uint16);
         hd.cellOf[slot] = result.cell;
         hd.used[slot] = hd.frame;
         state->setHdIndex(result.cell, Uint16(slot + 1));
@@ -1556,22 +1693,78 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
     if (!hd.pending && hd.previous.tile)
         state->retirePreviousHdAtlas();
     state->releaseIdleSpare(spareLifetimeMs);
-#endif
 }
 
 std::span<const SDL_Rect> DirectTerrain::preparedRegions() const
 {
-#ifdef DIRECT_TERRAIN_LEGACY_GL
     if (state) return state->animation.regions;
-#endif
     return {};
 }
 
 void DirectTerrain::drawPrepared(GAGCore::GraphicContext &gfx, int viewportX, int viewportY,
                                  bool wholeMap, int animationTime)
 {
+    if (!state || state->animation.regions.empty() || !state->hd.ready || state->hd.failed) return;
+    const auto &previous = state->hd.previous;
+    const auto &base = state->hd.base;
+    if (state->streaming)
+    {
+        // One packet over the regions' bounds: the shader discards undiscovered cells.
+        using Draw = GAGCore::DirectTerrainDraw;
+        auto data = std::make_shared<Draw>();
+        const auto bind = [&](unsigned slot, const Surface &surface) { data->streamed[slot] = surface.streamed; };
+        bind(Draw::Cells, state->textures[Draw::Cells]);
+        bind(Draw::Discovery, state->textures[Draw::Discovery]);
+        bind(Draw::ShoreCalm, state->textures[Draw::ShoreCalm]);
+        bind(Draw::Art, state->animation.art);
+        bind(Draw::Variants, state->animation.variants);
+        bind(Draw::Coverage, base.coverage);
+        bind(Draw::Edges, base.edges);
+        bind(Draw::HdIndex, state->hd.index);
+        bind(Draw::HdCoverage, state->hd.coverage);
+        bind(Draw::HdEdges, state->hd.edges);
+        if (previous.tile)
+        {
+            bind(Draw::HdPreviousIndex, previous.index);
+            bind(Draw::HdPreviousCoverage, previous.coverage);
+            bind(Draw::HdPreviousEdges, previous.edges);
+        }
+        auto &u = data->hd;
+        const auto pair = [](float (&out)[2], float x, float y) { out[0] = x; out[1] = y; };
+        pair(u.mapSize, float(state->width), float(state->height));
+        pair(u.artSize, float(state->animation.size), float(state->animation.size));
+        pair(u.variantSize, float(DirectTerrainData::VariantWidth), float(state->variantRows));
+        pair(u.hdCoverageSize, float(state->hd.size), float(state->hd.size));
+        pair(u.hdPreviousSize, float(previous.size), float(previous.size));
+        pair(u.hdBaseSize, float(state->width * base.tile), float(state->height * base.tile));
+        u.artTilePixels = float(state->animation.pixels);
+        u.hdTilePixels = float(state->hd.tile);
+        u.hdPreviousTile = float(previous.tile); // Zero: no fallback atlas.
+        u.hdBaseTile = float(base.tile);         // Zero: no base atlas.
+        data->wholeMap = wholeMap;
+        data->animationTime = float(animationTime);
+        SDL_Rect bounds = state->animation.regions.front();
+        for (const auto &rect : state->animation.regions)
+            SDL_GetRectUnion(&bounds, &rect, &bounds);
+        GAGCore::DrawPacket packet;
+        packet.kind = GAGCore::DrawPacket::Kind::DirectTerrain;
+        packet.blend = GAGCore::DrawPacket::Blend::Premultiplied;
+        packet.directTerrain = std::move(data);
+        const auto corner = [&](int x, int y) {
+            return SDL_Vertex{{float(x * TilePixels), float(y * TilePixels)}, {1, 1, 1, 1},
+                              {float(x + viewportX), float(y + viewportY)}};
+        };
+        const auto a = corner(bounds.x, bounds.y), b = corner(bounds.x + bounds.w, bounds.y);
+        const auto c = corner(bounds.x + bounds.w, bounds.y + bounds.h), d = corner(bounds.x, bounds.y + bounds.h);
+        packet.vertices = {a, b, c, a, c, d};
+        GAGCore::Sprite::flushBatches(&gfx);
+        if (!gfx.submitDevicePacket(std::move(packet)))
+            return;
+        gfx.countRenderBatchDraw();
+        ++state->frames;
+        return;
+    }
 #ifdef DIRECT_TERRAIN_LEGACY_GL
-    if (!state || state->animation.regions.empty() || !state->hd.program || state->hd.failed) return;
     GAGCore::Sprite::flushBatches(&gfx);
     if (auto *batch = gfx.getRenderBatch()) batch->stateChange();
     RestoreGL restore;
@@ -1580,15 +1773,14 @@ void DirectTerrain::drawPrepared(GAGCore::GraphicContext &gfx, int viewportX, in
     for (unsigned unit = 0; unit < State::Count; ++unit)
     {
         glActiveTexture(GL_TEXTURE0 + unit);
-        const auto texture = unit == State::Art ? state->animation.art
+        const auto &texture = unit == State::Art ? state->animation.art
             : unit == State::Variants ? state->animation.variants
             : unit == State::Coverage ? state->hd.base.coverage
             : unit == State::Edges ? state->hd.base.edges : state->textures[unit];
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glBindTexture(GL_TEXTURE_2D, texture.name);
     }
-    const auto &previous = state->hd.previous;
-    const GLuint extra[] = {state->hd.index, state->hd.coverage, state->hd.edges,
-                            previous.index, previous.coverage, previous.edges};
+    const GLuint extra[] = {state->hd.index.name, state->hd.coverage.name, state->hd.edges.name,
+                            previous.index.name, previous.coverage.name, previous.edges.name};
     for (unsigned i = 0; i < std::size(extra); ++i)
     {
         glActiveTexture(GL_TEXTURE0 + State::Hd::FirstUnit + i);
@@ -1603,7 +1795,6 @@ void DirectTerrain::drawPrepared(GAGCore::GraphicContext &gfx, int viewportX, in
     glUniform1f(uniforms[8], float(state->hd.tile));
     glUniform2f(uniforms[9], float(previous.size), float(previous.size));
     glUniform1f(uniforms[10], float(previous.tile)); // Zero: no fallback atlas.
-    const auto &base = state->hd.base;
     glUniform2f(uniforms[11], float(state->width * base.tile), float(state->height * base.tile));
     glUniform1f(uniforms[12], float(base.tile)); // Zero: no base atlas.
     glEnable(GL_BLEND);
@@ -1627,22 +1818,27 @@ void DirectTerrain::drawPrepared(GAGCore::GraphicContext &gfx, int viewportX, in
     glEnd();
     gfx.countRenderBatchDraw();
     ++state->frames;
+#else
+    (void)gfx; (void)viewportX; (void)viewportY; (void)wholeMap; (void)animationTime;
 #endif
 }
 
 bool DirectTerrain::needsBackdrop(GAGCore::GraphicContext &gfx, const SceneMap &map) const
 {
+    const auto *device = gfx.renderDevice();
+    const bool streaming = device && device->capabilities().directTerrainStreaming;
 #ifdef DIRECT_TERRAIN_LEGACY_GL
-    const auto context = SDL_GL_GetCurrentContext();
-    if (!context) return false;
+    const auto context = streaming ? nullptr : SDL_GL_GetCurrentContext();
+#else
+    constexpr SDL_GLContext context = nullptr;
+#endif
+    if (!streaming && !context) return false;
     // Until the map's tables are ready nothing draws; edits keep drawing.
-    if (!state || state->context != context || state->generation != gfx.getGLContextGeneration() ||
-        !state->sameMapSource(map))
+    if (!state || state->streaming != streaming || state->context != context ||
+        (streaming && state->resources != gfx.renderResourceOwner()) ||
+        state->generation != gfx.getGLContextGeneration() || !state->sameMapSource(map))
         return true;
     return !state->tablesReady && !state->failed;
-#else
-    return false;
-#endif
 }
 
 bool DirectTerrain::legacyPassAvailable()
@@ -1654,22 +1850,26 @@ bool DirectTerrain::legacyPassAvailable()
 #endif
 }
 
+bool DirectTerrain::streamedPassAvailable(GAGCore::GraphicContext &gfx)
+{
+    const auto *device = gfx.renderDevice();
+    return device && device->capabilities().directTerrainStreaming && gfx.renderResourceOwner();
+}
+
 bool DirectTerrain::failed() const
 {
-#ifdef DIRECT_TERRAIN_LEGACY_GL
     return state && state->failed;
-#else
-    return false;
-#endif
+}
+
+bool DirectTerrain::failedFor(const SceneMap &map) const
+{
+    return state && state->failed && state->sameMapSource(map);
 }
 
 bool DirectTerrain::preparing() const
 {
-#ifdef DIRECT_TERRAIN_LEGACY_GL
-    return state && !state->tablesReady && !state->failed;
-#else
-    return false;
-#endif
+    // Only the streamed pass builds its tables over several frames.
+    return state && (state->streaming || state->context) && !state->tablesReady && !state->failed;
 }
 std::size_t DirectTerrain::textureBytes() const { return state ? state->bytes : 0; }
 std::size_t DirectTerrain::uploadBytes() const { return state ? state->uploaded : 0; }

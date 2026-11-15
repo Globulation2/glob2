@@ -14,6 +14,8 @@ struct RenderDeviceCapabilities
     int maximumTextureSize = 0;
     bool mesh3D = false, torus = false, skinMaterials = false, terrainComposition = false;
     bool directTerrain = false;
+    // DirectTerrainDraw::streamed: streamed HD direct terrain.
+    bool directTerrainStreaming = false;
 };
 struct RenderSubmission
 {
