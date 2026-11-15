@@ -41,6 +41,8 @@ GAUGES = (
     ('gpu_frame_cache_bytes', 'GPU frame cache'),
     ('gpu_skin_atlas_bytes', 'GPU skin atlas'),
     ('gpu_view_tile_bytes', 'GPU view tiles'),
+    ('device_resource_bytes', 'Render device resources'),
+    ('device_snapshot_bytes', 'Render device CPU snapshots'),
 )
 
 
@@ -173,7 +175,7 @@ def table(summary, baseline=None):
     lines.append(row('Process resident memory', summary['peak_rss_bytes'], before.get('peak_rss_bytes')))
     lines.append(row('GPU driver memory', summary['peak_gpu_driver_bytes'], before.get('peak_gpu_driver_bytes')))
     for key, name in GAUGES:
-        lines.append(row(name, summary['peaks'][key], before.get('peaks', {}).get(key)))
+        lines.append(row(name, summary['peaks'].get(key), before.get('peaks', {}).get(key)))
     lines.append(row('Image decodes (count)', summary['image_decodes'], before.get('image_decodes'), str))
     lines.append(row('Image decode output', summary['image_decoded_bytes'], before.get('image_decoded_bytes')))
     for key in ('frame_median_ms', 'frame_p95_ms', 'frame_p99_ms', 'frame_max_ms'):
