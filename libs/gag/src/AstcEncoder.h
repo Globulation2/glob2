@@ -11,6 +11,4 @@ namespace GAGCore::AstcEncoder
 std::vector<unsigned char> encode(const unsigned char *rgba, int width, int height);
 //! The RGBA8 texels an ASTC LDR decoder produces from encode()'s blocks.
 std::vector<unsigned char> decode(const unsigned char *blocks, int width, int height);
-//! True where the SSE4.1 copy (AstcencSse41.cpp) runs on this CPU.
-bool usesSse41();
 } // namespace GAGCore::AstcEncoder
