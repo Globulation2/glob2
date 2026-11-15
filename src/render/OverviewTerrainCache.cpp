@@ -86,6 +86,8 @@ void OverviewTerrainCache::resetForMap(const SceneMap &map)
 	batches.clear();
 	pages.clear();
 	pageBytes = 0;
+	prewarmCursor = 0;
+	prewarmDone = false;
 	capacities.clear();
 	output.reset();
 	mapIdentity = map.identity();
@@ -469,9 +471,7 @@ void OverviewTerrainCache::draw(const SceneMap &map, int left, int top, int righ
 	const auto elapsed = [&] { return std::chrono::steady_clock::now() - started; };
 	const int other = samples == FewSamples ? ManySamples : FewSamples;
 	// Cells described per frame for the workers; batches still running count too.
-	std::size_t queued = 0;
-	for (const auto &batch : batches)
-		queued += batch->jobs.size();
+	std::size_t queued = queuedCells();
 	const std::size_t queueLimit = std::size_t(std::max(1u, BackgroundWork::workers())) * CellsPerBatch * 4;
 	std::size_t viewBytes = 0;
 	std::vector<CellJob> jobs;
@@ -534,4 +534,51 @@ void OverviewTerrainCache::drawPage(Page &page, int wx, int wy, const Region &re
 	target.drawSurface(screenX * 32, screenY * 32, (region.x1 - region.x0) * 32, (region.y1 - region.y0) * 32,
 					   page.image.get(), (region.x0 - wx) * samples, (region.y0 - wy) * samples,
 					   (region.x1 - region.x0) * samples, (region.y1 - region.y0) * samples, alpha);
+}
+
+std::size_t OverviewTerrainCache::queuedCells() const
+{
+	std::size_t queued = 0;
+	for (const auto &batch : batches)
+		queued += batch->jobs.size();
+	return queued;
+}
+
+void OverviewTerrainCache::prewarm(const SceneMap &map, Uint32 visibleTeams, bool wholeMap)
+{
+	resetForMap(map);
+	if (prewarmDone)
+		return;
+	const int columns = std::max(1, map.getW() / Tiles), rows = std::max(1, map.getH() / Tiles);
+	const std::size_t total = std::size_t(columns) * rows;
+	if (total * pageStorage(FewSamples) > Budget / 2)
+	{
+		prewarmDone = true;
+		return;
+	}
+	collect();
+	const auto started = std::chrono::steady_clock::now();
+	std::size_t queued = queuedCells();
+	const std::size_t queueLimit = std::size_t(std::max(1u, BackgroundWork::workers())) * CellsPerBatch * 4;
+	std::vector<CellJob> jobs;
+	while (prewarmCursor < total && std::chrono::steady_clock::now() - started < FrameBudget &&
+		   queued + jobs.size() < queueLimit)
+	{
+		const int wx = int(prewarmCursor % columns) * Tiles, wy = int(prewarmCursor / columns) * Tiles;
+		auto &page = this->page(map, wx, wy, FewSamples);
+		// The view's own pages stay the most recently used.
+		page.used = 0;
+		if (!validate(map, page, wx, wy, Region{wx, wy, wx + Tiles, wy + Tiles}, visibleTeams, wholeMap, jobs,
+					  queueLimit - queued))
+			break; // Resume this page next frame.
+		++prewarmCursor;
+		if (jobs.size() >= CellsPerBatch)
+		{
+			queued += jobs.size();
+			submit(jobs);
+		}
+	}
+	if (!jobs.empty())
+		submit(jobs);
+	prewarmDone = prewarmCursor >= total;
 }

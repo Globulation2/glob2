@@ -502,7 +502,10 @@ queues its changed cells the same way while the view keeps drawing the current
 pixels; finished cells upload as dirty rectangles. Each frame describes at most
 1024 cells for launches, reduces at most four pages from retained native pages,
 and installs at most four finished pages; pages nearest the view centre go
-first, and work for pages the view left is cancelled. Pages record the discovery
+first, and work for pages the view left is cancelled. Missing pages take build
+slots first: refreshes use at most half of them, and none while a missing page
+waited for a slot the frame before, so animated water cannot starve the edges
+of the view. Pages record the discovery
 revision they were checked against, so unchanged views skip per-cell fog checks.
 The compositor caches the material variants each 16×16 page uses until the
 terrain revision changes, so preparing a view unions short lists rather than

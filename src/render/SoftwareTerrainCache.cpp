@@ -1431,6 +1431,10 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 		std::size_t launchUnits = 0;
 		int reductionsThisFrame = 0;
 		const std::size_t pendingLimit = std::size_t(std::max(1u, BackgroundWork::workers())) * 2 + 2;
+		const auto refreshesPending = [&]
+		{ return std::size_t(std::count_if(pending.begin(), pending.end(), [](const auto &page) { return page->refresh; })); };
+		// Whether a missing page found no slot this frame; refreshes then wait.
+		bool waiting = false;
 		// Visit the view's centre first so workers fill it before its edges.
 		std::vector<std::size_t> order(pageCount);
 		for (std::size_t i = 0; i < pageCount; ++i)
@@ -1574,6 +1578,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							launch(wx, wy, tiles, sources);
 							launchUnits += ChunkTiles * ChunkTiles;
 						}
+						else
+							waiting = true;
 						if (Chunk *substitute = standIn(wx, wy))
 						{
 							substitute->used = frame;
@@ -1612,9 +1618,12 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				// cells while the view keeps drawing the current pixels.
 				if (deferring && entry && entry->valid && entry->cpuComposed && artChanged && entry->tiles == tiles)
 				{
+					// Missing pages come first: animation would otherwise keep every
+					// slot busy and leave pages away from the centre unbuilt.
 					if (auto *queued = pendingFor(entry->scale, entry->downsample))
 						queued->wanted = frame;
-					else if (launchUnits < LaunchUnitsPerFrame && pending.size() < pendingLimit)
+					else if (!coldBacklog && launchUnits < LaunchUnitsPerFrame &&
+							 refreshesPending() < pendingLimit / 2 && pending.size() < pendingLimit)
 						launchUnits += launchRefresh(*entry, tiles);
 					stampDiscovery(*entry);
 					entry->discoveryStamped = true;
@@ -1828,6 +1837,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				if (native) native->used = nativeUsed;
 				copies.push_back({entry, (cx * ChunkTiles - vx) * 32, (cy * ChunkTiles - vy) * 32});
 			}
+		coldBacklog = waiting;
 		// Pages the view has left for a few frames are no longer worth composing.
 		std::erase_if(pending, [&](const std::shared_ptr<TerrainPendingPage> &page)
 		{

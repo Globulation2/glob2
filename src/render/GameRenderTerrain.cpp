@@ -445,14 +445,17 @@ void MapDrawer::drawMapResources(int left, int top, int right, int bot, int view
 void MapDrawer::drawMapOverview(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, MapRenderState& render)
 {
 	const Uint8 alpha = Uint8(std::clamp(render.detail.terrainOverview, 0.f, 1.f) * 255);
-	if (!alpha)
-		return;
 	PERF_SCOPE_TIME(Terrain);
 	Uint32 visibleTeams = Team::teamNumberToMask(localTeam);
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 	const int columns = right-left+1, rows = bot-top+1;
 	if (!render.overviewCache)
 		render.overviewCache = std::make_unique<OverviewTerrainCache>();
+	// Fill the zoomed-out overview in the background from the first frame (under
+	// the opening cloud bank), so the first zoom out finds its pages ready.
+	render.overviewCache->prewarm(sceneMap, visibleTeams, drawOptions & Game::DRAW_WHOLE_MAP);
+	if (!alpha)
+		return;
 	// Size the image to what the screen can show: a cell's device pixels.
 	const double pixelsPerCell = 32 * globalContainer->gfx->mapTransformScale() * globalContainer->gfx->getRasterScale();
 	const int samples = OverviewTerrainCache::samplesFor(pixelsPerCell, render.overviewCache->samples(),

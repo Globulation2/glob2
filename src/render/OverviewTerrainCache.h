@@ -46,6 +46,11 @@ class OverviewTerrainCache
 	void draw(const SceneMap &, int left, int top, int right, int bottom, int vx, int vy,
 			  Uint32 visibleTeams, bool wholeMap, int samples, GAGCore::DrawableSurface &target,
 			  Uint8 alpha, bool complete);
+	//! Composes the whole map at few samples in the background, within the same
+	//! per-frame budget, so a first zoom out finds every page ready. Call every
+	//! frame from the start of a game; it stops once the map is done, and skips
+	//! maps whose pages would take more than half the cache allowance.
+	void prewarm(const SceneMap &, Uint32 visibleTeams, bool wholeMap);
 	std::uint64_t composedCells() const { return compositions; }
 	//! Samples per cell axis of the last update or draw, or 0 before the first.
 	int samples() const { return pageSamples; }
@@ -104,6 +109,7 @@ class OverviewTerrainCache
 	void forEachPage(const SceneMap &, int left, int top, int right, int bottom, int vx, int vy, bool centreFirst,
 					 Visit visit);
 	void trim(std::size_t keepBytes);
+	std::size_t queuedCells() const;
 	std::unordered_map<std::uint64_t, Page> pages;
 	std::vector<std::shared_ptr<Batch>> batches;
 	std::optional<Output> output;
@@ -117,4 +123,6 @@ class OverviewTerrainCache
 	std::uint64_t use = 0, compositions = 0;
 	std::size_t pageBytes = 0;
 	int pageSamples = 0;
+	std::size_t prewarmCursor = 0; // Next page of the map to prewarm.
+	bool prewarmDone = false;
 };

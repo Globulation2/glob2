@@ -172,6 +172,8 @@ class SoftwareTerrainCache
 	// Pages composed by background workers while the view draws stand-ins.
 	std::vector<std::shared_ptr<TerrainPendingPage>> pending;
 	bool incomplete = false;
+	// A missing page found no build slot last frame, so animation refreshes wait.
+	bool coldBacklog = false;
 	void cancelPending();
 
   public:

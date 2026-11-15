@@ -76,7 +76,10 @@ it is saved, checksummed or read by the simulation.
   background workers compose those cells and the graphics thread copies a
   bounded number into their pages each frame. Until a page is complete it draws
   over its other density where that exists. Tiled captures and complete draws
-  compose every visible cell first.
+  compose every visible cell first. From a game's first frame, under the
+  opening cloud bank, the same budget also composes the whole map at four
+  samples in the background (maps whose pages fit half the allowance), so the
+  first zoom out finds every page ready.
   When detailed resources come into view, installed resource sprites are
   requested on demand through the asset loader. The resource marker is used
   while its sprite is pending. Tiled captures and cached editor swatches wait
