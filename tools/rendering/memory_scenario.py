@@ -37,10 +37,12 @@ GAUGES = (
     ('gpu_surface_bytes', 'GPU sprite and atlas textures'),
     ('gpu_array_bytes', 'GPU texture-array pages'),
     ('gpu_direct_terrain_bytes', 'GPU direct terrain'),
+    ('cpu_terrain_page_pixel_bytes', 'Terrain page CPU pixels'),
     ('gpu_terrain_page_bytes', 'GPU terrain pages'),
     ('gpu_frame_cache_bytes', 'GPU frame cache'),
     ('gpu_skin_atlas_bytes', 'GPU skin atlas'),
     ('gpu_view_tile_bytes', 'GPU view tiles'),
+    ('gpu_backend_texture_bytes', 'Portable/software renderer textures'),
 )
 
 

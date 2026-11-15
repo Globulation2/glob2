@@ -224,6 +224,9 @@ class SoftwareTerrainCache
 	void draw(GAGCore::GraphicContext &);
 	std::size_t bytes() const;
 	std::size_t residentTextureBytes() const;
+	// CPU pixels pages hold: drawables that kept theirs plus parked pixels.
+	// bytes() is the budget's accounting, which also reserves texture storage.
+	std::size_t pixelBytes() const;
 	int samplingResolution() const { return resolution; }
 	int samplingReduction() const { return downsample; }
 	std::uint64_t cacheHits() const { return hits; }
