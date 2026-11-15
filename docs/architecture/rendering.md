@@ -727,6 +727,36 @@ restored from logical CPU snapshots, while preserving in-flight work, unfinished
 uploads and externally owned rendered targets. Actual pressure can reduce density,
 rather than a fixed low pixel cap.
 
+SDL GPU, programmable GL, the CPU restoration registry (`RenderResources`) and
+the terrain page and torus planners share one `RenderBudget`
+(`platformRenderBudget()`). Desktop keeps 256 MiB in total, General and SkinAtlas
+64 MiB, TerrainPage 128 MiB, TerrainMask 32 MiB and 64 MiB of geometry. Android
+and iOS builds use 160 MiB, 48, 32, 64 and 16 MiB and 32 MiB of geometry: phones
+share one memory pool between CPU and GPU, and the system kills a large
+backgrounded game first. Each mobile class still holds twice its largest single
+texture (the 22.4 MiB authored HD terrain block, 16 MiB skin atlas pages, sixteen
+downsampled 1024x1024 terrain pages), since a class limit is also the largest
+texture it admits; GPU terrain composition falls back to CPU pages when the view's
+pages exceed the TerrainPage class. `GLOB2_RENDER_BUDGET=mobile` (or `desktop`)
+overrides the choice to measure one platform's budget on another; WebGPU keeps
+its own limits.
+
+`SDL_EVENT_LOW_MEMORY` and backgrounding (`SDL_EVENT_WILL_ENTER_BACKGROUND`,
+`SDL_EVENT_DID_ENTER_BACKGROUND`) call `GraphicContext::trimPresentationMemory`,
+which frees what can be rebuilt without a renderer reset: the device's completed
+GPU copies (`trimRetiredResources`), the adapter's CPU restoration snapshots whose
+owners keep their pixels (`trimDeviceTextures`), terrain pages off the view
+(through `PresentationTrimSubscription`) and the retired HD frames of streamed
+banks. Backgrounded nothing is drawn, so all of it goes at once. In the
+foreground, presentation devices trim instead of resetting, which would upload
+the whole view again in one frame: at most 64 snapshots a frame, only those not
+drawn in the last two frames, eight idle terrain pages a frame and 64 retired
+frames a poll, so the view keeps drawing from what it holds. Erased snapshots and
+pages are re-created from their owners' pixels or recomposed in the background
+when next drawn. Other renderers still reset on low memory, and trim terrain
+pages and retired frames when backgrounded. `GLOB2_BENCH_TRIM_AT=<frame>` (or
+`memory_scenario.py --trim-at`) sends a low-memory trim during a benchmark.
+
 The command adapter preserves adjacent painter order and flushes at 4096 commands.
 Cloud alpha maps retain complete cell fans in painter order, submitting at most
 4092 vertices per chunk instead of allocating a packet for each cell (the

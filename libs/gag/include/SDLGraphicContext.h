@@ -374,6 +374,26 @@ namespace GAGCore
 	//! The description of a video mode
 	typedef std::vector<SDL_DisplayMode> VideoModes;
 	
+	//! Why presentation memory is trimmed: the system is short of memory while
+	//! the game runs, or the game is going to the background (nothing is drawn).
+	enum class PresentationTrim { LowMemory, Background };
+	//! A presentation cache outside libgag (terrain pages) frees what it can
+	//! rebuild while subscribed. Handlers run on the presentation thread, from
+	//! GraphicContext::trimPresentationMemory; a low-memory handler must spread
+	//! its work over its later frames rather than free everything at once.
+	class PresentationTrimSubscription
+	{
+	  public:
+		using Handler = std::function<void(PresentationTrim)>;
+		explicit PresentationTrimSubscription(Handler handler);
+		~PresentationTrimSubscription();
+		PresentationTrimSubscription(const PresentationTrimSubscription &) = delete;
+		PresentationTrimSubscription &operator=(const PresentationTrimSubscription &) = delete;
+		static void notify(PresentationTrim);
+	  private:
+		Handler handler;
+	};
+
 	//! A GraphicContext is a DrawableSurface that represent the main screen of the application.
 	class GraphicContext:public DrawableSurface
 	{
@@ -407,6 +427,15 @@ namespace GAGCore
     public:
         RenderDevice *renderDevice() const { return renderer == deviceRenderer.get() ? presentationDevice.get() : nullptr; }
         RenderResources *renderResources() const { return deviceResources.get(); }
+        //! Frees presentation memory that can be rebuilt, without a renderer
+        //! reset: completed GPU copies, CPU restoration snapshots whose owners
+        //! keep their pixels, terrain pages off the view and retired HD frames.
+        //! Backgrounded nothing is drawn, so it all goes at once; otherwise the
+        //! snapshots and frames go in bounded steps over the next frames.
+        void trimPresentationMemory(PresentationTrim);
+        //! One bounded step of a low-memory trim; Toolkit::pollAssets calls it a frame.
+        void servicePresentationTrim();
+        bool presentationTrimPending() const { return snapshotTrimPending; }
         std::shared_ptr<RenderResources> renderResourceOwner() const { return deviceResources; }
         bool beginDeviceTarget(TextureSnapshot target, float logicalWidth, float logicalHeight);
         void endDeviceTarget();
@@ -606,6 +635,7 @@ namespace GAGCore
         std::unique_ptr<RenderDevice> presentationDevice;
         std::shared_ptr<RenderResources> deviceResources;
         std::unique_ptr<RenderBackend> deviceRenderer;
+        bool snapshotTrimPending = false;
         RendererBackend configuredBackend = RendererBackend::Software;
         std::shared_ptr<DeviceSkinState> deviceSkinState;
         struct DeviceTargetState { SDL_Rect clip; float scale; bool offscreen, map, ui; };
@@ -1145,6 +1175,9 @@ namespace GAGCore
         //! were released have nothing left, so their sprites drop back to
         //! native artwork and reload HD in the background at the next poll.
         static void discardUnbackedHighResolution();
+        //! Frees the retired frames of streamed banks (see retiredHighResolutionBudget):
+        //! at once, or 64 a poll until none are left.
+        static void trimRetiredHighResolution(bool immediately);
         static bool pollHighResolution(unsigned budgetMs = 2);
         static bool pollHighResolutionUntil(std::int64_t deadlineNanoseconds); // GAGCore::steadyClockNanoseconds() clock
         // Blocks until every requested HD frame, deferred windows included, is

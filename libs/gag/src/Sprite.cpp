@@ -860,11 +860,23 @@ namespace GAGCore
         evictRetiredHighResolution();
     }
     size_t Sprite::retiredHighResolutionBytes() { return retiredHighResolutionTotal; }
+    // Set by trimRetiredHighResolution: evict retired frames regardless of
+    // budget and age, a bounded number a poll, until none are left.
+    static bool trimmingRetiredHighResolution = false;
+    void Sprite::trimRetiredHighResolution(bool immediately)
+    {
+        trimmingRetiredHighResolution = true;
+        if (immediately)
+            while (trimmingRetiredHighResolution) evictRetiredHighResolution();
+    }
     void Sprite::evictRetiredHighResolution()
     {
+        constexpr std::size_t TrimmedPerPoll = 64;
         std::set<Sprite *> changed;
+        std::size_t trimmed = 0;
         const auto expired = GAGCore::steadyClockNanoseconds() - retiredBudget.lifetimeNanoseconds;
-        while (!retiredHighResolution.empty() && (retiredHighResolutionTotal > retiredBudget.bytes ||
+        while (!retiredHighResolution.empty() && ((trimmingRetiredHighResolution && trimmed++ < TrimmedPerPoll) ||
+                                                 retiredHighResolutionTotal > retiredBudget.bytes ||
                                                  retiredHighResolution.back().retiredAt <= expired)) {
             const auto oldest = retiredHighResolution.back();
             retiredHighResolution.pop_back();
@@ -876,6 +888,7 @@ namespace GAGCore
             changed.insert(&sprite);
         }
         for (auto *sprite : changed) sprite->recomputeBlockCompleteHD();
+        if (retiredHighResolution.empty()) trimmingRetiredHighResolution = false;
     }
     void Sprite::releaseRetiredHighResolution(bool destroy)
     {

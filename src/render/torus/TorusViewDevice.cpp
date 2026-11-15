@@ -279,8 +279,9 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
             // tile. Map capture is 2D: only RGBA color is allocated, with no
             // depth or second atlas. The completed main image covers progress.
             // Reserve bounded authored source chains and upload staging separately.
-            constexpr std::size_t targetBudget = 128u * 1024 * 1024;
-            constexpr std::size_t deviceBudget = 256u * 1024 * 1024;
+            // The platform's limits (smaller on phones), as the device enforces them.
+            const std::size_t targetBudget = GAGCore::platformRenderBudget().classLimit(GAGCore::TextureDescriptor::BudgetClass::TerrainPage);
+            const std::size_t deviceBudget = GAGCore::platformRenderBudget().total;
             constexpr std::size_t uploadReserve = 8u * 1024 * 1024;
             // The largest HD authored terrain block is ~22.4 MiB including
             // mip levels. Keep additional glyph/sprite admission headroom.

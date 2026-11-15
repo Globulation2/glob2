@@ -48,7 +48,7 @@ class GpuTerrainPageCache
     std::uint64_t frame=0,maskIdentity=0,contentRevision=0;
     inline static std::atomic_uint64_t nextCacheIdentity{0};
     const std::uint64_t cacheIdentity=++nextCacheIdentity;
-    static constexpr std::size_t PageBudget=128u*1024*1024,MaskBudget=8u*1024*1024,MaxSources=1024;
+    static constexpr std::size_t MaskBudget=8u*1024*1024,MaxSources=1024;
     static constexpr std::size_t MaskLeaseBudgetBytes=40u*1024*1024;
     static PageKey key(const SoftwareTerrainCache::Chunk &chunk) {return {chunk.x,chunk.y,chunk.scale,chunk.downsample};}
     GAGCore::TextureSnapshot material(TerrainVisual::Compositor &compositor,const TerrainVisual::Recipe &recipe,TerrainVisual::MaterialId id) {
@@ -171,7 +171,9 @@ class GpuTerrainPageCache
         auto target=existing==pages.end()?TextureSnapshot{}:existing->second.pixels;
         if(!target) {
             const auto bytes=std::size_t(dimension)*dimension*4;
-            while(pageBytes+bytes>PageBudget) {
+            // The device's TerrainPage class (smaller on phones).
+            const auto pageBudget=resources->classLimit(TextureDescriptor::BudgetClass::TerrainPage);
+            while(pageBytes+bytes>pageBudget) {
                 auto oldest=pages.end();for(auto it=pages.begin();it!=pages.end();++it)
                     if(!protectedPages.contains(it->first) && (oldest==pages.end() || it->second.used<oldest->second.used))oldest=it;
                 if(oldest==pages.end())throw std::bad_alloc();
@@ -1014,6 +1016,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 	}
 	copies.clear();
 	incomplete = false;
+	// Before this frame marks what it draws: pages the last frame drew stay.
+	if (trimBefore) trimIdlePages(8);
 	++frame;
 	if (left > right || top > bottom) return true;
     if (!enabled)
@@ -1106,12 +1110,14 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
     // bounded upload segment on top of currently resident resources. Cached
     // pages may be counted twice; declining promotion releases those caches and
     // uses the CPU reference until aggregate headroom becomes available again.
-    constexpr std::uint64_t deviceBudget = 256u*1024*1024;
+    const auto &platformBudget = GAGCore::platformRenderBudget();
+    const std::uint64_t deviceBudget = platformBudget.total;
     constexpr std::uint64_t uploadReserveBytes = 8u*1024*1024;
     const auto resident = device ? device->telemetry().resourceBytes : 0;
     const auto compositionReserve = coverageReserve + colorReserve + uploadReserveBytes;
     const bool composeOnDevice = device && device->capabilities().terrainComposition &&
         coverageReserve <= GPUMaskBudget && compositionReserve <= deviceBudget &&
+        colorReserve <= platformBudget.classLimit(GAGCore::TextureDescriptor::BudgetClass::TerrainPage) &&
         resident <= deviceBudget-compositionReserve;
     const auto generation = gfx.getGLContextGeneration();
 	try
@@ -2221,6 +2227,22 @@ bool SoftwareTerrainCache::releaseMasks(std::size_t needed)
 			held.reset();
 	}
 	return *maskTotal + needed <= budget;
+}
+void SoftwareTerrainCache::trimIdlePages(std::size_t limit)
+{
+	std::size_t erased = 0;
+	std::erase_if(chunks, [&](const auto &chunk) {
+		if (erased >= limit || chunk->used >= trimBefore) return false;
+		if (gpuPages) gpuPages->erase(*chunk);
+		++erased;
+		return true;
+	});
+	if (erased >= limit) return;
+	// Every idle page is gone: so are the idle animated tiles and, without
+	// pending pages, the material snapshot workers composed from.
+	std::erase_if(animatedTiles, [&](const auto &entry) { return entry.second.used < trimBefore; });
+	if (pending.empty()) workerMaterials.reset();
+	trimBefore = 0;
 }
 std::size_t SoftwareTerrainCache::bytes() const
 {

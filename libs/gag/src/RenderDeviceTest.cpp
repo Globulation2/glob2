@@ -311,6 +311,55 @@ TEST_SUITE("RenderDevice")
             }
         }
     }
+    TEST_CASE("snapshot trims erase only idle textures, a bounded number a call, and redraw from pixels")
+    {
+        auto target = surface(); REQUIRE(target);
+        std::array<Surface, 4> sources{surface(), surface(), surface(), surface()};
+        for (std::size_t i = 0; i < sources.size(); ++i) { REQUIRE(sources[i]); paint(sources[i].get(), Uint8(60 * (i + 1)), 0, 0); }
+        RenderResources resources; auto device = makeSoftwareRenderDevice(target.get());
+        auto backend = makeDeviceRenderBackend(*device, resources, 2, 1);
+        const SDL_Rect src{0, 0, 1, 1};
+        for (auto &source : sources) backend->blit(source.get(), source.get(), 1, true, src, {0, 0, 1, 1}, 255);
+        backend->present();
+        backend->blit(sources[3].get(), sources[3].get(), 1, true, src, {0, 0, 1, 1}, 255);
+        backend->present();
+        CHECK(resources.retainedBytes() == 4 * 8);
+        // Three were not drawn in the last presentation; one a call.
+        CHECK(trimDeviceTextures(*backend, 1, 1) == 1);
+        CHECK(resources.retainedBytes() == 3 * 8);
+        CHECK(trimDeviceTextures(*backend, 8, 1) == 2);
+        CHECK(trimDeviceTextures(*backend, 8, 1) == 0);
+        CHECK(resources.retainedBytes() == 8);
+        // An erased snapshot is re-created from its owner's pixels.
+        backend->blit(sources[0].get(), sources[0].get(), 1, true, src, {1, 0, 1, 1}, 255);
+        backend->present();
+        CHECK(pixel(target.get(), 1).r == 60);
+        CHECK(trimDeviceTextures(*backend, 8, 0) == 2); // Zero idle frames: everything.
+        CHECK(resources.retainedBytes() == 0);
+        CHECK(trimDeviceTextures(*makeSoftwareRenderBackend(target.get()), 8, 0) == 0);
+    }
+    TEST_CASE("mobile budgets are smaller yet admit the largest single texture of each class twice")
+    {
+        const auto desktop = RenderBudget::desktop(), mobile = RenderBudget::mobile();
+        constexpr std::size_t MiB = 1024 * 1024;
+        CHECK(desktop.total == 256 * MiB);
+        CHECK(desktop.classes == std::array<std::size_t, 4>{64 * MiB, 64 * MiB, 128 * MiB, 32 * MiB});
+        CHECK(mobile.total < desktop.total);
+        for (std::size_t i = 0; i < 4; ++i) { CHECK(mobile.classes[i] <= desktop.classes[i]); CHECK(mobile.classes[i] <= mobile.total); }
+        // The authored HD terrain block (22.4 MiB with mips), skin atlas pages
+        // (2048x2048) and 16 downsampled 1024x1024 terrain pages.
+        CHECK(mobile.classLimit(TextureDescriptor::BudgetClass::General) >= 2 * 22.4 * MiB);
+        CHECK(mobile.classLimit(TextureDescriptor::BudgetClass::SkinAtlas) >= 2 * 2048 * 2048 * 4);
+        CHECK(mobile.classLimit(TextureDescriptor::BudgetClass::TerrainPage) >= 16 * 1024 * 1024 * 4);
+        RenderResources resources(RenderBudget{64, {16, 8, 32, 8}, 64});
+        CHECK(resources.byteLimit() == 64);
+        CHECK(resources.classLimit(TextureDescriptor::BudgetClass::SkinAtlas) == 8);
+        auto wide = surface(4, 1); REQUIRE(wide); // 16 bytes
+        TextureDescriptor skin; skin.budgetClass = TextureDescriptor::BudgetClass::SkinAtlas;
+        CHECK_FALSE(resources.create(wide.get(), 1, skin));
+        CHECK(resources.create(wide.get(), 1));
+        CHECK_FALSE(resources.create(wide.get(), 1)); // General is full.
+    }
     TEST_CASE("transient source views with no asset identity cannot reuse old pixels")
     {
         auto source = surface(); auto target = surface(); REQUIRE(source); REQUIRE(target);

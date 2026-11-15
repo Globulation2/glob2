@@ -241,4 +241,28 @@ class SoftwareTerrainCache
 	// A torus visits every page each frame. Keep its complete terrain working
 	// set resident instead of selecting density independently for each tile.
 	static int capturePixelsPerCell(int width, int height);
+
+  private:
+	// Pages not drawn since a presentation trim go, a few a frame (all at once
+	// when backgrounded); zero when no trim is pending.
+	std::uint64_t trimBefore = 0;
+	void trimIdlePages(std::size_t limit);
+	void trimmed(GAGCore::PresentationTrim reason)
+	{
+		trimBefore = frame;
+		if (reason == GAGCore::PresentationTrim::Background) trimIdlePages(SIZE_MAX);
+	}
+	// Stays bound to the cache it was built in: assigning another cache's
+	// pages leaves this cache's subscription as it is.
+	struct TrimHook
+	{
+		GAGCore::PresentationTrimSubscription subscription;
+		explicit TrimHook(SoftwareTerrainCache *cache)
+			: subscription([cache](GAGCore::PresentationTrim reason) { cache->trimmed(reason); }) {}
+		TrimHook(const TrimHook &) = delete;
+		TrimHook &operator=(const TrimHook &) { return *this; }
+		TrimHook &operator=(TrimHook &&) { return *this; }
+	};
+	// Last, so it unsubscribes before the pages it trims are destroyed.
+	TrimHook trimHook{this};
 };

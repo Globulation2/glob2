@@ -147,9 +147,9 @@ class DeviceRenderBackend final : public RenderBackend
     RenderDevice &device;
     RenderResources &resources;
     RenderFrameRecorder recorder;
-    struct TextureEntry { TextureHandle handle; std::uint64_t lastUse; };
+    struct TextureEntry { TextureHandle handle; std::uint64_t lastUse, lastFrame; };
     std::unordered_map<const void *, TextureEntry> textures;
-    std::uint64_t useClock = 0;
+    std::uint64_t useClock = 0, presentedFrames = 0;
     bool aborted=false,lastPresented=true,intentionalDefer=false,lastIntentionalDefer=false;
     std::string fatalReason;
     void abort(){aborted=true;recorder.cancel();}
@@ -220,7 +220,7 @@ class DeviceRenderBackend final : public RenderBackend
                 do { handle = resources.create(source, revision, descriptor, mipLevels); } while (!handle && evictOldest(key));
             }
             if (!handle) throw RenderAdmissionDeferred("Texture resource budget exhausted");
-            found = textures.emplace(key, TextureEntry{handle, ++useClock}).first;
+            found = textures.emplace(key, TextureEntry{handle, ++useClock, presentedFrames}).first;
         } else {
             auto previous = resources.snapshot(found->second.handle);
             const bool changed = !previous || previous->contentRevision != revision || previous->descriptor.mips != descriptor.mips;
@@ -239,7 +239,7 @@ class DeviceRenderBackend final : public RenderBackend
                     found->second.handle = replacement;
                 }
             }
-            found->second.lastUse = ++useClock;
+            found->second.lastUse = ++useClock; found->second.lastFrame = presentedFrames;
         }
         return resources.snapshot(found->second.handle);
     }
@@ -361,7 +361,22 @@ class DeviceRenderBackend final : public RenderBackend
         if (found != textures.end()) { resources.erase(found->second.handle); textures.erase(found); }
     }
     void reset() override { recorder.cancel(); device.reset(); submittedFrameIdentity=presentedFrameIdentity=0;aborted=false;lastPresented=false;intentionalDefer=lastIntentionalDefer=false;fatalReason.clear(); }
-    void present() override { flush();lastPresented=false;lastIntentionalDefer=intentionalDefer;
+    // Erases up to `limit` cached snapshots not drawn in the last `idleFrames`
+    // presentations (zero: any not drawn since the last one); their owners keep
+    // the pixels to re-create them on a draw.
+    // Queued and submitted work keep the revisions they reference. Returns how
+    // many went: fewer than `limit` means none is left to trim.
+    std::size_t trim(std::size_t limit, std::uint64_t idleFrames)
+    {
+        std::size_t erased = 0;
+        for (auto it = textures.begin(); it != textures.end() && erased < limit;) {
+            if (it->second.lastFrame + idleFrames < presentedFrames) {
+                resources.erase(it->second.handle); it = textures.erase(it); ++erased;
+            } else ++it;
+        }
+        return erased;
+    }
+    void present() override { ++presentedFrames;flush();lastPresented=false;lastIntentionalDefer=intentionalDefer;
         if(!fatalReason.empty())throw std::runtime_error(fatalReason);
         if(aborted){device.discardFrame();submittedFrameIdentity=presentedFrameIdentity;}else{device.present();presentedFrameIdentity=submittedFrameIdentity;lastPresented=true;}
         aborted=false;intentionalDefer=false;recorder.begin(++frameIdentity,width,height); }
@@ -396,6 +411,11 @@ std::unique_ptr<RenderDevice> makeSoftwareRenderDevice(SDL_Surface *target)
 std::unique_ptr<RenderBackend> makeDeviceRenderBackend(RenderDevice &device, RenderResources &resources, int width, int height)
 {
     return std::make_unique<DeviceRenderBackend>(device, resources, width, height);
+}
+std::size_t trimDeviceTextures(RenderBackend &backend, std::size_t limit, std::uint64_t idleFrames)
+{
+    auto *device = dynamic_cast<DeviceRenderBackend *>(&backend);
+    return device ? device->trim(limit, idleFrames) : 0;
 }
 bool pushDeviceTarget(RenderBackend &backend, TextureSnapshot target, float width, float height)
 {

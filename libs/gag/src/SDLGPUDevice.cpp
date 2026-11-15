@@ -197,7 +197,10 @@ class SDLGPUDevice final : public RenderDevice
     int width, height;
     RenderTelemetry counts;
     static constexpr int MaximumTextureSize = 4096;
-    static constexpr std::size_t TextureBudget = 64 * 1024 * 1024, TotalBudget = 256 * 1024 * 1024, SubmissionLimit = 8;
+    static constexpr std::size_t SubmissionLimit = 8;
+    // Platform limits (smaller on phones); see RenderBudget::mobile.
+    const RenderBudget budgetLimits = platformRenderBudget();
+    const std::size_t TotalBudget = budgetLimits.total, GeometryBudget = budgetLimits.geometry;
 
     TexturePtr allocate(int w, int h, TextureSnapshot source = {}, const Work *pending = nullptr)
     {
@@ -419,7 +422,7 @@ class SDLGPUDevice final : public RenderDevice
         }
         std::size_t bytes = std::size_t(source->descriptor.width) * source->descriptor.height * 4;
         for(const auto &level:source->mips)bytes+=level.rgba.size();
-        std::array<std::size_t,4> budgets{TextureBudget,TextureBudget,128 * 1024 * 1024,32 * 1024 * 1024};
+        const auto &budgets = budgetLimits.classes;
         const auto budget = static_cast<std::size_t>(source->descriptor.budgetClass);
         if (budget >= budgets.size()) throw std::invalid_argument("Invalid texture budget class");
         std::size_t resident = 0;
@@ -889,7 +892,7 @@ CoveragePtr SDLGPUDevice::resolveCoverage(SDL_GPUCommandBuffer *commands, Work &
         source->samples.size()!=std::size_t(source->width)*source->height) throw std::invalid_argument("Invalid immutable terrain coverage");
     const CoverageKey key{source->identity,source->revision,source->width,source->height};
     if(auto found=coverageCache.find(key);found!=coverageCache.end()) { entry.coverage.push_back(found->second); return found->second; }
-    const std::size_t bytes=source->samples.size()*9, limit=32*1024*1024;
+    const std::size_t bytes=source->samples.size()*9, limit=budgetLimits.classLimit(TextureDescriptor::BudgetClass::TerrainMask);
     if(bytes>limit) throw std::length_error("Terrain coverage exceeds mask budget");
     std::size_t used=0; for(const auto &[key,value]:coverageCache)used+=value->bytes;
     for(const auto &[key,value]:cache)if(value->source->descriptor.budgetClass==TextureDescriptor::BudgetClass::TerrainMask)used+=value->byteSize;
@@ -1031,12 +1034,12 @@ GeometryPtr SDLGPUDevice::resolveGeometry(SDL_GPUCommandBuffer *commands, Work &
     if (auto found = geometryCache.find(source.get()); found != geometryCache.end()) return found->second;
     std::size_t resident = 0; for (const auto &[key, geometry] : geometryCache) resident += geometry->source->bytes;
     const auto bytes = source->vertices.size() + source->indices.size() * sizeof(std::uint32_t);
-    if (bytes > TextureBudget) throw std::length_error("SDL GPU single geometry exceeds budget");
-    for(auto it=geometryCache.begin();resident>TextureBudget-bytes && it!=geometryCache.end();) {
+    if (bytes > GeometryBudget) throw std::length_error("SDL GPU single geometry exceeds budget");
+    for(auto it=geometryCache.begin();resident>GeometryBudget-bytes && it!=geometryCache.end();) {
         if(it->second.use_count()==1) { resident-=it->second->source->bytes;it=geometryCache.erase(it); }
         else ++it;
     }
-    if (resident > TextureBudget - bytes) throw RenderAdmissionDeferred("SDL GPU geometry budget exhausted");
+    if (resident > GeometryBudget - bytes) throw RenderAdmissionDeferred("SDL GPU geometry budget exhausted");
     reserveMemory(bytes * 2, &entry);
     for (std::size_t offset = 0; offset < source->vertices.size(); offset += sizeof(float)) {
         float value; std::memcpy(&value, source->vertices.data() + offset, sizeof(value));

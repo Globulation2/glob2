@@ -308,6 +308,13 @@ base mask finishes; a camera that never rests starves that work. Camera motion a
 flat pass, so a saved-game memory run needs `GLOB2_BENCH_FLAT=1` as well as
 `GLOB2_BENCH_GAME`.
 
+`--trim-at N` (`GLOB2_BENCH_TRIM_AT=N`) sends a low-memory presentation trim
+before measured frame N. The benchmark prints `PRESENTATION_TRIM` with the device
+registry's snapshot bytes and the device's resource bytes, then
+`PRESENTATION_TRIM_AFTER` every ten frames for sixty frames; compare them, and
+the `FRAME_RENDER_MEMORY` lines around frame N, to see what the trim freed. Set
+`GLOB2_RENDER_BUDGET=mobile` to run the scenario under the phone budgets.
+
 In the game client, legacy OpenGL records the same tracked GPU total as the
 `render.resource_bytes` gauge, and `GLOB2_TEAM_TIMELINE=1` adds a
 `GLOB2_RENDER_MEMORY` line with these fields once a second

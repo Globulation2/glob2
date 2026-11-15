@@ -6,22 +6,56 @@
 #include <cmath>
 #include <cstring>
 #include <atomic>
+#include <algorithm>
+#include <cstdlib>
+#include <string_view>
 
 namespace GAGCore
 {
 namespace { std::atomic<std::uint64_t> registryIdentity{1}; }
+constexpr std::size_t MiB = 1024 * 1024;
+RenderBudget RenderBudget::desktop() { return {256 * MiB, {64 * MiB, 64 * MiB, 128 * MiB, 32 * MiB}, 64 * MiB}; }
+// Phones share one memory pool between the CPU and GPU, and Android starts
+// killing a backgrounded game long before desktop limits. Each class keeps at
+// least twice its largest single texture: the 22.4 MiB authored HD terrain
+// block (General), two 16 MiB skin atlas pages, a 16-page window of 1024x1024
+// terrain pages (TerrainPage, pages draw downsampled there) and half the
+// desktop coverage masks. The total covers those classes plus transient work.
+RenderBudget RenderBudget::mobile() { return {160 * MiB, {48 * MiB, 32 * MiB, 64 * MiB, 16 * MiB}, 32 * MiB}; }
+const RenderBudget &platformRenderBudget()
+{
+    static const RenderBudget chosen = [] {
+        if (const char *value = std::getenv("GLOB2_RENDER_BUDGET")) {
+            const std::string_view name(value);
+            if (name == "mobile") return RenderBudget::mobile();
+            if (name == "desktop") return RenderBudget::desktop();
+        }
+#if defined(GLOB2_MOBILE) || defined(__ANDROID__)
+        return RenderBudget::mobile();
+#else
+        return RenderBudget::desktop();
+#endif
+    }();
+    return chosen;
+}
 struct RenderResources::Budget {
     std::size_t bytes = 0, limit;
-    std::array<std::size_t,4> classes{};
-    static constexpr std::array<std::size_t,4> classLimits{64*1024*1024,64*1024*1024,128*1024*1024,32*1024*1024};
-    explicit Budget(std::size_t limit) : limit(limit) {}
+    std::array<std::size_t,4> classes{}, classLimits{};
+    Budget(std::size_t limit, const std::array<std::size_t,4> &limits) : limit(limit)
+    {
+        for (std::size_t i = 0; i < limits.size(); ++i) classLimits[i] = std::min(limits[i], limit);
+    }
 };
-RenderResources::RenderResources(std::size_t bytes, std::size_t count)
-    : budget(std::make_shared<Budget>(bytes)), geometryBudget(std::make_shared<Budget>(64 * 1024 * 1024)), maximumSlots(count), identity(registryIdentity.fetch_add(1,std::memory_order_relaxed))
+RenderResources::RenderResources(const RenderBudget &limits, std::size_t count)
+    : budget(std::make_shared<Budget>(limits.total, limits.classes)),
+      geometryBudget(std::make_shared<Budget>(limits.geometry, std::array<std::size_t,4>{})), maximumSlots(count),
+      identity(registryIdentity.fetch_add(1,std::memory_order_relaxed))
 {
     if (count > std::numeric_limits<std::uint32_t>::max())
         throw std::invalid_argument("Too many texture slots");
 }
+RenderResources::RenderResources(std::size_t bytes, std::size_t count)
+    : RenderResources(RenderBudget{bytes, platformRenderBudget().classes, platformRenderBudget().geometry}, count) {}
 TextureSnapshot RenderResources::copy(TextureHandle handle, SDL_Surface *source,
                                       std::uint64_t revision, TextureDescriptor descriptor, std::span<const RenderMipLevel> mipLevels)
 {
@@ -55,7 +89,7 @@ TextureSnapshot RenderResources::copy(TextureHandle handle, SDL_Surface *source,
             validatedW = std::max(1, validatedW/2); validatedH = std::max(1, validatedH/2);
         }
         if (!finalSeen) throw std::invalid_argument("Authored mip chain must reach one texel");
-        if (authoredBytes > budget->limit - budget->bytes || authoredBytes > Budget::classLimits[category] - budget->classes[category]) return {};
+        if (authoredBytes > budget->limit - budget->bytes || authoredBytes > budget->classLimits[category] - budget->classes[category]) return {};
         for (std::size_t index = 0; index < mipLevels.size(); ++index) {
             const auto &level = mipLevels[index];
             if (level.width != expectedW || level.height != expectedH ||
@@ -90,12 +124,12 @@ TextureSnapshot RenderResources::copy(TextureHandle handle, SDL_Surface *source,
         throw std::invalid_argument("Authored mip descriptor requires supplied levels");
     }
     const std::size_t bytes = std::size_t(source->pitch) * source->h + mipBytes;
-    if (bytes > Budget::classLimits[category] - budget->classes[category]) return {};
+    if (bytes > budget->classLimits[category] - budget->classes[category]) return {};
     if (bytes > budget->limit - budget->bytes) return {};
     SDL_Surface *pixels = authoredBase ? authoredBase.get() : SDL_DuplicateSurface(source);
     if (!pixels) throw std::runtime_error(SDL_GetError());
     const std::size_t allocated = std::size_t(pixels->pitch) * pixels->h + mipBytes;
-    if (allocated > budget->limit - budget->bytes || allocated > Budget::classLimits[category] - budget->classes[category]) { if (!authoredBase) SDL_DestroySurface(pixels); return {}; }
+    if (allocated > budget->limit - budget->bytes || allocated > budget->classLimits[category] - budget->classes[category]) { if (!authoredBase) SDL_DestroySurface(pixels); return {}; }
     descriptor.width = pixels->w;
     descriptor.height = pixels->h;
     descriptor.format = pixels->format;
@@ -145,6 +179,12 @@ bool RenderResources::erase(TextureHandle handle)
 }
 std::size_t RenderResources::retainedBytes() const { return budget->bytes; }
 std::size_t RenderResources::byteLimit() const { return budget->limit; }
+std::size_t RenderResources::classLimit(TextureDescriptor::BudgetClass category) const
+{
+    const auto index = std::size_t(category);
+    if (index >= budget->classLimits.size()) throw std::invalid_argument("Invalid texture budget class");
+    return budget->classLimits[index];
+}
 BufferHandle RenderResources::createGeometry(GeometryLayout layout, std::span<const std::byte> vertices,
                                              std::span<const std::uint32_t> indices, std::uint64_t revision)
 {

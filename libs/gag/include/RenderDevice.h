@@ -102,6 +102,11 @@ std::unique_ptr<RenderDevice> makeSoftwareRenderDevice(SDL_Surface *borrowedTarg
 // Records existing drawing calls as neutral packets. Device and registry must
 // outlive the adapter. Caller flushes before destroying/replacing either.
 std::unique_ptr<RenderBackend> makeDeviceRenderBackend(RenderDevice &, RenderResources &, int width, int height);
+// Erases up to `limit` of the adapter's cached restoration snapshots that were
+// not drawn in the last `idleFrames` presentations (zero: any not drawn since
+// the last presentation); their owners
+// re-create them on the next draw. Returns how many went (0 for other backends).
+std::size_t trimDeviceTextures(RenderBackend &, std::size_t limit, std::uint64_t idleFrames);
 bool pushDeviceTarget(RenderBackend &, TextureSnapshot, float logicalWidth, float logicalHeight);
 void popDeviceTarget(RenderBackend &);
 bool recordDevicePacket(RenderBackend &, DrawPacket);

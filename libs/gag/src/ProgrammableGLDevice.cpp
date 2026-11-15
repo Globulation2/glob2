@@ -254,8 +254,9 @@ class ProgrammableGLDevice final : public RenderDevice
             slot = {};
         }
     }
-    static constexpr std::size_t TextureBudget = 256 * 1024 * 1024;
-    static constexpr std::array<std::size_t,4> ClassLimits{64*1024*1024,64*1024*1024,128*1024*1024,32*1024*1024};
+    // Platform limits (smaller on phones); see RenderBudget::mobile.
+    const std::size_t TextureBudget = platformRenderBudget().total;
+    const std::array<std::size_t,4> ClassLimits = platformRenderBudget().classes;
     std::array<std::size_t,4> classBytes{};
     std::size_t textureBytes = 0, vertexBytes = 0, captureBytes = 0;
     // Reused only during submit/upload; neither buffer grows beyond an existing admission limit.
