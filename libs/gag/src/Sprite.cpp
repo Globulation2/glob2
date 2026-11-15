@@ -733,6 +733,29 @@ namespace GAGCore
         return stats;
     }
 
+    Sprite::TeamColorStats Sprite::teamColorStats()
+    {
+        TeamColorStats stats;
+        const auto add=[&stats](DrawableSurface *surface)
+        {
+            // A drawn portable recolour may keep only its texture.
+            if(surface->hasPixels())stats.cpuBytes+=static_cast<size_t>(surface->getW())*surface->getH()*4;
+            ++stats.frames;
+        };
+        const auto addSprite=[&add](const Sprite &sprite)
+        {
+            for(const auto *images:{&sprite.rotated,&sprite.experimentRotated})
+                for(const auto *rotated:*images)if(rotated)for(const auto &entry:rotated->rotationMap)add(entry.second);
+            for(const auto &node:sprite.teamColorList)add(node.surface.get());
+        };
+        for(const auto *sprite:loadedSprites)
+        {
+            addSprite(*sprite);
+            if(sprite->highResolutionAtlas)addSprite(*sprite->highResolutionAtlas);
+        }
+        return stats;
+    }
+
     bool Sprite::highResolutionDeferred(const std::string& name)
     {
         return deferredHighResolutionNames.contains(name);

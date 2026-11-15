@@ -311,6 +311,29 @@ namespace GAGCore
 		return _gc->drawTeamColoredQuad(base, team, x, y, w, h, alpha, sprite->teamHueShiftDegrees());
 	}
 
+	bool DrawableSurface::drawDeviceTeamLayer(float x, float y, float w, float h, Sprite *sprite, unsigned index,
+	                                          bool experiment, Uint8 alpha)
+	{
+		if (this != _gc || !_gc->hasDeviceTeamColor())
+			return false;
+		// The layer prepareDrawSurface would recolour, uncoloured: the shader
+		// applies the hue, so no team-coloured copy is made or cached.
+		DrawableSurface *team = nullptr;
+		if (experiment && index < sprite->experimentRotated.size() && sprite->experimentRotated[index] &&
+		    sprite->experimentRotated[index]->orig->hasPixels())
+			team = sprite->experimentRotated[index]->orig;
+		else if (sprite->rotated[index])
+			team = sprite->rotated[index]->orig;
+		if (!team)
+			return true;
+		if (w < 0)
+		{
+			w = static_cast<float>(team->getW());
+			h = static_cast<float>(team->getH());
+		}
+		return _gc->drawTeamColorSurface(x, y, w, h, team, sprite->teamHueShiftDegrees(), alpha);
+	}
+
 	bool DrawableSurface::drawPortableHighResolution(float x, float y, float w, float h, Sprite *sprite, unsigned index,
 	                                                 Uint8 alpha)
 	{
@@ -359,7 +382,7 @@ namespace GAGCore
 		// the sized overload above, and by every sprite with no team layer.
 		if (sprite->images[index])
 			drawSurface(x, y, sprite->images[index], alpha);
-		if (sprite->rotated[index])
+		if (sprite->rotated[index] && !drawDeviceTeamLayer(x, y, -1, -1, sprite, index, false, alpha))
 			drawSurface(x, y, sprite->getRotatedSurface(index), alpha);
 	}
 
@@ -382,6 +405,9 @@ namespace GAGCore
 		// The team layer draws into the exact same destination box as the base
 		// layer above, regardless of the HD/native texture's own pixel size --
 		// drawSurface always stretches a surface's content to fit (x,y,w,h).
+		if (drawDeviceTeamLayer(static_cast<float>(x), static_cast<float>(y), static_cast<float>(w),
+		                        static_cast<float>(h), sprite, index, experiment, alpha))
+			return;
 		if (auto surface = sprite->prepareDrawSurface(index, true, experiment))
 			drawSurface(x, y, w, h, surface, alpha);
 	}
@@ -402,6 +428,8 @@ namespace GAGCore
 		bool experiment = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU);
 		if (auto surface = sprite->prepareDrawSurface(index, false, experiment))
 			drawSurface(x, y, w, h, surface, alpha);
+		if (drawDeviceTeamLayer(x, y, w, h, sprite, index, experiment, alpha))
+			return;
 		if (auto surface = sprite->prepareDrawSurface(index, true, experiment))
 			drawSurface(x, y, w, h, surface, alpha);
 	}

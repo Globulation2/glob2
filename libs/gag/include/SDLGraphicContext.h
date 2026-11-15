@@ -319,6 +319,11 @@ namespace GAGCore
 		// The portable renderer zoomed in: the frame's HD layers at its logical
 		// size, when they can draw now (Sprite::highResolutionDrawable).
 		bool drawPortableHighResolution(float x, float y, float w, float h, Sprite *sprite, unsigned index, Uint8 alpha);
+		// A device renderer with a team-colour shader: the frame's team layer
+		// (HD when `experiment` and it has pixels, as prepareDrawSurface picks)
+		// recoloured on the GPU, with no CPU recolour. A negative w draws it at
+		// its own size. False when the caller must draw a CPU-recoloured copy.
+		bool drawDeviceTeamLayer(float x, float y, float w, float h, Sprite *sprite, unsigned index, bool experiment, Uint8 alpha);
 		void drawSprite(float x, float y, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
 		
 		void drawSprite(int x, int y, int w, int h, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
@@ -540,6 +545,9 @@ namespace GAGCore
         std::unique_ptr<SoftwareFramePresenter> softwarePresenter;
         void prepareDraw() override;
 		void presentLastFrame();
+		// An HD layer's alpha-weighted mip chain for device uploads, prepared
+		// once per content revision and borrowed by the returned levels.
+		static std::vector<RenderMipLevel> deviceMipLevels(DrawableSurface *surface, SDL_Surface *pixels);
 		// GLSL 1.20 program that recolors a sprite's unrotated team layer on the
 		// GPU (same HSV hue shift as DrawableSurface::shiftHSV) and combines it
 		// with the base layer, so no team-coloured or composite texture is ever
@@ -831,6 +839,14 @@ namespace GAGCore
 		//! shader is unavailable so the caller can fall back to two ordinary
 		//! drawSurface calls (base, then the CPU-recoloured team layer).
 		bool drawTeamColoredQuad(DrawableSurface *base, DrawableSurface *team, float x, float y, float w, float h, Uint8 alpha, float hueShift);
+		//! Draw all of a team layer stretched to (x, y, w, h), recoloured by
+		//! hueShift degrees on the GPU exactly as Sprite::applyTeamHueShift
+		//! recolours a copy. Device renderers whose shader set has the
+		//! team-colour material only; false, drawing nothing, elsewhere, so the
+		//! caller draws the CPU-recoloured copy.
+		bool drawTeamColorSurface(float x, float y, float w, float h, DrawableSurface *team, float hueShift, Uint8 alpha = Color::ALPHA_OPAQUE);
+		//! Whether drawTeamColorSurface can draw now.
+		bool hasDeviceTeamColor() const;
 		//! Draw all of `surface` stretched to (x, y, w, h), adding its light (its
 		//! colour times alpha) to what is already drawn instead of blending over
 		//! it, so it brightens rather than tints. Accelerated renderers only; the
@@ -1100,6 +1116,11 @@ namespace GAGCore
         bool createDeviceTextureAtlas(int maximumTextureSize, bool variableSizes);
 		struct HighResolutionStats {size_t cpuBytes=0, coloredFrames=0;};
 		static HighResolutionStats highResolutionStats();
+		//! CPU team recolours of every loaded sprite, native and HD: rotation
+		//! maps and the recolour cache, and the bytes of those still holding
+		//! pixels. Zero where a device shader recolours.
+		struct TeamColorStats {size_t cpuBytes=0, frames=0;};
+		static TeamColorStats teamColorStats();
 		//! Resident pixel and texture bytes of each loaded sprite, for RenderMemory::sprites().
 		static void memoryUsage(std::vector<RenderMemory::SpriteUsage> &usage);
 		static void setHighResolution(bool enabled);

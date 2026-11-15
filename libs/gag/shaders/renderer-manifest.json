@@ -235,6 +235,29 @@
           "offset": 24
         }
       ]
+    },
+    "team-color": {
+      "stride": 32,
+      "attributes": [
+        {
+          "name": "position",
+          "location": 0,
+          "components": 2,
+          "offset": 0
+        },
+        {
+          "name": "vertexColor",
+          "location": 1,
+          "components": 4,
+          "offset": 8
+        },
+        {
+          "name": "texcoord",
+          "location": 2,
+          "components": 2,
+          "offset": 24
+        }
+      ]
     }
   },
   "uniformBlocks": {
@@ -523,6 +546,44 @@
           "type": "uvec4"
         }
       ]
+    },
+    "team-color": {
+      "stage": "vertex",
+      "set": 1,
+      "binding": 0,
+      "members": [
+        {
+          "name": "viewport",
+          "type": "vec2"
+        }
+      ]
+    },
+    "team-color-fragment": {
+      "stage": "fragment",
+      "set": 3,
+      "binding": 0,
+      "members": [
+        {
+          "name": "alpha",
+          "type": "float"
+        },
+        {
+          "name": "linear",
+          "type": "float"
+        },
+        {
+          "name": "premultiplied",
+          "type": "float"
+        },
+        {
+          "name": "levels",
+          "type": "float"
+        },
+        {
+          "name": "uvBounds",
+          "type": "vec4"
+        }
+      ]
     }
   },
   "textures": [
@@ -548,7 +609,8 @@
     "point",
     "terrain-direct",
     "terrain-compose",
-    "terrain-reduce"
+    "terrain-reduce",
+    "team-color"
   ],
   "nativeCompiler": {
     "name": "glslangValidator",
@@ -560,6 +622,13 @@
     "stage": "fragment",
     "set": 2,
     "binding": 0
+  },
+  "teamColorTexture": {
+    "name": "image",
+    "stage": "fragment",
+    "set": 2,
+    "binding": 0,
+    "layoutName": "team_color_image"
   },
   "worldTexture": {
     "name": "world",
@@ -575,7 +644,8 @@
     "pointFragment": "libs/gag/shaders/point-fragment.glsl",
     "terrain-directFragment": "libs/gag/include/DirectTerrainShader.h",
     "terrain-composeFragment": "libs/gag/shaders/terrain-compose-fragment.glsl",
-    "terrain-reduceFragment": "libs/gag/shaders/terrain-reduce-fragment.glsl"
+    "terrain-reduceFragment": "libs/gag/shaders/terrain-reduce-fragment.glsl",
+    "team-colorFragment": "libs/gag/shaders/team-color-fragment.glsl"
   },
   "webgpuCompiler": {
     "name": "naga-cli",

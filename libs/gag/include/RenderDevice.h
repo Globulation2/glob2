@@ -14,6 +14,8 @@ struct RenderDeviceCapabilities
     int maximumTextureSize = 0;
     bool mesh3D = false, torus = false, skinMaterials = false, terrainComposition = false;
     bool directTerrain = false;
+    // DrawPacket::Material::TeamColor blits, so team layers need no CPU recolour.
+    bool teamColor = false;
 };
 struct RenderSubmission
 {

@@ -117,7 +117,10 @@ struct DrawPacket
 {
     enum class Kind { Fill, Blit, Triangles, ScreenTriangles, Barrier, Clear, MeshTriangles, WeightedCompose, DirectTerrain };
     Kind kind = Kind::Fill;
-    enum class Material { Primitive, WorldLit, Cloud, SmoothPoint, Skin, SkinRig };
+    // TeamColor: a Blit whose texels take the CPU team recolour
+    // (DrawableSurface::shiftHSV) by teamHue degrees, per texel before
+    // filtering. Devices advertise it with RenderDeviceCapabilities::teamColor.
+    enum class Material { Primitive, WorldLit, Cloud, SmoothPoint, Skin, SkinRig, TeamColor };
     enum class Blend { Automatic, SourceOver, Premultiplied, Additive, Opaque };
     enum class Depth { Disabled, Less, LessEqual };
     enum class Cull { Disabled, Back };
@@ -151,6 +154,8 @@ struct DrawPacket
     std::vector<SDL_Vertex> vertices;
     bool opaque = false, linear = false;
     Uint8 alpha = 255;
+    // Per-vertex, so team draws of one texture batch across hues.
+    float teamHue = 0;
     bool compatible(const DrawPacket &) const;
 };
 struct RenderFrame

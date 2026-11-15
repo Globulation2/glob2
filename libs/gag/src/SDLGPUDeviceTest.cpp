@@ -3,6 +3,7 @@
 #include "DirectTerrainReadbackFixture.h"
 #include <cstring>
 #include <SDLGPUDevice.h>
+#include <SDLGraphicContext.h>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
@@ -971,6 +972,132 @@ TEST_SUITE("SDLGPUDevice")
         half.texture=snapshot;frame.identity=++identity;frame.packets={fill({0,0,16,16},{0,0,0,255}),half};REQUIRE(gpu->submit(frame));gpu->present();
         capture.reset(gpu->captureSynchronously(request));REQUIRE(capture);CHECK(pixel(capture.get(),2,2).g==255);
         auto malformed=std::make_shared<TextureRevision>(*snapshot);malformed->mips.pop_back();frame.packets={blit(malformed,{0,0,4,4})};CHECK_THROWS_AS(gpu->submit(frame),std::invalid_argument);
+    }
+
+    GLOB2_TEST_CASE("Vulkan team colour matches the CPU recolour of every texel", "[display][isolated]")
+    {
+        const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY");
+        if (!shaders) { MESSAGE("Set GLOB2_TEST_SHADER_DIRECTORY to generated SPIR-V assets; Vulkan coverage omitted"); return; }
+        Video video;
+        constexpr int Size = 256;
+        auto gpu = makeSDLGPUDevice(nullptr, Size, Size, shaders);
+        REQUIRE(gpu->capabilities().teamColor);
+        // Every red/green pair with a varied blue, the base colour and greys,
+        // and a translucent copy whose alpha sweeps the edge values.
+        auto opaque = surface(Size, Size), translucent = surface(Size, Size); REQUIRE(opaque); REQUIRE(translucent);
+        for (int y = 0; y < Size; ++y) for (int x = 0; x < Size; ++x) {
+            Uint8 r = Uint8(x), g = Uint8(y), b = Uint8((x * 7 + y * 13) & 255);
+            if (y < 4) { r = 51; g = 255; b = 153; }
+            if (y >= 252) r = g = b = Uint8(x);
+            REQUIRE(SDL_WriteSurfacePixel(opaque.get(), x, y, r, g, b, 255));
+            REQUIRE(SDL_WriteSurfacePixel(translucent.get(), x, y, r, g, b, Uint8((x + y * 3) & 255)));
+        }
+        // Sprite::teamHueShiftDegrees for the twelve game colours and a 16-hue wheel.
+        std::vector<float> hues;
+        float baseHue, actHue, saturation, value;
+        Color(51, 255, 153).getHSV(&baseHue, &saturation, &value);
+        for (int i = 0; i < 28; ++i) {
+            Color team; team.setHSV(i < 12 ? i * 30.0f : (i - 12) * 22.5f, i < 12 ? 0.8f : 1.0f, i < 12 ? 0.9f : 1.0f);
+            team.getHSV(&actHue, &saturation, &value); hues.push_back(actHue - baseHue);
+        }
+        RenderResources resources;
+        std::uint64_t identity = 0;
+        auto draw = [&](DrawPacket packet) {
+            RenderFrame frame; frame.identity = ++identity; frame.logicalWidth = frame.logicalHeight = Size;
+            frame.packets = {fill({0, 0, Size, Size}, {0, 0, 0, 255}), std::move(packet)};
+            REQUIRE(gpu->submit(frame)); gpu->present();
+            CaptureRequest request; request.identity = identity;
+            Surface capture(gpu->captureSynchronously(request), SDL_DestroySurface); REQUIRE(capture);
+            return capture;
+        };
+        struct Difference { std::size_t channels = 0, differing = 0; int maximum = 0; };
+        auto compare = [](SDL_Surface *actual, SDL_Surface *expected, Difference &difference) {
+            for (int y = 0; y < Size; ++y) for (int x = 0; x < Size; ++x) {
+                const auto a = pixel(actual, x, y), b = pixel(expected, x, y);
+                for (int delta : {a.r - b.r, a.g - b.g, a.b - b.b, a.a - b.a}) {
+                    ++difference.channels; difference.differing += delta != 0;
+                    difference.maximum = std::max(difference.maximum, std::abs(delta));
+                }
+            }
+        };
+        // An alpha-weighted box chain, as AssetImage::prepareUpload builds for HD layers.
+        auto chain = [](SDL_Surface *source, std::vector<std::vector<std::byte>> &pixels, std::vector<RenderMipLevel> &levels) {
+            std::vector<SDL_Color> current(std::size_t(Size) * Size);
+            for (int y = 0; y < Size; ++y) for (int x = 0; x < Size; ++x) current[y * Size + x] = pixel(source, x, y);
+            pixels.clear(); levels.clear();
+            auto &base = pixels.emplace_back(std::size_t(Size) * Size * 4);
+            for (std::size_t i = 0; i < current.size(); ++i)
+                for (int k = 0; k < 4; ++k) base[i * 4 + k] = std::byte(k == 0 ? current[i].r : k == 1 ? current[i].g : k == 2 ? current[i].b : current[i].a);
+            for (int size = Size / 2; size >= 1; size /= 2) {
+                std::vector<SDL_Color> next(std::size_t(size) * size);
+                auto &bytes = pixels.emplace_back(std::size_t(size) * size * 4);
+                for (int y = 0; y < size; ++y) for (int x = 0; x < size; ++x) {
+                    unsigned alpha = 0, rgb[3]{};
+                    for (int dy = 0; dy < 2; ++dy) for (int dx = 0; dx < 2; ++dx) {
+                        const auto c = current[(y * 2 + dy) * size * 2 + x * 2 + dx];
+                        alpha += c.a; rgb[0] += c.r * c.a; rgb[1] += c.g * c.a; rgb[2] += c.b * c.a;
+                    }
+                    SDL_Color c{0, 0, 0, Uint8((alpha + 2) / 4)};
+                    if (alpha) { c.r = Uint8((rgb[0] + alpha / 2) / alpha); c.g = Uint8((rgb[1] + alpha / 2) / alpha); c.b = Uint8((rgb[2] + alpha / 2) / alpha); }
+                    next[y * size + x] = c;
+                    for (int k = 0; k < 4; ++k) bytes[(y * size + x) * 4 + k] = std::byte(k == 0 ? c.r : k == 1 ? c.g : k == 2 ? c.b : c.a);
+                }
+                current = std::move(next);
+            }
+            for (std::size_t level = 0; level < pixels.size(); ++level) {
+                const int size = Size >> level;
+                levels.push_back({size, size, SDL_PIXELFORMAT_RGBA32, pixels[level]});
+            }
+        };
+        Difference nearest, linear, minified;
+        std::uint64_t revision = 0;
+        for (SDL_Surface *source : {opaque.get(), translucent.get()})
+            for (float hue : hues) {
+                // The CPU path: Sprite::applyTeamHueShift on a copy, drawn as a plain blit.
+                DrawableSurface recoloured(SDL_DuplicateSurface(source), DrawableSurface::AdoptPixels{}, false);
+                recoloured.shiftHSV(hue, 0.0f, 0.0f);
+                const auto cpu = resources.snapshot(resources.create(recoloured.getSDLSurface(), ++revision));
+                const auto original = resources.snapshot(resources.create(source, ++revision));
+                REQUIRE(cpu); REQUIRE(original);
+                auto team = blit(original, {0, 0, Size, Size});
+                team.material = DrawPacket::Material::TeamColor; team.teamHue = hue;
+                // Texel for texel at 1:1, nearest sampling.
+                auto expected = draw(blit(cpu, {0, 0, Size, Size}));
+                auto actual = draw(team);
+                compare(actual.get(), expected.get(), nearest);
+                // Linear magnification samples premultiplied uploads, as HD layers do.
+                auto zoomedCPU = blit(cpu, {0, 0, Size, Size}); zoomedCPU.source = {64, 64, 128, 128}; zoomedCPU.linear = true;
+                auto zoomedTeam = team; zoomedTeam.source = zoomedCPU.source; zoomedTeam.linear = true;
+                expected = draw(zoomedCPU); actual = draw(zoomedTeam);
+                compare(actual.get(), expected.get(), linear);
+                // Trilinear minification of authored chains: the CPU path builds its
+                // chain from the recoloured copy, the shader recolours each level.
+                if (hue != hues.front() && hue != hues[5]) continue;
+                std::vector<std::vector<std::byte>> cpuPixels, teamPixels;
+                std::vector<RenderMipLevel> cpuLevels, teamLevels;
+                chain(recoloured.getSDLSurface(), cpuPixels, cpuLevels); chain(source, teamPixels, teamLevels);
+                TextureDescriptor mipmapped; mipmapped.mips = TextureDescriptor::Mips::Generated; mipmapped.sampling = TextureDescriptor::Sampling::Linear;
+                auto cpuChain = blit(resources.snapshot(resources.create(recoloured.getSDLSurface(), ++revision, mipmapped, cpuLevels)), {0, 0, 80, 80});
+                auto teamChain = blit(resources.snapshot(resources.create(source, ++revision, mipmapped, teamLevels)), {0, 0, 80, 80});
+                cpuChain.linear = teamChain.linear = true;
+                teamChain.material = DrawPacket::Material::TeamColor; teamChain.teamHue = hue;
+                expected = draw(cpuChain); actual = draw(teamChain);
+                compare(actual.get(), expected.get(), minified);
+            }
+        MESSAGE("nearest: " << nearest.differing << "/" << nearest.channels << " channels differ, max " << nearest.maximum);
+        MESSAGE("linear: " << linear.differing << "/" << linear.channels << " channels differ, max " << linear.maximum);
+        MESSAGE("minified: " << minified.differing << "/" << minified.channels << " channels differ, max " << minified.maximum);
+        // Exact: the shader follows the CPU's float operations bit for bit.
+        CHECK(nearest.differing == 0);
+        // Hardware filtering weighs the CPU copy's texels in fixed point, the
+        // shader in float: one level apart at most.
+        CHECK(linear.maximum <= 1);
+        // Mip levels average neighbouring hues before recolouring instead of after,
+        // and the hardware chooses its level of detail by its own approximation.
+        // This chart puts unrelated hues side by side (lavapipe: 3% of channels,
+        // at most 41 levels); a team layer's hues vary far less.
+        CHECK(minified.differing * 20 <= minified.channels);
+        CHECK(minified.maximum <= 48);
     }
 
 }

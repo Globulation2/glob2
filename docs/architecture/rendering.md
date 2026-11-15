@@ -71,7 +71,8 @@ HD layers sample linearly with premultiplied alpha. Recoloured HD team layers,
 buildings' included, share each sprite's 64 MiB recolour cache; once drawn, a
 cached recolour keeps only its texture, and one whose texture a reset took is
 recoloured again from the HD team layer, which keeps its pixels for the other
-colours. Otherwise the
+colours (device renderers with the team-colour material make no recolours; see
+below). Otherwise the
 portable renderer and the presentation devices reach HD layers solely through
 `Sprite::baseFrame` (terrain composition, skin shadows and editor swatches), so
 there a sprite loads only its uncolored base layers, once `baseFrame` or an HD
@@ -601,6 +602,36 @@ straight alpha. The fragment `textured` flag disables sampling for solid fills. 
 clamps sampling to the selected source rectangle's texel centres, preventing
 linear filtering from bleeding adjacent atlas entries; generic triangles use
 the full texture bounds.
+
+The `team-color` material draws a sprite's team layer on the device renderers
+(SDL GPU and programmable GL) with the CPU recolour computed per texel in the
+shader: `DrawableSurface::shiftHSV`'s hue-only shift through
+`RGBtoHSV`/`HSVtoRGB` and `Color::setHSV`'s truncation, with unpremultiply and
+the upload's integer premultiply around it for premultiplied (linear, HD)
+textures. It fetches texels itself and recolours each before its own bilinear
+or trilinear filter, as the CPU recolours its copy before upload. Vertices use
+the primitive layout with a grey tint in colour x and the hue shift, in degrees,
+in colour y, read through a `flat` varying, so draws of one texture batch across
+teams. A `DrawPacket` with `Material::TeamColor` and `teamHue` carries it, and
+devices advertise it with `RenderDeviceCapabilities::teamColor`; SDL GPU loads
+its shaders and both blend pipelines with the device. `DrawableSurface::drawSprite`
+then draws the uncoloured team layer through `GraphicContext::drawTeamColorSurface`,
+so `Sprite::getColoredSurface` makes no clone: rotation maps and the unit recolour
+cache stay empty and `Sprite::highResolutionStats().coloredFrames` stays zero.
+A radial fade (a swimmer) draws its faded grid through the same material.
+Without the material (older shader sets, a driver that rejects it, WebGPU, or
+`GLOB2_DISABLE_UNIT_SHADER` set) team layers keep the CPU recolour, as do sprites
+drawn into a CPU surface rather than the screen; the
+memory report's `cpu_team_color_bytes` and `team_color_frames` count those copies.
+Sector and truncation boundaries make the recolour discontinuous, so the shader
+follows the CPU's single-precision operations exactly: it divides with integers
+(GPU division is not correctly rounded) and multiplies each product that feeds an
+addition by an opaque uniform one, so contracting it into a fused multiply-add
+rounds the same. On SDL GPU the result equals the CPU recolour drawn by the same
+device; linear filtering differs by at most one level (fixed-point hardware
+weights), and minified mip chains differ where a level averages different hues
+before recolouring rather than after (`SDLGPUDeviceTest`, `DeviceTeamColor`).
+Mesa's programmable GL moves a few channels by one level.
 
 Pass `--glslang /path/to/glslangValidator` to compile native SPIR-V ahead of time.
 The manifest pins build-only glslang **15.1.0** and Vulkan 1.0; another compiler

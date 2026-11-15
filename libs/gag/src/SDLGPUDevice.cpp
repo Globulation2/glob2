@@ -44,6 +44,15 @@ static_assert(Layout::terrain_compose_fragment_size == 368 && Layout::terrain_co
     Layout::terrain_compose_fragment_surfPlace_offset == 144 && Layout::terrain_compose_fragment_surfColor_offset == 288 &&
     Layout::terrain_compose_fragment_surfLand_offset == 352);
 static_assert(Layout::terrain_reduce_fragment_size == 16 && Layout::terrain_reduce_fragment_params_offset == 0);
+// Team colour shares the primitive vertex stream and uniform block sizes.
+static_assert(Layout::team_color_stride == Layout::primitive_stride && Layout::team_color_size == Layout::primitive_size &&
+    Layout::team_color_fragment_size == Layout::primitive_fragment_size);
+// Team colour samples straight uploads and premultiplies in the shader, after
+// recolouring, wherever a primitive blit would sample a premultiplied upload.
+bool teamPremultiplied(const DrawPacket &packet, bool texturePremultiplied)
+{
+    return texturePremultiplied || packet.linear;
+}
 static_assert(offsetof(SDL_Vertex, position) == Layout::primitive_attributes[0].offset);
 static_assert(offsetof(SDL_Vertex, color) == Layout::primitive_attributes[1].offset);
 static_assert(offsetof(SDL_Vertex, tex_coord) == Layout::primitive_attributes[2].offset);
@@ -176,7 +185,7 @@ class SDLGPUDevice final : public RenderDevice
     // A texture is charged once, including while only pending work owns it.
     std::size_t residentTextureBytes = 0;
     std::map<const GeometryRevision *, GeometryPtr> geometryCache;
-    bool worldAvailable = false, skinAvailable = false, terrainAvailable = false;
+    bool worldAvailable = false, skinAvailable = false, terrainAvailable = false, teamColorAvailable = false;
     std::array<SDL_GPUShader *,2> terrainShaders{};
     SDL_GPUShader *directTerrainVertex = nullptr, *directTerrainFragment = nullptr;
     SDL_GPUGraphicsPipeline *directTerrainPipeline = nullptr;
@@ -496,6 +505,10 @@ class SDLGPUDevice final : public RenderDevice
             const auto stages = worldShaders.find(material);
             if (stages == worldShaders.end()) throw std::runtime_error("Particle shader binaries unavailable");
             info.vertex_shader = stages->second.first; info.fragment_shader = stages->second.second;
+        } else if (material == DrawPacket::Material::TeamColor) {
+            const auto stages = worldShaders.find(material);
+            if (stages == worldShaders.end()) throw std::runtime_error("Team colour shader binaries unavailable");
+            info.vertex_shader = stages->second.first; info.fragment_shader = stages->second.second;
         } else if (material != DrawPacket::Material::Primitive) throw std::invalid_argument("Unsupported primitive material");
         info.vertex_input_state.vertex_buffer_descriptions = &buffer; info.vertex_input_state.num_vertex_buffers = 1;
         info.vertex_input_state.vertex_attributes = attributes.data(); info.vertex_input_state.num_vertex_attributes = attributes.size();
@@ -555,13 +568,37 @@ class SDLGPUDevice final : public RenderDevice
         state.target = draw.target->gpu;
         state.clip = scissor(packet, draw.target->width, draw.target->height, lw, lh);
         state.viewport = packet.viewport.value_or(SDL_Rect{0, 0, draw.target->width, draw.target->height});
-        state.pipeline = pipeline(SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM, bool(packet.texture) && draw.texture->premultiplied,
+        const bool team = packet.material == DrawPacket::Material::TeamColor;
+        state.pipeline = pipeline(SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM,
+            team ? teamPremultiplied(packet, draw.texture->premultiplied) : bool(packet.texture) && draw.texture->premultiplied,
             packet.material, packet.kind == DrawPacket::Kind::Clear ? DrawPacket::Blend::Opaque : packet.blend);
         if (packet.material == DrawPacket::Material::Primitive) {
             state.image = draw.texture->gpu; state.sampler = samplerFor(packet);
         }
         state.vertex[0] = lw; state.vertex[1] = lh;
         auto &fragment = state.fragment;
+        if (packet.material == DrawPacket::Material::TeamColor) {
+            // The shader fetches and filters texels itself, after recolouring.
+            state.image = draw.texture->gpu; state.sampler = nearest;
+            const bool filtering = packet.linear || packet.texture->descriptor.sampling == TextureDescriptor::Sampling::Linear;
+            const bool mipmapped = filtering && packet.texture->descriptor.mips == TextureDescriptor::Mips::Generated;
+            fragment[Layout::team_color_fragment_alpha_offset / sizeof(float)] = packet.alpha / 255.f;
+            fragment[Layout::team_color_fragment_linear_offset / sizeof(float)] = filtering ? 1.f : 0.f;
+            // 0: straight in and out; 1: straight in, premultiplied out; 2: premultiplied in and out.
+            fragment[Layout::team_color_fragment_premultiplied_offset / sizeof(float)] =
+                draw.texture->premultiplied ? 2.f : teamPremultiplied(packet, false) ? 1.f : 0.f;
+            fragment[Layout::team_color_fragment_levels_offset / sizeof(float)] = mipmapped ? float(packet.texture->mips.size() + 1) : 1.f;
+            const auto bounds = Layout::team_color_fragment_uvBounds_offset / sizeof(float);
+            if (packet.kind != DrawPacket::Kind::Blit) {
+                fragment[bounds] = fragment[bounds + 1] = 0; fragment[bounds + 2] = fragment[bounds + 3] = 1;
+                return state;
+            }
+            fragment[bounds] = (packet.source.x + .5f) / draw.texture->width;
+            fragment[bounds + 1] = (packet.source.y + .5f) / draw.texture->height;
+            fragment[bounds + 2] = (packet.source.x + packet.source.w - .5f) / draw.texture->width;
+            fragment[bounds + 3] = (packet.source.y + packet.source.h - .5f) / draw.texture->height;
+            return state;
+        }
         fragment[Layout::primitive_fragment_textured_offset / sizeof(float)] = packet.texture ? 1.f : 0.f;
         fragment[Layout::primitive_fragment_alpha_offset / sizeof(float)] = packet.kind == DrawPacket::Kind::Blit ? packet.alpha / 255.f : 1.f;
         const auto bounds = Layout::primitive_fragment_uvBounds_offset / sizeof(float);
@@ -627,6 +664,7 @@ class SDLGPUDevice final : public RenderDevice
     void loadSkinShaders(const std::string &);
     void loadTerrainShaders();
     void loadDirectTerrainShaders();
+    void loadTeamColorShaders();
     void drawDirectTerrain(SDL_GPUCommandBuffer *, Work &, const Draw &, float logicalWidth, float logicalHeight);
     CoveragePtr resolveCoverage(SDL_GPUCommandBuffer *, Work &, std::shared_ptr<const CoverageData>);
     void prepareTerrain(SDL_GPUCommandBuffer *&, Work &, Draw &, std::vector<SDL_Vertex> &);
@@ -701,6 +739,7 @@ class SDLGPUDevice final : public RenderDevice
             loadSkinShaders(shaders);
             loadTerrainShaders();
             loadDirectTerrainShaders();
+            loadTeamColorShaders();
             std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixel(SDL_CreateSurface(1, 1, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
             if (!pixel) fail("create white pixel");
             SDL_FillSurfaceRect(pixel.get(), nullptr, SDL_MapSurfaceRGBA(pixel.get(), 255, 255, 255, 255));
@@ -714,7 +753,7 @@ class SDLGPUDevice final : public RenderDevice
         } catch (...) { teardown(); throw; }
     }
     ~SDLGPUDevice() override { teardown(); }
-    RenderDeviceCapabilities capabilities() const override { return {true, true, false, MaximumTextureSize, worldAvailable, worldAvailable, skinAvailable, terrainAvailable, directTerrainPipeline != nullptr}; }
+    RenderDeviceCapabilities capabilities() const override { return {true, true, false, MaximumTextureSize, worldAvailable, worldAvailable, skinAvailable, terrainAvailable, directTerrainPipeline != nullptr, teamColorAvailable}; }
     RenderSubmission submit(RenderFrame frame) override;
     RenderCompletion completion(RenderSubmission submission) override
     {
@@ -775,6 +814,31 @@ void SDLGPUDevice::loadWorldShaders(const std::string &directory)
     }
     pipeline(SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM, false, DrawPacket::Material::SmoothPoint, DrawPacket::Blend::Additive);
     worldAvailable = true;
+}
+void SDLGPUDevice::loadTeamColorShaders()
+{
+    // Shaders and both blend pipelines are made with the device, never during
+    // a frame. Without them, team layers keep their CPU recolour.
+    if (!hasShader("team-color", "vertex") || !hasShader("team-color", "fragment")) return;
+    try {
+        auto &stages = worldShaders[DrawPacket::Material::TeamColor];
+        stages.first = loadShader("team-color", "vertex", 1, 0);
+        stages.second = loadShader("team-color", "fragment", 1, 1);
+        for (bool premultiplied : {false, true})
+            pipeline(SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM, premultiplied, DrawPacket::Material::TeamColor);
+        teamColorAvailable = true;
+    } catch (const std::runtime_error &error) {
+        // Optional: a driver that rejects it keeps the device and the CPU path.
+        for (auto it = pipelines.begin(); it != pipelines.end();)
+            if (std::get<2>(it->first) == DrawPacket::Material::TeamColor) { SDL_ReleaseGPUGraphicsPipeline(device, it->second); it = pipelines.erase(it); }
+            else ++it;
+        if (auto found = worldShaders.find(DrawPacket::Material::TeamColor); found != worldShaders.end()) {
+            if (found->second.first) SDL_ReleaseGPUShader(device, found->second.first);
+            if (found->second.second) SDL_ReleaseGPUShader(device, found->second.second);
+            worldShaders.erase(found);
+        }
+        SDL_LogWarn(SDL_LOG_CATEGORY_RENDER, "SDL GPU team colour unavailable: %s", error.what());
+    }
 }
 void SDLGPUDevice::loadSkinShaders(const std::string &directory)
 {
@@ -1329,6 +1393,10 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
             }
             if (packet.texture && packet.target && packet.texture.get() == packet.target.get())
                 throw std::invalid_argument("Render target cannot sample itself");
+            if (packet.material == DrawPacket::Material::TeamColor &&
+                (!teamColorAvailable || (packet.kind != DrawPacket::Kind::Blit && packet.kind != DrawPacket::Kind::Triangles) ||
+                 !packet.texture || !std::isfinite(packet.teamHue) || packet.blend != DrawPacket::Blend::Automatic))
+                throw std::invalid_argument("Invalid team colour draw");
             if (packet.kind == DrawPacket::Kind::Blit) {
                 if (!packet.texture) throw std::invalid_argument("Blit requires texture snapshot");
                 if (packet.source.w <= 0 || packet.source.h <= 0 || packet.destination.w == 0 || packet.destination.h == 0) continue;
@@ -1337,7 +1405,8 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
                     std::int64_t(packet.source.y) + packet.source.h > packet.texture->descriptor.height)
                     throw std::invalid_argument("Blit source is outside texture bounds");
             }
-            Draw draw{&packet, resolve(commands, entry, packet.texture, packet.opaque, packet.linear && packet.kind == DrawPacket::Kind::Blit),
+            Draw draw{&packet, resolve(commands, entry, packet.texture, packet.opaque,
+                          packet.linear && packet.kind == DrawPacket::Kind::Blit && packet.material != DrawPacket::Material::TeamColor),
                       packet.target ? resolve(commands, entry, packet.target, false, true, true) : screen, static_cast<Uint32>(vertices.size()), 0, {}, {}, {}, {}, {}};
             if (packet.kind == DrawPacket::Kind::WeightedCompose) {
                 prepareTerrain(commands,entry,draw,vertices);
@@ -1413,6 +1482,9 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
                 if (packet.texture && draw.texture->premultiplied && packet.kind != DrawPacket::Kind::Blit) {
                     vertex.color.r *= vertex.color.a; vertex.color.g *= vertex.color.a; vertex.color.b *= vertex.color.a;
                 }
+                // Team colour triangles: hue shift in y (team-color.vert); blits set it below.
+                if (packet.material == DrawPacket::Material::TeamColor && packet.kind != DrawPacket::Kind::Blit)
+                    vertex.color.g = packet.teamHue;
                 vertices.push_back(vertex);
             };
             if (packet.kind == DrawPacket::Kind::Fill || packet.kind == DrawPacket::Kind::Blit) {
@@ -1420,8 +1492,12 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
                 if (rect.w < 0 || rect.h < 0) throw std::invalid_argument("Negative rectangle extent");
                 SDL_FColor color{packet.color.r / 255.f, packet.color.g / 255.f, packet.color.b / 255.f, packet.color.a / 255.f};
                 if (packet.kind == DrawPacket::Kind::Blit) {
-                    const float rgb = draw.texture->premultiplied ? packet.alpha / 255.f : 1.f;
+                    const bool premultiplied = packet.material == DrawPacket::Material::TeamColor
+                        ? teamPremultiplied(packet, draw.texture->premultiplied) : draw.texture->premultiplied;
+                    const float rgb = premultiplied ? packet.alpha / 255.f : 1.f;
                     color = {rgb, rgb, rgb, 1};
+                    // Team colour: grey tint in x, hue shift in y (team-color.vert).
+                    if (packet.material == DrawPacket::Material::TeamColor) color = {rgb, packet.teamHue, 0, 1};
                 }
                 float u0 = 0, v0 = 0, u1 = 1, v1 = 1;
                 if (packet.texture) {

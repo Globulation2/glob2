@@ -32,7 +32,7 @@ def align(value, alignment):
 
 def metadata(root=ROOT):
     manifest = json.loads((root / MANIFEST).read_text())
-    if manifest['version'] != 1 or manifest['variants'] != ['skin', 'skin-rig', 'primitive', 'world', 'cloud', 'point', 'terrain-direct', 'terrain-compose', 'terrain-reduce']:
+    if manifest['version'] != 1 or manifest['variants'] != ['skin', 'skin-rig', 'primitive', 'world', 'cloud', 'point', 'terrain-direct', 'terrain-compose', 'terrain-reduce', 'team-color']:
         raise ValueError('unsupported renderer manifest version or variants')
     registry = skin_materials.load_registry(root)
     skin_materials.check_shader(root, registry)
@@ -129,6 +129,21 @@ def sources(root, meta, dialect, variant):
         version += 'precision highp usampler2D;\n'
     attributes = ''.join('layout(location=%d) in vec%d %s;\n' %
                          (a['location'], a['components'], a['name']) for a in meta['vertexLayouts'][variant]['attributes'])
+    if variant == 'team-color':
+        # Team-colour vertices carry a grey tint in x, the hue shift in degrees
+        # in y and alpha in w; the hue is flat so it reaches every fragment exact.
+        location = lambda index: 'layout(location=%d) ' % index if native else ''
+        vertex = (version + attributes + declarations(meta['uniformBlocks'][variant], native) +
+                  location(0) + 'out vec2 uv;\n' + location(1) + 'out vec4 tint;\n' + location(2) + 'flat out float hue;\n' +
+                  'void main(){uv=texcoord;tint=vec4(vertexColor.xxx,vertexColor.w);hue=vertexColor.y;'
+                  'gl_Position=vec4(position.x*2.0/viewport.x-1.0,1.0-position.y*2.0/viewport.y,0.0,1.0);}')
+        texture = meta['teamColorTexture']
+        fragment = (version + ('layout(set=%d,binding=%d) ' % (texture['set'], texture['binding']) if native else '') +
+                    'uniform sampler2D %s;\n' % texture['name'] + declarations(meta['uniformBlocks']['team-color-fragment'], native) +
+                    location(0) + 'in vec2 uv;\n' + location(1) + 'in vec4 tint;\n' + location(2) + 'flat in float hue;\n' +
+                    'layout(location=0) out vec4 color;\n' +
+                    (root / meta['passSources']['team-colorFragment']).read_text())
+        return {'vert': vertex, 'frag': fragment}
     if variant in ('primitive', 'point', 'terrain-compose', 'terrain-reduce'):
         vertex = (version + attributes + declarations(meta['uniformBlocks'][variant], native) +
                   ('layout(location=0) ' if native else '') + 'out vec2 uv;\n' +
@@ -228,6 +243,8 @@ def webgpu_sources(root, meta, variant):
         textures = [meta['terrainReduceTexture']]
     elif variant == 'primitive':
         textures = [meta['primitiveTexture']]
+    elif variant == 'team-color':
+        textures = [meta['teamColorTexture']]
     elif variant in ('world', 'cloud'):
         textures = [meta['worldTexture']]
     else:
@@ -265,7 +282,7 @@ def layout_header(meta):
             lines.append('inline constexpr std::uint32_t %s_%s = %d;' % (key, field, block[field]))
         for member in block['members']:
             lines.append('inline constexpr std::uint32_t %s_%s_offset = %d;' % (key, member['name'], member['offset']))
-    for texture in meta['textures'] + [meta['primitiveTexture'], meta['worldTexture']] + meta['terrainDirectTextures'] + meta['terrainComposeTextures'] + [meta['terrainReduceTexture']]:
+    for texture in meta['textures'] + [meta['primitiveTexture'], meta['teamColorTexture'], meta['worldTexture']] + meta['terrainDirectTextures'] + meta['terrainComposeTextures'] + [meta['terrainReduceTexture']]:
         for field in ('set', 'binding'):
             lines.append('inline constexpr std::uint32_t %s_%s = %d;' % (texture.get('layoutName', texture['name']), field, texture[field]))
     return '\n'.join(lines + ['}']) + '\n'
