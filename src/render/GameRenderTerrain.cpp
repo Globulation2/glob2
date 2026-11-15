@@ -451,22 +451,38 @@ void MapDrawer::drawMapOverview(int left, int top, int right, int bot, int viewp
 	const int columns = right-left+1, rows = bot-top+1;
 	if (!render.overviewCache)
 		render.overviewCache = std::make_unique<OverviewTerrainCache>();
+	const bool complete = (drawOptions & (Game::DRAW_TILED_CAPTURE | Game::DRAW_COMPLETE_TERRAIN)) ||
+		globalContainer->gfx->drawingOffscreen();
 	// Fill the zoomed-out overview in the background from the first frame (under
-	// the opening cloud bank), so the first zoom out finds its pages ready.
-	render.overviewCache->prewarm(sceneMap, visibleTeams, drawOptions & Game::DRAW_WHOLE_MAP);
+	// the opening cloud bank), so the first zoom out finds its pages ready. A
+	// one-shot draw has no later frames to fill.
+	if (!complete)
+		render.overviewCache->prewarm(sceneMap, visibleTeams, drawOptions & Game::DRAW_WHOLE_MAP);
 	if (!alpha)
 		return;
 	// Size the image to what the screen can show: a cell's device pixels.
 	const double pixelsPerCell = 32 * globalContainer->gfx->mapTransformScale() * globalContainer->gfx->getRasterScale();
 	const int samples = OverviewTerrainCache::samplesFor(pixelsPerCell, render.overviewCache->samples(),
 		std::max(columns, rows), globalContainer->gfx->maximumTextureSize());
+	if (complete)
+	{
+		// A one-shot draw (export, capture) assembles the view into one image and
+		// draws it once: drawn page by page, a view scaled far below a page per
+		// pixel rounds every page edge and can leave the last row uncovered.
+		if (!render.overview)
+			render.overview = std::make_unique<GAGCore::DrawableSurface>(columns*samples, rows*samples);
+		else if (render.overview->getW()!=columns*samples || render.overview->getH()!=rows*samples)
+			render.overview->setRes(columns*samples, rows*samples);
+		render.overviewCache->update(sceneMap, left, top, right, bot, viewportX, viewportY,
+									 visibleTeams, drawOptions & Game::DRAW_WHOLE_MAP, samples, *render.overview);
+		globalContainer->gfx->drawSurface(left*32, top*32, columns*32, rows*32, render.overview.get(), alpha);
+		return;
+	}
 	// Each page is its own texture: panning and zooming draw cached pages, and
 	// interactive views compose missing cells on background workers.
-	const bool complete = (drawOptions & (Game::DRAW_TILED_CAPTURE | Game::DRAW_COMPLETE_TERRAIN)) ||
-		globalContainer->gfx->drawingOffscreen();
 	render.overview.reset();
 	render.overviewCache->draw(sceneMap, left, top, right, bot, viewportX, viewportY, visibleTeams,
-							   drawOptions & Game::DRAW_WHOLE_MAP, samples, *globalContainer->gfx, alpha, complete);
+							   drawOptions & Game::DRAW_WHOLE_MAP, samples, *globalContainer->gfx, alpha, false);
 }
 
 void MapDrawer::drawMapTerritory(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const PresentationFrame& scene, float opacity)

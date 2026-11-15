@@ -207,7 +207,10 @@ bool OverviewTerrainCache::validate(const SceneMap &map, Page &page, int wx, int
 				continue;
 			int type, square;
 			const int code = cellCode(map, mx, my, visibleTeams, wholeMap, samples, type, square);
-			if (page.resources[i] == code || page.inFlight[i] == code)
+			// A complete draw (no job limit) composes cells still in flight itself:
+			// it has no later frame to install them on.
+			const bool complete = jobLimit == std::numeric_limits<std::size_t>::max();
+			if (page.resources[i] == code || (!complete && page.inFlight[i] == code))
 				continue;
 			if (jobs.size() >= jobLimit)
 			{
