@@ -319,6 +319,12 @@ namespace GAGCore
         return frameCache.valid && frameCache.surface ? frameCache.surface : sdlsurface;
     }
 
+    std::pair<std::uint64_t, std::uint64_t> GraphicContext::portableTextureMemory() const
+    {
+        if (!portableRenderer) return {0, 0};
+        const auto memory = portableRenderer->textureMemory();
+        return {memory.bytes, memory.peak};
+    }
     RenderOperations GraphicContext::backendOperations() const
     {
         return portableRenderer ? portableRenderer->operations() : softwareRasterizer ? softwareRasterizer->operations() : RenderOperations{};

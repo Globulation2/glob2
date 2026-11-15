@@ -2239,6 +2239,18 @@ std::size_t SoftwareTerrainCache::bytes() const
 	return total;
 }
 
+std::size_t SoftwareTerrainCache::pixelBytes() const
+{
+	std::size_t total = 0;
+	const auto add = [&](const SDL_Surface *pixels) { if (pixels) total += std::size_t(pixels->pitch) * pixels->h; };
+	for (const auto &chunk : chunks)
+	{
+		if (chunk->image) add(chunk->image->getSDLSurface());
+		add(chunk->parked.get());
+	}
+	return total;
+}
+
 std::size_t SoftwareTerrainCache::residentTextureBytes() const
 {
 	std::size_t total = gpuPages ? gpuPages->textureBytes() : 0;

@@ -62,6 +62,10 @@ class RenderBackend
         prepareTexture(key, pixels, revision, linear);
     }
 	virtual RenderOperations operations() const { return {}; }
+	// Resident and peak bytes of the textures this backend caches, in constant
+	// time (operations() walks every texture); zero where it keeps none.
+	struct TextureMemory { std::uint64_t bytes = 0, peak = 0; };
+	virtual TextureMemory textureMemory() const { return {}; }
 	// Zero means the backend does not impose or report a texture limit.
 	virtual int maximumTextureSize() const { return 0; }
 	// Only software backends borrow a target; binding flushes old queued work.

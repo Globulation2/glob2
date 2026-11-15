@@ -449,9 +449,10 @@ static int run(int argc, char **argv)
                             cache->samplingResolution(), cache->samplingReduction());
                     const auto *pages = gui.view.render.existingTerrainCache();
                     const auto *atlas = gui.view.render.existingDirectTerrain();
-                    std::printf("FRAME_TERRAIN_RESIDENCY frame=%d direct_bytes=%zu page_bytes=%zu page_retained_bytes=%zu peak_texture_bytes=%zu\n",
+                    std::printf("FRAME_TERRAIN_RESIDENCY frame=%d direct_bytes=%zu page_bytes=%zu page_retained_bytes=%zu peak_texture_bytes=%zu page_pixel_bytes=%zu\n",
                         i, atlas ? atlas->textureBytes() : 0, pages ? pages->residentTextureBytes() : 0,
-                        pages ? pages->bytes() : 0, gui.view.render.peakTerrainTextureBytes);
+                        pages ? pages->bytes() : 0, gui.view.render.peakTerrainTextureBytes,
+                        pages ? pages->pixelBytes() : 0);
                     std::printf("FRAME_RENDER_MEMORY frame=%d %s\n", i, RenderMemoryReport::fields(gui.view.render).c_str());
                     const auto &rows = gui.view.render.resourceRowMetrics;
                     std::printf("FRAME_RESOURCE_ROWS frame=%d eligibility_cells=%llu frame_cells=%llu animated_cells=%llu\n", i,
