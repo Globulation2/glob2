@@ -382,7 +382,7 @@ void MapDrawer::drawSceneMapRegion(const PresentationFrame& scene, int sx, int s
 	// Interactive views draw stand-ins while workers compose missing pages; the
 	// editor, captures and complete draws still finish every page first.
 	if (pagesForView)
-		pagesForView->deferBuilds = !scene.editor &&
+		pagesForView->deferBuilds = !scene.editor && !frame.target.drawingOffscreen() &&
 			!(frame.options & (Game::DRAW_TILED_CAPTURE | Game::DRAW_COMPLETE_TERRAIN));
 	const bool cached = pagesForView && pagesForView->prepare(scene.map, frame.terrain,
 		frame.left, frame.top, frame.right, frame.bottom, frame.viewportX, frame.viewportY,

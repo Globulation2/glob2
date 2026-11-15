@@ -186,6 +186,7 @@ namespace GAGCore
 		size_t gpuBytes=0;
 		//! The size of the pixels releasePixels() freed.
 		int releasedW = 0, releasedH = 0;
+		bool releasedOnPortable = false;
 		//! Prepared mip levels left out of the legacy GL upload (a detail band).
 		std::uint8_t uploadSkipLevels = 0;
 		//! texture divisor
@@ -255,6 +256,12 @@ namespace GAGCore
 		//! again. Only drawing it and reading its size and opacity stay valid.
 		//! Returns false and changes nothing where the pixels are still needed.
 		bool releasePixels();
+		//! The portable renderer's counterpart: frees the CPU pixels once its
+		//! texture holds this revision; draws then use that texture. Owners
+		//! recompose or reload such a surface after a renderer reset.
+		bool releasePortablePixels();
+		//! Pixels released by releasePortablePixels, drawn from the texture.
+		bool portableReleased() const { return releasedOnPortable; }
         std::uint64_t lifetimeIdentity() const { return surfaceIdentity; }
         std::uint64_t contentRevision() const { return pixelRevision; }
         virtual void prepareDraw() {}
@@ -658,6 +665,9 @@ namespace GAGCore
         }
         bool isResponsiveViewport() const { return responsiveViewport; }
         bool hasPortableRenderer() const { return bool(renderer) && !nativeSoftware && !offscreenPass; }
+        //! Inside drawToSurface: a one-shot draw (export, preview) that must
+        //! finish everything it shows rather than spread work over frames.
+        bool drawingOffscreen() const { return offscreenPass; }
         double logicalUnitsPerPoint() const;
         //! Logical pixels per authored font pixel for text a touch painter sizes in
         //! points: logicalUnitsPerPoint() times the player's text-size preference.
@@ -1000,9 +1010,19 @@ namespace GAGCore
         DrawableSurface *baseFrame(unsigned index)
         {
             if (!checkBound(index)) return nullptr;
+            return sampleBaseFrame(index);
+        }
+        //! The HD base layer (or the native frame) to draw, never read on the
+        //! CPU: unlike baseFrame, it leaves released pixels released.
+        DrawableSurface *drawFrame(unsigned index)
+        {
+            if (!checkBound(index)) return nullptr;
             if (!highResolutionDemanded) demandHighResolution();
             return prepareDrawSurface(index, false, true);
         }
+        //! After a portable draw: frees frame `index`'s HD base pixels, which
+        //! only its texture then holds, unless the CPU may sample them.
+        void releaseDrawnHighResolution(unsigned index);
         //! Only legacy OpenGL draws sprite frames from their HD layers; other
         //! backends sample them solely through baseFrame (terrain composition,
         //! skin shadows, editor swatches). There, a sprite loads its HD layers
@@ -1021,6 +1041,10 @@ namespace GAGCore
         //! them now. False until they load, for a unit whose action is not
         //! complete in HD, and for a first draw beyond this frame's upload budget.
         bool highResolutionDrawable(unsigned index);
+    private:
+        DrawableSurface *sampleBaseFrame(unsigned index);
+        bool sampledByBaseFrame = false; // Its HD base pixels stay for CPU sampling.
+    public:
 
         //! The frame's shape filled with one colour, for effects drawn over the
         //! sprite at its logical size: opaque wherever either layer is, or only
@@ -1057,6 +1081,8 @@ namespace GAGCore
             HighResolutionInputs& inputs);
         void releaseHighResolution();
         void queueHighResolutionReload(bool retainPublishedOnFailure);
+        // Loads the HD layers of these 32-frame blocks only, keeping the rest.
+        void queueHighResolutionBlocks(const std::set<unsigned> &blocks);
 
 	public:
 		//! Opt into batching variable-size frames; callers must finishDrawingSprite.

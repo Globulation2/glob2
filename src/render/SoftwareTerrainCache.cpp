@@ -251,8 +251,28 @@ std::size_t pageStorage(int scale, bool gpu, int downsample = 1)
 // textures on both GPU backends. Keep the composed pixels owned by the page.
 void retireTexture(SoftwareTerrainCache::Chunk &chunk)
 {
+	// A page whose pixels went after upload had only the texture: compose it again.
+	if (chunk.image->portableReleased())
+		chunk.valid = false;
 	chunk.parked.reset(chunk.image->takePixels());
 	chunk.image.reset();
+}
+// A page drawn on the portable renderer keeps its CPU pixels only while
+// something will write them: animation outside the shared overlay tiles
+// (shorelines, mixed animated cells) or a pending reduction from it.
+bool needsPagePixels(const SoftwareTerrainCache::Chunk &chunk, const TerrainVisual::Compositor &compositor)
+{
+	if (chunk.hasShoreline) return true;
+	for (int i = 0; i < SoftwareTerrainCache::ChunkTiles * SoftwareTerrainCache::ChunkTiles; ++i)
+	{
+		const auto &tile = chunk.tiles[i];
+		if (!tile.discovered || chunk.overlay[i]) continue;
+		std::array<TerrainVisual::MaterialId, 4> palette;
+		const unsigned count = tile.recipe.palette(palette);
+		if (std::any_of(palette.begin(), palette.begin() + count, [&](auto id) { return compositor.animated(id); }))
+			return true;
+	}
+	return false;
 }
 bool portableRenderer()
 {
@@ -897,6 +917,7 @@ SoftwareTerrainCache::AnimatedTiles *SoftwareTerrainCache::animatedTile(TerrainV
     const auto &material = compositor.catalog().materials[id];
     if (material.animationFrames <= 1 || material.variants.empty()) return nullptr;
     auto &set = animatedTiles[{unsigned(id), scale, reduction}];
+    set.used = frame;
     const int variants = int(material.variants.size());
     // Tiles at the page's density, each in a one-texel border copied from its
     // edge, so linear sampling of a scaled page never reads a neighbour.
@@ -967,6 +988,12 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
         cpuMaterialLease.reset();
     }
 	PERF_SCOPE_TIME(TerrainCache);
+	if (resetGeneration != GAGCore::GraphicContext::renderResetGeneration())
+	{
+		// A renderer reset took the textures of pages whose pixels had gone.
+		resetGeneration = GAGCore::GraphicContext::renderResetGeneration();
+		std::erase_if(chunks, [](const auto &chunk) { return chunk->image && chunk->image->portableReleased(); });
+	}
 	copies.clear();
 	incomplete = false;
 	++frame;
@@ -1338,6 +1365,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 		{
 			if (!snapshot)
 				workerMaterials = snapshot = compositor.cpuMaterials();
+			materialsUsed = frame;
 			return snapshot;
 		};
 		const auto launchRefresh = [&](Chunk &entry, const std::array<Tile, ChunkTiles * ChunkTiles> &tiles) -> std::size_t
@@ -1478,6 +1506,19 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 		std::size_t launchUnits = 0;
 		int reductionsThisFrame = 0;
 		const std::size_t pendingLimit = std::size_t(std::max(1u, BackgroundWork::workers())) * 2 + 2;
+		// In-flight buffers are bounded in bytes too: at four times density a
+		// page is 16 MiB. One launch always goes when nothing is in flight.
+		constexpr std::size_t PendingBytes = 64u * 1024 * 1024;
+		const auto pendingBytes = [&]
+		{
+			std::size_t total = 0;
+			for (const auto &page : pending)
+				total += page->pixels ? std::size_t(page->pixels->pitch) * page->pixels->h
+									  : page->cellPixels.size() * sizeof(Uint32);
+			return total;
+		};
+		const auto roomFor = [&](std::size_t bytes) { return pending.empty() || pendingBytes() + bytes <= PendingBytes; };
+		const std::size_t pageBytes = std::size_t(ChunkPixels * resolution / downsample) * (ChunkPixels * resolution / downsample) * 4;
 		const auto refreshesPending = [&]
 		{ return std::size_t(std::count_if(pending.begin(), pending.end(), [](const auto &page) { return page->refresh; })); };
 		// Whether a missing page found no slot this frame; refreshes then wait.
@@ -1557,6 +1598,15 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					target.discoveryWhole = wholeMap;
 				};
 				const bool unchanged = sameContent && !artChanged;
+				if (!unchanged && entry && entry->image && entry->image->portableReleased())
+				{
+					// Its pixels went after upload: a change composes the page again.
+					entry->valid = false;
+					entry->image.reset();
+					const int side = ChunkPixels * entry->scale / entry->downsample;
+					entry->parked.reset(SDL_CreateSurface(side, side, SDL_PIXELFORMAT_ARGB8888));
+					if (!entry->parked) throw std::bad_alloc();
+				}
 				if (unchanged)
 				{
 					stampDiscovery(*entry);
@@ -1618,7 +1668,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 						if (auto *queued = pendingFor(resolution, downsample))
 							queued->wanted = frame;
 						else if (launchUnits + ChunkTiles * ChunkTiles <= LaunchUnitsPerFrame &&
-								 pending.size() < pendingLimit)
+								 pending.size() < pendingLimit && roomFor(pageBytes))
 						{
 							std::array<Tile, ChunkTiles * ChunkTiles> tiles{};
 							describeTiles(tiles);
@@ -1670,7 +1720,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					if (auto *queued = pendingFor(entry->scale, entry->downsample))
 						queued->wanted = frame;
 					else if (!coldBacklog && launchUnits < LaunchUnitsPerFrame &&
-							 refreshesPending() < pendingLimit / 2 && pending.size() < pendingLimit)
+							 refreshesPending() < pendingLimit / 2 && pending.size() < pendingLimit &&
+							 roomFor(pageBytes / 4))
 						launchUnits += launchRefresh(*entry, tiles);
 					stampDiscovery(*entry);
 					entry->discoveryStamped = true;
@@ -1885,6 +1936,16 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				copies.push_back({entry, (cx * ChunkTiles - vx) * 32, (cy * ChunkTiles - vy) * 32});
 			}
 		coldBacklog = waiting;
+		// A view that has stopped launching work lets its snapshot's texture
+		// copies go, and densities it left let their animated tiles go.
+		if (pending.empty() && frame > materialsUsed + 120)
+			workerMaterials.reset();
+		std::erase_if(animatedTiles, [&](const auto &entry) { return entry.second.used + 600 < frame; });
+		// Pages the view has not drawn or stood in with for about ten seconds go:
+		// missing pages compose in the background, so other zoom densities need
+		// not stay resident.
+		if (deferring)
+			std::erase_if(chunks, [&](const auto &chunk) { return chunk->used + 600 < frame; });
 		// Pages the view has left for a few frames are no longer worth composing.
 		std::erase_if(pending, [&](const std::shared_ptr<TerrainPendingPage> &page)
 		{
@@ -1984,6 +2045,8 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
         }
 		if (gpu)
 		{
+			if (!copy.chunk->image && !copy.chunk->parked)
+				continue; // Lost with its texture this frame; composed again next.
 			if (!copy.chunk->image)
 			{
 				const auto needed = pageStorage(copy.chunk->scale, true, copy.chunk->downsample) -
@@ -2017,6 +2080,12 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 						rect.w * scale / reduction, rect.h * scale / reduction);
 				};
                 draw(visible);
+				// Native pages stay readable for reductions; others keep their
+				// pixels only while animation writes them.
+				if (deferBuilds && !(copy.chunk->scale == 1 && copy.chunk->downsample == 1) &&
+					copy.chunk->image->hasPixels() && overlayCompositor &&
+					!needsPagePixels(*copy.chunk, *overlayCompositor))
+					copy.chunk->image->releasePortablePixels();
 				// Uniform animated cells over the page, from their shared tiles.
 				if (overlayCompositor)
 					for (int i = 0; i < ChunkTiles * ChunkTiles; ++i)
@@ -2090,7 +2159,15 @@ std::size_t SoftwareTerrainCache::bytes() const
     std::size_t total = (gpuPages ? gpuPages->retainedBytes() : 0) +
                         (cpuMaterialLease ? cpuMaterialLease->bytes : 0);
 	for (const auto &chunk : chunks)
+	{
 		total += pageStorage(chunk->scale, gpu && bool(chunk->image), chunk->downsample);
+		// A released page holds its texture alone.
+		if (chunk->image && chunk->image->portableReleased())
+		{
+			const std::size_t side = std::size_t(ChunkPixels) * chunk->scale / chunk->downsample;
+			total -= side * side * 4;
+		}
+	}
 	return total;
 }
 

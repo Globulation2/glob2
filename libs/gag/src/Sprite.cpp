@@ -73,7 +73,13 @@ namespace GAGCore
         std::unique_ptr<Sprite> prepared;
         size_t frame = 0;
         bool retainPublishedOnFailure = false;
+        // Blocks of 32 frames to load; empty loads every frame. Frames outside
+        // them keep what the sprite has already published.
+        std::set<unsigned> blocks;
     };
+    constexpr unsigned HighResolutionBlock = 32; // As blockHasCompleteHD.
+    HighResolutionInputs prefetchHighResolutionBlocks(const std::string& name, size_t frames,
+                                                      const std::set<unsigned>& blocks);
     static std::map<Sprite*, HighResolutionReload> pendingHighResolution;
     // Sprites whose HD frames were discarded with their textures; see
     // discardUnbackedHighResolution().
@@ -148,6 +154,9 @@ namespace GAGCore
     // (Sprite::drawHighResolution), and their names: those load team layers too.
     static std::set<Sprite*> drawDemandedSprites;
     static std::set<std::string> drawDemandedNames;
+    // Portable draws load only the blocks they reach: those requested so far
+    // per sprite, and those wanted since its last reload began.
+    static std::map<const Sprite*, std::set<unsigned>> portableBlocks, portableWaitingBlocks;
     // Portable sprite detail: 0 draws HD frames, 1 native. HD frames hold four
     // texels a logical pixel and portable textures have no mip chain, so HD
     // starts above two screen pixels a logical pixel, where it shrinks at most
@@ -752,6 +761,15 @@ namespace GAGCore
     void Sprite::setHighResolutionDensity(double density)
     {
         portableFirstDraws = 0;
+        // The blocks last frame's draws reached load together, one reload a sprite.
+        for (auto it = portableWaitingBlocks.begin(); it != portableWaitingBlocks.end();) {
+            auto *sprite = const_cast<Sprite*>(it->first);
+            if (!loadedSprites.contains(sprite)) { it = portableWaitingBlocks.erase(it); continue; }
+            if (pendingHighResolution.contains(sprite)) { ++it; continue; }
+            portableBlocks[sprite].insert(it->second.begin(), it->second.end());
+            sprite->queueHighResolutionBlocks(it->second);
+            it = portableWaitingBlocks.erase(it);
+        }
         if (portableSpriteDetail.update(density > 2 ? 0 : 1, GAGCore::steadyClockNanoseconds(), lowerDetailDelay) &&
             portableSpriteDetail.level() == 1)
         {
@@ -1039,30 +1057,60 @@ namespace GAGCore
         auto prepared = std::make_unique<Sprite>();
         prepared->fileName = fileName;
         prepared->dynamicTeamColor = dynamicTeamColor;
+        // A sprite portable draws loads only the blocks it has reached.
+        if (auto found = portableBlocks.find(this); found != portableBlocks.end())
+        {
+            queueHighResolutionBlocks(found->second);
+            return;
+        }
         pendingHighResolution.insert_or_assign(this, HighResolutionReload{
             prefetchHighResolutionIncremental(fileName, images.size()), std::move(prepared), 0,
             retainPublishedOnFailure});
     }
+    void Sprite::queueHighResolutionBlocks(const std::set<unsigned>& blocks)
+    {
+        auto prepared = std::make_unique<Sprite>();
+        prepared->fileName = fileName;
+        prepared->dynamicTeamColor = dynamicTeamColor;
+        HighResolutionReload reload{prefetchHighResolutionBlocks(fileName, images.size(), blocks),
+                                    std::move(prepared), 0, true};
+        reload.blocks = blocks;
+        pendingHighResolution.insert_or_assign(this, std::move(reload));
+    }
     bool Sprite::highResolutionDrawable(unsigned index)
     {
         if (!portableHighResolution()) return false;
+        const bool deferred = highResolutionDeferred(fileName);
         if (!drawDemandedNames.contains(fileName))
         {
             // Load the team layers with the base ones: a frame never mixes resolutions.
             drawDemandedNames.insert(fileName);
-            if (!highResolutionDemanded) {
-                drawDemandedSprites.insert(this);
-                demandHighResolution();
-            } else if (std::any_of(rotated.begin(), rotated.end(), [](auto *image) { return image; }) &&
-                       !pendingHighResolution.contains(this) && !highResolutionDeferred(fileName))
-                // Base layers something else demanded are loaded without team layers.
-                queueHighResolutionReload(true);
+            if (deferred) {
+                // Decor streams the frames its windows declare.
+                if (!highResolutionDemanded) {
+                    drawDemandedSprites.insert(this);
+                    demandHighResolution();
+                }
+            } else {
+                // Blocks load as drawing reaches them, not the whole sheet.
+                portableBlocks.try_emplace(this);
+                if (!highResolutionDemanded) {
+                    drawDemandedSprites.insert(this);
+                    highResolutionDemanded = true;
+                    demandedHighResolutionNames.insert(fileName);
+                }
+            }
         }
+        const auto want = [&] {
+            const unsigned block = index / HighResolutionBlock;
+            if (!deferred && !portableBlocks[this].contains(block)) portableWaitingBlocks[this].insert(block);
+            return false;
+        };
         // Every layer the native frame has, in HD; a frame may be team layer only.
-        if (index >= experimentImages.size() || (!experimentImages[index] && !experimentRotated[index])) return false;
-        if (images[index] && !experimentImages[index]) return false;
-        if (rotated[index] && (!experimentRotated[index] || !experimentRotated[index]->orig->hasPixels())) return false;
-        if (dynamicTeamColor && !blockHasCompleteHD(index)) return false;
+        if (index >= experimentImages.size() || (!experimentImages[index] && !experimentRotated[index])) return want();
+        if (images[index] && !experimentImages[index]) return want();
+        if (rotated[index] && (!experimentRotated[index] || !experimentRotated[index]->orig->hasPixels())) return want();
+        if (dynamicTeamColor && !blockHasCompleteHD(index)) return want();
         // A first draw uploads the frame; a few per frame keep zooming in smooth.
         const auto key = std::make_pair(static_cast<const Sprite*>(this), index);
         if (portableDrawnFrames.contains(key)) return true;
@@ -1070,6 +1118,29 @@ namespace GAGCore
         ++portableFirstDraws;
         portableDrawnFrames.insert(key);
         return true;
+    }
+    DrawableSurface *Sprite::sampleBaseFrame(unsigned index)
+    {
+        if (!highResolutionDemanded) demandHighResolution();
+        sampledByBaseFrame = true;
+        auto *surface = prepareDrawSurface(index, false, true);
+        if (surface && !surface->hasPixels())
+        {
+            // A portable draw released it: sample native until its block
+            // reloads, keeping pixels from now on.
+            if (portableBlocks.contains(this))
+                portableWaitingBlocks[this].insert(index / HighResolutionBlock);
+            return images[index];
+        }
+        return surface;
+    }
+    void Sprite::releaseDrawnHighResolution(unsigned index)
+    {
+        if (sampledByBaseFrame || highResolutionDeferred(fileName) || highResolutionAtlasWanted(fileName) ||
+            pixelSampledHighResolutionNames.contains(fileName) || index >= experimentImages.size() ||
+            !experimentImages[index])
+            return;
+        experimentImages[index]->releasePortablePixels();
     }
     void Sprite::releaseHighResolutionDemand()
     {
@@ -1088,6 +1159,8 @@ namespace GAGCore
     {
         std::erase_if(portableDrawnFrames, [this](const auto &key) { return key.first == this; });
         drawDemandedSprites.erase(this);
+        portableBlocks.erase(this);
+        portableWaitingBlocks.erase(this);
         clearTeamColorCache();
         for (auto *&image : experimentImages) { delete image; image = nullptr; }
         for (auto *&image : experimentRotated) { delete image; image = nullptr; }
@@ -1162,6 +1235,13 @@ namespace GAGCore
             // Read native dimensions from the live sprite, but build every HD
             // layer and its atlas in a private target until publication.
             while (reload.frame < sprite->images.size()) {
+                if (!reload.blocks.empty() && !reload.blocks.contains(unsigned(reload.frame / HighResolutionBlock))) {
+                    // Not loaded by this reload: publication keeps the sprite's own.
+                    reload.prepared->experimentImages.push_back(nullptr);
+                    reload.prepared->experimentRotated.push_back(nullptr);
+                    ++reload.frame;
+                    continue;
+                }
                 if (!highResolutionFrameReady(sprite->fileName, reload.frame, reload.inputs)) break;
                 sprite->appendHighResolutionFrame(reload.frame++, *reload.prepared, reload.inputs);
                 if (std::chrono::steady_clock::now() >= deadline) return false;
@@ -1380,7 +1460,7 @@ namespace GAGCore
             file.find("..") == std::string::npos;
     }
     static HighResolutionInputs highResolutionInputs(
-        const std::string& name, size_t frames, bool incremental)
+        const std::string& name, size_t frames, bool incremental, const std::set<unsigned>* blocks = nullptr)
     {
         HighResolutionInputs inputs;
         const char* overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
@@ -1396,6 +1476,7 @@ namespace GAGCore
             if (!incremental) inputs.request(Toolkit::assets(), path, mipmaps);
         };
         for (size_t i = 0; i < frames; ++i) {
+            if (blocks && !blocks->contains(unsigned(i / HighResolutionBlock))) continue;
             auto found = packEntries->find(prefix + std::to_string(i));
             if (found == packEntries->end()) continue;
             for (const auto& file : wantedLayers(found->second, name)) {
@@ -1417,6 +1498,11 @@ namespace GAGCore
     HighResolutionInputs prefetchHighResolutionIncremental(const std::string& name, size_t frames)
     {
         return highResolutionInputs(name, frames, true);
+    }
+    HighResolutionInputs prefetchHighResolutionBlocks(const std::string& name, size_t frames,
+                                                      const std::set<unsigned>& blocks)
+    {
+        return highResolutionInputs(name, frames, true, &blocks);
     }
     bool highResolutionFrameReady(const std::string& name, size_t index, HighResolutionInputs& inputs)
     {
@@ -1561,6 +1647,8 @@ namespace GAGCore
         if (bandReloading == this) bandReloading = nullptr;
         deferredHighResolution.erase(this);
         drawDemandedSprites.erase(this);
+        portableBlocks.erase(this);
+        portableWaitingBlocks.erase(this);
         std::erase_if(portableDrawnFrames, [this](const auto &key) { return key.first == this; });
         if (deferredHighResolutionCursor == this) deferredHighResolutionCursor = nullptr;
         if (loadedSprites.erase(this)) pendingHighResolution.erase(this);

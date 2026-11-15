@@ -353,6 +353,13 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
         if (renderer) {
             if (w <= 0 || h <= 0 || sw <= 0 || sh <= 0) return;
             auto* pixels=surface->getSDLSurface();
+            if (!pixels && surface->portableReleased() && renderer == portableRenderer.get())
+            {
+                // Its texture holds the only copy; a reset lost it until its owner reloads.
+                if (spriteBatch.owner == this) spriteBatch.flush();
+                if (renderer->blitCached(surface, SDL_Rect{sx,sy,sw,sh}, SDL_FRect{x,y,w,h}, alpha)) ++drawCalls;
+                return;
+            }
             if (!pixels || pixels->w <= 0 || pixels->h <= 0) return;
             if (radialFade.active()) {
                 const DrawableSurface *uploadSource=surface;

@@ -154,6 +154,7 @@ class SoftwareTerrainCache
 		std::vector<char> opaque;
 		int columns = 0;
 		bool changed = false;
+		std::uint64_t used = 0; // Frame it last served a cell.
 	};
 	std::map<std::tuple<unsigned, int, int>, AnimatedTiles> animatedTiles; // By material, scale and reduction.
 	TerrainVisual::Compositor *overlayCompositor = nullptr; // Set by prepare for draw.
@@ -180,6 +181,8 @@ class SoftwareTerrainCache
 	bool incomplete = false;
 	// The last material snapshot given to workers (see prepareAtResolution).
 	std::shared_ptr<const TerrainVisual::Compositor::CpuMaterials> workerMaterials;
+	std::uint64_t materialsUsed = 0; // Frame of the last launch that used it.
+	std::uint64_t resetGeneration = 0; // GraphicContext::renderResetGeneration last seen.
 	// A missing page found no build slot last frame, so animation refreshes wait.
 	bool coldBacklog = false;
 	void cancelPending();

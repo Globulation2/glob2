@@ -161,6 +161,23 @@ namespace GAGCore
 #endif
     }
 
+    bool DrawableSurface::releasePortablePixels()
+    {
+        if (!sdlsurface || this == _gc || textureInfo || !_gc || !_gc->portableRenderer ||
+            _gc->renderer != _gc->portableRenderer.get() ||
+            !_gc->portableRenderer->hasTexture(this, contentRevision()))
+            return false;
+        hasOpaquePixels(); // Answered from the pixels one last time, then from the cache.
+        releasedW = sdlsurface->w;
+        releasedH = sdlsurface->h;
+        SDL_DestroySurface(sdlsurface);
+        sdlsurface = nullptr;
+        std::vector<unsigned char>().swap(preparedUploadPixels);
+        std::vector<AssetImage::Mip>().swap(preparedMips);
+        releasedOnPortable = true;
+        return true;
+    }
+
 	DrawableSurface *DrawableSurface::clone(void)
 	{
 		assert(sdlsurface);

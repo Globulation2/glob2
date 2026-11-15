@@ -59,7 +59,12 @@ logical pixel (`Sprite::highResolutionDrawable`): HD frames hold four texels a
 logical pixel and its textures have no mip chain, so they shrink at most twice.
 It drops back to native frames after ten seconds below that, like the legacy
 GL bands, and then releases the layers that drawing demanded. A drawn sprite
-demands its team layers with its base ones; a frame draws in HD only once every
+loads only the 32-frame blocks its draws reach (a unit's action), batched into
+one reload a frame, and demands its team layers with its base ones; once a
+frame's HD base layer is uploaded its CPU pixels go, unless something samples
+them through `Sprite::baseFrame` (a released frame then answers with its native
+frame and reloads with pixels; `Sprite::drawFrame` serves draw-only callers such
+as skin shadows), and a renderer reset reloads frames that had only textures; a frame draws in HD only once every
 layer its native frame has is loaded (a unit only once its whole action is), at
 most eight frames a frame draw in HD for the first time (each one uploads), and
 HD layers sample linearly with premultiplied alpha. Recoloured HD team layers,
@@ -949,7 +954,8 @@ a valid existing layer. Its linear textures need
 premultiplied alpha: accelerated SDL renderers prepare them by blending a
 straight-alpha staging texture onto a transparent target. The renderer keeps up
 to four staging textures, one per texture size, since pages, HD sprite frames and
-animated tiles of different sizes upload in the same frame; compatible cached
+animated tiles of different sizes upload in the same frame, and releases each
+after 300 presented frames unused; compatible cached
 textures are updated in place when pixels change. SDL's per-target viewport, clip, scale and logical presentation
 state is restored before drawing resumes. A bounded 256×256 startup probe checks
 all byte colour/alpha pairs against the CPU integer result. Drivers whose blend

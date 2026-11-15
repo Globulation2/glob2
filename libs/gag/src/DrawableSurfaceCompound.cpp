@@ -317,7 +317,11 @@ namespace GAGCore
 		if (this != _gc || !sprite->highResolutionDrawable(index))
 			return false;
 		if (auto *surface = sprite->prepareDrawSurface(index, false, true))
+		{
 			drawSurface(x, y, w, h, surface, alpha);
+			// Uploaded now: the texture can hold the only copy.
+			sprite->releaseDrawnHighResolution(index);
+		}
 		if (auto *surface = sprite->prepareDrawSurface(index, true, true))
 			drawSurface(x, y, w, h, surface, alpha);
 		return true;

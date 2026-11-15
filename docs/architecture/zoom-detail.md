@@ -75,8 +75,8 @@ it is saved, checksummed or read by the simulation.
   describe missing cells within a fixed graphics-thread budget per frame;
   background workers compose those cells and the graphics thread copies a
   bounded number into their pages each frame. Until a page is complete it draws
-  over its other density where that exists. Tiled captures and complete draws
-  compose every visible cell first. From a game's first frame, under the
+  over its other density where that exists. Tiled captures, offscreen draws (map
+  exports) and complete draws compose every visible cell first. From a game's first frame, under the
   opening cloud bank, the same budget also composes the whole map at four
   samples in the background (maps whose pages fit half the allowance), so the
   first zoom out finds every page ready.

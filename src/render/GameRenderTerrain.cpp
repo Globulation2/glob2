@@ -462,7 +462,8 @@ void MapDrawer::drawMapOverview(int left, int top, int right, int bot, int viewp
 		std::max(columns, rows), globalContainer->gfx->maximumTextureSize());
 	// Each page is its own texture: panning and zooming draw cached pages, and
 	// interactive views compose missing cells on background workers.
-	const bool complete = drawOptions & (Game::DRAW_TILED_CAPTURE | Game::DRAW_COMPLETE_TERRAIN);
+	const bool complete = (drawOptions & (Game::DRAW_TILED_CAPTURE | Game::DRAW_COMPLETE_TERRAIN)) ||
+		globalContainer->gfx->drawingOffscreen();
 	render.overview.reset();
 	render.overviewCache->draw(sceneMap, left, top, right, bot, viewportX, viewportY, visibleTeams,
 							   drawOptions & Game::DRAW_WHOLE_MAP, samples, *globalContainer->gfx, alpha, complete);
