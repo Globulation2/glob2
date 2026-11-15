@@ -3,6 +3,7 @@
 #include <ThreadSupport.h>
 #include <algorithm>
 #include <condition_variable>
+#include <cstdlib>
 #include <deque>
 #include <mutex>
 #include <system_error>
@@ -11,6 +12,21 @@
 
 namespace
 {
+// GLOB2_BACKGROUND_RENDER_WORKERS (1-64) overrides the default for measurements.
+unsigned workerCount()
+{
+	if (const char *value = std::getenv("GLOB2_BACKGROUND_RENDER_WORKERS"))
+	{
+		char *end = nullptr;
+		const unsigned long count = std::strtoul(value, &end, 10);
+		if (end != value && !*end && count >= 1 && count <= 64)
+			return unsigned(count);
+	}
+	// At normal speed the simulation needs about a core. Beyond four workers the
+	// graphics thread's launch and install budgets, not the workers, set the pace.
+	return std::clamp(std::thread::hardware_concurrency() / 2, 2u, 4u);
+}
+
 class Pool
 {
   public:
@@ -18,8 +34,7 @@ class Pool
 	{
 		if constexpr (!GAGCore::ThreadSupport::available)
 			return;
-		// Leave most cores to the simulation and the graphics thread.
-		const unsigned count = std::clamp(std::thread::hardware_concurrency() / 4, 2u, 6u);
+		const unsigned count = workerCount();
 		try
 		{
 			for (unsigned i = 0; i < count; ++i)
