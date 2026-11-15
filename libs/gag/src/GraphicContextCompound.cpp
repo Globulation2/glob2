@@ -4,6 +4,7 @@
 #include "GraphicContextPrivate.h"
 #include <SpriteDrawBatch.h>
 #include <RenderBackend.h>
+#include <RenderDevice.h>
 #ifdef HAVE_OPENGL
 #include <AlphaMapRender.h>
 #endif
@@ -378,14 +379,29 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
             if (renderer == deviceRenderer.get() && surface->highResolutionSampling) {
                 // Use the existing alpha-weighted CPU chain for every device.
                 // Mutation creates a new owned upload revision before submission.
-                if (surface->preparedUploadRevision != surface->contentRevision() || surface->preparedMips.empty()) {
+                // Worker-prepared premultiplied blocks the device samples replace
+                // the RGBA levels; a chain that kept only blocks is prepared
+                // again for a device that cannot sample them.
+                const auto blocksFor = [this](AssetImage::BlockCompression prepared) {
+                    const auto format = prepared == AssetImage::BlockCompression::PremultipliedBC3
+                        ? TextureCompression::BC3 : TextureCompression::Uncompressed;
+                    return presentationDevice->capabilities().supports(format) ? format : TextureCompression::Uncompressed;
+                };
+                auto blockFormat = surface->preparedMips.empty() || surface->preparedMips.front().compressed.empty()
+                    ? TextureCompression::Uncompressed : blocksFor(surface->preparedCompression);
+                const bool pixelsReleased = !surface->preparedMips.empty() && surface->preparedMips.front().pixels.empty();
+                if (surface->preparedUploadRevision != surface->contentRevision() || surface->preparedMips.empty() ||
+                    (pixelsReleased && blockFormat == TextureCompression::Uncompressed)) {
                     AssetImage prepared(nullptr);
                     prepared.surface = SDL_ConvertSurface(pixels, SDL_PIXELFORMAT_ARGB8888);
                     if (!prepared.surface) throw std::runtime_error(SDL_GetError());
                     prepared.prepareUpload(true);
                     surface->preparedUploadPixels = std::move(prepared.uploadPixels);
                     surface->preparedMips = std::move(prepared.mips);
+                    surface->preparedCompression = prepared.compression;
                     surface->preparedUploadRevision = surface->contentRevision();
+                    blockFormat = surface->preparedMips.front().compressed.empty()
+                        ? TextureCompression::Uncompressed : blocksFor(surface->preparedCompression);
                 }
                 std::vector<RenderMipLevel> levels;
                 levels.reserve(surface->preparedMips.size());
@@ -394,12 +410,22 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 #else
                 constexpr auto format = SDL_PIXELFORMAT_ARGB8888;
 #endif
-                for (const auto &level : surface->preparedMips)
-                    levels.push_back({level.width, level.height, format,
-                        {reinterpret_cast<const std::byte *>(level.pixels.data()), level.pixels.size()}});
+                for (const auto &level : surface->preparedMips) {
+                    RenderMipLevel view{level.width, level.height, format,
+                        {reinterpret_cast<const std::byte *>(level.pixels.data()), level.pixels.size()}};
+                    if (blockFormat != TextureCompression::Uncompressed && !level.compressed.empty()) {
+                        view.compression = blockFormat;
+                        view.blocks = {reinterpret_cast<const std::byte *>(level.compressed.data()), level.compressed.size()};
+                    }
+                    levels.push_back(view);
+                }
                 if (spriteBatch.owner == this) spriteBatch.flush();
                 renderer->blitMipmapped(surface, pixels, surface->contentRevision(), levels,
                     SDL_Rect{sx,sy,sw,sh}, SDL_FRect{x,y,w,h}, alpha);
+                // The blocks restore the device's texture; the RGBA levels are
+                // only needed again by a device that cannot sample them.
+                if (blockFormat != TextureCompression::Uncompressed && !pixelsReleased)
+                    for (auto &level : surface->preparedMips) std::vector<unsigned char>().swap(level.pixels);
                 return;
             }
             if (renderer == portableRenderer.get() && surface->highResolutionSampling)

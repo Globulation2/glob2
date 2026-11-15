@@ -186,6 +186,14 @@ class DeviceRenderBackend final : public RenderBackend
                 if (bytes > std::min(resources.byteLimit(), std::size_t(64*1024*1024))) throw std::length_error("Authored mip chain exceeds logical budget");
             }
             descriptor.mips = TextureDescriptor::Mips::Generated; descriptor.sampling = TextureDescriptor::Sampling::Linear;
+            // Prepared blocks the device samples replace the RGBA chain in the
+            // snapshot and on the GPU. Without them every level needs pixels.
+            const auto compression = mipLevels.front().compression;
+            if (compression != TextureCompression::Uncompressed && device.capabilities().supports(compression))
+                descriptor.compression = compression;
+            else
+                for (const auto &level : mipLevels)
+                    if (level.pixels.empty()) throw std::invalid_argument("Device cannot sample prepared blocks without pixels");
         }
         descriptor.alpha = opaque ? TextureDescriptor::Alpha::Opaque : TextureDescriptor::Alpha::Straight;
         // Borrowed terrain-run views often reuse the same surface address and
@@ -205,7 +213,7 @@ class DeviceRenderBackend final : public RenderBackend
         auto found = textures.find(key);
         if (found != textures.end()) {
             auto previous = resources.snapshot(found->second.handle);
-            if (previous && previous->descriptor.mips != descriptor.mips) {
+            if (previous && (previous->descriptor.mips != descriptor.mips || previous->descriptor.compression != descriptor.compression)) {
                 // The source content revision may be unchanged when an authored
                 // padded chain replaces an ordinary upload. A new handle keeps
                 // old queued pixels and device upload identities independent.

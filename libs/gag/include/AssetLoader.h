@@ -24,8 +24,10 @@ struct AssetImage {
     // Block formats workers encode high-resolution levels into (etcpak, see
     // third_party/README.md). Both store 16 bytes for each 4x4 pixels: BC3 for
     // desktop GPUs with S3TC, ETC2 with EAC alpha for GPUs without it, which
-    // every OpenGL ES 3 device decodes.
-    enum class BlockCompression : unsigned char { Uncompressed, BC3, ETC2 };
+    // every OpenGL ES 3 device decodes. PremultipliedBC3 multiplies colour by
+    // alpha before encoding, for render devices that sample premultiplied
+    // textures (SDL GPU); legacy OpenGL never uploads it.
+    enum class BlockCompression : unsigned char { Uncompressed, BC3, ETC2, PremultipliedBC3 };
     // compressed: the level's blocks in the image's compression, prepared on
     // the worker; empty below 4x4 or without compression.
     struct Mip { int width, height; std::vector<unsigned char> pixels, compressed; };

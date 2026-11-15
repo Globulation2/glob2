@@ -757,6 +757,23 @@ with explicit depth passes and premultiplied atlas composition. Paint and materi
 revisions remain immutable for submitted draws. Source, geometry and atlas caches
 are rebuilt after switching or recovery.
 
+SDL GPU samples block-compressed HD artwork where the device reports the format
+(`RenderDeviceCapabilities::bc3Textures`, `astc4x4Textures`). On entering the device,
+asset workers prepare each HD chain as premultiplied BC3 (`PremultipliedBC3`,
+etcpak); the draw passes the blocks with the RGBA levels, and the adapter stores a
+compressed `TextureRevision` holding only the blocks of the levels at least 4x4,
+charged at their size. The device uploads them unchanged into a
+`BC3_RGBA_UNORM` texture, a quarter of the RGBA chain on the GPU and in the
+restoration snapshot, and restores trimmed or lost textures from them. Workers
+keep only the blocks of those levels, and a chain prepared earlier releases its
+RGBA levels once the blocks reach the device; a device that
+cannot sample them (or legacy OpenGL, which never uploads premultiplied blocks)
+prepares the chain again from the surface pixels. Devices without BC3 sample RGBA.
+ASTC 4x4 uploads take the same path, but no ASTC encoder exists, so ASTC-only
+devices (most phones) still sample RGBA. `GLOB2_TEXTURE_COMPRESSION=none|bc3|astc`
+restricts the formats SDL GPU reports, for comparisons. The class budgets stay
+byte budgets, so the same budget holds about four times as much compressed artwork.
+
 Native texture restoration uses bounded upload slices when a full authored mip
 chain cannot coexist with retained depth atlases and its transfer buffer. Upload-only
 preparation can complete independently of a deferred draw frame; sampling waits for

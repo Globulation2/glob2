@@ -50,6 +50,57 @@ static_assert(offsetof(SDL_Vertex, color) == Layout::primitive_attributes[1].off
 static_assert(offsetof(SDL_Vertex, tex_coord) == Layout::primitive_attributes[2].offset);
 
 [[noreturn]] void fail(const char *operation) { throw std::runtime_error(std::string(operation) + ": " + SDL_GetError()); }
+SDL_GPUTextureFormat gpuFormat(TextureCompression compression)
+{
+    switch (compression) {
+    case TextureCompression::BC3: return SDL_GPU_TEXTUREFORMAT_BC3_RGBA_UNORM;
+    case TextureCompression::ASTC4x4: return SDL_GPU_TEXTUREFORMAT_ASTC_4x4_UNORM;
+    case TextureCompression::Uncompressed: break;
+    }
+    return SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
+}
+//! Device bytes of a revision's whole chain: its blocks, or RGBA8 levels.
+std::size_t revisionBytes(const TextureRevision &source)
+{
+    std::size_t bytes = 0;
+    if (source.descriptor.compression != TextureCompression::Uncompressed) {
+        for (const auto &level : source.blocks) bytes += level.size();
+        return bytes;
+    }
+    bytes = std::size_t(source.descriptor.width) * source.descriptor.height * 4;
+    for (const auto &level : source.mips) bytes += level.rgba.size();
+    return bytes;
+}
+// One level of a revision as upload rows: texel rows, or rows of 4x4 blocks.
+struct UploadLevel
+{
+    int width = 0, height = 0, rowTexels = 1;
+    std::size_t rowBytes = 0, rows = 0, pitch = 0;
+    const unsigned char *data = nullptr;
+    std::size_t bytes() const { return rowBytes * rows; }
+};
+UploadLevel uploadLevel(const TextureRevision &source, std::size_t index)
+{
+    UploadLevel level;
+    if (source.descriptor.compression != TextureCompression::Uncompressed) {
+        level.width = std::max(1, source.descriptor.width >> index); level.height = std::max(1, source.descriptor.height >> index);
+        level.rowTexels = 4; level.rowBytes = std::size_t((level.width + 3) / 4) * 16; level.rows = std::size_t((level.height + 3) / 4);
+        level.pitch = level.rowBytes; level.data = reinterpret_cast<const unsigned char *>(source.blocks.at(index).data());
+    } else if (index == 0) {
+        level.width = source.descriptor.width; level.height = source.descriptor.height;
+        level.rowBytes = std::size_t(level.width) * 4; level.rows = level.height; level.pitch = source.pixels->pitch;
+        level.data = static_cast<const unsigned char *>(source.pixels->pixels);
+    } else {
+        const auto &mip = source.mips.at(index - 1);
+        level.width = mip.width; level.height = mip.height; level.rowBytes = std::size_t(mip.width) * 4;
+        level.rows = mip.height; level.pitch = level.rowBytes; level.data = reinterpret_cast<const unsigned char *>(mip.rgba.data());
+    }
+    return level;
+}
+std::size_t uploadLevelCount(const TextureRevision &source)
+{
+    return source.descriptor.compression != TextureCompression::Uncompressed ? source.blocks.size() : source.mips.size() + 1;
+}
 std::vector<unsigned char> readShader(const std::string &file)
 {
     std::ifstream stream(file, std::ios::binary | std::ios::ate);
@@ -71,6 +122,9 @@ struct Texture
     std::size_t *residentBytes = nullptr;
     bool submitted = false, premultiplied = false, renderTarget = false;
     bool progressiveUpload = false;
+    // Block-compressed textures are sampled only, never rendered to.
+    SDL_GPUTextureFormat format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
+    bool compressed = false;
     std::size_t uploadOffset = 0;
     std::uint64_t uploadSubmission = 0;
     std::shared_ptr<Texture> depth;
@@ -188,6 +242,7 @@ class SDLGPUDevice final : public RenderDevice
     std::size_t residentTextureBytes = 0;
     std::map<const GeometryRevision *, GeometryPtr> geometryCache;
     bool worldAvailable = false, skinAvailable = false, terrainAvailable = false;
+    bool bc3Supported = false, astcSupported = false;
     std::array<SDL_GPUShader *,2> terrainShaders{};
     SDL_GPUShader *directTerrainVertex = nullptr, *directTerrainFragment = nullptr;
     SDL_GPUGraphicsPipeline *directTerrainPipeline = nullptr;
@@ -218,16 +273,18 @@ class SDLGPUDevice final : public RenderDevice
         if (w <= 0 || h <= 0 || w > MaximumTextureSize || h > MaximumTextureSize)
             throw std::invalid_argument("SDL GPU texture dimensions exceed supported limit");
         updateMemory(pending);
-        std::size_t bytes=std::size_t(w)*h*4;
-        if(source)for(const auto &level:source->mips)bytes+=level.rgba.size();
+        const std::size_t bytes = source ? revisionBytes(*source) : std::size_t(w) * h * 4;
         if (bytes > TotalBudget - std::min(TotalBudget, counts.resourceBytes) && pooledUploadBytes) releaseUploadPool();
         if (bytes > TotalBudget - std::min(TotalBudget, counts.resourceBytes)) throw RenderAdmissionDeferred("SDL GPU combined budget exhausted");
+        const auto compression = source ? source->descriptor.compression : TextureCompression::Uncompressed;
         SDL_GPUTextureCreateInfo info{};
-        info.type = SDL_GPU_TEXTURETYPE_2D; info.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
-        info.usage = SDL_GPU_TEXTUREUSAGE_SAMPLER | SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
-        info.width = w; info.height = h; info.layer_count_or_depth = 1; info.num_levels = source ? Uint32(source->mips.size()+1) : 1;
+        info.type = SDL_GPU_TEXTURETYPE_2D; info.format = gpuFormat(compression);
+        info.usage = compression != TextureCompression::Uncompressed ? SDL_GPU_TEXTUREUSAGE_SAMPLER
+            : SDL_GPU_TEXTUREUSAGE_SAMPLER | SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
+        info.width = w; info.height = h; info.layer_count_or_depth = 1; info.num_levels = source ? Uint32(uploadLevelCount(*source)) : 1;
         auto texture = std::make_shared<Texture>();texture->device=device;texture->source=std::move(source);
         texture->width=w;texture->height=h;texture->byteSize=bytes;
+        texture->format=info.format;texture->compressed=compression!=TextureCompression::Uncompressed;
         texture->gpu = SDL_CreateGPUTexture(device, &info);
         if (!texture->gpu) fail("create texture");
         texture->residentBytes = &residentTextureBytes; residentTextureBytes += bytes;
@@ -340,8 +397,34 @@ class SDLGPUDevice final : public RenderDevice
         }
         pooledUploadBytes = 0;
     }
+    void uploadBlocks(SDL_GPUCommandBuffer *commands, Work &entry, const TexturePtr &texture)
+    {
+        // Prepared premultiplied blocks: copied as they are, every level at once.
+        const std::size_t bytes = texture->byteSize;
+        reserveMemory(bytes, &entry);
+        auto *buffer = transfer(SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD, bytes); entry.transfers.emplace_back(buffer, bytes);
+        auto *mapped = static_cast<unsigned char *>(SDL_MapGPUTransferBuffer(device, buffer, false));
+        if (!mapped) fail("map compressed texture upload");
+        const auto &source = *texture->source;
+        std::size_t offset = 0;
+        for (const auto &level : source.blocks) { std::memcpy(mapped + offset, level.data(), level.size()); offset += level.size(); }
+        SDL_UnmapGPUTransferBuffer(device, buffer);
+        auto *copy = SDL_BeginGPUCopyPass(commands); if (!copy) fail("begin compressed upload pass");
+        offset = 0;
+        for (std::size_t index = 0; index < source.blocks.size(); ++index) {
+            const auto level = uploadLevel(source, index);
+            SDL_GPUTextureTransferInfo from{}; from.transfer_buffer = buffer; from.offset = Uint32(offset);
+            from.pixels_per_row = Uint32(level.width); from.rows_per_layer = Uint32(level.height);
+            SDL_GPUTextureRegion region{}; region.texture = texture->gpu; region.mip_level = Uint32(index);
+            region.w = Uint32(level.width); region.h = Uint32(level.height); region.d = 1;
+            SDL_UploadToGPUTexture(copy, &from, &region, false); offset += level.bytes();
+        }
+        SDL_EndGPUCopyPass(copy);
+        counts.uploadBytes += bytes;
+    }
     void upload(SDL_GPUCommandBuffer *commands, Work &entry, TexturePtr texture, SDL_Surface *source, bool opaque, bool premultiplied = false)
     {
+        if (texture->compressed) { uploadBlocks(commands, entry, texture); return; }
         std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> converted(
             SDL_ConvertSurface(source, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
         if (!converted) fail("convert texture pixels");
@@ -388,34 +471,34 @@ class SDLGPUDevice final : public RenderDevice
         if(texture->uploadOffset==texture->byteSize) {texture->progressiveUpload=false;return;}
         if(work.size()>=SubmissionLimit)throw RenderAdmissionDeferred("SDL GPU upload submission queue full");
         constexpr std::size_t SliceBytes=8*1024*1024;
+        const auto &revision=*texture->source;
+        if(!texture->compressed && revision.pixels->format!=SDL_PIXELFORMAT_RGBA32)throw std::invalid_argument("Progressive upload requires normalized RGBA32 restoration pixels");
         std::size_t offset=texture->uploadOffset;unsigned levelIndex=0;
-        int width=texture->width,height=texture->height;
-        const unsigned char *source=static_cast<const unsigned char *>(texture->source->pixels->pixels);
-        std::size_t pitch=texture->source->pixels->pitch;
-        while(offset>=std::size_t(width)*height*4) {
-            offset-=std::size_t(width)*height*4;
-            const auto &level=texture->source->mips.at(levelIndex++);
-            width=level.width;height=level.height;source=reinterpret_cast<const unsigned char *>(level.rgba.data());pitch=std::size_t(width)*4;
-        }
-        const auto rowBytes=std::size_t(width)*4;const unsigned firstRow=unsigned(offset/rowBytes);
-        const unsigned rows=unsigned(std::min<std::size_t>(height-firstRow,SliceBytes/rowBytes));
+        auto level=uploadLevel(revision,0);
+        while(offset>=level.bytes()) {offset-=level.bytes();level=uploadLevel(revision,++levelIndex);}
+        // Rows are texel rows, or rows of 4x4 blocks in a compressed level.
+        const auto rowBytes=level.rowBytes;const unsigned firstRow=unsigned(offset/rowBytes);
+        const unsigned rows=unsigned(std::min<std::size_t>(level.rows-firstRow,std::max<std::size_t>(1,SliceBytes/rowBytes)));
         const auto bytes=rowBytes*rows;reserveMemory(bytes,&pending);
-        if(texture->source->pixels->format!=SDL_PIXELFORMAT_RGBA32)throw std::invalid_argument("Progressive upload requires normalized RGBA32 restoration pixels");
+        const bool alterTexels=!texture->compressed && (opaque || premultiplied);
+        const int width=level.width;
         Work entry;entry.textures.push_back(texture);entry.transfers.reserve(1);
         auto *commands=SDL_AcquireGPUCommandBuffer(device);if(!commands)fail("acquire incremental upload commands");
         try {
             auto *buffer=transfer(SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD,bytes);entry.transfers.emplace_back(buffer,bytes);
             auto *pixels=static_cast<unsigned char *>(SDL_MapGPUTransferBuffer(device,buffer,false));if(!pixels)fail("map incremental texture upload");
             for(unsigned y=0;y<rows;++y) {
-                auto *row=pixels+y*rowBytes;std::memcpy(row,source+(firstRow+y)*pitch,rowBytes);
+                auto *row=pixels+y*rowBytes;std::memcpy(row,level.data+(firstRow+y)*level.pitch,rowBytes);
+                if(!alterTexels)continue;
                 if(opaque)for(int x=0;x<width;++x)row[x*4+3]=255;
                 if(premultiplied)for(int x=0;x<width;++x)for(int channel=0;channel<3;++channel)
                     row[x*4+channel]=(unsigned(row[x*4+channel])*row[x*4+3]+127)/255;
             }
             SDL_UnmapGPUTransferBuffer(device,buffer);
             auto *copy=SDL_BeginGPUCopyPass(commands);if(!copy)fail("begin incremental upload pass");
-            SDL_GPUTextureTransferInfo sourceInfo{};sourceInfo.transfer_buffer=buffer;sourceInfo.pixels_per_row=width;sourceInfo.rows_per_layer=rows;
-            SDL_GPUTextureRegion region{};region.texture=texture->gpu;region.mip_level=levelIndex;region.y=firstRow;region.w=width;region.h=rows;region.d=1;
+            const unsigned texelRow=firstRow*level.rowTexels,texelRows=std::min<unsigned>(unsigned(level.height)-texelRow,rows*level.rowTexels);
+            SDL_GPUTextureTransferInfo sourceInfo{};sourceInfo.transfer_buffer=buffer;sourceInfo.pixels_per_row=width;sourceInfo.rows_per_layer=rows*level.rowTexels;
+            SDL_GPUTextureRegion region{};region.texture=texture->gpu;region.mip_level=levelIndex;region.y=texelRow;region.w=width;region.h=texelRows;region.d=1;
             SDL_UploadToGPUTexture(copy,&sourceInfo,&region,false);SDL_EndGPUCopyPass(copy);
             submitWork(commands,entry);texture->submitted=true;texture->uploadSubmission=serial;texture->uploadOffset+=bytes;counts.uploadBytes+=bytes;
         } catch(...) {if(commands)SDL_CancelGPUCommandBuffer(commands);release(entry);throw;}
@@ -435,9 +518,26 @@ class SDLGPUDevice final : public RenderDevice
         for(auto &[key,value]:geometryCache)value->submitted=true;
         for(auto &[key,value]:coverageCache)value->submitted=true;
     }
+    void validateBlocks(const TextureRevision &source, bool asTarget) const
+    {
+        const auto format = source.descriptor.compression;
+        if ((format == TextureCompression::BC3 && !bc3Supported) || (format == TextureCompression::ASTC4x4 && !astcSupported))
+            throw std::invalid_argument("SDL GPU device cannot sample this block format");
+        if (asTarget) throw std::invalid_argument("Compressed textures cannot be render targets");
+        if (source.descriptor.alpha != TextureDescriptor::Alpha::Premultiplied || source.descriptor.mips != TextureDescriptor::Mips::Generated ||
+            source.blocks.empty() || source.blocks.size() > 16 || source.descriptor.width > MaximumTextureSize || source.descriptor.height > MaximumTextureSize)
+            throw std::invalid_argument("Invalid compressed texture descriptor");
+        for (std::size_t index = 0; index < source.blocks.size(); ++index) {
+            const int w = source.descriptor.width >> index, h = source.descriptor.height >> index;
+            if (w < 4 || h < 4 || source.blocks[index].size() != compressedLevelBytes(w, h))
+                throw std::invalid_argument("Invalid compressed level blocks");
+        }
+    }
     TexturePtr resolve(SDL_GPUCommandBuffer *&commands, Work &entry, TextureSnapshot source, bool opaque = false, bool premultiplied = false, bool asTarget = false)
     {
         if (!source) return white;
+        if (source->descriptor.compression != TextureCompression::Uncompressed) validateBlocks(*source, asTarget);
+        else {
         if (!source->pixels || source->pixels->w != source->descriptor.width || source->pixels->h != source->descriptor.height)
             throw std::invalid_argument("SDL GPU requires CPU texture pixels");
         if(asTarget && source->descriptor.mips!=TextureDescriptor::Mips::Disabled)throw std::invalid_argument("Authored mip textures cannot be render targets");
@@ -451,6 +551,7 @@ class SDLGPUDevice final : public RenderDevice
         if((source->descriptor.mips==TextureDescriptor::Mips::Generated && (mipWidth!=1 || mipHeight!=1)) ||
             (source->descriptor.mips==TextureDescriptor::Mips::Disabled && !source->mips.empty()))
             throw std::invalid_argument("Incomplete authored mip chain");
+        }
         // GPU render targets store premultiplied source-over results. Later
         // sampling must use those results rather than immutable restoration pixels.
         if (auto target = targets.find(source.get()); target != targets.end()) {
@@ -476,8 +577,7 @@ class SDLGPUDevice final : public RenderDevice
             if (asTarget) { found->second->renderTarget = true; targets[source.get()] = found->second; }
             return found->second;
         }
-        std::size_t bytes = std::size_t(source->descriptor.width) * source->descriptor.height * 4;
-        for(const auto &level:source->mips)bytes+=level.rgba.size();
+        const std::size_t bytes = revisionBytes(*source);
         std::array<std::size_t,4> budgets{TextureBudget,TextureBudget,128 * 1024 * 1024,32 * 1024 * 1024};
         const auto budget = static_cast<std::size_t>(source->descriptor.budgetClass);
         if (budget >= budgets.size()) throw std::invalid_argument("Invalid texture budget class");
@@ -755,6 +855,15 @@ class SDLGPUDevice final : public RenderDevice
                 throw std::runtime_error("Incomplete primitive shader assets for " + shaderFamily);
             device = SDL_CreateGPUDevice(shaderFormat, false, driver); if (!device) fail("create SDL GPU device");
             if (window) { claimed = SDL_ClaimWindowForGPUDevice(device, window); if (!claimed) fail("claim GPU window"); }
+            // Block formats for prepared artwork. Desktop GPUs decode BC3 and most
+            // mobile GPUs ASTC; GLOB2_TEXTURE_COMPRESSION=none|bc3|astc restricts it.
+            const char *wanted = SDL_getenv_unsafe("GLOB2_TEXTURE_COMPRESSION");
+            const std::string choice = wanted ? wanted : "";
+            const auto sampled = [&](SDL_GPUTextureFormat format) {
+                return SDL_GPUTextureSupportsFormat(device, format, SDL_GPU_TEXTURETYPE_2D, SDL_GPU_TEXTUREUSAGE_SAMPLER);
+            };
+            bc3Supported = (choice.empty() || choice == "bc3") && sampled(SDL_GPU_TEXTUREFORMAT_BC3_RGBA_UNORM);
+            astcSupported = (choice.empty() || choice == "astc") && sampled(SDL_GPU_TEXTUREFORMAT_ASTC_4x4_UNORM);
             vertexShader = loadShader("primitive", "vertex", 1, 0);
             fragmentShader = loadShader("primitive", "fragment", 1, 1);
             SDL_GPUSamplerCreateInfo sampler{}; sampler.min_filter = sampler.mag_filter = SDL_GPU_FILTER_NEAREST;
@@ -782,7 +891,12 @@ class SDLGPUDevice final : public RenderDevice
         } catch (...) { teardown(); throw; }
     }
     ~SDLGPUDevice() override { teardown(); }
-    RenderDeviceCapabilities capabilities() const override { return {true, true, false, MaximumTextureSize, worldAvailable, worldAvailable, skinAvailable, terrainAvailable, directTerrainPipeline != nullptr, directTerrainHdPipeline != nullptr}; }
+    RenderDeviceCapabilities capabilities() const override
+    {
+        RenderDeviceCapabilities result{true, true, false, MaximumTextureSize, worldAvailable, worldAvailable, skinAvailable, terrainAvailable, directTerrainPipeline != nullptr, directTerrainHdPipeline != nullptr};
+        result.bc3Textures = bc3Supported; result.astc4x4Textures = astcSupported;
+        return result;
+    }
     RenderSubmission submit(RenderFrame frame) override;
     RenderCompletion completion(RenderSubmission submission) override
     {
