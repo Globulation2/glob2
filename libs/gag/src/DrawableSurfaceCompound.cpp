@@ -314,7 +314,14 @@ namespace GAGCore
 	bool DrawableSurface::drawPortableHighResolution(float x, float y, float w, float h, Sprite *sprite, unsigned index,
 	                                                 Uint8 alpha)
 	{
-		if (this != _gc || !sprite->highResolutionDrawable(index))
+		if (this != _gc)
+			return false;
+		// A released frame lives only in the portable renderer's texture: an
+		// offscreen pass (a capture) draws the native frame instead.
+		if (_gc->renderer != _gc->portableRenderer.get() && index < sprite->experimentImages.size() &&
+			sprite->experimentImages[index] && !sprite->experimentImages[index]->hasPixels())
+			return false;
+		if (!sprite->highResolutionDrawable(index))
 			return false;
 		if (auto *surface = sprite->prepareDrawSurface(index, false, true))
 		{

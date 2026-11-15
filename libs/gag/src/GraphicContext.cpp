@@ -925,7 +925,12 @@ int GraphicContext::maximumTextureSize() const
 		if (context) SDL_GL_DestroyContext(context);
 		context = nullptr;
 		renderer = nullptr;
-        portableRenderer.reset();
+        if (portableRenderer) {
+            portableRenderer.reset();
+            // HD frames whose pixels went after a portable upload had only
+            // those textures: their sprites load them again.
+            Sprite::discardUnbackedHighResolution();
+        }
 		freeOwnedSurface();
 		if (window) {
 			removeMacScrollMonitor();
