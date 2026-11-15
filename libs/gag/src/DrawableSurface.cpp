@@ -178,6 +178,12 @@ namespace GAGCore
         return true;
     }
 
+    bool DrawableSurface::portableTextureLost() const
+    {
+        return releasedOnPortable && !(_gc && _gc->portableRenderer && _gc->renderer == _gc->portableRenderer.get() &&
+            _gc->portableRenderer->hasTexture(this, contentRevision()));
+    }
+
 	DrawableSurface *DrawableSurface::clone(void)
 	{
 		assert(sdlsurface);

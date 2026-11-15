@@ -68,7 +68,10 @@ as skin shadows), and a renderer reset reloads frames that had only textures; a 
 layer its native frame has is loaded (a unit only once its whole action is), at
 most eight frames a frame draw in HD for the first time (each one uploads), and
 HD layers sample linearly with premultiplied alpha. Recoloured HD team layers,
-buildings' included, share each sprite's 64 MiB recolour cache. Otherwise the
+buildings' included, share each sprite's 64 MiB recolour cache; once drawn, a
+cached recolour keeps only its texture, and one whose texture a reset took is
+recoloured again from the HD team layer, which keeps its pixels for the other
+colours. Otherwise the
 portable renderer and the presentation devices reach HD layers solely through
 `Sprite::baseFrame` (terrain composition, skin shadows and editor swatches), so
 there a sprite loads only its uncolored base layers, once `baseFrame` or an HD
