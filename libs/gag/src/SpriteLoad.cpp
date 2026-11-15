@@ -265,6 +265,7 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
         // Establish native preparation before queuing the optional HD frames,
         // so the private sprite can consume their output as decoding proceeds.
         impl->deferOptionalHD = Sprite::highResolutionDeferred(impl->name) ||
+            !highResolutionWantedAtLoad(impl->name) ||
             highResolutionNeedsAsyncLoad(impl->name, impl->sources->frames);
         if (!impl->deferOptionalHD)
             impl->highResolution = prefetchHighResolutionIncremental(impl->name, impl->sources->frames);

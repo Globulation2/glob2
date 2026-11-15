@@ -239,6 +239,15 @@ namespace GAGCore
         return readPackIndex(directory + "/frames.txt");
     }
 
+    static std::set<std::string> demandLoadedHighResolutionNames;
+    void Sprite::loadHighResolutionOnDemand(const std::string& name)
+    {
+        demandLoadedHighResolutionNames.insert(name);
+    }
+    bool highResolutionWantedAtLoad(const std::string& name)
+    {
+        return !demandLoadedHighResolutionNames.contains(name);
+    }
     bool highResolutionNeedsAsyncLoad(const std::string& name, size_t frames)
     {
 #ifdef __EMSCRIPTEN__

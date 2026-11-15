@@ -1113,6 +1113,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 			// Portable draws decor HD frames only zoomed in past its sprite threshold.
 			!portable || GAGCore::Sprite::portableHighResolution());
 	};
+	// A capture is drawn once: it waits for the material sheets the map holds.
+	if (tiledCapture) compositor.finishMaterials(map);
 	prepareMaterials();
 	// A capture is drawn once, so it waits for streamed HD rather than
 	// keeping the native fallback that interactive frames replace later.
@@ -2264,6 +2266,8 @@ void SoftwareTerrainCache::drawUncached(const SceneMap &map, GAGCore::Sprite &sp
 			(chunkOf(right + vx) + 1) * ChunkTiles - 1,
 			(chunkOf(bottom + vy) + 1) * ChunkTiles - 1, false, !portableRenderer());
 	};
+	// A capture is drawn once: it waits for the material sheets the map holds.
+	if (tiledCapture) compositor.finishMaterials(map);
 	prepareMaterials();
 	if (tiledCapture && highResolution)
 	{

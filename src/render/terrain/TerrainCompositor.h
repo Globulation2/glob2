@@ -37,16 +37,75 @@ class Surface : public GAGCore::DrawableSurface
 	}
 };
 
+// The native sheets of the installed terrain materials (one sprite each). An
+// on-demand compositor loads one when a map, the editor or composition first
+// needs it, on the asset workers through Toolkit::requestSprite, and draws the
+// material's flat preview colour until it is published. Sheets that no map
+// retains go after the retired HD frame lifetime, sooner when they and the
+// retired HD frames exceed that shared byte budget. Presentation thread only.
+class MaterialSheets
+{
+  public:
+	// The loaded sheet; null while it loads (the first ask queues it) or
+	// after it failed.
+	static GAGCore::Sprite *find(const std::string &name);
+	// The loaded sheet, without queuing a load.
+	static GAGCore::Sprite *loaded(const std::string &name);
+	static bool failed(const std::string &name);
+	// Blocks until each sheet is loaded or failed: complete draws only
+	// (captures, exports, editor swatches), never an interactive frame.
+	static void finish(std::span<const std::string> names);
+	// Moves whenever a sheet is published or released. A holder of sheet
+	// pointers resolves them again before using them once it moved.
+	static std::uint64_t generation();
+	// Publishes finished loads and releases sheets as described above. Cheap;
+	// compositors call it once a frame.
+	static void poll();
+	// Marks a sheet used now: an unretained sheet in use is not released.
+	static void touch(const std::string &name);
+	// The sheets an owner's map holds, which stay loaded; replaces the last set.
+	static void retain(const void *owner, std::vector<std::string> names);
+	static void forget(const void *owner);
+	// Pixel bytes of the sheets loaded on demand, and of those no owner retains.
+	static std::size_t residentBytes();
+	static std::size_t unretainedBytes();
+};
+
 // Renderer-owned, never accessed from the simulation. Sources are immutable
 // copies refreshed on sprite publication/content changes, including HD toggles.
 class Compositor
 {
   public:
-	explicit Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> assets = MapAssetBundle::empty());
+	// onDemand loads installed material sheets through MaterialSheets as they
+	// are needed (the game). Otherwise every sheet is loaded and validated
+	// here, as tools and tests expect.
+	explicit Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> assets = MapAssetBundle::empty(),
+						bool onDemand = false);
+	~Compositor();
+	Compositor(const Compositor &) = delete;
+	Compositor &operator=(const Compositor &) = delete;
 	const Catalog &catalog() const { return definitions; }
 	// Contextual and smooth profiles read one vertex of halo around each cell.
 	bool neighborhoodBorders() const { return hasNeighborhoodProfiles; }
-	std::pair<GAGCore::Sprite *, unsigned> editorIcon(TerrainType type) const;
+	// The sheet and frame of a terrain type's icon; a null sheet while it loads.
+	std::pair<GAGCore::Sprite *, unsigned> editorIcon(TerrainType type);
+	// Draws that icon at its 32x32 logical size, or the material's preview
+	// colour while its sheet loads.
+	void drawEditorIcon(GAGCore::GraphicContext &target, int x, int y, TerrainType type);
+	// Whether every material this map holds has its sheet (or failed to load
+	// one). Advances a bounded scan of the map's terrain, so a few frames
+	// pass before a new map answers true; until then composition draws flat
+	// preview colours for missing sheets. Retains those sheets.
+	bool materialsReady(const SceneMap &);
+	// Blocks until the map's (or these) material sheets are loaded: for
+	// complete draws (captures, exports, swatches), never interactive frames.
+	void finishMaterials(const SceneMap &);
+	void finishMaterials(std::span<const MaterialId>);
+	bool materialLoaded(MaterialId id) const { return sheet(id) != nullptr; }
+	// Counters for holders of composed pixels: sheets published, and
+	// preparations that drew a flat preview colour for a missing sheet.
+	std::uint64_t materialArrivals() const { return sheetArrivals; }
+	std::uint64_t materialFallbacks() const { return sheetFallbacks; }
 	void prepare(bool hd, int time);
     // Retain only requested variants; immutable CPU snapshots remain usable.
     void prepareForRecipes(bool hd, int time, std::span<const Recipe> recipes);
@@ -365,6 +424,29 @@ class Compositor
 	std::map<std::uint64_t, std::uint64_t> cleanSources;
 	std::array<MaterialId, TERRAIN_COUNT> terrainBindings{};
 	std::vector<GAGCore::Sprite *> sprites;
+	// On demand: which materials' sheets load through MaterialSheets, and
+	// those whose sheet failed validation.
+	std::vector<char> lazySheets, invalidSheets;
+	std::uint64_t sheetGeneration = 0, sheetArrivals = 0, sheetFallbacks = 0;
+	// The adopted sheet of a material, or null while it loads.
+	GAGCore::Sprite *sheet(unsigned id) const;
+	// Asks for a missing sheet and marks a present one used.
+	void wantSheet(unsigned id) const;
+	// Adopts newly published sheets and forgets released ones.
+	void refreshSheets();
+	// Validates a sheet and derives what composition needs from it.
+	void adoptSheet(unsigned id, GAGCore::Sprite *);
+	void fallbackTexture(unsigned id, Texture &) const;
+	// The materials each map holds, found a few rows a frame.
+	struct MapScan
+	{
+		std::uint64_t identity = 0, revision = 0;
+		int row = 0;
+		bool scanning = false, complete = false;
+		std::vector<char> present, seen;
+	} scan;
+	bool advanceScan(const SceneMap &, std::size_t vertexBudget);
+	std::vector<std::string> presentSheets() const;
 	std::vector<GAGCore::Sprite *> decorSprites;
     GAGCore::Sprite *sharedDecorSprite = nullptr;
     bool mixedDecorSprites = false;

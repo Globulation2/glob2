@@ -95,6 +95,26 @@ while the portable renderer draws sprites from HD layers (past two screen pixels
 a logical pixel); below that it draws decor from native frames and retires them.
 Captures keep their own density and HD artwork.
 
+The game's compositors load the native sheets of the installed terrain
+materials on demand (`TerrainVisual::MaterialSheets`): startup decodes none of
+them. A map's materials are found by a scan of its terrain a few rows a frame
+(again, keeping those found, after an edit), and their sheets load on the asset
+workers through `Toolkit::requestSprite` and publish within the frame's asset
+budget; composition, the editor's palette and phase pixels also ask for a sheet
+the moment they need one. Until a sheet arrives its material draws its flat
+preview colour, stamped so that the arrival recomposes the pages that used it.
+Direct terrain builds its tables only once the map's sheets are in (pages draw
+meanwhile) and builds them again if an edit baked a preview colour for a sheet
+that has since arrived. Complete draws wait explicitly, off the interactive
+frame: tiled captures, `MapRender` exports, editor swatches
+(`Compositor::prepareForRecipes`), the whole-catalogue `Compositor::prepare` and a
+complete direct terrain draw call `Compositor::finishMaterials`. Sheets no map
+retains go after the retired HD frames' lifetime, sooner when they and those
+frames exceed that shared byte budget. Map asset bundles' own sheets and
+compositors built outside the game (tools, tests) still load every sheet at
+construction; `GLOB2_TERRAIN_SHEETS=eager` restores that in the game. The shared
+decor and overlay sheets still load at startup.
+
 Terrain uses the shared CPU material compositor and bounded 16 by 16 cell pages
 on software and GPU backends; see [terrain materials](../assets/terrain-materials.md).
 [Direct terrain](../development/rendering-benchmarks.md#direct-terrain)

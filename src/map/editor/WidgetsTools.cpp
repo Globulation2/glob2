@@ -83,9 +83,9 @@ void TerrainSelector::draw()
     if (TerrainSelector::isBaseTerrain(terrainType))
     {
         const auto type = TerrainSelector::baseTerrain(terrainType);
-		const auto [sprite, frame] = globalContainer->terrainCompositor().editorIcon(
+		// The material's preview colour stands in while its sheet loads.
+		globalContainer->terrainCompositor().drawEditorIcon(*globalContainer->gfx, area.x, area.y,
 			me.view.scene->map.terrainRegistry().appearance(type));
-		globalContainer->gfx->drawSprite(area.x,area.y,sprite,frame);
     }
 	if(terrainType==Wheat)
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 19);
@@ -103,16 +103,7 @@ void TerrainSelector::draw()
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 59);
 	if(terrainType==PruneTree)
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 64);
-	if (TerrainSelector::isBaseTerrain(terrainType))
-		{
-        const auto type = TerrainSelector::baseTerrain(terrainType);
-		globalContainer->gfx->finishDrawingSprite(
-			globalContainer->terrainCompositor()
-				.editorIcon(me.view.scene->map.terrainRegistry().appearance(type))
-				.first,
-			255);
-	}
-	else
+	if (!TerrainSelector::isBaseTerrain(terrainType))
 		globalContainer->gfx->finishDrawingSprite(globalContainer->resources, 255);
 	// Legacy and registry selectors for one resource are the same brush.
 	if (me.canonicalSelector(me.terrainType) == me.canonicalSelector(terrainType))
@@ -140,10 +131,8 @@ void TerrainGroupSelector::draw()
 			active = true;
 		}
 	}
-	const auto [sprite, frame] = globalContainer->terrainCompositor().editorIcon(
+	globalContainer->terrainCompositor().drawEditorIcon(*globalContainer->gfx, area.x, area.y,
 		me.view.scene->map.terrainRegistry().appearance(shown));
-	globalContainer->gfx->drawSprite(area.x, area.y, sprite, frame);
-	globalContainer->gfx->finishDrawingSprite(sprite, 255);
 	if (active)
 	{
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 22);

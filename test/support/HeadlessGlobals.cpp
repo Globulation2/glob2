@@ -20,6 +20,7 @@ namespace glob2test
 		if (options.addSourceRoot)
 			globals.fileManager->addDir(sourceRoot().string());
 		globals.runNoX = !options.display;
+		globals.terrainSheetsEager = !options.terrainSheetsOnDemand;
 		globals.settings.rememberUnit = false;
 		globals.settings.mute = 1;
 		globals.settings.screenWidth = options.width;

@@ -294,6 +294,10 @@ struct DirectTerrain::State
     std::size_t bytes = 0, uploaded = 0;
     unsigned frames = 0;
     bool failed = false;
+    // Tables that baked a material's flat preview colour (its sheet was still
+    // loading) are built again once a sheet arrives after this count.
+    bool bakedFallback = false;
+    std::uint64_t sheetArrivals = 0, sheetFallbacks = 0;
     std::vector<Uint8> visibility;
     Uint32 discoveryTeams = 0;
     Uint64 discoveryRevision = 0;
@@ -837,15 +841,32 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
     const auto registry = map.frozenTerrainRegistry();
     const bool sameContext = state && state->context == (resources ? nullptr : context) &&
         state->resources == resources && state->generation == generation;
+    auto &sheets = globalContainer->terrainCompositor(assets);
+    const bool staleSheets = state && state->bakedFallback && state->sheetArrivals != sheets.materialArrivals();
 #ifdef DIRECT_TERRAIN_LEGACY_GL
     // Legacy GL edits its tables in place; anything else about the map, or
     // the context, starts again.
-    const bool edited = legacy && sameContext && state->tablesReady && state->sameMapSource(map) &&
+    const bool edited = !staleSheets && legacy && sameContext && state->tablesReady && state->sameMapSource(map) &&
         state->revision != map.terrainRevision();
 #else
     constexpr bool edited = false;
 #endif
-    if (!edited && (!sameContext || !state->matchesMap(map)))
+    // The map's material sheets load on demand: tables wait for them (pages
+    // draw meanwhile), or a complete draw waits here.
+    const auto sheetsReady = [&] {
+        if (sheets.materialsReady(map)) return true;
+        if (!complete) return false;
+        sheets.finishMaterials(map);
+        return true;
+    };
+    const auto beginBake = [&] {
+        state->sheetArrivals = sheets.materialArrivals();
+        state->sheetFallbacks = sheets.materialFallbacks();
+    };
+    const auto endBake = [&] {
+        state->bakedFallback |= sheets.materialFallbacks() != state->sheetFallbacks;
+    };
+    if (!edited && (!sameContext || !state->matchesMap(map) || staleSheets))
     {
         if (state && !sameContext)
             state->context = nullptr; // The retired context owns its old names.
@@ -868,7 +889,12 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
         try
         {
             if (!state->handles[State::Cells])
+            {
+                if (!sheetsReady()) return false;
+                beginBake();
                 state->initializeDevice(map, capabilities.maximumTextureSize);
+                endBake();
+            }
             if (!wholeMap)
                 state->updateDiscovery(map, visibleTeams);
         }
@@ -920,6 +946,8 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
         {
             if (!state->building)
             {
+                if (!sheetsReady()) return false;
+                beginBake();
                 GLint maxSize = 0;
                 glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxSize);
                 state->building.emplace(DirectTerrainData::begin(
@@ -933,11 +961,15 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
                 return false;
             auto data = state->building->take();
             state->building.reset();
+            endBake();
             state->initialize(map, data);
         }
         else if (edited)
         {
-            state->applyEdits(map, globalContainer->terrainCompositor(assets));
+            // An edit can paint a material whose sheet is still loading.
+            if (!state->bakedFallback) beginBake();
+            state->applyEdits(map, sheets);
+            endBake();
             state->revision = map.terrainRevision();
         }
         if (!wholeMap)

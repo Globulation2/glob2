@@ -19,6 +19,9 @@
 #include <cassert>
 #include <stdexcept>
 #include <cstring>
+#include <cstdio>
+#include <limits>
+#include <SDL3/SDL_timer.h>
 
 namespace TerrainVisual
 {
@@ -27,7 +30,184 @@ namespace
 // Numbers compositors for presentation caches that outlive one of them.
 std::atomic<std::uint64_t> compositorInstances{0};
 } // namespace
-Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> assets)
+namespace
+{
+// MaterialSheets state. Sheets are Toolkit sprites; these records only say
+// which were loaded on demand, when they were last used and their size.
+struct SheetRecord
+{
+	GAGCore::Sprite *sprite = nullptr; // Null while loading.
+	std::size_t bytes = 0;
+	std::int64_t used = 0;
+};
+std::map<std::string, SheetRecord> sheetRecords;
+std::map<const void *, std::vector<std::string>> sheetOwners;
+std::uint64_t sheetGenerationCounter = 1;
+std::int64_t sheetClock = 0, sheetCollected = 0;
+std::size_t sheetBytes(GAGCore::Sprite &sprite)
+{
+	std::size_t bytes = 0;
+	for (int i = 0; i < sprite.getFrameCount(); ++i)
+		if (auto *frame = sprite.nativeFrame(unsigned(i)); frame && frame->hasPixels())
+			bytes += std::size_t(frame->getW()) * frame->getH() * 4;
+	return bytes;
+}
+bool sheetRetained(const std::string &name)
+{
+	for (const auto &[owner, names] : sheetOwners)
+		if (std::binary_search(names.begin(), names.end(), name))
+			return true;
+	return false;
+}
+// The fallback texture's stamp: never a surface's identity (those count up from 1).
+constexpr std::uint64_t FallbackIdentity = std::uint64_t(1) << 63;
+} // namespace
+
+GAGCore::Sprite *MaterialSheets::loaded(const std::string &name)
+{
+	const auto found = sheetRecords.find(name);
+	if (found == sheetRecords.end() || !found->second.sprite)
+		return nullptr;
+	// Toolkit::close deletes every sprite; a record never outlives its sprite.
+	if (GAGCore::Toolkit::findSprite(name) != found->second.sprite)
+	{
+		sheetRecords.erase(found);
+		++sheetGenerationCounter;
+		return nullptr;
+	}
+	return found->second.sprite;
+}
+GAGCore::Sprite *MaterialSheets::find(const std::string &name)
+{
+	if (auto *sprite = loaded(name))
+		return sprite;
+	if (GAGCore::Toolkit::spriteFailed(name))
+		return nullptr;
+	auto &record = sheetRecords[name];
+	record.used = GAGCore::steadyClockNanoseconds();
+	if (auto *sprite = GAGCore::Toolkit::findSprite(name))
+	{
+		// Already loaded (by an earlier request or a tool): adopt it.
+		record.sprite = sprite;
+		record.bytes = sheetBytes(*sprite);
+		++sheetGenerationCounter;
+		return sprite;
+	}
+	GAGCore::Toolkit::requestSprite(name);
+	return nullptr;
+}
+bool MaterialSheets::failed(const std::string &name)
+{
+	return !loaded(name) && GAGCore::Toolkit::spriteFailed(name);
+}
+void MaterialSheets::finish(std::span<const std::string> names)
+{
+	for (const auto &name : names)
+		find(name);
+	for (const auto &name : names)
+		while (!loaded(name) && !GAGCore::Toolkit::spriteFailed(name))
+		{
+			if (!GAGCore::Toolkit::spriteLoading(name) && !GAGCore::Toolkit::findSprite(name))
+				find(name);
+			GAGCore::Toolkit::pollAssets(4);
+			poll();
+#ifndef __EMSCRIPTEN__
+			if (!loaded(name)) SDL_Delay(1);
+#endif
+		}
+}
+std::uint64_t MaterialSheets::generation() { return sheetGenerationCounter; }
+void MaterialSheets::touch(const std::string &name)
+{
+	if (const auto found = sheetRecords.find(name); found != sheetRecords.end())
+		found->second.used = GAGCore::steadyClockNanoseconds();
+}
+void MaterialSheets::poll()
+{
+	sheetClock = GAGCore::steadyClockNanoseconds();
+	for (auto it = sheetRecords.begin(); it != sheetRecords.end();)
+	{
+		auto &record = it->second;
+		if (record.sprite)
+		{
+			if (GAGCore::Toolkit::findSprite(it->first) != record.sprite)
+			{
+				it = sheetRecords.erase(it);
+				++sheetGenerationCounter;
+				continue;
+			}
+		}
+		else if (auto *sprite = GAGCore::Toolkit::findSprite(it->first))
+		{
+			record.sprite = sprite;
+			record.bytes = sheetBytes(*sprite);
+			record.used = sheetClock;
+			++sheetGenerationCounter;
+		}
+		else if (!GAGCore::Toolkit::spriteLoading(it->first))
+		{
+			// Failed (Toolkit remembers it) or forgotten by a Toolkit restart.
+			it = sheetRecords.erase(it);
+			continue;
+		}
+		++it;
+	}
+	// Releasing is not urgent: look a few times a second.
+	if (sheetClock - sheetCollected < 250'000'000)
+		return;
+	sheetCollected = sheetClock;
+	const auto budget = GAGCore::Sprite::retiredHighResolutionBudget();
+	const std::size_t retiredFrames = GAGCore::Sprite::retiredHighResolutionBytes();
+	std::vector<std::map<std::string, SheetRecord>::iterator> unretained;
+	std::size_t bytes = 0;
+	for (auto it = sheetRecords.begin(); it != sheetRecords.end(); ++it)
+		if (it->second.sprite && !sheetRetained(it->first))
+		{
+			unretained.push_back(it);
+			bytes += it->second.bytes;
+		}
+	// Oldest first. A sheet used within the last second may still be in a
+	// pending draw, so only age releases sheets that recently used.
+	std::sort(unretained.begin(), unretained.end(),
+			  [](auto a, auto b) { return a->second.used < b->second.used; });
+	for (auto it : unretained)
+	{
+		const auto age = sheetClock - it->second.used;
+		const bool expired = age >= budget.lifetimeNanoseconds;
+		const bool overBudget = retiredFrames + bytes > budget.bytes && age >= 1'000'000'000;
+		if (!expired && !overBudget)
+			continue;
+		bytes -= it->second.bytes;
+		const auto name = it->first;
+		sheetRecords.erase(it);
+		GAGCore::Toolkit::releaseSprite(name);
+		++sheetGenerationCounter;
+	}
+}
+void MaterialSheets::retain(const void *owner, std::vector<std::string> names)
+{
+	std::sort(names.begin(), names.end());
+	sheetOwners[owner] = std::move(names);
+}
+void MaterialSheets::forget(const void *owner) { sheetOwners.erase(owner); }
+std::size_t MaterialSheets::residentBytes()
+{
+	std::size_t bytes = 0;
+	for (const auto &[name, record] : sheetRecords)
+		bytes += record.sprite ? record.bytes : 0;
+	return bytes;
+}
+std::size_t MaterialSheets::unretainedBytes()
+{
+	std::size_t bytes = 0;
+	for (const auto &[name, record] : sheetRecords)
+		if (record.sprite && !sheetRetained(name))
+			bytes += record.bytes;
+	return bytes;
+}
+
+Compositor::~Compositor() { MaterialSheets::forget(this); }
+Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> assets, bool onDemand)
     : definitions(std::move(catalog)), customSprites(std::move(assets))
 {
 	hasNeighborhoodProfiles = std::any_of(definitions.profiles.begin(), definitions.profiles.end(),
@@ -47,20 +227,20 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 	{
 		if (m.variantBlocks > 1) GAGCore::Sprite::deferHighResolution(m.sprite);
 		GAGCore::Sprite::keepHighResolutionPixels(m.sprite); // prepareMaterial reads them.
-        auto *sprite = customSprites.resolve(m.sprite);
-		if (!sprite)
-			throw std::runtime_error("Missing terrain material sprite: " + m.sprite);
-		for (const auto &v : m.variants)
-			for (int p = 0; p < m.animationFrames; ++p)
-			{
-				const int frame = v.frame + p * m.animationStride;
-				if (frame >= sprite->getFrameCount() || sprite->getW(frame) != 32 ||
-					sprite->getH(frame) != 32)
-					throw std::runtime_error("Terrain material requires a 32x32 logical frame: " +
-											 m.key);
-				auto *native = sprite->nativeFrame(frame);
-				cleanSources[native->lifetimeIdentity()] = native->contentRevision();
-			}
+		// Map asset bundles carry their own sheets, already in memory.
+		const bool lazy = onDemand && !m.sprite.starts_with("data/sets/");
+		// A sheet loaded mid-game decodes HD frames only once a page asks.
+		if (lazy) GAGCore::Sprite::loadHighResolutionOnDemand(m.sprite);
+		lazySheets.push_back(lazy);
+		invalidSheets.push_back(0);
+		GAGCore::Sprite *sprite = nullptr;
+		if (!lazy)
+		{
+			sprite = customSprites.resolve(m.sprite);
+			if (!sprite)
+				throw std::runtime_error("Missing terrain material sprite: " + m.sprite);
+		}
+		sprites.push_back(sprite);
 		if (!m.decor.sprite.empty())
 		{
 			GAGCore::Sprite::deferHighResolution(m.decor.sprite);
@@ -101,7 +281,6 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 			sharedOverlaySprite = overlay;
 		}
 		overlaySprites.push_back(m.overlay.sprite.empty() ? nullptr : customSprites.resolve(m.overlay.sprite));
-        sprites.push_back(sprite);
 		textures.emplace_back(m.variants.size());
 		animationTextures.emplace_back();
 		if (m.animationFrames > 1 && m.animationTicks > 1)
@@ -114,27 +293,210 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 	}
     if (mixedDecorSprites) sharedDecorSprite = nullptr;
 	if (mixedOverlaySprites) sharedOverlaySprite = nullptr;
-	// Shore calm pulls waves toward one colour per material, so the fade
-	// stays continuous across variants and does not shift the shore's tone.
 	for (unsigned id = 0; id < definitions.materials.size(); ++id)
 	{
 		auto &m = definitions.materials[id];
 		m.shoreCalm = m.surf.period > 0 && m.animationFrames > 1;
-		if (!m.shoreCalm)
-			continue;
-		std::uint64_t sum[3] = {}, count = 0;
-		for (const auto &v : m.variants)
-		{
-			Texture t;
-			readTexture(t, sprites[id]->nativeFrame(v.frame));
-			for (const auto &p : t.pixels)
-				for (int k = 0; k < 3; ++k)
-					sum[k] += p[k];
-			count += t.pixels.size();
-		}
-		for (int k = 0; k < 3; ++k)
-			m.calmMean[k] = static_cast<unsigned char>((sum[k] + count / 2) / count);
+		// Until its sheet arrives, a material's waves calm toward its preview.
+		m.calmMean = m.preview;
+		if (sprites[id])
+			adoptSheet(id, sprites[id]); // Eager: a bad sheet throws here.
 	}
+	sheetGeneration = MaterialSheets::generation();
+}
+void Compositor::adoptSheet(unsigned id, GAGCore::Sprite *sprite)
+{
+	auto &m = definitions.materials[id];
+	for (const auto &v : m.variants)
+		for (int p = 0; p < m.animationFrames; ++p)
+		{
+			const int frame = v.frame + p * m.animationStride;
+			if (frame >= sprite->getFrameCount() || sprite->getW(frame) != 32 ||
+				sprite->getH(frame) != 32 || !sprite->nativeFrame(frame))
+				throw std::runtime_error("Terrain material requires a 32x32 logical frame: " +
+										 m.key);
+		}
+	for (const auto &v : m.variants)
+		for (int p = 0; p < m.animationFrames; ++p)
+		{
+			auto *native = sprite->nativeFrame(v.frame + p * m.animationStride);
+			cleanSources[native->lifetimeIdentity()] = native->contentRevision();
+		}
+	// Shore calm pulls waves toward one colour per material, so the fade
+	// stays continuous across variants and does not shift the shore's tone.
+	if (!m.shoreCalm)
+		return;
+	std::uint64_t sum[3] = {}, count = 0;
+	for (const auto &v : m.variants)
+	{
+		Texture t;
+		readTexture(t, sprite->nativeFrame(v.frame));
+		for (const auto &p : t.pixels)
+			for (int k = 0; k < 3; ++k)
+				sum[k] += p[k];
+		count += t.pixels.size();
+	}
+	for (int k = 0; k < 3; ++k)
+		m.calmMean[k] = static_cast<unsigned char>((sum[k] + count / 2) / count);
+}
+GAGCore::Sprite *Compositor::sheet(unsigned id) const
+{
+	auto *sprite = sprites[id];
+	// A released sheet's pointer is stale until refreshSheets runs.
+	if (lazySheets[id] && sprite && sheetGeneration != MaterialSheets::generation() &&
+		MaterialSheets::loaded(definitions.materials[id].sprite) != sprite)
+		return nullptr;
+	return sprite;
+}
+void Compositor::wantSheet(unsigned id) const
+{
+	if (!lazySheets[id] || invalidSheets[id])
+		return;
+	if (sprites[id])
+		MaterialSheets::touch(definitions.materials[id].sprite);
+	else
+		MaterialSheets::find(definitions.materials[id].sprite);
+}
+void Compositor::refreshSheets()
+{
+	if (std::none_of(lazySheets.begin(), lazySheets.end(), [](char lazy) { return lazy; }))
+		return;
+	MaterialSheets::poll();
+	const auto generation = MaterialSheets::generation();
+	if (generation == sheetGeneration)
+		return;
+	sheetGeneration = generation;
+	bool changed = false;
+	for (unsigned id = 0; id < sprites.size(); ++id)
+	{
+		if (!lazySheets[id] || invalidSheets[id])
+			continue;
+		auto *sprite = MaterialSheets::loaded(definitions.materials[id].sprite);
+		if (sprite == sprites[id])
+			continue;
+		sprites[id] = nullptr;
+		if (sprite)
+		{
+			try
+			{
+				adoptSheet(id, sprite);
+				sprites[id] = sprite;
+				++sheetArrivals;
+			}
+			catch (const std::exception &error)
+			{
+				std::fprintf(stderr, "TERRAIN_SHEET_INVALID %s\n", error.what());
+				invalidSheets[id] = 1;
+			}
+		}
+		// Textures prepared from the old sheet (or the fallback) are refreshed
+		// by prepareMaterial, which compares their source stamps.
+		++textureRevisions[id];
+		changed = true;
+	}
+	if (changed)
+	{
+		// The published catalog carries calmMean.
+		publishedCpu.reset();
+		publishedCatalog.reset();
+	}
+}
+void Compositor::fallbackTexture(unsigned id, Texture &t) const
+{
+	const auto &preview = definitions.materials[id].preview;
+	t.pixels = MaterialPixels(32 * 32, {preview[0], preview[1], preview[2], 255});
+	t.size = 32;
+	t.source = nullptr;
+	t.identity = FallbackIdentity | id;
+	t.revision = 0;
+	t.opaque = true;
+}
+std::vector<std::string> Compositor::presentSheets() const
+{
+	std::vector<std::string> names;
+	for (unsigned id = 0; id < scan.present.size(); ++id)
+		if (scan.present[id] && lazySheets[id])
+			names.push_back(definitions.materials[id].sprite);
+	std::sort(names.begin(), names.end());
+	names.erase(std::unique(names.begin(), names.end()), names.end());
+	return names;
+}
+bool Compositor::advanceScan(const SceneMap &map, std::size_t vertexBudget)
+{
+	if (scan.identity != map.identity() || scan.present.size() != definitions.materials.size())
+	{
+		scan = {};
+		scan.identity = map.identity();
+		scan.present.assign(definitions.materials.size(), 0);
+		scan.scanning = true;
+	}
+	else if (scan.revision != map.terrainRevision() && !scan.scanning)
+	{
+		// An edit can add materials: scan again, keeping those found.
+		scan.scanning = true;
+		scan.row = 0;
+	}
+	scan.revision = map.terrainRevision();
+	if (!scan.scanning)
+		return scan.complete;
+	if (scan.seen.empty())
+		scan.seen.assign(std::size_t(1) << 16, 0);
+	const int width = map.getW(), height = map.getH();
+	std::size_t visited = 0;
+	while (scan.row < height && visited < vertexBudget)
+	{
+		for (int x = 0; x < width; ++x)
+		{
+			const auto type = map.vertexTerrainAt(x, scan.row);
+			if (scan.seen[type])
+				continue;
+			scan.seen[type] = 1;
+			scan.present[materialFor(map, type)] = 1;
+		}
+		visited += std::size_t(width);
+		++scan.row;
+	}
+	if (scan.row < height)
+		return scan.complete;
+	scan.scanning = false;
+	scan.complete = true;
+	std::vector<char>().swap(scan.seen);
+	auto names = presentSheets();
+	for (const auto &name : names)
+		MaterialSheets::find(name);
+	MaterialSheets::retain(this, std::move(names));
+	return true;
+}
+bool Compositor::materialsReady(const SceneMap &map)
+{
+	refreshSheets();
+	if (!advanceScan(map, 65536))
+		return false;
+	for (unsigned id = 0; id < scan.present.size(); ++id)
+		if (scan.present[id] && lazySheets[id] && !invalidSheets[id] && !sprites[id] &&
+			!MaterialSheets::failed(definitions.materials[id].sprite))
+			return false;
+	return true;
+}
+void Compositor::finishMaterials(const SceneMap &map)
+{
+	if (std::none_of(lazySheets.begin(), lazySheets.end(), [](char lazy) { return lazy; }))
+		return;
+	advanceScan(map, std::numeric_limits<std::size_t>::max());
+	const auto names = presentSheets();
+	MaterialSheets::finish(names);
+	refreshSheets();
+}
+void Compositor::finishMaterials(std::span<const MaterialId> ids)
+{
+	std::vector<std::string> names;
+	for (const auto id : ids)
+		if (lazySheets.at(id) && !invalidSheets[id])
+			names.push_back(definitions.materials[id].sprite);
+	if (names.empty())
+		return;
+	MaterialSheets::finish(names);
+	refreshSheets();
 }
 void Compositor::readTexture(Texture &t, GAGCore::DrawableSurface *source)
 {
@@ -161,13 +523,28 @@ void Compositor::markOpaque(Texture &t)
 {
 	t.opaque = std::all_of(t.pixels.begin(), t.pixels.end(), [](const auto &p) { return p[3] == 255; });
 }
-std::pair<GAGCore::Sprite *, unsigned> Compositor::editorIcon(TerrainType type) const
+std::pair<GAGCore::Sprite *, unsigned> Compositor::editorIcon(TerrainType type)
 {
+	refreshSheets();
 	const auto id = terrainBindings[unsigned(type)];
-	return {sprites[id], unsigned(definitions.materials[id].variants.front().frame)};
+	wantSheet(id);
+	return {sheet(id), unsigned(definitions.materials[id].variants.front().frame)};
+}
+void Compositor::drawEditorIcon(GAGCore::GraphicContext &target, int x, int y, TerrainType type)
+{
+	const auto [sprite, frame] = editorIcon(type);
+	if (sprite)
+	{
+		target.drawSprite(x, y, sprite, frame);
+		target.finishDrawingSprite(sprite, 255);
+		return;
+	}
+	const auto &preview = definitions.materials[terrainBindings[unsigned(type)]].preview;
+	target.drawFilledRect(x, y, 32, 32, GAGCore::Color(preview[0], preview[1], preview[2]));
 }
 Compositor::MaterialPixels Compositor::nativeMaterialPixels(MaterialId id, unsigned variant, unsigned phase)
 {
+    refreshSheets();
     const auto count = definitions.materials.at(id).variants.size();
     std::vector<Texture> prepared(count);
     std::vector<unsigned char> wanted(count);
@@ -180,7 +557,11 @@ Compositor::PhaseSource Compositor::phaseSource(MaterialId id, unsigned variant,
 {
     const auto &material = definitions.materials.at(id);
     const auto frame = material.variants.at(variant).frame + phase * material.animationStride;
-    auto *sprite = sprites.at(id);
+    auto *sprite = sheet(id);
+    // A sheet still loading answers with the flat fallback's stamp, which
+    // its arrival replaces.
+    wantSheet(id);
+    if (!sprite) return {FallbackIdentity | id, 0, 32, 0, 0};
     const auto frameOf = [&](unsigned index) { return native ? sprite->nativeFrame(index) : sprite->baseFrame(index); };
     auto *source = frameOf(frame);
     if (!source) throw std::runtime_error("Missing animated terrain source");
@@ -191,6 +572,7 @@ Compositor::PhaseSource Compositor::phaseSource(MaterialId id, unsigned variant,
 }
 Compositor::MaterialPixels Compositor::phasePixels(MaterialId id, unsigned variant, unsigned phase, bool native)
 {
+    refreshSheets();
     const auto count = definitions.materials.at(id).variants.size();
     std::vector<Texture> prepared(count);
     std::vector<unsigned char> wanted(count);
@@ -205,7 +587,9 @@ const SDL_Surface *Compositor::phaseSurface(MaterialId id, unsigned variant, uns
     // Other art takes its border from variant zero, which prepareMaterial blends in.
     if (!material.periodicEdges) return nullptr;
     const auto frame = material.variants.at(variant).frame + phase * material.animationStride;
-    auto *source = native ? sprites.at(id)->nativeFrame(frame) : sprites.at(id)->baseFrame(frame);
+    auto *sprite = sheet(id);
+    if (!sprite) return nullptr;
+    auto *source = native ? sprite->nativeFrame(frame) : sprite->baseFrame(frame);
     const auto *pixels = source ? source->getSDLSurface() : nullptr;
     if (!pixels || pixels->format != SDL_PIXELFORMAT_ARGB8888 || pixels->w != pixels->h ||
         pixels->w < 32 || pixels->w > 512 || pixels->pitch != pixels->w * 4)
@@ -245,11 +629,33 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
 {
 	const auto &m = definitions.materials[id];
     bool refresh = false, changed = false;
+    auto *sprite = sheet(id);
+    wantSheet(id);
+    if (!sprite)
+    {
+        // The sheet is loading (or failed): its preview colour stands in,
+        // stamped so that the sheet's arrival counts as a change.
+        for (unsigned i = 0; i < m.variants.size(); ++i)
+        {
+            if (wanted && !(*wanted)[i]) continue;
+            auto &t = target[i];
+            if (t.identity == (FallbackIdentity | id) && !t.pixels.empty()) continue;
+            changed |= t.identity != 0 && t.identity != (FallbackIdentity | id);
+            fallbackTexture(id, t);
+            refresh = true;
+        }
+        if (refresh)
+        {
+            publishedCpu.reset();
+            ++sheetFallbacks;
+        }
+        return changed;
+    }
 	for (unsigned i = 0; i < m.variants.size(); ++i)
 	{
 		if (wanted && !(*wanted)[i]) continue;
 		const int frame = m.variants[i].frame + phase * m.animationStride;
-		auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
+		auto *source = hd ? sprite->baseFrame(frame) : sprite->nativeFrame(frame);
 		if (!source)
 			throw std::runtime_error("Missing terrain texture: " + m.key);
 		auto &t = target[i];
@@ -270,9 +676,9 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
             if (wanted && !(*wanted)[i]) continue;
             const auto &variant = m.variants[i];
 			const int frame = variant.frame + phase * m.animationStride;
-			auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
+			auto *source = hd ? sprite->baseFrame(frame) : sprite->nativeFrame(frame);
 			const auto clean = cleanSources.find(source->lifetimeIdentity());
-			packaged &= source == sprites[id]->nativeFrame(frame) &&
+			packaged &= source == sprite->nativeFrame(frame) &&
 						clean != cleanSources.end() &&
 						clean->second == source->contentRevision() &&
 						pack->matches(m.sprite + std::to_string(frame) + ".png",
@@ -282,7 +688,7 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
 	{
 		if (wanted && !(*wanted)[i]) continue;
 		const int frame = m.variants[i].frame + phase * m.animationStride;
-		auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
+		auto *source = hd ? sprite->baseFrame(frame) : sprite->nativeFrame(frame);
 		auto &t = target[i];
 		if (packaged)
 		{
@@ -332,6 +738,10 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
 }
 void Compositor::prepare(bool hd, int time)
 {
+    // One-shot callers draw the whole catalogue: every sheet first.
+    std::vector<MaterialId> all(definitions.materials.size());
+    for (unsigned id = 0; id < all.size(); ++id) all[id] = MaterialId(id);
+    finishMaterials(all);
     // The complete catalogue is for one-shot callers: wait for deferred HD
     // windows, then read the published frames.
     prepareSelected(hd, time, nullptr);
@@ -349,6 +759,12 @@ void Compositor::prepareForRecipes(bool hd, int time, std::span<const Recipe> re
         for (unsigned i = 0, n = r.palette(palette); i < n; ++i)
             usage[palette[i]][definitions.variantIndex(palette[i], r.x, r.y, r.seed)] = 1;
     }
+    // Recipe callers (editor swatches) keep what they compose: wait for its sheets.
+    std::vector<MaterialId> needed;
+    for (unsigned id = 0; id < usage.size(); ++id)
+        if (std::any_of(usage[id].begin(), usage[id].end(), [](auto v) { return v != 0; }))
+            needed.push_back(MaterialId(id));
+    finishMaterials(needed);
     prepareSelected(hd, time, &usage);
 }
 #ifdef __EMSCRIPTEN__
@@ -387,6 +803,8 @@ void Compositor::prepareVisible(bool hd, int time, const SceneMap &map,
 #ifdef __EMSCRIPTEN__
     if (hd && GAGCore::Sprite::highResolutionRequested()) requestMapTerrain(map);
 #endif
+    refreshSheets();
+    advanceScan(map, 65536);
     const auto usage = visibleUsage(map, left, top, right, bottom);
     prepareSelected(hd, time, &usage, nativeComposition, decor);
 }
@@ -397,13 +815,19 @@ bool Compositor::highResolutionPages(double density)
         pageDetail.level())
         // Deferred banks retire their frames when the next window declares
         // none; whole sheets that a baseFrame demanded drop theirs here.
-        for (auto *sprite : std::set<GAGCore::Sprite *>(sprites.begin(), sprites.end()))
-            if (sprite) sprite->releaseHighResolutionDemand();
+    {
+        std::set<GAGCore::Sprite *> unique;
+        for (unsigned id = 0; id < sprites.size(); ++id)
+            if (auto *sprite = sheet(id)) unique.insert(sprite);
+        for (auto *sprite : unique) sprite->releaseHighResolutionDemand();
+    }
     return pageDetail.level() == 0;
 }
 void Compositor::declareVisible(int time, const SceneMap &map, int left, int top, int right, int bottom,
                                 bool frames)
 {
+    refreshSheets();
+    advanceScan(map, 65536);
     auto usage = visibleUsage(map, left, top, right, bottom);
     includeBoundarySources(usage);
     declareWindows(frames, frames, time, &usage);
@@ -516,10 +940,16 @@ void Compositor::declareWindows(bool materials, bool decor, int time, const Usag
     // so advancing reuses decoded frames instead of dropping the old phase and
     // decoding the next one again. Endpoints are listed first and decode first.
     std::size_t lookaheadBytes = AnimationLookaheadBytes;
+    refreshSheets();
+    std::vector<unsigned> loading; // The window of a sheet still loading goes nowhere.
     for (unsigned id = 0; id < definitions.materials.size(); ++id)
     {
         const auto &m = definitions.materials[id];
-        auto &window = windows[sprites[id]];
+        // Every loaded sheet gets a window, empty ones included: an empty
+        // window retires the frames a previous view streamed.
+        auto *materialSheet = sheet(id);
+        loading.clear();
+        auto &window = materialSheet ? windows[materialSheet] : loading;
         if (!materials && !decor) continue;
 #ifdef __EMSCRIPTEN__
         if (materials && requested && GAGCore::Sprite::highResolutionRequested() && m.sprite.starts_with("data/gfx/terrain-") &&
@@ -624,7 +1054,8 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool
 			// Reuse the previous next phase as the current endpoint on ordinary advances.
 			const unsigned first = wanted ? std::find(wanted->begin(), wanted->end(), 1) - wanted->begin() : 0;
             const int frame = m.variants[first].frame + phase * m.animationStride;
-			auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
+            auto *sprite = sheet(id);
+			auto *source = !sprite ? nullptr : hd ? sprite->baseFrame(frame) : sprite->nativeFrame(frame);
 			const bool advanced = animation.next[first].source == source;
 			if (advanced) animation.current.swap(animation.next);
 			const bool currentChanged = prepareMaterial(id, hd, phase, animation.current, wanted);

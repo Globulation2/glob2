@@ -22,6 +22,9 @@ namespace glob2test
 		Uint32 seed = 0;             // nonzero: setSyncRandSeed(seed); zero leaves the default state
 		std::string profileName = "glob2-tests";
 		bool addSourceRoot = true;   // data/ and maps/ resolve from any working directory
+		// Load terrain material sheets as maps need them, as the game does,
+		// instead of every sheet up front (TerrainVisual::MaterialSheets).
+		bool terrainSheetsOnDemand = false;
 		// Runs after the settings above are applied and before load(): language,
 		// extra data directories, anything the old harness set before loading.
 		std::function<void(GlobalContainer&)> beforeLoad;

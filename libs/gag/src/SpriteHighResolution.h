@@ -8,6 +8,9 @@
 
 namespace GAGCore {
 bool highResolutionNeedsAsyncLoad(const std::string& name, size_t frames);
+// Whether a sprite loading now should decode its HD layers with its native
+// frames: not one named by Sprite::loadHighResolutionOnDemand.
+bool highResolutionWantedAtLoad(const std::string& name);
 HighResolutionInputs prefetchHighResolutionIncremental(
     const std::string& name, size_t frames);
 // Adopt ready HD frames into a private sprite while other frames decode.
