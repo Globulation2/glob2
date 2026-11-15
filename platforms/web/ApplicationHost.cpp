@@ -42,7 +42,7 @@ void initializeOpenGLContext()
 namespace
 {
 struct Diagnostics {
-    std::string screen, screenClass, import;
+    std::string screen, screenClass, import, hudPanel, hudSelection;
     std::uint32_t tick = 0;
     unsigned frames = 0;
     int paused = -1, torus = -1, torusSettled = -1, room = -1, custom = -1;
@@ -97,6 +97,12 @@ void publishDiagnostics(bool hostTurn = false, bool sampleGraphics = false) {
        d.paused, d.torus, d.room, d.custom, d.screenClass.c_str(), hostTurn,
        dimensions[0], dimensions[1], dimensions[2], d.torusSettled,
        Toolkit::pollAssets(0));
+    // A separate call: two more arguments on the publication above failed the
+    // proxied call's argument-count assertion.
+    if (!d.hudPanel.empty())
+        MAIN_THREAD_EM_ASM({
+            Module.glob2Hud = Object.freeze({panel:UTF8ToString($0), selection:UTF8ToString($1)});
+        }, d.hudPanel.c_str(), d.hudSelection.c_str());
     for (const auto &[owner, json] : d.controls) {
         MAIN_THREAD_EM_ASM({
             Module.glob2Controls ||= new Map();
@@ -633,6 +639,10 @@ void matchFrame(bool paused) { ++diagnostics.frames; diagnostics.paused = paused
 void overviewDrawn(bool drawn, bool settled) {
     diagnostics.torus = drawn;
     diagnostics.torusSettled = settled;
+}
+void hudDrawn(const char *panel, const char *selection) {
+    diagnostics.hudPanel = panel;
+    diagnostics.hudSelection = selection;
 }
 
 }
