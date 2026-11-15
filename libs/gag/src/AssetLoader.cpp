@@ -101,19 +101,24 @@ std::vector<unsigned char> AssetImage::compressBlocks(const unsigned char *pixel
     // etcpak reads 32-bit pixels: its BC encoders with red in the low byte,
     // its ETC encoders with blue there. Swap the channels where ours differ.
     const bool wantsBgra = format == BlockCompression::ETC2;
+    const bool premultiply = format == BlockCompression::PremultipliedBC3;
     std::vector<std::uint32_t> source(size_t(width) * height);
     std::memcpy(source.data(), pixels, source.size() * 4);
-    if (bgra != wantsBgra)
+    if (bgra != wantsBgra || premultiply)
         for (auto &pixel : source) {
             unsigned char bytes[4];
             std::memcpy(bytes, &pixel, 4);
-            std::swap(bytes[0], bytes[2]);
+            if (bgra != wantsBgra) std::swap(bytes[0], bytes[2]);
+            // The rounding SDL GPU applies when it premultiplies RGBA uploads.
+            if (premultiply)
+                for (int channel = 0; channel < 3; ++channel)
+                    bytes[channel] = static_cast<unsigned char>((unsigned(bytes[channel]) * bytes[3] + 127) / 255);
             std::memcpy(&pixel, bytes, 4);
         }
     std::vector<std::uint64_t> encoded(count * 2);
     // The SSE4.1 build where the CPU runs it: the same blocks about three times faster.
     static const auto simd = EtcpakSse41::available();
-    if (format == BlockCompression::BC3) {
+    if (format == BlockCompression::BC3 || format == BlockCompression::PremultipliedBC3) {
         if (simd.bc3) simd.bc3(source.data(), encoded.data(), std::uint32_t(count), size_t(width));
         else CompressBc3(source.data(), encoded.data(), std::uint32_t(count), size_t(width));
     } else {
@@ -166,6 +171,11 @@ void AssetImage::prepareUpload(bool highResolution) {
     const bool bgra = uploadPixels.empty();
     for (auto &mip : mips)
         mip.compressed = compressBlocks(mip.pixels.data(), mip.width, mip.height, compression, bgra);
+    // A render device samples premultiplied blocks directly and restores from
+    // them; their RGBA levels would only be prepared again by another renderer.
+    if (compression == BlockCompression::PremultipliedBC3)
+        for (auto &mip : mips)
+            if (!mip.compressed.empty()) std::vector<unsigned char>().swap(mip.pixels);
 }
 void downsampleMip(const unsigned char *source, int width, int height,
                                unsigned char *destination) {

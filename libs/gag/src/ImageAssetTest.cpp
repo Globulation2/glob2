@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include <array>
 #include "LossyAlphaFixture.h"
 #include "MipReduction.h"
 #include <FileManager.h>
@@ -105,6 +106,34 @@ TEST_CASE("block compression follows the requested format and skips what it cann
     CHECK(bc3 != etc2);
     // A flat opaque block: BC3 stores its alpha endpoints first.
     CHECK(bc3[0] == 200);
+    // Premultiplied blocks scale colour by alpha before encoding, as SDL GPU
+    // premultiplies RGBA uploads; alpha is unchanged.
+    std::vector<unsigned char> translucent(8 * 4 * 4);
+    for (size_t i = 0; i < translucent.size(); i += 4) { translucent[i] = 40; translucent[i + 1] = 120; translucent[i + 2] = 240; translucent[i + 3] = 128; }
+    const auto straight = GAGCore::AssetImage::compressBlocks(translucent.data(), 8, 4, Compression::BC3, true);
+    const auto premultiplied = GAGCore::AssetImage::compressBlocks(translucent.data(), 8, 4, Compression::PremultipliedBC3, true);
+    REQUIRE(premultiplied.size() == 32);
+    CHECK(premultiplied[0] == 128);
+    // The first texel's decoded colour (BC1 palette after the alpha half).
+    const auto texel = [](const std::vector<unsigned char> &block) {
+        const unsigned c0 = block[8] | block[9] << 8, c1 = block[10] | block[11] << 8;
+        int palette[4][3];
+        for (int k = 0; k < 2; ++k) {
+            const unsigned c = k ? c1 : c0;
+            palette[k][0] = int(c >> 11) * 255 / 31; palette[k][1] = int((c >> 5) & 63) * 255 / 63; palette[k][2] = int(c & 31) * 255 / 31;
+        }
+        for (int c = 0; c < 3; ++c) {
+            palette[2][c] = c0 > c1 ? (2 * palette[0][c] + palette[1][c]) / 3 : (palette[0][c] + palette[1][c]) / 2;
+            palette[3][c] = c0 > c1 ? (palette[0][c] + 2 * palette[1][c]) / 3 : 0;
+        }
+        const auto *q = palette[block[12] & 3];
+        return std::array<int, 3>{q[0], q[1], q[2]};
+    };
+    // BGRA bytes: red is 240 straight and (240 * 128 + 127) / 255 = 120 premultiplied.
+    CHECK(std::abs(texel(straight)[0] - 240) <= 8);
+    CHECK(std::abs(texel(premultiplied)[0] - 120) <= 8);
+    CHECK(std::abs(texel(premultiplied)[1] - 60) <= 8);
+    CHECK(std::abs(texel(premultiplied)[2] - 20) <= 8);
     // The prepared image records the format its levels hold.
     const auto previous = GAGCore::AssetImage::highResolutionCompression.exchange(Compression::ETC2);
     struct Restore { Compression value; ~Restore() { GAGCore::AssetImage::highResolutionCompression = value; } } restore{previous};
