@@ -323,7 +323,10 @@ namespace GAGCore
 			sprite->releaseDrawnHighResolution(index);
 		}
 		if (auto *surface = sprite->prepareDrawSurface(index, true, true))
+		{
 			drawSurface(x, y, w, h, surface, alpha);
+			sprite->releaseDrawnTeamColor(index);
+		}
 		return true;
 	}
 

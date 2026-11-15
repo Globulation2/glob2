@@ -262,6 +262,9 @@ namespace GAGCore
 		bool releasePortablePixels();
 		//! Pixels released by releasePortablePixels, drawn from the texture.
 		bool portableReleased() const { return releasedOnPortable; }
+		//! Released, and the portable renderer no longer holds its texture (a
+		//! reset or a backend change took it): nothing can draw it any more.
+		bool portableTextureLost() const;
         std::uint64_t lifetimeIdentity() const { return surfaceIdentity; }
         std::uint64_t contentRevision() const { return pixelRevision; }
         virtual void prepareDraw() {}
@@ -1025,6 +1028,10 @@ namespace GAGCore
         //! After a portable draw: frees frame `index`'s HD base pixels, which
         //! only its texture then holds, unless the CPU may sample them.
         void releaseDrawnHighResolution(unsigned index);
+        //! After a portable draw of frame `index`'s recoloured HD team layer
+        //! (in the current colour): frees the cached copy's pixels, which its
+        //! texture then holds alone; a lost texture recolours it again.
+        void releaseDrawnTeamColor(unsigned index);
         //! Only legacy OpenGL draws sprite frames from their HD layers; other
         //! backends sample them solely through baseFrame (terrain composition,
         //! skin shadows, editor swatches). There, a sprite loads its HD layers
