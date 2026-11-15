@@ -688,14 +688,13 @@ TEST_SUITE("TerrainPresentation")
 				CHECK(reinterpret_cast<const Uint32 *>(
 						  static_cast<const Uint8 *>(customOverview.getSDLSurface()->pixels) +
 						  y * customOverview.getSDLSurface()->pitch)[x] == 0xFF111F2Fu);
-		MapRenderState render;
-		render.detail.terrainOverview = .5f;
 		map.setResourceByIndex(9, 9, WHEAT, 1);
 		map.setResourceAmount(map.coordToIndex(9, 9), 2);
 		glob2test::observeMap(map,scene);
-		MapDrawer::drawMapOverview(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, render);
-		REQUIRE(render.overview->getW() == overview.getW());
-		REQUIRE(render.overview->getH() == overview.getH());
+		// The view as its pages compose it; the game draws those pages directly.
+		OverviewTerrainCache pages;
+		GAGCore::DrawableSurface drawn(16 * samples, 16 * samples);
+		pages.update(scene, 0, 0, 15, 15, 0, 0, 0, true, samples, drawn);
 		const auto& tint = map.resourceRegistry().presentation(static_cast<ResourceId>(WHEAT)).minimap;
 		// Two of five wheat: a 2x2 square centred in the cell over unchanged ground.
 		const int square = OverviewTerrainCache::resourceSquare(2, 5, samples);
@@ -710,7 +709,7 @@ TEST_SUITE("TerrainPresentation")
 					return reinterpret_cast<const Uint32 *>(
 						static_cast<const Uint8 *>(surface->pixels) + y * surface->pitch)[x];
 				};
-				const auto ground = pixelAt(overview), actual = pixelAt(*render.overview);
+				const auto ground = pixelAt(overview), actual = pixelAt(drawn);
 				if (x / samples == 9 && y / samples == 9 && x % samples >= inset &&
 					x % samples < inset + square && y % samples >= inset &&
 					y % samples < inset + square)
@@ -733,7 +732,10 @@ TEST_SUITE("TerrainPresentation")
 			globals->gfx->renderer->flush();
 		CHECK(IMG_SavePNG(globals->gfx->getSDLSurface(),
 						  (evidence / "detailed.png").string().c_str()));
-		MapDrawer::drawMapOverview(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene, render);
+		MapRenderState render;
+		render.detail.terrainOverview = .5f;
+		MapDrawer::drawMapOverview(0, 0, 15, 15, 0, 0, 0, Game::DRAW_WHOLE_MAP | Game::DRAW_COMPLETE_TERRAIN,
+								   scene, render);
 		GAGCore::Sprite::flushBatches(globals->gfx);
 		if (globals->gfx->renderer)
 			globals->gfx->renderer->flush();

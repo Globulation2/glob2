@@ -53,8 +53,23 @@ Preference changes, a new asset source generation or a different pack directory
 start a reload; unchanged requests do not. Explicit synchronous reloads used by
 tools still refresh unchanged artwork. Disabling the preference releases the
 optional layers through asset polling, rather than through screen destruction.
-Only desktop legacy OpenGL draws sprite frames from their HD layers. The portable
-SDL renderer and the presentation devices reach them solely through
+Desktop legacy OpenGL draws sprite frames from their HD layers at every zoom.
+The portable SDL renderer draws them once the view exceeds two screen pixels a
+logical pixel (`Sprite::highResolutionDrawable`): HD frames hold four texels a
+logical pixel and its textures have no mip chain, so they shrink at most twice.
+It drops back to native frames after ten seconds below that, like the legacy
+GL bands, and then releases the layers that drawing demanded. A drawn sprite
+loads only the 32-frame blocks its draws reach (a unit's action), batched into
+one reload a frame, and demands its team layers with its base ones; once a
+frame's HD base layer is uploaded its CPU pixels go, unless something samples
+them through `Sprite::baseFrame` (a released frame then answers with its native
+frame and reloads with pixels; `Sprite::drawFrame` serves draw-only callers such
+as skin shadows), and a renderer reset reloads frames that had only textures; a frame draws in HD only once every
+layer its native frame has is loaded (a unit only once its whole action is), at
+most eight frames a frame draw in HD for the first time (each one uploads), and
+HD layers sample linearly with premultiplied alpha. Recoloured HD team layers,
+buildings' included, share each sprite's 64 MiB recolour cache. Otherwise the
+portable renderer and the presentation devices reach HD layers solely through
 `Sprite::baseFrame` (terrain composition, skin shadows and editor swatches), so
 there a sprite loads only its uncolored base layers, once `baseFrame` or an HD
 window first asks for them, and uploads them on the first direct draw. The first
@@ -72,8 +87,9 @@ on the clock of the legacy OpenGL sprite bands), so zooming across the threshold
 and back recomposes nothing. Then pages compose from native frames, the HD pages
 are discarded, the streamed banks' frames retire into the shared budget for
 [retired frames](../development/rendering-benchmarks.md#direct-terrain) and whole sheets a page demanded through `Sprite::baseFrame`
-release their layers until the next demand. Decor HD frames never stream there,
-since the portable renderer draws decor sprites from their native frames.
+release their layers until the next demand. Decor HD frames stream there only
+while the portable renderer draws sprites from HD layers (past two screen pixels
+a logical pixel); below that it draws decor from native frames and retires them.
 Captures keep their own density and HD artwork.
 
 Terrain uses the shared CPU material compositor and bounded 16 by 16 cell pages
@@ -546,6 +562,15 @@ lattice when zooming out to half size or smaller. Patches retain at most their c
 time remain unchanged, but distant clouds have less fine detail. The torus view
 retains its separate sampling budget.
 
+Renderers without a cloud shader, including the portable SDL renderer, sample
+the shadow and cloud lattices on the CPU. A cloud thread of its own samples the
+next lattices, with a margin of three cells around the view, while frames draw;
+the graphics thread draws the newest finished lattices at their world position
+and samples on the graphics thread (with a few helper threads) only when none
+covers the view, as on the first frame or after a jump. The portable SDL
+renderer draws each alpha map as one small lattice texture stretched with linear
+filtering, texel centres on lattice points, instead of four triangles per cell.
+
 Point bars batch opaque fills within each bar using bounded OpenGL or SDL geometry
 submissions. OpenGL outlines and translucent fills preserve their original order;
 software surfaces retain their existing path. Full-map terrain and resource passes
@@ -701,7 +726,8 @@ rather than a fixed low pixel cap.
 
 The command adapter preserves adjacent painter order and flushes at 4096 commands.
 Cloud alpha maps retain complete cell fans in painter order, submitting at most
-4092 vertices per chunk instead of allocating a packet for each cell. Legacy GL
+4092 vertices per chunk instead of allocating a packet for each cell (the
+portable SDL renderer uses its lattice texture instead). Legacy GL
 float alpha maps also group complete fans into bounded submissions, retaining
 their integer centers and existing clamped colors. Software nearest blits use
 direct coordinate offsets on unscaled axes; scaled axes retain the original
@@ -926,9 +952,11 @@ published images when mip preparation or CPU restoration requirements change.
 The previous artwork remains visible until publication, and failed upgrades keep
 a valid existing layer. Its linear textures need
 premultiplied alpha: accelerated SDL renderers prepare them by blending a
-straight-alpha staging texture onto a transparent target. The staging texture is
-shared by the renderer, and compatible cached textures are updated in place when
-pixels change. SDL's per-target viewport, clip, scale and logical presentation
+straight-alpha staging texture onto a transparent target. The renderer keeps up
+to four staging textures, one per texture size, since pages, HD sprite frames and
+animated tiles of different sizes upload in the same frame, and releases each
+after 300 presented frames unused; compatible cached
+textures are updated in place when pixels change. SDL's per-target viewport, clip, scale and logical presentation
 state is restored before drawing resumes. A bounded 256×256 startup probe checks
 all byte colour/alpha pairs against the CPU integer result. Drivers whose blend
 units differ retain CPU conversion and log their conformance mismatch count.

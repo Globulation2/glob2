@@ -490,6 +490,37 @@ bookkeeping and resident texture reservations. The additional 128 MiB lets
 inactive zoom densities retain their CPU pixels without sacrificing sampling
 quality. Android and browser builds retain the 128 MiB total ceiling.
 These are maximum memory allowances, not up-front allocations.
+
+Interactive views on accelerated page renderers without device composition (the
+portable SDL renderer, and browser legacy OpenGL composing HD pages) never
+compose a page inside the frame. A cold page is described from the scene on the
+graphics thread and composed by the shared presentation workers
+(`render/BackgroundWork.h`) from an immutable material snapshot. Until it
+arrives the view draws the same page at its nearest other density, or the
+overview beneath where none exists. Uniform animated cells (open water) draw over
+their page from one shared tile per material variant at the page's density, so
+an animation step recomposes and uploads those few tiles, not the pages. Any
+other animation or surf step of a valid page (shorelines) queues its changed
+cells the same way while the view keeps drawing the current pixels; finished
+cells upload as dirty rectangles. Each frame describes at most
+1024 cells for launches, reduces at most four pages from retained native pages,
+keeps at most 64 MiB of page buffers in flight, and installs at most four
+finished pages within 8 MiB; pages nearest the view centre go
+first, and work for pages the view left is cancelled. Missing pages take build
+slots first: refreshes use at most half of them, and none while a missing page
+waited for a slot the frame before, so animated water cannot starve the edges
+of the view. Pages record the discovery
+revision they were checked against, so unchanged views skip per-cell fog checks.
+The compositor caches the material variants each 16×16 page uses until the
+terrain revision changes, so preparing a view unions short lists rather than
+visiting every cell. On the portable renderer a drawn page that is not
+native density and has nothing animated outside the shared tiles keeps only its
+texture: its CPU pixels go, and a change, an evicted texture or a renderer reset
+composes it again. Pages neither drawn nor standing in for about ten seconds
+leave the cache, as do animated tile sets, and the last material snapshot goes
+two seconds after the last launch. The editor, tiled captures, offscreen draws
+(map exports) and `DRAW_COMPLETE_TERRAIN` draws still compose every page before
+drawing.
 Generated/edited pages keep alpha-weighted mip filtering but upload uncompressed
 textures. Driver-side DXT encoding is reserved for artwork with prepared mip
 chains; repeating that encoding on animated terrain updates stalls rendering.

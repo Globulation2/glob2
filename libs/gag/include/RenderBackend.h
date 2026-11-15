@@ -99,6 +99,12 @@ class RenderBackend
         return blitPixels(source, src, dst, alpha);
     }
     virtual bool fillPixels(const SDL_Rect&, SDL_Color) { return false; }
+    // Whether `key` has a texture holding `revision`, so its CPU pixels can go.
+    virtual bool hasTexture(const void * /*key*/, std::uint64_t /*revision*/) const { return false; }
+    // Draws the texture `key` already holds, whose CPU pixels were released, in
+    // the sampling it was uploaded with. False when there is none (a reset).
+    virtual bool blitCached(const void * /*key*/, const SDL_Rect & /*src*/, const SDL_FRect & /*dst*/,
+                            Uint8 /*alpha*/) { return false; }
 };
 std::unique_ptr<RenderBackend> makeSoftwareRenderBackend(SDL_Surface *surface);
 std::unique_ptr<RenderBackend> makeSDLRenderBackend(SDL_Window *window, int width, int height);

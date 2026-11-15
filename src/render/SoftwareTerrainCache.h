@@ -3,8 +3,10 @@
 #include <SDLGraphicContext.h>
 #include "terrain/TerrainCompositor.h"
 #include <algorithm>
+#include <atomic>
 #include <array>
 #include <cstdint>
+#include <map>
 #include <memory>
 #include <span>
 #include <tuple>
@@ -14,6 +16,7 @@ class SceneMap;
 class TerrainRegistry;
 class MapAssetBundle;
 class GpuTerrainPageCache;
+struct TerrainPendingPage;
 // Shared presentation page cache. The historical name remains for existing view
 // controls/benchmarks; software and GPU consume the same composed coverage.
 class SoftwareTerrainCache
@@ -41,8 +44,9 @@ class SoftwareTerrainCache
 	struct HeldMask
 	{
 		TerrainVisual::Compositor::CellMask mask;
-		std::shared_ptr<std::size_t> total;
-		HeldMask(TerrainVisual::Compositor::CellMask m, std::shared_ptr<std::size_t> t)
+		// Atomic: a refresh job on a worker can hold the last reference.
+		std::shared_ptr<std::atomic<std::size_t>> total;
+		HeldMask(TerrainVisual::Compositor::CellMask m, std::shared_ptr<std::atomic<std::size_t>> t)
 			: mask(std::move(m)), total(std::move(t))
 		{
 			*total += mask.bytes();
@@ -94,7 +98,8 @@ class SoftwareTerrainCache
 	std::unique_ptr<TerrainVisual::Surface> image;
 		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> parked{nullptr, SDL_DestroySurface};
 		std::vector<OpaqueRun> opaqueRuns;
-		std::array<std::unique_ptr<HeldMask>, ChunkTiles * ChunkTiles> masks;
+		// Shared with refresh jobs, which read a mask while the page keeps it.
+		std::array<std::shared_ptr<HeldMask>, ChunkTiles * ChunkTiles> masks;
 		bool valid = false;
 		// Device-composed pages have no matching pixels in image/parked.
 		bool cpuComposed = true;
@@ -104,6 +109,11 @@ class SoftwareTerrainCache
 		std::vector<std::pair<TerrainVisual::MaterialId, std::uint64_t>> materialRevisions;
 		std::uint64_t used = 0;
 		std::uint64_t textureUsed = 0;
+		// The discovery state `tiles` was checked against, so unchanged frames
+		// skip checking every cell.
+		Uint64 discoveryRevision = 0;
+		Uint32 discoveryTeams = 0;
+		bool discoveryWhole = false, discoveryStamped = false;
 	};
 	static constexpr std::size_t ChunkStorageBytes =
 		ChunkPixels * ChunkPixels * 4 + sizeof(Chunk) +
@@ -133,9 +143,10 @@ class SoftwareTerrainCache
 	std::shared_ptr<const TerrainRegistry> registry;
     std::shared_ptr<const MapAssetBundle> assets;
 	std::vector<Copy> copies;
-	// One composed tile per variant of each animated opaque material, shared by
-	// every uniform cell of it on native device pages. An animation step then
-	// recomposes and uploads one small atlas instead of each page's water.
+	// One composed tile per variant of each animated opaque material at each
+	// page density, shared by every uniform cell of it on device pages. An
+	// animation step then recomposes and uploads one small atlas instead of
+	// each page's water.
 	struct AnimatedTiles
 	{
 		std::unique_ptr<TerrainVisual::Surface> atlas;
@@ -143,16 +154,18 @@ class SoftwareTerrainCache
 		std::vector<char> opaque;
 		int columns = 0;
 		bool changed = false;
+		std::uint64_t used = 0; // Frame it last served a cell.
 	};
-	std::vector<AnimatedTiles> animatedTiles;
+	std::map<std::tuple<unsigned, int, int>, AnimatedTiles> animatedTiles; // By material, scale and reduction.
 	TerrainVisual::Compositor *overlayCompositor = nullptr; // Set by prepare for draw.
 	// The overlay tile of a uniform cell, composed for the current revision.
 	// Null when its material does not animate or its tile is not opaque.
-	AnimatedTiles *animatedTile(TerrainVisual::Compositor &, const TerrainVisual::Recipe &, SDL_Rect &source);
+	AnimatedTiles *animatedTile(TerrainVisual::Compositor &, const TerrainVisual::Recipe &, SDL_Rect &source,
+								int scale, int reduction);
 	std::uint64_t frame = 0, hits = 0, rebuilds = 0;
 	std::uint64_t textureUse = 0, reductions = 0;
 	// Bytes of every chunk's kept masks; shared so a mask outliving the cache is safe.
-	std::shared_ptr<std::size_t> maskTotal = std::make_shared<std::size_t>(0);
+	std::shared_ptr<std::atomic<std::size_t>> maskTotal = std::make_shared<std::atomic<std::size_t>>(0);
 	SDL_Rect paintBounds{};
 	// Composition scale and subsequent page reduction are separate: reduction
 	// filters the native material result, never its individual source textures.
@@ -163,6 +176,16 @@ class SoftwareTerrainCache
 	bool composedHighResolution = false; // Whether the last view composed HD material frames.
     std::shared_ptr<GpuTerrainPageCache> gpuPages;
     std::uint64_t gpuPageGeneration = 0;
+	// Pages composed by background workers while the view draws stand-ins.
+	std::vector<std::shared_ptr<TerrainPendingPage>> pending;
+	bool incomplete = false;
+	// The last material snapshot given to workers (see prepareAtResolution).
+	std::shared_ptr<const TerrainVisual::Compositor::CpuMaterials> workerMaterials;
+	std::uint64_t materialsUsed = 0; // Frame of the last launch that used it.
+	std::uint64_t resetGeneration = 0; // GraphicContext::renderResetGeneration last seen.
+	// A missing page found no build slot last frame, so animation refreshes wait.
+	bool coldBacklog = false;
+	void cancelPending();
 
   public:
     struct WorkMetrics
@@ -185,6 +208,14 @@ class SoftwareTerrainCache
 							 int animationTime = 0, FallbackMode mode = FallbackMode::StreamPages,
 							 bool tiledCapture = false);
 	bool enabled = true;
+	// Interactive views on accelerated page renderers compose missing pages on
+	// background workers instead of within the frame. Until a page arrives the
+	// view draws the same page at another density, or nothing, and complete()
+	// is false so the caller can draw the overview beneath. Captures, the
+	// editor and other complete draws leave this off.
+	bool deferBuilds = false;
+	bool complete() const { return !incomplete; }
+	std::size_t pendingPages() const { return pending.size(); }
 	// Benchmark override for comparing stable page density with adaptive sampling.
 	int benchmarkDownsample = 0;
 	bool prepare(const SceneMap &, GAGCore::Sprite &, int left, int top, int right, int bottom,

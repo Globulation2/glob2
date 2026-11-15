@@ -13,6 +13,7 @@
 #include <mutex>
 #include <span>
 #include <tuple>
+#include <unordered_map>
 
 class SceneMap;
 namespace TerrainVisual
@@ -130,6 +131,9 @@ class Compositor
 	// samples share the detailed renderer's material partition.
 	void composeOverview(const Recipe &, SDL_Surface *target, int x, int y, int samples,
 						 const CornerColors *cornerColors = nullptr) const;
+	// The same from a catalog snapshot (CpuMaterials::definitions), for workers.
+	static void composeOverview(const Catalog &, const Recipe &, SDL_Surface *target, int x, int y,
+								int samples, const CornerColors *cornerColors = nullptr);
 	// The shared sprite supports cached row batching; mixed custom sprites use
 	// the ordinary renderer. Material lookup also serves editor swatches.
 	GAGCore::Sprite *decorSprite() const { return sharedDecorSprite; }
@@ -350,6 +354,13 @@ class Compositor
     void prepareSelected(bool hd, int time, const Usage *usage, bool nativeComposition = false,
                          bool decor = true);
     Usage visibleUsage(const SceneMap &, int left, int top, int right, int bottom) const;
+    // Material variants each 16x16 page of the map uses (material << 16 | variant),
+    // kept until the terrain changes, so a frame unions short lists instead of
+    // visiting every visible cell.
+    const std::vector<std::uint32_t> &pageUsage(const SceneMap &, int wx, int wy) const;
+    mutable std::unordered_map<std::uint64_t, std::vector<std::uint32_t>> usagePages;
+    mutable std::uint64_t usageIdentity = 0, usageRevision = 0;
+    mutable std::uint32_t usageSeed = 0;
     // Nonperiodic custom art uses variant zero as its shared boundary source.
     void includeBoundarySources(Usage &usage) const;
     void declareWindows(bool materials, bool decor, int time, const Usage *requested);

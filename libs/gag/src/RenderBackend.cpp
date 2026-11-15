@@ -141,7 +141,50 @@ class SDLRenderBackend final : public RenderBackend
 	std::optional<SDL_Rect> appliedClip;
 	bool clipKnown = false;
 	std::unordered_map<const void *, Texture> textures;
-	SDL_Texture *uploadTexture = nullptr;
+	// Straight-alpha staging for GPU premultiplication, one per texture size.
+	// Linear textures of several sizes upload in one frame (pages, HD sprite
+	// frames, overlay tiles): a single staging texture recreated whenever the
+	// size changed made each such upload allocate a texture.
+	struct Staging { SDL_Texture *texture; int w, h; std::uint64_t used, presented; };
+	std::vector<Staging> staging;
+	std::uint64_t stagingUse = 0, presents = 0;
+	static constexpr std::size_t MaxStaging = 4;
+	SDL_Texture *uploadTexture = nullptr; // The staging texture of the current upload.
+	SDL_Texture *stagingFor(int w, int h)
+	{
+		for (auto &entry : staging)
+			if (entry.w == w && entry.h == h)
+			{
+				entry.used = ++stagingUse;
+				entry.presented = presents;
+				return entry.texture;
+			}
+		if (staging.size() >= MaxStaging)
+		{
+			auto oldest = std::min_element(staging.begin(), staging.end(),
+				[](const Staging &a, const Staging &b) { return a.used < b.used; });
+			// Draws queued with the evicted texture go first.
+			submitBatch();
+			SDL_DestroyTexture(oldest->texture);
+			staging.erase(oldest);
+		}
+		auto *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, w, h);
+		if (!texture || !SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND) ||
+			!SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST))
+		{
+			SDL_DestroyTexture(texture);
+			return nullptr;
+		}
+		staging.push_back({texture, w, h, ++stagingUse, presents});
+		return texture;
+	}
+	void releaseStaging()
+	{
+		for (auto &entry : staging)
+			SDL_DestroyTexture(entry.texture);
+		staging.clear();
+		uploadTexture = nullptr;
+	}
 	bool gpuPreparation;
 	const SDL_Texture *lastTexture = nullptr;
 	std::uint64_t textureBytes = 0, peakTextureBytes = 0;
@@ -165,19 +208,9 @@ class SDLRenderBackend final : public RenderBackend
 	// textures contain premultiplied pixels. No CPU copy or pixel loop is needed.
 	bool premultiply(SDL_Texture *target, SDL_Surface *pixels)
 	{
-		if (uploadTexture && (uploadTexture->w != pixels->w || uploadTexture->h != pixels->h))
-		{
-			SDL_DestroyTexture(uploadTexture);
-			uploadTexture = nullptr;
-		}
+		uploadTexture = stagingFor(pixels->w, pixels->h);
 		if (!uploadTexture)
-		{
-			uploadTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
-											  SDL_TEXTUREACCESS_STATIC, pixels->w, pixels->h);
-			if (!uploadTexture || !SDL_SetTextureBlendMode(uploadTexture, SDL_BLENDMODE_BLEND) ||
-				!SDL_SetTextureScaleMode(uploadTexture, SDL_SCALEMODE_NEAREST))
-				return false;
-		}
+			return false;
 		if (!update(uploadTexture, pixels))
 			return false;
 		++counts.textureUploads;
@@ -553,7 +586,7 @@ class SDLRenderBackend final : public RenderBackend
 		indexedBatches = std::strcmp(SDL_GetRendererName(renderer), "software") == 0;
         if (gpuPreparation) {
             gpuPreparation = exactPremultiplication();
-            if (!gpuPreparation) { SDL_DestroyTexture(uploadTexture); uploadTexture = nullptr; }
+            if (!gpuPreparation) releaseStaging();
         }
 	}
 	~SDLRenderBackend() override
@@ -793,7 +826,8 @@ class SDLRenderBackend final : public RenderBackend
 			{
 				// A GPU-prepared page stages the rectangle in the shared
 				// straight-alpha texture, which must match the page's size.
-				if (!uploadTexture || uploadTexture->w != pixels->w || uploadTexture->h != pixels->h)
+				uploadTexture = stagingFor(pixels->w, pixels->h);
+				if (!uploadTexture)
 				{
 					textureFor(key, pixels, revision, linear);
 					return;
@@ -849,12 +883,43 @@ class SDLRenderBackend final : public RenderBackend
 	static void quad(SDL_Vertex (&vertices)[6], const SDL_Surface *pixels, const SDL_Rect &src,
 					 const SDL_FRect &dst, SDL_FColor c)
 	{
-		const float u0 = float(src.x) / pixels->w, v0 = float(src.y) / pixels->h;
-		const float u1 = float(src.x + src.w) / pixels->w, v1 = float(src.y + src.h) / pixels->h;
+		quad(vertices, pixels->w, pixels->h, src, dst, c);
+	}
+	static void quad(SDL_Vertex (&vertices)[6], int width, int height, const SDL_Rect &src,
+					 const SDL_FRect &dst, SDL_FColor c)
+	{
+		const float u0 = float(src.x) / width, v0 = float(src.y) / height;
+		const float u1 = float(src.x + src.w) / width, v1 = float(src.y + src.h) / height;
 		const SDL_Vertex a{{dst.x, dst.y}, c, {u0, v0}}, b{{dst.x + dst.w, dst.y}, c, {u1, v0}},
 			d{{dst.x, dst.y + dst.h}, c, {u0, v1}}, e{{dst.x + dst.w, dst.y + dst.h}, c, {u1, v1}};
 		vertices[0] = a; vertices[1] = b; vertices[2] = e;
 		vertices[3] = a; vertices[4] = e; vertices[5] = d;
+	}
+	bool hasTexture(const void *key, std::uint64_t revision) const override
+	{
+		const auto found = textures.find(key);
+		return found != textures.end() && found->second.revision == revision;
+	}
+	bool blitCached(const void *key, const SDL_Rect &src, const SDL_FRect &dst, Uint8 alpha) override
+	{
+		auto found = textures.find(key);
+		if (found == textures.end())
+			return false;
+		auto &entry = found->second;
+		++counts.blits;
+		SDL_Vertex vertices[6];
+		if (entry.linear)
+		{
+			const float opacity = alpha / 255.f;
+			quad(vertices, entry.width, entry.height, src, dst, {opacity, opacity, opacity, opacity});
+			queue(vertices, &entry, SDL_BLENDMODE_BLEND_PREMULTIPLIED, SDL_SCALEMODE_LINEAR, true);
+		}
+		else
+		{
+			quad(vertices, entry.width, entry.height, src, dst, {1, 1, 1, alpha / 255.0f});
+			queue(vertices, &entry, SDL_BLENDMODE_BLEND, SDL_SCALEMODE_NEAREST, true);
+		}
+		return true;
 	}
 	void blit(const void *key, SDL_Surface *pixels, std::uint64_t revision, bool,
 			  const SDL_Rect &src, const SDL_FRect &dst, Uint8 alpha) override
@@ -918,7 +983,8 @@ class SDLRenderBackend final : public RenderBackend
 		}
 		for (const auto &[source, uses] : sources)
 			result.sharedSourceTextures += uses > 1 ? uses : 0;
-		result.stagingTextureBytes = storageBytes(uploadTexture);
+		for (const auto &entry : staging)
+			result.stagingTextureBytes += storageBytes(entry.texture);
 		result.batchCapacityBytes = direct.capacity() * sizeof(SDL_Vertex);
 		for (const auto &run : runs)
 			result.batchCapacityBytes += run.vertices.capacity() * sizeof(SDL_Vertex) +
@@ -944,8 +1010,7 @@ class SDLRenderBackend final : public RenderBackend
 		textures.clear();
 		textureBytes = 0;
 		lastTexture = nullptr;
-		SDL_DestroyTexture(uploadTexture);
-		uploadTexture = nullptr;
+		releaseStaging();
 		gpuPreparation = gpuPreparationEnabled(renderer);
 	}
 	void clear()
@@ -998,6 +1063,15 @@ class SDLRenderBackend final : public RenderBackend
 		submitBatch();
 		lastTexture = nullptr;
 		SDL_RenderPresent(renderer);
+		// Staging textures (a page's can be 16 MiB) go after 300 frames unused.
+		++presents;
+		std::erase_if(staging, [&](const Staging &entry)
+		{
+			if (entry.presented + 300 >= presents) return false;
+			if (uploadTexture == entry.texture) uploadTexture = nullptr;
+			SDL_DestroyTexture(entry.texture);
+			return true;
+		});
 		refreshBoundsMargin(); // The window may have been resized.
 		clear();
 	}

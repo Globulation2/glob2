@@ -802,6 +802,8 @@ int GraphicContext::maximumTextureSize() const
             case SDL_EVENT_RENDER_TARGETS_RESET:
                 if (_gc->renderer) _gc->renderer->reset();
                 ++renderResets;
+                // HD frames whose pixels went after upload had only those textures.
+                Sprite::discardUnbackedHighResolution();
                 break;
 			case SDL_EVENT_MOUSE_MOTION:
                 // SDL3 keeps all renderer events in window coordinates. Convert

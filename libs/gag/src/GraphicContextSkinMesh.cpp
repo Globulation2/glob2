@@ -49,7 +49,8 @@ void drawSkinShadow(GraphicContext &gfx, SkinShadow shadow, float x, float y,
 {
     if (!shadow.width || !shadow.height || !logicalSize) return;
     DrawableSurface *surface = shadow.surface;
-    if (!surface && shadow.sprite) surface = shadow.sprite->baseFrame(shadow.frame);
+    // Drawn, not sampled: a frame whose pixels a portable draw released still draws.
+    if (!surface && shadow.sprite) surface = shadow.sprite->drawFrame(shadow.frame);
     if (!surface) return;
     const float width = shadow.width * w / logicalSize;
     const float height = shadow.height * h / logicalSize;

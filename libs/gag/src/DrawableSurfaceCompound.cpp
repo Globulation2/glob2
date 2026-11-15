@@ -311,6 +311,22 @@ namespace GAGCore
 		return _gc->drawTeamColoredQuad(base, team, x, y, w, h, alpha, sprite->teamHueShiftDegrees());
 	}
 
+	bool DrawableSurface::drawPortableHighResolution(float x, float y, float w, float h, Sprite *sprite, unsigned index,
+	                                                 Uint8 alpha)
+	{
+		if (this != _gc || !sprite->highResolutionDrawable(index))
+			return false;
+		if (auto *surface = sprite->prepareDrawSurface(index, false, true))
+		{
+			drawSurface(x, y, w, h, surface, alpha);
+			// Uploaded now: the texture can hold the only copy.
+			sprite->releaseDrawnHighResolution(index);
+		}
+		if (auto *surface = sprite->prepareDrawSurface(index, true, true))
+			drawSurface(x, y, w, h, surface, alpha);
+		return true;
+	}
+
 	void DrawableSurface::drawSprite(float x, float y, Sprite *sprite, unsigned index,  Uint8 alpha)
 	{
 		// check bounds
@@ -320,6 +336,9 @@ namespace GAGCore
 		const bool gpuActive = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU);
 		if (drawTeamShaderSprite(x, y, static_cast<float>(sprite->getW(index)),
 		                         static_cast<float>(sprite->getH(index)), sprite, index, alpha))
+			return;
+		if (drawPortableHighResolution(x, y, static_cast<float>(sprite->getW(index)),
+		                               static_cast<float>(sprite->getH(index)), sprite, index, alpha))
 			return;
 
 		const bool wantsHDRoute = sprite->highResolutionAtlas || sprite->experimentImages[index] || sprite->experimentRotated[index];
@@ -351,6 +370,9 @@ namespace GAGCore
 		if (drawTeamShaderSprite(static_cast<float>(x), static_cast<float>(y), static_cast<float>(w),
 		                         static_cast<float>(h), sprite, index, alpha))
 			return;
+		if (drawPortableHighResolution(static_cast<float>(x), static_cast<float>(y), static_cast<float>(w),
+		                               static_cast<float>(h), sprite, index, alpha))
+			return;
 		bool experiment = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU);
 		if (auto surface = sprite->prepareDrawSurface(index, false, experiment))
 			drawSurface(x, y, w, h, surface, alpha);
@@ -370,6 +392,9 @@ namespace GAGCore
 
 		if (drawTeamShaderSprite(static_cast<float>(x), static_cast<float>(y), static_cast<float>(w),
 		                         static_cast<float>(h), sprite, index, alpha))
+			return;
+		if (drawPortableHighResolution(static_cast<float>(x), static_cast<float>(y), static_cast<float>(w),
+		                               static_cast<float>(h), sprite, index, alpha))
 			return;
 		bool experiment = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU);
 		if (auto surface = sprite->prepareDrawSurface(index, false, experiment))

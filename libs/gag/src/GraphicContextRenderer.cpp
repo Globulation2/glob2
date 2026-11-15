@@ -124,7 +124,7 @@ RendererCapabilities GraphicContext::rendererCapabilities() const
     return {.accelerated = gl || bool(portableRenderer) || bool(presentationDevice), .torus = gl || (presentationDevice && presentationDevice->capabilities().torus),
         .liveSkins = gl || (presentationDevice && presentationDevice->capabilities().skinMaterials), .textureFiltering = gl || bool(portableRenderer) || bool(presentationDevice),
         .asynchronousCapture = presentationDevice && presentationDevice->capabilities().asynchronousCapture,
-        .alphaMapCellCentres = gl || bool(presentationDevice), .cloudLayers = gl || bool(presentationDevice),
+        .alphaMapCellCentres = gl || bool(presentationDevice), .cloudLayers = gl || bool(portableRenderer) || bool(presentationDevice),
         .textureMipmaps = gl || bool(presentationDevice)};
 }
 
