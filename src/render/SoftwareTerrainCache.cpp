@@ -247,11 +247,19 @@ std::size_t pageStorage(int scale, bool gpu, int downsample = 1)
 		   SoftwareTerrainCache::ChunkPixels * SoftwareTerrainCache::ChunkPixels * 4 +
 		   pixels * pixels * 4 * (gpu ? 3 : 1);
 }
+// The CPU pixels a page composes into and reduces from. Null once a portable
+// upload released them, including after retireTexture parked that released page.
+SDL_Surface *pagePixels(const SoftwareTerrainCache::Chunk &chunk)
+{
+	return chunk.image ? chunk.image->getSDLSurface() : chunk.parked.get();
+}
 // Normal surface destruction flushes queued renderer references and releases
 // textures on both GPU backends. Keep the composed pixels owned by the page.
 void retireTexture(SoftwareTerrainCache::Chunk &chunk)
 {
-	// A page whose pixels went after upload had only the texture: compose it again.
+	// A page whose pixels went after upload had only the texture: compose it
+	// again. It is left with neither image nor parked pixels until a rebuild
+	// allocates them (see pagePixels and prepareAtResolution).
 	if (chunk.image->portableReleased())
 		chunk.valid = false;
 	chunk.parked.reset(chunk.image->takePixels());
@@ -1259,7 +1267,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							target = chunk.get();
 					if (!target || !target->valid || target->tiles != page->tiles)
 						return true;
-					auto *pixels = target->image ? target->image->getSDLSurface() : target->parked.get();
+					auto *pixels = pagePixels(*target);
 					if (!pixels)
 						return true;
 					const int n = 32 * page->scale / page->downsample;
@@ -1598,9 +1606,10 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					target.discoveryWhole = wholeMap;
 				};
 				const bool unchanged = sameContent && !artChanged;
-				if (!unchanged && entry && entry->image && entry->image->portableReleased())
+				if (!unchanged && entry && !gpuPages && !pagePixels(*entry))
 				{
-					// Its pixels went after upload: a change composes the page again.
+					// Its pixels went after upload, or its released texture was then
+					// retired: a change composes the page again into fresh pixels.
 					entry->valid = false;
 					entry->image.reset();
 					const int side = ChunkPixels * entry->scale / entry->downsample;
@@ -1655,7 +1664,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					if (downsample > 1 && reductionsThisFrame < MaxReductionsPerFrame)
 						for (auto &c : chunks)
 							if (c->x == wx && c->y == wy && c->scale == 1 && c->downsample == 1 && c->valid &&
-								c->seed == map.terrainSeed() && c->recipeTerrainRevision == terrainRevision &&
+								pagePixels(*c) && c->seed == map.terrainSeed() && c->recipeTerrainRevision == terrainRevision &&
 								c->discoveryStamped && c->discoveryWhole == wholeMap &&
 								(wholeMap || (c->discoveryRevision == map.discoveryRevision() &&
 											  c->discoveryTeams == visibleTeams)) &&
@@ -1701,7 +1710,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				if (downsample > 1 && !gpuPages)
 					for (auto &c : chunks)
 						if (c->x == wx && c->y == wy && c->scale == 1 && c->downsample == 1 &&
-							c->valid && c->tiles == tiles &&
+							c->valid && pagePixels(*c) && c->tiles == tiles &&
 							!pageChanged(*c))
 						{
 							native = c.get();
@@ -1774,7 +1783,25 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				const bool sourcesChanged = pageChanged(*entry);
 				if (!entry->valid || sourcesChanged || entry->tiles != tiles || (gpuPages && !gpuPages->find(*entry)))
 				{
-					auto *target = entry->image ? entry->image->getSDLSurface() : entry->parked.get();
+					auto *target = pagePixels(*entry);
+					if (!target && !gpuPages)
+					{
+						// Every path that drops a page's pixels should reallocate them
+						// above; compose into fresh ones rather than through null.
+						const int side = ChunkPixels * entry->scale / entry->downsample;
+						std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
+							SDL_CreateSurface(side, side, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+						if (!pixels) throw std::bad_alloc();
+						entry->valid = false;
+						entry->image.reset();
+						if (gpu) entry->parked = std::move(pixels);
+						else
+						{
+							entry->image = std::make_unique<TerrainVisual::Surface>(pixels.get(), false);
+							pixels.release();
+						}
+						target = pagePixels(*entry);
+					}
 					const bool wasValid = entry->valid;
 					// Cells written by this rebuild; an uploaded page updates only those.
 					std::array<bool, ChunkTiles * ChunkTiles> dirty{};
@@ -1848,7 +1875,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 								{
 									if (native)
 									{
-										auto *pixels = native->image ? native->image->getSDLSurface() : native->parked.get();
+										auto *pixels = pagePixels(*native);
 										auto tile = *pixels;
 										tile.pixels = static_cast<Uint8 *>(pixels->pixels) + y * 32 * pixels->pitch + x * 32 * 4;
 										reduceTile(&tile, target, x * n, y * n, downsample);

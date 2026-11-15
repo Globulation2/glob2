@@ -1815,6 +1815,75 @@ TEST_SUITE("TerrainPresentation")
 		}
 	}
 
+	TEST_CASE("portable pages whose released pixels were retired recompose before a native reduction [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 512, .height = 512,
+			.screenFlags = GAGCore::GraphicContext::PORTABLEGPU});
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
+		auto &map = fixture.game.map;
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 3; ++x) map.paintCell(x, y, WATER);
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		auto &gfx = *globals->gfx;
+		REQUIRE(gfx.renderer == gfx.portableRenderer.get());
+		const auto draw = [&](SoftwareTerrainCache &pages, int reduction)
+		{
+			gfx.drawFilledRect(0, 0, 512, 512, 17, 29, 41);
+			gfx.beginMapTransform(.75f, .375f, .625f, 0, 0, 512, 512);
+			REQUIRE(pages.prepareAtResolution(scene, *globals->terrain, 0, 0, 15, 15,
+				31, 31, fixture.team->me, true, 19, 1, false, reduction));
+			pages.draw(gfx);
+			gfx.endMapTransform();
+		};
+		SoftwareTerrainCache cache;
+		draw(cache, 1); // Native pages: the reduction's retained input.
+		draw(cache, 2);
+		const auto reductions = cache.cacheReductions();
+		// What a long portable session does to a reduced page: draw() releases
+		// its CPU pixels after upload, then texture pressure retires it
+		// (retireTexture), leaving an invalid page with neither image nor parked.
+		std::size_t retired = 0;
+		for (auto &chunk : cache.chunks)
+			if (chunk->downsample == 2 && chunk->image && chunk->image->releasePortablePixels())
+			{
+				REQUIRE(chunk->image->portableReleased());
+				chunk->valid = false;
+				chunk->parked.reset(chunk->image->takePixels());
+				chunk->image.reset();
+				CHECK_FALSE(chunk->parked);
+				++retired;
+			}
+		REQUIRE(retired > 0);
+		// The native pages are still valid, so the rebuild reduces from them into
+		// the retired page; it must allocate pixels first, not write through null.
+		draw(cache, 2);
+		CHECK(cache.cacheReductions() > reductions);
+		for (const auto &chunk : cache.chunks)
+			if (chunk->valid && chunk->cpuComposed)
+				CHECK((chunk->image ? chunk->image->hasPixels() || chunk->image->portableReleased()
+									: bool(chunk->parked)));
+		const auto pixels = [&]
+		{
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> captured(
+				gfx.renderer->capture(), SDL_DestroySurface);
+			REQUIRE(captured);
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
+				SDL_ConvertSurface(captured.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+			REQUIRE(rgba);
+			std::vector<Uint8> result(size_t(rgba->w) * rgba->h * 4);
+			for (int y = 0; y < rgba->h; ++y)
+				std::memcpy(result.data() + size_t(y) * rgba->w * 4,
+					static_cast<Uint8 *>(rgba->pixels) + y * rgba->pitch, rgba->w * 4);
+			return result;
+		};
+		draw(cache, 2);
+		const auto recovered = pixels();
+		SoftwareTerrainCache fresh;
+		draw(fresh, 2);
+		CHECK(pixels() == recovered);
+	}
+
 	TEST_CASE("zoomed-out GPU terrain retains pages across frames and wrapped views [display] "
 			  "[artifacts]")
 	{
