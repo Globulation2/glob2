@@ -95,11 +95,70 @@ jobs:
           if [[ -n "$EXPECTED_COMMIT" ]]; then test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"; fi
           echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-  build:
+  # Translates the SDL GPU shaders with the pinned Linux glslang and SPIRV-Cross.
+  # No secrets or environment: the Mac build re-verifies everything it receives.
+  shaders:
     needs: credentials
+    name: Translate SDL GPU shaders for Metal
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    outputs:
+      metal: ${{ steps.lock.outputs.metal }}
+      bundle_sha256: ${{ steps.bundle.outputs.sha256 }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ needs.credentials.outputs.commit }}
+          persist-credentials: false
+      - name: Require Metal shaders when the source commits a Metal tool lock
+        id: lock
+        run: |
+          set -euo pipefail
+          if [ -f platforms/mobile/metal-tool-lock.json ]; then
+            echo "metal=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::This source has no platforms/mobile/metal-tool-lock.json, so the build ships without SDL GPU Metal shaders. Run the iOS Metal tool lock workflow (.github/workflows/ios-metal-tool-lock.yml) and commit its reviewed lock in a pull request."
+            echo "metal=false" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.lock.outputs.metal == 'true'
+        uses: ./.github/actions/renderer-shader-tools
+      - name: Install the pinned SPIRV-Cross
+        if: steps.lock.outputs.metal == 'true'
+        run: |
+          set -euo pipefail
+          version=$(python3 -c 'import json; print(json.load(open("libs/gag/shaders/renderer-manifest.json"))["nativeTranslationTools"]["spirvCross"]["packageVersion"])')
+          sudo apt-get update -qq
+          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "spirv-cross=$version"
+      # generate.py rejects any glslang or SPIRV-Cross binary that is not pinned.
+      - name: Translate and package the verified shader bundle
+        id: bundle
+        if: steps.lock.outputs.metal == 'true'
+        run: |
+          set -euo pipefail
+          out=artifacts/ios-shaders
+          python3 tools/shaders/generate.py --output "$out/renderer-shaders" \
+            --glslang "$GLOB2_GLSLANG" --spirv-cross "$(command -v spirv-cross)"
+          python3 tools/shaders/generate.py --output "$RUNNER_TEMP/renderer-shaders-check" --prebuilt "$out/renderer-shaders"
+          tar -C "$out" --sort=name --owner=0 --group=0 --numeric-owner --mtime=@0 -cf - renderer-shaders | gzip -n > "$out/renderer-shaders.tar.gz"
+          echo "sha256=$(sha256sum "$out/renderer-shaders.tar.gz" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+      - if: steps.lock.outputs.metal == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: glob2-ios-renderer-shaders
+          path: artifacts/ios-shaders/renderer-shaders.tar.gz
+          if-no-files-found: error
+          retention-days: 1
+
+  build:
+    needs: [credentials, shaders]
     name: Build unsigned iPhone archive
     runs-on: xcode-27
     timeout-minutes: 180
+    permissions:
+      contents: read
     outputs:
       build_number: ${{ steps.version.outputs.build_number }}
       commit: ${{ needs.credentials.outputs.commit }}
@@ -162,17 +221,58 @@ jobs:
       - name: Build pinned iPhone dependencies
         run: python3 platforms/mobile/dependencies.py --target ios --environment device --release --jobs 2
 
-      # SDL GPU on iOS needs offline Metal libraries, which need a translated
-      # shader bundle and a verified Metal tool lock that this workflow does not
-      # provision yet. Package portable SDL explicitly instead of silently.
+      - name: Download the translated SDL GPU shader bundle
+        if: needs.shaders.outputs.metal == 'true'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: glob2-ios-renderer-shaders
+          path: ${{ runner.temp }}/ios-shaders
+      # Fails closed: the archive must be the exact bytes the Linux job hashed,
+      # the bundle must verify against this checkout (source fingerprint,
+      # layouts, artifact hashes, entrypoints), and the local Xcode must match
+      # the committed lock. There is no override.
+      - name: Verify the shader bundle and the committed Metal tool lock
+        if: needs.shaders.outputs.metal == 'true'
+        env:
+          BUNDLE_SHA256: ${{ needs.shaders.outputs.bundle_sha256 }}
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/ios-shaders/renderer-shaders.tar.gz"
+          [[ "$BUNDLE_SHA256" =~ ^[0-9a-f]{64}$ ]]
+          actual=$(shasum -a 256 "$archive" | cut -d' ' -f1)
+          if [ "$actual" != "$BUNDLE_SHA256" ]; then
+            echo "::error::Translated shader bundle digest $actual does not match the Linux job's $BUNDLE_SHA256"
+            exit 1
+          fi
+          input="$RUNNER_TEMP/ios-shader-input"
+          rm -rf "$input" && mkdir -p "$input"
+          tar -xzf "$archive" -C "$input"
+          python3 tools/shaders/generate.py --output "$RUNNER_TEMP/ios-shader-check" --prebuilt "$input/renderer-shaders"
+          if ! python3 tools/shaders/metal_tool_lock.py --check --sdk iphoneos --lock platforms/mobile/metal-tool-lock.json; then
+            echo "::error::The runner's Xcode no longer matches platforms/mobile/metal-tool-lock.json. Run the iOS Metal tool lock workflow (.github/workflows/ios-metal-tool-lock.yml), review its artifact and update the lock in a pull request."
+            exit 1
+          fi
+          {
+            echo "GLOB2_RENDER_SHADER_INPUT=$input/renderer-shaders"
+            echo "GLOB2_METAL_SDK=iphoneos"
+            echo "GLOB2_METAL_TOOL_LOCK=$GITHUB_WORKSPACE/platforms/mobile/metal-tool-lock.json"
+          } >> "$GITHUB_ENV"
+
+      # With a committed Metal tool lock the build requires the complete Metal
+      # set and fails closed. Sources without one package portable SDL only,
+      # explicitly and with a warning.
       - name: Compile game and generate Xcode project
+        env:
+          METAL_REQUIRED: ${{ needs.shaders.outputs.metal }}
         run: |
           set -euo pipefail
           sdl_gpu=()
-          # Tags older than the SDL GPU packaging check do not know the option.
-          if python3 platforms/mobile/ios.py --help | grep -q -- --allow-missing-sdl-gpu; then
-            echo "::warning::This TestFlight build ships without SDL GPU Metal shaders (portable SDL only)"
-            sdl_gpu=(--allow-missing-sdl-gpu)
+          if [ "$METAL_REQUIRED" != true ]; then
+            echo "::warning::This TestFlight build ships without SDL GPU Metal shaders (portable SDL only): the source has no platforms/mobile/metal-tool-lock.json. Run the iOS Metal tool lock workflow (.github/workflows/ios-metal-tool-lock.yml) and commit its reviewed lock in a pull request."
+            # Tags older than the SDL GPU packaging check do not know the option.
+            if python3 platforms/mobile/ios.py --help | grep -q -- --allow-missing-sdl-gpu; then
+              sdl_gpu=(--allow-missing-sdl-gpu)
+            fi
           fi
           python3 platforms/mobile/ios.py configure --environment device --release \
             --unsigned --build-number "$BUILD_NUMBER" --jobs 2 "${sdl_gpu[@]}"

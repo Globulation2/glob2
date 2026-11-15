@@ -1,0 +1,79 @@
+# Generates the trusted Metal tool lock on the pinned Xcode runner image and
+# uploads it for review. It never commits or pushes: the lock enters master only
+# through a reviewed pull request that adds platforms/mobile/metal-tool-lock.json
+# (docs/mobile/ios.md, "SDL GPU Metal shaders").
+name: iOS Metal tool lock
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Globulation2/glob2 branch, tag or commit whose Xcode pin to lock
+        required: true
+        default: master
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-metal-tool-lock-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && github.ref != format('refs/heads/{0}', github.event.repository.default_branch)) }}
+
+jobs:
+  lock:
+    if: ${{ github.event_name == 'workflow_dispatch' && !github.event.repository.fork }}
+    name: Generate the Metal tool lock for review
+    runs-on: xcode-27
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      # Unlike the build workflows, never fall back to the runner default Xcode.
+      - name: Select the pinned Xcode
+        run: |
+          set -euo pipefail
+          xcode=$(python3 -c 'import json; print(json.load(open("platforms/mobile/toolchain.json"))["ios"]["xcode"])')
+          developer="/Applications/Xcode_${xcode}.app/Contents/Developer"
+          if [ ! -d "$developer" ]; then
+            echo "::error::Xcode $xcode is not installed at $developer on this runner image; update the pin in platforms/mobile/toolchain.json or the runner"
+            exit 1
+          fi
+          echo "DEVELOPER_DIR=$developer" >> "$GITHUB_ENV"
+      - name: Write the lock from the pinned toolchain
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/metal-tool-lock
+          python3 tools/shaders/metal_tool_lock.py --sdk iphoneos --output artifacts/metal-tool-lock/metal-tool-lock.json
+          git rev-parse HEAD > artifacts/metal-tool-lock/source-commit.txt
+      - name: Compare with the committed lock
+        run: |
+          set -uo pipefail
+          {
+            echo "## Metal tool lock"
+            echo "Source: Globulation2/glob2 @ $(cat artifacts/metal-tool-lock/source-commit.txt)"
+            echo '```json'
+            cat artifacts/metal-tool-lock/metal-tool-lock.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ -f platforms/mobile/metal-tool-lock.json ]; then
+            if python3 tools/shaders/metal_tool_lock.py --sdk iphoneos --check > artifacts/metal-tool-lock/check.txt 2>&1; then
+              echo "The committed lock already matches this runner image." >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "::warning::The committed lock differs from this runner image; review the artifact and update it in a pull request"
+              { echo '```'; cat artifacts/metal-tool-lock/check.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+            fi
+          else
+            echo "No committed lock yet: review the artifact and commit it as platforms/mobile/metal-tool-lock.json in a pull request." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: metal-tool-lock
+          path: artifacts/metal-tool-lock/
+          if-no-files-found: error
+          retention-days: 30
