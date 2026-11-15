@@ -495,6 +495,8 @@ struct TerrainCellResult
     Uint8 *pixels = nullptr;
     std::optional<TerrainVisual::Compositor::CellMask> mask;
     const TerrainVisual::Compositor::CellMask *reused = nullptr;
+    // Keeps `reused` alive for a background job when it is a page's held mask.
+    std::shared_ptr<const SoftwareTerrainCache::HeldMask> held;
     std::optional<TerrainVisual::Compositor::Refresh> refresh;
     bool opaque = false, empty = false, keepMask = false;
 };
@@ -635,6 +637,7 @@ void SoftwareTerrainCache::cancelPending()
     for (auto &page : pending)
         page->cancelled.store(true, std::memory_order_relaxed);
     pending.clear();
+    workerMaterials.reset();
 }
 
 int SoftwareTerrainCache::capturePixelsPerCell(int width, int height)
@@ -977,7 +980,9 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 		compositor.prepareVisible(highResolution, time, map,
 			chunkOf(left + vx) * ChunkTiles, chunkOf(top + vy) * ChunkTiles,
 			(chunkOf(right + vx) + 1) * ChunkTiles - 1,
-			(chunkOf(bottom + vy) + 1) * ChunkTiles - 1, reducedLegacyView, !portable);
+			(chunkOf(bottom + vy) + 1) * ChunkTiles - 1, reducedLegacyView,
+			// Portable draws decor HD frames only zoomed in past its sprite threshold.
+			!portable || GAGCore::Sprite::portableHighResolution());
 	};
 	prepareMaterials();
 	// A capture is drawn once, so it waits for streamed HD rather than
@@ -1179,14 +1184,25 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 			return pageStorage(scale, false, reduction) +
 				(gpu ? pageStorage(scale, true, reduction) - pageStorage(scale, false, reduction) : 0);
 		};
-		// Finished pages join the cache, a few per frame to bound uploads.
+		// Finished pages join the cache within a per-frame byte budget: a new
+		// page uploads its whole texture on its first draw (16 MiB at four times
+		// density) and a refresh copies its changed cells. One always goes.
 		if (!pending.empty())
 		{
+			constexpr std::size_t InstallBytesPerFrame = 8u * 1024 * 1024;
+			std::size_t installBytes = 0;
 			int installs = 0;
 			std::erase_if(pending, [&](const std::shared_ptr<TerrainPendingPage> &page)
 			{
 				if (!page->done() || installs >= 4)
 					return false;
+				const std::size_t side = std::size_t(ChunkPixels) * page->scale / page->downsample;
+				const std::size_t bytes = page->refresh
+					? page->results.size() * (side / ChunkTiles) * (side / ChunkTiles) * 4
+					: side * side * 4;
+				if (installs && installBytes + bytes > InstallBytesPerFrame)
+					return false;
+				installBytes += bytes;
 				if (page->failed || page->seed != map.terrainSeed())
 					return true;
 				if (page->refresh)
@@ -1289,11 +1305,15 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 			return best;
 		};
 		// One snapshot of every material serves all of this frame's launches.
+		// The cache keeps the last one, so its texture copies stay shared and a
+		// new snapshot copies only textures whose revision moved on.
+		if (!deferring)
+			workerMaterials.reset();
 		std::shared_ptr<const TerrainVisual::Compositor::CpuMaterials> snapshot;
 		const auto frameMaterials = [&]
 		{
 			if (!snapshot)
-				snapshot = compositor.cpuMaterials();
+				workerMaterials = snapshot = compositor.cpuMaterials();
 			return snapshot;
 		};
 		const auto launchRefresh = [&](Chunk &entry, const std::array<Tile, ChunkTiles * ChunkTiles> &tiles) -> std::size_t
@@ -1355,11 +1375,14 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				result.index = i;
 				result.input = tiles[i];
 				result.pixels = reinterpret_cast<Uint8 *>(page->cellPixels.data() + k * std::size_t(n) * n);
-				// Workers reuse a copy of the kept coverage rather than sampling it again.
+				// Workers read the kept coverage, shared, rather than sampling it again.
 				const auto &held = entry.masks[i];
 				const int maskScale = entry.downsample > 1 ? 1 : entry.scale;
 				if (held && held->mask.recipe == tiles[i].recipe && held->mask.scale == maskScale)
-					result.mask = held->mask;
+				{
+					result.held = held;
+					result.reused = &held->mask;
+				}
 				page->results.push_back(std::move(result));
 			}
 			page->cellsPerJob = 16;

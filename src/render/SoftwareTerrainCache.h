@@ -3,6 +3,7 @@
 #include <SDLGraphicContext.h>
 #include "terrain/TerrainCompositor.h"
 #include <algorithm>
+#include <atomic>
 #include <array>
 #include <cstdint>
 #include <memory>
@@ -42,8 +43,9 @@ class SoftwareTerrainCache
 	struct HeldMask
 	{
 		TerrainVisual::Compositor::CellMask mask;
-		std::shared_ptr<std::size_t> total;
-		HeldMask(TerrainVisual::Compositor::CellMask m, std::shared_ptr<std::size_t> t)
+		// Atomic: a refresh job on a worker can hold the last reference.
+		std::shared_ptr<std::atomic<std::size_t>> total;
+		HeldMask(TerrainVisual::Compositor::CellMask m, std::shared_ptr<std::atomic<std::size_t>> t)
 			: mask(std::move(m)), total(std::move(t))
 		{
 			*total += mask.bytes();
@@ -95,7 +97,8 @@ class SoftwareTerrainCache
 	std::unique_ptr<TerrainVisual::Surface> image;
 		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> parked{nullptr, SDL_DestroySurface};
 		std::vector<OpaqueRun> opaqueRuns;
-		std::array<std::unique_ptr<HeldMask>, ChunkTiles * ChunkTiles> masks;
+		// Shared with refresh jobs, which read a mask while the page keeps it.
+		std::array<std::shared_ptr<HeldMask>, ChunkTiles * ChunkTiles> masks;
 		bool valid = false;
 		// Device-composed pages have no matching pixels in image/parked.
 		bool cpuComposed = true;
@@ -158,7 +161,7 @@ class SoftwareTerrainCache
 	std::uint64_t frame = 0, hits = 0, rebuilds = 0;
 	std::uint64_t textureUse = 0, reductions = 0;
 	// Bytes of every chunk's kept masks; shared so a mask outliving the cache is safe.
-	std::shared_ptr<std::size_t> maskTotal = std::make_shared<std::size_t>(0);
+	std::shared_ptr<std::atomic<std::size_t>> maskTotal = std::make_shared<std::atomic<std::size_t>>(0);
 	SDL_Rect paintBounds{};
 	// Composition scale and subsequent page reduction are separate: reduction
 	// filters the native material result, never its individual source textures.
@@ -172,6 +175,8 @@ class SoftwareTerrainCache
 	// Pages composed by background workers while the view draws stand-ins.
 	std::vector<std::shared_ptr<TerrainPendingPage>> pending;
 	bool incomplete = false;
+	// The last material snapshot given to workers (see prepareAtResolution).
+	std::shared_ptr<const TerrainVisual::Compositor::CpuMaterials> workerMaterials;
 	// A missing page found no build slot last frame, so animation refreshes wait.
 	bool coldBacklog = false;
 	void cancelPending();

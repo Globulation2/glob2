@@ -82,8 +82,9 @@ on the clock of the legacy OpenGL sprite bands), so zooming across the threshold
 and back recomposes nothing. Then pages compose from native frames, the HD pages
 are discarded, the streamed banks' frames retire into the shared budget for
 [retired frames](../development/rendering-benchmarks.md#direct-terrain) and whole sheets a page demanded through `Sprite::baseFrame`
-release their layers until the next demand. Decor HD frames never stream there,
-since the portable renderer draws decor sprites from their native frames.
+release their layers until the next demand. Decor HD frames stream there only
+while the portable renderer draws sprites from HD layers (past two screen pixels
+a logical pixel); below that it draws decor from native frames and retires them.
 Captures keep their own density and HD artwork.
 
 Terrain uses the shared CPU material compositor and bounded 16 by 16 cell pages
