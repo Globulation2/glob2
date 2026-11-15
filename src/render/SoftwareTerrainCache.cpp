@@ -247,16 +247,6 @@ std::size_t pageStorage(int scale, bool gpu, int downsample = 1)
 		   SoftwareTerrainCache::ChunkPixels * SoftwareTerrainCache::ChunkPixels * 4 +
 		   pixels * pixels * 4 * (gpu ? 3 : 1);
 }
-// Normal surface destruction flushes queued renderer references and releases
-// textures on both GPU backends. Keep the composed pixels owned by the page.
-void retireTexture(SoftwareTerrainCache::Chunk &chunk)
-{
-	// A page whose pixels went after upload had only the texture: compose it again.
-	if (chunk.image->portableReleased())
-		chunk.valid = false;
-	chunk.parked.reset(chunk.image->takePixels());
-	chunk.image.reset();
-}
 // A page drawn on the portable renderer keeps its CPU pixels only while
 // something will write them: animation outside the shared overlay tiles
 // (shorelines, mixed animated cells) or a pending reduction from it.
@@ -1775,6 +1765,17 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				if (!entry->valid || sourcesChanged || entry->tiles != tiles || (gpuPages && !gpuPages->find(*entry)))
 				{
 					auto *target = entry->image ? entry->image->getSDLSurface() : entry->parked.get();
+					if (!target && !gpuPages)
+					{
+						// A released page whose texture then retired holds no pixels
+						// at all (retireTexture): compose it whole into new ones.
+						entry->valid = false;
+						entry->image.reset();
+						const int side = ChunkPixels * entry->scale / entry->downsample;
+						entry->parked.reset(SDL_CreateSurface(side, side, SDL_PIXELFORMAT_ARGB8888));
+						if (!entry->parked) throw std::bad_alloc();
+						target = entry->parked.get();
+					}
 					const bool wasValid = entry->valid;
 					// Cells written by this rebuild; an uploaded page updates only those.
 					std::array<bool, ChunkTiles * ChunkTiles> dirty{};
@@ -2153,6 +2154,17 @@ bool SoftwareTerrainCache::releaseMasks(std::size_t needed)
 			held.reset();
 	}
 	return *maskTotal + needed <= budget;
+}
+// Normal surface destruction flushes queued renderer references and releases
+// textures on both GPU backends. Keep the composed pixels owned by the page.
+void SoftwareTerrainCache::retireTexture(Chunk &chunk)
+{
+	// A page whose pixels went after upload had only the texture: it keeps
+	// neither pixels nor a drawable, and composes again when next prepared.
+	if (chunk.image->portableReleased())
+		chunk.valid = false;
+	chunk.parked.reset(chunk.image->takePixels());
+	chunk.image.reset();
 }
 std::size_t SoftwareTerrainCache::bytes() const
 {

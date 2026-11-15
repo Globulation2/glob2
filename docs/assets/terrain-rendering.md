@@ -516,7 +516,8 @@ terrain revision changes, so preparing a view unions short lists rather than
 visiting every cell. On the portable renderer a drawn page that is not
 native density and has nothing animated outside the shared tiles keeps only its
 texture: its CPU pixels go, and a change, an evicted texture or a renderer reset
-composes it again. Pages neither drawn nor standing in for about ten seconds
+composes it again into newly allocated pixels (an evicted one holds no pixels
+until then). Pages neither drawn nor standing in for about ten seconds
 leave the cache, as do animated tile sets, and the last material snapshot goes
 two seconds after the last launch. The editor, tiled captures, offscreen draws
 (map exports) and `DRAW_COMPLETE_TERRAIN` draws still compose every page before

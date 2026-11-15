@@ -2111,6 +2111,60 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(compositor.scale() == 4);
 		CHECK(resident(false) > 0);
 	}
+	TEST_CASE("a portable page retired after releasing its pixels composes again [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
+			.screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		REQUIRE(globals->gfx->backendSwitchStatus().active == GAGCore::RendererBackend::PortableSDL);
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
+		auto &map = fixture.game.map;
+		// No shoreline or animated material, so drawn reduced pages keep no pixels.
+		for (int y = 0; y < map.getH(); ++y)
+			for (int x = 0; x < map.getW(); ++x)
+				map.paintCell(x, y, (x + y) % 3 ? ICE : GRASS);
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		SoftwareTerrainCache cache;
+		const auto draw = [&]
+		{
+			globals->gfx->drawFilledRect(0, 0, 256, 256, 17, 29, 41);
+			globals->gfx->beginMapTransform(0.25f, 0, 0, 0, 0, 256, 256);
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 31, 31, 0, 0, fixture.team->me, true));
+			cache.draw(*globals->gfx);
+			globals->gfx->endMapTransform();
+		};
+		// A reduced interactive view, as when the visible pages overflow the
+		// texture budget: workers compose the pages, which release their pixels
+		// once drawn from uploaded textures.
+		cache.benchmarkDownsample = 2;
+		cache.deferBuilds = true;
+		const auto released = [&]
+		{
+			return std::count_if(cache.chunks.begin(), cache.chunks.end(),
+				[](const auto &chunk) { return chunk->image && chunk->image->portableReleased(); });
+		};
+		for (int attempt = 0; attempt < 400 && (!cache.complete() || cache.pendingPages() || !released()); ++attempt)
+		{
+			draw();
+			SDL_Delay(5);
+		}
+		REQUIRE(cache.samplingReduction() > 1);
+		REQUIRE(released() > 0);
+		// Texture pressure retires a released page: it keeps neither pixels nor a
+		// drawable. Preparing it again, as a complete draw does, composes it anew
+		// instead of writing through a null surface.
+		auto page = std::find_if(cache.chunks.begin(), cache.chunks.end(),
+			[](const auto &chunk) { return chunk->image && chunk->image->portableReleased(); });
+		SoftwareTerrainCache::retireTexture(**page);
+		CHECK(!(*page)->image);
+		CHECK(!(*page)->parked);
+		CHECK(!(*page)->valid);
+		cache.deferBuilds = false;
+		draw();
+		CHECK(cache.complete());
+		CHECK(std::all_of(cache.chunks.begin(), cache.chunks.end(),
+			[](const auto &chunk) { return chunk->valid && (chunk->image || chunk->parked); }));
+	}
 	TEST_CASE("offscreen terrain density follows the target and stays stable across capture tiles "
 			  "[display]")
 	{

@@ -138,6 +138,8 @@ class SoftwareTerrainCache
 	// Frees kept masks of pages not drawn this frame, oldest first, until
 	// `needed` more bytes fit the mask budget. Returns whether they now fit.
 	bool releaseMasks(std::size_t needed);
+	// Drops a page's drawable (and so its renderer texture), parking its pixels.
+	static void retireTexture(Chunk &);
 	std::vector<std::unique_ptr<Chunk>> chunks;
     std::shared_ptr<const TerrainVisual::Compositor::CpuMaterials> cpuMaterialLease;
 	std::shared_ptr<const TerrainRegistry> registry;
