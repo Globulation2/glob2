@@ -53,8 +53,18 @@ Preference changes, a new asset source generation or a different pack directory
 start a reload; unchanged requests do not. Explicit synchronous reloads used by
 tools still refresh unchanged artwork. Disabling the preference releases the
 optional layers through asset polling, rather than through screen destruction.
-Only desktop legacy OpenGL draws sprite frames from their HD layers. The portable
-SDL renderer and the presentation devices reach them solely through
+Desktop legacy OpenGL draws sprite frames from their HD layers at every zoom.
+The portable SDL renderer draws them once the view exceeds two screen pixels a
+logical pixel (`Sprite::highResolutionDrawable`): HD frames hold four texels a
+logical pixel and its textures have no mip chain, so they shrink at most twice.
+It drops back to native frames after ten seconds below that, like the legacy
+GL bands, and then releases the layers that drawing demanded. A drawn sprite
+demands its team layers with its base ones; a frame draws in HD only once every
+layer its native frame has is loaded (a unit only once its whole action is), at
+most eight frames a frame draw in HD for the first time (each one uploads), and
+HD layers sample linearly with premultiplied alpha. Recoloured HD team layers,
+buildings' included, share each sprite's 64 MiB recolour cache. Otherwise the
+portable renderer and the presentation devices reach HD layers solely through
 `Sprite::baseFrame` (terrain composition, skin shadows and editor swatches), so
 there a sprite loads only its uncolored base layers, once `baseFrame` or an HD
 window first asks for them, and uploads them on the first direct draw. The first

@@ -144,11 +144,26 @@ namespace GAGCore
     {
         return !_gc || !(_gc->getOptionFlags() & GraphicContext::USEGPU);
     }
+    // Sprites the portable renderer draws from their HD layers while zoomed in
+    // (Sprite::drawHighResolution), and their names: those load team layers too.
+    static std::set<Sprite*> drawDemandedSprites;
+    static std::set<std::string> drawDemandedNames;
+    // Portable sprite detail: 0 draws HD frames, 1 native. HD frames hold four
+    // texels a logical pixel and portable textures have no mip chain, so HD
+    // starts above two screen pixels a logical pixel, where it shrinks at most
+    // twice. Lowered only after lowerDetailDelay, like the legacy GL bands.
+    static DetailHysteresis portableSpriteDetail(1);
+    // Frames whose HD textures were first drawn, and how many first draws this
+    // frame admitted: each one uploads (and may recolour) a frame.
+    static std::set<std::pair<const Sprite*, unsigned>> portableDrawnFrames;
+    static unsigned portableFirstDraws = 0;
+    static constexpr unsigned PortableFirstDrawsPerFrame = 8;
     // On-demand backends sample only uncolored base layers (baseFrame), so
-    // they neither decode nor retain team-colour layers.
-    static std::vector<std::string> wantedLayers(const PackEntry& entry)
+    // they neither decode nor retain team-colour layers, unless the portable
+    // renderer draws that sprite's HD frames.
+    static std::vector<std::string> wantedLayers(const PackEntry& entry, const std::string& name)
     {
-        if (highResolutionOnDemand()) return {entry.base};
+        if (highResolutionOnDemand() && !drawDemandedNames.contains(name)) return {entry.base};
         return {entry.base, entry.team};
     }
     static bool highResolutionPackageReady(const std::string& name, const std::string& directory)
@@ -604,7 +619,9 @@ namespace GAGCore
 	{
 		RotatedImage *image = experiment ? experimentRotated[index] : rotated[index];
 		assert(image);
-		if (dynamicTeamColor)
+		// HD recolours are sixteen times a native one: buildings use the capped
+		// cache for those too, rather than one retained clone per colour.
+		if (dynamicTeamColor || experiment)
 		{
 			// Bounded software/shader-unavailable fallback: keyed by source frame,
 			// resolution (native/HD) and team color, never by the composited result.
@@ -726,8 +743,25 @@ namespace GAGCore
     unsigned Sprite::highResolutionDetailSkip() { return highResolutionSkip.level(); }
     void Sprite::setHighResolutionDetailDelay(std::int64_t nanoseconds) { lowerDetailDelay = nanoseconds; }
     std::int64_t Sprite::highResolutionDetailDelay() { return lowerDetailDelay; }
+    bool Sprite::portableHighResolution()
+    {
+        return highResolutionEnabled && _gc && !(_gc->getOptionFlags() & GraphicContext::USEGPU) &&
+            _gc->backendSwitchStatus().active == RendererBackend::PortableSDL && highResolutionFramesSupported() &&
+            portableSpriteDetail.level() == 0;
+    }
     void Sprite::setHighResolutionDensity(double density)
     {
+        portableFirstDraws = 0;
+        if (portableSpriteDetail.update(density > 2 ? 0 : 1, GAGCore::steadyClockNanoseconds(), lowerDetailDelay) &&
+            portableSpriteDetail.level() == 1)
+        {
+            // Back on native frames: what drawing demanded goes again.
+            const auto demanded = std::exchange(drawDemandedSprites, {});
+            drawDemandedNames.clear();
+            portableDrawnFrames.clear();
+            for (auto *sprite : demanded)
+                if (loadedSprites.contains(sprite)) sprite->releaseHighResolutionDemand();
+        }
         // HD frames hold four texels for each logical pixel; each band halves that.
         const unsigned wanted = detailSkipFor(density);
         highResolutionSkipChosen = true;
@@ -891,7 +925,7 @@ namespace GAGCore
             if (entry == packEntries->end()) continue;
             auto &inputs = stream.pending[frame];
             stream.queued.push_back(frame);
-            for (const auto &file : wantedLayers(entry->second))
+            for (const auto &file : wantedLayers(entry->second, fileName))
                 if (validHighResolutionFile(file)) inputs.add(directory + '/' + file, mipmaps);
         }
     }
@@ -1009,6 +1043,34 @@ namespace GAGCore
             prefetchHighResolutionIncremental(fileName, images.size()), std::move(prepared), 0,
             retainPublishedOnFailure});
     }
+    bool Sprite::highResolutionDrawable(unsigned index)
+    {
+        if (!portableHighResolution()) return false;
+        if (!drawDemandedNames.contains(fileName))
+        {
+            // Load the team layers with the base ones: a frame never mixes resolutions.
+            drawDemandedNames.insert(fileName);
+            if (!highResolutionDemanded) {
+                drawDemandedSprites.insert(this);
+                demandHighResolution();
+            } else if (std::any_of(rotated.begin(), rotated.end(), [](auto *image) { return image; }) &&
+                       !pendingHighResolution.contains(this) && !highResolutionDeferred(fileName))
+                // Base layers something else demanded are loaded without team layers.
+                queueHighResolutionReload(true);
+        }
+        // Every layer the native frame has, in HD; a frame may be team layer only.
+        if (index >= experimentImages.size() || (!experimentImages[index] && !experimentRotated[index])) return false;
+        if (images[index] && !experimentImages[index]) return false;
+        if (rotated[index] && (!experimentRotated[index] || !experimentRotated[index]->orig->hasPixels())) return false;
+        if (dynamicTeamColor && !blockHasCompleteHD(index)) return false;
+        // A first draw uploads the frame; a few per frame keep zooming in smooth.
+        const auto key = std::make_pair(static_cast<const Sprite*>(this), index);
+        if (portableDrawnFrames.contains(key)) return true;
+        if (portableFirstDraws >= PortableFirstDrawsPerFrame) return false;
+        ++portableFirstDraws;
+        portableDrawnFrames.insert(key);
+        return true;
+    }
     void Sprite::releaseHighResolutionDemand()
     {
         if (!highResolutionDemanded || !requestedHighResolutionOnDemand || highResolutionDeferred(fileName)) return;
@@ -1024,6 +1086,8 @@ namespace GAGCore
     }
     void Sprite::releaseHighResolution()
     {
+        std::erase_if(portableDrawnFrames, [this](const auto &key) { return key.first == this; });
+        drawDemandedSprites.erase(this);
         clearTeamColorCache();
         for (auto *&image : experimentImages) { delete image; image = nullptr; }
         for (auto *&image : experimentRotated) { delete image; image = nullptr; }
@@ -1334,7 +1398,7 @@ namespace GAGCore
         for (size_t i = 0; i < frames; ++i) {
             auto found = packEntries->find(prefix + std::to_string(i));
             if (found == packEntries->end()) continue;
-            for (const auto& file : wantedLayers(found->second)) {
+            for (const auto& file : wantedLayers(found->second, name)) {
                 if (!validHighResolutionFile(file)) continue;
                 firstFrame = std::min(firstFrame, i);
                 add(directory + '/' + file, mipmaps);
@@ -1369,12 +1433,12 @@ namespace GAGCore
         for (size_t frame = index; frame < index + lookahead; ++frame) {
             auto entry = packEntries->find(prefix + std::to_string(frame));
             if (entry == packEntries->end()) continue;
-            for (const auto& file : wantedLayers(entry->second))
+            for (const auto& file : wantedLayers(entry->second, name))
                 if (validHighResolutionFile(file)) inputs.request(Toolkit::assets(), directory + '/' + file, mipmaps);
         }
         auto found = packEntries->find(prefix + std::to_string(index));
         if (found == packEntries->end()) return true;
-        for (const auto& file : wantedLayers(found->second))
+        for (const auto& file : wantedLayers(found->second, name))
             if (validHighResolutionFile(file) && inputs.pending(directory + '/' + file, mipmaps)) return false;
         return true;
     }
@@ -1446,7 +1510,7 @@ namespace GAGCore
             if (release) result->releasePixels();
             return result.release();
         };
-        const bool team = !highResolutionOnDemand();
+        const bool team = !highResolutionOnDemand() || drawDemandedNames.contains(fileName);
         // A unit's base layer is recoloured with its team layer without the shader.
         auto *normal = load(entry.base, images[index], dynamicTeamColor ? releaseTeam : releaseBase);
         auto *colored = team ? load(entry.team, rotated[index] ? rotated[index]->orig : nullptr, releaseTeam) : nullptr;
@@ -1496,6 +1560,8 @@ namespace GAGCore
         std::erase(bandReloadQueue, this);
         if (bandReloading == this) bandReloading = nullptr;
         deferredHighResolution.erase(this);
+        drawDemandedSprites.erase(this);
+        std::erase_if(portableDrawnFrames, [this](const auto &key) { return key.first == this; });
         if (deferredHighResolutionCursor == this) deferredHighResolutionCursor = nullptr;
         if (loadedSprites.erase(this)) pendingHighResolution.erase(this);
 #ifdef HAVE_OPENGL

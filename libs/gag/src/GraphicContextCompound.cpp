@@ -395,6 +395,17 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
                     SDL_Rect{sx,sy,sw,sh}, SDL_FRect{x,y,w,h}, alpha);
                 return;
             }
+            if (renderer == portableRenderer.get() && surface->highResolutionSampling)
+            {
+                // HD sprite layers and reduced terrain pages are drawn away from
+                // their texel size: sample them linearly, with premultiplied
+                // alpha, after the nearest-sampled batch drawn before them.
+                if (spriteBatch.owner == this) spriteBatch.flush();
+                renderer->blitLinear(surface, pixels, surface->contentRevision(), SDL_Rect{sx,sy,sw,sh},
+                                     SDL_FRect{x,y,w,h}, alpha);
+                ++drawCalls;
+                return;
+            }
             if (spriteBatch.owner == this && renderer != deviceRenderer.get())
             {
                 const float u0 = float(sx)/pixels->w, v0 = float(sy)/pixels->h;

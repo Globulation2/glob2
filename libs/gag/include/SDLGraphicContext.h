@@ -306,6 +306,9 @@ namespace GAGCore
 		void drawSprite(int x, int y, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
 		//! Draws a frame's base and team layers as one team-colour shader quad; false when it cannot.
 		bool drawTeamShaderSprite(float x, float y, float w, float h, Sprite *sprite, unsigned index, Uint8 alpha);
+		// The portable renderer zoomed in: the frame's HD layers at its logical
+		// size, when they can draw now (Sprite::highResolutionDrawable).
+		bool drawPortableHighResolution(float x, float y, float w, float h, Sprite *sprite, unsigned index, Uint8 alpha);
 		void drawSprite(float x, float y, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
 		
 		void drawSprite(int x, int y, int w, int h, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
@@ -1010,6 +1013,14 @@ namespace GAGCore
         //! banks retire frames through their windows instead; elsewhere this
         //! does nothing.
         void releaseHighResolutionDemand();
+        //! Whether the portable renderer's view is zoomed in enough to draw sprite
+        //! frames from their HD layers.
+        static bool portableHighResolution();
+        //! On the portable renderer, zoomed in: demands this sprite's HD layers
+        //! (team layers included) and answers whether frame `index` can draw from
+        //! them now. False until they load, for a unit whose action is not
+        //! complete in HD, and for a first draw beyond this frame's upload budget.
+        bool highResolutionDrawable(unsigned index);
 
         //! The frame's shape filled with one colour, for effects drawn over the
         //! sprite at its logical size: opaque wherever either layer is, or only
