@@ -498,12 +498,23 @@ void GraphicContext::captureScreenshot()
     } catch (const RenderAdmissionDeferred &) {}
     catch (const std::exception &error) { SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Screenshot: %s", error.what()); pendingScreenshot.clear(); }
 }
+std::size_t GraphicContext::retainedDeviceSnapshotBytes() const
+{
+    return deviceRenderer ? retainedDeviceTextureBytes(*deviceRenderer) : 0;
+}
 void GraphicContext::recoverPresentationDevice()
 {
     cancelCaptures();
     resetDeviceSkinState(); deviceTargetStates.clear();
     ++glContextGeneration;
-    renderer = nullptr; deviceRenderer.reset(); presentationDevice.reset();
+    // Snapshots move to the replacement adapter, so surfaces whose pixels were
+    // released draw again; the old adapter never touches its lost device.
+    auto previous = std::move(deviceRenderer);
+    renderer = nullptr; presentationDevice.reset();
+    struct DiscardOnFailure {
+        std::unique_ptr<RenderBackend> &adapter;
+        ~DiscardOnFailure() { if (adapter) { adapter.reset(); Sprite::discardUnbackedHighResolution(); } }
+    } discardOnFailure{previous};
     // Recompile programs and recreate every graphics object after context loss.
     // Logical source pixels and immutable geometry remain owned by the registry.
     if (configuredBackend == RendererBackend::ProgrammableGL)
@@ -515,6 +526,7 @@ void GraphicContext::recoverPresentationDevice()
 #endif
     selectDeviceBlockCompression(*presentationDevice);
     deviceRenderer = makeDeviceRenderBackend(*presentationDevice, *deviceResources, getW(), getH());
+    if (previous) { adoptDeviceTextures(*previous, *deviceRenderer); previous.reset(); }
     renderer = deviceRenderer.get(); renderer->clip(&clipRect); resetRenderPacing();
 }
 void GraphicContext::handleDeviceFailure(const std::string &reason)

@@ -318,7 +318,7 @@ and as `RENDER_MEMORY` when a pass ends:
 | `gpu_backend_texture_bytes`, `gpu_backend_peak_texture_bytes` | Textures the portable SDL renderer holds, current and peak, which no surface accounts for; on phones they share system memory |
 | `gpu_frame_cache_bytes`, `gpu_skin_atlas_bytes`, `gpu_view_tile_bytes` | Render targets no surface owns |
 | `device_resource_bytes` | A render device's own total (SDL GPU, Programmable GL, WebGPU): resident textures, depth, geometry and staging; the `gpu_*` surface rows stay zero on these devices |
-| `device_snapshot_bytes` | The logical CPU copies `RenderResources` keeps so a device can restore its textures |
+| `device_snapshot_bytes`, `device_retained_bytes` | The logical CPU copies `RenderResources` keeps so a device can restore its textures, and the part retained for surfaces whose own pixels were released |
 | `image_decodes`, `image_decoded_bytes` | Image decodes since launch and the pixels they produced; growth during camera motion is streaming churn |
 | `peak_rss_bytes` | The process's peak resident set (zero on Windows and in the browser) |
 

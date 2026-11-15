@@ -55,6 +55,9 @@ void drawSkinShadow(GraphicContext &gfx, SkinShadow shadow, float x, float y,
     const float width = shadow.width * w / logicalSize;
     const float height = shadow.height * h / logicalSize;
     gfx.drawSurface(x + (w-width)/2, y + (h-height)/2, width, height, surface, alpha);
+    // A presentation device now holds the frame's snapshot: its CPU pixels can go.
+    if (!shadow.surface && shadow.sprite && gfx.renderDevice())
+        shadow.sprite->releaseDrawnHighResolution(shadow.frame);
 }
 bool skinMaterialShells(unsigned id)
 {

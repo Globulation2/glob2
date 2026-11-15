@@ -113,6 +113,15 @@ std::unique_ptr<RenderDevice> makeSoftwareRenderDevice(SDL_Surface *borrowedTarg
 // Records existing drawing calls as neutral packets. Device and registry must
 // outlive the adapter. Caller flushes before destroying/replacing either.
 std::unique_ptr<RenderBackend> makeDeviceRenderBackend(RenderDevice &, RenderResources &, int width, int height);
+// Keeps the adapter's restoration snapshot of `key` at `revision` until the key
+// is forgotten, so its owner may free its CPU pixels and draw with blitCached.
+// Retained snapshots never take part in eviction and are capped at half of each
+// budget class. False, changing nothing, without that snapshot or the room.
+bool retainDeviceTexture(RenderBackend &, const void *key, std::uint64_t revision);
+std::size_t retainedDeviceTextureBytes(const RenderBackend &);
+// Moves every cached snapshot to the adapter replacing it (context recovery);
+// both must share one registry. The previous adapter keeps none.
+void adoptDeviceTextures(RenderBackend &previous, RenderBackend &replacement);
 bool pushDeviceTarget(RenderBackend &, TextureSnapshot, float logicalWidth, float logicalHeight);
 void popDeviceTarget(RenderBackend &);
 bool recordDevicePacket(RenderBackend &, DrawPacket);

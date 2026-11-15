@@ -131,6 +131,53 @@ TEST_SUITE("RendererAssetLifetime") {
         }
     }
 
+    TEST_CASE("device-released pixels draw from retained snapshots across resets until a switch [display]") {
+        glob2test::ToolkitScope toolkit;
+        GraphicContext::setInitialRendererBackend(RendererBackend::Software);
+        auto *gfx=Toolkit::initGraphic(640,480,GraphicContext::NOAUDIO,"device pixel release");
+        unsigned tested=0;
+        for(const auto &choice:gfx->rendererAvailability()) {
+            if(!choice.available || (choice.backend!=RendererBackend::ProgrammableGL && choice.backend!=RendererBackend::SDLGPU))continue;
+            INFO("backend=" << int(choice.backend));
+            REQUIRE(gfx->requestBackendSwitch(choice.backend));gfx->nextFrame();
+            REQUIRE(gfx->backendSwitchStatus().phase==RendererSwitchPhase::Complete);
+            DrawableSurface source(8,8);
+            source.drawFilledRect(0,0,8,8,Color(255,0,0));
+            CHECK_FALSE(source.releaseDevicePixels()); // Nothing uploaded yet.
+            gfx->drawFilledRect(0,0,640,480,Color(0,0,0));
+            gfx->drawSurface(10,0,&source);
+            REQUIRE(source.releaseDevicePixels());
+            CHECK_FALSE(source.hasPixels());
+            CHECK(source.deviceReleased());
+            CHECK(source.deviceBacked());
+            CHECK(source.getW()==8);CHECK(source.getH()==8);
+            CHECK(gfx->retainedDeviceSnapshotBytes()>=8*8*4);
+            const auto drawnRed=[&](int x) {
+                gfx->drawFilledRect(0,0,640,480,Color(0,0,0));
+                gfx->drawSurface(x,0,&source);
+                gfx->nextFrame();
+                CaptureRequest request;request.width=640;request.height=480;
+                std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> pixels(gfx->renderDevice()->captureSynchronously(request),SDL_DestroySurface);
+                REQUIRE(pixels);
+                Uint8 r,g,b,a;
+                REQUIRE(SDL_ReadSurfacePixel(pixels.get(),x+4,4,&r,&g,&b,&a));
+                CHECK(r==255);CHECK(g==0);CHECK(b==0);
+            };
+            drawnRed(20);
+            // A device reset keeps the adapter's snapshots: the surface still draws.
+            SDL_Event reset{};reset.type=SDL_EVENT_RENDER_DEVICE_RESET;
+            GraphicContext::translateMouseEvent(&reset);
+            CHECK(source.deviceBacked());
+            drawnRed(30);
+            // A backend switch takes the snapshots: owners must reload.
+            REQUIRE(gfx->requestBackendSwitch(RendererBackend::Software));gfx->nextFrame();
+            CHECK_FALSE(source.deviceBacked());
+            CHECK(gfx->retainedDeviceSnapshotBytes()==0);
+            ++tested;
+        }
+        if(!tested) WARN("No programmable device available in this build");
+    }
+
     TEST_CASE("an offscreen pass draws a drawable rebuilt at a freed drawable's address [display]") {
         // Whole-map renders stream one terrain page at a time, each allocated where the last was freed.
         glob2test::ToolkitScope toolkit;
