@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <vector>
 #include <tuple>
+#include <unordered_map>
 #include <nlohmann/json.hpp>
 #include <filesystem>
 #ifdef __APPLE__
@@ -219,6 +220,7 @@ class SDLGPUDevice final : public RenderDevice
         updateMemory(pending);
         std::size_t bytes=std::size_t(w)*h*4;
         if(source)for(const auto &level:source->mips)bytes+=level.rgba.size();
+        if (bytes > TotalBudget - std::min(TotalBudget, counts.resourceBytes) && pooledUploadBytes) releaseUploadPool();
         if (bytes > TotalBudget - std::min(TotalBudget, counts.resourceBytes)) throw RenderAdmissionDeferred("SDL GPU combined budget exhausted");
         SDL_GPUTextureCreateInfo info{};
         info.type = SDL_GPU_TEXTURETYPE_2D; info.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
@@ -239,7 +241,7 @@ class SDLGPUDevice final : public RenderDevice
             if (!SDL_QueryGPUFence(device, entry.fence)) SDL_WaitForGPUFences(device, true, &entry.fence, 1);
             SDL_ReleaseGPUFence(device, entry.fence);
         }
-        for (auto [transfer, bytes] : entry.transfers) SDL_ReleaseGPUTransferBuffer(device, transfer);
+        for (auto [transfer, bytes] : entry.transfers) recycleUpload(transfer);
         if (entry.vertices) SDL_ReleaseGPUBuffer(device, entry.vertices);
         entry.textures.clear(); entry.geometry.clear(); entry.coverage.clear();
     }
@@ -284,15 +286,59 @@ class SDLGPUDevice final : public RenderDevice
         updateMemory(pending);
         const std::size_t used = counts.resourceBytes;
         if (bytes > TotalBudget) throw std::length_error("SDL GPU single resource exceeds combined budget");
+        if (used > TotalBudget - bytes && pooledUploadBytes) releaseUploadPool();
         if (used > TotalBudget - bytes) throw RenderAdmissionDeferred("SDL GPU combined resource budget exhausted");
     }
+    // Upload staging buffers are recycled once their work completes: creating
+    // and binding a Vulkan buffer for every frame's vertices and uploads cost
+    // more CPU than filling them. Power-of-two classes from 64 KiB to 16 MiB,
+    // a few of each, at most UploadPoolBudget idle; larger buffers are released.
+    // Idle buffers are not charged as resources: an admission that would fail
+    // and an explicit trim release them first.
+    static constexpr unsigned UploadClasses = 9;
+    static constexpr std::size_t UploadPoolBudget = 24 * 1024 * 1024, UploadClassDepth = 4;
+    std::array<std::vector<SDL_GPUTransferBuffer *>, UploadClasses> uploadPool;
+    std::unordered_map<SDL_GPUTransferBuffer *, unsigned> uploadClass; // Pooled-size uploads in use or idle.
+    std::size_t pooledUploadBytes = 0;
+    static std::size_t uploadClassBytes(unsigned index) { return std::size_t(64 * 1024) << index; }
     SDL_GPUTransferBuffer *transfer(SDL_GPUTransferBufferUsage usage, std::size_t size)
     {
         if (size > 0xffffffffu) throw std::length_error("GPU transfer exceeds 32-bit capacity");
-        SDL_GPUTransferBufferCreateInfo info{}; info.usage = usage; info.size = static_cast<Uint32>(size);
+        unsigned index = 0;
+        while (index < UploadClasses && uploadClassBytes(index) < size) ++index;
+        const bool pooled = usage == SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD && index < UploadClasses;
+        if (pooled && !uploadPool[index].empty()) {
+            auto *result = uploadPool[index].back(); uploadPool[index].pop_back();
+            pooledUploadBytes -= uploadClassBytes(index);
+            return result;
+        }
+        SDL_GPUTransferBufferCreateInfo info{}; info.usage = usage;
+        info.size = static_cast<Uint32>(pooled ? uploadClassBytes(index) : size);
         auto *result = SDL_CreateGPUTransferBuffer(device, &info);
         if (!result) fail("create transfer buffer");
+        if (pooled) uploadClass.emplace(result, index);
         return result;
+    }
+    // Work holding the buffer has completed (or was never submitted).
+    void recycleUpload(SDL_GPUTransferBuffer *buffer)
+    {
+        const auto found = uploadClass.find(buffer);
+        if (found != uploadClass.end()) {
+            const auto index = found->second;
+            if (uploadPool[index].size() < UploadClassDepth && pooledUploadBytes + uploadClassBytes(index) <= UploadPoolBudget) {
+                uploadPool[index].push_back(buffer); pooledUploadBytes += uploadClassBytes(index); return;
+            }
+            uploadClass.erase(found);
+        }
+        SDL_ReleaseGPUTransferBuffer(device, buffer);
+    }
+    void releaseUploadPool()
+    {
+        for (auto &buffers : uploadPool) {
+            for (auto *buffer : buffers) { uploadClass.erase(buffer); SDL_ReleaseGPUTransferBuffer(device, buffer); }
+            buffers.clear();
+        }
+        pooledUploadBytes = 0;
     }
     void upload(SDL_GPUCommandBuffer *commands, Work &entry, TexturePtr texture, SDL_Surface *source, bool opaque, bool premultiplied = false)
     {
@@ -665,6 +711,7 @@ class SDLGPUDevice final : public RenderDevice
         if (directTerrainHdPipeline) SDL_ReleaseGPUGraphicsPipeline(device, directTerrainHdPipeline);
         if (directTerrainHdFragment) SDL_ReleaseGPUShader(device, directTerrainHdFragment);
         streamed.clear();
+        releaseUploadPool();
         for (auto *pipeline : terrainPipelines) if (pipeline) SDL_ReleaseGPUGraphicsPipeline(device,pipeline);
         terrainPipelines.fill(nullptr);
         for (auto *shader : terrainShaders) if (shader) SDL_ReleaseGPUShader(device,shader);
@@ -754,6 +801,7 @@ class SDLGPUDevice final : public RenderDevice
     std::uint64_t generation() const override { return epoch; }
     RenderTelemetry telemetry() const override { return counts; }
     void trimRetiredResources() override {
+        releaseUploadPool();
         reap();
         for(auto it=cache.begin();it!=cache.end();) {
             if(it->second.use_count()==1 && !it->second->renderTarget && !it->second->progressiveUpload) it=cache.erase(it); else ++it;

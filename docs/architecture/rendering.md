@@ -749,7 +749,10 @@ terrain density when the full tiled layout fits the terrain-target and aggregate
 resource budgets. SDL GPU charges texture and depth allocations once over their
 owned lifetime, including pending submissions and captures, instead of rebuilding
 the complete texture lease set during each admission check. Staging buffers remain
-charged separately until their work completes. Explicit trimming releases completed GPU copies that can be
+charged separately until their work completes; upload staging buffers up to 16 MiB
+are then kept for reuse in power-of-two classes (at most 24 MiB idle, uncharged:
+an admission that would fail and an explicit trim release them first), since creating a Vulkan buffer for every frame's vertices and uploads
+cost more CPU than filling it. Explicit trimming releases completed GPU copies that can be
 restored from logical CPU snapshots, while preserving in-flight work, unfinished
 uploads and externally owned rendered targets. Actual pressure can reduce density,
 rather than a fixed low pixel cap.
