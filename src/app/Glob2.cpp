@@ -90,6 +90,7 @@
 
 #include "FrontendTheme.h"
 #include "MapCommand.h"
+#include <ThreadSupport.h>
 
 using std::shared_ptr;
 
@@ -575,6 +576,9 @@ int Glob2::run(const Cli::Request &request)
 		return ret;
 	}
 
+	// The windowed client's main thread draws every frame; headless commands
+	// above keep the default so batch runs do not crowd the desktop.
+	GAGCore::ThreadSupport::setCurrentThreadRole(GAGCore::ThreadSupport::ThreadRole::Interactive);
 	auto cancelled = std::make_shared<bool>(false);
 	auto launch = [cancelled]
 	{

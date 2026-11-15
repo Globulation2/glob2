@@ -882,6 +882,7 @@ set(GLOB2_GAG_SOURCES
     libs/gag/src/RecordingFiles.cpp
     libs/gag/src/RecordingSession.cpp
     libs/gag/src/ParallelPresentationWork.cpp
+    libs/gag/src/ThreadSupport.cpp
     libs/gag/src/PerformanceTelemetry.cpp
     libs/gag/src/BackgroundFileWriter.cpp
     libs/gag/src/Sha1.cpp
@@ -1664,6 +1665,7 @@ set(GLOB2_ANDROID_SOURCES
     libs/gag/src/RecordingFiles.cpp
     libs/gag/src/RecordingSession.cpp
     libs/gag/src/ParallelPresentationWork.cpp
+    libs/gag/src/ThreadSupport.cpp
     libs/gag/src/PerformanceTelemetry.cpp
     libs/gag/src/BackgroundFileWriter.cpp
     libs/gag/src/Sha1.cpp
@@ -2461,6 +2463,7 @@ set(GLOB2_IOS_SOURCES
     libs/gag/src/RecordingFiles.cpp
     libs/gag/src/RecordingSession.cpp
     libs/gag/src/ParallelPresentationWork.cpp
+    libs/gag/src/ThreadSupport.cpp
     libs/gag/src/PerformanceTelemetry.cpp
     libs/gag/src/BackgroundFileWriter.cpp
     libs/gag/src/Sha1.cpp
@@ -3412,6 +3415,7 @@ set(GLOB2_WEB_SOURCES
     libs/gag/src/RecordingMetadata.cpp
     libs/gag/src/RecordingFiles.cpp
     libs/gag/src/ParallelPresentationWork.cpp
+    libs/gag/src/ThreadSupport.cpp
     libs/gag/src/PerformanceTelemetry.cpp
     libs/gag/src/BackgroundFileWriter.cpp
     libs/gag/src/Sha1.cpp
