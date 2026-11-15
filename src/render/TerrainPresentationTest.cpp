@@ -1148,8 +1148,10 @@ TEST_SUITE("TerrainPresentation")
 												   y < inset + side));
 					}
 			};
-			std::uint64_t composed = 0;
-			// Each step changes the square, so each recomposes just this cell.
+			// A stock change that resizes the square recomposes just this cell; one that
+			// keeps its size (common at four samples, where squares are 1 or 2 wide)
+			// recomposes nothing.
+			int side = 0;
 			for (const Uint32 stock : {1u, 3u, 5u, 4u, 2u})
 			{
 				CAPTURE(stock);
@@ -1157,10 +1159,11 @@ TEST_SUITE("TerrainPresentation")
 				glob2test::observeMap(map, scene);
 				const auto before = cache.composedCells();
 				cache.update(scene, 0, 0, 15, 15, 0, 0, fixture.team->me, true, samples, image);
-				checkSquare(OverviewTerrainCache::resourceSquare(stock, capacity, samples));
-				if (composed)
-					CHECK(cache.composedCells() - before == 1);
-				composed = cache.composedCells();
+				const int square = OverviewTerrainCache::resourceSquare(stock, capacity, samples);
+				checkSquare(square);
+				if (side)
+					CHECK(cache.composedCells() - before == (square != side ? 1u : 0u));
+				side = square;
 			}
 			// Changing density replaces every page rather than mixing resolutions.
 			const auto before = cache.composedCells();
