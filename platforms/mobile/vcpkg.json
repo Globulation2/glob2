@@ -5,7 +5,13 @@
   "dependencies": [
     {
       "name": "sdl3",
-      "default-features": false
+      "default-features": false,
+      "features": [
+        {
+          "name": "vulkan",
+          "platform": "android"
+        }
+      ]
     },
     {
       "name": "sdl3-image",

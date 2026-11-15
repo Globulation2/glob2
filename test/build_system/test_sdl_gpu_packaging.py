@@ -84,6 +84,14 @@ class PackagingRequirementTests(unittest.TestCase):
                 asset_bundle.verify_apk_sdl_gpu(stripped)
 
 
+class AndroidSdlVulkanTests(unittest.TestCase):
+    def test_android_sdl_builds_the_vulkan_gpu_driver(self):
+        # Without SDL_VULKAN the SDL GPU device reports "vulkan unsupported" on Android.
+        manifest = json.loads((ROOT / 'platforms/mobile/vcpkg.json').read_text())
+        sdl = next(entry for entry in manifest['dependencies'] if isinstance(entry, dict) and entry['name'] == 'sdl3')
+        self.assertIn({'name': 'vulkan', 'platform': 'android'}, sdl.get('features', []))
+
+
 class GlslangProvisioningTests(unittest.TestCase):
     def test_pin_matches_the_shader_manifest(self):
         pin = json.loads((ROOT / 'buildsys/glslang.json').read_text())
