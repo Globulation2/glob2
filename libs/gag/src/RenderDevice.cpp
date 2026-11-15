@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <RenderDevice.h>
 #include <chrono>
+#include <cmath>
 #include <deque>
 #include <stdexcept>
 #include <unordered_map>
@@ -337,6 +338,34 @@ class DeviceRenderBackend final : public RenderBackend
         catch (const RenderAdmissionDeferred &) { abort(); return; }
         value.source = src; value.destination = dst; value.alpha = alpha; value.linear = true;
         append(std::move(value)); ++counts.blits;
+    }
+    bool blitTeamColor(const void *key, SDL_Surface *source, std::uint64_t revision,
+                       std::span<const RenderMipLevel> mipLevels, const SDL_Rect &src,
+                       const SDL_FRect &dst, Uint8 alpha, float hue) override
+    {
+        if (!device.capabilities().teamColor || !std::isfinite(hue)) return false;
+        if (aborted) return true;
+        auto value = packet(DrawPacket::Kind::Blit);
+        try { value.texture = texture(key, source, revision, false, mipLevels); }
+        catch (const RenderAdmissionDeferred &) { abort(); return true; }
+        value.material = DrawPacket::Material::TeamColor; value.teamHue = hue;
+        value.source = src; value.destination = dst; value.alpha = alpha; value.linear = !mipLevels.empty();
+        append(std::move(value)); ++counts.blits;
+        return true;
+    }
+    bool trianglesTeamColor(std::span<const SDL_Vertex> vertices, const void *key, SDL_Surface *pixels,
+                            std::uint64_t revision, float hue) override
+    {
+        if (!device.capabilities().teamColor || !std::isfinite(hue)) return false;
+        if (vertices.size() > RenderFrame::VertexCapacity) throw std::length_error("Draw packet exceeds vertex capacity");
+        if (aborted) return true;
+        auto value = packet(DrawPacket::Kind::Triangles);
+        try { value.texture = texture(key, pixels, revision, false); }
+        catch (const RenderAdmissionDeferred &) { abort(); return true; }
+        value.material = DrawPacket::Material::TeamColor; value.teamHue = hue;
+        value.vertices.assign(vertices.begin(), vertices.end());
+        append(std::move(value)); ++counts.triangles;
+        return true;
     }
     void prepareTexture(const void *key, SDL_Surface *source, std::uint64_t revision, bool = false) override { if(aborted)return;try{texture(key,source,revision,false);}catch(const RenderAdmissionDeferred &){abort();} }
     void fill(const SDL_FRect &rect, SDL_Color color) override
