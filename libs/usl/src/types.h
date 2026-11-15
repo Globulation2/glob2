@@ -9,6 +9,7 @@
 #include <vector>
 #include <functional>
 #include <typeindex>
+#include <unordered_map>
 
 struct Value;
 struct Prototype;
@@ -19,7 +20,9 @@ struct Heap
 
 	Values values;
 	// Native method tables belong to this interpreter, never to another heap.
-	std::map<std::type_index, Prototype*> nativePrototypes;
+	// Hashed, not ordered: type_index ordering is inconsistent between
+	// anonymous-namespace and other types under libstdc++ on MinGW.
+	std::unordered_map<std::type_index, Prototype*> nativePrototypes;
 	~Heap();
 
 	void collectGarbage();

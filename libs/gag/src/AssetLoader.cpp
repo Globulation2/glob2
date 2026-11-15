@@ -20,7 +20,7 @@
 #include <stdexcept>
 #include <thread>
 #include <unordered_map>
-#include <regex>
+#include "TextShape.h"
 
 namespace GAGCore {
 namespace {
@@ -491,12 +491,28 @@ std::shared_ptr<AssetLoader::Result> AssetLoader::submit(const std::string& key,
     (read ? impl->ioWake : *impl->cpuWake).notify_one();
     return result;
 }
+namespace {
+// community/buildings/<64 lowercase hex>/sprite<digits>[r].webp
+bool communityAssetPath(std::string_view name) {
+    using namespace TextShape;
+    constexpr std::string_view prefix="community/buildings/", sprite="/sprite", suffix=".webp";
+    if(name.substr(0,prefix.size())!=prefix) return false;
+    name.remove_prefix(prefix.size());
+    if(!lowerHex(name.substr(0,64),64)) return false;
+    name.remove_prefix(64);
+    if(name.substr(0,sprite.size())!=sprite) return false;
+    name.remove_prefix(sprite.size());
+    if(name.size()<suffix.size() || name.substr(name.size()-suffix.size())!=suffix) return false;
+    name.remove_suffix(suffix.size());
+    if(!name.empty() && name.back()=='r') name.remove_suffix(1);
+    return !name.empty() && all(name,asciiDigit);
+}
+}
 void AssetLoader::setCommunityFiles(CommunityFiles files) {
     impl->checkOwner();
-    static const std::regex path("^community/buildings/[0-9a-f]{64}/sprite[0-9]+r?\\.webp$");
     size_t bytes=0;
     for(const auto& [name, content] : files) {
-        if(!std::regex_match(name,path) || !content) throw std::invalid_argument("Invalid community asset path");
+        if(!communityAssetPath(name) || !content) throw std::invalid_argument("Invalid community asset path");
         bytes+=content->size();
         if(bytes>64u*1024u*1024u) throw std::invalid_argument("Community assets exceed 64 MiB");
         const auto old=impl->communityFiles.find(name);
