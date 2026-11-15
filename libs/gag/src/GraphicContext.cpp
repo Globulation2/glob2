@@ -918,6 +918,8 @@ int GraphicContext::maximumTextureSize() const
         deviceRenderer.reset();
         presentationDevice.reset();
         deviceResources.reset();
+        // Frames released on the device had only its snapshots: reload them.
+        Sprite::discardUnbackedHighResolution();
         softwareTransform = false;
 #ifdef HAVE_OPENGL
         if (context) { releaseSurfaceTextures(); destroySkinRenderer(); destroyUnitShader(); destroyCloudCover(); releaseNativeMipmaps(context); }
@@ -1289,6 +1291,7 @@ int GraphicContext::maximumTextureSize() const
 	void GraphicContext::nextFrame(void)
 	{
         ++captureFrameIdentity;
+        deviceReleasesThisFrame = 0;
         endBrowserTextFrame();
 		DrawableSurface::nextFrame();
 		if (sdlsurface)

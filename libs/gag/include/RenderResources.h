@@ -101,6 +101,8 @@ class RenderResources
     bool erase(TextureHandle);
     std::size_t retainedBytes() const;
     std::size_t byteLimit() const;
+    //! The most one budget class may retain, within byteLimit().
+    std::size_t classLimit(TextureDescriptor::BudgetClass) const;
     std::uint64_t instanceIdentity() const { return identity; }
     BufferHandle createGeometry(GeometryLayout, std::span<const std::byte> vertices,
                                 std::span<const std::uint32_t> indices, std::uint64_t revision);

@@ -184,6 +184,33 @@ namespace GAGCore
             _gc->portableRenderer->hasTexture(this, contentRevision()));
     }
 
+    bool DrawableSurface::releaseDevicePixels()
+    {
+        // Releasing frees a few large blocks; spreading them keeps frames even.
+        constexpr unsigned ReleasesPerFrame = 16;
+        if (!sdlsurface || this == _gc || textureInfo || !_gc || !_gc->deviceRenderer ||
+            _gc->renderer != _gc->deviceRenderer.get() || _gc->offscreenPass ||
+            _gc->deviceReleasesThisFrame >= ReleasesPerFrame ||
+            !retainDeviceTexture(*_gc->deviceRenderer, this, contentRevision()))
+            return false;
+        ++_gc->deviceReleasesThisFrame;
+        hasOpaquePixels(); // Answered from the pixels one last time, then from the cache.
+        releasedW = sdlsurface->w;
+        releasedH = sdlsurface->h;
+        SDL_DestroySurface(sdlsurface);
+        sdlsurface = nullptr;
+        std::vector<unsigned char>().swap(preparedUploadPixels);
+        std::vector<AssetImage::Mip>().swap(preparedMips);
+        releasedOnDevice = true;
+        return true;
+    }
+
+    bool DrawableSurface::deviceBacked() const
+    {
+        return releasedOnDevice && !sdlsurface && _gc && _gc->deviceRenderer &&
+            _gc->deviceRenderer->hasTexture(this, pixelRevision);
+    }
+
 	DrawableSurface *DrawableSurface::clone(void)
 	{
 		assert(sdlsurface);

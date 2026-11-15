@@ -1137,17 +1137,24 @@ namespace GAGCore
             // reloads, keeping pixels from now on.
             if (portableBlocks.contains(this))
                 portableWaitingBlocks[this].insert(index / HighResolutionBlock);
+            // A device draw released it: reload the sheet in the background
+            // with pixels; the released layers keep drawing until it publishes.
+            else if (surface->deviceReleased() && !pendingHighResolution.contains(this) &&
+                     !highResolutionDeferred(fileName))
+                queueHighResolutionReload(true);
             return images[index];
         }
         return surface;
     }
     void Sprite::releaseDrawnHighResolution(unsigned index)
     {
-        if (sampledByBaseFrame || highResolutionDeferred(fileName) || highResolutionAtlasWanted(fileName) ||
-            pixelSampledHighResolutionNames.contains(fileName) || index >= experimentImages.size() ||
-            !experimentImages[index])
+        // Cheap checks first: drawing calls this for every frame it draws.
+        if (sampledByBaseFrame || index >= experimentImages.size() || !experimentImages[index] ||
+            !experimentImages[index]->hasPixels() || highResolutionDeferred(fileName) ||
+            highResolutionAtlasWanted(fileName) || pixelSampledHighResolutionNames.contains(fileName))
             return;
-        experimentImages[index]->releasePortablePixels();
+        if (!experimentImages[index]->releasePortablePixels())
+            experimentImages[index]->releaseDevicePixels();
     }
     void Sprite::releaseDrawnTeamColor(unsigned index)
     {
@@ -1205,11 +1212,16 @@ namespace GAGCore
     }
     void Sprite::discardUnbackedHighResolution()
     {
-        const auto unbacked = [](const Sprite &sprite) {
+        // A layer released on a device adapter that still holds its snapshot
+        // survives resets and recovery; one released elsewhere does not.
+        const auto lost = [](const DrawableSurface *image) {
+            return image && !image->hasPixels() && !image->deviceBacked();
+        };
+        const auto unbacked = [&](const Sprite &sprite) {
             for (const auto *image : sprite.experimentImages)
-                if (image && !image->hasPixels()) return true;
+                if (lost(image)) return true;
             for (const auto *rotated : sprite.experimentRotated)
-                if (rotated && !rotated->orig->hasPixels()) return true;
+                if (rotated && lost(rotated->orig)) return true;
             return false;
         };
         for (auto *sprite : loadedSprites) {

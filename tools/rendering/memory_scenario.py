@@ -34,6 +34,8 @@ GAUGES = (
     ('cpu_high_resolution_bytes', '  of which HD artwork'),
     ('cpu_compositor_bytes', 'Terrain compositor copies'),
     ('cpu_prepared_bytes', 'Upload staging'),
+    ('device_snapshot_bytes', 'Device restoration snapshots'),
+    ('device_retained_bytes', '  of which retained for released pixels'),
     ('gpu_surface_bytes', 'GPU sprite and atlas textures'),
     ('gpu_array_bytes', 'GPU texture-array pages'),
     ('gpu_direct_terrain_bytes', 'GPU direct terrain'),

@@ -2,6 +2,7 @@
 #include <RenderDevice.h>
 #include <chrono>
 #include <deque>
+#include <list>
 #include <stdexcept>
 #include <unordered_map>
 
@@ -147,20 +148,49 @@ class DeviceRenderBackend final : public RenderBackend
     RenderDevice &device;
     RenderResources &resources;
     RenderFrameRecorder recorder;
-    struct TextureEntry { TextureHandle handle; std::uint64_t lastUse; };
+    // Entries whose owner still has CPU pixels are on `recent` (least recently
+    // used first) and may be evicted and re-created. A retained entry holds the
+    // only copy of a surface whose pixels were released, so it never is; it is
+    // capped at half of its budget class so admission always has room.
+    struct TextureEntry
+    {
+        TextureHandle handle;
+        std::list<const void *>::iterator recentPosition;
+        bool retained = false;
+        std::size_t retainedBytes = 0;
+        TextureDescriptor::BudgetClass category = TextureDescriptor::BudgetClass::General;
+    };
     std::unordered_map<const void *, TextureEntry> textures;
-    std::uint64_t useClock = 0;
+    std::list<const void *> recent;
+    std::array<std::size_t, 4> retainedBytes{};
+    using TextureIterator = std::unordered_map<const void *, TextureEntry>::iterator;
+    TextureIterator insertEntry(const void *key, TextureHandle handle)
+    {
+        recent.push_back(key);
+        return textures.emplace(key, TextureEntry{handle, std::prev(recent.end())}).first;
+    }
+    void touch(TextureEntry &entry)
+    {
+        if (!entry.retained) recent.splice(recent.end(), recent, entry.recentPosition);
+    }
+    TextureIterator eraseEntry(TextureIterator it)
+    {
+        resources.erase(it->second.handle);
+        if (it->second.retained) retainedBytes[std::size_t(it->second.category)] -= it->second.retainedBytes;
+        else recent.erase(it->second.recentPosition);
+        return textures.erase(it);
+    }
     bool aborted=false,lastPresented=true,intentionalDefer=false,lastIntentionalDefer=false;
     std::string fatalReason;
     void abort(){aborted=true;recorder.cancel();}
     void append(DrawPacket value){if(!aborted){recorder.append(std::move(value));if(aborted)recorder.cancel();}}
     bool evictOldest(const void *except)
     {
-        auto oldest = textures.end();
-        for (auto it = textures.begin(); it != textures.end(); ++it)
-            if (it->first != except && (oldest == textures.end() || it->second.lastUse < oldest->second.lastUse)) oldest = it;
-        if (oldest == textures.end()) return false;
-        resources.erase(oldest->second.handle); textures.erase(oldest); return true;
+        // Constant time: at most the first entry is the one being admitted.
+        auto candidate = recent.begin();
+        if (candidate != recent.end() && *candidate == except) ++candidate;
+        if (candidate == recent.end()) return false;
+        eraseEntry(textures.find(*candidate)); return true;
     }
     RenderTransform currentTransform;
     std::optional<SDL_Rect> currentClip, currentTargetScissor;
@@ -209,7 +239,7 @@ class DeviceRenderBackend final : public RenderBackend
                 // The source content revision may be unchanged when an authored
                 // padded chain replaces an ordinary upload. A new handle keeps
                 // old queued pixels and device upload identities independent.
-                resources.erase(found->second.handle); textures.erase(found); found = textures.end();
+                eraseEntry(found); found = textures.end();
             }
         }
         if (found == textures.end()) {
@@ -220,7 +250,7 @@ class DeviceRenderBackend final : public RenderBackend
                 do { handle = resources.create(source, revision, descriptor, mipLevels); } while (!handle && evictOldest(key));
             }
             if (!handle) throw RenderAdmissionDeferred("Texture resource budget exhausted");
-            found = textures.emplace(key, TextureEntry{handle, ++useClock}).first;
+            found = insertEntry(key, handle);
         } else {
             auto previous = resources.snapshot(found->second.handle);
             const bool changed = !previous || previous->contentRevision != revision || previous->descriptor.mips != descriptor.mips;
@@ -235,11 +265,14 @@ class DeviceRenderBackend final : public RenderBackend
                     // retire the cache's old logical revision before admission.
                     resources.erase(found->second.handle);
                     auto replacement = resources.create(source, revision, descriptor, mipLevels);
-                    if (!replacement) { textures.erase(found); throw RenderAdmissionDeferred("Texture resource budget exhausted by in-flight revisions"); }
+                    if (!replacement) {
+                        found->second.handle = {}; eraseEntry(found);
+                        throw RenderAdmissionDeferred("Texture resource budget exhausted by in-flight revisions");
+                    }
                     found->second.handle = replacement;
                 }
             }
-            found->second.lastUse = ++useClock;
+            touch(found->second);
         }
         return resources.snapshot(found->second.handle);
     }
@@ -358,7 +391,67 @@ class DeviceRenderBackend final : public RenderBackend
     void forget(const void *key) override
     {
         auto found = textures.find(key);
-        if (found != textures.end()) { resources.erase(found->second.handle); textures.erase(found); }
+        if (found != textures.end()) eraseEntry(found);
+    }
+    bool hasTexture(const void *key, std::uint64_t revision) const override
+    {
+        const auto found = textures.find(key);
+        if (found == textures.end()) return false;
+        const auto snapshot = resources.snapshot(found->second.handle);
+        return snapshot && snapshot->contentRevision == revision;
+    }
+    // Keeps `key`'s restoration snapshot of `revision` until forgotten, so its
+    // owner can release its CPU pixels: device resets and recovery restore the
+    // texture from it. False (nothing changes) without that snapshot or room.
+    bool retain(const void *key, std::uint64_t revision)
+    {
+        auto found = textures.find(key);
+        if (found == textures.end()) return false;
+        auto &entry = found->second;
+        const auto snapshot = resources.snapshot(entry.handle);
+        if (!snapshot || snapshot->contentRevision != revision) return false;
+        if (entry.retained) return true;
+        const auto category = snapshot->descriptor.budgetClass;
+        auto &held = retainedBytes[std::size_t(category)];
+        if (snapshot->bytes > resources.classLimit(category) / 2 - std::min(held, resources.classLimit(category) / 2))
+            return false;
+        recent.erase(entry.recentPosition);
+        entry.retained = true; entry.retainedBytes = snapshot->bytes; entry.category = category;
+        held += snapshot->bytes;
+        return true;
+    }
+    std::size_t retainedTextureBytes() const
+    {
+        std::size_t total = 0;
+        for (auto bytes : retainedBytes) total += bytes;
+        return total;
+    }
+    // Moves every cached snapshot of `previous` (same registry) here, so a
+    // replacement device restores textures whose owners released their pixels.
+    void adopt(DeviceRenderBackend &previous)
+    {
+        if (&previous.resources != &resources) throw std::invalid_argument("Device textures belong to another registry");
+        for (auto it = textures.begin(); it != textures.end();) it = eraseEntry(it);
+        textures = std::move(previous.textures); recent = std::move(previous.recent);
+        retainedBytes = previous.retainedBytes;
+        previous.textures.clear(); previous.recent.clear(); previous.retainedBytes = {};
+    }
+    bool blitCached(const void *key, const SDL_Rect &src, const SDL_FRect &dst, Uint8 alpha) override
+    {
+        auto found = textures.find(key);
+        if (found == textures.end()) return false;
+        auto snapshot = resources.snapshot(found->second.handle);
+        if (!snapshot) return false;
+        touch(found->second);
+        if (aborted) return true;
+        // The sampling the texture was recorded with: authored chains are linear.
+        auto value = packet(DrawPacket::Kind::Blit);
+        value.linear = snapshot->descriptor.mips == TextureDescriptor::Mips::Generated;
+        value.opaque = snapshot->descriptor.alpha == TextureDescriptor::Alpha::Opaque;
+        value.texture = std::move(snapshot);
+        value.source = src; value.destination = dst; value.alpha = alpha;
+        append(std::move(value)); ++counts.blits;
+        return true;
     }
     void reset() override { recorder.cancel(); device.reset(); submittedFrameIdentity=presentedFrameIdentity=0;aborted=false;lastPresented=false;intentionalDefer=lastIntentionalDefer=false;fatalReason.clear(); }
     void present() override { flush();lastPresented=false;lastIntentionalDefer=intentionalDefer;
@@ -396,6 +489,23 @@ std::unique_ptr<RenderDevice> makeSoftwareRenderDevice(SDL_Surface *target)
 std::unique_ptr<RenderBackend> makeDeviceRenderBackend(RenderDevice &device, RenderResources &resources, int width, int height)
 {
     return std::make_unique<DeviceRenderBackend>(device, resources, width, height);
+}
+bool retainDeviceTexture(RenderBackend &backend, const void *key, std::uint64_t revision)
+{
+    auto *device = dynamic_cast<DeviceRenderBackend *>(&backend);
+    return device && device->retain(key, revision);
+}
+std::size_t retainedDeviceTextureBytes(const RenderBackend &backend)
+{
+    auto *device = dynamic_cast<const DeviceRenderBackend *>(&backend);
+    return device ? device->retainedTextureBytes() : 0;
+}
+void adoptDeviceTextures(RenderBackend &previous, RenderBackend &replacement)
+{
+    auto *from = dynamic_cast<DeviceRenderBackend *>(&previous);
+    auto *to = dynamic_cast<DeviceRenderBackend *>(&replacement);
+    if (!from || !to) throw std::invalid_argument("Device textures move between device adapters only");
+    to->adopt(*from);
 }
 bool pushDeviceTarget(RenderBackend &backend, TextureSnapshot target, float width, float height)
 {

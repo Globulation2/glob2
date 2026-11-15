@@ -57,6 +57,8 @@ Report report()
 	const auto textures = DrawableSurface::allocatedTextureBytes();
 	result.gpuSurfaceBytes = textures - std::min(textures, result.gpuArrayBytes);
 	result.gpuAuxiliaryBytes = auxiliaryBytes;
+	if (_gc && _gc->renderResources()) result.deviceSnapshotBytes = _gc->renderResources()->retainedBytes();
+	if (_gc) result.deviceRetainedBytes = _gc->retainedDeviceSnapshotBytes();
 	const auto decodes = AssetLoader::decodeTotals();
 	result.imageDecodes = decodes.images;
 	result.imageDecodedBytes = decodes.bytes;
@@ -70,7 +72,9 @@ std::string fields(const Report &report)
 		" cpu_surface_bytes=" + std::to_string(report.cpuSurfaceBytes) +
 		" cpu_prepared_bytes=" + std::to_string(report.cpuPreparedBytes) +
 		" gpu_surface_bytes=" + std::to_string(report.gpuSurfaceBytes) +
-		" gpu_array_bytes=" + std::to_string(report.gpuArrayBytes);
+		" gpu_array_bytes=" + std::to_string(report.gpuArrayBytes) +
+		" device_snapshot_bytes=" + std::to_string(report.deviceSnapshotBytes) +
+		" device_retained_bytes=" + std::to_string(report.deviceRetainedBytes);
 	for (unsigned i = 0; i < unsigned(Auxiliary::Count); ++i)
 		text += std::string(" ") + auxiliaryNames[i] + "=" + std::to_string(report.gpuAuxiliaryBytes[i]);
 	text += " image_decodes=" + std::to_string(report.imageDecodes) +

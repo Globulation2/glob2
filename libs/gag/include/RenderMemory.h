@@ -28,6 +28,9 @@ struct Report
 	//! Texture-array pages, which duplicate their source textures.
 	std::size_t gpuArrayBytes = 0;
 	std::array<std::size_t, unsigned(Auxiliary::Count)> gpuAuxiliaryBytes{};
+	//! CPU restoration snapshots a presentation device's registry holds, and
+	//! the part retained for surfaces whose own pixels were released.
+	std::size_t deviceSnapshotBytes = 0, deviceRetainedBytes = 0;
 	//! Image decodes since launch, and the pixels they produced.
 	std::uint64_t imageDecodes = 0, imageDecodedBytes = 0;
 	//! The process's peak resident set, or zero where it is not measured.
