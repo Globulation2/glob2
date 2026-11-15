@@ -122,6 +122,11 @@ std::size_t retainedDeviceTextureBytes(const RenderBackend &);
 // Moves every cached snapshot to the adapter replacing it (context recovery);
 // both must share one registry. The previous adapter keeps none.
 void adoptDeviceTextures(RenderBackend &previous, RenderBackend &replacement);
+// Erases up to `limit` of the adapter's cached restoration snapshots that were
+// not drawn in the last `idleFrames` presentations (zero: any not drawn since
+// the last presentation); their owners
+// re-create them on the next draw. Returns how many went (0 for other backends).
+std::size_t trimDeviceTextures(RenderBackend &, std::size_t limit, std::uint64_t idleFrames);
 bool pushDeviceTarget(RenderBackend &, TextureSnapshot, float logicalWidth, float logicalHeight);
 void popDeviceTarget(RenderBackend &);
 bool recordDevicePacket(RenderBackend &, DrawPacket);

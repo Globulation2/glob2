@@ -116,6 +116,8 @@ def run(args, directory):
     })
     if args.zoom:
         environment['GLOB2_BENCH_ZOOM'] = str(args.zoom)
+    if args.trim_at is not None:
+        environment['GLOB2_BENCH_TRIM_AT'] = str(args.trim_at)
     if args.capture:
         environment['GLOB2_BENCH_CAPTURE'] = str(directory / 'final.ppm')
     command = [str(binary), '--renderer', args.renderer, '--no-fullscreen', '--mute', '--window-size', args.window_size]
@@ -203,6 +205,7 @@ def main():
     parser.add_argument('--zoom', type=float,
                         help='Start of the zoom cycle, which reaches four times this (default: the minimum zoom)')
     parser.add_argument('--capture', action='store_true', help='Save the last frame as final.ppm')
+    parser.add_argument('--trim-at', type=int, help='Send a low-memory presentation trim at this measured frame')
     parser.add_argument('--settle-frames', type=int, default=600,
                         help='Frames at the starting view before the camera moves, as a game starts: '
                              'background work such as the whole-map base mask finishes')

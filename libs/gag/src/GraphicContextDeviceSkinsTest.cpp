@@ -282,3 +282,66 @@ TEST_SUITE("DeviceTeamColor") {
         if(!tested) WARN("No device renderer with the team-colour material in this build");
     }
 }
+
+TEST_SUITE("PresentationTrim") {
+    TEST_CASE("low-memory trims free idle device snapshots over frames and keep drawing [display]") {
+        glob2test::ToolkitScope toolkit;
+        GraphicContext::setInitialRendererBackend(RendererBackend::Software);
+        auto *gfx=Toolkit::initGraphic(640,480,GraphicContext::NOAUDIO,"presentation trim");
+        // Nothing retired: an immediate trim of retired HD frames returns at once.
+        Sprite::trimRetiredHighResolution(true);
+        unsigned tested=0;
+        for(const auto &choice:gfx->rendererAvailability()) {
+            if(!choice.available || (choice.backend!=RendererBackend::ProgrammableGL && choice.backend!=RendererBackend::SDLGPU))continue;
+            INFO("backend=" << int(choice.backend));
+            REQUIRE(gfx->requestBackendSwitch(choice.backend));gfx->nextFrame();
+            REQUIRE(gfx->backendSwitchStatus().phase==RendererSwitchPhase::Complete);
+            auto *resources=gfx->renderResources();REQUIRE(resources);
+            std::vector<std::unique_ptr<DrawableSurface>> idle;
+            for(int i=0;i<100;++i) {
+                idle.push_back(std::make_unique<DrawableSurface>(8,8));
+                idle.back()->drawFilledRect(0,0,8,8,Color(0,0,255));
+                gfx->drawSurface(i%64*8,i/64*8+100,idle.back().get());
+            }
+            DrawableSurface view(8,8);view.drawFilledRect(0,0,8,8,Color(255,0,0));
+            const auto drawView=[&]{
+                gfx->drawFilledRect(0,0,640,480,Color(0,0,0));
+                gfx->drawSurface(10,0,&view);
+                gfx->nextFrame();
+            };
+            for(int frame=0;frame<4;++frame) drawView();
+            const auto before=resources->retainedBytes();
+            REQUIRE(before>=101*8*8*4);
+            gfx->trimPresentationMemory(PresentationTrim::LowMemory);
+            CHECK(gfx->presentationTrimPending());
+            // Bounded: one step frees at most 64 snapshots.
+            gfx->servicePresentationTrim();
+            CHECK(resources->retainedBytes()>=before-64*8*8*4);
+            CHECK(resources->retainedBytes()<before);
+            for(int frame=0;frame<8 && gfx->presentationTrimPending();++frame) { drawView(); gfx->servicePresentationTrim(); }
+            CHECK_FALSE(gfx->presentationTrimPending());
+            CHECK(resources->retainedBytes()<=before-100*8*8*4);
+            CHECK(resources->retainedBytes()>=8*8*4); // The view's own texture stays.
+            drawView();
+            CaptureRequest request;request.width=640;request.height=480;
+            std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> pixels(gfx->renderDevice()->captureSynchronously(request),SDL_DestroySurface);
+            REQUIRE(pixels);
+            Uint8 r,g,b,a;
+            REQUIRE(SDL_ReadSurfacePixel(pixels.get(),14,4,&r,&g,&b,&a));CHECK(r==255);CHECK(g==0);
+            // Trimmed snapshots come back from their owners' pixels.
+            gfx->drawFilledRect(0,0,640,480,Color(0,0,0));
+            gfx->drawSurface(20,0,idle.front().get());
+            gfx->nextFrame();
+            pixels.reset(gfx->renderDevice()->captureSynchronously(request));REQUIRE(pixels);
+            REQUIRE(SDL_ReadSurfacePixel(pixels.get(),24,4,&r,&g,&b,&a));CHECK(b==255);CHECK(r==0);
+            // Backgrounded, everything restorable goes at once.
+            gfx->trimPresentationMemory(PresentationTrim::Background);
+            CHECK_FALSE(gfx->presentationTrimPending());
+            CHECK(resources->retainedBytes()==0);
+            idle.clear();
+            REQUIRE(gfx->requestBackendSwitch(RendererBackend::Software));gfx->nextFrame();
+            ++tested;
+        }
+        if(!tested) WARN("No programmable device available in this build");
+    }
+}

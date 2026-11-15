@@ -1996,6 +1996,52 @@ TEST_SUITE("TerrainPresentation")
 		}
 	}
 
+	TEST_CASE("presentation trims free idle terrain pages in bounded steps and keep the view [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 512, .height = 512,
+			.screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .discovered = true});
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		auto &gfx = *globals->gfx;
+		SoftwareTerrainCache cache;
+		const auto draw = [&](int viewX, int viewY)
+		{
+			gfx.drawFilledRect(0, 0, 512, 512, 17, 29, 41);
+			gfx.beginMapTransform(1.f, 0.f, 0.f, 0, 0, 512, 512);
+			REQUIRE(cache.prepareAtResolution(scene, *globals->terrain, 0, 0, 15, 15,
+				viewX, viewY, fixture.team->me, true, 0, 1));
+			cache.draw(gfx);
+			gfx.endMapTransform();
+		};
+		const auto drawn = [&] { return std::count_if(cache.chunks.begin(), cache.chunks.end(),
+			[&](const auto &chunk) { return chunk->used == cache.frame; }); };
+		// Visit the whole 64x64 map, then settle on one corner.
+		for (int y = 0; y < 64; y += 16)
+			for (int x = 0; x < 64; x += 16) draw(x, y);
+		draw(0, 0);
+		const auto view = drawn();
+		const auto resident = cache.chunks.size();
+		REQUIRE(resident > std::size_t(view) + 8);
+		GAGCore::PresentationTrimSubscription::notify(GAGCore::PresentationTrim::LowMemory);
+		draw(0, 0);
+		// At most eight idle pages go a frame; the view's pages never do.
+		CHECK(cache.chunks.size() >= resident - 8);
+		CHECK(cache.chunks.size() < resident);
+		for (int frame = 0; frame < 64 && cache.trimBefore; ++frame) draw(0, 0);
+		CHECK(cache.trimBefore == 0);
+		CHECK(cache.chunks.size() == std::size_t(drawn()));
+		CHECK(drawn() == view);
+		// Backgrounded, every idle page goes at once.
+		draw(32, 32);
+		CHECK(cache.chunks.size() > std::size_t(drawn()));
+		GAGCore::PresentationTrimSubscription::notify(GAGCore::PresentationTrim::Background);
+		CHECK(cache.chunks.size() == std::size_t(drawn()));
+		CHECK(cache.trimBefore == 0);
+		draw(0, 0); // Trimmed pages compose again.
+		CHECK(drawn() == view);
+	}
+
 	TEST_CASE("zoomed-out GPU terrain retains pages across frames and wrapped views [display] "
 			  "[artifacts]")
 	{

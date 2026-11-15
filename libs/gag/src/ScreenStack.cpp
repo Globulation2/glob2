@@ -158,14 +158,22 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events, bool 
 		~Guard() { flag = false; }
 	} guard(dispatching);
     pollInputReceipts();
+    auto *graphics = dynamic_cast<GAGCore::GraphicContext *>(&surface);
     for (const auto& event:events) {
         if (event.type==SDL_EVENT_WILL_ENTER_BACKGROUND || event.type==SDL_EVENT_DID_ENTER_BACKGROUND) {
+            // Free what can be rebuilt once, before the system judges our size.
+            if (!backgrounded && graphics) graphics->trimPresentationMemory(GAGCore::PresentationTrim::Background);
             backgrounded=true; suspendExecution();
             for (auto& entry:screens) entry.screen->cancelExecutionInput();
         } else if (event.type==SDL_EVENT_DID_ENTER_FOREGROUND) {
             backgrounded=false; suspendExecution();
         }
-        if (event.type==SDL_EVENT_RENDER_DEVICE_RESET || event.type==SDL_EVENT_RENDER_TARGETS_RESET || event.type==SDL_EVENT_LOW_MEMORY) resetGraphics=true;
+        // Presentation devices trim restorable memory on low memory instead of
+        // resetting: a reset re-uploads the whole view in one frame. Other
+        // renderers free their textures only by resetting.
+        if (event.type==SDL_EVENT_LOW_MEMORY && graphics && graphics->renderDevice())
+            graphics->trimPresentationMemory(backgrounded ? GAGCore::PresentationTrim::Background : GAGCore::PresentationTrim::LowMemory);
+        else if (event.type==SDL_EVENT_RENDER_DEVICE_RESET || event.type==SDL_EVENT_RENDER_TARGETS_RESET || event.type==SDL_EVENT_LOW_MEMORY) resetGraphics=true;
         if (event.type==SDL_EVENT_TERMINATING || (event.type==SDL_EVENT_QUIT && !quitIntercepted())) stop();
     }
     if (backgrounded) { if(stopped) boundary(); return; }
