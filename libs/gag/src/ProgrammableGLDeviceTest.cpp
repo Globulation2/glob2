@@ -81,6 +81,79 @@ TEST_SUITE("ProgrammableGLDevice")
         REQUIRE(fixture.device->capabilities().directTerrain);
         verifyDirectTerrainReadback(*fixture.device);
     }
+    GLOB2_TEST_CASE("streamed terrain textures apply queued writes in place and are lost on reset", "[display]")
+    {
+        GLFixture fixture;
+        if (!fixture.device->capabilities().directTerrainStreaming) {
+            MESSAGE("terrain-direct-hd unavailable; streamed terrain omitted");
+            return;
+        }
+        using Terrain = DirectTerrainDraw;
+        const auto streamedDraw = [] {
+            auto terrain = std::make_shared<Terrain>();
+            for (unsigned slot = 0; slot < Terrain::StreamedCount; ++slot) {
+                if (slot == Terrain::MaskIndex || slot == Terrain::HdPreviousIndex) continue; // Placeholders.
+                auto texture = std::make_shared<StreamedTexture>();
+                texture->width = 4; texture->height = 2;
+                texture->write({0, 0, 4, 2}, std::vector<std::uint8_t>(32, 0));
+                texture->write({1, 1, 2, 1}, std::vector<std::uint8_t>(8, 255));
+                terrain->streamed[slot] = texture;
+            }
+            terrain->wholeMap = true;
+            terrain->hd.mapSize[0] = terrain->hd.mapSize[1] = 2;
+            terrain->hd.artSize[0] = terrain->hd.artSize[1] = 4;
+            return terrain;
+        };
+        const auto frame = [](std::uint64_t identity, std::shared_ptr<const Terrain> terrain) {
+            DrawPacket tile;
+            tile.kind = DrawPacket::Kind::DirectTerrain;
+            tile.blend = DrawPacket::Blend::Premultiplied;
+            tile.directTerrain = std::move(terrain);
+            const SDL_FColor white{1, 1, 1, 1};
+            const SDL_Vertex a{{0, 0}, white, {0, 0}}, b{{16, 0}, white, {2, 0}},
+                             c{{16, 16}, white, {2, 2}}, d{{0, 16}, white, {0, 2}};
+            tile.vertices = {a, b, c, a, c, d};
+            RenderFrame result;
+            result.identity = identity;
+            result.logicalWidth = result.logicalHeight = 16;
+            result.packets = {tile};
+            result.vertexCount = 6;
+            return result;
+        };
+        auto terrain = streamedDraw();
+        const auto before = fixture.device->telemetry().resourceBytes;
+        REQUIRE(fixture.device->submit(frame(1, terrain)));
+        fixture.device->present();
+        for (const auto &texture : terrain->streamed) {
+            if (!texture) continue;
+            CHECK(texture->writes.empty());
+            CHECK(texture->queuedBytes == 0);
+            CHECK(texture->applied == 2);
+            CHECK_FALSE(texture->lost);
+        }
+        CHECK(fixture.device->telemetry().resourceBytes >= before + 12 * 32);
+        // Later writes apply in place; the texture is not recreated.
+        terrain->streamed[Terrain::Cells]->write({0, 0, 1, 1}, std::vector<std::uint8_t>(4, 7));
+        REQUIRE(fixture.device->submit(frame(2, terrain)));
+        fixture.device->present();
+        CHECK(terrain->streamed[Terrain::Cells]->applied == 3);
+        // A reset drops what was applied: the owner sees the loss, the draw is
+        // skipped, and new owners start again.
+        fixture.device->reset();
+        REQUIRE(fixture.device->submit(frame(3, terrain)));
+        fixture.device->present();
+        CHECK(terrain->streamed[Terrain::Cells]->lost);
+        auto fresh = streamedDraw();
+        REQUIRE(fixture.device->submit(frame(4, fresh)));
+        fixture.device->present();
+        CHECK_FALSE(fresh->streamed[Terrain::Cells]->lost);
+        CHECK(fresh->streamed[Terrain::Cells]->applied == 2);
+        // Owners that go release their textures.
+        const auto held = fixture.device->telemetry().resourceBytes;
+        terrain.reset(); fresh.reset();
+        fixture.device->trimRetiredResources();
+        CHECK(fixture.device->telemetry().resourceBytes + 12 * 32 <= held);
+    }
     GLOB2_TEST_CASE("ordered primitive segments share uploads across state and point changes", "[display]")
     {
         GLFixture fixture;

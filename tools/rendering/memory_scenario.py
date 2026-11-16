@@ -18,6 +18,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import threading
@@ -97,7 +98,33 @@ def process_memory(pid):
             sample['gpu_driver'] = sum(clients.values())
     except OSError:
         pass
+    if 'gpu_driver' not in sample and (used := nvidia_memory(pid)) is not None:
+        sample['gpu_driver'] = used
     return sample
+
+
+_nvidia = {'available': shutil.which('nvidia-smi') is not None, 'last': 0.0, 'value': None}
+
+
+def nvidia_memory(pid):
+    """The NVIDIA driver's per-process memory (no DRM fdinfo there), at most once a second."""
+    if not _nvidia['available']:
+        return None
+    now = time.monotonic()
+    if now - _nvidia['last'] < 1.0:
+        return _nvidia['value']
+    _nvidia['last'] = now
+    try:
+        text = subprocess.run(['nvidia-smi', '-q', '-d', 'PIDS'], capture_output=True, text=True,
+                              timeout=5).stdout
+    except (OSError, subprocess.SubprocessError):
+        _nvidia['available'] = False
+        return None
+    # Each process block names its PID and, a few lines on, its memory in MiB.
+    used = [int(m) * MIB for p, m in re.findall(r'Process ID\s*:\s*(\d+)(?:(?!Process ID).)*?Used GPU Memory\s*:\s*(\d+)\s*MiB',
+                                                 text, re.S) if int(p) == pid]
+    _nvidia['value'] = sum(used) if used else None
+    return _nvidia['value']
 
 
 def run(args, directory):
