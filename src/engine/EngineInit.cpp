@@ -785,6 +785,7 @@ void Engine::finalAdjustments(void)
 	{
 		gui.adjustInitialViewport();
 		gui.loadTerrainArtwork();
+		gui.prepareDirectTerrain();
 	}
 	gui.game.setAlliances();
 }

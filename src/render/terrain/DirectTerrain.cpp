@@ -15,6 +15,7 @@
 #include "DirectTerrainData.h"
 #include "TerrainCompositor.h"
 #include "render/SoftwareTerrainCache.h"
+#include "render/BackgroundWork.h"
 #include "render/scene/SceneMap.h"
 #ifdef DIRECT_TERRAIN_LEGACY_GL
 #ifdef __APPLE__
@@ -176,11 +177,67 @@ struct DirectTerrain::State
         Surface art, variants;
         std::size_t bytes = 0, variantBytes = 0; // bytes includes the variant table's.
         int pixels = 0;
+        unsigned serial = 0; // Which atlas a background filter batch belongs to.
         bool failed = false;
         std::map<unsigned, Entry> entries;
         std::vector<unsigned> freePairs;
         std::vector<SDL_Rect> regions;
     } animation;
+    // The atlas a density or size change fills over several frames, a bounded
+    // number of tiles each, while `animation` keeps drawing; it replaces
+    // `animation` once every visible variant is in it.
+    Animation nextArt;
+    // Art tiles box-filtered on the background workers, from copies of their
+    // sources, for the atlas whose serial they carry; one batch at a time.
+    struct ArtBatch
+    {
+        struct Job
+        {
+            unsigned slot, pair, parity, phase;
+            TerrainVisual::Compositor::PhaseSource stamp;
+            TerrainVisual::Compositor::MaterialPixels input;
+            std::vector<Pixel> tile;
+        };
+        std::vector<Job> jobs;
+        int pixels = 0;
+        unsigned serial = 0;
+        std::atomic<std::size_t> remaining{0};
+    };
+    std::shared_ptr<ArtBatch> artBatch;
+    unsigned artSerial = 0;
+    // Box-filters a tile in premultiplied colour. Point samples at a block's
+    // corner would read a tile's two edges asymmetrically, so neighbouring
+    // variants, blended to meet at their borders, would not.
+    static void filterTile(int pixels, int size, const Uint32 *surface,
+                           const TerrainVisual::Compositor::MaterialPixels &input, std::vector<Pixel> &tile)
+    {
+        tile.resize(std::size_t(pixels) * pixels);
+        const int block = std::max(1, size / pixels);
+        for (int y = 0; y < pixels; ++y)
+            for (int x = 0; x < pixels; ++x)
+            {
+                unsigned sum[4] = {};
+                for (int dy = 0; dy < block; ++dy)
+                    for (int dx = 0; dx < block; ++dx)
+                    {
+                        const auto index = std::size_t(y * size / pixels + dy) * size + x * size / pixels + dx;
+                        std::array<unsigned char, 4> p;
+                        if (surface)
+                        {
+                            const Uint32 argb = surface[index];
+                            p = {Uint8(argb >> 16), Uint8(argb >> 8), Uint8(argb), Uint8(argb >> 24)};
+                        }
+                        else
+                            p = input[index];
+                        for (int k = 0; k < 3; ++k) sum[k] += unsigned(p[k]) * p[3];
+                        sum[3] += p[3];
+                    }
+                auto &out = tile[y * pixels + x];
+                const unsigned count = unsigned(block * block);
+                for (int k = 0; k < 3; ++k) out[k] = Uint8(sum[3] ? (sum[k] + sum[3] / 2) / sum[3] : 0);
+                out[3] = Uint8((sum[3] + count / 2) / count);
+            }
+    }
     // Coverage masks for visible mixed cells at the display density (8 to 128
     // texels a side), built by background workers.
     struct Hd {
@@ -202,9 +259,10 @@ struct DirectTerrain::State
             std::vector<Uint16> slotOf;
         } previous;
         // A low-density mask of every mixed cell, laid out like the map and
-        // built by the workers whenever visible cells leave them idle. A cell
-        // with no mask at this density or the previous one draws its base
-        // mask, so it keeps its borders anywhere on the map.
+        // built for the whole map before the map's first terrain frame (see
+        // buildBase). A cell with no mask at this density or the previous one
+        // draws its base mask, so it keeps its borders anywhere on the map;
+        // edits rebuild their base cells ahead of any view mask.
         struct Base {
             Surface coverage, edges;
             int tile = 0;                // Texels per cell side; 0 before creation or on huge maps.
@@ -223,7 +281,7 @@ struct DirectTerrain::State
         Uint64 frame = 0;
         // The base mask serves the view: there is no atlas at the view's density.
         bool suspended = false;
-        std::size_t pending = 0, bytes = 0;
+        std::size_t pending = 0, bytes = 0, split = 0;
         bool failed = false;
         // Masks are built by background workers from an immutable material
         // snapshot; the graphics thread only computes recipes and uploads.
@@ -233,7 +291,7 @@ struct DirectTerrain::State
         std::mutex mutex;
         std::condition_variable wake;
         std::deque<Job> jobs;      // Visible cells, replaced every frame.
-        std::deque<Job> baseJobs;  // Base masks, taken only when jobs is empty.
+        std::deque<Job> baseJobs;  // Base masks (after the first build, edits): taken before jobs.
         std::vector<Result> done;
         std::vector<std::thread> workers;
         bool stop = false;
@@ -301,7 +359,9 @@ struct DirectTerrain::State
                     std::unique_lock lock(mutex);
                     wake.wait(lock, [&] { return stop || !jobs.empty() || !baseJobs.empty(); });
                     if (stop) return;
-                    auto &from = jobs.empty() ? baseJobs : jobs;
+                    // The base is the low-resolution terrain every view can
+                    // always draw: keep it ahead of the view's masks.
+                    auto &from = baseJobs.empty() ? jobs : baseJobs;
                     job = std::move(from.front());
                     from.pop_front();
                     snapshot = materials;
@@ -325,6 +385,7 @@ struct DirectTerrain::State
     std::vector<Uint8> visibility;
     Uint32 discoveryTeams = 0;
     Uint64 discoveryRevision = 0;
+    std::vector<Uint64> discoveryStamps; // The map's discovery sector stamps last applied.
     DirectTerrain::DiscoveryMetrics discoveryStats;
 
     bool matchesMap(const SceneMap &map) const
@@ -348,11 +409,12 @@ struct DirectTerrain::State
                 }
     }
 
-    std::array<Surface *, 10 + Count> surfaces()
+    std::array<Surface *, 12 + Count> surfaces()
     {
-        std::array<Surface *, 10 + Count> all{&animation.art, &animation.variants, &hd.index, &hd.coverage, &hd.edges,
-            &hd.previous.index, &hd.previous.coverage, &hd.previous.edges, &hd.base.coverage, &hd.base.edges};
-        for (unsigned i = 0; i < Count; ++i) all[10 + i] = &textures[i];
+        std::array<Surface *, 12 + Count> all{&animation.art, &animation.variants, &hd.index, &hd.coverage, &hd.edges,
+            &hd.previous.index, &hd.previous.coverage, &hd.previous.edges, &hd.base.coverage, &hd.base.edges,
+            &nextArt.art, &nextArt.variants};
+        for (unsigned i = 0; i < Count; ++i) all[12 + i] = &textures[i];
         return all;
     }
 
@@ -894,6 +956,7 @@ struct DirectTerrain::State
         b.order.reserve(ranked.size());
         for (const auto &[distance, cell] : ranked) b.order.push_back(cell);
         b.remaining = b.order.size();
+        b.reported = b.order.empty(); // No mixed cell: nothing to build.
         b.started = SDL_GetTicks();
     }
 
@@ -910,6 +973,61 @@ struct DirectTerrain::State
             write(b.edges, Edges, x * b.tile, y * b.tile, b.tile, b.tile, zeros.data());
         }
         if (cellMasks[cell]) b.redo.push_back(cell);
+    }
+
+    void ensureBase(const SceneMap &map, TerrainVisual::Compositor &compositor, int centreX, int centreY, bool now)
+    {
+        if (hd.base.tile || !hd.base.built.empty()) return;
+        createBase(centreX, centreY);
+        if (now) buildBase(map, compositor);
+    }
+    // The base is still building for the first time (not an edit's rebuild).
+    bool baseBuilding() const { return hd.base.tile && !hd.base.reported; }
+
+    // Builds the base mask of every mixed cell now, in parallel on the
+    // presentation workers, and writes it in whole-row strips. It runs once a
+    // map (and after a device loses its textures), where the game would
+    // otherwise draw corner splits for seconds while a camera moves.
+    void buildBase(const SceneMap &map, TerrainVisual::Compositor &compositor)
+    {
+        auto &b = hd.base;
+        if (!b.tile || b.order.empty()) return;
+        const auto started = SDL_GetTicks();
+        if (!hd.materials) hd.materials = compositor.cpuMaterialsForRecipes({});
+        const int w = width * b.tile, h = height * b.tile;
+        std::vector<Pixel> coverage(std::size_t(w) * h, Pixel{});
+        std::vector<Uint16> edges(std::size_t(w) * h, 0);
+        const auto materials = hd.materials;
+        const int tile = b.tile;
+        // Each job describes its cell (const reads of the map and catalogue)
+        // and writes its own cell's texels.
+        filterTiles(b.order.size(), [&](std::size_t i)
+        {
+            const int cell = b.order[i];
+            const auto recipe = compositor.describe(map, cell % width, cell / width);
+            const auto built = Hd::build(*materials, cell, recipe, tile, b.version[cell]);
+            const int ox = (cell % width) * tile, oy = (cell / width) * tile;
+            for (int row = 0; row < tile; ++row)
+            {
+                std::copy_n(built.weights.begin() + std::size_t(row) * tile, tile, coverage.begin() + std::size_t(oy + row) * w + ox);
+                std::copy_n(built.edges.begin() + std::size_t(row) * tile, tile, edges.begin() + std::size_t(oy + row) * w + ox);
+            }
+        });
+        const auto composed = SDL_GetTicks();
+        constexpr int StripRows = 128;
+        for (int y = 0; y < h; y += StripRows)
+        {
+            const int rows = std::min(StripRows, h - y);
+            write(b.coverage, Coverage, 0, y, w, rows, coverage.data() + std::size_t(y) * w);
+            write(b.edges, Edges, 0, y, w, rows, edges.data() + std::size_t(y) * w);
+        }
+        std::fill(b.built.begin(), b.built.end(), Uint8(0));
+        for (const int cell : b.order) b.built[cell] = 1;
+        b.cursor = b.order.size();
+        b.remaining = 0;
+        b.reported = true;
+        std::fprintf(stderr, "DIRECT_TERRAIN_BASE cells=%zu tile=%d ms=%llu build_ms=%llu\n", b.order.size(), b.tile,
+            (unsigned long long)(SDL_GetTicks() - started), (unsigned long long)(composed - started));
     }
 
     // Runs job(0..count-1) on this thread and, for a large batch, on helper
@@ -959,24 +1077,56 @@ struct DirectTerrain::State
         const auto revision = map.discoveryRevision();
         if (revision && discoveryTeams == teams && discoveryRevision == revision)
             return;
+        // Discovery only grows within the sectors whose stamps moved: revisit
+        // those (and the cells a sector's edge reaches) rather than the map.
+        constexpr int Sector = 16;
+        const auto stamps = map.discoveryStamps();
+        const int sectorsWide = (width + Sector - 1) / Sector, sectorsHigh = (height + Sector - 1) / Sector;
+        const bool whole = discoveryTeams != teams || !revision || stamps.size() != std::size_t(sectorsWide) * sectorsHigh ||
+            discoveryStamps.size() != stamps.size();
         discoveryRevision = revision;
         discoveryTeams = teams;
-        discoveryStats.rebuilt += visibility.size();
         bool changed = false;
-        for (int y = 0; y < height; ++y)
-            for (int x = 0; x < width; ++x)
+        int firstRow = height, lastRow = -1;
+        const auto refresh = [&](int x, int y)
+        {
+            auto &pixel = visibility[map.coordToIndex(x, y)];
+            const Uint8 value = map.isMapPartiallyDiscovered(x - 1, y - 1, x + 1, y + 1, teams) ? 255 : 0;
+            ++discoveryStats.rebuilt;
+            if (value == pixel) return;
+            pixel = value;
+            changed = true;
+            const int row = (y % height + height) % height;
+            firstRow = std::min(firstRow, row);
+            lastRow = std::max(lastRow, row);
+        };
+        if (whole)
+        {
+            for (int y = 0; y < height; ++y)
+                for (int x = 0; x < width; ++x)
+                    refresh(x, y);
+            discoveryStamps.assign(stamps.begin(), stamps.end());
+        }
+        else
+            for (std::size_t sector = 0; sector < stamps.size(); ++sector)
             {
-                auto &pixel = visibility[map.coordToIndex(x, y)];
-                const Uint8 value = map.isMapPartiallyDiscovered(x - 1, y - 1, x + 1, y + 1, teams) ? 255 : 0;
-                changed |= value != pixel;
-                pixel = value;
+                if (stamps[sector] == discoveryStamps[sector]) continue;
+                discoveryStamps[sector] = stamps[sector];
+                const int sx = int(sector % sectorsWide) * Sector, sy = int(sector / sectorsWide) * Sector;
+                // A cell shows when any of its eight neighbours is discovered.
+                for (int y = sy - 1; y <= std::min(sy + Sector, height); ++y)
+                    for (int x = sx - 1; x <= std::min(sx + Sector, width); ++x)
+                        refresh((x + width) % width, (y + height) % height);
             }
         if (!changed) return;
         if (resources && !streaming)
             uploadDeviceVisibility();
         else
         {
-            write(textures[Discovery], Discovery, 0, 0, width, height, visibility.data());
+            // Whole rows (the packed texture's unit), only those that changed;
+            // a wrap from the last row to the first rewrites the whole map.
+            write(textures[Discovery], Discovery, 0, firstRow, width, lastRow - firstRow + 1,
+                  visibility.data() + std::size_t(firstRow) * width);
             if (glFailed())
                 throw std::runtime_error("Direct terrain discovery upload failed");
         }
@@ -1022,8 +1172,21 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
     const bool staleSheets = state && state->bakedFallback && state->sheetArrivals != sheets.materialArrivals();
     // The streamed pass edits its tables in place; anything else about the
     // map, or the context, starts again.
-    const bool edited = !staleSheets && (legacy || streaming) && sameContext && state->tablesReady &&
+    bool edited = !staleSheets && (legacy || streaming) && sameContext && state->tablesReady &&
         state->sameMapSource(map) && state->revision != map.terrainRevision();
+    // A device that dropped a streamed texture (a reset, or its budget) or
+    // stopped draining its writes: start this map's textures again rather
+    // than leave the streamed pass. Nothing blocks: the tables build in
+    // slices and the base masks on the workers, while the view draws the
+    // overview (its always-resident whole-map base beneath), and the direct
+    // pass returns once every base mask is back.
+    if (streaming && sameContext && state->streamLost())
+    {
+        std::fprintf(stderr, "DIRECT_TERRAIN_RESTART streamed textures lost or stopped draining\n");
+        ++restarts;
+        edited = false;
+        state.reset();
+    }
     // The map's material sheets load on demand: tables wait for them (pages
     // draw meanwhile), or a complete draw waits here.
     const auto sheetsReady = [&] {
@@ -1039,7 +1202,7 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
     const auto endBake = [&] {
         state->bakedFallback |= sheets.materialFallbacks() != state->sheetFallbacks;
     };
-    if (!edited && (!sameContext || !state->matchesMap(map) || staleSheets))
+    if (!edited && (!state || !sameContext || !state->matchesMap(map) || staleSheets))
     {
         if (state && !sameContext)
             state->context = nullptr; // The retired context owns its old names.
@@ -1123,8 +1286,6 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
     const auto deadline = std::chrono::steady_clock::now() + slice;
     try
     {
-        if (streaming && state->streamLost())
-            throw std::runtime_error("Streamed direct terrain textures were lost or stopped draining");
         if (!state->tablesReady)
         {
             if (!state->building)
@@ -1258,15 +1419,46 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
     };
     constexpr int SmallAtlasSize = 2048;
     const auto pairsAt = [&](int size) { return std::size_t(size / pixels) * (size / pixels); };
-    // A density change refilters every tile anyway: take the small atlas again
-    // when the view fits it twice over, so a pan does not grow it straight back.
+    // The atlas this view wants: a density change refilters every tile
+    // anyway, so take the small atlas again when the view fits it twice over
+    // (a pan does not grow it straight back), and grow once when it is full.
+    int wantedSize = out.size;
     if (out.size > SmallAtlasSize && out.pixels != pixels && wanted.size() * 4 <= pairsAt(SmallAtlasSize))
-        restartAtlas(SmallAtlasSize);
-    if (out.size < state->maxAtlasSize && wanted.size() * 2 > pairsAt(out.size))
-        restartAtlas(state->maxAtlasSize); // Grow.
-    const int atlasSize = out.size;
-    while (pixels > 8 && wanted.size() * 2 > std::size_t(atlasSize / pixels) * (atlasSize / pixels))
+        wantedSize = SmallAtlasSize;
+    if (wantedSize < state->maxAtlasSize && wanted.size() * 2 > pairsAt(wantedSize))
+        wantedSize = state->maxAtlasSize;
+    while (pixels > 8 && wanted.size() * 2 > std::size_t(wantedSize / pixels) * (wantedSize / pixels))
         pixels /= 2;
+    // An interactive view whose atlas already draws builds the new one in
+    // `nextArt` over several frames and keeps drawing the old one meanwhile;
+    // a complete draw, or a view with nothing yet, rebuilds it at once.
+    auto &next = state->nextArt;
+    const auto dropNext = [&]
+    {
+        if (!next.art && !next.variants && next.entries.empty()) return;
+        state->drop(next.art);
+        state->drop(next.variants);
+        state->bytes -= next.bytes;
+        next = {};
+    };
+    const bool transition = !complete && out.art && out.pixels && (out.pixels != pixels || out.size != wantedSize);
+    if (!transition)
+    {
+        if (next.pixels) // The view came back to the drawing atlas: its records again.
+        {
+            for (const auto &[slot, entry] : out.entries)
+                state->palette.variants[slot * DirectTerrainData::VariantRecords][0] = Uint16(entry.pair * 2);
+        }
+        dropNext();
+        if (out.size != wantedSize) restartAtlas(wantedSize);
+    }
+    else if (next.size != wantedSize || (next.pixels && next.pixels != pixels))
+    {
+        dropNext();
+        next.size = wantedSize;
+    }
+    auto &art = transition ? next : out;
+    const int atlasSize = art.size;
     const unsigned pairs = (atlasSize / pixels) * (atlasSize / pixels) / 2;
     if (wanted.size() > pairs) { out.regions.clear(); return false; }
     std::optional<RestoreGL> restore;
@@ -1280,16 +1472,17 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
 #endif
     try
     {
-        if (!out.art)
+        if (!art.art)
         {
-            state->create(out.art, State::Art, atlasSize, atlasSize, Format::Rgba8, true);
-            out.bytes = std::size_t(atlasSize) * atlasSize * sizeof(Pixel);
-            out.variantBytes = 0;
-            state->bytes += out.bytes;
+            state->create(art.art, State::Art, atlasSize, atlasSize, Format::Rgba8, true);
+            art.bytes = std::size_t(atlasSize) * atlasSize * sizeof(Pixel);
+            art.variantBytes = 0;
+            state->bytes += art.bytes;
         }
-        // The variant table, again whenever an edit added variants.
+        // The variant table, again whenever an edit added variants (the
+        // drawing atlas's; a filling atlas gets its own when it takes over).
         auto &variants = state->palette.variants;
-        if (state->uploadedVariants != variants.size())
+        if (!transition && state->uploadedVariants != variants.size())
         {
             const int rows = int((variants.size() + DirectTerrainData::VariantWidth - 1) / DirectTerrainData::VariantWidth);
             std::vector<Record> padded(variants);
@@ -1303,13 +1496,39 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
             state->variantRows = rows;
             state->uploadedVariants = variants.size();
         }
-        if (out.pixels != pixels)
+        if (art.pixels != pixels)
         {
-            out.entries.clear();
-            out.freePairs.clear();
-            for (unsigned pair = pairs; pair > 0; --pair) out.freePairs.push_back(pair - 1);
-            out.pixels = pixels;
+            art.entries.clear();
+            art.freePairs.clear();
+            for (unsigned pair = pairs; pair > 0; --pair) art.freePairs.push_back(pair - 1);
+            art.pixels = pixels;
+            art.serial = ++state->artSerial;
         }
+        // Tiles the workers finished: into the atlas they were filtered for,
+        // if it still holds their variants at that density.
+        if (state->artBatch && !state->artBatch->remaining.load(std::memory_order_acquire))
+        {
+            auto batch = std::move(state->artBatch);
+            auto *target = out.serial == batch->serial ? &out : next.serial == batch->serial ? &next : nullptr;
+            if (target && target->art && target->pixels == batch->pixels)
+            {
+                const int targetColumns = target->size / batch->pixels;
+                for (auto &job : batch->jobs)
+                {
+                    auto found = target->entries.find(job.slot);
+                    if (found == target->entries.end() || found->second.pair != job.pair) continue;
+                    const unsigned index = job.pair * 2 + job.parity;
+                    state->write(target->art, State::Art, int(index % targetColumns) * batch->pixels,
+                                 int(index / targetColumns) * batch->pixels, batch->pixels, batch->pixels, job.tile.data());
+                    found->second.phases[job.parity] = job.phase;
+                    found->second.stamps[job.parity] = job.stamp;
+                }
+            }
+        }
+        const bool batchBusy = bool(state->artBatch);
+        auto background = std::make_shared<State::ArtBatch>();
+        background->pixels = pixels;
+        background->serial = art.serial;
         // Three passes: claim atlas pairs and gather each tile's source here,
         // box-filter the tiles on worker threads, then upload them here. A
         // density change refilters every visible variant (over a thousand
@@ -1325,23 +1544,30 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
         };
         std::vector<TileJob> jobs;
         std::vector<std::pair<unsigned, State::Animation::Entry *>> added;
+        // A filling atlas takes a bounded number of tiles a frame, and so do
+        // animation steps of variants the atlas already holds (they draw their
+        // previous phase a frame longer); a variant new to the drawing atlas
+        // gets its tiles at once, since its record is written with them.
+        constexpr std::size_t TransitionTiles = 192, PhaseTiles = 192;
+        bool filled = true;
         for (auto slot : wanted)
         {
-            auto it = out.entries.find(slot);
-            if (it == out.entries.end())
+            auto it = art.entries.find(slot);
+            if (it == art.entries.end())
             {
-                if (out.freePairs.empty())
+                if (art.freePairs.empty())
                 {
-                    const auto idle = std::find_if(out.entries.begin(), out.entries.end(),
+                    const auto idle = std::find_if(art.entries.begin(), art.entries.end(),
                         [&](const auto &item) { return !wanted.contains(item.first); });
-                    out.freePairs.push_back(idle->second.pair);
-                    out.entries.erase(idle);
+                    art.freePairs.push_back(idle->second.pair);
+                    art.entries.erase(idle);
                 }
-                const auto pair = out.freePairs.back();
-                out.freePairs.pop_back();
-                it = out.entries.emplace(slot, State::Animation::Entry{pair}).first;
+                const auto pair = art.freePairs.back();
+                art.freePairs.pop_back();
+                it = art.entries.emplace(slot, State::Animation::Entry{pair}).first;
                 added.push_back({slot, &it->second});
             }
+            const bool fresh = !added.empty() && added.back().second == &it->second;
             auto &entry = it->second;
             const auto source = state->palette.sources[slot];
             const auto &material = catalog.materials[source.material];
@@ -1357,6 +1583,15 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
                 const bool native = !highResolutionFrames;
                 const auto stamp = compositor.phaseSource(source.material, source.variant, phase, native);
                 if (entry.phases[parity] == phase && entry.stamps[parity] == stamp) continue;
+                // A variant new to the drawing atlas gets its tiles now, with
+                // its record; animation steps and a filling atlas go to the
+                // workers, one batch at a time, the old tiles drawing meanwhile.
+                const bool async = !complete && (transition || !fresh);
+                if (async && (batchBusy || background->jobs.size() >= (transition ? TransitionTiles : PhaseTiles)))
+                {
+                    filled = false;
+                    continue;
+                }
                 // Shipped materials are sampled in place; art that takes its
                 // border from another variant comes as a prepared copy.
                 const auto *surface = compositor.phaseSurface(source.material, source.variant, phase, native);
@@ -1369,6 +1604,20 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
                 }
                 else if (surface->w != stamp.size)
                     throw std::runtime_error("Animated terrain source changed dimensions");
+                if (async)
+                {
+                    // The workers read a copy: the frame may go before they run.
+                    if (surface)
+                    {
+                        input.resize(std::size_t(stamp.size) * stamp.size);
+                        const auto *argb = static_cast<const Uint32 *>(surface->pixels);
+                        for (std::size_t i = 0; i < input.size(); ++i)
+                            input[i] = {Uint8(argb[i] >> 16), Uint8(argb[i] >> 8), Uint8(argb[i]), Uint8(argb[i] >> 24)};
+                    }
+                    background->jobs.push_back({slot, entry.pair, parity, phase, stamp, std::move(input), {}});
+                    filled = false;
+                    continue;
+                }
                 jobs.push_back({&entry, parity, phase, stamp,
                                 surface ? static_cast<const Uint32 *>(surface->pixels) : nullptr, std::move(input), {}});
             }
@@ -1378,41 +1627,31 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
         // neighbouring variants, blended to meet at their borders, would not.
         // Workers only read the gathered sources and write their own tiles.
         const auto filter = [pixels](TileJob &job)
-        {
-            const int size = job.stamp.size;
-            job.tile.resize(std::size_t(pixels) * pixels);
-            const int block = std::max(1, size / pixels);
-            for (int y = 0; y < pixels; ++y)
-                for (int x = 0; x < pixels; ++x)
-                {
-                    unsigned sum[4] = {};
-                    for (int dy = 0; dy < block; ++dy)
-                        for (int dx = 0; dx < block; ++dx)
-                        {
-                            const auto index = std::size_t(y * size / pixels + dy) * size + x * size / pixels + dx;
-                            std::array<unsigned char, 4> p;
-                            if (job.surfacePixels)
-                            {
-                                const Uint32 argb = job.surfacePixels[index];
-                                p = {Uint8(argb >> 16), Uint8(argb >> 8), Uint8(argb), Uint8(argb >> 24)};
-                            }
-                            else
-                                p = job.input[index];
-                            for (int k = 0; k < 3; ++k) sum[k] += unsigned(p[k]) * p[3];
-                            sum[3] += p[3];
-                        }
-                    auto &out = job.tile[y * pixels + x];
-                    const unsigned count = unsigned(block * block);
-                    for (int k = 0; k < 3; ++k) out[k] = Uint8(sum[3] ? (sum[k] + sum[3] / 2) / sum[3] : 0);
-                    out[3] = Uint8((sum[3] + count / 2) / count);
-                }
-        };
+        { State::filterTile(pixels, job.stamp.size, job.surfacePixels, job.input, job.tile); };
         state->filterTiles(jobs.size(), [&](std::size_t i) { filter(jobs[i]); });
+        if (!background->jobs.empty())
+        {
+            constexpr std::size_t JobsPerTask = 16;
+            const std::size_t tasks = (background->jobs.size() + JobsPerTask - 1) / JobsPerTask;
+            background->remaining.store(tasks, std::memory_order_relaxed);
+            state->artBatch = background;
+            for (std::size_t task = 0; task < tasks; ++task)
+                BackgroundWork::submit([background, task]
+                {
+                    const std::size_t last = std::min(background->jobs.size(), (task + 1) * JobsPerTask);
+                    for (std::size_t i = task * JobsPerTask; i < last; ++i)
+                    {
+                        auto &job = background->jobs[i];
+                        State::filterTile(background->pixels, job.stamp.size, nullptr, job.input, job.tile);
+                    }
+                    background->remaining.fetch_sub(1, std::memory_order_acq_rel);
+                });
+        }
         const int columns = atlasSize / pixels;
         for (auto &job : jobs)
         {
             const unsigned index = job.entry->pair * 2 + job.parity;
-            state->write(out.art, State::Art, int(index % columns) * pixels, int(index / columns) * pixels,
+            state->write(art.art, State::Art, int(index % columns) * pixels, int(index / columns) * pixels,
                          pixels, pixels, job.tile.data());
             job.entry->phases[job.parity] = job.phase;
             job.entry->stamps[job.parity] = job.stamp;
@@ -1427,8 +1666,31 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
             // Parity addresses the streamed current/next endpoints independently
             // of the material's original loop length, including odd-length loops.
             record[1] = Uint16(material.animationFrames > 1 ? 2 : 1);
-            state->write(out.variants, State::Variants, int(recordIndex % DirectTerrainData::VariantWidth),
-                         int(recordIndex / DirectTerrainData::VariantWidth), 1, 1, record.data());
+            if (!transition)
+                state->write(out.variants, State::Variants, int(recordIndex % DirectTerrainData::VariantWidth),
+                             int(recordIndex / DirectTerrainData::VariantWidth), 1, 1, record.data());
+        }
+        // Every visible variant is in the filling atlas: it takes over, with
+        // a variant table of its records.
+        if (transition && filled)
+        {
+            state->drop(out.art);
+            state->drop(out.variants);
+            state->bytes -= out.bytes;
+            auto regions = std::move(out.regions);
+            out = std::move(next);
+            next = {};
+            out.regions = std::move(regions);
+            const int rows = int((variants.size() + DirectTerrainData::VariantWidth - 1) / DirectTerrainData::VariantWidth);
+            std::vector<Record> padded(variants);
+            padded.resize(std::size_t(rows) * DirectTerrainData::VariantWidth);
+            state->create(out.variants, State::Variants, DirectTerrainData::VariantWidth, rows, Format::Record16,
+                          false, padded.data());
+            out.variantBytes = padded.size() * sizeof(Record);
+            out.bytes += out.variantBytes;
+            state->bytes += out.variantBytes;
+            state->variantRows = rows;
+            state->uploadedVariants = variants.size();
         }
         if (state->glFailed())
             throw std::runtime_error("Animated terrain source upload failed");
@@ -1438,11 +1700,18 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
         while (tile < 128 && tile < 32 * density) tile *= 2;
         prepareHdMasks(map, left, top, right, bottom, viewportX, viewportY, visibleTeams, wholeMap, tile, complete);
         if (state->hd.failed) { out.regions.clear(); return false; }
+        // SDL GPU never draws a mixed cell as a corner split for want of a
+        // base mask: until the base is back the view draws the overview.
+        if (state->streaming && state->baseBuilding()) { out.regions.clear(); state->hd.split = 0; return false; }
         return true;
     }
     catch (const std::exception &error)
     {
         std::fprintf(stderr, "ANIMATED_TERRAIN_FALLBACK %s\n", error.what());
+        state->drop(state->nextArt.art);
+        state->drop(state->nextArt.variants);
+        state->bytes -= state->nextArt.bytes;
+        state->nextArt = {};
         state->drop(out.art);
         state->drop(out.variants);
         state->bytes -= out.bytes;
@@ -1456,6 +1725,23 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
 std::size_t DirectTerrain::pendingHdMasks() const
 {
     return state ? state->hd.pending : 0;
+}
+
+void DirectTerrain::preload(GAGCore::GraphicContext &gfx, const SceneMap &map)
+{
+    const bool legacy = gfx.isLegacyGLScreen() && legacyPassAvailable();
+    if (!legacy && !streamedPassAvailable(gfx)) return;
+    const auto started = SDL_GetTicks();
+    // A complete prepare-only pass builds the tables at once; then the base.
+    if (!drawInternal(gfx, map, 0, 0, 0, 0, 0, 0, 0, true, 0, true, true) || !state || !state->tablesReady) return;
+    auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
+    state->ensureBase(map, compositor, state->width / 2, state->height / 2, true);
+    std::fprintf(stderr, "DIRECT_TERRAIN_PRELOAD ms=%llu\n", (unsigned long long)(SDL_GetTicks() - started));
+}
+
+std::size_t DirectTerrain::splitCells() const
+{
+    return state ? state->hd.split : 0;
 }
 
 std::size_t DirectTerrain::pendingBaseMasks() const
@@ -1553,7 +1839,8 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
         // mask's distance channel, and only the view's fringe is affected, since
         // the nearest cells take slots first. That is not worth the large
         // atlas, or coarser tiles for every cell.
-        const bool baseTakesOverflow = hd.base.tile && tile <= 4 * hd.base.tile &&
+        // A complete draw (a capture) always takes masks at its density.
+        const bool baseTakesOverflow = !complete && hd.base.tile && tile <= 4 * hd.base.tile &&
             !hd.base.remaining && hd.base.redo.empty();
         if (size < state->maxAtlasSize && !fits(size) && !baseTakesOverflow)
             size = state->maxAtlasSize; // Grow once rather than draw coarser.
@@ -1563,13 +1850,19 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
             state->restartHdAtlas(tile, size, current > 0 && current >= previous);
     }
     const int atlasSize = hd.size;
-    if (!hd.base.tile && hd.base.built.empty())
-        state->createBase(((left + right) / 2 + viewportX) % width, ((top + bottom) / 2 + viewportY) % height);
+    auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
+    // The low-resolution masks of the whole map. Game loading builds them
+    // (DirectTerrain::preload), and a complete draw builds them now; otherwise
+    // (a restart after a device loss, a view without that load) the workers
+    // build them, ahead of any view mask.
+    state->ensureBase(map, compositor, ((left + right) / 2 + viewportX) % width,
+                      ((top + bottom) / 2 + viewportY) % height, complete);
     ++hd.frame;
     // Visible mixed cells: keep resident ones, and queue the rest nearest the
     // view centre first, so a zoom or pan fills in from the middle outwards.
     struct Want { int distance, cell, x, y; };
     std::vector<Want> missing;
+    std::size_t split = 0, resident = 0;
     const int cx = (left + right) / 2, cy = (top + bottom) / 2;
     for (int y = top; y <= bottom && !hd.suspended; ++y)
         for (int x = left; x <= right; ++x)
@@ -1581,19 +1874,36 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
             if (!state->cellMasks[cell])
                 continue; // One material: no mask needed.
             if (const auto slot = hd.slotOf[cell])
+            {
                 hd.used[slot - 1] = hd.frame;
+                ++resident;
+            }
             else
+            {
                 missing.push_back({std::abs(x - cx) + std::abs(y - cy), cell, x + viewportX, y + viewportY});
+                split += !(hd.base.tile && hd.base.built[cell]) &&
+                    !(!hd.previous.slotOf.empty() && hd.previous.slotOf[cell]);
+            }
         }
+    hd.split = split;
     std::sort(missing.begin(), missing.end(), [](const Want &a, const Want &b) { return a.distance < b.distance; });
-    hd.pending = missing.size();
-    auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
+    // Where the base takes the overflow, more cells can be visible than the
+    // atlas has slots: the farthest keep their base masks rather than being
+    // built every frame only to find every slot visible.
+    // They count as pending only until the base that draws them is complete.
+    const std::size_t free = hd.cellOf.size() - std::min(hd.cellOf.size(), resident);
+    const std::size_t wantedMasks = missing.size();
+    if (missing.size() > free) missing.resize(free);
+    const bool baseComplete = hd.base.tile && hd.base.reported && !hd.base.remaining && hd.base.redo.empty();
+    hd.pending = baseComplete ? missing.size() : wantedMasks;
     const int columns = atlasSize / tile;
     if (hd.workers.empty())
     {
         hd.materials = compositor.cpuMaterialsForRecipes({});
+        // Half the cores (two to six): masks keep pace with a zoom without
+        // crowding out the simulation and asset threads.
         const unsigned cores = std::max(2u, std::thread::hardware_concurrency());
-        for (unsigned i = 0; i < std::min(3u, cores - 1); ++i)
+        for (unsigned i = 0; i < std::min(6u, std::max(2u, cores / 2)); ++i)
             hd.workers.emplace_back([&hd] { hd.work(); });
     }
     // A complete draw builds every missing visible mask now, in parallel.
@@ -1614,7 +1924,9 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
     // workers follow the camera instead of finishing a view already left.
     else
     {
-        constexpr std::size_t QueueDepth = 64;
+        // Enough queued that no worker idles until the next frame refills it:
+        // the queue bounds how many masks a frame can finish.
+        const std::size_t QueueDepth = 64 * std::max<std::size_t>(1, hd.workers.size());
         std::vector<State::Hd::Job> queue;
         const auto now = std::chrono::steady_clock::now();
         const auto deadline = now + std::chrono::milliseconds(2);
@@ -1631,19 +1943,23 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
             }
             queue.push_back({want.cell, found->second, tile, hd.generation});
         }
-        // The base takes only spare frames: when every visible mask is built,
-        // a quarter millisecond of recipes keeps its queue topped up. Base
-        // recipes are not kept, since most cells are never seen.
+        // Base cells an edit invalidated (the first build is complete): a
+        // quarter millisecond of recipes each frame, ahead of the view's
+        // masks, whatever the view still waits for. Base recipes are not kept,
+        // since most cells are never seen.
         auto &base = hd.base;
         std::vector<State::Hd::Job> baseQueue;
-        if (base.tile && missing.empty() && (base.remaining || !base.redo.empty()))
+        if (base.tile && (base.remaining || !base.redo.empty()))
         {
             std::size_t queued;
             {
                 std::lock_guard lock(hd.mutex);
                 queued = hd.baseJobs.size();
             }
-            const auto baseDeadline = std::chrono::steady_clock::now() + std::chrono::microseconds(250);
+            // Two milliseconds while the base first builds (the view shows the
+            // overview meanwhile), a quarter after.
+            const auto baseDeadline = std::chrono::steady_clock::now() +
+                std::chrono::microseconds(state->baseBuilding() ? 2000 : 250);
             while (queued + baseQueue.size() < QueueDepth && std::chrono::steady_clock::now() < baseDeadline)
             {
                 int cell = -1;
@@ -1672,8 +1988,21 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
         std::lock_guard lock(hd.mutex);
         finished.swap(hd.done);
     }
-    const std::size_t UploadBudget = complete ? ~std::size_t(0) : std::size_t(6) << 20;
-    std::size_t uploaded = 0, nextFree = 0;
+    // A time budget, not a fixed count: a fast frame uploads every finished
+    // mask, a slow one stops after a few milliseconds (or 16 MiB) and leaves
+    // the rest, nearest cells first, to the next frames.
+    const std::size_t UploadBudget = complete ? ~std::size_t(0) : std::size_t(16) << 20;
+    const auto uploadDeadline = std::chrono::steady_clock::now() + std::chrono::microseconds(complete ? 1000000000 : 3000);
+    std::size_t uploaded = 0, nextFree = 0, checked = 0;
+    bool spent = false;
+    const auto overBudget = [&] {
+        // Reading the clock every eighth upload keeps its cost out of the loop.
+        // Past the first 2 MiB (some 300 masks at 32 texels), which every
+        // frame takes however slow its uploads.
+        spent = spent || uploaded >= UploadBudget ||
+            (uploaded >= (std::size_t(2) << 20) && (++checked & 7) == 0 && std::chrono::steady_clock::now() > uploadDeadline);
+        return spent;
+    };
     std::vector<State::Hd::Result> later;
     std::size_t baseUploads = 0;
     for (auto &result : finished)
@@ -1682,7 +2011,7 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
         {
             auto &base = hd.base;
             // A tiny tile each: bound the calls, not just the bytes.
-            if (baseUploads >= 128 || uploaded >= UploadBudget) { later.push_back(std::move(result)); continue; }
+            if (baseUploads >= 1024 || overBudget()) { later.push_back(std::move(result)); continue; }
             hd.baseInFlight.erase(result.cell);
             if (base.built[result.cell] || !state->cellMasks[result.cell]) continue;
             // Built from the recipe before an edit: build it again.
@@ -1705,7 +2034,7 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
         hd.inFlight.erase(result.cell);
         if (result.generation != hd.generation || hd.slotOf[result.cell])
             continue;
-        if (uploaded >= UploadBudget) { hd.inFlight.insert(result.cell); later.push_back(std::move(result)); continue; }
+        if (overBudget()) { hd.inFlight.insert(result.cell); later.push_back(std::move(result)); continue; }
         std::size_t slot = hd.cellOf.size();
         for (; nextFree < hd.cellOf.size(); ++nextFree)
             if (hd.cellOf[nextFree] < 0) { slot = nextFree++; break; }
@@ -1917,5 +2246,6 @@ bool DirectTerrain::preparing() const
 std::size_t DirectTerrain::textureBytes() const { return state ? state->bytes : 0; }
 std::size_t DirectTerrain::uploadBytes() const { return state ? state->uploaded : 0; }
 unsigned DirectTerrain::draws() const { return state ? state->frames : 0; }
+unsigned DirectTerrain::restartCount() const { return restarts; }
 DirectTerrain::DiscoveryMetrics DirectTerrain::discoveryMetrics() const
 { return state ? state->discoveryStats : DiscoveryMetrics{}; }

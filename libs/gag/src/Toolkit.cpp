@@ -103,6 +103,8 @@ namespace GAGCore
             return std::max(std::chrono::milliseconds::zero(),
                 std::chrono::ceil<std::chrono::milliseconds>(deadline - std::chrono::steady_clock::now()));
         };
+        // A low-memory trim frees its next bounded step once a frame.
+        if (gc) gc->servicePresentationTrim();
         // Consume ready HD output before more reads/decodes can spend this
         // turn's whole budget and leave large prepared buffers accumulating.
         Sprite::pollHighResolutionUntil(std::chrono::duration_cast<std::chrono::nanoseconds>(deadline.time_since_epoch()).count());

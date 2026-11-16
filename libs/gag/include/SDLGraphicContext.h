@@ -190,6 +190,7 @@ namespace GAGCore
 		//! The size of the pixels releasePixels() freed.
 		int releasedW = 0, releasedH = 0;
 		bool releasedOnPortable = false;
+		bool releasedOnDevice = false;
 		//! Prepared mip levels left out of the legacy GL upload (a detail band).
 		std::uint8_t uploadSkipLevels = 0;
 		//! texture divisor
@@ -268,6 +269,25 @@ namespace GAGCore
 		//! Released, and the portable renderer no longer holds its texture (a
 		//! reset or a backend change took it): nothing can draw it any more.
 		bool portableTextureLost() const;
+		//! The presentation devices' counterpart (SDL GPU, programmable GL,
+		//! WebGPU): frees the CPU pixels and upload staging once the device
+		//! adapter holds a restoration snapshot of this revision, which it then
+		//! keeps (device resets and context recovery restore from it). Draws use
+		//! that snapshot. A few per frame; false where the pixels stay.
+		bool releaseDevicePixels();
+		//! Pixels released by releaseDevicePixels.
+		bool deviceReleased() const { return releasedOnDevice; }
+		//! Released on a device whose adapter still holds the snapshot: false
+		//! after a backend switch, so the owner must reload the surface.
+		bool deviceBacked() const;
+		//! On a presentation device, whether the adapter holds this revision's
+		//! texture, so drawing it uploads nothing. True on other renderers.
+		bool deviceHoldsPixels() const;
+		//! Takes one of the few new device textures a frame may upload (true
+		//! on other renderers). A caller with a stand-in draws that instead,
+		//! or keeps drawing a held older revision, when this is false: SDL GPU
+		//! submits a command buffer for every texture it creates.
+		bool takeDeviceUpload();
         std::uint64_t lifetimeIdentity() const { return surfaceIdentity; }
         std::uint64_t contentRevision() const { return pixelRevision; }
         virtual void prepareDraw() {}
@@ -322,6 +342,11 @@ namespace GAGCore
 		// The portable renderer zoomed in: the frame's HD layers at its logical
 		// size, when they can draw now (Sprite::highResolutionDrawable).
 		bool drawPortableHighResolution(float x, float y, float w, float h, Sprite *sprite, unsigned index, Uint8 alpha);
+		// A device renderer with a team-colour shader: the frame's team layer
+		// (HD when `experiment` and it has pixels, as prepareDrawSurface picks)
+		// recoloured on the GPU, with no CPU recolour. A negative w draws it at
+		// its own size. False when the caller must draw a CPU-recoloured copy.
+		bool drawDeviceTeamLayer(float x, float y, float w, float h, Sprite *sprite, unsigned index, bool experiment, Uint8 alpha);
 		void drawSprite(float x, float y, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
 		
 		void drawSprite(int x, int y, int w, int h, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
@@ -377,6 +402,26 @@ namespace GAGCore
 	//! The description of a video mode
 	typedef std::vector<SDL_DisplayMode> VideoModes;
 	
+	//! Why presentation memory is trimmed: the system is short of memory while
+	//! the game runs, or the game is going to the background (nothing is drawn).
+	enum class PresentationTrim { LowMemory, Background };
+	//! A presentation cache outside libgag (terrain pages) frees what it can
+	//! rebuild while subscribed. Handlers run on the presentation thread, from
+	//! GraphicContext::trimPresentationMemory; a low-memory handler must spread
+	//! its work over its later frames rather than free everything at once.
+	class PresentationTrimSubscription
+	{
+	  public:
+		using Handler = std::function<void(PresentationTrim)>;
+		explicit PresentationTrimSubscription(Handler handler);
+		~PresentationTrimSubscription();
+		PresentationTrimSubscription(const PresentationTrimSubscription &) = delete;
+		PresentationTrimSubscription &operator=(const PresentationTrimSubscription &) = delete;
+		static void notify(PresentationTrim);
+	  private:
+		Handler handler;
+	};
+
 	//! A GraphicContext is a DrawableSurface that represent the main screen of the application.
 	class GraphicContext:public DrawableSurface
 	{
@@ -410,6 +455,17 @@ namespace GAGCore
     public:
         RenderDevice *renderDevice() const { return renderer == deviceRenderer.get() ? presentationDevice.get() : nullptr; }
         RenderResources *renderResources() const { return deviceResources.get(); }
+        //! Snapshots the device adapter retains for surfaces whose pixels it released.
+        std::size_t retainedDeviceSnapshotBytes() const;
+        //! Frees presentation memory that can be rebuilt, without a renderer
+        //! reset: completed GPU copies, CPU restoration snapshots whose owners
+        //! keep their pixels, terrain pages off the view and retired HD frames.
+        //! Backgrounded nothing is drawn, so it all goes at once; otherwise the
+        //! snapshots and frames go in bounded steps over the next frames.
+        void trimPresentationMemory(PresentationTrim);
+        //! One bounded step of a low-memory trim; Toolkit::pollAssets calls it a frame.
+        void servicePresentationTrim();
+        bool presentationTrimPending() const { return snapshotTrimPending; }
         std::shared_ptr<RenderResources> renderResourceOwner() const { return deviceResources; }
         bool beginDeviceTarget(TextureSnapshot target, float logicalWidth, float logicalHeight);
         void endDeviceTarget();
@@ -418,6 +474,8 @@ namespace GAGCore
         bool flushDeviceFrame();
         bool presentedDeviceFrame() const;
         bool deferDeviceFrame();
+        // See GAGCore::allowDeviceFrameDeferral.
+        void allowDeviceFrameDeferral();
         bool setDeviceTargetScissor(const SDL_Rect *pixels);
     private:
         bool activateBackend(RendererBackend backend, SDL_Surface *previousFrame);
@@ -543,6 +601,13 @@ namespace GAGCore
         std::unique_ptr<SoftwareFramePresenter> softwarePresenter;
         void prepareDraw() override;
 		void presentLastFrame();
+		// An HD layer's alpha-weighted mip chain for device uploads, prepared
+		// once per content revision and borrowed by the returned levels. Levels
+		// carry worker-prepared blocks wherever the device samples them.
+		std::vector<RenderMipLevel> deviceMipLevels(DrawableSurface *surface, SDL_Surface *pixels);
+		// After a draw of deviceMipLevels: once blocks reached the device, the
+		// RGBA levels are only needed again by a device that cannot sample them.
+		static void releaseDeviceRgbaLevels(DrawableSurface *surface, std::span<const RenderMipLevel> levels);
 		// GLSL 1.20 program that recolors a sprite's unrotated team layer on the
 		// GPU (same HSV hue shift as DrawableSurface::shiftHSV) and combines it
 		// with the base layer, so no team-coloured or composite texture is ever
@@ -609,6 +674,13 @@ namespace GAGCore
         std::unique_ptr<RenderDevice> presentationDevice;
         std::shared_ptr<RenderResources> deviceResources;
         std::unique_ptr<RenderBackend> deviceRenderer;
+        //! DrawableSurface::releaseDevicePixels calls this frame (reset in nextFrame).
+        unsigned deviceReleasesThisFrame = 0;
+        //! DrawableSurface::takeDeviceUpload calls this frame (reset in nextFrame).
+        unsigned deviceUploadsThisFrame = 0;
+        //! Level-zero bytes whose mip chains drawSurface built this frame (reset in nextFrame).
+        std::size_t deviceMipBuildBytesThisFrame = 0;
+        bool snapshotTrimPending = false;
         RendererBackend configuredBackend = RendererBackend::Software;
         std::shared_ptr<DeviceSkinState> deviceSkinState;
         struct DeviceTargetState { SDL_Rect clip; float scale; bool offscreen, map, ui; };
@@ -834,6 +906,14 @@ namespace GAGCore
 		//! shader is unavailable so the caller can fall back to two ordinary
 		//! drawSurface calls (base, then the CPU-recoloured team layer).
 		bool drawTeamColoredQuad(DrawableSurface *base, DrawableSurface *team, float x, float y, float w, float h, Uint8 alpha, float hueShift);
+		//! Draw all of a team layer stretched to (x, y, w, h), recoloured by
+		//! hueShift degrees on the GPU exactly as Sprite::applyTeamHueShift
+		//! recolours a copy. Device renderers whose shader set has the
+		//! team-colour material only; false, drawing nothing, elsewhere, so the
+		//! caller draws the CPU-recoloured copy.
+		bool drawTeamColorSurface(float x, float y, float w, float h, DrawableSurface *team, float hueShift, Uint8 alpha = Color::ALPHA_OPAQUE);
+		//! Whether drawTeamColorSurface can draw now.
+		bool hasDeviceTeamColor() const;
 		//! Draw all of `surface` stretched to (x, y, w, h), adding its light (its
 		//! colour times alpha) to what is already drawn instead of blending over
 		//! it, so it brightens rather than tints. Accelerated renderers only; the
@@ -956,6 +1036,9 @@ namespace GAGCore
         std::vector<SpriteAtlasStamp> atlasStamps;
         std::vector<SDL_Rect> atlasRegions;
         bool atlasVariableSizes = false;
+        //! Frame (GraphicContext::frameIdentity) before which a sheet whose
+        //! device atlas could not be made does not try again: every draw tried.
+        std::uint64_t atlasRetryFrame = 0;
 		static void checkAllSpritesDrawn();
 		Color actColor;
 
@@ -1028,8 +1111,9 @@ namespace GAGCore
             if (!highResolutionDemanded) demandHighResolution();
             return prepareDrawSurface(index, false, true);
         }
-        //! After a portable draw: frees frame `index`'s HD base pixels, which
-        //! only its texture then holds, unless the CPU may sample them.
+        //! After a portable or presentation-device draw: frees frame `index`'s
+        //! HD base pixels, which only its texture (portable) or the device's
+        //! retained snapshot then holds, unless the CPU may sample them.
         void releaseDrawnHighResolution(unsigned index);
         //! After a portable draw of frame `index`'s recoloured HD team layer
         //! (in the current colour): frees the cached copy's pixels, which its
@@ -1103,6 +1187,11 @@ namespace GAGCore
         bool createDeviceTextureAtlas(int maximumTextureSize, bool variableSizes);
 		struct HighResolutionStats {size_t cpuBytes=0, coloredFrames=0;};
 		static HighResolutionStats highResolutionStats();
+		//! CPU team recolours of every loaded sprite, native and HD: rotation
+		//! maps and the recolour cache, and the bytes of those still holding
+		//! pixels. Zero where a device shader recolours.
+		struct TeamColorStats {size_t cpuBytes=0, frames=0;};
+		static TeamColorStats teamColorStats();
 		//! Resident pixel and texture bytes of each loaded sprite, for RenderMemory::sprites().
 		static void memoryUsage(std::vector<RenderMemory::SpriteUsage> &usage);
 		static void setHighResolution(bool enabled);
@@ -1152,6 +1241,9 @@ namespace GAGCore
         //! were released have nothing left, so their sprites drop back to
         //! native artwork and reload HD in the background at the next poll.
         static void discardUnbackedHighResolution();
+        //! Frees the retired frames of streamed banks (see retiredHighResolutionBudget):
+        //! at once, or 64 a poll until none are left.
+        static void trimRetiredHighResolution(bool immediately);
         static bool pollHighResolution(unsigned budgetMs = 2);
         static bool pollHighResolutionUntil(std::int64_t deadlineNanoseconds); // GAGCore::steadyClockNanoseconds() clock
         // Blocks until every requested HD frame, deferred windows included, is

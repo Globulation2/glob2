@@ -1457,34 +1457,20 @@ TEST_SUITE("TerrainPresentation")
 			gfx.endMapTransform();
 			return pixels;
 		};
-		// Eight texels a cell, the base mask's own density: until the base
-		// covers the map, the view builds an atlas of its own. Density counts
-		// drawable pixels, so a high-density display needs a smaller map scale.
+		// Eight texels a cell, the base mask's own density. The workers build
+		// the base ahead of any view mask; once it covers the map the view
+		// draws every mixed cell from it and keeps no atlas of its own. Density
+		// counts drawable pixels, so a high-density display needs a smaller
+		// map scale.
 		const float baseScale = .24f / float(gfx.getRasterScale());
-		for (Patience waiting; waiting() && !prepare(baseScale, 63, 31);) SDL_Delay(1);
-		REQUIRE_FALSE(atlas.pendingHdMasks());
-		const auto fromAtlas = frame(baseScale);
-		const auto withAtlas = atlas.textureBytes();
-		for (Patience waiting; waiting() && atlas.pendingBaseMasks();)
-		{
-			prepare(baseScale, 63, 31);
+		for (Patience waiting; waiting() && (!prepare(baseScale, 63, 31) || atlas.pendingBaseMasks());)
 			SDL_Delay(1);
-		}
 		REQUIRE_FALSE(atlas.pendingBaseMasks());
 		REQUIRE(prepare(baseScale, 63, 31));
-		// The same masks now come from the base; the atlas is gone.
-		CHECK(atlas.textureBytes() + 20u * 1024 * 1024 < withAtlas);
+		CHECK(atlas.splitCells() == 0);
+		CHECK(atlas.textureBytes() < 20u * 1024 * 1024);
 		const auto fromBase = frame(baseScale);
-		std::size_t differing = 0;
-		for (std::size_t i = 0; i + 3 < fromBase.size(); i += 4)
-		{
-			int largest = 0;
-			for (int k = 0; k < 3; ++k) largest = std::max(largest, std::abs(int(fromBase[i + k]) - int(fromAtlas[i + k])));
-			differing += largest > 48;
-		}
-		const double share = double(differing) / double(fromBase.size() / 4);
-		CAPTURE(share);
-		CHECK(share < .01);
+		CHECK(fromBase != std::vector<Uint8>(fromBase.size(), 0));
 		// Zooming in builds an atlas at the new density again.
 		for (Patience waiting; waiting() && !prepare(.76f, 26, 19);) SDL_Delay(1);
 		CHECK_FALSE(atlas.pendingHdMasks());
@@ -2003,6 +1989,52 @@ TEST_SUITE("TerrainPresentation")
 			draw(freshHidden, 2, 25, 0, false);
 			CHECK(pixels() == hidden);
 		}
+	}
+
+	TEST_CASE("presentation trims free idle terrain pages in bounded steps and keep the view [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 512, .height = 512,
+			.screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .discovered = true});
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		auto &gfx = *globals->gfx;
+		SoftwareTerrainCache cache;
+		const auto draw = [&](int viewX, int viewY)
+		{
+			gfx.drawFilledRect(0, 0, 512, 512, 17, 29, 41);
+			gfx.beginMapTransform(1.f, 0.f, 0.f, 0, 0, 512, 512);
+			REQUIRE(cache.prepareAtResolution(scene, *globals->terrain, 0, 0, 15, 15,
+				viewX, viewY, fixture.team->me, true, 0, 1));
+			cache.draw(gfx);
+			gfx.endMapTransform();
+		};
+		const auto drawn = [&] { return std::count_if(cache.chunks.begin(), cache.chunks.end(),
+			[&](const auto &chunk) { return chunk->used == cache.frame; }); };
+		// Visit the whole 64x64 map, then settle on one corner.
+		for (int y = 0; y < 64; y += 16)
+			for (int x = 0; x < 64; x += 16) draw(x, y);
+		draw(0, 0);
+		const auto view = drawn();
+		const auto resident = cache.chunks.size();
+		REQUIRE(resident > std::size_t(view) + 8);
+		GAGCore::PresentationTrimSubscription::notify(GAGCore::PresentationTrim::LowMemory);
+		draw(0, 0);
+		// At most eight idle pages go a frame; the view's pages never do.
+		CHECK(cache.chunks.size() >= resident - 8);
+		CHECK(cache.chunks.size() < resident);
+		for (int frame = 0; frame < 64 && cache.trimBefore; ++frame) draw(0, 0);
+		CHECK(cache.trimBefore == 0);
+		CHECK(cache.chunks.size() == std::size_t(drawn()));
+		CHECK(drawn() == view);
+		// Backgrounded, every idle page goes at once.
+		draw(32, 32);
+		CHECK(cache.chunks.size() > std::size_t(drawn()));
+		GAGCore::PresentationTrimSubscription::notify(GAGCore::PresentationTrim::Background);
+		CHECK(cache.chunks.size() == std::size_t(drawn()));
+		CHECK(cache.trimBefore == 0);
+		draw(0, 0); // Trimmed pages compose again.
+		CHECK(drawn() == view);
 	}
 
 	TEST_CASE("zoomed-out GPU terrain retains pages across frames and wrapped views [display] "

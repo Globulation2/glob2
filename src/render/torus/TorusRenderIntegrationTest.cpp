@@ -493,8 +493,12 @@ static void liveTerrainPressure(GAGCore::RendererBackend backend)
     Game game(nullptr);makeTorusMapFixture(game,256,256);game.map.setMapDiscovered();
     const auto requested=SoftwareTerrainCache::capturePixelsPerCell(256,256);
     TorusView view;view.textureLimit=2048;view.toggle();
+    // The whole-map terrain base builds on background workers: seconds in a
+    // dev build, over 100 s under coverage instrumentation. Wait on a clock,
+    // not an attempt count.
     auto render=[&]{
-        for(unsigned retry=0;retry<128;++retry){
+        const auto deadline=std::chrono::steady_clock::now()+std::chrono::minutes(5);
+        while(std::chrono::steady_clock::now()<deadline){
             if(!view.active())view.toggle();
             int vx=128,vy=128;
             REQUIRE(view.draw(glob2test::sceneOf(game),nullptr,0,Game::DRAW_WHOLE_MAP,
@@ -516,7 +520,7 @@ static void liveTerrainPressure(GAGCore::RendererBackend backend)
             if(recorded)return;
             SDL_Delay(1);
         }
-        FAIL("Torus never completed within bounded pressure retries");
+        FAIL("Torus never completed under pressure within five minutes");
     };
     render();REQUIRE(view.pixelsPerCell>0);REQUIRE(view.pixelsPerCell<requested);
     const auto reduced=view.pixelsPerCell;

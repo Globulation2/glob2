@@ -870,10 +870,11 @@ set(GLOB2_STRICT_CXXFLAGS
     -ffp-contract=off
 )
 
-# buildsys/sources.py GAG_SOURCES and ETCPAK_SOURCES.
+# buildsys/sources.py GAG_SOURCES, ETCPAK_SOURCES and ASTCENC_SOURCES.
 set(GLOB2_GAG_SOURCES
     libs/gag/src/AssetLoader.cpp
     libs/gag/src/EtcpakSse41.cpp
+    libs/gag/src/AstcEncoder.cpp
     libs/gag/src/AssetVideo.cpp
     libs/gag/src/AssetVideoDecoder.cpp
     libs/gag/src/PackedSpriteFrame.cpp
@@ -957,6 +958,28 @@ set(GLOB2_GAG_SOURCES
     third_party/etcpak/etcpak/ProcessRGB.cpp
     third_party/etcpak/etcpak/Tables.cpp
     third_party/etcpak/etcpak/Dither.cpp
+    third_party/astcenc/astcenc/astcenc_averages_and_directions.cpp
+    third_party/astcenc/astcenc/astcenc_block_sizes.cpp
+    third_party/astcenc/astcenc/astcenc_color_quantize.cpp
+    third_party/astcenc/astcenc/astcenc_color_unquantize.cpp
+    third_party/astcenc/astcenc/astcenc_compress_symbolic.cpp
+    third_party/astcenc/astcenc/astcenc_compute_variance.cpp
+    third_party/astcenc/astcenc/astcenc_decompress_symbolic.cpp
+    third_party/astcenc/astcenc/astcenc_diagnostic_trace.cpp
+    third_party/astcenc/astcenc/astcenc_entry.cpp
+    third_party/astcenc/astcenc/astcenc_find_best_partitioning.cpp
+    third_party/astcenc/astcenc/astcenc_ideal_endpoints_and_weights.cpp
+    third_party/astcenc/astcenc/astcenc_image.cpp
+    third_party/astcenc/astcenc/astcenc_integer_sequence.cpp
+    third_party/astcenc/astcenc/astcenc_mathlib.cpp
+    third_party/astcenc/astcenc/astcenc_mathlib_softfloat.cpp
+    third_party/astcenc/astcenc/astcenc_partition_tables.cpp
+    third_party/astcenc/astcenc/astcenc_percentile_tables.cpp
+    third_party/astcenc/astcenc/astcenc_pick_best_endpoint_format.cpp
+    third_party/astcenc/astcenc/astcenc_quantization.cpp
+    third_party/astcenc/astcenc/astcenc_symbolic_physical.cpp
+    third_party/astcenc/astcenc/astcenc_weight_align.cpp
+    third_party/astcenc/astcenc/astcenc_weight_quant_xfer_tables.cpp
 )
 
 # buildsys/sources.py SSE41_SOURCES: libgag sources native x86 builds compile with -msse4.1.
@@ -1660,6 +1683,7 @@ set(GLOB2_ANDROID_SOURCES
     src/app/CompileProfile.cpp
     libs/gag/src/AssetLoader.cpp
     libs/gag/src/EtcpakSse41.cpp
+    libs/gag/src/AstcEncoder.cpp
     libs/gag/src/AssetVideo.cpp
     libs/gag/src/AssetVideoDecoder.cpp
     libs/gag/src/PackedSpriteFrame.cpp
@@ -1743,6 +1767,28 @@ set(GLOB2_ANDROID_SOURCES
     third_party/etcpak/etcpak/ProcessRGB.cpp
     third_party/etcpak/etcpak/Tables.cpp
     third_party/etcpak/etcpak/Dither.cpp
+    third_party/astcenc/astcenc/astcenc_averages_and_directions.cpp
+    third_party/astcenc/astcenc/astcenc_block_sizes.cpp
+    third_party/astcenc/astcenc/astcenc_color_quantize.cpp
+    third_party/astcenc/astcenc/astcenc_color_unquantize.cpp
+    third_party/astcenc/astcenc/astcenc_compress_symbolic.cpp
+    third_party/astcenc/astcenc/astcenc_compute_variance.cpp
+    third_party/astcenc/astcenc/astcenc_decompress_symbolic.cpp
+    third_party/astcenc/astcenc/astcenc_diagnostic_trace.cpp
+    third_party/astcenc/astcenc/astcenc_entry.cpp
+    third_party/astcenc/astcenc/astcenc_find_best_partitioning.cpp
+    third_party/astcenc/astcenc/astcenc_ideal_endpoints_and_weights.cpp
+    third_party/astcenc/astcenc/astcenc_image.cpp
+    third_party/astcenc/astcenc/astcenc_integer_sequence.cpp
+    third_party/astcenc/astcenc/astcenc_mathlib.cpp
+    third_party/astcenc/astcenc/astcenc_mathlib_softfloat.cpp
+    third_party/astcenc/astcenc/astcenc_partition_tables.cpp
+    third_party/astcenc/astcenc/astcenc_percentile_tables.cpp
+    third_party/astcenc/astcenc/astcenc_pick_best_endpoint_format.cpp
+    third_party/astcenc/astcenc/astcenc_quantization.cpp
+    third_party/astcenc/astcenc/astcenc_symbolic_physical.cpp
+    third_party/astcenc/astcenc/astcenc_weight_align.cpp
+    third_party/astcenc/astcenc/astcenc_weight_quant_xfer_tables.cpp
     libs/usl/src/code.cpp
     libs/usl/src/debug.cpp
     libs/usl/src/interpreter.cpp
@@ -2461,6 +2507,7 @@ set(GLOB2_IOS_SOURCES
     platforms/mobile/ios/CertificateTrust.cpp
     libs/gag/src/AssetLoader.cpp
     libs/gag/src/EtcpakSse41.cpp
+    libs/gag/src/AstcEncoder.cpp
     libs/gag/src/AssetVideo.cpp
     libs/gag/src/AssetVideoDecoder.cpp
     libs/gag/src/PackedSpriteFrame.cpp
@@ -2544,6 +2591,28 @@ set(GLOB2_IOS_SOURCES
     third_party/etcpak/etcpak/ProcessRGB.cpp
     third_party/etcpak/etcpak/Tables.cpp
     third_party/etcpak/etcpak/Dither.cpp
+    third_party/astcenc/astcenc/astcenc_averages_and_directions.cpp
+    third_party/astcenc/astcenc/astcenc_block_sizes.cpp
+    third_party/astcenc/astcenc/astcenc_color_quantize.cpp
+    third_party/astcenc/astcenc/astcenc_color_unquantize.cpp
+    third_party/astcenc/astcenc/astcenc_compress_symbolic.cpp
+    third_party/astcenc/astcenc/astcenc_compute_variance.cpp
+    third_party/astcenc/astcenc/astcenc_decompress_symbolic.cpp
+    third_party/astcenc/astcenc/astcenc_diagnostic_trace.cpp
+    third_party/astcenc/astcenc/astcenc_entry.cpp
+    third_party/astcenc/astcenc/astcenc_find_best_partitioning.cpp
+    third_party/astcenc/astcenc/astcenc_ideal_endpoints_and_weights.cpp
+    third_party/astcenc/astcenc/astcenc_image.cpp
+    third_party/astcenc/astcenc/astcenc_integer_sequence.cpp
+    third_party/astcenc/astcenc/astcenc_mathlib.cpp
+    third_party/astcenc/astcenc/astcenc_mathlib_softfloat.cpp
+    third_party/astcenc/astcenc/astcenc_partition_tables.cpp
+    third_party/astcenc/astcenc/astcenc_percentile_tables.cpp
+    third_party/astcenc/astcenc/astcenc_pick_best_endpoint_format.cpp
+    third_party/astcenc/astcenc/astcenc_quantization.cpp
+    third_party/astcenc/astcenc/astcenc_symbolic_physical.cpp
+    third_party/astcenc/astcenc/astcenc_weight_align.cpp
+    third_party/astcenc/astcenc/astcenc_weight_quant_xfer_tables.cpp
     libs/usl/src/code.cpp
     libs/usl/src/debug.cpp
     libs/usl/src/interpreter.cpp
@@ -4273,6 +4342,7 @@ set(GLOB2_INCLUDE_DIRECTORIES
     src/scripting/sgsl
     third_party/nlohmann-json/include
     third_party/etcpak
+    third_party/astcenc
 )
 
 # buildsys/javascript.py QUICKJS_SOURCES and openlibm_sources().

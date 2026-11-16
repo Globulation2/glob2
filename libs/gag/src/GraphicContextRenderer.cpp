@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GraphicContextPrivate.h"
 #include <cstring>
+#include <list>
+#include <vector>
 #include <SoftwareFramePresenter.h>
 #include <algorithm>
 #include <RenderDevice.h>
@@ -67,6 +69,11 @@ bool GraphicContext::flushDeviceFrame()
 bool GraphicContext::presentedDeviceFrame() const
 {
     return !renderDevice() || didPresentDeviceFrame(*renderer);
+}
+
+void GraphicContext::allowDeviceFrameDeferral()
+{
+    if (renderDevice()) GAGCore::allowDeviceFrameDeferral(*renderer);
 }
 
 bool GraphicContext::deferDeviceFrame()
@@ -498,12 +505,69 @@ void GraphicContext::captureScreenshot()
     } catch (const RenderAdmissionDeferred &) {}
     catch (const std::exception &error) { SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Screenshot: %s", error.what()); pendingScreenshot.clear(); }
 }
+std::size_t GraphicContext::retainedDeviceSnapshotBytes() const
+{
+    return deviceRenderer ? retainedDeviceTextureBytes(*deviceRenderer) : 0;
+}
+namespace { std::list<PresentationTrimSubscription *> trimSubscriptions; }
+PresentationTrimSubscription::PresentationTrimSubscription(Handler value) : handler(std::move(value))
+{
+    trimSubscriptions.push_back(this);
+}
+PresentationTrimSubscription::~PresentationTrimSubscription() { trimSubscriptions.remove(this); }
+void PresentationTrimSubscription::notify(PresentationTrim reason)
+{
+    // A handler may destroy another cache; copy the list first.
+    const std::vector<PresentationTrimSubscription *> current(trimSubscriptions.begin(), trimSubscriptions.end());
+    for (auto *subscription : current)
+        if (std::find(trimSubscriptions.begin(), trimSubscriptions.end(), subscription) != trimSubscriptions.end() &&
+            subscription->handler)
+            subscription->handler(reason);
+}
+// A foreground trim erases at most this many snapshots a frame, and only those
+// not drawn for two frames, so the view's own textures are never re-uploaded.
+constexpr std::size_t SnapshotTrimsPerFrame = 64;
+constexpr std::uint64_t SnapshotTrimIdleFrames = 2;
+void GraphicContext::trimPresentationMemory(PresentationTrim reason)
+{
+    const bool background = reason == PresentationTrim::Background;
+    if (presentationDevice) {
+        // Completed GPU copies that logical snapshots restore; in-flight work,
+        // unfinished uploads and rendered targets stay.
+        try { presentationDevice->trimRetiredResources(); }
+        catch (const std::exception &error) { SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Presentation trim: %s", error.what()); }
+    }
+    if (deviceRenderer) {
+        snapshotTrimPending = true;
+        // Nothing is drawn in the background: no frame to spread the work over.
+        if (background) {
+            while (trimDeviceTextures(*deviceRenderer, SnapshotTrimsPerFrame, 0) == SnapshotTrimsPerFrame) {}
+            snapshotTrimPending = false;
+        }
+    }
+    Sprite::trimRetiredHighResolution(background);
+    PresentationTrimSubscription::notify(reason);
+}
+void GraphicContext::servicePresentationTrim()
+{
+    if (!snapshotTrimPending) return;
+    if (!deviceRenderer ||
+        trimDeviceTextures(*deviceRenderer, SnapshotTrimsPerFrame, SnapshotTrimIdleFrames) < SnapshotTrimsPerFrame)
+        snapshotTrimPending = false;
+}
 void GraphicContext::recoverPresentationDevice()
 {
     cancelCaptures();
     resetDeviceSkinState(); deviceTargetStates.clear();
     ++glContextGeneration;
-    renderer = nullptr; deviceRenderer.reset(); presentationDevice.reset();
+    // Snapshots move to the replacement adapter, so surfaces whose pixels were
+    // released draw again; the old adapter never touches its lost device.
+    auto previous = std::move(deviceRenderer);
+    renderer = nullptr; presentationDevice.reset();
+    struct DiscardOnFailure {
+        std::unique_ptr<RenderBackend> &adapter;
+        ~DiscardOnFailure() { if (adapter) { adapter.reset(); Sprite::discardUnbackedHighResolution(); } }
+    } discardOnFailure{previous};
     // Recompile programs and recreate every graphics object after context loss.
     // Logical source pixels and immutable geometry remain owned by the registry.
     if (configuredBackend == RendererBackend::ProgrammableGL)
@@ -513,7 +577,9 @@ void GraphicContext::recoverPresentationDevice()
 #else
     else presentationDevice = makeWebGPURenderDevice(window);
 #endif
+    selectDeviceBlockCompression(*presentationDevice);
     deviceRenderer = makeDeviceRenderBackend(*presentationDevice, *deviceResources, getW(), getH());
+    if (previous) { adoptDeviceTextures(*previous, *deviceRenderer); previous.reset(); }
     renderer = deviceRenderer.get(); renderer->clip(&clipRect); resetRenderPacing();
 }
 void GraphicContext::handleDeviceFailure(const std::string &reason)

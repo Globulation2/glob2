@@ -8,6 +8,9 @@
 #include <etcpak/ProcessDxtc.hpp>
 #include <etcpak/ProcessRGB.hpp>
 #include "EtcpakSse41.h"
+#ifndef GLOB2_WEBGL2
+#include "AstcEncoder.h"
+#endif
 #include <cstring>
 #include <algorithm>
 #include <cmath>
@@ -101,19 +104,32 @@ std::vector<unsigned char> AssetImage::compressBlocks(const unsigned char *pixel
     // etcpak reads 32-bit pixels: its BC encoders with red in the low byte,
     // its ETC encoders with blue there. Swap the channels where ours differ.
     const bool wantsBgra = format == BlockCompression::ETC2;
+    const bool premultiply = premultipliedBlocks(format);
     std::vector<std::uint32_t> source(size_t(width) * height);
     std::memcpy(source.data(), pixels, source.size() * 4);
-    if (bgra != wantsBgra)
+    if (bgra != wantsBgra || premultiply)
         for (auto &pixel : source) {
             unsigned char bytes[4];
             std::memcpy(bytes, &pixel, 4);
-            std::swap(bytes[0], bytes[2]);
+            if (bgra != wantsBgra) std::swap(bytes[0], bytes[2]);
+            // The rounding SDL GPU applies when it premultiplies RGBA uploads.
+            if (premultiply)
+                for (int channel = 0; channel < 3; ++channel)
+                    bytes[channel] = static_cast<unsigned char>((unsigned(bytes[channel]) * bytes[3] + 127) / 255);
             std::memcpy(&pixel, bytes, 4);
         }
+    if (format == BlockCompression::PremultipliedASTC4x4) {
+#ifdef GLOB2_WEBGL2
+        return blocks;
+#else
+        // astcenc reads RGBA bytes, which the conversion above produced.
+        return AstcEncoder::encode(reinterpret_cast<const unsigned char *>(source.data()), width, height);
+#endif
+    }
     std::vector<std::uint64_t> encoded(count * 2);
     // The SSE4.1 build where the CPU runs it: the same blocks about three times faster.
     static const auto simd = EtcpakSse41::available();
-    if (format == BlockCompression::BC3) {
+    if (format == BlockCompression::BC3 || format == BlockCompression::PremultipliedBC3) {
         if (simd.bc3) simd.bc3(source.data(), encoded.data(), std::uint32_t(count), size_t(width));
         else CompressBc3(source.data(), encoded.data(), std::uint32_t(count), size_t(width));
     } else {
@@ -124,7 +140,7 @@ std::vector<unsigned char> AssetImage::compressBlocks(const unsigned char *pixel
     std::memcpy(blocks.data(), encoded.data(), blocks.size());
     return blocks;
 }
-void AssetImage::prepareUpload(bool highResolution) {
+void AssetImage::prepareUpload(bool highResolution, bool encodeBlocks) {
 #if defined(GLOB2_WEBGL2) || SDL_BYTEORDER == SDL_BIG_ENDIAN
     uploadPixels.resize(size_t(surface->w) * surface->h * 4);
     for (int y = 0; y < surface->h; ++y) {
@@ -161,11 +177,16 @@ void AssetImage::prepareUpload(bool highResolution) {
     }
     // The driver would otherwise compress each level inside glTexImage2D on
     // the graphics thread: tens of milliseconds for a 2048-pixel HD sheet.
-    compression = highResolutionCompression.load(std::memory_order_relaxed);
+    compression = encodeBlocks ? highResolutionCompression.load(std::memory_order_relaxed) : BlockCompression::Uncompressed;
     // Levels hold the surface's byte order, except where uploadPixels made them RGBA.
     const bool bgra = uploadPixels.empty();
     for (auto &mip : mips)
         mip.compressed = compressBlocks(mip.pixels.data(), mip.width, mip.height, compression, bgra);
+    // A render device samples premultiplied blocks directly and restores from
+    // them; their RGBA levels would only be prepared again by another renderer.
+    if (premultipliedBlocks(compression))
+        for (auto &mip : mips)
+            if (!mip.compressed.empty()) std::vector<unsigned char>().swap(mip.pixels);
 }
 void downsampleMip(const unsigned char *source, int width, int height,
                                unsigned char *destination) {

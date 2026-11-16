@@ -46,6 +46,37 @@ To update, replace the listed files from a new tag, reapply the patch, record
 the tag and commit here, and rerun the `ImageAssets` and `GpuTexturePreparation`
 suites, which decode both formats.
 
+## ASTC texture compression
+
+astcenc 5.7.1, the Arm ASTC Encoder (Apache License 2.0), from
+https://github.com/ARM-software/astc-encoder (tag `5.7.1`, commit
+`0affb51aaf0e0de3a8b038fa32487d59754a1eed`). Added as a runtime dependency with
+maintainer approval, for SDL GPU devices that sample ASTC but not BC3 (phones).
+`astcenc/astcenc/` holds only the core codec library from upstream `Source/`:
+the 22 sources `Source/cmake_core.cmake` builds into its static library and the
+headers they include (`astcenc.h`, `astcenc_internal.h`,
+`astcenc_internal_entry.h`, `astcenc_mathlib.h`, `astcenc_diagnostic_trace.h`
+and the `astcenc_vecmathlib*.h` SIMD back ends), with the upstream `LICENSE.txt`
+beside it. Upstream has no NOTICE file. The command-line tool, its image
+loaders and `Source/ThirdParty/`, the tests, fuzzers and documentation are left
+out. The sources are unmodified.
+
+`buildsys/sources.py` compiles them into libgag on native and mobile platforms
+(`ASTCENC_SOURCES`) and puts `third_party/astcenc` on the include path; include
+the API as `<astcenc/astcenc.h>`. The browser build leaves them out with
+`AstcEncoder.cpp` (it renders through WebGL 2, never SDL GPU).
+`libs/gag/src/AstcEncoder.cpp` is the only caller: asset workers encode premultiplied high-resolution levels
+(`AssetImage::BlockCompression::PremultipliedASTC4x4`) with a trimmed fastest
+preset into 4x4 LDR blocks, each worker thread through its own child context sharing
+one root context's tables. astcenc picks its SIMD back end from the compiler's
+target macros: NEON on arm64 (Android `arm64-v8a`, iOS), SSE4.2 and POPCNT on
+Android `x86_64` (that ABI's baseline), SSE2 on desktop x86-64, and the scalar
+path on 32-bit ARM. Unlike etcpak there is no second, run-time-selected
+SSE4.1 build: desktops sample BC3, so the SSE2 build is only their fallback,
+and a copy would add about 275 KB for about 10% faster encoding. The notice ships as `content/data/astcenc-license.txt`. To update, replace the
+listed files from a new tag, record the tag and commit here, and rerun the `ImageAssets`, `RenderDevice` and
+`SDLGPUDevice` suites, which encode, decode and sample the blocks.
+
 ## Scripting runtime
 
 

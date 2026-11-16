@@ -60,7 +60,8 @@ def content():
               'Client sources whose objects the numeric symbol guard checks (javascript.guarded_numeric_source).'),
         _list('GLOB2_STRICT_CXXFLAGS', javascript.STRICT_CXXFLAGS, 'javascript.STRICT_CXXFLAGS.'),
         _list('GLOB2_GAG_SOURCES', ['libs/gag/src/' + name for name in sources.GAG_SOURCES] +
-              list(sources.ETCPAK_SOURCES), 'buildsys/sources.py GAG_SOURCES and ETCPAK_SOURCES.'),
+              list(sources.ETCPAK_SOURCES) + list(sources.ASTCENC_SOURCES),
+              'buildsys/sources.py GAG_SOURCES, ETCPAK_SOURCES and ASTCENC_SOURCES.'),
         _list('GLOB2_SSE41_SOURCES', list(sources.SSE41_SOURCES),
               'buildsys/sources.py SSE41_SOURCES: libgag sources native x86 builds compile with -msse4.1.'),
         _list('GLOB2_ANDROID_SOURCES', sources.mobile_sources('android'),

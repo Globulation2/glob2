@@ -149,6 +149,8 @@ void SceneMap::resourceRowRevisions(std::span<Uint64> rows) const
 }
 
 Uint64 SceneMap::discoveryRevision() const { return snapshot->visibility->discoveryRevision; }
+std::span<const Uint64> SceneMap::discoveryStamps() const
+{ return snapshot && snapshot->visibility ? std::span<const Uint64>(snapshot->visibility->discoveredStamps.chunks) : std::span<const Uint64>{}; }
 
 TerrainType SceneMap::vertexTerrainAt(int x, int y) const
 { return (*snapshot->terrain->vertices)[coordToIndex(x,y)]; }

@@ -414,7 +414,18 @@ void MapDrawer::drawSceneMapRegion(const PresentationFrame& scene, int sx, int s
 		pagesForView->draw(frame.target);
 	}
 	else if (!overviewOnly && !direct && !terrainBackdrop && !legacy)
-		drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions, scene.map, time);
+	{
+		// An interactive device view whose pages could not prepare this frame
+		// (the device refused page composition, say) shows the overview:
+		// composing uncached pages here, on the graphics thread, through the
+		// device took seconds a frame and repeated every frame the admission
+		// kept failing. CPU renderers still stream pages a view too large for
+		// the cache needs.
+		if (pagesForView && pagesForView->deferBuilds && frame.target.renderDevice())
+			drawBackdrop();
+		else
+			drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions, scene.map, time);
+	}
 
     const auto *atlas = view.render.existingDirectTerrain();
     const auto *pages = view.render.existingTerrainCache();

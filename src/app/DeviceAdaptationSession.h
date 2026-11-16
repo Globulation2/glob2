@@ -19,7 +19,7 @@ void serviceFrame(const std::vector<SDL_Event> &events);
 void matchStarted();
 // A presented in-game frame.
 void framePresented();
-// The single trim entry point. Today it frees retired HD frames; it is where
-// GraphicContext::trimPresentationMemory and the shared render budget plug in.
+// The single trim entry point: forwards to GraphicContext::trimPresentationMemory
+// and, for Smallest, keeps the retired HD frames' budget at zero.
 void trimPresentationMemory(Trim trim);
 } // namespace DeviceAdaptation

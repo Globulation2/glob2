@@ -12,7 +12,8 @@ remain authoritative; this page does not replace them.
   libraries, versions, licenses, and local patches.
 - [Shipped JavaScript notices](../../content/data/javascript-licenses.txt),
   [JSON notice](../../content/data/json-license.txt),
-  [texture-compression notice](../../content/data/etcpak-license.txt), and
+  texture-compression notices ([etcpak](../../content/data/etcpak-license.txt),
+  [astcenc](../../content/data/astcenc-license.txt)), and
   [image-codec notices](../../content/data/image-codec-licenses.txt) accompany runtime assets.
 
 - [AUTHORS](../../AUTHORS) retains core author attribution; Git history records

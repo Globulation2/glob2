@@ -287,7 +287,7 @@ after about a second, and results go to `artifacts/render-fallback/<label>/`.
 `tools/rendering/memory_scenario.py` runs the standard memory scenario and reports
 peak memory by owner. It loads a mid-game save of a 256×256 Honeycomb Isles map
 in `torus-render-benchmark`, draws the flat game view on legacy OpenGL (`--renderer` picks
-another, such as `portable-sdl`) with HD artwork, and pans while cycling the zoom between the minimum and four times
+another backend, such as `sdl-gpu` or `portable-sdl`) with HD artwork, and pans while cycling the zoom between the minimum and four times
 that; `--zoom 1` cycles from one to four instead, where the portable renderer
 draws HD sprites and pages. Build the perf tier first; `--prepare` generates the save (map seed 7,
 four AIs, tick 30000) under `artifacts/render-memory/`.
@@ -317,6 +317,8 @@ and as `RENDER_MEMORY` when a pass ends:
 | `cpu_terrain_page_bytes`, `cpu_terrain_page_pixel_bytes` | The page cache's budget accounting (pixels, bookkeeping and texture reservations) and the CPU pixels its pages actually hold |
 | `gpu_backend_texture_bytes`, `gpu_backend_peak_texture_bytes` | Textures the portable SDL renderer holds, current and peak, which no surface accounts for; on phones they share system memory |
 | `gpu_frame_cache_bytes`, `gpu_skin_atlas_bytes`, `gpu_view_tile_bytes` | Render targets no surface owns |
+| `device_resource_bytes` | A render device's own total (SDL GPU, Programmable GL, WebGPU): resident textures, depth, geometry and staging; the `gpu_*` surface rows stay zero on these devices |
+| `device_snapshot_bytes`, `device_retained_bytes` | The logical CPU copies `RenderResources` keeps so a device can restore its textures, and the part retained for surfaces whose own pixels were released |
 | `image_decodes`, `image_decoded_bytes` | Image decodes since launch and the pixels they produced; growth during camera motion is streaming churn |
 | `peak_rss_bytes` | The process's peak resident set (zero on Windows and in the browser) |
 
@@ -334,6 +336,13 @@ game does before the player moves, so background work such as the whole-map
 base mask finishes; a camera that never rests starves that work. Camera motion applies to the
 flat pass, so a saved-game memory run needs `GLOB2_BENCH_FLAT=1` as well as
 `GLOB2_BENCH_GAME`.
+
+`--trim-at N` (`GLOB2_BENCH_TRIM_AT=N`) sends a low-memory presentation trim
+before measured frame N. The benchmark prints `PRESENTATION_TRIM` with the device
+registry's snapshot bytes and the device's resource bytes, then
+`PRESENTATION_TRIM_AFTER` every ten frames for sixty frames; compare them, and
+the `FRAME_RENDER_MEMORY` lines around frame N, to see what the trim freed. Set
+`GLOB2_RENDER_BUDGET=mobile` to run the scenario under the phone budgets.
 
 In the game client, legacy OpenGL records the same tracked GPU total as the
 `render.resource_bytes` gauge, and `GLOB2_TEAM_TIMELINE=1` adds a

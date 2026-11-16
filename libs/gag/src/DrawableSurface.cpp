@@ -184,6 +184,48 @@ namespace GAGCore
             _gc->portableRenderer->hasTexture(this, contentRevision()));
     }
 
+    bool DrawableSurface::releaseDevicePixels()
+    {
+        // Releasing frees a few large blocks; spreading them keeps frames even.
+        constexpr unsigned ReleasesPerFrame = 16;
+        if (!sdlsurface || this == _gc || textureInfo || !_gc || !_gc->deviceRenderer ||
+            _gc->renderer != _gc->deviceRenderer.get() || _gc->offscreenPass ||
+            _gc->deviceReleasesThisFrame >= ReleasesPerFrame ||
+            !retainDeviceTexture(*_gc->deviceRenderer, this, contentRevision()))
+            return false;
+        ++_gc->deviceReleasesThisFrame;
+        hasOpaquePixels(); // Answered from the pixels one last time, then from the cache.
+        releasedW = sdlsurface->w;
+        releasedH = sdlsurface->h;
+        SDL_DestroySurface(sdlsurface);
+        sdlsurface = nullptr;
+        std::vector<unsigned char>().swap(preparedUploadPixels);
+        std::vector<AssetImage::Mip>().swap(preparedMips);
+        releasedOnDevice = true;
+        return true;
+    }
+
+    bool DrawableSurface::deviceHoldsPixels() const
+    {
+        if (!_gc || !_gc->deviceRenderer || _gc->renderer != _gc->deviceRenderer.get()) return true;
+        return _gc->deviceRenderer->hasTexture(this, contentRevision());
+    }
+
+    bool DrawableSurface::takeDeviceUpload()
+    {
+        constexpr unsigned UploadsPerFrame = 8;
+        if (!_gc || !_gc->deviceRenderer || _gc->renderer != _gc->deviceRenderer.get() || _gc->offscreenPass) return true;
+        if (_gc->deviceUploadsThisFrame >= UploadsPerFrame) return false;
+        ++_gc->deviceUploadsThisFrame;
+        return true;
+    }
+
+    bool DrawableSurface::deviceBacked() const
+    {
+        return releasedOnDevice && !sdlsurface && _gc && _gc->deviceRenderer &&
+            _gc->deviceRenderer->hasTexture(this, pixelRevision);
+    }
+
 	DrawableSurface *DrawableSurface::clone(void)
 	{
 		assert(sdlsurface);
@@ -344,6 +386,10 @@ namespace GAGCore
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
                     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+                    // A render device may have kept only premultiplied blocks,
+                    // which this context never uploads: prepare the chain again.
+                    if (!preparedMips.empty() && preparedMips.front().pixels.empty())
+                        std::vector<AssetImage::Mip>().swap(preparedMips);
                     if ((preparedUploadRevision != pixelRevision || preparedMips.empty()) &&
                         sdlsurface->w > 0 && sdlsurface->h > 0 &&
                         sdlsurface->pitch == sdlsurface->w * 4 &&

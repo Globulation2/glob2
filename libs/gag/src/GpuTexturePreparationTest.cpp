@@ -3,6 +3,7 @@
 #include "ScopedEnvironment.h"
 #include "GraphicContextPrivate.h"
 #include <AssetLoader.h>
+#include <RenderDevice.h>
 #include <algorithm>
 #include <cmath>
 #include <cstring>
@@ -155,6 +156,24 @@ void portablePreparation(bool cpu)
 } // namespace
 TEST_SUITE("GpuTexturePreparation")
 {
+	TEST_CASE("render devices get premultiplied BC3 where sampled, else premultiplied ASTC 4x4")
+	{
+		using Compression = AssetImage::BlockCompression;
+		RenderDeviceCapabilities capabilities;
+		CHECK(preferredDeviceBlockCompression(capabilities) == Compression::Uncompressed);
+		capabilities.astc4x4Textures = true;
+#if defined(GLOB2_WEBGL2)
+		CHECK(preferredDeviceBlockCompression(capabilities) == Compression::Uncompressed);
+#else
+		// Phones: ASTC alone.
+		CHECK(preferredDeviceBlockCompression(capabilities) == Compression::PremultipliedASTC4x4);
+#endif
+		// Desktop GPUs, and the few that sample both: etcpak's faster BC3.
+		capabilities.bc3Textures = true;
+		CHECK(preferredDeviceBlockCompression(capabilities) == Compression::PremultipliedBC3);
+		capabilities.astc4x4Textures = false;
+		CHECK(preferredDeviceBlockCompression(capabilities) == Compression::PremultipliedBC3);
+	}
 	TEST_CASE("SDL premultiplication preserves pixels state and queued revisions [display]")
 	{
 		portablePreparation(false);

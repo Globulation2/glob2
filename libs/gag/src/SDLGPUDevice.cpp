@@ -15,6 +15,7 @@
 #include <vector>
 #include <tuple>
 #include <unordered_map>
+#include <functional>
 #include <nlohmann/json.hpp>
 #include <filesystem>
 #ifdef __APPLE__
@@ -46,11 +47,71 @@ static_assert(Layout::terrain_compose_fragment_size == 368 && Layout::terrain_co
     Layout::terrain_compose_fragment_surfPlace_offset == 144 && Layout::terrain_compose_fragment_surfColor_offset == 288 &&
     Layout::terrain_compose_fragment_surfLand_offset == 352);
 static_assert(Layout::terrain_reduce_fragment_size == 16 && Layout::terrain_reduce_fragment_params_offset == 0);
+// Team colour shares the primitive vertex stream and uniform block sizes.
+static_assert(Layout::team_color_stride == Layout::primitive_stride && Layout::team_color_size == Layout::primitive_size &&
+    Layout::team_color_fragment_size == Layout::primitive_fragment_size);
+// Team colour samples straight uploads and premultiplies in the shader, after
+// recolouring, wherever a primitive blit would sample a premultiplied upload.
+bool teamPremultiplied(const DrawPacket &packet, bool texturePremultiplied)
+{
+    return texturePremultiplied || packet.linear;
+}
 static_assert(offsetof(SDL_Vertex, position) == Layout::primitive_attributes[0].offset);
 static_assert(offsetof(SDL_Vertex, color) == Layout::primitive_attributes[1].offset);
 static_assert(offsetof(SDL_Vertex, tex_coord) == Layout::primitive_attributes[2].offset);
 
 [[noreturn]] void fail(const char *operation) { throw std::runtime_error(std::string(operation) + ": " + SDL_GetError()); }
+SDL_GPUTextureFormat gpuFormat(TextureCompression compression)
+{
+    switch (compression) {
+    case TextureCompression::BC3: return SDL_GPU_TEXTUREFORMAT_BC3_RGBA_UNORM;
+    case TextureCompression::ASTC4x4: return SDL_GPU_TEXTUREFORMAT_ASTC_4x4_UNORM;
+    case TextureCompression::Uncompressed: break;
+    }
+    return SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
+}
+//! Device bytes of a revision's whole chain: its blocks, or RGBA8 levels.
+std::size_t revisionBytes(const TextureRevision &source)
+{
+    std::size_t bytes = 0;
+    if (source.descriptor.compression != TextureCompression::Uncompressed) {
+        for (const auto &level : source.blocks) bytes += level.size();
+        return bytes;
+    }
+    bytes = std::size_t(source.descriptor.width) * source.descriptor.height * 4;
+    for (const auto &level : source.mips) bytes += level.rgba.size();
+    return bytes;
+}
+// One level of a revision as upload rows: texel rows, or rows of 4x4 blocks.
+struct UploadLevel
+{
+    int width = 0, height = 0, rowTexels = 1;
+    std::size_t rowBytes = 0, rows = 0, pitch = 0;
+    const unsigned char *data = nullptr;
+    std::size_t bytes() const { return rowBytes * rows; }
+};
+UploadLevel uploadLevel(const TextureRevision &source, std::size_t index)
+{
+    UploadLevel level;
+    if (source.descriptor.compression != TextureCompression::Uncompressed) {
+        level.width = std::max(1, source.descriptor.width >> index); level.height = std::max(1, source.descriptor.height >> index);
+        level.rowTexels = 4; level.rowBytes = std::size_t((level.width + 3) / 4) * 16; level.rows = std::size_t((level.height + 3) / 4);
+        level.pitch = level.rowBytes; level.data = reinterpret_cast<const unsigned char *>(source.blocks.at(index).data());
+    } else if (index == 0) {
+        level.width = source.descriptor.width; level.height = source.descriptor.height;
+        level.rowBytes = std::size_t(level.width) * 4; level.rows = level.height; level.pitch = source.pixels->pitch;
+        level.data = static_cast<const unsigned char *>(source.pixels->pixels);
+    } else {
+        const auto &mip = source.mips.at(index - 1);
+        level.width = mip.width; level.height = mip.height; level.rowBytes = std::size_t(mip.width) * 4;
+        level.rows = mip.height; level.pitch = level.rowBytes; level.data = reinterpret_cast<const unsigned char *>(mip.rgba.data());
+    }
+    return level;
+}
+std::size_t uploadLevelCount(const TextureRevision &source)
+{
+    return source.descriptor.compression != TextureCompression::Uncompressed ? source.blocks.size() : source.mips.size() + 1;
+}
 std::vector<unsigned char> readShader(const std::string &file)
 {
     std::ifstream stream(file, std::ios::binary | std::ios::ate);
@@ -62,6 +123,44 @@ std::vector<unsigned char> readShader(const std::string &file)
     if (!stream) throw std::runtime_error("Unreadable shader: " + file);
     return code;
 }
+// Released colour textures, kept for reuse by an allocation of the same shape.
+// SDL's Vulkan backend submits a layout transition for every texture it
+// creates, so revisions that churn at one size (overview and terrain pages,
+// streamed snapshots) would otherwise pay a queue submission each.
+struct TexturePool
+{
+    struct Shape
+    {
+        int width, height; SDL_GPUTextureFormat format; Uint32 levels; SDL_GPUTextureUsageFlags usage;
+        auto operator<=>(const Shape &) const = default;
+    };
+    struct Idle { SDL_GPUTexture *texture; std::size_t bytes; };
+    std::map<Shape, std::vector<Idle>> idle;
+    std::size_t bytes = 0, limit = 0;
+    bool open = false;
+    std::function<bool(std::size_t)> fits; // Whether the device's total budget has room.
+    static constexpr std::size_t ShapeDepth = 8;
+    bool keep(const Shape &shape, SDL_GPUTexture *texture, std::size_t size)
+    {
+        if (!open || bytes + size > limit || (fits && !fits(size))) return false;
+        auto &list = idle[shape];
+        if (list.size() >= ShapeDepth) return false;
+        list.push_back({texture, size}); bytes += size; return true;
+    }
+    SDL_GPUTexture *take(const Shape &shape)
+    {
+        const auto found = idle.find(shape);
+        if (found == idle.end() || found->second.empty()) return nullptr;
+        const auto entry = found->second.back(); found->second.pop_back();
+        if (found->second.empty()) idle.erase(found);
+        bytes -= entry.bytes; return entry.texture;
+    }
+    void release(SDL_GPUDevice *device)
+    {
+        for (auto &[shape, list] : idle) for (const auto &entry : list) SDL_ReleaseGPUTexture(device, entry.texture);
+        idle.clear(); bytes = 0;
+    }
+};
 struct Texture
 {
     SDL_GPUDevice *device;
@@ -70,14 +169,22 @@ struct Texture
     int width=0, height=0;
     std::size_t byteSize=0;
     std::size_t *residentBytes = nullptr;
+    // Its budget class's running total while the texture cache has admitted it.
+    std::size_t *classBytes = nullptr;
     bool submitted = false, premultiplied = false, renderTarget = false;
     bool progressiveUpload = false;
+    // Block-compressed textures are sampled only, never rendered to.
+    SDL_GPUTextureFormat format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
+    bool compressed = false;
     std::size_t uploadOffset = 0;
     std::uint64_t uploadSubmission = 0;
     std::shared_ptr<Texture> depth;
+    TexturePool *pool = nullptr;
+    TexturePool::Shape shape{};
     ~Texture() {
-        if (gpu) SDL_ReleaseGPUTexture(device, gpu);
+        if (gpu && !(pool && pool->keep(shape, gpu, byteSize))) SDL_ReleaseGPUTexture(device, gpu);
         if (residentBytes) *residentBytes -= byteSize;
+        if (classBytes) *classBytes -= byteSize;
     }
 };
 using TexturePtr = std::shared_ptr<Texture>;
@@ -86,10 +193,12 @@ struct Geometry
     SDL_GPUDevice *device;
     GeometrySnapshot source;
     SDL_GPUBuffer *vertices = nullptr, *indices = nullptr;
+    std::size_t *residentBytes = nullptr; // Running total, charged source->bytes.
     bool submitted = false;
     ~Geometry() {
         if (vertices) SDL_ReleaseGPUBuffer(device, vertices);
         if (indices) SDL_ReleaseGPUBuffer(device, indices);
+        if (residentBytes) *residentBytes -= source->bytes;
     }
 };
 using GeometryPtr = std::shared_ptr<Geometry>;
@@ -99,10 +208,12 @@ struct CoverageGPU
     SDL_GPUTexture *weights = nullptr, *selectors = nullptr;
     std::shared_ptr<const CoverageData> source;
     std::size_t bytes = 0;
+    std::size_t *residentBytes = nullptr; // Running total, charged bytes.
     bool submitted = false;
     ~CoverageGPU() {
         if (weights) SDL_ReleaseGPUTexture(device, weights);
         if (selectors) SDL_ReleaseGPUTexture(device, selectors);
+        if (residentBytes) *residentBytes -= bytes;
     }
 };
 using CoveragePtr = std::shared_ptr<CoverageGPU>;
@@ -116,6 +227,13 @@ struct Work
     std::vector<std::pair<SDL_GPUTransferBuffer *, std::size_t>> transfers;
     SDL_GPUBuffer *vertices = nullptr;
     std::size_t vertexBytes = 0;
+    // Transient bytes this work holds until it retires: vertices and staging.
+    std::size_t chargedBytes() const
+    {
+        std::size_t total = vertexBytes;
+        for (const auto &transfer : transfers) total += transfer.second;
+        return total;
+    }
 };
 struct Readback
 {
@@ -187,22 +305,46 @@ class SDLGPUDevice final : public RenderDevice
     // Declared before texture owners so it outlives every allocation lease.
     // A texture is charged once, including while only pending work owns it.
     std::size_t residentTextureBytes = 0;
+    TexturePool texturePool;
+    // Running totals, so admission and telemetry never walk the caches: live
+    // geometry and coverage, cached textures by budget class, retiring work's
+    // transient bytes and pending readbacks.
+    std::size_t residentGeometryBytes = 0, residentCoverageBytes = 0, workBytes = 0, captureBytes = 0;
+    std::array<std::size_t, std::tuple_size_v<decltype(RenderBudget::classes)>> classBytes{};
     std::map<const GeometryRevision *, GeometryPtr> geometryCache;
-    bool worldAvailable = false, skinAvailable = false, terrainAvailable = false;
+    bool worldAvailable = false, skinAvailable = false, terrainAvailable = false, teamColorAvailable = false;
+    bool bc3Supported = false, astcSupported = false;
     std::array<SDL_GPUShader *,2> terrainShaders{};
     SDL_GPUShader *directTerrainVertex = nullptr, *directTerrainFragment = nullptr;
     SDL_GPUGraphicsPipeline *directTerrainPipeline = nullptr;
     SDL_GPUShader *directTerrainHdFragment = nullptr;
     SDL_GPUGraphicsPipeline *directTerrainHdPipeline = nullptr;
     std::map<const StreamedTexture *, StreamedEntry> streamed;
+    unsigned streamedDeferrals = 0; // Consecutive frames deferred for streamed staging.
+    // New cache textures this submission created for screen packets (see resolve).
+    static constexpr unsigned FrameTextureLimit = 96;
+    unsigned frameTextures = 0;
+    bool capCreations = false;
     std::array<SDL_GPUGraphicsPipeline *,2> terrainPipelines{};
     using CoverageKey = std::tuple<std::uint64_t,std::uint64_t,std::uint32_t,std::uint32_t>;
     std::map<CoverageKey,CoveragePtr> coverageCache;
     std::map<int,TexturePtr> terrainScratch;
     using PrimitivePipelineKey = std::tuple<SDL_GPUTextureFormat, bool, DrawPacket::Material, DrawPacket::Blend>;
     std::map<PrimitivePipelineKey, SDL_GPUGraphicsPipeline *> pipelines;
-    std::map<std::tuple<const TextureRevision *, bool, bool>, TexturePtr> cache;
+    using TextureKey = std::tuple<const TextureRevision *, bool, bool>;
+    std::map<TextureKey, TexturePtr> cache;
     std::map<const TextureRevision *, std::weak_ptr<Texture>> targets;
+    // Cache entries admitted since the last submission: marked submitted, or
+    // dropped when the frame fails, without walking the caches.
+    std::vector<TextureKey> freshTextures;
+    std::vector<const GeometryRevision *> freshGeometry;
+    std::vector<CoverageKey> freshCoverage;
+    // reap() retires dead CPU revisions a bounded slice at a time, resuming here.
+    TextureKey textureSweep{};
+    const TextureRevision *targetSweep = nullptr;
+    const GeometryRevision *geometrySweep = nullptr;
+    CoverageKey coverageSweep{};
+    static constexpr std::size_t SweepSlice = 128;
     TexturePtr screen, committedScreen, white;
     std::shared_ptr<const CoverageData> zeroCoverage;
     bool frameOpen = false;
@@ -212,23 +354,34 @@ class SDLGPUDevice final : public RenderDevice
     int width, height;
     RenderTelemetry counts;
     static constexpr int MaximumTextureSize = 4096;
-    static constexpr std::size_t TextureBudget = 64 * 1024 * 1024, TotalBudget = 256 * 1024 * 1024, SubmissionLimit = 8;
+    static constexpr std::size_t SubmissionLimit = 8;
+    // Platform limits (smaller on phones); see RenderBudget::mobile.
+    const RenderBudget budgetLimits = platformRenderBudget();
+    const std::size_t TotalBudget = budgetLimits.total, GeometryBudget = budgetLimits.geometry;
 
     TexturePtr allocate(int w, int h, TextureSnapshot source = {}, const Work *pending = nullptr)
     {
         if (w <= 0 || h <= 0 || w > MaximumTextureSize || h > MaximumTextureSize)
             throw std::invalid_argument("SDL GPU texture dimensions exceed supported limit");
         updateMemory(pending);
-        std::size_t bytes=std::size_t(w)*h*4;
-        if(source)for(const auto &level:source->mips)bytes+=level.rgba.size();
-        if (bytes > TotalBudget - std::min(TotalBudget, counts.resourceBytes) && pooledUploadBytes) releaseUploadPool();
+        const std::size_t bytes = source ? revisionBytes(*source) : std::size_t(w) * h * 4;
+        if (bytes > TotalBudget - std::min(TotalBudget, counts.resourceBytes) && (pooledUploadBytes || texturePool.bytes)) { releaseUploadPool(); updateMemory(pending); }
         if (bytes > TotalBudget - std::min(TotalBudget, counts.resourceBytes)) throw RenderAdmissionDeferred("SDL GPU combined budget exhausted");
+        const auto compression = source ? source->descriptor.compression : TextureCompression::Uncompressed;
         SDL_GPUTextureCreateInfo info{};
-        info.type = SDL_GPU_TEXTURETYPE_2D; info.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
-        info.usage = SDL_GPU_TEXTUREUSAGE_SAMPLER | SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
-        info.width = w; info.height = h; info.layer_count_or_depth = 1; info.num_levels = source ? Uint32(source->mips.size()+1) : 1;
+        info.type = SDL_GPU_TEXTURETYPE_2D; info.format = gpuFormat(compression);
+        info.usage = compression != TextureCompression::Uncompressed ? SDL_GPU_TEXTUREUSAGE_SAMPLER
+            : SDL_GPU_TEXTUREUSAGE_SAMPLER | SDL_GPU_TEXTUREUSAGE_COLOR_TARGET;
+        info.width = w; info.height = h; info.layer_count_or_depth = 1; info.num_levels = source ? Uint32(uploadLevelCount(*source)) : 1;
         auto texture = std::make_shared<Texture>();texture->device=device;texture->source=std::move(source);
         texture->width=w;texture->height=h;texture->byteSize=bytes;
+        texture->format=info.format;texture->compressed=compression!=TextureCompression::Uncompressed;
+        // Every caller uploads, clears or blits all of a new allocation before
+        // sampling it, so a pooled texture's old contents never show.
+        texture->shape = {w, h, info.format, info.num_levels, info.usage};
+        texture->gpu = texturePool.take(texture->shape);
+        texture->pool = &texturePool;
+        if (texture->gpu) { texture->residentBytes = &residentTextureBytes; residentTextureBytes += bytes; return texture; }
         texture->gpu = SDL_CreateGPUTexture(device, &info);
         if (!texture->gpu) fail("create texture");
         texture->residentBytes = &residentTextureBytes; residentTextureBytes += bytes;
@@ -242,74 +395,120 @@ class SDLGPUDevice final : public RenderDevice
             if (!SDL_QueryGPUFence(device, entry.fence)) SDL_WaitForGPUFences(device, true, &entry.fence, 1);
             SDL_ReleaseGPUFence(device, entry.fence);
         }
-        for (auto [transfer, bytes] : entry.transfers) recycleUpload(transfer);
-        if (entry.vertices) SDL_ReleaseGPUBuffer(device, entry.vertices);
+        for (auto [transfer, bytes] : entry.transfers) recycleTransfer(transfer);
+        if (entry.vertices) recycleVertices(entry.vertices);
         entry.textures.clear(); entry.geometry.clear(); entry.coverage.clear();
+    }
+    // Visits at most `slice` entries from `cursor`, wrapping, erasing those
+    // `retire` accepts, and remembers where to resume: per-call work stays
+    // bounded however many entries the cache holds.
+    template <class Map, class Retire>
+    static void sweep(Map &map, typename Map::key_type &cursor, std::size_t slice, Retire retire)
+    {
+        if (map.empty()) return;
+        auto it = map.lower_bound(cursor);
+        const std::size_t limit = std::min(slice, map.size());
+        for (std::size_t visited = 0; visited < limit && !map.empty(); ++visited) {
+            if (it == map.end()) it = map.begin();
+            if (retire(it->second)) it = map.erase(it); else ++it;
+        }
+        if (it == map.end()) it = map.begin();
+        cursor = it == map.end() ? typename Map::key_type{} : it->first;
     }
     void reap()
     {
         while (!work.empty() && SDL_QueryGPUFence(device, work.front().fence)) {
             completed = std::max(completed, work.front().submission.identity);
+            workBytes -= std::min(workBytes, work.front().chargedBytes());
             release(work.front()); work.pop_front();
         }
         // CPU revisions referenced only by cache and completed GPU work can retire.
-        for (auto it = cache.begin(); it != cache.end();) {
-            if (it->second.use_count() == 1 && it->second->source.use_count() == 1) it = cache.erase(it);
-            else ++it;
-        }
-        for (auto it = targets.begin(); it != targets.end();) {
-            if (it->second.expired()) it = targets.erase(it); else ++it;
-        }
-        for (auto it = geometryCache.begin(); it != geometryCache.end();) {
-            if (it->second.use_count() == 1 && it->second->source.use_count() == 1) it = geometryCache.erase(it); else ++it;
-        }
-        for (auto it=coverageCache.begin(); it!=coverageCache.end();) {
-            if (it->second.use_count()==1 && it->second->source.use_count()==1) it=coverageCache.erase(it); else ++it;
-        }
+        sweep(cache, textureSweep, SweepSlice, [](const TexturePtr &texture) {
+            return texture.use_count() == 1 && texture->source.use_count() == 1;
+        });
+        sweep(targets, targetSweep, SweepSlice, [](const std::weak_ptr<Texture> &target) { return target.expired(); });
+        sweep(geometryCache, geometrySweep, SweepSlice, [](const GeometryPtr &geometry) {
+            return geometry.use_count() == 1 && geometry->source.use_count() == 1;
+        });
+        sweep(coverageCache, coverageSweep, SweepSlice, [](const CoveragePtr &coverage) {
+            return coverage.use_count() == 1 && coverage->source.use_count() == 1;
+        });
         updateMemory();
     }
     void updateMemory(const Work *pending = nullptr)
     {
-        counts.resourceBytes = residentTextureBytes;
-        for (const auto &[key,coverage] : coverageCache) counts.resourceBytes += coverage->bytes;
-        const auto addWork=[&](const Work &entry) {
-            counts.resourceBytes += entry.vertexBytes;
-            for (auto [buffer, bytes] : entry.transfers) counts.resourceBytes += bytes;
-        };
-        for (const auto &entry : work) addWork(entry);
-        if (pending) addWork(*pending);
-        for (const auto &capture : captures)
-            counts.resourceBytes += std::size_t(capture.request.width) * capture.request.height * 4;
-        for (const auto &[key, geometry] : geometryCache) counts.resourceBytes += geometry->source->bytes;
+        counts.resourceBytes = residentTextureBytes + residentCoverageBytes + residentGeometryBytes + workBytes + captureBytes +
+            (pending ? pending->chargedBytes() : 0);
+        counts.idleBytes = idleBytes();
+    }
+    // Cache admissions since the last submission, now owned by submitted work.
+    void markFreshSubmitted()
+    {
+        for (const auto &key : freshTextures) if (auto found = cache.find(key); found != cache.end()) found->second->submitted = true;
+        for (auto *key : freshGeometry) if (auto found = geometryCache.find(key); found != geometryCache.end()) found->second->submitted = true;
+        for (const auto &key : freshCoverage) if (auto found = coverageCache.find(key); found != coverageCache.end()) found->second->submitted = true;
+        freshTextures.clear(); freshGeometry.clear(); freshCoverage.clear();
+    }
+    // A failed frame: forget admissions no submitted work uploaded.
+    void dropFreshUnsubmitted()
+    {
+        for (const auto &key : freshTextures) if (auto found = cache.find(key); found != cache.end() && !found->second->submitted) cache.erase(found);
+        for (auto *key : freshGeometry) if (auto found = geometryCache.find(key); found != geometryCache.end() && !found->second->submitted) geometryCache.erase(found);
+        for (const auto &key : freshCoverage) if (auto found = coverageCache.find(key); found != coverageCache.end() && !found->second->submitted) coverageCache.erase(found);
+        freshTextures.clear(); freshGeometry.clear(); freshCoverage.clear();
+    }
+    void admitTexture(const TextureKey &key, const TexturePtr &texture)
+    {
+        if (!cache.emplace(key, texture).second) return;
+        freshTextures.push_back(key);
+        if (!texture->classBytes) {
+            texture->classBytes = &classBytes[std::size_t(texture->source->descriptor.budgetClass)];
+            *texture->classBytes += texture->byteSize;
+        }
+    }
+    void clearCaches()
+    {
+        cache.clear(); targets.clear(); geometryCache.clear(); coverageCache.clear(); terrainScratch.clear();
+        freshTextures.clear(); freshGeometry.clear(); freshCoverage.clear();
     }
     void reserveMemory(std::size_t bytes, const Work *pending = nullptr)
     {
         updateMemory(pending);
-        const std::size_t used = counts.resourceBytes;
         if (bytes > TotalBudget) throw std::length_error("SDL GPU single resource exceeds combined budget");
-        if (used > TotalBudget - bytes && pooledUploadBytes) releaseUploadPool();
-        if (used > TotalBudget - bytes) throw RenderAdmissionDeferred("SDL GPU combined resource budget exhausted");
+        if (counts.resourceBytes > TotalBudget - bytes && (pooledUploadBytes || texturePool.bytes)) { releaseUploadPool(); updateMemory(pending); }
+        if (counts.resourceBytes > TotalBudget - bytes) throw RenderAdmissionDeferred("SDL GPU combined resource budget exhausted");
     }
     // Upload staging buffers are recycled once their work completes: creating
     // and binding a Vulkan buffer for every frame's vertices and uploads cost
     // more CPU than filling them. Power-of-two classes from 64 KiB to 16 MiB,
-    // a few of each, at most UploadPoolBudget idle; larger buffers are released.
-    // Idle buffers are not charged as resources: an admission that would fail
-    // and an explicit trim release them first.
+    // a few of each, at most UploadPoolBudget idle (24 MiB, a tenth of the
+    // total budget on phones); larger buffers are released. Idle buffers and
+    // textures (idleBytes, reported apart from resourceBytes) are kept only
+    // while they fit beside the resources within the total budget, and an
+    // admission that would fail and an explicit trim release them first.
     static constexpr unsigned UploadClasses = 9;
-    static constexpr std::size_t UploadPoolBudget = 24 * 1024 * 1024, UploadClassDepth = 4;
-    std::array<std::vector<SDL_GPUTransferBuffer *>, UploadClasses> uploadPool;
-    std::unordered_map<SDL_GPUTransferBuffer *, unsigned> uploadClass; // Pooled-size uploads in use or idle.
+    static constexpr std::size_t UploadClassDepth = 4;
+    const std::size_t UploadPoolBudget = std::min<std::size_t>(24 * 1024 * 1024, TotalBudget / 10);
+    // Upload and download (capture readback) buffers pool separately. Every
+    // pooled-size buffer is in transferClass while it exists; release one only
+    // through recycleTransfer or dropTransfer, or a later buffer SDL places at
+    // the same address would inherit its class.
+    std::array<std::array<std::vector<SDL_GPUTransferBuffer *>, UploadClasses>, 2> uploadPool;
+    std::unordered_map<SDL_GPUTransferBuffer *, std::pair<bool, unsigned>> transferClass; // download?, class
+    static unsigned transferKind(SDL_GPUTransferBufferUsage usage) { return usage == SDL_GPU_TRANSFERBUFFERUSAGE_DOWNLOAD ? 1 : 0; }
     std::size_t pooledUploadBytes = 0;
     static std::size_t uploadClassBytes(unsigned index) { return std::size_t(64 * 1024) << index; }
+    std::size_t idleBytes() const { return pooledUploadBytes + texturePool.bytes; }
+    bool idleFits(std::size_t bytes) const { return counts.resourceBytes + idleBytes() + bytes <= TotalBudget; }
     SDL_GPUTransferBuffer *transfer(SDL_GPUTransferBufferUsage usage, std::size_t size)
     {
         if (size > 0xffffffffu) throw std::length_error("GPU transfer exceeds 32-bit capacity");
         unsigned index = 0;
         while (index < UploadClasses && uploadClassBytes(index) < size) ++index;
-        const bool pooled = usage == SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD && index < UploadClasses;
-        if (pooled && !uploadPool[index].empty()) {
-            auto *result = uploadPool[index].back(); uploadPool[index].pop_back();
+        const bool pooled = index < UploadClasses;
+        auto &pool = uploadPool[transferKind(usage)];
+        if (pooled && !pool[index].empty()) {
+            auto *result = pool[index].back(); pool[index].pop_back();
             pooledUploadBytes -= uploadClassBytes(index);
             return result;
         }
@@ -317,32 +516,106 @@ class SDLGPUDevice final : public RenderDevice
         info.size = static_cast<Uint32>(pooled ? uploadClassBytes(index) : size);
         auto *result = SDL_CreateGPUTransferBuffer(device, &info);
         if (!result) fail("create transfer buffer");
-        if (pooled) uploadClass.emplace(result, index);
+        if (pooled) transferClass.emplace(result, std::make_pair(transferKind(usage) == 1, index));
         return result;
     }
     // Work holding the buffer has completed (or was never submitted).
-    void recycleUpload(SDL_GPUTransferBuffer *buffer)
+    void recycleTransfer(SDL_GPUTransferBuffer *buffer)
     {
-        const auto found = uploadClass.find(buffer);
-        if (found != uploadClass.end()) {
-            const auto index = found->second;
-            if (uploadPool[index].size() < UploadClassDepth && pooledUploadBytes + uploadClassBytes(index) <= UploadPoolBudget) {
-                uploadPool[index].push_back(buffer); pooledUploadBytes += uploadClassBytes(index); return;
+        const auto found = transferClass.find(buffer);
+        if (found != transferClass.end()) {
+            const auto [download, index] = found->second;
+            auto &pool = uploadPool[download ? 1 : 0];
+            if (pool[index].size() < UploadClassDepth && pooledUploadBytes + uploadClassBytes(index) <= UploadPoolBudget &&
+                idleFits(uploadClassBytes(index))) {
+                pool[index].push_back(buffer); pooledUploadBytes += uploadClassBytes(index); return;
             }
-            uploadClass.erase(found);
+            transferClass.erase(found);
         }
+        SDL_ReleaseGPUTransferBuffer(device, buffer);
+    }
+    // The buffer may still be in use (failure cleanup): never reuse it.
+    void dropTransfer(SDL_GPUTransferBuffer *buffer)
+    {
+        transferClass.erase(buffer);
         SDL_ReleaseGPUTransferBuffer(device, buffer);
     }
     void releaseUploadPool()
     {
-        for (auto &buffers : uploadPool) {
-            for (auto *buffer : buffers) { uploadClass.erase(buffer); SDL_ReleaseGPUTransferBuffer(device, buffer); }
+        for (auto &pool : uploadPool) for (auto &buffers : pool) {
+            for (auto *buffer : buffers) { transferClass.erase(buffer); SDL_ReleaseGPUTransferBuffer(device, buffer); }
+            buffers.clear();
+        }
+        for (auto &buffers : vertexPool) {
+            for (auto *buffer : buffers) { vertexClass.erase(buffer); SDL_ReleaseGPUBuffer(device, buffer); }
             buffers.clear();
         }
         pooledUploadBytes = 0;
+        texturePool.release(device);
+    }
+    // Each frame's vertex buffer comes from the same size classes, at most
+    // VertexClassDepth idle per class (one per frame in flight would do; the
+    // frame's size wanders between neighbouring classes).
+    static constexpr std::size_t VertexClassDepth = 2;
+    std::array<std::vector<SDL_GPUBuffer *>, UploadClasses> vertexPool;
+    std::unordered_map<SDL_GPUBuffer *, unsigned> vertexClass;
+    SDL_GPUBuffer *vertexBuffer(std::size_t size, std::size_t &capacity)
+    {
+        unsigned index = 0;
+        while (index < UploadClasses && uploadClassBytes(index) < size) ++index;
+        const bool pooled = index < UploadClasses;
+        capacity = pooled ? uploadClassBytes(index) : size;
+        if (pooled && !vertexPool[index].empty()) {
+            auto *result = vertexPool[index].back(); vertexPool[index].pop_back();
+            pooledUploadBytes -= capacity;
+            return result;
+        }
+        SDL_GPUBufferCreateInfo info{}; info.usage = SDL_GPU_BUFFERUSAGE_VERTEX; info.size = static_cast<Uint32>(capacity);
+        auto *result = SDL_CreateGPUBuffer(device, &info); if (!result) fail("create vertex buffer");
+        if (pooled) vertexClass.emplace(result, index);
+        return result;
+    }
+    void recycleVertices(SDL_GPUBuffer *buffer)
+    {
+        const auto found = vertexClass.find(buffer);
+        if (found != vertexClass.end()) {
+            const auto index = found->second;
+            if (vertexPool[index].size() < VertexClassDepth && pooledUploadBytes + uploadClassBytes(index) <= UploadPoolBudget &&
+                idleFits(uploadClassBytes(index))) {
+                vertexPool[index].push_back(buffer); pooledUploadBytes += uploadClassBytes(index); return;
+            }
+            vertexClass.erase(found);
+        }
+        SDL_ReleaseGPUBuffer(device, buffer);
+    }
+    void uploadBlocks(SDL_GPUCommandBuffer *commands, Work &entry, const TexturePtr &texture)
+    {
+        // Prepared premultiplied blocks: copied as they are, every level at once.
+        const std::size_t bytes = texture->byteSize;
+        reserveMemory(bytes, &entry);
+        auto *buffer = transfer(SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD, bytes); entry.transfers.emplace_back(buffer, bytes);
+        auto *mapped = static_cast<unsigned char *>(SDL_MapGPUTransferBuffer(device, buffer, false));
+        if (!mapped) fail("map compressed texture upload");
+        const auto &source = *texture->source;
+        std::size_t offset = 0;
+        for (const auto &level : source.blocks) { std::memcpy(mapped + offset, level.data(), level.size()); offset += level.size(); }
+        SDL_UnmapGPUTransferBuffer(device, buffer);
+        auto *copy = SDL_BeginGPUCopyPass(commands); if (!copy) fail("begin compressed upload pass");
+        offset = 0;
+        for (std::size_t index = 0; index < source.blocks.size(); ++index) {
+            const auto level = uploadLevel(source, index);
+            SDL_GPUTextureTransferInfo from{}; from.transfer_buffer = buffer; from.offset = Uint32(offset);
+            from.pixels_per_row = Uint32(level.width); from.rows_per_layer = Uint32(level.height);
+            SDL_GPUTextureRegion region{}; region.texture = texture->gpu; region.mip_level = Uint32(index);
+            region.w = Uint32(level.width); region.h = Uint32(level.height); region.d = 1;
+            SDL_UploadToGPUTexture(copy, &from, &region, false); offset += level.bytes();
+        }
+        SDL_EndGPUCopyPass(copy);
+        counts.uploadBytes += bytes;
     }
     void upload(SDL_GPUCommandBuffer *commands, Work &entry, TexturePtr texture, SDL_Surface *source, bool opaque, bool premultiplied = false)
     {
+        if (texture->compressed) { uploadBlocks(commands, entry, texture); return; }
         std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> converted(
             SDL_ConvertSurface(source, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
         if (!converted) fail("convert texture pixels");
@@ -389,34 +662,34 @@ class SDLGPUDevice final : public RenderDevice
         if(texture->uploadOffset==texture->byteSize) {texture->progressiveUpload=false;return;}
         if(work.size()>=SubmissionLimit)throw RenderAdmissionDeferred("SDL GPU upload submission queue full");
         constexpr std::size_t SliceBytes=8*1024*1024;
+        const auto &revision=*texture->source;
+        if(!texture->compressed && revision.pixels->format!=SDL_PIXELFORMAT_RGBA32)throw std::invalid_argument("Progressive upload requires normalized RGBA32 restoration pixels");
         std::size_t offset=texture->uploadOffset;unsigned levelIndex=0;
-        int width=texture->width,height=texture->height;
-        const unsigned char *source=static_cast<const unsigned char *>(texture->source->pixels->pixels);
-        std::size_t pitch=texture->source->pixels->pitch;
-        while(offset>=std::size_t(width)*height*4) {
-            offset-=std::size_t(width)*height*4;
-            const auto &level=texture->source->mips.at(levelIndex++);
-            width=level.width;height=level.height;source=reinterpret_cast<const unsigned char *>(level.rgba.data());pitch=std::size_t(width)*4;
-        }
-        const auto rowBytes=std::size_t(width)*4;const unsigned firstRow=unsigned(offset/rowBytes);
-        const unsigned rows=unsigned(std::min<std::size_t>(height-firstRow,SliceBytes/rowBytes));
+        auto level=uploadLevel(revision,0);
+        while(offset>=level.bytes()) {offset-=level.bytes();level=uploadLevel(revision,++levelIndex);}
+        // Rows are texel rows, or rows of 4x4 blocks in a compressed level.
+        const auto rowBytes=level.rowBytes;const unsigned firstRow=unsigned(offset/rowBytes);
+        const unsigned rows=unsigned(std::min<std::size_t>(level.rows-firstRow,std::max<std::size_t>(1,SliceBytes/rowBytes)));
         const auto bytes=rowBytes*rows;reserveMemory(bytes,&pending);
-        if(texture->source->pixels->format!=SDL_PIXELFORMAT_RGBA32)throw std::invalid_argument("Progressive upload requires normalized RGBA32 restoration pixels");
+        const bool alterTexels=!texture->compressed && (opaque || premultiplied);
+        const int width=level.width;
         Work entry;entry.textures.push_back(texture);entry.transfers.reserve(1);
         auto *commands=SDL_AcquireGPUCommandBuffer(device);if(!commands)fail("acquire incremental upload commands");
         try {
             auto *buffer=transfer(SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD,bytes);entry.transfers.emplace_back(buffer,bytes);
             auto *pixels=static_cast<unsigned char *>(SDL_MapGPUTransferBuffer(device,buffer,false));if(!pixels)fail("map incremental texture upload");
             for(unsigned y=0;y<rows;++y) {
-                auto *row=pixels+y*rowBytes;std::memcpy(row,source+(firstRow+y)*pitch,rowBytes);
+                auto *row=pixels+y*rowBytes;std::memcpy(row,level.data+(firstRow+y)*level.pitch,rowBytes);
+                if(!alterTexels)continue;
                 if(opaque)for(int x=0;x<width;++x)row[x*4+3]=255;
                 if(premultiplied)for(int x=0;x<width;++x)for(int channel=0;channel<3;++channel)
                     row[x*4+channel]=(unsigned(row[x*4+channel])*row[x*4+3]+127)/255;
             }
             SDL_UnmapGPUTransferBuffer(device,buffer);
             auto *copy=SDL_BeginGPUCopyPass(commands);if(!copy)fail("begin incremental upload pass");
-            SDL_GPUTextureTransferInfo sourceInfo{};sourceInfo.transfer_buffer=buffer;sourceInfo.pixels_per_row=width;sourceInfo.rows_per_layer=rows;
-            SDL_GPUTextureRegion region{};region.texture=texture->gpu;region.mip_level=levelIndex;region.y=firstRow;region.w=width;region.h=rows;region.d=1;
+            const unsigned texelRow=firstRow*level.rowTexels,texelRows=std::min<unsigned>(unsigned(level.height)-texelRow,rows*level.rowTexels);
+            SDL_GPUTextureTransferInfo sourceInfo{};sourceInfo.transfer_buffer=buffer;sourceInfo.pixels_per_row=width;sourceInfo.rows_per_layer=rows*level.rowTexels;
+            SDL_GPUTextureRegion region{};region.texture=texture->gpu;region.mip_level=levelIndex;region.y=texelRow;region.w=width;region.h=texelRows;region.d=1;
             SDL_UploadToGPUTexture(copy,&sourceInfo,&region,false);SDL_EndGPUCopyPass(copy);
             submitWork(commands,entry);texture->submitted=true;texture->uploadSubmission=serial;texture->uploadOffset+=bytes;counts.uploadBytes+=bytes;
         } catch(...) {if(commands)SDL_CancelGPUCommandBuffer(commands);release(entry);throw;}
@@ -428,17 +701,32 @@ class SDLGPUDevice final : public RenderDevice
         // resolve() runs before ordered drawing begins. Commit immutable upload
         // preparation under pressure so retries do not discard the same assets
         // forever while their staging buffers occupy the admission budget.
-        for(const auto &[key,value]:cache)if(!value->submitted)entry.textures.push_back(value);
-        for(const auto &[key,value]:geometryCache)if(!value->submitted)entry.geometry.push_back(value);
-        for(const auto &[key,value]:coverageCache)if(!value->submitted)entry.coverage.push_back(value);
+        for(const auto &key:freshTextures)if(auto found=cache.find(key);found!=cache.end() && !found->second->submitted)entry.textures.push_back(found->second);
+        for(auto *key:freshGeometry)if(auto found=geometryCache.find(key);found!=geometryCache.end() && !found->second->submitted)entry.geometry.push_back(found->second);
+        for(const auto &key:freshCoverage)if(auto found=coverageCache.find(key);found!=coverageCache.end() && !found->second->submitted)entry.coverage.push_back(found->second);
         submitWork(commands,entry);
-        for(auto &[key,value]:cache)value->submitted=true;
-        for(auto &[key,value]:geometryCache)value->submitted=true;
-        for(auto &[key,value]:coverageCache)value->submitted=true;
+        markFreshSubmitted();
+    }
+    void validateBlocks(const TextureRevision &source, bool asTarget) const
+    {
+        const auto format = source.descriptor.compression;
+        if ((format == TextureCompression::BC3 && !bc3Supported) || (format == TextureCompression::ASTC4x4 && !astcSupported))
+            throw std::invalid_argument("SDL GPU device cannot sample this block format");
+        if (asTarget) throw std::invalid_argument("Compressed textures cannot be render targets");
+        if (source.descriptor.alpha != TextureDescriptor::Alpha::Premultiplied || source.descriptor.mips != TextureDescriptor::Mips::Generated ||
+            source.blocks.empty() || source.blocks.size() > 16 || source.descriptor.width > MaximumTextureSize || source.descriptor.height > MaximumTextureSize)
+            throw std::invalid_argument("Invalid compressed texture descriptor");
+        for (std::size_t index = 0; index < source.blocks.size(); ++index) {
+            const int w = source.descriptor.width >> index, h = source.descriptor.height >> index;
+            if (w < 4 || h < 4 || source.blocks[index].size() != compressedLevelBytes(w, h))
+                throw std::invalid_argument("Invalid compressed level blocks");
+        }
     }
     TexturePtr resolve(SDL_GPUCommandBuffer *&commands, Work &entry, TextureSnapshot source, bool opaque = false, bool premultiplied = false, bool asTarget = false)
     {
         if (!source) return white;
+        if (source->descriptor.compression != TextureCompression::Uncompressed) validateBlocks(*source, asTarget);
+        else {
         if (!source->pixels || source->pixels->w != source->descriptor.width || source->pixels->h != source->descriptor.height)
             throw std::invalid_argument("SDL GPU requires CPU texture pixels");
         if(asTarget && source->descriptor.mips!=TextureDescriptor::Mips::Disabled)throw std::invalid_argument("Authored mip textures cannot be render targets");
@@ -452,6 +740,7 @@ class SDLGPUDevice final : public RenderDevice
         if((source->descriptor.mips==TextureDescriptor::Mips::Generated && (mipWidth!=1 || mipHeight!=1)) ||
             (source->descriptor.mips==TextureDescriptor::Mips::Disabled && !source->mips.empty()))
             throw std::invalid_argument("Incomplete authored mip chain");
+        }
         // GPU render targets store premultiplied source-over results. Later
         // sampling must use those results rather than immutable restoration pixels.
         if (auto target = targets.find(source.get()); target != targets.end()) {
@@ -477,20 +766,25 @@ class SDLGPUDevice final : public RenderDevice
             if (asTarget) { found->second->renderTarget = true; targets[source.get()] = found->second; }
             return found->second;
         }
-        std::size_t bytes = std::size_t(source->descriptor.width) * source->descriptor.height * 4;
-        for(const auto &level:source->mips)bytes+=level.rgba.size();
-        std::array<std::size_t,4> budgets{TextureBudget,TextureBudget,128 * 1024 * 1024,32 * 1024 * 1024};
+        const std::size_t bytes = revisionBytes(*source);
+        const auto &budgets = budgetLimits.classes;
         const auto budget = static_cast<std::size_t>(source->descriptor.budgetClass);
         if (budget >= budgets.size()) throw std::invalid_argument("Invalid texture budget class");
-        std::size_t resident = 0;
-        for (const auto &[key, texture] : cache) if (texture->source->descriptor.budgetClass == source->descriptor.budgetClass)
-            resident += texture->byteSize;
-        if (source->descriptor.budgetClass==TextureDescriptor::BudgetClass::TerrainMask)
-            for(const auto &[key,value]:coverageCache)resident+=value->bytes;
+        std::size_t resident = classBytes[budget];
+        if (source->descriptor.budgetClass==TextureDescriptor::BudgetClass::TerrainMask) resident+=residentCoverageBytes;
         if (bytes > budgets[budget]) throw std::length_error("SDL GPU single texture exceeds class budget");
         // Immutable uploaded content can be restored from its snapshot even
         // while the logical asset remains alive. Keep rendered targets and any
         // allocation referenced by this frame or in-flight work intact.
+        // Under pressure, first retire every dead revision reap() has not
+        // reached yet (it visits a bounded slice per call).
+        if (resident > budgets[budget] - bytes) {
+            sweep(cache, textureSweep, cache.size(), [](const TexturePtr &texture) {
+                return texture.use_count() == 1 && texture->source.use_count() == 1;
+            });
+            resident = classBytes[budget];
+            if (source->descriptor.budgetClass==TextureDescriptor::BudgetClass::TerrainMask) resident+=residentCoverageBytes;
+        }
         for (auto it=cache.begin(); resident>budgets[budget]-bytes && it!=cache.end();) {
             const auto &candidate=it->second;
             if(candidate.use_count()==1 && !candidate->renderTarget && candidate->source->descriptor.budgetClass==source->descriptor.budgetClass) {
@@ -499,6 +793,20 @@ class SDLGPUDevice final : public RenderDevice
         }
         if (resident > budgets[budget] - bytes) throw RenderAdmissionDeferred("SDL GPU texture class budget exhausted");
         try {
+        // SDL's Vulkan backend submits a command buffer for every texture it
+        // creates. A deferrable submission creates at most FrameTextureLimit
+        // new textures for packets drawn to the screen; past that the uploads so far are
+        // kept and the frame defers, so the previous frame shows while later
+        // frames create the rest (a resume after a background trim, a first
+        // zoom out). Offscreen composition (terrain pages) is exempt: a page
+        // half composed would have to start again.
+        if (capCreations && !asTarget) {
+            if (frameTextures >= FrameTextureLimit) {
+                ++counts.deferredFrames;
+                throw RenderAdmissionDeferred("SDL GPU per-frame texture creations reached");
+            }
+            ++frameTextures;
+        }
         auto texture = allocate(source->descriptor.width, source->descriptor.height, source, &entry);
         texture->premultiplied = premultiplied; texture->renderTarget = asTarget;
         if (asTarget) targets[source.get()] = texture;
@@ -507,11 +815,11 @@ class SDLGPUDevice final : public RenderDevice
         // In that case admit bounded asynchronous slices across frame retries.
         updateMemory(&entry);
         if(bytes>TotalBudget-std::min(TotalBudget,counts.resourceBytes)) {
-            texture->progressiveUpload=true;cache.emplace(key,texture);
+            texture->progressiveUpload=true;admitTexture(key,texture);
             progressUpload(texture,entry,opaque,premultiplied && source->descriptor.alpha!=TextureDescriptor::Alpha::Premultiplied);
         }
         upload(commands, entry, texture, source->pixels.get(), opaque, premultiplied && source->descriptor.alpha != TextureDescriptor::Alpha::Premultiplied);
-        cache.emplace(key, texture); return texture;
+        admitTexture(key, texture); return texture;
         } catch(const RenderAdmissionDeferred &) {preservePreparedUploads(commands,entry);throw;}
     }
     TexturePtr captureSource(CaptureRequest &request, SDL_Rect &rect)
@@ -558,6 +866,10 @@ class SDLGPUDevice final : public RenderDevice
             const auto stages = worldShaders.find(material);
             if (stages == worldShaders.end()) throw std::runtime_error("Particle shader binaries unavailable");
             info.vertex_shader = stages->second.first; info.fragment_shader = stages->second.second;
+        } else if (material == DrawPacket::Material::TeamColor) {
+            const auto stages = worldShaders.find(material);
+            if (stages == worldShaders.end()) throw std::runtime_error("Team colour shader binaries unavailable");
+            info.vertex_shader = stages->second.first; info.fragment_shader = stages->second.second;
         } else if (material != DrawPacket::Material::Primitive) throw std::invalid_argument("Unsupported primitive material");
         info.vertex_input_state.vertex_buffer_descriptions = &buffer; info.vertex_input_state.num_vertex_buffers = 1;
         info.vertex_input_state.vertex_attributes = attributes.data(); info.vertex_input_state.num_vertex_attributes = attributes.size();
@@ -579,9 +891,7 @@ class SDLGPUDevice final : public RenderDevice
         auto *buffer = transfer(SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD, size); entry.transfers.emplace_back(buffer, size);
         void *mapped = SDL_MapGPUTransferBuffer(device, buffer, false); if (!mapped) fail("map vertices");
         std::memcpy(mapped, vertices.data(), size); SDL_UnmapGPUTransferBuffer(device, buffer);
-        SDL_GPUBufferCreateInfo info{}; info.usage = SDL_GPU_BUFFERUSAGE_VERTEX; info.size = static_cast<Uint32>(size);
-        entry.vertexBytes = size;
-        entry.vertices = SDL_CreateGPUBuffer(device, &info); if (!entry.vertices) fail("create vertex buffer");
+        entry.vertices = vertexBuffer(size, entry.vertexBytes);
         SDL_GPUTransferBufferLocation from{}; from.transfer_buffer = buffer;
         SDL_GPUBufferRegion to{}; to.buffer = entry.vertices; to.size = static_cast<Uint32>(size);
         auto *copy = SDL_BeginGPUCopyPass(commands); if (!copy) fail("begin geometry upload");
@@ -618,13 +928,37 @@ class SDLGPUDevice final : public RenderDevice
         state.target = draw.target->gpu;
         state.clip = scissor(packet, draw.target->width, draw.target->height, lw, lh);
         state.viewport = packet.viewport.value_or(SDL_Rect{0, 0, draw.target->width, draw.target->height});
-        state.pipeline = pipeline(SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM, bool(packet.texture) && draw.texture->premultiplied,
+        const bool team = packet.material == DrawPacket::Material::TeamColor;
+        state.pipeline = pipeline(SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM,
+            team ? teamPremultiplied(packet, draw.texture->premultiplied) : bool(packet.texture) && draw.texture->premultiplied,
             packet.material, packet.kind == DrawPacket::Kind::Clear ? DrawPacket::Blend::Opaque : packet.blend);
         if (packet.material == DrawPacket::Material::Primitive) {
             state.image = draw.texture->gpu; state.sampler = samplerFor(packet);
         }
         state.vertex[0] = lw; state.vertex[1] = lh;
         auto &fragment = state.fragment;
+        if (packet.material == DrawPacket::Material::TeamColor) {
+            // The shader fetches and filters texels itself, after recolouring.
+            state.image = draw.texture->gpu; state.sampler = nearest;
+            const bool filtering = packet.linear || packet.texture->descriptor.sampling == TextureDescriptor::Sampling::Linear;
+            const bool mipmapped = filtering && packet.texture->descriptor.mips == TextureDescriptor::Mips::Generated;
+            fragment[Layout::team_color_fragment_alpha_offset / sizeof(float)] = packet.alpha / 255.f;
+            fragment[Layout::team_color_fragment_linear_offset / sizeof(float)] = filtering ? 1.f : 0.f;
+            // 0: straight in and out; 1: straight in, premultiplied out; 2: premultiplied in and out.
+            fragment[Layout::team_color_fragment_premultiplied_offset / sizeof(float)] =
+                draw.texture->premultiplied ? 2.f : teamPremultiplied(packet, false) ? 1.f : 0.f;
+            fragment[Layout::team_color_fragment_levels_offset / sizeof(float)] = mipmapped ? float(uploadLevelCount(*packet.texture)) : 1.f;
+            const auto bounds = Layout::team_color_fragment_uvBounds_offset / sizeof(float);
+            if (packet.kind != DrawPacket::Kind::Blit) {
+                fragment[bounds] = fragment[bounds + 1] = 0; fragment[bounds + 2] = fragment[bounds + 3] = 1;
+                return state;
+            }
+            fragment[bounds] = (packet.source.x + .5f) / draw.texture->width;
+            fragment[bounds + 1] = (packet.source.y + .5f) / draw.texture->height;
+            fragment[bounds + 2] = (packet.source.x + packet.source.w - .5f) / draw.texture->width;
+            fragment[bounds + 3] = (packet.source.y + packet.source.h - .5f) / draw.texture->height;
+            return state;
+        }
         fragment[Layout::primitive_fragment_textured_offset / sizeof(float)] = packet.texture ? 1.f : 0.f;
         fragment[Layout::primitive_fragment_alpha_offset / sizeof(float)] = packet.kind == DrawPacket::Kind::Blit ? packet.alpha / 255.f : 1.f;
         const auto bounds = Layout::primitive_fragment_uvBounds_offset / sizeof(float);
@@ -653,7 +987,7 @@ class SDLGPUDevice final : public RenderDevice
         if (!entry.fence) {
             work.pop_back();SDL_WaitForGPUIdle(device);fail("submit GPU work");
         }
-        entry.submission = {++serial, epoch}; work.back()=std::move(entry);
+        entry.submission = {++serial, epoch}; workBytes += entry.chargedBytes(); work.back()=std::move(entry);
         entry=Work{}; // Clear copied raw handles before callers' failure cleanup.
         updateMemory();
     }
@@ -690,6 +1024,7 @@ class SDLGPUDevice final : public RenderDevice
     void loadSkinShaders(const std::string &);
     void loadTerrainShaders();
     void loadDirectTerrainShaders();
+    void loadTeamColorShaders();
     void drawDirectTerrain(SDL_GPUCommandBuffer *, Work &, const Draw &, float logicalWidth, float logicalHeight);
     TexturePtr resolveStreamed(SDL_GPUCommandBuffer *, Work &, const std::shared_ptr<StreamedTexture> &);
     void settleStreamed(bool submitted);
@@ -700,12 +1035,13 @@ class SDLGPUDevice final : public RenderDevice
     {
         if (!device) return;
         SDL_WaitForGPUIdle(device);
+        texturePool.open = false;
         for (auto &entry : work) release(entry);
         work.clear();
         for (auto &capture : captures) {
-            SDL_ReleaseGPUFence(device, capture.fence); SDL_ReleaseGPUTransferBuffer(device, capture.transfer);
+            SDL_ReleaseGPUFence(device, capture.fence); dropTransfer(capture.transfer);
         }
-        captures.clear(); cache.clear(); targets.clear(); geometryCache.clear(); coverageCache.clear(); terrainScratch.clear(); screen.reset(); committedScreen.reset(); white.reset();
+        captures.clear(); captureBytes = 0; workBytes = 0; clearCaches(); screen.reset(); committedScreen.reset(); white.reset();
         if (directTerrainPipeline) SDL_ReleaseGPUGraphicsPipeline(device, directTerrainPipeline);
         if (directTerrainVertex) SDL_ReleaseGPUShader(device, directTerrainVertex);
         if (directTerrainFragment) SDL_ReleaseGPUShader(device, directTerrainFragment);
@@ -765,7 +1101,18 @@ class SDLGPUDevice final : public RenderDevice
                 device = SDL_CreateGPUDevice(shaderFormat, false, driver);
             }
             if (!device) fail("create SDL GPU device");
+            texturePool.limit = std::min<std::size_t>(32 * 1024 * 1024, TotalBudget / 8); texturePool.open = true;
+            texturePool.fits = [this](std::size_t bytes) { return idleFits(bytes); };
             if (window) { claimed = SDL_ClaimWindowForGPUDevice(device, window); if (!claimed) fail("claim GPU window"); }
+            // Block formats for prepared artwork. Desktop GPUs decode BC3 and most
+            // mobile GPUs ASTC; GLOB2_TEXTURE_COMPRESSION=none|bc3|astc restricts it.
+            const char *wanted = SDL_getenv_unsafe("GLOB2_TEXTURE_COMPRESSION");
+            const std::string choice = wanted ? wanted : "";
+            const auto sampled = [&](SDL_GPUTextureFormat format) {
+                return SDL_GPUTextureSupportsFormat(device, format, SDL_GPU_TEXTURETYPE_2D, SDL_GPU_TEXTUREUSAGE_SAMPLER);
+            };
+            bc3Supported = (choice.empty() || choice == "bc3") && sampled(SDL_GPU_TEXTUREFORMAT_BC3_RGBA_UNORM);
+            astcSupported = (choice.empty() || choice == "astc") && sampled(SDL_GPU_TEXTUREFORMAT_ASTC_4x4_UNORM);
             vertexShader = loadShader("primitive", "vertex", 1, 0);
             fragmentShader = loadShader("primitive", "fragment", 1, 1);
             SDL_GPUSamplerCreateInfo sampler{}; sampler.min_filter = sampler.mag_filter = SDL_GPU_FILTER_NEAREST;
@@ -780,6 +1127,7 @@ class SDLGPUDevice final : public RenderDevice
             loadSkinShaders(shaders);
             loadTerrainShaders();
             loadDirectTerrainShaders();
+            loadTeamColorShaders();
             std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixel(SDL_CreateSurface(1, 1, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
             if (!pixel) fail("create white pixel");
             SDL_FillSurfaceRect(pixel.get(), nullptr, SDL_MapSurfaceRGBA(pixel.get(), 255, 255, 255, 255));
@@ -793,7 +1141,13 @@ class SDLGPUDevice final : public RenderDevice
         } catch (...) { teardown(); throw; }
     }
     ~SDLGPUDevice() override { teardown(); }
-    RenderDeviceCapabilities capabilities() const override { return {true, true, false, MaximumTextureSize, worldAvailable, worldAvailable, skinAvailable, terrainAvailable, directTerrainPipeline != nullptr, directTerrainHdPipeline != nullptr}; }
+    RenderDeviceCapabilities capabilities() const override
+    {
+        RenderDeviceCapabilities result{true, true, false, MaximumTextureSize, worldAvailable, worldAvailable, skinAvailable, terrainAvailable, directTerrainPipeline != nullptr, directTerrainHdPipeline != nullptr};
+        result.bc3Textures = bc3Supported; result.astc4x4Textures = astcSupported;
+        result.teamColor = teamColorAvailable;
+        return result;
+    }
     RenderSubmission submit(RenderFrame frame) override;
     RenderCompletion completion(RenderSubmission submission) override
     {
@@ -805,8 +1159,9 @@ class SDLGPUDevice final : public RenderDevice
     void reset() override
     {
         SDL_WaitForGPUIdle(device); for (auto &entry : work) release(entry);
-        work.clear(); cache.clear(); targets.clear(); geometryCache.clear(); coverageCache.clear(); terrainScratch.clear();
+        work.clear(); workBytes = 0; clearCaches();
         streamed.clear(); // Owners that had writes applied see their textures lost.
+        texturePool.release(device);
         cancelCaptures(); frameOpen = false; ++epoch; completed = serial; lastFrame = 0; reap();
     }
     std::uint64_t generation() const override { return epoch; }
@@ -856,6 +1211,31 @@ void SDLGPUDevice::loadWorldShaders(const std::string &directory)
     }
     pipeline(SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM, false, DrawPacket::Material::SmoothPoint, DrawPacket::Blend::Additive);
     worldAvailable = true;
+}
+void SDLGPUDevice::loadTeamColorShaders()
+{
+    // Shaders and both blend pipelines are made with the device, never during
+    // a frame. Without them, team layers keep their CPU recolour.
+    if (!hasShader("team-color", "vertex") || !hasShader("team-color", "fragment")) return;
+    try {
+        auto &stages = worldShaders[DrawPacket::Material::TeamColor];
+        stages.first = loadShader("team-color", "vertex", 1, 0);
+        stages.second = loadShader("team-color", "fragment", 1, 1);
+        for (bool premultiplied : {false, true})
+            pipeline(SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM, premultiplied, DrawPacket::Material::TeamColor);
+        teamColorAvailable = true;
+    } catch (const std::runtime_error &error) {
+        // Optional: a driver that rejects it keeps the device and the CPU path.
+        for (auto it = pipelines.begin(); it != pipelines.end();)
+            if (std::get<2>(it->first) == DrawPacket::Material::TeamColor) { SDL_ReleaseGPUGraphicsPipeline(device, it->second); it = pipelines.erase(it); }
+            else ++it;
+        if (auto found = worldShaders.find(DrawPacket::Material::TeamColor); found != worldShaders.end()) {
+            if (found->second.first) SDL_ReleaseGPUShader(device, found->second.first);
+            if (found->second.second) SDL_ReleaseGPUShader(device, found->second.second);
+            worldShaders.erase(found);
+        }
+        SDL_LogWarn(SDL_LOG_CATEGORY_RENDER, "SDL GPU team colour unavailable: %s", error.what());
+    }
 }
 void SDLGPUDevice::loadSkinShaders(const std::string &directory)
 {
@@ -987,8 +1367,14 @@ TexturePtr SDLGPUDevice::resolveStreamed(SDL_GPUCommandBuffer *commands, Work &e
         entry.textures.push_back(state.texture);
         return state.texture;
     } catch (const RenderAdmissionDeferred &) {
-        // Over the device budget: the owner falls back rather than abort every frame.
+        // Staging for this frame's writes did not fit: usually in-flight work
+        // that retires within a frame or two. A texture the owner already
+        // draws defers the frame (its writes stay queued) a bounded number of
+        // times before the owner is told to start its textures again.
+        constexpr unsigned StreamedDeferrals = 30;
+        if (found != streamed.end() && found->second.committed && ++streamedDeferrals <= StreamedDeferrals) throw;
         if (found != streamed.end() && !found->second.committed) streamed.erase(found);
+        streamedDeferrals = 0;
         source->lost = true;
         return nullptr;
     }
@@ -1099,16 +1485,16 @@ CoveragePtr SDLGPUDevice::resolveCoverage(SDL_GPUCommandBuffer *commands, Work &
         source->samples.size()!=std::size_t(source->width)*source->height) throw std::invalid_argument("Invalid immutable terrain coverage");
     const CoverageKey key{source->identity,source->revision,source->width,source->height};
     if(auto found=coverageCache.find(key);found!=coverageCache.end()) { entry.coverage.push_back(found->second); return found->second; }
-    const std::size_t bytes=source->samples.size()*9, limit=32*1024*1024;
+    const std::size_t bytes=source->samples.size()*9, limit=budgetLimits.classLimit(TextureDescriptor::BudgetClass::TerrainMask);
     if(bytes>limit) throw std::length_error("Terrain coverage exceeds mask budget");
-    std::size_t used=0; for(const auto &[key,value]:coverageCache)used+=value->bytes;
-    for(const auto &[key,value]:cache)if(value->source->descriptor.budgetClass==TextureDescriptor::BudgetClass::TerrainMask)used+=value->byteSize;
+    std::size_t used=residentCoverageBytes+classBytes[std::size_t(TextureDescriptor::BudgetClass::TerrainMask)];
     for(auto it=coverageCache.begin();used>limit-bytes && it!=coverageCache.end();) {
         if(it->second.use_count()==1) {used-=it->second->bytes;it=coverageCache.erase(it);} else++it;
     }
     if(used>limit-bytes)throw RenderAdmissionDeferred("Terrain mask budget exhausted");
     reserveMemory(bytes*2,&entry);
     auto value=std::make_shared<CoverageGPU>();value->device=device;value->source=std::move(source);value->bytes=bytes;
+    value->residentBytes=&residentCoverageBytes;residentCoverageBytes+=bytes;
     SDL_GPUTextureCreateInfo info{};info.type=SDL_GPU_TEXTURETYPE_2D;info.usage=SDL_GPU_TEXTUREUSAGE_SAMPLER;
     info.width=value->source->width;info.height=value->source->height;info.layer_count_or_depth=1;info.num_levels=1;
     info.format=SDL_GPU_TEXTUREFORMAT_R16G16B16A16_UINT;value->weights=SDL_CreateGPUTexture(device,&info);if(!value->weights)fail("create terrain weights");
@@ -1127,7 +1513,7 @@ CoveragePtr SDLGPUDevice::resolveCoverage(SDL_GPUCommandBuffer *commands, Work &
     SDL_UploadToGPUTexture(copy,&from,&destination,false);
     from.offset=static_cast<Uint32>(value->source->samples.size()*8);destination.texture=value->selectors;
     SDL_UploadToGPUTexture(copy,&from,&destination,false);SDL_EndGPUCopyPass(copy);
-    counts.uploadBytes+=bytes;coverageCache.emplace(key,value);entry.coverage.push_back(value);return value;
+    counts.uploadBytes+=bytes;coverageCache.emplace(key,value);freshCoverage.push_back(key);entry.coverage.push_back(value);return value;
 }
 void SDLGPUDevice::prepareTerrain(SDL_GPUCommandBuffer *&commands, Work &entry, Draw &draw, std::vector<SDL_Vertex> &vertices)
 {
@@ -1239,14 +1625,14 @@ GeometryPtr SDLGPUDevice::resolveGeometry(SDL_GPUCommandBuffer *commands, Work &
                         source->layout == GeometryLayout::SkinRig72 ? Layout::skin_rig_stride : 0;
     if (!stride || source->stride != stride) throw std::invalid_argument("Unsupported mesh vertex layout");
     if (auto found = geometryCache.find(source.get()); found != geometryCache.end()) return found->second;
-    std::size_t resident = 0; for (const auto &[key, geometry] : geometryCache) resident += geometry->source->bytes;
+    std::size_t resident = residentGeometryBytes;
     const auto bytes = source->vertices.size() + source->indices.size() * sizeof(std::uint32_t);
-    if (bytes > TextureBudget) throw std::length_error("SDL GPU single geometry exceeds budget");
-    for(auto it=geometryCache.begin();resident>TextureBudget-bytes && it!=geometryCache.end();) {
+    if (bytes > GeometryBudget) throw std::length_error("SDL GPU single geometry exceeds budget");
+    for(auto it=geometryCache.begin();resident>GeometryBudget-bytes && it!=geometryCache.end();) {
         if(it->second.use_count()==1) { resident-=it->second->source->bytes;it=geometryCache.erase(it); }
         else ++it;
     }
-    if (resident > TextureBudget - bytes) throw RenderAdmissionDeferred("SDL GPU geometry budget exhausted");
+    if (resident > GeometryBudget - bytes) throw RenderAdmissionDeferred("SDL GPU geometry budget exhausted");
     reserveMemory(bytes * 2, &entry);
     for (std::size_t offset = 0; offset < source->vertices.size(); offset += sizeof(float)) {
         float value; std::memcpy(&value, source->vertices.data() + offset, sizeof(value));
@@ -1261,6 +1647,7 @@ GeometryPtr SDLGPUDevice::resolveGeometry(SDL_GPUCommandBuffer *commands, Work &
     }
     for (auto index : source->indices) if (index >= source->vertices.size() / source->stride) throw std::invalid_argument("Mesh index outside vertex range");
     auto geometry = std::make_shared<Geometry>(); geometry->device = device; geometry->source = source;
+    geometry->residentBytes = &residentGeometryBytes; residentGeometryBytes += source->bytes;
     auto uploadBuffer = [&](const void *pixels, std::size_t size, SDL_GPUBufferUsageFlags usage) {
         SDL_GPUBufferCreateInfo info{}; info.usage = usage; info.size = Uint32(size);
         auto *buffer = SDL_CreateGPUBuffer(device, &info); if (!buffer) fail("create persistent geometry buffer");
@@ -1277,7 +1664,7 @@ GeometryPtr SDLGPUDevice::resolveGeometry(SDL_GPUCommandBuffer *commands, Work &
     };
     geometry->vertices = uploadBuffer(source->vertices.data(), source->vertices.size(), SDL_GPU_BUFFERUSAGE_VERTEX);
     if (!source->indices.empty()) geometry->indices = uploadBuffer(source->indices.data(), source->indices.size() * sizeof(std::uint32_t), SDL_GPU_BUFFERUSAGE_INDEX);
-    geometryCache.emplace(source.get(), geometry); return geometry;
+    geometryCache.emplace(source.get(), geometry); freshGeometry.push_back(source.get()); return geometry;
 }
 TexturePtr SDLGPUDevice::depthFor(TexturePtr color, const Work *pending)
 {
@@ -1490,6 +1877,7 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
 {
     detail::RenderCpuTimer timing(counts.cpuSubmitNanoseconds);
     reap(); if (work.size() >= SubmissionLimit) return {};
+    frameTextures = 0;
     if (frame.logicalWidth <= 0 || frame.logicalHeight <= 0 || frame.packets.size() > RenderFrame::CommandCapacity || frame.vertexCount > RenderFrame::VertexCapacity)
         throw std::invalid_argument("Invalid or unbounded render frame");
     std::size_t recordedVertices = 0;
@@ -1539,6 +1927,10 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
             }
             if (packet.texture && packet.target && packet.texture.get() == packet.target.get())
                 throw std::invalid_argument("Render target cannot sample itself");
+            if (packet.material == DrawPacket::Material::TeamColor &&
+                (!teamColorAvailable || (packet.kind != DrawPacket::Kind::Blit && packet.kind != DrawPacket::Kind::Triangles) ||
+                 !packet.texture || !std::isfinite(packet.teamHue) || packet.blend != DrawPacket::Blend::Automatic))
+                throw std::invalid_argument("Invalid team colour draw");
             if (packet.kind == DrawPacket::Kind::Blit) {
                 if (!packet.texture) throw std::invalid_argument("Blit requires texture snapshot");
                 if (packet.source.w <= 0 || packet.source.h <= 0 || packet.destination.w == 0 || packet.destination.h == 0) continue;
@@ -1547,7 +1939,11 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
                     std::int64_t(packet.source.y) + packet.source.h > packet.texture->descriptor.height)
                     throw std::invalid_argument("Blit source is outside texture bounds");
             }
-            Draw draw{&packet, resolve(commands, entry, packet.texture, packet.opaque, packet.linear && packet.kind == DrawPacket::Kind::Blit),
+            capCreations = frame.deferrable && !packet.target;
+            auto sampled = resolve(commands, entry, packet.texture, packet.opaque,
+                packet.linear && packet.kind == DrawPacket::Kind::Blit && packet.material != DrawPacket::Material::TeamColor);
+            capCreations = false;
+            Draw draw{&packet, std::move(sampled),
                       packet.target ? resolve(commands, entry, packet.target, false, true, true) : screen, static_cast<Uint32>(vertices.size()), 0, {}, {}, {}, {}, {}};
             if (packet.kind == DrawPacket::Kind::WeightedCompose) {
                 prepareTerrain(commands,entry,draw,vertices);
@@ -1635,6 +2031,9 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
                 if (packet.texture && draw.texture->premultiplied && packet.kind != DrawPacket::Kind::Blit) {
                     vertex.color.r *= vertex.color.a; vertex.color.g *= vertex.color.a; vertex.color.b *= vertex.color.a;
                 }
+                // Team colour triangles: hue shift in y (team-color.vert); blits set it below.
+                if (packet.material == DrawPacket::Material::TeamColor && packet.kind != DrawPacket::Kind::Blit)
+                    vertex.color.g = packet.teamHue;
                 vertices.push_back(vertex);
             };
             if (packet.kind == DrawPacket::Kind::Fill || packet.kind == DrawPacket::Kind::Blit) {
@@ -1642,8 +2041,12 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
                 if (rect.w < 0 || rect.h < 0) throw std::invalid_argument("Negative rectangle extent");
                 SDL_FColor color{packet.color.r / 255.f, packet.color.g / 255.f, packet.color.b / 255.f, packet.color.a / 255.f};
                 if (packet.kind == DrawPacket::Kind::Blit) {
-                    const float rgb = draw.texture->premultiplied ? packet.alpha / 255.f : 1.f;
+                    const bool premultiplied = packet.material == DrawPacket::Material::TeamColor
+                        ? teamPremultiplied(packet, draw.texture->premultiplied) : draw.texture->premultiplied;
+                    const float rgb = premultiplied ? packet.alpha / 255.f : 1.f;
                     color = {rgb, rgb, rgb, 1};
+                    // Team colour: grey tint in x, hue shift in y (team-color.vert).
+                    if (packet.material == DrawPacket::Material::TeamColor) color = {rgb, packet.teamHue, 0, 1};
                 }
                 float u0 = 0, v0 = 0, u1 = 1, v1 = 1;
                 if (packet.texture) {
@@ -1666,20 +2069,13 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
         drawPackets(commands, entry, draws, frame.logicalWidth, frame.logicalHeight);
         submitWork(commands, entry);
         settleStreamed(true);
-        for (auto &[key, texture] : cache) texture->submitted = true;
-        for (auto &[key, geometry] : geometryCache) geometry->submitted = true;
-        for (auto &[key,coverage] : coverageCache) coverage->submitted=true;
+        streamedDeferrals = 0;
+        markFreshSubmitted();
         frameOpen = true; lastFrame = frame.identity; return work.back().submission;
     } catch (...) {
         if (commands) SDL_CancelGPUCommandBuffer(commands);
         release(entry);
-        for (auto it = cache.begin(); it != cache.end();) {
-            if (!it->second->submitted) it = cache.erase(it); else ++it;
-        }
-        for (auto it = geometryCache.begin(); it != geometryCache.end();) {
-            if (!it->second->submitted) it = geometryCache.erase(it); else ++it;
-        }
-        for (auto it=coverageCache.begin(); it!=coverageCache.end();) { if(!it->second->submitted)it=coverageCache.erase(it);else++it; }
+        dropFreshUnsubmitted();
         settleStreamed(false);
         screen = previousScreen; width = previousWidth; height = previousHeight; throw;
     }
@@ -1751,11 +2147,11 @@ bool SDLGPUDevice::capture(CaptureRequest request)
         captures.back().fence = SDL_SubmitGPUCommandBufferAndAcquireFence(submitted);
         if (!captures.back().fence) {SDL_WaitForGPUIdle(device);fail("submit capture");}
         readback.transfer=nullptr;queued=false;
-        counts.resourceBytes+=std::size_t(pixels.w)*pixels.h*4;
+        captureBytes+=std::size_t(pixels.w)*pixels.h*4; updateMemory();
         return true;
     } catch (...) {
         if(queued)captures.pop_back();
-        if (readback.transfer) SDL_ReleaseGPUTransferBuffer(device, readback.transfer);
+        if (readback.transfer) dropTransfer(readback.transfer);
         if (commands) SDL_CancelGPUCommandBuffer(commands);
         ++counts.captureDrops; return false;
     }
@@ -1777,7 +2173,8 @@ bool SDLGPUDevice::pollCapture(CaptureResult &result)
         ++counts.captureCompletions;
         counts.captureLatencyNanoseconds += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-entry.admitted).count();
     }
-    SDL_ReleaseGPUFence(device, entry.fence); SDL_ReleaseGPUTransferBuffer(device, entry.transfer);
+    SDL_ReleaseGPUFence(device, entry.fence); recycleTransfer(entry.transfer);
+    captureBytes -= std::min(captureBytes, std::size_t(entry.request.width) * entry.request.height * 4);
     captures.pop_front(); updateMemory(); result = std::move(next); return true;
 }
 SDL_Surface *SDLGPUDevice::captureSynchronously(CaptureRequest request)
@@ -1806,12 +2203,12 @@ SDL_Surface *SDLGPUDevice::captureSynchronously(CaptureRequest request)
             std::memcpy(static_cast<unsigned char *>(result.pixels->pixels) + y * result.pixels->pitch,
                         static_cast<const unsigned char *>(pixels) + std::size_t(y) * width * 4, width * 4);
         SDL_UnmapGPUTransferBuffer(device, buffer);
-        SDL_ReleaseGPUFence(device, fence); SDL_ReleaseGPUTransferBuffer(device, buffer);
+        SDL_ReleaseGPUFence(device, fence); recycleTransfer(buffer);
         return result.pixels.release();
     } catch (...) {
         if (commands) SDL_CancelGPUCommandBuffer(commands);
         if (fence) SDL_ReleaseGPUFence(device, fence);
-        SDL_ReleaseGPUTransferBuffer(device, buffer); throw;
+        dropTransfer(buffer); throw;
     }
 }
 } // namespace

@@ -349,10 +349,16 @@ namespace GAGCore
 	// Using a sprite sheet lets us efficiently drawn terrain and water with a few calls
 	// to glDrawArrays, rather than 272 individual calls to glBegin...glEnd.
     bool Sprite::createDeviceTextureAtlas(int maximumTextureSize, bool variableSizes) {
-        if (images.empty() || dynamicTeamColor || std::any_of(rotated.begin(),rotated.end(),[](auto value){return value!=nullptr;})) return false;
+        // A sheet that cannot have an atlas (team-coloured or rotated frames,
+        // frames without pixels, too large, no atlas memory) tries again only
+        // after two seconds of frames, not on every draw of every frame.
+        const std::uint64_t frame = Toolkit::gc ? Toolkit::gc->frameIdentity() : 0;
+        if (!atlas && frame && frame < atlasRetryFrame) return false;
+        const auto refuse = [&] { atlasRetryFrame = frame + 120; return false; };
+        if (images.empty() || dynamicTeamColor || std::any_of(rotated.begin(),rotated.end(),[](auto value){return value!=nullptr;})) return refuse();
         std::vector<SpriteAtlasSource> sources; sources.reserve(images.size());
         for (std::size_t index=0;index<images.size();++index) {
-            auto *image=images[index]; if(!image || image->highResolutionSampling || !image->sdlsurface)return false;
+            auto *image=images[index]; if(!image || image->highResolutionSampling || !image->sdlsurface)return refuse();
             image->spriteSource=this;image->spriteFrame=index;
             sources.push_back({image->sdlsurface,{image->lifetimeIdentity(),image->contentRevision(),image->sdlsurface->w,image->sdlsurface->h}});
         }
@@ -368,7 +374,7 @@ namespace GAGCore
         atlas.reset();atlasMemory.reset();atlasStamps.clear();atlasRegions.clear();
         for(auto *image:images)image->textureInfo.reset();
         auto page=prepareSpriteRenderAtlas(sources,maximumTextureSize,variableSizes);
-        if(!page)return false;
+        if(!page)return refuse();
         AssetImage image(page->pixels.release());
         auto replacement=DrawableSurface::fromAssetImage(image,true,false);
         atlas=std::move(replacement);atlasMemory=std::move(page->memory);
@@ -377,6 +383,17 @@ namespace GAGCore
     bool Sprite::resolveDeviceAtlas(DrawableSurface &surface,SDL_Rect &source,const DrawableSurface *&upload) {
         if(surface.spriteSource!=this || surface.spriteFrame>=images.size() || images[surface.spriteFrame]!=&surface ||
             !Toolkit::gc || !Toolkit::gc->renderDevice() || surface.highResolutionSampling)return false;
+        // Every sprite draw comes here: when the atlas already holds this
+        // frame's current pixels, use it without revisiting every frame. A
+        // changed frame rebuilds the atlas when that frame is drawn.
+        const auto frame=surface.spriteFrame;
+        if(atlas && atlasMemory && atlasStamps.size()==images.size() && atlasRegions.size()==images.size() && surface.sdlsurface &&
+            atlasStamps[frame]==SpriteAtlasStamp{surface.lifetimeIdentity(),surface.contentRevision(),surface.sdlsurface->w,surface.sdlsurface->h} &&
+            std::max(atlas->sdlsurface->w,atlas->sdlsurface->h)<=std::min(2048,Toolkit::gc->renderDevice()->capabilities().maximumTextureSize)) {
+            const auto &region=atlasRegions[frame];
+            if(source.x<0 || source.y<0 || source.w<=0 || source.h<=0 || source.x>region.w-source.w || source.y>region.h-source.h)return false;
+            source.x+=region.x;source.y+=region.y;upload=atlas.get();return true;
+        }
         if(!createDeviceTextureAtlas(Toolkit::gc->renderDevice()->capabilities().maximumTextureSize,atlasVariableSizes))return false;
         const auto &region=atlasRegions[surface.spriteFrame];
         if(source.x<0 || source.y<0 || source.w<=0 || source.h<=0 || source.x>region.w-source.w || source.y>region.h-source.h)return false;
@@ -742,6 +759,29 @@ namespace GAGCore
         return stats;
     }
 
+    Sprite::TeamColorStats Sprite::teamColorStats()
+    {
+        TeamColorStats stats;
+        const auto add=[&stats](DrawableSurface *surface)
+        {
+            // A drawn portable recolour may keep only its texture.
+            if(surface->hasPixels())stats.cpuBytes+=static_cast<size_t>(surface->getW())*surface->getH()*4;
+            ++stats.frames;
+        };
+        const auto addSprite=[&add](const Sprite &sprite)
+        {
+            for(const auto *images:{&sprite.rotated,&sprite.experimentRotated})
+                for(const auto *rotated:*images)if(rotated)for(const auto &entry:rotated->rotationMap)add(entry.second);
+            for(const auto &node:sprite.teamColorList)add(node.surface.get());
+        };
+        for(const auto *sprite:loadedSprites)
+        {
+            addSprite(*sprite);
+            if(sprite->highResolutionAtlas)addSprite(*sprite->highResolutionAtlas);
+        }
+        return stats;
+    }
+
     bool Sprite::highResolutionDeferred(const std::string& name)
     {
         return deferredHighResolutionNames.contains(name);
@@ -869,11 +909,23 @@ namespace GAGCore
         evictRetiredHighResolution();
     }
     size_t Sprite::retiredHighResolutionBytes() { return retiredHighResolutionTotal; }
+    // Set by trimRetiredHighResolution: evict retired frames regardless of
+    // budget and age, a bounded number a poll, until none are left.
+    static bool trimmingRetiredHighResolution = false;
+    void Sprite::trimRetiredHighResolution(bool immediately)
+    {
+        trimmingRetiredHighResolution = true;
+        if (immediately)
+            while (trimmingRetiredHighResolution) evictRetiredHighResolution();
+    }
     void Sprite::evictRetiredHighResolution()
     {
+        constexpr std::size_t TrimmedPerPoll = 64;
         std::set<Sprite *> changed;
+        std::size_t trimmed = 0;
         const auto expired = GAGCore::steadyClockNanoseconds() - retiredBudget.lifetimeNanoseconds;
-        while (!retiredHighResolution.empty() && (retiredHighResolutionTotal > retiredBudget.bytes ||
+        while (!retiredHighResolution.empty() && ((trimmingRetiredHighResolution && trimmed++ < TrimmedPerPoll) ||
+                                                 retiredHighResolutionTotal > retiredBudget.bytes ||
                                                  retiredHighResolution.back().retiredAt <= expired)) {
             const auto oldest = retiredHighResolution.back();
             retiredHighResolution.pop_back();
@@ -885,6 +937,7 @@ namespace GAGCore
             changed.insert(&sprite);
         }
         for (auto *sprite : changed) sprite->recomputeBlockCompleteHD();
+        if (retiredHighResolution.empty()) trimmingRetiredHighResolution = false;
     }
     void Sprite::releaseRetiredHighResolution(bool destroy)
     {
@@ -1149,20 +1202,27 @@ namespace GAGCore
             // reloads, keeping pixels from now on.
             if (portableBlocks.contains(this))
                 portableWaitingBlocks[this].insert(index / HighResolutionBlock);
+            // A device draw released it: reload the sheet in the background
+            // with pixels; the released layers keep drawing until it publishes.
+            else if (surface->deviceReleased() && !pendingHighResolution.contains(this) &&
+                     !highResolutionDeferred(fileName))
+                queueHighResolutionReload(true);
             return images[index];
         }
         return surface;
     }
     void Sprite::releaseDrawnHighResolution(unsigned index)
     {
+        // Cheap checks first: drawing calls this for every frame it draws.
         // Deferred banks release too (decor): a reset that loses the textures
         // asks their windows for the frames again (discardUnbackedHighResolution).
         // Banks the compositor samples on the CPU keep their pixels.
-        if (sampledByBaseFrame || highResolutionAtlasWanted(fileName) ||
-            pixelSampledHighResolutionNames.contains(fileName) || index >= experimentImages.size() ||
-            !experimentImages[index])
+        if (sampledByBaseFrame || index >= experimentImages.size() || !experimentImages[index] ||
+            !experimentImages[index]->hasPixels() || highResolutionAtlasWanted(fileName) ||
+            pixelSampledHighResolutionNames.contains(fileName))
             return;
-        experimentImages[index]->releasePortablePixels();
+        if (!experimentImages[index]->releasePortablePixels())
+            experimentImages[index]->releaseDevicePixels();
     }
     void Sprite::releaseDrawnTeamColor(unsigned index)
     {
@@ -1220,11 +1280,16 @@ namespace GAGCore
     }
     void Sprite::discardUnbackedHighResolution()
     {
-        const auto unbacked = [](const Sprite &sprite) {
+        // A layer released on a device adapter that still holds its snapshot
+        // survives resets and recovery; one released elsewhere does not.
+        const auto lost = [](const DrawableSurface *image) {
+            return image && !image->hasPixels() && !image->deviceBacked();
+        };
+        const auto unbacked = [&](const Sprite &sprite) {
             for (const auto *image : sprite.experimentImages)
-                if (image && !image->hasPixels()) return true;
+                if (lost(image)) return true;
             for (const auto *rotated : sprite.experimentRotated)
-                if (rotated && !rotated->orig->hasPixels()) return true;
+                if (rotated && lost(rotated->orig)) return true;
             return false;
         };
         for (auto *sprite : loadedSprites) {

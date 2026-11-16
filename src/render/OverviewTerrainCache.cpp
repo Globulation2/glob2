@@ -600,15 +600,35 @@ void OverviewTerrainCache::draw(const SceneMap &map, int left, int top, int righ
 			page->shownEmpty = false;
 			page->fadeStart = now;
 		}
+		// A page the device cannot upload this frame shows what lies beneath
+		// (or its previous upload), and fades in once it uploads.
+		const auto admitted = admit(*page);
+		const bool drawable = admitted != Admission::None;
+		if (!drawable && composed)
+		{
+			page->shownEmpty = true;
+			page->fadeStart = 0;
+		}
+		const bool otherDrawable = otherPage && admit(found->second) != Admission::None;
+		if (!otherDrawable)
+			fromOther = 0;
+		if (!drawable)
+		{
+			shown = false;
+			composed = 0;
+		}
+		// Its previous upload may lack cells composed since: the base beneath covers them.
+		if (admitted == Admission::Previous)
+			shown = false;
 		const bool fading = page->fadeStart && now - page->fadeStart < FadeMs;
 		if (!fading)
 			page->fadeStart = 0;
 		if (!shown || fading)
 		{
 			// Beneath: the base wherever the other density cannot stand in, then the other density.
-			if (base && (!otherPage || fromOther + composed < cells || fading))
+			if (base && (!otherDrawable || fromOther + composed < cells || fading))
 				drawBase(wx, wy, region, screenX, screenY, target, alpha);
-			if (otherPage)
+			if (otherDrawable)
 				drawPage(found->second, wx, wy, region, screenX, screenY, target, alpha);
 		}
 		const std::uint64_t missing = cells - composed - fromOther;
@@ -616,8 +636,9 @@ void OverviewTerrainCache::draw(const SceneMap &map, int left, int top, int righ
 		(base ? metrics.base : metrics.holes) += missing;
 		if (fading)
 			metrics.fading += composed;
-		drawPage(*page, wx, wy, region, screenX, screenY, target,
-				 fading ? Uint8(alpha * (now - page->fadeStart) / FadeMs) : alpha);
+		if (drawable)
+			drawPage(*page, wx, wy, region, screenX, screenY, target,
+					 fading ? Uint8(alpha * (now - page->fadeStart) / FadeMs) : alpha);
 	});
 	if (!jobs.empty())
 		submit(jobs);
@@ -643,6 +664,21 @@ bool OverviewTerrainCache::covers(const Page &page, int wx, int wy, const Region
 			if (page.resources[(my - wy) * Tiles + (mx - wx)] == Uncomposed)
 				return false;
 	return true;
+}
+
+OverviewTerrainCache::Admission OverviewTerrainCache::admit(Page &page)
+{
+	// New pixels upload within the device's per-frame allowance; past it a
+	// page whose previous revision the device holds keeps drawing that.
+	const bool held = page.image->deviceHoldsPixels();
+	if ((page.changed || !held) && !page.image->takeDeviceUpload())
+		return held ? Admission::Previous : Admission::None;
+	if (page.changed)
+	{
+		page.image->markPixelsChanged();
+		page.changed = false;
+	}
+	return Admission::Current;
 }
 
 void OverviewTerrainCache::drawPage(Page &page, int wx, int wy, const Region &region, int screenX, int screenY,

@@ -131,11 +131,16 @@ void trimPresentationMemory(Trim trim)
 {
 	if (!graphical() || trim == Trim::None)
 		return;
+	// The presentation trim: device copies its snapshots restore, cached
+	// snapshots spread over later frames (at once in the background), retired
+	// HD frames and subscribed caches such as terrain pages. Repeating it for a
+	// signal ScreenStack also handled (SDL_EVENT_LOW_MEMORY) frees nothing twice.
+	globalContainer->gfx->trimPresentationMemory(trim == Trim::Background ? GAGCore::PresentationTrim::Background
+																		  : GAGCore::PresentationTrim::LowMemory);
 	// Retired HD frames are decoded copies kept for panning back; they reload
 	// from disk when needed. Smallest keeps their budget at zero for the session.
-	// With the mobile render budgets (integ/6-mobile-budgets) this also forwards to
-	// GraphicContext::trimPresentationMemory
-	// (LowMemory for Caches/Smallest, Background) and the smallest RenderBudget.
+	// The smallest RenderBudget is not applied: render budgets are fixed when
+	// the presentation device is created.
 	auto budget = GAGCore::Sprite::retiredHighResolutionBudget();
 	const auto kept = budget;
 	budget.bytes = 0;

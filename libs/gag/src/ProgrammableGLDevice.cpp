@@ -181,6 +181,8 @@ class ProgrammableGLDevice final : public RenderDevice
     MaterialProgram worldProgram, cloudProgram;
     GLuint pointProgram = 0;
     GLint pointViewport = -1, pointAlpha = -1;
+    struct TeamColorProgram { GLuint program=0; GLint viewport=-1,image=-1,alpha=-1,linear=-1,premultiplied=-1,levels=-1,uvBounds=-1; };
+    TeamColorProgram teamProgram;
     bool supportsWorld = false, supportsSkins = false;
     struct SkinProgram { GLuint program=0; GLint shell=-1,furLength=-1,shellDepth=-1,region=-1,bones=-1,view=-1,normalView=-1,paint=-1,material=-1; };
     SkinProgram skinProgram, rigProgram;
@@ -254,8 +256,9 @@ class ProgrammableGLDevice final : public RenderDevice
             slot = {};
         }
     }
-    static constexpr std::size_t TextureBudget = 256 * 1024 * 1024;
-    static constexpr std::array<std::size_t,4> ClassLimits{64*1024*1024,64*1024*1024,128*1024*1024,32*1024*1024};
+    // Platform limits (smaller on phones); see RenderBudget::mobile.
+    const std::size_t TextureBudget = platformRenderBudget().total;
+    const std::array<std::size_t,4> ClassLimits = platformRenderBudget().classes;
     std::array<std::size_t,4> classBytes{};
     std::size_t textureBytes = 0, vertexBytes = 0, captureBytes = 0;
     // Reused only during submit/upload; neither buffer grows beyond an existing admission limit.
@@ -550,6 +553,8 @@ class ProgrammableGLDevice final : public RenderDevice
                 const float alpha = vertex.color.a * packet.alpha / 255.f;
                 vertex.color.r *= alpha; vertex.color.g *= alpha; vertex.color.b *= alpha;
             }
+            // Team colour: grey tint in x, hue shift in y (team-color.vert).
+            if (packet.material == DrawPacket::Material::TeamColor) vertex.color.g = packet.teamHue;
         }
     }
     // Local to one bounded primitive upload. Other passes, uploads and frame
@@ -652,10 +657,12 @@ void main() {
         int w = width, h = height;
         if (packet.target) { auto &destination = target(packet.target); framebuffer = destination.framebuffer;
             w = packet.target->descriptor.width; h = packet.target->descriptor.height; }
-        GLuint source = 0; bool premultiplied = false;
+        GLuint source = 0; bool premultiplied = false, texturePremultiplied = false;
         if (packet.texture) {
-            auto &allocation = texture(packet.texture, packet.linear); source = allocation.texture;
-            premultiplied = allocation.premultiplied;
+            const bool team = packet.material == DrawPacket::Material::TeamColor;
+            auto &allocation = texture(packet.texture, packet.linear && !team); source = allocation.texture;
+            texturePremultiplied = allocation.premultiplied;
+            premultiplied = team ? teamPremultiplied(packet, allocation) : allocation.premultiplied;
         }
         if (packet.targetLogicalWidth > 0) logicalW = packet.targetLogicalWidth;
         if (packet.targetLogicalHeight > 0) logicalH = packet.targetLogicalHeight;
@@ -671,6 +678,11 @@ void main() {
         if (packet.kind == DrawPacket::Kind::DirectTerrain) {
             drawDirectTerrain(*packet.directTerrain, logicalW, logicalH, first, count);
             cached.selectedProgram = directTerrainProgram;
+            return;
+        }
+        if (packet.material == DrawPacket::Material::TeamColor) {
+            drawTeamColor(packet, source, texturePremultiplied ? 2.f : premultiplied ? 1.f : 0.f, logicalW, logicalH, first, count);
+            cached.selectedProgram = teamProgram.program;
             return;
         }
         GLuint selectedProgram = packet.material == DrawPacket::Material::SmoothPoint ? pointProgram : program;
@@ -704,6 +716,41 @@ void main() {
             gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, packet.linear ? (packet.texture && packet.texture->descriptor.mips == TextureDescriptor::Mips::Generated ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR) : GL_NEAREST);
             gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, packet.linear ? GL_LINEAR : GL_NEAREST);
         }
+        gl.glDrawArrays(GL_TRIANGLES, GLint(first), GLsizei(count)); ++counts.batches;
+    }
+    // Team colour samples straight uploads and premultiplies in the shader, after
+    // recolouring, wherever a primitive blit would sample a premultiplied upload.
+    static bool teamPremultiplied(const DrawPacket &packet, const Allocation &allocation)
+    { return allocation.premultiplied || packet.linear; }
+    // premultiplied: 0 straight in and out, 1 straight in and premultiplied out,
+    // 2 premultiplied in and out.
+    void drawTeamColor(const DrawPacket &packet, GLuint source, float premultiplied, float logicalW, float logicalH,
+                       std::size_t first, std::size_t count)
+    {
+        if (!teamProgram.program || (packet.kind != DrawPacket::Kind::Blit && packet.kind != DrawPacket::Kind::Triangles) || !source)
+            throw std::invalid_argument("Invalid team colour draw");
+        const auto &descriptor = packet.texture->descriptor;
+        const bool filtering = packet.linear || descriptor.sampling == TextureDescriptor::Sampling::Linear;
+        const bool mipmapped = filtering && descriptor.mips == TextureDescriptor::Mips::Generated;
+        gl.glUseProgram(teamProgram.program);
+        gl.glUniform2f(teamProgram.viewport, logicalW, logicalH);
+        gl.glUniform1f(teamProgram.alpha, packet.alpha / 255.f);
+        gl.glUniform1f(teamProgram.linear, filtering ? 1.f : 0.f);
+        gl.glUniform1f(teamProgram.premultiplied, premultiplied);
+        gl.glUniform1f(teamProgram.levels, mipmapped ? float(packet.texture->mips.size() + 1) : 1.f);
+        // As the primitive program: adjacent nearest blits of one texture share
+        // a batch, so only linear sampling (whose batches share a source) clamps.
+        float u0 = 0, v0 = 0, u1 = 1, v1 = 1;
+        if (filtering && packet.kind == DrawPacket::Kind::Blit) {
+            u0 = (packet.source.x + .5f) / descriptor.width; u1 = (packet.source.x + packet.source.w - .5f) / descriptor.width;
+            v0 = (packet.source.y + .5f) / descriptor.height; v1 = (packet.source.y + packet.source.h - .5f) / descriptor.height;
+            if (targets.contains(key(packet.texture))) { const float lower = 1 - v1; v1 = 1 - v0; v0 = lower; }
+        }
+        gl.glUniform4f(teamProgram.uvBounds, u0, v0, u1, v1);
+        // The shader fetches texels itself, recolouring each before filtering.
+        gl.glActiveTexture(GL_TEXTURE0); gl.glBindTexture(GL_TEXTURE_2D, source);
+        gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         gl.glDrawArrays(GL_TRIANGLES, GLint(first), GLsizei(count)); ++counts.batches;
     }
     MaterialProgram materialProgram(const std::string &vertexFile, const std::string &fragmentFile)
@@ -1047,6 +1094,7 @@ void main() {
             if (worldProgram.program) gl.glDeleteProgram(worldProgram.program);
             if (cloudProgram.program) gl.glDeleteProgram(cloudProgram.program);
             if (pointProgram) gl.glDeleteProgram(pointProgram);
+            if (teamProgram.program) gl.glDeleteProgram(teamProgram.program);
         if (skinProgram.program) gl.glDeleteProgram(skinProgram.program);
         if (rigProgram.program) gl.glDeleteProgram(rigProgram.program);
             if (screenDepth) gl.glDeleteRenderbuffers(1, &screenDepth);
@@ -1131,6 +1179,25 @@ void main() {
                 pointAlpha = gl.glGetUniformLocation(pointProgram, "alpha");
                 supportsWorld = true;
             }
+            if (std::ifstream(shaderRoot + "team-color.vert") && std::ifstream(shaderRoot + "team-color.frag")) {
+                // Optional: a driver that rejects it keeps the CPU team recolour.
+                try {
+                    auto &team = teamProgram;
+                    team.program = materialProgram(shaderRoot + "team-color.vert", shaderRoot + "team-color.frag").program;
+                    team.viewport = gl.glGetUniformLocation(team.program, "viewport");
+                    team.image = gl.glGetUniformLocation(team.program, "image");
+                    team.alpha = gl.glGetUniformLocation(team.program, "alpha");
+                    team.linear = gl.glGetUniformLocation(team.program, "linear");
+                    team.premultiplied = gl.glGetUniformLocation(team.program, "premultiplied");
+                    team.levels = gl.glGetUniformLocation(team.program, "levels");
+                    team.uvBounds = gl.glGetUniformLocation(team.program, "uvBounds");
+                    gl.glUniform1i(team.image, 0);
+                } catch (const std::exception &error) {
+                    if (teamProgram.program) gl.glDeleteProgram(teamProgram.program);
+                    teamProgram = {};
+                    SDL_LogWarn(SDL_LOG_CATEGORY_RENDER, "Team colour unavailable: %s", error.what());
+                }
+            }
             if (std::ifstream(shaderRoot+"skin.vert") && std::ifstream(shaderRoot+"skin-rig.vert") && std::ifstream(shaderRoot+"skin.frag")) {
                 skinProgram=loadSkin(shaderRoot+"skin.vert",shaderRoot+"skin.frag");
                 rigProgram=loadSkin(shaderRoot+"skin-rig.vert",shaderRoot+"skin.frag"); supportsSkins=true;
@@ -1151,7 +1218,12 @@ void main() {
     }
     ~ProgrammableGLDevice() override { cleanup(); }
     SDL_GLContext borrowedContext() const { return context; }
-    RenderDeviceCapabilities capabilities() const override { return {true, true, timingSupported, maxTexture, supportsWorld, supportsWorld, supportsSkins,supportsTerrain,directTerrainProgram != 0}; }
+    RenderDeviceCapabilities capabilities() const override
+    {
+        RenderDeviceCapabilities result{true, true, timingSupported, maxTexture, supportsWorld, supportsWorld, supportsSkins,supportsTerrain,directTerrainProgram != 0};
+        result.teamColor = teamProgram.program != 0;
+        return result;
+    }
     bool canBeginFrame() override
     {
         current(); poll();
@@ -1227,7 +1299,11 @@ void main() {
             }
             if (first.target) target(first.target);
             bool flip = false, premultiplied = false;
-            if (first.texture) { auto &allocation = texture(first.texture, first.linear); flip = allocation.framebuffer != 0; premultiplied = allocation.premultiplied; }
+            if (first.texture) {
+                const bool team = first.material == DrawPacket::Material::TeamColor;
+                auto &allocation = texture(first.texture, first.linear && !team); flip = allocation.framebuffer != 0;
+                premultiplied = team ? teamPremultiplied(first, allocation) : allocation.premultiplied;
+            }
             std::size_t rangeStart = geometry.size();
             for (auto index = begin; index < end; ++index) {
                 const auto &packet = frame.packets[index];

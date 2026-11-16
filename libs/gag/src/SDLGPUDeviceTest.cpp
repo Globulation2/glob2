@@ -3,6 +3,10 @@
 #include "DirectTerrainReadbackFixture.h"
 #include <cstring>
 #include <SDLGPUDevice.h>
+#include <RenderBackend.h>
+#include <RenderDevice.h>
+#include <AssetLoader.h>
+#include <SDLGraphicContext.h>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
@@ -164,6 +168,83 @@ TEST_SUITE("SDLGPUDevice")
         REQUIRE(device->submit(frame)); device->present();
         device->reset();
         CHECK(device->telemetry().resourceBytes == 2 * 16 * 16 * 4 + 4);
+    }
+
+    GLOB2_TEST_CASE("A burst of new screen textures spreads over deferred frames; offscreen composition is exempt", "[display][isolated]")
+    {
+        const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
+        Video video; auto device = makeSDLGPUDevice(nullptr, 16, 16, shaders);
+        RenderResources resources;
+        std::vector<TextureSnapshot> textures;
+        for (int i = 0; i < 200; ++i) {
+            auto pixels = surface(4, 4); REQUIRE(pixels);
+            SDL_FillSurfaceRect(pixels.get(), nullptr, SDL_MapSurfaceRGBA(pixels.get(), Uint8(i), 0, 0, 255));
+            textures.push_back(resources.snapshot(resources.create(pixels.get(), 1)));
+            REQUIRE(textures.back());
+        }
+        const auto frameOf = [&](std::uint64_t identity, const TextureSnapshot &target, bool deferrable = true) {
+            RenderFrame frame; frame.identity = identity; frame.logicalWidth = frame.logicalHeight = 16;
+            frame.deferrable = deferrable;
+            for (const auto &texture : textures) {
+                auto packet = blit(texture, {0, 0, 4, 4});
+                if (target) { packet.target = target; packet.targetLogicalWidth = packet.targetLogicalHeight = 16; }
+                frame.packets.push_back(std::move(packet));
+            }
+            return frame;
+        };
+        // Drawn to the screen, 200 new textures take three submissions: each
+        // creates at most 96 and keeps them, so the next continues.
+        unsigned deferred = 0;
+        for (std::uint64_t attempt = 1; attempt <= 4; ++attempt) {
+            try { REQUIRE(device->submit(frameOf(attempt, {}))); device->present(); break; }
+            catch (const RenderAdmissionDeferred &) { ++deferred; device->discardFrame(); }
+        }
+        CHECK(deferred == 2);
+        // The same burst into an offscreen target completes at once.
+        auto targetPixels = surface(16, 16); REQUIRE(targetPixels);
+        auto target = resources.snapshot(resources.create(targetPixels.get(), 1));
+        for (auto &texture : textures) {
+            auto pixels = surface(4, 4); REQUIRE(pixels);
+            texture = resources.snapshot(resources.create(pixels.get(), 2));
+        }
+        CHECK(device->submit(frameOf(10, target)));
+        device->present();
+        // A frame its owner cannot defer (it may be captured) completes at once.
+        for (auto &texture : textures) {
+            auto pixels = surface(4, 4); REQUIRE(pixels);
+            texture = resources.snapshot(resources.create(pixels.get(), 3));
+        }
+        CHECK(device->submit(frameOf(11, {}, false)));
+        device->present();
+    }
+
+    GLOB2_TEST_CASE("A synchronous capture after a texture burst in a deferrable frame succeeds", "[display][isolated]")
+    {
+        const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
+        Video video; auto device = makeSDLGPUDevice(nullptr, 16, 16, shaders);
+        RenderResources resources;
+        auto backend = makeDeviceRenderBackend(*device, resources, 16, 16);
+        std::vector<Surface> sources;
+        for (int i = 0; i < 400; ++i) {
+            sources.push_back(surface(4, 4)); REQUIRE(sources.back());
+            SDL_FillSurfaceRect(sources.back().get(), nullptr, SDL_MapSurfaceRGBA(sources.back().get(), 0, 255, 0, 255));
+        }
+        const auto burst = [&](std::size_t first) {
+            for (std::size_t i = first; i < first + 200; ++i)
+                backend->blit(sources[i].get(), sources[i].get(), 1, true, {0, 0, 4, 4}, {0, 0, 16, 16}, 255);
+        };
+        // The game's frames may defer a burst: the previous frame shows.
+        allowDeviceFrameDeferral(*backend);
+        burst(0);
+        backend->present();
+        CHECK_FALSE(didPresentDeviceFrame(*backend));
+        // Deferral ends with the frame, and a capture ends it within one.
+        allowDeviceFrameDeferral(*backend);
+        burst(200);
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> captured(backend->capture(), SDL_DestroySurface);
+        REQUIRE(captured);
+        backend->present();
+        CHECK(didPresentDeviceFrame(*backend));
     }
 
     GLOB2_TEST_CASE("Expanded rectangles do not consume recorded triangle capacity", "[display][isolated]")
@@ -971,6 +1052,204 @@ TEST_SUITE("SDLGPUDevice")
         half.texture=snapshot;frame.identity=++identity;frame.packets={fill({0,0,16,16},{0,0,0,255}),half};REQUIRE(gpu->submit(frame));gpu->present();
         capture.reset(gpu->captureSynchronously(request));REQUIRE(capture);CHECK(pixel(capture.get(),2,2).g==255);
         auto malformed=std::make_shared<TextureRevision>(*snapshot);malformed->mips.pop_back();frame.packets={blit(malformed,{0,0,4,4})};CHECK_THROWS_AS(gpu->submit(frame),std::invalid_argument);
+    }
+
+    GLOB2_TEST_CASE("Vulkan samples premultiplied BC3 chains from block-only restoration snapshots", "[display][isolated]")
+    {
+        const char *shaders=std::getenv("GLOB2_TEST_SHADER_DIRECTORY");if(!shaders)return;
+        Video video;auto gpu=makeSDLGPUDevice(nullptr,16,16,shaders);
+        if(!gpu->capabilities().bc3Textures){MESSAGE("Device lacks BC3 sampling");return;}
+        RenderResources resources;auto base=surface(8,8);REQUIRE(base);
+        // Level zero opaque red, level one half-transparent green; 2x2 and 1x1 carry no blocks.
+        const std::array<SDL_Color,2> colours{{{255,0,0,255},{0,255,0,128}}};
+        std::array<std::vector<unsigned char>,2> encoded;std::array<RenderMipLevel,4> levels{{{8,8},{4,4},{2,2},{1,1}}};
+        for(unsigned level=0;level<2;++level) {
+            const int size=8>>level;std::vector<unsigned char> rgba(std::size_t(size)*size*4);
+            for(std::size_t i=0;i<rgba.size();i+=4){rgba[i]=colours[level].r;rgba[i+1]=colours[level].g;rgba[i+2]=colours[level].b;rgba[i+3]=colours[level].a;}
+            encoded[level]=AssetImage::compressBlocks(rgba.data(),size,size,AssetImage::BlockCompression::PremultipliedBC3,false);
+            REQUIRE(encoded[level].size()==compressedLevelBytes(size,size));
+            levels[level].compression=TextureCompression::BC3;
+            levels[level].blocks={reinterpret_cast<const std::byte *>(encoded[level].data()),encoded[level].size()};
+        }
+        TextureDescriptor descriptor;descriptor.compression=TextureCompression::BC3;descriptor.sampling=TextureDescriptor::Sampling::Linear;
+        auto handle=resources.create(base.get(),1,descriptor,levels);REQUIRE(handle);auto snapshot=resources.snapshot(handle);REQUIRE(snapshot);
+        CHECK_FALSE(snapshot->pixels);CHECK(snapshot->bytes==80);
+        RenderFrame frame;frame.logicalWidth=frame.logicalHeight=16;std::uint64_t identity=0;
+        const auto draw=[&](int size){
+            auto packet=blit(snapshot,{0,0,float(size),float(size)});packet.linear=true;
+            frame.identity=++identity;frame.packets={fill({0,0,16,16},{0,0,0,255}),packet};REQUIRE(gpu->submit(frame));gpu->present();
+            CaptureRequest request;request.identity=identity;Surface capture(gpu->captureSynchronously(request),SDL_DestroySurface);REQUIRE(capture);
+            return pixel(capture.get(),size/2,size/2);
+        };
+        auto red=draw(8);CHECK(red.r>=250);CHECK(red.g<=4);CHECK(red.b<=4);
+        // The blocks hold premultiplied colour, blended over black once.
+        auto green=draw(4);CHECK(green.r<=4);CHECK(std::abs(int(green.g)-128)<=6);CHECK(green.b<=4);
+        // Trimming forgets the GPU copy; the block-only snapshot restores it.
+        gpu->trimRetiredResources();red=draw(8);CHECK(red.r>=250);
+        auto invalid=std::make_shared<TextureRevision>(*snapshot);invalid->blocks.back().pop_back();
+        frame.packets={blit(invalid,{0,0,4,4})};CHECK_THROWS_AS(gpu->submit(frame),std::invalid_argument);
+    }
+
+    GLOB2_TEST_CASE("Vulkan samples premultiplied ASTC 4x4 chains from block-only restoration snapshots", "[display][isolated]")
+    {
+        const char *shaders=std::getenv("GLOB2_TEST_SHADER_DIRECTORY");if(!shaders)return;
+        Video video;auto gpu=makeSDLGPUDevice(nullptr,16,16,shaders);
+        if(!gpu->capabilities().astc4x4Textures){MESSAGE("Device lacks ASTC 4x4 sampling");return;}
+        RenderResources resources;auto base=surface(8,8);REQUIRE(base);
+        // Level zero opaque red, level one half-transparent green; 2x2 and 1x1 carry no blocks.
+        const std::array<SDL_Color,2> colours{{{255,0,0,255},{0,255,0,128}}};
+        std::array<std::vector<unsigned char>,2> encoded;std::array<RenderMipLevel,4> levels{{{8,8},{4,4},{2,2},{1,1}}};
+        for(unsigned level=0;level<2;++level) {
+            const int size=8>>level;std::vector<unsigned char> rgba(std::size_t(size)*size*4);
+            for(std::size_t i=0;i<rgba.size();i+=4){rgba[i]=colours[level].r;rgba[i+1]=colours[level].g;rgba[i+2]=colours[level].b;rgba[i+3]=colours[level].a;}
+            encoded[level]=AssetImage::compressBlocks(rgba.data(),size,size,AssetImage::BlockCompression::PremultipliedASTC4x4,false);
+            REQUIRE(encoded[level].size()==compressedLevelBytes(size,size));
+            levels[level].compression=TextureCompression::ASTC4x4;
+            levels[level].blocks={reinterpret_cast<const std::byte *>(encoded[level].data()),encoded[level].size()};
+        }
+        TextureDescriptor descriptor;descriptor.compression=TextureCompression::ASTC4x4;descriptor.sampling=TextureDescriptor::Sampling::Linear;
+        auto handle=resources.create(base.get(),1,descriptor,levels);REQUIRE(handle);auto snapshot=resources.snapshot(handle);REQUIRE(snapshot);
+        CHECK_FALSE(snapshot->pixels);CHECK(snapshot->bytes==80);
+        RenderFrame frame;frame.logicalWidth=frame.logicalHeight=16;std::uint64_t identity=0;
+        const auto draw=[&](int size){
+            auto packet=blit(snapshot,{0,0,float(size),float(size)});packet.linear=true;
+            frame.identity=++identity;frame.packets={fill({0,0,16,16},{0,0,0,255}),packet};REQUIRE(gpu->submit(frame));gpu->present();
+            CaptureRequest request;request.identity=identity;Surface capture(gpu->captureSynchronously(request),SDL_DestroySurface);REQUIRE(capture);
+            return pixel(capture.get(),size/2,size/2);
+        };
+        auto red=draw(8);CHECK(red.r>=250);CHECK(red.g<=4);CHECK(red.b<=4);
+        // The blocks hold premultiplied colour, blended over black once.
+        auto green=draw(4);CHECK(green.r<=4);CHECK(std::abs(int(green.g)-128)<=6);CHECK(green.b<=4);
+        // Trimming forgets the GPU copy; the block-only snapshot restores it.
+        gpu->trimRetiredResources();red=draw(8);CHECK(red.r>=250);
+        auto invalid=std::make_shared<TextureRevision>(*snapshot);invalid->blocks.back().pop_back();
+        frame.packets={blit(invalid,{0,0,4,4})};CHECK_THROWS_AS(gpu->submit(frame),std::invalid_argument);
+    }
+
+    GLOB2_TEST_CASE("Vulkan team colour matches the CPU recolour of every texel", "[display][isolated]")
+    {
+        const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY");
+        if (!shaders) { MESSAGE("Set GLOB2_TEST_SHADER_DIRECTORY to generated SPIR-V assets; Vulkan coverage omitted"); return; }
+        Video video;
+        constexpr int Size = 256;
+        auto gpu = makeSDLGPUDevice(nullptr, Size, Size, shaders);
+        REQUIRE(gpu->capabilities().teamColor);
+        // Every red/green pair with a varied blue, the base colour and greys,
+        // and a translucent copy whose alpha sweeps the edge values.
+        auto opaque = surface(Size, Size), translucent = surface(Size, Size); REQUIRE(opaque); REQUIRE(translucent);
+        for (int y = 0; y < Size; ++y) for (int x = 0; x < Size; ++x) {
+            Uint8 r = Uint8(x), g = Uint8(y), b = Uint8((x * 7 + y * 13) & 255);
+            if (y < 4) { r = 51; g = 255; b = 153; }
+            if (y >= 252) r = g = b = Uint8(x);
+            REQUIRE(SDL_WriteSurfacePixel(opaque.get(), x, y, r, g, b, 255));
+            REQUIRE(SDL_WriteSurfacePixel(translucent.get(), x, y, r, g, b, Uint8((x + y * 3) & 255)));
+        }
+        // Sprite::teamHueShiftDegrees for the twelve game colours and a 16-hue wheel.
+        std::vector<float> hues;
+        float baseHue, actHue, saturation, value;
+        Color(51, 255, 153).getHSV(&baseHue, &saturation, &value);
+        for (int i = 0; i < 28; ++i) {
+            Color team; team.setHSV(i < 12 ? i * 30.0f : (i - 12) * 22.5f, i < 12 ? 0.8f : 1.0f, i < 12 ? 0.9f : 1.0f);
+            team.getHSV(&actHue, &saturation, &value); hues.push_back(actHue - baseHue);
+        }
+        RenderResources resources;
+        std::uint64_t identity = 0;
+        auto draw = [&](DrawPacket packet) {
+            RenderFrame frame; frame.identity = ++identity; frame.logicalWidth = frame.logicalHeight = Size;
+            frame.packets = {fill({0, 0, Size, Size}, {0, 0, 0, 255}), std::move(packet)};
+            REQUIRE(gpu->submit(frame)); gpu->present();
+            CaptureRequest request; request.identity = identity;
+            Surface capture(gpu->captureSynchronously(request), SDL_DestroySurface); REQUIRE(capture);
+            return capture;
+        };
+        struct Difference { std::size_t channels = 0, differing = 0; int maximum = 0; };
+        auto compare = [](SDL_Surface *actual, SDL_Surface *expected, Difference &difference) {
+            for (int y = 0; y < Size; ++y) for (int x = 0; x < Size; ++x) {
+                const auto a = pixel(actual, x, y), b = pixel(expected, x, y);
+                for (int delta : {a.r - b.r, a.g - b.g, a.b - b.b, a.a - b.a}) {
+                    ++difference.channels; difference.differing += delta != 0;
+                    difference.maximum = std::max(difference.maximum, std::abs(delta));
+                }
+            }
+        };
+        // An alpha-weighted box chain, as AssetImage::prepareUpload builds for HD layers.
+        auto chain = [](SDL_Surface *source, std::vector<std::vector<std::byte>> &pixels, std::vector<RenderMipLevel> &levels) {
+            std::vector<SDL_Color> current(std::size_t(Size) * Size);
+            for (int y = 0; y < Size; ++y) for (int x = 0; x < Size; ++x) current[y * Size + x] = pixel(source, x, y);
+            pixels.clear(); levels.clear();
+            auto &base = pixels.emplace_back(std::size_t(Size) * Size * 4);
+            for (std::size_t i = 0; i < current.size(); ++i)
+                for (int k = 0; k < 4; ++k) base[i * 4 + k] = std::byte(k == 0 ? current[i].r : k == 1 ? current[i].g : k == 2 ? current[i].b : current[i].a);
+            for (int size = Size / 2; size >= 1; size /= 2) {
+                std::vector<SDL_Color> next(std::size_t(size) * size);
+                auto &bytes = pixels.emplace_back(std::size_t(size) * size * 4);
+                for (int y = 0; y < size; ++y) for (int x = 0; x < size; ++x) {
+                    unsigned alpha = 0, rgb[3]{};
+                    for (int dy = 0; dy < 2; ++dy) for (int dx = 0; dx < 2; ++dx) {
+                        const auto c = current[(y * 2 + dy) * size * 2 + x * 2 + dx];
+                        alpha += c.a; rgb[0] += c.r * c.a; rgb[1] += c.g * c.a; rgb[2] += c.b * c.a;
+                    }
+                    SDL_Color c{0, 0, 0, Uint8((alpha + 2) / 4)};
+                    if (alpha) { c.r = Uint8((rgb[0] + alpha / 2) / alpha); c.g = Uint8((rgb[1] + alpha / 2) / alpha); c.b = Uint8((rgb[2] + alpha / 2) / alpha); }
+                    next[y * size + x] = c;
+                    for (int k = 0; k < 4; ++k) bytes[(y * size + x) * 4 + k] = std::byte(k == 0 ? c.r : k == 1 ? c.g : k == 2 ? c.b : c.a);
+                }
+                current = std::move(next);
+            }
+            for (std::size_t level = 0; level < pixels.size(); ++level) {
+                const int size = Size >> level;
+                levels.push_back({size, size, SDL_PIXELFORMAT_RGBA32, pixels[level]});
+            }
+        };
+        Difference nearest, linear, minified;
+        std::uint64_t revision = 0;
+        for (SDL_Surface *source : {opaque.get(), translucent.get()})
+            for (float hue : hues) {
+                // The CPU path: Sprite::applyTeamHueShift on a copy, drawn as a plain blit.
+                DrawableSurface recoloured(SDL_DuplicateSurface(source), DrawableSurface::AdoptPixels{}, false);
+                recoloured.shiftHSV(hue, 0.0f, 0.0f);
+                const auto cpu = resources.snapshot(resources.create(recoloured.getSDLSurface(), ++revision));
+                const auto original = resources.snapshot(resources.create(source, ++revision));
+                REQUIRE(cpu); REQUIRE(original);
+                auto team = blit(original, {0, 0, Size, Size});
+                team.material = DrawPacket::Material::TeamColor; team.teamHue = hue;
+                // Texel for texel at 1:1, nearest sampling.
+                auto expected = draw(blit(cpu, {0, 0, Size, Size}));
+                auto actual = draw(team);
+                compare(actual.get(), expected.get(), nearest);
+                // Linear magnification samples premultiplied uploads, as HD layers do.
+                auto zoomedCPU = blit(cpu, {0, 0, Size, Size}); zoomedCPU.source = {64, 64, 128, 128}; zoomedCPU.linear = true;
+                auto zoomedTeam = team; zoomedTeam.source = zoomedCPU.source; zoomedTeam.linear = true;
+                expected = draw(zoomedCPU); actual = draw(zoomedTeam);
+                compare(actual.get(), expected.get(), linear);
+                // Trilinear minification of authored chains: the CPU path builds its
+                // chain from the recoloured copy, the shader recolours each level.
+                if (hue != hues.front() && hue != hues[5]) continue;
+                std::vector<std::vector<std::byte>> cpuPixels, teamPixels;
+                std::vector<RenderMipLevel> cpuLevels, teamLevels;
+                chain(recoloured.getSDLSurface(), cpuPixels, cpuLevels); chain(source, teamPixels, teamLevels);
+                TextureDescriptor mipmapped; mipmapped.mips = TextureDescriptor::Mips::Generated; mipmapped.sampling = TextureDescriptor::Sampling::Linear;
+                auto cpuChain = blit(resources.snapshot(resources.create(recoloured.getSDLSurface(), ++revision, mipmapped, cpuLevels)), {0, 0, 80, 80});
+                auto teamChain = blit(resources.snapshot(resources.create(source, ++revision, mipmapped, teamLevels)), {0, 0, 80, 80});
+                cpuChain.linear = teamChain.linear = true;
+                teamChain.material = DrawPacket::Material::TeamColor; teamChain.teamHue = hue;
+                expected = draw(cpuChain); actual = draw(teamChain);
+                compare(actual.get(), expected.get(), minified);
+            }
+        MESSAGE("nearest: " << nearest.differing << "/" << nearest.channels << " channels differ, max " << nearest.maximum);
+        MESSAGE("linear: " << linear.differing << "/" << linear.channels << " channels differ, max " << linear.maximum);
+        MESSAGE("minified: " << minified.differing << "/" << minified.channels << " channels differ, max " << minified.maximum);
+        // Exact: the shader follows the CPU's float operations bit for bit.
+        CHECK(nearest.differing == 0);
+        // Hardware filtering weighs the CPU copy's texels in fixed point, the
+        // shader in float: one level apart at most.
+        CHECK(linear.maximum <= 1);
+        // Mip levels average neighbouring hues before recolouring instead of after,
+        // and the hardware chooses its level of detail by its own approximation.
+        // This chart puts unrelated hues side by side (lavapipe: 3% of channels,
+        // at most 41 levels); a team layer's hues vary far less.
+        CHECK(minified.differing * 20 <= minified.channels);
+        CHECK(minified.maximum <= 48);
     }
 
 }

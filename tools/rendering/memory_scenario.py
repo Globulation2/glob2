@@ -32,8 +32,12 @@ PLAYERS = ('castor', 'cortex', 'castor', 'cortex')
 GAUGES = (
     ('cpu_surface_bytes', 'Decoded pixels held by surfaces'),
     ('cpu_high_resolution_bytes', '  of which HD artwork'),
+    ('cpu_team_color_bytes', 'CPU team recolours'),
+    ('team_color_frames', 'CPU team recolours (frames)'),
     ('cpu_compositor_bytes', 'Terrain compositor copies'),
     ('cpu_prepared_bytes', 'Upload staging'),
+    ('device_snapshot_bytes', 'Device restoration snapshots'),
+    ('device_retained_bytes', '  of which retained for released pixels'),
     ('gpu_surface_bytes', 'GPU sprite and atlas textures'),
     ('gpu_array_bytes', 'GPU texture-array pages'),
     ('gpu_direct_terrain_bytes', 'GPU direct terrain'),
@@ -43,6 +47,7 @@ GAUGES = (
     ('gpu_skin_atlas_bytes', 'GPU skin atlas'),
     ('gpu_view_tile_bytes', 'GPU view tiles'),
     ('gpu_backend_texture_bytes', 'Portable renderer textures'),
+    ('device_resource_bytes', 'Render device resources'),
 )
 
 
@@ -111,6 +116,8 @@ def run(args, directory):
     })
     if args.zoom:
         environment['GLOB2_BENCH_ZOOM'] = str(args.zoom)
+    if args.trim_at is not None:
+        environment['GLOB2_BENCH_TRIM_AT'] = str(args.trim_at)
     if args.capture:
         environment['GLOB2_BENCH_CAPTURE'] = str(directory / 'final.ppm')
     command = [str(binary), '--renderer', args.renderer, '--no-fullscreen', '--mute', '--window-size', args.window_size]
@@ -174,8 +181,10 @@ def table(summary, baseline=None):
     before = baseline or {}
     lines.append(row('Process resident memory', summary['peak_rss_bytes'], before.get('peak_rss_bytes')))
     lines.append(row('GPU driver memory', summary['peak_gpu_driver_bytes'], before.get('peak_gpu_driver_bytes')))
+    count = lambda value: 'n/a' if value is None else str(value)
     for key, name in GAUGES:
-        lines.append(row(name, summary['peaks'][key], before.get('peaks', {}).get(key)))
+        lines.append(row(name, summary['peaks'].get(key), before.get('peaks', {}).get(key),
+                         count if key.endswith('_frames') else mib))
     lines.append(row('Image decodes (count)', summary['image_decodes'], before.get('image_decodes'), str))
     lines.append(row('Image decode output', summary['image_decoded_bytes'], before.get('image_decoded_bytes')))
     for key in ('frame_median_ms', 'frame_p95_ms', 'frame_p99_ms', 'frame_max_ms'):
@@ -196,6 +205,7 @@ def main():
     parser.add_argument('--zoom', type=float,
                         help='Start of the zoom cycle, which reaches four times this (default: the minimum zoom)')
     parser.add_argument('--capture', action='store_true', help='Save the last frame as final.ppm')
+    parser.add_argument('--trim-at', type=int, help='Send a low-memory presentation trim at this measured frame')
     parser.add_argument('--settle-frames', type=int, default=600,
                         help='Frames at the starting view before the camera moves, as a game starts: '
                              'background work such as the whole-map base mask finishes')

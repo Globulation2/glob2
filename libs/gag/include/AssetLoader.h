@@ -24,8 +24,17 @@ struct AssetImage {
     // Block formats workers encode high-resolution levels into (etcpak, see
     // third_party/README.md). Both store 16 bytes for each 4x4 pixels: BC3 for
     // desktop GPUs with S3TC, ETC2 with EAC alpha for GPUs without it, which
-    // every OpenGL ES 3 device decodes.
-    enum class BlockCompression : unsigned char { Uncompressed, BC3, ETC2 };
+    // every OpenGL ES 3 device decodes. PremultipliedBC3 multiplies colour by
+    // alpha before encoding, for render devices that sample premultiplied
+    // textures (SDL GPU); legacy OpenGL never uploads it. PremultipliedASTC4x4
+    // does the same with astcenc, also 16 bytes per 4x4, for SDL GPU devices
+    // without BC3 (phones); the browser build has no ASTC encoder.
+    enum class BlockCompression : unsigned char { Uncompressed, BC3, ETC2, PremultipliedBC3, PremultipliedASTC4x4 };
+    //! True for the formats a render device samples as premultiplied blocks.
+    static constexpr bool premultipliedBlocks(BlockCompression format)
+    {
+        return format == BlockCompression::PremultipliedBC3 || format == BlockCompression::PremultipliedASTC4x4;
+    }
     // compressed: the level's blocks in the image's compression, prepared on
     // the worker; empty below 4x4 or without compression.
     struct Mip { int width, height; std::vector<unsigned char> pixels, compressed; };
@@ -46,7 +55,10 @@ struct AssetImage {
     mutable SDL_Surface *surface = nullptr;
     mutable std::vector<unsigned char> uploadPixels;
     mutable std::vector<Mip> mips;
-    void prepareUpload(bool highResolution);
+    //! Builds the HD mip chain and, with encodeBlocks, its blocks in
+    //! highResolutionCompression. Only asset workers encode; the render thread
+    //! passes false and samples RGBA until a worker supplies blocks.
+    void prepareUpload(bool highResolution, bool encodeBlocks = true);
     explicit AssetImage(SDL_Surface *value) : surface(value) {}
     ~AssetImage() { SDL_DestroySurface(surface); }
     AssetImage(const AssetImage&) = delete;

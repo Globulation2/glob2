@@ -140,6 +140,9 @@ public:
 	//! material sheets its map holds (TerrainVisual::MaterialSheets), so the
 	//! first view composes at once. Later sheets load in the background.
 	void loadTerrainArtwork();
+	//! Game loading: builds the map's direct terrain tables and whole-map
+	//! base masks before the first frame (DirectTerrain::preload).
+	void prepareDirectTerrain();
 	void adjustLocalTeam();
     void selectViewedTeam(int team);
 	//! Handle mouse, keyboard and window resize inputs, and stats
