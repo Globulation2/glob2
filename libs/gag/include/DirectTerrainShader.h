@@ -137,21 +137,28 @@ vec2 hdMaskUV(float index, vec2 pixel, vec2 size, float tile) {
     vec2 samplePixel = clamp(pixel * (tile / 32.0), vec2(0.5), vec2(tile - 0.5));
     return (hdTileBase(index, size, tile) + samplePixel) / size;
 }
-vec3 hdEdgeTexel(sampler2D image, float index, vec2 texel, vec2 size, float tile) {
-    float packedEdge = readScalar(image, (hdTileBase(index, size, tile) + texel + 0.5) / size, size);
+// Edge atlases are chosen by number rather than passed as samplers, so the
+// shader also translates to separate textures: 0 current, 1 retired, 2 base.
+float hdEdgeScalar(int atlas, vec2 uv, vec2 size) {
+    if (atlas == 0) return readScalar(hdEdges, uv, size);
+    if (atlas == 1) return readScalar(hdPreviousEdges, uv, size);
+    return readScalar(hdBaseEdges, uv, size);
+}
+vec3 hdEdgeTexel(int atlas, float index, vec2 texel, vec2 size, float tile) {
+    float packedEdge = hdEdgeScalar(atlas, (hdTileBase(index, size, tile) + texel + 0.5) / size, size);
     float selectors = floor(packedEdge / 4096.0);
     return vec3(mod(packedEdge, 4096.0), mod(selectors, 4.0), floor(selectors / 4.0));
 }
 // As edgeAt, at one texel per sample.
-vec3 hdEdgeAt(sampler2D image, float index, vec2 pixel, vec2 size, float tile) {
+vec3 hdEdgeAt(int atlas, float index, vec2 pixel, vec2 size, float tile) {
     vec2 p = pixel * (tile / 32.0) - 0.5;
     vec2 low = clamp(floor(p), vec2(0.0), vec2(tile - 2.0));
     vec2 f = p - low;
     vec2 high = low + 1.0;
-    vec3 e00 = hdEdgeTexel(image, index, low, size, tile);
-    vec3 e10 = hdEdgeTexel(image, index, vec2(high.x, low.y), size, tile);
-    vec3 e01 = hdEdgeTexel(image, index, vec2(low.x, high.y), size, tile);
-    vec3 e11 = hdEdgeTexel(image, index, high, size, tile);
+    vec3 e00 = hdEdgeTexel(atlas, index, low, size, tile);
+    vec3 e10 = hdEdgeTexel(atlas, index, vec2(high.x, low.y), size, tile);
+    vec3 e01 = hdEdgeTexel(atlas, index, vec2(low.x, high.y), size, tile);
+    vec3 e11 = hdEdgeTexel(atlas, index, high, size, tile);
     vec3 nearest = f.y < 0.5 ? (f.x < 0.5 ? e00 : e10) : (f.x < 0.5 ? e01 : e11);
     if (nearest.y == nearest.z)
         return nearest;
@@ -366,9 +373,7 @@ void main() {
         if (weights.w > 0.0) color += weights.w * material(indices.w, uv, calm);
 #ifdef DIRECT_TERRAIN_HD_MASKS
         // The split carries no edge: no contact shading or surf until the mask lands.
-        vec3 edge = split ? vec3(0.0) : base ? hdEdgeAt(hdBaseEdges, hd - 1.0, uv, atlasSize, atlasTile)
-                  : retired ? hdEdgeAt(hdPreviousEdges, hd - 1.0, uv, atlasSize, atlasTile)
-                            : hdEdgeAt(hdEdges, hd - 1.0, uv, atlasSize, atlasTile);
+        vec3 edge = split ? vec3(0.0) : hdEdgeAt(base ? 2 : retired ? 1 : 0, hd - 1.0, uv, atlasSize, atlasTile);
 #else
         vec3 edge = edgeAt(mask - 1.0, uv);
 #endif

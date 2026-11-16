@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <vector>
 #include <tuple>
+#include <unordered_map>
 #include <nlohmann/json.hpp>
 #include <filesystem>
 #ifdef __APPLE__
@@ -135,6 +136,16 @@ struct Draw
     CoveragePtr coverage;
     TexturePtr scratch;
     std::array<TexturePtr, DirectTerrainDraw::Count> directTextures{};
+    std::array<TexturePtr, DirectTerrainDraw::StreamedCount> streamedTextures{};
+};
+// A device texture written in place for its StreamedTexture owner.
+struct StreamedEntry
+{
+    std::weak_ptr<StreamedTexture> owner;
+    TexturePtr texture;
+    bool committed = false;   // Created by a submitted frame.
+    std::size_t recorded = 0; // Queued writes recorded into the open submission.
+    std::size_t recordedBytes = 0;
 };
 struct PrimitiveState
 {
@@ -180,6 +191,9 @@ class SDLGPUDevice final : public RenderDevice
     std::array<SDL_GPUShader *,2> terrainShaders{};
     SDL_GPUShader *directTerrainVertex = nullptr, *directTerrainFragment = nullptr;
     SDL_GPUGraphicsPipeline *directTerrainPipeline = nullptr;
+    SDL_GPUShader *directTerrainHdFragment = nullptr;
+    SDL_GPUGraphicsPipeline *directTerrainHdPipeline = nullptr;
+    std::map<const StreamedTexture *, StreamedEntry> streamed;
     std::array<SDL_GPUGraphicsPipeline *,2> terrainPipelines{};
     using CoverageKey = std::tuple<std::uint64_t,std::uint64_t,std::uint32_t,std::uint32_t>;
     std::map<CoverageKey,CoveragePtr> coverageCache;
@@ -206,6 +220,7 @@ class SDLGPUDevice final : public RenderDevice
         updateMemory(pending);
         std::size_t bytes=std::size_t(w)*h*4;
         if(source)for(const auto &level:source->mips)bytes+=level.rgba.size();
+        if (bytes > TotalBudget - std::min(TotalBudget, counts.resourceBytes) && pooledUploadBytes) releaseUploadPool();
         if (bytes > TotalBudget - std::min(TotalBudget, counts.resourceBytes)) throw RenderAdmissionDeferred("SDL GPU combined budget exhausted");
         SDL_GPUTextureCreateInfo info{};
         info.type = SDL_GPU_TEXTURETYPE_2D; info.format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
@@ -226,7 +241,7 @@ class SDLGPUDevice final : public RenderDevice
             if (!SDL_QueryGPUFence(device, entry.fence)) SDL_WaitForGPUFences(device, true, &entry.fence, 1);
             SDL_ReleaseGPUFence(device, entry.fence);
         }
-        for (auto [transfer, bytes] : entry.transfers) SDL_ReleaseGPUTransferBuffer(device, transfer);
+        for (auto [transfer, bytes] : entry.transfers) recycleUpload(transfer);
         if (entry.vertices) SDL_ReleaseGPUBuffer(device, entry.vertices);
         entry.textures.clear(); entry.geometry.clear(); entry.coverage.clear();
     }
@@ -271,15 +286,59 @@ class SDLGPUDevice final : public RenderDevice
         updateMemory(pending);
         const std::size_t used = counts.resourceBytes;
         if (bytes > TotalBudget) throw std::length_error("SDL GPU single resource exceeds combined budget");
+        if (used > TotalBudget - bytes && pooledUploadBytes) releaseUploadPool();
         if (used > TotalBudget - bytes) throw RenderAdmissionDeferred("SDL GPU combined resource budget exhausted");
     }
+    // Upload staging buffers are recycled once their work completes: creating
+    // and binding a Vulkan buffer for every frame's vertices and uploads cost
+    // more CPU than filling them. Power-of-two classes from 64 KiB to 16 MiB,
+    // a few of each, at most UploadPoolBudget idle; larger buffers are released.
+    // Idle buffers are not charged as resources: an admission that would fail
+    // and an explicit trim release them first.
+    static constexpr unsigned UploadClasses = 9;
+    static constexpr std::size_t UploadPoolBudget = 24 * 1024 * 1024, UploadClassDepth = 4;
+    std::array<std::vector<SDL_GPUTransferBuffer *>, UploadClasses> uploadPool;
+    std::unordered_map<SDL_GPUTransferBuffer *, unsigned> uploadClass; // Pooled-size uploads in use or idle.
+    std::size_t pooledUploadBytes = 0;
+    static std::size_t uploadClassBytes(unsigned index) { return std::size_t(64 * 1024) << index; }
     SDL_GPUTransferBuffer *transfer(SDL_GPUTransferBufferUsage usage, std::size_t size)
     {
         if (size > 0xffffffffu) throw std::length_error("GPU transfer exceeds 32-bit capacity");
-        SDL_GPUTransferBufferCreateInfo info{}; info.usage = usage; info.size = static_cast<Uint32>(size);
+        unsigned index = 0;
+        while (index < UploadClasses && uploadClassBytes(index) < size) ++index;
+        const bool pooled = usage == SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD && index < UploadClasses;
+        if (pooled && !uploadPool[index].empty()) {
+            auto *result = uploadPool[index].back(); uploadPool[index].pop_back();
+            pooledUploadBytes -= uploadClassBytes(index);
+            return result;
+        }
+        SDL_GPUTransferBufferCreateInfo info{}; info.usage = usage;
+        info.size = static_cast<Uint32>(pooled ? uploadClassBytes(index) : size);
         auto *result = SDL_CreateGPUTransferBuffer(device, &info);
         if (!result) fail("create transfer buffer");
+        if (pooled) uploadClass.emplace(result, index);
         return result;
+    }
+    // Work holding the buffer has completed (or was never submitted).
+    void recycleUpload(SDL_GPUTransferBuffer *buffer)
+    {
+        const auto found = uploadClass.find(buffer);
+        if (found != uploadClass.end()) {
+            const auto index = found->second;
+            if (uploadPool[index].size() < UploadClassDepth && pooledUploadBytes + uploadClassBytes(index) <= UploadPoolBudget) {
+                uploadPool[index].push_back(buffer); pooledUploadBytes += uploadClassBytes(index); return;
+            }
+            uploadClass.erase(found);
+        }
+        SDL_ReleaseGPUTransferBuffer(device, buffer);
+    }
+    void releaseUploadPool()
+    {
+        for (auto &buffers : uploadPool) {
+            for (auto *buffer : buffers) { uploadClass.erase(buffer); SDL_ReleaseGPUTransferBuffer(device, buffer); }
+            buffers.clear();
+        }
+        pooledUploadBytes = 0;
     }
     void upload(SDL_GPUCommandBuffer *commands, Work &entry, TexturePtr texture, SDL_Surface *source, bool opaque, bool premultiplied = false)
     {
@@ -468,9 +527,11 @@ class SDLGPUDevice final : public RenderDevice
             throw std::invalid_argument("Capture dimensions, region or frame do not match allocation");
         request.width = rect.w; request.height = rect.h; return source;
     }
-    SDL_GPUGraphicsPipeline *pipeline(SDL_GPUTextureFormat format, bool premultiplied = false, DrawPacket::Material material = DrawPacket::Material::Primitive, DrawPacket::Blend mode = DrawPacket::Blend::Automatic, bool direct = false)
+    SDL_GPUGraphicsPipeline *pipeline(SDL_GPUTextureFormat format, bool premultiplied = false, DrawPacket::Material material = DrawPacket::Material::Primitive, DrawPacket::Blend mode = DrawPacket::Blend::Automatic, int direct = 0)
     {
-        if (direct && directTerrainPipeline) return directTerrainPipeline;
+        // direct: 1 native direct terrain, 2 streamed (HD) direct terrain.
+        if (direct == 1 && directTerrainPipeline) return directTerrainPipeline;
+        if (direct == 2 && directTerrainHdPipeline) return directTerrainHdPipeline;
         const PrimitivePipelineKey key{format, premultiplied, material, mode};
         if (auto found = pipelines.find(key); !direct && found != pipelines.end()) return found->second;
         SDL_GPUVertexBufferDescription buffer{}; buffer.slot = 0; buffer.pitch = Layout::primitive_stride;
@@ -491,7 +552,7 @@ class SDLGPUDevice final : public RenderDevice
         info.vertex_shader = vertexShader; info.fragment_shader = fragmentShader;
         if (direct) {
             info.vertex_shader = directTerrainVertex;
-            info.fragment_shader = directTerrainFragment;
+            info.fragment_shader = direct == 2 ? directTerrainHdFragment : directTerrainFragment;
         } else if (material == DrawPacket::Material::SmoothPoint) {
             const auto stages = worldShaders.find(material);
             if (stages == worldShaders.end()) throw std::runtime_error("Particle shader binaries unavailable");
@@ -504,7 +565,8 @@ class SDLGPUDevice final : public RenderDevice
         info.multisample_state.sample_count = SDL_GPU_SAMPLECOUNT_1;
         info.target_info.color_target_descriptions = &color; info.target_info.num_color_targets = 1;
         auto *result = SDL_CreateGPUGraphicsPipeline(device, &info); if (!result) fail("create primitive pipeline");
-        if (direct) directTerrainPipeline = result;
+        if (direct == 1) directTerrainPipeline = result;
+        else if (direct == 2) directTerrainHdPipeline = result;
         else pipelines.emplace(key, result);
         return result;
     }
@@ -628,6 +690,8 @@ class SDLGPUDevice final : public RenderDevice
     void loadTerrainShaders();
     void loadDirectTerrainShaders();
     void drawDirectTerrain(SDL_GPUCommandBuffer *, Work &, const Draw &, float logicalWidth, float logicalHeight);
+    TexturePtr resolveStreamed(SDL_GPUCommandBuffer *, Work &, const std::shared_ptr<StreamedTexture> &);
+    void settleStreamed(bool submitted);
     CoveragePtr resolveCoverage(SDL_GPUCommandBuffer *, Work &, std::shared_ptr<const CoverageData>);
     void prepareTerrain(SDL_GPUCommandBuffer *&, Work &, Draw &, std::vector<SDL_Vertex> &);
     void drawTerrain(SDL_GPUCommandBuffer *, Work &, const Draw &, PrimitivePass &);
@@ -644,6 +708,10 @@ class SDLGPUDevice final : public RenderDevice
         if (directTerrainPipeline) SDL_ReleaseGPUGraphicsPipeline(device, directTerrainPipeline);
         if (directTerrainVertex) SDL_ReleaseGPUShader(device, directTerrainVertex);
         if (directTerrainFragment) SDL_ReleaseGPUShader(device, directTerrainFragment);
+        if (directTerrainHdPipeline) SDL_ReleaseGPUGraphicsPipeline(device, directTerrainHdPipeline);
+        if (directTerrainHdFragment) SDL_ReleaseGPUShader(device, directTerrainHdFragment);
+        streamed.clear();
+        releaseUploadPool();
         for (auto *pipeline : terrainPipelines) if (pipeline) SDL_ReleaseGPUGraphicsPipeline(device,pipeline);
         terrainPipelines.fill(nullptr);
         for (auto *shader : terrainShaders) if (shader) SDL_ReleaseGPUShader(device,shader);
@@ -714,7 +782,7 @@ class SDLGPUDevice final : public RenderDevice
         } catch (...) { teardown(); throw; }
     }
     ~SDLGPUDevice() override { teardown(); }
-    RenderDeviceCapabilities capabilities() const override { return {true, true, false, MaximumTextureSize, worldAvailable, worldAvailable, skinAvailable, terrainAvailable, directTerrainPipeline != nullptr}; }
+    RenderDeviceCapabilities capabilities() const override { return {true, true, false, MaximumTextureSize, worldAvailable, worldAvailable, skinAvailable, terrainAvailable, directTerrainPipeline != nullptr, directTerrainHdPipeline != nullptr}; }
     RenderSubmission submit(RenderFrame frame) override;
     RenderCompletion completion(RenderSubmission submission) override
     {
@@ -727,11 +795,13 @@ class SDLGPUDevice final : public RenderDevice
     {
         SDL_WaitForGPUIdle(device); for (auto &entry : work) release(entry);
         work.clear(); cache.clear(); targets.clear(); geometryCache.clear(); coverageCache.clear(); terrainScratch.clear();
+        streamed.clear(); // Owners that had writes applied see their textures lost.
         cancelCaptures(); frameOpen = false; ++epoch; completed = serial; lastFrame = 0; reap();
     }
     std::uint64_t generation() const override { return epoch; }
     RenderTelemetry telemetry() const override { return counts; }
     void trimRetiredResources() override {
+        releaseUploadPool();
         reap();
         for(auto it=cache.begin();it!=cache.end();) {
             if(it->second.use_count()==1 && !it->second->renderTarget && !it->second->progressiveUpload) it=cache.erase(it); else ++it;
@@ -826,12 +896,107 @@ void SDLGPUDevice::loadDirectTerrainShaders()
         directTerrainVertex = loadShader("terrain-direct", "vertex", 1, 0);
         directTerrainFragment = loadShader("terrain-direct", "fragment", 1, DirectTerrainDraw::Count);
         pipeline(SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM, false, DrawPacket::Material::Primitive,
-                 DrawPacket::Blend::Premultiplied, true);
+                 DrawPacket::Blend::Premultiplied, 1);
     } catch (const std::exception &error) {
         if (directTerrainVertex) SDL_ReleaseGPUShader(device, directTerrainVertex);
         if (directTerrainFragment) SDL_ReleaseGPUShader(device, directTerrainFragment);
         directTerrainVertex = directTerrainFragment = nullptr;
         SDL_LogWarn(SDL_LOG_CATEGORY_RENDER, "Direct terrain unavailable: %s", error.what());
+        return;
+    }
+    // Streamed HD direct terrain shares the vertex stage.
+    if (!hasShader("terrain-direct-hd", "fragment")) return;
+    try {
+        directTerrainHdFragment = loadShader("terrain-direct-hd", "fragment", 1, DirectTerrainDraw::StreamedCount);
+        pipeline(SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM, false, DrawPacket::Material::Primitive,
+                 DrawPacket::Blend::Premultiplied, 2);
+    } catch (const std::exception &error) {
+        if (directTerrainHdFragment) SDL_ReleaseGPUShader(device, directTerrainHdFragment);
+        directTerrainHdFragment = nullptr;
+        SDL_LogWarn(SDL_LOG_CATEGORY_RENDER, "Streamed direct terrain unavailable: %s", error.what());
+    }
+}
+TexturePtr SDLGPUDevice::resolveStreamed(SDL_GPUCommandBuffer *commands, Work &entry, const std::shared_ptr<StreamedTexture> &source)
+{
+    if (source->lost) return nullptr;
+    auto found = streamed.find(source.get());
+    if (found != streamed.end() && found->second.owner.lock() != source) { streamed.erase(found); found = streamed.end(); }
+    try {
+        if (found == streamed.end()) {
+            // Writes already applied went to a texture this device no longer holds.
+            if (source->applied) { source->lost = true; return nullptr; }
+            if (source->width <= 0 || source->height <= 0 || source->width > MaximumTextureSize || source->height > MaximumTextureSize)
+                throw std::invalid_argument("Invalid streamed texture dimensions");
+            StreamedEntry created; created.owner = source;
+            created.texture = allocate(source->width, source->height, {}, &entry);
+            clear(commands, created.texture);
+            found = streamed.emplace(source.get(), std::move(created)).first;
+        }
+        auto &state = found->second;
+        // Every queued write is applied before this frame draws: the owner
+        // bounds what it queues per frame, and a prefix could pair a new index
+        // with a tile not yet written.
+        if (state.recorded < source->writes.size()) {
+            std::size_t bytes = 0;
+            for (std::size_t i = state.recorded; i < source->writes.size(); ++i) {
+                const auto &write = source->writes[i];
+                const auto &rect = write.rect;
+                if (rect.x < 0 || rect.y < 0 || rect.w <= 0 || rect.h <= 0 || rect.x + rect.w > source->width ||
+                    rect.y + rect.h > source->height || write.rgba.size() != std::size_t(rect.w) * rect.h * 4)
+                    throw std::invalid_argument("Streamed texture write outside its texture");
+                bytes += write.rgba.size();
+            }
+            reserveMemory(bytes, &entry);
+            auto *buffer = transfer(SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD, bytes); entry.transfers.emplace_back(buffer, bytes);
+            auto *mapped = static_cast<unsigned char *>(SDL_MapGPUTransferBuffer(device, buffer, false));
+            if (!mapped) fail("map streamed texture writes");
+            std::size_t offset = 0;
+            for (std::size_t i = state.recorded; i < source->writes.size(); ++i) {
+                std::memcpy(mapped + offset, source->writes[i].rgba.data(), source->writes[i].rgba.size());
+                offset += source->writes[i].rgba.size();
+            }
+            SDL_UnmapGPUTransferBuffer(device, buffer);
+            auto *copy = SDL_BeginGPUCopyPass(commands); if (!copy) fail("begin streamed texture pass");
+            offset = 0;
+            for (std::size_t i = state.recorded; i < source->writes.size(); ++i) {
+                const auto &write = source->writes[i];
+                SDL_GPUTextureTransferInfo from{}; from.transfer_buffer = buffer; from.offset = Uint32(offset);
+                from.pixels_per_row = Uint32(write.rect.w); from.rows_per_layer = Uint32(write.rect.h);
+                SDL_GPUTextureRegion region{}; region.texture = state.texture->gpu;
+                region.x = Uint32(write.rect.x); region.y = Uint32(write.rect.y);
+                region.w = Uint32(write.rect.w); region.h = Uint32(write.rect.h); region.d = 1;
+                SDL_UploadToGPUTexture(copy, &from, &region, false);
+                offset += write.rgba.size();
+            }
+            SDL_EndGPUCopyPass(copy);
+            counts.uploadBytes += bytes;
+            state.recordedBytes += bytes;
+            state.recorded = source->writes.size();
+        }
+        entry.textures.push_back(state.texture);
+        return state.texture;
+    } catch (const RenderAdmissionDeferred &) {
+        // Over the device budget: the owner falls back rather than abort every frame.
+        if (found != streamed.end() && !found->second.committed) streamed.erase(found);
+        source->lost = true;
+        return nullptr;
+    }
+}
+void SDLGPUDevice::settleStreamed(bool submitted)
+{
+    for (auto it = streamed.begin(); it != streamed.end();) {
+        auto &state = it->second;
+        auto owner = state.owner.lock();
+        if (!owner) { it = streamed.erase(it); continue; }
+        if (submitted) {
+            // The recorded writes are on the GPU: drop them from the queue.
+            for (std::size_t i = 0; i < state.recorded; ++i) owner->writes.pop_front();
+            owner->applied += state.recorded;
+            owner->queuedBytes -= std::min(owner->queuedBytes, state.recordedBytes);
+            state.committed = true;
+        } else if (!state.committed) { it = streamed.erase(it); continue; }
+        state.recorded = state.recordedBytes = 0;
+        ++it;
     }
 }
 void SDLGPUDevice::drawDirectTerrain(SDL_GPUCommandBuffer *commands, Work &entry, const Draw &draw,
@@ -849,13 +1014,49 @@ void SDLGPUDevice::drawDirectTerrain(SDL_GPUCommandBuffer *commands, Work &entry
     color.store_op = SDL_GPU_STOREOP_STORE;
     auto *pass = SDL_BeginGPURenderPass(commands, &color, 1, nullptr);
     if (!pass) fail("begin direct terrain pass");
-    SDL_BindGPUGraphicsPipeline(pass, directTerrainPipeline);
+    const bool streamedDraw = packet.directTerrain->isStreamed();
+    SDL_BindGPUGraphicsPipeline(pass, streamedDraw ? directTerrainHdPipeline : directTerrainPipeline);
     const SDL_GPUBufferBinding vertices{entry.vertices, 0};
     SDL_BindGPUVertexBuffers(pass, 0, &vertices, 1);
     const auto rect = packet.viewport.value_or(SDL_Rect{0, 0, draw.target->width, draw.target->height});
     const SDL_GPUViewport viewport{float(rect.x), float(rect.y), float(rect.w), float(rect.h), 0, 1};
     SDL_SetGPUViewport(pass, &viewport);
     SDL_SetGPUScissor(pass, &clip);
+    namespace Shader = RendererShaderLayouts;
+    const std::array<float, Shader::terrain_direct_size / sizeof(float)> vertex{logicalWidth, logicalHeight};
+    if (streamedDraw) {
+        std::array<SDL_GPUTextureSamplerBinding, DirectTerrainDraw::StreamedCount> images{};
+        for (unsigned i = 0; i < images.size(); ++i) {
+            const auto &source = packet.directTerrain->streamed[i];
+            images[i] = {draw.streamedTextures[i]->gpu, source && source->linear ? linear : nearest};
+        }
+        SDL_BindGPUFragmentSamplers(pass, 0, images.data(), images.size());
+        const auto &hd = packet.directTerrain->hd;
+        std::array<float, Shader::terrain_direct_hd_fragment_size / sizeof(float)> fragment{};
+        const auto pair = [&](std::size_t offset, const float (&value)[2]) {
+            fragment[offset / sizeof(float)] = value[0]; fragment[offset / sizeof(float) + 1] = value[1];
+        };
+        const float unused[2]{1, 1};
+        pair(Shader::terrain_direct_hd_fragment_mapSize_offset, hd.mapSize);
+        pair(Shader::terrain_direct_hd_fragment_artSize_offset, hd.artSize);
+        pair(Shader::terrain_direct_hd_fragment_coverageSize_offset, unused);
+        pair(Shader::terrain_direct_hd_fragment_variantSize_offset, hd.variantSize);
+        pair(Shader::terrain_direct_hd_fragment_hdCoverageSize_offset, hd.hdCoverageSize);
+        pair(Shader::terrain_direct_hd_fragment_hdPreviousSize_offset, hd.hdPreviousSize);
+        pair(Shader::terrain_direct_hd_fragment_hdBaseSize_offset, hd.hdBaseSize);
+        fragment[Shader::terrain_direct_hd_fragment_animationTime_offset / sizeof(float)] = packet.directTerrain->animationTime;
+        fragment[Shader::terrain_direct_hd_fragment_wholeMapValue_offset / sizeof(float)] = packet.directTerrain->wholeMap;
+        fragment[Shader::terrain_direct_hd_fragment_artTilePixels_offset / sizeof(float)] = hd.artTilePixels;
+        fragment[Shader::terrain_direct_hd_fragment_hdTilePixels_offset / sizeof(float)] = hd.hdTilePixels;
+        fragment[Shader::terrain_direct_hd_fragment_hdPreviousTile_offset / sizeof(float)] = hd.hdPreviousTile;
+        fragment[Shader::terrain_direct_hd_fragment_hdBaseTile_offset / sizeof(float)] = hd.hdBaseTile;
+        SDL_PushGPUVertexUniformData(commands, Shader::terrain_direct_binding, vertex.data(), sizeof(vertex));
+        SDL_PushGPUFragmentUniformData(commands, Shader::terrain_direct_hd_fragment_binding, fragment.data(), sizeof(fragment));
+        SDL_DrawGPUPrimitives(pass, draw.count, 1, draw.first, 0);
+        SDL_EndGPURenderPass(pass);
+        ++counts.batches;
+        return;
+    }
     std::array<SDL_GPUTextureSamplerBinding, DirectTerrainDraw::Count> images{};
     for (unsigned i = 0; i < images.size(); ++i) {
         const auto &source = packet.directTerrain->textures[i];
@@ -864,8 +1065,6 @@ void SDLGPUDevice::drawDirectTerrain(SDL_GPUCommandBuffer *commands, Work &entry
     }
     SDL_BindGPUFragmentSamplers(pass, 0, images.data(), images.size());
 
-    namespace Shader = RendererShaderLayouts;
-    const std::array<float, Shader::terrain_direct_size / sizeof(float)> vertex{logicalWidth, logicalHeight};
     std::array<float, Shader::terrain_direct_fragment_size / sizeof(float)> fragment{};
     const auto size = [&](std::size_t offset, DirectTerrainDraw::Texture slot, int widthDivisor = 1) {
         fragment[offset / sizeof(float)] = draw.directTextures[slot]->width / widthDivisor;
@@ -1349,7 +1548,19 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
                     packet.texture || packet.blend != DrawPacket::Blend::Premultiplied ||
                     packet.depth != DrawPacket::Depth::Disabled || packet.depthWrite)
                     throw std::invalid_argument("Invalid direct terrain draw");
-                for (unsigned i = 0; i < draw.directTextures.size(); ++i) {
+                if (packet.directTerrain->isStreamed()) {
+                    if (!directTerrainHdPipeline) throw std::invalid_argument("Streamed direct terrain unavailable");
+                    bool lost = false;
+                    for (unsigned i = 0; i < draw.streamedTextures.size(); ++i) {
+                        const auto &source = packet.directTerrain->streamed[i];
+                        if (!source) { draw.streamedTextures[i] = white; continue; }
+                        draw.streamedTextures[i] = resolveStreamed(commands, entry, source);
+                        lost |= !draw.streamedTextures[i];
+                    }
+                    // The owner sees the loss and draws its fallback from the next frame.
+                    if (lost) continue;
+                }
+                else for (unsigned i = 0; i < draw.directTextures.size(); ++i) {
                     const auto &source = packet.directTerrain->textures[i];
                     if (!source || !source->pixels || source == packet.target || targets.contains(source.get()))
                         throw std::invalid_argument("Invalid direct terrain texture");
@@ -1443,6 +1654,7 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
         uploadVertices(commands, entry, vertices);
         drawPackets(commands, entry, draws, frame.logicalWidth, frame.logicalHeight);
         submitWork(commands, entry);
+        settleStreamed(true);
         for (auto &[key, texture] : cache) texture->submitted = true;
         for (auto &[key, geometry] : geometryCache) geometry->submitted = true;
         for (auto &[key,coverage] : coverageCache) coverage->submitted=true;
@@ -1457,6 +1669,7 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
             if (!it->second->submitted) it = geometryCache.erase(it); else ++it;
         }
         for (auto it=coverageCache.begin(); it!=coverageCache.end();) { if(!it->second->submitted)it=coverageCache.erase(it);else++it; }
+        settleStreamed(false);
         screen = previousScreen; width = previousWidth; height = previousHeight; throw;
     }
 }

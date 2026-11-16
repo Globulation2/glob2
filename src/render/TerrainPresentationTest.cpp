@@ -1594,6 +1594,131 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(share < .14);
 	}
 
+	// SDL GPU draws Legacy GL's streamed pass through streamed device textures
+	// and terrain-direct-hd: the same HD artwork and display-density masks, from
+	// 16 to 128 texels a cell, animated and with undiscovered cells hidden.
+	TEST_CASE("SDL GPU streamed direct terrain matches Legacy GL's HD pass at every density [display]")
+	{
+		struct View { float zoom; int right, bottom, time; bool whole; };
+		// Zooms keep pixel centres off texel and cell boundaries, where
+		// interpolation rounding alone would pick a neighbouring texel.
+		const View views[] = {{.45f, 45, 34, 0, true}, {1.f, 20, 15, 7, true}, {2.f, 10, 8, 13, true},
+							  {4.f, 5, 4, 21, true}, {1.f, 20, 15, 7, false}};
+		const auto paint = [](glob2test::HeadlessGame &fixture)
+		{
+			// Blocks of water, grass and sand: most cells are mixed shores.
+			const TerrainType kinds[] = {WATER, GRASS, SAND};
+			for (int y = 0; y < 64; ++y)
+				for (int x = 0; x < 64; ++x)
+					fixture.game.map.setVertexTerrain(x, y, kinds[((x / 3) * 7 + (y / 3) * 5) % 3]);
+			fixture.game.map.unsetMapDiscovered();
+			fixture.game.map.setMapDiscovered(0, 0, 14, 9, fixture.team->me);
+		};
+		struct HighResolution
+		{
+			HighResolution() { GAGCore::Sprite::setHighResolution(true); }
+			~HighResolution() { GAGCore::Sprite::setHighResolution(false); }
+		};
+		std::vector<std::vector<Uint8>> expected;
+		{
+			glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
+				.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU),
+				.beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::LegacyGL; }});
+			auto &gfx = *globals->gfx;
+			HighResolution hd;
+			if (!gfx.isLegacyGLScreen() || !DirectTerrain::legacyPassAvailable())
+			{
+				MESSAGE("Legacy GL direct terrain unavailable; comparison omitted");
+				return;
+			}
+			glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .terrain = WATER, .discovered = true});
+			paint(fixture);
+			SceneMap scene;
+			glob2test::observeMap(fixture.game.map, scene);
+			DirectTerrain atlas;
+			for (const auto &view : views)
+			{
+				gfx.beginMapTransform(view.zoom, 0, 0, 0, 0, 640, 480);
+				gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
+				REQUIRE(atlas.prepare(gfx, scene, 0, 0, view.right, view.bottom, 0, 0, fixture.team->me,
+									  view.whole, view.time, true));
+				REQUIRE_FALSE(atlas.pendingHdMasks());
+				atlas.drawPrepared(gfx, 0, 0, view.whole, view.time);
+				gfx.endMapTransform();
+				auto pixels = terrainPixels(true);
+				// glReadPixels rows run bottom-up.
+				std::vector<Uint8> rows(pixels.size());
+				const std::size_t pitch = 640 * 4;
+				for (std::size_t y = 0; y < 480; ++y)
+					std::memcpy(rows.data() + y * pitch, pixels.data() + (479 - y) * pitch, pitch);
+				expected.push_back(std::move(rows));
+			}
+		}
+		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
+			.beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::SDLGPU; }});
+		auto &gfx = *globals->gfx;
+		HighResolution hd;
+		if (!DirectTerrain::streamedPassAvailable(gfx))
+		{
+			MESSAGE("SDL GPU streamed direct terrain unavailable (no device or terrain-direct-hd shader); comparison omitted");
+			return;
+		}
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .terrain = WATER, .discovered = true});
+		paint(fixture);
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		DirectTerrain atlas;
+		for (std::size_t index = 0; index < std::size(views); ++index)
+		{
+			const auto &view = views[index];
+			CAPTURE(view.zoom);
+			CAPTURE(view.whole);
+			bool drawn = false;
+			for (int attempt = 0; attempt < 32 && !drawn; ++attempt)
+			{
+				gfx.setClipRect();
+				gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
+				gfx.beginMapTransform(view.zoom, 0, 0, 0, 0, 640, 480);
+				const bool ready = atlas.prepare(gfx, scene, 0, 0, view.right, view.bottom, 0, 0, fixture.team->me,
+												 view.whole, view.time, true);
+				if (ready) atlas.drawPrepared(gfx, 0, 0, view.whole, view.time);
+				gfx.endMapTransform();
+				gfx.renderer->flush();
+				drawn = ready && GAGCore::didRecordDeviceFrame(*gfx.renderer);
+				if (!drawn) gfx.nextFrame();
+			}
+			REQUIRE(drawn);
+			REQUIRE_FALSE(atlas.failed());
+			REQUIRE_FALSE(atlas.pendingHdMasks());
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> captured(gfx.renderer->capture(), SDL_DestroySurface);
+			REQUIRE(captured);
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
+				SDL_ConvertSurface(captured.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+			REQUIRE(rgba);
+			REQUIRE(rgba->w == 640);
+			REQUIRE(rgba->h == 480);
+			unsigned maximum = 0;
+			std::size_t differing = 0;
+			for (int y = 0; y < 480; ++y)
+				for (int x = 0; x < 640; ++x)
+				{
+					const auto *actual = static_cast<const Uint8 *>(rgba->pixels) + y * rgba->pitch + x * 4;
+					const auto *reference = expected[index].data() + (std::size_t(y) * 640 + x) * 4;
+					unsigned largest = 0;
+					for (int k = 0; k < 3; ++k)
+						largest = std::max(largest, unsigned(std::abs(int(actual[k]) - int(reference[k]))));
+					maximum = std::max(maximum, largest);
+					differing += largest > 2;
+				}
+			CAPTURE(maximum);
+			CAPTURE(differing);
+			// Both draw the one shared shader over the same texel values; only
+			// interpolation rounding differs between drivers.
+			CHECK(differing <= 640 * 480 / 1000);
+			gfx.nextFrame();
+		}
+	}
+
 	TEST_CASE("generated terrain mip uploads stay uncompressed across animation updates [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
