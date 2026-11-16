@@ -116,7 +116,7 @@ test('studio follows the shared system and saved themes, including open dialogs'
       'background-image',
       new RegExp(palette.bg.replace(/[()]/g, '\\$&')),
     );
-    await expect(page.getByLabel('Paint color')).toHaveValue('#ed9252');
+    await expect(page.getByLabel('Paint color', { exact: true })).toHaveValue('#ed9252');
     await expect(page.getByLabel('Skin name')).toHaveValue('Shared theme design');
     const dialog = page.getByRole('dialog');
     if (await dialog.count()) {

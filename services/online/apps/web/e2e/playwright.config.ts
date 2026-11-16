@@ -41,6 +41,8 @@ export default defineConfig({
     url: `http://127.0.0.1:${port}/api/v1/instance`,
     reuseExistingServer: !process.env['CI'],
     timeout: 120_000,
-    env: { PORT: String(port), SKINS_E2E_ENABLED: '1' },
+    // Generator Studio authoring talks to the real API, so the instance enables it
+    // (no model request is dispatched); the other studios' specs mock their APIs.
+    env: { PORT: String(port), SKINS_E2E_ENABLED: '1', GENERATOR_E2E_ENABLED: '1' },
   },
 });

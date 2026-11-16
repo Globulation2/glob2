@@ -152,9 +152,7 @@ test.describe('paint-to-game demonstration', () => {
   });
 });
 
-test('inspection rotation keeps the camera fixed and turns every model horizontally', async ({
-  page,
-}) => {
+test('inspection rotation tilts and turns every model', async ({ page }) => {
   await page.goto('/skins');
   await page.getByRole('button', { name: 'Rotate', exact: true }).click();
   await expect(
@@ -163,7 +161,7 @@ test('inspection rotation keeps the camera fixed and turns every model horizonta
   await expect(
     page.getByLabel('Camera view').getByRole('option', { name: 'Bottom', exact: true }),
   ).toHaveCount(0);
-  for (const model of ['Worker', 'Warrior', 'Explorer', 'Swarm']) {
+  for (const [index, model] of ['Worker', 'Warrior', 'Explorer', 'Swarm'].entries()) {
     await page.getByRole('button', { name: model, exact: true }).click();
     const preview = page.getByLabel(`Paint directly on the 3D ${model.toLowerCase()} model`);
     const asset =
@@ -182,16 +180,23 @@ test('inspection rotation keeps the camera fixed and turns every model horizonta
     const before = await preview.screenshot();
     await page.mouse.move(x, y);
     await page.mouse.down();
-    await page.mouse.move(x, y + 60, { steps: 5 });
+    // Alternate directions so a tilt kept across models never sits at its bound.
+    await page.mouse.move(x, y + (index % 2 ? -60 : 60), { steps: 5 });
     await page.mouse.up();
     await page.mouse.move(0, 0);
-    expect(Buffer.compare(await preview.screenshot(), before), `${model}: vertical drag`).toBe(0);
+    // A vertical drag tilts the inspection camera within its pitch bounds.
+    await expect
+      .poll(async () => Buffer.compare(await preview.screenshot(), before), {
+        message: `${model}: vertical drag`,
+      })
+      .not.toBe(0);
+    const tilted = await preview.screenshot();
     await page.mouse.move(x, y);
     await page.mouse.down();
     await page.mouse.move(x + 110, y, { steps: 5 });
     await page.mouse.up();
     await page.mouse.move(0, 0);
-    await expect.poll(async () => Buffer.compare(await preview.screenshot(), before)).not.toBe(0);
+    await expect.poll(async () => Buffer.compare(await preview.screenshot(), tilted)).not.toBe(0);
   }
 });
 

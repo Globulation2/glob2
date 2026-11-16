@@ -97,7 +97,8 @@ for (const [path, library] of [
       (sidebarBox?.x ?? 0) + (sidebarBox?.width ?? 0),
     );
     if (path === '/skins') {
-      await expect(page.getByRole('status').first()).toHaveText('Ready');
+      // Signed out, the designer settles on its save prompt once the draft is restored.
+      await expect(page.getByRole('status').first()).toHaveText(/^Sign in to save/);
       await page.getByLabel('Skin name').fill('Sidebar recovery');
     }
     await sidebar.getByRole('link', { name: 'Maps', exact: true }).click();

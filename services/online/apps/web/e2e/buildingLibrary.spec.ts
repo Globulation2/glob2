@@ -96,7 +96,7 @@ test('owner changes published visibility and confirms withdrawal', async ({
     .getByRole('textbox', { name: 'Published description', exact: true })
     .fill('Only for my own maps.');
   await page.getByRole('button', { name: 'Save published details' }).click();
-  await expect(page.getByRole('status').filter({ hasText: 'Saved.' })).toBeVisible();
+  await expect(page.getByRole('status').filter({ hasText: /^Saved$/ })).toBeVisible();
   expect(family.visibility).toBe('private');
   expect(family.description).toBe('Only for my own maps.');
   await expect(page.locator('p').filter({ hasText: /^Only for my own maps\.$/ })).toBeVisible();

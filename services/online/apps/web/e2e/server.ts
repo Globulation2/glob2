@@ -20,6 +20,7 @@ import { seedAdminReports } from './adminShowcase.ts';
 import { seedBuildingLibrary } from './buildingShowcase.ts';
 import { previewFixture, seedShowcase } from './showcase.ts';
 import { simVersionKey, type GeneratorSettings } from '@glob2/protocol';
+import { ENGINE_AGENT_HEARTBEAT_SECONDS } from '@glob2/core';
 import { SET_CREDITS_FIXTURE } from '../../api/test/setCreditsFixture.ts';
 
 const here = import.meta.dirname;
@@ -383,6 +384,17 @@ const front = createServer((req, res) => {
   );
 });
 
+// Stand in for the engine agents' heartbeat. The seeded agents are what make the
+// seed's sim version current (leaderboard AIs, map checks); without a heartbeat they
+// go stale after ENGINE_AGENT_FRESH_SECONDS and every later spec sees no AIs.
+const agentHeartbeat = setInterval(() => {
+  void harness.database.db
+    .updateTable('engine_agents')
+    .set({ last_seen_at: new Date() })
+    .execute()
+    .catch(console.error);
+}, ENGINE_AGENT_HEARTBEAT_SECONDS * 1000);
+
 front.listen(port, '127.0.0.1', () => {
   console.log(`READY ${origin}`);
 });
@@ -391,6 +403,7 @@ const stop = async () => {
   front.close();
   await musicRunner?.stop();
   clearInterval(generatorTimer);
+  clearInterval(agentHeartbeat);
   await generatorWork;
   await harness.close();
   process.exit(0);

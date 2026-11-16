@@ -1,6 +1,7 @@
 import { readFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { test, expect } from '@playwright/test';
+import { enableFeatures } from './features.ts';
 import { AxeBuilder } from '@axe-core/playwright';
 import type { MusicTrack } from '@glob2/protocol';
 import type { SeededHistory } from '../../api/test/historySeed.ts';
@@ -8,6 +9,7 @@ test('music workspace exposes revision checks and keeps publication explicit', a
   page,
   request,
 }, info) => {
+  await enableFeatures(page, 'music-studio');
   const seed = (await (await request.get('/__seed')).json()) as SeededHistory;
   await page.context().addCookies([
     {
@@ -184,7 +186,7 @@ test('music workspace exposes revision checks and keeps publication explicit', a
       .getByRole('tab', { name: /^Preview(?: ·.*)?$/ })
       .first()
       .click();
-  await expect(page.getByRole('button', { name: 'Play', exact: true })).toBeInViewport();
+  await expect(page.getByRole('button', { name: 'Play music', exact: true })).toBeInViewport();
   const seek = page.getByRole('slider', { name: 'Playback position' });
   await seek.scrollIntoViewIfNeeded();
   await expect(seek).toBeInViewport();
@@ -216,7 +218,7 @@ test('music workspace exposes revision checks and keeps publication explicit', a
     await page.getByRole('button', { name: 'Crossfade to Combat' }).click();
     await page.getByRole('slider', { name: 'Volume' }).fill('0.4');
     holdTracks = true;
-    await page.getByRole('button', { name: 'Play', exact: true }).click();
+    await page.getByRole('button', { name: 'Play music', exact: true }).click();
     await expect(page.getByRole('button', { name: 'Loading music…' })).toBeVisible();
     await page.screenshot({ path: info.outputPath('studio-loading.png'), fullPage: true });
     holdTracks = false;

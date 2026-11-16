@@ -3,16 +3,19 @@ import { join } from 'node:path';
 import { expect, test } from '@playwright/test';
 import type { MapDetail } from '@glob2/protocol';
 
+// The fixture's instance origin is play.example.org; the web app's CSP (img-src 'self',
+// deploy/Caddyfile, served by e2e/server.ts) only loads previews from its own origin,
+// as on a real instance, so serve the fixture's URLs from the app's origin.
 const detail = JSON.parse(
   readFileSync(
     new URL('../../../packages/protocol/fixtures/valid/MapDetail/public-map.json', import.meta.url),
     'utf8',
-  ),
+  ).replaceAll('https://play.example.org/', '/'),
 ) as MapDetail;
 
 test.beforeEach(async ({ page }) => {
   await page.route('**/api/v1/maps/*', (route) => route.fulfill({ json: detail }));
-  await page.route('https://play.example.org/**/preview.webp', (route) =>
+  await page.route('**/api/v1/maps/*/versions/*/preview.webp', (route) =>
     route.fulfill({
       contentType: 'image/webp',
       body: readFileSync(join(import.meta.dirname, 'fixtures/maps/river.webp')),
@@ -90,7 +93,7 @@ test('touch panning works at full-map scale and cancellation ends the drag', asy
 });
 
 test('rectangular maps retain their proportions', async ({ page }) => {
-  await page.route('https://play.example.org/**/preview.webp', (route) =>
+  await page.route('**/api/v1/maps/*/versions/*/preview.webp', (route) =>
     route.fulfill({
       contentType: 'image/svg+xml',
       body: '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="256"><rect width="512" height="256" fill="green"/><rect width="128" height="128" fill="blue"/></svg>',
