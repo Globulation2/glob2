@@ -16,6 +16,7 @@ from build_layout import BuildLock, write_if_changed
 from dev_store import Lease, android_java_command, cache, isolated, mobile_tools
 from setup_ndk import ROOT
 from tool_archives import install
+import glslang_tool
 
 
 def ensure_sdk_metadata(destination, artifact):
@@ -70,7 +71,21 @@ def main():
         action="store_true",
         help="Install pinned platform/build packages; accept licenses explicitly with sdkmanager --licenses first",
     )
+    parser.add_argument(
+        "--glslang",
+        action="store_true",
+        help="Also build the pinned build-only glslang that compiles SDL GPU Vulkan shaders "
+        "(android.py builds it on demand otherwise)",
+    )
+    parser.add_argument(
+        "--glslang-only",
+        action="store_true",
+        help="Only provision the pinned glslang; install nothing else",
+    )
     args = parser.parse_args()
+    if args.glslang_only:
+        print("Installed", glslang_tool.ensure())
+        return
     lock = json.loads((ROOT / "platforms/mobile/android-tools.json").read_text())
     tools = mobile_tools(ROOT, lease=False)
     tools.mkdir(parents=True, exist_ok=True)
@@ -135,6 +150,10 @@ def main():
                 env=env,
                 check=True,
             )
+    if args.glslang:
+        # Android packages need offline SDL GPU shaders and android.py fails
+        # without them. Build the pinned compiler once, outside the tool lease.
+        print("Installed", glslang_tool.ensure())
 
 
 if __name__ == "__main__":

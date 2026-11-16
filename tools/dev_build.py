@@ -34,6 +34,7 @@ mobile_deps= and developer_dir=, and build lib/libmain.so or lib/libglob2.a
 and the android-tests and ios-tests targets.
 """
 import argparse
+import json
 import os
 from pathlib import Path
 import platform
@@ -230,6 +231,36 @@ def compiler_environment(arguments, environment):
     return result
 
 
+def provision_shader_compiler(arguments, environment):
+    """Give local builds the pinned glslang so SDL GPU gets Vulkan SPIR-V.
+
+    Builds buildsys/glslang.json's compiler once into the development store.
+    CI jobs, GLOB2_GLSLANG (empty disables), browser targets and dry runs keep
+    their explicit configuration. A failure only warns: desktop builds still
+    work, without SDL GPU; mobile packaging checks fail loudly instead.
+    """
+    request = Request(arguments)
+    if (request.dry_run or 'GLOB2_GLSLANG' in environment or environment.get('CI')
+            or request.options.get('target', 'native') == 'web'):
+        return
+    import glslang_tool
+    try:
+        compiler = glslang_tool.ensure()
+    except (ValueError, OSError, subprocess.CalledProcessError) as error:
+        print('dev_build.py: warning: pinned glslang unavailable, SDL GPU shaders not compiled: ' + str(error),
+              file=sys.stderr)
+        return
+    receipt = request.build_directory() / 'shaders/.inputs.json'
+    try:
+        stale = receipt.is_file() and 'compiler' not in json.loads(receipt.read_text())
+    except ValueError:
+        stale = True
+    if stale:
+        # The shader step predates the compiler; rerun it on this build.
+        (request.build_directory() / 'generated-stamps/shaders').unlink(missing_ok=True)
+        print('dev_build.py: regenerating renderer shaders with ' + str(compiler), file=sys.stderr)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--cache-stats', action='store_true', help='show managed compiler-cache statistics and exit')
@@ -246,6 +277,7 @@ def main():
         raise SystemExit(subprocess.call(['ccache', '--show-stats'], env=environment))
     try:
         check_tools(remaining)
+        provision_shader_compiler(remaining, environment)
         commands = cmake_commands(remaining)
         environment = compiler_environment(remaining, environment)
     except ValueError as error:

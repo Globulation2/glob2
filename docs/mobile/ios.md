@@ -108,3 +108,16 @@ on copy. Gradient compute loads it independently of rendering, and falls back to
 CPU for unavailable device capabilities. The lock is `buildsys/moltenvk.json`; no
 runtime shader compiler is shipped. Device correctness and signed package launch
 need Apple qualification in addition to cross-platform solver tests.
+
+### SDL GPU Metal shaders
+
+The SDL GPU renderer on iOS needs offline Metal libraries (`.metallib`); the
+pinned SDL GPU does not support the Simulator, so simulator packages simply lack
+it. Device packaging (`ios.py configure|build --environment device`) fails unless
+the build directory holds the complete Metal set, produced by importing a verified
+translated bundle (`GLOB2_RENDER_SHADER_INPUT`, generated on Linux with pinned
+glslang and SPIRV-Cross) and compiling it with `GLOB2_METAL_SDK` plus a verified
+`GLOB2_METAL_TOOL_LOCK`; see [Portable shader build artifacts](../architecture/rendering.md#portable-shader-build-artifacts).
+`--allow-missing-sdl-gpu` packages portable SDL only and says so; the TestFlight
+workflow uses it until it provisions the bundle and tool lock. A successful device
+build verifies the app's Metal libraries against their receipts.

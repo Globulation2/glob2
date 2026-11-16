@@ -162,10 +162,20 @@ jobs:
       - name: Build pinned iPhone dependencies
         run: python3 platforms/mobile/dependencies.py --target ios --environment device --release --jobs 2
 
+      # SDL GPU on iOS needs offline Metal libraries, which need a translated
+      # shader bundle and a verified Metal tool lock that this workflow does not
+      # provision yet. Package portable SDL explicitly instead of silently.
       - name: Compile game and generate Xcode project
         run: |
+          set -euo pipefail
+          sdl_gpu=()
+          # Tags older than the SDL GPU packaging check do not know the option.
+          if python3 platforms/mobile/ios.py --help | grep -q -- --allow-missing-sdl-gpu; then
+            echo "::warning::This TestFlight build ships without SDL GPU Metal shaders (portable SDL only)"
+            sdl_gpu=(--allow-missing-sdl-gpu)
+          fi
           python3 platforms/mobile/ios.py configure --environment device --release \
-            --unsigned --build-number "$BUILD_NUMBER" --jobs 2
+            --unsigned --build-number "$BUILD_NUMBER" --jobs 2 "${sdl_gpu[@]}"
 
       - name: Archive iPhone app
         run: |

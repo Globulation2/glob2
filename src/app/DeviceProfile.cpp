@@ -24,6 +24,7 @@ extern "C" double glob2_device_memory_gib();
 #if !defined(GLOB2_MOBILE) && !defined(__EMSCRIPTEN__) && !defined(__APPLE__)
 #define GLOB2_DEVICE_VRAM_PROBE 1
 #include <SDL3/SDL_loadso.h>
+#include <VulkanInstanceLock.h>
 #include <vector>
 #include "../../third_party/vulkan/vulkan_core.h"
 #endif
@@ -242,6 +243,9 @@ std::pair<std::uint64_t, std::string> probeVulkanVram()
 	application.apiVersion = VK_API_VERSION_1_0;
 	VkInstanceCreateInfo info{VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};
 	info.pApplicationInfo = &application;
+	// One instance at a time in this process: SDL GPU may be creating its own
+	// on the main thread right now (see VulkanInstanceLock.h).
+	std::lock_guard instanceLock(GAGCore::vulkanInstanceMutex());
 	VkInstance instance = VK_NULL_HANDLE;
 	if (create(&info, nullptr, &instance) != VK_SUCCESS || !instance)
 		return {0, "unavailable"};

@@ -14,13 +14,23 @@ NDK and packaging tools, then build target dependencies and stage the project:
 
 ```sh
 python3 platforms/mobile/setup_ndk.py
-python3 platforms/mobile/setup_tools.py
+python3 platforms/mobile/setup_tools.py --glslang
 sdk="$(python3 tools/dev_environment.py paths --field android_sdk)"
 python3 tools/dev_environment.py sdkmanager -- --licenses
 python3 platforms/mobile/setup_tools.py --sdk-packages
 python3 platforms/mobile/dependencies.py --arch arm64-v8a --release
 python3 platforms/mobile/android.py configure --arch arm64-v8a --release
 ```
+
+`--glslang` builds the pinned, build-only glslang 15.1.0 (`buildsys/glslang.json`:
+a SHA-256-verified source archive, built once into the development store) that
+compiles the SDL GPU renderer's Vulkan SPIR-V. `android.py` provisions it on
+demand when it is missing, or uses `GLOB2_GLSLANG` when that names the pinned
+version, and fails rather than package an APK without the complete Vulkan shader
+set; `build` and `bundle` then check the packaged SPIR-V against its receipts.
+The Android SDL dependency is built with its `vulkan` feature
+(`platforms/mobile/vcpkg.json`); without it SDL GPU reports the Vulkan driver as
+unsupported and the game falls back to software rendering.
 
 Install the Android SDK platform and build-tools versions listed in the toolchain
 manifest using `sdkmanager`, accepting the SDK license yourself. Then package:
