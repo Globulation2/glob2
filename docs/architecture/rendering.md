@@ -114,7 +114,13 @@ copy of their pixels. Writes queue on the texture until a submitted frame applie
 them, all before that frame draws; a dropped frame leaves them queued. A device
 that advertises `directTerrainStreaming` takes this pass at every zoom, with HD
 artwork on or off; its atlases stay at 2048 square, so a view that needs more
-takes coarser tiles.
+takes coarser tiles. An interactive view whose artwork density or atlas size
+changes fills a second art atlas, 96 tiles a frame, while the old one keeps
+drawing (its water stops animating for those frames), and switches to it with
+its own variant table once every visible variant is in it; a complete draw
+refilters at once. Animation steps refilter at most 64 tiles a frame (the rest
+draw their previous phase a frame longer); a variant new to the atlas gets its
+tiles at once.
 
 SDL GPU always has a low-resolution version of the whole map to draw: only HD
 masks and artwork stream in and out. Game loading (`GameGUI::prepareDirectTerrain`,
