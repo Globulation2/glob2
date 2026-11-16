@@ -123,7 +123,10 @@ meanwhile) and builds them again if an edit baked a preview colour for a sheet
 that has since arrived. Complete draws wait explicitly, off the interactive
 frame: tiled captures, `MapRender` exports, editor swatches
 (`Compositor::prepareForRecipes`), the whole-catalogue `Compositor::prepare` and a
-complete direct terrain draw call `Compositor::finishMaterials`. Sheets no map
+complete direct terrain draw call `Compositor::finishMaterials`, as do a game
+while it loads (`GameGUI::loadTerrainArtwork`) and the menu colony while the
+loading screen is still up (`MenuColony::load`), so neither first paints with
+its sheets still loading. Sheets no map
 retains go after the retired HD frames' lifetime, sooner when they and those
 frames exceed that shared byte budget. Map asset bundles' own sheets and
 compositors built outside the game (tools, tests) still load every sheet at
