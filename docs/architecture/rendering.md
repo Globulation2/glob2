@@ -141,6 +141,9 @@ never block on it: until wanted terrain arrives they draw the best real terrain
 they have, in painter order beneath it: the same page at another density, then
 the overview limited to the missing pages, then the overview's whole-map base,
 which a worker composes as the map loads, so no transparent or flat patch shows.
+On a device renderer a frame whose pages cannot prepare at all (the device
+refused page composition) draws the overview too, never uncached pages composed
+on the graphics thread.
 Pages and overview pages that arrive over a fallback fade in over 150 ms with
 presentation-only alpha on their ordinary draw. On a presentation device at most
 eight new overview page textures upload a frame (`DrawableSurface::takeDeviceUpload`):
