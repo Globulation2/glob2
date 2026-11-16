@@ -903,7 +903,12 @@ while it fits beside the resources within the total budget, and an admission tha
 would fail and an explicit trim release it first. Creating a Vulkan buffer for
 every frame's vertices, uploads and the benchmark's completion readback, and
 freeing it, cost more CPU in driver calls than filling it; SDL's Vulkan backend
-also submits a command buffer for every texture it creates. Explicit trimming releases completed GPU copies that can be
+also submits a command buffer for every texture it creates, so a submission
+creates at most 96 new cache textures for packets drawn to the screen: past
+that it keeps the uploads made so far and defers the frame, and the previous
+frame shows while later frames create the rest (a resume after a background
+trim, a first zoom out). Offscreen composition, such as terrain pages, is
+exempt, since a page left half composed would start again. Explicit trimming releases completed GPU copies that can be
 restored from logical CPU snapshots, while preserving in-flight work, unfinished
 uploads and externally owned rendered targets. Actual pressure can reduce density,
 rather than a fixed low pixel cap.

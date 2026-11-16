@@ -320,6 +320,10 @@ class SDLGPUDevice final : public RenderDevice
     SDL_GPUGraphicsPipeline *directTerrainHdPipeline = nullptr;
     std::map<const StreamedTexture *, StreamedEntry> streamed;
     unsigned streamedDeferrals = 0; // Consecutive frames deferred for streamed staging.
+    // New cache textures this submission created for screen packets (see resolve).
+    static constexpr unsigned FrameTextureLimit = 96;
+    unsigned frameTextures = 0;
+    bool capCreations = false;
     std::array<SDL_GPUGraphicsPipeline *,2> terrainPipelines{};
     using CoverageKey = std::tuple<std::uint64_t,std::uint64_t,std::uint32_t,std::uint32_t>;
     std::map<CoverageKey,CoveragePtr> coverageCache;
@@ -788,6 +792,20 @@ class SDLGPUDevice final : public RenderDevice
         }
         if (resident > budgets[budget] - bytes) throw RenderAdmissionDeferred("SDL GPU texture class budget exhausted");
         try {
+        // SDL's Vulkan backend submits a command buffer for every texture it
+        // creates. A submission creates at most FrameTextureLimit new textures
+        // for packets drawn to the screen; past that the uploads so far are
+        // kept and the frame defers, so the previous frame shows while later
+        // frames create the rest (a resume after a background trim, a first
+        // zoom out). Offscreen composition (terrain pages) is exempt: a page
+        // half composed would have to start again.
+        if (capCreations && !asTarget) {
+            if (frameTextures >= FrameTextureLimit) {
+                ++counts.deferredFrames;
+                throw RenderAdmissionDeferred("SDL GPU per-frame texture creations reached");
+            }
+            ++frameTextures;
+        }
         auto texture = allocate(source->descriptor.width, source->descriptor.height, source, &entry);
         texture->premultiplied = premultiplied; texture->renderTarget = asTarget;
         if (asTarget) targets[source.get()] = texture;
@@ -1848,6 +1866,7 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
 {
     detail::RenderCpuTimer timing(counts.cpuSubmitNanoseconds);
     reap(); if (work.size() >= SubmissionLimit) return {};
+    frameTextures = 0;
     if (frame.logicalWidth <= 0 || frame.logicalHeight <= 0 || frame.packets.size() > RenderFrame::CommandCapacity || frame.vertexCount > RenderFrame::VertexCapacity)
         throw std::invalid_argument("Invalid or unbounded render frame");
     std::size_t recordedVertices = 0;
@@ -1909,8 +1928,11 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
                     std::int64_t(packet.source.y) + packet.source.h > packet.texture->descriptor.height)
                     throw std::invalid_argument("Blit source is outside texture bounds");
             }
-            Draw draw{&packet, resolve(commands, entry, packet.texture, packet.opaque,
-                          packet.linear && packet.kind == DrawPacket::Kind::Blit && packet.material != DrawPacket::Material::TeamColor),
+            capCreations = !packet.target;
+            auto sampled = resolve(commands, entry, packet.texture, packet.opaque,
+                packet.linear && packet.kind == DrawPacket::Kind::Blit && packet.material != DrawPacket::Material::TeamColor);
+            capCreations = false;
+            Draw draw{&packet, std::move(sampled),
                       packet.target ? resolve(commands, entry, packet.target, false, true, true) : screen, static_cast<Uint32>(vertices.size()), 0, {}, {}, {}, {}, {}};
             if (packet.kind == DrawPacket::Kind::WeightedCompose) {
                 prepareTerrain(commands,entry,draw,vertices);

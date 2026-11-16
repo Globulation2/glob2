@@ -168,6 +168,45 @@ TEST_SUITE("SDLGPUDevice")
         CHECK(device->telemetry().resourceBytes == 2 * 16 * 16 * 4 + 4);
     }
 
+    GLOB2_TEST_CASE("A burst of new screen textures spreads over deferred frames; offscreen composition is exempt", "[display][isolated]")
+    {
+        const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
+        Video video; auto device = makeSDLGPUDevice(nullptr, 16, 16, shaders);
+        RenderResources resources;
+        std::vector<TextureSnapshot> textures;
+        for (int i = 0; i < 200; ++i) {
+            auto pixels = surface(4, 4); REQUIRE(pixels);
+            SDL_FillSurfaceRect(pixels.get(), nullptr, SDL_MapSurfaceRGBA(pixels.get(), Uint8(i), 0, 0, 255));
+            textures.push_back(resources.snapshot(resources.create(pixels.get(), 1)));
+            REQUIRE(textures.back());
+        }
+        const auto frameOf = [&](std::uint64_t identity, const TextureSnapshot &target) {
+            RenderFrame frame; frame.identity = identity; frame.logicalWidth = frame.logicalHeight = 16;
+            for (const auto &texture : textures) {
+                auto packet = blit(texture, {0, 0, 4, 4});
+                if (target) { packet.target = target; packet.targetLogicalWidth = packet.targetLogicalHeight = 16; }
+                frame.packets.push_back(std::move(packet));
+            }
+            return frame;
+        };
+        // Drawn to the screen, 200 new textures take three submissions: each
+        // creates at most 96 and keeps them, so the next continues.
+        unsigned deferred = 0;
+        for (std::uint64_t attempt = 1; attempt <= 4; ++attempt) {
+            try { REQUIRE(device->submit(frameOf(attempt, {}))); device->present(); break; }
+            catch (const RenderAdmissionDeferred &) { ++deferred; device->discardFrame(); }
+        }
+        CHECK(deferred == 2);
+        // The same burst into an offscreen target completes at once.
+        auto targetPixels = surface(16, 16); REQUIRE(targetPixels);
+        auto target = resources.snapshot(resources.create(targetPixels.get(), 1));
+        for (auto &texture : textures) {
+            auto pixels = surface(4, 4); REQUIRE(pixels);
+            texture = resources.snapshot(resources.create(pixels.get(), 2));
+        }
+        CHECK(device->submit(frameOf(10, target)));
+    }
+
     GLOB2_TEST_CASE("Expanded rectangles do not consume recorded triangle capacity", "[display][isolated]")
     {
         const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
