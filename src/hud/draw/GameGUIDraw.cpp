@@ -192,6 +192,50 @@ void GameGUI::drawPanel(void)
 	drawPanelButtons(YPOS_BASE_DEFAULT-32);
 
 	dispatchSelectionPanel();
+	GAGCore::ApplicationHost::hudDrawn(drawnPanelName(), selectionModeName());
+}
+
+const char *GameGUI::drawnPanelName() const
+{
+	switch (selectionMode)
+	{
+	case BUILDING_SELECTION: return "building";
+	case UNIT_SELECTION: return "unit";
+	case RESOURCE_SELECTION: return "resource";
+	default: break;
+	}
+	if (globalContainer->isViewingGame())
+	{
+		switch (replayDisplayMode)
+		{
+		case RDM_REPLAY_VIEW: return "replay";
+		case RDM_STAT_TEXT_VIEW: return "stats";
+		case RDM_STAT_GRAPH_VIEW: return "overlays";
+		default: return "unknown";
+		}
+	}
+	switch (displayMode)
+	{
+	case CONSTRUCTION_VIEW: return "construction";
+	case FLAG_VIEW: return "flags";
+	case STAT_TEXT_VIEW: return "stats";
+	case STAT_GRAPH_VIEW: return "overlays";
+	default: return "unknown";
+	}
+}
+
+const char *GameGUI::selectionModeName() const
+{
+	switch (selectionMode)
+	{
+	case NO_SELECTION: return "none";
+	case BUILDING_SELECTION: return "building";
+	case UNIT_SELECTION: return "unit";
+	case RESOURCE_SELECTION: return "resource";
+	case TOOL_SELECTION: return "tool";
+	case BRUSH_SELECTION: return "brush";
+	}
+	return "unknown";
 }
 
 void GameGUI::dispatchSelectionPanel(void)

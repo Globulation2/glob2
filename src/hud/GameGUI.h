@@ -564,6 +564,9 @@ private:
 	//! dispatchDisplayModePanel or dispatchReplayDisplayModePanel depending on
 	//! globalContainer->replaying.
 	void dispatchSelectionPanel(void);
+	//! Names for ApplicationHost::hudDrawn: the panel drawn and the selection mode.
+	const char *drawnPanelName() const;
+	const char *selectionModeName() const;
 	//! Dispatch on displayMode (non-replay path). Asserts on an unknown mode.
 	void dispatchDisplayModePanel(void);
 	//! Dispatch on replayDisplayMode (replay path). Asserts on an unknown mode.
