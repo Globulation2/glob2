@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <SDLGPUDevice.h>
+#include <VulkanInstanceLock.h>
 #include <chrono>
 #ifndef __EMSCRIPTEN__
 #include <RendererShaderLayouts.h>
@@ -729,7 +730,11 @@ class SDLGPUDevice final : public RenderDevice
         if (vertexShader) SDL_ReleaseGPUShader(device, vertexShader);
         if (fragmentShader) SDL_ReleaseGPUShader(device, fragmentShader);
         if (claimed) SDL_ReleaseWindowFromGPUDevice(device, window);
-        SDL_DestroyGPUDevice(device); device = nullptr;
+        {
+            std::lock_guard instanceLock(vulkanInstanceMutex()); // see VulkanInstanceLock.h
+            SDL_DestroyGPUDevice(device);
+        }
+        device = nullptr;
     }
   public:
     SDLGPUDevice(SDL_Window *window, int w, int h, const std::string &shaders, const char *driver)
@@ -753,7 +758,13 @@ class SDLGPUDevice final : public RenderDevice
             shaderArtifacts = metadata.at("shaderArtifacts").at(shaderFamily);
             if (!hasShader("primitive", "vertex") || !hasShader("primitive", "fragment"))
                 throw std::runtime_error("Incomplete primitive shader assets for " + shaderFamily);
-            device = SDL_CreateGPUDevice(shaderFormat, false, driver); if (!device) fail("create SDL GPU device");
+            {
+                // Never alongside another Vulkan instance being created (the
+                // device profile's VRAM probe thread): see VulkanInstanceLock.h.
+                std::lock_guard instanceLock(vulkanInstanceMutex());
+                device = SDL_CreateGPUDevice(shaderFormat, false, driver);
+            }
+            if (!device) fail("create SDL GPU device");
             if (window) { claimed = SDL_ClaimWindowForGPUDevice(device, window); if (!claimed) fail("claim GPU window"); }
             vertexShader = loadShader("primitive", "vertex", 1, 0);
             fragmentShader = loadShader("primitive", "fragment", 1, 1);
