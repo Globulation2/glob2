@@ -16,6 +16,7 @@
 #include <array>
 #include <iostream>
 #include "render/MapDrawer.h"
+#include "render/terrain/TerrainCompositor.h"
 #include "Team.h"
 
 namespace
@@ -88,6 +89,11 @@ bool MenuColony::load(const std::string& path)
 			initialScene = std::make_unique<PresentationFrame>();
 			SceneExtractor extractor;
 			extractor.prepare(world, request, *initialScene);
+			// Material sheets load on demand. Load this map's now, as a game
+			// does while it loads (GameGUI::loadTerrainArtwork), so the menu
+			// first paints with its terrain and no asset work behind it.
+			globalContainer->terrainCompositor(initialScene->map.frozenAssetBundle())
+				.finishMaterials(initialScene->map);
 		}
 		return true;
 	}
