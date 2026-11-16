@@ -871,7 +871,11 @@ until queue completion. Discard fences also cover uploads prepared before packet
 submission; backend recreation shares the adapter’s issued completion timeline.
 Texture/depth allocations are bounded to 256 MiB in total, with General and
 SkinAtlas class budgets of 64 MiB, TerrainPage 128 MiB, and TerrainMask 32 MiB;
-persistent geometry to 32 MiB. Eight pending presentation frames and three capture
+persistent geometry to 32 MiB. Terrain imagery the CPU composes (view pages,
+overview pages and animated tiles, `TerrainVisual::Surface`) is admitted in the
+TerrainPage class on every device, matching the page cache's own 128 MiB plan;
+in the General class a view's high-density pages alone could exceed 64 MiB,
+deferring every frame. Eight pending presentation frames and three capture
 requests bound GPU admission. Recorder flushes within one presentation share a
 fence and admission slot; all transient buffers also count toward the 256 MiB
 aggregate device limit. Capture maps complete asynchronously in admission
