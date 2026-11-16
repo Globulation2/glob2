@@ -68,6 +68,8 @@ class MaterialSheets
 	static void forget(const void *owner);
 	// Pixel bytes of the sheets loaded on demand, and of those no owner retains.
 	static std::size_t residentBytes();
+	// Sheets queued and not yet published.
+	static std::size_t loading();
 	static std::size_t unretainedBytes();
 };
 
@@ -102,6 +104,11 @@ class Compositor
 	void finishMaterials(const SceneMap &);
 	void finishMaterials(std::span<const MaterialId>);
 	bool materialLoaded(MaterialId id) const { return sheet(id) != nullptr; }
+	// Whether every material a recipe composes from has its sheet (or can
+	// never have one); asks for the missing ones first. Interactive pages
+	// leave a cell uncomposed until it answers true, so the fallback chain
+	// beneath draws, never a material's flat preview colour.
+	bool sheetsReady(const Recipe &) const;
 	// Counters for holders of composed pixels: sheets published, and
 	// preparations that drew a flat preview colour for a missing sheet.
 	std::uint64_t materialArrivals() const { return sheetArrivals; }
@@ -446,6 +453,9 @@ class Compositor
 		std::vector<char> present, seen;
 	} scan;
 	bool advanceScan(const SceneMap &, std::size_t vertexBudget);
+	// The map's sheets not yet asked for: they load after those in view,
+	// at most two at a time, so the view's own sheets come first.
+	std::vector<std::string> prefetchSheets;
 	std::vector<std::string> presentSheets() const;
 	std::vector<GAGCore::Sprite *> decorSprites;
     GAGCore::Sprite *sharedDecorSprite = nullptr;

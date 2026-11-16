@@ -136,6 +136,10 @@ public:
 	void rebuildBuildingChoices(bool preserve = false);
 	///Moves the local viewport
 	void adjustInitialViewport();
+	//! While the game loads, before its first frame: waits for the terrain
+	//! material sheets its map holds (TerrainVisual::MaterialSheets), so the
+	//! first view composes at once. Later sheets load in the background.
+	void loadTerrainArtwork();
 	void adjustLocalTeam();
     void selectViewedTeam(int team);
 	//! Handle mouse, keyboard and window resize inputs, and stats

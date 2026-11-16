@@ -228,6 +228,9 @@ TEST_SUITE("TerrainMaterials")
 		CHECK(std::all_of(flat.begin(), flat.end(), [&](const auto &p) { return p == colour; }));
 		CHECK(compositor.materialFallbacks() > 0);
 		CHECK(compositor.phaseSource(grass, 0, 0).revision == 0);
+		// Pages leave a cell uncomposed until its sheets are in.
+		const auto grassCell = compositor.describe(scene, 24, 20);
+		CHECK_FALSE(compositor.sheetsReady(grassCell));
 
 		// A short scan finds the map's materials; their sheets decode on the
 		// asset workers and publish within the frame polls' budget.
@@ -240,6 +243,7 @@ TEST_SUITE("TerrainMaterials")
 			SDL_Delay(1);
 		}
 		CHECK(compositor.materialLoaded(grass));
+		CHECK(compositor.sheetsReady(grassCell));
 		CHECK(compositor.materialArrivals() > arrivals);
 		const auto loaded = compositor.phasePixels(grass, 0, 0);
 		CHECK_FALSE(std::all_of(loaded.begin(), loaded.end(), [&](const auto &p) { return p == colour; }));

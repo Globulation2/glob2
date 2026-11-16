@@ -1466,8 +1466,22 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 			materialsUsed = frame;
 			return snapshot;
 		};
+		// Material sheets load on demand: a cell whose sheets are still loading
+		// stays uncomposed, so the chain beneath (another density, the
+		// overview) draws instead of a flat preview colour.
+		const auto sheetsReady = [&](const std::array<Tile, ChunkTiles * ChunkTiles> &tiles)
+		{
+			bool ready = true;
+			for (const auto &tile : tiles)
+				if (tile.discovered && !compositor.sheetsReady(tile.recipe))
+					ready = false; // Keep asking for every missing sheet.
+			return ready;
+		};
 		const auto launchRefresh = [&](Chunk &entry, const std::array<Tile, ChunkTiles * ChunkTiles> &tiles) -> std::size_t
 		{
+			// Keep the page's pixels until its sheets are back.
+			if (!sheetsReady(tiles))
+				return std::size_t(1);
 			const auto materialChanged = [&](TerrainVisual::MaterialId id)
 			{
 				const auto previous = std::find_if(entry.materialRevisions.begin(), entry.materialRevisions.end(),
@@ -1849,10 +1863,12 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							{
 								std::array<Tile, ChunkTiles * ChunkTiles> tiles{};
 								describeTiles(tiles);
-								launch(wx, wy, tiles, sources);
+								if (sheetsReady(tiles))
+									launch(wx, wy, tiles, sources);
 							}
 						});
-						pending.back()->fellBack = true;
+						if (!pending.empty() && pending.back()->x == wx && pending.back()->y == wy)
+							pending.back()->fellBack = true;
 						launchUnits += units;
 					}
 					else
@@ -1875,6 +1891,31 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				}
 				std::array<Tile, ChunkTiles * ChunkTiles> tiles{};
 				describeTiles(tiles);
+				if (!sheetsReady(tiles))
+				{
+					// Its sheets are loading: draw what the page showed before,
+					// or what stands in for a missing page.
+					if (entry && entry->valid)
+					{
+						entry->used = frame;
+						copies.push_back({entry, (cx * ChunkTiles - vx) * 32, (cy * ChunkTiles - vy) * 32});
+					}
+					else if (Chunk *substitute = standIn(wx, wy))
+					{
+						substitute->used = frame;
+						copies.push_back({substitute, (cx * ChunkTiles - vx) * 32, (cy * ChunkTiles - vy) * 32});
+						++standIns;
+						coverage.standInCells += shownCells;
+					}
+					else
+					{
+						incomplete = true;
+						++uncovered;
+						coverage.backdropCells += shownCells;
+						uncoveredPages.push_back({wx, wy});
+					}
+					continue;
+				}
 				// Reduced pages average native composition. A retained native
 				// page is already that exact input, including coverage and alpha;
 				// do not sample every contour again just to change zoom density.
@@ -2206,7 +2247,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							if (t.discovered)
 								t.recipe = compositor.describe(map, wx + x, wy + y);
 						}
-					launch(wx, wy, tiles, sources, nullptr, true);
+					if (sheetsReady(tiles))
+						launch(wx, wy, tiles, sources, nullptr, true);
 				});
 				launchUnits += ChunkTiles * ChunkTiles;
 				aheadBytes += pageStorageHere;

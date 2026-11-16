@@ -197,6 +197,11 @@ std::size_t MaterialSheets::residentBytes()
 		bytes += record.sprite ? record.bytes : 0;
 	return bytes;
 }
+std::size_t MaterialSheets::loading()
+{
+	return std::size_t(std::count_if(sheetRecords.begin(), sheetRecords.end(),
+									 [](const auto &record) { return !record.second.sprite; }));
+}
 std::size_t MaterialSheets::unretainedBytes()
 {
 	std::size_t bytes = 0;
@@ -357,11 +362,32 @@ void Compositor::wantSheet(unsigned id) const
 	else
 		MaterialSheets::find(definitions.materials[id].sprite);
 }
+bool Compositor::sheetsReady(const Recipe &recipe) const
+{
+	std::array<MaterialId, 4> palette;
+	bool ready = true;
+	for (unsigned i = 0, n = recipe.palette(palette); i < n; ++i)
+	{
+		const auto id = palette[i];
+		if (!lazySheets[id] || invalidSheets[id] || sheet(id))
+			continue;
+		if (MaterialSheets::failed(definitions.materials[id].sprite))
+			continue;
+		wantSheet(id);
+		ready = false;
+	}
+	return ready;
+}
 void Compositor::refreshSheets()
 {
 	if (std::none_of(lazySheets.begin(), lazySheets.end(), [](char lazy) { return lazy; }))
 		return;
 	MaterialSheets::poll();
+	while (!prefetchSheets.empty() && MaterialSheets::loading() < 2)
+	{
+		MaterialSheets::find(prefetchSheets.back());
+		prefetchSheets.pop_back();
+	}
 	const auto generation = MaterialSheets::generation();
 	if (generation == sheetGeneration)
 		return;
@@ -426,6 +452,7 @@ bool Compositor::advanceScan(const SceneMap &map, std::size_t vertexBudget)
 	if (scan.identity != map.identity() || scan.present.size() != definitions.materials.size())
 	{
 		scan = {};
+		prefetchSheets.clear();
 		scan.identity = map.identity();
 		scan.present.assign(definitions.materials.size(), 0);
 		scan.scanning = true;
@@ -462,8 +489,7 @@ bool Compositor::advanceScan(const SceneMap &map, std::size_t vertexBudget)
 	scan.complete = true;
 	std::vector<char>().swap(scan.seen);
 	auto names = presentSheets();
-	for (const auto &name : names)
-		MaterialSheets::find(name);
+	prefetchSheets.assign(names.rbegin(), names.rend());
 	MaterialSheets::retain(this, std::move(names));
 	return true;
 }

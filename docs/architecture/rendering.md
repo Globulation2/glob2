@@ -101,8 +101,13 @@ them. A map's materials are found by a scan of its terrain a few rows a frame
 (again, keeping those found, after an edit), and their sheets load on the asset
 workers through `Toolkit::requestSprite` and publish within the frame's asset
 budget; composition, the editor's palette and phase pixels also ask for a sheet
-the moment they need one. Until a sheet arrives its material draws its flat
-preview colour, stamped so that the arrival recomposes the pages that used it.
+the moment they need one; sheets of materials in view load first, and the rest
+of the map's at most two at a time behind them. A page whose cells need a sheet
+still loading stays uncomposed (`Compositor::sheetsReady`), so the fallback
+chain draws there (another density, the overview, the whole-map base) and the
+page fades in once composed, like any other; a page already composed keeps its
+pixels. Only the editor palette's icon shows a material's preview colour while
+its sheet loads.
 Direct terrain builds its tables only once the map's sheets are in (pages draw
 meanwhile) and builds them again if an edit baked a preview colour for a sheet
 that has since arrived. Complete draws wait explicitly, off the interactive
