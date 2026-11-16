@@ -1,4 +1,9 @@
-import { displayMessage, MessageError, message as sourceMessage } from '../i18n.tsx';
+import {
+  displayMessage,
+  MessageError,
+  message as sourceMessage,
+  serverExplanation,
+} from '../i18n.tsx';
 import { statusLabel } from '../i18n.tsx';
 import { t, tp, useLocale, RichMessage } from '../i18n.tsx';
 import {
@@ -984,7 +989,8 @@ export function MapUpload() {
     } catch (e) {
       // Problems with the file itself (not a map, too big, newer version…) belong to the file field.
       const details = e instanceof ApiError ? (e.body?.details as { problem?: string }) : undefined;
-      if (e instanceof ApiError && (details?.problem || e.status === 413)) fileProblem(e.message);
+      if (e instanceof ApiError && (details?.problem || e.status === 413))
+        fileProblem(serverExplanation(e));
       else setError(e as Error);
     } finally {
       setPhase('idle');
