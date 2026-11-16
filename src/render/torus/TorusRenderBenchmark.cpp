@@ -28,6 +28,7 @@
 #include <RenderBatch.h>
 #include <RenderDevice.h>
 #include <RendererSelection.h>
+#include <limits>
 #include <memory>
 #include <stdexcept>
 #include <string_view>
@@ -136,11 +137,15 @@ class TorusRenderBenchmark
     static void populateSynthetic(Game &game, int worldW, int worldH)
     {
         const char *requested = std::getenv("GLOB2_BENCH_UNITS");
-        const int count = requested ? std::atoi(requested) : 1000;
         // Distinct interior cells avoid seam copies and viewport clipping.
-        const int columns = std::min(worldW / 32, game.map.getW()) - 4;
-        const int rows = std::min(worldH / 32, game.map.getH()) - 4;
-        assert(columns > 0 && rows > 0 && count >= 0 && count <= columns * rows);
+        const int columns = std::max(0, std::min(worldW / 32, game.map.getW()) - 4);
+        const int rows = std::max(0, std::min(worldH / 32, game.map.getH()) - 4);
+        // The default fills the view with up to 1000 units; a small or close
+        // view holds fewer. An explicit count must fit.
+        const int count = requested ? std::atoi(requested) : std::min(1000, columns * rows);
+        if (count < 0 || count > columns * rows)
+            throw std::invalid_argument("GLOB2_BENCH_UNITS=" + std::to_string(count) + " does not fit the " +
+                std::to_string(columns) + "x" + std::to_string(rows) + " interior cells of the view");
         for (int team = game.mapHeader.getNumberOfTeams(); team < Team::MAX_COUNT; ++team) game.addTeam();
         GameHeader header;
         header.setRandomSeed(1);
@@ -148,13 +153,16 @@ class TorusRenderBenchmark
         for (int team = 0; team < Team::MAX_COUNT; ++team)
             header.getBasePlayer(team) = BasePlayer(team, "Benchmark", team, BasePlayer::P_LOCAL);
         game.setGameHeader(header, false);
+        // The synthetic flat map takes a unit in every cell; a real map's
+        // water or obstacles refuse some, which are left empty.
+        int placed = 0;
         for (int i = 0; i < count; ++i)
         {
             const int cell = int(static_cast<long long>(i) * columns * rows / std::max(1, count));
-            Unit *unit = game.addUnit(2 + cell % columns, 2 + cell / columns,
-                i % Team::MAX_COUNT, i % 3, 0, (i * 17) & 255, 0, 0);
-            assert(unit);
+            placed += game.addUnit(2 + cell % columns, 2 + cell / columns,
+                i % Team::MAX_COUNT, i % 3, 0, (i * 17) & 255, 0, 0) != nullptr;
         }
+        std::printf("BENCH_UNITS requested=%d placed=%d\n", count, placed);
     }
 
     static void advanceAiTick(GameGUI &gui)
@@ -218,11 +226,15 @@ class TorusRenderBenchmark
             if(!completion)throw std::runtime_error("Benchmark completion readback failed");
             return true;
         }
+        // Portable SDL batches its own commands: submit them first.
+        if(auto *sdlRenderer=SDL_GetRenderer(SDL_GetWindowFromID(gfx->windowID())))SDL_FlushRenderer(sdlRenderer);
 #ifdef HAVE_OPENGL
-        glFinish();assert(glGetError()==GL_NO_ERROR);return true;
-#else
-        throw std::runtime_error("Benchmark requires a rendering device");
+        // Legacy GL, and portable SDL over OpenGL, complete with glFinish.
+        // Portable SDL over Metal or Direct3D, and the software renderer,
+        // have no current GL context: their flush above submitted the frame.
+        if(SDL_GL_GetCurrentContext()){glFinish();assert(glGetError()==GL_NO_ERROR);}
 #endif
+        return true;
     }
     static void captureFramebuffer(const char *path = nullptr)
     {
@@ -337,8 +349,11 @@ static int run(int argc, char **argv)
     std::printf("BENCH_CAPABILITIES torus=%d skin_materials=%d async_capture=%d terrain_composition=%d gpu_timing=%d max_texture=%d\n",
         capabilities.torus,capabilities.liveSkins,capabilities.asynchronousCapture,deviceCapabilities.terrainComposition,
         deviceCapabilities.gpuTiming,deviceCapabilities.maximumTextureSize);
-    if(!std::getenv("GLOB2_BENCH_FLAT") && !gfx->rendererCapabilities().torus)
-        throw std::runtime_error("Selected benchmark backend does not support torus");
+    // A backend without the torus view (portable SDL, software) measures the
+    // flat view instead of stopping.
+    const bool flatOnly = !std::getenv("GLOB2_BENCH_FLAT") && !gfx->rendererCapabilities().torus;
+    if(flatOnly)
+        std::printf("BENCH_FLAT_FALLBACK backend has no torus view; measuring the flat view\n");
     if(!std::getenv("GLOB2_BENCH_VISIBLE")) {
         int count=0;auto **windows=SDL_GetWindows(&count);
         if(windows){for(int i=0;i<count;++i)SDL_HideWindow(windows[i]);SDL_free(windows);}
@@ -432,10 +447,13 @@ static int run(int argc, char **argv)
                 ? std::atoi(std::getenv("GLOB2_BENCH_FRAME_INTERVAL_MS")) : 0);
             benchmarkStart = SDL_GetPerformanceCounter();
             // A low-memory trim at one measured frame (GLOB2_BENCH_TRIM_AT=frame).
-            const int trimAt = std::getenv("GLOB2_BENCH_TRIM_AT") ? std::atoi(std::getenv("GLOB2_BENCH_TRIM_AT")) : -1;
+            // Unset means never: warmup frames are negative, so -1 would trim
+            // (and reset the device) on the last warmup frame of every run.
+            constexpr int Never = std::numeric_limits<int>::min();
+            const int trimAt = std::getenv("GLOB2_BENCH_TRIM_AT") ? std::atoi(std::getenv("GLOB2_BENCH_TRIM_AT")) : Never;
             // A device reset at one measured frame (GLOB2_BENCH_DEVICE_RESET_AT=frame):
             // the device drops every texture, streamed direct terrain included.
-            const int resetAt = std::getenv("GLOB2_BENCH_DEVICE_RESET_AT") ? std::atoi(std::getenv("GLOB2_BENCH_DEVICE_RESET_AT")) : -1;
+            const int resetAt = std::getenv("GLOB2_BENCH_DEVICE_RESET_AT") ? std::atoi(std::getenv("GLOB2_BENCH_DEVICE_RESET_AT")) : Never;
             for (int i = -warmupFrames; i < frames; ++i)
             {
                 if (i == 0) initialCoverage = compositor.highResolutionCoverage();
@@ -454,6 +472,10 @@ static int run(int argc, char **argv)
                     std::printf("PRESENTATION_TRIM_AFTER frame=%d frames=%d pending=%d snapshot_bytes=%zu device_bytes=%zu\n", i,
                         i - trimAt, int(gfx->presentationTrimPending()), snapshotBytes(), deviceBytes());
                 if(!finishRendering())ContextAccess::backend(*gfx)->present();
+                // Frames present through the backend, not nextFrame: start the
+                // per-frame device upload allowances as a game frame does, or
+                // after the first few uploads nothing new (overview pages) shows.
+                gfx->resetFrameAllowances();
                 const auto telemetryBefore=gfx->renderDevice()?gfx->renderDevice()->telemetry():GAGCore::RenderTelemetry{};
                 const auto scopesBefore = PerformanceTelemetry::collector().window;
                 Uint64 start = SDL_GetPerformanceCounter();
@@ -636,7 +658,7 @@ static int run(int argc, char **argv)
             std::fflush(stdout);
             if (std::strncmp(label, "Torus", 5) == 0) captureFramebuffer();
         };
-        if (std::getenv("GLOB2_BENCH_FLAT"))
+        if (std::getenv("GLOB2_BENCH_FLAT") || flatOnly)
         {
             if (const char *density = std::getenv("GLOB2_BENCH_TERRAIN_PIXELS_PER_TILE"))
             {
