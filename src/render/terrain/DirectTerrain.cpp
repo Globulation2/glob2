@@ -470,24 +470,33 @@ struct DirectTerrain::State
 
     // A terrain edit: re-describe every cell whose recipe reads a changed
     // vertex, and rebuild the masks of those that change.
-    void applyEdits(const SceneMap &map, TerrainVisual::Compositor &compositor)
+    // False, changing nothing, while an edited cell needs a material sheet
+    // that is still loading: the tables keep drawing the cells' previous
+    // materials (never a flat colour) and the edit applies once it arrives.
+    bool applyEdits(const SceneMap &map, TerrainVisual::Compositor &compositor)
     {
         constexpr int halo = SoftwareTerrainCache::SourceHalo;
         std::vector<char> affected(cells.size(), 0);
-        bool any = false;
+        std::vector<std::size_t> changed;
         for (int y = 0; y < height; ++y)
             for (int x = 0; x < width; ++x)
             {
                 const auto vertex = map.vertexTerrainAt(x, y);
-                auto &known = vertices[std::size_t(y) * width + x];
-                if (vertex == known) continue;
-                known = vertex;
-                any = true;
+                if (vertex == vertices[std::size_t(y) * width + x]) continue;
+                changed.push_back(std::size_t(y) * width + x);
                 for (int cy = y - halo - 1; cy <= y + halo; ++cy)
                     for (int cx = x - halo - 1; cx <= x + halo; ++cx)
                         affected[map.coordToIndex((cx % width + width) % width, (cy % height + height) % height)] = 1;
             }
-        if (!any) return;
+        if (changed.empty()) return true;
+        bool ready = true;
+        for (int y = 0; y < height; ++y)
+            for (int x = 0; x < width; ++x)
+                if (affected[map.coordToIndex(x, y)] && !compositor.sheetsReady(compositor.describe(map, x, y)))
+                    ready = false; // Asks for every missing sheet.
+        if (!ready) return false;
+        for (const auto vertex : changed)
+            vertices[vertex] = map.vertexTerrainAt(int(vertex % width), int(vertex / width));
         const auto &catalog = compositor.catalog();
         bool masksChanged = false;
         for (int y = 0; y < height; ++y)
@@ -540,6 +549,7 @@ struct DirectTerrain::State
         if (masksChanged) ++hd.generation;
         if (glGetError() != GL_NO_ERROR)
             throw std::runtime_error("Direct terrain edit upload failed");
+        return true;
     }
 
     void setHdIndex(int cell, Uint16 value)
@@ -966,11 +976,12 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
         }
         else if (edited)
         {
-            // An edit can paint a material whose sheet is still loading.
+            // An edit that paints a material whose sheet is still loading
+            // waits for it; the tables keep the previous terrain meanwhile.
             if (!state->bakedFallback) beginBake();
-            state->applyEdits(map, sheets);
+            if (state->applyEdits(map, sheets))
+                state->revision = map.terrainRevision();
             endBake();
-            state->revision = map.terrainRevision();
         }
         if (!wholeMap)
             state->updateDiscovery(map, visibleTeams);
