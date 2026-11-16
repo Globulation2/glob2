@@ -18,6 +18,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import threading
@@ -100,6 +101,26 @@ def process_memory(pid):
     return sample
 
 
+def nvidia_memory(pid):
+    """Per-process GPU memory from nvidia-smi, where the proprietary driver
+    exposes no drm-memory fdinfo keys; None without it."""
+    try:
+        text = subprocess.run(['nvidia-smi', '-q', '-d', 'PIDS'], capture_output=True, text=True,
+                              timeout=5).stdout
+    except (OSError, subprocess.SubprocessError):
+        return None
+    total, current = 0, None
+    for line in text.splitlines():
+        key, _, value = (part.strip() for part in line.partition(':'))
+        if key == 'Process ID':
+            current = value
+        elif key == 'Used GPU Memory' and current == str(pid):
+            amount = re.match(r'(\d+)\s*MiB', value)
+            if amount:
+                total += int(amount.group(1)) * MIB
+    return total or None
+
+
 def run(args, directory):
     binary = Path(args.binary) if args.binary else newest('test/torus-render-benchmark')
     environment = dict(os.environ)
@@ -132,10 +153,21 @@ def run(args, directory):
                 if value:
                     samples.append(value)
                 time.sleep(0.25)
-        sampler = threading.Thread(target=sample, daemon=True)
-        sampler.start()
+        def sample_nvidia():
+            # nvidia-smi is slow, so it samples on its own thread, once a second.
+            while process.poll() is None:
+                value = nvidia_memory(process.pid)
+                if value:
+                    samples.append({'gpu_nvidia': value})
+                time.sleep(1)
+        samplers = [threading.Thread(target=sample, daemon=True)]
+        if shutil.which('nvidia-smi'):
+            samplers.append(threading.Thread(target=sample_nvidia, daemon=True))
+        for sampler in samplers:
+            sampler.start()
         code = process.wait()
-        sampler.join()
+        for sampler in samplers:
+            sampler.join()
     if code:
         raise SystemExit(f'{binary} exited with {code}; see {log}')
     return binary, command, log, samples
@@ -144,8 +176,16 @@ def run(args, directory):
 def summarize(log, samples):
     peaks, last, frames = {}, {}, 0
     summary = {}
+    cpu, slow = [], 0
     for line in log.read_text(errors='replace').splitlines():
-        if line.startswith('FRAME_RENDER_MEMORY '):
+        if line.startswith('FRAME mode='):
+            elapsed = re.search(r'elapsed_ms=([\d.]+)', line)
+            process_cpu = re.search(r'process_cpu_ms=([\d.]+)', line)
+            if elapsed and float(elapsed.group(1)) > 50:
+                slow += 1
+            if process_cpu:
+                cpu.append(float(process_cpu.group(1)))
+        elif line.startswith('FRAME_RENDER_MEMORY '):
             frames += 1
             last = {key: int(value) for key, value in re.findall(r'(\w+)=(\d+)', line)}
             for key, value in last.items():
@@ -166,6 +206,11 @@ def summarize(log, samples):
     summary['peak_rss_bytes'] = max([last.get('peak_rss_bytes', 0)] + [s.get('VmHWM', 0) for s in samples])
     drivers = [s['gpu_driver'] for s in samples if 'gpu_driver' in s]
     summary['peak_gpu_driver_bytes'] = max(drivers) if drivers else None
+    nvidia = [s['gpu_nvidia'] for s in samples if 'gpu_nvidia' in s]
+    summary['peak_gpu_nvidia_bytes'] = max(nvidia) if nvidia else None
+    summary['frames_over_50_ms'] = slow
+    if cpu:
+        summary['process_cpu_mean_ms'] = sum(cpu) / len(cpu)
     return summary
 
 
@@ -181,6 +226,7 @@ def table(summary, baseline=None):
     before = baseline or {}
     lines.append(row('Process resident memory', summary['peak_rss_bytes'], before.get('peak_rss_bytes')))
     lines.append(row('GPU driver memory', summary['peak_gpu_driver_bytes'], before.get('peak_gpu_driver_bytes')))
+    lines.append(row('GPU memory (nvidia-smi)', summary.get('peak_gpu_nvidia_bytes'), before.get('peak_gpu_nvidia_bytes')))
     count = lambda value: 'n/a' if value is None else str(value)
     for key, name in GAUGES:
         lines.append(row(name, summary['peaks'].get(key), before.get('peaks', {}).get(key),
@@ -189,6 +235,9 @@ def table(summary, baseline=None):
     lines.append(row('Image decode output', summary['image_decoded_bytes'], before.get('image_decoded_bytes')))
     for key in ('frame_median_ms', 'frame_p95_ms', 'frame_p99_ms', 'frame_max_ms'):
         lines.append(row(key.replace('_', ' '), summary.get(key), before.get(key), lambda v: 'n/a' if v is None else f'{v:.2f}'))
+    lines.append(row('frames over 50 ms', summary.get('frames_over_50_ms'), before.get('frames_over_50_ms'), count))
+    lines.append(row('process cpu mean ms', summary.get('process_cpu_mean_ms'), before.get('process_cpu_mean_ms'),
+                     lambda v: 'n/a' if v is None else f'{v:.2f}'))
     return '\n'.join(lines)
 
 

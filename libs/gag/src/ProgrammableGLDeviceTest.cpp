@@ -4,6 +4,8 @@
 #include <cstring>
 #include <ProgrammableGLDevice.h>
 #include <SpriteRenderAtlas.h>
+#include <AssetLoader.h>
+#include <array>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #include <glob2/BuildPaths.h>
@@ -729,6 +731,62 @@ TEST_SUITE("ProgrammableGLDevice")
         const auto generation = fixture.device->generation(); fixture.device->reset();
         CHECK(fixture.device->generation() == generation + 1);
         CHECK(fixture.device->completion(submission) == RenderCompletion::Cancelled);
+    }
+    GLOB2_TEST_CASE("GL samples premultiplied block chains from block-only restoration snapshots", "[display]")
+    {
+        for (bool es : {false, true}) {
+            GLFixture fixture(es); auto &device = *fixture.device;
+            const auto capabilities = device.capabilities();
+            const auto format = capabilities.bc3Textures ? TextureCompression::BC3 :
+                capabilities.astc4x4Textures ? TextureCompression::ASTC4x4 : TextureCompression::Uncompressed;
+            if (format == TextureCompression::Uncompressed) { MESSAGE("Context samples no block format"); continue; }
+            const auto encoding = format == TextureCompression::BC3 ? AssetImage::BlockCompression::PremultipliedBC3
+                                                                    : AssetImage::BlockCompression::PremultipliedASTC4x4;
+            RenderResources resources; auto base = surface(8, 8); REQUIRE(base);
+            // Level zero opaque red, level one half-transparent green; 2x2 and 1x1 carry no blocks.
+            const std::array<SDL_Color, 2> colours{{{255, 0, 0, 255}, {0, 255, 0, 128}}};
+            std::array<std::vector<unsigned char>, 2> encoded; std::array<RenderMipLevel, 4> levels{{{8, 8}, {4, 4}, {2, 2}, {1, 1}}};
+            for (unsigned level = 0; level < 2; ++level) {
+                const int size = 8 >> level; std::vector<unsigned char> rgba(std::size_t(size) * size * 4);
+                for (std::size_t i = 0; i < rgba.size(); i += 4) {
+                    rgba[i] = colours[level].r; rgba[i + 1] = colours[level].g; rgba[i + 2] = colours[level].b; rgba[i + 3] = colours[level].a;
+                }
+                encoded[level] = AssetImage::compressBlocks(rgba.data(), size, size, encoding, false);
+                REQUIRE(encoded[level].size() == compressedLevelBytes(size, size));
+                levels[level].compression = format;
+                levels[level].blocks = {reinterpret_cast<const std::byte *>(encoded[level].data()), encoded[level].size()};
+            }
+            TextureDescriptor descriptor; descriptor.compression = format; descriptor.sampling = TextureDescriptor::Sampling::Linear;
+            descriptor.alpha = TextureDescriptor::Alpha::Premultiplied; descriptor.mips = TextureDescriptor::Mips::Generated;
+            auto handle = resources.create(base.get(), 1, descriptor, levels); REQUIRE(handle);
+            auto snapshot = resources.snapshot(handle); REQUIRE(snapshot);
+            CHECK_FALSE(snapshot->pixels); CHECK(snapshot->bytes == 80);
+            std::uint64_t identity = 0;
+            const auto draw = [&](int size) {
+                DrawPacket fill; fill.kind = DrawPacket::Kind::Fill; fill.destination = {0, 0, 16, 16}; fill.color = {0, 0, 0, 255};
+                DrawPacket packet; packet.kind = DrawPacket::Kind::Blit; packet.texture = snapshot; packet.linear = true;
+                packet.source = {0, 0, 8, 8}; packet.destination = {0, 0, float(size), float(size)};
+                RenderFrame frame; frame.identity = ++identity; frame.logicalWidth = frame.logicalHeight = 16;
+                frame.packets = {fill, packet}; REQUIRE(device.submit(std::move(frame))); device.present();
+                CaptureRequest request; request.identity = identity;
+                Surface capture(device.captureSynchronously(request), SDL_DestroySurface); REQUIRE(capture);
+                SDL_Color colour{}; REQUIRE(SDL_ReadSurfacePixel(capture.get(), size / 2, size / 2, &colour.r, &colour.g, &colour.b, &colour.a));
+                return colour;
+            };
+            const auto uploaded = device.telemetry().uploadBytes;
+            auto red = draw(8); CHECK(red.r >= 250); CHECK(red.g <= 4); CHECK(red.b <= 4);
+            CHECK(device.telemetry().uploadBytes - uploaded == 80);
+            // The blocks hold premultiplied colour, blended over black once.
+            auto green = draw(4); CHECK(green.r <= 4); CHECK(std::abs(int(green.g) - 128) <= 6); CHECK(green.b <= 4);
+            // Trimming forgets the GPU copy; the block-only snapshot restores it.
+            const auto deadline = SDL_GetTicks() + 5000;
+            while (device.completion({identity, device.generation()}) == RenderCompletion::Pending && SDL_GetTicks() < deadline) SDL_Delay(1);
+            device.trimRetiredResources(); red = draw(8); CHECK(red.r >= 250);
+            auto invalid = std::make_shared<TextureRevision>(*snapshot); invalid->blocks.back().pop_back();
+            DrawPacket broken; broken.kind = DrawPacket::Kind::Blit; broken.texture = invalid; broken.source = {0, 0, 4, 4}; broken.destination = {0, 0, 4, 4};
+            RenderFrame frame; frame.logicalWidth = frame.logicalHeight = 16; frame.packets = {broken};
+            CHECK_THROWS_AS(device.submit(std::move(frame)), std::invalid_argument);
+        }
     }
 }
 

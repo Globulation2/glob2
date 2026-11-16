@@ -43,6 +43,7 @@ namespace
  F(void, glActiveTexture, (GLenum)) \
  F(void, glTexParameteri, (GLenum, GLenum, GLint)) \
  F(void, glTexImage2D, (GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const void *)) \
+ F(void, glCompressedTexImage2D, (GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, const void *)) \
  F(void, glPixelStorei, (GLenum, GLint)) \
  F(void, glGenBuffers, (GLsizei, GLuint *)) \
  F(void, glDeleteBuffers, (GLsizei, const GLuint *)) \
@@ -184,6 +185,8 @@ class ProgrammableGLDevice final : public RenderDevice
     struct TeamColorProgram { GLuint program=0; GLint viewport=-1,image=-1,alpha=-1,linear=-1,premultiplied=-1,levels=-1,uvBounds=-1; };
     TeamColorProgram teamProgram;
     bool supportsWorld = false, supportsSkins = false;
+    // Block formats sampled directly (see TextureCompression and initCompression).
+    bool bc3Supported = false, astcSupported = false;
     struct SkinProgram { GLuint program=0; GLint shell=-1,furLength=-1,shellDepth=-1,region=-1,bones=-1,view=-1,normalView=-1,paint=-1,material=-1; };
     SkinProgram skinProgram, rigProgram;
     GLuint screenDepth = 0;
@@ -407,12 +410,71 @@ class ProgrammableGLDevice final : public RenderDevice
         gl.glBindFramebuffer(GL_DRAW_FRAMEBUFFER, committedFramebuffer);
         gl.glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, committedTexture, 0);
     }
+    void initCompression(bool es)
+    {
+        // Prepared artwork as blocks: BC3 where S3TC is sampled (desktop), ASTC
+        // 4x4 on GL ES devices with the LDR profile (phones). The browser build
+        // keeps uncompressed uploads. GLOB2_TEXTURE_COMPRESSION=none|bc3|astc
+        // restricts it, as on SDL GPU.
+#ifndef __EMSCRIPTEN__
+        const char *wanted = SDL_getenv_unsafe("GLOB2_TEXTURE_COMPRESSION");
+        const std::string choice = wanted ? wanted : "";
+        bc3Supported = (choice.empty() || choice == "bc3") && SDL_GL_ExtensionSupported("GL_EXT_texture_compression_s3tc");
+        astcSupported = (choice.empty() || choice == "astc") && es && SDL_GL_ExtensionSupported("GL_KHR_texture_compression_astc_ldr");
+#else
+        (void)es;
+#endif
+    }
+    static GLenum blockFormat(TextureCompression compression)
+    {
+        return compression == TextureCompression::BC3 ? 0x83F3 /* GL_COMPRESSED_RGBA_S3TC_DXT5_EXT */
+                                                      : 0x93B0 /* GL_COMPRESSED_RGBA_ASTC_4x4_KHR */;
+    }
+    //! Levels the device stores: blocks of a compressed revision, or RGBA8 levels.
+    static std::size_t levelCount(const TextureRevision &source)
+    {
+        return source.descriptor.compression != TextureCompression::Uncompressed ? source.blocks.size() : source.mips.size() + 1;
+    }
+    void validateBlocks(const TextureRevision &source, bool target) const
+    {
+        const auto &descriptor = source.descriptor;
+        if ((descriptor.compression == TextureCompression::BC3 && !bc3Supported) ||
+            (descriptor.compression == TextureCompression::ASTC4x4 && !astcSupported))
+            throw std::invalid_argument("GL device cannot sample this block format");
+        if (target) throw std::invalid_argument("Compressed textures cannot be render targets");
+        if (descriptor.alpha != TextureDescriptor::Alpha::Premultiplied || descriptor.mips != TextureDescriptor::Mips::Generated ||
+            source.blocks.empty() || source.blocks.size() > 16)
+            throw std::invalid_argument("Invalid compressed texture descriptor");
+        for (std::size_t index = 0; index < source.blocks.size(); ++index) {
+            const int w = descriptor.width >> index, h = descriptor.height >> index;
+            if (w < 4 || h < 4 || source.blocks[index].size() != compressedLevelBytes(w, h))
+                throw std::invalid_argument("Invalid compressed level blocks");
+        }
+    }
+    // Uploads a compressed revision's blocks as they are: no conversion, flip
+    // or premultiplication (blocks hold premultiplied colour).
+    void uploadBlocks(Allocation &allocation, const TextureRevision &source)
+    {
+        const auto &descriptor = source.descriptor;
+        const GLenum format = blockFormat(descriptor.compression);
+        for (std::size_t index = 0; index < source.blocks.size(); ++index) {
+            const auto &blocks = source.blocks[index];
+            gl.glCompressedTexImage2D(GL_TEXTURE_2D, GLint(index), format, descriptor.width >> index, descriptor.height >> index, 0,
+                GLsizei(blocks.size()), blocks.data());
+        }
+        gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, GLint(source.blocks.size() - 1));
+        allocation.premultiplied = true;
+    }
     Allocation allocate(TextureSnapshot snapshot, bool premultiplied, bool target)
     {
         const auto &descriptor = snapshot->descriptor;
         if (descriptor.width <= 0 || descriptor.height <= 0 || descriptor.width > maxTexture || descriptor.height > maxTexture)
             throw std::invalid_argument("Invalid GL texture dimensions");
-        auto required = std::uint64_t(descriptor.width) * descriptor.height * 4;
+        const bool compressed = descriptor.compression != TextureCompression::Uncompressed;
+        if (compressed) validateBlocks(*snapshot, target);
+        std::uint64_t required = 0;
+        if (compressed) for (const auto &level : snapshot->blocks) required += level.size();
+        else required = std::uint64_t(descriptor.width) * descriptor.height * 4;
         for (const auto &level : snapshot->mips) required += level.rgba.size();
         if (target && descriptor.mips != TextureDescriptor::Mips::Disabled) throw std::invalid_argument("Authored mip texture cannot be a render target");
         const auto category = std::size_t(descriptor.budgetClass);
@@ -420,6 +482,19 @@ class ProgrammableGLDevice final : public RenderDevice
         if (required > TextureBudget || required > ClassLimits[category]) throw std::length_error("GL texture exceeds resource budget");
         const std::size_t bytes = std::size_t(required);
         trim(bytes, category);
+        if (compressed) {
+            Allocation allocation; allocation.snapshot = snapshot; allocation.bytes = bytes; allocation.category = category;
+            gl.glGenTextures(1, &allocation.texture); gl.glBindTexture(GL_TEXTURE_2D, allocation.texture);
+            gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, descriptor.addressU == TextureDescriptor::Address::Repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+            gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, descriptor.addressV == TextureDescriptor::Address::Repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+            gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            uploadBlocks(allocation, *snapshot);
+            textureBytes += bytes; classBytes[category] += bytes; counts.uploadBytes += bytes; counts.resourceBytes = textureBytes;
+            try { check("Upload compressed texture"); }
+            catch (...) { destroy(allocation); counts.resourceBytes = textureBytes; throw; }
+            return allocation;
+        }
         std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> converted(nullptr, SDL_DestroySurface);
         SDL_Surface *pixels = snapshot->pixels.get();
         if (!pixels) throw std::invalid_argument("GL texture has no restoration pixels");
@@ -737,7 +812,7 @@ void main() {
         gl.glUniform1f(teamProgram.alpha, packet.alpha / 255.f);
         gl.glUniform1f(teamProgram.linear, filtering ? 1.f : 0.f);
         gl.glUniform1f(teamProgram.premultiplied, premultiplied);
-        gl.glUniform1f(teamProgram.levels, mipmapped ? float(packet.texture->mips.size() + 1) : 1.f);
+        gl.glUniform1f(teamProgram.levels, mipmapped ? float(levelCount(*packet.texture)) : 1.f);
         // As the primitive program: adjacent nearest blits of one texture share
         // a batch, so only linear sampling (whose batches share a source) clamps.
         float u0 = 0, v0 = 0, u1 = 1, v1 = 1;
@@ -1213,6 +1288,7 @@ void main() {
                 directTerrainProgram = 0;
                 SDL_LogWarn(SDL_LOG_CATEGORY_RENDER, "Direct terrain unavailable: %s", error.what());
             }
+            initCompression(profile == SDL_GL_CONTEXT_PROFILE_ES);
             SDL_GL_SetSwapInterval(0); screen(); initTiming();
         } catch (...) { cleanup(); throw; }
     }
@@ -1222,6 +1298,7 @@ void main() {
     {
         RenderDeviceCapabilities result{true, true, timingSupported, maxTexture, supportsWorld, supportsWorld, supportsSkins,supportsTerrain,directTerrainProgram != 0};
         result.teamColor = teamProgram.program != 0;
+        result.bc3Textures = bc3Supported; result.astc4x4Textures = astcSupported;
         return result;
     }
     bool canBeginFrame() override

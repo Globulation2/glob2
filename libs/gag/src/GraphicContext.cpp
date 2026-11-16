@@ -1152,6 +1152,9 @@ int GraphicContext::maximumTextureSize() const
 			if (optionFlags & USEGPU)
 			{
 				glState.checkExtensions();
+				// checkExtensions chooses legacy OpenGL's straight-alpha blocks;
+				// a presentation device (programmable GL) samples premultiplied ones.
+				if (presentationDevice) selectDeviceBlockCompression(*presentationDevice);
                 restoreSurfaceTextures();
 				// A failed compile/link logs once and leaves hasUnitShader() false;
 				// callers fall back to the CPU team-color cache for this context's
