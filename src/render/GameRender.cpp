@@ -33,6 +33,7 @@
 
 #include "GameRenderInternal.h"
 #include "SoftwareTerrainCache.h"
+#include <HighResolutionPolicy.h>
 #include "terrain/DirectTerrain.h"
 #include "unit/render/UnitMotion.h"
 #include "UnitEffects.h"
@@ -249,9 +250,8 @@ void MapDrawer::drawSceneMapRegion(const PresentationFrame& scene, int sx, int s
 	// HD sprite textures follow the zoom; interface drawing still needs the
 	// display's own scale. Captures draw once at their own scale and keep it.
 	if (!(drawOptions & Game::DRAW_TILED_CAPTURE))
-		GAGCore::Sprite::setHighResolutionDensity(std::max(
-			double(globalContainer->gfx->mapTransformScale() * globalContainer->gfx->getRasterScale()),
-			double(globalContainer->gfx->getRasterScale())));
+		GAGCore::Sprite::setHighResolutionDensity(GAGCore::HighResolutionPolicy::density(
+			globalContainer->gfx->mapTransformScale(), globalContainer->gfx->getRasterScale()));
 	// Queue constant-size overlays for this frame, and draw whatever the later
 	// passes queued however drawMap returns.
 	MapRenderState* drawnRender = globalContainer->settings.adaptiveZoomDetail ? &view.render : nullptr;

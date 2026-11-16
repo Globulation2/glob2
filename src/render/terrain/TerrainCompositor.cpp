@@ -9,6 +9,7 @@
 #include "render/scene/SceneMap.h"
 #include <Toolkit.h>
 #include <SteadyClock.h>
+#include <HighResolutionPolicy.h>
 #ifdef __EMSCRIPTEN__
 #include <ApplicationHost.h>
 #include <bitset>
@@ -838,7 +839,7 @@ void Compositor::prepareVisible(bool hd, int time, const SceneMap &map,
 }
 bool Compositor::highResolutionPages(double density)
 {
-    if (pageDetail.update(density > 1 ? 0 : 1, GAGCore::steadyClockNanoseconds(),
+    if (pageDetail.update(GAGCore::HighResolutionPolicy::wantsHighResolution(density) ? 0 : 1, GAGCore::steadyClockNanoseconds(),
                           GAGCore::Sprite::highResolutionDetailDelay()) &&
         pageDetail.level())
         // Deferred banks retire their frames when the next window declares

@@ -150,9 +150,21 @@ int GraphicContext::maximumTextureSize() const
 #endif
 		return AssetImage::BlockCompression::Uncompressed;
 	}
+	// The chains workers prepare are HD sprite frames, drawn only where the HD
+	// sprite policy shows HD. Their blocks show: 4x4 blocks step along the
+	// edges where a frame's base and team layers meet (2% of the zoomed-in
+	// game screen in the renderer parity scenes, on devices and legacy GL
+	// alike). They draw uncompressed, like the portable renderer's;
+	// GLOB2_HD_BLOCK_COMPRESSION=1 trades that for a quarter of the memory.
+	static bool highResolutionBlocksWanted()
+	{
+		const char *wanted = SDL_getenv_unsafe("GLOB2_HD_BLOCK_COMPRESSION");
+		return wanted && std::string_view(wanted) == "1";
+	}
 	void selectDeviceBlockCompression(const RenderDevice &device)
 	{
-		AssetImage::highResolutionCompression = preferredDeviceBlockCompression(device.capabilities());
+		AssetImage::highResolutionCompression = highResolutionBlocksWanted()
+			? preferredDeviceBlockCompression(device.capabilities()) : AssetImage::BlockCompression::Uncompressed;
 	}
 	const bool EXPERIMENTAL = false;
 
@@ -191,7 +203,8 @@ int GraphicContext::maximumTextureSize() const
 #endif
 		blockCompressionFormat = blockCompression == AssetImage::BlockCompression::BC3 ? 0x83F3 // COMPRESSED_RGBA_S3TC_DXT5_EXT
 			: blockCompression == AssetImage::BlockCompression::ETC2 ? 0x9278 : 0; // COMPRESSED_RGBA8_ETC2_EAC
-		AssetImage::highResolutionCompression = blockCompression;
+		AssetImage::highResolutionCompression = highResolutionBlocksWanted()
+			? blockCompression : AssetImage::BlockCompression::Uncompressed;
 		const char *glVendor = (const char *)glGetString(GL_VENDOR);
 		if (strstr(glVendor, "ATI"))
 			useATIWorkaround = true; // ugly temporary bug fix for bug 13823. We think it is an ATI driver bug
@@ -1083,6 +1096,10 @@ int GraphicContext::maximumTextureSize() const
             }
             renderer->outputSize(drawableW, drawableH);
         }
+		// The portable and software renderers sample RGBA pixels: workers
+		// building an HD level for them encode no blocks. A device or legacy
+		// GL names its own format below.
+		if (!(flags & USEGPU)) AssetImage::highResolutionCompression = AssetImage::BlockCompression::Uncompressed;
 		applyWindowMinimumSize();
 		// Own the drawing surface: SDL invalidates its window surface during resizing.
 		sdlsurface = createFrameSurface(logicalW, logicalH);

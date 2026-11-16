@@ -122,6 +122,9 @@ std::unique_ptr<RenderBackend> makeDeviceRenderBackend(RenderDevice &, RenderRes
 // budget class. False, changing nothing, without that snapshot or the room.
 bool retainDeviceTexture(RenderBackend &, const void *key, std::uint64_t revision);
 std::size_t retainedDeviceTextureBytes(const RenderBackend &);
+//! The retained bytes of one budget class, and that class's limit (0 for other backends).
+std::size_t retainedDeviceTextureBytes(const RenderBackend &, TextureDescriptor::BudgetClass);
+std::size_t deviceTextureClassLimit(const RenderBackend &, TextureDescriptor::BudgetClass);
 // Moves every cached snapshot to the adapter replacing it (context recovery);
 // both must share one registry. The previous adapter keeps none.
 void adoptDeviceTextures(RenderBackend &previous, RenderBackend &replacement);

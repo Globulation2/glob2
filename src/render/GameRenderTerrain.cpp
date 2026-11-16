@@ -235,7 +235,9 @@ bool drawCachedResources(Uint64 mapIdentity, const SceneMap& map, int left, int 
             rowLayer.artworkFrames = rowLayer.revision;
             rowLayer.artworkSprite = spriteRevision;
         }
-        return rowLayer.artwork;
+        // The HD sprite policy switching between HD and native frames changes
+        // the artwork as a new HD layer would.
+        return rowLayer.artwork + GAGCore::Sprite::highResolutionPolicyRevision();
     };
     auto drawLayer = [&](GAGCore::Sprite *layerSprite, ResourceRowCache::Layer &rowLayer,
         int layerKey, int y, int mapY)
