@@ -545,6 +545,7 @@ int GraphicContext::maximumTextureSize() const
             mapTransformActive = uiTransformActive = false;
             mapScale = 1;
         }
+        cpuMapClip = false;
         // Both native-display and transformed passes borrow this owner.
         // Invalidate the active pointer before destroying its target/backend.
         if (renderer == softwareRasterizer.get()) renderer = nullptr;

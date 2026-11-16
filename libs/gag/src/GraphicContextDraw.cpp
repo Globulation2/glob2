@@ -143,8 +143,15 @@ namespace GAGCore
             mapClipX=cx; mapClipY=cy; mapClipW=cw; mapClipH=ch;
             SDL_Rect bounds{cx,cy,cw,ch}; renderer->transform(zoom,x,y,&bounds); return;
         }
+        if (!(optionFlags & USEGPU)) {
+            // The software renderer at 1:1 draws straight to its surface. The
+            // map still stops at its rectangle, as on every other renderer:
+            // without it the map draws under the top bar and the side panel.
+            mapClipX=cx; mapClipY=cy; mapClipW=cw; mapClipH=ch; cpuMapClip=true;
+            setClipRect(cx,cy,cw,ch);
+            return;
+        }
 #ifdef HAVE_OPENGL
-		if(!(optionFlags & USEGPU))return;
 		assert(!mapTransformActive);
 		Sprite::flushBatches(this);
 		mapTranslateX=x;mapTranslateY=y;mapTransformActive=true;mapScale=zoom;mapClipX=cx;mapClipY=cy;mapClipW=cw;mapClipH=ch;
@@ -156,6 +163,7 @@ namespace GAGCore
 		if (renderBatch)
 			renderBatch->stateChange();
         if (renderer) { renderer->transform(1,0,0,nullptr); mapTransformActive=false; mapScale=1; endSoftwareTransform(); setClipRect(); return; }
+        if (cpuMapClip) { cpuMapClip=false; setClipRect(); return; }
 #ifdef HAVE_OPENGL
 		if(!mapTransformActive)return;
 		Sprite::flushBatches(this);
@@ -379,7 +387,7 @@ namespace GAGCore
             x=clipped.x;y=clipped.y;w=clipped.w;h=clipped.h;
         }
 #endif
-		if(mapTransformActive){x=mapClipX;y=mapClipY;w=mapClipW;h=mapClipH;}
+		if(mapTransformActive || cpuMapClip){x=mapClipX;y=mapClipY;w=mapClipW;h=mapClipH;}
 		DrawableSurface::setClipRect(x, y, w, h);
 		if (nativeSoftware) SDL_SetSurfaceClipRect(sdlsurface, nullptr);
         if (renderer) renderer->clip(mapTransformActive ? nullptr : &clipRect);
@@ -423,7 +431,7 @@ namespace GAGCore
             uiTransformActive=true; return;
         }
 #endif
-		if(mapTransformActive){setClipRect(mapClipX,mapClipY,mapClipW,mapClipH);return;}
+		if(mapTransformActive || cpuMapClip){setClipRect(mapClipX,mapClipY,mapClipW,mapClipH);return;}
 		DrawableSurface::setClipRect();
 		clipRect = SDL_Rect{0,0,getW(),getH()};
         if (renderer) renderer->clip(nullptr);
