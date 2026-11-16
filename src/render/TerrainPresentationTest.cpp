@@ -1241,6 +1241,61 @@ TEST_SUITE("TerrainPresentation")
 	}
 #if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
 
+	TEST_CASE("Legacy GL game-load preload leaves sprites and fills drawing as before [display]")
+	{
+		// GameGUI::prepareDirectTerrain builds the whole-map base at game load,
+		// outside any draw. Its texture uploads must not leave another texture
+		// unit active or a binding behind the sprite path's cache: on macOS
+		// that drew resource sprites blank and health bars and the HUD black.
+		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
+			.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU),
+			.beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::LegacyGL; }});
+		auto &gfx = *globals->gfx;
+		REQUIRE(gfx.isLegacyGLScreen());
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .terrain = WATER, .discovered = true});
+		const TerrainType kinds[] = {WATER, GRASS, SAND};
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 64; ++x)
+				fixture.game.map.setVertexTerrain(x, y, kinds[((x / 3) * 7 + (y / 3) * 5) % 3]);
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		GAGCore::Sprite resources;
+		REQUIRE(resources.load("data/gfx/ressource"));
+		const auto draw = [&]
+		{
+			gfx.setClipRect();
+			gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
+			for (int i = 0; i < std::min(resources.getFrameCount(), 32); ++i)
+				gfx.drawSprite(20 + (i % 8) * 52, 20 + (i / 8) * 52, &resources, i);
+			// A health bar: an opaque fill and a translucent one.
+			gfx.drawFilledRect(40, 300, 120, 6, 40, 220, 40);
+			gfx.drawFilledRect(40, 310, 120, 6, 220, 40, 40, 128);
+			return terrainPixels(true);
+		};
+		draw();
+		const auto before = draw();
+		GLint unitBefore = 0, programBefore = 0;
+		glGetIntegerv(GL_ACTIVE_TEXTURE, &unitBefore);
+		glGetIntegerv(GL_CURRENT_PROGRAM, &programBefore);
+		DirectTerrain atlas;
+		for (Patience waiting; waiting() && !atlas.textureBytes();)
+		{
+			atlas.preload(gfx, scene);
+			if (!atlas.textureBytes()) SDL_Delay(1);
+		}
+		REQUIRE(atlas.textureBytes() > 0);
+		GLint unitAfter = 0, programAfter = 0;
+		glGetIntegerv(GL_ACTIVE_TEXTURE, &unitAfter);
+		glGetIntegerv(GL_CURRENT_PROGRAM, &programAfter);
+		CHECK(unitAfter == unitBefore);
+		CHECK(programAfter == programBefore);
+		CHECK(glGetError() == GL_NO_ERROR);
+		const auto after = draw();
+		std::size_t changed = 0;
+		for (std::size_t i = 0; i < before.size(); ++i) changed += before[i] != after[i];
+		CHECK(changed == 0);
+	}
+
 	TEST_CASE("Legacy GL single pass animates water and shores and hides undiscovered terrain [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,

@@ -596,6 +596,9 @@ jobs:
     timeout-minutes: 180
     runs-on: ${{ matrix.runner }}
     env:
+      # Compile SDL GPU's Metal libraries only with a toolchain buildsys/metal-tool-lock.json lists, and fail
+      # the build rather than ship an app without them (docs/architecture/rendering.md, "Apple Metal shaders").
+      GLOB2_METAL_REQUIRE_COMMITTED_LOCK: '1'
       MACOSX_DEPLOYMENT_TARGET: '15.0'
       PYTHONPATH: ${{ github.workspace }}
     steps:

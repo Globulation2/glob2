@@ -1313,12 +1313,17 @@ int GraphicContext::maximumTextureSize() const
 		}
 	}
 
-	void GraphicContext::nextFrame(void)
+	void GraphicContext::resetFrameAllowances()
 	{
-        ++captureFrameIdentity;
         deviceReleasesThisFrame = 0;
         deviceUploadsThisFrame = 0;
         deviceMipBuildBytesThisFrame = 0;
+	}
+
+	void GraphicContext::nextFrame(void)
+	{
+        ++captureFrameIdentity;
+        resetFrameAllowances();
         endBrowserTextFrame();
 		DrawableSurface::nextFrame();
 		if (sdlsurface)

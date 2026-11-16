@@ -1,0 +1,167 @@
+# Checks the trusted Metal tool lock (buildsys/metal-tool-lock.json) against every
+# Mac runner image that builds macOS or iOS releases, and uploads each image's
+# toolchain entry plus a combined candidate lock for review. It never commits or
+# pushes: the lock changes only through a reviewed pull request
+# (docs/architecture/rendering.md, "Apple Metal shaders").
+#
+# On pull requests that touch the lock, the Xcode pin or the lock tooling it fails
+# when a release runner's toolchain is missing from the lock, so a lock or pin
+# change cannot land while some release job would refuse to compile Metal.
+name: Apple Metal tool lock
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Globulation2/glob2 branch, tag or commit to check
+        required: true
+        default: master
+        type: string
+  pull_request:
+    paths:
+      - buildsys/metal-tool-lock.json
+      - platforms/mobile/toolchain.json
+      - tools/shaders/metal_tool_lock.py
+      - .github/workflows/apple-metal-tool-lock.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: apple-metal-tool-lock-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && github.ref != format('refs/heads/{0}', github.event.repository.default_branch)) }}
+
+jobs:
+  toolchain:
+    if: ${{ !github.event.repository.fork || github.event_name == 'pull_request' }}
+    name: Metal toolchain on ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # The macOS release, GOG and signing jobs.
+          - runner: macos-15
+            sdks: --sdk macosx
+          - runner: macos-15-intel
+            sdks: --sdk macosx
+          # The Mac App Store and macOS CI jobs.
+          - runner: macos-26
+            sdks: --sdk macosx
+          # iOS TestFlight builds, which need the pinned Xcode.
+          - runner: xcode-27
+            sdks: --sdk macosx --sdk iphoneos
+            pinned: true
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.sha }}
+          persist-credentials: false
+      # iOS releases select the pinned Xcode; never fall back to the image default here.
+      - name: Select the pinned Xcode
+        if: matrix.pinned
+        run: |
+          set -euo pipefail
+          xcode=$(python3 -c 'import json; print(json.load(open("platforms/mobile/toolchain.json"))["ios"]["xcode"])')
+          developer="/Applications/Xcode_${xcode}.app/Contents/Developer"
+          if [ ! -d "$developer" ]; then
+            echo "::error::Xcode $xcode is not installed at $developer on this runner image; update the pin in platforms/mobile/toolchain.json or the runner"
+            exit 1
+          fi
+          echo "DEVELOPER_DIR=$developer" >> "$GITHUB_ENV"
+      - name: Record this runner's toolchain
+        env:
+          SDKS: ${{ matrix.sdks }}
+          RUNNER_LABEL: ${{ matrix.runner }}
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/metal-tool-lock
+          # shellcheck disable=SC2086
+          python3 tools/shaders/metal_tool_lock.py $SDKS --output "artifacts/metal-tool-lock/$RUNNER_LABEL.json"
+          {
+            echo "## $RUNNER_LABEL"
+            echo '```json'
+            cat "artifacts/metal-tool-lock/$RUNNER_LABEL.json"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: metal-toolchain-${{ matrix.runner }}
+          path: artifacts/metal-tool-lock/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Require the committed lock to list this toolchain
+        env:
+          SDKS: ${{ matrix.sdks }}
+        run: |
+          set -euo pipefail
+          # shellcheck disable=SC2086
+          python3 tools/shaders/metal_tool_lock.py $SDKS --check
+      # A listed toolchain must also compile the whole shader set, as release builds
+      # do: pinned glslang and SPIRV-Cross from verified source, then strict Metal.
+      - name: Compile the Metal shaders with this toolchain
+        env:
+          SDKS: ${{ matrix.sdks }}
+          GLOB2_METAL_REQUIRE_COMMITTED_LOCK: '1'
+        run: |
+          set -euo pipefail
+          python3 -m venv "$RUNNER_TEMP/metal-build-tools"
+          "$RUNNER_TEMP/metal-build-tools/bin/pip" install --quiet ninja==1.11.1.1 cmake==4.4.3
+          export PATH="$RUNNER_TEMP/metal-build-tools/bin:$PATH"
+          for sdk in $(printf '%s\n' $SDKS | grep -v -- --sdk); do
+            python3 - "$sdk" <<'PYTHON'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, 'buildsys')
+          import renderer_shaders
+          sdk = sys.argv[1]
+          target = {'macosx': 'macos', 'iphoneos': 'ios'}[sdk]
+          shaders = renderer_shaders.prepare(Path.cwd(), Path('artifacts/metal-compile') / sdk, apple_sdk=sdk)
+          renderer_shaders.require_sdl_gpu_shaders(shaders, target)
+          print('Compiled the complete Metal set for', sdk)
+          PYTHON
+          done
+
+  combine:
+    needs: toolchain
+    if: ${{ always() && !cancelled() }}
+    name: Combine a candidate lock for review
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: metal-toolchain-*
+          path: ${{ runner.temp }}/toolchains
+          merge-multiple: true
+      - name: Combine the committed lock with every runner's toolchain
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/metal-tool-lock
+          locks=("$RUNNER_TEMP"/toolchains/*.json)
+          if [ -f buildsys/metal-tool-lock.json ]; then locks=(buildsys/metal-tool-lock.json "${locks[@]}"); fi
+          python3 tools/shaders/metal_tool_lock.py --combine "${locks[@]}" > artifacts/metal-tool-lock/metal-tool-lock.json
+          {
+            echo "## Candidate buildsys/metal-tool-lock.json"
+            echo "Review it, drop toolchains no release job uses any more, and commit it in a pull request."
+            echo '```json'
+            cat artifacts/metal-tool-lock/metal-tool-lock.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: metal-tool-lock
+          path: artifacts/metal-tool-lock/
+          if-no-files-found: error
+          retention-days: 30

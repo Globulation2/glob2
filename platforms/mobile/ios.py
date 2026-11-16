@@ -191,8 +191,8 @@ def main():
     export_assets(ROOT, asset_root, platform='ios', optimized=True, lossy=args.release, jobs=args.jobs,
                       terrain_sheets=packing != 'legacy', packed_hd_sprites=packing != 'legacy',
                       video_sprites=packing == 'video')
-    shutil.copytree(output/'shaders', asset_root/'shaders', dirs_exist_ok=True,
-                    ignore=shutil.ignore_patterns('.*', 'RendererShaderLayouts.h', 'native-sources', '*.air'))
+    import renderer_shaders
+    renderer_shaders.install_runtime_shaders(output/'shaders', asset_root/'shaders')
     shutil.copytree(recording_prefix/'share/licenses/recording',asset_root/'licenses/recording',dirs_exist_ok=True)
     notice=asset_root/'licenses/MoltenVK'
     notice.mkdir(parents=True,exist_ok=True)

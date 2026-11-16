@@ -100,6 +100,8 @@ jobs:
     name: Build unsigned iPhone archive
     runs-on: xcode-27
     timeout-minutes: 180
+    permissions:
+      contents: read
     outputs:
       build_number: ${{ steps.version.outputs.build_number }}
       commit: ${{ needs.credentials.outputs.commit }}
@@ -162,16 +164,35 @@ jobs:
       - name: Build pinned iPhone dependencies
         run: python3 platforms/mobile/dependencies.py --target ios --environment device --release --jobs 2
 
-      # SDL GPU on iOS needs offline Metal libraries, which need a translated
-      # shader bundle and a verified Metal tool lock that this workflow does not
-      # provision yet. Package portable SDL explicitly instead of silently.
+      # Sources with a committed Metal tool lock compile SDL GPU's Metal libraries on
+      # this Mac as part of the build (pinned glslang and SPIRV-Cross are built from
+      # verified source) and fail closed: the runner's Xcode, SDK and compiler must
+      # match the reviewed lock, and the package must hold the complete Metal set.
+      # Older tags without the lock package portable SDL only, with a warning.
+      - name: Require the committed Metal tool lock
+        id: metal
+        run: |
+          set -euo pipefail
+          if [ -f buildsys/metal-tool-lock.json ]; then
+            if ! python3 tools/shaders/metal_tool_lock.py --check --sdk iphoneos; then
+              echo "::error::The runner's Xcode no longer matches buildsys/metal-tool-lock.json. Run the Apple Metal tool lock workflow (.github/workflows/apple-metal-tool-lock.yml), review its artifact and update the lock in a pull request."
+              exit 1
+            fi
+            echo "GLOB2_METAL_REQUIRE_COMMITTED_LOCK=1" >> "$GITHUB_ENV"
+            echo "required=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::This source has no buildsys/metal-tool-lock.json, so the TestFlight build ships without SDL GPU Metal shaders (portable SDL only)."
+            echo "required=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Compile game and generate Xcode project
+        env:
+          METAL_REQUIRED: ${{ steps.metal.outputs.required }}
         run: |
           set -euo pipefail
           sdl_gpu=()
           # Tags older than the SDL GPU packaging check do not know the option.
-          if python3 platforms/mobile/ios.py --help | grep -q -- --allow-missing-sdl-gpu; then
-            echo "::warning::This TestFlight build ships without SDL GPU Metal shaders (portable SDL only)"
+          if [ "$METAL_REQUIRED" != true ] && python3 platforms/mobile/ios.py --help | grep -q -- --allow-missing-sdl-gpu; then
             sdl_gpu=(--allow-missing-sdl-gpu)
           fi
           python3 platforms/mobile/ios.py configure --environment device --release \

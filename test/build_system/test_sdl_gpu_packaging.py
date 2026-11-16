@@ -58,7 +58,7 @@ class PackagingRequirementTests(unittest.TestCase):
     def test_ios_requires_metal_libraries_not_spirv(self):
         with tempfile.TemporaryDirectory() as directory:
             shader_set(directory)
-            with self.assertRaisesRegex(ValueError, 'ios packaging.*GLOB2_METAL_TOOL_LOCK'):
+            with self.assertRaisesRegex(ValueError, 'ios packaging.*compile Metal automatically'):
                 renderer_shaders.require_sdl_gpu_shaders(directory, 'ios')
         with tempfile.TemporaryDirectory() as directory:
             shader_set(directory, 'metal', 'metallib', '.metallib', METAL)

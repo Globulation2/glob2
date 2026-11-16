@@ -399,13 +399,17 @@ SPIR-V; CI jobs and browser builds keep their explicit configuration. glslang is
 development dependency: nothing at runtime links or ships it. Android packaging
 requires the complete Vulkan set and iOS device packaging the Metal set (see the
 mobile guides); without the platform’s offline binaries the experimental SDL GPU
-family is unavailable.
+family is unavailable. macOS and iOS device builds compile the Metal set
+automatically, provisioning pinned SPIRV-Cross (`buildsys/spirv_cross_tool.py`)
+from verified source the same way; see
+[Apple Metal shaders](../architecture/rendering.md#apple-metal-shaders).
 `GLOB2_NAGA` selects pinned Naga 27.0.0 for browser WGSL. Optional
 `GLOB2_SPIRV_CROSS` and `GLOB2_DXC` select the pinned build-only native translators
 described in the rendering guide; together with glslang they produce Direct3D 12
-DXIL. On Apple build hosts, `GLOB2_METAL_SDK` and
-`GLOB2_METAL_TOOL_LOCK` select the verified offline Metal SDK and tool receipt;
-`DEVELOPER_DIR` scopes the selected Xcode installation. `GLOB2_RENDER_SHADER_INPUT`
+DXIL. Apple builds choose their Metal SDK and tool lock themselves;
+`GLOB2_METAL_SDK` and `GLOB2_METAL_TOOL_LOCK` only apply to an imported prebuilt
+bundle, `GLOB2_METAL_REQUIRE_COMMITTED_LOCK=1` makes release builds fail closed,
+and `DEVELOPER_DIR` scopes the selected Xcode installation. `GLOB2_RENDER_SHADER_INPUT`
 imports prebuilt shaders only after validating source, layout and artifact
 receipts. These paths are described in the rendering guide. No shader translation compiler ships with the game. Generated native assets install under
 `glob2/shaders`; browser GLSL assets are preloaded under `/shaders/webgl2`.

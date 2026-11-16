@@ -79,7 +79,7 @@ def skin_materials(args):
 def shaders(args):
     import renderer_shaders
     renderer_shaders.verify_compute(ROOT)
-    renderer_shaders.prepare(ROOT, Path(args.builddir))
+    renderer_shaders.prepare(ROOT, Path(args.builddir), apple_sdk=args.apple_sdk)
     _touch(args.stamp)
 
 
@@ -87,6 +87,10 @@ def shader_inputs(args):
     import renderer_shaders
     import glslang_tool
     paths = list(renderer_shaders.inputs(ROOT))
+    # Metal is recompiled when its committed tool lock changes.
+    lock = ROOT / 'buildsys/metal-tool-lock.json'
+    if lock.is_file():
+        paths.append(lock)
     # Regenerate SPIR-V when the provisioned compiler appears or changes.
     compiler = glslang_tool.resolve_for_build()
     if compiler and Path(compiler).is_file():
@@ -282,7 +286,9 @@ def mobile_configure(args):
         + ('#define GLOB2_AMAZON_RELEASE 1\n' if identity.get('amazon') else '') + client_feature_header(identity))
     skin_materials.generate(ROOT, output)
     renderer_shaders.verify_compute(ROOT)
-    renderer_shaders.prepare(ROOT, output)
+    # iOS device builds compile SDL GPU's Metal libraries; SDL GPU does not run in the Simulator.
+    renderer_shaders.prepare(ROOT, output, apple_sdk='iphoneos' if identity['target'] == 'ios' and
+                             identity.get('environment', 'device') == 'device' else None)
     checkout_paths.write(output, PACKAGE_SOURCE_DIR='.', GLOB2_RENDER_SHADER_DIR=str((output / 'shaders').resolve()))
     environment = dict(os.environ)
     # Cross builds must not inherit host include/library injection.
@@ -790,7 +796,8 @@ def main(argv=None):
     sub.add_argument('--profile', required=True)
     command('build-stamp', build_stamp)
     command('skin-materials', skin_materials, stamp=True)
-    command('shaders', shaders, stamp=True)
+    sub = command('shaders', shaders, stamp=True)
+    sub.add_argument('--apple-sdk', choices=('macosx',), help='Also compile Metal for the macOS app')
     command('shader-inputs', shader_inputs, builddir=False)
     command('hive-api', hive_api, stamp=True)
     command('skin-render', skin_render, stamp=True)

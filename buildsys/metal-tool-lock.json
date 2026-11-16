@@ -1,0 +1,39 @@
+{
+  "toolchains": [
+    {
+      "xcodeVersion": "Xcode 27.2\nBuild version 27B52",
+      "sdks": {
+        "iphoneos": {
+          "sdkVersion": "27.2",
+          "metalSha256": "b5a27d6aa4f412e7e1a15ee8a6da1f0c02f5fad66203398ac0368cc580c4cc0a",
+          "metallibSha256": "3510ace70e1652fe2cf70c1608df0ce0660339c5a656f4e8bb4522fedfb8a86c"
+        },
+        "macosx": {
+          "sdkVersion": "27.2",
+          "metalSha256": "b5a27d6aa4f412e7e1a15ee8a6da1f0c02f5fad66203398ac0368cc580c4cc0a",
+          "metallibSha256": "3510ace70e1652fe2cf70c1608df0ce0660339c5a656f4e8bb4522fedfb8a86c"
+        }
+      }
+    },
+    {
+      "xcodeVersion": "Xcode 26.6\nBuild version 17F113",
+      "sdks": {
+        "macosx": {
+          "sdkVersion": "26.5",
+          "metalSha256": "3457ceed7d7e9cd5ac4e96affa8726df72331e19f3a836ece5c0758e0ba79f54",
+          "metallibSha256": "0f391fad93f257988128848b76eec747ddf6863cff871ee9b9518152a8db68ac"
+        }
+      }
+    },
+    {
+      "xcodeVersion": "Xcode 16.4\nBuild version 16F6",
+      "sdks": {
+        "macosx": {
+          "sdkVersion": "15.5",
+          "metalSha256": "c29f0132834760a987d7e3d92bc955d3968a06444cd9a3caa2f4f94dbf8512e6",
+          "metallibSha256": "af241fb43101e795a5364171e2695255d2e56310018becdfa83317716ba912c8"
+        }
+      }
+    }
+  ]
+}
