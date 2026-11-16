@@ -570,6 +570,8 @@ void GraphicContext::recoverPresentationDevice()
     } discardOnFailure{previous};
     // Recompile programs and recreate every graphics object after context loss.
     // Logical source pixels and immutable geometry remain owned by the registry.
+    // Device renderers present in window pixels (HiDPI), with or without GL.
+    SDL_GetWindowSizeInPixels(window, &drawableW, &drawableH);
     if (configuredBackend == RendererBackend::ProgrammableGL)
         presentationDevice = makeProgrammableGLDevice(window, rendererShaderDirectory());
 #ifndef __EMSCRIPTEN__
