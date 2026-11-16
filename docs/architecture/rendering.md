@@ -114,12 +114,27 @@ copy of their pixels. Writes queue on the texture until a submitted frame applie
 them, all before that frame draws; a dropped frame leaves them queued. A device
 that advertises `directTerrainStreaming` takes this pass at every zoom, with HD
 artwork on or off; its atlases stay at 2048 square, so a view that needs more
-takes coarser tiles. When the device loses a streamed texture (reset, or over its
-budget) or its writes stop draining, the view falls back to pages for that map.
+takes coarser tiles.
+
+SDL GPU always has a low-resolution version of the whole map to draw: only HD
+masks and artwork stream in and out. A map's first prepare builds its per-cell
+tables and then the whole-map base masks at once, the masks on every
+presentation worker (`DIRECT_TERRAIN_BASE` reports the time), so no frame of the
+map draws a mixed cell as a corner split for want of a base mask. Workers take
+base jobs (cells an edit invalidated) ahead of the view's masks. View masks
+queue 64 per worker, nearest the view centre first, and upload within a few
+milliseconds a frame (at most 16 MiB) rather than a fixed count. When the device
+loses a streamed texture (a reset, or staging that stays over its budget for 30
+frames; a texture already drawing defers the frame until then) or its writes
+stop draining, the view starts its streamed textures again, tables and base at
+once (`DIRECT_TERRAIN_RESTART`), and never falls back to pages; only a map whose
+tables exceed the device's texture size does. `GLOB2_BENCH_DEVICE_RESET_AT`
+resets the device at one benchmark frame, and `fallback_scenario.py --reset-at`
+reports the restarts and the cells drawn as corner splits.
 
 The page renderer handles HD artwork on
 programmable OpenGL and WebGPU, backends without direct terrain, tiled captures outside legacy
-OpenGL and SDL GPU, SDL GPU views whose streamed pass failed, and the browser's WebGL2 renderer (legacy OpenGL through Emscripten's WebGL2
+OpenGL and SDL GPU, SDL GPU maps too large for its direct terrain tables, and the browser's WebGL2 renderer (legacy OpenGL through Emscripten's WebGL2
 bridge), where pages draw native artwork until the view's HD families arrive.
 Interactive page and overview views never compose on the graphics thread and
 never block on it: until wanted terrain arrives they draw the best real terrain

@@ -431,6 +431,9 @@ static int run(int argc, char **argv)
             benchmarkStart = SDL_GetPerformanceCounter();
             // A low-memory trim at one measured frame (GLOB2_BENCH_TRIM_AT=frame).
             const int trimAt = std::getenv("GLOB2_BENCH_TRIM_AT") ? std::atoi(std::getenv("GLOB2_BENCH_TRIM_AT")) : -1;
+            // A device reset at one measured frame (GLOB2_BENCH_DEVICE_RESET_AT=frame):
+            // the device drops every texture, streamed direct terrain included.
+            const int resetAt = std::getenv("GLOB2_BENCH_DEVICE_RESET_AT") ? std::atoi(std::getenv("GLOB2_BENCH_DEVICE_RESET_AT")) : -1;
             for (int i = -warmupFrames; i < frames; ++i)
             {
                 if (i == 0) initialCoverage = compositor.highResolutionCoverage();
@@ -440,6 +443,10 @@ static int run(int argc, char **argv)
                     std::printf("PRESENTATION_TRIM frame=%d reason=low-memory snapshot_bytes=%zu device_bytes=%zu\n", i,
                         snapshotBytes(), deviceBytes());
                     gfx->trimPresentationMemory(GAGCore::PresentationTrim::LowMemory);
+                }
+                if (i == resetAt && gfx->renderDevice()) {
+                    std::printf("DEVICE_RESET frame=%d\n", i);
+                    gfx->renderDevice()->reset();
                 }
                 if (trimAt >= 0 && i > trimAt && i <= trimAt + 60 && (i - trimAt) % 10 == 0)
                     std::printf("PRESENTATION_TRIM_AFTER frame=%d frames=%d pending=%d snapshot_bytes=%zu device_bytes=%zu\n", i,
@@ -516,8 +523,9 @@ static int run(int argc, char **argv)
                         static_cast<unsigned long long>(rows.animatedCells));
                     if (const auto *direct = gui.view.render.existingDirectTerrain())
                     {
-                        std::printf("FRAME_DIRECT_TERRAIN frame=%d draws=%u texture_bytes=%zu uploaded_bytes=%zu\n",
-                            i, direct->draws(), direct->textureBytes(), direct->uploadBytes());
+                        std::printf("FRAME_DIRECT_TERRAIN frame=%d draws=%u texture_bytes=%zu uploaded_bytes=%zu split_cells=%zu base_pending=%zu restarts=%u\n",
+                            i, direct->draws(), direct->textureBytes(), direct->uploadBytes(), direct->splitCells(),
+                            direct->pendingBaseMasks(), direct->restartCount());
                         const auto fog = direct->discoveryMetrics();
                         std::printf("FRAME_DIRECT_DISCOVERY frame=%d rebuilt_cells=%zu\n",
                             i, fog.rebuilt);
