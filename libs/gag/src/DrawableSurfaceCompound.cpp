@@ -304,12 +304,17 @@ namespace GAGCore
 		}
 		else
 		{
-			const auto *hdTeam = shown && index < sprite->experimentRotated.size() ? sprite->experimentRotated[index] : nullptr;
 			const auto *nativeTeam = sprite->rotated[index];
-			if (!hdTeam && !nativeTeam) return false;
+			const auto *hdTeam = shown && index < sprite->experimentRotated.size() ? sprite->experimentRotated[index] : nullptr;
 			auto *hdBase = shown && index < sprite->experimentImages.size() ? sprite->experimentImages[index] : nullptr;
-			base = hdBase ? hdBase : sprite->images[index];
-			team = hdTeam ? hdTeam->orig : nativeTeam->orig;
+			if (!hdTeam && !nativeTeam) return false;
+			// As on the portable renderer, a frame draws in HD only once every
+			// layer its native frame has is HD: an HD base under a native team
+			// layer (or the reverse) shows the coarse layer's blocks at its edges.
+			const bool hd = (hdBase || hdTeam) && (!sprite->images[index] || hdBase) && (!nativeTeam || hdTeam);
+			base = hd ? hdBase : sprite->images[index];
+			team = hd ? (hdTeam ? hdTeam->orig : nullptr) : (nativeTeam ? nativeTeam->orig : nullptr);
+			if (!team) return false;
 		}
 		return _gc->drawTeamColoredQuad(base, team, x, y, w, h, alpha, sprite->teamHueShiftDegrees());
 	}
