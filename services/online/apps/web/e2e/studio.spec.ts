@@ -3,9 +3,11 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { AxeBuilder } from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
+import { enableFeatures } from './features.ts';
 import type { SeededHistory } from '../../api/test/historySeed.ts';
 const base = `http://127.0.0.1:${process.env['PORT'] ?? 4280}`;
 test('conversation and canvas fit desktop and phone', async ({ page, request }, info) => {
+  await enableFeatures(page, 'map-studio');
   await page.emulateMedia({ reducedMotion: 'reduce', colorScheme: 'dark' });
   // Snapshot routes do not stream. Keep this test's connection open; SSE recovery has its own tests.
   await page.addInitScript(() => {

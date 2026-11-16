@@ -14,6 +14,7 @@ export {
   t,
   tp,
   translateError,
+  serverExplanation,
   getLocale,
   formatNumber,
   formatDate,

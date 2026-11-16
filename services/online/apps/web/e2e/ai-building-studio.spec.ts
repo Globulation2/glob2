@@ -1,15 +1,20 @@
 import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { expect, test } from '@playwright/test';
+import { enableFeatures } from './features.ts';
 import { AxeBuilder } from '@axe-core/playwright';
 import type { SeededHistory } from '../../api/test/historySeed.ts';
 const id = '11111111-1111-4111-8111-111111111111',
   draftId = '22222222-2222-4222-8222-222222222222',
   revision = '33333333-3333-4333-8333-333333333333';
+// The client shows only catalogued server messages (others read as a generic failure),
+// so mocked errors use real API messages.
+const DRAFT_CHANGED = 'This draft changed. Reload it before saving again.';
 test('building workspace supports revision-bound chat, previews, restoration and mobile panes', async ({
   page,
   request,
 }, info) => {
+  await enableFeatures(page, 'ai-building-studio');
   const seed = (await (await request.get('/__seed')).json()) as SeededHistory;
   await page.context().addCookies([
     {
@@ -72,7 +77,10 @@ test('building workspace supports revision-bound chat, previews, restoration and
       }
       writes.push(route.request().postDataJSON());
       if (path.endsWith('/turns') && writes.length === 1)
-        return route.fulfill({ status: 409, json: { message: 'Draft revision changed.' } });
+        return route.fulfill({
+          status: 409,
+          json: { code: 'conflict', message: DRAFT_CHANGED, messageKey: DRAFT_CHANGED },
+        });
       return route.fulfill({ json: { id: 'accepted' } });
     }
     if (path.endsWith('/account'))
@@ -137,7 +145,7 @@ test('building workspace supports revision-bound chat, previews, restoration and
   const prompt = page.getByLabel('Describe your creation or ask a question');
   await prompt.fill('Make only the hospital cheaper.');
   await page.getByRole('button', { name: 'Send', exact: true }).click();
-  await expect(page.getByRole('alert')).toContainText('Draft revision changed.');
+  await expect(page.getByRole('alert')).toContainText(DRAFT_CHANGED);
   await expect(prompt).toHaveValue('Make only the hospital cheaper.');
   await page.getByText('Reference images', { exact: true }).first().click();
   await page

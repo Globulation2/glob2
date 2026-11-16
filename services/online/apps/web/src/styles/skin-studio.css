@@ -120,6 +120,11 @@
   min-width: 140px;
   max-width: 240px;
 }
+/* The studio's page heading, styled as its eyebrow label. */
+.skin-document-title > h1 {
+  margin: 0;
+  font-family: inherit;
+}
 .skin-eyebrow {
   font-size: 10px;
   letter-spacing: 0.17em;
@@ -944,8 +949,9 @@
   .skin-tool-options {
     gap: 9px;
   }
+  /* Two rows of tools: Patterns wraps below the four brushes at this width. */
   .skin-toolbox.is-collapsed {
-    max-height: 122px;
+    max-height: min(180px, calc(100% - 145px));
   }
   .skin-pattern-layout {
     grid-template-columns: minmax(0, 1fr) 230px;
@@ -1095,16 +1101,20 @@
     width: 100%;
     height: 28px;
   }
+  /* One row of tools, so the collapsed tray keeps Patterns beside the brushes
+     even on 320px screens beside the navigation rail; scroll rather than wrap. */
   .skin-tools {
     width: 100%;
-    padding: 3px 8px;
-    gap: 4px;
+    padding: 3px 4px;
+    gap: 2px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
   }
   .skin-tools button {
     min-height: 44px;
     flex-direction: column;
     gap: 2px;
-    padding: 2px;
+    padding: 2px 1px;
     font-size: 10px;
   }
   .skin-tool-options {

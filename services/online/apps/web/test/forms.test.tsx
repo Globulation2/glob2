@@ -225,6 +225,26 @@ describe('map upload', () => {
     expect(calls).not.toContain('POST /api/v1/maps');
   });
 
+  it('keeps the server’s explanation of a file problem it has no translation for', async () => {
+    const explanation =
+      "This file isn't a Globulation 2 map. Upload a .map or .map.gz file saved by the game or its map editor.";
+    handlers['POST /api/v1/uploads'] = () =>
+      Response.json(
+        {
+          code: 'bad_request',
+          message: explanation,
+          messageKey: explanation,
+          details: { problem: 'not_a_map' },
+        },
+        { status: 400 },
+      );
+    open('/maps/new');
+    await chooseFileAndUpload('holiday.map.gz');
+    const error = await screen.findByText(explanation);
+    expect(error.id).toBe('map-file-error');
+    expect(calls).not.toContain('POST /api/v1/maps');
+  });
+
   it('waits for the game’s verdict and keeps an invalid file out of the catalog', async () => {
     handlers['POST /api/v1/uploads'] = () => Response.json(upload('pending'), { status: 201 });
     handlers[`GET /api/v1/uploads/${UPLOAD_ID}`] = () =>

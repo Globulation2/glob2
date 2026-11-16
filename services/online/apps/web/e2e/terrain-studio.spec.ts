@@ -1,14 +1,19 @@
 import { mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { expect, test } from '@playwright/test';
+import { enableFeatures } from './features.ts';
 import { AxeBuilder } from '@axe-core/playwright';
 import type { SeededHistory } from '../../api/test/historySeed.ts';
 const id = '11111111-1111-4111-8111-111111111111',
   draftId = '22222222-2222-4222-8222-222222222222';
+// The client shows only catalogued server messages (others read as a generic failure),
+// so mocked errors use real API messages.
+const DRAFT_CHANGED = 'This draft changed. Reload it before saving again.';
 test('terrain creation workspace fits desktop and phone and submits one revision-bound turn', async ({
   page,
   request,
 }, info) => {
+  await enableFeatures(page, 'terrain-studio');
   const seed = (await (await request.get('/__seed')).json()) as SeededHistory;
   await page.context().addCookies([
     {
@@ -78,7 +83,10 @@ test('terrain creation workspace fits desktop and phone and submits one revision
       }
       writes.push(route.request().postDataJSON());
       if (writes.length === 1)
-        return route.fulfill({ status: 409, json: { message: 'Draft revision changed.' } });
+        return route.fulfill({
+          status: 409,
+          json: { code: 'conflict', message: DRAFT_CHANGED, messageKey: DRAFT_CHANGED },
+        });
       if (writes.length === 2)
         return route.fulfill({ status: 503, json: { message: 'Connection interrupted.' } });
       await route.fulfill({ json: { id: 'next' } });
@@ -178,7 +186,7 @@ test('terrain creation workspace fits desktop and phone and submits one revision
     .fill('Make only the marsh faster.');
   await page.getByRole('button', { name: 'Send', exact: true }).click();
   expect(writes).toHaveLength(1);
-  await expect(page.getByRole('alert')).toContainText('Draft revision changed.');
+  await expect(page.getByRole('alert')).toContainText(DRAFT_CHANGED);
   const prompt = page.getByLabel('Describe your creation or ask a question');
   await expect(prompt).toBeEnabled();
   await expect(prompt).toHaveValue('Make only the marsh faster.');

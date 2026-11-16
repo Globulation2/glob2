@@ -1,5 +1,5 @@
-import { mkdirSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { existsSync, mkdirSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { expect, test } from '@playwright/test';
 import type { SeededHistory } from '../../api/test/historySeed.ts';
 import { decodeGeneratorDraft, generatorPackage, type AiStudioDetail } from '@glob2/protocol';
@@ -69,22 +69,29 @@ test('authors both files, recovers invalid JSON, freezes previews and exports on
   expect(JSON.parse(decodeGeneratorDraft(detail.current.source).manifest).entry).toBe(
     'generator.js',
   );
-  await workspace.getByRole('tab', { name: 'Preview', exact: true }).click();
-  await expect(page.getByRole('combobox', { name: 'Width', exact: true })).toHaveValue('7');
-  await workspace.getByRole('button', { name: 'Generate', exact: true }).last().click();
-  const watch = workspace.getByRole('button', { name: 'Watch AI play', exact: true });
-  await expect(watch).toBeEnabled({ timeout: 150000 });
-  const first = page.locator('iframe[title^="Generator preview"]');
-  const firstSrc = await first.getAttribute('src');
-  await page.getByLabel('Seed', { exact: true }).fill('20');
-  expect(await first.getAttribute('src')).toBe(firstSrc);
-  await workspace.getByRole('button', { name: 'Generate', exact: true }).last().click();
-  await expect(watch).toBeEnabled({ timeout: 150000 });
-  await expect(first).not.toHaveAttribute('src', firstSrc ?? '');
-  await watch.click();
-  await expect(page.getByRole('status').filter({ hasText: /tick \d+ · live/ })).toBeVisible({
-    timeout: 60000,
-  });
+  // Previews run the browser game build (/play/generator-studio.html), as Watch in
+  // browser does (smoke.spec.ts); without one, the authoring checks still run.
+  const game =
+    process.env['GLOB2_WEB_CLIENT_DIR'] ??
+    join(import.meta.dirname, '../../../../../build/emscripten/client/release');
+  if (existsSync(join(game, 'index.html'))) {
+    await workspace.getByRole('tab', { name: 'Preview', exact: true }).click();
+    await expect(page.getByRole('combobox', { name: 'Width', exact: true })).toHaveValue('7');
+    await workspace.getByRole('button', { name: 'Generate', exact: true }).last().click();
+    const watch = workspace.getByRole('button', { name: 'Watch AI play', exact: true });
+    await expect(watch).toBeEnabled({ timeout: 150000 });
+    const first = page.locator('iframe[title^="Generator preview"]');
+    const firstSrc = await first.getAttribute('src');
+    await page.getByLabel('Seed', { exact: true }).fill('20');
+    expect(await first.getAttribute('src')).toBe(firstSrc);
+    await workspace.getByRole('button', { name: 'Generate', exact: true }).last().click();
+    await expect(watch).toBeEnabled({ timeout: 150000 });
+    await expect(first).not.toHaveAttribute('src', firstSrc ?? '');
+    await watch.click();
+    await expect(page.getByRole('status').filter({ hasText: /tick \d+ · live/ })).toBeVisible({
+      timeout: 60000,
+    });
+  } else info.annotations.push({ type: 'skipped', description: 'no browser game build: preview' });
   if (process.env['GENERATOR_E2E_BINARY']) {
     await workspace.getByRole('tab', { name: 'Code', exact: true }).click();
     await workspace.getByRole('combobox', { name: 'File', exact: true }).selectOption('script');

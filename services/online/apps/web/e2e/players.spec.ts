@@ -1,10 +1,13 @@
 import { mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { AxeBuilder } from '@axe-core/playwright';
 import sharp from 'sharp';
 import type { SeededHistory } from '../../api/test/historySeed.ts';
 let seed: SeededHistory;
+// Directory results only: the sidebar's language select has options too.
+const results = (page: Page) =>
+  page.getByRole('listbox', { name: 'Players', exact: true }).getByRole('option');
 test.beforeAll(async ({ request }) => {
   seed = (await (await request.get('/__seed')).json()) as SeededHistory;
 });
@@ -14,9 +17,9 @@ for (const theme of ['light', 'dark'] as const) {
     await page.emulateMedia({ colorScheme: theme });
     await page.goto('/players');
     const search = page.getByRole('combobox', { name: 'Find a player' });
-    await expect(page.getByRole('option').first()).toBeVisible();
+    await expect(results(page).first()).toBeVisible();
     await search.fill('nico');
-    await expect(page.getByRole('option')).toHaveCount(1);
+    await expect(results(page)).toHaveCount(1);
     const violations = (
       await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
@@ -33,7 +36,7 @@ for (const theme of ['light', 'dark'] as const) {
     await expect(search).toHaveValue('nico');
     await expect(search).toHaveAttribute('aria-expanded', 'false');
     await search.press('ArrowUp');
-    await expect(page.getByRole('option')).toHaveAttribute('aria-selected', 'true');
+    await expect(results(page)).toHaveAttribute('aria-selected', 'true');
     await search.press('Enter');
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Nicowar');
     await expect(page.getByTestId('match-row').first()).toBeVisible();
@@ -107,12 +110,19 @@ for (const theme of ['light', 'dark'] as const) {
       (route) =>
         route.fulfill({
           status: 503,
-          json: { code: 'unavailable', message: 'Photo service temporarily unavailable.' },
+          // A catalogued API message: the client shows uncatalogued ones as a generic failure.
+          json: {
+            code: 'unavailable',
+            message: 'Another upload is in progress. Please retry shortly.',
+            messageKey: 'Another upload is in progress. Please retry shortly.',
+          },
         }),
       { times: 1 },
     );
     await page.getByRole('button', { name: 'Save photo' }).click();
-    await expect(page.getByRole('alert')).toContainText('Photo service temporarily unavailable.');
+    await expect(page.getByRole('alert')).toContainText(
+      'Another upload is in progress. Please retry shortly.',
+    );
     await expect(page.getByRole('dialog')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Cancel', exact: true })).toBeEnabled();
     await page.getByRole('button', { name: 'Save photo' }).click();
@@ -146,7 +156,7 @@ for (const theme of ['light', 'dark'] as const) {
 test('keyboard directory navigation keeps the active result in view', async ({ page }) => {
   await page.goto('/players');
   const search = page.getByRole('combobox', { name: 'Find a player' });
-  await expect(page.getByRole('option').first()).toBeVisible();
+  await expect(results(page).first()).toBeVisible();
   await search.focus();
   await search.press('ArrowUp');
   const active = page.locator('[role="option"][aria-selected="true"]');

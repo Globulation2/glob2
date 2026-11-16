@@ -1,13 +1,18 @@
 import { expect, test } from '@playwright/test';
+import { enableFeatures } from './features.ts';
 import { mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pendingAiReport } from '@glob2/protocol';
 const id = '11111111-1111-4111-8111-111111111111';
 const initial =
   'export function metadata() { return { apiVersion: 2, name: "My Colony" }; }\nexport function step(ctx) {\n  const buildings = ctx.game.buildings({team: ctx.myTeam});\n  for (const building of buildings) building.workers = 2;\n}\n';
+// The client shows only catalogued server messages (others read as a generic failure),
+// so mocked errors use real API messages.
+const UNAVAILABLE = 'No isolated AI validator is available.';
 test('studio edits, restores, explicitly checks, watches a pinned revision and publishes', async ({
   page,
 }, info) => {
+  await enableFeatures(page, 'ai-studio');
   let revision = 1,
     source = initial,
     cursor = 0,
@@ -101,7 +106,10 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
     if (path.endsWith('/requests')) {
       submissions.push(data.id);
       if (submissions.length === 1)
-        return r.fulfill({ status: 503, json: { message: 'Submission response lost' } });
+        return r.fulfill({
+          status: 503,
+          json: { code: 'unavailable', message: UNAVAILABLE, messageKey: UNAVAILABLE },
+        });
       if (submissions.length === 2) await delayedSubmission;
       source = source.replace('workers = 2', 'workers = 3');
       revision++;
@@ -246,7 +254,7 @@ test('studio edits, restores, explicitly checks, watches a pinned revision and p
     .getByRole('textbox', { name: 'Describe a change or ask a question' })
     .fill('Give every building three workers.');
   await page.getByRole('button', { name: 'Send', exact: true }).click();
-  await expect(page.getByText('Submission response lost')).toBeVisible();
+  await expect(page.getByText(UNAVAILABLE)).toBeVisible();
   await page.getByRole('button', { name: 'Send', exact: true }).click();
   await expect.poll(() => submissions.length).toBe(2);
   if (info.project.name === 'phone')

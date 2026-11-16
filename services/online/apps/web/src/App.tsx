@@ -445,12 +445,19 @@ function Layout() {
       key: navigationKey,
       collapsed: studioLocal.getItem(navigationKey) !== 'expanded',
     });
-  const collapsed =
-    studio &&
-    (navigationPreference.key === navigationKey
+  // Ordinary pages keep their own, unsaved choice, starting expanded; studios
+  // remember theirs per account and start collapsed.
+  const [pageCollapsed, setPageCollapsed] = useState(false);
+  const collapsed = studio
+    ? navigationPreference.key === navigationKey
       ? navigationPreference.collapsed
-      : studioLocal.getItem(navigationKey) !== 'expanded');
+      : studioLocal.getItem(navigationKey) !== 'expanded'
+    : pageCollapsed;
   const setCollapsed = (value: boolean) => {
+    if (!studio) {
+      setPageCollapsed(value);
+      return;
+    }
     setNavigationPreference({ key: navigationKey, collapsed: value });
     studioLocal.setItem(navigationKey, value ? 'collapsed' : 'expanded');
   };

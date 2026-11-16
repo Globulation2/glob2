@@ -79,6 +79,18 @@ export function translateError(error: unknown): string {
   return localization.translateError(error);
 }
 
+/** A server explanation in the current language, or in the server's own words when
+ * the catalog has no entry for it, instead of a generic failure that hides the reason. */
+export function serverExplanation(error: {
+  message: string;
+  body?: { messageKey?: string; message?: string } | undefined;
+}): string {
+  const key = error.body?.messageKey;
+  return key && !localization.hasMessage(key, 'en') && error.body?.message
+    ? error.body.message
+    : error.message;
+}
+
 export const getLocale = localization.getLocale;
 export const formatNumber = localization.formatNumber;
 export const formatDate = localization.formatDate;

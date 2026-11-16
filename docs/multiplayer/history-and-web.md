@@ -310,6 +310,12 @@ accounts enabled, and a front server that routes like the Caddyfile. When a
 browser game build exists (`build/emscripten/client/release`, or
 `GLOB2_WEB_CLIENT_DIR`) it also plays the seeded replay
 (`platforms/web/tests/fixtures/cross-replay.replay`) through Watch in browser.
+The server refreshes the seeded engine agents' heartbeat, so the seed's sim version
+(and with it the leaderboard AIs) stays current however long the suite runs. Its
+instance enables the skin designer and Generator Studio (whose spec uses the real
+API; no model request is dispatched); the other studios are off, as on a default
+instance, and their specs, which mock the studio APIs, add the studio to the
+instance's features with `enableFeatures` (`apps/web/e2e/features.ts`).
 
 Every page, including the sign-in and invite pages, is checked with axe in both
 themes on desktop and phone and must have no violations: `a11y.spec.ts` runs

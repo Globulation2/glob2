@@ -65,7 +65,10 @@ for (const scheme of ['light', 'dark'] as const) {
       await page.context().clearCookies();
       if (entry.signedIn) await signIn(page, seed.userSession);
       await page.goto(entry.path);
-      if (entry.name.startsWith('skins'))
+      // Signed in, /skins opens the account's skin library; signed out, the designer.
+      if (entry.name === 'skins')
+        await expect(page.getByRole('heading', { level: 1, name: 'My skins' })).toBeVisible();
+      else if (entry.name === 'skins-signed-out')
         await expect(page.getByRole('region', { name: 'Skin designer' })).toBeVisible();
       else await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
       await page.waitForLoadState('networkidle');
