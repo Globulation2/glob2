@@ -4,7 +4,9 @@
 // settings and new-game screens that show and use the Auto values.
 #include "HeadlessGlobals.h"
 #include "CustomGamePreferences.h"
+#include "AdaptiveMapSize.h"
 #include "CustomGameScreen.h"
+#include "GeneratorRegistry.h"
 #include "DeviceAdaptationSession.h"
 #include "DeviceProfile.h"
 #include "FrontendTheme.h"
@@ -210,7 +212,7 @@ TEST_SUITE("AdaptiveSettings")
 		REQUIRE(s.save());
 	}
 
-	TEST_CASE("a new custom game starts at the device's map size; a saved lobby keeps its own [display][writes-preferences]")
+	TEST_CASE("a new custom game starts at the device's map size where it fits; a saved lobby keeps its own [display][writes-preferences]")
 	{
 		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 1000, .height = 700,
 										  .screenFlags = Uint32(GAGCore::GraphicContext::USEGPU)};
@@ -218,32 +220,49 @@ TEST_SUITE("AdaptiveSettings")
 		FrontendTheme theme;
 		FrontendScope frontend;
 		GAGGUI::ScreenStack stack(*globalContainer->gfx);
-		GAGCore::Toolkit::getFileManager()->remove(CustomGamePreferences::filename);
+		// The landscape decides whether the smaller size can host the colonies:
+		// Lava shield's coastal towns fit two colonies on 128x128 but not four.
+		GenerationRequest lava;
+		lava.setMethodDefaults(GeneratorRegistry::builtins().idOf("lava-shield"));
 		{
 			ScopedDevice low(device(2048, true));
+			auto two = lava, four = lava;
+			applyDeviceMapSize(two, 2);
+			applyDeviceMapSize(four, 4);
+			CHECK(two.wDec == 7);
+			CHECK(two.hDec == 7);
+			CHECK(four.wDec == 8);
+		}
+		{
+			ScopedDevice high(device(16384));
+			auto two = lava;
+			applyDeviceMapSize(two, 2);
+			CHECK(two.wDec == 8);
+		}
+		for (const auto &profile : {device(2048, true), device(4096, true), device(4096, false), device(16384)})
+		{
+			// Each screen saves its lobby on the way out; start without one.
+			GAGCore::Toolkit::getFileManager()->remove(CustomGamePreferences::filename);
+			ScopedDevice scoped(profile);
 			CustomGameScreen screen(stack);
-			CHECK(screen.setup.generator.wDec == 7);
-			CHECK(screen.setup.generator.hDec == 7);
-			// The player can still choose 256×256; Reset returns to the device default.
+			CAPTURE(DeviceProfile::tierName(profile.tier));
+			// The default lobby must stay startable on every device (a 128x128
+			// Lava shield with four colonies is not, and its Start never enabled).
+			CHECK(screen.setup.validation().empty());
+			auto expected = screen.setup.generator;
+			expected.wDec = expected.hDec = 8;
+			applyDeviceMapSize(expected, screen.setup.capacity);
+			CHECK(screen.setup.generator.wDec == expected.wDec);
+			// The player can still choose 256x256; Reset returns to the device default.
 			screen.setup.generator.wDec = screen.setup.generator.hDec = 8;
 			screen.resetParameters();
-			CHECK(screen.setup.generator.wDec == 7);
-		}
-		// Each screen saves its lobby on the way out; start again without one.
-		GAGCore::Toolkit::getFileManager()->remove(CustomGamePreferences::filename);
-		{
-			ScopedDevice mid(device(4096, false));
-			CustomGameScreen screen(stack);
-			CHECK(screen.setup.generator.wDec == 8); // desktop mid tier keeps 256
-		}
-		GAGCore::Toolkit::getFileManager()->remove(CustomGamePreferences::filename);
-		{
-			ScopedDevice mid(device(4096, true));
-			CustomGameScreen screen(stack);
-			CHECK(screen.setup.generator.wDec == 7); // phones from the mid tier down
+			CHECK(screen.setup.validation().empty());
 		}
 		// A saved lobby is the player's own setup: its size is not adapted.
 		CustomGamePreferences saved;
+		saved.setup.generator.method = lava.method;
+		saved.setup.generator.options = lava.options;
+		saved.setup.setCapacity(2);
 		saved.setup.generator.wDec = saved.setup.generator.hDec = 8;
 		REQUIRE(saved.save(*GAGCore::Toolkit::getFileManager()));
 		{

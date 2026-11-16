@@ -12,6 +12,9 @@
 #include <sstream>
 #include <thread>
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 #ifdef __ANDROID__
 #include <SDL3/SDL_system.h>
 #include <jni.h>
@@ -78,7 +81,9 @@ DeviceProfile DeviceProfile::classify(const DeviceInputs &inputs, std::optional<
 
 DeviceDecision DeviceProfile::highResolutionArtwork() const
 {
-	if (tier == DeviceTier::Low)
+	// Too few cores make a device Low for the map size (simulation cost), but
+	// artwork is a memory question: a CPU-only Low keeps high resolution.
+	if (tier == DeviceTier::Low && reason != DeviceReason::Cores)
 		return {false, reason, reasonValue};
 	// Phones share one memory pool between CPU and GPU, and legacy GL has no
 	// portable query, so the VRAM rule applies only to a measured discrete GPU.
@@ -191,6 +196,14 @@ DeviceInputs probeCheap()
 	DeviceInputs inputs;
 	const int ram = SDL_GetSystemRAM(); // MiB; the figure AssetLoader budgets from
 	inputs.systemRamMiB = ram > 0 ? std::uint64_t(ram) : 0;
+#ifdef __EMSCRIPTEN__
+	// In a browser SDL reports the WebAssembly heap limit, not the device's
+	// memory. navigator.deviceMemory (Chromium; rounded, at most 8 GiB) is the
+	// device's own figure; elsewhere memory stays unknown (today's defaults).
+	inputs.systemRamMiB = std::uint64_t(EM_ASM_DOUBLE({
+		return (typeof navigator !== 'undefined' && navigator.deviceMemory > 0) ? navigator.deviceMemory : 0;
+	}) * 1024);
+#endif
 	inputs.cores = std::thread::hardware_concurrency();
 #ifdef GLOB2_MOBILE
 	inputs.mobile = true;

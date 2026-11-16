@@ -109,6 +109,9 @@ TEST_SUITE("DeviceProfile")
 		CHECK(DeviceProfile::classify(inputs(16384, 8, true)).newMapSize().shift == 8);
 		CHECK(DeviceProfile::classify(inputs(16384)).highResolutionArtwork().on);
 		CHECK(DeviceProfile::classify(inputs(0)).newMapSize().shift == 8);
+		// Too few cores lower the map size (simulation cost) but not artwork (memory).
+		CHECK(DeviceProfile::classify(inputs(16384, 2)).newMapSize().shift == 7);
+		CHECK(DeviceProfile::classify(inputs(16384, 2)).highResolutionArtwork().on);
 
 		auto desktop = inputs(16384);
 		desktop.vramMiB = 512;

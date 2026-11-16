@@ -27,7 +27,8 @@ struct DeviceThresholds
 	// "4 GB" phone reports about 3.6 GiB, a "3 GB" one about 2.7 GiB).
 	std::uint64_t lowMemoryBelowMiB = 3 * 1024;
 	std::uint64_t highMemoryAboveMiB = 6 * 1024;
-	// A device with this many hardware threads or fewer is Low whatever its memory.
+	// A device with this many hardware threads or fewer is Low whatever its
+	// memory; that lowers the map-size default but not artwork.
 	unsigned lowCoresAtMost = 2;
 	// Desktop only: a discrete GPU whose largest device-local heap is smaller
 	// starts with original artwork. Phones share memory between CPU and GPU.
@@ -61,7 +62,9 @@ enum class DeviceReason : std::uint8_t
 
 struct DeviceInputs
 {
-	std::uint64_t systemRamMiB = 0; // SDL_GetSystemRAM (iOS: hw.memsize = physicalMemory); 0 unknown
+	// SDL_GetSystemRAM (iOS: hw.memsize = physicalMemory; browsers use
+	// navigator.deviceMemory, as SDL reports the heap limit there); 0 unknown.
+	std::uint64_t systemRamMiB = 0;
 	unsigned cores = 0;             // std::thread::hardware_concurrency; 0 unknown
 	bool mobile = false;            // Android or iOS build
 	// Android ActivityManager, through Glob2Activity.getMemoryProfile.

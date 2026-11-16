@@ -2,7 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #include "ui/LibraryText.h"
 #include "NewMapScreen.h"
-#include "DeviceProfile.h"
+#include "AdaptiveMapSize.h"
 #include "GeneratorText.h"
 #include "GUIMapPreview.h"
 #include "Game.h"
@@ -36,7 +36,7 @@ NewMapScreen::NewMapScreen(std::shared_ptr<const GeneratorRegistry> catalog,
 {
 	descriptor.setMethodDefaults(registry.defaultMethod(), registryOwner);
 	// A new map starts at the device's default size; the player can still pick any.
-	descriptor.wDec = descriptor.hDec = DeviceProfile::current().newMapSize().shift;
+	applyDeviceMapSize(descriptor, descriptor.nbTeams);
 	preview = std::make_unique<MapPreview>();
 }
 

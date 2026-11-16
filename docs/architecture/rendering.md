@@ -365,7 +365,8 @@ reads this profile; nothing probes hardware itself, and nothing in the simulatio
 path reads it, so simulation checksums and `SIM_REVISION` are unaffected.
 
 Inputs: `SDL_GetSystemRAM` (on iOS this is `hw.memsize`, the same figure as
-`NSProcessInfo.physicalMemory`) and the hardware thread count, which
+`NSProcessInfo.physicalMemory`; browsers use `navigator.deviceMemory`, because SDL
+reports the WebAssembly heap limit there) and the hardware thread count, which
 `AssetLoader::Options::environment` also budgets from; on Android
 `ActivityManager.isLowRamDevice()`, `getMemoryClass()`, `getLargeMemoryClass()`
 and `MemoryInfo.totalMem` through `Glob2Activity.getMemoryProfile` (totalMem
@@ -380,7 +381,7 @@ live in `deviceThresholds`:
 
 | Tier | Rule | Auto artwork | New-map default |
 | --- | --- | --- | --- |
-| Low | under 3 GiB, an Android low-RAM device, or at most 2 hardware threads | original | 128×128 |
+| Low | under 3 GiB or an Android low-RAM device; or at most 2 hardware threads (map size only) | original (high resolution when only the cores are low) | 128×128 |
 | Mid | 3 to 6 GiB | high resolution | 128×128 on phones, 256×256 elsewhere |
 | High | over 6 GiB, or nothing reported | high resolution | 256×256 |
 
@@ -400,7 +401,8 @@ explicit Off; on mid and high devices Auto resolves to the old value.
 
 The map size is gameplay, so only the defaults adapt: a custom game without a
 saved lobby, Reset to defaults, and a new map in the editor start at the tier's
-size, and the player can still choose any size. A saved lobby keeps the size it
+size where the landscape can host the colonies at it (otherwise they keep 256×256,
+so the lobby stays startable), and the player can still choose any size. A saved lobby keeps the size it
 was played at. Online rooms use the host's map; a low-tier device in a room whose
 generated map is larger than its default sees a warning, and the match never
 changes.
