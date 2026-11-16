@@ -170,6 +170,10 @@ including equal-size terrain tiles. Fractional zoom and camera offsets can put
 a covered pixel arbitrarily close to a frame edge; the nearest-sampling tie
 bias must land in that frame's border rather than a neighboring frame. Keep
 the border copy unblended so transparent edges retain their original RGBA.
+On the device renderers a draw checks only its own frame's stamp against the
+sheet's atlas, and a sheet that cannot have one (team-coloured or rotated
+frames, frames without pixels, too large, no atlas memory) tries again after
+120 frames rather than on every draw.
 
 The portable SDL renderer merges its blits, fills and triangle lists into
 `SDL_RenderGeometry` runs keyed by texture, blend mode, scale mode and SDL's
