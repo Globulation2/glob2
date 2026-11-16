@@ -15,6 +15,7 @@
 #include <cstring>
 #include <deque>
 #include <fstream>
+#include <list>
 #include <map>
 #include <stdexcept>
 #ifdef __EMSCRIPTEN__
@@ -156,6 +157,9 @@ class ProgrammableGLDevice final : public RenderDevice
         bool premultiplied=false;
         std::size_t bytes = 0, depthBytes = 0, category = 0;
         std::uint64_t lastUse = 0;
+        // Sampled textures only: the position on its class's recency list.
+        std::list<std::pair<std::tuple<std::uint32_t, std::uint32_t, std::uint64_t>, bool>>::iterator recent;
+        bool listed = false;
     };
     struct CoverageAllocation {
         GLuint weights=0,selectors=0;
@@ -216,8 +220,20 @@ class ProgrammableGLDevice final : public RenderDevice
     using TextureKey = std::tuple<std::uint32_t, std::uint32_t, std::uint64_t>;
     static TextureKey key(const TextureSnapshot &snapshot)
     { return {snapshot->handle.slot, snapshot->handle.generation, snapshot->contentRevision}; }
-    std::map<std::pair<TextureKey, bool>, Allocation> textures;
+    using SampledKey = std::pair<TextureKey, bool>;
+    std::map<SampledKey, Allocation> textures;
     std::map<TextureKey, Allocation> targets;
+    // Sampled textures by budget class, least recently used first. Each use
+    // sets lastUse to the next submission, so a list is also ordered by
+    // lastUse: eviction stops at the first entry pending work still needs.
+    std::array<std::list<SampledKey>, 4> recentTextures;
+    // Routine retirement visits a bounded slice of each cache per call,
+    // resuming where it stopped, however many entries the caches hold.
+    static constexpr std::size_t SweepSlice = 128;
+    SampledKey textureSweep{};
+    TextureKey targetSweep{};
+    std::tuple<std::uint64_t,std::uint64_t,std::uint32_t,std::uint32_t> maskSweep{};
+    std::tuple<std::uint32_t, std::uint32_t, std::uint64_t> meshSweep{};
     std::deque<Pending> pending;
     std::deque<Readback> readbacks;
     RenderTelemetry counts;
@@ -340,36 +356,97 @@ class ProgrammableGLDevice final : public RenderDevice
             gl.glDeleteSync(pending.front().fence); pending.pop_front();
         }
     }
+    template <class Map, class Retire>
+    static void sweep(Map &map, typename Map::key_type &cursor, std::size_t slice, Retire retire)
+    {
+        if (map.empty()) return;
+        auto it = map.lower_bound(cursor);
+        const std::size_t limit = std::min(slice, map.size());
+        for (std::size_t visited = 0; visited < limit && !map.empty(); ++visited) {
+            if (it == map.end()) it = map.begin();
+            if (retire(it)) it = map.erase(it); else ++it;
+        }
+        if (it == map.end()) it = map.begin();
+        cursor = it == map.end() ? typename Map::key_type{} : it->first;
+    }
+    // Erases a sampled texture and its recency entry.
+    std::map<SampledKey, Allocation>::iterator eraseTexture(std::map<SampledKey, Allocation>::iterator it)
+    {
+        if (it->second.listed) recentTextures[it->second.category].erase(it->second.recent);
+        destroy(it->second); return textures.erase(it);
+    }
+    void touch(Allocation &allocation)
+    {
+        allocation.lastUse = issued + 1;
+        if (allocation.listed) {
+            auto &list = recentTextures[allocation.category];
+            list.splice(list.end(), list, allocation.recent);
+        }
+    }
+    // The least recently used sampled texture no pending work holds: of one
+    // class, or of any class (whichever was used longest ago).
+    std::map<SampledKey, Allocation>::iterator evictable(std::optional<std::size_t> category)
+    {
+        std::map<SampledKey, Allocation>::iterator best = textures.end();
+        for (std::size_t index = 0; index < recentTextures.size(); ++index) {
+            if ((category && *category != index) || recentTextures[index].empty()) continue;
+            const auto found = textures.find(recentTextures[index].front());
+            if (found->second.lastUse <= completed && (best == textures.end() || found->second.lastUse < best->second.lastUse))
+                best = found;
+        }
+        return best;
+    }
     void trim(std::size_t admission = 0, std::size_t category = 0, bool colorAdmission = true, bool releaseCompleted = false)
     {
-        const auto eligible = [this](const Allocation &value) { return value.lastUse <= completed; };
+        const auto overTotal = [&] { return admission > TextureBudget - std::min(TextureBudget, textureBytes + captureBytes); };
+        const auto overClass = [&](std::size_t index) { return colorAdmission && index == category && admission > ClassLimits[index] - std::min(ClassLimits[index], classBytes[index]); };
         // A handful of streamed textures per view: never evicted, only
         // released with their owner (or lost on reset).
         for (auto it = streamed.begin(); it != streamed.end();) {
             if (it->second.owner.expired()) { destroy(it->second); it = streamed.erase(it); } else ++it;
         }
-        for (auto it = textures.begin(); it != textures.end();) {
-            if (eligible(it->second) && (releaseCompleted || it->second.snapshot.expired() || textureBytes + admission > TextureBudget-captureBytes || (colorAdmission && it->second.category == category && admission > ClassLimits[category] - classBytes[category]))) {
-                destroy(it->second); it = textures.erase(it);
-            } else ++it;
+        if (releaseCompleted) {
+            // Explicit trims (trimRetiredResources) only, never per frame.
+            for (auto it = textures.begin(); it != textures.end();)
+                it = it->second.lastUse <= completed ? eraseTexture(it) : std::next(it);
+            for (auto it = targets.begin(); it != targets.end();)
+                if (it->second.lastUse <= completed && it->second.snapshot.expired()) { destroy(it->second); it = targets.erase(it); } else ++it;
+            for (auto it = masks.begin(); it != masks.end();)
+                if (it->second.lastUse <= completed) { destroy(it->second); it = masks.erase(it); } else ++it;
+            for (auto it = scratchTargets.begin(); it != scratchTargets.end();)
+                if (it->second.lastUse <= completed) { destroy(it->second); it = scratchTargets.erase(it); } else ++it;
         }
-        for (auto it = targets.begin(); it != targets.end();) {
-            // Rendered target content cannot be reconstructed from CPU pixels;
-            // retain it while its logical revision is referenced externally.
-            if (eligible(it->second) && it->second.snapshot.expired()) {
-                destroy(it->second); it = targets.erase(it);
-            } else ++it;
+        // Retire allocations of dead CPU revisions a slice at a time.
+        sweep(textures, textureSweep, SweepSlice, [&](auto it) {
+            if (it->second.lastUse > completed || !it->second.snapshot.expired()) return false;
+            if (it->second.listed) recentTextures[it->second.category].erase(it->second.recent);
+            destroy(it->second); return true;
+        });
+        // Rendered target content cannot be reconstructed from CPU pixels;
+        // retain it while its logical revision is referenced externally.
+        sweep(targets, targetSweep, SweepSlice, [&](auto it) {
+            if (it->second.lastUse > completed || !it->second.snapshot.expired()) return false;
+            destroy(it->second); return true;
+        });
+        sweep(masks, maskSweep, SweepSlice, [&](auto it) {
+            if (it->second.lastUse > completed || !it->second.source.expired()) return false;
+            destroy(it->second); return true;
+        });
+        if (!admission) { counts.resourceBytes = textureBytes; return; }
+        // Admission under pressure: least recently used first, constant time each.
+        const bool maskAdmission = category == std::size_t(TextureDescriptor::BudgetClass::TerrainMask);
+        while (overClass(category) || overTotal()) {
+            auto victim = evictable(overClass(category) ? std::optional<std::size_t>(category) : std::nullopt);
+            if (victim == textures.end()) break;
+            eraseTexture(victim);
         }
-        for(auto it=masks.begin();it!=masks.end();) {
-            const bool pressure=admission>TextureBudget-textureBytes-captureBytes ||
-                (colorAdmission && category==std::size_t(TextureDescriptor::BudgetClass::TerrainMask) && admission>ClassLimits[category]-classBytes[category]);
-            if(it->second.lastUse<=completed && (releaseCompleted || it->second.source.expired() || pressure)){destroy(it->second);it=masks.erase(it);}else ++it;
-        }
-        for(auto it=scratchTargets.begin();it!=scratchTargets.end();) {
-            if(it->second.lastUse<=completed && (releaseCompleted || admission>TextureBudget-textureBytes-captureBytes)){destroy(it->second);it=scratchTargets.erase(it);}else ++it;
-        }
-        if (admission > TextureBudget - textureBytes - captureBytes || (colorAdmission && admission > ClassLimits[category] - classBytes[category])) throw RenderAdmissionDeferred("GL texture budget exhausted");
+        // Coverage masks share the terrain mask class; scratch targets only the total.
+        for (auto it = masks.begin(); it != masks.end() && ((maskAdmission && overClass(category)) || overTotal());)
+            if (it->second.lastUse <= completed) { destroy(it->second); it = masks.erase(it); } else ++it;
+        for (auto it = scratchTargets.begin(); it != scratchTargets.end() && overTotal();)
+            if (it->second.lastUse <= completed) { destroy(it->second); it = scratchTargets.erase(it); } else ++it;
         counts.resourceBytes = textureBytes;
+        if (overTotal() || overClass(category)) throw RenderAdmissionDeferred("GL texture budget exhausted");
     }
     void screen()
     {
@@ -596,17 +673,21 @@ class ProgrammableGLDevice final : public RenderDevice
     {
         auto found = targets.find(key(snapshot));
         if (found == targets.end()) found = targets.emplace(key(snapshot), allocate(snapshot, snapshot->descriptor.alpha==TextureDescriptor::Alpha::Premultiplied, true)).first;
-        found->second.lastUse = issued + 1; return found->second;
+        touch(found->second); return found->second;
     }
     Allocation &texture(TextureSnapshot snapshot, bool linear)
     {
         if (auto found = targets.find(key(snapshot)); found != targets.end()) {
-            found->second.lastUse = issued + 1; return found->second;
+            touch(found->second); return found->second;
         }
         const auto textureKey = std::make_pair(key(snapshot), linear);
         auto found = textures.find(textureKey);
-        if (found == textures.end()) found = textures.emplace(textureKey, allocate(snapshot, linear, false)).first;
-        found->second.lastUse = issued + 1; return found->second;
+        if (found == textures.end()) {
+            found = textures.emplace(textureKey, allocate(snapshot, linear, false)).first;
+            auto &list = recentTextures[found->second.category];
+            found->second.recent = list.insert(list.end(), textureKey); found->second.listed = true;
+        }
+        touch(found->second); return found->second;
     }
     SDL_Rect clip(const DrawPacket &packet, int w, int h, float logicalW, float logicalH)
     {
@@ -1197,10 +1278,13 @@ void main() {
         const auto identity = std::make_tuple(geometry->handle.slot, geometry->handle.generation, geometry->contentRevision);
         auto found = meshes.find(identity);
         if (found == meshes.end()) {
-            for (auto it = meshes.begin(); it != meshes.end();) {
-                if (it->second.lastUse <= completed && it->second.geometry.expired()) { destroyMesh(it->second); it = meshes.erase(it); }
-                else ++it;
-            }
+            const auto retire = [&](auto it) {
+                if (it->second.lastUse > completed || !it->second.geometry.expired()) return false;
+                destroyMesh(it->second); return true;
+            };
+            sweep(meshes, meshSweep, SweepSlice, retire);
+            // Under pressure, every dead revision the slices have not reached.
+            if (geometry->bytes > 64 * 1024 * 1024 - meshBytes) sweep(meshes, meshSweep, meshes.size(), retire);
             if (geometry->bytes > 64 * 1024 * 1024 - meshBytes) throw RenderAdmissionDeferred("World geometry upload budget exhausted");
             MeshAllocation value; value.geometry = geometry; value.bytes = geometry->bytes;
             gl.glGenVertexArrays(1, &value.vao); gl.glBindVertexArray(value.vao);
@@ -1642,6 +1726,7 @@ void main() {
         pending.clear();
         for (auto &[key, value] : textures) destroy(value);
         textures.clear();
+        for (auto &list : recentTextures) list.clear();
         for (auto &[key, value] : targets) destroy(value);
         targets.clear();
         for (auto &[key, value] : meshes) destroyMesh(value);
