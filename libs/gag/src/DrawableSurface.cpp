@@ -205,6 +205,21 @@ namespace GAGCore
         return true;
     }
 
+    bool DrawableSurface::deviceHoldsPixels() const
+    {
+        if (!_gc || !_gc->deviceRenderer || _gc->renderer != _gc->deviceRenderer.get()) return true;
+        return _gc->deviceRenderer->hasTexture(this, contentRevision());
+    }
+
+    bool DrawableSurface::takeDeviceUpload()
+    {
+        constexpr unsigned UploadsPerFrame = 8;
+        if (!_gc || !_gc->deviceRenderer || _gc->renderer != _gc->deviceRenderer.get() || _gc->offscreenPass) return true;
+        if (_gc->deviceUploadsThisFrame >= UploadsPerFrame) return false;
+        ++_gc->deviceUploadsThisFrame;
+        return true;
+    }
+
     bool DrawableSurface::deviceBacked() const
     {
         return releasedOnDevice && !sdlsurface && _gc && _gc->deviceRenderer &&
