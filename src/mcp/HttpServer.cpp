@@ -8,6 +8,7 @@
 #include <set>
 #include <sstream>
 #include <locale>
+#include <ThreadSupport.h>
 namespace MCP
 {
 namespace asio = boost::asio;
@@ -109,6 +110,7 @@ struct HttpServer::Impl
 		worker = std::thread(
 			[this]
 			{
+				GAGCore::ThreadSupport::setCurrentThreadRole(GAGCore::ThreadSupport::ThreadRole::Worker);
 				io.run();
 				completed = true;
 			});
