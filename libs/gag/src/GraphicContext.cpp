@@ -1309,6 +1309,7 @@ int GraphicContext::maximumTextureSize() const
 	{
         ++captureFrameIdentity;
         deviceReleasesThisFrame = 0;
+        deviceUploadsThisFrame = 0;
         endBrowserTextFrame();
 		DrawableSurface::nextFrame();
 		if (sdlsurface)

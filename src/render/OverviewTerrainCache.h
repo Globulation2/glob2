@@ -130,6 +130,10 @@ class OverviewTerrainCache
 	void collect();
 	void installCell(Page &, const CellJob &, const Uint32 *pixels, int pitch);
 	bool covers(const Page &, int wx, int wy, const Region &) const;
+	//! Whether the page draws this frame: its current pixels, the previous
+	//! revision the device holds, or nothing (a device's upload allowance is spent).
+	enum class Admission { None, Previous, Current };
+	Admission admit(Page &);
 	void drawPage(Page &, int wx, int wy, const Region &, int screenX, int screenY, GAGCore::DrawableSurface &,
 				  Uint8 alpha);
 	template <class Visit>

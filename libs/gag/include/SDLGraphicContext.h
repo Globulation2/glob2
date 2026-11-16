@@ -277,6 +277,14 @@ namespace GAGCore
 		//! Released on a device whose adapter still holds the snapshot: false
 		//! after a backend switch, so the owner must reload the surface.
 		bool deviceBacked() const;
+		//! On a presentation device, whether the adapter holds this revision's
+		//! texture, so drawing it uploads nothing. True on other renderers.
+		bool deviceHoldsPixels() const;
+		//! Takes one of the few new device textures a frame may upload (true
+		//! on other renderers). A caller with a stand-in draws that instead,
+		//! or keeps drawing a held older revision, when this is false: SDL GPU
+		//! submits a command buffer for every texture it creates.
+		bool takeDeviceUpload();
         std::uint64_t lifetimeIdentity() const { return surfaceIdentity; }
         std::uint64_t contentRevision() const { return pixelRevision; }
         virtual void prepareDraw() {}
@@ -663,6 +671,8 @@ namespace GAGCore
         std::unique_ptr<RenderBackend> deviceRenderer;
         //! DrawableSurface::releaseDevicePixels calls this frame (reset in nextFrame).
         unsigned deviceReleasesThisFrame = 0;
+        //! DrawableSurface::takeDeviceUpload calls this frame (reset in nextFrame).
+        unsigned deviceUploadsThisFrame = 0;
         bool snapshotTrimPending = false;
         RendererBackend configuredBackend = RendererBackend::Software;
         std::shared_ptr<DeviceSkinState> deviceSkinState;
