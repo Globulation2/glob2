@@ -130,7 +130,10 @@ stop draining, the view starts its streamed textures again, tables and base at
 once (`DIRECT_TERRAIN_RESTART`), and never falls back to pages; only a map whose
 tables exceed the device's texture size does. `GLOB2_BENCH_DEVICE_RESET_AT`
 resets the device at one benchmark frame, and `fallback_scenario.py --reset-at`
-reports the restarts and the cells drawn as corner splits.
+reports the restarts and the cells drawn as corner splits. Discovery updates
+revisit only the 16x16 sectors whose discovery stamps moved
+(`SceneMap::discoveryStamps`) and rewrite only the changed rows of the
+discovery table.
 
 The page renderer handles HD artwork on
 programmable OpenGL and WebGPU, backends without direct terrain, tiled captures outside legacy

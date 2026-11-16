@@ -87,6 +87,9 @@ class SceneMap
     Uint64 resourcePresentationRevision() const { return resourceRevision; }
     void resourceRowRevisions(std::span<Uint64> rows) const;
     Uint64 discoveryRevision() const;
+	//! Per 16x16 sector, row by row, a stamp that changes whenever a cell of
+	//! it is newly discovered (MapState::ChangeTracker); empty without a world.
+	std::span<const Uint64> discoveryStamps() const;
 	TerrainType vertexTerrainAt(int x, int y) const;
 	//! Every vertex's terrain, row by row (vertexTerrainAt's storage): immutable,
 	//! so presentation workers may keep and read it. Null without a world.
