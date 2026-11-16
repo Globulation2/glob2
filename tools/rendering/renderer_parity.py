@@ -290,8 +290,8 @@ def main():
     parser.add_argument('--no-hd', dest='hd', action='store_false', help='Pin HD artwork off instead of on')
     parser.add_argument('--shift', type=int, default=1,
                         help='Pixels a difference may move and still match (default 1)')
-    parser.add_argument('--max-over-8', type=float, default=5.0,
-                        help='Tolerance: percent of pixels more than 8 levels from the reference (default 5.0)')
+    parser.add_argument('--max-over-8', type=float, default=2.0,
+                        help='Tolerance: percent of pixels more than 8 levels from the reference (default 2.0)')
     parser.add_argument('--max-over-32', type=float, help='Optional tolerance on the share over 32 levels')
     parser.add_argument('--shader-dir', default=os.environ.get('GLOB2_RENDERER_SHADER_DIR'),
                         help='SDL GPU / programmable GL shader directory (GLOB2_RENDERER_SHADER_DIR)')
