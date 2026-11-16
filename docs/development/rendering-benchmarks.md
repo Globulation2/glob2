@@ -304,7 +304,7 @@ pixels more than 8 and 32 levels from the reference and the mean difference.
 A pixel takes the smallest difference to the other image within `--shift`
 pixels (1 by default), so an edge one pixel out of place does not count while a
 missing sprite or a wrong colour does. The run exits 1 when a renderer fails or
-more than `--max-over-8` percent of its pixels (1% by default) differ by more
+more than `--max-over-8` percent of its pixels (5% by default; the maintainer's parity bar) differ by more
 than 8 levels; `--max-over-32` adds a limit on the share over 32 levels.
 
 The benchmark options behind it: `GLOB2_BENCH_GUI=1` draws the game screen in
