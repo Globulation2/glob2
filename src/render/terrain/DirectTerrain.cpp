@@ -875,12 +875,14 @@ struct DirectTerrain::State
         hd.cellOf.assign(slots, -1);
         hd.used.assign(slots, 0);
         // Results in flight were built for the old tiles. Recipes do not
-        // depend on the density and stay.
+        // depend on the density and stay. Finished base masks keep their own
+        // tile: dropping them would leave their cells in flight, and the base
+        // (and with it the streamed view) would never complete.
         ++hd.generation;
         {
             std::lock_guard lock(hd.mutex);
             hd.jobs.clear();
-            hd.done.clear();
+            std::erase_if(hd.done, [](const Hd::Result &result) { return !result.base; });
         }
         hd.inFlight.clear();
     }
@@ -1700,7 +1702,7 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
         while (tile < 128 && tile < 32 * density) tile *= 2;
         prepareHdMasks(map, left, top, right, bottom, viewportX, viewportY, visibleTeams, wholeMap, tile, complete);
         if (state->hd.failed) { out.regions.clear(); return false; }
-        // SDL GPU never draws a mixed cell as a corner split for want of a
+        // Streamed devices never draw a mixed cell as a corner split for want of a
         // base mask: until the base is back the view draws the overview.
         if (state->streaming && state->baseBuilding()) { out.regions.clear(); state->hd.split = 0; return false; }
         return true;

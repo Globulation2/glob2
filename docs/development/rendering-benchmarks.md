@@ -133,8 +133,8 @@ Direct terrain is the default for flat views with Original artwork
 (`highResolutionArtwork=0`) on desktop legacy OpenGL, programmable OpenGL,
 SDL GPU with the direct terrain shaders, and WebGPU with the WGSL assets.
 It uses the map's terrain variants, coverage, contact bands, surf, and
-discovery. Desktop legacy OpenGL draws every view, HD artwork included, with
-the direct pass described below. On the other backends, HD artwork, editor views,
+discovery. Desktop legacy OpenGL, SDL GPU and programmable OpenGL draw every
+view, HD artwork included, with the streamed direct pass described below. On the other backends, HD artwork, editor views,
 tiled captures, and backends without direct terrain support use composed pages.
 
 The shader blends in floating point and uses linear atlas sampling. The page
@@ -300,8 +300,9 @@ python3 tools/rendering/memory_scenario.py --label change --compare master
 
 The table it prints goes in the pull request. Peak process resident memory and,
 on Linux, the GPU driver's per-process memory (`drm-memory-*` in
-`/proc/<pid>/fdinfo`) come from sampling the process; an integrated GPU's driver
-memory is system RAM. The remaining rows are the renderer's own tracked bytes,
+`/proc/<pid>/fdinfo`, or `nvidia-smi` on the NVIDIA driver, which has no fdinfo
+memory) come from sampling the process; an integrated GPU's driver memory is
+system RAM. The remaining rows are the renderer's own tracked bytes,
 which the benchmark prints as `FRAME_RENDER_MEMORY` with `GLOB2_BENCH_FRAME_TIMES`
 and as `RENDER_MEMORY` when a pass ends:
 

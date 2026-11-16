@@ -309,7 +309,7 @@ void MapDrawer::drawSceneMapRegion(const PresentationFrame& scene, int sx, int s
 	bool overviewOnly = view.render.detail.terrainOverview >= 1;
 	// Browser builds drive Legacy GL through the WebGL2 bridge, which has no
 	// direct pass: their views compose pages, native until HD artwork streams in.
-	// Devices with streamed textures (SDL GPU) draw the same streamed pass as
+	// Devices with streamed textures (SDL GPU, Programmable GL) draw the same streamed pass as
 	// Legacy GL, HD artwork included; where it cannot fit they compose pages.
 	const bool legacyScreen = frame.target.isLegacyGLScreen();
 	const auto *existingDirect = view.render.existingDirectTerrain();

@@ -1589,11 +1589,13 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(share < .14);
 	}
 
-	// SDL GPU draws Legacy GL's streamed pass through streamed device textures
-	// and terrain-direct-hd: the same HD artwork and display-density masks, from
-	// 16 to 128 texels a cell, animated and with undiscovered cells hidden.
-	TEST_CASE("SDL GPU streamed direct terrain matches Legacy GL's HD pass at every density [display]")
+	// SDL GPU and Programmable GL draw Legacy GL's streamed pass through
+	// streamed device textures and terrain-direct-hd: the same HD artwork and
+	// display-density masks, from 16 to 128 texels a cell, animated and with
+	// undiscovered cells hidden.
+	void checkStreamedDirectTerrain(GAGCore::RendererBackend backend)
 	{
+		const auto name = std::string(GAGCore::rendererBackendName(backend));
 		struct View { float zoom; int right, bottom, time; bool whole; };
 		// Zooms keep pixel centres off texel and cell boundaries, where
 		// interpolation rounding alone would pick a neighbouring texel.
@@ -1650,12 +1652,12 @@ TEST_SUITE("TerrainPresentation")
 			}
 		}
 		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
-			.beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::SDLGPU; }});
+			.beforeLoad = [backend](GlobalContainer &g) { g.settings.rendererBackend = backend; }});
 		auto &gfx = *globals->gfx;
 		HighResolution hd;
 		if (!DirectTerrain::streamedPassAvailable(gfx))
 		{
-			MESSAGE("SDL GPU streamed direct terrain unavailable (no device or terrain-direct-hd shader); comparison omitted");
+			MESSAGE(name << " streamed direct terrain unavailable (no device or terrain-direct-hd shader); comparison omitted");
 			return;
 		}
 		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .terrain = WATER, .discovered = true});
@@ -1712,6 +1714,16 @@ TEST_SUITE("TerrainPresentation")
 			CHECK(differing <= 640 * 480 / 1000);
 			gfx.nextFrame();
 		}
+	}
+
+	TEST_CASE("SDL GPU streamed direct terrain matches Legacy GL's HD pass at every density [display]")
+	{
+		checkStreamedDirectTerrain(GAGCore::RendererBackend::SDLGPU);
+	}
+
+	TEST_CASE("Programmable GL streamed direct terrain matches Legacy GL's HD pass at every density [display]")
+	{
+		checkStreamedDirectTerrain(GAGCore::RendererBackend::ProgrammableGL);
 	}
 
 	TEST_CASE("generated terrain mip uploads stay uncompressed across animation updates [display]")
