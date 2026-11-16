@@ -388,7 +388,9 @@ void Compositor::prepareVisible(bool hd, int time, const SceneMap &map,
     if (hd && GAGCore::Sprite::highResolutionRequested()) requestMapTerrain(map);
 #endif
     const auto usage = visibleUsage(map, left, top, right, bottom);
+    if (hd && decor) collectVisibleDecor(map, left, top, right, bottom);
     prepareSelected(hd, time, &usage, nativeComposition, decor);
+    visibleDecorSet = false;
 }
 bool Compositor::highResolutionPages(double density)
 {
@@ -406,8 +408,67 @@ void Compositor::declareVisible(int time, const SceneMap &map, int left, int top
 {
     auto usage = visibleUsage(map, left, top, right, bottom);
     includeBoundarySources(usage);
+    if (frames) collectVisibleDecor(map, left, top, right, bottom);
     declareWindows(frames, frames, time, &usage);
+    visibleDecorSet = false;
     releasePreparedTextures();
+}
+const std::vector<Compositor::DecorLayer> &Compositor::pageDecor(const SceneMap &map, int px, int py) const
+{
+    constexpr int Page = 16;
+    const auto key = std::uint64_t(unsigned(py)) << 32 | unsigned(px);
+    if (auto found = decorPages.find(key); found != decorPages.end())
+        return found->second;
+    std::vector<DecorLayer> entries;
+    const auto tiers = tierField(map);
+    for (int y = 0; y < Page; ++y)
+        for (int x = 0; x < Page; ++x)
+            for (const auto &layer : decorLayers(map, px + x, py + y, tiers.get()))
+                if (layer.sprite && layer.frame >= 0)
+                    entries.push_back(layer);
+    const auto order = [](const DecorLayer &a, const DecorLayer &b)
+    { return std::tie(a.sprite, a.frame) < std::tie(b.sprite, b.frame); };
+    std::sort(entries.begin(), entries.end(), order);
+    entries.erase(std::unique(entries.begin(), entries.end(),
+        [](const DecorLayer &a, const DecorLayer &b) { return a.sprite == b.sprite && a.frame == b.frame; }), entries.end());
+    entries.shrink_to_fit();
+    return decorPages.emplace(key, std::move(entries)).first->second;
+}
+void Compositor::collectVisibleDecor(const SceneMap &map, int left, int top, int right, int bottom)
+{
+    visibleDecor.clear();
+    visibleDecorSet = true;
+    if (!sharedDecorSprite && std::none_of(decorSprites.begin(), decorSprites.end(), [](auto *s) { return s; }))
+        return;
+    // Raised decor reaches past its cell: include the rows whose frames rise
+    // into the view from below it, and those hanging into it from above.
+    top -= (reach.down + 31) / 32;
+    bottom += (reach.up + 31) / 32;
+    left -= (reach.side + 31) / 32;
+    right += (reach.side + 31) / 32;
+    const int width = std::min(map.getW(), std::max(0, right - left + 1));
+    const int height = std::min(map.getH(), std::max(0, bottom - top + 1));
+    if (!width || !height)
+        return;
+    if (usageIdentity != map.identity() || usageRevision != map.terrainRevision() || usageSeed != map.terrainSeed())
+    {
+        usagePages.clear();
+        decorPages.clear();
+        usageIdentity = map.identity();
+        usageRevision = map.terrainRevision();
+        usageSeed = map.terrainSeed();
+    }
+    constexpr int Page = 16;
+    const auto pageOf = [](int tile) { return int(std::floor(double(tile) / Page)); };
+    const int px0 = pageOf(left), px1 = pageOf(left + width - 1);
+    const int py0 = pageOf(top), py1 = pageOf(top + height - 1);
+    const int pagesX = std::max(1, map.getW() / Page), pagesY = std::max(1, map.getH() / Page);
+    for (int py = py0; py <= std::min(py1, py0 + pagesY - 1); ++py)
+        for (int px = px0; px <= std::min(px1, px0 + pagesX - 1); ++px)
+        {
+            const auto &page = pageDecor(map, (px * Page) & map.getMaskW(), (py * Page) & map.getMaskH());
+            visibleDecor.insert(visibleDecor.end(), page.begin(), page.end());
+        }
 }
 void Compositor::releasePreparedTextures()
 {
@@ -491,6 +552,7 @@ Compositor::Usage Compositor::visibleUsage(const SceneMap &map, int left, int to
     if (usageIdentity != map.identity() || usageRevision != map.terrainRevision() || usageSeed != map.terrainSeed())
     {
         usagePages.clear();
+        decorPages.clear();
         usageIdentity = map.identity();
         usageRevision = map.terrainRevision();
         usageSeed = map.terrainSeed();
@@ -539,8 +601,9 @@ void Compositor::declareWindows(bool materials, bool decor, int time, const Usag
                     window.push_back(m.variants[i].frame + (phase + 1) % m.animationFrames * m.animationStride);
             }
         // Decor (spires, masses, terraces) streams per material in view too:
-        // the shared sheet is far larger than any one map needs.
-        if (decor && count && decorSprites[id])
+        // the shared sheet is far larger than any one map needs. A view
+        // declares only the frames its cells draw (collectVisibleDecor).
+        if (decor && count && decorSprites[id] && !visibleDecorSet)
         {
             auto &decorWindow = windows[decorSprites[id]];
             for (const auto &frames : {m.decor.full, m.decor.edge, m.decor.connected, m.decor.connectedInterior,
@@ -557,6 +620,15 @@ void Compositor::declareWindows(bool materials, bool decor, int time, const Usag
             for (unsigned i = 0; i < m.variants.size(); ++i)
                 if (!requested || (*requested)[id][i])
                     window.push_back(m.variants[i].frame + (phase + ahead) % m.animationFrames * m.animationStride);
+    }
+    if (decor && visibleDecorSet)
+    {
+        // Every decor sheet declares a window, an empty one included, so
+        // frames that left the view retire.
+        for (auto *sprite : decorSprites)
+            if (sprite) windows[sprite];
+        for (const auto &layer : visibleDecor)
+            windows[layer.sprite].push_back(unsigned(layer.frame));
     }
     for (auto &[sprite, window] : windows) sprite->setHighResolutionFrames(window);
 }
