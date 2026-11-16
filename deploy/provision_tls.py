@@ -19,14 +19,17 @@ def provision(destination):
         run('req', '-x509', '-newkey', 'ec', '-pkeyopt', 'ec_paramgen_curve:prime256v1',
             '-nodes', '-keyout', work/'ca.key', '-out', work/'ca.pem', '-days', '3650',
             '-subj', '/CN=Glob2 deployment CA', '-addext', 'basicConstraints=critical,CA:TRUE',
-            '-addext', 'keyUsage=critical,keyCertSign,cRLSign')
+            '-addext', 'keyUsage=critical,keyCertSign,cRLSign', '-addext', 'subjectKeyIdentifier=hash')
         for service in ('lobby', 'router'):
             run('req', '-new', '-newkey', 'ec', '-pkeyopt', 'ec_paramgen_curve:prime256v1',
                 '-nodes', '-keyout', work/f'{service}.key', '-out', work/f'{service}.csr',
                 '-subj', f'/CN={service}')
             extension = work/f'{service}.ext'
+            # RFC 5280 key identifiers: strict verifiers (Python 3.13+ defaults
+            # among them) reject an issued certificate without an authority key ID.
             extension.write_text(f'basicConstraints=critical,CA:FALSE\nkeyUsage=critical,digitalSignature\n'
-                f'extendedKeyUsage=serverAuth,clientAuth\nsubjectAltName=DNS:{service},DNS:localhost,IP:127.0.0.1\n')
+                f'extendedKeyUsage=serverAuth,clientAuth\nsubjectAltName=DNS:{service},DNS:localhost,IP:127.0.0.1\n'
+                'subjectKeyIdentifier=hash\nauthorityKeyIdentifier=keyid:always\n')
             run('x509', '-req', '-in', work/f'{service}.csr', '-CA', work/'ca.pem', '-CAkey', work/'ca.key',
                 '-CAcreateserial', '-out', work/f'{service}.pem', '-days', '90', '-sha256', '-extfile', extension)
         for name in ('ca.pem', 'ca.key', 'lobby.pem', 'lobby.key', 'router.pem', 'router.key'):

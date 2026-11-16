@@ -8,7 +8,7 @@ links it with:
   CLIENT          every client object except the entry point, then the libraries
   CLIENT_OBJECTS  the harness object first, then the client objects and libraries
   LIBRARIES       libgag and libusl only
-  a tuple         those client sources' objects (paths relative to src/)
+  a tuple         those client sources' objects (paths relative to src/), then libgag
 
 Fields: `object` names the harness object (default: the source's basename);
 `cxxflags` are appended for the harness object only; `shared` names objects of
