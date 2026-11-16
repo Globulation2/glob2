@@ -399,7 +399,8 @@ void GlobalContainer::loadGameGraphics()
 	// load terrain data
 	if (!terrain)
 		terrain = sprite("data/gfx/terrain");
-	terrainCompositor(); // Validate all registered material sources before drawing.
+	// Parses the catalog; material sheets load as maps need them.
+	terrainCompositor();
 	terrainCloud = sprite("data/gfx/cloud");
 
 	// black for unexplored terrain
@@ -456,7 +457,10 @@ void GlobalContainer::requestGameGraphics()
 	{
 		if (material.variantBlocks > 1) Sprite::deferHighResolution(material.sprite);
 		Sprite::keepHighResolutionPixels(material.sprite); // The compositor samples them.
-		Toolkit::requestSprite(material.sprite);
+		// Material sheets load on demand (TerrainVisual::MaterialSheets), as a
+		// map, the editor or composition first needs them.
+		if (!terrainSheetsOnDemand())
+			Toolkit::requestSprite(material.sprite);
 		if (!material.decor.sprite.empty())
 		{
 			// The shared decor sheet holds every material's decor, thousands of
@@ -584,11 +588,19 @@ void GlobalContainer::loadOffscreenGraphics()
 	}
 }
 
+bool GlobalContainer::terrainSheetsOnDemand() const
+{
+	// GLOB2_TERRAIN_SHEETS=eager loads every material sheet at startup, as
+	// before, for comparisons.
+	const char *mode = std::getenv("GLOB2_TERRAIN_SHEETS");
+	return !terrainSheetsEager && (!mode || std::string(mode) != "eager");
+}
+
 TerrainVisual::Compositor &GlobalContainer::terrainCompositor()
 {
 	if (!terrainCompositor_)
-		terrainCompositor_ =
-			std::make_shared<TerrainVisual::Compositor>(TerrainVisual::loadCatalog());
+		terrainCompositor_ = std::make_shared<TerrainVisual::Compositor>(
+			TerrainVisual::loadCatalog(), MapAssetBundle::empty(), terrainSheetsOnDemand());
 	return *terrainCompositor_;
 }
 
@@ -608,7 +620,7 @@ std::shared_ptr<TerrainVisual::Compositor> GlobalContainer::terrainCompositorOwn
     if (compositorAssets != assets)
     {
         customTerrainCompositor = std::make_shared<TerrainVisual::Compositor>(
-            TerrainVisual::loadCatalog(assets), assets);
+            TerrainVisual::loadCatalog(assets), assets, terrainSheetsOnDemand());
         compositorAssets = std::move(assets);
     }
     return customTerrainCompositor;

@@ -167,8 +167,11 @@ The pipeline has three responsibilities:
    terrain pack and audit all output files. It records fingerprints of the actual
    decoded runtime sources, including lossy WebP and sheet frames, separately
    from original PNG provenance hashes.
-3. **Runtime compositor:** verify native source fingerprints, read prepared texture
-   regions lazily from CPU pages, resolve coverage and compose visible terrain.
+3. **Runtime compositor:** load each material's native sheet when a map first
+   needs it (drawing its preview colour until then, see
+   [rendering](../architecture/rendering.md)), verify native source fingerprints,
+   read prepared texture regions lazily from CPU pages, resolve coverage and
+   compose visible terrain.
    It computes coverage directly from normalized profile controls. Exported
    contour tables are validation/packaging data. Composed view pages supply their
    own GPU mipmaps and respect the device texture limit.

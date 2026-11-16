@@ -784,6 +784,7 @@ void Engine::finalAdjustments(void)
 	if (!globalContainer->runNoX)
 	{
 		gui.adjustInitialViewport();
+		gui.loadTerrainArtwork();
 		gui.prepareDirectTerrain();
 	}
 	gui.game.setAlliances();

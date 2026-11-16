@@ -200,6 +200,81 @@ TEST_SUITE("TerrainMaterials")
 		CHECK(compositor.sourceBytes() == prepared);
 	}
 
+	TEST_CASE("an on-demand compositor draws preview colours until a map's sheets arrive [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .terrainSheetsOnDemand = true});
+		TerrainVisual::Compositor compositor(catalog(), MapAssetBundle::empty(), true);
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
+		auto &map = fixture.game.map;
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 32; ++x)
+				map.setVertexTerrain(x, y, y < 12 ? WATER : (x < 16 ? SAND : GRASS));
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		const auto &materials = compositor.catalog().materials;
+		const auto grass = compositor.catalog().find("grass");
+		const auto lava = compositor.catalog().find("lava");
+		const auto &grassSheet = materials[grass].sprite, &lavaSheet = materials[lava].sprite;
+		REQUIRE(grassSheet != lavaSheet);
+		// Nothing loaded the material sheets at startup.
+		REQUIRE_FALSE(GAGCore::Toolkit::findSprite(grassSheet));
+		CHECK_FALSE(compositor.materialLoaded(grass));
+
+		// The first answer is the material's preview colour; nothing waits.
+		const auto flat = compositor.phasePixels(grass, 0, 0);
+		REQUIRE(flat.size() == 32 * 32);
+		const auto &preview = materials[grass].preview;
+		const std::array<unsigned char, 4> colour{preview[0], preview[1], preview[2], 255};
+		CHECK(std::all_of(flat.begin(), flat.end(), [&](const auto &p) { return p == colour; }));
+		CHECK(compositor.materialFallbacks() > 0);
+		CHECK(compositor.phaseSource(grass, 0, 0).revision == 0);
+		// Pages leave a cell uncomposed until its sheets are in.
+		const auto grassCell = compositor.describe(scene, 24, 20);
+		CHECK_FALSE(compositor.sheetsReady(grassCell));
+
+		// A short scan finds the map's materials; their sheets decode on the
+		// asset workers and publish within the frame polls' budget.
+		const auto arrivals = compositor.materialArrivals();
+		const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(30);
+		while (!compositor.materialsReady(scene))
+		{
+			REQUIRE(std::chrono::steady_clock::now() < deadline);
+			GAGCore::Toolkit::pollAssets(4);
+			SDL_Delay(1);
+		}
+		CHECK(compositor.materialLoaded(grass));
+		CHECK(compositor.sheetsReady(grassCell));
+		CHECK(compositor.materialArrivals() > arrivals);
+		const auto loaded = compositor.phasePixels(grass, 0, 0);
+		CHECK_FALSE(std::all_of(loaded.begin(), loaded.end(), [&](const auto &p) { return p == colour; }));
+		// The same pixels an eagerly loaded compositor composes.
+		TerrainVisual::Compositor eager(catalog());
+		CHECK(eager.phasePixels(grass, 0, 0) == loaded);
+		// A material the map does not hold stays unloaded until asked for.
+		CHECK_FALSE(compositor.materialLoaded(lava));
+
+		// A complete draw can wait for a sheet. Once no map holds it, it goes
+		// after the retired frames' lifetime, and the next ask loads it again.
+		const std::array<TerrainVisual::MaterialId, 1> asked{lava};
+		compositor.finishMaterials(asked);
+		CHECK(compositor.materialLoaded(lava));
+		const auto saved = GAGCore::Sprite::retiredHighResolutionBudget();
+		struct Restore
+		{
+			GAGCore::Sprite::RetiredHighResolutionBudget budget;
+			~Restore() { GAGCore::Sprite::setRetiredHighResolutionBudget(budget); }
+		} restore{saved};
+		GAGCore::Sprite::setRetiredHighResolutionBudget({saved.bytes, 0});
+		SDL_Delay(300);
+		CHECK(compositor.materialsReady(scene));
+		CHECK_FALSE(GAGCore::Toolkit::findSprite(lavaSheet));
+		CHECK_FALSE(compositor.materialLoaded(lava));
+		CHECK(GAGCore::Toolkit::findSprite(grassSheet)); // The map holds it.
+		CHECK(compositor.materialLoaded(grass));
+		compositor.finishMaterials(asked);
+		CHECK(compositor.materialLoaded(lava));
+	}
+
 	TEST_CASE("fertile ground overlays glint sparsely, out of step and on its own cycle")
 	{
 		glob2test::HeadlessGlobals globals;
