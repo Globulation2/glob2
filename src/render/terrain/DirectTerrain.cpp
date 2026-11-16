@@ -884,6 +884,7 @@ struct DirectTerrain::State
         b.order.reserve(ranked.size());
         for (const auto &[distance, cell] : ranked) b.order.push_back(cell);
         b.remaining = b.order.size();
+        b.reported = b.order.empty(); // No mixed cell: nothing to build.
         b.started = SDL_GetTicks();
     }
 
@@ -901,6 +902,15 @@ struct DirectTerrain::State
         }
         if (cellMasks[cell]) b.redo.push_back(cell);
     }
+
+    void ensureBase(const SceneMap &map, TerrainVisual::Compositor &compositor, int centreX, int centreY, bool now)
+    {
+        if (hd.base.tile || !hd.base.built.empty()) return;
+        createBase(centreX, centreY);
+        if (now) buildBase(map, compositor);
+    }
+    // The base is still building for the first time (not an edit's rebuild).
+    bool baseBuilding() const { return hd.base.tile && !hd.base.reported; }
 
     // Builds the base mask of every mixed cell now, in parallel on the
     // presentation workers, and writes it in whole-row strips. It runs once a
@@ -1091,16 +1101,15 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
     bool edited = (legacy || streaming) && sameContext && state->tablesReady && state->sameMapSource(map) &&
         state->revision != map.terrainRevision();
     // A device that dropped a streamed texture (a reset, or its budget) or
-    // stopped draining its writes: start this map's textures again, the
-    // tables and base masks at once, rather than leave the streamed pass. SDL
-    // GPU then draws every cell from the base until its masks and artwork
-    // stream back.
-    bool restoring = false;
+    // stopped draining its writes: start this map's textures again rather
+    // than leave the streamed pass. Nothing blocks: the tables build in
+    // slices and the base masks on the workers, while the view draws the
+    // overview (its always-resident whole-map base beneath), and the direct
+    // pass returns once every base mask is back.
     if (streaming && sameContext && state->streamLost())
     {
         std::fprintf(stderr, "DIRECT_TERRAIN_RESTART streamed textures lost or stopped draining\n");
         ++restarts;
-        restoring = true;
         edited = false;
         state.reset();
     }
@@ -1108,9 +1117,6 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
     {
         if (state && !sameContext)
             state->context = nullptr; // The retired context owns its old names.
-        // SDL GPU builds a map's tables, and then its base masks, in the
-        // first prepare, as part of loading: no frame of the map lacks them.
-        restoring = restoring || streaming;
         state = std::make_unique<State>();
         state->context = resources ? nullptr : context;
         state->resources = resources;
@@ -1207,7 +1213,7 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
             bool ready;
             do
                 ready = state->building->advance();
-            while (!ready && (complete || restoring || std::chrono::steady_clock::now() < deadline));
+            while (!ready && (complete || std::chrono::steady_clock::now() < deadline));
             if (!ready)
                 return false;
             auto data = state->building->take();
@@ -1492,6 +1498,9 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
         while (tile < 128 && tile < 32 * density) tile *= 2;
         prepareHdMasks(map, left, top, right, bottom, viewportX, viewportY, visibleTeams, wholeMap, tile, complete);
         if (state->hd.failed) { out.regions.clear(); return false; }
+        // SDL GPU never draws a mixed cell as a corner split for want of a
+        // base mask: until the base is back the view draws the overview.
+        if (state->streaming && state->baseBuilding()) { out.regions.clear(); state->hd.split = 0; return false; }
         return true;
     }
     catch (const std::exception &error)
@@ -1510,6 +1519,18 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
 std::size_t DirectTerrain::pendingHdMasks() const
 {
     return state ? state->hd.pending : 0;
+}
+
+void DirectTerrain::preload(GAGCore::GraphicContext &gfx, const SceneMap &map)
+{
+    const bool legacy = gfx.isLegacyGLScreen() && legacyPassAvailable();
+    if (!legacy && !streamedPassAvailable(gfx)) return;
+    const auto started = SDL_GetTicks();
+    // A complete prepare-only pass builds the tables at once; then the base.
+    if (!drawInternal(gfx, map, 0, 0, 0, 0, 0, 0, 0, true, 0, true, true) || !state || !state->tablesReady) return;
+    auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
+    state->ensureBase(map, compositor, state->width / 2, state->height / 2, true);
+    std::fprintf(stderr, "DIRECT_TERRAIN_PRELOAD ms=%llu\n", (unsigned long long)(SDL_GetTicks() - started));
 }
 
 std::size_t DirectTerrain::splitCells() const
@@ -1623,15 +1644,12 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
     }
     const int atlasSize = hd.size;
     auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
-    if (!hd.base.tile && hd.base.built.empty())
-    {
-        state->createBase(((left + right) / 2 + viewportX) % width, ((top + bottom) / 2 + viewportY) % height);
-        // The low-resolution masks of the whole map, before this map's first
-        // terrain frame (and again after a device lost them): every view can
-        // draw every cell with its borders from then on, and HD masks only
-        // refine it.
-        state->buildBase(map, compositor);
-    }
+    // The low-resolution masks of the whole map. Game loading builds them
+    // (DirectTerrain::preload), and a complete draw builds them now; otherwise
+    // (a restart after a device loss, a view without that load) the workers
+    // build them, ahead of any view mask.
+    state->ensureBase(map, compositor, ((left + right) / 2 + viewportX) % width,
+                      ((top + bottom) / 2 + viewportY) % height, complete);
     ++hd.frame;
     // Visible mixed cells: keep resident ones, and queue the rest nearest the
     // view centre first, so a zoom or pan fills in from the middle outwards.
@@ -1728,7 +1746,10 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
                 std::lock_guard lock(hd.mutex);
                 queued = hd.baseJobs.size();
             }
-            const auto baseDeadline = std::chrono::steady_clock::now() + std::chrono::microseconds(250);
+            // Two milliseconds while the base first builds (the view shows the
+            // overview meanwhile), a quarter after.
+            const auto baseDeadline = std::chrono::steady_clock::now() +
+                std::chrono::microseconds(state->baseBuilding() ? 2000 : 250);
             while (queued + baseQueue.size() < QueueDepth && std::chrono::steady_clock::now() < baseDeadline)
             {
                 int cell = -1;

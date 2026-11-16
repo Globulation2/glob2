@@ -136,6 +136,9 @@ public:
 	void rebuildBuildingChoices(bool preserve = false);
 	///Moves the local viewport
 	void adjustInitialViewport();
+	//! Game loading: builds the map's direct terrain tables and whole-map
+	//! base masks before the first frame (DirectTerrain::preload).
+	void prepareDirectTerrain();
 	void adjustLocalTeam();
     void selectViewedTeam(int team);
 	//! Handle mouse, keyboard and window resize inputs, and stats
