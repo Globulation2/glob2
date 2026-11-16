@@ -13,7 +13,8 @@
 #include <thread>
 
 #ifdef __EMSCRIPTEN__
-#include <emscripten.h>
+// platforms/web/canvas-size.js: navigator.deviceMemory in GiB, 0 when unknown.
+extern "C" double glob2_device_memory_gib();
 #endif
 #ifdef __ANDROID__
 #include <SDL3/SDL_system.h>
@@ -200,9 +201,7 @@ DeviceInputs probeCheap()
 	// In a browser SDL reports the WebAssembly heap limit, not the device's
 	// memory. navigator.deviceMemory (Chromium; rounded, at most 8 GiB) is the
 	// device's own figure; elsewhere memory stays unknown (today's defaults).
-	inputs.systemRamMiB = std::uint64_t(EM_ASM_DOUBLE({
-		return (typeof navigator !== 'undefined' && navigator.deviceMemory > 0) ? navigator.deviceMemory : 0;
-	}) * 1024);
+	inputs.systemRamMiB = std::uint64_t(glob2_device_memory_gib() * 1024);
 #endif
 	inputs.cores = std::thread::hardware_concurrency();
 #ifdef GLOB2_MOBILE
