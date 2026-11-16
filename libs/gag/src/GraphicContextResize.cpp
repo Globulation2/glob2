@@ -27,6 +27,8 @@ namespace GAGCore
 		SDL_GetWindowSize(window, &pointsW, &pointsH);
 		if (pointsW <= 0 || pointsH <= 0 || (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)) return true;
 		pixelsW = pointsW; pixelsH = pointsH;
+		// Device renderers draw in window pixels (HiDPI) as GL does.
+		if (presentationDevice && renderer == deviceRenderer.get()) SDL_GetWindowSizeInPixels(window, &pixelsW, &pixelsH);
 #ifdef HAVE_OPENGL
 		if (optionFlags & USEGPU) SDL_GetWindowSizeInPixels(window, &pixelsW, &pixelsH);
 		else

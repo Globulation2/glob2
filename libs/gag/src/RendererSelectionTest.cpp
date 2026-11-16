@@ -92,6 +92,38 @@ TEST_SUITE("RendererSelection")
         }
     }
 
+    // On HiDPI displays a window's pixels exceed its points. Device renderers
+    // have no GL context to measure them through, and SDL GPU once drew a
+    // half-resolution frame that the swapchain stretched. On a 1x display both
+    // sizes agree, so this guards HiDPI machines (Retina Macs, phones).
+    TEST_CASE("device renderers draw at the window's pixel size, from startup and after a switch [display]")
+    {
+        for (auto backend : {RendererBackend::ProgrammableGL, RendererBackend::SDLGPU}) {
+            for (bool atStartup : {true, false}) {
+                GraphicContext::setInitialRendererBackend(atStartup ? backend : RendererBackend::Software);
+                GraphicContext gfx(64, 48, GraphicContext::NOAUDIO, "device pixel size");
+                if (!atStartup) {
+                    const auto choices = gfx.rendererAvailability();
+                    if (std::none_of(choices.begin(), choices.end(), [&](const auto &c) { return c.backend == backend && c.available; })) {
+                        MESSAGE("Pixel size coverage unavailable for ", rendererBackendName(backend));
+                        continue;
+                    }
+                    REQUIRE(gfx.requestBackendSwitch(backend)); gfx.nextFrame();
+                }
+                if (gfx.backendSwitchStatus().active != backend) {
+                    MESSAGE("Pixel size coverage unavailable for ", rendererBackendName(backend));
+                    continue;
+                }
+                auto *device = gfx.renderDevice(); REQUIRE(device);
+                int pixelsW = 0, pixelsH = 0, deviceW = 0, deviceH = 0;
+                REQUIRE(SDL_GetWindowSizeInPixels(SDL_GetWindowFromID(gfx.windowID()), &pixelsW, &pixelsH));
+                device->outputSize(deviceW, deviceH);
+                INFO(rendererBackendName(backend), atStartup ? " at startup" : " after a switch");
+                CHECK(deviceW == pixelsW); CHECK(deviceH == pixelsH);
+            }
+        }
+    }
+
     TEST_CASE("public admission abort retains target leases and advances content epoch [display]")
     {
         for(auto backend:{RendererBackend::ProgrammableGL,RendererBackend::SDLGPU}){

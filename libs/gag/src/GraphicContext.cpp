@@ -652,7 +652,6 @@ int GraphicContext::maximumTextureSize() const
 			if (renderer) renderer->logicalSize(logicalW, logicalH);
 			setClipRect();
 		}
-		if (renderer) renderer->outputSize(drawableW, drawableH);
 		#ifdef HAVE_OPENGL
 		if (optionFlags & USEGPU)
 		{
@@ -660,6 +659,9 @@ int GraphicContext::maximumTextureSize() const
 			applyGLViewport();
 		}
 		#endif
+		// Device renderers draw in window pixels (HiDPI) as GL does.
+		if (presentationDevice) SDL_GetWindowSizeInPixels(window, &drawableW, &drawableH);
+		if (renderer) renderer->outputSize(drawableW, drawableH);
 	}
 
 	void GraphicContext::windowToLogical(float &x, float &y)
@@ -902,6 +904,7 @@ int GraphicContext::maximumTextureSize() const
         ownsSurface = true;
         SDL_GetWindowSize(window, &windowW, &windowH);
         drawableW = windowW; drawableH = windowH;
+        if (presentationDevice) SDL_GetWindowSizeInPixels(window, &drawableW, &drawableH);
 #ifdef HAVE_OPENGL
         if (optionFlags & USEGPU) {
             SDL_GetWindowSizeInPixels(window, &drawableW, &drawableH);
@@ -1129,6 +1132,9 @@ int GraphicContext::maximumTextureSize() const
 				#endif
 			}
             if (configuredBackend == RendererBackend::ProgrammableGL || configuredBackend == RendererBackend::SDLGPU || configuredBackend == RendererBackend::WebGPU) {
+                // Device renderers present in window pixels, which on HiDPI exceed the
+                // window's points even without a GL context to measure them.
+                SDL_GetWindowSizeInPixels(window, &drawableW, &drawableH);
                 try {
                     if (configuredBackend == RendererBackend::ProgrammableGL)
                         presentationDevice = makeProgrammableGLDevice(window, rendererShaderDirectory());
