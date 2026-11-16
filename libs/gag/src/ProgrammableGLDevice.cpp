@@ -15,6 +15,7 @@
 #include <cstring>
 #include <deque>
 #include <fstream>
+#include <list>
 #include <map>
 #include <stdexcept>
 #ifdef __EMSCRIPTEN__
@@ -43,6 +44,7 @@ namespace
  F(void, glActiveTexture, (GLenum)) \
  F(void, glTexParameteri, (GLenum, GLenum, GLint)) \
  F(void, glTexImage2D, (GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const void *)) \
+ F(void, glCompressedTexImage2D, (GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, const void *)) \
  F(void, glTexSubImage2D, (GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const void *)) \
  F(void, glPixelStorei, (GLenum, GLint)) \
  F(void, glGenBuffers, (GLsizei, GLuint *)) \
@@ -155,6 +157,9 @@ class ProgrammableGLDevice final : public RenderDevice
         bool premultiplied=false;
         std::size_t bytes = 0, depthBytes = 0, category = 0;
         std::uint64_t lastUse = 0;
+        // Sampled textures only: the position on its class's recency list.
+        std::list<std::pair<std::tuple<std::uint32_t, std::uint32_t, std::uint64_t>, bool>>::iterator recent;
+        bool listed = false;
     };
     struct CoverageAllocation {
         GLuint weights=0,selectors=0;
@@ -185,6 +190,8 @@ class ProgrammableGLDevice final : public RenderDevice
     struct TeamColorProgram { GLuint program=0; GLint viewport=-1,image=-1,alpha=-1,linear=-1,premultiplied=-1,levels=-1,uvBounds=-1; };
     TeamColorProgram teamProgram;
     bool supportsWorld = false, supportsSkins = false;
+    // Block formats sampled directly (see TextureCompression and initCompression).
+    bool bc3Supported = false, astcSupported = false;
     struct SkinProgram { GLuint program=0; GLint shell=-1,furLength=-1,shellDepth=-1,region=-1,bones=-1,view=-1,normalView=-1,paint=-1,material=-1; };
     SkinProgram skinProgram, rigProgram;
     GLuint screenDepth = 0;
@@ -213,8 +220,20 @@ class ProgrammableGLDevice final : public RenderDevice
     using TextureKey = std::tuple<std::uint32_t, std::uint32_t, std::uint64_t>;
     static TextureKey key(const TextureSnapshot &snapshot)
     { return {snapshot->handle.slot, snapshot->handle.generation, snapshot->contentRevision}; }
-    std::map<std::pair<TextureKey, bool>, Allocation> textures;
+    using SampledKey = std::pair<TextureKey, bool>;
+    std::map<SampledKey, Allocation> textures;
     std::map<TextureKey, Allocation> targets;
+    // Sampled textures by budget class, least recently used first. Each use
+    // sets lastUse to the next submission, so a list is also ordered by
+    // lastUse: eviction stops at the first entry pending work still needs.
+    std::array<std::list<SampledKey>, 4> recentTextures;
+    // Routine retirement visits a bounded slice of each cache per call,
+    // resuming where it stopped, however many entries the caches hold.
+    static constexpr std::size_t SweepSlice = 128;
+    SampledKey textureSweep{};
+    TextureKey targetSweep{};
+    std::tuple<std::uint64_t,std::uint64_t,std::uint32_t,std::uint32_t> maskSweep{};
+    std::tuple<std::uint32_t, std::uint32_t, std::uint64_t> meshSweep{};
     std::deque<Pending> pending;
     std::deque<Readback> readbacks;
     RenderTelemetry counts;
@@ -275,6 +294,23 @@ class ProgrammableGLDevice final : public RenderDevice
     std::vector<Uint8> uploadScratch;
     struct PrimitiveRange { const DrawPacket *packet; std::size_t first, count; };
     std::vector<PrimitiveRange> primitiveRanges;
+    // New sampled textures a deferrable frame (RenderFrame::deferrable) may
+    // create for screen packets, and their bytes. Past either the uploads so
+    // far are kept and the frame defers: the previous frame shows while later
+    // frames create the rest (a first zoom out, a resume after a trim).
+    static constexpr unsigned FrameTextureLimit = 96;
+    static constexpr std::size_t FrameUploadLimit = 16 * 1024 * 1024;
+    unsigned frameTextures = 0;
+    std::size_t frameUploadBytes = 0;
+    bool capCreations = false;
+    void admitCreation(std::size_t bytes)
+    {
+        if (!capCreations) return;
+        if (frameTextures >= FrameTextureLimit || (frameTextures && bytes > FrameUploadLimit - std::min(FrameUploadLimit, frameUploadBytes)))
+            throw RenderAdmissionDeferred("GL per-frame texture creations reached");
+        ++frameTextures; frameUploadBytes += bytes;
+    }
+    void endFrameCreations() { frameTextures = 0; frameUploadBytes = 0; capCreations = false; }
     static constexpr std::size_t UploadScratchLimit = 8 * 1024 * 1024;
 
     void current()
@@ -337,36 +373,97 @@ class ProgrammableGLDevice final : public RenderDevice
             gl.glDeleteSync(pending.front().fence); pending.pop_front();
         }
     }
+    template <class Map, class Retire>
+    static void sweep(Map &map, typename Map::key_type &cursor, std::size_t slice, Retire retire)
+    {
+        if (map.empty()) return;
+        auto it = map.lower_bound(cursor);
+        const std::size_t limit = std::min(slice, map.size());
+        for (std::size_t visited = 0; visited < limit && !map.empty(); ++visited) {
+            if (it == map.end()) it = map.begin();
+            if (retire(it)) it = map.erase(it); else ++it;
+        }
+        if (it == map.end()) it = map.begin();
+        cursor = it == map.end() ? typename Map::key_type{} : it->first;
+    }
+    // Erases a sampled texture and its recency entry.
+    std::map<SampledKey, Allocation>::iterator eraseTexture(std::map<SampledKey, Allocation>::iterator it)
+    {
+        if (it->second.listed) recentTextures[it->second.category].erase(it->second.recent);
+        destroy(it->second); return textures.erase(it);
+    }
+    void touch(Allocation &allocation)
+    {
+        allocation.lastUse = issued + 1;
+        if (allocation.listed) {
+            auto &list = recentTextures[allocation.category];
+            list.splice(list.end(), list, allocation.recent);
+        }
+    }
+    // The least recently used sampled texture no pending work holds: of one
+    // class, or of any class (whichever was used longest ago).
+    std::map<SampledKey, Allocation>::iterator evictable(std::optional<std::size_t> category)
+    {
+        std::map<SampledKey, Allocation>::iterator best = textures.end();
+        for (std::size_t index = 0; index < recentTextures.size(); ++index) {
+            if ((category && *category != index) || recentTextures[index].empty()) continue;
+            const auto found = textures.find(recentTextures[index].front());
+            if (found->second.lastUse <= completed && (best == textures.end() || found->second.lastUse < best->second.lastUse))
+                best = found;
+        }
+        return best;
+    }
     void trim(std::size_t admission = 0, std::size_t category = 0, bool colorAdmission = true, bool releaseCompleted = false)
     {
-        const auto eligible = [this](const Allocation &value) { return value.lastUse <= completed; };
+        const auto overTotal = [&] { return admission > TextureBudget - std::min(TextureBudget, textureBytes + captureBytes); };
+        const auto overClass = [&](std::size_t index) { return colorAdmission && index == category && admission > ClassLimits[index] - std::min(ClassLimits[index], classBytes[index]); };
         // A handful of streamed textures per view: never evicted, only
         // released with their owner (or lost on reset).
         for (auto it = streamed.begin(); it != streamed.end();) {
             if (it->second.owner.expired()) { destroy(it->second); it = streamed.erase(it); } else ++it;
         }
-        for (auto it = textures.begin(); it != textures.end();) {
-            if (eligible(it->second) && (releaseCompleted || it->second.snapshot.expired() || textureBytes + admission > TextureBudget-captureBytes || (colorAdmission && it->second.category == category && admission > ClassLimits[category] - classBytes[category]))) {
-                destroy(it->second); it = textures.erase(it);
-            } else ++it;
+        if (releaseCompleted) {
+            // Explicit trims (trimRetiredResources) only, never per frame.
+            for (auto it = textures.begin(); it != textures.end();)
+                it = it->second.lastUse <= completed ? eraseTexture(it) : std::next(it);
+            for (auto it = targets.begin(); it != targets.end();)
+                if (it->second.lastUse <= completed && it->second.snapshot.expired()) { destroy(it->second); it = targets.erase(it); } else ++it;
+            for (auto it = masks.begin(); it != masks.end();)
+                if (it->second.lastUse <= completed) { destroy(it->second); it = masks.erase(it); } else ++it;
+            for (auto it = scratchTargets.begin(); it != scratchTargets.end();)
+                if (it->second.lastUse <= completed) { destroy(it->second); it = scratchTargets.erase(it); } else ++it;
         }
-        for (auto it = targets.begin(); it != targets.end();) {
-            // Rendered target content cannot be reconstructed from CPU pixels;
-            // retain it while its logical revision is referenced externally.
-            if (eligible(it->second) && it->second.snapshot.expired()) {
-                destroy(it->second); it = targets.erase(it);
-            } else ++it;
+        // Retire allocations of dead CPU revisions a slice at a time.
+        sweep(textures, textureSweep, SweepSlice, [&](auto it) {
+            if (it->second.lastUse > completed || !it->second.snapshot.expired()) return false;
+            if (it->second.listed) recentTextures[it->second.category].erase(it->second.recent);
+            destroy(it->second); return true;
+        });
+        // Rendered target content cannot be reconstructed from CPU pixels;
+        // retain it while its logical revision is referenced externally.
+        sweep(targets, targetSweep, SweepSlice, [&](auto it) {
+            if (it->second.lastUse > completed || !it->second.snapshot.expired()) return false;
+            destroy(it->second); return true;
+        });
+        sweep(masks, maskSweep, SweepSlice, [&](auto it) {
+            if (it->second.lastUse > completed || !it->second.source.expired()) return false;
+            destroy(it->second); return true;
+        });
+        if (!admission) { counts.resourceBytes = textureBytes; return; }
+        // Admission under pressure: least recently used first, constant time each.
+        const bool maskAdmission = category == std::size_t(TextureDescriptor::BudgetClass::TerrainMask);
+        while (overClass(category) || overTotal()) {
+            auto victim = evictable(overClass(category) ? std::optional<std::size_t>(category) : std::nullopt);
+            if (victim == textures.end()) break;
+            eraseTexture(victim);
         }
-        for(auto it=masks.begin();it!=masks.end();) {
-            const bool pressure=admission>TextureBudget-textureBytes-captureBytes ||
-                (colorAdmission && category==std::size_t(TextureDescriptor::BudgetClass::TerrainMask) && admission>ClassLimits[category]-classBytes[category]);
-            if(it->second.lastUse<=completed && (releaseCompleted || it->second.source.expired() || pressure)){destroy(it->second);it=masks.erase(it);}else ++it;
-        }
-        for(auto it=scratchTargets.begin();it!=scratchTargets.end();) {
-            if(it->second.lastUse<=completed && (releaseCompleted || admission>TextureBudget-textureBytes-captureBytes)){destroy(it->second);it=scratchTargets.erase(it);}else ++it;
-        }
-        if (admission > TextureBudget - textureBytes - captureBytes || (colorAdmission && admission > ClassLimits[category] - classBytes[category])) throw RenderAdmissionDeferred("GL texture budget exhausted");
+        // Coverage masks share the terrain mask class; scratch targets only the total.
+        for (auto it = masks.begin(); it != masks.end() && ((maskAdmission && overClass(category)) || overTotal());)
+            if (it->second.lastUse <= completed) { destroy(it->second); it = masks.erase(it); } else ++it;
+        for (auto it = scratchTargets.begin(); it != scratchTargets.end() && overTotal();)
+            if (it->second.lastUse <= completed) { destroy(it->second); it = scratchTargets.erase(it); } else ++it;
         counts.resourceBytes = textureBytes;
+        if (overTotal() || overClass(category)) throw RenderAdmissionDeferred("GL texture budget exhausted");
     }
     void screen()
     {
@@ -433,19 +530,92 @@ class ProgrammableGLDevice final : public RenderDevice
         gl.glBindFramebuffer(GL_DRAW_FRAMEBUFFER, committedFramebuffer);
         gl.glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, committedTexture, 0);
     }
+    void initCompression(bool es)
+    {
+        // Prepared artwork as blocks: BC3 where S3TC is sampled (desktop), ASTC
+        // 4x4 on GL ES devices with the LDR profile (phones). The browser build
+        // keeps uncompressed uploads. GLOB2_TEXTURE_COMPRESSION=none|bc3|astc
+        // restricts it, as on SDL GPU.
+#ifndef __EMSCRIPTEN__
+        const char *wanted = SDL_getenv_unsafe("GLOB2_TEXTURE_COMPRESSION");
+        const std::string choice = wanted ? wanted : "";
+        bc3Supported = (choice.empty() || choice == "bc3") && SDL_GL_ExtensionSupported("GL_EXT_texture_compression_s3tc");
+        astcSupported = (choice.empty() || choice == "astc") && es && SDL_GL_ExtensionSupported("GL_KHR_texture_compression_astc_ldr");
+#else
+        (void)es;
+#endif
+    }
+    static GLenum blockFormat(TextureCompression compression)
+    {
+        return compression == TextureCompression::BC3 ? 0x83F3 /* GL_COMPRESSED_RGBA_S3TC_DXT5_EXT */
+                                                      : 0x93B0 /* GL_COMPRESSED_RGBA_ASTC_4x4_KHR */;
+    }
+    //! Levels the device stores: blocks of a compressed revision, or RGBA8 levels.
+    static std::size_t levelCount(const TextureRevision &source)
+    {
+        return source.descriptor.compression != TextureCompression::Uncompressed ? source.blocks.size() : source.mips.size() + 1;
+    }
+    void validateBlocks(const TextureRevision &source, bool target) const
+    {
+        const auto &descriptor = source.descriptor;
+        if ((descriptor.compression == TextureCompression::BC3 && !bc3Supported) ||
+            (descriptor.compression == TextureCompression::ASTC4x4 && !astcSupported))
+            throw std::invalid_argument("GL device cannot sample this block format");
+        if (target) throw std::invalid_argument("Compressed textures cannot be render targets");
+        if (descriptor.alpha != TextureDescriptor::Alpha::Premultiplied || descriptor.mips != TextureDescriptor::Mips::Generated ||
+            source.blocks.empty() || source.blocks.size() > 16)
+            throw std::invalid_argument("Invalid compressed texture descriptor");
+        for (std::size_t index = 0; index < source.blocks.size(); ++index) {
+            const int w = descriptor.width >> index, h = descriptor.height >> index;
+            if (w < 4 || h < 4 || source.blocks[index].size() != compressedLevelBytes(w, h))
+                throw std::invalid_argument("Invalid compressed level blocks");
+        }
+    }
+    // Uploads a compressed revision's blocks as they are: no conversion, flip
+    // or premultiplication (blocks hold premultiplied colour).
+    void uploadBlocks(Allocation &allocation, const TextureRevision &source)
+    {
+        const auto &descriptor = source.descriptor;
+        const GLenum format = blockFormat(descriptor.compression);
+        for (std::size_t index = 0; index < source.blocks.size(); ++index) {
+            const auto &blocks = source.blocks[index];
+            gl.glCompressedTexImage2D(GL_TEXTURE_2D, GLint(index), format, descriptor.width >> index, descriptor.height >> index, 0,
+                GLsizei(blocks.size()), blocks.data());
+        }
+        gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, GLint(source.blocks.size() - 1));
+        allocation.premultiplied = true;
+    }
     Allocation allocate(TextureSnapshot snapshot, bool premultiplied, bool target)
     {
         const auto &descriptor = snapshot->descriptor;
         if (descriptor.width <= 0 || descriptor.height <= 0 || descriptor.width > maxTexture || descriptor.height > maxTexture)
             throw std::invalid_argument("Invalid GL texture dimensions");
-        auto required = std::uint64_t(descriptor.width) * descriptor.height * 4;
+        const bool compressed = descriptor.compression != TextureCompression::Uncompressed;
+        if (compressed) validateBlocks(*snapshot, target);
+        std::uint64_t required = 0;
+        if (compressed) for (const auto &level : snapshot->blocks) required += level.size();
+        else required = std::uint64_t(descriptor.width) * descriptor.height * 4;
         for (const auto &level : snapshot->mips) required += level.rgba.size();
         if (target && descriptor.mips != TextureDescriptor::Mips::Disabled) throw std::invalid_argument("Authored mip texture cannot be a render target");
         const auto category = std::size_t(descriptor.budgetClass);
         if (category >= classBytes.size()) throw std::invalid_argument("Invalid GL texture budget class");
         if (required > TextureBudget || required > ClassLimits[category]) throw std::length_error("GL texture exceeds resource budget");
         const std::size_t bytes = std::size_t(required);
+        admitCreation(bytes);
         trim(bytes, category);
+        if (compressed) {
+            Allocation allocation; allocation.snapshot = snapshot; allocation.bytes = bytes; allocation.category = category;
+            gl.glGenTextures(1, &allocation.texture); gl.glBindTexture(GL_TEXTURE_2D, allocation.texture);
+            gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, descriptor.addressU == TextureDescriptor::Address::Repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+            gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, descriptor.addressV == TextureDescriptor::Address::Repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+            gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            uploadBlocks(allocation, *snapshot);
+            textureBytes += bytes; classBytes[category] += bytes; counts.uploadBytes += bytes; counts.resourceBytes = textureBytes;
+            try { check("Upload compressed texture"); }
+            catch (...) { destroy(allocation); counts.resourceBytes = textureBytes; throw; }
+            return allocation;
+        }
         std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> converted(nullptr, SDL_DestroySurface);
         SDL_Surface *pixels = snapshot->pixels.get();
         if (!pixels) throw std::invalid_argument("GL texture has no restoration pixels");
@@ -521,17 +691,21 @@ class ProgrammableGLDevice final : public RenderDevice
     {
         auto found = targets.find(key(snapshot));
         if (found == targets.end()) found = targets.emplace(key(snapshot), allocate(snapshot, snapshot->descriptor.alpha==TextureDescriptor::Alpha::Premultiplied, true)).first;
-        found->second.lastUse = issued + 1; return found->second;
+        touch(found->second); return found->second;
     }
     Allocation &texture(TextureSnapshot snapshot, bool linear)
     {
         if (auto found = targets.find(key(snapshot)); found != targets.end()) {
-            found->second.lastUse = issued + 1; return found->second;
+            touch(found->second); return found->second;
         }
         const auto textureKey = std::make_pair(key(snapshot), linear);
         auto found = textures.find(textureKey);
-        if (found == textures.end()) found = textures.emplace(textureKey, allocate(snapshot, linear, false)).first;
-        found->second.lastUse = issued + 1; return found->second;
+        if (found == textures.end()) {
+            found = textures.emplace(textureKey, allocate(snapshot, linear, false)).first;
+            auto &list = recentTextures[found->second.category];
+            found->second.recent = list.insert(list.end(), textureKey); found->second.listed = true;
+        }
+        touch(found->second); return found->second;
     }
     SDL_Rect clip(const DrawPacket &packet, int w, int h, float logicalW, float logicalH)
     {
@@ -911,7 +1085,7 @@ void main() {
         gl.glUniform1f(teamProgram.alpha, packet.alpha / 255.f);
         gl.glUniform1f(teamProgram.linear, filtering ? 1.f : 0.f);
         gl.glUniform1f(teamProgram.premultiplied, premultiplied);
-        gl.glUniform1f(teamProgram.levels, mipmapped ? float(packet.texture->mips.size() + 1) : 1.f);
+        gl.glUniform1f(teamProgram.levels, mipmapped ? float(levelCount(*packet.texture)) : 1.f);
         // As the primitive program: adjacent nearest blits of one texture share
         // a batch, so only linear sampling (whose batches share a source) clamps.
         float u0 = 0, v0 = 0, u1 = 1, v1 = 1;
@@ -1122,10 +1296,13 @@ void main() {
         const auto identity = std::make_tuple(geometry->handle.slot, geometry->handle.generation, geometry->contentRevision);
         auto found = meshes.find(identity);
         if (found == meshes.end()) {
-            for (auto it = meshes.begin(); it != meshes.end();) {
-                if (it->second.lastUse <= completed && it->second.geometry.expired()) { destroyMesh(it->second); it = meshes.erase(it); }
-                else ++it;
-            }
+            const auto retire = [&](auto it) {
+                if (it->second.lastUse > completed || !it->second.geometry.expired()) return false;
+                destroyMesh(it->second); return true;
+            };
+            sweep(meshes, meshSweep, SweepSlice, retire);
+            // Under pressure, every dead revision the slices have not reached.
+            if (geometry->bytes > 64 * 1024 * 1024 - meshBytes) sweep(meshes, meshSweep, meshes.size(), retire);
             if (geometry->bytes > 64 * 1024 * 1024 - meshBytes) throw RenderAdmissionDeferred("World geometry upload budget exhausted");
             MeshAllocation value; value.geometry = geometry; value.bytes = geometry->bytes;
             gl.glGenVertexArrays(1, &value.vao); gl.glBindVertexArray(value.vao);
@@ -1390,6 +1567,7 @@ void main() {
                 directTerrainProgram = 0;
                 SDL_LogWarn(SDL_LOG_CATEGORY_RENDER, "Direct terrain unavailable: %s", error.what());
             }
+            initCompression(profile == SDL_GL_CONTEXT_PROFILE_ES);
             if (directTerrainProgram && std::ifstream(shaderRoot + "terrain-direct-hd.frag")) {
                 // Optional: without it HD terrain composes pages.
                 try {
@@ -1409,6 +1587,7 @@ void main() {
     {
         RenderDeviceCapabilities result{true, true, timingSupported, maxTexture, supportsWorld, supportsWorld, supportsSkins,supportsTerrain,directTerrainProgram != 0};
         result.teamColor = teamProgram.program != 0;
+        result.bc3Textures = bc3Supported; result.astc4x4Textures = astcSupported;
         result.directTerrainStreaming = directTerrainProgram != 0 && directTerrainHdProgram != 0;
         return result;
     }
@@ -1430,6 +1609,7 @@ void main() {
     RenderSubmission submit(RenderFrame frame) override
     {
         detail::RenderCpuTimer timing(counts.cpuSubmitNanoseconds);
+        capCreations = false;
         current(); poll(); trim();
         if (!frameOpen && !canBeginFrame()) return {};
         if (frame.logicalWidth <= 0 || frame.logicalHeight <= 0 || frame.packets.size() > RenderFrame::CommandCapacity)
@@ -1493,7 +1673,11 @@ void main() {
             bool flip = false, premultiplied = false;
             if (first.texture) {
                 const bool team = first.material == DrawPacket::Material::TeamColor;
+                // Only screen packets of a deferrable frame: offscreen
+                // composition left half done would start again.
+                capCreations = frame.deferrable && !first.target;
                 auto &allocation = texture(first.texture, first.linear && !team); flip = allocation.framebuffer != 0;
+                capCreations = false;
                 premultiplied = team ? teamPremultiplied(first, allocation) : allocation.premultiplied;
             }
             std::size_t rangeStart = geometry.size();
@@ -1532,6 +1716,7 @@ void main() {
             GLsync fence = gl.glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
             if (!fence) throw std::runtime_error("Cannot create renderer fence");
             pending.push_back({{issued, epoch}, fence}); frameOpen = false; gl.glFlush();
+            endFrameCreations();
         }
         if (!SDL_GL_SwapWindow(window)) throw std::runtime_error(SDL_GetError());
         poll(); trim();
@@ -1554,6 +1739,7 @@ void main() {
         const auto fence=gl.glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE,0);
         if(!fence)throw std::runtime_error("Cannot fence deferred renderer frame");
         pending.push_back({{++issued,epoch},fence});frameOpen=false;gl.glFlush();poll();
+        endFrameCreations();
         check("Discard renderer frame");
     }
     void reset() override
@@ -1565,6 +1751,7 @@ void main() {
         pending.clear();
         for (auto &[key, value] : textures) destroy(value);
         textures.clear();
+        for (auto &list : recentTextures) list.clear();
         for (auto &[key, value] : targets) destroy(value);
         targets.clear();
         for (auto &[key, value] : meshes) destroyMesh(value);
@@ -1574,7 +1761,7 @@ void main() {
         for(auto &[key,value]:scratchTargets)destroy(value);
         scratchTargets.clear();
         destroyStreamed(); // Owners that had writes applied see their textures lost.
-        ++epoch; completed = issued; frameOpen = false; counts.resourceBytes = 0;
+        ++epoch; completed = issued; frameOpen = false; counts.resourceBytes = 0; endFrameCreations();
     }
     std::uint64_t generation() const override { return epoch; }
     void trimRetiredResources() override

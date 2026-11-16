@@ -1018,8 +1018,10 @@ with explicit depth passes and premultiplied atlas composition. Paint and materi
 revisions remain immutable for submitted draws. Source, geometry and atlas caches
 are rebuilt after switching or recovery.
 
-SDL GPU samples block-compressed HD artwork where the device reports the format
-(`RenderDeviceCapabilities::bc3Textures`, `astc4x4Textures`). On entering the device,
+SDL GPU and programmable GL sample block-compressed HD artwork where the device
+reports the format (`RenderDeviceCapabilities::bc3Textures`, `astc4x4Textures`;
+programmable GL reports BC3 with `GL_EXT_texture_compression_s3tc` and ASTC 4x4 on
+GL ES contexts with `GL_KHR_texture_compression_astc_ldr`, never in the browser). On entering the device,
 asset workers prepare each HD chain as premultiplied BC3 (`PremultipliedBC3`,
 etcpak) where the device samples BC3 (desktop GPUs), otherwise as premultiplied
 ASTC 4x4 (`PremultipliedASTC4x4`, astcenc) where it samples ASTC (phones), and
@@ -1038,7 +1040,7 @@ prepare itself (mutated content, or released pixels on a device without the
 blocks' format) gets RGBA levels and no blocks, so the render thread never runs
 an encoder and never waits for one; the HD loader keeps drawing the native
 frame until the worker's chain arrives. `GLOB2_TEXTURE_COMPRESSION=none|bc3|astc`
-restricts the formats SDL GPU reports, for comparisons (`astc` exercises the
+restricts the formats SDL GPU and programmable GL report, for comparisons (`astc` exercises the
 phone path on a desktop GPU that samples ASTC, such as Mesa's lavapipe). The class budgets stay
 byte budgets, so the same budget holds about four times as much compressed artwork.
 
@@ -1097,7 +1099,11 @@ background trim, a first zoom out). Only frames their owner marks deferrable
 in game are asynchronous) are capped; a synchronous capture ends the mark
 before it flushes, and other frames, such as menus, tests and complete draws,
 are never capped. Offscreen composition, such as terrain pages, is exempt,
-since a page left half composed would start again. Explicit trimming releases completed GPU copies that can be
+since a page left half composed would start again. Programmable GL caps a
+deferrable frame the same way, at 96 new textures or 16 MiB of their uploads,
+and keeps the same constant-time bookkeeping: sampled textures on intrusive
+least-recently-used lists by budget class, and dead revisions retired 128 cache
+entries per call from a cursor. Explicit trimming releases completed GPU copies that can be
 restored from logical CPU snapshots, while preserving in-flight work, unfinished
 uploads and externally owned rendered targets. Actual pressure can reduce density,
 rather than a fixed low pixel cap.
