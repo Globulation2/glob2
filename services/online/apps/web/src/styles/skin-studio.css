@@ -120,6 +120,11 @@
   min-width: 140px;
   max-width: 240px;
 }
+/* The studio's page heading, styled as its eyebrow label. */
+.skin-document-title > h1 {
+  margin: 0;
+  font-family: inherit;
+}
 .skin-eyebrow {
   font-size: 10px;
   letter-spacing: 0.17em;

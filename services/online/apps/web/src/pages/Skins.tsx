@@ -306,7 +306,7 @@ function SkinStudio() {
               </a>
             )}
             <div className="skin-document-title">
-              <span className="skin-eyebrow">{t('COLONY STUDIO')}</span>
+              <h1 className="skin-eyebrow">{t('COLONY STUDIO')}</h1>
               <input
                 aria-label={t('Skin name')}
                 maxLength={64}
