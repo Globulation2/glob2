@@ -81,7 +81,11 @@ jobs:
         run: python3 platforms/mobile/setup_ndk.py
       - name: Install pinned Android packaging tools
         run: |
-          python3 platforms/mobile/setup_tools.py
+          # Pinned build-only glslang compiles the SDL GPU Vulkan shaders that
+          # android.py now requires (older revisions build it on demand or not at all).
+          glslang=()
+          if python3 platforms/mobile/setup_tools.py --help | grep -q -- --glslang; then glslang=(--glslang); fi
+          python3 platforms/mobile/setup_tools.py "${glslang[@]}"
           sdk="$(python3 tools/dev_environment.py paths --field android_sdk)"
           "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" --licenses < <(yes)
           "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" \

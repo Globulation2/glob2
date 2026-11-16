@@ -80,6 +80,8 @@ class MobileDependencyManifestTests(unittest.TestCase):
                          patch.object(android, 'dependency_prefix', return_value=prefix), \
                          patch.object(android, 'discover', return_value={'fingerprint': {'compiler': 'pinned'}}), \
                          patch.object(android.subprocess, 'run'), patch.object(android, 'verify_android_shared_library'), \
+                         patch.object(android.glslang_tool, 'ensure', return_value=root / 'glslang'), \
+                         patch.object(android.renderer_shaders, 'require_sdl_gpu_shaders'), \
                          patch('tools.package_assets.export_assets', side_effect=PackagingReached) as export:
                         with self.assertRaises(ValueError if corruption else PackagingReached):
                             android.main()

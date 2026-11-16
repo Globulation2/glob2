@@ -58,6 +58,8 @@ def main():
     parser.add_argument('--simulator-set',default=str(ROOT/'build/mobile-tools/ios-simulators'),
                         help='Isolated simulator device set for install/launch')
     parser.add_argument('--cmake',default='cmake')
+    parser.add_argument('--allow-missing-sdl-gpu',action='store_true',
+                        help='Package a device build without Metal SDL GPU shaders (portable SDL only); never silent')
     args=parser.parse_args()
     release_marketing_version=marketing_version(PACKAGE_VERSION)
     if not args.build_number.isdecimal() or int(args.build_number) < 1:
@@ -98,6 +100,17 @@ def main():
     command=[sys.executable,str(ROOT/'tools/dev_build.py')]+[str(k)+'='+str(v) for k,v in options.items()]+['mobile_deps='+str(prefix),'-j'+str(args.jobs)]
     if args.script_tests: command += ['ios-tests']
     subprocess.run(command,cwd=ROOT,env=env,check=True)
+    import renderer_shaders
+    # SDL GPU on iOS needs offline Metal libraries (the pinned SDL GPU does not
+    # support the Simulator at all). Device packages fail rather than silently
+    # shipping without it, unless the build explicitly opts out.
+    sdl_gpu_missing=renderer_shaders.missing_sdl_gpu_shaders(output/'shaders','ios')
+    if args.environment=='device' and sdl_gpu_missing:
+        if not args.allow_missing_sdl_gpu:
+            renderer_shaders.require_sdl_gpu_shaders(output/'shaders','ios')
+        print('WARNING: packaging iOS without SDL GPU Metal shaders (--allow-missing-sdl-gpu): '+sdl_gpu_missing[0],file=sys.stderr)
+    elif args.environment=='simulator' and sdl_gpu_missing:
+        print('Note: iOS Simulator packages have no SDL GPU (unsupported by pinned SDL GPU).',file=sys.stderr)
     project.mkdir(parents=True,exist_ok=True)
     info=plistlib.loads((ROOT/'platforms/mobile/ios/Info.plist.in').read_bytes())
     if info['CFBundleIdentifier'] != BUNDLE_ID:
@@ -223,6 +236,9 @@ def main():
             # the completed bundle: the linker-only signature omits resources.
             subprocess.run(['codesign','--force','--sign','-',str(app)],env=env,check=True)
             subprocess.run(['codesign','--verify','--deep','--strict',str(app)],env=env,check=True)
+        if args.environment=='device' and not sdl_gpu_missing:
+            from asset_bundle import verify_sdl_gpu_shaders
+            print('Verified SDL GPU Metal shaders:',verify_sdl_gpu_shaders(lambda relative:(app/'shaders'/relative).read_bytes(),'ios'))
 
 if __name__=='__main__':
     try: main()

@@ -17,7 +17,9 @@ from mobile_toolchain import ROOT, LOCK, discover
 from mobile_artifacts import verify_android_shared_library, verify_android_symbols, verify_android_archive_symbols
 import developer_apk
 from dev_paths import android_sdk, mobile_tools, gradle_home, dependency_prefix
-from asset_bundle import encode_asset_index, restore_gzip_assets, verify_apk_assets
+from asset_bundle import encode_asset_index, restore_gzip_assets, verify_apk_assets, verify_apk_sdl_gpu
+import glslang_tool
+import renderer_shaders
 
 
 # Intent filters that open invite links (glob2://join and the official App Link),
@@ -105,6 +107,7 @@ def main():
         if provenance.get('sha256') != hashlib.sha256(bundle.read_bytes()).hexdigest():
             raise ValueError('Release bundle changed since verification; rebuild it before signing')
         verify_apk_assets(bundle,'base/assets/glob2-bundle/')
+        verify_apk_sdl_gpu(bundle,'base/assets/glob2-bundle/')
         signed=bundle.with_name('app-release-play.aab')
         signed.unlink(missing_ok=True)
         env=developer_apk.java_environment(ROOT)
@@ -140,10 +143,18 @@ def main():
     dependency_identities={abi:dependency_identity(build_identity(dict(base_options,arch=abi))) for abi in arches}
     dependency_toolchains={abi:discover(dependency_identities[abi], {'android_sdk':str(sdk)})['fingerprint'] for abi in arches}
     prefixes={abi:dependency_prefix(ROOT, dependency_identities[abi], dependency_toolchains[abi]) for abi in arches}
+    # SDL GPU on Android needs Vulkan SPIR-V, which only the pinned build-only
+    # glslang produces. Provision it rather than silently packaging without it.
+    native_env=dict(os.environ)
+    if native_env.get('GLOB2_GLSLANG'):
+        glslang_tool.check_version(native_env['GLOB2_GLSLANG'])
+    else:
+        native_env['GLOB2_GLSLANG']=str(glslang_tool.ensure(args.jobs))
     for abi in arches:
         subprocess.run([sys.executable,str(ROOT/'tools/dev_build.py'),'target=android','arch='+abi,
             'release='+str(int(args.release)),'china='+str(int(args.china)),'amazon='+str(int(args.amazon_apk)),
-            'android_sdk='+str(sdk),'mobile_deps='+str(prefixes[abi]),'-j'+str(args.jobs)],cwd=ROOT,check=True)
+            'android_sdk='+str(sdk),'mobile_deps='+str(prefixes[abi]),'-j'+str(args.jobs)],cwd=ROOT,env=native_env,check=True)
+        renderer_shaders.require_sdl_gpu_shaders(outputs[abi]/'shaders','android')
     with BuildLock(output):
         # Only refresh the generated source inputs, leaving Gradle build products intact.
         for source_tree in ('app/src/main/java', 'app/src/androidTest/java'):
@@ -228,6 +239,7 @@ def main():
         if args.command=='bundle':
             restore_gzip_assets(bundle, assets, 'base/assets/glob2-bundle/')
             verify_apk_assets(bundle, 'base/assets/glob2-bundle/')
+            print('Verified SDL GPU Vulkan shaders:',verify_apk_sdl_gpu(bundle, 'base/assets/glob2-bundle/'))
             member='base/lib/'+args.arch+'/libmain.so'
             build_id=verify_android_archive_symbols(bundle,output/'lib/libmain.so',member,readelf)
             bundle.with_suffix('.json').write_text(json.dumps({'sha256':hashlib.sha256(bundle.read_bytes()).hexdigest(),
@@ -246,6 +258,7 @@ def main():
                 aligned.unlink(missing_ok=True)
         developer_apk.verify_alignment(ROOT,sdk,apk)
         verify_apk_assets(apk)
+        print('Verified SDL GPU Vulkan shaders:',verify_apk_sdl_gpu(apk))
         if args.fdroid:
             digest=verify_apk(apk,args.arch,sdk)
             apk.with_suffix('.sha256').write_text(digest+'  '+apk.name+'\n')
