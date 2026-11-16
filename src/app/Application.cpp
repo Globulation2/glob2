@@ -26,6 +26,7 @@
 #include "GameGUIKeyActions.h"
 #include "CreditScreen.h"
 #include "CompileProfile.h"
+#include "DeviceAdaptationSession.h"
 #include <iostream>
 #include "EditorEntry.h"
 #include "LANMenuScreen.h"
@@ -349,6 +350,9 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 	}
 	const auto &events = *delivered;
 	Online::pump();
+	// Memory signals and the VRAM probe, also while hidden: a trim in the
+	// background is when the system judges the app's size.
+	DeviceAdaptation::serviceFrame(events);
 	auto filtered = events;
 	if (GAGCore::ApplicationHost::takeVisibilityChange(hidden))
 	{

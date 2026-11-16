@@ -8,6 +8,7 @@
 #include "ui/FrontendUI.h"
 #include <ApplicationHost.h>
 #include <array>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <vector>
@@ -140,6 +141,9 @@ class SettingsScreen : public Glob2UI::Screen
 	bool phonePage() const { return modal == Modal::None && phoneLayout; }
 	void buildRows();
 	void buildGeneral();
+	void artworkRows();
+	// "3.5 GB RAM", "low-memory device": why a device-adaptive default was chosen.
+	static std::string deviceReasonText(int reason, std::uint64_t value);
 	void buildBuildings();
 	void buildBuildingDetail(int type);
 	void buildKeyboard();

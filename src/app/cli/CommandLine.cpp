@@ -104,6 +104,7 @@ std::vector<Option> display()
             choice("--renderer", "Rendering backend", {"auto", "sdl-gpu", "programmable-gl", "webgpu",
                 "portable-sdl", "software", "legacy-gl", "gpu", "webgl2", "sdl", "opengl"}),
 			choice("--graphics-detail", "Detail effects", {"full", "reduced"}),
+			choice("--device-tier", "Classify this device for Auto defaults; also GLOB2_DEVICE_TIER", {"low", "mid", "high"}),
 			value("--window-size", "resolution",
 				  "Initial window size in pixels; clamped to at least 640x480"),
 			value("--username", "string", "Player name"),

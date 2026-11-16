@@ -14,6 +14,7 @@
 #include "AINames.h"
 #include "AIRegistry.h"
 #include "CustomGamePreferences.h"
+#include "DeviceProfile.h"
 #include "Engine.h"
 #include "Game.h"
 #include "GenerationContext.h"
@@ -176,10 +177,12 @@ CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack &screens) : screens(scree
 	}
 	else
 	{
-		// No saved lobby: a random map at four colonies (random maps are the default).
+		// No saved lobby: a random map at four colonies (random maps are the default),
+		// at the device's default size. A saved lobby keeps the size it was played at.
 		listMaps();
 		setup.random = true;
 		setup.setCapacity(4);
+		setup.generator.wDec = setup.generator.hDec = DeviceProfile::current().newMapSize().shift;
 		validMap = false;
 		source.clear();
 		invalidatePreview();
@@ -482,6 +485,7 @@ void CustomGameScreen::resetParameters()
 {
 	GenerationRequest reset;
 	reset.setMethodDefaults(setup.generator.method, setup.generator.catalogSnapshot());
+	reset.wDec = reset.hDec = DeviceProfile::current().newMapSize().shift;
 	reset.nbWorkers = setup.generator.nbWorkers;
 	reset.terrainType = setup.generator.terrainType;
 	reset.seed = setup.generator.seed;
@@ -1229,6 +1233,7 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 												   [this] { chooseLandscape(); })));
 		GenerationRequest defaults;
 		defaults.setMethodDefaults(g.method, g.catalogSnapshot());
+		defaults.wDec = defaults.hDec = DeviceProfile::current().newMapSize().shift;
 		const bool atDefaults = g.options == defaults.options && g.wDec == defaults.wDec && g.hDec == defaults.hDec && setup.capacity == defaults.nbTeams;
 		left.push_back(fe::wrap({fe::button("generator/reset", tr("Reset to defaults"), [this] { resetParameters(); },
 											{.enabled = !atDefaults, .icon = fe::uiIcon(fe::UIIcon::Reset)}),
