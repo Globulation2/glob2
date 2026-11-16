@@ -64,7 +64,9 @@ one reload a frame, and demands its team layers with its base ones; once a
 frame's HD base layer is uploaded its CPU pixels go, unless something samples
 them through `Sprite::baseFrame` (a released frame then answers with its native
 frame and reloads with pixels; `Sprite::drawFrame` serves draw-only callers such
-as skin shadows), and a renderer reset reloads frames that had only textures; a frame draws in HD only once every
+as skin shadows), and a renderer reset, a lost device or rebuilding the portable
+renderer reloads frames that had only textures (a capture's offscreen pass draws
+such a frame's native layer); a frame draws in HD only once every
 layer its native frame has is loaded (a unit only once its whole action is), at
 most eight frames a frame draw in HD for the first time (each one uploads), and
 HD layers sample linearly with premultiplied alpha. Recoloured HD team layers,
@@ -93,17 +95,39 @@ are discarded, the streamed banks' frames retire into the shared budget for
 release their layers until the next demand. Decor HD frames stream there only
 while the portable renderer draws sprites from HD layers (past two screen pixels
 a logical pixel); below that it draws decor from native frames and retires them.
-Captures keep their own density and HD artwork.
+A view's decor window holds only the frames its cells draw (each 16 by 16
+cell page's decor frames are kept until the terrain changes, and the view widens
+by the decor's reach), not every frame of every material in view. Drawn decor
+HD frames free their CPU pixels like other drawn HD frames (the
+material banks, which composition samples, keep theirs); retired frames count
+only the pixels they still hold, and when a reset takes the textures, the bank
+keeps the frames that kept their pixels and declares its window again so the
+lost ones decode once more. Captures keep their own density and HD artwork.
 
 Terrain uses the shared CPU material compositor and bounded 16 by 16 cell pages
 on software and GPU backends; see [terrain materials](../assets/terrain-materials.md).
 [Direct terrain](../development/rendering-benchmarks.md#direct-terrain)
 uses map-space atlases for Original artwork on desktop legacy OpenGL, programmable
-OpenGL, SDL GPU, and WebGPU; desktop legacy OpenGL also draws HD artwork with it. SDL GPU and WebGPU use offline shader assets. The atlas builder packs terrain data independently of the device. The
+OpenGL, SDL GPU, and WebGPU; desktop legacy OpenGL and SDL GPU also draw HD artwork with it. SDL GPU and WebGPU use offline shader assets. The atlas builder packs terrain data independently of the device. The
 camera transforms a terrain quad while its fragment shader blends material
-variants, coverage and shoreline effects. The page renderer handles HD artwork on
-the other backends, backends without direct terrain, tiled captures outside legacy
-OpenGL, and the browser's WebGL2 renderer (legacy OpenGL through Emscripten's WebGL2
+variants, coverage and shoreline effects.
+
+SDL GPU draws legacy OpenGL's streamed pass rather than the whole-map native
+atlas: the same per-cell tables, artwork streamed at the display density, coverage
+masks built by background workers at that density, the retired atlas a zoom
+keeps, the whole-map base masks and the corner split, through the
+`terrain-direct-hd` shader. Its textures are `StreamedTexture`s
+(`libs/gag/include/RenderFrame.h`): device textures written in place with no CPU
+copy of their pixels. Writes queue on the texture until a submitted frame applies
+them, all before that frame draws; a dropped frame leaves them queued. A device
+that advertises `directTerrainStreaming` takes this pass at every zoom, with HD
+artwork on or off; its atlases stay at 2048 square, so a view that needs more
+takes coarser tiles. When the device loses a streamed texture (reset, or over its
+budget) or its writes stop draining, the view falls back to pages for that map.
+
+The page renderer handles HD artwork on
+programmable OpenGL and WebGPU, backends without direct terrain, tiled captures outside legacy
+OpenGL and SDL GPU, SDL GPU views whose streamed pass failed, and the browser's WebGL2 renderer (legacy OpenGL through Emscripten's WebGL2
 bridge), where pages draw native artwork until the view's HD families arrive.
 Interactive page and overview views never compose on the graphics thread and
 never block on it: until wanted terrain arrives they draw the best real terrain
@@ -460,20 +484,24 @@ also remains the headless default and the equivalence reference.
   background is therefore not caught up after resuming, as in serial execution.
   GUI updates use `SDL_GetTicks()` instead: touch event timestamps and momentum
   must share the SDL clock, including after the session clock has been suspended.
-- Threads carry a scheduling role (`GAGCore::ThreadSupport::ThreadRole`). The windowed
-  client's main thread and the simulation thread are *interactive*; pools they wait on
-  (the compute executor's simulation barriers and presentation, parallel presentation
-  batches, asset streaming) are *normal*, which every `ThreadSupport::launch` thread
-  starts as; work nothing waits on (`render/BackgroundWork.h` composition, the
-  background file writer) is *background*. Roles map to QoS classes on Apple
-  platforms (user-interactive, user-initiated, utility; the last also prefers
-  efficiency cores), thread priorities on Windows (above normal, normal, below normal)
-  and nice values on Linux and Android (−4, 0, 5). Unprivileged Linux processes cannot
-  go below nice 0, so there only *background* takes effect. Headless commands leave the
-  main thread at the default, so batch runs do not crowd the desktop. Roles never change
-  what a tick computes; `GLOB2_THREAD_PRIORITY=0` turns them off for comparisons.
-  Lowering a pool the simulation waits on would slow ticks under load (priority
-  inversion), so only pools off the critical path are *background*.
+- Threads carry a scheduling role (`GAGCore::ThreadSupport::ThreadRole`) in three tiers.
+  *Interactive* is the core loop (the windowed client's main thread, which also draws,
+  and the simulation thread) plus the audio mixer, which SDL then raises to high
+  priority so playback does not stutter. *Worker* is every other thread: the compute
+  executor (including the simulation barriers the core loop waits on), parallel
+  presentation, asset streaming, the gradient coordinator, previews, recording, network
+  transports and helper threads. `ThreadSupport::launch` starts threads as workers, and
+  threads created directly set the role themselves. *Background* is work nothing waits
+  on: `render/BackgroundWork.h` composition and the background file writer. Roles map to
+  QoS classes on Apple platforms (user-interactive, user-initiated, utility; utility
+  also prefers efficiency cores), thread priorities on Windows (above normal, normal,
+  below normal) and nice values on Linux and Android (−4, +2, +5). Unprivileged Linux
+  processes cannot go below nice 0, so there the core loop and audio stay at 0, still
+  ahead of workers. Headless commands leave the main thread at the default, so batch
+  runs do not crowd the desktop. Roles never change what a tick computes;
+  `GLOB2_THREAD_PRIORITY=0` turns them off for comparisons. Under contention the core
+  loop can wait on workers that run behind it (priority inversion); the tiers are an
+  architectural choice that favours frame and input latency in that case.
 - Values the client sets while drawing and preparation reads (viewport, drawn map size,
   overlay, observed building) go through `ClientRequests`, never through `Game` or `Map`
   fields. To check for races, build with `CXXFLAGS="-g -fsanitize=thread"
@@ -823,7 +851,10 @@ terrain density when the full tiled layout fits the terrain-target and aggregate
 resource budgets. SDL GPU charges texture and depth allocations once over their
 owned lifetime, including pending submissions and captures, instead of rebuilding
 the complete texture lease set during each admission check. Staging buffers remain
-charged separately until their work completes. Explicit trimming releases completed GPU copies that can be
+charged separately until their work completes; upload staging buffers up to 16 MiB
+are then kept for reuse in power-of-two classes (at most 24 MiB idle, uncharged:
+an admission that would fail and an explicit trim release them first), since creating a Vulkan buffer for every frame's vertices and uploads
+cost more CPU than filling it. Explicit trimming releases completed GPU copies that can be
 restored from logical CPU snapshots, while preserving in-flight work, unfinished
 uploads and externally owned rendered targets. Actual pressure can reduce density,
 rather than a fixed low pixel cap.

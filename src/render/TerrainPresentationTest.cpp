@@ -58,6 +58,13 @@
 
 namespace
 {
+// Background mask builds take seconds in optimized builds and far longer under
+// coverage instrumentation: wait on a clock, not an attempt count.
+struct Patience
+{
+	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now() + std::chrono::minutes(2);
+	bool operator()() const { return std::chrono::steady_clock::now() < end; }
+};
 // Four panels: cliffs on the left of each, against thicket, hedge, rock
 // spires and basalt columns, along a stepped border with a cliff spur and a
 // pocket of the neighbour, all inside a grass margin.
@@ -337,7 +344,14 @@ void layeredCache(bool gpu, bool hd = false)
 	if (hd)
 	{
 		GAGCore::Sprite::setHighResolution(true);
-		REQUIRE(globals->terrain->baseFrame(0)->getW() == 128);
+		// baseFrame only demands the HD layers; wait for them to load. On legacy
+		// GL this sheet keeps its HD layers as textures alone, which baseFrame
+		// (CPU sampling) does not return, so check the layer itself.
+		globals->terrain->baseFrame(0);
+		GAGCore::Sprite::finishHighResolution();
+		REQUIRE(globals->terrain->experimentImages.size() > 0);
+		REQUIRE(globals->terrain->experimentImages[0]);
+		REQUIRE(globals->terrain->experimentImages[0]->getW() == 128);
 	}
 	// Exercise every edge mask, torus neighbors, water tiles, and mixed layers.
 	for (int y = 0; y < 32; ++y)
@@ -1316,7 +1330,7 @@ TEST_SUITE("TerrainPresentation")
 		const auto settle = [&](float scale, int right, int bottom)
 		{
 			gfx.beginMapTransform(scale, 0, 0, 0, 0, 640, 480);
-			for (int attempt = 0; attempt < 2000; ++attempt)
+			for (Patience waiting; waiting();)
 			{
 				const bool ready = atlas.prepare(gfx, scene, 0, 0, right, bottom, 0, 0, fixture.team->me, true, 0);
 				if (ready && !atlas.preparing() && !atlas.pendingHdMasks()) break;
@@ -1377,7 +1391,7 @@ TEST_SUITE("TerrainPresentation")
 		const auto settle = [&](float scale, int right, int bottom)
 		{
 			gfx.beginMapTransform(scale, 0, 0, 0, 0, 640, 480);
-			for (int attempt = 0; attempt < 2000; ++attempt)
+			for (Patience waiting; waiting();)
 			{
 				const bool ready = atlas.prepare(gfx, scene, 0, 0, right, bottom, 0, 0, fixture.team->me, true, 0);
 				if (ready && !atlas.preparing() && !atlas.pendingHdMasks()) break;
@@ -1445,11 +1459,11 @@ TEST_SUITE("TerrainPresentation")
 		};
 		// Eight texels a cell, the base mask's own density: until the base
 		// covers the map, the view builds an atlas of its own.
-		for (int attempt = 0; attempt < 4000 && !prepare(.24f, 63, 31); ++attempt) SDL_Delay(1);
+		for (Patience waiting; waiting() && !prepare(.24f, 63, 31);) SDL_Delay(1);
 		REQUIRE_FALSE(atlas.pendingHdMasks());
 		const auto fromAtlas = frame(.24f);
 		const auto withAtlas = atlas.textureBytes();
-		for (int attempt = 0; attempt < 8000 && atlas.pendingBaseMasks(); ++attempt)
+		for (Patience waiting; waiting() && atlas.pendingBaseMasks();)
 		{
 			prepare(.24f, 63, 31);
 			SDL_Delay(1);
@@ -1470,7 +1484,7 @@ TEST_SUITE("TerrainPresentation")
 		CAPTURE(share);
 		CHECK(share < .01);
 		// Zooming in builds an atlas at the new density again.
-		for (int attempt = 0; attempt < 4000 && !prepare(.76f, 26, 19); ++attempt) SDL_Delay(1);
+		for (Patience waiting; waiting() && !prepare(.76f, 26, 19);) SDL_Delay(1);
 		CHECK_FALSE(atlas.pendingHdMasks());
 		CHECK(atlas.textureBytes() > 20u * 1024 * 1024);
 	}
@@ -1492,7 +1506,7 @@ TEST_SUITE("TerrainPresentation")
 		DirectTerrain atlas;
 		// The left half at 32-texel masks, until the base covers the whole map.
 		gfx.beginMapTransform(.76f, 0, 0, 0, 0, 640, 480);
-		for (int attempt = 0; attempt < 4000; ++attempt)
+		for (Patience waiting; waiting();)
 		{
 			const bool ready = atlas.prepare(gfx, scene, 0, 0, 26, 19, 0, 0, fixture.team->me, true, 0);
 			if (ready && !atlas.preparing() && !atlas.pendingHdMasks() && !atlas.pendingBaseMasks()) break;
@@ -1511,7 +1525,7 @@ TEST_SUITE("TerrainPresentation")
 			return terrainPixels(true);
 		};
 		const auto first = frame();
-		for (int attempt = 0; attempt < 4000 && atlas.pendingHdMasks(); ++attempt)
+		for (Patience waiting; waiting() && atlas.pendingHdMasks();)
 		{
 			atlas.prepare(gfx, scene, 0, 0, 26, 19, 32, 0, fixture.team->me, true, 0);
 			SDL_Delay(1);
@@ -1563,7 +1577,7 @@ TEST_SUITE("TerrainPresentation")
 		const auto pending = atlas.pendingHdMasks();
 		REQUIRE(pending > 100);
 		const auto first = frame();
-		for (int attempt = 0; attempt < 4000 && atlas.pendingHdMasks(); ++attempt)
+		for (Patience waiting; waiting() && atlas.pendingHdMasks();)
 		{
 			atlas.prepare(gfx, scene, 0, 0, 26, 19, 0, 0, fixture.team->me, true, 0);
 			SDL_Delay(1);
@@ -1585,6 +1599,131 @@ TEST_SUITE("TerrainPresentation")
 		CAPTURE(pending);
 		CAPTURE(share);
 		CHECK(share < .14);
+	}
+
+	// SDL GPU draws Legacy GL's streamed pass through streamed device textures
+	// and terrain-direct-hd: the same HD artwork and display-density masks, from
+	// 16 to 128 texels a cell, animated and with undiscovered cells hidden.
+	TEST_CASE("SDL GPU streamed direct terrain matches Legacy GL's HD pass at every density [display]")
+	{
+		struct View { float zoom; int right, bottom, time; bool whole; };
+		// Zooms keep pixel centres off texel and cell boundaries, where
+		// interpolation rounding alone would pick a neighbouring texel.
+		const View views[] = {{.45f, 45, 34, 0, true}, {1.f, 20, 15, 7, true}, {2.f, 10, 8, 13, true},
+							  {4.f, 5, 4, 21, true}, {1.f, 20, 15, 7, false}};
+		const auto paint = [](glob2test::HeadlessGame &fixture)
+		{
+			// Blocks of water, grass and sand: most cells are mixed shores.
+			const TerrainType kinds[] = {WATER, GRASS, SAND};
+			for (int y = 0; y < 64; ++y)
+				for (int x = 0; x < 64; ++x)
+					fixture.game.map.setVertexTerrain(x, y, kinds[((x / 3) * 7 + (y / 3) * 5) % 3]);
+			fixture.game.map.unsetMapDiscovered();
+			fixture.game.map.setMapDiscovered(0, 0, 14, 9, fixture.team->me);
+		};
+		struct HighResolution
+		{
+			HighResolution() { GAGCore::Sprite::setHighResolution(true); }
+			~HighResolution() { GAGCore::Sprite::setHighResolution(false); }
+		};
+		std::vector<std::vector<Uint8>> expected;
+		{
+			glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
+				.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU),
+				.beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::LegacyGL; }});
+			auto &gfx = *globals->gfx;
+			HighResolution hd;
+			if (!gfx.isLegacyGLScreen() || !DirectTerrain::legacyPassAvailable())
+			{
+				MESSAGE("Legacy GL direct terrain unavailable; comparison omitted");
+				return;
+			}
+			glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .terrain = WATER, .discovered = true});
+			paint(fixture);
+			SceneMap scene;
+			glob2test::observeMap(fixture.game.map, scene);
+			DirectTerrain atlas;
+			for (const auto &view : views)
+			{
+				gfx.beginMapTransform(view.zoom, 0, 0, 0, 0, 640, 480);
+				gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
+				REQUIRE(atlas.prepare(gfx, scene, 0, 0, view.right, view.bottom, 0, 0, fixture.team->me,
+									  view.whole, view.time, true));
+				REQUIRE_FALSE(atlas.pendingHdMasks());
+				atlas.drawPrepared(gfx, 0, 0, view.whole, view.time);
+				gfx.endMapTransform();
+				auto pixels = terrainPixels(true);
+				// glReadPixels rows run bottom-up.
+				std::vector<Uint8> rows(pixels.size());
+				const std::size_t pitch = 640 * 4;
+				for (std::size_t y = 0; y < 480; ++y)
+					std::memcpy(rows.data() + y * pitch, pixels.data() + (479 - y) * pitch, pitch);
+				expected.push_back(std::move(rows));
+			}
+		}
+		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
+			.beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::SDLGPU; }});
+		auto &gfx = *globals->gfx;
+		HighResolution hd;
+		if (!DirectTerrain::streamedPassAvailable(gfx))
+		{
+			MESSAGE("SDL GPU streamed direct terrain unavailable (no device or terrain-direct-hd shader); comparison omitted");
+			return;
+		}
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .terrain = WATER, .discovered = true});
+		paint(fixture);
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		DirectTerrain atlas;
+		for (std::size_t index = 0; index < std::size(views); ++index)
+		{
+			const auto &view = views[index];
+			CAPTURE(view.zoom);
+			CAPTURE(view.whole);
+			bool drawn = false;
+			for (int attempt = 0; attempt < 32 && !drawn; ++attempt)
+			{
+				gfx.setClipRect();
+				gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
+				gfx.beginMapTransform(view.zoom, 0, 0, 0, 0, 640, 480);
+				const bool ready = atlas.prepare(gfx, scene, 0, 0, view.right, view.bottom, 0, 0, fixture.team->me,
+												 view.whole, view.time, true);
+				if (ready) atlas.drawPrepared(gfx, 0, 0, view.whole, view.time);
+				gfx.endMapTransform();
+				gfx.renderer->flush();
+				drawn = ready && GAGCore::didRecordDeviceFrame(*gfx.renderer);
+				if (!drawn) gfx.nextFrame();
+			}
+			REQUIRE(drawn);
+			REQUIRE_FALSE(atlas.failed());
+			REQUIRE_FALSE(atlas.pendingHdMasks());
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> captured(gfx.renderer->capture(), SDL_DestroySurface);
+			REQUIRE(captured);
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
+				SDL_ConvertSurface(captured.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+			REQUIRE(rgba);
+			REQUIRE(rgba->w == 640);
+			REQUIRE(rgba->h == 480);
+			unsigned maximum = 0;
+			std::size_t differing = 0;
+			for (int y = 0; y < 480; ++y)
+				for (int x = 0; x < 640; ++x)
+				{
+					const auto *actual = static_cast<const Uint8 *>(rgba->pixels) + y * rgba->pitch + x * 4;
+					const auto *reference = expected[index].data() + (std::size_t(y) * 640 + x) * 4;
+					unsigned largest = 0;
+					for (int k = 0; k < 3; ++k)
+						largest = std::max(largest, unsigned(std::abs(int(actual[k]) - int(reference[k]))));
+					maximum = std::max(maximum, largest);
+					differing += largest > 2;
+				}
+			CAPTURE(maximum);
+			CAPTURE(differing);
+			// Both draw the one shared shader over the same texel values; only
+			// interpolation rounding differs between drivers.
+			CHECK(differing <= 640 * 480 / 1000);
+			gfx.nextFrame();
+		}
 	}
 
 	TEST_CASE("generated terrain mip uploads stay uncompressed across animation updates [display]")

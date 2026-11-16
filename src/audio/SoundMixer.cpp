@@ -183,7 +183,11 @@ struct SoundMixer::Impl
 						if (!deviceStarted && !filling)
 							deviceStarted = SDL_ResumeAudioStreamDevice(stream);
 					}
-				});
+				},
+				// Interactive from its first instruction: without privilege, Linux
+				// cannot return a thread from the Worker nice value to 0. SDL then
+				// raises it further.
+				ThreadSupport::ThreadRole::Interactive);
 		}
 		catch (const std::exception &error)
 		{

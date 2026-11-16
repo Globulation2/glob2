@@ -6,6 +6,7 @@
 #include <deque>
 #include <mutex>
 #include <thread>
+#include <ThreadSupport.h>
 
 namespace
 {
@@ -109,7 +110,7 @@ class TcpTransport final : public NetTransport
 		close();
 		stop = false;
 		status = State::Connecting;
-		worker = std::thread([this, host, port] { run(nullptr, host, port); });
+		worker = std::thread([this, host, port] { GAGCore::ThreadSupport::setCurrentThreadRole(GAGCore::ThreadSupport::ThreadRole::Worker); run(nullptr, host, port); });
 	}
 	bool accept(NET_StreamSocket *socket)
 	{
@@ -119,7 +120,7 @@ class TcpTransport final : public NetTransport
 		// The accepted socket is already connected; callers can immediately
 		// queue the server greeting while the worker takes ownership.
 		status = State::Connected;
-		worker = std::thread([this, socket] { run(socket, {}, 0); });
+		worker = std::thread([this, socket] { GAGCore::ThreadSupport::setCurrentThreadRole(GAGCore::ThreadSupport::ThreadRole::Worker); run(socket, {}, 0); });
 		return true;
 	}
 	void close() override

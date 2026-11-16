@@ -297,6 +297,83 @@ TEST_CASE("deferred HD frames that leave their window stay decoded within a budg
     }
     CHECK(GAGCore::Sprite::retiredHighResolutionBytes() == 0);
 }
+TEST_CASE("drawn deferred HD frames free their pixels and return after the portable renderer is rebuilt [display]") {
+    glob2test::TempDir scratch("drawn-deferred-hd");
+    const auto artwork = scratch.path / "data/gfx";
+    const auto hd = scratch.path / "data/highres/v1";
+    std::filesystem::create_directories(artwork);
+    std::filesystem::create_directories(hd);
+    std::filesystem::copy_file(glob2test::sourceRoot() / "test/fixtures/image-assets/native-sheet.webp",
+        artwork / "native-sheet.webp");
+    std::ofstream(artwork / "drawn-decor.sheet") << "native-sheet.webp image 0 16 4 2\n";
+    std::ofstream frame(hd / "frame.webp", std::ios::binary);
+    frame.write(reinterpret_cast<const char*>(lossyAlphaFixture::webp), sizeof(lossyAlphaFixture::webp));
+    frame.close();
+    std::ofstream index(hd / "frames.txt");
+    index << "GLOB2_HIGHRES 1\n";
+    for (unsigned i = 0; i < 16; ++i) index << "drawn-decor" << i << " 4 2 4 frame.webp -\n";
+    index.close();
+    glob2test::ScopedEnvironment assets("GLOB2_ASSET_DIR", scratch.path.string().c_str());
+    glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
+    glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+    glob2test::ScopedEnvironment cooperative("GLOB2_ASSET_THREADS", "0");
+    glob2test::ToolkitScope toolkit;
+    auto *context = GAGCore::Toolkit::initGraphic(64, 64, GAGCore::GraphicContext::PORTABLEGPU, "drawn deferred HD");
+    if (context->backendSwitchStatus().active != GAGCore::RendererBackend::PortableSDL) return;
+    struct Restore {
+        std::int64_t delay = GAGCore::Sprite::highResolutionDetailDelay();
+        ~Restore() {
+            // Back on native frames at once, as the next case expects.
+            GAGCore::Sprite::setHighResolutionDetailDelay(0);
+            GAGCore::Sprite::setHighResolutionDensity(1);
+            GAGCore::Sprite::setHighResolutionDetailDelay(delay);
+            GAGCore::Sprite::setHighResolution(false);
+        }
+    } restore;
+    GAGCore::Sprite::setHighResolution(true);
+    GAGCore::Sprite::deferHighResolution("data/gfx/drawn-decor");
+    GAGCore::Sprite sprite;
+    REQUIRE(sprite.load("data/gfx/drawn-decor"));
+    const auto wait = [&] {
+        const auto deadline = SDL_GetTicks() + 10000;
+        while (!GAGCore::Toolkit::pollAssets(2) && SDL_GetTicks() < deadline) SDL_Delay(1);
+        REQUIRE(GAGCore::Sprite::pollHighResolution(1));
+    };
+    const std::array<unsigned, 3> window{1, 2, 3};
+    sprite.setHighResolutionFrames(window);
+    wait();
+    for (unsigned i : window) REQUIRE(sprite.experimentImages[i]);
+    // Zoomed in past the portable sprite threshold, a draw uploads the frame;
+    // the next one finds it uploaded and frees its pixels.
+    GAGCore::Sprite::setHighResolutionDensity(4);
+    REQUIRE(GAGCore::Sprite::portableHighResolution());
+    for (int pass = 0; pass < 3; ++pass) {
+        GAGCore::Sprite::setHighResolutionDensity(4);
+        context->drawSprite(0.f, 0.f, &sprite, 1);
+        context->nextFrame();
+    }
+    auto *drawn = sprite.experimentImages[1];
+    REQUIRE(drawn);
+    CHECK_FALSE(drawn->hasPixels());
+    CHECK(drawn->getW() == 16);
+    CHECK(drawn->getH() == 8);
+    CHECK(sprite.experimentImages[2]->hasPixels()); // Never drawn.
+    // Leaving the window retires the frame by what it still holds in memory.
+    sprite.setHighResolutionFrames(std::array<unsigned, 2>{2, 3});
+    CHECK(GAGCore::Sprite::retiredHighResolutionBytes() == 0);
+    sprite.setHighResolutionFrames(window);
+    // Rebuilding the renderer loses the texture, the only copy: the window
+    // decodes the frame again and keeps the frames that kept their pixels.
+    auto *kept = sprite.experimentImages[2];
+    REQUIRE(context->setRes(64, 64, context->getOptionFlags()));
+    CHECK(sprite.experimentImages[1] == nullptr);
+    CHECK(sprite.baseFrame(1) == sprite.nativeFrame(1));
+    CHECK(sprite.experimentImages[2] == kept);
+    wait();
+    REQUIRE(sprite.experimentImages[1]);
+    CHECK(sprite.experimentImages[1]->hasPixels());
+    CHECK(sprite.experimentImages[2] == kept);
+}
 TEST_CASE("deferred terrain HD loads native first and bounds frame windows across toggles [display]") {
     glob2test::TempDir scratch("deferred-terrain-hd");
     const auto artwork = scratch.path / "data/gfx";
@@ -617,18 +694,19 @@ TEST_CASE("the unit sheet keeps no HD pixels after upload and reloads once its t
         CHECK(textures > 0);
     };
     requireReleased();
-    // The shader draws both layers from their textures alone.
+    // The shader draws both layers from their textures alone. drawFrame, not
+    // baseFrame: CPU sampling would keep the HD pixels from then on.
     context->drawSprite(0, 0, &units, index);
     context->nextFrame();
-    CHECK(units.baseFrame(index) == units.experimentImages[index]);
+    CHECK(units.drawFrame(index) == units.experimentImages[index]);
 
     // A context rebuild frees every texture. Frames without pixels have nothing
     // left: the sheet draws native artwork at once and reloads HD from disk.
     GAGCore::GraphicContext::releaseSurfaceTextures();
     CHECK(units.experimentImages[index] == nullptr);
     CHECK(units.experimentRotated[index] == nullptr);
-    REQUIRE(units.baseFrame(index) == units.images[index]);
-    CHECK(units.baseFrame(index)->hasPixels());
+    REQUIRE(units.drawFrame(index) == units.images[index]);
+    CHECK(units.drawFrame(index)->hasPixels());
     GAGCore::GraphicContext::restoreSurfaceTextures();
     context->drawSprite(0, 0, &units, index);
     context->nextFrame();

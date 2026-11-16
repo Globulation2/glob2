@@ -246,9 +246,21 @@ TEST_CASE("Q90 lossy WebP preserves dimensions and exact alpha") {
 }
 TEST_CASE("16-bit RGBA rounds normalized channels to the exporter reference") {
     // Keep one JUnit result for the strict native selection inventory while
-    // exercising both production decoder paths against the same reference.
-    for (const auto decoder : {IMG_Load_IO, SDL_LoadPNG_IO}) {
-        auto surface = decoder(SDL_IOFromConstMem(rgba16Fixture::png, sizeof(rgba16Fixture::png)), true);
+    // exercising both production decoder paths against the same reference:
+    // IMG_Load_IO (skins, terrain packs) and IMG_LoadPNG_IO (map asset bundles
+    // and sprites). SDL core's own SDL_LoadPNG_IO is not one of them; SDL 3.4.18
+    // truncates 16-bit channels there instead of rounding.
+    using Decoder = SDL_Surface *(*)(SDL_IOStream *);
+    const Decoder decoders[] = {
+        [](SDL_IOStream *io) { return IMG_Load_IO(io, true); },
+        [](SDL_IOStream *io) {
+            SDL_Surface *surface = IMG_LoadPNG_IO(io);
+            SDL_CloseIO(io);
+            return surface;
+        },
+    };
+    for (const auto decoder : decoders) {
+        auto surface = decoder(SDL_IOFromConstMem(rgba16Fixture::png, sizeof(rgba16Fixture::png)));
 
         REQUIRE(surface != nullptr);
         auto rgba = SDL_ConvertSurface(surface, SDL_PIXELFORMAT_RGBA32);

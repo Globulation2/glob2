@@ -16,7 +16,7 @@
 #include <unordered_set>
 #include <type_traits>
 #include <tuple>
-#include <regex>
+#include <TextShape.h>
 #include "Unit.h"
 #include "Building.h"
 
@@ -554,10 +554,18 @@ void BuildingsTypes::composePackages(const std::vector<std::string>& packages)
     if (packages.empty()) return;
     if (packages.size() > MAX_CATALOG_VARIANTS) fail("packages", "too many packages");
     std::map<std::string, Json> ordered;
-    const std::regex uuid("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
-    const std::regex localKey("^[a-z0-9][a-z0-9._-]{0,63}$");
-    const std::regex hash("^[0-9a-f]{64}$");
-    const std::regex installed("^data/gfx/[a-zA-Z0-9_-]+$");
+    using namespace GAGCore::TextShape;
+    // [a-z0-9][a-z0-9._-]{0,63}
+    const auto localKey = [](std::string_view key) {
+        const auto keyChar = [](char c) { return asciiDigit(c) || asciiLower(c) || c == '.' || c == '_' || c == '-'; };
+        return !key.empty() && key.size() <= 64 && (asciiDigit(key[0]) || asciiLower(key[0])) && all(key, keyChar);
+    };
+    // data/gfx/[a-zA-Z0-9_-]+
+    const auto installed = [](std::string_view ref) {
+        constexpr std::string_view prefix = "data/gfx/";
+        if (ref.size() <= prefix.size() || ref.substr(0, prefix.size()) != prefix) return false;
+        return all(ref.substr(prefix.size()), [](char c) { return asciiAlnum(c) || c == '_' || c == '-'; });
+    };
     std::size_t decodedBytes = 0, inputBytes = 0;
     for (const auto& text : packages)
     {
@@ -568,7 +576,7 @@ void BuildingsTypes::composePackages(const std::vector<std::string>& packages)
         if (integer(package.at("schemaVersion"), "package.schemaVersion") != 1)
             fail("package", "unsupported schemaVersion");
         const auto name = string(package.at("namespace"), "package.namespace");
-        if (!std::regex_match(name, uuid)) fail("package.namespace", "must be a lowercase UUID");
+        if (!lowerUuid(name)) fail("package.namespace", "must be a lowercase UUID");
         if (!ordered.emplace(name, std::move(package)).second) fail("packages", "duplicate namespace");
     }
     Json snapshot = Json::parse(snapshotJson());
@@ -610,19 +618,19 @@ void BuildingsTypes::composePackages(const std::vector<std::string>& packages)
         {
             keys(sprite, {"key", "frames"}, "package.sprite");
             const auto key = string(sprite.at("key"), "package.sprite.key");
-            if (!std::regex_match(key, localKey)) fail("package.sprite.key", "invalid local key");
+            if (!localKey(key)) fail("package.sprite.key", "invalid local key");
             const auto& frames = sprite.at("frames");
             if (!frames.is_array() || frames.empty() || frames.size() > 256) fail("package.sprite.frames", "invalid count");
             for (const auto& frame : frames)
             {
                 keys(frame, {"imageHash", "width", "height", "teamColorHash"}, "package.frame");
-                if (!std::regex_match(string(frame.at("imageHash"), "imageHash"), hash)) fail("imageHash", "invalid hash");
+                if (!lowerHex(string(frame.at("imageHash"), "imageHash"), 64)) fail("imageHash", "invalid hash");
                 const auto w = integer(frame.at("width"), "width"), h = integer(frame.at("height"), "height");
                 if (w < 1 || h < 1 || w > 512 || h > 512) fail("package.frame", "dimensions outside 1..512");
                 std::size_t layers = 1;
                 if (frame.contains("teamColorHash"))
                 {
-                    if (!std::regex_match(string(frame.at("teamColorHash"), "teamColorHash"), hash)) fail("teamColorHash", "invalid hash");
+                    if (!lowerHex(string(frame.at("teamColorHash"), "teamColorHash"), 64)) fail("teamColorHash", "invalid hash");
                     layers = 2;
                 }
                 images += layers;
@@ -686,7 +694,7 @@ void BuildingsTypes::composePackages(const std::vector<std::string>& packages)
                     }
                     v["properties"][field] = path;
                 }
-                else if (!std::regex_match(ref, installed)) fail(field, "use installed artwork or a package sprite");
+                else if (!installed(ref)) fail(field, "use installed artwork or a package sprite");
             }
             v["id"] = snapshot["variants"].size();
             snapshot["variants"].push_back(std::move(v));

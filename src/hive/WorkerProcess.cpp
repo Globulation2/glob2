@@ -6,6 +6,7 @@
 #include <chrono>
 #include <thread>
 #include <atomic>
+#include <ThreadSupport.h>
 namespace Hive
 {
 namespace
@@ -114,7 +115,7 @@ std::future<Json> startWorker(Json request)
 	auto result = task.get_future();
 	try
 	{
-		std::thread(std::move(task)).detach();
+		std::thread([task = std::move(task)]() mutable { GAGCore::ThreadSupport::setCurrentThreadRole(GAGCore::ThreadSupport::ThreadRole::Worker); task(); }).detach();
 	}
 	catch (...)
 	{

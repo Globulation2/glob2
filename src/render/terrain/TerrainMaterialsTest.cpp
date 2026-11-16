@@ -338,6 +338,49 @@ TEST_SUITE("TerrainMaterials")
 		CHECK_NOTHROW(TerrainVisual::Catalog::parse(document));
 	}
 
+	TEST_CASE("an HD view streams only the decor frames its cells draw [display]")
+	{
+		glob2test::HeadlessGlobals globals(
+			{.display = true, .screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		struct Restore { ~Restore() { GAGCore::Sprite::setHighResolution(false); } } restore;
+		GAGCore::Sprite::setHighResolution(true);
+		auto &compositor = globals->terrainCompositor();
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .discovered = true});
+		auto &map = fixture.game.map;
+		for (int y = 0; y < 64; ++y)
+			for (int x = 0; x < 64; ++x)
+				map.setVertexTerrain(x, y, x < 32 ? BOULDERS : (y < 32 ? HEDGE : GRASS));
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		auto *decor = compositor.decorSprite(compositor.catalog().find("boulders"));
+		REQUIRE(decor);
+		if (!GAGCore::Sprite::highResolutionRequested()) return; // No HD frames on this backend.
+		// Every frame the cells of the view's pages, widened by one page for
+		// decor reaching in, could draw.
+		std::set<int> drawable, catalogued;
+		const auto tiers = compositor.tierField(scene);
+		for (int y = -16; y < 32; ++y)
+			for (int x = -16; x < 32; ++x)
+				for (const auto &layer : compositor.decorLayers(scene, x, y, tiers.get()))
+					if (layer.sprite == decor && layer.frame >= 0) drawable.insert(layer.frame);
+		for (const char *key : {"boulders", "hedge"})
+		{
+			const auto &d = compositor.catalog().materials[compositor.catalog().find(key)].decor;
+			for (const auto *frames : {&d.full, &d.edge, &d.connected, &d.connectedInterior, &d.connectedForeign})
+				for (int frame : *frames) if (frame >= 0) catalogued.insert(frame);
+		}
+		compositor.declareVisible(0, scene, 0, 0, 15, 15, true);
+		GAGCore::Sprite::finishHighResolution();
+		std::set<int> resident;
+		for (int frame : catalogued)
+			if (decor->baseFrame(unsigned(frame)) != decor->nativeFrame(unsigned(frame))) resident.insert(frame);
+		CHECK_FALSE(resident.empty());
+		for (int frame : resident) CHECK(drawable.contains(frame));
+		// Not every frame the materials in view could ever draw.
+		CHECK(resident.size() < catalogued.size());
+		compositor.declareVisible(0, scene, 0, 0, 15, 15, false);
+	}
+
 	TEST_CASE("connected canopy ground leaves contact shadows to the foliage [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true});

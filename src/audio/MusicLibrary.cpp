@@ -8,7 +8,7 @@
 #include <fstream>
 #include <map>
 #include <memory>
-#include <regex>
+#include <TextShape.h>
 #include <set>
 #include <stdexcept>
 namespace Music
@@ -16,6 +16,14 @@ namespace Music
 namespace fs = std::filesystem;
 namespace
 {
+using namespace GAGCore::TextShape;
+// community-[0-9a-f-]{36}
+bool installedDirectory(std::string_view name)
+{
+	constexpr std::string_view prefix = "community-";
+	return name.size() == prefix.size() + 36 && name.substr(0, prefix.size()) == prefix &&
+		   all(name.substr(prefix.size()), [](char c) { return lowerHexDigit(c) || c == '-'; });
+}
 std::string pathText(const fs::path &path)
 {
 	auto bytes = path.u8string();
@@ -86,9 +94,7 @@ Metadata metadata(const fs::path &path, unsigned mood, bool validateAudio)
 	require(tag(tags, "GLOB2_SCHEMA") == "1", "Unsupported music metadata version.");
 	require(tag(tags, "GLOB2_MOOD") == Moods[mood], "Music moods are missing or mixed up.");
 	m.id = tag(tags, "GLOB2_RELEASE", 36);
-	require(std::regex_match(
-				m.id, std::regex("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")),
-			"Invalid release identifier.");
+	require(lowerUuid(m.id), "Invalid release identifier.");
 	m.origin = tag(tags, "GLOB2_ORIGIN", 2048);
 	m.title = tag(tags, "ALBUM", 512);
 	m.artist = tag(tags, "ARTIST", 512);
@@ -140,7 +146,7 @@ Library::Library(fs::path userRoot) : root(std::move(userRoot) / "data/zik")
 }
 std::array<std::string, 3> Library::paths(const std::string &directory) const
 {
-	require(std::regex_match(directory, std::regex("community-[0-9a-f-]{36}")),
+	require(installedDirectory(directory),
 			"Invalid installed music directory.");
 	return {pathText(root / directory / "a1.opus"), pathText(root / directory / "a2.opus"),
 			pathText(root / directory / "a3.opus")};
@@ -151,7 +157,7 @@ std::vector<Installed> Library::list() const
 	for (const auto &entry : fs::directory_iterator(root))
 	{
 		auto name = entry.path().filename().string();
-		if (!entry.is_directory() || !std::regex_match(name, std::regex("community-[0-9a-f-]{36}")))
+		if (!entry.is_directory() || !installedDirectory(name))
 			continue;
 		try
 		{
@@ -252,11 +258,20 @@ unpackZip(const std::vector<unsigned char> &bytes)
 					(attrs >> 16 & 0170000) != 0120000,
 				"Encrypted files, links, and this compression method are unsupported.");
 		std::string name(reinterpret_cast<const char *>(bytes.data() + pos + 46), n);
-		std::smatch match;
-		require(std::regex_match(name, match, std::regex("([A-Za-z0-9_-]{1,80}/)?a([123])\\.opus")),
+		// ([A-Za-z0-9_-]{1,80}/)?a([123]).opus: an optional set directory, then the mood track.
+		const auto slash = name.find('/');
+		const std::string_view leaf = slash == std::string::npos ? std::string_view(name)
+																 : std::string_view(name).substr(slash + 1);
+		const std::string_view directoryPart =
+			slash == std::string::npos ? std::string_view() : std::string_view(name).substr(0, slash);
+		require((slash == std::string::npos ||
+				 (!directoryPart.empty() && directoryPart.size() <= 80 &&
+				  all(directoryPart, [](char c) { return asciiAlnum(c) || c == '_' || c == '-'; }))) &&
+					leaf.size() == 7 && leaf[0] == 'a' && leaf[1] >= '1' && leaf[1] <= '3' &&
+					leaf.substr(2) == ".opus",
 				"Unexpected or unsafe archive path.");
-		auto group = match[1].str();
-		unsigned mood = unsigned(match[2].str()[0] - '1');
+		auto group = slash == std::string::npos ? std::string() : std::string(name, 0, slash + 1);
+		unsigned mood = unsigned(leaf[1] - '1');
 		auto &target = sets[group][mood];
 		require(target.empty(), "Duplicate music archive member.");
 		require(unpacked > 0 && unpacked <= MaxTrack && (total += unpacked) <= MaxArchive,
