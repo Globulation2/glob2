@@ -558,6 +558,9 @@ namespace GAGCore
 		float renderTargetScale = 0.0f;
 		bool offscreenPass = false;
 		bool mapTransformActive=false;
+		//! A CPU surface's map pass at 1:1 draws directly, without a
+		//! transform, but still clips to the map's rectangle.
+		bool cpuMapClip=false;
         bool periodicCopy=false;
 		float mapScale=1, mapTranslateX=0, mapTranslateY=0;
 		void drawMapSnappedRect(int x1, int y1, int x2, int y2, const Color& color, bool stroked, float maxStrokePoints);
