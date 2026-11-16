@@ -8,6 +8,7 @@
 #include <SDL3/SDL_platform_defines.h>
 #include <array>
 #include <chrono>
+#include <deque>
 #include <exception>
 #include <future>
 #include <memory>
@@ -625,6 +626,9 @@ struct Runtime : std::enable_shared_from_this<Runtime>
     std::vector<std::uint16_t> values;
     std::vector<std::uint64_t> destinationValues;
     std::vector<std::uint8_t> blocked;
+#if defined(__APPLE__)
+    std::deque<std::vector<UInt>> fillPatterns; // fillWords sources; see there.
+#endif
     struct RequiredTransaction {
         struct Admission {
             std::shared_ptr<Device> parent;
@@ -787,11 +791,26 @@ struct Runtime : std::enable_shared_from_this<Runtime>
 		status.available = true;
 		probed = true;
 	}
-	template <class... Args> Int fill(Args... args)
+	// Sets every 32-bit word of the first bytes of buffer to value.
+	Int fillWords(Handle buffer, UInt value, std::size_t bytes)
 	{
-
-		const auto result = api.EnqueueFillBuffer(args...);
-
+#if defined(__APPLE__)
+		// Apple's OpenCL leaves buffers untouched by clEnqueueFillBuffer, so the
+		// change flags and tile masks kept stale contents and no field converged.
+		// Write from a host pattern instead. The write is asynchronous, so a
+		// pattern is never freed while the lane lives, and a deque never moves
+		// its elements when it grows.
+		const std::vector<UInt>* pattern = nullptr;
+		for (const auto& candidate : fillPatterns)
+			if (candidate.front() == value && candidate.size() * sizeof(UInt) >= bytes) { pattern = &candidate; break; }
+		if (!pattern) {
+			fillPatterns.emplace_back(std::max<std::size_t>(64, (bytes + sizeof(UInt) - 1) / sizeof(UInt)), value);
+			pattern = &fillPatterns.back();
+		}
+		const auto result = api.EnqueueWriteBuffer(queue, buffer, 0, 0, bytes, pattern->data(), 0, nullptr, nullptr);
+#else
+		const auto result = api.EnqueueFillBuffer(queue, buffer, &value, sizeof value, 0, bytes, 0, nullptr, nullptr);
+#endif
 		if (required)
 			required->proof.enqueueUnobserved(result);
 		return result;
@@ -1085,14 +1104,11 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             tileCapacity = tileCount;
         }
 
-        UInt one = 1;
-        check(fill(queue, tilesFirst, &one, sizeof one, 0, tileCount * sizeof(UInt), 0,
-                                    nullptr, nullptr));
+        check(fillWords(tilesFirst, 1, tileCount * sizeof(UInt)));
         Handle active = tilesFirst, nextActive = tilesSecond;
         const std::size_t global[]{std::size_t(pitch) * variant.threads, std::size_t(rows),
                                    requests.size()},
             local[]{variant.threads, 1, 1};
-        std::array<UInt,8> zero{};
         auto& flags=required->flags;flags.fill(0);
         ++status.batches;
         status.maxBatchFields = std::max(status.maxBatchFields, std::uint64_t(requests.size()));
@@ -1117,10 +1133,8 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 // Only the last dispatch's changes are read by the host. The
                 // in-order queue clears earlier accumulated flags before it.
                 if (dispatch+1 == count)
-                    check(fill(queue, changed, zero.data(), sizeof(UInt), 0,
-                                                requests.size() * sizeof(UInt), 0, nullptr, nullptr));
-                check(fill(queue,nextActive,zero.data(),sizeof(UInt),0,
-                           tileCount*sizeof(UInt),0,nullptr,nullptr));
+                    check(fillWords(changed, 0, requests.size() * sizeof(UInt)));
+                check(fillWords(nextActive, 0, tileCount * sizeof(UInt)));
                 argument(0,a);argument(1,b);
                 argument(12,active);argument(13,nextActive);
                 check(
@@ -1245,12 +1259,24 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             }
             const auto executeStaged = [&](auto& staged, auto& stagingLease) {
                 using Word = typename std::remove_reference_t<decltype(staged)>::value_type;
-            if(total>OpenCLHostBudget/sizeof(Word)) throw BudgetExceeded();
-            try {resizeStaging(staged,total,stagingLease);}
-            catch(const BudgetExceeded&) {shared->evictUnusedPlanes();resizeStaging(staged,total,stagingLease);}
+            // Every chunk is read back to its own position in staging. Start each
+            // on a 64-byte boundary of the (allocator-aligned) vector: Apple's
+            // OpenCL rounds an unaligned clEnqueueReadBuffer destination down,
+            // which shifted a later chunk's results by one element.
+            constexpr std::size_t chunkAlignment=64/sizeof(Word);
+            const auto alignChunk=[](std::size_t offset){return (offset+chunkAlignment-1)/chunkAlignment*chunkAlignment;};
+            std::size_t stagedCells=0;
+            for(std::size_t begin=0;begin<input.size();begin+=8) {
+                stagedCells=alignChunk(stagedCells);
+                for(std::size_t i=begin;i<std::min<std::size_t>(begin+8,input.size());++i) stagedCells+=input[i].grid.cells();
+            }
+            if(stagedCells>OpenCLHostBudget/sizeof(Word)) throw BudgetExceeded();
+            try {resizeStaging(staged,stagedCells,stagingLease);}
+            catch(const BudgetExceeded&) {shared->evictUnusedPlanes();resizeStaging(staged,stagedCells,stagingLease);}
 
             std::size_t outputOffset=0;
             for(std::size_t begin=0;begin<input.size();begin+=8) {
+                outputOffset=alignChunk(outputOffset);
                 const auto count=std::min<std::size_t>(8,input.size()-begin);
                 std::array<const BackendRequest*,8> pointers{};transaction->controls.fill({});
                 for(std::size_t i=0;i<count;++i){pointers[i]=&input[begin+i];transaction->controls[i]=input[begin+i].requiredControl;}
@@ -1265,7 +1291,9 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 throw std::runtime_error("OpenCL device or session failed on another lane");
 
             outputOffset=0;
-            for(const auto& r:input) {
+            for(std::size_t index=0;index<input.size();++index) {
+                const auto& r=input[index];
+                if(index%8==0) outputOffset=alignChunk(outputOffset);
                 if constexpr (sizeof(Word) == sizeof(std::uint16_t))
                     std::copy_n(staged.data()+outputOffset,r.grid.cells(),r.gradient);
                 else for (std::size_t i=0;i<r.grid.cells();++i) {
