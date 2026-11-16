@@ -27,6 +27,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <fstream>
 #include <memory>
 #include <string>
 #include <SDL3/SDL.h>
@@ -79,7 +80,10 @@ void testWideRoundTrip()
         unsigned observed=0;
         writer.setSaveObserver([&](const std::string &saved) {
             CHECK(saved==path);
-            CHECK(std::filesystem::file_size(saved)>0);
+            // Measure through a new handle: Windows stat() reads the directory entry,
+            // whose size NTFS leaves at 0 while the writer still holds the file open.
+            std::ifstream written(saved, std::ios::binary | std::ios::ate);
+            CHECK(written.tellg() > 0);
             ++observed;
             throw std::runtime_error("optional metadata cannot stop recording");
         });
