@@ -45,6 +45,9 @@ public:
     std::size_t pendingHdMasks() const;
     // Mixed cells of the whole map whose low-density base mask is still missing.
     std::size_t pendingBaseMasks() const;
+    // Visible mixed cells the last prepare left to a corner split: no mask at
+    // the view's density, the previous one or the base.
+    std::size_t splitCells() const;
     // Whether this build has the Legacy GL pass. Browser builds drive Legacy
     // GL through Emscripten's WebGL2 bridge, which it does not support; their
     // Legacy GL views compose pages instead.
@@ -61,6 +64,8 @@ public:
     unsigned spareLifetimeMs = 10000;
     std::size_t uploadBytes() const;
     unsigned draws() const;
+    // Times a device lost this view's streamed textures and they started again.
+    unsigned restartCount() const;
     struct DiscoveryMetrics { std::size_t rebuilt = 0; };
     DiscoveryMetrics discoveryMetrics() const;
 
@@ -73,4 +78,5 @@ private:
                       bool complete, bool prepareOnly);
     struct State;
     std::unique_ptr<State> state;
+    unsigned restarts = 0;
 };

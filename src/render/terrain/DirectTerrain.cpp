@@ -202,9 +202,10 @@ struct DirectTerrain::State
             std::vector<Uint16> slotOf;
         } previous;
         // A low-density mask of every mixed cell, laid out like the map and
-        // built by the workers whenever visible cells leave them idle. A cell
-        // with no mask at this density or the previous one draws its base
-        // mask, so it keeps its borders anywhere on the map.
+        // built for the whole map before the map's first terrain frame (see
+        // buildBase). A cell with no mask at this density or the previous one
+        // draws its base mask, so it keeps its borders anywhere on the map;
+        // edits rebuild their base cells ahead of any view mask.
         struct Base {
             Surface coverage, edges;
             int tile = 0;                // Texels per cell side; 0 before creation or on huge maps.
@@ -223,7 +224,7 @@ struct DirectTerrain::State
         Uint64 frame = 0;
         // The base mask serves the view: there is no atlas at the view's density.
         bool suspended = false;
-        std::size_t pending = 0, bytes = 0;
+        std::size_t pending = 0, bytes = 0, split = 0;
         bool failed = false;
         // Masks are built by background workers from an immutable material
         // snapshot; the graphics thread only computes recipes and uploads.
@@ -233,7 +234,7 @@ struct DirectTerrain::State
         std::mutex mutex;
         std::condition_variable wake;
         std::deque<Job> jobs;      // Visible cells, replaced every frame.
-        std::deque<Job> baseJobs;  // Base masks, taken only when jobs is empty.
+        std::deque<Job> baseJobs;  // Base masks (after the first build, edits): taken before jobs.
         std::vector<Result> done;
         std::vector<std::thread> workers;
         bool stop = false;
@@ -301,7 +302,9 @@ struct DirectTerrain::State
                     std::unique_lock lock(mutex);
                     wake.wait(lock, [&] { return stop || !jobs.empty() || !baseJobs.empty(); });
                     if (stop) return;
-                    auto &from = jobs.empty() ? baseJobs : jobs;
+                    // The base is the low-resolution terrain every view can
+                    // always draw: keep it ahead of the view's masks.
+                    auto &from = baseJobs.empty() ? jobs : baseJobs;
                     job = std::move(from.front());
                     from.pop_front();
                     snapshot = materials;
@@ -898,6 +901,52 @@ struct DirectTerrain::State
         if (cellMasks[cell]) b.redo.push_back(cell);
     }
 
+    // Builds the base mask of every mixed cell now, in parallel on the
+    // presentation workers, and writes it in whole-row strips. It runs once a
+    // map (and after a device loses its textures), where the game would
+    // otherwise draw corner splits for seconds while a camera moves.
+    void buildBase(const SceneMap &map, TerrainVisual::Compositor &compositor)
+    {
+        auto &b = hd.base;
+        if (!b.tile || b.order.empty()) return;
+        const auto started = SDL_GetTicks();
+        if (!hd.materials) hd.materials = compositor.cpuMaterialsForRecipes({});
+        const int w = width * b.tile, h = height * b.tile;
+        std::vector<Pixel> coverage(std::size_t(w) * h, Pixel{});
+        std::vector<Uint16> edges(std::size_t(w) * h, 0);
+        const auto materials = hd.materials;
+        const int tile = b.tile;
+        // Each job describes its cell (const reads of the map and catalogue)
+        // and writes its own cell's texels.
+        filterTiles(b.order.size(), [&](std::size_t i)
+        {
+            const int cell = b.order[i];
+            const auto recipe = compositor.describe(map, cell % width, cell / width);
+            const auto built = Hd::build(*materials, cell, recipe, tile, b.version[cell]);
+            const int ox = (cell % width) * tile, oy = (cell / width) * tile;
+            for (int row = 0; row < tile; ++row)
+            {
+                std::copy_n(built.weights.begin() + std::size_t(row) * tile, tile, coverage.begin() + std::size_t(oy + row) * w + ox);
+                std::copy_n(built.edges.begin() + std::size_t(row) * tile, tile, edges.begin() + std::size_t(oy + row) * w + ox);
+            }
+        });
+        const auto composed = SDL_GetTicks();
+        constexpr int StripRows = 128;
+        for (int y = 0; y < h; y += StripRows)
+        {
+            const int rows = std::min(StripRows, h - y);
+            write(b.coverage, Coverage, 0, y, w, rows, coverage.data() + std::size_t(y) * w);
+            write(b.edges, Edges, 0, y, w, rows, edges.data() + std::size_t(y) * w);
+        }
+        std::fill(b.built.begin(), b.built.end(), Uint8(0));
+        for (const int cell : b.order) b.built[cell] = 1;
+        b.cursor = b.order.size();
+        b.remaining = 0;
+        b.reported = true;
+        std::fprintf(stderr, "DIRECT_TERRAIN_BASE cells=%zu tile=%d ms=%llu build_ms=%llu\n", b.order.size(), b.tile,
+            (unsigned long long)(SDL_GetTicks() - started), (unsigned long long)(composed - started));
+    }
+
     // Runs job(0..count-1) on this thread and, for a large batch, on helper
     // threads, returning when all are done. Only density changes and the first
     // view build large batches, so helpers are started for them alone.
@@ -1006,12 +1055,29 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
         state->resources == resources && state->generation == generation && state->streaming == streaming;
     // The streamed pass edits its tables in place; anything else about the
     // map, or the context, starts again.
-    const bool edited = (legacy || streaming) && sameContext && state->tablesReady && state->sameMapSource(map) &&
+    bool edited = (legacy || streaming) && sameContext && state->tablesReady && state->sameMapSource(map) &&
         state->revision != map.terrainRevision();
-    if (!edited && (!sameContext || !state->matchesMap(map)))
+    // A device that dropped a streamed texture (a reset, or its budget) or
+    // stopped draining its writes: start this map's textures again, the
+    // tables and base masks at once, rather than leave the streamed pass. SDL
+    // GPU then draws every cell from the base until its masks and artwork
+    // stream back.
+    bool restoring = false;
+    if (streaming && sameContext && state->streamLost())
+    {
+        std::fprintf(stderr, "DIRECT_TERRAIN_RESTART streamed textures lost or stopped draining\n");
+        ++restarts;
+        restoring = true;
+        edited = false;
+        state.reset();
+    }
+    if (!edited && (!state || !sameContext || !state->matchesMap(map)))
     {
         if (state && !sameContext)
             state->context = nullptr; // The retired context owns its old names.
+        // SDL GPU builds a map's tables, and then its base masks, in the
+        // first prepare, as part of loading: no frame of the map lacks them.
+        restoring = restoring || streaming;
         state = std::make_unique<State>();
         state->context = resources ? nullptr : context;
         state->resources = resources;
@@ -1087,8 +1153,6 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
     const auto deadline = std::chrono::steady_clock::now() + slice;
     try
     {
-        if (streaming && state->streamLost())
-            throw std::runtime_error("Streamed direct terrain textures were lost or stopped draining");
         if (!state->tablesReady)
         {
             if (!state->building)
@@ -1110,7 +1174,7 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
             bool ready;
             do
                 ready = state->building->advance();
-            while (!ready && (complete || std::chrono::steady_clock::now() < deadline));
+            while (!ready && (complete || restoring || std::chrono::steady_clock::now() < deadline));
             if (!ready)
                 return false;
             auto data = state->building->take();
@@ -1415,6 +1479,11 @@ std::size_t DirectTerrain::pendingHdMasks() const
     return state ? state->hd.pending : 0;
 }
 
+std::size_t DirectTerrain::splitCells() const
+{
+    return state ? state->hd.split : 0;
+}
+
 std::size_t DirectTerrain::pendingBaseMasks() const
 {
     if (!state || !state->hd.base.tile) return 0;
@@ -1520,13 +1589,22 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
             state->restartHdAtlas(tile, size, current > 0 && current >= previous);
     }
     const int atlasSize = hd.size;
+    auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
     if (!hd.base.tile && hd.base.built.empty())
+    {
         state->createBase(((left + right) / 2 + viewportX) % width, ((top + bottom) / 2 + viewportY) % height);
+        // The low-resolution masks of the whole map, before this map's first
+        // terrain frame (and again after a device lost them): every view can
+        // draw every cell with its borders from then on, and HD masks only
+        // refine it.
+        state->buildBase(map, compositor);
+    }
     ++hd.frame;
     // Visible mixed cells: keep resident ones, and queue the rest nearest the
     // view centre first, so a zoom or pan fills in from the middle outwards.
     struct Want { int distance, cell, x, y; };
     std::vector<Want> missing;
+    std::size_t split = 0, resident = 0;
     const int cx = (left + right) / 2, cy = (top + bottom) / 2;
     for (int y = top; y <= bottom && !hd.suspended; ++y)
         for (int x = left; x <= right; ++x)
@@ -1538,19 +1616,33 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
             if (!state->cellMasks[cell])
                 continue; // One material: no mask needed.
             if (const auto slot = hd.slotOf[cell])
+            {
                 hd.used[slot - 1] = hd.frame;
+                ++resident;
+            }
             else
+            {
                 missing.push_back({std::abs(x - cx) + std::abs(y - cy), cell, x + viewportX, y + viewportY});
+                split += !(hd.base.tile && hd.base.built[cell]) &&
+                    !(!hd.previous.slotOf.empty() && hd.previous.slotOf[cell]);
+            }
         }
+    hd.split = split;
     std::sort(missing.begin(), missing.end(), [](const Want &a, const Want &b) { return a.distance < b.distance; });
+    // Where the base takes the overflow, more cells can be visible than the
+    // atlas has slots: the farthest keep their base masks rather than being
+    // built every frame only to find every slot visible.
+    const std::size_t free = hd.cellOf.size() - std::min(hd.cellOf.size(), resident);
+    if (missing.size() > free) missing.resize(free);
     hd.pending = missing.size();
-    auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
     const int columns = atlasSize / tile;
     if (hd.workers.empty())
     {
         hd.materials = compositor.cpuMaterialsForRecipes({});
+        // Half the cores (two to six): masks keep pace with a zoom without
+        // crowding out the simulation and asset threads.
         const unsigned cores = std::max(2u, std::thread::hardware_concurrency());
-        for (unsigned i = 0; i < std::min(3u, cores - 1); ++i)
+        for (unsigned i = 0; i < std::min(6u, std::max(2u, cores / 2)); ++i)
             hd.workers.emplace_back([&hd] { hd.work(); });
     }
     // A complete draw builds every missing visible mask now, in parallel.
@@ -1571,7 +1663,9 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
     // workers follow the camera instead of finishing a view already left.
     else
     {
-        constexpr std::size_t QueueDepth = 64;
+        // Enough queued that no worker idles until the next frame refills it:
+        // the queue bounds how many masks a frame can finish.
+        const std::size_t QueueDepth = 64 * std::max<std::size_t>(1, hd.workers.size());
         std::vector<State::Hd::Job> queue;
         const auto now = std::chrono::steady_clock::now();
         const auto deadline = now + std::chrono::milliseconds(2);
@@ -1588,12 +1682,13 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
             }
             queue.push_back({want.cell, found->second, tile, hd.generation});
         }
-        // The base takes only spare frames: when every visible mask is built,
-        // a quarter millisecond of recipes keeps its queue topped up. Base
-        // recipes are not kept, since most cells are never seen.
+        // Base cells an edit invalidated (the first build is complete): a
+        // quarter millisecond of recipes each frame, ahead of the view's
+        // masks, whatever the view still waits for. Base recipes are not kept,
+        // since most cells are never seen.
         auto &base = hd.base;
         std::vector<State::Hd::Job> baseQueue;
-        if (base.tile && missing.empty() && (base.remaining || !base.redo.empty()))
+        if (base.tile && (base.remaining || !base.redo.empty()))
         {
             std::size_t queued;
             {
@@ -1629,8 +1724,19 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
         std::lock_guard lock(hd.mutex);
         finished.swap(hd.done);
     }
-    const std::size_t UploadBudget = complete ? ~std::size_t(0) : std::size_t(6) << 20;
-    std::size_t uploaded = 0, nextFree = 0;
+    // A time budget, not a fixed count: a fast frame uploads every finished
+    // mask, a slow one stops after a few milliseconds (or 16 MiB) and leaves
+    // the rest, nearest cells first, to the next frames.
+    const std::size_t UploadBudget = complete ? ~std::size_t(0) : std::size_t(16) << 20;
+    const auto uploadDeadline = std::chrono::steady_clock::now() + std::chrono::microseconds(complete ? 1000000000 : 3000);
+    std::size_t uploaded = 0, nextFree = 0, checked = 0;
+    bool spent = false;
+    const auto overBudget = [&] {
+        // Reading the clock every eighth upload keeps its cost out of the loop.
+        spent = spent || uploaded >= UploadBudget ||
+            ((++checked & 7) == 0 && std::chrono::steady_clock::now() > uploadDeadline);
+        return spent;
+    };
     std::vector<State::Hd::Result> later;
     std::size_t baseUploads = 0;
     for (auto &result : finished)
@@ -1639,7 +1745,7 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
         {
             auto &base = hd.base;
             // A tiny tile each: bound the calls, not just the bytes.
-            if (baseUploads >= 128 || uploaded >= UploadBudget) { later.push_back(std::move(result)); continue; }
+            if (baseUploads >= 1024 || overBudget()) { later.push_back(std::move(result)); continue; }
             hd.baseInFlight.erase(result.cell);
             if (base.built[result.cell] || !state->cellMasks[result.cell]) continue;
             // Built from the recipe before an edit: build it again.
@@ -1662,7 +1768,7 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
         hd.inFlight.erase(result.cell);
         if (result.generation != hd.generation || hd.slotOf[result.cell])
             continue;
-        if (uploaded >= UploadBudget) { hd.inFlight.insert(result.cell); later.push_back(std::move(result)); continue; }
+        if (overBudget()) { hd.inFlight.insert(result.cell); later.push_back(std::move(result)); continue; }
         std::size_t slot = hd.cellOf.size();
         for (; nextFree < hd.cellOf.size(); ++nextFree)
             if (hd.cellOf[nextFree] < 0) { slot = nextFree++; break; }
@@ -1874,5 +1980,6 @@ bool DirectTerrain::preparing() const
 std::size_t DirectTerrain::textureBytes() const { return state ? state->bytes : 0; }
 std::size_t DirectTerrain::uploadBytes() const { return state ? state->uploaded : 0; }
 unsigned DirectTerrain::draws() const { return state ? state->frames : 0; }
+unsigned DirectTerrain::restartCount() const { return restarts; }
 DirectTerrain::DiscoveryMetrics DirectTerrain::discoveryMetrics() const
 { return state ? state->discoveryStats : DiscoveryMetrics{}; }

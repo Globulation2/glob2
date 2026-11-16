@@ -70,6 +70,8 @@ def run(args, directory):
         environment['GLOB2_BENCH_CAPTURE_PREFIX'] = str(directory / 'frame')
     if args.hd:
         environment['GLOB2_BENCH_TERRAIN_SWITCH'] = 'hd'
+    if args.reset_at is not None:
+        environment['GLOB2_BENCH_DEVICE_RESET_AT'] = str(args.reset_at)
     command = [str(binary), '--renderer', args.renderer, '--no-fullscreen', '--mute', '--window-size', args.window_size]
     log = directory / 'benchmark.log'
     with log.open('w') as output:
@@ -81,15 +83,49 @@ def run(args, directory):
 
 def summarize(log):
     frames = []
+    direct, hd = {}, {}
     for line in log.read_text(errors='replace').splitlines():
+        if line.startswith('FRAME_HD '):
+            fields = dict(re.findall(r'(\w+)=(\S+)', line))
+            if 'frame' in fields and 'pending' in fields:
+                hd[int(fields['frame'])] = int(fields['pending'])
+        if line.startswith('FRAME_DIRECT_TERRAIN '):
+            fields = dict(re.findall(r'(\w+)=(\S+)', line))
+            if 'frame' in fields:
+                direct[int(fields['frame'])] = fields
         if line.startswith('FRAME_FALLBACK '):
             fields = dict(re.findall(r'(\w+)=(\S+)', line))
+            # Stderr from other threads can split a line: skip a torn one.
+            if any(key not in fields for key, _ in KINDS):
+                continue
             frame = {key: (value if key == 'event' else float(value)) for key, value in fields.items()}
             frame['fallback'] = sum(frame[key] for key, _ in KINDS)
             frames.append(frame)
     if not frames:
         raise SystemExit(f'No FRAME_FALLBACK lines in {log}')
     summary = {'frames': len(frames)}
+    # Direct terrain (Legacy GL, SDL GPU): visible mixed cells drawn as a
+    # corner split, with no mask at the view's density, the previous one or the
+    # whole-map base, and the times a device lost its streamed textures.
+    split = [int(direct.get(int(frame['frame']), {}).get('split_cells', 0)) for frame in frames]
+    summary['split_frames'] = sum(1 for value in split if value)
+    summary['split_cell_frames'] = sum(split)
+    summary['restarts'] = max((int(fields.get('restarts', 0)) for fields in direct.values()), default=0)
+    summary['page_frames'] = sum(1 for frame in frames if frame['page_cells'])
+    # Direct terrain: from each camera event, how long until no visible mixed
+    # cell waits for its mask at the view's density (FRAME_HD pending).
+    settle = []
+    marks = [i for i, frame in enumerate(frames) if frame['event'] != '-']
+    for n, start in enumerate(marks):
+        end = marks[n + 1] if n + 1 < len(marks) else len(frames)
+        done = next((i for i in range(start, end) if not hd.get(int(frames[i]['frame']), 0)), None)
+        if done is not None:
+            settle.append(frames[done]['time_ms'] - frames[start]['time_ms'])
+    summary['hd_settled_events'] = len(settle)
+    summary['hd_unsettled_events'] = len(marks) - len(settle)
+    summary['hd_settle_median_ms'] = statistics.median(settle) if settle else None
+    summary['hd_settle_max_ms'] = max(settle) if settle else None
+    summary['hd_pending_max'] = max(hd.values(), default=0)
     summary['fallback_frames'] = sum(1 for frame in frames if frame['fallback'])
     shown = sum(frame['page_cells'] for frame in frames) + sum(
         frame['overview_cells'] for frame in frames if not frame['page_cells'])
@@ -142,6 +178,14 @@ def table(summary, baseline=None):
     before = baseline or {'kinds': {}, 'events': {}}
     lines.append(row('Frames', summary['frames'], before.get('frames')))
     lines.append(row('Frames showing any fallback', summary['fallback_frames'], before.get('fallback_frames')))
+    lines.append(row('Frames drawing terrain pages', summary.get('page_frames'), before.get('page_frames')))
+    lines.append(row('Direct terrain: frames with corner-split cells', summary.get('split_frames'), before.get('split_frames')))
+    lines.append(row('Direct terrain: corner-split cell-frames', summary.get('split_cell_frames'), before.get('split_cell_frames')))
+    lines.append(row('Direct terrain: streamed texture restarts', summary.get('restarts'), before.get('restarts')))
+    lines.append(row('Direct terrain: most masks pending', summary.get('hd_pending_max'), before.get('hd_pending_max')))
+    lines.append(row('Direct terrain: events unsettled (masks pending)', summary.get('hd_unsettled_events'), before.get('hd_unsettled_events')))
+    lines.append(row('Direct terrain: median ms until no mask pending', summary.get('hd_settle_median_ms'), before.get('hd_settle_median_ms')))
+    lines.append(row('Direct terrain: max ms until no mask pending', summary.get('hd_settle_max_ms'), before.get('hd_settle_max_ms')))
     for key, name in KINDS:
         now, then = summary['kinds'][key], before['kinds'].get(key, {})
         lines.append(row(f'{name}: frames', now['frames'], then.get('frames')))
@@ -171,6 +215,7 @@ def main():
     parser.add_argument('--workers', type=int, help='Presentation workers (GLOB2_BACKGROUND_RENDER_WORKERS)')
     parser.add_argument('--capture-frames', help='Comma-separated frames to save as frame-<n>.ppm')
     parser.add_argument('--hd', action='store_true', help='Switch HD terrain artwork on after about a second (frame 68)')
+    parser.add_argument('--reset-at', type=int, help='Reset the render device at this frame (streamed textures lost)')
     args = parser.parse_args()
     if not Path(args.save).exists():
         raise SystemExit(f'{args.save} is missing; run tools/rendering/memory_scenario.py --prepare first')
