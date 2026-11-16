@@ -1115,6 +1115,10 @@ namespace GAGCore
         // The caller reads this sprite's HD frames as pixels (terrain materials
         // feed CPU sampling), so they are never released after upload.
         static void keepHighResolutionPixels(const std::string& name);
+        // A sprite loaded later, when HD is already enabled, does not decode
+        // its HD layers with its native frames; its deferred windows or a
+        // demand load them (lazily loaded terrain material sheets).
+        static void loadHighResolutionOnDemand(const std::string& name);
         static bool highResolutionDeferred(const std::string& name);
         void setHighResolutionFrames(std::span<const unsigned> indices);
         //! Deferred frames that left their window stay decoded, most recently

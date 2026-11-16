@@ -35,6 +35,10 @@ namespace GAGCore
 		static Sprite *getSprite(const std::string name);
         static void requestSprite(const std::string& name, bool variableAtlas = false);
         static Sprite *findSprite(const std::string& name);
+        //! Whether a requested sprite is still loading.
+        static bool spriteLoading(const std::string& name);
+        //! Whether the last request of this sprite failed (until it is requested again).
+        static bool spriteFailed(const std::string& name);
         //! Share a presentation budget across cooperative jobs, sprites and HD reloads.
         //! One indivisible decode/upload may exceed it; zero only queries readiness.
         static bool pollAssets(unsigned budgetMs = 2);

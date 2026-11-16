@@ -399,6 +399,7 @@ static int run(int argc, char **argv)
         gui.localPlayer = gui.localTeamNo = 0;
         gui.adjustLocalTeam();
         gui.adjustInitialViewport();
+        gui.loadTerrainArtwork(); // As Engine::finalAdjustments does.
         prepareScene(gui);
         int width = globalContainer->gfx->getW() - 160, height = globalContainer->gfx->getH();
         int x = 0, y = 0;

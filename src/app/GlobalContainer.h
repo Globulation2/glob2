@@ -106,6 +106,10 @@ public:
 
 	std::unique_ptr<DrawableSurface> title; //!< Owned.
 	
+	// Whether the compositors load material sheets on demand (the default).
+	bool terrainSheetsOnDemand() const;
+	// Test fixtures that check composition, not loading, load every sheet up front.
+	bool terrainSheetsEager = false;
 	TerrainVisual::Compositor &terrainCompositor();
     TerrainVisual::Compositor &terrainCompositor(std::shared_ptr<const MapAssetBundle> assets);
     std::shared_ptr<const MapAssetBundle> compositorAssets;

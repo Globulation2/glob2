@@ -9,6 +9,7 @@
 #include "BuildingType.h"
 #include "GlobalContainer.h"
 #include "render/scene/Scene.h"
+#include "render/terrain/TerrainCompositor.h"
 #include <SDL3_image/SDL_image.h>
 #include <algorithm>
 #include <filesystem>
@@ -83,6 +84,8 @@ void toPng(const PresentationFrame& scene, const std::string& path, int maximumP
 		rendered.panels.building.type=remap(rendered.panels.building.type);
 		rendered.buildingTypes=std::move(types);
 	}
+	// An export is drawn once: it waits for the material sheets the map holds.
+	globalContainer->terrainCompositor(rendered.map.frozenAssetBundle()).finishMaterials(rendered.map);
 	// Nothing else runs during an export: compose terrain pages on every core.
 	GAGCore::OfflineRenderScope parallel(ParallelFor::limit());
 	globalContainer->gfx->drawToSurface(canvas.get(), float(std::min(extent, maximumPixels))/extent, [&] {

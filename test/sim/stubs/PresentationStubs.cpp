@@ -46,5 +46,6 @@ void Glob2Style::drawTextButtonBackground(GAGCore::DrawableSurface*, int, int, i
 void Glob2Style::drawFrame(GAGCore::DrawableSurface*, int, int, int, int, unsigned) { std::abort(); }
 void Glob2Style::drawProgressBar(GAGCore::DrawableSurface*, int, int, int, int, int) { std::abort(); }
 int Glob2Style::getStyleMetric(StyleMetrics) { std::abort(); }
-TerrainVisual::Compositor::Compositor(Catalog, std::shared_ptr<const MapAssetBundle> assets)
+TerrainVisual::Compositor::Compositor(Catalog, std::shared_ptr<const MapAssetBundle> assets, bool)
 	: customSprites(std::move(assets)) { std::abort(); }
+TerrainVisual::Compositor::~Compositor() { std::abort(); }
