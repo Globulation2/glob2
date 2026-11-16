@@ -1034,7 +1034,11 @@ background trim, a first zoom out). Only frames their owner marks deferrable
 in game are asynchronous) are capped; a synchronous capture ends the mark
 before it flushes, and other frames, such as menus, tests and complete draws,
 are never capped. Offscreen composition, such as terrain pages, is exempt,
-since a page left half composed would start again. Explicit trimming releases completed GPU copies that can be
+since a page left half composed would start again. Programmable GL caps a
+deferrable frame the same way, at 96 new textures or 16 MiB of their uploads,
+and keeps the same constant-time bookkeeping: sampled textures on intrusive
+least-recently-used lists by budget class, and dead revisions retired 128 cache
+entries per call from a cursor. Explicit trimming releases completed GPU copies that can be
 restored from logical CPU snapshots, while preserving in-flight work, unfinished
 uploads and externally owned rendered targets. Actual pressure can reduce density,
 rather than a fixed low pixel cap.

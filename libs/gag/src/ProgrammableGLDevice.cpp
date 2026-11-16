@@ -294,6 +294,23 @@ class ProgrammableGLDevice final : public RenderDevice
     std::vector<Uint8> uploadScratch;
     struct PrimitiveRange { const DrawPacket *packet; std::size_t first, count; };
     std::vector<PrimitiveRange> primitiveRanges;
+    // New sampled textures a deferrable frame (RenderFrame::deferrable) may
+    // create for screen packets, and their bytes. Past either the uploads so
+    // far are kept and the frame defers: the previous frame shows while later
+    // frames create the rest (a first zoom out, a resume after a trim).
+    static constexpr unsigned FrameTextureLimit = 96;
+    static constexpr std::size_t FrameUploadLimit = 16 * 1024 * 1024;
+    unsigned frameTextures = 0;
+    std::size_t frameUploadBytes = 0;
+    bool capCreations = false;
+    void admitCreation(std::size_t bytes)
+    {
+        if (!capCreations) return;
+        if (frameTextures >= FrameTextureLimit || (frameTextures && bytes > FrameUploadLimit - std::min(FrameUploadLimit, frameUploadBytes)))
+            throw RenderAdmissionDeferred("GL per-frame texture creations reached");
+        ++frameTextures; frameUploadBytes += bytes;
+    }
+    void endFrameCreations() { frameTextures = 0; frameUploadBytes = 0; capCreations = false; }
     static constexpr std::size_t UploadScratchLimit = 8 * 1024 * 1024;
 
     void current()
@@ -584,6 +601,7 @@ class ProgrammableGLDevice final : public RenderDevice
         if (category >= classBytes.size()) throw std::invalid_argument("Invalid GL texture budget class");
         if (required > TextureBudget || required > ClassLimits[category]) throw std::length_error("GL texture exceeds resource budget");
         const std::size_t bytes = std::size_t(required);
+        admitCreation(bytes);
         trim(bytes, category);
         if (compressed) {
             Allocation allocation; allocation.snapshot = snapshot; allocation.bytes = bytes; allocation.category = category;
@@ -1591,6 +1609,7 @@ void main() {
     RenderSubmission submit(RenderFrame frame) override
     {
         detail::RenderCpuTimer timing(counts.cpuSubmitNanoseconds);
+        capCreations = false;
         current(); poll(); trim();
         if (!frameOpen && !canBeginFrame()) return {};
         if (frame.logicalWidth <= 0 || frame.logicalHeight <= 0 || frame.packets.size() > RenderFrame::CommandCapacity)
@@ -1654,7 +1673,11 @@ void main() {
             bool flip = false, premultiplied = false;
             if (first.texture) {
                 const bool team = first.material == DrawPacket::Material::TeamColor;
+                // Only screen packets of a deferrable frame: offscreen
+                // composition left half done would start again.
+                capCreations = frame.deferrable && !first.target;
                 auto &allocation = texture(first.texture, first.linear && !team); flip = allocation.framebuffer != 0;
+                capCreations = false;
                 premultiplied = team ? teamPremultiplied(first, allocation) : allocation.premultiplied;
             }
             std::size_t rangeStart = geometry.size();
@@ -1693,6 +1716,7 @@ void main() {
             GLsync fence = gl.glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
             if (!fence) throw std::runtime_error("Cannot create renderer fence");
             pending.push_back({{issued, epoch}, fence}); frameOpen = false; gl.glFlush();
+            endFrameCreations();
         }
         if (!SDL_GL_SwapWindow(window)) throw std::runtime_error(SDL_GetError());
         poll(); trim();
@@ -1715,6 +1739,7 @@ void main() {
         const auto fence=gl.glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE,0);
         if(!fence)throw std::runtime_error("Cannot fence deferred renderer frame");
         pending.push_back({{++issued,epoch},fence});frameOpen=false;gl.glFlush();poll();
+        endFrameCreations();
         check("Discard renderer frame");
     }
     void reset() override
@@ -1736,7 +1761,7 @@ void main() {
         for(auto &[key,value]:scratchTargets)destroy(value);
         scratchTargets.clear();
         destroyStreamed(); // Owners that had writes applied see their textures lost.
-        ++epoch; completed = issued; frameOpen = false; counts.resourceBytes = 0;
+        ++epoch; completed = issued; frameOpen = false; counts.resourceBytes = 0; endFrameCreations();
     }
     std::uint64_t generation() const override { return epoch; }
     void trimRetiredResources() override

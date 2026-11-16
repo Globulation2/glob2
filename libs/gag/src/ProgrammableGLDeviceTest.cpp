@@ -805,6 +805,37 @@ TEST_SUITE("ProgrammableGLDevice")
         CHECK(fixture.device->generation() == generation + 1);
         CHECK(fixture.device->completion(submission) == RenderCompletion::Cancelled);
     }
+    GLOB2_TEST_CASE("deferrable frames cap new textures and finish them over later frames", "[display]")
+    {
+        GLFixture fixture; auto &device = *fixture.device;
+        RenderResources resources; std::vector<TextureSnapshot> sources;
+        for (int i = 0; i < 100; ++i) {
+            auto pixels = surface(4, 4); REQUIRE(pixels);
+            REQUIRE(SDL_FillSurfaceRect(pixels.get(), nullptr, SDL_MapSurfaceRGBA(pixels.get(), 255, 0, 0, 255)));
+            const auto handle = resources.create(pixels.get(), 1); REQUIRE(handle);
+            sources.push_back(resources.snapshot(handle));
+        }
+        const auto frame = [&](bool deferrable) {
+            RenderFrame value; value.logicalWidth = value.logicalHeight = 16; value.deferrable = deferrable;
+            for (const auto &source : sources) {
+                DrawPacket packet; packet.kind = DrawPacket::Kind::Blit; packet.texture = source;
+                packet.source = {0, 0, 4, 4}; packet.destination = {0, 0, 1, 1}; value.packets.push_back(packet);
+            }
+            return value;
+        };
+        // 96 creations a deferrable frame; the frame defers and the next one finishes.
+        CHECK_THROWS_AS(device.submit(frame(true)), RenderAdmissionDeferred);
+        device.discardFrame();
+        CHECK(device.submit(frame(true))); device.present();
+        // Frames that are not deferrable create everything they draw.
+        sources.clear();
+        for (int i = 0; i < 100; ++i) {
+            auto pixels = surface(4, 4); REQUIRE(pixels);
+            const auto handle = resources.create(pixels.get(), 2); REQUIRE(handle);
+            sources.push_back(resources.snapshot(handle));
+        }
+        CHECK(device.submit(frame(false))); device.present();
+    }
     GLOB2_TEST_CASE("GL samples premultiplied block chains from block-only restoration snapshots", "[display]")
     {
         for (bool es : {false, true}) {
