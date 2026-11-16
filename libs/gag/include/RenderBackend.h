@@ -51,6 +51,9 @@ class RenderBackend
     // and the caller then draws normally.
     virtual bool blitAdditive(const void *, SDL_Surface *, std::uint64_t, const SDL_Rect &,
                               const SDL_FRect &, Uint8) { return false; }
+    // The device budget class of textures the following draws admit, until set
+    // again. Backends without per-class device budgets ignore it.
+    virtual void textureBudgetClass(TextureDescriptor::BudgetClass) {}
 	virtual void fill(const SDL_FRect &rect, SDL_Color color) = 0;
     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
     // Like prepareTexture, after writes confined to `dirty` (pixel rectangles of

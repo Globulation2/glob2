@@ -163,6 +163,7 @@ class DeviceRenderBackend final : public RenderBackend
         resources.erase(oldest->second.handle); textures.erase(oldest); return true;
     }
     RenderTransform currentTransform;
+    TextureDescriptor::BudgetClass budgetClass = TextureDescriptor::BudgetClass::General;
     std::optional<SDL_Rect> currentClip, currentTargetScissor;
     TextureSnapshot currentTarget;
     float targetWidth = 0, targetHeight = 0;
@@ -188,6 +189,7 @@ class DeviceRenderBackend final : public RenderBackend
             descriptor.mips = TextureDescriptor::Mips::Generated; descriptor.sampling = TextureDescriptor::Sampling::Linear;
         }
         descriptor.alpha = opaque ? TextureDescriptor::Alpha::Opaque : TextureDescriptor::Alpha::Straight;
+        descriptor.budgetClass = budgetClass;
         // Borrowed terrain-run views often reuse the same surface address and
         // revision zero with new pixels. A missing logical key never caches them.
         if (!key) {
@@ -205,7 +207,8 @@ class DeviceRenderBackend final : public RenderBackend
         auto found = textures.find(key);
         if (found != textures.end()) {
             auto previous = resources.snapshot(found->second.handle);
-            if (previous && previous->descriptor.mips != descriptor.mips) {
+            if (previous && (previous->descriptor.mips != descriptor.mips ||
+                             previous->descriptor.budgetClass != descriptor.budgetClass)) {
                 // The source content revision may be unchanged when an authored
                 // padded chain replaces an ordinary upload. A new handle keeps
                 // old queued pixels and device upload identities independent.
@@ -330,6 +333,7 @@ class DeviceRenderBackend final : public RenderBackend
         value.source = src; value.destination = dst; value.alpha = alpha; value.linear = true;
         append(std::move(value)); ++counts.blits;
     }
+    void textureBudgetClass(TextureDescriptor::BudgetClass value) override { budgetClass = value; }
     void prepareTexture(const void *key, SDL_Surface *source, std::uint64_t revision, bool = false) override { if(aborted)return;try{texture(key,source,revision,false);}catch(const RenderAdmissionDeferred &){abort();} }
     void fill(const SDL_FRect &rect, SDL_Color color) override
     {

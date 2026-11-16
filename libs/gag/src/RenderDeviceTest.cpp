@@ -197,6 +197,25 @@ TEST_SUITE("RenderDevice")
         CHECK(packets[1].texture->descriptor.mips==TextureDescriptor::Mips::Generated);CHECK(pixel(packets[0].texture->pixels.get(),0).r==255);
         CHECK(pixel(packets[1].texture->pixels.get(),0).b==255);
     }
+    TEST_CASE("draws admit textures in the selected device budget class")
+    {
+        // Terrain pages count against the terrain page class, so a view's pages
+        // cannot exhaust the general class every frame and hold presentation.
+        auto page=surface(1,1),sprite=surface(1,1);paint(page.get(),255,0,0);paint(sprite.get(),0,0,255);
+        DelayedDevice device;RenderResources resources;
+        auto backend=makeDeviceRenderBackend(device,resources,2,1);
+        backend->textureBudgetClass(TextureDescriptor::BudgetClass::TerrainPage);
+        backend->blit(page.get(),page.get(),1,false,{0,0,1,1},{0,0,1,1},255);
+        backend->textureBudgetClass(TextureDescriptor::BudgetClass::General);
+        backend->blit(sprite.get(),sprite.get(),1,false,{0,0,1,1},{1,0,1,1},255);
+        // A key admitted in another class takes a new resource, not a relabelled one.
+        backend->blit(page.get(),page.get(),1,false,{0,0,1,1},{1,0,1,1},255);backend->present();
+        REQUIRE(device.pending.size()==1);const auto &packets=device.pending.front().frame.packets;REQUIRE(packets.size()==3);
+        CHECK(packets[0].texture->descriptor.budgetClass==TextureDescriptor::BudgetClass::TerrainPage);
+        CHECK(packets[1].texture->descriptor.budgetClass==TextureDescriptor::BudgetClass::General);
+        CHECK(packets[2].texture->descriptor.budgetClass==TextureDescriptor::BudgetClass::General);
+        CHECK(packets[0].texture->handle!=packets[2].texture->handle);
+    }
     TEST_CASE("implicit capacity submission defers fatal device errors to presentation boundary")
     {
         DelayedDevice device;RenderResources resources;auto backend=makeDeviceRenderBackend(device,resources,2,1);
