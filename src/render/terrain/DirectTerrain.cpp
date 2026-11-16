@@ -15,6 +15,7 @@
 #include "DirectTerrainData.h"
 #include "TerrainCompositor.h"
 #include "render/SoftwareTerrainCache.h"
+#include "render/BackgroundWork.h"
 #include "render/scene/SceneMap.h"
 #ifdef DIRECT_TERRAIN_LEGACY_GL
 #ifdef __APPLE__
@@ -176,6 +177,7 @@ struct DirectTerrain::State
         Surface art, variants;
         std::size_t bytes = 0, variantBytes = 0; // bytes includes the variant table's.
         int pixels = 0;
+        unsigned serial = 0; // Which atlas a background filter batch belongs to.
         bool failed = false;
         std::map<unsigned, Entry> entries;
         std::vector<unsigned> freePairs;
@@ -185,6 +187,57 @@ struct DirectTerrain::State
     // number of tiles each, while `animation` keeps drawing; it replaces
     // `animation` once every visible variant is in it.
     Animation nextArt;
+    // Art tiles box-filtered on the background workers, from copies of their
+    // sources, for the atlas whose serial they carry; one batch at a time.
+    struct ArtBatch
+    {
+        struct Job
+        {
+            unsigned slot, pair, parity, phase;
+            TerrainVisual::Compositor::PhaseSource stamp;
+            TerrainVisual::Compositor::MaterialPixels input;
+            std::vector<Pixel> tile;
+        };
+        std::vector<Job> jobs;
+        int pixels = 0;
+        unsigned serial = 0;
+        std::atomic<std::size_t> remaining{0};
+    };
+    std::shared_ptr<ArtBatch> artBatch;
+    unsigned artSerial = 0;
+    // Box-filters a tile in premultiplied colour. Point samples at a block's
+    // corner would read a tile's two edges asymmetrically, so neighbouring
+    // variants, blended to meet at their borders, would not.
+    static void filterTile(int pixels, int size, const Uint32 *surface,
+                           const TerrainVisual::Compositor::MaterialPixels &input, std::vector<Pixel> &tile)
+    {
+        tile.resize(std::size_t(pixels) * pixels);
+        const int block = std::max(1, size / pixels);
+        for (int y = 0; y < pixels; ++y)
+            for (int x = 0; x < pixels; ++x)
+            {
+                unsigned sum[4] = {};
+                for (int dy = 0; dy < block; ++dy)
+                    for (int dx = 0; dx < block; ++dx)
+                    {
+                        const auto index = std::size_t(y * size / pixels + dy) * size + x * size / pixels + dx;
+                        std::array<unsigned char, 4> p;
+                        if (surface)
+                        {
+                            const Uint32 argb = surface[index];
+                            p = {Uint8(argb >> 16), Uint8(argb >> 8), Uint8(argb), Uint8(argb >> 24)};
+                        }
+                        else
+                            p = input[index];
+                        for (int k = 0; k < 3; ++k) sum[k] += unsigned(p[k]) * p[3];
+                        sum[3] += p[3];
+                    }
+                auto &out = tile[y * pixels + x];
+                const unsigned count = unsigned(block * block);
+                for (int k = 0; k < 3; ++k) out[k] = Uint8(sum[3] ? (sum[k] + sum[3] / 2) / sum[3] : 0);
+                out[3] = Uint8((sum[3] + count / 2) / count);
+            }
+    }
     // Coverage masks for visible mixed cells at the display density (8 to 128
     // texels a side), built by background workers.
     struct Hd {
@@ -1406,7 +1459,33 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
             art.freePairs.clear();
             for (unsigned pair = pairs; pair > 0; --pair) art.freePairs.push_back(pair - 1);
             art.pixels = pixels;
+            art.serial = ++state->artSerial;
         }
+        // Tiles the workers finished: into the atlas they were filtered for,
+        // if it still holds their variants at that density.
+        if (state->artBatch && !state->artBatch->remaining.load(std::memory_order_acquire))
+        {
+            auto batch = std::move(state->artBatch);
+            auto *target = out.serial == batch->serial ? &out : next.serial == batch->serial ? &next : nullptr;
+            if (target && target->art && target->pixels == batch->pixels)
+            {
+                const int targetColumns = target->size / batch->pixels;
+                for (auto &job : batch->jobs)
+                {
+                    auto found = target->entries.find(job.slot);
+                    if (found == target->entries.end() || found->second.pair != job.pair) continue;
+                    const unsigned index = job.pair * 2 + job.parity;
+                    state->write(target->art, State::Art, int(index % targetColumns) * batch->pixels,
+                                 int(index / targetColumns) * batch->pixels, batch->pixels, batch->pixels, job.tile.data());
+                    found->second.phases[job.parity] = job.phase;
+                    found->second.stamps[job.parity] = job.stamp;
+                }
+            }
+        }
+        const bool batchBusy = bool(state->artBatch);
+        auto background = std::make_shared<State::ArtBatch>();
+        background->pixels = pixels;
+        background->serial = art.serial;
         // Three passes: claim atlas pairs and gather each tile's source here,
         // box-filter the tiles on worker threads, then upload them here. A
         // density change refilters every visible variant (over a thousand
@@ -1426,12 +1505,10 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
         // animation steps of variants the atlas already holds (they draw their
         // previous phase a frame longer); a variant new to the drawing atlas
         // gets its tiles at once, since its record is written with them.
-        constexpr std::size_t TransitionTiles = 96, PhaseTiles = 64;
-        std::size_t phaseJobs = 0;
+        constexpr std::size_t TransitionTiles = 192, PhaseTiles = 192;
         bool filled = true;
         for (auto slot : wanted)
         {
-            if (transition && jobs.size() >= TransitionTiles) { filled = false; break; }
             auto it = art.entries.find(slot);
             if (it == art.entries.end())
             {
@@ -1463,7 +1540,15 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
                 const bool native = !highResolutionFrames;
                 const auto stamp = compositor.phaseSource(source.material, source.variant, phase, native);
                 if (entry.phases[parity] == phase && entry.stamps[parity] == stamp) continue;
-                if (!complete && !transition && !fresh && phaseJobs++ >= PhaseTiles) continue;
+                // A variant new to the drawing atlas gets its tiles now, with
+                // its record; animation steps and a filling atlas go to the
+                // workers, one batch at a time, the old tiles drawing meanwhile.
+                const bool async = !complete && (transition || !fresh);
+                if (async && (batchBusy || background->jobs.size() >= (transition ? TransitionTiles : PhaseTiles)))
+                {
+                    filled = false;
+                    continue;
+                }
                 // Shipped materials are sampled in place; art that takes its
                 // border from another variant comes as a prepared copy.
                 const auto *surface = compositor.phaseSurface(source.material, source.variant, phase, native);
@@ -1476,6 +1561,20 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
                 }
                 else if (surface->w != stamp.size)
                     throw std::runtime_error("Animated terrain source changed dimensions");
+                if (async)
+                {
+                    // The workers read a copy: the frame may go before they run.
+                    if (surface)
+                    {
+                        input.resize(std::size_t(stamp.size) * stamp.size);
+                        const auto *argb = static_cast<const Uint32 *>(surface->pixels);
+                        for (std::size_t i = 0; i < input.size(); ++i)
+                            input[i] = {Uint8(argb[i] >> 16), Uint8(argb[i] >> 8), Uint8(argb[i]), Uint8(argb[i] >> 24)};
+                    }
+                    background->jobs.push_back({slot, entry.pair, parity, phase, stamp, std::move(input), {}});
+                    filled = false;
+                    continue;
+                }
                 jobs.push_back({&entry, parity, phase, stamp,
                                 surface ? static_cast<const Uint32 *>(surface->pixels) : nullptr, std::move(input), {}});
             }
@@ -1485,36 +1584,26 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
         // neighbouring variants, blended to meet at their borders, would not.
         // Workers only read the gathered sources and write their own tiles.
         const auto filter = [pixels](TileJob &job)
-        {
-            const int size = job.stamp.size;
-            job.tile.resize(std::size_t(pixels) * pixels);
-            const int block = std::max(1, size / pixels);
-            for (int y = 0; y < pixels; ++y)
-                for (int x = 0; x < pixels; ++x)
-                {
-                    unsigned sum[4] = {};
-                    for (int dy = 0; dy < block; ++dy)
-                        for (int dx = 0; dx < block; ++dx)
-                        {
-                            const auto index = std::size_t(y * size / pixels + dy) * size + x * size / pixels + dx;
-                            std::array<unsigned char, 4> p;
-                            if (job.surfacePixels)
-                            {
-                                const Uint32 argb = job.surfacePixels[index];
-                                p = {Uint8(argb >> 16), Uint8(argb >> 8), Uint8(argb), Uint8(argb >> 24)};
-                            }
-                            else
-                                p = job.input[index];
-                            for (int k = 0; k < 3; ++k) sum[k] += unsigned(p[k]) * p[3];
-                            sum[3] += p[3];
-                        }
-                    auto &out = job.tile[y * pixels + x];
-                    const unsigned count = unsigned(block * block);
-                    for (int k = 0; k < 3; ++k) out[k] = Uint8(sum[3] ? (sum[k] + sum[3] / 2) / sum[3] : 0);
-                    out[3] = Uint8((sum[3] + count / 2) / count);
-                }
-        };
+        { State::filterTile(pixels, job.stamp.size, job.surfacePixels, job.input, job.tile); };
         state->filterTiles(jobs.size(), [&](std::size_t i) { filter(jobs[i]); });
+        if (!background->jobs.empty())
+        {
+            constexpr std::size_t JobsPerTask = 16;
+            const std::size_t tasks = (background->jobs.size() + JobsPerTask - 1) / JobsPerTask;
+            background->remaining.store(tasks, std::memory_order_relaxed);
+            state->artBatch = background;
+            for (std::size_t task = 0; task < tasks; ++task)
+                BackgroundWork::submit([background, task]
+                {
+                    const std::size_t last = std::min(background->jobs.size(), (task + 1) * JobsPerTask);
+                    for (std::size_t i = task * JobsPerTask; i < last; ++i)
+                    {
+                        auto &job = background->jobs[i];
+                        State::filterTile(background->pixels, job.stamp.size, nullptr, job.input, job.tile);
+                    }
+                    background->remaining.fetch_sub(1, std::memory_order_acq_rel);
+                });
+        }
         const int columns = atlasSize / pixels;
         for (auto &job : jobs)
         {
