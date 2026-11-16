@@ -872,11 +872,71 @@ source and library hashes with the entrypoint. Failed or incomplete builds leave
 Metal unavailable. A verified Apple tool lock and actual SDK compilation are
 required before producing release libraries; mock tests verify invocation and
 receipt handling only.
-iOS device packages use the committed lock `platforms/mobile/metal-tool-lock.json`,
-which `tools/shaders/metal_tool_lock.py` writes on the pinned Xcode and checks
-(`--check`) against a local toolchain; a lock that differs in any field, or carries
-unknown fields, fails compilation. Generating, reviewing and bumping it is described
-in [SDL GPU Metal shaders](../mobile/ios.md#sdl-gpu-metal-shaders).
+Apple builds run all of this automatically; see [Apple Metal shaders](#apple-metal-shaders).
+
+#### Apple Metal shaders
+
+Every macOS app and iOS device build compiles SDL GPU's Metal libraries as part
+of its ordinary shader step, with no environment or manual translation: the CMake
+build passes `--apple-sdk macosx` on macOS hosts, and iOS device builds use
+`iphoneos` (the pinned SDL GPU does not run in the Simulator, so simulator builds
+have none). `buildsys/renderer_shaders.py` then:
+
+1. provisions pinned glslang (`buildsys/glslang.json`) and SPIRV-Cross
+   (`buildsys/spirv-cross.json`, tag `sdk-1.3.239.0`) from hash-verified source into
+   the development store, once per machine (`python3 buildsys/spirv_cross_tool.py`
+   does it ahead of time). The source-built SPIRV-Cross translates byte-for-byte
+   like the pinned Ubuntu `2021.01.15+1.3.239.0-1build1` binary, so a Mac produces
+   the same `metalSources` receipts Linux does; `generate.py` accepts either the
+   pinned Ubuntu binary or a receipted build of the pinned source;
+2. compiles the translated sources with `xcrun metal` and `metallib`, checked against
+   the committed lock `buildsys/metal-tool-lock.json`;
+3. ships the runtime artifacts: `buildsys/bundle.py` copies the shader set,
+   Metal libraries included, into `Glob2.app/Contents/Resources/shaders`, which the
+   runtime finds through the file manager, and `platforms/mobile/ios.py` into the
+   iOS app. Translated sources, AIR and the layout header stay behind.
+
+The lock lists every reviewed Apple toolchain: the exact `xcodebuild -version`
+output and, per SDK, the SDK version and SHA-256 digests of the resolved `metal`
+and `metallib` executables:
+
+```json
+{"toolchains": [{"xcodeVersion": "Xcode 27.2\nBuild version 27B52",
+                 "sdks": {"macosx": {"sdkVersion": "27.2", "metalSha256": "…", "metallibSha256": "…"},
+                          "iphoneos": {"sdkVersion": "27.2", "metalSha256": "…", "metallibSha256": "…"}}}]}
+```
+
+A build compiles with a listed toolchain when one matches this Mac. iOS entries
+also require the Xcode pinned in `platforms/mobile/toolchain.json`; macOS entries
+cover each release runner image's own Xcode. Otherwise:
+
+- **Development builds** record this Mac's toolchain as
+  `BUILD/metal-development-lock-SDK.json`, warn, and compile with it, so a developer
+  Mac on another Xcode still gets SDL GPU. The receipt marks the libraries
+  `metalToolLockKind: development`. Without full Xcode, or when the translators
+  cannot be provisioned, a development build warns and carries on without Metal
+  (SDL GPU then reports itself unavailable).
+- **Release builds** set `GLOB2_METAL_REQUIRE_COMMITTED_LOCK=1` (the macOS release,
+  Mac App Store, GOG and TestFlight workflows do) and fail instead: on an unlisted
+  toolchain, on missing translators, or when the packaged app lacks the complete
+  Metal set.
+
+`tools/shaders/metal_tool_lock.py` writes a Mac's entry (`--output`), merges entries
+(`--combine`) and checks the committed lock against a Mac (`--check`, printing the
+nearest entry's differing fields and the entry that would match). The lock changes
+only through a reviewed pull request. The **Apple Metal tool lock** workflow
+(`.github/workflows/apple-metal-tool-lock.yml`) runs on every release runner image
+(`macos-15`, `macos-15-intel`, `macos-26`, and `xcode-27` with the pinned Xcode for
+iOS) on manual dispatch and on pull requests that change the lock, the Xcode pin or
+the lock tooling. It fails while any release runner's toolchain is missing, and
+uploads each runner's entry plus a combined candidate lock to review and commit.
+When a runner image moves, its release job fails with the differences; dispatch the
+workflow, review the candidate, and commit it, dropping toolchains no release job
+uses any more.
+
+`GLOB2_RENDER_SHADER_INPUT` with `GLOB2_METAL_SDK` and `GLOB2_METAL_TOOL_LOCK`
+remains for importing an externally translated bundle (below); an Apple build that
+imports one without them compiles it with the automatic lock choice.
 
 
 Native skin shaders convert GL clip depth to Vulkan's 0..w range;

@@ -473,10 +473,16 @@ add_custom_command(OUTPUT "${stamps}/skin-materials"
 
 file(GLOB shader_globs CONFIGURE_DEPENDS "${GLOB2_ROOT}/libs/gag/shaders/*.glsl")
 glob2_bridge(shader_inputs shader-inputs)
+# The macOS app compiles SDL GPU's Metal libraries automatically (buildsys/renderer_shaders.py).
+set(shader_apple_sdk)
+if(GLOB2_PLATFORM STREQUAL "darwin")
+  set(shader_apple_sdk --apple-sdk macosx)
+endif()
 add_custom_command(OUTPUT "${stamps}/shaders"
   BYPRODUCTS "${GLOB2_OUT}/shaders/RendererShaderLayouts.h"
-  COMMAND ${bridge} shaders --builddir "${GLOB2_OUT}" --stamp "${stamps}/shaders"
-  DEPENDS "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/buildsys/renderer_shaders.py" "${GLOB2_ROOT}/buildsys/glslang_tool.py" ${shader_inputs}
+  COMMAND ${bridge} shaders --builddir "${GLOB2_OUT}" --stamp "${stamps}/shaders" ${shader_apple_sdk}
+  DEPENDS "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/buildsys/renderer_shaders.py" "${GLOB2_ROOT}/buildsys/glslang_tool.py"
+          "${GLOB2_ROOT}/buildsys/spirv_cross_tool.py" "${GLOB2_ROOT}/buildsys/spirv-cross.json" ${shader_inputs}
           "${GLOB2_ROOT}/tools/shaders/gradient_compute.py" "${GLOB2_ROOT}/tools/shaders/gradient_preparation_rules.py"
   WORKING_DIRECTORY "${GLOB2_ROOT}" COMMENT "Generating renderer shader assets" VERBATIM)
 

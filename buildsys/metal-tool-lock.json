@@ -1,0 +1,19 @@
+{
+  "toolchains": [
+    {
+      "xcodeVersion": "Xcode 27.2\nBuild version 27B52",
+      "sdks": {
+        "iphoneos": {
+          "sdkVersion": "27.2",
+          "metalSha256": "b5a27d6aa4f412e7e1a15ee8a6da1f0c02f5fad66203398ac0368cc580c4cc0a",
+          "metallibSha256": "3510ace70e1652fe2cf70c1608df0ce0660339c5a656f4e8bb4522fedfb8a86c"
+        },
+        "macosx": {
+          "sdkVersion": "27.2",
+          "metalSha256": "b5a27d6aa4f412e7e1a15ee8a6da1f0c02f5fad66203398ac0368cc580c4cc0a",
+          "metallibSha256": "3510ace70e1652fe2cf70c1608df0ce0660339c5a656f4e8bb4522fedfb8a86c"
+        }
+      }
+    }
+  ]
+}

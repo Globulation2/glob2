@@ -113,53 +113,23 @@ need Apple qualification in addition to cross-platform solver tests.
 
 The SDL GPU renderer on iOS needs offline Metal libraries (`.metallib`); the
 pinned SDL GPU does not support the Simulator, so simulator packages simply lack
-it. Device packaging (`ios.py configure|build --environment device`) fails unless
-the build directory holds the complete Metal set, produced by importing a verified
-translated bundle (`GLOB2_RENDER_SHADER_INPUT`, generated on Linux with pinned
-glslang and SPIRV-Cross) and compiling it with `GLOB2_METAL_SDK` plus a verified
-`GLOB2_METAL_TOOL_LOCK`; see [Portable shader build artifacts](../architecture/rendering.md#portable-shader-build-artifacts).
-`--allow-missing-sdl-gpu` packages portable SDL only and says so. A successful
-device build verifies the app's Metal libraries against their receipts.
-
-#### The Metal tool lock
-
-`platforms/mobile/metal-tool-lock.json` is the trust anchor for the Apple compiler
-that produces shipped Metal libraries. It holds the exact `xcodebuild -version`
-output, the SDK name and version, and SHA-256 digests of the resolved `metal` and
-`metallib` executables, in the format `tools/shaders/generate.py` reads. It only
-changes through a reviewed pull request: no workflow commits, regenerates or
-overrides it, and release builds have no switch that skips it.
-
-To create or bump the lock (first time, or after an Xcode pin or runner image change):
-
-1. Run the **iOS Metal tool lock** workflow
-   (`.github/workflows/ios-metal-tool-lock.yml`, manual dispatch only) on the
-   revision whose `platforms/mobile/toolchain.json` pin should be locked. It runs on
-   the `xcode-27` image, refuses any Xcode other than the pin, and uploads a
-   `metal-tool-lock` artifact (the lock, the source commit and, when a lock is
-   already committed, the differences). It has read-only repository access and no
-   secrets.
-2. Review the artifact: `xcodeVersion` must start with `Xcode` and the pinned
-   version, `sdk` must be `iphoneos`, and an Xcode bump should explain any changed
-   digest. On a Mac with the same Xcode,
-   `python3 tools/shaders/metal_tool_lock.py --output /tmp/lock.json` reproduces it.
-3. Commit it as `platforms/mobile/metal-tool-lock.json` in a pull request (with the
-   `platforms/mobile/toolchain.json` change, for an Xcode bump).
-
-`python3 tools/shaders/metal_tool_lock.py --check` verifies the committed lock
-against the local toolchain and prints each differing field. A mismatch means the
-Xcode, SDK or compiler on that machine is not the one the repository reviewed, most
-often because the runner image moved; no Metal library is compiled with it, so
-regenerate and review the lock rather than working around it.
+it. Device builds compile them automatically on the Mac, as every Apple build does
+(see [Apple Metal shaders](../architecture/rendering.md#apple-metal-shaders)):
+pinned glslang and SPIRV-Cross are built from verified source, and the Metal
+compiler must match a toolchain in the committed `buildsys/metal-tool-lock.json`
+whose Xcode is the pin in `platforms/mobile/toolchain.json`. Device packaging
+(`ios.py configure|build --environment device`) fails unless the build holds the
+complete Metal set; `--allow-missing-sdl-gpu` packages portable SDL only and says
+so. A successful device build verifies the app's Metal libraries against their
+receipts.
 
 #### TestFlight
 
-The TestFlight workflow translates the shaders in a Linux job with the pinned glslang
-and SPIRV-Cross, without secrets, and passes the archive to the Mac build job with its
-SHA-256 as a job output. The Mac job checks that digest, re-verifies the bundle
-against its own checkout with the `--prebuilt` import, checks the committed lock, and
-builds with `GLOB2_RENDER_SHADER_INPUT`, `GLOB2_METAL_SDK=iphoneos` and
-`GLOB2_METAL_TOOL_LOCK`; any mismatch fails the build. The signing job never handles
-shader input. A tagged source without a committed lock packages portable SDL only
-(`--allow-missing-sdl-gpu`) with a warning naming the lock workflow. The
-`ios-production` workflow promotes an uploaded build and does not rebuild shaders.
+The TestFlight build job checks that the committed lock lists the runner's pinned
+Xcode (`metal_tool_lock.py --check --sdk iphoneos`), sets
+`GLOB2_METAL_REQUIRE_COMMITTED_LOCK=1`, and compiles the Metal libraries in the
+ordinary build; any mismatch fails it. After an Xcode pin or runner image change,
+run the **Apple Metal tool lock** workflow and commit its reviewed candidate lock.
+A tagged source without a committed lock packages portable SDL only
+(`--allow-missing-sdl-gpu`) with a warning. The `ios-production` workflow promotes
+an uploaded build and does not rebuild shaders.

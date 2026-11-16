@@ -393,8 +393,12 @@ def generate(output, compiler=None, root=ROOT, naga=None, spirv_cross=None, dxc=
             raise ValueError('native translation requires pinned glslang and SPIRV-Cross')
         pins = meta['nativeTranslationTools']
         cross_digest = hashlib.sha256(Path(spirv_cross).read_bytes()).hexdigest()
-        if cross_digest != pins['spirvCross']['linuxX86BinarySha256']:
-            raise ValueError('SPIRV-Cross binary does not match pinned Linux build')
+        # The pinned Ubuntu binary, or one buildsys/spirv_cross_tool.py built from
+        # the same pinned source on this host (it translates byte-identically).
+        import spirv_cross_tool
+        if cross_digest != pins['spirvCross']['linuxX86BinarySha256'] and not spirv_cross_tool.verified_build(spirv_cross):
+            raise ValueError('SPIRV-Cross binary is neither the pinned Linux build nor built from the pinned source '
+                             '(python3 buildsys/spirv_cross_tool.py)')
         if dxc:
             dxc_digest = hashlib.sha256(Path(dxc).read_bytes()).hexdigest()
             dxc_version = subprocess.check_output([dxc, '--version'], text=True).strip()
@@ -435,27 +439,50 @@ def generate(output, compiler=None, root=ROOT, naga=None, spirv_cross=None, dxc=
     return meta
 
 
-# The trusted Apple tool lock (platforms/mobile/metal-tool-lock.json for iOS
-# device builds) holds exactly these keys; tools/shaders/metal_tool_lock.py
-# writes and checks it with observe_metal_tools below.
+# A Metal tool lock for one SDK holds exactly these keys (compile_metal's input).
+# The committed lock, buildsys/metal-tool-lock.json, is the trust anchor for every
+# shipped .metallib on macOS and iOS. It lists each reviewed Apple toolchain (one
+# per release runner image and developer Xcode):
+#   {"toolchains": [{"xcodeVersion": ..., "sdks": {sdk: {sdkVersion, metalSha256,
+#    metallibSha256}}}, ...]}
+# tools/shaders/metal_tool_lock.py writes, combines and checks it.
 METAL_TOOL_LOCK_KEYS = ('xcodeVersion', 'sdk', 'sdkVersion', 'metalSha256', 'metallibSha256')
-METAL_TOOL_LOCK_REMEDY = ('If the runner image or Xcode changed, run the "iOS Metal tool lock" workflow '
-                          '(.github/workflows/ios-metal-tool-lock.yml) on the pinned Xcode runner, review its '
-                          'artifact and update platforms/mobile/metal-tool-lock.json in a pull request '
-                          '(docs/mobile/ios.md, "SDL GPU Metal shaders").')
+METAL_SDK_KEYS = ('sdkVersion', 'metalSha256', 'metallibSha256')
+COMMITTED_METAL_TOOL_LOCK = Path('buildsys/metal-tool-lock.json')
+METAL_TOOL_LOCK_REMEDY = ('If Xcode or a runner image changed, run the "Apple Metal tool lock" workflow '
+                          '(.github/workflows/apple-metal-tool-lock.yml), or python3 tools/shaders/metal_tool_lock.py '
+                          '--output LOCK on that Mac, and add the reviewed toolchain to buildsys/metal-tool-lock.json '
+                          'in a pull request (docs/architecture/rendering.md, "Apple Metal shaders").')
 
 
-def observe_metal_tools(sdk, root=ROOT, developer_dir=None):
+def xcode_pin(root=ROOT):
+    return json.loads((Path(root) / 'platforms/mobile/toolchain.json').read_text())['ios']['xcode']
+
+
+def metal_tool_lock_entries(committed, sdk):
+    """Every reviewed flat single-SDK lock for sdk in a committed lock (possibly none)."""
+    toolchains = committed.get('toolchains') if isinstance(committed, dict) else None
+    entries = []
+    for toolchain in toolchains if isinstance(toolchains, list) else []:
+        entry = toolchain.get('sdks', {}).get(sdk) if isinstance(toolchain, dict) else None
+        if isinstance(entry, dict):
+            entries.append({'xcodeVersion': toolchain.get('xcodeVersion'), 'sdk': sdk, **entry})
+    return entries
+
+
+def observe_metal_tools(sdk, root=ROOT, developer_dir=None, require_pin=True):
     """Return the tool lock the selected Xcode would produce, and the resolved binaries.
 
-    Refuses any Xcode other than the repository pin in platforms/mobile/toolchain.json.
+    With require_pin (every committed lock and every release build), refuses any
+    Xcode other than the repository pin in platforms/mobile/toolchain.json.
+    Development builds on a Mac with another Xcode observe it without the pin.
     """
-    xcode_pin = json.loads((Path(root) / 'platforms/mobile/toolchain.json').read_text())['ios']['xcode']
     prefix = ['/usr/bin/env', 'DEVELOPER_DIR=' + developer_dir] if developer_dir else []
     xcrun = prefix + ['xcrun', '--sdk', sdk]
     xcode = subprocess.check_output(prefix + ['xcodebuild', '-version'], text=True).strip()
-    if not xcode or xcode.splitlines()[0] != 'Xcode ' + xcode_pin:
-        raise ValueError('Metal requires the repository-pinned Xcode ' + xcode_pin + ' (found ' +
+    pin = xcode_pin(root)
+    if require_pin and (not xcode or xcode.splitlines()[0] != 'Xcode ' + pin):
+        raise ValueError('Metal requires the repository-pinned Xcode ' + pin + ' (found ' +
                          repr(xcode.splitlines()[0] if xcode else '') + '); select it with DEVELOPER_DIR')
     observed = {'xcodeVersion': xcode, 'sdk': sdk,
                 'sdkVersion': subprocess.check_output(xcrun + ['--show-sdk-version'], text=True).strip()}
@@ -475,14 +502,25 @@ def metal_tool_lock_differences(lock, observed):
     return [(key, lock.get(key), observed.get(key)) for key in keys if lock.get(key) != observed.get(key)]
 
 
-def compile_metal(output, sdk, tool_lock, root=ROOT, developer_dir=None):
+def compile_metal(output, sdk, tool_lock, root=ROOT, developer_dir=None, lock_kind='committed'):
     """Compile translated sources using an explicitly verified Apple tool lock.
 
+    tool_lock is a path or object: a single-SDK lock, or the committed multi-SDK
+    lock (its entry for sdk is used). A 'development' lock_kind is one a local
+    build recorded from a non-pinned Xcode; it is never acceptable for release
+    (renderer_shaders.prepare enforces that) and is recorded in the receipt.
     Xcode selection remains local to these subprocesses. Unknown compiler/SDK
     binaries fail closed; source translation alone never advertises Metal.
     """
-    lock = json.loads(Path(tool_lock).read_text())
-    observed, binaries = observe_metal_tools(sdk, root, developer_dir)
+    output = Path(output)
+    lock = tool_lock if isinstance(tool_lock, dict) else json.loads(Path(tool_lock).read_text())
+    # iOS ships only from the pinned Xcode; macOS from any reviewed runner toolchain.
+    observed, binaries = observe_metal_tools(sdk, root, developer_dir,
+                                             require_pin=lock_kind != 'development' and sdk != 'macosx')
+    if isinstance(lock, dict) and 'toolchains' in lock:
+        entries = metal_tool_lock_entries(lock, sdk)
+        lock = next((entry for entry in entries if not metal_tool_lock_differences(entry, observed)),
+                    entries[0] if entries else {'sdk': '<no reviewed toolchain for ' + sdk + '>'})
     differences = metal_tool_lock_differences(lock, observed)
     if differences:
         keys = [key for key, _, _ in differences]
@@ -530,7 +568,8 @@ def compile_metal(output, sdk, tool_lock, root=ROOT, developer_dir=None):
     for variant, stage, library, source in produced:
         register_artifact(meta, output, 'metal', variant, stage, library, 'metallib', source['entrypoint'])
         meta['shaderArtifacts']['metal'][variant][stage]['sourceSha256'] = source['sha256']
-    meta['nativeTranslationReceipt'].update({'metalLibrariesProduced': True, 'metalToolLock': lock})
+    meta['nativeTranslationReceipt'].update({'metalLibrariesProduced': True, 'metalToolLock': lock,
+                                             'metalToolLockKind': lock_kind})
     metadata_path.write_text(json.dumps(meta, indent=2) + '\n')
     return meta
 
