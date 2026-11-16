@@ -471,6 +471,8 @@ namespace GAGCore
         bool flushDeviceFrame();
         bool presentedDeviceFrame() const;
         bool deferDeviceFrame();
+        // See GAGCore::allowDeviceFrameDeferral.
+        void allowDeviceFrameDeferral();
         bool setDeviceTargetScissor(const SDL_Rect *pixels);
     private:
         bool activateBackend(RendererBackend backend, SDL_Surface *previousFrame);

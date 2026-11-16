@@ -71,6 +71,11 @@ bool GraphicContext::presentedDeviceFrame() const
     return !renderDevice() || didPresentDeviceFrame(*renderer);
 }
 
+void GraphicContext::allowDeviceFrameDeferral()
+{
+    if (renderDevice()) GAGCore::allowDeviceFrameDeferral(*renderer);
+}
+
 bool GraphicContext::deferDeviceFrame()
 {
     return renderDevice() && GAGCore::deferDeviceFrame(*renderer);

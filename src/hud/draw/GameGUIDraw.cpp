@@ -810,6 +810,10 @@ void GameGUI::drawInGameScrollableText(void)
 void GameGUI::drawAll(int team)
 {
 	PERF_SCOPE_TIME(Render);
+	// The game shows its previous frame when one defers and captures device
+	// frames asynchronously, so a device may spread a burst of work (texture
+	// creation after a trim) over its next frames.
+	globalContainer->gfx->allowDeviceFrameDeferral();
 	// Apply any simulation notices not consumed yet and resolve the selection
 	// for the renderer (view.selectedBuilding/selectedUnit). With a simulation
 	// thread, that happens in threadedClientStep against the immutable PresentationFrame.

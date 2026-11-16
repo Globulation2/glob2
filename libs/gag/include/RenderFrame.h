@@ -202,6 +202,10 @@ struct RenderFrame
     int logicalWidth = 0, logicalHeight = 0;
     std::vector<DrawPacket> packets;
     std::size_t vertexCount = 0;
+    // The owner shows the previous frame if this one defers, and no
+    // synchronous capture will read it: a device may defer it to spread work
+    // (such as texture creation) over later frames.
+    bool deferrable = false;
     // Returns only adjacent compatible spans; never changes painter order.
     std::size_t batchEnd(std::size_t begin) const;
 };

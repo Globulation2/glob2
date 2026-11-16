@@ -3,6 +3,8 @@
 #include "DirectTerrainReadbackFixture.h"
 #include <cstring>
 #include <SDLGPUDevice.h>
+#include <RenderBackend.h>
+#include <RenderDevice.h>
 #include <AssetLoader.h>
 #include <SDLGraphicContext.h>
 #ifdef HAVE_CONFIG_H
@@ -180,8 +182,9 @@ TEST_SUITE("SDLGPUDevice")
             textures.push_back(resources.snapshot(resources.create(pixels.get(), 1)));
             REQUIRE(textures.back());
         }
-        const auto frameOf = [&](std::uint64_t identity, const TextureSnapshot &target) {
+        const auto frameOf = [&](std::uint64_t identity, const TextureSnapshot &target, bool deferrable = true) {
             RenderFrame frame; frame.identity = identity; frame.logicalWidth = frame.logicalHeight = 16;
+            frame.deferrable = deferrable;
             for (const auto &texture : textures) {
                 auto packet = blit(texture, {0, 0, 4, 4});
                 if (target) { packet.target = target; packet.targetLogicalWidth = packet.targetLogicalHeight = 16; }
@@ -205,6 +208,43 @@ TEST_SUITE("SDLGPUDevice")
             texture = resources.snapshot(resources.create(pixels.get(), 2));
         }
         CHECK(device->submit(frameOf(10, target)));
+        device->present();
+        // A frame its owner cannot defer (it may be captured) completes at once.
+        for (auto &texture : textures) {
+            auto pixels = surface(4, 4); REQUIRE(pixels);
+            texture = resources.snapshot(resources.create(pixels.get(), 3));
+        }
+        CHECK(device->submit(frameOf(11, {}, false)));
+        device->present();
+    }
+
+    GLOB2_TEST_CASE("A synchronous capture after a texture burst in a deferrable frame succeeds", "[display][isolated]")
+    {
+        const char *shaders = std::getenv("GLOB2_TEST_SHADER_DIRECTORY"); REQUIRE(shaders);
+        Video video; auto device = makeSDLGPUDevice(nullptr, 16, 16, shaders);
+        RenderResources resources;
+        auto backend = makeDeviceRenderBackend(*device, resources, 16, 16);
+        std::vector<Surface> sources;
+        for (int i = 0; i < 400; ++i) {
+            sources.push_back(surface(4, 4)); REQUIRE(sources.back());
+            SDL_FillSurfaceRect(sources.back().get(), nullptr, SDL_MapSurfaceRGBA(sources.back().get(), 0, 255, 0, 255));
+        }
+        const auto burst = [&](std::size_t first) {
+            for (std::size_t i = first; i < first + 200; ++i)
+                backend->blit(sources[i].get(), sources[i].get(), 1, true, {0, 0, 4, 4}, {0, 0, 16, 16}, 255);
+        };
+        // The game's frames may defer a burst: the previous frame shows.
+        allowDeviceFrameDeferral(*backend);
+        burst(0);
+        backend->present();
+        CHECK_FALSE(didPresentDeviceFrame(*backend));
+        // Deferral ends with the frame, and a capture ends it within one.
+        allowDeviceFrameDeferral(*backend);
+        burst(200);
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> captured(backend->capture(), SDL_DestroySurface);
+        REQUIRE(captured);
+        backend->present();
+        CHECK(didPresentDeviceFrame(*backend));
     }
 
     GLOB2_TEST_CASE("Expanded rectangles do not consume recorded triangle capacity", "[display][isolated]")

@@ -793,8 +793,8 @@ class SDLGPUDevice final : public RenderDevice
         if (resident > budgets[budget] - bytes) throw RenderAdmissionDeferred("SDL GPU texture class budget exhausted");
         try {
         // SDL's Vulkan backend submits a command buffer for every texture it
-        // creates. A submission creates at most FrameTextureLimit new textures
-        // for packets drawn to the screen; past that the uploads so far are
+        // creates. A deferrable submission creates at most FrameTextureLimit
+        // new textures for packets drawn to the screen; past that the uploads so far are
         // kept and the frame defers, so the previous frame shows while later
         // frames create the rest (a resume after a background trim, a first
         // zoom out). Offscreen composition (terrain pages) is exempt: a page
@@ -1928,7 +1928,7 @@ RenderSubmission SDLGPUDevice::submit(RenderFrame frame)
                     std::int64_t(packet.source.y) + packet.source.h > packet.texture->descriptor.height)
                     throw std::invalid_argument("Blit source is outside texture bounds");
             }
-            capCreations = !packet.target;
+            capCreations = frame.deferrable && !packet.target;
             auto sampled = resolve(commands, entry, packet.texture, packet.opaque,
                 packet.linear && packet.kind == DrawPacket::Kind::Blit && packet.material != DrawPacket::Material::TeamColor);
             capCreations = false;

@@ -140,6 +140,11 @@ bool didRecordDeviceFrame(const RenderBackend &);
 // Set exact backing-pixel clipping for this target scope; nullptr resets it.
 bool setDeviceTargetScissor(RenderBackend &, const SDL_Rect *);
 bool deferDeviceFrame(RenderBackend &);
+// Lets the device defer the rest of this frame to spread work over later
+// frames (RenderFrame::deferrable); present and a synchronous capture end it.
+// Only owners that show the previous frame on deferral and capture
+// asynchronously call it.
+void allowDeviceFrameDeferral(RenderBackend &);
 bool didIntentionallyDeferDeviceFrame(const RenderBackend &);
 bool didPresentDeviceFrame(const RenderBackend &);
 std::uint64_t submittedDeviceFrameIdentity(const RenderBackend &);

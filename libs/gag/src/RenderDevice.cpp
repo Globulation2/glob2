@@ -188,6 +188,8 @@ class DeviceRenderBackend final : public RenderBackend
         return textures.erase(it);
     }
     bool aborted=false,lastPresented=true,intentionalDefer=false,lastIntentionalDefer=false;
+    // Set by the owner for this frame only (see RenderFrame::deferrable).
+    bool deferrableFrame=false;
     std::string fatalReason;
     void abort(){aborted=true;recorder.cancel();}
     void append(DrawPacket value){if(!aborted){recorder.append(std::move(value));if(aborted)recorder.cancel();}}
@@ -300,7 +302,7 @@ class DeviceRenderBackend final : public RenderBackend
     DeviceRenderBackend(RenderDevice &device, RenderResources &resources, int w, int h)
         : device(device), resources(resources), recorder([this](RenderFrame frame) {
             if(aborted) return;
-            try { const auto identity=frame.identity; if(!this->device.submit(std::move(frame))) abort(); else submittedFrameIdentity=identity; }
+            try { const auto identity=frame.identity; frame.deferrable=deferrableFrame; if(!this->device.submit(std::move(frame))) abort(); else submittedFrameIdentity=identity; }
             catch(const RenderAdmissionDeferred &){abort();}
             catch(const std::exception &error){fatalReason=error.what();abort();}
         }), width(w), height(h) { recorder.begin(frameIdentity, width, height); }
@@ -498,7 +500,7 @@ class DeviceRenderBackend final : public RenderBackend
         append(std::move(value)); ++counts.blits;
         return true;
     }
-    void reset() override { recorder.cancel(); device.reset(); submittedFrameIdentity=presentedFrameIdentity=0;aborted=false;lastPresented=false;intentionalDefer=lastIntentionalDefer=false;fatalReason.clear(); }
+    void reset() override { recorder.cancel(); device.reset(); submittedFrameIdentity=presentedFrameIdentity=0;aborted=false;lastPresented=false;intentionalDefer=lastIntentionalDefer=false;fatalReason.clear();deferrableFrame=false; }
     // Erases up to `limit` cached snapshots not drawn in the last `idleFrames`
     // presentations (zero: any not drawn since the last one); their owners keep
     // the pixels to re-create them on a draw.
@@ -520,7 +522,8 @@ class DeviceRenderBackend final : public RenderBackend
     void present() override { ++presentedFrames;flush();lastPresented=false;lastIntentionalDefer=intentionalDefer;
         if(!fatalReason.empty())throw std::runtime_error(fatalReason);
         if(aborted){device.discardFrame();submittedFrameIdentity=presentedFrameIdentity;}else{device.present();presentedFrameIdentity=submittedFrameIdentity;lastPresented=true;}
-        aborted=false;intentionalDefer=false;recorder.begin(++frameIdentity,width,height); }
+        aborted=false;intentionalDefer=false;deferrableFrame=false;recorder.begin(++frameIdentity,width,height); }
+    void allowDeferral() {deferrableFrame=true;}
     std::uint64_t submittedIdentity() const {return submittedFrameIdentity;}
     bool defer() {
         flush();
@@ -535,6 +538,8 @@ class DeviceRenderBackend final : public RenderBackend
     void nativeLogicalSize(int w, int h) override { logicalSize(w, h); }
     SDL_Surface *capture() override
     {
+        // A frame read back synchronously cannot defer from here on.
+        deferrableFrame=false;
         flush(); if(aborted)throw RenderAdmissionDeferred("Cannot capture deferred presentation frame"); int w, h; device.outputSize(w, h);
         CaptureRequest request; request.identity = ++captureIdentity; request.frameIdentity = submittedFrameIdentity;
         request.width = w; request.height = h;
@@ -593,6 +598,7 @@ bool recordDevicePacket(RenderBackend &backend, DrawPacket packet)
     device->record(std::move(packet)); return true;
 }
 bool setDeviceTargetScissor(RenderBackend &backend, const SDL_Rect *rect){auto *device=dynamic_cast<DeviceRenderBackend *>(&backend);if(!device)return false;device->setTargetScissor(rect);return true;}
+void allowDeviceFrameDeferral(RenderBackend &backend){if(auto *device=dynamic_cast<DeviceRenderBackend *>(&backend))device->allowDeferral();}
 bool deferDeviceFrame(RenderBackend &backend){auto *device=dynamic_cast<DeviceRenderBackend *>(&backend);return device && device->defer();}
 bool didIntentionallyDeferDeviceFrame(const RenderBackend &backend){auto *device=dynamic_cast<const DeviceRenderBackend *>(&backend);return device && device->intentionallyDeferred();}
 bool didRecordDeviceFrame(const RenderBackend &backend){auto *device=dynamic_cast<const DeviceRenderBackend *>(&backend);return !device || device->recorded();}
