@@ -1236,6 +1236,11 @@ namespace GAGCore
         static void setHighResolutionDensity(double screenPixelsPerLogicalPixel);
         //! Levels the current band leaves out: 0 for full detail, up to 2.
         static unsigned highResolutionDetailSkip();
+        //! Whether legacy GL draws sprite frames from their HD layers: only in
+        //! the full-detail band, past two screen pixels a logical pixel, the
+        //! threshold of the portable and device renderers. Below it every
+        //! renderer draws the native frames, so all show the same image.
+        static bool legacyHighResolutionShown();
         //! How long the view must want less detail before the band drops (tests shorten it).
         static void setHighResolutionDetailDelay(std::int64_t nanoseconds);
         //! The same delay, for other views that lower their detail on its clock

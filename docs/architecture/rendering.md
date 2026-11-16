@@ -53,7 +53,10 @@ Preference changes, a new asset source generation or a different pack directory
 start a reload; unchanged requests do not. Explicit synchronous reloads used by
 tools still refresh unchanged artwork. Disabling the preference releases the
 optional layers through asset polling, rather than through screen destruction.
-Desktop legacy OpenGL draws sprite frames from their HD layers at every zoom.
+Desktop legacy OpenGL draws sprite frames from their HD layers in its full-detail
+band only (`Sprite::legacyHighResolutionShown`), past two screen pixels a logical
+pixel like the portable renderer; below it every renderer draws native frames,
+so they all show the same image at a given zoom.
 The portable SDL renderer draws them once the view exceeds two screen pixels a
 logical pixel (`Sprite::highResolutionDrawable`): HD frames hold four texels a
 logical pixel and its textures have no mip chain, so they shrink at most twice.

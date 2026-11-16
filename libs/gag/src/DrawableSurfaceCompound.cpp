@@ -290,9 +290,12 @@ namespace GAGCore
 		if (this != _gc || !(_gc->getOptionFlags() & GraphicContext::USEGPU) || !_gc->hasUnitShader())
 			return false;
 		DrawableSurface *base, *team;
+		// Below the full-detail band legacy GL draws native frames, as the
+		// other renderers do at that zoom.
+		const bool shown = Sprite::legacyHighResolutionShown();
 		if (sprite->dynamicTeamColor)
 		{
-			const bool useHD = sprite->blockHasCompleteHD(index)
+			const bool useHD = shown && sprite->blockHasCompleteHD(index)
 				&& (sprite->experimentImages[index] || sprite->experimentRotated[index]);
 			base = useHD ? sprite->experimentImages[index] : sprite->images[index];
 			team = useHD
@@ -301,10 +304,10 @@ namespace GAGCore
 		}
 		else
 		{
-			const auto *hdTeam = index < sprite->experimentRotated.size() ? sprite->experimentRotated[index] : nullptr;
+			const auto *hdTeam = shown && index < sprite->experimentRotated.size() ? sprite->experimentRotated[index] : nullptr;
 			const auto *nativeTeam = sprite->rotated[index];
 			if (!hdTeam && !nativeTeam) return false;
-			auto *hdBase = index < sprite->experimentImages.size() ? sprite->experimentImages[index] : nullptr;
+			auto *hdBase = shown && index < sprite->experimentImages.size() ? sprite->experimentImages[index] : nullptr;
 			base = hdBase ? hdBase : sprite->images[index];
 			team = hdTeam ? hdTeam->orig : nativeTeam->orig;
 		}
@@ -374,7 +377,8 @@ namespace GAGCore
 		                               static_cast<float>(sprite->getH(index)), sprite, index, alpha))
 			return;
 
-		const bool wantsHDRoute = sprite->highResolutionAtlas || sprite->experimentImages[index] || sprite->experimentRotated[index];
+		const bool wantsHDRoute = Sprite::legacyHighResolutionShown() &&
+			(sprite->highResolutionAtlas || sprite->experimentImages[index] || sprite->experimentRotated[index]);
 		// A dynamicTeamColor sprite (unit) with an incomplete HD block must not
 		// take the per-frame HD routing below: that could mix HD and native
 		// resolutions across poses in one action. Falling through renders native.
@@ -406,7 +410,8 @@ namespace GAGCore
 		if (drawPortableHighResolution(static_cast<float>(x), static_cast<float>(y), static_cast<float>(w),
 		                               static_cast<float>(h), sprite, index, alpha))
 			return;
-		bool experiment = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU);
+		bool experiment = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU) &&
+			Sprite::legacyHighResolutionShown();
 		if (auto surface = sprite->prepareDrawSurface(index, false, experiment))
 			drawSurface(x, y, w, h, surface, alpha);
 		// The team layer draws into the exact same destination box as the base
@@ -432,7 +437,8 @@ namespace GAGCore
 		if (drawPortableHighResolution(static_cast<float>(x), static_cast<float>(y), static_cast<float>(w),
 		                               static_cast<float>(h), sprite, index, alpha))
 			return;
-		bool experiment = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU);
+		bool experiment = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU) &&
+			Sprite::legacyHighResolutionShown();
 		if (auto surface = sprite->prepareDrawSurface(index, false, experiment))
 			drawSurface(x, y, w, h, surface, alpha);
 		if (drawDeviceTeamLayer(x, y, w, h, sprite, index, experiment, alpha))

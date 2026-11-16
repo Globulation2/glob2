@@ -806,6 +806,7 @@ namespace GAGCore
 #endif
     }
     unsigned Sprite::highResolutionDetailSkip() { return highResolutionSkip.level(); }
+    bool Sprite::legacyHighResolutionShown() { return highResolutionSkip.level() == 0; }
     void Sprite::setHighResolutionDetailDelay(std::int64_t nanoseconds) { lowerDetailDelay = nanoseconds; }
     std::int64_t Sprite::highResolutionDetailDelay() { return lowerDetailDelay; }
     bool Sprite::portableHighResolution()
