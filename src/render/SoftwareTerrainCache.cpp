@@ -640,6 +640,10 @@ struct TerrainPendingPage
     // workers reduce instead of composing the cells again.
     std::vector<Uint32> native;
     bool refresh = false;
+    // A refresh of an animation round: staged when done, published with the round.
+    bool round = false;
+    // Cells a refresh left out of view, stale once it is staged.
+    std::array<bool, SoftwareTerrainCache::ChunkTiles * SoftwareTerrainCache::ChunkTiles> skipped{};
     int pitch = 0;
     Uint64 discoveryRevision = 0;
     Uint32 discoveryTeams = 0;
@@ -694,6 +698,10 @@ void SoftwareTerrainCache::cancelPending()
         page->cancelled.store(true, std::memory_order_relaxed);
     pending.clear();
     workerMaterials.reset();
+    // Without background work, pages compose at the live phase again.
+    round.reset();
+    shownPhase = {};
+    publishStaged();
 }
 
 int SoftwareTerrainCache::capturePixelsPerCell(int width, int height)
@@ -734,11 +742,18 @@ bool hasShoreline(const TerrainVisual::Recipe &recipe, const TerrainVisual::Comp
     return std::any_of(palette.begin() + 1, palette.begin() + count, [&](auto id) { return liquid(id) != first; });
 }
 
+// Whether the surf of `id` stepped between two animation times (by default,
+// up to the compositor's own).
+bool surfStepChanged(TerrainVisual::MaterialId id, unsigned previousTime,
+                     const TerrainVisual::Compositor &compositor, unsigned now)
+{
+    const auto &surf = compositor.catalog().materials[id].surf;
+    return surf.period && previousTime / surf.ticks != now / surf.ticks;
+}
 bool surfStepChanged(TerrainVisual::MaterialId id, unsigned previousTime,
                      const TerrainVisual::Compositor &compositor)
 {
-    const auto &surf = compositor.catalog().materials[id].surf;
-    return surf.period && previousTime / surf.ticks != compositor.surfTime() / surf.ticks;
+    return surfStepChanged(id, previousTime, compositor, compositor.surfTime());
 }
 
 // An unchanged mixed cell recomposes only the samples its changed textures
@@ -785,14 +800,35 @@ std::vector<SDL_Rect> dirtyRects(const std::array<bool, SoftwareTerrainCache::Ch
     return rects;
 }
 bool tileSurfChanged(const TerrainVisual::Recipe &recipe, unsigned previousTime,
-                     const TerrainVisual::Compositor &compositor)
+                     const TerrainVisual::Compositor &compositor, unsigned now)
 {
     std::array<TerrainVisual::MaterialId, 4> palette;
     const unsigned count = recipe.palette(palette);
-    return previousTime != compositor.surfTime() && hasShoreline(recipe, compositor) &&
+    return previousTime != now && hasShoreline(recipe, compositor) &&
         std::any_of(palette.begin(), palette.begin() + count,
-            [&](auto id) { return surfStepChanged(id, previousTime, compositor); });
+            [&](auto id) { return surfStepChanged(id, previousTime, compositor, now); });
 }
+bool tileSurfChanged(const TerrainVisual::Recipe &recipe, unsigned previousTime,
+                     const TerrainVisual::Compositor &compositor)
+{
+    return tileSurfChanged(recipe, previousTime, compositor, compositor.surfTime());
+}
+}
+std::size_t SoftwareTerrainCache::publishStaged()
+{
+    std::size_t bytes = 0;
+    for (auto &chunk : chunks)
+    {
+        if (!chunk->hasStaged)
+            continue;
+        const int n = ChunkPixels * chunk->scale / chunk->downsample / ChunkTiles;
+        if (chunk->image)
+            chunk->image->markPixelsChanged(dirtyRects(chunk->staged, n));
+        bytes += std::size_t(std::count(chunk->staged.begin(), chunk->staged.end(), true)) * n * n * 4;
+        chunk->staged = {};
+        chunk->hasStaged = false;
+    }
+    return bytes;
 }
 bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
                                         const std::array<Tile, ChunkTiles * ChunkTiles> &tiles,
@@ -824,7 +860,7 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
     for (unsigned i = 0; i < tiles.size(); ++i)
     {
         const auto &tile = tiles[i];
-        if (wasValid && page.tiles[i] == tile &&
+        if (wasValid && page.tiles[i] == tile && !page.stale[i] &&
             (!tile.discovered || (std::none_of(tile.recipe.corners.begin(),
                                                tile.recipe.corners.end(), materialChanged) &&
                                   !tileSurfChanged(tile.recipe, page.surfTime, compositor))))
@@ -894,7 +930,7 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
             if (tiles[i].discovered && held && held->mask.recipe == recipe &&
                 held->mask.scale == resolution)
                 result.reused = &held->mask;
-            if (wasValid && page.tiles[i] == tiles[i] && tiles[i].discovered && !recipe.uniform())
+            if (wasValid && page.tiles[i] == tiles[i] && !page.stale[i] && tiles[i].discovered && !recipe.uniform())
                 result.refresh = cellRefresh(recipe, materialChanged, page.surfTime, compositor);
             std::array<TerrainVisual::MaterialId, 4> palette;
             const unsigned paletteCount = recipe.palette(palette);
@@ -973,7 +1009,9 @@ SoftwareTerrainCache::AnimatedTiles *SoftwareTerrainCache::animatedTile(TerrainV
     const unsigned variant = compositor.catalog().variantIndex(id, recipe.x, recipe.y, recipe.seed);
     const int cx = int(variant) % set.columns * cell, cy = int(variant) / set.columns * cell;
     source = {cx + 1, cy + 1, n, n};
-    const auto revision = compositor.textureRevision(id) + 1;
+    // The phase the view shows, or the live one when pages compose at it.
+    const auto *shown = shownPhase.materials && id < shownPhase.revisions.size() ? shownPhase.materials.get() : nullptr;
+    const auto revision = (shown ? shownPhase.revisions[id] : compositor.textureRevision(id)) + 1;
     if (set.revisions[variant] != revision)
     {
         // A uniform, uncalmed cell's pixels depend only on its material and variant.
@@ -983,8 +1021,19 @@ SoftwareTerrainCache::AnimatedTiles *SoftwareTerrainCache::animatedTile(TerrainV
             std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> native(
                 SDL_CreateSurface(NativeTilePixels, NativeTilePixels, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
             if (!native) throw std::bad_alloc();
-            compositor.compose(recipe, native.get(), 0, 0, 1);
+            if (shown) shown->compose(recipe, native.get(), 1);
+            else compositor.compose(recipe, native.get(), 0, 0, 1);
             reduceTile(native.get(), atlas, source.x, source.y, reduction);
+        }
+        else if (shown)
+        {
+            // The tile's rectangle of the atlas, as a surface of its own.
+            SDL_Surface tile{};
+            tile.format = SDL_PIXELFORMAT_ARGB8888;
+            tile.w = tile.h = n;
+            tile.pitch = atlas->pitch;
+            tile.pixels = static_cast<Uint8 *>(atlas->pixels) + source.y * atlas->pitch + source.x * 4;
+            shown->compose(recipe, &tile, scale);
         }
         else
             compositor.compose(recipe, atlas, source.x, source.y, scale);
@@ -1337,52 +1386,16 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 			std::stable_partition(pending.begin(), pending.end(), [](const auto &page) { return !page->ahead; });
 			std::erase_if(pending, [&](const std::shared_ptr<TerrainPendingPage> &page)
 			{
-				if (!page->done() || installs >= 16)
+				// Animation rounds stage their refreshes below, after the view's pages.
+				if (page->round || !page->done() || installs >= 16)
 					return false;
 				const std::size_t side = std::size_t(ChunkPixels) * page->scale / page->downsample;
-				const std::size_t bytes = page->refresh
-					? page->results.size() * (side / ChunkTiles) * (side / ChunkTiles) * 4
-					: side * side * 4;
+				const std::size_t bytes = side * side * 4;
 				if (installs && installBytes + bytes > InstallBytesPerFrame)
 					return false;
 				installBytes += bytes;
 				if (page->failed || page->seed != map.terrainSeed())
 					return true;
-				if (page->refresh)
-				{
-					Chunk *target = nullptr;
-					for (auto &chunk : chunks)
-						if (chunk->x == page->x && chunk->y == page->y && chunk->scale == page->scale &&
-							chunk->downsample == page->downsample)
-							target = chunk.get();
-					if (!target || !target->valid || target->tiles != page->tiles)
-						return true;
-					auto *pixels = target->image ? target->image->getSDLSurface() : target->parked.get();
-					if (!pixels)
-						return true;
-					const int n = 32 * page->scale / page->downsample;
-					std::array<bool, ChunkTiles * ChunkTiles> dirty{};
-					for (auto &result : page->results)
-					{
-						const int i = int(result.index);
-						for (int row = 0; row < n; ++row)
-							std::memcpy(static_cast<Uint8 *>(pixels->pixels) + (i / ChunkTiles * n + row) * pixels->pitch +
-											i % ChunkTiles * n * 4,
-										result.pixels + std::size_t(row) * n * 4, std::size_t(n) * 4);
-						target->opaque[i] = result.opaque;
-						target->empty[i] = result.empty;
-						dirty[i] = true;
-						auto &held = target->masks[i];
-						if (!held && result.mask && releaseMasks(result.mask->bytes()))
-							held = std::make_unique<HeldMask>(std::move(*result.mask), maskTotal);
-					}
-					target->materialRevisions = std::move(page->materialRevisions);
-					target->surfTime = page->materials->surfTime;
-					if (target->image)
-						target->image->markPixelsChanged(dirtyRects(dirty, n));
-					++installs;
-					return true;
-				}
 				if (!page->pixels)
 					return true;
 				Chunk *existing = nullptr;
@@ -1483,20 +1496,27 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					ready = false; // Keep asking for every missing sheet.
 			return ready;
 		};
-		const auto launchRefresh = [&](Chunk &entry, const std::array<Tile, ChunkTiles * ChunkTiles> &tiles) -> std::size_t
+		// Brings a valid page to an animation round's phase: workers compose its
+		// changed cells that the view shows from the round's snapshot. Cells out
+		// of view become stale instead, until the view shows them.
+		const auto launchRefresh = [&](Chunk &entry, const std::array<Tile, ChunkTiles * ChunkTiles> &tiles,
+									   const AnimationPhase &phase, const std::array<bool, ChunkTiles * ChunkTiles> &shown,
+									   std::size_t &units)
 		{
+			units = 1;
 			// Keep the page's pixels until its sheets are back.
 			if (!sheetsReady(tiles))
-				return std::size_t(1);
+				return;
+			const unsigned now = phase.materials->surfTime;
 			const auto materialChanged = [&](TerrainVisual::MaterialId id)
 			{
 				const auto previous = std::find_if(entry.materialRevisions.begin(), entry.materialRevisions.end(),
 					[id](const auto &revision) { return revision.first == id; });
-				return previous == entry.materialRevisions.end() ||
-					compositor.textureRevision(id) != previous->second;
+				return previous == entry.materialRevisions.end() || phase.revisions[id] != previous->second;
 			};
 			auto page = std::make_shared<TerrainPendingPage>();
 			page->refresh = true;
+			page->round = true;
 			page->x = entry.x;
 			page->y = entry.y;
 			page->scale = entry.scale;
@@ -1505,16 +1525,37 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 			page->terrainRevision = entry.recipeTerrainRevision;
 			page->tiles = tiles;
 			const int n = 32 * entry.scale / entry.downsample;
+			// Whether an overlay cell touches a cell drawn from the page: linear
+			// sampling of that cell's edge reads this cell's page pixels.
+			const auto bordersPage = [&](unsigned i)
+			{
+				const int x = int(i % ChunkTiles), y = int(i / ChunkTiles);
+				for (int dy = -1; dy <= 1; ++dy)
+					for (int dx = -1; dx <= 1; ++dx)
+					{
+						const int nx = x + dx, ny = y + dy;
+						if (nx >= 0 && ny >= 0 && nx < ChunkTiles && ny < ChunkTiles &&
+							tiles[ny * ChunkTiles + nx].discovered && !entry.overlay[ny * ChunkTiles + nx])
+							return true;
+					}
+				return false;
+			};
 			std::vector<unsigned> changed;
 			for (unsigned i = 0; i < tiles.size(); ++i)
 			{
 				const auto &tile = tiles[i];
-				// Overlay cells draw from the shared animated tiles instead.
-				if (!tile.discovered || entry.overlay[i])
+				// Overlay cells draw from the shared animated tiles instead, but
+				// the page keeps those beside its own cells at the same phase.
+				if (!tile.discovered || (entry.overlay[i] && !bordersPage(i)))
 					continue;
-				if (std::any_of(tile.recipe.corners.begin(), tile.recipe.corners.end(), materialChanged) ||
-					tileSurfChanged(tile.recipe, entry.surfTime, compositor))
-					changed.push_back(i);
+				if (entry.stale[i] || std::any_of(tile.recipe.corners.begin(), tile.recipe.corners.end(), materialChanged) ||
+					tileSurfChanged(tile.recipe, entry.surfTime, compositor, now))
+				{
+					if (shown[i])
+						changed.push_back(i);
+					else
+						page->skipped[i] = true;
+				}
 			}
 			// Revisions as of this snapshot; a later step queues another refresh.
 			for (const auto &tile : tiles)
@@ -1525,16 +1566,19 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				for (unsigned k = 0, count = tile.recipe.palette(palette); k < count; ++k)
 					if (std::none_of(page->materialRevisions.begin(), page->materialRevisions.end(),
 									 [&](const auto &revision) { return revision.first == palette[k]; }))
-						page->materialRevisions.emplace_back(palette[k], compositor.textureRevision(palette[k]));
+						page->materialRevisions.emplace_back(palette[k], phase.revisions[palette[k]]);
 			}
 			if (changed.empty())
 			{
-				// Only overlay cells moved on; the page pixels are still current.
+				// Only overlay cells, or cells out of view, moved on.
 				entry.materialRevisions = std::move(page->materialRevisions);
-				entry.surfTime = compositor.surfTime();
-				return std::size_t(1);
+				entry.surfTime = now;
+				for (unsigned i = 0; i < tiles.size(); ++i)
+					entry.stale[i] = entry.stale[i] || page->skipped[i];
+				return;
 			}
-			page->materials = frameMaterials();
+			page->materials = phase.materials;
+			materialsUsed = frame;
 			page->cellPixels.resize(changed.size() * std::size_t(n) * n);
 			page->pitch = n * 4;
 			page->results.reserve(changed.size());
@@ -1560,8 +1604,9 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 			page->remaining.store(page->jobs, std::memory_order_relaxed);
 			page->wanted = frame;
 			pending.push_back(page);
+			round->pages.push_back(page);
 			submitPage(page);
-			return changed.size();
+			units = changed.size();
 		};
 		const auto launch = [&](int wx, int wy, const std::array<Tile, ChunkTiles * ChunkTiles> &tiles,
 								const std::array<Uint32, SourceSpan * SourceSpan> &sources,
@@ -1660,7 +1705,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 		const auto roomFor = [&](std::size_t bytes) { return pending.empty() || pendingBytes() + bytes <= PendingBytes; };
 		const std::size_t pageBytes = std::size_t(ChunkPixels * resolution / downsample) * (ChunkPixels * resolution / downsample) * 4;
 		const auto refreshesPending = [&]
-		{ return std::size_t(std::count_if(pending.begin(), pending.end(), [](const auto &page) { return page->refresh; })); };
+		{ return std::size_t(std::count_if(pending.begin(), pending.end(), [](const auto &page) { return page->refresh && !page->done(); })); };
 		// Pages composing ahead of the camera take no slot from visible work.
 		const auto visiblePending = [&]
 		{ return std::size_t(std::count_if(pending.begin(), pending.end(), [](const auto &page) { return !page->ahead; })); };
@@ -1940,18 +1985,11 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							native->used = frame;
 							break;
 						}
-				// An animation step of a valid page: workers recompose its changed
-				// cells while the view keeps drawing the current pixels.
+				// An animation step of a valid page: the animation round below
+				// recomposes its changed cells while the view keeps drawing the
+				// shown phase.
 				if (deferring && entry && entry->valid && entry->cpuComposed && artChanged && entry->tiles == tiles)
 				{
-					// Missing pages come first: animation would otherwise keep every
-					// slot busy and leave pages away from the centre unbuilt.
-					if (auto *queued = pendingFor(entry->scale, entry->downsample))
-						queued->wanted = frame;
-					else if (!coldBacklog && launchUnits < LaunchUnitsPerFrame && launchTimeLeft() &&
-							 refreshesPending() < pendingLimit / 2 && visiblePending() < pendingLimit &&
-							 roomFor(pageBytes / 4))
-						timed([&] { launchUnits += launchRefresh(*entry, tiles); });
 					stampDiscovery(*entry);
 					entry->discoveryStamped = true;
 					entry->used = frame;
@@ -2045,7 +2083,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 								animatedTile(compositor, tiles[i].recipe, tileSource, resolution, downsample);
 							if (wasValid && overlay && entry->overlay[i] && entry->tiles[i] == tiles[i])
 								continue;
-							if (wasValid && entry->tiles[i] == tiles[i] &&
+							if (wasValid && entry->tiles[i] == tiles[i] && !entry->stale[i] &&
 								(!tiles[i].discovered ||
 								 std::none_of(tiles[i].recipe.corners.begin(),
 											  tiles[i].recipe.corners.end(), materialChanged) &&
@@ -2108,7 +2146,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 								{
 									// The page already holds this cell's previous composition.
 									std::optional<TerrainVisual::Compositor::Refresh> refresh;
-									if (wasValid && entry->tiles[i] == tiles[i] && cellMask)
+									if (wasValid && entry->tiles[i] == tiles[i] && !entry->stale[i] && cellMask)
 									{
 										refresh = cellRefresh(recipe, materialChanged, entry->surfTime, compositor);
 										// An animation step visits only the samples it can change.
@@ -2144,6 +2182,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					stampDiscovery(*entry);
 					entry->discoveryStamped = true;
 					entry->materialRevisions.clear();
+					entry->stale = {};
 					entry->surfTime = compositor.surfTime();
 					entry->hasShoreline = false;
 					for (const auto &tile : tiles)
@@ -2175,6 +2214,158 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				if (native) native->used = nativeUsed;
 				copies.push_back({entry, (cx * ChunkTiles - vx) * 32, (cy * ChunkTiles - vy) * 32});
 			}
+		// Animation rounds (see shownPhase), over the pages this frame draws, each
+		// once: the view's own, stand-ins and pages fading in over them.
+		if (deferring)
+		{
+			std::vector<Chunk *> drawn;
+			// The cells of each drawn page the view shows, with a margin of one
+			// cell for the camera's next step.
+			std::vector<std::array<bool, ChunkTiles * ChunkTiles>> shownCells;
+			for (const auto &copy : copies)
+			{
+				Chunk *page = copy.chunk;
+				// A page drawn from its texture alone has no pixels to refresh; a
+				// change of its content composes it again.
+				if (!page->valid || !page->cpuComposed || (page->image && page->image->portableReleased()))
+					continue;
+				auto found = std::find(drawn.begin(), drawn.end(), page);
+				if (found == drawn.end())
+				{
+					drawn.push_back(page);
+					shownCells.emplace_back();
+					found = drawn.end() - 1;
+				}
+				auto &shown = shownCells[std::size_t(found - drawn.begin())];
+				const int x0 = std::max(0, left - copy.x / 32 - 1), x1 = std::min(ChunkTiles - 1, right - copy.x / 32 + 1);
+				const int y0 = std::max(0, top - copy.y / 32 - 1), y1 = std::min(ChunkTiles - 1, bottom - copy.y / 32 + 1);
+				for (int y = y0; y <= y1; ++y)
+					for (int x = x0; x <= x1; ++x)
+						shown[y * ChunkTiles + x] = true;
+			}
+			// Whether a page shows another phase than these revisions and surf
+			// time: its pixels hold another, or cells it shows went stale.
+			const auto behind = [&](std::size_t k, const std::vector<std::uint64_t> &revisions, unsigned now)
+			{
+				const Chunk &page = *drawn[k];
+				for (int i = 0; i < ChunkTiles * ChunkTiles; ++i)
+					if (page.stale[i] && shownCells[k][i])
+						return true;
+				return std::any_of(page.materialRevisions.begin(), page.materialRevisions.end(), [&](const auto &revision)
+				{
+					return revisions[revision.first] != revision.second ||
+						(page.hasShoreline && surfStepChanged(revision.first, page.surfTime, compositor, now));
+				});
+			};
+			// A round that settles lets the next one launch in the same frame,
+			// unless its uploads were large: views with many animated page cells
+			// then step every other frame rather than upload every frame.
+			constexpr std::size_t RoundPipelineBytes = 8u * 1024 * 1024;
+			for (int pass = 0; pass < 2; ++pass)
+			{
+				if (!round)
+				{
+					std::vector<std::uint64_t> live(compositor.catalog().materials.size());
+					for (std::size_t id = 0; id < live.size(); ++id)
+						live[id] = compositor.textureRevision(TerrainVisual::MaterialId(id));
+					bool any = false;
+					for (std::size_t k = 0; k < drawn.size() && !any; ++k)
+						any = behind(k, live, compositor.surfTime());
+					if (any)
+						round = AnimationRound{{frameMaterials(), std::move(live)}, {}};
+				}
+				if (round)
+				{
+					const auto &phase = round->phase;
+					// Finished refreshes write their cells into the page pixels; the
+					// page's texture keeps the shown phase until the round publishes.
+					const auto stage = [&](TerrainPendingPage &page)
+					{
+						if (page.failed || page.seed != map.terrainSeed())
+							return;
+						Chunk *target = nullptr;
+						for (auto &chunk : chunks)
+							if (chunk->x == page.x && chunk->y == page.y && chunk->scale == page.scale &&
+								chunk->downsample == page.downsample)
+								target = chunk.get();
+						if (!target || !target->valid || target->tiles != page.tiles)
+							return;
+						auto *pixels = target->image ? target->image->getSDLSurface() : target->parked.get();
+						if (!pixels)
+							return;
+						const int n = 32 * page.scale / page.downsample;
+						for (auto &result : page.results)
+						{
+							const int i = int(result.index);
+							for (int row = 0; row < n; ++row)
+								std::memcpy(static_cast<Uint8 *>(pixels->pixels) + (i / ChunkTiles * n + row) * pixels->pitch +
+												i % ChunkTiles * n * 4,
+											result.pixels + std::size_t(row) * n * 4, std::size_t(n) * 4);
+							target->opaque[i] = result.opaque;
+							target->empty[i] = result.empty;
+							target->staged[i] = true;
+							target->stale[i] = false;
+							auto &held = target->masks[i];
+							if (!held && result.mask && releaseMasks(result.mask->bytes()))
+								held = std::make_unique<HeldMask>(std::move(*result.mask), maskTotal);
+						}
+						target->hasStaged = true;
+						for (int i = 0; i < ChunkTiles * ChunkTiles; ++i)
+							target->stale[i] = target->stale[i] || page.skipped[i];
+						target->materialRevisions = std::move(page.materialRevisions);
+						target->surfTime = page.materials->surfTime;
+					};
+					std::erase_if(round->pages, [&](const std::shared_ptr<TerrainPendingPage> &page)
+					{
+						if (page->cancelled.load(std::memory_order_relaxed))
+							return true;
+						if (!page->done())
+							return false;
+						stage(*page);
+						std::erase(pending, page);
+						return true;
+					});
+					for (std::size_t k = 0; k < drawn.size(); ++k)
+					{
+						Chunk *page = drawn[k];
+						if (!behind(k, phase.revisions, phase.materials->surfTime))
+							continue;
+						bool queued = false;
+						for (auto &refresh : round->pages)
+							if (refresh->x == page->x && refresh->y == page->y && refresh->scale == page->scale &&
+								refresh->downsample == page->downsample)
+							{
+								refresh->wanted = frame;
+								queued = true;
+							}
+						// Missing pages come first: animation would otherwise keep every
+						// slot busy and leave pages away from the centre unbuilt. The
+						// round then waits, and the view keeps showing one phase.
+						if (queued || coldBacklog || launchUnits >= LaunchUnitsPerFrame || !launchTimeLeft() ||
+							refreshesPending() >= pendingLimit / 2 || !roomFor(pageBytes / 4))
+							continue;
+						std::size_t units = 0;
+						timed([&] { launchRefresh(*page, page->tiles, phase, shownCells[k], units); });
+						launchUnits += units;
+					}
+					// No drawn page waits for this phase: every staged cell and the
+					// overlay tiles change to it in this frame. A page whose sheets are
+					// loading keeps its pixels rather than holding every other page.
+					bool settled = round->pages.empty();
+					for (std::size_t k = 0; k < drawn.size() && settled; ++k)
+						settled = !behind(k, phase.revisions, phase.materials->surfTime) || !sheetsReady(drawn[k]->tiles);
+					if (!settled)
+						break;
+					const std::size_t published = publishStaged();
+					shownPhase = std::move(round->phase);
+					round.reset();
+					// A large step's uploads take this frame; the next round
+					// launches in the next one.
+					if (published > RoundPipelineBytes)
+						break;
+				}
+			}
+		}
 		coldBacklog = waiting;
 		// Pages around the view and ahead of the camera (`around`) compose in
 		// advance, at worker priority behind visible work, once every visible
@@ -2279,6 +2470,21 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 			page->cancelled.store(true, std::memory_order_relaxed);
 			return true;
 		});
+		// Compose the overlay tiles the view's cells use now, so each atlas
+		// uploads once rather than again for every variant the draw meets.
+		for (const auto &copy : copies)
+		{
+			const int x0 = std::max(0, left - copy.x / 32), x1 = std::min(ChunkTiles - 1, right - copy.x / 32);
+			const int y0 = std::max(0, top - copy.y / 32), y1 = std::min(ChunkTiles - 1, bottom - copy.y / 32);
+			for (int y = y0; y <= y1; ++y)
+				for (int x = x0; x <= x1; ++x)
+					if (copy.chunk->overlay[y * ChunkTiles + x])
+					{
+						SDL_Rect source;
+						animatedTile(compositor, copy.chunk->tiles[y * ChunkTiles + x].recipe, source,
+									 copy.chunk->scale, copy.chunk->downsample);
+					}
+		}
 		for (auto &[key, set] : animatedTiles)
 			if (set.changed)
 			{
@@ -2434,7 +2640,7 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 				// Native pages stay readable for reductions; others keep their
 				// pixels only while animation writes them.
 				if (deferBuilds && !(copy.chunk->scale == 1 && copy.chunk->downsample == 1) &&
-					copy.chunk->image->hasPixels() && overlayCompositor &&
+					copy.chunk->image->hasPixels() && overlayCompositor && !copy.chunk->hasStaged &&
 					!needsPagePixels(*copy.chunk, *overlayCompositor))
 					copy.chunk->image->releasePortablePixels();
 				// Uniform animated cells over the page, from their shared tiles.

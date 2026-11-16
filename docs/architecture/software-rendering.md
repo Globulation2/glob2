@@ -97,7 +97,24 @@ the page's last draw used, and a texture it cannot patch in place (a missed revi
 or a changed size) waits for its next draw to upload whole. On native device pages (no HD scale or
 reduction) uniform cells of an animated opaque material draw from one shared tile
 per variant over their page, which keeps an earlier frame underneath, so open water
-recomposes and uploads one small atlas per step. Composition at native scale reads
+recomposes and uploads one small atlas per step; the page keeps the cells beside
+its own cells current, because linear sampling at their edge reads them.
+
+While pages build on background workers, the view shows one animation phase
+everywhere (`SoftwareTerrainCache::shownPhase`): the shared tiles compose from
+that phase's material snapshot, not the live compositor. An animation round
+takes the next phase's snapshot and has the workers recompose every drawn page's
+changed cells that the view shows, with a margin of one cell, stand-ins included.
+Finished cells are written into the page pixels but not uploaded. Once no drawn page
+waits for the phase, every staged cell uploads and the shared tiles change, in the
+same frame, and the next round launches. A round publishing more than 8 MiB lets the
+next round launch in the following frame. Cells left out of view become stale and
+are recomposed when the view reaches them. A page whose sheets are still loading
+keeps its pixels instead of holding the round. A page arriving from a cold build
+carries the phase it was launched with until the next round reaches it. The shared
+tiles the view uses compose during preparation, so each atlas uploads once a frame.
+
+Composition at native scale reads
 HD sources through compact per-variant copies of the texels it samples. All of
 these produce the same page pixels as composing every cell again. Drawn output is
 identical too except where the shared water tiles are sampled linearly (zoomed out on
