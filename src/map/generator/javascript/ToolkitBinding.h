@@ -16,7 +16,8 @@ class Building;
 #include <memory>
 #include <optional>
 #include <typeindex>
-#include <unordered_map>
+#include <algorithm>
+#include <list>
 #include <type_traits>
 #include <tuple>
 #include <span>
@@ -151,10 +152,12 @@ class Binding
 	std::set<NativeBox *> boxes;
 	std::deque<std::string> strings;
 	std::map<std::string, JSValue> cachedDesigns;
-	// Hashed, not ordered: libstdc++ without merged typeinfo names (MinGW) orders
-	// anonymous-namespace types by name address and others by strcmp, which is not
-	// a strict weak order, so a std::map could take a Layout for a Torus.
-	std::unordered_map<std::type_index, JSValue> prototypes;
+	// Searched with type_info ==, never ordered or hashed. Without merged typeinfo
+	// names (MinGW), libstdc++ orders anonymous-namespace types by name address and
+	// others by strcmp, which is not a strict weak order (a std::map took a Layout
+	// for a Torus); hashing pulls platform math (ceilf) into this simulation-path
+	// code under libc++. A list keeps `handle`'s iterator valid while attach adds.
+	std::list<std::pair<std::type_index, JSValue>> prototypes;
 	struct Operation
 	{
 		using Call = std::function<JSValue(JSValueConst, int, JSValueConst *)>;
@@ -304,7 +307,11 @@ class Binding
 		if (!owner && !alive && !leases.empty())
 			alive = leases.back();
 		// Reserve the cache slot before creating its owned QuickJS value.
-		auto [found, inserted] = prototypes.emplace(typeid(U), JS_UNDEFINED);
+		auto found = std::find_if(prototypes.begin(), prototypes.end(),
+								  [](const auto &entry) { return entry.first == typeid(U); });
+		const bool inserted = found == prototypes.end();
+		if (inserted)
+			found = prototypes.emplace(prototypes.end(), typeid(U), JS_UNDEFINED);
 		if (inserted)
 		{
 			auto prototype = JS_NewObject(ctx);

@@ -21,8 +21,10 @@ Two libstdc++ traps surfaced under MinGW release LTO. `std::regex` compiles a co
 repeat such as `[0-9a-f]{64}` into that many copies and recurses once per copy, which can
 overflow Windows' 2 MiB main stack; check fixed-shape identifiers with
 `libs/gag/include/TextShape.h` instead. Without merged typeinfo names, `std::type_index`
-ordering is not a strict weak order between anonymous-namespace and other types, so key
-type tables with `std::unordered_map`, never `std::map` or `std::set`.
+ordering is not a strict weak order between anonymous-namespace and other types, so never
+key a `std::map` or `std::set` by it; search small type tables with `==`. In simulation
+code avoid `std::unordered_map` too: libc++ rehashing calls `ceilf`, which the numeric
+guard rejects.
 
 For unused-include cleanup, generate `compile_commands.json` and use
 `tools/remove-unused-includes.py`; do not apply blind bulk fixes. Rebuild client,
