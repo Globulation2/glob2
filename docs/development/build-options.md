@@ -389,8 +389,17 @@ DESTDIR="$stage" cmake --install build/linux/client/release/lean-images
 
 The build generates shader layouts and GLSL variants from
 `libs/gag/shaders/renderer-manifest.json` and the authoritative material sources.
-`GLOB2_GLSLANG` can point to pinned glslang 15.1.0 for offline Vulkan SPIR-V generation;
-without the platform’s offline binaries the experimental SDL GPU family is unavailable.
+Offline Vulkan SPIR-V needs pinned glslang 15.1.0. Local `tools/dev_build.py` builds
+provision it once (`python3 buildsys/glslang_tool.py` does the same by hand): the
+compiler is built from the SHA-256-pinned source archive in `buildsys/glslang.json`
+into the shared development store (`build/mobile-tools/` in isolated mode) and the
+shader step uses it from then on, regenerating an existing build's shaders.
+`GLOB2_GLSLANG` overrides the provisioned compiler and an empty value disables
+SPIR-V; CI jobs and browser builds keep their explicit configuration. glslang is a
+development dependency: nothing at runtime links or ships it. Android packaging
+requires the complete Vulkan set and iOS device packaging the Metal set (see the
+mobile guides); without the platform’s offline binaries the experimental SDL GPU
+family is unavailable.
 `GLOB2_NAGA` selects pinned Naga 27.0.0 for browser WGSL. Optional
 `GLOB2_SPIRV_CROSS` and `GLOB2_DXC` select the pinned build-only native translators
 described in the rendering guide; together with glslang they produce Direct3D 12
