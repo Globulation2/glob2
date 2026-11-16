@@ -324,6 +324,7 @@ struct DirectTerrain::State
     std::vector<Uint8> visibility;
     Uint32 discoveryTeams = 0;
     Uint64 discoveryRevision = 0;
+    std::vector<Uint64> discoveryStamps; // The map's discovery sector stamps last applied.
     DirectTerrain::DiscoveryMetrics discoveryStats;
 
     bool matchesMap(const SceneMap &map) const
@@ -994,24 +995,56 @@ struct DirectTerrain::State
         const auto revision = map.discoveryRevision();
         if (revision && discoveryTeams == teams && discoveryRevision == revision)
             return;
+        // Discovery only grows within the sectors whose stamps moved: revisit
+        // those (and the cells a sector's edge reaches) rather than the map.
+        constexpr int Sector = 16;
+        const auto stamps = map.discoveryStamps();
+        const int sectorsWide = (width + Sector - 1) / Sector, sectorsHigh = (height + Sector - 1) / Sector;
+        const bool whole = discoveryTeams != teams || !revision || stamps.size() != std::size_t(sectorsWide) * sectorsHigh ||
+            discoveryStamps.size() != stamps.size();
         discoveryRevision = revision;
         discoveryTeams = teams;
-        discoveryStats.rebuilt += visibility.size();
         bool changed = false;
-        for (int y = 0; y < height; ++y)
-            for (int x = 0; x < width; ++x)
+        int firstRow = height, lastRow = -1;
+        const auto refresh = [&](int x, int y)
+        {
+            auto &pixel = visibility[map.coordToIndex(x, y)];
+            const Uint8 value = map.isMapPartiallyDiscovered(x - 1, y - 1, x + 1, y + 1, teams) ? 255 : 0;
+            ++discoveryStats.rebuilt;
+            if (value == pixel) return;
+            pixel = value;
+            changed = true;
+            const int row = (y % height + height) % height;
+            firstRow = std::min(firstRow, row);
+            lastRow = std::max(lastRow, row);
+        };
+        if (whole)
+        {
+            for (int y = 0; y < height; ++y)
+                for (int x = 0; x < width; ++x)
+                    refresh(x, y);
+            discoveryStamps.assign(stamps.begin(), stamps.end());
+        }
+        else
+            for (std::size_t sector = 0; sector < stamps.size(); ++sector)
             {
-                auto &pixel = visibility[map.coordToIndex(x, y)];
-                const Uint8 value = map.isMapPartiallyDiscovered(x - 1, y - 1, x + 1, y + 1, teams) ? 255 : 0;
-                changed |= value != pixel;
-                pixel = value;
+                if (stamps[sector] == discoveryStamps[sector]) continue;
+                discoveryStamps[sector] = stamps[sector];
+                const int sx = int(sector % sectorsWide) * Sector, sy = int(sector / sectorsWide) * Sector;
+                // A cell shows when any of its eight neighbours is discovered.
+                for (int y = sy - 1; y <= std::min(sy + Sector, height); ++y)
+                    for (int x = sx - 1; x <= std::min(sx + Sector, width); ++x)
+                        refresh((x + width) % width, (y + height) % height);
             }
         if (!changed) return;
         if (resources && !streaming)
             uploadDeviceVisibility();
         else
         {
-            write(textures[Discovery], Discovery, 0, 0, width, height, visibility.data());
+            // Whole rows (the packed texture's unit), only those that changed;
+            // a wrap from the last row to the first rewrites the whole map.
+            write(textures[Discovery], Discovery, 0, firstRow, width, lastRow - firstRow + 1,
+                  visibility.data() + std::size_t(firstRow) * width);
             if (glFailed())
                 throw std::runtime_error("Direct terrain discovery upload failed");
         }
