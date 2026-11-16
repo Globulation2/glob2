@@ -74,6 +74,9 @@ class Compositor
     void declareVisible(int time, const SceneMap &, int left, int top, int right, int bottom, bool frames);
 	Recipe describe(const SceneMap &, int x, int y) const;
 	Recipe describeOverview(const SceneMap &, int x, int y) const;
+	// The colour the overview draws a vertex of this terrain with: a saved
+	// custom terrain's own overview colour, or its material's preview.
+	std::array<unsigned char, 3> overviewColor(const SceneMap &, TerrainType) const;
 	// Coverage of one mixed cell at one sampling scale. It depends on the cell's
 	// geometry, never on the animation phase, so a page can keep it and re-blend
 	// only the textures when an animated material changes phase.

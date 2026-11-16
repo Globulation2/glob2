@@ -105,6 +105,18 @@ variants, coverage and shoreline effects. The page renderer handles HD artwork o
 the other backends, backends without direct terrain, tiled captures outside legacy
 OpenGL, and the browser's WebGL2 renderer (legacy OpenGL through Emscripten's WebGL2
 bridge), where pages draw native artwork until the view's HD families arrive.
+Interactive page and overview views never compose on the graphics thread and
+never block on it: until wanted terrain arrives they draw the best real terrain
+they have, in painter order beneath it: the same page at another density, then
+the overview limited to the missing pages, then the overview's whole-map base,
+which a worker composes as the map loads, so no transparent or flat patch shows.
+Pages and overview pages that arrive over a fallback fade in over 150 ms with
+presentation-only alpha on their ordinary draw. Pages and overview cells ahead of
+the camera compose on the workers' lower priority lane. Each frame's
+`TerrainFallbackMetrics` (in `MapRenderState`) counts the visible cells drawn
+from each fallback; `tools/rendering/fallback_scenario.py` reports them for a
+scripted game of jumps, pans and zooms, see
+[terrain rendering](../assets/terrain-rendering.md).
 Fully revealed resources use canonical map rows, with sorted source-tile indices
 selecting the contiguous visible vertex range. Translation places a canonical row
 at its wrapped-map position, so camera panning does not change its vertices.

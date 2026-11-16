@@ -255,6 +255,33 @@ diagnostic immediate path is not an untouched-master baseline.
 
 See [skin rendering](skin-rendering.md) for production sprite export and skin preview diagnostics.
 
+## Terrain fallbacks
+
+`tools/rendering/fallback_scenario.py` measures how much terrain the view draws
+from fallbacks while terrain composes in the background. It loads the memory
+scenario's save (or `--save` another, such as a short game on a 512 by 512
+map, whose overview the cache cannot hold whole) in
+`torus-render-benchmark` with `GLOB2_BENCH_CAMERA_SCRIPT=fallback`: from the
+first frame of the game, cycles of eight seconds at 60 frames a second, each
+starting with a jump to a far place (as a minimap click), then a hold, a pan at
+fifteen tiles a second, six wheel steps out towards the overview, a hold, six
+steps back and a hold. Each frame prints `FRAME_FALLBACK` with the visible cells
+by source (`TerrainFallbackMetrics`): pages drawn from another density, missing
+pages over the overview backdrop, pages fading in, and overview cells drawn from
+the other density, the whole-map base, or nothing (transparent). The runner
+prints the frames and share of visible cells per source and, for each kind of
+camera event, the median and longest time until a frame shows no fallback, and
+how often the next event came first.
+
+```sh
+python3 tools/dev_build.py perf=1 torus-render-benchmark
+python3 tools/rendering/fallback_scenario.py --label master --renderer portable-sdl
+python3 tools/rendering/fallback_scenario.py --label change --renderer portable-sdl --compare master
+```
+
+`--workers N` measures a phone-class worker count, `--hd` switches HD terrain on
+after about a second, and results go to `artifacts/render-fallback/<label>/`.
+
 ## Renderer memory
 
 `tools/rendering/memory_scenario.py` runs the standard memory scenario and reports

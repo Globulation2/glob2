@@ -152,6 +152,8 @@ Uint64 SceneMap::discoveryRevision() const { return snapshot->visibility->discov
 
 TerrainType SceneMap::vertexTerrainAt(int x, int y) const
 { return (*snapshot->terrain->vertices)[coordToIndex(x,y)]; }
+std::shared_ptr<const std::vector<TerrainType>> SceneMap::vertexStorage() const
+{ return snapshot && snapshot->terrain ? snapshot->terrain->vertices : nullptr; }
 TerrainType SceneMap::terrainTypeAt(int x, int y) const
 { const auto c = cellCorners(x, y); return c[0] == c[1] && c[0] == c[2] && c[0] == c[3] ? c[0] : MIXED_TERRAIN; }
 const TerrainProperties& SceneMap::terrainPropertiesAt(int x, int y) const

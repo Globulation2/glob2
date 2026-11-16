@@ -1178,6 +1178,53 @@ TEST_SUITE("TerrainPresentation")
 			CHECK(cache.composedCells() - before == 256);
 		}
 	}
+	TEST_CASE("interactive overview draws the whole-map base beneath cells still composing and prewarms around the view [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256});
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .discovered = true});
+		auto &map = fixture.game.map;
+		for (int y = 10; y < 30; ++y)
+			for (int x = 20; x < 44; ++x)
+				map.setVertexTerrain(x, y, WATER);
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		globals->terrainCompositor().prepare(false, 0);
+		auto &gfx = *globals->gfx;
+		OverviewTerrainCache cache;
+		const auto draw = [&](int vx, int vy)
+		{
+			cache.draw(scene, 0, 0, 7, 7, vx, vy, fixture.team->me, true, OverviewTerrainCache::FewSamples, gfx, 255,
+					   false);
+			return cache.drawMetrics();
+		};
+		// The base is composed by a worker as the map loads; once it is ready no
+		// visible cell is ever transparent, whatever is still composing.
+		for (int frame = 0; frame < 2000 && !cache.baseReady(); ++frame)
+		{
+			draw(0, 0);
+			SDL_Delay(1);
+		}
+		REQUIRE(cache.baseReady());
+		for (const auto &[vx, vy] : {std::pair{16, 16}, {40, 8}, {60, 60}})
+		{
+			const auto metrics = draw(vx, vy);
+			CHECK(metrics.cells == 64);
+			CHECK(metrics.holes == 0);
+		}
+		// Prewarming spirals out from the view's centre until it has composed
+		// every page of a map this small.
+		for (int frame = 0; frame < 4000 && cache.composedCells() < 64u * 64u; ++frame)
+		{
+			cache.prewarm(scene, fixture.team->me, true, 33, 47, OverviewTerrainCache::FewSamples);
+			SDL_Delay(1);
+		}
+		CHECK(cache.composedCells() >= 64u * 64u);
+		// Then the view finds every cell composed: nothing falls back.
+		const auto settled = draw(24, 40);
+		CHECK(settled.base == 0);
+		CHECK(settled.other == 0);
+		CHECK(settled.holes == 0);
+	}
 #if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
 
 	TEST_CASE("Legacy GL single pass animates water and shores and hides undiscovered terrain [display]")

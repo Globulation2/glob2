@@ -971,6 +971,15 @@ Recipe Compositor::describeOverview(const SceneMap &map, int x, int y) const
 {
 	return describe(map, x, y, false);
 }
+std::array<unsigned char, 3> Compositor::overviewColor(const SceneMap &map, TerrainType type) const
+{
+	if (unsigned(type) >= TERRAIN_COUNT)
+	{
+		const auto color = map.terrainPresentation(type).overview;
+		return {color.r, color.g, color.b};
+	}
+	return definitions.materials[materialFor(map, type)].preview;
+}
 Recipe Compositor::describe(const SceneMap &map, int x, int y, bool detailed) const
 {
 	auto r = describeCell(map, x, y, detailed);

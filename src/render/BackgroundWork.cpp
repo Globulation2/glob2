@@ -51,12 +51,13 @@ class Pool
 			std::lock_guard lock(mutex);
 			stop = true;
 			tasks.clear();
+			ahead.clear();
 		}
 		wake.notify_all();
 		for (auto &thread : threads)
 			thread.join();
 	}
-	void submit(std::function<void()> task)
+	void submit(std::function<void()> task, BackgroundWork::Priority priority)
 	{
 		if (threads.empty())
 		{
@@ -65,7 +66,10 @@ class Pool
 		}
 		{
 			std::lock_guard lock(mutex);
-			tasks.push_back(std::move(task));
+			if (priority == BackgroundWork::Priority::First)
+				tasks.push_front(std::move(task));
+			else
+				(priority == BackgroundWork::Priority::Visible ? tasks : ahead).push_back(std::move(task));
 		}
 		wake.notify_one();
 	}
@@ -79,11 +83,12 @@ class Pool
 			std::function<void()> task;
 			{
 				std::unique_lock lock(mutex);
-				wake.wait(lock, [&] { return stop || !tasks.empty(); });
+				wake.wait(lock, [&] { return stop || !tasks.empty() || !ahead.empty(); });
 				if (stop)
 					return;
-				task = std::move(tasks.front());
-				tasks.pop_front();
+				auto &queue = tasks.empty() ? ahead : tasks;
+				task = std::move(queue.front());
+				queue.pop_front();
 			}
 			try
 			{
@@ -97,7 +102,7 @@ class Pool
 	}
 	std::mutex mutex;
 	std::condition_variable wake;
-	std::deque<std::function<void()>> tasks;
+	std::deque<std::function<void()>> tasks, ahead;
 	std::vector<std::thread> threads;
 	bool stop = false;
 };
@@ -111,6 +116,6 @@ Pool &pool()
 
 namespace BackgroundWork
 {
-void submit(std::function<void()> task) { pool().submit(std::move(task)); }
+void submit(std::function<void()> task, Priority priority) { pool().submit(std::move(task), priority); }
 unsigned workers() { return pool().workers(); }
 }
