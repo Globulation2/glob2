@@ -37,6 +37,9 @@ struct RenderTelemetry
 {
     std::uint64_t packets = 0, batches = 0, uploadBytes = 0, captureDrops = 0;
     std::size_t resourceBytes = 0;
+    // Released buffers and textures kept for reuse, apart from resourceBytes
+    // and within the total budget beside it.
+    std::size_t idleBytes = 0;
     std::uint64_t cpuSubmitNanoseconds=0,cpuPresentNanoseconds=0,cpuCaptureNanoseconds=0;
     std::uint64_t captureLatencyNanoseconds=0,captureCompletions=0;
     std::uint64_t deferredFrames=0,reusedFrames=0,gpuSkipped=0,gpuInvalid=0;

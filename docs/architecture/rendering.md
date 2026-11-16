@@ -839,11 +839,23 @@ budgets do not imply that all classes fit simultaneously. Torus captures use the
 terrain density when the full tiled layout fits the terrain-target and aggregate
 resource budgets. SDL GPU charges texture and depth allocations once over their
 owned lifetime, including pending submissions and captures, instead of rebuilding
-the complete texture lease set during each admission check. Staging buffers remain
-charged separately until their work completes; upload staging buffers up to 16 MiB
-are then kept for reuse in power-of-two classes (at most 24 MiB idle, uncharged:
-an admission that would fail and an explicit trim release them first), since creating a Vulkan buffer for every frame's vertices and uploads
-cost more CPU than filling it. Explicit trimming releases completed GPU copies that can be
+the complete texture lease set during each admission check. Its bookkeeping is
+constant time per frame: running totals for live textures (per budget class),
+geometry, coverage, retiring work and readbacks; cache admissions since the last
+submission listed apart, so a submitted or failed frame marks or drops only
+those; and dead CPU revisions retired 128 cache entries per call from a cursor
+(all of them only when a budget class is full). Staging buffers remain
+charged separately until their work completes; upload and readback staging buffers
+and each frame's vertex buffer, up to 16 MiB, are then kept for reuse in
+power-of-two classes (at most 24 MiB idle, a tenth of the total budget on phones),
+and released colour textures for an allocation of the same size and format (at
+most 32 MiB, an eighth on phones; every allocation is uploaded, cleared or copied
+whole before it is sampled). Idle memory (`RenderTelemetry::idleBytes`) is kept only
+while it fits beside the resources within the total budget, and an admission that
+would fail and an explicit trim release it first. Creating a Vulkan buffer for
+every frame's vertices, uploads and the benchmark's completion readback, and
+freeing it, cost more CPU in driver calls than filling it; SDL's Vulkan backend
+also submits a command buffer for every texture it creates. Explicit trimming releases completed GPU copies that can be
 restored from logical CPU snapshots, while preserving in-flight work, unfinished
 uploads and externally owned rendered targets. Actual pressure can reduce density,
 rather than a fixed low pixel cap.
