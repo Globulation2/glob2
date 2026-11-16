@@ -285,6 +285,10 @@ jobs:
     needs: preflight
     timeout-minutes: 180
     runs-on: macos-15
+    env:
+      # Compile SDL GPU's Metal libraries only with a toolchain buildsys/metal-tool-lock.json lists, and fail
+      # the build rather than ship an app without them (docs/architecture/rendering.md, "Apple Metal shaders").
+      GLOB2_METAL_REQUIRE_COMMITTED_LOCK: '1'
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
