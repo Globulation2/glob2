@@ -839,7 +839,9 @@ namespace GAGCore
         // HD frames hold four texels for each logical pixel; each band halves that.
         const unsigned wanted = detailSkipFor(density);
         highResolutionSkipChosen = true;
+        const unsigned previousSkip = highResolutionSkip.level();
         if (!highResolutionSkip.update(wanted, GAGCore::steadyClockNanoseconds(), lowerDetailDelay)) return;
+        const bool moreDetail = highResolutionSkip.level() < previousSkip;
         if (!highResolutionEnabled || !highResolutionFramesSupported()) return;
         trimAfterBandReload = true;
         bandReloadQueue.clear();
@@ -850,9 +852,13 @@ namespace GAGCore
             // A reload in flight was prepared for the previous band.
             if (loaded || pendingHighResolution.contains(sprite)) bandReloadQueue.push_back(sprite);
         }
-        // The largest first: the unit sheet holds most of the banded textures.
+        // Zooming in, the smallest first: the unit sheet alone takes seconds,
+        // and buildings, flags and effects queued behind it stayed coarse for
+        // that long while every other renderer already drew them sharp.
+        // Zooming out, the largest first: the unit sheet frees the most.
         std::stable_sort(bandReloadQueue.begin(), bandReloadQueue.end(),
-            [](const Sprite *a, const Sprite *b) { return a->images.size() > b->images.size(); });
+            [moreDetail](const Sprite *a, const Sprite *b) {
+                return moreDetail ? a->images.size() < b->images.size() : a->images.size() > b->images.size(); });
         if (bandReloading && pendingHighResolution.contains(bandReloading)) bandReloadQueue.push_front(bandReloading);
         bandReloading = nullptr;
     }
