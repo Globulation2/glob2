@@ -368,6 +368,17 @@ namespace GAGCore
     bool Sprite::resolveDeviceAtlas(DrawableSurface &surface,SDL_Rect &source,const DrawableSurface *&upload) {
         if(surface.spriteSource!=this || surface.spriteFrame>=images.size() || images[surface.spriteFrame]!=&surface ||
             !Toolkit::gc || !Toolkit::gc->renderDevice() || surface.highResolutionSampling)return false;
+        // Every sprite draw comes here: when the atlas already holds this
+        // frame's current pixels, use it without revisiting every frame. A
+        // changed frame rebuilds the atlas when that frame is drawn.
+        const auto frame=surface.spriteFrame;
+        if(atlas && atlasMemory && atlasStamps.size()==images.size() && atlasRegions.size()==images.size() && surface.sdlsurface &&
+            atlasStamps[frame]==SpriteAtlasStamp{surface.lifetimeIdentity(),surface.contentRevision(),surface.sdlsurface->w,surface.sdlsurface->h} &&
+            std::max(atlas->sdlsurface->w,atlas->sdlsurface->h)<=std::min(2048,Toolkit::gc->renderDevice()->capabilities().maximumTextureSize)) {
+            const auto &region=atlasRegions[frame];
+            if(source.x<0 || source.y<0 || source.w<=0 || source.h<=0 || source.x>region.w-source.w || source.y>region.h-source.h)return false;
+            source.x+=region.x;source.y+=region.y;upload=atlas.get();return true;
+        }
         if(!createDeviceTextureAtlas(Toolkit::gc->renderDevice()->capabilities().maximumTextureSize,atlasVariableSizes))return false;
         const auto &region=atlasRegions[surface.spriteFrame];
         if(source.x<0 || source.y<0 || source.w<=0 || source.h<=0 || source.x>region.w-source.w || source.y>region.h-source.h)return false;
