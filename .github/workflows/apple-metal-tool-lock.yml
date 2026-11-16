@@ -101,6 +101,30 @@ jobs:
           set -euo pipefail
           # shellcheck disable=SC2086
           python3 tools/shaders/metal_tool_lock.py $SDKS --check
+      # A listed toolchain must also compile the whole shader set, as release builds
+      # do: pinned glslang and SPIRV-Cross from verified source, then strict Metal.
+      - name: Compile the Metal shaders with this toolchain
+        env:
+          SDKS: ${{ matrix.sdks }}
+          GLOB2_METAL_REQUIRE_COMMITTED_LOCK: '1'
+        run: |
+          set -euo pipefail
+          python3 -m venv "$RUNNER_TEMP/metal-build-tools"
+          "$RUNNER_TEMP/metal-build-tools/bin/pip" install --quiet ninja==1.11.1.1 cmake==4.4.3
+          export PATH="$RUNNER_TEMP/metal-build-tools/bin:$PATH"
+          for sdk in $(printf '%s\n' $SDKS | grep -v -- --sdk); do
+            python3 - "$sdk" <<'PYTHON'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, 'buildsys')
+          import renderer_shaders
+          sdk = sys.argv[1]
+          target = {'macosx': 'macos', 'iphoneos': 'ios'}[sdk]
+          shaders = renderer_shaders.prepare(Path.cwd(), Path('artifacts/metal-compile') / sdk, apple_sdk=sdk)
+          renderer_shaders.require_sdl_gpu_shaders(shaders, target)
+          print('Compiled the complete Metal set for', sdk)
+          PYTHON
+          done
 
   combine:
     needs: toolchain
