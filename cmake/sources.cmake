@@ -582,6 +582,9 @@ set(GLOB2_CLIENT_SOURCES
     src/map/Sector.cpp
     src/app/Settings.cpp
     src/app/SystemLanguage.cpp
+    src/app/DeviceProfile.cpp
+    src/app/DeviceAdaptation.cpp
+    src/app/DeviceAdaptationSession.cpp
     src/render/torus/TorusView.cpp
     src/render/torus/TorusViewDevice.cpp
     src/render/torus/TorusViewRender.cpp
@@ -1565,6 +1568,9 @@ set(GLOB2_ANDROID_SOURCES
     src/map/Sector.cpp
     src/app/Settings.cpp
     src/app/SystemLanguage.cpp
+    src/app/DeviceProfile.cpp
+    src/app/DeviceAdaptation.cpp
+    src/app/DeviceAdaptationSession.cpp
     src/render/torus/TorusView.cpp
     src/render/torus/TorusViewDevice.cpp
     src/render/torus/TorusViewRender.cpp
@@ -2382,6 +2388,9 @@ set(GLOB2_IOS_SOURCES
     src/map/Sector.cpp
     src/app/Settings.cpp
     src/app/SystemLanguage.cpp
+    src/app/DeviceProfile.cpp
+    src/app/DeviceAdaptation.cpp
+    src/app/DeviceAdaptationSession.cpp
     src/render/torus/TorusView.cpp
     src/render/torus/TorusViewDevice.cpp
     src/render/torus/TorusViewRender.cpp
@@ -3368,6 +3377,9 @@ set(GLOB2_WEB_SOURCES
     src/map/Sector.cpp
     src/app/Settings.cpp
     src/app/SystemLanguage.cpp
+    src/app/DeviceProfile.cpp
+    src/app/DeviceAdaptation.cpp
+    src/app/DeviceAdaptationSession.cpp
     src/render/torus/TorusView.cpp
     src/render/torus/TorusViewDevice.cpp
     src/render/torus/TorusViewRender.cpp

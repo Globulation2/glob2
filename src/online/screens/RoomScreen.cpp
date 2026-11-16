@@ -2,6 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 #include "ui/LibraryText.h"
 #include "RoomScreen.h"
+#include "DeviceProfile.h"
 #include "AINames.h"
 #include "CustomGameOtherOptions.h"
 #include "CustomGameScreen.h"
@@ -741,6 +742,21 @@ Element RoomScreen::seats(const Presentation &p, bool phone)
 	return column(std::move(rows), {p.pt(phone ? 6 : 6)});
 }
 
+Element RoomScreen::largeMapWarning()
+{
+	CustomGameSetup draft;
+	auto *online = dynamic_cast<Online::PlatformRoom *>(room.get());
+	if (!room->setupDraft(draft) || (online && !online->generatedMap()))
+		return nullptr;
+	// The host's map applies to everyone: warn a low-tier device, never change it.
+	const auto &device = DeviceProfile::current();
+	const auto &request = draft.generator;
+	if (device.tier != DeviceTier::Low || request.wDec + request.hDec <= 2 * device.newMapSize().shift)
+		return nullptr;
+	return paragraph(tr("[room large map for device]"),
+					 {FontRole::Support, false, TextAlign::Left, theme().palette.warning});
+}
+
 Element RoomScreen::mapPanel(const Presentation &p, bool phone)
 {
 	std::vector<Element> facts;
@@ -770,6 +786,8 @@ Element RoomScreen::mapPanel(const Presentation &p, bool phone)
 		facts.push_back(field(tr("[room colonies]"), label(std::to_string(draft.capacity))));
 		const auto &request = draft.generator;
 		facts.push_back(field(tr("[room size]"), label(std::to_string(1 << request.wDec) + " × " + std::to_string(1 << request.hDec))));
+		if (auto warning = largeMapWarning())
+			facts.push_back(std::move(warning));
 	}
 	else if (room->teamCount() > 0)
 		facts.push_back(field(tr("[room colonies]"), label(std::to_string(room->teamCount()))));
@@ -996,6 +1014,8 @@ Element RoomScreen::build(const Presentation &p)
 			mapRow.alignLeft = true;
 			mapRow.icon = uiIcon(UIIcon::Map);
 			parts.push_back(button("map/summary", room->mapName() + " ›", [this] { selectTab(MapTab); }, mapRow));
+			if (auto warning = largeMapWarning())
+				parts.push_back(std::move(warning));
 			if (room->kind() != RoomBackend::Kind::Online)
 				parts.push_back(invite(p, true));
 			body = scroll("room/seats", column(std::move(parts), {p.pt(8)}));

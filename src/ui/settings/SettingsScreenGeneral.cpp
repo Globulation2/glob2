@@ -6,6 +6,8 @@
 #include "SettingsScreen.h"
 #include "ExperimentalFeatures.h"
 #include "GlobalContainer.h"
+#include "DeviceAdaptationSession.h"
+#include "DeviceProfile.h"
 #include "field/GradientAccelerators.h"
 #include "SoundMixer.h"
 #include "ui/ThemeCatalog.h"
@@ -15,9 +17,76 @@
 #include <FormatableString.h>
 #include <algorithm>
 #include <cmath>
+#include <cstdio>
 #include <iterator>
 
 using namespace GAGCore;
+
+std::string SettingsScreen::deviceReasonText(int reason, std::uint64_t value)
+{
+	const auto gigabytes = [](std::uint64_t mib)
+	{
+		char text[32];
+		std::snprintf(text, sizeof text, mib >= 10 * 1024 ? "%.0f" : "%.1f", double(mib) / 1024.0);
+		std::string result = text;
+		if (result.size() > 2 && result.ends_with(".0"))
+			result.resize(result.size() - 2);
+		return result;
+	};
+	switch (DeviceReason(reason))
+	{
+	case DeviceReason::Memory: return FormattableString(tr("device memory %0")).arg(gigabytes(value));
+	case DeviceReason::AndroidLowRam: return tr("device low RAM");
+	case DeviceReason::Cores: return FormattableString(tr("device cores %0")).arg(unsigned(value));
+	case DeviceReason::Vram: return FormattableString(tr("device video memory %0")).arg(gigabytes(value));
+	case DeviceReason::Override:
+		return FormattableString(tr("device tier override %0")).arg(DeviceProfile::tierName(DeviceProfile::current().tier));
+	case DeviceReason::Unknown: break;
+	}
+	return tr("device unknown");
+}
+
+// Auto shows what it resolved to on this device and why; Original and High
+// resolution are explicit and never adapted.
+void SettingsScreen::artworkRows()
+{
+	auto &s = globalContainer->settings;
+	using Choice = Settings::AdaptiveChoice;
+	choice("graphics.artwork", "Artwork", "Apply artwork on the next game or editor load.",
+		   s.highResolutionArtworkChoice == Choice::Off ? 1 : s.highResolutionArtworkChoice == Choice::On ? 2 : 0,
+		   {tr("Automatic"), tr("Original"), tr("High resolution")},
+		   [this](int v)
+		   {
+			   globalContainer->settings.setHighResolutionArtworkChoice(v == 1 ? Choice::Off : v == 2 ? Choice::On : Choice::Auto);
+			   commit();
+		   });
+	const bool gpu = globalContainer->gfx->rendererCapabilities().textureFiltering;
+	auto &row = form.back();
+	row.enabled = gpu;
+	if (!gpu)
+	{
+		row.help = tr("Requires a renderer with texture filtering. Your saved choice is retained.");
+		return;
+	}
+	if (s.highResolutionArtworkChoice != Choice::Auto)
+		return;
+	if (s.highResolutionArtworkSteppedDown)
+	{
+		const auto event = DeviceAdaptation::session().stepDownEvent();
+		row.help = tr(event && event->cause == DeviceAdaptation::Cause::Hitches ? "Auto artwork stepped down slow"
+																				: "Auto artwork stepped down memory");
+		// The non-modal offer: keep what the session fell back to.
+		button("graphics.artwork.keep", tr("Keep original artwork"), [this]
+			   {
+				   globalContainer->settings.setHighResolutionArtworkChoice(Choice::Off);
+				   commit();
+			   });
+		return;
+	}
+	const auto decision = DeviceProfile::current().highResolutionArtwork();
+	row.help = FormattableString(tr(decision.on ? "Auto artwork high %0" : "Auto artwork original %0"))
+				   .arg(deviceReasonText(int(decision.reason), decision.value));
+}
 
 void SettingsScreen::buildGeneral()
 {
@@ -117,20 +186,10 @@ void SettingsScreen::buildGeneral()
 		effect("graphics.shadows", "Cloud shadows", "Show cloud shadows on the ground independently of cloud cover.", &Settings::cloudShadows);
 		effect("graphics.particles", "Building particles", "Show smoke and other building particles.", &Settings::buildingParticles);
 		appearance("graphics.magic", "Magic effects", "Choose animated magic effects or a simple visible effect.", &Settings::fullMagicEffects, "Simple", "Full");
+		artworkRows();
 #ifndef GLOB2_MOBILE
 		if (!touchLayout || globalContainer->gfx->isNativeDesktop())
 		{
-			choice("graphics.artwork", "Artwork",
-				   "Apply artwork on the next game or editor load.",
-				   s.highResolutionArtwork, {tr("Original"), tr("High resolution")},
-				   [this](int v)
-				   {
-					   globalContainer->settings.highResolutionArtwork = v;
-					   commit();
-				   });
-			const bool gpu = globalContainer->gfx->rendererCapabilities().textureFiltering;
-			form.back().enabled = gpu;
-            if (!gpu) form.back().help = tr("Requires a renderer with texture filtering. Your saved choice is retained.");
 			toggle("graphics.torus", "Automatic torus view",
                    "Automatically show the torus overview while moving around the map.",
 				   s.automaticTorus,

@@ -78,6 +78,7 @@ _glob2() {
       '--no-mute[no-mute]' \
       '--renderer[renderer]:value:(auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl)' \
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
+      '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
@@ -108,6 +109,7 @@ _glob2() {
       '--no-mute[no-mute]' \
       '--renderer[renderer]:value:(auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl)' \
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
+      '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
@@ -314,6 +316,7 @@ _glob2() {
       '--no-mute[no-mute]' \
       '--renderer[renderer]:value:(auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl)' \
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
+      '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
@@ -351,6 +354,7 @@ _glob2() {
       '--no-mute[no-mute]' \
       '--renderer[renderer]:value:(auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl)' \
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
+      '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
@@ -382,6 +386,7 @@ _glob2() {
       '--no-mute[no-mute]' \
       '--renderer[renderer]:value:(auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl)' \
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
+      '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
@@ -415,6 +420,7 @@ _glob2() {
       '--no-mute[no-mute]' \
       '--renderer[renderer]:value:(auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl)' \
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
+      '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
@@ -490,6 +496,7 @@ _glob2() {
       '--no-mute[no-mute]' \
       '--renderer[renderer]:value:(auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl)' \
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
+      '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
@@ -529,6 +536,7 @@ _glob2() {
       '--no-mute[no-mute]' \
       '--renderer[renderer]:value:(auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl)' \
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
+      '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \

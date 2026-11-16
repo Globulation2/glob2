@@ -428,6 +428,84 @@ this preference. Headless runs, offline image exports and renderer benchmarks do
 not opt into the interactive limiter. Recording output FPS remains independent;
 recordings cannot gain new visual detail from frames the application did not draw.
 
+### Device profile and adaptive defaults
+
+`DeviceProfile` (`src/app/DeviceProfile.h`) classifies the device once at startup
+as low, mid or high and records its inputs. Everything that adapts to the device
+reads this profile; nothing probes hardware itself, and nothing in the simulation
+path reads it, so simulation checksums and `SIM_REVISION` are unaffected.
+
+Inputs: `SDL_GetSystemRAM` (on iOS this is `hw.memsize`, the same figure as
+`NSProcessInfo.physicalMemory`; browsers use `navigator.deviceMemory`, because SDL
+reports the WebAssembly heap limit there) and the hardware thread count, which
+`AssetLoader::Options::environment` also budgets from; on Android
+`ActivityManager.isLowRamDevice()`, `getMemoryClass()`, `getLargeMemoryClass()`
+and `MemoryInfo.totalMem` through `Glob2Activity.getMemoryProfile` (totalMem
+replaces SDL's figure when known); on Windows and Linux windowed runs, the largest
+device-local heap of a discrete Vulkan GPU, probed on a background thread and
+folded in by `DeviceProfile::poll()`. Phones share memory between CPU and GPU,
+integrated GPUs use system memory and legacy GL has no portable query, so they
+have no VRAM rule.
+
+The thresholds are provisional until phone measurements exist, and all of them
+live in `deviceThresholds`:
+
+| Tier | Rule | Auto artwork | New-map default |
+| --- | --- | --- | --- |
+| Low | under 3 GiB or an Android low-RAM device; or at most 2 hardware threads (map size only) | original (high resolution when only the cores are low) | 128×128 |
+| Mid | 3 to 6 GiB | high resolution | 128×128 on phones, 256×256 elsewhere |
+| High | over 6 GiB, or nothing reported | high resolution | 256×256 |
+
+A discrete desktop GPU with less than 1 GiB of device-local memory also starts
+with original artwork. `GLOB2_DEVICE_TIER=low|mid|high` or
+`play --device-tier low|mid|high` overrides the tier for testing.
+
+**Auto semantics.** Adaptive settings have an Auto state, and Auto is the
+default; Original and High resolution are explicit choices that the device never
+overrides. Settings > Display shows what Auto resolved to and why, for example
+"Automatic: original on this device (2.7 GB RAM)". Preferences store
+`highResolutionArtworkChoice=auto|off|on` and keep writing the legacy
+`highResolutionArtwork` key (0 only for Off) for older builds. Profiles from
+before Auto wrote `highResolutionArtwork=1` whether or not the player chose it,
+so `1` migrates to Auto and `0`, which departs from the old default, stays an
+explicit Off; on mid and high devices Auto resolves to the old value.
+
+The map size is gameplay, so only the defaults adapt: a custom game without a
+saved lobby, Reset to defaults, and a new map in the editor start at the tier's
+size where the landscape can host the colonies at it (otherwise they keep 256×256,
+so the lobby stays startable), and the player can still choose any size. A saved lobby keeps the size it
+was played at. Online rooms use the host's map; a low-tier device in a room whose
+generated map is larger than its default sees a warning, and the match never
+changes.
+
+**Session step-down.** With artwork on Auto, high resolution turns off for the
+rest of the session, through the asynchronous `Sprite::requestHighResolution(false)`
+path, when the OS reports memory pressure or the game sustains hitches: 40
+presented frames over 50 ms within 15 seconds, outside the first 20 seconds of a
+match and ignoring gaps over a second (an O(1) ring of timestamps). The player is
+told once in game, and Settings > Display offers to keep original artwork as the
+default. Memory signals respond by severity (`DeviceAdaptation::respond`):
+
+| Signal | Response |
+| --- | --- |
+| iOS memory warning (`SDL_EVENT_LOW_MEMORY`) | trim caches; step down at once |
+| Android `TRIM_MEMORY_RUNNING_MODERATE` | trim caches |
+| Android `TRIM_MEMORY_RUNNING_LOW` | trim caches; step down at once |
+| Android `TRIM_MEMORY_RUNNING_CRITICAL`, `onLowMemory` | smallest budgets; step down at once |
+| Android `TRIM_MEMORY_UI_HIDDEN`, `BACKGROUND` and higher | background trim; no step-down |
+
+SDL 3.4's `SDLActivity` turns every `onTrimMemory` level into one ungraded
+`SDL_EVENT_LOW_MEMORY`, so `Glob2Activity` also passes the level to native code,
+where a lock-free queue hands it to the game thread once a frame; on Android the
+ungraded SDL event only feeds `ScreenStack`'s existing handling. An explicit
+artwork choice is never stepped down, but caches are still trimmed. All trims go
+through `DeviceAdaptation::trimPresentationMemory`, which forwards to the
+renderer's bounded `GraphicContext::trimPresentationMemory` (a background trim
+for `Background`, a low-memory trim otherwise) and keeps the retired HD frames'
+budget at zero after a critical signal. Render budgets stay as the device was
+created with. The tier, its inputs and every step-down with its OS signal are
+logged in the [performance telemetry](../development/performance-telemetry.md).
+
 ### Simulation thread
 
 Interactive sessions run the simulation on its own thread (`src/engine/sim/SimulationRunner.h`)
@@ -1065,7 +1143,11 @@ until queue completion. Discard fences also cover uploads prepared before packet
 submission; backend recreation shares the adapter’s issued completion timeline.
 Texture/depth allocations are bounded to 256 MiB in total, with General and
 SkinAtlas class budgets of 64 MiB, TerrainPage 128 MiB, and TerrainMask 32 MiB;
-persistent geometry to 32 MiB. Eight pending presentation frames and three capture
+persistent geometry to 32 MiB. Terrain imagery the CPU composes (view pages,
+overview pages and animated tiles, `TerrainVisual::Surface`) is admitted in the
+TerrainPage class on every device, matching the page cache's own 128 MiB plan;
+in the General class a view's high-density pages alone could exceed 64 MiB,
+deferring every frame. Eight pending presentation frames and three capture
 requests bound GPU admission. Recorder flushes within one presentation share a
 fence and admission slot; all transient buffers also count toward the 256 MiB
 aggregate device limit. Capture maps complete asynchronously in admission

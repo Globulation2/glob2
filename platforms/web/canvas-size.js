@@ -136,6 +136,12 @@ addToLibrary({
   glob2_surface_webgl_available__deps: ['$Glob2SurfaceBridge'],
   glob2_surface_webgl_available: () => +Glob2SurfaceBridge.webglAvailable(),
   glob2_surface_webgpu_available: () => +Boolean(globalThis.navigator?.gpu),
+  // The device's memory in GiB (Chromium; rounded, at most 8), 0 when the
+  // browser doesn't say. DeviceProfile reads it instead of SDL's heap limit.
+  glob2_device_memory_gib: () => {
+    const memory = globalThis.navigator?.deviceMemory;
+    return memory > 0 ? memory : 0;
+  },
   // The startup choice belongs to the DOM realm, not the pthread's Module.
   glob2_surface_startup_uses_gl__proxy: 'sync',
   glob2_surface_startup_uses_gl: () => +(Module.renderer === 'webgl2'),

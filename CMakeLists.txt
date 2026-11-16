@@ -1108,6 +1108,9 @@ foreach(program IN LISTS GLOB2_HARNESS_PROGRAMS)
   else()
     glob2_objects_of(linked glob2_client ${${prefix}_LINK_SOURCES})
     list(APPEND sources "${linked}")
+    # Client sources use libgag helpers (ThreadSupport thread roles); the static
+    # archive contributes only the objects they reference.
+    list(APPEND inputs gag)
   endif()
   add_executable(${program} EXCLUDE_FROM_ALL ${sources})
   set_target_properties(${program} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${GLOB2_OUT}/src")

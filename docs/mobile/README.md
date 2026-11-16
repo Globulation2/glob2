@@ -11,6 +11,7 @@ Build, test and understand the Android and iOS clients.
 - [Touch gameplay controls](gameplay-controls.md).
 - [Touch map and campaign editing](editor-interface.md).
 - [Verification and design gallery](verification.md).
+- [Device tiers, Auto defaults and memory signals](../architecture/rendering.md#device-profile-and-adaptive-defaults).
 
 ## Release and policies
 

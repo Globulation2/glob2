@@ -27,6 +27,9 @@ class Surface : public GAGCore::DrawableSurface
 	Surface(SDL_Surface *pixels, bool hd) : DrawableSurface(pixels, AdoptPixels{}, true)
 	{
 		highResolutionSampling = hd;
+		// Pages, overview pages and animated tiles: the page caches size
+		// themselves for the device's terrain page budget, not the general one.
+		deviceBudgetClass = GAGCore::TextureDescriptor::BudgetClass::TerrainPage;
 	}
 	// Retire the renderer allocation while keeping expensive composed CPU pixels.
 	SDL_Surface *takePixels()

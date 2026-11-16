@@ -82,6 +82,14 @@ Existing records remain unchanged. New records use key/value fields and nanoseco
 - `GLOB2_PERF_SCHEMA`: stable scope name, sampling stride, population-variance convention.
 - `GLOB2_PERF_SAMPLE`: interval tick and elapsed-time ranges, execution mode and separate work/presentation budgets, scope,
   thread attribution, call/sample counts, mean, standard deviation, maximum and totals.
+- `GLOB2_DEVICE_PROFILE`: at match start, the device tier, what decided it and every
+  input (`memory_mib`, `cores`, the Android memory classes, `vram_mib` and its source),
+  the Auto values, the artwork choice and whether the session stepped down, and why.
+- `GLOB2_DEVICE_ADAPTATION`: each handled OS memory signal or sustained-hitch trigger:
+  `cause` (`sdl-low-memory`, `android-trim-running-low`, ..., `hitches`), `trim` and
+  `stepped_down`. Windowed runs also log the profile and these events with `SDL_Log`
+  (logcat on Android), so thresholds can be tuned from devices without output enabled.
+  See [device profile](../architecture/rendering.md#device-profile-and-adaptive-defaults).
 - `GLOB2_PERF_FINAL`: session aggregates, following the final partial sample and the existing
   autosave drain. Cumulative mode is `all`; compare mode-specific sample records when speed
   changes matter.

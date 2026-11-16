@@ -20,6 +20,18 @@ namespace GAGCore
 {
 namespace
 {
+// Admits one draw's texture in its surface's device budget class.
+struct BudgetClassScope
+{
+    RenderBackend &backend;
+    BudgetClassScope(RenderBackend &backend, TextureDescriptor::BudgetClass budget) : backend(backend)
+    {
+        backend.textureBudgetClass(budget);
+    }
+    ~BudgetClassScope() { backend.textureBudgetClass(TextureDescriptor::BudgetClass::General); }
+    BudgetClassScope(const BudgetClassScope &) = delete;
+    BudgetClassScope &operator=(const BudgetClassScope &) = delete;
+};
 template<class Alpha>
 void recordAlphaMap(RenderBackend &backend, std::span<const Alpha> map,
                     int mapW, int mapH, int x, int y, int cellW, int cellH,
@@ -491,6 +503,7 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
                 if (rebuild) deviceMipBuildBytesThisFrame += buildBytes;
                 const auto levels = deviceMipLevels(surface, pixels);
                 if (spriteBatch.owner == this) spriteBatch.flush();
+                BudgetClassScope budget(*renderer, surface->deviceBudgetClass);
                 renderer->blitMipmapped(surface, pixels, surface->contentRevision(), levels,
                     SDL_Rect{sx,sy,sw,sh}, SDL_FRect{x,y,w,h}, alpha);
                 releaseDeviceRgbaLevels(surface, levels);
@@ -521,6 +534,7 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
             if(renderer==deviceRenderer.get() && surface->spriteSource &&
                 surface->spriteSource->resolveDeviceAtlas(*surface,source,uploadSource))
                 pixels=const_cast<DrawableSurface*>(uploadSource)->getSDLSurface();
+            BudgetClassScope budget(*renderer, uploadSource->deviceBudgetClass);
             renderer->blit(uploadSource, pixels, uploadSource->contentRevision(),
                            renderer == softwareRasterizer.get() && surface->hasOpaquePixels(),
                            source, SDL_FRect{x,y,w,h}, alpha);

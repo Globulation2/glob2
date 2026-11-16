@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Settings.h"
+#include "DeviceProfile.h"
 #include "EngineTiming.h"
 #include "BuildingType.h"
 #include <InterfacePresentation.h>
@@ -66,7 +67,8 @@ Settings::Settings()
 	scrollWheelEnabled=true;
 	hiveMindEnabled=true;
 	hiveMindSupervision=true;
-	highResolutionArtwork=true;
+	highResolutionArtworkChoice=AdaptiveChoice::Auto;
+	resolveAdaptiveDefaults();
 	autosaveGames=true;
 	resetDefaultUnitsAssigned();
 	resetDefaultFlagRadius();
@@ -118,6 +120,33 @@ void Settings::setGraphicsDetail(bool full)
 	optionFlags &= ~LEGACY_LOW_DETAIL;
 }
 
+const char *Settings::adaptiveChoiceName(AdaptiveChoice choice)
+{
+	return choice == AdaptiveChoice::Off ? "off" : choice == AdaptiveChoice::On ? "on" : "auto";
+}
+
+std::optional<Settings::AdaptiveChoice> Settings::parseAdaptiveChoice(const std::string &text)
+{
+	if (text == "auto") return AdaptiveChoice::Auto;
+	if (text == "off") return AdaptiveChoice::Off;
+	if (text == "on") return AdaptiveChoice::On;
+	return std::nullopt;
+}
+
+void Settings::resolveAdaptiveDefaults()
+{
+	if (highResolutionArtworkChoice == AdaptiveChoice::Auto)
+		highResolutionArtwork = DeviceProfile::current().highResolutionArtwork().on && !highResolutionArtworkSteppedDown;
+	else
+		highResolutionArtwork = highResolutionArtworkChoice == AdaptiveChoice::On;
+}
+
+void Settings::setHighResolutionArtworkChoice(AdaptiveChoice choice)
+{
+	highResolutionArtworkChoice = choice;
+	resolveAdaptiveDefaults();
+}
+
 std::string Settings::getUsername() { return username; }
 void Settings::setUsername(std::string s)
 {
@@ -150,6 +179,7 @@ void Settings::load(std::string filename)
     interfacePresentation="automatic";
     menuTheme="light";
     gameTheme="dark";
+    highResolutionArtworkChoice=AdaptiveChoice::Auto;
 	std::map<std::string, std::string> parsed;
 
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
@@ -256,7 +286,14 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(edgeScrollWindowed);
 		READ_PARSED_INT(hiveMindEnabled);
 		READ_PARSED_INT(hiveMindSupervision);
-		READ_PARSED_INT(highResolutionArtwork);
+		// Profiles before Auto wrote highResolutionArtwork=1 unconditionally (the
+		// old default), indistinguishable from a choice, so 1 migrates to Auto.
+		// 0 departs from that default and stays an explicit Off.
+		if (const auto choice = parsed.find("highResolutionArtworkChoice"); choice != parsed.end() &&
+			parseAdaptiveChoice(choice->second))
+			highResolutionArtworkChoice = *parseAdaptiveChoice(choice->second);
+		else if (const auto legacy = parsed.find("highResolutionArtwork"); legacy != parsed.end())
+			highResolutionArtworkChoice = std::atoi(legacy->second.c_str()) ? AdaptiveChoice::Auto : AdaptiveChoice::Off;
 		READ_PARSED_INT(autosaveGames);
 		// The file decides the set: absent or empty means nothing enabled, the
 		// default, rather than whatever this object held before.
@@ -389,6 +426,7 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(version);
 	}
 	delete stream;
+	resolveAdaptiveDefaults();
     presentationPreference=parsePresentationPreference(interfacePresentation);
 	
 	if(version < 1)
@@ -431,7 +469,10 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "edgeScrollWindowed=%d\n", edgeScrollWindowed);
 		Utilities::streamprintf(stream, "hiveMindEnabled=%d\n", hiveMindEnabled);
 		Utilities::streamprintf(stream, "hiveMindSupervision=%d\n", hiveMindSupervision);
-		Utilities::streamprintf(stream, "highResolutionArtwork=%d\n", highResolutionArtwork);
+		Utilities::streamprintf(stream, "highResolutionArtworkChoice=%s\n", adaptiveChoiceName(highResolutionArtworkChoice));
+		// Older builds read only this key: Auto keeps their former default (on),
+		// so a round trip through one migrates back to Auto.
+		Utilities::streamprintf(stream, "highResolutionArtwork=%d\n", highResolutionArtworkChoice != AdaptiveChoice::Off);
 		Utilities::streamprintf(stream, "showColonySkins=%d\n", showColonySkins);
 		Utilities::streamprintf(stream, "clouds=%d\n", clouds);
 		Utilities::streamprintf(stream, "cloudShadows=%d\n", cloudShadows);

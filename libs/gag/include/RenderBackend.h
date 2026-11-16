@@ -62,6 +62,9 @@ class RenderBackend
     // recolour; vertex colours carry tint and opacity as in triangles().
     virtual bool trianglesTeamColor(std::span<const SDL_Vertex>, const void *, SDL_Surface *, std::uint64_t, float)
     { return false; }
+    // The device budget class of textures the following draws admit, until set
+    // again. Backends without per-class device budgets ignore it.
+    virtual void textureBudgetClass(TextureDescriptor::BudgetClass) {}
 	virtual void fill(const SDL_FRect &rect, SDL_Color color) = 0;
     virtual void prepareTexture(const void*, SDL_Surface*, std::uint64_t, bool linear = false) {}
     // Like prepareTexture, after writes confined to `dirty` (pixel rectangles of

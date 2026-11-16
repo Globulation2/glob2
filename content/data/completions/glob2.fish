@@ -131,6 +131,7 @@ complete -c glob2 -n "__glob2_at 'play'" -l mute
 complete -c glob2 -n "__glob2_at 'play'" -l no-mute
 complete -c glob2 -n "__glob2_at 'play'" -l renderer -r -f -a 'auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl'
 complete -c glob2 -n "__glob2_at 'play'" -l graphics-detail -r -f -a 'full reduced'
+complete -c glob2 -n "__glob2_at 'play'" -l device-tier -r -f -a 'low mid high'
 complete -c glob2 -n "__glob2_at 'play'" -l window-size -r
 complete -c glob2 -n "__glob2_at 'play'" -l username -r
 complete -c glob2 -n "__glob2_at 'play'" -l editor-script -r -f -a 'sgsl usl'
@@ -159,6 +160,7 @@ complete -c glob2 -n "__glob2_at 'replay'" -l mute
 complete -c glob2 -n "__glob2_at 'replay'" -l no-mute
 complete -c glob2 -n "__glob2_at 'replay'" -l renderer -r -f -a 'auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl'
 complete -c glob2 -n "__glob2_at 'replay'" -l graphics-detail -r -f -a 'full reduced'
+complete -c glob2 -n "__glob2_at 'replay'" -l device-tier -r -f -a 'low mid high'
 complete -c glob2 -n "__glob2_at 'replay'" -l window-size -r
 complete -c glob2 -n "__glob2_at 'replay'" -l username -r
 complete -c glob2 -n "__glob2_at 'replay'" -l editor-script -r -f -a 'sgsl usl'
@@ -339,6 +341,7 @@ complete -c glob2 -n "__glob2_at 'game repeat'" -l mute
 complete -c glob2 -n "__glob2_at 'game repeat'" -l no-mute
 complete -c glob2 -n "__glob2_at 'game repeat'" -l renderer -r -f -a 'auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl'
 complete -c glob2 -n "__glob2_at 'game repeat'" -l graphics-detail -r -f -a 'full reduced'
+complete -c glob2 -n "__glob2_at 'game repeat'" -l device-tier -r -f -a 'low mid high'
 complete -c glob2 -n "__glob2_at 'game repeat'" -l window-size -r
 complete -c glob2 -n "__glob2_at 'game repeat'" -l username -r
 complete -c glob2 -n "__glob2_at 'game repeat'" -l editor-script -r -f -a 'sgsl usl'
@@ -372,6 +375,7 @@ complete -c glob2 -n "__glob2_at 'online join'" -l mute
 complete -c glob2 -n "__glob2_at 'online join'" -l no-mute
 complete -c glob2 -n "__glob2_at 'online join'" -l renderer -r -f -a 'auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl'
 complete -c glob2 -n "__glob2_at 'online join'" -l graphics-detail -r -f -a 'full reduced'
+complete -c glob2 -n "__glob2_at 'online join'" -l device-tier -r -f -a 'low mid high'
 complete -c glob2 -n "__glob2_at 'online join'" -l window-size -r
 complete -c glob2 -n "__glob2_at 'online join'" -l username -r
 complete -c glob2 -n "__glob2_at 'online join'" -l editor-script -r -f -a 'sgsl usl'
@@ -401,6 +405,7 @@ complete -c glob2 -n "__glob2_at 'online play-map'" -l mute
 complete -c glob2 -n "__glob2_at 'online play-map'" -l no-mute
 complete -c glob2 -n "__glob2_at 'online play-map'" -l renderer -r -f -a 'auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl'
 complete -c glob2 -n "__glob2_at 'online play-map'" -l graphics-detail -r -f -a 'full reduced'
+complete -c glob2 -n "__glob2_at 'online play-map'" -l device-tier -r -f -a 'low mid high'
 complete -c glob2 -n "__glob2_at 'online play-map'" -l window-size -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l username -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l editor-script -r -f -a 'sgsl usl'
@@ -432,6 +437,7 @@ complete -c glob2 -n "__glob2_at 'online host-map'" -l mute
 complete -c glob2 -n "__glob2_at 'online host-map'" -l no-mute
 complete -c glob2 -n "__glob2_at 'online host-map'" -l renderer -r -f -a 'auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl'
 complete -c glob2 -n "__glob2_at 'online host-map'" -l graphics-detail -r -f -a 'full reduced'
+complete -c glob2 -n "__glob2_at 'online host-map'" -l device-tier -r -f -a 'low mid high'
 complete -c glob2 -n "__glob2_at 'online host-map'" -l window-size -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l username -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l editor-script -r -f -a 'sgsl usl'
@@ -491,6 +497,7 @@ complete -c glob2 -n "__glob2_at 'dev random-games'" -l mute
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l no-mute
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l renderer -r -f -a 'auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl'
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l graphics-detail -r -f -a 'full reduced'
+complete -c glob2 -n "__glob2_at 'dev random-games'" -l device-tier -r -f -a 'low mid high'
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l window-size -r
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l username -r
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l editor-script -r -f -a 'sgsl usl'
@@ -526,6 +533,7 @@ complete -c glob2 -n "__glob2_at 'dev textshots'" -l mute
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l no-mute
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l renderer -r -f -a 'auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl'
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l graphics-detail -r -f -a 'full reduced'
+complete -c glob2 -n "__glob2_at 'dev textshots'" -l device-tier -r -f -a 'low mid high'
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l window-size -r
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l username -r
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l editor-script -r -f -a 'sgsl usl'

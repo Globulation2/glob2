@@ -40,10 +40,11 @@ for (const variant of ['serial', 'threaded']) {
     expect(result.executionMode).toBe(variant);
     if (variant === 'serial') expect(result.workerCount).toBe(0);
     else {
-      // Seven compute workers and eight asset decoders; the asynchronous
-      // SoundMixer loader may also be active while music changes.
-      expect(result.workerCount).toBeGreaterThanOrEqual(15);
-      expect(result.workerCount).toBeLessThanOrEqual(16);
+      // Seven compute workers, eight asset decoders and four presentation
+      // workers (render/BackgroundWork: half the CPUs, at most four); the
+      // asynchronous SoundMixer loader may also be active while music changes.
+      expect(result.workerCount).toBeGreaterThanOrEqual(19);
+      expect(result.workerCount).toBeLessThanOrEqual(20);
     }
     expect(result.heapBytes).toBeGreaterThan(0);
     // The Wasm heap is capped at 2 GiB. HD terrain pages decode in this test only since the

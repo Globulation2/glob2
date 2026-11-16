@@ -181,6 +181,9 @@ namespace GAGCore
         const std::uint64_t surfaceIdentity = nextSurfaceIdentity();
         bool opaquePixels = false;
 		bool highResolutionSampling=false;
+		//! The device budget class this surface's texture counts against.
+		//! Terrain imagery uses TerrainPage, which the page caches size for.
+		TextureDescriptor::BudgetClass deviceBudgetClass = TextureDescriptor::BudgetClass::General;
 		//! texture index if GPU (GL) is used
 		unsigned int texture=0;
 		size_t gpuBytes=0;

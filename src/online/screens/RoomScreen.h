@@ -102,6 +102,9 @@ class RoomScreen : public Glob2UI::Screen
 	Glob2UI::Element seats(const Glob2UI::Presentation &p, bool phone);
 	Glob2UI::Element seatControls(const RoomBackend::Slot &slot, const Glob2UI::Presentation &p, bool phone);
 	Glob2UI::Element mapPanel(const Glob2UI::Presentation &p, bool phone);
+	// A non-blocking warning when the room's generated map is larger than a
+	// low-tier device's default; null otherwise. The match itself never changes.
+	Glob2UI::Element largeMapWarning();
 	Glob2UI::Element rulesPanel(const Glob2UI::Presentation &p);
 	Glob2UI::Element invite(const Glob2UI::Presentation &p, bool phone);
 	Glob2UI::Element chatPanel(const Glob2UI::Presentation &p, bool phone);
