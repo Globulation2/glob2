@@ -83,10 +83,10 @@ struct NativeValue: Value
 	static NativeValuePrototype<This>* prototypeFor(Heap* heap) {
 		assert(heap);
 		const auto key = std::type_index(typeid(This));
-		auto found = heap->nativePrototypes.find(key);
-		if (found != heap->nativePrototypes.end()) return static_cast<NativeValuePrototype<This>*>(found->second);
+		for (const auto& [type, existing] : heap->nativePrototypes)
+			if (type == key) return static_cast<NativeValuePrototype<This>*>(existing);
 		auto* prototype = new NativeValuePrototype<This>(heap);
-		heap->nativePrototypes.emplace(key, prototype);
+		heap->nativePrototypes.emplace_back(key, prototype);
 		prototype->initialize();
 		return prototype;
 	}

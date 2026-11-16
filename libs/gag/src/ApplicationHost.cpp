@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <ApplicationHost.h>
+#include "ThreadSupport.h"
 #include <EventQueue.h>
 #include <BrowserTextInput.h>
 #include <GraphicContext.h>
@@ -37,6 +38,7 @@ bool exportFilePath(const std::string &path)
 		if (!files || !files[0]) return;
 		std::thread([source = *source, destination = std::string(files[0])]
 		{
+			GAGCore::ThreadSupport::setCurrentThreadRole(GAGCore::ThreadSupport::ThreadRole::Worker);
 			try { std::filesystem::copy_file(std::filesystem::u8path(source),std::filesystem::u8path(destination),std::filesystem::copy_options::overwrite_existing); }
 			catch (const std::exception &e) { SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,"Export: %s",e.what()); }
 		}).detach();
@@ -217,6 +219,7 @@ void screenChanged(const char *name) {
 void simulationAdvanced(std::uint32_t) {}
 void matchFrame(bool) {}
 void overviewDrawn(bool, bool) {}
+void hudDrawn(const char *, const char *) {}
 void roomReady(bool) {}
 void customGameReady(bool) {}
 void studioGenerated(const std::string &) {}

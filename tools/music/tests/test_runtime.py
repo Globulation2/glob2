@@ -34,6 +34,7 @@ class RuntimeTest(unittest.TestCase):
                     "-std=c++20",
                     "-O2",
                     "-I" + str(ROOT / "src/audio"),
+                    "-I" + str(ROOT / "libs/gag/include"),  # TextShape.h
                     str(ROOT / "tools/music/tests/runtime_probe.cpp"),
                     str(ROOT / "src/audio/MusicStream.cpp"),
                     str(ROOT / "src/audio/MusicLibrary.cpp"),

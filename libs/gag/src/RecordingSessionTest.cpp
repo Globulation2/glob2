@@ -354,7 +354,9 @@ TEST_SUITE("RecordingSession")
 			{
 				Session session(path,options,files,[](const Status &) {});
 				for (int n=0;n<120;++n) { auto time=1000000+std::int64_t(n)*1000000/30; session.frame(pixels(time)); session.step(time+50000); }
-				CHECK(std::filesystem::file_size(path+".recording/capture"+Extension)>1000);
+				// Through a new handle: Windows stat() reports 0 while the capture is still open.
+				std::ifstream capture(path+".recording/capture"+Extension,std::ios::binary|std::ios::ate);
+				CHECK(capture.tellg()>1000);
 			}
 			if (interruptedMetadata)
 			{ std::ofstream(path+".recording/manifest.json",std::ios::trunc) << "{\"version\":"; }

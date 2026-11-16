@@ -60,23 +60,30 @@ test('desktop right-click cancels a selection and cycles sidebar views without a
       if(event.target.id==='canvas')window.canvasContextMenus.push(event.defaultPrevented);
     });
   });
+  // Sidebar state comes from the drawn frame (glob2Diagnostics hud). Exact
+  // pixels are not a stable identity for a view: texture preparation may
+  // refine an icon after the first capture, so a byte comparison against an
+  // early screenshot can stay unequal while the right view is showing.
+  const hud=async()=>(await state(page)).hud;
   const panel={x:1042,y:185,width:150,height:240};
   await page.mouse.move(400,350);
+  await expect.poll(hud).toEqual({panel:'construction',selection:'none'});
   const construction=await page.screenshot({clip:panel});
   await page.mouse.click(400,350,{button:'right',delay:80});
+  await expect.poll(hud).toEqual({panel:'flags',selection:'none'});
+  // Views differ wholesale, so the switch is visible as well as reported.
   await expect.poll(async()=>(await page.screenshot({clip:panel})).equals(construction)).toBe(false);
-  const flags=await page.screenshot({clip:panel});
-  expect(flags.equals(construction)).toBe(false);
-  await info.attach('right-click-flags',{body:flags,contentType:'image/png'});
-  for(let i=0;i<3;i++)await page.mouse.click(400,350,{button:'right',delay:80});
-  await expect.poll(async()=>(await page.screenshot({clip:panel})).equals(construction)).toBe(true);
-  // Select the first building tool, then cancel it with a secondary click.
+  await info.attach('right-click-flags',{body:await page.screenshot({clip:panel}),contentType:'image/png'});
+  for(const view of ['stats','overlays','construction']){
+    await page.mouse.click(400,350,{button:'right',delay:80});
+    await expect.poll(hud).toEqual({panel:view,selection:'none'});
+  }
+  // Select the first building tool, then cancel it with a secondary click,
+  // which must leave the construction view in place rather than cycle it.
   await page.locator('#canvas').click({position:{x:1075,y:205},delay:80});
-  // Confirm the tool is visibly selected before sending the cancelling click.
-  // Input processing and screenshot capture can land on different frames.
-  await expect.poll(async()=>(await page.screenshot({clip:panel})).equals(construction)).toBe(false);
+  await expect.poll(hud).toEqual({panel:'construction',selection:'tool'});
   await page.mouse.click(400,350,{button:'right',delay:80});
-  await expect.poll(async()=>(await page.screenshot({clip:panel})).equals(construction)).toBe(true);
+  await expect.poll(hud).toEqual({panel:'construction',selection:'none'});
   const menus=await page.evaluate(()=>window.canvasContextMenus);
   expect(menus.length).toBeGreaterThan(0);
   expect(menus.every(Boolean)).toBe(true);

@@ -27,6 +27,7 @@
 #include "Sha256.h"
 #include "SimVersion.h"
 #include "TurnMessages.h"
+#include <ThreadSupport.h>
 
 namespace Lan
 {
@@ -251,7 +252,7 @@ LanHost::LanHost(Options selected) : options(std::move(selected))
 		if (options.thread)
 		{
 			waker = std::make_unique<NetWaker>();
-			worker = std::thread([this] { serve(); });
+			worker = std::thread([this] { GAGCore::ThreadSupport::setCurrentThreadRole(GAGCore::ThreadSupport::ThreadRole::Worker); serve(); });
 		}
 	}
 }

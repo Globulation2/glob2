@@ -250,7 +250,10 @@ foreach(variant IN LISTS GLOB2_WEB_VARIANTS)
   glob2_web_flags(unused_cxx unused_cc test_link "" "" "${link}")
   set(game_link ${test_link} --pre-js "${GLOB2_OUT}/asset-manifest.js" --pre-js "${web}/asset-loader.js")
   # SDL_ttf's static archive requires HarfBuzz; HarfBuzz in turn uses FreeType.
-  set(libraries -L${sdl}/lib -lSDL3_ttf -lSDL3_image -lSDL3_net -lSDL3 -lharfbuzz -lfreetype -lwebpdemux
+  # The SDL prefix can sit under a path with spaces (the shared dependency store
+  # in ~/Library/Application Support); target_link_directories quotes it, where a
+  # raw -L item in target_link_libraries would be split.
+  set(libraries -lSDL3_ttf -lSDL3_image -lSDL3_net -lSDL3 -lharfbuzz -lfreetype -lwebpdemux
       -lwebpmux -lwebp -lsharpyuv)
   foreach(name IN LISTS GLOB2_WEB_OPUS_LIBRARIES)
     list(APPEND libraries "${opus}/lib/lib${name}.a")
@@ -268,6 +271,7 @@ foreach(variant IN LISTS GLOB2_WEB_VARIANTS)
   add_executable(${runtime} EXCLUDE_FROM_ALL $<TARGET_OBJECTS:glob2_web_${variant}>
                  $<TARGET_OBJECTS:glob2_web_${variant}_javascript>)
   glob2_web_link_options(${runtime} ${game_link})
+  target_link_directories(${runtime} PRIVATE "${sdl}/lib")
   target_link_libraries(${runtime} PRIVATE ${libraries})
   set_target_properties(${runtime} PROPERTIES OUTPUT_NAME index RUNTIME_OUTPUT_DIRECTORY "${out}"
                         LINK_DEPENDS "${link_inputs};${GLOB2_OUT}/asset-manifest.js" LINKER_LANGUAGE CXX
@@ -318,6 +322,7 @@ foreach(variant IN LISTS GLOB2_WEB_VARIANTS)
   add_executable(${harness} EXCLUDE_FROM_ALL "${production_objects}"
                  $<TARGET_OBJECTS:glob2_web_${variant}_javascript> ${test_objects})
   glob2_web_link_options(${harness} ${harness_link})
+  target_link_directories(${harness} PRIVATE "${sdl}/lib")
   target_link_libraries(${harness} PRIVATE ${libraries})
   set_target_properties(${harness} PROPERTIES OUTPUT_NAME script-tests RUNTIME_OUTPUT_DIRECTORY "${out}"
                         LINK_DEPENDS "${link_inputs}" LINKER_LANGUAGE CXX)

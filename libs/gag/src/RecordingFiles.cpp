@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <GameplayRecording.h>
+#include "ThreadSupport.h"
 #include <Toolkit.h>
 #include <FileManager.h>
 #include "RecordingSession.h"
@@ -35,6 +36,7 @@ struct Library
 		{ std::lock_guard lock(mutex); status.busy = true; status.error.clear(); }
 		worker = std::thread([this,operation = std::move(operation)]
 		{
+			GAGCore::ThreadSupport::setCurrentThreadRole(GAGCore::ThreadSupport::ThreadRole::Worker);
 			try { operation(); }
 			catch (const std::exception &e) { std::lock_guard lock(mutex); status.error = e.what(); }
 			{ std::lock_guard lock(mutex); status.busy = false; }

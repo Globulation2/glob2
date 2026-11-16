@@ -469,6 +469,65 @@
         }
       ]
     },
+    "terrain-direct-hd-fragment": {
+      "stage": "fragment",
+      "set": 3,
+      "binding": 0,
+      "members": [
+        {
+          "name": "mapSize",
+          "type": "vec2"
+        },
+        {
+          "name": "artSize",
+          "type": "vec2"
+        },
+        {
+          "name": "coverageSize",
+          "type": "vec2"
+        },
+        {
+          "name": "variantSize",
+          "type": "vec2"
+        },
+        {
+          "name": "hdCoverageSize",
+          "type": "vec2"
+        },
+        {
+          "name": "hdPreviousSize",
+          "type": "vec2"
+        },
+        {
+          "name": "hdBaseSize",
+          "type": "vec2"
+        },
+        {
+          "name": "animationTime",
+          "type": "float"
+        },
+        {
+          "name": "wholeMapValue",
+          "type": "float"
+        },
+        {
+          "name": "artTilePixels",
+          "type": "float"
+        },
+        {
+          "name": "hdTilePixels",
+          "type": "float"
+        },
+        {
+          "name": "hdPreviousTile",
+          "type": "float"
+        },
+        {
+          "name": "hdBaseTile",
+          "type": "float"
+        }
+      ]
+    },
     "terrain-compose-fragment": {
       "stage": "fragment",
       "set": 3,
@@ -547,6 +606,7 @@
     "cloud",
     "point",
     "terrain-direct",
+    "terrain-direct-hd",
     "terrain-compose",
     "terrain-reduce"
   ],
@@ -657,6 +717,56 @@
       "stage": "fragment",
       "set": 2,
       "binding": 7,
+      "type": "sampler2D"
+    }
+  ],
+  "terrainDirectHdTextures": [
+    {
+      "name": "hdIndex",
+      "layoutName": "terrain_direct_hdIndex",
+      "stage": "fragment",
+      "set": 2,
+      "binding": 8,
+      "type": "sampler2D"
+    },
+    {
+      "name": "hdCoverage",
+      "layoutName": "terrain_direct_hdCoverage",
+      "stage": "fragment",
+      "set": 2,
+      "binding": 9,
+      "type": "sampler2D"
+    },
+    {
+      "name": "hdEdges",
+      "layoutName": "terrain_direct_hdEdges",
+      "stage": "fragment",
+      "set": 2,
+      "binding": 10,
+      "type": "sampler2D"
+    },
+    {
+      "name": "hdPreviousIndex",
+      "layoutName": "terrain_direct_hdPreviousIndex",
+      "stage": "fragment",
+      "set": 2,
+      "binding": 11,
+      "type": "sampler2D"
+    },
+    {
+      "name": "hdPreviousCoverage",
+      "layoutName": "terrain_direct_hdPreviousCoverage",
+      "stage": "fragment",
+      "set": 2,
+      "binding": 12,
+      "type": "sampler2D"
+    },
+    {
+      "name": "hdPreviousEdges",
+      "layoutName": "terrain_direct_hdPreviousEdges",
+      "stage": "fragment",
+      "set": 2,
+      "binding": 13,
       "type": "sampler2D"
     }
   ],
