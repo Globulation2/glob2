@@ -915,8 +915,11 @@ namespace GAGCore
         // returns is simply wanted again. Readers own copied pixels, never a
         // borrowed pointer across this declaration: eviction below may delete
         // any sprite's retired frames.
+        // Released frames hold only their texture (gpuBytes is legacy GL's).
         const auto surfaceBytes = [](DrawableSurface *surface) {
-            return surface ? size_t(surface->getW()) * surface->getH() * 4 + surface->gpuBytes : size_t(0);
+            if (!surface) return size_t(0);
+            return (surface->hasPixels() ? size_t(surface->getW()) * surface->getH() * 4 : size_t(0)) +
+                surface->gpuBytes;
         };
         for (unsigned frame = 0; frame < images.size(); ++frame) {
             const auto retired = stream.retired.find(frame);
@@ -1143,7 +1146,10 @@ namespace GAGCore
     }
     void Sprite::releaseDrawnHighResolution(unsigned index)
     {
-        if (sampledByBaseFrame || highResolutionDeferred(fileName) || highResolutionAtlasWanted(fileName) ||
+        // Deferred banks release too (decor): a reset that loses the textures
+        // asks their windows for the frames again (discardUnbackedHighResolution).
+        // Banks the compositor samples on the CPU keep their pixels.
+        if (sampledByBaseFrame || highResolutionAtlasWanted(fileName) ||
             pixelSampledHighResolutionNames.contains(fileName) || index >= experimentImages.size() ||
             !experimentImages[index])
             return;
@@ -1213,6 +1219,32 @@ namespace GAGCore
             return false;
         };
         for (auto *sprite : loadedSprites) {
+            if (highResolutionDeferred(sprite->fileName)) {
+                // A deferred bank keeps the frames that still have pixels and
+                // forgets only those its window must decode again.
+                auto &stream = deferredHighResolution[sprite];
+                bool lost = false;
+                for (unsigned frame = 0; frame < sprite->experimentImages.size(); ++frame) {
+                    auto *&image = sprite->experimentImages[frame];
+                    auto *&rotated = sprite->experimentRotated[frame];
+                    if (!(image && !image->hasPixels()) && !(rotated && !rotated->orig->hasPixels())) continue;
+                    if (const auto retired = stream.retired.find(frame); retired != stream.retired.end()) {
+                        retiredHighResolutionTotal -= retired->second->bytes;
+                        retiredHighResolution.erase(retired->second);
+                        stream.retired.erase(retired);
+                    }
+                    delete image; image = nullptr;
+                    delete rotated; rotated = nullptr;
+                    stream.completed.erase(frame);
+                    portableDrawnFrames.erase({sprite, frame});
+                    lost = true;
+                }
+                if (!lost) continue;
+                sprite->clearTeamColorCache();
+                sprite->recomputeBlockCompleteHD();
+                lostHighResolution.insert(sprite);
+                continue;
+            }
             const auto pending = pendingHighResolution.find(sprite);
             const bool staged = pending != pendingHighResolution.end() && pending->second.prepared &&
                 unbacked(*pending->second.prepared);
@@ -1236,7 +1268,17 @@ namespace GAGCore
         advanceBandReload();
         // Reload what a context rebuild discarded, under the renderer now active.
         for (auto *sprite : lostHighResolution) {
-            if (pendingHighResolution.contains(sprite) || highResolutionDeferred(sprite->fileName)) continue;
+            if (!loadedSprites.contains(sprite)) continue;
+            if (highResolutionDeferred(sprite->fileName)) {
+                // Declare the window again: its lost frames are no longer
+                // completed, so they queue; in-flight and resident ones stay.
+                auto &stream = deferredHighResolution[sprite];
+                const auto window = stream.order;
+                stream.wanted.clear();
+                sprite->setHighResolutionFrames(window);
+                continue;
+            }
+            if (pendingHighResolution.contains(sprite)) continue;
             sprite->queueHighResolutionReload(true);
         }
         lostHighResolution.clear();

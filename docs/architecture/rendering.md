@@ -64,7 +64,9 @@ one reload a frame, and demands its team layers with its base ones; once a
 frame's HD base layer is uploaded its CPU pixels go, unless something samples
 them through `Sprite::baseFrame` (a released frame then answers with its native
 frame and reloads with pixels; `Sprite::drawFrame` serves draw-only callers such
-as skin shadows), and a renderer reset reloads frames that had only textures; a frame draws in HD only once every
+as skin shadows), and a renderer reset, a lost device or rebuilding the portable
+renderer reloads frames that had only textures (a capture's offscreen pass draws
+such a frame's native layer); a frame draws in HD only once every
 layer its native frame has is loaded (a unit only once its whole action is), at
 most eight frames a frame draw in HD for the first time (each one uploads), and
 HD layers sample linearly with premultiplied alpha. Recoloured HD team layers,
@@ -93,7 +95,14 @@ are discarded, the streamed banks' frames retire into the shared budget for
 release their layers until the next demand. Decor HD frames stream there only
 while the portable renderer draws sprites from HD layers (past two screen pixels
 a logical pixel); below that it draws decor from native frames and retires them.
-Captures keep their own density and HD artwork.
+A view's decor window holds only the frames its cells draw (each 16 by 16
+cell page's decor frames are kept until the terrain changes, and the view widens
+by the decor's reach), not every frame of every material in view. Drawn decor
+HD frames free their CPU pixels like other drawn HD frames (the
+material banks, which composition samples, keep theirs); retired frames count
+only the pixels they still hold, and when a reset takes the textures, the bank
+keeps the frames that kept their pixels and declares its window again so the
+lost ones decode once more. Captures keep their own density and HD artwork.
 
 Terrain uses the shared CPU material compositor and bounded 16 by 16 cell pages
 on software and GPU backends; see [terrain materials](../assets/terrain-materials.md).
