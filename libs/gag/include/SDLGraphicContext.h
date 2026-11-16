@@ -1029,6 +1029,9 @@ namespace GAGCore
         std::vector<SpriteAtlasStamp> atlasStamps;
         std::vector<SDL_Rect> atlasRegions;
         bool atlasVariableSizes = false;
+        //! Frame (GraphicContext::frameIdentity) before which a sheet whose
+        //! device atlas could not be made does not try again: every draw tried.
+        std::uint64_t atlasRetryFrame = 0;
 		static void checkAllSpritesDrawn();
 		Color actColor;
 

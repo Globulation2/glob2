@@ -340,10 +340,16 @@ namespace GAGCore
 	// Using a sprite sheet lets us efficiently drawn terrain and water with a few calls
 	// to glDrawArrays, rather than 272 individual calls to glBegin...glEnd.
     bool Sprite::createDeviceTextureAtlas(int maximumTextureSize, bool variableSizes) {
-        if (images.empty() || dynamicTeamColor || std::any_of(rotated.begin(),rotated.end(),[](auto value){return value!=nullptr;})) return false;
+        // A sheet that cannot have an atlas (team-coloured or rotated frames,
+        // frames without pixels, too large, no atlas memory) tries again only
+        // after two seconds of frames, not on every draw of every frame.
+        const std::uint64_t frame = Toolkit::gc ? Toolkit::gc->frameIdentity() : 0;
+        if (!atlas && frame && frame < atlasRetryFrame) return false;
+        const auto refuse = [&] { atlasRetryFrame = frame + 120; return false; };
+        if (images.empty() || dynamicTeamColor || std::any_of(rotated.begin(),rotated.end(),[](auto value){return value!=nullptr;})) return refuse();
         std::vector<SpriteAtlasSource> sources; sources.reserve(images.size());
         for (std::size_t index=0;index<images.size();++index) {
-            auto *image=images[index]; if(!image || image->highResolutionSampling || !image->sdlsurface)return false;
+            auto *image=images[index]; if(!image || image->highResolutionSampling || !image->sdlsurface)return refuse();
             image->spriteSource=this;image->spriteFrame=index;
             sources.push_back({image->sdlsurface,{image->lifetimeIdentity(),image->contentRevision(),image->sdlsurface->w,image->sdlsurface->h}});
         }
@@ -359,7 +365,7 @@ namespace GAGCore
         atlas.reset();atlasMemory.reset();atlasStamps.clear();atlasRegions.clear();
         for(auto *image:images)image->textureInfo.reset();
         auto page=prepareSpriteRenderAtlas(sources,maximumTextureSize,variableSizes);
-        if(!page)return false;
+        if(!page)return refuse();
         AssetImage image(page->pixels.release());
         auto replacement=DrawableSurface::fromAssetImage(image,true,false);
         atlas=std::move(replacement);atlasMemory=std::move(page->memory);
