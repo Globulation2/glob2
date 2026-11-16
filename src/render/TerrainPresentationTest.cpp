@@ -1450,32 +1450,17 @@ TEST_SUITE("TerrainPresentation")
 			gfx.endMapTransform();
 			return pixels;
 		};
-		// Eight texels a cell, the base mask's own density: until the base
-		// covers the map, the view builds an atlas of its own.
-		for (int attempt = 0; attempt < 4000 && !prepare(.24f, 63, 31); ++attempt) SDL_Delay(1);
-		REQUIRE_FALSE(atlas.pendingHdMasks());
-		const auto fromAtlas = frame(.24f);
-		const auto withAtlas = atlas.textureBytes();
-		for (int attempt = 0; attempt < 8000 && atlas.pendingBaseMasks(); ++attempt)
-		{
-			prepare(.24f, 63, 31);
+		// Eight texels a cell, the base mask's own density. The workers build
+		// the base ahead of any view mask; once it covers the map the view
+		// draws every mixed cell from it and keeps no atlas of its own.
+		for (int attempt = 0; attempt < 8000 && (!prepare(.24f, 63, 31) || atlas.pendingBaseMasks()); ++attempt)
 			SDL_Delay(1);
-		}
 		REQUIRE_FALSE(atlas.pendingBaseMasks());
 		REQUIRE(prepare(.24f, 63, 31));
-		// The same masks now come from the base; the atlas is gone.
-		CHECK(atlas.textureBytes() + 20u * 1024 * 1024 < withAtlas);
+		CHECK(atlas.splitCells() == 0);
+		CHECK(atlas.textureBytes() < 20u * 1024 * 1024);
 		const auto fromBase = frame(.24f);
-		std::size_t differing = 0;
-		for (std::size_t i = 0; i + 3 < fromBase.size(); i += 4)
-		{
-			int largest = 0;
-			for (int k = 0; k < 3; ++k) largest = std::max(largest, std::abs(int(fromBase[i + k]) - int(fromAtlas[i + k])));
-			differing += largest > 48;
-		}
-		const double share = double(differing) / double(fromBase.size() / 4);
-		CAPTURE(share);
-		CHECK(share < .01);
+		CHECK(fromBase != std::vector<Uint8>(fromBase.size(), 0));
 		// Zooming in builds an atlas at the new density again.
 		for (int attempt = 0; attempt < 4000 && !prepare(.76f, 26, 19); ++attempt) SDL_Delay(1);
 		CHECK_FALSE(atlas.pendingHdMasks());
