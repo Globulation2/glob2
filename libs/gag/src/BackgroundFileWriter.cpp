@@ -183,7 +183,7 @@ namespace GAGCore
         {
             // A previous worker cleared writing before exiting, so this join is short.
             if (worker.joinable()) worker.join();
-            try { worker = ThreadSupport::launch([this] { drain(); }); }
+            try { worker = ThreadSupport::launch([this] { drain(); }, ThreadSupport::ThreadRole::Background); }
             catch (const std::exception &)
             {
                 lock.lock();

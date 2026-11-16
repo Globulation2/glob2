@@ -38,7 +38,8 @@ class Pool
 		try
 		{
 			for (unsigned i = 0; i < count; ++i)
-				threads.push_back(GAGCore::ThreadSupport::launch([this] { work(); }));
+				threads.push_back(GAGCore::ThreadSupport::launch([this] { work(); },
+				                                                  GAGCore::ThreadSupport::ThreadRole::Background));
 		}
 		catch (const std::system_error &)
 		{

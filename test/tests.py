@@ -268,6 +268,7 @@ UNIT_TESTS = [
     '#libs/gag/src/GraphicContextDeviceSkinsTest.cpp',
     '#libs/gag/src/FontMetricsTest.cpp',
     '#libs/gag/src/PackedArrayTest.cpp',
+    '#libs/gag/src/ThreadSupportTest.cpp',
     '#libs/gag/src/EventQueueTest.cpp',
 
     '#libs/gag/src/GameplayRecordingTest.cpp',

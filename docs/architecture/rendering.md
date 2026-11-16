@@ -385,6 +385,20 @@ also remains the headless default and the equivalence reference.
   background is therefore not caught up after resuming, as in serial execution.
   GUI updates use `SDL_GetTicks()` instead: touch event timestamps and momentum
   must share the SDL clock, including after the session clock has been suspended.
+- Threads carry a scheduling role (`GAGCore::ThreadSupport::ThreadRole`). The windowed
+  client's main thread and the simulation thread are *interactive*; pools they wait on
+  (the compute executor's simulation barriers and presentation, parallel presentation
+  batches, asset streaming) are *normal*, which every `ThreadSupport::launch` thread
+  starts as; work nothing waits on (`render/BackgroundWork.h` composition, the
+  background file writer) is *background*. Roles map to QoS classes on Apple
+  platforms (user-interactive, user-initiated, utility; the last also prefers
+  efficiency cores), thread priorities on Windows (above normal, normal, below normal)
+  and nice values on Linux and Android (−4, 0, 5). Unprivileged Linux processes cannot
+  go below nice 0, so there only *background* takes effect. Headless commands leave the
+  main thread at the default, so batch runs do not crowd the desktop. Roles never change
+  what a tick computes; `GLOB2_THREAD_PRIORITY=0` turns them off for comparisons.
+  Lowering a pool the simulation waits on would slow ticks under load (priority
+  inversion), so only pools off the critical path are *background*.
 - Values the client sets while drawing and preparation reads (viewport, drawn map size,
   overlay, observed building) go through `ClientRequests`, never through `Game` or `Map`
   fields. To check for races, build with `CXXFLAGS="-g -fsanitize=thread"
