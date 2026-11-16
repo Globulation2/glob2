@@ -1458,21 +1458,23 @@ TEST_SUITE("TerrainPresentation")
 			return pixels;
 		};
 		// Eight texels a cell, the base mask's own density: until the base
-		// covers the map, the view builds an atlas of its own.
-		for (Patience waiting; waiting() && !prepare(.24f, 63, 31);) SDL_Delay(1);
+		// covers the map, the view builds an atlas of its own. Density counts
+		// drawable pixels, so a high-density display needs a smaller map scale.
+		const float baseScale = .24f / float(gfx.getRasterScale());
+		for (Patience waiting; waiting() && !prepare(baseScale, 63, 31);) SDL_Delay(1);
 		REQUIRE_FALSE(atlas.pendingHdMasks());
-		const auto fromAtlas = frame(.24f);
+		const auto fromAtlas = frame(baseScale);
 		const auto withAtlas = atlas.textureBytes();
 		for (Patience waiting; waiting() && atlas.pendingBaseMasks();)
 		{
-			prepare(.24f, 63, 31);
+			prepare(baseScale, 63, 31);
 			SDL_Delay(1);
 		}
 		REQUIRE_FALSE(atlas.pendingBaseMasks());
-		REQUIRE(prepare(.24f, 63, 31));
+		REQUIRE(prepare(baseScale, 63, 31));
 		// The same masks now come from the base; the atlas is gone.
 		CHECK(atlas.textureBytes() + 20u * 1024 * 1024 < withAtlas);
-		const auto fromBase = frame(.24f);
+		const auto fromBase = frame(baseScale);
 		std::size_t differing = 0;
 		for (std::size_t i = 0; i + 3 < fromBase.size(); i += 4)
 		{
@@ -2261,29 +2263,32 @@ TEST_SUITE("TerrainPresentation")
 			GAGCore::Sprite::finishHighResolution();
 			draw(zoom);
 		};
+		// Zooms below are screen pixels per logical pixel; a high-density
+		// display draws more screen pixels at the same map zoom.
+		const float screenPixel = 1.f / float(globals->gfx->getRasterScale());
 
 		// A view at one screen pixel per logical pixel composes native frames
 		// and asks for no HD frame.
-		settle(1);
+		settle(1 * screenPixel);
 		CHECK(compositor.scale() == 1);
 		CHECK(cache.samplingResolution() == 1);
 		CHECK(resident(false) == 0);
 
 		// Zooming in takes HD frames at once; decor still draws native sprites.
-		settle(2);
+		settle(2 * screenPixel);
 		CHECK(compositor.scale() == 4);
 		CHECK(cache.samplingResolution() > 1);
 		CHECK(resident(false) > 0);
 		CHECK(resident(true) == 0);
 
 		// Zooming back out keeps them until the view has wanted less for the delay.
-		draw(1);
+		draw(1 * screenPixel);
 		CHECK(compositor.scale() == 4);
 		CHECK(cache.samplingResolution() > 1);
 
 		// Then pages compose native frames, HD pages go and frames retire.
 		GAGCore::Sprite::setHighResolutionDetailDelay(0);
-		draw(1);
+		draw(1 * screenPixel);
 		CHECK(compositor.scale() == 1);
 		CHECK(cache.samplingResolution() == 1);
 		CHECK(std::all_of(cache.chunks.begin(), cache.chunks.end(),
@@ -2295,7 +2300,7 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(GAGCore::Sprite::retiredHighResolutionBytes() == 0);
 
 		// And zooming in again raises detail on the next frame.
-		settle(1.25f);
+		settle(1.25f * screenPixel);
 		CHECK(compositor.scale() == 4);
 		CHECK(resident(false) > 0);
 	}
