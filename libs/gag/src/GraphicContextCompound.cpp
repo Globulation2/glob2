@@ -477,6 +477,18 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
                 return;
             }
             if (renderer == deviceRenderer.get() && surface->highResolutionSampling) {
+                // A changed surface (a terrain page that animation rewrote)
+                // builds its mip chain here, on the graphics thread: at most
+                // 8 MiB of level-zero pixels a frame. Past that a surface the
+                // adapter already holds draws its previous upload this frame.
+                const bool rebuild = surface->preparedUploadRevision != surface->contentRevision() || surface->preparedMips.empty();
+                const std::size_t buildBytes = std::size_t(pixels->w) * pixels->h * 4;
+                constexpr std::size_t MipBuildBytesPerFrame = 8u << 20;
+                if (rebuild && deviceMipBuildBytesThisFrame && deviceMipBuildBytesThisFrame + buildBytes > MipBuildBytesPerFrame) {
+                    if (spriteBatch.owner == this) spriteBatch.flush();
+                    if (renderer->blitCached(surface, SDL_Rect{sx,sy,sw,sh}, SDL_FRect{x,y,w,h}, alpha)) { ++drawCalls; return; }
+                }
+                if (rebuild) deviceMipBuildBytesThisFrame += buildBytes;
                 const auto levels = deviceMipLevels(surface, pixels);
                 if (spriteBatch.owner == this) spriteBatch.flush();
                 renderer->blitMipmapped(surface, pixels, surface->contentRevision(), levels,

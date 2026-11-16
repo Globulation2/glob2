@@ -673,6 +673,8 @@ namespace GAGCore
         unsigned deviceReleasesThisFrame = 0;
         //! DrawableSurface::takeDeviceUpload calls this frame (reset in nextFrame).
         unsigned deviceUploadsThisFrame = 0;
+        //! Level-zero bytes whose mip chains drawSurface built this frame (reset in nextFrame).
+        std::size_t deviceMipBuildBytesThisFrame = 0;
         bool snapshotTrimPending = false;
         RendererBackend configuredBackend = RendererBackend::Software;
         std::shared_ptr<DeviceSkinState> deviceSkinState;
