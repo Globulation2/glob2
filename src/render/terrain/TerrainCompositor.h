@@ -414,6 +414,15 @@ class Compositor
     // visiting every visible cell.
     const std::vector<std::uint32_t> &pageUsage(const SceneMap &, int wx, int wy) const;
     mutable std::unordered_map<std::uint64_t, std::vector<std::uint32_t>> usagePages;
+    // The decor frames each 16x16 page draws, kept like usagePages, so the HD
+    // decor window holds only frames visible cells use, not every frame of
+    // every material in view.
+    const std::vector<DecorLayer> &pageDecor(const SceneMap &, int wx, int wy) const;
+    mutable std::unordered_map<std::uint64_t, std::vector<DecorLayer>> decorPages;
+    // The view's decor frames, set while its windows are declared.
+    std::vector<DecorLayer> visibleDecor;
+    bool visibleDecorSet = false;
+    void collectVisibleDecor(const SceneMap &, int left, int top, int right, int bottom);
     mutable std::uint64_t usageIdentity = 0, usageRevision = 0;
     mutable std::uint32_t usageSeed = 0;
     // Nonperiodic custom art uses variant zero as its shared boundary source.

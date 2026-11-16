@@ -95,7 +95,10 @@ are discarded, the streamed banks' frames retire into the shared budget for
 release their layers until the next demand. Decor HD frames stream there only
 while the portable renderer draws sprites from HD layers (past two screen pixels
 a logical pixel); below that it draws decor from native frames and retires them.
-Drawn decor HD frames free their CPU pixels like other drawn HD frames (the
+A view's decor window holds only the frames its cells draw (each 16 by 16
+cell page's decor frames are kept until the terrain changes, and the view widens
+by the decor's reach), not every frame of every material in view. Drawn decor
+HD frames free their CPU pixels like other drawn HD frames (the
 material banks, which composition samples, keep theirs); retired frames count
 only the pixels they still hold, and when a reset takes the textures, the bank
 keeps the frames that kept their pixels and declares its window again so the
