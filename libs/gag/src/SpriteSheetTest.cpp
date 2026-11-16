@@ -617,18 +617,19 @@ TEST_CASE("the unit sheet keeps no HD pixels after upload and reloads once its t
         CHECK(textures > 0);
     };
     requireReleased();
-    // The shader draws both layers from their textures alone.
+    // The shader draws both layers from their textures alone. drawFrame, not
+    // baseFrame: CPU sampling would keep the HD pixels from then on.
     context->drawSprite(0, 0, &units, index);
     context->nextFrame();
-    CHECK(units.baseFrame(index) == units.experimentImages[index]);
+    CHECK(units.drawFrame(index) == units.experimentImages[index]);
 
     // A context rebuild frees every texture. Frames without pixels have nothing
     // left: the sheet draws native artwork at once and reloads HD from disk.
     GAGCore::GraphicContext::releaseSurfaceTextures();
     CHECK(units.experimentImages[index] == nullptr);
     CHECK(units.experimentRotated[index] == nullptr);
-    REQUIRE(units.baseFrame(index) == units.images[index]);
-    CHECK(units.baseFrame(index)->hasPixels());
+    REQUIRE(units.drawFrame(index) == units.images[index]);
+    CHECK(units.drawFrame(index)->hasPixels());
     GAGCore::GraphicContext::restoreSurfaceTextures();
     context->drawSprite(0, 0, &units, index);
     context->nextFrame();

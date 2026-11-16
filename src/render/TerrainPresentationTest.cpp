@@ -337,7 +337,14 @@ void layeredCache(bool gpu, bool hd = false)
 	if (hd)
 	{
 		GAGCore::Sprite::setHighResolution(true);
-		REQUIRE(globals->terrain->baseFrame(0)->getW() == 128);
+		// baseFrame only demands the HD layers; wait for them to load. On legacy
+		// GL this sheet keeps its HD layers as textures alone, which baseFrame
+		// (CPU sampling) does not return, so check the layer itself.
+		globals->terrain->baseFrame(0);
+		GAGCore::Sprite::finishHighResolution();
+		REQUIRE(globals->terrain->experimentImages.size() > 0);
+		REQUIRE(globals->terrain->experimentImages[0]);
+		REQUIRE(globals->terrain->experimentImages[0]->getW() == 128);
 	}
 	// Exercise every edge mask, torus neighbors, water tiles, and mixed layers.
 	for (int y = 0; y < 32; ++y)
