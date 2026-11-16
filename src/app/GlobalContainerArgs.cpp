@@ -5,6 +5,7 @@
 #include "GlobalContainer.h"
 #include "CommandLine.h"
 #include "ComputeThreads.h"
+#include "DeviceProfile.h"
 #include "field/GradientBackend.h"
 #include <cstdlib>
 #include <cstring>
@@ -129,6 +130,11 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
 		GAGCore::DrawableSurface::translationPicturesDirectory = r.get("--output-dir");
 	if (r.command.rfind("dev dump-", 0) == 0)
 		runNoX = true;
+	// The device profile decides Auto defaults; a windowed run also measures
+	// the desktop GPU's memory in the background.
+	DeviceProfile::initialize(r.has("--device-tier") ? DeviceProfile::parseTier(r.get("--device-tier")) : std::nullopt,
+							  !runNoX && (r.command == "play" || r.command == "replay"));
+	settings.resolveAdaptiveDefaults();
 	Online::acceptLaunchRequest(r);
 }
 

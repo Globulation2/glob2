@@ -78,7 +78,20 @@ public:
 	}
 	bool hiveMindEnabled;
 	bool hiveMindSupervision;
-	bool highResolutionArtwork;
+	// Device-adaptive preferences: Auto follows DeviceProfile; Off and On are
+	// the player's explicit choice and are never overridden.
+	enum class AdaptiveChoice : std::uint8_t { Auto, Off, On };
+	AdaptiveChoice highResolutionArtworkChoice = AdaptiveChoice::Auto;
+	// The effective value every renderer reads: the explicit choice, or Auto
+	// resolved against the device profile. A session step-down lowers it on
+	// Auto for the rest of the run without saving anything.
+	bool highResolutionArtwork = true;
+	bool highResolutionArtworkSteppedDown = false;
+	void setHighResolutionArtworkChoice(AdaptiveChoice choice);
+	// Resolve Auto values against DeviceProfile::current() (load() calls it).
+	void resolveAdaptiveDefaults();
+	static const char *adaptiveChoiceName(AdaptiveChoice choice);
+	static std::optional<AdaptiveChoice> parseAdaptiveChoice(const std::string &text);
 	// Local rendering preferences; never serialized into games or orders.
 	bool showColonySkins = true;
 	bool clouds;

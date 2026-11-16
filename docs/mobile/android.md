@@ -37,7 +37,8 @@ ZIP alignment, the signature and APK digest. Store distribution requires separat
 signing arrangements. Use `armeabi-v7a` or `x86_64` for other supported targets.
 Android packages store native libraries uncompressed and aligned so Android can
 load them directly from the APK. The game library's linker export list exposes
-only the SDL entry point and the Java document picker callback. Update
+only the SDL entry point, the Java document picker callback and the memory-trim
+callbacks. Update
 `platforms/mobile/android/libmain.exports` if Android or SDL needs to look up a
 new entry point by name.
 The F-Droid build mode adds `--fdroid` to the Android build, sign, install, and

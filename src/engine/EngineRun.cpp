@@ -10,6 +10,7 @@
 #include <EventQueue.h>
 #include <ApplicationHost.h>
 #include <Toolkit.h>
+#include <StringTable.h>
 #include <FormatableString.h>
 
 #include "AINames.h"
@@ -17,6 +18,7 @@
 #include "ConnectionOverlay.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
+#include "DeviceAdaptationSession.h"
 #include "tutorial/TutorialModel.h"
 #include "sim/snapshot/SnapshotChecksum.h"
 #include "hive/HiveClient.h"
@@ -447,6 +449,12 @@ void Engine::drawFrame(MainLoopState& st, bool everyFrame, const PresentationFra
 			if (perf.lastPresentation && perf.clock() - perf.lastPresentation > 2000000000ULL)
 				perf.windowFlags |= PerformanceTelemetry::PresentationGap;
 			perf.presented();
+			// O(1): the step-down's slow-frame ring. Fast-forward presets skip
+			// frames on purpose, so only normal-cadence drawing counts.
+			if (globalContainer->settings.getGameSpeedRenderInterval() <= 1)
+				DeviceAdaptation::framePresented();
+			if (DeviceAdaptation::session().takeNotice())
+				gui.addNotice(Toolkit::getStringTable()->getString("[artwork stepped down notice]"));
 		}
 		else
 			perf.record(PerformanceTelemetry::Id::RenderDeferred, 1);
@@ -1268,6 +1276,8 @@ void Engine::beginSession(Uint64 now)
 		perf.describe(metadata.str());
 	}
 	printTurnTelemetrySession();
+	if (!globalContainer->runNoX)
+		DeviceAdaptation::matchStarted();
 	// Establish loaded-session coverage before a simulation thread can publish.
 	configureSessionTelemetry(*session, perf);
 	establishObservation(!globalContainer->runNoX);

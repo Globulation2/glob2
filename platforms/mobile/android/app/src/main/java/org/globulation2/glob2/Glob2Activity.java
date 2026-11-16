@@ -58,6 +58,37 @@ public final class Glob2Activity extends SDLActivity {
         });
     }
 
+    // Device profile inputs, read once by the native startup thread:
+    // {isLowRamDevice, memory class MiB, large memory class MiB, total memory bytes}.
+    public long[] getMemoryProfile() {
+        long[] values = new long[] {0, 0, 0, 0};
+        android.app.ActivityManager manager = (android.app.ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        if (manager == null) return values;
+        android.app.ActivityManager.MemoryInfo info = new android.app.ActivityManager.MemoryInfo();
+        manager.getMemoryInfo(info);
+        values[0] = manager.isLowRamDevice() ? 1 : 0;
+        values[1] = manager.getMemoryClass();
+        values[2] = manager.getLargeMemoryClass();
+        values[3] = info.totalMem;
+        return values;
+    }
+
+    // SDL 3.4 turns every onTrimMemory level into one ungraded
+    // SDL_EVENT_LOW_MEMORY. Pass the level too; the game thread queues it and
+    // responds by severity (src/app/DeviceAdaptation.cpp).
+    private static native void nativeTrimMemory(int level);
+    private static native void nativeSystemLowMemory();
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        if (!SDLActivity.mBrokenLibraries) nativeTrimMemory(level);
+    }
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        if (!SDLActivity.mBrokenLibraries) nativeSystemLowMemory();
+    }
+
     private static volatile int[] uiInsets = new int[] {0, 0, 0, 0};
     public static int[] getUiInsets() { return uiInsets; }
     private static volatile int keyboardInset = 0;

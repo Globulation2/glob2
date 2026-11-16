@@ -7110,3 +7110,29 @@ Standing order update failed. Your order is paused locally; retry the control.
 Replay stopped: %0
 [replay stopped help]
 The replay was recorded by a different version of the game or is damaged, so it cannot be played back.
+[settings Auto artwork high %0]
+Automatic: high resolution on this device (%0). Applies on the next game or editor load.
+[settings Auto artwork original %0]
+Automatic: original on this device (%0). Applies on the next game or editor load.
+[settings Auto artwork stepped down memory]
+Automatic: original for the rest of this session because the device ran low on memory.
+[settings Auto artwork stepped down slow]
+Automatic: original for the rest of this session because the game was running slowly.
+[settings Keep original artwork]
+Keep original artwork on this device
+[settings device memory %0]
+%0 GB RAM
+[settings device low RAM]
+low-memory device
+[settings device cores %0]
+%0 processor threads
+[settings device video memory %0]
+%0 GB video memory
+[settings device tier override %0]
+device tier set to %0
+[settings device unknown]
+memory not reported
+[artwork stepped down notice]
+High-resolution artwork is off for this session to keep the game running smoothly. Choose Original in Settings to keep it off.
+[room large map for device]
+This map is larger than this device's default and may run slowly here.

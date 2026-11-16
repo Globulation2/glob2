@@ -214,6 +214,7 @@ set(GLOB2_ENGINE_TESTS_2_SOURCES
     src/ai/maxima/MaximaImplementationIntegrationTest.cpp
     src/render/TerrainPresentationTest.cpp
     src/render/torus/TorusRenderIntegrationTest.cpp
+    src/app/AdaptiveSettingsTest.cpp
     src/game/orders/FarmAreaTest.cpp
     src/game/GameSpeedTest.cpp
     src/team/IntrusivePopulationSaveTest.cpp
@@ -556,6 +557,7 @@ set(GLOB2_UNIT_TESTS_0_SOURCES
     libs/gag/src/SpriteLoadTest.cpp
     libs/gag/src/SpriteRenderAtlasTest.cpp
     libs/gag/src/RenderFramePacerTest.cpp
+    src/app/DeviceProfileTest.cpp
     libs/gag/src/RenderDeviceTest.cpp
     libs/gag/src/ProgrammableGLDeviceTest.cpp
     libs/gag/src/SDLGPUDeviceTest.cpp
@@ -804,6 +806,8 @@ set(GLOB2_UNIT_TESTS_REUSED_CLIENT_SOURCES
     src/field/VulkanGradient.cpp
     src/field/WebGPUGradient.cpp
     src/app/cli/CommandLine.cpp
+    src/app/DeviceProfile.cpp
+    src/app/DeviceAdaptation.cpp
     src/map/TerrainRegistry.cpp
     src/map/TerrainCatalog.cpp
     src/map/CellRules.cpp
@@ -1172,6 +1176,7 @@ set(GLOB2_SIM_TESTS_REUSED_CLIENT_SOURCES
     src/app/GlobalContainer.cpp
     src/app/Settings.cpp
     src/app/SystemLanguage.cpp
+    src/app/DeviceProfile.cpp
     src/app/CompileProfile.cpp
     src/online/SimVersion.cpp
     src/net/message/OrderMessages.cpp
@@ -1473,6 +1478,7 @@ set(GLOB2_ANDROID_ENGINE_TESTS_1_SOURCES
     src/ai/maxima/MaximaImplementationIntegrationTest.cpp
     src/render/TerrainPresentationTest.cpp
     src/render/torus/TorusRenderIntegrationTest.cpp
+    src/app/AdaptiveSettingsTest.cpp
     src/game/orders/FarmAreaTest.cpp
     src/game/GameSpeedTest.cpp
     src/team/IntrusivePopulationSaveTest.cpp
@@ -1827,6 +1833,7 @@ set(GLOB2_ANDROID_UNIT_TESTS_0_SOURCES
     libs/gag/src/SpriteLoadTest.cpp
     libs/gag/src/SpriteRenderAtlasTest.cpp
     libs/gag/src/RenderFramePacerTest.cpp
+    src/app/DeviceProfileTest.cpp
     libs/gag/src/RenderDeviceTest.cpp
     libs/gag/src/ProgrammableGLDeviceTest.cpp
     libs/gag/src/SDLGPUDeviceTest.cpp
@@ -2083,6 +2090,8 @@ set(GLOB2_ANDROID_UNIT_REUSED_SOURCES
     src/field/VulkanGradient.cpp
     src/field/WebGPUGradient.cpp
     src/app/cli/CommandLine.cpp
+    src/app/DeviceProfile.cpp
+    src/app/DeviceAdaptation.cpp
     src/map/TerrainRegistry.cpp
     src/map/TerrainCatalog.cpp
     src/map/CellRules.cpp

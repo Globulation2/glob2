@@ -363,9 +363,10 @@ static void run(int width,int height,bool gl,bool expanded)
         REQUIRE(s.highResolutionArtwork==originalArtwork);
         screen.selectCategory(SettingsScreen::Category::Display);
         const auto capabilities=globalContainer->gfx->rendererCapabilities();
-        REQUIRE(screen.changeSetting("graphics.artwork",!originalArtwork)==capabilities.textureFiltering);
+        // Index 0 is Automatic; 1 Original and 2 High resolution are explicit.
+        REQUIRE(screen.changeSetting("graphics.artwork",originalArtwork ? 1 : 2)==capabilities.textureFiltering);
         Settings saved;saved.load();REQUIRE(saved.highResolutionArtwork==(capabilities.textureFiltering ? !originalArtwork : originalArtwork));
-        screen.changeSetting("graphics.artwork",originalArtwork);
+        screen.changeSetting("graphics.artwork",0);
         screen.selectCategory(SettingsScreen::Category::Display);
         const bool previousTorus=s.automaticTorus;
         REQUIRE(screen.changeSetting("graphics.torus",!previousTorus)==capabilities.torus);
