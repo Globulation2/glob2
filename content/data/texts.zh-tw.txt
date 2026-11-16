@@ -5049,9 +5049,9 @@ AI 遙測
 [stat prestige about]
 殖民地的聲望，由最高等級的建築物獲得。設有聲望目標的對局會在達到目標時結束。
 [stat prestige needed]
-Prestige needed to win
+獲勝所需聲望
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+殖民地若要以聲望獲勝仍須取得的聲望：足以讓對局的聲望總和達到目標，並超越其他所有存活的殖民地。僅在對局設有聲望目標時記錄。
 [stat band combat]
 戰鬥
 [stat band starvation]

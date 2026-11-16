@@ -5049,9 +5049,9 @@ Prestige
 [stat prestige about]
 Koloniens prestige, optjent med bygninger på højeste niveau. En kamp med et prestigemål slutter, når målet nås.
 [stat prestige needed]
-Prestige needed to win
+Prestige nødvendig for at vinde
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+Den prestige, kolonien stadig skal optjene for at vinde på prestige: nok til, at kampens samlede prestige når målet, og til at overgå alle andre overlevende kolonier. Registreres kun, når kampen har et prestigemål.
 [stat band combat]
 Kamp
 [stat band starvation]

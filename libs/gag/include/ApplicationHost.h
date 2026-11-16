@@ -137,6 +137,11 @@ void simulationAdvanced(std::uint32_t tick);
 void matchFrame(bool paused);
 // Whether the torus overview replaced the flat map on the latest match frame.
 void overviewDrawn(bool drawn, bool settled);
+// What the in-game sidebar drew on the latest match frame: its panel (a view
+// such as "construction" or "flags", or the selected entity's panel) and the
+// selection mode ("none", "tool", ...). Lets tests wait for interface state
+// rather than for exact pixels, which texture preparation may refine later.
+void hudDrawn(const char *panel, const char *selection);
 // Read-only presentation diagnostic for the active multiplayer room.
 void roomReady(bool canStart);
 // Whether the custom-game lobby can launch its current map.

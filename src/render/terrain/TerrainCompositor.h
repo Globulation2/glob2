@@ -74,6 +74,9 @@ class Compositor
     void declareVisible(int time, const SceneMap &, int left, int top, int right, int bottom, bool frames);
 	Recipe describe(const SceneMap &, int x, int y) const;
 	Recipe describeOverview(const SceneMap &, int x, int y) const;
+	// The colour the overview draws a vertex of this terrain with: a saved
+	// custom terrain's own overview colour, or its material's preview.
+	std::array<unsigned char, 3> overviewColor(const SceneMap &, TerrainType) const;
 	// Coverage of one mixed cell at one sampling scale. It depends on the cell's
 	// geometry, never on the animation phase, so a page can keep it and re-blend
 	// only the textures when an animated material changes phase.
@@ -204,6 +207,58 @@ class Compositor
     // Published material revisions own only composition data. A later prepare
     // can replace animated pixels without invalidating a running CPU batch.
     using MaterialPixels = std::vector<std::array<unsigned char, 4>>;
+    // Prepared pixels shared, copy on write, with the CPU snapshots published
+    // from them, so a snapshot holds no second copy of an unchanged texture.
+    class SharedPixels
+    {
+        std::shared_ptr<MaterialPixels> pixels;
+        static const MaterialPixels &none()
+        {
+            static const MaterialPixels empty;
+            return empty;
+        }
+      public:
+        SharedPixels() = default;
+        SharedPixels &operator=(MaterialPixels &&replacement)
+        {
+            if (replacement.empty()) pixels.reset();
+            else pixels = std::make_shared<MaterialPixels>(std::move(replacement));
+            return *this;
+        }
+        const MaterialPixels &get() const { return pixels ? *pixels : none(); }
+        bool empty() const { return get().empty(); }
+        std::size_t size() const { return get().size(); }
+        std::size_t capacity() const { return get().capacity(); }
+        const MaterialPixels::value_type &operator[](std::size_t i) const { return get()[i]; }
+        const MaterialPixels::value_type *data() const { return get().data(); }
+        const MaterialPixels::value_type &front() const { return get().front(); }
+        auto begin() const { return get().begin(); }
+        auto end() const { return get().end(); }
+        // Writable pixels, first copied if a published snapshot shares them.
+        MaterialPixels &mutate()
+        {
+            if (!pixels) pixels = std::make_shared<MaterialPixels>();
+            else if (pixels.use_count() > 1) pixels = std::make_shared<MaterialPixels>(*pixels);
+            return *pixels;
+        }
+        // `count` writable pixels whose old values do not matter: fresh storage
+        // if a snapshot shares the current ones.
+        MaterialPixels &overwrite(std::size_t count)
+        {
+            if (!pixels || pixels.use_count() > 1) pixels = std::make_shared<MaterialPixels>(count);
+            else pixels->resize(count);
+            return *pixels;
+        }
+        std::shared_ptr<const MaterialPixels> share() const { return pixels; }
+        // The pixels by value, moved when nothing else shares them.
+        MaterialPixels take()
+        {
+            if (!pixels) return {};
+            MaterialPixels result = pixels.use_count() > 1 ? *pixels : std::move(*pixels);
+            pixels.reset();
+            return result;
+        }
+    };
     // A single immutable animation phase, prepared with the reference variant edges.
     MaterialPixels nativeMaterialPixels(MaterialId id, unsigned variant, unsigned phase);
     // Individual source endpoints for GPU crossfades. Stamps include deferred HD
@@ -286,7 +341,7 @@ class Compositor
 		std::uint64_t identity = 0, revision = 0;
 		int size = 0;
 		bool opaque = false; // Every pixel has full alpha.
-		std::vector<std::array<unsigned char, 4>> pixels;
+		SharedPixels pixels;
 	};
 	static void markOpaque(Texture &);
 	Catalog definitions;

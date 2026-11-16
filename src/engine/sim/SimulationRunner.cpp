@@ -5,6 +5,7 @@
 #include "Engine.h"
 #include "sim/presentation/SceneInputs.h"
 #include <SDL3/SDL_stdinc.h>
+#include <ThreadSupport.h>
 
 #include <chrono>
 #include <system_error>
@@ -64,6 +65,8 @@ void SimulationRunner::park(std::unique_lock<std::mutex> &lock)
 
 void SimulationRunner::run()
 {
+	// Frames wait on ticks; scheduling never changes what a tick computes.
+	GAGCore::ThreadSupport::setCurrentThreadRole(GAGCore::ThreadSupport::ThreadRole::Interactive);
 	PerformanceTelemetry::bindCollector(&telemetry);
 	try
 	{

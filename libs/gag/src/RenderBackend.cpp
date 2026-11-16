@@ -968,6 +968,7 @@ class SDLRenderBackend final : public RenderBackend
 		queue(vertices, nullptr, opaque ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND,
 			  SDL_SCALEMODE_NEAREST, true);
 	}
+	TextureMemory textureMemory() const override { return {textureBytes, peakTextureBytes}; }
 	RenderOperations operations() const override
 	{
 		RenderOperations result = counts;

@@ -255,13 +255,41 @@ diagnostic immediate path is not an untouched-master baseline.
 
 See [skin rendering](skin-rendering.md) for production sprite export and skin preview diagnostics.
 
+## Terrain fallbacks
+
+`tools/rendering/fallback_scenario.py` measures how much terrain the view draws
+from fallbacks while terrain composes in the background. It loads the memory
+scenario's save (or `--save` another, such as a short game on a 512 by 512
+map, whose overview the cache cannot hold whole) in
+`torus-render-benchmark` with `GLOB2_BENCH_CAMERA_SCRIPT=fallback`: from the
+first frame of the game, cycles of eight seconds at 60 frames a second, each
+starting with a jump to a far place (as a minimap click), then a hold, a pan at
+fifteen tiles a second, six wheel steps out towards the overview, a hold, six
+steps back and a hold. Each frame prints `FRAME_FALLBACK` with the visible cells
+by source (`TerrainFallbackMetrics`): pages drawn from another density, missing
+pages over the overview backdrop, pages fading in, and overview cells drawn from
+the other density, the whole-map base, or nothing (transparent). The runner
+prints the frames and share of visible cells per source and, for each kind of
+camera event, the median and longest time until a frame shows no fallback, and
+how often the next event came first.
+
+```sh
+python3 tools/dev_build.py perf=1 torus-render-benchmark
+python3 tools/rendering/fallback_scenario.py --label master --renderer portable-sdl
+python3 tools/rendering/fallback_scenario.py --label change --renderer portable-sdl --compare master
+```
+
+`--workers N` measures a phone-class worker count, `--hd` switches HD terrain on
+after about a second, and results go to `artifacts/render-fallback/<label>/`.
+
 ## Renderer memory
 
 `tools/rendering/memory_scenario.py` runs the standard memory scenario and reports
 peak memory by owner. It loads a mid-game save of a 256×256 Honeycomb Isles map
-in `torus-render-benchmark`, draws the flat game view on legacy OpenGL with HD
-artwork, and pans while cycling the zoom between the minimum and four times
-that. Build the perf tier first; `--prepare` generates the save (map seed 7,
+in `torus-render-benchmark`, draws the flat game view on legacy OpenGL (`--renderer` picks
+another, such as `portable-sdl`) with HD artwork, and pans while cycling the zoom between the minimum and four times
+that; `--zoom 1` cycles from one to four instead, where the portable renderer
+draws HD sprites and pages. Build the perf tier first; `--prepare` generates the save (map seed 7,
 four AIs, tick 30000) under `artifacts/render-memory/`.
 
 ```sh
@@ -286,6 +314,8 @@ and as `RENDER_MEMORY` when a pass ends:
 | `gpu_surface_bytes` | Sprite and atlas textures |
 | `gpu_array_bytes` | Texture-array pages, which duplicate their source textures |
 | `gpu_direct_terrain_bytes`, `gpu_terrain_page_bytes` | Direct terrain atlases and composed terrain pages |
+| `cpu_terrain_page_bytes`, `cpu_terrain_page_pixel_bytes` | The page cache's budget accounting (pixels, bookkeeping and texture reservations) and the CPU pixels its pages actually hold |
+| `gpu_backend_texture_bytes`, `gpu_backend_peak_texture_bytes` | Textures the portable SDL renderer holds, current and peak, which no surface accounts for; on phones they share system memory |
 | `gpu_frame_cache_bytes`, `gpu_skin_atlas_bytes`, `gpu_view_tile_bytes` | Render targets no surface owns |
 | `image_decodes`, `image_decoded_bytes` | Image decodes since launch and the pixels they produced; growth during camera motion is streaming churn |
 | `peak_rss_bytes` | The process's peak resident set (zero on Windows and in the browser) |

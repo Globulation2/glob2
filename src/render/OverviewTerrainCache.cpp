@@ -14,6 +14,7 @@
 #include <new>
 #include <limits>
 #include <stdexcept>
+#include <unordered_set>
 
 namespace
 {
@@ -50,6 +51,25 @@ struct OverviewTerrainCache::Batch
 	std::vector<Uint32> pixels;
 	std::shared_ptr<const TerrainVisual::Catalog> catalog;
 	std::atomic<bool> done{false}, cancelled{false};
+	// Ahead of the view (prewarm): queued behind visible work until a view
+	// wants one of its pages, which queues it again as visible work; whichever
+	// task claims it first composes it.
+	bool ahead = false, promoted = false;
+	std::vector<std::uint64_t> keys; // Pages it composes cells of.
+	std::atomic<bool> claimed{false};
+};
+
+//! The whole-map base: one colour per cell, the mean of its corners' overview
+//! colours, from the immutable vertex storage of one snapshot.
+struct OverviewTerrainCache::BaseJob
+{
+	std::shared_ptr<const std::vector<TerrainType>> vertices;
+	std::vector<std::array<unsigned char, 3>> colors; // By terrain type.
+	int w = 0, h = 0, reduction = 1;
+	Uint64 terrainRevision = 0;
+	Uint32 seed = 0;
+	std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels{nullptr, SDL_DestroySurface};
+	std::atomic<bool> done{false}, cancelled{false};
 };
 
 int OverviewTerrainCache::samplesFor(double pixelsPerCell, int current, int cells,
@@ -74,6 +94,8 @@ OverviewTerrainCache::~OverviewTerrainCache()
 {
 	for (auto &batch : batches)
 		batch->cancelled.store(true, std::memory_order_relaxed);
+	if (baseJob)
+		baseJob->cancelled.store(true, std::memory_order_relaxed);
 }
 
 void OverviewTerrainCache::resetForMap(const SceneMap &map)
@@ -86,8 +108,13 @@ void OverviewTerrainCache::resetForMap(const SceneMap &map)
 	batches.clear();
 	pages.clear();
 	pageBytes = 0;
-	prewarmCursor = 0;
+	prewarmSamples = 0;
 	prewarmDone = false;
+	viewBytes = 0;
+	if (baseJob)
+		baseJob->cancelled.store(true, std::memory_order_relaxed);
+	baseJob.reset();
+	base.reset();
 	capacities.clear();
 	output.reset();
 	mapIdentity = map.identity();
@@ -166,6 +193,7 @@ bool OverviewTerrainCache::validate(const SceneMap &map, Page &page, int wx, int
 		{
 			page.resources.fill(Uncomposed);
 			page.inFlight.fill(Uncomposed);
+			page.uncomposed = Tiles * Tiles;
 			page.vertices = vertices;
 		}
 		page.seed = map.terrainSeed();
@@ -190,13 +218,19 @@ bool OverviewTerrainCache::validate(const SceneMap &map, Page &page, int wx, int
 					continue;
 				int type, square;
 				if (cellCode(map, wx + x, wy + y, visibleTeams, wholeMap, samples, type, square) != page.resources[i])
+				{
 					page.resources[i] = Uncomposed;
+					++page.uncomposed;
+				}
 			}
 		page.resourceRevision = map.resourcePresentationRevision();
 		page.discoveryRevision = discovery;
 		page.visibleTeams = teams;
 		page.wholeMap = wholeMap;
 	}
+	// A page with every cell composed against the current stamp has nothing to queue.
+	if (stamped && !page.uncomposed)
+		return true;
 	const auto key = pageKey(samples, wx, wy);
 	auto &compositor = globalContainer->terrainCompositor(assets);
 	for (int my = region.y0; my < region.y1; ++my)
@@ -272,6 +306,7 @@ void OverviewTerrainCache::installCell(Page &page, const CellJob &job, const Uin
 	for (int row = 0; row < job.samples; ++row)
 		std::memcpy(static_cast<Uint8 *>(surface->pixels) + (y + row) * surface->pitch + x * 4,
 					reinterpret_cast<const Uint8 *>(pixels) + row * pitch, std::size_t(job.samples) * 4);
+	page.uncomposed -= page.resources[job.index] == Uncomposed;
 	page.resources[job.index] = job.code;
 	if (page.inFlight[job.index] == job.code)
 		page.inFlight[job.index] = Uncomposed;
@@ -289,6 +324,7 @@ void OverviewTerrainCache::composeNow(std::vector<CellJob> &jobs)
 		auto &page = found->second;
 		const int x = job.index % Tiles * job.samples, y = job.index / Tiles * job.samples;
 		composeCell(*catalog, job, page.image->getSDLSurface(), x, y);
+		page.uncomposed -= page.resources[job.index] == Uncomposed;
 		page.resources[job.index] = job.code;
 		page.inFlight[job.index] = Uncomposed;
 		page.changed = true;
@@ -297,7 +333,35 @@ void OverviewTerrainCache::composeNow(std::vector<CellJob> &jobs)
 	jobs.clear();
 }
 
-void OverviewTerrainCache::submit(std::vector<CellJob> &jobs)
+namespace
+{
+template <class Batch, class Compose> void runBatch(const std::shared_ptr<Batch> &batch, Compose composeCell)
+{
+	if (batch->claimed.exchange(true, std::memory_order_acq_rel))
+		return;
+	if (!batch->cancelled.load(std::memory_order_relaxed))
+	{
+		std::size_t bytes = 0;
+		for (const auto &job : batch->jobs)
+			bytes += std::size_t(job.samples) * job.samples;
+		batch->pixels.resize(bytes);
+		std::size_t offset = 0;
+		for (const auto &job : batch->jobs)
+		{
+			SDL_Surface cell{};
+			cell.format = SDL_PIXELFORMAT_ARGB8888;
+			cell.w = cell.h = job.samples;
+			cell.pitch = job.samples * 4;
+			cell.pixels = batch->pixels.data() + offset;
+			composeCell(*batch->catalog, job, &cell, 0, 0);
+			offset += std::size_t(job.samples) * job.samples;
+		}
+	}
+	batch->done.store(true, std::memory_order_release);
+}
+}
+
+void OverviewTerrainCache::submit(std::vector<CellJob> &jobs, bool ahead)
 {
 	for (std::size_t first = 0; first < jobs.size(); first += CellsPerBatch)
 	{
@@ -305,29 +369,13 @@ void OverviewTerrainCache::submit(std::vector<CellJob> &jobs)
 		const auto last = std::min(jobs.size(), first + CellsPerBatch);
 		batch->jobs.assign(std::make_move_iterator(jobs.begin() + first), std::make_move_iterator(jobs.begin() + last));
 		batch->catalog = catalog;
+		batch->ahead = ahead;
+		for (const auto &job : batch->jobs)
+			if (std::find(batch->keys.begin(), batch->keys.end(), job.key) == batch->keys.end())
+				batch->keys.push_back(job.key);
 		batches.push_back(batch);
-		BackgroundWork::submit([batch]
-		{
-			if (!batch->cancelled.load(std::memory_order_relaxed))
-			{
-				std::size_t bytes = 0;
-				for (const auto &job : batch->jobs)
-					bytes += std::size_t(job.samples) * job.samples;
-				batch->pixels.resize(bytes);
-				std::size_t offset = 0;
-				for (const auto &job : batch->jobs)
-				{
-					SDL_Surface cell{};
-					cell.format = SDL_PIXELFORMAT_ARGB8888;
-					cell.w = cell.h = job.samples;
-					cell.pitch = job.samples * 4;
-					cell.pixels = batch->pixels.data() + offset;
-					composeCell(*batch->catalog, job, &cell, 0, 0);
-					offset += std::size_t(job.samples) * job.samples;
-				}
-			}
-			batch->done.store(true, std::memory_order_release);
-		});
+		BackgroundWork::submit([batch] { runBatch(batch, &OverviewTerrainCache::composeCell); },
+							   ahead ? BackgroundWork::Priority::Ahead : BackgroundWork::Priority::Visible);
 	}
 	jobs.clear();
 }
@@ -437,14 +485,14 @@ void OverviewTerrainCache::update(const SceneMap &map, int left, int top, int ri
 	resetForMap(map);
 	output.reset();
 	collect();
-	std::size_t viewBytes = 0;
+	std::size_t keptBytes = 0;
 	std::vector<CellJob> jobs;
 	auto *pixels = target.getSDLSurface();
 	forEachPage(map, left, top, right, bottom, vx, vy, false,
 				[&](int wx, int wy, const Region &region, int screenX, int screenY)
 	{
 		auto &page = this->page(map, wx, wy, samples);
-		viewBytes += pageStorage(samples);
+		keptBytes += pageStorage(samples);
 		validate(map, page, wx, wy, region, visibleTeams, wholeMap, jobs, std::numeric_limits<std::size_t>::max());
 		composeNow(jobs);
 		const auto *source = page.image->getSDLSurface();
@@ -455,7 +503,7 @@ void OverviewTerrainCache::update(const SceneMap &map, int left, int top, int ri
 							(region.x0 - wx) * samples * 4,
 						std::size_t(region.x1 - region.x0) * samples * 4);
 	});
-	trim(viewBytes);
+	trim(keptBytes);
 	target.markPixelsChanged();
 	next.surfaceRevision = target.contentRevision();
 	output = next;
@@ -463,25 +511,38 @@ void OverviewTerrainCache::update(const SceneMap &map, int left, int top, int ri
 
 void OverviewTerrainCache::draw(const SceneMap &map, int left, int top, int right, int bottom, int vx, int vy,
 								Uint32 visibleTeams, bool wholeMap, int samples, GAGCore::DrawableSurface &target,
-								Uint8 alpha, bool complete)
+								Uint8 alpha, bool complete, const std::vector<SDL_Point> *shownPages)
 {
+	metrics = {};
 	if (samples != FewSamples && samples != ManySamples)
 		throw std::invalid_argument("Overview samples must be 4 or 8 per cell");
 	pageSamples = samples;
 	resetForMap(map);
 	collect();
-	const auto started = std::chrono::steady_clock::now();
-	const auto elapsed = [&] { return std::chrono::steady_clock::now() - started; };
+	if (!complete)
+		updateBase(map);
+	// Graphics-thread time spent checking pages and describing cells; drawing
+	// the pages already composed does not count against it.
+	std::chrono::steady_clock::duration describing{};
+	const Uint64 now = SDL_GetTicks();
 	const int other = samples == FewSamples ? ManySamples : FewSamples;
-	// Cells described per frame for the workers; batches still running count too.
-	std::size_t queued = queuedCells();
+	// Cells described per frame for the workers; visible batches still running count too.
+	std::size_t queued = queuedCells(false);
 	const std::size_t queueLimit = std::size_t(std::max(1u, BackgroundWork::workers())) * CellsPerBatch * 4;
-	std::size_t viewBytes = 0;
+	// A backdrop draws, and composes, only the pages it shows through.
+	std::unordered_set<std::uint64_t> shownKeys;
+	if (shownPages)
+		for (const auto &origin : *shownPages)
+			shownKeys.insert(pageKey(0, origin.x, origin.y));
+	std::size_t keptBytes = 0;
+	std::vector<std::uint64_t> wanted; // Visible pages still waiting for cells.
 	std::vector<CellJob> jobs;
 	forEachPage(map, left, top, right, bottom, vx, vy, !complete,
 				[&](int wx, int wy, const Region &region, int screenX, int screenY)
 	{
-		viewBytes += pageStorage(samples);
+		if (shownPages && !shownKeys.count(pageKey(0, wx, wy)))
+			return;
+		keptBytes += pageStorage(samples);
 		auto *page = &this->page(map, wx, wy, samples);
 		bool shown = true;
 		if (complete)
@@ -489,8 +550,9 @@ void OverviewTerrainCache::draw(const SceneMap &map, int left, int top, int righ
 			validate(map, *page, wx, wy, region, visibleTeams, wholeMap, jobs, std::numeric_limits<std::size_t>::max());
 			composeNow(jobs);
 		}
-		else if (elapsed() < FrameBudget && queued + jobs.size() < queueLimit)
+		else if (describing < FrameBudget && queued + jobs.size() < queueLimit)
 		{
+			const auto started = std::chrono::steady_clock::now();
 			const std::size_t limit = queueLimit - queued;
 			if (!validate(map, *page, wx, wy, region, visibleTeams, wholeMap, jobs, limit))
 				shown = false;
@@ -499,21 +561,79 @@ void OverviewTerrainCache::draw(const SceneMap &map, int left, int top, int righ
 				queued += jobs.size();
 				submit(jobs);
 			}
+			describing += std::chrono::steady_clock::now() - started;
 		}
-		if (!complete)
-			shown = shown && covers(*page, wx, wy, region);
-		if (!shown)
+		const std::uint64_t cells = std::uint64_t(region.x1 - region.x0) * (region.y1 - region.y0);
+		metrics.cells += cells;
+		if (complete)
 		{
-			// The other density, if it already shows this part, stands in beneath.
-			auto found = pages.find(pageKey(other, wx, wy));
-			if (found != pages.end() && found->second.valid && found->second.seed == map.terrainSeed())
+			drawPage(*page, wx, wy, region, screenX, screenY, target, alpha);
+			return;
+		}
+		// Cells of the page this view shows that are composed, and those the
+		// other density or only the base can show instead.
+		std::uint64_t composed = 0, fromOther = 0;
+		auto found = pages.find(pageKey(other, wx, wy));
+		const Page *otherPage = found != pages.end() && found->second.valid && found->second.seed == map.terrainSeed()
+			? &found->second : nullptr;
+		if (!page->uncomposed)
+			composed = cells;
+		else
+			for (int my = region.y0; my < region.y1; ++my)
+				for (int mx = region.x0; mx < region.x1; ++mx)
+				{
+					const int i = (my - wy) * Tiles + (mx - wx);
+					if (page->resources[i] != Uncomposed)
+						++composed;
+					else if (otherPage && otherPage->resources[i] != Uncomposed)
+						++fromOther;
+				}
+		shown = composed == cells;
+		if (!shown)
+			wanted.push_back(pageKey(samples, wx, wy));
+		// A page drawn empty fades its first cells in; one composed before the
+		// view reached it (prewarmed) shows at once.
+		if (!composed)
+			page->shownEmpty = true;
+		else if (page->shownEmpty)
+		{
+			page->shownEmpty = false;
+			page->fadeStart = now;
+		}
+		const bool fading = page->fadeStart && now - page->fadeStart < FadeMs;
+		if (!fading)
+			page->fadeStart = 0;
+		if (!shown || fading)
+		{
+			// Beneath: the base wherever the other density cannot stand in, then the other density.
+			if (base && (!otherPage || fromOther + composed < cells || fading))
+				drawBase(wx, wy, region, screenX, screenY, target, alpha);
+			if (otherPage)
 				drawPage(found->second, wx, wy, region, screenX, screenY, target, alpha);
 		}
-		drawPage(*page, wx, wy, region, screenX, screenY, target, alpha);
+		const std::uint64_t missing = cells - composed - fromOther;
+		metrics.other += fromOther;
+		(base ? metrics.base : metrics.holes) += missing;
+		if (fading)
+			metrics.fading += composed;
+		drawPage(*page, wx, wy, region, screenX, screenY, target,
+				 fading ? Uint8(alpha * (now - page->fadeStart) / FadeMs) : alpha);
 	});
 	if (!jobs.empty())
 		submit(jobs);
-	trim(viewBytes * 2);
+	// Prewarmed batches for pages the view now waits on run as visible work.
+	if (!wanted.empty())
+		for (auto &batch : batches)
+			if (batch->ahead && !batch->promoted && !batch->claimed.load(std::memory_order_relaxed) &&
+				std::any_of(batch->keys.begin(), batch->keys.end(),
+							[&](std::uint64_t key) { return std::find(wanted.begin(), wanted.end(), key) != wanted.end(); }))
+			{
+				batch->promoted = true;
+				BackgroundWork::submit([batch] { runBatch(batch, &OverviewTerrainCache::composeCell); });
+			}
+	if (!complete && !shownPages)
+		viewBytes = keptBytes;
+	trim(keptBytes * 2);
 }
 
 bool OverviewTerrainCache::covers(const Page &page, int wx, int wy, const Region &region) const
@@ -539,49 +659,190 @@ void OverviewTerrainCache::drawPage(Page &page, int wx, int wy, const Region &re
 					   (region.x1 - region.x0) * samples, (region.y1 - region.y0) * samples, alpha);
 }
 
-std::size_t OverviewTerrainCache::queuedCells() const
+void OverviewTerrainCache::updateBase(const SceneMap &map)
+{
+	if (baseJob && baseJob->done.load(std::memory_order_acquire))
+	{
+		if (baseJob->pixels)
+		{
+			// Sampled linearly: one texel per cell blends smoothly into its neighbours.
+			base = std::make_unique<TerrainVisual::Surface>(baseJob->pixels.get(), true);
+			baseJob->pixels.release();
+			baseReduction = baseJob->reduction;
+			baseTerrainRevision = baseJob->terrainRevision;
+			baseSeed = baseJob->seed;
+		}
+		baseJob.reset();
+	}
+	if (baseJob || (base && baseTerrainRevision == map.terrainRevision() && baseSeed == map.terrainSeed()))
+		return;
+	auto vertices = map.vertexStorage();
+	if (!vertices || vertices->size() < std::size_t(map.getW()) * map.getH())
+		return;
+	auto job = std::make_shared<BaseJob>();
+	job->vertices = std::move(vertices);
+	job->w = map.getW();
+	job->h = map.getH();
+	job->terrainRevision = map.terrainRevision();
+	job->seed = map.terrainSeed();
+	const int limit = globalContainer->gfx ? globalContainer->gfx->maximumTextureSize() : 0;
+	while (limit > 0 && (job->w / job->reduction > limit || job->h / job->reduction > limit))
+		job->reduction *= 2;
+	// One colour per terrain type: a few dozen lookups here, the map on the worker.
+	const auto &compositor = globalContainer->terrainCompositor(assets);
+	job->colors.resize(map.terrainRegistry().size());
+	for (std::size_t type = 0; type < job->colors.size(); ++type)
+		job->colors[type] = compositor.overviewColor(map, TerrainType(type));
+	baseJob = job;
+	BackgroundWork::submit([job]
+	{
+		if (job->cancelled.load(std::memory_order_relaxed))
+		{
+			job->done.store(true, std::memory_order_release);
+			return;
+		}
+		const int r = job->reduction, w = job->w / r, h = job->h / r;
+		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
+			SDL_CreateSurface(w, h, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+		if (pixels)
+		{
+			const auto &vertices = *job->vertices;
+			const auto color = [&](int x, int y) -> const std::array<unsigned char, 3> &
+			{
+				static constexpr std::array<unsigned char, 3> none{};
+				const auto type = std::size_t(vertices[std::size_t(y & (job->h - 1)) * job->w + (x & (job->w - 1))]);
+				return type < job->colors.size() ? job->colors[type] : none;
+			};
+			for (int by = 0; by < h; ++by)
+			{
+				auto *row = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(pixels->pixels) + by * pixels->pitch);
+				for (int bx = 0; bx < w; ++bx)
+				{
+					// The mean of the corners of the texel's cells.
+					unsigned sum[3] = {};
+					unsigned count = 0;
+					for (int y = by * r; y <= by * r + r; y += r)
+						for (int x = bx * r; x <= bx * r + r; x += r)
+						{
+							const auto &c = color(x, y);
+							for (int k = 0; k < 3; ++k)
+								sum[k] += c[k];
+							++count;
+						}
+					row[bx] = 0xFF000000u | (sum[0] + count / 2) / count << 16 | (sum[1] + count / 2) / count << 8 |
+						(sum[2] + count / 2) / count;
+				}
+			}
+			job->pixels = std::move(pixels);
+		}
+		job->done.store(true, std::memory_order_release);
+	}, BackgroundWork::Priority::First);
+}
+
+void OverviewTerrainCache::drawBase(int wx, int wy, const Region &region, int screenX, int screenY,
+									GAGCore::DrawableSurface &target, Uint8 alpha)
+{
+	(void)wx;
+	(void)wy;
+	const int r = baseReduction;
+	target.drawSurface(screenX * 32, screenY * 32, (region.x1 - region.x0) * 32, (region.y1 - region.y0) * 32,
+					   base.get(), region.x0 / r, region.y0 / r, std::max(1, (region.x1 - region.x0) / r),
+					   std::max(1, (region.y1 - region.y0) / r), alpha);
+}
+
+std::size_t OverviewTerrainCache::queuedCells(bool ahead) const
 {
 	std::size_t queued = 0;
 	for (const auto &batch : batches)
-		queued += batch->jobs.size();
+		if (batch->ahead == ahead)
+			queued += batch->jobs.size();
 	return queued;
 }
 
-void OverviewTerrainCache::prewarm(const SceneMap &map, Uint32 visibleTeams, bool wholeMap)
+void OverviewTerrainCache::prewarm(const SceneMap &map, Uint32 visibleTeams, bool wholeMap, int centreX, int centreY,
+								   int samples)
 {
 	resetForMap(map);
+	updateBase(map);
+	if (samples != FewSamples && samples != ManySamples)
+		throw std::invalid_argument("Overview samples must be 4 or 8 per cell");
+	const int columns = std::max(1, map.getW() / Tiles), rows = std::max(1, map.getH() / Tiles);
+	const int cx = int(unsigned(centreX & map.getMaskW()) / Tiles), cy = int(unsigned(centreY & map.getMaskH()) / Tiles);
+	// Spiral again around a centre that moved two pages or more (a jump or a
+	// pan), or for another density; pages composed already cost only a check.
+	const auto apart = [](int a, int b, int period)
+	{
+		const int d = std::abs(a - b) % period;
+		return std::min(d, period - d);
+	};
+	if (samples != prewarmSamples || apart(cx, prewarmX, columns) >= 2 || apart(cy, prewarmY, rows) >= 2)
+	{
+		prewarmSamples = samples;
+		prewarmX = cx;
+		prewarmY = cy;
+		prewarmRing = prewarmStep = 0;
+		prewarmVisited = 0;
+		prewarmDone = false;
+	}
+	// Finished cells install even once the spiral is done.
+	collect();
 	if (prewarmDone)
 		return;
-	const int columns = std::max(1, map.getW() / Tiles), rows = std::max(1, map.getH() / Tiles);
-	const std::size_t total = std::size_t(columns) * rows;
-	if (total * pageStorage(FewSamples) > Budget / 2)
-	{
-		prewarmDone = true;
-		return;
-	}
-	collect();
+	// The pages three quarters of the allowance hold beside what the view
+	// keeps (a 256 by 256 map whole at many samples), and the rings
+	// that reach every page of the map.
+	const std::size_t allowance = std::min(Budget / 4 * 3, Budget - std::min(Budget, viewBytes));
+	const std::size_t limit = std::min(std::size_t(columns) * rows, allowance / pageStorage(samples));
+	const int lastRing = std::max(columns, rows) / 2;
 	const auto started = std::chrono::steady_clock::now();
-	std::size_t queued = queuedCells();
+	std::size_t queued = queuedCells(true);
 	const std::size_t queueLimit = std::size_t(std::max(1u, BackgroundWork::workers())) * CellsPerBatch * 4;
 	std::vector<CellJob> jobs;
-	while (prewarmCursor < total && std::chrono::steady_clock::now() - started < FrameBudget &&
-		   queued + jobs.size() < queueLimit)
+	while (prewarmVisited < limit && prewarmRing <= lastRing &&
+		   std::chrono::steady_clock::now() - started < FrameBudget && queued + jobs.size() < queueLimit)
 	{
-		const int wx = int(prewarmCursor % columns) * Tiles, wy = int(prewarmCursor / columns) * Tiles;
-		auto &page = this->page(map, wx, wy, FewSamples);
-		// The view's own pages stay the most recently used.
-		page.used = 0;
+		// Step `prewarmStep` of ring `prewarmRing` around the centre page.
+		const int ring = prewarmRing, side = std::max(1, 2 * ring);
+		int dx = 0, dy = 0;
+		if (ring)
+		{
+			const int edge = prewarmStep / side, along = prewarmStep % side;
+			dx = edge == 0 ? -ring + along : edge == 1 ? ring : edge == 2 ? ring - along : -ring;
+			dy = edge == 0 ? -ring : edge == 1 ? -ring + along : edge == 2 ? ring : ring - along;
+		}
+		const auto advance = [&]
+		{
+			if (++prewarmStep >= (ring ? 8 * ring : 1))
+			{
+				++prewarmRing;
+				prewarmStep = 0;
+			}
+		};
+		// Rings wider than the map would wrap onto pages they already passed.
+		if (std::abs(dx) > columns / 2 || std::abs(dy) > rows / 2 || (columns % 2 == 0 && dx == columns / 2) ||
+			(rows % 2 == 0 && dy == rows / 2))
+		{
+			advance();
+			continue;
+		}
+		const int wx = ((cx + dx) % columns + columns) % columns * Tiles;
+		const int wy = ((cy + dy) % rows + rows) % rows * Tiles;
+		// Stamped as used now: the view's own pages, drawn after this, stay more
+		// recent, and the pages farthest from the camera go first.
+		auto &page = this->page(map, wx, wy, samples);
 		if (!validate(map, page, wx, wy, Region{wx, wy, wx + Tiles, wy + Tiles}, visibleTeams, wholeMap, jobs,
 					  queueLimit - queued))
 			break; // Resume this page next frame.
-		++prewarmCursor;
+		advance();
+		++prewarmVisited;
 		if (jobs.size() >= CellsPerBatch)
 		{
 			queued += jobs.size();
-			submit(jobs);
+			submit(jobs, true);
 		}
 	}
 	if (!jobs.empty())
-		submit(jobs);
-	prewarmDone = prewarmCursor >= total;
+		submit(jobs, true);
+	trim(viewBytes);
+	prewarmDone = prewarmVisited >= limit || prewarmRing > lastRing;
 }

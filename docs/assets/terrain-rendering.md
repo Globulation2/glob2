@@ -495,18 +495,38 @@ Interactive views on accelerated page renderers without device composition (the
 portable SDL renderer, and browser legacy OpenGL composing HD pages) never
 compose a page inside the frame. A cold page is described from the scene on the
 graphics thread and composed by the shared presentation workers
-(`render/BackgroundWork.h`) from an immutable material snapshot. Until it
+(`render/BackgroundWork.h`) from an immutable material snapshot; a page at a
+reduced density whose native page is retained is reduced on the workers from a
+copy of that page instead. There are half as many workers as logical CPUs,
+between two and four: at normal game speed the simulation needs about one core,
+and in the pan-and-zoom benchmark more than four workers neither filled missing
+pages faster nor kept frames shorter, because the graphics thread's per-frame
+launch and install budgets set the pace. `GLOB2_BACKGROUND_RENDER_WORKERS=N` (1 to 64)
+overrides the count for measurements. Until it
 arrives the view draws the same page at its nearest other density, or the
-overview beneath where none exists. Uniform animated cells (open water) draw over
+overview beneath where none exists; the overview then draws, and composes, only
+those missing pages. A page that arrives where the view drew either fallback
+fades in over it in 150 ms rather than popping. Pages around the view also
+compose ahead of the camera: a ring one page wide, widened in the direction of a
+pan by about half a second of its recent motion and all round while the view is
+growing in a zoom out. Those launches wait until every visible page has
+arrived, use only the frame's leftover launch budget and half the in-flight room, run on the workers' lower priority lane
+(`BackgroundWork::Priority::Ahead`, taken only while no visible work waits), and
+admit a finished page only into free cache room or room held by pages the view
+has not used for two seconds, so they never displace a stand-in. A page composing
+ahead that the view reaches is queued again as visible work; each job runs once,
+whichever lane takes it. Visible pages install before pages composed ahead. Uniform animated cells (open water) draw over
 their page from one shared tile per material variant at the page's density, so
 an animation step recomposes and uploads those few tiles, not the pages. Any
 other animation or surf step of a valid page (shorelines) queues its changed
 cells the same way while the view keeps drawing the current pixels; finished
 cells upload as dirty rectangles. Each frame describes at most
-1024 cells for launches, reduces at most four pages from retained native pages,
-keeps at most 64 MiB of page buffers in flight, and installs at most four
-finished pages within 8 MiB; pages nearest the view centre go
-first, and work for pages the view left is cancelled. Missing pages take build
+4096 cells for launches (a native page copied for a reduction counts as 64)
+within 2 ms of graphics-thread time spent describing (one launch always goes),
+keeps at most four visible pages per worker plus four in flight and 64 MiB of
+page buffers, and installs at most sixteen finished pages within 8 MiB. Missing
+pages that nothing stands in for (where the overview shows) go first, then
+those nearest the view centre, and work for pages the view left is cancelled. Missing pages take build
 slots first: refreshes use at most half of them, and none while a missing page
 waited for a slot the frame before, so animated water cannot starve the edges
 of the view. Pages record the discovery
@@ -570,15 +590,33 @@ for recipes and bookkeeping plus density-dependent pixel storage. Increasing it
 can retain more detail but does not remove the need to handle oversized views.
 If the complete view cannot retain all of its textures simultaneously, but its
 CPU pages and one texture upload fit, the cache keeps those CPU pages and retires
-textures in drawing order as needed. This preserves the selected sampling and
+textures in drawing order as needed. Before retiring a texture the frame draws,
+an upload retires idle textures and then drops idle pages that hold only pixels
+(such as HD pages parked before a zoom out); when every remaining page is drawn
+this frame, the page waits for a later frame instead of failing it. This preserves the selected sampling and
 avoids repeated boundary composition near page-alignment budget thresholds.
 Only a view whose CPU pages and one upload cannot fit uses composition streaming.
 First-time composition still evaluates native terrain before reduction; this
 policy removes repeated work on warm frames, not the cost of a cold frame.
 
-Overview palette samples have a separate 32 MiB CPU page cache. A view larger
-than that keeps all its pages, and the cache drops back to the budget once the
-view is smaller again. Its pages keep canonical world coordinates across
+Overview palette samples have a separate 48 MiB page cache (CPU pixels and the
+texture each page uploads). A view larger than that keeps all its pages, and the
+cache drops back to the budget once the view is smaller again. Interactive views
+compose overview cells on the presentation workers within a per-frame budget
+(1.5 ms of graphics-thread time describing cells). Beneath cells still composing
+the view draws the other density where it has them and otherwise the whole-map
+base: one linearly filtered texel per cell, the mean of its corners' overview
+colours, composed by a worker from the snapshot's immutable vertex storage as the
+map loads and again after a terrain edit (4 bytes a cell, twice for its texture;
+2 MiB for a 512 by 512 map). The overview therefore never shows a transparent
+patch once the base is ready, a frame or two after the map loads. A page whose
+first cells arrive after it was drawn empty fades in over the base in 150 ms.
+From the start of a game the cache also prewarms pages at the density the
+farthest zoom draws, spiralling out from the view's centre within three
+quarters of its allowance (less what the view holds) on the workers' lower priority lane, and
+starts the spiral again around a new centre after a jump or a pan of two pages;
+a prewarming batch for a page the view then waits on is queued again as visible
+work. Captures, exports and other one-shot draws compose every cell first. Its pages keep canonical world coordinates across
 viewport movement, atlas tiles and zooms that keep the same samples per cell. Vertex windows include the contextual
 contour halo; terrain seeds, immutable terrain/resource registries and map asset
 bundles also invalidate the samples. Texture animation and blend opacity do not

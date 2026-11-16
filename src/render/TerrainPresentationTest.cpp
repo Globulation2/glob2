@@ -46,6 +46,8 @@
 #endif
 #endif
 #include <algorithm>
+#include <chrono>
+#include <thread>
 #include <set>
 #include <cstdio>
 #include <filesystem>
@@ -1176,6 +1178,53 @@ TEST_SUITE("TerrainPresentation")
 			CHECK(cache.composedCells() - before == 256);
 		}
 	}
+	TEST_CASE("interactive overview draws the whole-map base beneath cells still composing and prewarms around the view [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256});
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .discovered = true});
+		auto &map = fixture.game.map;
+		for (int y = 10; y < 30; ++y)
+			for (int x = 20; x < 44; ++x)
+				map.setVertexTerrain(x, y, WATER);
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		globals->terrainCompositor().prepare(false, 0);
+		auto &gfx = *globals->gfx;
+		OverviewTerrainCache cache;
+		const auto draw = [&](int vx, int vy)
+		{
+			cache.draw(scene, 0, 0, 7, 7, vx, vy, fixture.team->me, true, OverviewTerrainCache::FewSamples, gfx, 255,
+					   false);
+			return cache.drawMetrics();
+		};
+		// The base is composed by a worker as the map loads; once it is ready no
+		// visible cell is ever transparent, whatever is still composing.
+		for (int frame = 0; frame < 2000 && !cache.baseReady(); ++frame)
+		{
+			draw(0, 0);
+			SDL_Delay(1);
+		}
+		REQUIRE(cache.baseReady());
+		for (const auto &[vx, vy] : {std::pair{16, 16}, {40, 8}, {60, 60}})
+		{
+			const auto metrics = draw(vx, vy);
+			CHECK(metrics.cells == 64);
+			CHECK(metrics.holes == 0);
+		}
+		// Prewarming spirals out from the view's centre until it has composed
+		// every page of a map this small.
+		for (int frame = 0; frame < 4000 && cache.composedCells() < 64u * 64u; ++frame)
+		{
+			cache.prewarm(scene, fixture.team->me, true, 33, 47, OverviewTerrainCache::FewSamples);
+			SDL_Delay(1);
+		}
+		CHECK(cache.composedCells() >= 64u * 64u);
+		// Then the view finds every cell composed: nothing falls back.
+		const auto settled = draw(24, 40);
+		CHECK(settled.base == 0);
+		CHECK(settled.other == 0);
+		CHECK(settled.holes == 0);
+	}
 #if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
 
 	TEST_CASE("Legacy GL single pass animates water and shores and hides undiscovered terrain [display]")
@@ -2110,6 +2159,153 @@ TEST_SUITE("TerrainPresentation")
 		settle(1.25f);
 		CHECK(compositor.scale() == 4);
 		CHECK(resident(false) > 0);
+	}
+	TEST_CASE("a portable page uploads past idle parked pages over the budget [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
+			.screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		REQUIRE(globals->gfx->backendSwitchStatus().active == GAGCore::RendererBackend::PortableSDL);
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
+		auto &map = fixture.game.map;
+		for (int y = 0; y < map.getH(); ++y)
+			for (int x = 0; x < map.getW(); ++x)
+				map.paintCell(x, y, (x + y) % 3 ? ICE : GRASS);
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		SoftwareTerrainCache cache;
+		const auto prepare = [&]
+		{
+			globals->gfx->drawFilledRect(0, 0, 256, 256, 17, 29, 41);
+			globals->gfx->beginMapTransform(1, 0, 0, 0, 0, 256, 256);
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 7, 7, 0, 0, fixture.team->me, true));
+		};
+		const auto finish = [&]
+		{
+			cache.draw(*globals->gfx);
+			globals->gfx->endMapTransform();
+		};
+		prepare();
+		finish();
+		prepare();
+		auto visible = std::find_if(cache.chunks.begin(), cache.chunks.end(),
+			[&](const auto &chunk) { return chunk->used == cache.frame && chunk->image; });
+		REQUIRE(visible != cache.chunks.end());
+		// The visible page lost its texture, its pixels parked, while pages of an
+		// earlier zoom that this frame does not draw (HD, 2048 pixels square)
+		// fill the budget and hold no texture to retire.
+		auto *page = visible->get();
+		page->parked.reset(page->image->takePixels());
+		page->image.reset();
+		std::size_t added = 0;
+		while (cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget)
+		{
+			auto idle = std::make_unique<SoftwareTerrainCache::Chunk>();
+			idle->x = 1024 + int(added++) * SoftwareTerrainCache::ChunkTiles;
+			idle->scale = 4;
+			idle->valid = true;
+			cache.chunks.push_back(std::move(idle));
+		}
+		// Uploading it again evicts idle pages instead of failing the frame.
+		REQUIRE_NOTHROW(finish());
+		CHECK(page->image);
+		CHECK(!page->parked);
+		CHECK(std::size_t(std::count_if(cache.chunks.begin(), cache.chunks.end(),
+			[](const auto &chunk) { return chunk->scale == 4; })) < added);
+		CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
+	}
+	TEST_CASE("a portable page retired after its pixels were released composes again [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
+			.screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		REQUIRE(globals->gfx->backendSwitchStatus().active == GAGCore::RendererBackend::PortableSDL);
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true});
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		SoftwareTerrainCache cache;
+		const auto draw = [&]
+		{
+			globals->gfx->beginMapTransform(1, 0, 0, 0, 0, 256, 256);
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 7, 7, 0, 0, fixture.team->me, true));
+			cache.draw(*globals->gfx);
+			globals->gfx->endMapTransform();
+		};
+		draw();
+		REQUIRE(!cache.chunks.empty());
+		// What retiring a texture leaves when the portable renderer had already
+		// released the page's pixels: takePixels() has nothing to park.
+		auto &page = *cache.chunks.front();
+		page.image.reset();
+		page.parked.reset();
+		page.valid = false;
+		draw();
+		CHECK(page.valid);
+		CHECK(chunkPixels(page) != nullptr);
+	}
+	TEST_CASE("an interactive portable view reduces native pages on workers to the synchronous pixels [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
+			.screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		REQUIRE(globals->gfx->backendSwitchStatus().active == GAGCore::RendererBackend::PortableSDL);
+		glob2test::HeadlessGame fixture({.wDec = 7, .hDec = 7, .discovered = true});
+		auto &map = fixture.game.map;
+		for (int y = 0; y < map.getH(); ++y)
+			for (int x = 0; x < map.getW(); ++x)
+				// Mixed cells in the page under test; plain grass keeps the rest cheap.
+				map.paintCell(x, y, x >= 16 || y >= 16 ? GRASS : x < 3 ? WATER : ((x + y) % 3 ? ICE : GRASS));
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		struct Reduced
+		{
+			std::vector<Uint32> pixels;
+			std::uint64_t reductions = 0;
+		};
+		const auto reduce = [&](bool interactive)
+		{
+			SoftwareTerrainCache cache;
+			cache.deferBuilds = interactive;
+			// An interactive view composes on workers: draw until nothing waits.
+			const auto settle = [&](float zoom, int right, int bottom)
+			{
+				for (int attempt = 0; attempt < 5000; ++attempt)
+				{
+					globals->gfx->beginMapTransform(zoom, 0, 0, 0, 0, 256, 256);
+					REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, right, bottom, 0, 0, fixture.team->me, true));
+					cache.draw(*globals->gfx);
+					globals->gfx->endMapTransform();
+					if (cache.pendingPages() == 0 && cache.complete() &&
+						std::all_of(cache.copies.begin(), cache.copies.end(), [&](const auto &copy)
+							{ return copy.chunk->downsample == cache.samplingReduction(); }))
+						return;
+					std::this_thread::sleep_for(std::chrono::milliseconds(1));
+				}
+				FAIL("the interactive view never completed");
+			};
+			settle(1, 7, 7);
+			REQUIRE(cache.samplingReduction() == 1);
+			// The whole map exceeds the page budget at native density.
+			settle(.25f, 127, 127);
+			REQUIRE(cache.samplingReduction() > 1);
+			Reduced result;
+			result.reductions = cache.cacheReductions();
+			for (const auto &chunk : cache.chunks)
+				if (chunk->x == 0 && chunk->y == 0 && chunk->downsample > 1)
+				{
+					const auto *pixels = chunkPixels(*chunk);
+					REQUIRE(pixels);
+					for (int y = 0; y < pixels->h; ++y)
+					{
+						const auto *row = reinterpret_cast<const Uint32 *>(
+							static_cast<const Uint8 *>(pixels->pixels) + y * pixels->pitch);
+						result.pixels.insert(result.pixels.end(), row, row + pixels->w);
+					}
+				}
+			return result;
+		};
+		const Reduced synchronous = reduce(false), interactive = reduce(true);
+		REQUIRE(!synchronous.pixels.empty());
+		CHECK(synchronous.reductions > 0);
+		CHECK(interactive.reductions > 0);
+		CHECK(interactive.pixels == synchronous.pixels);
 	}
 	TEST_CASE("offscreen terrain density follows the target and stays stable across capture tiles "
 			  "[display]")

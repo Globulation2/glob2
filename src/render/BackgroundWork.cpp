@@ -3,6 +3,7 @@
 #include <ThreadSupport.h>
 #include <algorithm>
 #include <condition_variable>
+#include <cstdlib>
 #include <deque>
 #include <mutex>
 #include <system_error>
@@ -11,6 +12,21 @@
 
 namespace
 {
+// GLOB2_BACKGROUND_RENDER_WORKERS (1-64) overrides the default for measurements.
+unsigned workerCount()
+{
+	if (const char *value = std::getenv("GLOB2_BACKGROUND_RENDER_WORKERS"))
+	{
+		char *end = nullptr;
+		const unsigned long count = std::strtoul(value, &end, 10);
+		if (end != value && !*end && count >= 1 && count <= 64)
+			return unsigned(count);
+	}
+	// At normal speed the simulation needs about a core. Beyond four workers the
+	// graphics thread's launch and install budgets, not the workers, set the pace.
+	return std::clamp(std::thread::hardware_concurrency() / 2, 2u, 4u);
+}
+
 class Pool
 {
   public:
@@ -18,12 +34,12 @@ class Pool
 	{
 		if constexpr (!GAGCore::ThreadSupport::available)
 			return;
-		// Leave most cores to the simulation and the graphics thread.
-		const unsigned count = std::clamp(std::thread::hardware_concurrency() / 4, 2u, 6u);
+		const unsigned count = workerCount();
 		try
 		{
 			for (unsigned i = 0; i < count; ++i)
-				threads.push_back(GAGCore::ThreadSupport::launch([this] { work(); }));
+				threads.push_back(GAGCore::ThreadSupport::launch([this] { work(); },
+				                                                  GAGCore::ThreadSupport::ThreadRole::Background));
 		}
 		catch (const std::system_error &)
 		{
@@ -36,12 +52,13 @@ class Pool
 			std::lock_guard lock(mutex);
 			stop = true;
 			tasks.clear();
+			ahead.clear();
 		}
 		wake.notify_all();
 		for (auto &thread : threads)
 			thread.join();
 	}
-	void submit(std::function<void()> task)
+	void submit(std::function<void()> task, BackgroundWork::Priority priority)
 	{
 		if (threads.empty())
 		{
@@ -50,7 +67,10 @@ class Pool
 		}
 		{
 			std::lock_guard lock(mutex);
-			tasks.push_back(std::move(task));
+			if (priority == BackgroundWork::Priority::First)
+				tasks.push_front(std::move(task));
+			else
+				(priority == BackgroundWork::Priority::Visible ? tasks : ahead).push_back(std::move(task));
 		}
 		wake.notify_one();
 	}
@@ -64,11 +84,12 @@ class Pool
 			std::function<void()> task;
 			{
 				std::unique_lock lock(mutex);
-				wake.wait(lock, [&] { return stop || !tasks.empty(); });
+				wake.wait(lock, [&] { return stop || !tasks.empty() || !ahead.empty(); });
 				if (stop)
 					return;
-				task = std::move(tasks.front());
-				tasks.pop_front();
+				auto &queue = tasks.empty() ? ahead : tasks;
+				task = std::move(queue.front());
+				queue.pop_front();
 			}
 			try
 			{
@@ -82,7 +103,7 @@ class Pool
 	}
 	std::mutex mutex;
 	std::condition_variable wake;
-	std::deque<std::function<void()>> tasks;
+	std::deque<std::function<void()>> tasks, ahead;
 	std::vector<std::thread> threads;
 	bool stop = false;
 };
@@ -96,6 +117,6 @@ Pool &pool()
 
 namespace BackgroundWork
 {
-void submit(std::function<void()> task) { pool().submit(std::move(task)); }
+void submit(std::function<void()> task, Priority priority) { pool().submit(std::move(task), priority); }
 unsigned workers() { return pool().workers(); }
 }

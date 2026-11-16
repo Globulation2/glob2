@@ -5017,9 +5017,9 @@ FFmpeg не е наличен, така че записът е изключен.
 [stat prestige about]
 Престижът на колонията, спечелен от сгради от най-високо ниво. Мач с цел за престиж приключва, когато тя бъде достигната.
 [stat prestige needed]
-Prestige needed to win
+Престиж, нужен за победа
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+Престижът, който колонията още трябва да спечели, за да победи чрез престиж: достатъчно, за да достигне общият престиж в мача целта, и да изпревари всяка друга оцеляла колония. Записва се само когато мачът има цел за престиж.
 [stat band combat]
 Бой
 [stat band starvation]

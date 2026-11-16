@@ -174,7 +174,7 @@ Compositor::MaterialPixels Compositor::nativeMaterialPixels(MaterialId id, unsig
     wanted.at(variant) = 1;
     wanted.front() = 1; // Variant zero defines the shared edge band.
     prepareMaterial(id, false, phase, prepared, &wanted);
-    return std::move(prepared[variant].pixels);
+    return prepared[variant].pixels.take();
 }
 Compositor::PhaseSource Compositor::phaseSource(MaterialId id, unsigned variant, unsigned phase, bool native) const
 {
@@ -197,7 +197,7 @@ Compositor::MaterialPixels Compositor::phasePixels(MaterialId id, unsigned varia
     wanted.at(variant) = 1;
     wanted.front() = 1;
     prepareMaterial(id, !native, phase, prepared, &wanted);
-    return std::move(prepared[variant].pixels);
+    return prepared[variant].pixels.take();
 }
 const SDL_Surface *Compositor::phaseSurface(MaterialId id, unsigned variant, unsigned phase, bool native) const
 {
@@ -223,7 +223,19 @@ std::size_t Compositor::sourceBytes() const
 			for (const auto &t : *set)
 				bytes += t.pixels.capacity() * 4;
     if (auto retained = publishedCpu.lock())
-        bytes += retained->bytes;
+    {
+        // The snapshot shares unchanged textures; count only pixels that a
+        // prepare since replaced, which it alone keeps alive.
+        bytes += cpuPublicationBytes();
+        for (std::size_t id = 0; id < retained->textures.size(); ++id)
+            for (std::size_t variant = 0; variant < retained->textures[id].size(); ++variant)
+            {
+                const auto &pixels = retained->textures[id][variant].pixels;
+                if (pixels && !(id < textures.size() && variant < textures[id].size() &&
+                                textures[id][variant].pixels.share() == pixels))
+                    bytes += pixels->capacity() * sizeof(MaterialPixels::value_type);
+            }
+    }
     else if (!publishedPixels.empty())
         bytes += cpuPublicationBytes();
 	return bytes;
@@ -274,7 +286,7 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
 		auto &t = target[i];
 		if (packaged)
 		{
-			pack->read(m.sprite + std::to_string(frame) + ".png", t.pixels);
+			pack->read(m.sprite + std::to_string(frame) + ".png", t.pixels.mutate());
 			markOpaque(t);
 			t.size = 32;
 			t.source = source;
@@ -291,6 +303,8 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
 	// translucent variants cannot reintroduce rectangular seams.
 	const auto master = target[0];
 	for (auto &t : target)
+	{
+		auto &pixels = t.pixels.mutate(); // Copies the master's shared pixels once.
 		for (int y = 0; y < t.size; ++y)
 			for (int x = 0; x < t.size; ++x)
 			{
@@ -303,7 +317,7 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
 				const int xx = std::min(mx, master.size - 1 - mx),
 						  yy = std::min(my, master.size - 1 - my);
 				const auto &p = master.pixels[yy * master.size + xx];
-				auto &destination = t.pixels[y * t.size + x];
+				auto &destination = pixels[y * t.size + x];
 				const unsigned alpha = p[3] * (band - distance) + destination[3] * distance;
 				for (int k = 0; k < 3; ++k)
 					destination[k] = alpha ? (p[k] * p[3] * (band - distance) +
@@ -312,6 +326,7 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
 										   : 0;
 				destination[3] = alpha / band;
 			}
+	}
 	for (auto &t : target) markOpaque(t);
 	return changed;
 }
@@ -632,7 +647,7 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool
 					const auto &a = animation.current[i], &b = animation.next[i];
 					auto &out = textures[id][i];
 					out.size = std::max(a.size, b.size);
-					out.pixels.resize(out.size * out.size);
+					auto &pixels = out.pixels.overwrite(std::size_t(out.size) * out.size);
 					const unsigned weightB = (std::uint64_t(blend) * 65536 + steps / 2) / steps;
 					const unsigned weightA = 65536 - weightB;
 					out.opaque = a.opaque && b.opaque;
@@ -641,7 +656,7 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool
 						// Opaque endpoints at one size: a flat loop the compiler
 						// vectorizes. Full alpha stays (255 * 65536 + 32768) >> 16.
 						const auto *pa = a.pixels.front().data(), *pb = b.pixels.front().data();
-						auto *po = out.pixels.front().data();
+						auto *po = pixels.front().data();
 						const std::size_t bytes = out.pixels.size() * 4;
 						for (std::size_t k = 0; k < bytes; ++k)
 							po[k] = static_cast<unsigned char>((pa[k] * weightA + pb[k] * weightB + 32768) >> 16);
@@ -657,7 +672,7 @@ void Compositor::prepareSelected(bool hd, int time, const Usage *requested, bool
 								p % out.size * t.size / out.size];
 						};
 						const auto &pa = sample(a), &pb = sample(b);
-						auto &pixel = out.pixels[p];
+						auto &pixel = pixels[p];
 						if (pa[3] == 255 && pb[3] == 255)
 						{
 							for (unsigned k = 0; k < 3; ++k)
@@ -955,6 +970,15 @@ Recipe Compositor::describe(const SceneMap &map, int x, int y) const
 Recipe Compositor::describeOverview(const SceneMap &map, int x, int y) const
 {
 	return describe(map, x, y, false);
+}
+std::array<unsigned char, 3> Compositor::overviewColor(const SceneMap &map, TerrainType type) const
+{
+	if (unsigned(type) >= TERRAIN_COUNT)
+	{
+		const auto color = map.terrainPresentation(type).overview;
+		return {color.r, color.g, color.b};
+	}
+	return definitions.materials[materialFor(map, type)].preview;
 }
 Recipe Compositor::describe(const SceneMap &map, int x, int y, bool detailed) const
 {
@@ -1481,12 +1505,10 @@ std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterialsSelected
                 next->textures[id].push_back({});
                 continue;
             }
-            auto pixels = record.pixels[variant].lock();
-            if (!pixels)
-            {
-                pixels = std::make_shared<const MaterialPixels>(texture.pixels);
-                record.pixels[variant] = pixels;
-            }
+            // The snapshot shares the prepared pixels; a later prepare copies
+            // them before writing (SharedPixels::mutate).
+            auto pixels = texture.pixels.share();
+            record.pixels[variant] = pixels;
             next->textures[id].push_back({texture.size, std::move(pixels)});
         }
     }

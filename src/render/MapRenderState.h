@@ -4,9 +4,11 @@
 #include "AnimationClock.h"
 #include "FogFade.h"
 #include "MapOverlayQueue.h"
+#include "TerrainFallbackMetrics.h"
 #include "ZoomDetail.h"
 #include "scene/Scene.h"
 
+#include <SDL3/SDL_rect.h>
 #include <SDL3/SDL_stdinc.h>
 
 #include <memory>
@@ -57,6 +59,11 @@ struct MapRenderState
 	//! The terrain overview's sampled palette image, kept between frames.
 	std::unique_ptr<GAGCore::DrawableSurface> overview;
 	std::unique_ptr<OverviewTerrainCache> overviewCache;
+	//! Set while the overview draws as the backdrop of missing detailed pages:
+	//! the world tile origins of those pages, the only places it shows.
+	const std::vector<SDL_Point> *overviewBackdropPages = nullptr;
+	//! This frame's terrain drawn from fallbacks; reset by MapDrawer::drawMap.
+	TerrainFallbackMetrics fallback;
 	//! The furthest this view's camera can zoom out, set by its owner; 0 when
 	//! unknown. It anchors the far end of the detail curves (ZoomDetail::rampTile).
 	double minimumZoom = 0;

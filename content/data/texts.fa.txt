@@ -5049,9 +5049,9 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 [stat prestige about]
 اعتبار مستعمره که با ساختمان‌های بالاترین سطح به دست می‌آید. مسابقه‌ای با هدف اعتبار، با رسیدن به آن تمام می‌شود.
 [stat prestige needed]
-Prestige needed to win
+اعتبار لازم برای پیروزی
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+اعتباری که مستعمره هنوز باید به دست آورد تا با اعتبار پیروز شود: به اندازه‌ای که اعتبار مجموع مسابقه به هدف برسد و از همهٔ مستعمره‌های بازماندهٔ دیگر جلو بزند. فقط وقتی ثبت می‌شود که مسابقه هدف اعتبار داشته باشد.
 [stat band combat]
 نبرد
 [stat band starvation]

@@ -217,6 +217,57 @@ void batchPixels(bool highResolution, bool portable = false)
     REQUIRE_NOTHROW(GAGCore::SpriteDrawBatch(gfx, &sprite));
     GAGCore::Sprite::setHighResolution(false);
 }
+
+void portableTeamColourRelease()
+{
+    SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "1");
+    glob2test::ToolkitScope toolkit;
+    auto *gfx = GAGCore::Toolkit::initGraphic(128, 128, GAGCore::GraphicContext::PORTABLEGPU, "portable team colour release");
+    REQUIRE(gfx->hasPortableRenderer());
+    GAGCore::Sprite sprite;
+    REQUIRE(sprite.load("data/gfx/clearingflag"));
+    REQUIRE(sprite.rotated[0]);
+    // An HD team layer four times the native one, as an HD load installs it.
+    auto *native = sprite.rotated[0]->orig;
+    std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> scaled(
+        SDL_ScaleSurface(native->getSDLSurface(), native->getW() * 4,
+            native->getH() * 4, SDL_SCALEMODE_NEAREST), SDL_DestroySurface);
+    REQUIRE(scaled);
+    auto *layer = new GAGCore::DrawableSurface(scaled.get());
+    layer->highResolutionSampling = true;
+    sprite.experimentRotated.resize(sprite.images.size(), nullptr);
+    sprite.experimentRotated[0] = new GAGCore::Sprite::RotatedImage(layer);
+    sprite.setBaseColor(40, 200, 90);
+    const int w = sprite.getW(0), h = sprite.getH(0);
+    const auto frame = [&](GAGCore::DrawableSurface *surface)
+    {
+        gfx->drawFilledRect(0, 0, 128, 128, 0, 0, 0);
+        gfx->drawSurface(0.f, 0.f, float(w), float(h), surface, 0, 0, surface->getW(), surface->getH(), 255);
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> captured(gfx->renderer->capture(), SDL_DestroySurface);
+        REQUIRE(captured);
+        std::vector<unsigned char> pixels(std::size_t(captured->pitch) * captured->h);
+        std::memcpy(pixels.data(), captured->pixels, pixels.size());
+        return pixels;
+    };
+    auto *recoloured = sprite.prepareDrawSurface(0, true, true);
+    REQUIRE(recoloured);
+    REQUIRE(recoloured->hasPixels());
+    const auto drawn = frame(recoloured);
+    // Once drawn, the cached recolour keeps only its texture, and draws the same.
+    sprite.releaseDrawnTeamColor(0);
+    CHECK(!recoloured->hasPixels());
+    CHECK(recoloured->portableReleased());
+    CHECK(sprite.prepareDrawSurface(0, true, true) == recoloured);
+    CHECK(frame(recoloured) == drawn);
+    // The HD team layer keeps its pixels for other colours.
+    CHECK(layer->hasPixels());
+    // A lost texture (a renderer reset) recolours the frame again.
+    gfx->portableRenderer->forget(recoloured);
+    auto *again = sprite.prepareDrawSurface(0, true, true);
+    REQUIRE(again);
+    CHECK(again->hasPixels());
+    CHECK(frame(again) == drawn);
+}
 }
 
 #ifdef HAVE_OPENGL
@@ -227,3 +278,5 @@ TEST_CASE("ordered native resource sprite batch retains pixels [display]") { bat
 TEST_CASE("ordered portable resource sprite batch retains pixels [display]") { batchPixels(false, true); }
 
 TEST_CASE("resource sprite batch recovers from submission errors") { batchFailures(); }
+
+TEST_CASE("portable HD team recolours keep only their texture once drawn [display]") { portableTeamColourRelease(); }

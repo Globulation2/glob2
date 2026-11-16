@@ -636,7 +636,14 @@ namespace GAGCore
 			// resolution (native/HD) and team color, never by the composited result.
 			TeamColorKey key{index, experiment, actColor.r, actColor.g, actColor.b};
 			if (DrawableSurface *hit = lookupTeamColor(key))
-				return hit;
+			{
+				if (!hit->portableTextureLost())
+					return hit;
+				// Its texture held the only copy: recolour it again.
+				teamColorBytes -= teamColorList.front().bytes;
+				teamColorIndex.erase(key);
+				teamColorList.pop_front();
+			}
 			std::unique_ptr<DrawableSurface> ds(image->orig->clone());
 			applyTeamHueShift(*ds);
 			// Count the first GPU upload toward the budget, matching every other
@@ -1141,6 +1148,12 @@ namespace GAGCore
             !experimentImages[index])
             return;
         experimentImages[index]->releasePortablePixels();
+    }
+    void Sprite::releaseDrawnTeamColor(unsigned index)
+    {
+        const auto found = teamColorIndex.find(TeamColorKey{int(index), true, actColor.r, actColor.g, actColor.b});
+        if (found != teamColorIndex.end())
+            found->second->surface->releasePortablePixels();
     }
     void Sprite::releaseHighResolutionDemand()
     {

@@ -5049,9 +5049,9 @@ Prestiž
 [stat prestige about]
 Prestiž kolonie, získaná budovami nejvyšší úrovně. Zápas s cílem prestiže skončí, jakmile je cíl dosažen.
 [stat prestige needed]
-Prestige needed to win
+Prestiž potřebná k vítězství
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+Prestiž, kterou by kolonie ještě musela získat, aby zvítězila prestiží: dost na to, aby celková prestiž zápasu dosáhla cíle, a aby předstihla všechny ostatní přeživší kolonie. Zaznamenává se, jen když má zápas cíl prestiže.
 [stat band combat]
 Boj
 [stat band starvation]

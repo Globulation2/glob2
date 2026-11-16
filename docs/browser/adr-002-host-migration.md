@@ -22,7 +22,11 @@ include Emscripten APIs. Static dependency tests enforce that boundary.
 key with logical-pixel bounds and the `visible` part left after scroll-region
 clipping, so browser tests click real controls (scrolling them into view first)
 instead of mirroring layout arithmetic; `loop` counts processed host frames so
-a test can wait until queued input has been consumed. It reports
+a test can wait until queued input has been consumed; during a match, `hud`
+gives the sidebar panel and selection mode of the latest drawn frame
+(`ApplicationHost::hudDrawn`), so tests wait for interface state instead of
+comparing exact pixels, which asynchronous texture preparation may refine after
+a first capture. It reports
 screen, simulation, rendering, persistence, audio, save, multiplayer, and custom-game readiness state.
 It cannot issue orders, advance simulation, alter files, or navigate menus.
 

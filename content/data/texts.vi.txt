@@ -5049,9 +5049,9 @@ Uy danh
 [stat prestige about]
 Uy danh của thuộc địa, có được nhờ các công trình cấp cao nhất. Trận đấu có mục tiêu uy danh sẽ kết thúc khi đạt mục tiêu đó.
 [stat prestige needed]
-Prestige needed to win
+Uy danh cần để thắng
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+Uy danh mà thuộc địa vẫn cần đạt thêm để thắng bằng uy danh: đủ để tổng uy danh của trận đấu đạt mục tiêu, và vượt qua mọi thuộc địa còn sống sót khác. Chỉ được ghi lại khi trận đấu có mục tiêu uy danh.
 [stat band combat]
 Chiến đấu
 [stat band starvation]

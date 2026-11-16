@@ -5049,9 +5049,9 @@ Roem
 [stat prestige about]
 De roem van de kolonie, verdiend met gebouwen van het hoogste niveau. Een wedstrijd met een roemdoel eindigt als dat bereikt is.
 [stat prestige needed]
-Prestige needed to win
+Roem nodig om te winnen
 [stat prestige needed about]
-The prestige the colony would still have to earn to win by prestige: enough for the match's combined prestige to reach the goal, and to pass every other surviving colony. Recorded only when the match has a prestige goal.
+De roem die de kolonie nog zou moeten verdienen om op roem te winnen: genoeg om de gezamenlijke roem van de wedstrijd het doel te laten halen, en om elke andere overlevende kolonie te overtreffen. Alleen vastgelegd als de wedstrijd een roemdoel heeft.
 [stat band combat]
 Gevecht
 [stat band starvation]
