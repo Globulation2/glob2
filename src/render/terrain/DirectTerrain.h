@@ -56,7 +56,7 @@ public:
     // Legacy GL views compose pages instead.
     static bool legacyPassAvailable();
     // Whether this graphics context's device draws the same streamed pass
-    // (prepare/drawPrepared) through streamed textures: SDL GPU.
+    // (prepare/drawPrepared) through streamed textures: SDL GPU and Programmable GL.
     static bool streamedPassAvailable(GAGCore::GraphicContext &);
     // Nothing of this map can draw yet: show the overview.
     bool needsBackdrop(GAGCore::GraphicContext &, const SceneMap &) const;

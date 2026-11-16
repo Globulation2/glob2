@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <map>
 #include <memory>
+#include <optional>
 #include <span>
 #include <tuple>
 #include <vector>
@@ -117,6 +118,13 @@ class SoftwareTerrainCache
 		// When (SDL_GetTicks) a page arrived where the view had drawn a stand-in
 		// or the overview; it fades in over FadeMs. Zero once settled.
 		Uint64 arrived = 0;
+		// Cells an animation round wrote into the pixels but not yet to the
+		// texture, which keeps the shown phase until the round publishes.
+		std::array<bool, ChunkTiles * ChunkTiles> staged{};
+		bool hasStaged = false;
+		// Cells out of view that rounds left at an earlier phase than the
+		// page's revisions; a round recomposes them once the view shows them.
+		std::array<bool, ChunkTiles * ChunkTiles> stale{};
 	};
 	static constexpr std::size_t ChunkStorageBytes =
 		ChunkPixels * ChunkPixels * 4 + sizeof(Chunk) +
@@ -164,6 +172,26 @@ class SoftwareTerrainCache
 	};
 	std::map<std::tuple<unsigned, int, int>, AnimatedTiles> animatedTiles; // By material, scale and reduction.
 	TerrainVisual::Compositor *overlayCompositor = nullptr; // Set by prepare for draw.
+	// An animation phase: a material snapshot and the texture revisions it holds.
+	struct AnimationPhase
+	{
+		std::shared_ptr<const TerrainVisual::Compositor::CpuMaterials> materials;
+		std::vector<std::uint64_t> revisions; // By material.
+	};
+	// While pages build in the background, the view shows one animation phase
+	// everywhere: the overlay tiles compose from it, and a round brings every
+	// drawn page's animated cells to the next phase off-thread, staging them
+	// into page pixels, then publishes all of them and the overlay tiles in one
+	// frame. Empty when pages compose synchronously at the live phase.
+	AnimationPhase shownPhase;
+	struct AnimationRound
+	{
+		AnimationPhase phase;
+		std::vector<std::shared_ptr<TerrainPendingPage>> pages; // Refreshes composing.
+	};
+	std::optional<AnimationRound> round;
+	// Writes the staged cells of every page to its texture; returns their bytes.
+	std::size_t publishStaged();
 	// The overlay tile of a uniform cell, composed for the current revision.
 	// Null when its material does not animate or its tile is not opaque.
 	AnimatedTiles *animatedTile(TerrainVisual::Compositor &, const TerrainVisual::Recipe &, SDL_Rect &source,

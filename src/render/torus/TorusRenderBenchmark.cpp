@@ -501,6 +501,17 @@ static int run(int argc, char **argv)
                         PerformanceTelemetry::Id::Resources, PerformanceTelemetry::Id::GroundUnits})
                         std::printf("FRAME_SCOPE frame=%d scope=%u elapsed_ms=%.6f\n", i, unsigned(id),
                             (scopes[unsigned(id)].time.total - scopesBefore[unsigned(id)].time.total) / 1e6);
+                    // Texture uploads since the previous frame's line (the portable
+                    // renderer counts them; other backends report zero).
+                    if (auto *backend = ContextAccess::backend(*gfx))
+                    {
+                        static GAGCore::RenderOperations previous{};
+                        const auto ops = backend->operations();
+                        std::printf("FRAME_UPLOADS frame=%d uploads=%llu upload_bytes=%llu\n", i,
+                            static_cast<unsigned long long>(ops.textureUploads - previous.textureUploads),
+                            static_cast<unsigned long long>(ops.textureUploadBytes - previous.textureUploadBytes));
+                        previous = ops;
+                    }
                     if (auto *direct = gui.view.render.existingDirectTerrain())
                         std::printf("FRAME_HD frame=%d pending=%zu texture_bytes=%zu\n", i, direct->pendingHdMasks(),
                             direct->textureBytes());

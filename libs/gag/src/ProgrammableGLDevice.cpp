@@ -44,6 +44,7 @@ namespace
  F(void, glTexParameteri, (GLenum, GLenum, GLint)) \
  F(void, glTexImage2D, (GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const void *)) \
  F(void, glCompressedTexImage2D, (GLenum, GLint, GLenum, GLsizei, GLsizei, GLint, GLsizei, const void *)) \
+ F(void, glTexSubImage2D, (GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const void *)) \
  F(void, glPixelStorei, (GLenum, GLint)) \
  F(void, glGenBuffers, (GLsizei, GLuint *)) \
  F(void, glDeleteBuffers, (GLsizei, const GLuint *)) \
@@ -199,6 +200,14 @@ class ProgrammableGLDevice final : public RenderDevice
     GLuint program = 0, vao = 0, vertexBuffer = 0, whiteTexture = 0, screenTexture = 0, screenFramebuffer = 0, committedTexture = 0, committedFramebuffer = 0;
     GLuint directTerrainProgram = 0;
     std::array<GLint, 7> directTerrainUniforms{};
+    // Streamed direct terrain (terrain-direct-hd): RGBA8 textures their
+    // StreamedTexture owners write in place, charged to the total budget.
+    GLuint directTerrainHdProgram = 0;
+    std::array<GLint, 14> directTerrainHdUniforms{};
+    struct StreamedAllocation { std::weak_ptr<StreamedTexture> owner; GLuint texture = 0; std::size_t bytes = 0; };
+    std::map<const StreamedTexture *, StreamedAllocation> streamed;
+    std::size_t streamedBytes = 0;
+    GLuint streamedClearFramebuffer = 0;
     GLint viewportUniform = -1, imageUniform = -1, texturedUniform = -1, alphaUniform = -1, boundsUniform = -1;
     int width = 0, height = 0, maxTexture = 0;
     std::uint64_t epoch = 1, issued = 0, completed = 0;
@@ -309,6 +318,18 @@ class ProgrammableGLDevice final : public RenderDevice
         gl.glDeleteTextures(1,&value.texture);gl.glDeleteFramebuffers(1,&value.framebuffer);
         textureBytes-=value.bytes;scratchBytes-=value.bytes;
     }
+    // GL keeps deleted storage alive for commands already issued, so a
+    // streamed texture goes as soon as its owner does.
+    void destroy(StreamedAllocation &value)
+    {
+        gl.glDeleteTextures(1, &value.texture);
+        textureBytes -= value.bytes; streamedBytes -= value.bytes;
+    }
+    void destroyStreamed()
+    {
+        for (auto &[key, value] : streamed) destroy(value);
+        streamed.clear();
+    }
     void poll()
     {
         while (!pending.empty()) {
@@ -322,6 +343,11 @@ class ProgrammableGLDevice final : public RenderDevice
     void trim(std::size_t admission = 0, std::size_t category = 0, bool colorAdmission = true, bool releaseCompleted = false)
     {
         const auto eligible = [this](const Allocation &value) { return value.lastUse <= completed; };
+        // A handful of streamed textures per view: never evicted, only
+        // released with their owner (or lost on reset).
+        for (auto it = streamed.begin(); it != streamed.end();) {
+            if (it->second.owner.expired()) { destroy(it->second); it = streamed.erase(it); } else ++it;
+        }
         for (auto it = textures.begin(); it != textures.end();) {
             if (eligible(it->second) && (releaseCompleted || it->second.snapshot.expired() || textureBytes + admission > TextureBudget-captureBytes || (colorAdmission && it->second.category == category && admission > ClassLimits[category] - classBytes[category]))) {
                 destroy(it->second); it = textures.erase(it);
@@ -644,11 +670,16 @@ class ProgrammableGLDevice final : public RenderDevice
     };
     static bool sameRect(const std::optional<SDL_Rect> &stored, const SDL_Rect &value)
     { return stored && stored->x==value.x && stored->y==value.y && stored->w==value.w && stored->h==value.h; }
-    void initDirectTerrain(bool es)
+    static std::string directTerrainVersion(bool es)
     {
-        const std::string version = es ? "#version 300 es\nprecision highp float;\nprecision highp int;\nprecision highp sampler2D;\n"
-                                       : "#version 330 core\n";
-        const auto vertex = shader(GL_VERTEX_SHADER, version + R"(
+        return es ? "#version 300 es\nprecision highp float;\nprecision highp int;\nprecision highp sampler2D;\n"
+                  : "#version 330 core\n";
+    }
+    // Links the shared direct-terrain vertex stage (primitive vertex layout)
+    // with a fragment source; the program is left in use.
+    GLuint directTerrainLink(bool es, const std::string &fragmentSource)
+    {
+        const auto vertex = shader(GL_VERTEX_SHADER, directTerrainVersion(es) + R"(
 layout(location=0) in vec2 position;
 layout(location=2) in vec2 texcoord;
 uniform vec2 viewport;
@@ -660,26 +691,32 @@ void main() {
 )");
         GLuint fragment = 0;
         try {
-            fragment = shader(GL_FRAGMENT_SHADER, version + "#define DIRECT_TERRAIN_PACKED\n" +
-                              DirectTerrainFragment);
+            fragment = shader(GL_FRAGMENT_SHADER, fragmentSource);
         } catch (...) {
             gl.glDeleteShader(vertex);
             throw;
         }
-        directTerrainProgram = gl.glCreateProgram();
-        gl.glAttachShader(directTerrainProgram, vertex);
-        gl.glAttachShader(directTerrainProgram, fragment);
-        gl.glLinkProgram(directTerrainProgram);
+        const GLuint linkedProgram = gl.glCreateProgram();
+        gl.glAttachShader(linkedProgram, vertex);
+        gl.glAttachShader(linkedProgram, fragment);
+        gl.glLinkProgram(linkedProgram);
         gl.glDeleteShader(vertex);
         gl.glDeleteShader(fragment);
         GLint linked = GL_FALSE;
-        gl.glGetProgramiv(directTerrainProgram, GL_LINK_STATUS, &linked);
+        gl.glGetProgramiv(linkedProgram, GL_LINK_STATUS, &linked);
         if (!linked) {
             char log[4096]{};
-            gl.glGetProgramInfoLog(directTerrainProgram, sizeof(log), nullptr, log);
+            gl.glGetProgramInfoLog(linkedProgram, sizeof(log), nullptr, log);
+            gl.glDeleteProgram(linkedProgram);
             throw std::runtime_error(std::string("Direct terrain shader link: ") + log);
         }
-        gl.glUseProgram(directTerrainProgram);
+        gl.glUseProgram(linkedProgram);
+        return linkedProgram;
+    }
+    void initDirectTerrain(bool es)
+    {
+        directTerrainProgram = directTerrainLink(es, directTerrainVersion(es) + "#define DIRECT_TERRAIN_PACKED\n" +
+                                                 DirectTerrainFragment);
         for (unsigned i = 0; i < DirectTerrainDraw::Count; ++i)
             gl.glUniform1i(gl.glGetUniformLocation(directTerrainProgram, DirectTerrainDraw::Samplers[i]), i);
         constexpr std::array names{"viewport", "mapSize", "artSize", "coverageSize", "variantSize",
@@ -687,21 +724,158 @@ void main() {
         for (unsigned i = 0; i < names.size(); ++i)
             directTerrainUniforms[i] = gl.glGetUniformLocation(directTerrainProgram, names[i]);
     }
+    // Streamed direct terrain: the generated terrain-direct-hd fragment stage
+    // (Legacy GL's pass, with packed tables), one texture unit per streamed slot.
+    void initDirectTerrainHd(bool es, const std::string &fragmentFile)
+    {
+        GLint units = 0;
+        gl.glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &units);
+        if (units < GLint(DirectTerrainDraw::StreamedCount))
+            throw std::runtime_error("Too few texture units for streamed direct terrain");
+        directTerrainHdProgram = directTerrainLink(es, readShader(fragmentFile));
+        constexpr std::array<const char *, DirectTerrainDraw::StreamedCount - DirectTerrainDraw::Count> hdSamplers{
+            "hdIndex", "hdCoverage", "hdEdges", "hdPreviousIndex", "hdPreviousCoverage", "hdPreviousEdges"};
+        for (unsigned i = 0; i < DirectTerrainDraw::StreamedCount; ++i)
+            gl.glUniform1i(gl.glGetUniformLocation(directTerrainHdProgram,
+                i < DirectTerrainDraw::Count ? DirectTerrainDraw::Samplers[i] : hdSamplers[i - DirectTerrainDraw::Count]), GLint(i));
+        constexpr std::array names{"viewport", "mapSize", "artSize", "coverageSize", "variantSize", "hdCoverageSize",
+                                   "hdPreviousSize", "hdBaseSize", "animationTime", "wholeMapValue", "artTilePixels",
+                                   "hdTilePixels", "hdPreviousTile", "hdBaseTile"};
+        static_assert(names.size() == std::tuple_size_v<decltype(directTerrainHdUniforms)>);
+        for (unsigned i = 0; i < names.size(); ++i)
+            directTerrainHdUniforms[i] = gl.glGetUniformLocation(directTerrainHdProgram, names[i]);
+        gl.glGenFramebuffers(1, &streamedClearFramebuffer);
+        check("Prepare streamed direct terrain");
+    }
+    // The device texture of a streamed slot with every queued write applied,
+    // or 0 when it is lost: created by an earlier generation of this device,
+    // or not admitted within the total budget. The owner then starts again.
+    // Writes are applied in order, all of them, before the frame draws: the
+    // owner bounds what it queues per frame, and a prefix could pair a new
+    // index with a tile not yet written.
+    GLuint resolveStreamed(const std::shared_ptr<StreamedTexture> &source)
+    {
+        if (source->lost) return 0;
+        auto found = streamed.find(source.get());
+        if (found != streamed.end() && found->second.owner.lock() != source) {
+            destroy(found->second); streamed.erase(found); found = streamed.end();
+        }
+        if (found == streamed.end()) {
+            // Writes already applied went to a texture this device no longer holds.
+            if (source->applied) { source->lost = true; return 0; }
+            if (source->width <= 0 || source->height <= 0 || source->width > maxTexture || source->height > maxTexture)
+                throw std::invalid_argument("Invalid streamed texture dimensions");
+            const std::size_t bytes = std::size_t(source->width) * source->height * 4;
+            if (bytes > TextureBudget) { source->lost = true; return 0; }
+            try { trim(bytes, 0, false); }
+            catch (const RenderAdmissionDeferred &) { source->lost = true; return 0; }
+            StreamedAllocation created; created.owner = source; created.bytes = bytes;
+            gl.glGenTextures(1, &created.texture);
+            gl.glActiveTexture(GL_TEXTURE0);
+            gl.glBindTexture(GL_TEXTURE_2D, created.texture);
+            const GLint filter = source->linear ? GL_LINEAR : GL_NEAREST;
+            gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+            gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+            gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+            gl.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, source->width, source->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+            // A new streamed texture starts cleared to zero, without a CPU copy.
+            gl.glBindFramebuffer(GL_FRAMEBUFFER, streamedClearFramebuffer);
+            gl.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, created.texture, 0);
+            gl.glDisable(GL_SCISSOR_TEST);
+            gl.glClearColor(0, 0, 0, 0);
+            gl.glClear(GL_COLOR_BUFFER_BIT);
+            gl.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
+            textureBytes += bytes; streamedBytes += bytes; counts.resourceBytes = textureBytes;
+            try { check("Create streamed texture"); }
+            catch (...) { destroy(created); throw; }
+            found = streamed.emplace(source.get(), std::move(created)).first;
+        }
+        if (!source->writes.empty()) {
+            gl.glActiveTexture(GL_TEXTURE0);
+            gl.glBindTexture(GL_TEXTURE_2D, found->second.texture);
+            gl.glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+            while (!source->writes.empty()) {
+                const auto &write = source->writes.front();
+                const auto &rect = write.rect;
+                if (rect.x < 0 || rect.y < 0 || rect.w <= 0 || rect.h <= 0 || rect.x > source->width - rect.w ||
+                    rect.y > source->height - rect.h || write.rgba.size() != std::size_t(rect.w) * rect.h * 4)
+                    throw std::invalid_argument("Streamed texture write outside its texture");
+                gl.glTexSubImage2D(GL_TEXTURE_2D, 0, rect.x, rect.y, rect.w, rect.h, GL_RGBA, GL_UNSIGNED_BYTE, write.rgba.data());
+                // GL copies the pixels on the call: the write is applied.
+                counts.uploadBytes += write.rgba.size();
+                source->queuedBytes -= std::min(source->queuedBytes, write.rgba.size());
+                ++source->applied;
+                source->writes.pop_front();
+            }
+            check("Apply streamed texture writes");
+        }
+        return found->second.texture;
+    }
+    // Resolves every streamed slot of a draw; false when one is lost, and the
+    // owner, seeing the loss, draws its fallback from the next frame.
+    bool resolveStreamedDraw(const DirectTerrainDraw &data)
+    {
+        bool lost = false;
+        for (const auto &source : data.streamed)
+            if (source && !resolveStreamed(source)) lost = true;
+        return !lost;
+    }
     void validateDirectTerrain(const DrawPacket &packet) const
     {
         if (!directTerrainProgram || !packet.directTerrain || packet.vertices.size() != 6 ||
             packet.texture || packet.blend != DrawPacket::Blend::Premultiplied ||
             packet.depth != DrawPacket::Depth::Disabled || packet.depthWrite)
             throw std::invalid_argument("Invalid direct terrain draw");
+        if (packet.directTerrain->isStreamed()) {
+            if (!directTerrainHdProgram) throw std::invalid_argument("Streamed direct terrain unavailable");
+            return;
+        }
         const auto &sources = packet.directTerrain->textures;
         for (const auto &source : sources)
             if (!source || !source->pixels || targets.contains(key(source)) ||
                 (packet.target && key(source) == key(packet.target)))
                 throw std::invalid_argument("Invalid direct terrain texture");
     }
+    void drawStreamedTerrain(const DirectTerrainDraw &data, float logicalW, float logicalH,
+                             std::size_t first, std::size_t count)
+    {
+        gl.glUseProgram(directTerrainHdProgram);
+        for (unsigned unit = 0; unit < data.streamed.size(); ++unit) {
+            gl.glActiveTexture(GL_TEXTURE0 + unit);
+            const auto &source = data.streamed[unit];
+            // Resolved before this draw was queued; a null slot binds a placeholder.
+            const auto found = source ? streamed.find(source.get()) : streamed.end();
+            gl.glBindTexture(GL_TEXTURE_2D, found != streamed.end() ? found->second.texture : whiteTexture);
+        }
+        const auto &hd = data.hd;
+        const auto pair = [&](unsigned uniform, const float (&value)[2]) {
+            gl.glUniform2f(directTerrainHdUniforms[uniform], value[0], value[1]);
+        };
+        const float unused[2]{1, 1};
+        gl.glUniform2f(directTerrainHdUniforms[0], logicalW, logicalH);
+        pair(1, hd.mapSize);
+        pair(2, hd.artSize);
+        pair(3, unused);
+        pair(4, hd.variantSize);
+        pair(5, hd.hdCoverageSize);
+        pair(6, hd.hdPreviousSize);
+        pair(7, hd.hdBaseSize);
+        gl.glUniform1f(directTerrainHdUniforms[8], data.animationTime);
+        gl.glUniform1f(directTerrainHdUniforms[9], data.wholeMap ? 1.f : 0.f);
+        gl.glUniform1f(directTerrainHdUniforms[10], hd.artTilePixels);
+        gl.glUniform1f(directTerrainHdUniforms[11], hd.hdTilePixels);
+        gl.glUniform1f(directTerrainHdUniforms[12], hd.hdPreviousTile);
+        gl.glUniform1f(directTerrainHdUniforms[13], hd.hdBaseTile);
+        gl.glDrawArrays(GL_TRIANGLES, GLint(first), GLsizei(count));
+        gl.glActiveTexture(GL_TEXTURE0);
+        ++counts.batches;
+    }
     void drawDirectTerrain(const DirectTerrainDraw &data, float logicalW, float logicalH,
                            std::size_t first, std::size_t count)
     {
+        if (data.isStreamed()) return drawStreamedTerrain(data, logicalW, logicalH, first, count);
         gl.glUseProgram(directTerrainProgram);
         for (unsigned unit = 0; unit < data.textures.size(); ++unit) {
             gl.glActiveTexture(GL_TEXTURE0 + unit);
@@ -752,7 +926,7 @@ void main() {
         state(packet, premultiplied);
         if (packet.kind == DrawPacket::Kind::DirectTerrain) {
             drawDirectTerrain(*packet.directTerrain, logicalW, logicalH, first, count);
-            cached.selectedProgram = directTerrainProgram;
+            cached.selectedProgram = packet.directTerrain->isStreamed() ? directTerrainHdProgram : directTerrainProgram;
             return;
         }
         if (packet.material == DrawPacket::Material::TeamColor) {
@@ -1163,6 +1337,9 @@ void main() {
             for (auto &[key, value] : masks) destroy(value);
             for (auto &[key, value] : scratchTargets) destroy(value);
             if (directTerrainProgram) gl.glDeleteProgram(directTerrainProgram);
+            destroyStreamed();
+            if (directTerrainHdProgram) gl.glDeleteProgram(directTerrainHdProgram);
+            if (streamedClearFramebuffer) gl.glDeleteFramebuffers(1, &streamedClearFramebuffer);
             if(composeProgram.program)gl.glDeleteProgram(composeProgram.program);
             if(reduceProgram.program)gl.glDeleteProgram(reduceProgram.program);
             for (auto &[key, value] : meshes) destroyMesh(value);
@@ -1289,6 +1466,16 @@ void main() {
                 SDL_LogWarn(SDL_LOG_CATEGORY_RENDER, "Direct terrain unavailable: %s", error.what());
             }
             initCompression(profile == SDL_GL_CONTEXT_PROFILE_ES);
+            if (directTerrainProgram && std::ifstream(shaderRoot + "terrain-direct-hd.frag")) {
+                // Optional: without it HD terrain composes pages.
+                try {
+                    initDirectTerrainHd(profile == SDL_GL_CONTEXT_PROFILE_ES, shaderRoot + "terrain-direct-hd.frag");
+                } catch (const std::exception &error) {
+                    if (directTerrainHdProgram) gl.glDeleteProgram(directTerrainHdProgram);
+                    directTerrainHdProgram = 0;
+                    SDL_LogWarn(SDL_LOG_CATEGORY_RENDER, "Streamed direct terrain unavailable: %s", error.what());
+                }
+            }
             SDL_GL_SetSwapInterval(0); screen(); initTiming();
         } catch (...) { cleanup(); throw; }
     }
@@ -1299,6 +1486,7 @@ void main() {
         RenderDeviceCapabilities result{true, true, timingSupported, maxTexture, supportsWorld, supportsWorld, supportsSkins,supportsTerrain,directTerrainProgram != 0};
         result.teamColor = teamProgram.program != 0;
         result.bc3Textures = bc3Supported; result.astc4x4Textures = astcSupported;
+        result.directTerrainStreaming = directTerrainProgram != 0 && directTerrainHdProgram != 0;
         return result;
     }
     bool canBeginFrame() override
@@ -1374,6 +1562,10 @@ void main() {
             if (first.kind == DrawPacket::Kind::Clear || first.kind == DrawPacket::Kind::MeshTriangles) {
                 flushPrimitives(); drawWorld(first, frame.logicalWidth, frame.logicalHeight); ++counts.packets; ++begin; continue;
             }
+            // Streamed terrain applies its queued writes before it draws; a
+            // lost texture skips the draw (the owner starts again).
+            if (first.kind == DrawPacket::Kind::DirectTerrain && first.directTerrain->isStreamed() &&
+                !resolveStreamedDraw(*first.directTerrain)) { ++counts.packets; begin = end; continue; }
             if (first.target) target(first.target);
             bool flip = false, premultiplied = false;
             if (first.texture) {
@@ -1458,6 +1650,7 @@ void main() {
         masks.clear();
         for(auto &[key,value]:scratchTargets)destroy(value);
         scratchTargets.clear();
+        destroyStreamed(); // Owners that had writes applied see their textures lost.
         ++epoch; completed = issued; frameOpen = false; counts.resourceBytes = 0;
     }
     std::uint64_t generation() const override { return epoch; }

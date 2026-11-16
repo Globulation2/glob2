@@ -137,18 +137,23 @@ Terrain uses the shared CPU material compositor and bounded 16 by 16 cell pages
 on software and GPU backends; see [terrain materials](../assets/terrain-materials.md).
 [Direct terrain](../development/rendering-benchmarks.md#direct-terrain)
 uses map-space atlases for Original artwork on desktop legacy OpenGL, programmable
-OpenGL, SDL GPU, and WebGPU; desktop legacy OpenGL and SDL GPU also draw HD artwork with it. SDL GPU and WebGPU use offline shader assets. The atlas builder packs terrain data independently of the device. The
+OpenGL, SDL GPU, and WebGPU; desktop legacy OpenGL, SDL GPU and programmable OpenGL also draw HD artwork with it. SDL GPU and WebGPU use offline shader assets. The atlas builder packs terrain data independently of the device. The
 camera transforms a terrain quad while its fragment shader blends material
 variants, coverage and shoreline effects.
 
-SDL GPU draws legacy OpenGL's streamed pass rather than the whole-map native
+SDL GPU and programmable OpenGL draw legacy OpenGL's streamed pass rather than the whole-map native
 atlas: the same per-cell tables, artwork streamed at the display density, coverage
 masks built by background workers at that density, the retired atlas a zoom
 keeps, the whole-map base masks and the corner split, through the
 `terrain-direct-hd` shader. Its textures are `StreamedTexture`s
 (`libs/gag/include/RenderFrame.h`): device textures written in place with no CPU
 copy of their pixels. Writes queue on the texture until a submitted frame applies
-them, all before that frame draws; a dropped frame leaves them queued. A device
+them, all before that frame draws; a dropped frame leaves them queued.
+Programmable OpenGL applies them with `glTexSubImage2D` as it submits the frame
+that draws them, clears a new texture through a framebuffer rather than a CPU
+copy, charges the textures to its total budget and never evicts them; it loads
+the generated `terrain-direct-hd` GLSL (desktop 3.30 or ES 3.00) and needs 14
+texture units. A device
 that advertises `directTerrainStreaming` takes this pass at every zoom, with HD
 artwork on or off; its atlases stay at 2048 square, so a view that needs more
 takes coarser tiles. Art tiles are box-filtered on the background workers
@@ -162,7 +167,7 @@ previous phase until the workers deliver the next. A variant new to the drawing
 atlas is filtered at once, with its record, and a complete draw refilters
 everything at once.
 
-SDL GPU always has a low-resolution version of the whole map to draw: only HD
+The streamed devices always have a low-resolution version of the whole map to draw: only HD
 masks and artwork stream in and out. Game loading (`GameGUI::prepareDirectTerrain`,
 from `Engine::finalAdjustments`) builds the map's per-cell tables and then the
 whole-map base masks, the masks on up to eight threads (`DIRECT_TERRAIN_PRELOAD`
@@ -187,8 +192,8 @@ revisit only the 16x16 sectors whose discovery stamps moved
 discovery table.
 
 The page renderer handles HD artwork on
-programmable OpenGL and WebGPU, backends without direct terrain, tiled captures outside legacy
-OpenGL and SDL GPU, SDL GPU maps too large for its direct terrain tables, and the browser's WebGL2 renderer (legacy OpenGL through Emscripten's WebGL2
+WebGPU, backends without direct terrain or the streamed pass, tiled captures outside legacy
+OpenGL and the streamed devices, streamed-device maps too large for its direct terrain tables, and the browser's WebGL2 renderer (legacy OpenGL through Emscripten's WebGL2
 bridge), where pages draw native artwork until the view's HD families arrive.
 Interactive page and overview views never compose on the graphics thread and
 never block on it: until wanted terrain arrives they draw the best real terrain
