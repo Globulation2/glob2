@@ -58,6 +58,13 @@
 
 namespace
 {
+// Background mask builds take seconds in optimized builds and far longer under
+// coverage instrumentation: wait on a clock, not an attempt count.
+struct Patience
+{
+	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now() + std::chrono::minutes(2);
+	bool operator()() const { return std::chrono::steady_clock::now() < end; }
+};
 // Four panels: cliffs on the left of each, against thicket, hedge, rock
 // spires and basalt columns, along a stepped border with a cliff spur and a
 // pocket of the neighbour, all inside a grass margin.
@@ -1323,7 +1330,7 @@ TEST_SUITE("TerrainPresentation")
 		const auto settle = [&](float scale, int right, int bottom)
 		{
 			gfx.beginMapTransform(scale, 0, 0, 0, 0, 640, 480);
-			for (int attempt = 0; attempt < 2000; ++attempt)
+			for (Patience waiting; waiting();)
 			{
 				const bool ready = atlas.prepare(gfx, scene, 0, 0, right, bottom, 0, 0, fixture.team->me, true, 0);
 				if (ready && !atlas.preparing() && !atlas.pendingHdMasks()) break;
@@ -1384,7 +1391,7 @@ TEST_SUITE("TerrainPresentation")
 		const auto settle = [&](float scale, int right, int bottom)
 		{
 			gfx.beginMapTransform(scale, 0, 0, 0, 0, 640, 480);
-			for (int attempt = 0; attempt < 2000; ++attempt)
+			for (Patience waiting; waiting();)
 			{
 				const bool ready = atlas.prepare(gfx, scene, 0, 0, right, bottom, 0, 0, fixture.team->me, true, 0);
 				if (ready && !atlas.preparing() && !atlas.pendingHdMasks()) break;
@@ -1452,11 +1459,11 @@ TEST_SUITE("TerrainPresentation")
 		};
 		// Eight texels a cell, the base mask's own density: until the base
 		// covers the map, the view builds an atlas of its own.
-		for (int attempt = 0; attempt < 4000 && !prepare(.24f, 63, 31); ++attempt) SDL_Delay(1);
+		for (Patience waiting; waiting() && !prepare(.24f, 63, 31);) SDL_Delay(1);
 		REQUIRE_FALSE(atlas.pendingHdMasks());
 		const auto fromAtlas = frame(.24f);
 		const auto withAtlas = atlas.textureBytes();
-		for (int attempt = 0; attempt < 8000 && atlas.pendingBaseMasks(); ++attempt)
+		for (Patience waiting; waiting() && atlas.pendingBaseMasks();)
 		{
 			prepare(.24f, 63, 31);
 			SDL_Delay(1);
@@ -1477,7 +1484,7 @@ TEST_SUITE("TerrainPresentation")
 		CAPTURE(share);
 		CHECK(share < .01);
 		// Zooming in builds an atlas at the new density again.
-		for (int attempt = 0; attempt < 4000 && !prepare(.76f, 26, 19); ++attempt) SDL_Delay(1);
+		for (Patience waiting; waiting() && !prepare(.76f, 26, 19);) SDL_Delay(1);
 		CHECK_FALSE(atlas.pendingHdMasks());
 		CHECK(atlas.textureBytes() > 20u * 1024 * 1024);
 	}
@@ -1499,7 +1506,7 @@ TEST_SUITE("TerrainPresentation")
 		DirectTerrain atlas;
 		// The left half at 32-texel masks, until the base covers the whole map.
 		gfx.beginMapTransform(.76f, 0, 0, 0, 0, 640, 480);
-		for (int attempt = 0; attempt < 4000; ++attempt)
+		for (Patience waiting; waiting();)
 		{
 			const bool ready = atlas.prepare(gfx, scene, 0, 0, 26, 19, 0, 0, fixture.team->me, true, 0);
 			if (ready && !atlas.preparing() && !atlas.pendingHdMasks() && !atlas.pendingBaseMasks()) break;
@@ -1518,7 +1525,7 @@ TEST_SUITE("TerrainPresentation")
 			return terrainPixels(true);
 		};
 		const auto first = frame();
-		for (int attempt = 0; attempt < 4000 && atlas.pendingHdMasks(); ++attempt)
+		for (Patience waiting; waiting() && atlas.pendingHdMasks();)
 		{
 			atlas.prepare(gfx, scene, 0, 0, 26, 19, 32, 0, fixture.team->me, true, 0);
 			SDL_Delay(1);
@@ -1570,7 +1577,7 @@ TEST_SUITE("TerrainPresentation")
 		const auto pending = atlas.pendingHdMasks();
 		REQUIRE(pending > 100);
 		const auto first = frame();
-		for (int attempt = 0; attempt < 4000 && atlas.pendingHdMasks(); ++attempt)
+		for (Patience waiting; waiting() && atlas.pendingHdMasks();)
 		{
 			atlas.prepare(gfx, scene, 0, 0, 26, 19, 0, 0, fixture.team->me, true, 0);
 			SDL_Delay(1);
