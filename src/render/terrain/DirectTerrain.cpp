@@ -1734,6 +1734,19 @@ void DirectTerrain::preload(GAGCore::GraphicContext &gfx, const SceneMap &map)
     const bool legacy = gfx.isLegacyGLScreen() && legacyPassAvailable();
     if (!legacy && !streamedPassAvailable(gfx)) return;
     const auto started = SDL_GetTicks();
+    // The base build below creates and fills textures on the terrain's own
+    // units. Legacy GL draws sprites and fills with fixed-function state
+    // that assumes unit 0 is active and the cached bindings are current, so
+    // leave every unit, binding and program as found, as each draw does.
+    std::optional<RestoreGL> restore;
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+    if (legacy)
+    {
+        GAGCore::Sprite::flushBatches(&gfx);
+        if (auto *batch = gfx.getRenderBatch()) batch->stateChange();
+        restore.emplace();
+    }
+#endif
     // A complete prepare-only pass builds the tables at once; then the base.
     if (!drawInternal(gfx, map, 0, 0, 0, 0, 0, 0, 0, true, 0, true, true) || !state || !state->tablesReady) return;
     auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
