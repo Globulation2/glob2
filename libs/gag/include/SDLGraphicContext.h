@@ -859,6 +859,10 @@ namespace GAGCore
         std::pair<std::uint64_t, std::uint64_t> portableTextureMemory() const;
         SDL_Surface* completedFrame() const;
         virtual void nextFrame(void);
+        //! Starts the per-frame device upload, release and mip-build allowances
+        //! again. nextFrame does this; tools that present frames through the
+        //! backend directly call it once a frame.
+        void resetFrameAllowances();
 		//! This function does not work for GraphicContext
 		virtual bool loadImage(const std::string name) { return false; }
 		//! This function does not work for GraphicContext
