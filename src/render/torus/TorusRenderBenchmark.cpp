@@ -18,6 +18,9 @@
 #include "ComputeThreads.h"
 #include "Team.h"
 #include "Unit.h"
+#include "Building.h"
+#include "BuildingType.h"
+#include "render/AnimationClock.h"
 #include "Player.h"
 #include "AI.h"
 #include "Order.h"
@@ -112,6 +115,66 @@ class TorusRenderBenchmark
         const auto request = gui.sceneRequest();
         SceneExtractor().prepare(gui.game.captureReadBoundary(SceneExtractor::captureOptions(request)), request, gui.view.render.ownScene);
         gui.view.scene = &gui.view.render.ownScene;
+    }
+
+    // The game's initial view (the local team's colony) at the requested
+    // zoom; GLOB2_BENCH_PAN_X/Y move its top-left tile by that many tiles.
+    static void prepareGuiScreen(GameGUI &gui, double zoom)
+    {
+        auto &settings = globalContainer->settings;
+        settings.unitInterpolation = false;
+        settings.buildingParticles = false;
+        gui.drawHealthFoodBar = true;
+        gui.prepareLocalPresentation();
+        gui.updateCamera();
+        gui.camera.setZoom(zoom, gui.camera.offsetX + gui.camera.width / 2, gui.camera.offsetY + gui.camera.height / 2);
+        if (const char *x = std::getenv("GLOB2_BENCH_PAN_X")) gui.camera.originX += 32.0 * std::atoi(x);
+        if (const char *y = std::getenv("GLOB2_BENCH_PAN_Y")) gui.camera.originY += 32.0 * std::atoi(y);
+        // Whole tiles, so sub-pixel camera offsets do not differ by renderer.
+        gui.camera.originX = std::floor(gui.camera.originX / 32) * 32;
+        gui.camera.originY = std::floor(gui.camera.originY / 32) * 32;
+        gui.camera.normalize();
+        gui.viewportX = gui.camera.tileX();
+        gui.viewportY = gui.camera.tileY();
+        // GLOB2_BENCH_SELECT=unit|building selects the local team's first such
+        // entity, so the panel and the selection marker are in the picture.
+        if (const char *select = std::getenv("GLOB2_BENCH_SELECT"))
+        {
+            const std::string_view kind(select);
+            Team *team = gui.game.teams[gui.localTeamNo];
+            bool selected = false;
+            if (kind == "building")
+                for (Building *b : team->liveBuildings.entries())
+                    if (!selected && !b->type->isVirtual && b->type->maxUnitWorking)
+                    {
+                        gui.setSelection(GameGUI::BUILDING_SELECTION, b);
+                        selected = true;
+                    }
+            if (kind == "unit")
+                for (Unit *u : team->liveUnits.entries())
+                    if (!selected)
+                    {
+                        gui.setSelection(GameGUI::UNIT_SELECTION, u);
+                        selected = true;
+                    }
+            if (!selected) throw std::invalid_argument("GLOB2_BENCH_SELECT found nothing to select");
+        }
+        gui.game.snapshots().invalidateBoundary();
+        gui.prepareLocalPresentation();
+        std::printf("BENCH_GUI zoom=%.6f viewport=%d,%d\n", gui.camera.zoom, gui.viewportX, gui.viewportY);
+    }
+
+    static void drawGuiScreen(GameGUI &gui)
+    {
+        // The HUD's tick rate and the map animation follow the wall clock;
+        // hold both so a capture does not depend on when it was taken.
+        const Uint32 now = Uint32(SDL_GetTicks());
+        gui.tickRate = {};
+        gui.tickRate.sample(now - TickRateMeter::UPDATE_MS, 0, 0);
+        gui.tickRate.sample(now, 0, 0);
+        AnimationClock::fixedSteps = 1;
+        gui.view.render.animationTime = 21;
+        gui.drawAll(gui.localTeamNo);
     }
 
     static int population(const Game &game)
@@ -265,6 +328,15 @@ class TorusRenderBenchmark
             if(!image.good())throw std::runtime_error("Benchmark capture write failed");
             return;
         }
+        if(!gfx->rendererCapabilities().accelerated && gfx->getSDLSurface()) {
+            std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> pixels(
+                SDL_ConvertSurface(gfx->getSDLSurface(),SDL_PIXELFORMAT_RGB24),SDL_DestroySurface);
+            if(!pixels)throw std::runtime_error("Benchmark software capture failed");
+            std::ofstream image(path,std::ios::binary);image<<"P6\n"<<pixels->w<<" "<<pixels->h<<"\n255\n";
+            for(int y=0;y<pixels->h;++y)image.write(static_cast<const char *>(pixels->pixels)+y*pixels->pitch,pixels->w*3);
+            if(!image.good())throw std::runtime_error("Benchmark capture write failed");
+            return;
+        }
 #ifdef HAVE_OPENGL
         GLint viewport[4];
         glGetIntegerv(GL_VIEWPORT, viewport);
@@ -338,6 +410,11 @@ static int run(int argc, char **argv)
         launchArgs.insert(launchArgs.end(),argv+1,argv+argc);
         globalContainer->applyCommand(Cli::parse(launchArgs));
     globalContainer->load();
+    // GLOB2_BENCH_HD=0|1 pins HD artwork instead of the device's Auto default,
+    // so renderer comparisons get identical inputs.
+    if (const char *hd = std::getenv("GLOB2_BENCH_HD"))
+        globalContainer->settings.setHighResolutionArtworkChoice(std::atoi(hd)
+            ? Settings::AdaptiveChoice::On : Settings::AdaptiveChoice::Off);
     // Finish deferred HD publication before comparing renderer workloads.
     GAGCore::Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
     auto *gfx=globalContainer->gfx;
@@ -346,6 +423,9 @@ static int run(int argc, char **argv)
     std::printf("BACKEND requested=%.*s active=%.*s fallback_reason=%s\n",int(requested.size()),requested.data(),int(active.size()),active.data(),gfx->backendSwitchStatus().reason.c_str());
     const auto capabilities=gfx->rendererCapabilities();
     const auto deviceCapabilities=gfx->renderDevice()?gfx->renderDevice()->capabilities():GAGCore::RenderDeviceCapabilities{};
+    std::printf("BENCH_SETTINGS high_resolution_artwork=%d adaptive_zoom_detail=%d smooth_fog=%d window=%dx%d\n",
+        int(globalContainer->settings.highResolutionArtwork), int(globalContainer->settings.adaptiveZoomDetail),
+        int(globalContainer->settings.smoothFog), gfx->getW(), gfx->getH());
     std::printf("BENCH_CAPABILITIES torus=%d skin_materials=%d async_capture=%d terrain_composition=%d gpu_timing=%d max_texture=%d\n",
         capabilities.torus,capabilities.liveSkins,capabilities.asynchronousCapture,deviceCapabilities.terrainComposition,
         deviceCapabilities.gpuTiming,deviceCapabilities.maximumTextureSize);
@@ -586,17 +666,18 @@ static int run(int argc, char **argv)
                             static_cast<unsigned long long>(fallback.overviewFadingCells));
                         cameraEvent = nullptr;
                     }
-                    // GLOB2_BENCH_CAPTURE_FRAMES lists frames (comma separated) to save
-                    // as <GLOB2_BENCH_CAPTURE_PREFIX>-<frame>.ppm, for frame sequences.
-                    if (const char *list = std::getenv("GLOB2_BENCH_CAPTURE_FRAMES"))
+                }
+                // GLOB2_BENCH_CAPTURE_FRAMES lists frames (comma separated) to save
+                // as <GLOB2_BENCH_CAPTURE_PREFIX>-<frame>.ppm, for frame sequences,
+                // with or without GLOB2_BENCH_FRAME_TIMES.
+                if (const char *list = std::getenv("GLOB2_BENCH_CAPTURE_FRAMES"))
+                {
+                    const std::string wanted = std::string(",") + list + ",";
+                    if (wanted.find("," + std::to_string(i) + ",") != std::string::npos)
                     {
-                        const std::string wanted = std::string(",") + list + ",";
-                        if (wanted.find("," + std::to_string(i) + ",") != std::string::npos)
-                        {
-                            const char *prefix = std::getenv("GLOB2_BENCH_CAPTURE_PREFIX");
-                            const std::string path = std::string(prefix ? prefix : "frame") + "-" + std::to_string(i) + ".ppm";
-                            captureFramebuffer(path.c_str());
-                        }
+                        const char *prefix = std::getenv("GLOB2_BENCH_CAPTURE_PREFIX");
+                        const std::string path = std::string(prefix ? prefix : "frame") + "-" + std::to_string(i) + ".ppm";
+                        captureFramebuffer(path.c_str());
                     }
                 }
                 if (i < 0 && i >= -warmupFrames && i < -warmupFrames + 8)
@@ -707,6 +788,13 @@ static int run(int argc, char **argv)
                 globalContainer->settings.smoothFog = std::atoi(smoothFog) != 0;
             const Uint32 options = (std::getenv("GLOB2_BENCH_FOG") ? 0 : Game::DRAW_WHOLE_MAP) | (std::getenv("GLOB2_BENCH_BARS") ? Game::DRAW_HEALTH_FOOD_BAR : 0)
                 | (std::getenv("GLOB2_BENCH_AREAS") ? Game::DRAW_AREA : 0);
+            // GLOB2_BENCH_GUI=1 draws the whole in-game screen (GameGUI::drawAll:
+            // map, HUD panel, minimap, top bar, health bars and selection) at a
+            // fixed camera instead of the bare map, with presentation-only
+            // motion pinned so every renderer draws the same image.
+            const bool guiScreen = std::getenv("GLOB2_BENCH_GUI");
+            if (guiScreen)
+                prepareGuiScreen(gui, camera.zoom);
             std::printf("mapped_units=%d (excludes units inside buildings)\n", mappedPopulation(gui.game));
             std::printf("flat zoom=%.6f world=%dx%d total_units=%d shader=%d cloud_grid_limit=%d\n", camera.zoom, worldW, worldH, count, globalContainer->gfx->hasUnitShader(), cloudGridLimit);
             for (bool clouds : {false, true})
@@ -762,6 +850,11 @@ static int run(int argc, char **argv)
                         }
                     }
                     gfx->resetDrawCallCount();
+                    if (guiScreen)
+                    {
+                        drawGuiScreen(gui);
+                        return;
+                    }
                     gfx->setClipRect();
                     gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), GAGCore::Color(0, 0, 0));
                     const bool sweep = std::getenv("GLOB2_BENCH_CAMERA_SWEEP");

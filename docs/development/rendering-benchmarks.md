@@ -260,6 +260,59 @@ diagnostic immediate path is not an untouched-master baseline.
 
 See [skin rendering](skin-rendering.md) for production sprite export and skin preview diagnostics.
 
+## Renderer parity
+
+Every renderer may draw by its own path, but once a view has been held still
+long enough for streaming and background composition to finish, they must all
+show the same picture to within a few pixels.
+`tools/rendering/renderer_parity.py` checks that side by side. It draws a fixed
+set of scenes with each renderer (`legacy-gl`, `portable-sdl`, `sdl-gpu`,
+`programmable-gl`, `software`; any the host cannot create are skipped and
+listed), each in a fresh process and profile, holds the camera for
+`--settle-frames` (600 by default, about ten seconds: long enough for legacy GL's HD band reload after a zoom), captures the last frame and
+compares it with the reference renderer (the first available of `portable-sdl`,
+`legacy-gl`).
+
+```sh
+python3 tools/dev_build.py perf=1 torus-render-benchmark
+python3 tools/rendering/renderer_parity.py --prepare --label master
+python3 tools/rendering/renderer_parity.py --list-scenes
+```
+
+The scenes use the memory scenario's Honeycomb 256 save (`--prepare` makes it):
+the bare map at the overview zoom with health bars (`map-far`), and the whole
+in-game screen (`GameGUI::drawAll`: HUD panel, minimap, top bar, health and food
+bars, the selection) at the overview zoom, the default zoom with a unit
+selected, zoomed in to HD terrain, panned, and on the small SmallForTwo map.
+`--scenes` picks a subset and `--renderers` a list of backends.
+
+Inputs are pinned so renderers draw the same thing: device tier `high`
+(`--device-tier`), HD artwork on (`--no-hd` pins it off), the desktop HUD
+(`GLOB2_MOBILE_UI=0`), a fixed animation phase, no clouds, particles or unit
+interpolation, and whole-tile camera positions. Each log's `BENCH_SETTINGS` line
+records the resolved settings. SDL GPU and programmable GL need their shaders:
+pass `--shader-dir` (or set `GLOB2_RENDERER_SHADER_DIR`), or `--glslang PATH`
+to generate them with `tools/shaders/generate.py` first. On Linux the runner sets
+`SDL_VIDEO_DRIVER=x11` when a display is available; runs need a real display (in
+an agent session, outside its sandbox). On macOS the windows are created hidden.
+
+Results go to `artifacts/renderer-parity/<label>/`: `<scene>.png` is a contact
+sheet with each renderer's capture above a heat map of its differences from the
+reference (yellow to red where a pixel differs by more than 8 levels), next to
+the captures, logs, `summary.json` and `report.md`, a table of the share of
+pixels more than 8 and 32 levels from the reference and the mean difference.
+A pixel takes the smallest difference to the other image within `--shift`
+pixels (1 by default), so an edge one pixel out of place does not count while a
+missing sprite or a wrong colour does. The run exits 1 when a renderer fails or
+more than `--max-over-8` percent of its pixels (1% by default) differ by more
+than 8 levels; `--max-over-32` adds a limit on the share over 32 levels.
+
+The benchmark options behind it: `GLOB2_BENCH_GUI=1` draws the game screen in
+the flat fixture, centred on the local colony at `GLOB2_BENCH_ZOOM`, with
+`GLOB2_BENCH_PAN_X`/`_Y` moving it by that many tiles; `GLOB2_BENCH_SELECT=unit`
+or `building` selects the local team's first one; `GLOB2_BENCH_HD=0|1` pins HD
+artwork. `torus-render-benchmark` also captures the software renderer.
+
 ## Terrain fallbacks
 
 `tools/rendering/fallback_scenario.py` measures how much terrain the view draws
