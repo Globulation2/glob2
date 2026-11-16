@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <glob2/BuildConfig.h>
+#include "ThreadSupport.h"
 #include <GameplayRecording.h>
 #include "RecordingMetadata.h"
 #include "RecordingSession.h"
@@ -245,6 +246,7 @@ bool Recorder::start(const std::string &requestedPath)
 		impl->worker = std::thread(
 			[this, settings = options]
 			{
+				GAGCore::ThreadSupport::setCurrentThreadRole(GAGCore::ThreadSupport::ThreadRole::Worker);
 				try
 				{
 					impl->run(settings);

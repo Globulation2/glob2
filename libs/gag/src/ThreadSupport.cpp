@@ -38,8 +38,8 @@ bool setCurrentThreadRole(ThreadRole role) noexcept
                                                           : THREAD_PRIORITY_NORMAL;
     return SetThreadPriority(GetCurrentThread(), priority) != 0;
 #elif defined(__APPLE__)
-    // QoS also chooses performance or efficiency cores. Normal pools sit one
-    // class below the threads that wait on them and never on efficiency cores.
+    // QoS also chooses performance or efficiency cores. Workers sit one class
+    // below the core loop and are not biased toward efficiency cores.
     const qos_class_t qos = role == ThreadRole::Interactive ? QOS_CLASS_USER_INTERACTIVE
                             : role == ThreadRole::Background ? QOS_CLASS_UTILITY
                                                              : QOS_CLASS_USER_INITIATED;
@@ -47,9 +47,9 @@ bool setCurrentThreadRole(ThreadRole role) noexcept
 #elif defined(__linux__)
     // Linux nice values belong to the thread id. Raising one is always allowed;
     // lowering it needs CAP_SYS_NICE or RLIMIT_NICE (Android grants apps the
-    // display priority, -4), so Interactive, and Normal after Background, may
-    // be refused.
-    const int nice = role == ThreadRole::Interactive ? -4 : role == ThreadRole::Background ? 5 : 0;
+    // display priority, -4), so Interactive, and Worker after Background, may
+    // be refused. Workers at +2 then still trail a core loop left at 0.
+    const int nice = role == ThreadRole::Interactive ? -4 : role == ThreadRole::Background ? 5 : 2;
     return setpriority(PRIO_PROCESS, static_cast<id_t>(syscall(SYS_gettid)), nice) == 0;
 #else
     (void)role;

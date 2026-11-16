@@ -46,7 +46,7 @@ int expectedScheduling(ThreadRole role)
 	                        : role == ThreadRole::Background ? QOS_CLASS_UTILITY
 	                                                         : QOS_CLASS_USER_INITIATED);
 #elif defined(__linux__)
-	return role == ThreadRole::Interactive ? -4 : role == ThreadRole::Background ? 5 : 0;
+	return role == ThreadRole::Interactive ? -4 : role == ThreadRole::Background ? 5 : 2;
 #else
 	(void)role;
 	return 0;
@@ -110,19 +110,28 @@ TEST_SUITE("ThreadSupport")
 		      expectedScheduling(ThreadRole::Background));
 	}
 
+	TEST_CASE("workers are scheduled between the core loop and background")
+	{
+		EnvironmentOverride enabled(nullptr);
+		if (startedNiced())
+			return;
+		CHECK(onLaunched(ThreadRole::Worker, observedScheduling) == expectedScheduling(ThreadRole::Worker));
+	}
+
 	TEST_CASE("interactive applies where the platform allows raising priority")
 	{
 		EnvironmentOverride enabled(nullptr);
 		if (startedNiced())
 			return;
-		const auto [applied, observed] = onLaunched(ThreadRole::Normal, [] {
+		const auto [applied, observed] = onLaunched(ThreadRole::Worker, [] {
 			const bool applied = GAGCore::ThreadSupport::setCurrentThreadRole(ThreadRole::Interactive);
 			return std::pair{applied, observedScheduling()};
 		});
 #if defined(__linux__)
-		// Unprivileged Linux threads cannot go below nice 0 outside RLIMIT_NICE.
+		// Unprivileged Linux threads cannot lower their nice value outside
+		// RLIMIT_NICE, so a refused request leaves the Worker value.
 		CHECK(observed == (applied ? expectedScheduling(ThreadRole::Interactive)
-		                           : expectedScheduling(ThreadRole::Normal)));
+		                           : expectedScheduling(ThreadRole::Worker)));
 #else
 		CHECK(applied);
 		CHECK(observed == expectedScheduling(ThreadRole::Interactive));
@@ -137,15 +146,15 @@ TEST_SUITE("ThreadSupport")
 		// Linux children inherit a raised nice value that unprivileged threads
 		// cannot lower again, so only platforms that reset freely check this.
 		const int child = onLaunched(ThreadRole::Background,
-		                             [] { return onLaunched(ThreadRole::Normal, observedScheduling); });
-		CHECK(child == expectedScheduling(ThreadRole::Normal));
+		                             [] { return onLaunched(ThreadRole::Worker, observedScheduling); });
+		CHECK(child == expectedScheduling(ThreadRole::Worker));
 	}
 #endif
 
 	TEST_CASE("GLOB2_THREAD_PRIORITY=0 leaves scheduling untouched")
 	{
 		EnvironmentOverride off("0");
-		const auto [applied, before, after] = onLaunched(ThreadRole::Normal, [] {
+		const auto [applied, before, after] = onLaunched(ThreadRole::Worker, [] {
 			const int before = observedScheduling();
 			const bool applied = GAGCore::ThreadSupport::setCurrentThreadRole(ThreadRole::Background);
 			return std::tuple{applied, before, observedScheduling()};
