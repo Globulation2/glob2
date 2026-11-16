@@ -313,6 +313,15 @@ the flat fixture, centred on the local colony at `GLOB2_BENCH_ZOOM`, with
 or `building` selects the local team's first one; `GLOB2_BENCH_HD=0|1` pins HD
 artwork. `torus-render-benchmark` also captures the software renderer.
 
+`tools/rendering/parity_diagnose.py FIRST.png SECOND.png --region panel|topbar|map|all|x0,y0,x1,y1`
+explains one difference that the parity run found. It reports how much of the
+difference remains after the best whole-pixel and half-pixel shifts (position or rounding),
+the share on edges as against flat areas (filtering lives on edges; a wrong
+colour, blend or missing layer shows on flat areas too), the mean signed
+difference on differing edges (premultiplication or blending darkens or
+brightens fringes consistently), and the ratio of gradient energy (one side
+softer: linear against nearest sampling, or another mip level).
+
 ## Terrain fallbacks
 
 `tools/rendering/fallback_scenario.py` measures how much terrain the view draws
