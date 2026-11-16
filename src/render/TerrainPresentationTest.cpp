@@ -1419,7 +1419,7 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(frame(1.6f) == reference);
 	}
 
-	TEST_CASE("Legacy GL draws a zoomed-out view from the base mask, built with the tables, without an atlas [display]")
+	TEST_CASE("Legacy GL draws a zoomed-out view from the base mask alone once it covers the map [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
 			.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU),
@@ -1450,17 +1450,32 @@ TEST_SUITE("TerrainPresentation")
 			gfx.endMapTransform();
 			return pixels;
 		};
-		// Eight texels a cell, the base mask's own density. The first prepare
-		// builds the whole map's base with the tables, so the view draws every
-		// mixed cell from it at once and needs no atlas of its own.
+		// Eight texels a cell, the base mask's own density: until the base
+		// covers the map, the view builds an atlas of its own.
 		for (int attempt = 0; attempt < 4000 && !prepare(.24f, 63, 31); ++attempt) SDL_Delay(1);
-		REQUIRE(prepare(.24f, 63, 31));
+		REQUIRE_FALSE(atlas.pendingHdMasks());
+		const auto fromAtlas = frame(.24f);
+		const auto withAtlas = atlas.textureBytes();
+		for (int attempt = 0; attempt < 8000 && atlas.pendingBaseMasks(); ++attempt)
+		{
+			prepare(.24f, 63, 31);
+			SDL_Delay(1);
+		}
 		REQUIRE_FALSE(atlas.pendingBaseMasks());
-		CHECK_FALSE(atlas.pendingHdMasks());
-		CHECK(atlas.splitCells() == 0);
-		CHECK(atlas.textureBytes() < 20u * 1024 * 1024);
+		REQUIRE(prepare(.24f, 63, 31));
+		// The same masks now come from the base; the atlas is gone.
+		CHECK(atlas.textureBytes() + 20u * 1024 * 1024 < withAtlas);
 		const auto fromBase = frame(.24f);
-		CHECK(fromBase != std::vector<Uint8>(fromBase.size(), 0));
+		std::size_t differing = 0;
+		for (std::size_t i = 0; i + 3 < fromBase.size(); i += 4)
+		{
+			int largest = 0;
+			for (int k = 0; k < 3; ++k) largest = std::max(largest, std::abs(int(fromBase[i + k]) - int(fromAtlas[i + k])));
+			differing += largest > 48;
+		}
+		const double share = double(differing) / double(fromBase.size() / 4);
+		CAPTURE(share);
+		CHECK(share < .01);
 		// Zooming in builds an atlas at the new density again.
 		for (int attempt = 0; attempt < 4000 && !prepare(.76f, 26, 19); ++attempt) SDL_Delay(1);
 		CHECK_FALSE(atlas.pendingHdMasks());

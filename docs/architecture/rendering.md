@@ -117,20 +117,25 @@ artwork on or off; its atlases stay at 2048 square, so a view that needs more
 takes coarser tiles.
 
 SDL GPU always has a low-resolution version of the whole map to draw: only HD
-masks and artwork stream in and out. A map's first prepare builds its per-cell
-tables and then the whole-map base masks at once, the masks on every
-presentation worker (`DIRECT_TERRAIN_BASE` reports the time), so no frame of the
-map draws a mixed cell as a corner split for want of a base mask. Workers take
-base jobs (cells an edit invalidated) ahead of the view's masks. View masks
-queue 64 per worker, nearest the view centre first, and upload within a few
-milliseconds a frame (at most 16 MiB) rather than a fixed count. When the device
-loses a streamed texture (a reset, or staging that stays over its budget for 30
-frames; a texture already drawing defers the frame until then) or its writes
-stop draining, the view starts its streamed textures again, tables and base at
-once (`DIRECT_TERRAIN_RESTART`), and never falls back to pages; only a map whose
-tables exceed the device's texture size does. `GLOB2_BENCH_DEVICE_RESET_AT`
-resets the device at one benchmark frame, and `fallback_scenario.py --reset-at`
-reports the restarts and the cells drawn as corner splits. Discovery updates
+masks and artwork stream in and out. Game loading (`GameGUI::prepareDirectTerrain`,
+from `Engine::finalAdjustments`) builds the map's per-cell tables and then the
+whole-map base masks, the masks on up to eight threads (`DIRECT_TERRAIN_PRELOAD`
+and `DIRECT_TERRAIN_BASE` report the time), so the first frame finds them and no
+frame draws a mixed cell as a corner split for want of a base mask. Nothing in
+the render loop blocks on them: a view without that load, or one whose device
+lost its streamed textures, builds the tables in 3 ms slices and the base on the
+mask workers (ahead of the view's masks, with 2 ms of recipes a frame), and
+draws the overview, with its always-resident whole-map base beneath, until every
+base mask is back. Workers take base jobs (cells an edit invalidated) ahead of
+the view's masks. View masks queue 64 per worker, nearest the view centre first,
+and upload within a few milliseconds a frame (at most 16 MiB) rather than a fixed
+count. When the device loses a streamed texture (a reset, or staging that stays
+over its budget for 30 frames; a texture already drawing defers the frame until
+then) or its writes stop draining, the view starts its streamed textures again
+(`DIRECT_TERRAIN_RESTART`) and never falls back to pages; only a map whose tables
+exceed the device's texture size does. `GLOB2_BENCH_DEVICE_RESET_AT` resets the
+device at one benchmark frame, and `fallback_scenario.py --reset-at` reports the
+restarts and the cells drawn as corner splits. Discovery updates
 revisit only the 16x16 sectors whose discovery stamps moved
 (`SceneMap::discoveryStamps`) and rewrite only the changed rows of the
 discovery table.

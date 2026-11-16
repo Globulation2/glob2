@@ -38,6 +38,9 @@ public:
                  int right, int bottom, int viewportX, int viewportY,
                  Uint32 visibleTeams, bool wholeMap, int animationTime, bool complete = false);
     std::span<const SDL_Rect> preparedRegions() const;
+    // Game loading: builds the map's per-cell tables and its whole-map base
+    // masks now, so the first frame finds them (SDL GPU and Legacy GL).
+    void preload(GAGCore::GraphicContext &, const SceneMap &);
     // Draw the prepared view, with the time and view prepare used.
     void drawPrepared(GAGCore::GraphicContext &, int viewportX, int viewportY,
                       bool wholeMap, int animationTime);

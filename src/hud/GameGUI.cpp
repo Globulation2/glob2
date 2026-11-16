@@ -24,6 +24,8 @@
 #include "TorusView.h"
 #include "render/ViewState.h"
 #include "render/scene/SceneExtract.h"
+#include "render/terrain/DirectTerrain.h"
+#include "render/MapRenderState.h"
 #include "online/SkinDownloads.h"
 #include "render/ColonySkinPreview.h"
 #include "GameGUITouch.h"
@@ -535,6 +537,15 @@ const bool replayHeaderSkipperRegistered = [] {
 }
 
 Team *GameGUI::getLocalTeam(void) { return game.teams[localTeamNo]; }
+
+void GameGUI::prepareDirectTerrain()
+{
+	if (globalContainer->runNoX || !globalContainer->gfx)
+		return;
+	PresentationFrame scene;
+	prepareLocalPresentation(scene);
+	view.render.directTerrain().preload(*globalContainer->gfx, scene.map);
+}
 
 void GameGUI::prepareLocalPresentation(PresentationFrame& scene)
 {
