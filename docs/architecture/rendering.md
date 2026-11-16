@@ -151,7 +151,10 @@ Pages and overview pages that arrive over a fallback fade in over 150 ms with
 presentation-only alpha on their ordinary draw. On a presentation device at most
 eight new overview page textures upload a frame (`DrawableSurface::takeDeviceUpload`):
 past that a page draws its previous upload over the base, or the base alone, so
-a first zoom out to some 150 pages spreads their uploads over a few frames. Pages and overview cells ahead of
+a first zoom out to some 150 pages spreads their uploads over a few frames.
+Likewise a changed HD surface (a terrain page animation rewrote) builds its mip
+chain on the graphics thread within 8 MiB of level-zero pixels a frame; past
+that a surface the device adapter already holds draws its previous upload. Pages and overview cells ahead of
 the camera compose on the workers' lower priority lane. Each frame's
 `TerrainFallbackMetrics` (in `MapRenderState`) counts the visible cells drawn
 from each fallback; `tools/rendering/fallback_scenario.py` reports them for a
