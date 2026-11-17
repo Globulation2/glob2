@@ -127,16 +127,22 @@ static void tiledCapture(bool hd = false)
     baseline.render.areaAnimationTick = 0;
     // A fresh view draws the overview until its terrain tables are ready, and
     // mixed cells their first material until their masks land: draw the
-    // reference until it is complete.
-    for (int attempt = 0; attempt < 400; ++attempt)
+    // reference until it is complete. Wait on a clock, not an attempt count:
+    // slow runners (software GL on CI) outlast a fixed number of short sleeps,
+    // and an incomplete reference would show up as a misleading pixel diff.
+    const auto referenceDeadline = std::chrono::steady_clock::now() + std::chrono::minutes(2);
+    bool referenceComplete = false;
+    while (!referenceComplete && std::chrono::steady_clock::now() < referenceDeadline)
     {
         glob2test::drawMap(game,0, 0, 2048, 2048, 0, 0, view.originX, view.originY, 0,
                      baseline, options | Game::DRAW_NO_CLOUD_LAYER, nullptr, nullptr, true, 128);
         Sprite::flushBatches(globalContainer->gfx);
         const auto *direct = baseline.render.existingDirectTerrain();
-        if (!direct || (!direct->preparing() && direct->pendingHdMasks() == 0)) break;
-        std::this_thread::sleep_for(std::chrono::milliseconds(2));
+        referenceComplete = !direct || (!direct->preparing() && direct->pendingHdMasks() == 0);
+        if (!referenceComplete) std::this_thread::sleep_for(std::chrono::milliseconds(2));
     }
+    INFO("The whole-map reference never finished preparing its terrain within two minutes");
+    REQUIRE(referenceComplete);
     std::vector<unsigned char> pixels(2048 * 2048 * 4);
     glReadPixels(0, 0, 2048, 2048, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
