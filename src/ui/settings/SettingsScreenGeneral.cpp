@@ -300,7 +300,9 @@ void SettingsScreen::buildGeneral()
                 status.phase == RendererSwitchPhase::Presenting) info(tr("Changing renderer…"));
             // Backend diagnostics may contain untranslated driver messages. Keep
             // the detailed reason in backend status and show a catalog notice.
-            if (!status.reason.empty()) info(tr("Renderer unavailable"));
+            // Auto falling through its order keeps a reason for the log, but
+            // nothing the player chose failed.
+            if (status.phase == RendererSwitchPhase::Failed && !status.reason.empty()) info(tr("Renderer unavailable"));
         }
 		if (touchLayout)
 			choice("display.zoomdrag", "One-finger zoom", "Double-tap the map, hold, then drag to zoom.",

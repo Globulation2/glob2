@@ -100,10 +100,12 @@ Settings::Settings()
 
 unsigned startupScreenFlags(unsigned savedFlags)
 {
-#if defined(GLOB2_MOBILE) || defined(__EMSCRIPTEN__)
+#if defined(__EMSCRIPTEN__)
 	return savedFlags;
+#elif defined(GLOB2_MOBILE)
+	return savedFlags | GraphicContext::PREFERDEVICE;
 #else
-	return savedFlags | GraphicContext::USEGPU;
+	return savedFlags | GraphicContext::USEGPU | GraphicContext::PREFERDEVICE;
 #endif
 }
 
@@ -227,11 +229,13 @@ void Settings::load(std::string filename)
             rendererBackend = GAGCore::parseRendererBackend(backend->second).value_or(GAGCore::RendererBackend::Auto);
         else if (parsed.count("screenFlags"))
             rendererBackend = (screenFlags & GraphicContext::PORTABLEGPU) ? GAGCore::RendererBackend::PortableSDL :
-                (screenFlags & GraphicContext::USEGPU) ? GAGCore::RendererBackend::LegacyGL :
 #if defined(GLOB2_MOBILE) || defined(__EMSCRIPTEN__)
+                (screenFlags & GraphicContext::USEGPU) ? GAGCore::RendererBackend::LegacyGL :
                 GAGCore::RendererBackend::Software;
 #else
-                // Desktop profiles never set a GPU flag by default; keep them on Auto.
+                // The old desktop toggle offered only Software or OpenGL, and its
+                // default set no GPU flag. Either answer meant "the best this
+                // machine draws with", which Auto now provides; keep both on Auto.
                 GAGCore::RendererBackend::Auto;
 #endif
 		READ_PARSED_INT(uiScale);

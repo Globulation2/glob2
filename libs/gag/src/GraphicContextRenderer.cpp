@@ -30,6 +30,7 @@ void glob2_surface_finish(int success);
 void glob2_surface_error(char *destination, int size);
 int glob2_surface_webgl_available();
 int glob2_surface_webgpu_available();
+int glob2_surface_startup_uses_gl();
 }
 #endif
 SDL_Surface *GraphicContext::getSDLSurface()
@@ -171,6 +172,74 @@ std::vector<RendererAvailability> GraphicContext::rendererAvailability() const
         choices.push_back({backend, available, std::move(reason)});
     }
     return choices;
+}
+
+namespace
+{
+// Auto's order for the game (PREFERDEVICE), one row per platform. Measurements
+// choose it; see "Runtime backend selection" in docs/architecture/rendering.md
+// for the numbers and when to revisit. Software always follows the row, and
+// Legacy GL is dropped from builds without OpenGL.
+using RB = RendererBackend;
+#if defined(GLOB2_MOBILE)
+// Android and iOS: unmeasured on devices; SDL GPU on Metal was the slowest
+// renderer on a Retina Mac, so phones keep Portable SDL.
+constexpr RB PreferredRendererOrder[] = {RB::PortableSDL};
+#elif defined(__APPLE__)
+// macOS: Retina still-camera medians put Legacy GL ahead of programmable GL and
+// SDL GPU (1.28, 2.03, 4.67 ms); keep it first until tail and memory data land.
+constexpr RB PreferredRendererOrder[] = {RB::LegacyGL, RB::ProgrammableGL, RB::SDLGPU, RB::PortableSDL};
+#else
+// Linux and Windows: programmable GL had the lowest median and memory with a
+// p99 close to Legacy GL's; SDL GPU had the worst tail.
+constexpr RB PreferredRendererOrder[] = {RB::ProgrammableGL, RB::LegacyGL, RB::SDLGPU, RB::PortableSDL};
+#endif
+}
+
+std::vector<RendererBackend> GraphicContext::automaticRendererOrder(Uint32 flags)
+{
+#ifdef __EMSCRIPTEN__
+    // Browsers keep the probed WebGL2 or Software surface; WebGPU stays opt-in.
+    (void)flags;
+    if (glob2_surface_startup_uses_gl()) return {RendererBackend::LegacyGL, RendererBackend::Software};
+    return {RendererBackend::Software};
+#else
+    std::vector<RendererBackend> order;
+    if (flags & PREFERDEVICE) {
+        for (auto backend : PreferredRendererOrder) {
+#ifndef HAVE_OPENGL
+            if (backend == RendererBackend::LegacyGL) continue;
+#endif
+            order.push_back(backend);
+        }
+    }
+#ifdef GLOB2_MOBILE
+    else order.push_back(RendererBackend::PortableSDL);
+#else
+#ifdef HAVE_OPENGL
+    else if (flags & USEGPU) order.push_back(RendererBackend::LegacyGL);
+#endif
+    else if (flags & PORTABLEGPU) order.push_back(RendererBackend::PortableSDL);
+#endif
+    order.push_back(RendererBackend::Software);
+    return order;
+#endif
+}
+
+RendererBackend GraphicContext::fallbackAfter(RendererBackend failed) const
+{
+    const auto choices = rendererAvailability();
+    const auto usable = [&](RendererBackend backend) {
+        return backend != failed && std::any_of(choices.begin(), choices.end(), [&](const auto &choice) {
+            return choice.backend == backend && choice.available;
+        });
+    };
+    // The next family in Auto's order after the failed one; a family outside
+    // the order (an explicit choice) falls to the start of it.
+    const auto position = std::find(automaticOrder.begin(), automaticOrder.end(), failed);
+    for (auto i = position == automaticOrder.end() ? automaticOrder.begin() : position + 1; i != automaticOrder.end(); ++i)
+        if (usable(*i)) return *i;
+    return RendererBackend::Software;
 }
 
 bool GraphicContext::requestBackendSwitch(RendererBackend backend)
@@ -593,7 +662,7 @@ void GraphicContext::handleDeviceFailure(const std::string &reason)
     // device cannot provide a completed CPU image for the transition.
     recoveringBackend = true; nextBackendPersists = false;
     nextBackend = backendStatus.active == RendererBackend::WebGPU && programmableGLCompiled()
-        ? RendererBackend::ProgrammableGL : RendererBackend::Software;
+        ? RendererBackend::ProgrammableGL : fallbackAfter(backendStatus.active);
     backendStatus.phase = RendererSwitchPhase::Queued;
     applyQueuedBackend();
 }

@@ -6,6 +6,10 @@
 #include <RenderDevice.h>
 #include <Toolkit.h>
 #include <algorithm>
+#include <filesystem>
+#include <stdexcept>
+#include "ScopedEnvironment.h"
+#include <ProgrammableGLDevice.h>
 
 using namespace GAGCore;
 namespace {
@@ -26,6 +30,41 @@ public:
     SDL_Surface *captureSynchronously(CaptureRequest r) override{return owned->captureSynchronously(std::move(r));}
     void cancelCaptures() override{owned->cancelCaptures();} void outputSize(int &w,int &h) override{owned->outputSize(w,h);}
 };
+// Forwards to the real device until told to fail, then reports device loss.
+class LossProbe final : public RenderDevice {
+    std::unique_ptr<RenderDevice> owned;
+public:
+    bool lose = false;
+    explicit LossProbe(std::unique_ptr<RenderDevice> device):owned(std::move(device)){}
+    RenderDeviceCapabilities capabilities() const override{return owned->capabilities();}
+    bool canBeginFrame() override{if(lose)throw std::runtime_error("injected device loss");return owned->canBeginFrame();}
+    RenderSubmission submit(RenderFrame frame) override{if(lose)throw std::runtime_error("injected device loss");return owned->submit(std::move(frame));}
+    RenderCompletion completion(RenderSubmission s) override{return owned->completion(s);}
+    void present() override{if(lose)throw std::runtime_error("injected device loss");owned->present();}
+    void discardFrame() override{owned->discardFrame();}
+    void reset() override{owned->reset();} std::uint64_t generation() const override{return owned->generation();}
+    RenderTelemetry telemetry() const override{return owned->telemetry();}
+    bool capture(CaptureRequest r) override{return owned->capture(std::move(r));}
+    bool pollCapture(CaptureResult &r) override{return owned->pollCapture(r);}
+    SDL_Surface *captureSynchronously(CaptureRequest r) override{return owned->captureSynchronously(std::move(r));}
+    void cancelCaptures() override{owned->cancelCaptures();} void outputSize(int &w,int &h) override{owned->outputSize(w,h);}
+};
+class LossContext final : public GraphicContext {
+public:
+    using GraphicContext::GraphicContext;
+    LossProbe &installProbe(){
+        renderer->flush();deviceRenderer.reset();
+        auto probe=std::make_unique<LossProbe>(std::move(presentationDevice));auto *result=probe.get();
+        presentationDevice=std::move(probe);
+        deviceRenderer=makeDeviceRenderBackend(*presentationDevice,*deviceResources,getW(),getH());renderer=deviceRenderer.get();
+        return *result;
+    }
+};
+bool availableIn(const GraphicContext &gfx, RendererBackend backend)
+{
+    const auto choices=gfx.rendererAvailability();
+    return std::any_of(choices.begin(),choices.end(),[&](const auto &c){return c.backend==backend&&c.available;});
+}
 class AdmissionContext final : public GraphicContext {
 public:
     using GraphicContext::GraphicContext;
@@ -50,6 +89,136 @@ TEST_SUITE("RendererSelection")
         CHECK(resolveRendererPreference(RendererBackend::Software, {}, RendererBackend::PortableSDL) == RendererBackend::PortableSDL);
         CHECK(resolveRendererPreference(RendererBackend::Software, RendererBackend::Auto, RendererBackend::PortableSDL) == RendererBackend::Auto);
     }
+    TEST_CASE("automatic order keeps the historical flags for tools and prefers devices for the game")
+    {
+        for (Uint32 flags : {Uint32(0), Uint32(GraphicContext::USEGPU), Uint32(GraphicContext::PORTABLEGPU),
+                 Uint32(GraphicContext::PREFERDEVICE), Uint32(GraphicContext::PREFERDEVICE | GraphicContext::USEGPU)}) {
+            const auto order = GraphicContext::automaticRendererOrder(flags);
+            INFO("flags ", flags);
+            REQUIRE(!order.empty());
+            CHECK(order.back() == RendererBackend::Software);
+            CHECK(std::find(order.begin(), order.end(), RendererBackend::Auto) == order.end());
+            CHECK(std::find(order.begin(), order.end(), RendererBackend::WebGPU) == order.end());
+#if !defined(__EMSCRIPTEN__)
+            // The game's order holds both device renderers ahead of Portable SDL on desktop.
+#if !defined(GLOB2_MOBILE)
+            if (flags & GraphicContext::PREFERDEVICE) {
+                const auto at = [&](RendererBackend b) { return std::find(order.begin(), order.end(), b) - order.begin(); };
+                CHECK(at(RendererBackend::ProgrammableGL) < at(RendererBackend::PortableSDL));
+                CHECK(at(RendererBackend::SDLGPU) < at(RendererBackend::PortableSDL));
+                CHECK(at(RendererBackend::PortableSDL) < std::ptrdiff_t(order.size()));
+            }
+#endif
+#if !defined(GLOB2_MOBILE)
+            if (!(flags & GraphicContext::PREFERDEVICE))
+                CHECK(std::find(order.begin(), order.end(), RendererBackend::SDLGPU) == order.end());
+            if (flags == 0) CHECK(order == std::vector{RendererBackend::Software});
+            if (flags == GraphicContext::PORTABLEGPU) CHECK(order == std::vector{RendererBackend::PortableSDL, RendererBackend::Software});
+#endif
+#endif
+        }
+    }
+
+    TEST_CASE("Auto starts on the first renderer in its order that starts and records why it skipped others [display]")
+    {
+        glob2test::ScopedEnvironment autoRenderer("GLOB2_RENDERER", "auto");
+        const Uint32 flags = GraphicContext::PREFERDEVICE | GraphicContext::USEGPU | GraphicContext::NOAUDIO;
+        const auto order = GraphicContext::automaticRendererOrder(flags);
+        {
+            GraphicContext gfx(64, 48, flags, "automatic renderer");
+            const auto &status = gfx.backendSwitchStatus();
+            INFO(status.reason);
+            CHECK(status.requested == RendererBackend::Auto);
+            CHECK(status.phase != RendererSwitchPhase::Failed);
+            CHECK(gfx.automaticRenderer() == status.active);
+            // Nothing ahead of the active family in the order may have started.
+            const auto active = std::find(order.begin(), order.end(), status.active);
+            REQUIRE(active != order.end());
+            for (auto i = order.begin(); i != active; ++i)
+                CHECK(status.reason.find(std::string(rendererBackendName(*i)) + ": ") != std::string::npos);
+            if (status.active != order.front())
+                MESSAGE("Auto skipped ", rendererBackendName(order.front()), ": ", status.reason);
+        }
+        {
+            // Without shaders neither device renderer can start: SDL GPU is
+            // unavailable and programmable GL fails to compile its programs.
+            const auto empty = std::filesystem::temp_directory_path() / "glob2-no-renderer-shaders";
+            std::filesystem::create_directories(empty);
+            glob2test::ScopedEnvironment shaders("GLOB2_RENDERER_SHADER_DIR", empty.string().c_str());
+            GraphicContext gfx(64, 48, flags, "automatic renderer fallback");
+            const auto &status = gfx.backendSwitchStatus();
+            INFO(status.reason);
+            CHECK(status.active != RendererBackend::SDLGPU);
+            CHECK(status.active != RendererBackend::ProgrammableGL);
+            CHECK(status.phase != RendererSwitchPhase::Failed);
+            CHECK(gfx.automaticRenderer() == status.active);
+            CHECK_FALSE(availableIn(gfx, RendererBackend::SDLGPU));
+            // Only the families ahead of the one that started are reported.
+            const auto passedOver = [&](RendererBackend b) {
+                return std::find(order.begin(), order.end(), b) < std::find(order.begin(), order.end(), status.active);
+            };
+            for (auto b : order)
+                CHECK((status.reason.find(std::string(rendererBackendName(b)) + ": ") != std::string::npos) == passedOver(b));
+            // The first family in the order other than the device renderers that exists here.
+            const auto next = std::find_if(order.begin(), order.end(), [&](RendererBackend b) {
+                return b != RendererBackend::SDLGPU && b != RendererBackend::ProgrammableGL && availableIn(gfx, b);
+            });
+            REQUIRE(next != order.end());
+            CHECK(status.active == *next);
+            gfx.drawFilledRect(0, 0, 64, 48, Color(10, 20, 30));
+            gfx.nextFrame();
+            CHECK(gfx.backendSwitchStatus().active == *next);
+        }
+        {
+            // An explicit choice is kept when it starts, and falls into Auto's order when it cannot.
+            const auto empty = std::filesystem::temp_directory_path() / "glob2-no-renderer-shaders";
+            glob2test::ScopedEnvironment shaders("GLOB2_RENDERER_SHADER_DIR", empty.string().c_str());
+            GraphicContext::setInitialRendererBackend(RendererBackend::ProgrammableGL);
+            GraphicContext gfx(64, 48, flags, "explicit renderer fallback");
+            const auto &status = gfx.backendSwitchStatus();
+            INFO(status.reason);
+            CHECK(status.requested == RendererBackend::ProgrammableGL);
+            if (programmableGLCompiled()) {
+                CHECK(status.active != RendererBackend::ProgrammableGL);
+                CHECK(status.phase == RendererSwitchPhase::Failed);
+                CHECK(status.reason.find("programmable-gl: ") != std::string::npos);
+            }
+            CHECK(status.active != RendererBackend::Software);
+        }
+        std::filesystem::remove_all(std::filesystem::temp_directory_path() / "glob2-no-renderer-shaders");
+    }
+
+    TEST_CASE("a lost device falls to the next renderer in Auto's order, not to Software [display]")
+    {
+        glob2test::ScopedEnvironment autoRenderer("GLOB2_RENDERER", "auto");
+        const Uint32 flags = GraphicContext::PREFERDEVICE | GraphicContext::USEGPU | GraphicContext::NOAUDIO;
+        LossContext gfx(64, 48, flags, "device loss fallback");
+        const auto first = gfx.backendSwitchStatus().active;
+        if (first != RendererBackend::SDLGPU && first != RendererBackend::ProgrammableGL) {
+            MESSAGE("Device loss coverage unavailable: Auto started on ", rendererBackendName(first));
+            return;
+        }
+        gfx.drawFilledRect(0, 0, 64, 48, Color(200, 10, 10));
+        gfx.nextFrame();
+        auto &probe = gfx.installProbe();
+        probe.lose = true;
+        gfx.drawFilledRect(0, 0, 64, 48, Color(10, 200, 10));
+        gfx.nextFrame();
+        gfx.nextFrame();
+        const auto &status = gfx.backendSwitchStatus();
+        INFO(status.reason);
+        const auto order = GraphicContext::automaticRendererOrder(flags);
+        const auto expected = std::find_if(std::find(order.begin(), order.end(), first) + 1, order.end(),
+            [&](RendererBackend b) { return availableIn(gfx, b); });
+        REQUIRE(expected != order.end());
+        CHECK(status.active == *expected);
+        CHECK(status.active != RendererBackend::Software);
+        CHECK(status.reason.find("injected device loss") != std::string::npos);
+        gfx.drawFilledRect(0, 0, 64, 48, Color(10, 10, 200));
+        gfx.nextFrame();
+        CHECK(gfx.backendSwitchStatus().active == *expected);
+    }
+
     TEST_CASE("public device hold preserves graphics generation and offscreen captures [display]")
     {
         for (auto backend : {RendererBackend::ProgrammableGL, RendererBackend::SDLGPU}) {

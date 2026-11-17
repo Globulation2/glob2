@@ -272,6 +272,12 @@ void GlobalContainer::openLoadingScreen(void)
 	GraphicContext::setInitialRendererBackend(GAGCore::resolveRendererPreference(
 		settings.rendererBackend, rendererLaunchOverride, environmentBackend));
 	gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, startupScreenFlags(settings.screenFlags), "Globulation 2", "glob 2");
+	{
+		const auto &status = gfx->backendSwitchStatus();
+		SDL_Log("BACKEND requested=%s active=%s fallback_reason=%s",
+			std::string(GAGCore::rendererBackendName(status.requested)).c_str(),
+			std::string(GAGCore::rendererBackendName(status.active)).c_str(), status.reason.c_str());
+	}
 	gfx->setBackendPreferenceCallback([this](GAGCore::RendererBackend selected) {
 		settings.rendererBackend = selected;
 		if (!settings.save()) std::cerr << "Could not save renderer preference." << std::endl;

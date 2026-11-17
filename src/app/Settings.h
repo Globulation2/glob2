@@ -216,8 +216,9 @@ public:
 	void resetDefaultFlagRadius();
 };
 
-// Window flags for the startup graphic context. Desktop builds request the GL
-// presentation surface so that the Auto renderer resolves to Legacy GL; the
+// Window flags for the startup graphic context. Desktop and mobile builds let
+// Auto follow the measured per-platform renderer order (PREFERDEVICE; desktop
+// also keeps USEGPU for Legacy GL); browsers keep their probed surface. The
 // request is not persisted, and an explicit renderer choice still overrides it.
 unsigned startupScreenFlags(unsigned savedFlags);
 
