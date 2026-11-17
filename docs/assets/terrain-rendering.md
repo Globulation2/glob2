@@ -473,8 +473,14 @@ only `LegacyTerrainFrames.h` still decodes classic frames, for old script memori
 
 `TerrainVisual::Compositor` owns prepared material sources. Source lifetime and
 content revisions, animation phase and native/HD selection invalidate prepared
-pixels. View caches hold 16×16-cell composed pages and compare recipes including
+pixels. View caches hold square composed pages and compare recipes including
 the surrounding lattice, so edits update neighboring tiles and wrapped chunks.
+A page is 512 pixels wide at every density: 16 cells at native density, 8 at
+twice and 4 at four times (`SoftwareTerrainCache::pageTilesAt`). A view at
+three or four times density (zoom 1.5 or 2 on a 2x display) then needs little
+more than its own area in pages and fits the budget below, where 16-cell pages
+(2048 pixels at four times) cost up to twice that for their alignment and
+dropped the view to twice density, a softer image than the other renderers' HD.
 Each page and tile tracks revisions only for materials used by its discovered
 recipes; an animation outside that dependency set does not rebuild the page.
 Sampling density is part of the page key. Old densities retain their composed
@@ -484,7 +490,12 @@ discovery and material revisions before reusing its pixels.
 The historical `SoftwareTerrainCache` name is retained for benchmark controls,
 but the cache also draws GPU pages. Software page storage stays bounded by
 32 MiB. GPU density selection retains its 128 MiB allowance, and resident
-textures remain bounded by 128 MiB of conservative texture/mip reservations.
+textures remain bounded by 128 MiB of conservative texture reservations: a
+page's texture and its mips (three times its pixels with the CPU copy), or
+twice its pixels on the portable SDL renderer, whose page textures have no
+mips. `TERRAIN_PAGE_ADMISSION` on stderr records each change of a view's page
+density, page size and the reason it is coarser than the compositor's
+(`page budget`, `texture size`).
 On desktop, the total GPU-page cache has a 256 MiB ceiling including CPU pixels,
 bookkeeping and resident texture reservations. The additional 128 MiB lets
 inactive zoom densities retain their CPU pixels without sacrificing sampling
@@ -503,9 +514,10 @@ and in the pan-and-zoom benchmark more than four workers neither filled missing
 pages faster nor kept frames shorter, because the graphics thread's per-frame
 launch and install budgets set the pace. `GLOB2_BACKGROUND_RENDER_WORKERS=N` (1 to 64)
 overrides the count for measurements. Until it
-arrives the view draws the same page at its nearest other density, or the
-overview beneath where none exists; the overview then draws, and composes, only
-those missing pages. A page that arrives where the view drew either fallback
+arrives the view draws the same place at its nearest other density (the larger
+page holding it, clipped to it, or the smaller pages within it), or the
+overview beneath where none, or only part, exists; the overview then draws, and
+composes, only those missing pages. A page that arrives where the view drew either fallback
 fades in over it in 150 ms rather than popping. Pages around the view also
 compose ahead of the camera: a ring one page wide, widened in the direction of a
 pan by about half a second of its recent motion and all round while the view is

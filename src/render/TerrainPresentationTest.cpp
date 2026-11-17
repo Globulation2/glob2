@@ -1900,6 +1900,7 @@ TEST_SUITE("TerrainPresentation")
 										true));
 		}
 		CHECK(globals->terrainCompositor().scale() == 4);
+		// Portable pages compose at the display density (twice native here).
 		CHECK(independent.resolution == 2);
 		SoftwareTerrainCache tiled;
 		REQUIRE(tiled.prepare(scene, *globals->terrain, 0, 0, 63, 63, 0, 0, fixture.team->me, true,
@@ -1948,9 +1949,12 @@ TEST_SUITE("TerrainPresentation")
 			CHECK(admitted == (limit >= SoftwareTerrainCache::ChunkPixels));
 			if (admitted)
 			{
-				CHECK(cache.resolution == limit / SoftwareTerrainCache::ChunkPixels);
+				// Pages hold fewer cells at higher density: every page is
+				// ChunkPixels wide, so a limit that admits one keeps the
+				// display density.
+				CHECK(cache.resolution == 2);
 				cache.draw(*globals->gfx);
-				CHECK(backend.largestTexture == limit);
+				CHECK(backend.largestTexture == SoftwareTerrainCache::ChunkPixels);
 			}
 			else
 			{
@@ -2425,10 +2429,11 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(resident(false) > 0);
 		CHECK(resident(true) == 0);
 
-		// Zooming back out keeps them until the view has wanted less for the delay.
+		// Zooming back out keeps them until the view has wanted less for the
+		// delay; pages meanwhile compose them at the display density.
 		draw(1 * screenPixel);
 		CHECK(compositor.scale() == 4);
-		CHECK(cache.samplingResolution() > 1);
+		CHECK(cache.samplingResolution() == 1);
 
 		// Then pages compose native frames, HD pages go and frames retire.
 		GAGCore::Sprite::setHighResolutionDetailDelay(0);
@@ -2594,6 +2599,97 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(synchronous.reductions > 0);
 		CHECK(interactive.reductions > 0);
 		CHECK(interactive.pixels == synchronous.pixels);
+	}
+	TEST_CASE("a portable zoom into HD stands in with a larger coarser page, clipped to each small page [display]")
+	{
+		glob2test::ScopedEnvironment hdPath("GLOB2_EXPERIMENT_TEXTURE_DIR",
+											highResolutionFixture().string().c_str());
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
+			.screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		REQUIRE(globals->gfx->backendSwitchStatus().active == GAGCore::RendererBackend::PortableSDL);
+		glob2test::HeadlessGame fixture({.wDec = 7, .hDec = 7, .discovered = true});
+		GAGCore::Sprite::setHighResolution(true);
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		SoftwareTerrainCache cache;
+		cache.deferBuilds = true;
+		const auto frame = [&](float zoom, int right, int bottom)
+		{
+			globals->gfx->beginMapTransform(zoom, 0, 0, 0, 0, 256, 256);
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, right, bottom, 0, 0, fixture.team->me, true));
+			cache.draw(*globals->gfx);
+			globals->gfx->endMapTransform();
+		};
+		const auto settle = [&](float zoom, int right, int bottom)
+		{
+			for (int attempt = 0; attempt < 5000; ++attempt)
+			{
+				frame(zoom, right, bottom);
+				if (cache.pendingPages() == 0 && cache.complete() &&
+					std::all_of(cache.copies.begin(), cache.copies.end(), [&](const auto &copy)
+						{ return copy.chunk->scale == cache.samplingResolution(); }))
+					return;
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			}
+			FAIL("the interactive view never completed");
+		};
+		// Native density: one 16-cell page holds the view.
+		settle(1, 7, 7);
+		REQUIRE(cache.samplingResolution() == 1);
+		REQUIRE(cache.pageTiles == SoftwareTerrainCache::ChunkTiles);
+		// At three screen pixels per logical pixel, the view wants HD pages of
+		// four times density and fewer cells.
+		frame(3, 5, 5);
+		REQUIRE(cache.samplingResolution() == 4);
+		CHECK(cache.pageTiles == SoftwareTerrainCache::pageTilesAt(4));
+		CHECK(cache.pageTiles < SoftwareTerrainCache::ChunkTiles);
+		// Until they arrive, a larger page of a coarser density draws each of
+		// them, clipped to it: nothing falls to the overview.
+		CHECK(cache.complete());
+		CHECK(cache.backdropPages().empty());
+		CHECK(cache.frameCoverage().backdropCells == 0);
+		CHECK(cache.frameCoverage().standInCells == cache.frameCoverage().pageCells);
+		for (const auto &copy : cache.copies)
+		{
+			CAPTURE(copy.clip.x);
+			CAPTURE(copy.clip.y);
+			CHECK(copy.chunk->scale < 4);
+			CHECK(copy.chunk->span > cache.pageTiles);
+			CHECK(copy.clip.w == cache.pageTiles * 32);
+			CHECK(copy.clip.h == cache.pageTiles * 32);
+			// Drawn where the small page it stands in for is.
+			CHECK((copy.x + copy.clip.x) % (cache.pageTiles * 32) == 0);
+			CHECK(copy.x + copy.clip.x < 8 * 32);
+		}
+		GAGCore::Sprite::finishHighResolution();
+		settle(3, 5, 5);
+		for (const auto &copy : cache.copies)
+			CHECK(copy.chunk->span == cache.pageTiles);
+	}
+	TEST_CASE("portable pages without HD artwork sample coverage at the display density [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
+			.screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		REQUIRE(globals->gfx->backendSwitchStatus().active == GAGCore::RendererBackend::PortableSDL);
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .discovered = true});
+		GAGCore::Sprite::setHighResolution(false);
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		// Native material frames throughout; the pages' composition scale
+		// follows the direct pass's mask density: a power of two at least the
+		// display density, up to four.
+		for (const auto &[zoom, scale] : {std::pair{1.f, 1}, {1.5f, 2}, {2.f, 2}, {3.f, 4}, {4.f, 4}})
+		{
+			CAPTURE(zoom);
+			SoftwareTerrainCache cache;
+			globals->gfx->beginMapTransform(zoom, 0, 0, 0, 0, 256, 256);
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 7, 7, 0, 0, fixture.team->me, true));
+			cache.draw(*globals->gfx);
+			globals->gfx->endMapTransform();
+			CHECK(globals->terrainCompositor().scale() == 1);
+			CHECK(cache.samplingResolution() == scale);
+			CHECK(cache.pageTiles == SoftwareTerrainCache::pageTilesAt(scale));
+		}
 	}
 	TEST_CASE("offscreen terrain density follows the target and stays stable across capture tiles "
 			  "[display]")

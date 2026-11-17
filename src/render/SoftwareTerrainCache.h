@@ -24,6 +24,17 @@ class SoftwareTerrainCache
 {
   public:
 	static constexpr int ChunkTiles = 16, ChunkPixels = ChunkTiles * 32;
+	// Tiles along a page's side at a composition scale: ChunkTiles at native
+	// density and fewer above, so every page is ChunkPixels (512) wide. A view
+	// at three or four times density then needs little more than its own
+	// area in pages, where 16-tile pages (2048 pixels at four times) cost up
+	// to twice it for their alignment and left the view at a coarser density.
+	// Page arrays keep the ChunkTiles stride; a smaller page uses their
+	// top-left corner.
+	static constexpr int pageTilesAt(int scale)
+	{
+		return std::clamp(ChunkTiles / std::max(1, scale), 4, ChunkTiles);
+	}
 	// Vertices beyond a page's corners that its cells read: contextual borders
 	// need one, shore calm searches ShoreCalmSearch toward land and whole-stone
 	// path edges StoneSearch.
@@ -84,6 +95,9 @@ class SoftwareTerrainCache
 	struct Chunk
 	{
 		int x = 0, y = 0, scale = 1, downsample = 1;
+		int span = ChunkTiles; // Tiles along each side: pageTilesAt(scale).
+		// Pixels along each side of the page's surface.
+		int pixels() const { return span * 32 * scale / downsample; }
 		Uint32 seed = 0; // Map terrain seed the page was composed with.
 		Uint64 recipeTerrainRevision = 0;
 		// Corner vertices and the SourceHalo used by contextual borders and shore calm.
@@ -135,8 +149,11 @@ class SoftwareTerrainCache
 	struct Copy
 	{
 		Chunk *chunk;
-		int x, y;
+		int x, y; // The page's origin on screen, in logical pixels.
 		Uint8 alpha = 255; // Below opaque while a page fades in.
+		// The part of the page drawn, in logical pixels from its origin: a
+		// coarser stand-in draws only the cells of the page it stands in for.
+		SDL_Rect clip{0, 0, ChunkPixels, ChunkPixels};
 	};
 	//! How long a page that arrives over a fallback takes to fade in.
 	static constexpr Uint64 FadeMs = 150;
@@ -217,6 +234,10 @@ class SoftwareTerrainCache
 	// Only GPU pages reduce; at most one of these factors can exceed one.
 	int resolution = 1;
 	int downsample = 1;
+	int pageTiles = ChunkTiles; // pageTilesAt(resolution).
+	// The last page admission logged (TERRAIN_PAGE_ADMISSION): wanted scale,
+	// scale, reduction and why it is coarser, to log changes only.
+	std::tuple<int, int, int, const char *> lastAdmission{};
 	bool gpu = false;
 	bool composedHighResolution = false; // Whether the last view composed HD material frames.
     std::shared_ptr<GpuTerrainPageCache> gpuPages;
