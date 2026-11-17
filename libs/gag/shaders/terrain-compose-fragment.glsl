@@ -6,17 +6,36 @@
 uvec4 terrainBytes(vec4 value) {
     return uvec4(floor(value * 255.0 + 0.5));
 }
+// Explicit branches keep combined texture bindings portable across dialects.
+uvec4 terrainTexel(uint slot, ivec2 texel) {
+    if (slot == 0u) return terrainBytes(texelFetch(material0, texel, 0));
+    if (slot == 1u) return terrainBytes(texelFetch(material1, texel, 0));
+    if (slot == 2u) return terrainBytes(texelFetch(material2, texel, 0));
+    return terrainBytes(texelFetch(material3, texel, 0));
+}
+int terrainSourceSize(uint slot) {
+    if (slot == 0u) return textureSize(material0, 0).x;
+    if (slot == 1u) return textureSize(material1, 0).x;
+    if (slot == 2u) return textureSize(material2, 0).x;
+    return textureSize(material3, 0).x;
+}
+// CPU reference: Compositor::boxFilter. A source an exact multiple of the
+// composition size is box-filtered in premultiplied colour; any other scales.
 uvec4 terrainMaterial(uint slot, ivec2 pixel) {
     if ((params.z & (1u << slot)) == 0u) return uvec4(0u);
-    // Explicit branches keep combined texture bindings portable across dialects.
-    if (slot == 0u) return terrainBytes(texelFetch(material0,
-        pixel * textureSize(material0, 0) / int(params.x), 0));
-    if (slot == 1u) return terrainBytes(texelFetch(material1,
-        pixel * textureSize(material1, 0) / int(params.x), 0));
-    if (slot == 2u) return terrainBytes(texelFetch(material2,
-        pixel * textureSize(material2, 0) / int(params.x), 0));
-    return terrainBytes(texelFetch(material3,
-        pixel * textureSize(material3, 0) / int(params.x), 0));
+    int size = terrainSourceSize(slot), composed = int(params.x);
+    if (size <= composed || size % composed != 0)
+        return terrainTexel(slot, pixel * size / composed);
+    int step = size / composed;
+    uvec4 sum = uvec4(0u);
+    for (int dy = 0; dy < step; ++dy)
+        for (int dx = 0; dx < step; ++dx) {
+            uvec4 texel = terrainTexel(slot, pixel * step + ivec2(dx, dy));
+            sum += uvec4(texel.rgb * texel.a, texel.a);
+        }
+    uint count = uint(step * step);
+    uvec3 rgb = sum.a > 0u ? (sum.rgb + sum.a / 2u) / sum.a : uvec3(0u);
+    return uvec4(rgb, (sum.a + count / 2u) / count);
 }
 vec4 terrainUnpack(uint packedColor) {
     uvec4 bytes = uvec4((packedColor >> 16u) & 255u, (packedColor >> 8u) & 255u,

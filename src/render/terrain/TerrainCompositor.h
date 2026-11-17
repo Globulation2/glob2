@@ -352,7 +352,13 @@ class Compositor
     {
         CellMask mask;
         std::vector<PreparedMaterialView> sources;
+        std::array<MaterialPixels, 4> filtered; // Box-filtered HD sources, one per palette slot.
     };
+    // An HD source composed below its own size: each output texel is the
+    // premultiplied box average of the step-by-step block it covers, as the
+    // streamed direct pass filters its art tiles (DirectTerrain), so every
+    // renderer draws the same half-resolution level.
+    static void boxFilter(const PreparedMaterialView &, int size, MaterialPixels &out);
     struct CpuMaterials
     {
         struct Texture
@@ -465,9 +471,9 @@ class Compositor
     bool mixedDecorSprites = false;
     bool tieredDecor = false;
     mutable std::mutex tierMutex;
-    // A composition scale below an HD source's samples every step-th texel. Cells
-    // read those from one compact copy per prepared variant revision instead of
-    // striding the whole source (one cache line per sample) for every cell.
+    // A composition scale below an HD source's box-filters each step-by-step
+    // block. Cells read one compact filtered copy per prepared variant
+    // revision instead of filtering the whole source for every cell.
     struct Decimated
     {
         std::uint64_t revision = 0;

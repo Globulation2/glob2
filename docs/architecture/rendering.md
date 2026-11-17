@@ -119,6 +119,13 @@ same pixels (`DrawableSurface::singleLevelSampling`):
 The software renderer draws native frames (and native terrain pages) at every
 zoom: it has no filtering, and it is exempt from renderer parity.
 
+Terrain takes its half-resolution level the same way everywhere: an HD
+material composed or streamed below its own size is box-filtered in
+premultiplied colour, one output texel the average of the block it covers.
+The streamed direct pass filters its art tiles so (`DirectTerrain`), and the
+page compositor its sources (`Compositor::boxFilter`, mirrored by the
+`terrain-compose` shader), rather than sampling every second texel.
+
 Legacy OpenGL's bands load the HD frames with the levels a view needs left out
 (band 2, a quarter of the frame, while the policy is native), reloading in the
 background on a band change while the current textures draw. The on-demand

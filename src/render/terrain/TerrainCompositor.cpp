@@ -1851,6 +1851,32 @@ void Compositor::describeShoreCalm(const SceneMap &map, Recipe &r) const
 	if (!liquidCalm)
 		r.calm = {};
 }
+void Compositor::boxFilter(const PreparedMaterialView &view, int size, MaterialPixels &out)
+{
+    // The same arithmetic as DirectTerrain's art tiles: premultiplied sums,
+    // colour rounded over the summed alpha and alpha over the block.
+    const int step = view.step;
+    out.resize(std::size_t(size) * size);
+    const unsigned count = unsigned(step * step);
+    for (int y = 0; y < size; ++y)
+        for (int x = 0; x < size; ++x)
+        {
+            unsigned sum[4] = {};
+            for (int dy = 0; dy < step; ++dy)
+            {
+                const auto *row = view.pixels.data() + std::size_t(y * step + dy) * view.size + x * step;
+                for (int dx = 0; dx < step; ++dx)
+                {
+                    const auto &p = row[dx];
+                    for (int k = 0; k < 3; ++k) sum[k] += unsigned(p[k]) * p[3];
+                    sum[3] += p[3];
+                }
+            }
+            auto &o = out[std::size_t(y) * size + x];
+            for (int k = 0; k < 3; ++k) o[k] = (unsigned char)(sum[3] ? (sum[k] + sum[3] / 2) / sum[3] : 0);
+            o[3] = (unsigned char)((sum[3] + count / 2) / count);
+        }
+}
 Compositor::PreparedMaterialView Compositor::decimated(MaterialId id, const PreparedMaterialView &view,
                                                        int scale,
                                                        std::shared_ptr<const MaterialPixels> &hold) const
@@ -1875,10 +1901,8 @@ Compositor::PreparedMaterialView Compositor::decimated(MaterialId id, const Prep
         // Always a fresh copy: a composition in progress (another palette slot
         // of the same cell, or another thread) may still read the old one
         // through its hold, so neither eviction nor a rebuild frees it.
-        auto pixels = std::make_shared<MaterialPixels>(std::size_t(size) * size);
-        for (int y = 0; y < size; ++y)
-            for (int x = 0; x < size; ++x)
-                (*pixels)[std::size_t(y) * size + x] = view.pixels[std::size_t(y) * view.step * view.size + x * view.step];
+        auto pixels = std::make_shared<MaterialPixels>();
+        boxFilter(view, size, *pixels);
         entry.pixels = std::move(pixels);
         entry.revision = view.revision;
         entry.source = view.pixels.data();
@@ -2076,6 +2100,12 @@ void Compositor::CpuMaterials::compose(const Recipe &recipe, SDL_Surface *target
         }
         sources[id] = {variant, 0, texture.size, *texture.pixels,
                        texture.size % (32 * scale) ? 0 : texture.size / (32 * scale)};
+        if (sources[id].step > 1)
+        {
+            auto &filtered = scratch.filtered[i];
+            boxFilter(sources[id], 32 * scale, filtered);
+            sources[id] = {variant, 0, 32 * scale, filtered, 1};
+        }
     }
     if (!mask && !recipe.uniform())
     {
