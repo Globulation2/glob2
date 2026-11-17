@@ -329,6 +329,34 @@ foreach(variant IN LISTS GLOB2_WEB_VARIANTS)
   add_dependencies(${harness} glob2_web_assets glob2_web_${variant} glob2_web_${variant}_guard)
   glob2_web_launcher(${harness} "${environment}")
   list(APPEND web_aliases ${harness})
+
+  # ---- render-parity.js: torus-render-benchmark in the browser (tools/rendering/browser_parity.py) ----
+  # Test-only, never packaged: the same scene setup and capture as the native
+  # renderer parity matrix, linked with the game's objects and asset packages.
+  # Its frame loop blocks, so only the threaded runtime (an application worker)
+  # can run it; epoxy/gl.h resolves to Emscripten's GL headers.
+  if(threads)
+    set(parity glob2_web_${variant}_render_parity)
+    set(parity_source "${GLOB2_ROOT}/src/render/torus/TorusRenderBenchmark.cpp")
+    add_executable(${parity} EXCLUDE_FROM_ALL "${production_objects}"
+                   $<TARGET_OBJECTS:glob2_web_${variant}_javascript> "${parity_source}")
+    set_source_files_properties("${parity_source}" PROPERTIES
+      COMPILE_DEFINITIONS "SDL_MAIN_HANDLED;main=glob2ApplicationMain")
+    target_compile_options(${parity} PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${cxxflags}>" ${ccflags})
+    target_compile_definitions(${parity} PRIVATE ${official_definitions})
+    target_include_directories(${parity} PRIVATE "${web}/parity/include" ${includes} "${GLOB2_ROOT}/test"
+                               "${GLOB2_ROOT}/test/support" "${GLOB2_ROOT}/libs/gag/src")
+    glob2_web_link_options(${parity} ${game_link} --pre-js "${web}/parity/read-pixels-rgb.js")
+    target_link_directories(${parity} PRIVATE "${sdl}/lib")
+    target_link_libraries(${parity} PRIVATE ${libraries})
+    set_target_properties(${parity} PROPERTIES OUTPUT_NAME render-parity RUNTIME_OUTPUT_DIRECTORY "${out}"
+                          LINK_DEPENDS "${link_inputs};${GLOB2_OUT}/asset-manifest.js;${web}/parity/read-pixels-rgb.js"
+                          LINKER_LANGUAGE CXX)
+    add_dependencies(${parity} glob2_web_assets glob2_web_${variant} glob2_web_${variant}_generated
+                     glob2_web_${variant}_guard)
+    glob2_web_launcher(${parity} "${environment}")
+    add_custom_target(web-render-parity DEPENDS ${parity})
+  endif()
 endforeach()
 set_source_files_properties("${GLOB2_ROOT}/test/support/TestMain.cpp" PROPERTIES
   COMPILE_DEFINITIONS "SDL_MAIN_HANDLED;main=glob2ApplicationMain")

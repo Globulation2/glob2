@@ -396,6 +396,38 @@ differing edges (premultiplication or blending darkens or brightens fringes
 consistently), and the ratio of gradient energy (one side softer: linear
 against nearest sampling, or another mip level).
 
+### Browser renderers
+
+`tools/rendering/browser_parity.py` measures the browser's WebGL2 renderer
+(legacy GL through Emscripten) against a native run's consensus with the same
+metric. It draws the scenes with `torus-render-benchmark` built for the
+browser (`web-render-parity` in `cmake/web.cmake`: the release build's game
+objects and asset packages, never packaged), loads the same save with the same
+pinned inputs and settle frames in headless Chromium
+(`platforms/web/benchmarks/render-parity.cjs`), and writes sheets, heat maps
+and `report.md` to `artifacts/browser-parity/<label>/`. The browser always
+uploads RGBA, so it compares with the native compression-off pass (`<label>/off`,
+or a `--compression off` run) and its bar is 2%.
+
+```sh
+python3 tools/rendering/renderer_parity.py --prepare --quick --compression off --label native
+python3 tools/dev_build.py target=web release=1 web-render-parity web-package
+python3 tools/rendering/browser_parity.py --quick --native-label native --label mine
+```
+
+Chromium draws through ANGLE on SwiftShader (as CI does). A hardware ANGLE
+backend (`--angle`) needs `--allow-gpu`: never run it on a machine that is
+doing native GPU work at the same time, since a browser sharing the GPU with
+native benchmarks has hung the driver. Run the native captures first, and the
+browser after they finish. The browser's WebGPU renderer cannot run this
+benchmark: its frame loop blocks the application worker and completes each
+frame with a synchronous readback, which the browser's WebGPU device does not
+offer. On a desktop smaller than a `-hidpi` scene's window (2560 by 1600 by
+default) the window manager resizes some renderers' windows, so the native
+captures differ in size and have no consensus; draw those scenes with a smaller
+`--window-size` (such as `640x400`) under their own label and compare the
+browser with that label.
+
 The benchmark options behind it: `GLOB2_BENCH_GUI=1` draws the game screen in
 the flat fixture, centred on the local colony at `GLOB2_BENCH_ZOOM`, with
 `GLOB2_BENCH_PAN_X`/`_Y` moving it by that many tiles;
