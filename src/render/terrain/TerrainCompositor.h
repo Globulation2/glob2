@@ -187,8 +187,12 @@ class Compositor
 	unsigned animatedSlots(const CellMask &) const;
 	// A uniform recipe ignores the mask; a mixed one composes from it when given.
 	// A refresh requires the mask and is ignored by uniform recipes.
+	// reduction > 1 (a mixed cell only, without a refresh) composes the cell
+	// 32 * scale / reduction pixels square, as the direct pass draws it at
+	// that density: each pixel blends its block of samples, toned by the
+	// seam and surf of the block's centre sample.
 	void compose(const Recipe &, SDL_Surface *target, int x, int y, int scale,
-				 const CellMask *mask = nullptr, const Refresh *refresh = nullptr) const;
+				 const CellMask *mask = nullptr, const Refresh *refresh = nullptr, int reduction = 1) const;
 	// Animated textures or surf: either changes this material's composed pixels over time.
 	bool animated(MaterialId id) const
 	{
@@ -375,7 +379,7 @@ class Compositor
         // Every recipe corner must be included in this immutable snapshot.
         void compose(const Recipe &, SDL_Surface *, int scale, const CellMask * = nullptr) const;
         void compose(const Recipe &, SDL_Surface *, int scale, CpuScratch &,
-                     const CellMask * = nullptr, const Refresh * = nullptr) const;
+                     const CellMask * = nullptr, const Refresh * = nullptr, int reduction = 1) const;
         CellMask mask(const Recipe &, int scale) const;
     };
     std::shared_ptr<const CpuMaterials> cpuMaterials(std::span<const MaterialId> needed = {});
@@ -408,7 +412,7 @@ class Compositor
       std::size_t cpuPublicationBytes() const;
       static void composePixels(const Catalog &, const StoneMaps &, const Recipe &, SDL_Surface *, int, int, int,
                                 std::span<const PreparedMaterialView>, const CellMask *,
-                                unsigned surfTime, const Refresh * = nullptr);
+                                unsigned surfTime, const Refresh * = nullptr, int reduction = 1);
       static void buildMask(const Catalog &, const StoneMaps &, const Recipe &, int, CellMask &);
 	struct Texture
 	{

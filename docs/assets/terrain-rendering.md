@@ -508,7 +508,9 @@ compose a page inside the frame. A cold page is described from the scene on the
 graphics thread and composed by the shared presentation workers
 (`render/BackgroundWork.h`) from an immutable material snapshot; a page at a
 reduced density whose native page is retained is reduced on the workers from a
-copy of that page instead. There are half as many workers as logical CPUs,
+copy of that page instead, except its mixed cells, which off the render devices
+compose at the reduced density (`Compositor::compose` with a reduction) so their
+shore lines match the direct pass. There are half as many workers as logical CPUs,
 between two and four: at normal game speed the simulation needs about one core,
 and in the pan-and-zoom benchmark more than four workers neither filled missing
 pages faster nor kept frames shorter, because the graphics thread's per-frame

@@ -2248,20 +2248,35 @@ TEST_SUITE("TerrainPresentation")
 			CHECK(cache.cacheHits() >= rebuilds * 5);
 			REQUIRE(!cache.chunks.empty());
 			CHECK(chunkPixels(*cache.copies.front().chunk)->w < SoftwareTerrainCache::ChunkPixels);
-			// Check the reduced pixels against independent area averages of native
-			// composition, including partially transparent coast tiles.
+			// Check the reduced pixels of uniform cells against independent area
+			// averages of native composition, including partially transparent
+			// coast tiles, and mixed cells against their reduced composition.
 			const auto &chunk = *cache.copies.front().chunk;
 			const int divisor = SoftwareTerrainCache::ChunkPixels / chunkPixels(chunk)->w;
 			const int tileSize = 32 / divisor, count = divisor * divisor;
 			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> tile(
 				SDL_CreateSurface(32, 32, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
 			REQUIRE(tile);
-			unsigned mismatches = 0, partial = 0;
+			unsigned mismatches = 0, partial = 0, mixed = 0;
 			for (int ty : {0, 3, 4, 15})
 				for (int tx : {0, 3, 4, 15})
 				{
-					globals->terrainCompositor().compose(chunk.tiles[ty * 16 + tx].recipe,
-														 tile.get(), 0, 0, 1);
+					const auto &recipe = chunk.tiles[ty * 16 + tx].recipe;
+					if (!recipe.uniform())
+					{
+						++mixed;
+						globals->terrainCompositor().compose(recipe, tile.get(), 0, 0, 1, nullptr, nullptr,
+															 divisor);
+						const auto *surface = chunkPixels(chunk);
+						for (int y = 0; y < tileSize; ++y)
+							mismatches += std::memcmp(
+								static_cast<const Uint8 *>(tile->pixels) + y * tile->pitch,
+								static_cast<const Uint8 *>(surface->pixels) + (ty * tileSize + y) * surface->pitch +
+									tx * tileSize * 4,
+								std::size_t(tileSize) * 4) != 0;
+						continue;
+					}
+					globals->terrainCompositor().compose(recipe, tile.get(), 0, 0, 1);
 					for (int y = 0; y < tileSize; ++y)
 						for (int x = 0; x < tileSize; ++x)
 						{
@@ -2295,6 +2310,7 @@ TEST_SUITE("TerrainPresentation")
 			// Terrain is opaque since water became an ordinary material, so these
 			// tiles carry no partial coverage; the arithmetic above still covers it.
 			(void)partial;
+			(void)mixed;
 			// Equivalent wrapped coordinates reuse the same pages and pixels.
 			const auto pixels = [&]
 			{
