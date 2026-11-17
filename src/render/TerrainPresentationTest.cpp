@@ -2682,6 +2682,48 @@ TEST_SUITE("TerrainPresentation")
 		for (const auto &copy : cache.copies)
 			CHECK(copy.chunk->span == cache.pageTiles);
 	}
+	TEST_CASE("a portable jump to pages never composed draws the resident base, not the overview [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,
+			.screenFlags = Uint32(GAGCore::GraphicContext::PORTABLEGPU)});
+		REQUIRE(globals->gfx->backendSwitchStatus().active == GAGCore::RendererBackend::PortableSDL);
+		glob2test::HeadlessGame fixture({.wDec = 7, .hDec = 7, .discovered = true});
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		SoftwareTerrainCache cache;
+		cache.deferBuilds = true;
+		const auto frame = [&](int vx, int vy)
+		{
+			globals->gfx->beginMapTransform(1, 0, 0, 0, 0, 256, 256);
+			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 7, 7, vx, vy, fixture.team->me, true));
+			cache.draw(*globals->gfx);
+			globals->gfx->endMapTransform();
+		};
+		// The whole 128-cell map at 16 pixels a cell: 64 pages of 256 pixels.
+		const std::size_t whole = 64u * 256 * 256 * 4;
+		for (int attempt = 0; attempt < 5000 && !(cache.pendingPages() == 0 && cache.baseTextureBytes() == whole); ++attempt)
+		{
+			frame(0, 0);
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+		REQUIRE(cache.basePixelsPerCell() == 16);
+		REQUIRE(cache.baseTextureBytes() == whole);
+		// Its pages hold textures alone.
+		CHECK(cache.basePixelBytes() == 0);
+		// A jump to cells no page has composed at any density draws the base
+		// beneath them while they compose: nothing falls to the overview.
+		frame(64, 64);
+		CHECK(cache.complete());
+		CHECK(cache.backdropPages().empty());
+		CHECK(cache.frameCoverage().backdropCells == 0);
+		CHECK(cache.frameCoverage().standInCells == cache.frameCoverage().pageCells);
+		REQUIRE_FALSE(cache.copies.empty());
+		for (const auto &copy : cache.copies)
+		{
+			CHECK(copy.chunk->resident);
+			CHECK(copy.chunk->downsample == 2);
+		}
+	}
 	TEST_CASE("portable pages without HD artwork sample coverage at the display density [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,

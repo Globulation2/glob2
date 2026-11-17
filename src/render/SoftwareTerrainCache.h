@@ -139,6 +139,9 @@ class SoftwareTerrainCache
 		// Cells out of view that rounds left at an earlier phase than the
 		// page's revisions; a round recomposes them once the view shows them.
 		std::array<bool, ChunkTiles * ChunkTiles> stale{};
+		// A page of the resident base (see basePages): never animated, and its
+		// pixels go once its texture holds them.
+		bool resident = false;
 	};
 	static constexpr std::size_t ChunkStorageBytes =
 		ChunkPixels * ChunkPixels * 4 + sizeof(Chunk) +
@@ -226,6 +229,15 @@ class SoftwareTerrainCache
 	};
 	FrameCoverage coverage;
 	std::vector<SDL_Point> uncoveredPages;
+	// The portable renderer's resident base: the whole map in native-density
+	// pages (ChunkTiles wide) reduced to baseReduction, composed on the workers
+	// behind visible work from the first interactive frame and never evicted.
+	// A missing page whose other densities do not cover it draws its base
+	// page, textured art, rather than the flat-coloured overview. Indexed by
+	// page row and column; null until composed.
+	std::vector<std::unique_ptr<Chunk>> basePages;
+	int baseReduction = 0, baseColumns = 0, baseRows = 0;
+	void clearBase();
 	// Bytes of every chunk's kept masks; shared so a mask outliving the cache is safe.
 	std::shared_ptr<std::atomic<std::size_t>> maskTotal = std::make_shared<std::atomic<std::size_t>>(0);
 	SDL_Rect paintBounds{};
@@ -311,6 +323,12 @@ class SoftwareTerrainCache
 	//! the only places the overview backdrop shows.
 	const std::vector<SDL_Point> &backdropPages() const { return uncoveredPages; }
 	std::size_t maskBytes() const { return *maskTotal; }
+	//! Bytes of the resident base's page textures and the pixels it still
+	//! holds, outside the page budget (see basePages).
+	std::size_t baseTextureBytes() const;
+	std::size_t basePixelBytes() const;
+	//! Pixels per cell of the resident base, or 0 without one.
+	int basePixelsPerCell() const { return baseReduction ? 32 / baseReduction : 0; }
 	// A torus visits every page each frame. Keep its complete terrain working
 	// set resident instead of selecting density independently for each tile.
 	static int capturePixelsPerCell(int width, int height);

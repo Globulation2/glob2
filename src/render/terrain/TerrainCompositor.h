@@ -123,9 +123,12 @@ class Compositor
     // with native sources as fallback until each requested frame is available.
     // Without decor, only material frames stream: a renderer that draws decor
     // sprites from their native frames alone (the portable SDL renderer) has
-    // no use for HD decor.
+    // no use for HD decor. `extraPages` lists more 16-cell pages (world tile
+    // origins) whose materials composition needs this frame, such as the
+    // portable renderer's resident base pages; their decor is not collected.
     void prepareVisible(bool hd, int time, const SceneMap &, int left, int top, int right, int bottom,
-                        bool nativeComposition = false, bool decor = true);
+                        bool nativeComposition = false, bool decor = true,
+                        std::span<const SDL_Point> extraPages = {});
     // Whether the portable renderer's pages compose HD material frames for a
     // view at `density` screen pixels per logical pixel (map scale times raster
     // scale). Native frames are the HD frames reduced by four, so at one or
