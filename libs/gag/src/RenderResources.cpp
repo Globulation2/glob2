@@ -15,7 +15,10 @@ namespace GAGCore
 {
 namespace { std::atomic<std::uint64_t> registryIdentity{1}; }
 constexpr std::size_t MiB = 1024 * 1024;
-RenderBudget RenderBudget::desktop() { return {256 * MiB, {64 * MiB, 64 * MiB, 128 * MiB, 32 * MiB}, 64 * MiB}; }
+// Desktop GPUs hold gigabytes. At a 2x display density a game holds 200 to
+// 230 MiB (HD sprites, direct terrain, staging), and the direct pass grows its
+// art atlas to 4096 (64 MiB, twice while it fills) only within this total.
+RenderBudget RenderBudget::desktop() { return {512 * MiB, {64 * MiB, 64 * MiB, 128 * MiB, 32 * MiB}, 64 * MiB}; }
 // Phones share one memory pool between the CPU and GPU, and Android starts
 // killing a backgrounded game long before desktop limits. Each class keeps at
 // least twice its largest single texture: the 22.4 MiB authored HD terrain
@@ -26,16 +29,22 @@ RenderBudget RenderBudget::mobile() { return {160 * MiB, {48 * MiB, 32 * MiB, 64
 const RenderBudget &platformRenderBudget()
 {
     static const RenderBudget chosen = [] {
+        RenderBudget budget =
+#if defined(GLOB2_MOBILE) || defined(__ANDROID__)
+            RenderBudget::mobile();
+#else
+            RenderBudget::desktop();
+#endif
         if (const char *value = std::getenv("GLOB2_RENDER_BUDGET")) {
             const std::string_view name(value);
-            if (name == "mobile") return RenderBudget::mobile();
-            if (name == "desktop") return RenderBudget::desktop();
+            if (name == "mobile") budget = RenderBudget::mobile();
+            if (name == "desktop") budget = RenderBudget::desktop();
         }
-#if defined(GLOB2_MOBILE) || defined(__ANDROID__)
-        return RenderBudget::mobile();
-#else
-        return RenderBudget::desktop();
-#endif
+        // GLOB2_RENDER_BUDGET_TOTAL_MIB replaces the total alone, for tests
+        // and memory experiments that need the combined limit to bind.
+        if (const char *total = std::getenv("GLOB2_RENDER_BUDGET_TOTAL_MIB"))
+            if (const long mib = std::strtol(total, nullptr, 10); mib > 0) budget.total = std::size_t(mib) * MiB;
+        return budget;
     }();
     return chosen;
 }

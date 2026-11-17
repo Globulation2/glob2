@@ -268,7 +268,9 @@ than a typical view's variants. It grows only under the desktop budget, with
 4096 textures, and while the renderer's resident bytes leave room in the
 platform's `RenderBudget` for twice the new atlas and an eighth of the budget
 besides (the old atlas draws while the new one fills); otherwise the view takes
-coarser tiles. A device counts its resident resources; legacy OpenGL, which has
+coarser tiles. A game on a 2x display holds 200 to 230 MiB, so the atlas needs a
+total of about 400 MiB to grow: under the former 256 MiB desktop total every
+renderer drew zoomed-in Retina views from 32-pixel art instead of 64. A device counts its resident resources; legacy OpenGL, which has
 no device budget, counts its direct terrain and its other textures up to the
 General class a device would keep them in. `DIRECT_TERRAIN_ADMISSION` on stderr records each change of a
 view's art atlas, tile density and the reason it is coarser than the display
@@ -1272,7 +1274,7 @@ Offscreen CPU exports cannot draw a device-released surface.
 
 SDL GPU, programmable GL, the CPU restoration registry (`RenderResources`) and
 the terrain page and torus planners share one `RenderBudget`
-(`platformRenderBudget()`). Desktop keeps 256 MiB in total, General and SkinAtlas
+(`platformRenderBudget()`). Desktop keeps 512 MiB in total, General and SkinAtlas
 64 MiB, TerrainPage 128 MiB, TerrainMask 32 MiB and 64 MiB of geometry. Android
 and iOS builds use 160 MiB, 48, 32, 64 and 16 MiB and 32 MiB of geometry: phones
 share one memory pool between CPU and GPU, and the system kills a large
@@ -1281,8 +1283,11 @@ texture (the 22.4 MiB authored HD terrain block, 16 MiB skin atlas pages, sixtee
 downsampled 1024x1024 terrain pages), since a class limit is also the largest
 texture it admits; GPU terrain composition falls back to CPU pages when the view's
 pages exceed the TerrainPage class. `GLOB2_RENDER_BUDGET=mobile` (or `desktop`)
-overrides the choice to measure one platform's budget on another; WebGPU keeps
-its own limits.
+overrides the choice to measure one platform's budget on another, and
+`GLOB2_RENDER_BUDGET_TOTAL_MIB` replaces the total alone (the class limits stay),
+for tests and memory experiments that need the combined limit to bind: the
+desktop classes add up to 288 MiB, so nothing but depth and transient work fills
+its 512 MiB. WebGPU keeps its own limits.
 
 `SDL_EVENT_LOW_MEMORY` and backgrounding (`SDL_EVENT_WILL_ENTER_BACKGROUND`,
 `SDL_EVENT_DID_ENTER_BACKGROUND`) call `GraphicContext::trimPresentationMemory`,
@@ -1362,7 +1367,7 @@ owned arrays, supporting shared memory and memory growth. Logical resource
 revisions use independent device allocations; submitted frames retain snapshots
 until queue completion. Discard fences also cover uploads prepared before packet
 submission; backend recreation shares the adapter’s issued completion timeline.
-Texture/depth allocations are bounded to 256 MiB in total, with General and
+Texture/depth allocations are bounded to 512 MiB in total on desktop, with General and
 SkinAtlas class budgets of 64 MiB, TerrainPage 128 MiB, and TerrainMask 32 MiB;
 persistent geometry to 32 MiB. Terrain imagery the CPU composes (view pages,
 overview pages and animated tiles, `TerrainVisual::Surface`) is admitted in the
@@ -1370,7 +1375,7 @@ TerrainPage class on every device, matching the page cache's own 128 MiB plan;
 in the General class a view's high-density pages alone could exceed 64 MiB,
 deferring every frame. Eight pending presentation frames and three capture
 requests bound GPU admission. Recorder flushes within one presentation share a
-fence and admission slot; all transient buffers also count toward the 256 MiB
+fence and admission slot; all transient buffers also count toward that
 aggregate device limit. Capture maps complete asynchronously in admission
 order; recording timestamps and context remain in the originating C++ request.
 Submission, presentation and capture CPU times and completed capture latency

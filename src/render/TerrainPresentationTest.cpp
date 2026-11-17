@@ -583,7 +583,7 @@ TEST_SUITE("TerrainPresentation")
             std::vector<Uint8> result(std::size_t(rgba->w)*rgba->h*4);
             for(int y=0;y<rgba->h;++y)std::memcpy(result.data()+std::size_t(y)*rgba->w*4,static_cast<Uint8 *>(rgba->pixels)+y*rgba->pitch,rgba->w*4);
             CHECK(cache.bytes()<=SoftwareTerrainCache::GPUCacheBudget);CHECK(cache.residentTextureBytes()<=SoftwareTerrainCache::GPUBudget);
-            CHECK(gfx.renderDevice()->telemetry().resourceBytes<=256u*1024*1024);
+            CHECK(gfx.renderDevice()->telemetry().resourceBytes<=GAGCore::platformRenderBudget().total);
             gfx.nextFrame();return result;
         };
         const auto compare=[&](int vx,int vy,int scale,int reduction,int animation,bool whole) {
@@ -640,7 +640,8 @@ TEST_SUITE("TerrainPresentation")
                 // Model concurrent retained atlas/geometry allocations without
                 // allocating fake GPU resources or weakening the actual cap.
                 ScopedCPUComposition pressure(gfx);pressure.device().forceCPU=false;
-                pressure.device().telemetryFloor=252u*1024*1024;
+                // Leave 4 MiB of the platform's total budget, too little for a page.
+                pressure.device().telemetryFloor=GAGCore::platformRenderBudget().total-4u*1024*1024;
                 SoftwareTerrainCache constrained;
                 const auto reference=draw(constrained,0,0,1,0,25,true);
                 CHECK_FALSE(bool(constrained.gpuPages));
