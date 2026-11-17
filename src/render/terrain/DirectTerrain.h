@@ -77,6 +77,9 @@ public:
     // another variant's art; always zero). lowArtBytes: that art's texture.
     struct ArtMetrics { std::size_t visible = 0, absent = 0, stale = 0, lowArtBytes = 0; };
     ArtMetrics artMetrics() const;
+    //! Texture units the last Legacy GL draw bound to its 1x1 placeholder
+    //! because their surface had no texture yet (the base before it is built).
+    unsigned placeholderBindings() const;
 
 private:
     void prepareHdMasks(const SceneMap &, int left, int top, int right, int bottom,

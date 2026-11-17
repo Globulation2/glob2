@@ -237,6 +237,14 @@ struct DirectTerrain::State
         }
         return padded;
     }
+#ifdef DIRECT_TERRAIN_LEGACY_GL
+    // Legacy GL binds this 1x1 zeroed texture to every unit whose surface has
+    // no texture yet (the base before it is built, a retired atlas that is not
+    // there): a sampler must never meet a unit without one, even on branches
+    // the shader does not take. Created on first use.
+    GLuint placeholder = 0;
+#endif
+    unsigned placeholderBindings = 0; // Units the last legacy draw bound it to.
     // The drawing atlas's uploaded record tiles, per variant slot, mirrored to
     // check that no visible variant draws a tile its atlas does not hold.
     std::vector<Uint16> tableTiles;
@@ -540,6 +548,7 @@ struct DirectTerrain::State
         {
             releaseSurfaces();
             if (hd.program) glDeleteProgram(hd.program);
+            if (placeholder) glDeleteTextures(1, &placeholder);
         }
 #endif
         releaseDeviceTextures();
@@ -2398,6 +2407,26 @@ void DirectTerrain::drawPrepared(GAGCore::GraphicContext &gfx, int viewportX, in
     RestoreGL restore;
     const auto &uniforms = state->hd.uniforms;
     glUseProgram(state->hd.program);
+    state->placeholderBindings = 0;
+    // Binds to the active unit; a surface without a texture gets the placeholder.
+    const auto bind = [&](GLuint name)
+    {
+        if (!name)
+        {
+            if (!state->placeholder)
+            {
+                const std::uint8_t zero[4] = {};
+                glGenTextures(1, &state->placeholder);
+                glBindTexture(GL_TEXTURE_2D, state->placeholder);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, zero);
+            }
+            name = state->placeholder;
+            ++state->placeholderBindings;
+        }
+        glBindTexture(GL_TEXTURE_2D, name);
+    };
     for (unsigned unit = 0; unit < State::Count; ++unit)
     {
         glActiveTexture(GL_TEXTURE0 + unit);
@@ -2406,14 +2435,14 @@ void DirectTerrain::drawPrepared(GAGCore::GraphicContext &gfx, int viewportX, in
             : unit == State::Coverage ? state->hd.base.coverage
             : unit == State::Edges ? state->hd.base.edges
             : unit == State::MaskIndex ? state->lowArt.surface : state->textures[unit];
-        glBindTexture(GL_TEXTURE_2D, texture.name);
+        bind(texture.name);
     }
     const GLuint extra[] = {state->hd.index.name, state->hd.coverage.name, state->hd.edges.name,
                             previous.index.name, previous.coverage.name, previous.edges.name};
     for (unsigned i = 0; i < std::size(extra); ++i)
     {
         glActiveTexture(GL_TEXTURE0 + State::Hd::FirstUnit + i);
-        glBindTexture(GL_TEXTURE_2D, extra[i]);
+        bind(extra[i]);
     }
     glUniform2f(uniforms[1], float(state->animation.size), float(state->animation.size));
     glUniform2f(uniforms[2], float(std::max(1, state->lowArt.width)), float(std::max(1, state->lowArt.height)));
@@ -2505,6 +2534,7 @@ std::size_t DirectTerrain::textureBytes() const { return state ? state->bytes : 
 std::size_t DirectTerrain::uploadBytes() const { return state ? state->uploaded : 0; }
 unsigned DirectTerrain::draws() const { return state ? state->frames : 0; }
 unsigned DirectTerrain::restartCount() const { return restarts; }
+unsigned DirectTerrain::placeholderBindings() const { return state ? state->placeholderBindings : 0; }
 DirectTerrain::ArtMetrics DirectTerrain::artMetrics() const
 {
     if (!state) return {};
