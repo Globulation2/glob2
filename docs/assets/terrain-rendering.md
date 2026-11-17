@@ -519,7 +519,17 @@ overrides the count for measurements. Until it
 arrives the view draws the same place at its nearest other density (the larger
 page holding it, clipped to it, or the smaller pages within it), or the
 overview beneath where none, or only part, exists; the overview then draws, and
-composes, only those missing pages. A page that arrives where the view drew either fallback
+composes, only those missing pages. The portable renderer also keeps a resident
+base: the whole map in native 16-cell pages reduced to 16 pixels a cell (8 or 4
+on maps too large for half the platform's `TerrainPage` texture allowance:
+64 MiB on desktop, 32 MiB with the mobile budget), composed two pages a frame
+from the view outward on the workers' lower lane from the first interactive
+frame, uploaded on arrival with their CPU pixels released, and never evicted. A
+missing page whose other densities do not cover it draws its base page, with any
+nearer partial density over it, so a fast zoom or jump shows textured terrain at
+no coarser than 16 pixels a cell rather than the flat-coloured overview. A base
+page whose cells' terrain or discovery changed draws nothing and composes again;
+it never animates. A page that arrives where the view drew either fallback
 fades in over it in 150 ms rather than popping. Pages around the view also
 compose ahead of the camera: a ring one page wide, widened in the direction of a
 pan by about half a second of its recent motion and all round while the view is

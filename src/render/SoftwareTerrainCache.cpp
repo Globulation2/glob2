@@ -726,6 +726,8 @@ struct TerrainPendingPage
     bool ahead = false;
     // The view drew a stand-in or the overview for it: it fades in on arrival.
     bool fellBack = false;
+    // A page of the resident base (SoftwareTerrainCache::basePages).
+    bool base = false;
     std::atomic<bool> cancelled{false}, failed{false};
     std::uint64_t wanted = 0;
     bool done() const { return remaining.load(std::memory_order_acquire) == 0; }
@@ -1133,6 +1135,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 	if (registry.get() != &map.terrainRegistry() || assets != map.frozenAssetBundle())
 	{
         chunks.clear();
+        clearBase();
         gpuPages.reset();
         cpuMaterialLease.reset();
         animatedTiles.clear();
@@ -1151,6 +1154,9 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 		// A renderer reset took the textures of pages whose pixels had gone.
 		resetGeneration = GAGCore::GraphicContext::renderResetGeneration();
 		std::erase_if(chunks, [](const auto &chunk) { return chunk->image && chunk->image->portableReleased(); });
+		for (auto &page : basePages)
+			if (page && page->image && page->image->portableReleased())
+				page.reset();
 	}
 	copies.clear();
 	incomplete = false;
@@ -1165,6 +1171,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
     {
         gpuPages.reset();
         chunks.clear();
+        clearBase();
         cpuMaterialLease.reset();
         cancelPending();
         return false;
@@ -1228,6 +1235,64 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 		samplingPlan(map, left, top, right, bottom, vx, vy, 1).downsample > 1;
 	const bool portable = portableRenderer();
 	const bool highResolution = composeHighResolution(compositor, tiledCapture);
+	// The portable renderer's resident base (see basePages): the finest
+	// reduction of native density whose whole map fits half the platform's
+	// terrain page allowance (16 pixels a cell for maps up to 256 cells square
+	// on desktop), chosen once a map. The missing base pages nearest the view
+	// launch a few a frame; their materials are prepared with the view's.
+	std::vector<SDL_Point> baseLaunches;
+	if (composeAhead && portable && !baseReduction)
+	{
+		const std::size_t allowance =
+			GAGCore::platformRenderBudget().classLimit(GAGCore::TextureDescriptor::BudgetClass::TerrainPage) / 2;
+		const int columns = std::max(1, map.getW() / ChunkTiles), rows = std::max(1, map.getH() / ChunkTiles);
+		baseReduction = -1; // None fits.
+		for (int reduction = 2; reduction <= 8; reduction *= 2)
+		{
+			const std::size_t side = ChunkPixels / reduction;
+			if (std::size_t(columns) * rows * side * side * 4 > allowance)
+				continue;
+			baseReduction = reduction;
+			baseColumns = columns;
+			baseRows = rows;
+			basePages.clear();
+			basePages.resize(std::size_t(columns) * rows);
+			break;
+		}
+	}
+	if (composeAhead && portable && baseReduction > 0)
+	{
+		constexpr std::size_t BaseLaunchesPerFrame = 2;
+		const std::size_t baseLimit = std::max(2u, BackgroundWork::workers());
+		std::vector<char> queued(basePages.size(), 0);
+		std::size_t inFlight = 0;
+		for (const auto &page : pending)
+			if (page->base)
+			{
+				++inFlight;
+				queued[std::size_t(page->y / ChunkTiles) * baseColumns + page->x / ChunkTiles] = 1;
+			}
+		if (inFlight < baseLimit)
+		{
+			const double centreX = (left + right + 1) * 0.5 + vx, centreY = (top + bottom + 1) * 0.5 + vy;
+			const auto wrapped = [](double delta, int period)
+			{ return delta - std::round(delta / period) * period; };
+			std::vector<std::pair<double, std::size_t>> missing;
+			for (std::size_t i = 0; i < basePages.size(); ++i)
+			{
+				if (queued[i] || (basePages[i] && basePages[i]->valid))
+					continue;
+				const double dx = wrapped(double(i % baseColumns) * ChunkTiles + ChunkTiles * 0.5 - centreX, map.getW());
+				const double dy = wrapped(double(i / baseColumns) * ChunkTiles + ChunkTiles * 0.5 - centreY, map.getH());
+				missing.push_back({dx * dx + dy * dy, i});
+			}
+			const std::size_t count = std::min({missing.size(), baseLimit - inFlight, BaseLaunchesPerFrame});
+			std::partial_sort(missing.begin(), missing.begin() + count, missing.end());
+			for (std::size_t k = 0; k < count; ++k)
+				baseLaunches.push_back({int(missing[k].second % baseColumns) * ChunkTiles,
+										int(missing[k].second / baseColumns) * ChunkTiles});
+		}
+	}
     {
         PERF_SCOPE_TIME(TerrainMaterials);
 	// CPU and device composition can rebuild complete pages beyond the
@@ -1242,7 +1307,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 			px0 * ChunkTiles, py0 * ChunkTiles, (px1 + 1) * ChunkTiles - 1, (py1 + 1) * ChunkTiles - 1,
 			reducedLegacyView,
 			// Portable draws decor HD frames only where the HD sprite policy shows HD.
-			!portable || GAGCore::Sprite::drawsHighResolutionOnDemand());
+			!portable || GAGCore::Sprite::drawsHighResolutionOnDemand(), baseLaunches);
 	};
 	// A capture is drawn once: it waits for the material sheets the map holds.
 	if (tiledCapture) compositor.finishMaterials(map);
@@ -1291,6 +1356,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 	if (gpu != nextGPU)
 	{
 		chunks.clear();
+		clearBase();
         cpuMaterialLease.reset();
         cancelPending();
 	}
@@ -1493,6 +1559,39 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					return true;
 				if (!page->pixels)
 					return true;
+				if (page->base)
+				{
+					// A base page uploads its texture now and lets its pixels go:
+					// it never animates, and the view may not draw it for minutes.
+					const int column = page->x / ChunkTiles, row = page->y / ChunkTiles;
+					if (page->downsample != baseReduction || column >= baseColumns || row >= baseRows)
+						return true;
+					auto fresh = std::make_unique<Chunk>();
+					fresh->x = page->x;
+					fresh->y = page->y;
+					fresh->downsample = page->downsample;
+					fresh->seed = page->seed;
+					fresh->recipeTerrainRevision = page->terrainRevision;
+					fresh->sources = page->sources;
+					fresh->tiles = page->tiles;
+					for (const auto &result : page->results)
+					{
+						fresh->opaque[result.index] = result.opaque;
+						fresh->empty[result.index] = result.empty;
+					}
+					fresh->discoveryRevision = page->discoveryRevision;
+					fresh->discoveryTeams = page->discoveryTeams;
+					fresh->discoveryWhole = page->discoveryWhole;
+					fresh->discoveryStamped = true;
+					fresh->valid = true;
+					fresh->resident = true;
+					fresh->image = std::make_unique<TerrainVisual::Surface>(page->pixels.release(), true);
+					fresh->image->prepareTexture();
+					fresh->image->releasePortablePixels();
+					basePages[std::size_t(row) * baseColumns + column] = std::move(fresh);
+					++installs;
+					return true;
+				}
 				Chunk *existing = nullptr;
 				for (auto &chunk : chunks)
 					if (chunk->x == page->x && chunk->y == page->y && chunk->scale == page->scale &&
@@ -1549,6 +1648,53 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				return true;
 			});
 		}
+		// The resident base page holding world tile (wx, wy), when it shows the
+		// map as it is now: a page whose terrain or discovered cells changed
+		// draws nothing and composes again.
+		const auto usableBase = [&](int wx, int wy) -> Chunk *
+		{
+			if (baseReduction <= 0)
+				return nullptr;
+			const int column = (wx & map.getMaskW()) / ChunkTiles, row = (wy & map.getMaskH()) / ChunkTiles;
+			if (column >= baseColumns || row >= baseRows)
+				return nullptr;
+			Chunk *base = basePages[std::size_t(row) * baseColumns + column].get();
+			if (!base || !base->valid || !base->image)
+				return nullptr;
+			const int px = column * ChunkTiles, py = row * ChunkTiles;
+			if (base->seed != map.terrainSeed())
+				base->valid = false;
+			else if (base->recipeTerrainRevision != terrainRevision)
+			{
+				std::array<Uint32, SourceSpan * SourceSpan> sources{};
+				for (int y = -SourceHalo; y <= ChunkTiles + SourceHalo; ++y)
+					for (int x = -SourceHalo; x <= ChunkTiles + SourceHalo; ++x)
+						sources[(y + SourceHalo) * SourceSpan + x + SourceHalo] = map.vertexTerrainAt(px + x, py + y);
+				if (sources == base->sources)
+					base->recipeTerrainRevision = terrainRevision;
+				else
+					base->valid = false;
+			}
+			if (base->valid && !(base->discoveryWhole == wholeMap &&
+				(wholeMap || (base->discoveryRevision == map.discoveryRevision() && base->discoveryTeams == visibleTeams))))
+			{
+				for (int y = 0; y < ChunkTiles && base->valid; ++y)
+					for (int x = 0; x < ChunkTiles; ++x)
+						if ((wholeMap || map.isMapPartiallyDiscovered(px + x - 1, py + y - 1, px + x + 1, py + y + 1,
+																	  visibleTeams)) != base->tiles[y * ChunkTiles + x].discovered)
+						{
+							base->valid = false;
+							break;
+						}
+				if (base->valid)
+				{
+					base->discoveryRevision = map.discoveryRevision();
+					base->discoveryTeams = visibleTeams;
+					base->discoveryWhole = wholeMap;
+				}
+			}
+			return base->valid ? base : nullptr;
+		};
 		// The page at its nearest other density; never the view's own density.
 		// What stands in for the view's page at world tile (wx, wy) while it
 		// composes: the pages of one other density over it, either the larger
@@ -1581,8 +1727,18 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				density.first.push_back(chunk.get());
 				density.second += cells;
 			}
-			double bestDistance = 0;
+			// The resident base covers the whole page, beneath any pages of its
+			// density there.
+			const std::pair<int, int> baseKey{1, baseReduction};
+			if (Chunk *base = usableBase(wx, wy); base && densities[baseKey].second < pageTiles * pageTiles)
+			{
+				auto &density = densities[baseKey];
+				density.first.insert(density.first.begin(), base);
+				density.second = pageTiles * pageTiles;
+			}
+			double bestDistance = 0, partialDistance = 0;
 			bool bestComplete = false;
+			const std::vector<Chunk *> *partial = nullptr; // The nearest density that does not cover it.
 			for (auto &[key, density] : densities)
 			{
 				const bool complete = density.second >= pageTiles * pageTiles;
@@ -1591,7 +1747,12 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				if (found.empty() || (complete && !bestComplete) ||
 					(complete == bestComplete && distance < bestDistance))
 					found = density.first, bestDistance = distance, bestComplete = complete;
+				if (!complete && (!partial || distance < partialDistance))
+					partial = &density.first, partialDistance = distance;
 			}
+			// Over the base, the parts of the page that a nearer density has.
+			if (bestComplete && partial && partialDistance < bestDistance && found.front()->resident)
+				found.insert(found.end(), partial->begin(), partial->end());
 			return bestComplete;
 		};
 		std::vector<Chunk *> standInPages;
@@ -2009,7 +2170,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				const auto pendingFor = [&](int scale, int reduction) -> TerrainPendingPage *
 				{
 					for (auto &page : pending)
-						if (page->x == wx && page->y == wy && page->scale == scale && page->downsample == reduction)
+						if (!page->base && page->x == wx && page->y == wy && page->scale == scale &&
+							page->downsample == reduction)
 						{
 							// The view wants a page composing ahead of it: queue it
 							// again as visible work.
@@ -2372,7 +2534,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				Chunk *page = copy.chunk;
 				// A page drawn from its texture alone has no pixels to refresh; a
 				// change of its content composes it again.
-				if (!page->valid || !page->cpuComposed || (page->image && page->image->portableReleased()))
+				if (!page->valid || !page->cpuComposed || page->resident ||
+					(page->image && page->image->portableReleased()))
 					continue;
 				auto found = std::find(drawn.begin(), drawn.end(), page);
 				if (found == drawn.end())
@@ -2563,7 +2726,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				}
 				TerrainPendingPage *queued = nullptr;
 				for (auto &page : pending)
-					if (page->x == wx && page->y == wy && page->scale == resolution && page->downsample == downsample)
+					if (!page->base && page->x == wx && page->y == wy && page->scale == resolution &&
+						page->downsample == downsample)
 						queued = page.get();
 				if (queued)
 				{
@@ -2599,6 +2763,69 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				++aheadPages;
 			}
 		}
+		// The resident base pages this frame prepared materials for compose
+		// behind visible work and the pages around the view, unless a renderer
+		// change cleared the base since they were chosen.
+		if (deferring && !waiting && baseReduction > 0)
+			for (const SDL_Point &place : baseLaunches)
+			{
+				const int side = ChunkPixels / baseReduction, n = 32 / baseReduction;
+				if (!launchTimeLeft() || launchUnits + ChunkTiles * ChunkTiles > LaunchUnitsPerFrame ||
+					pendingBytes() + std::size_t(side) * side * 4 > PendingBytes)
+					break;
+				timed([&]
+				{
+					const int wx = place.x, wy = place.y;
+					auto page = std::make_shared<TerrainPendingPage>();
+					for (int y = -SourceHalo; y <= ChunkTiles + SourceHalo; ++y)
+						for (int x = -SourceHalo; x <= ChunkTiles + SourceHalo; ++x)
+							page->sources[(y + SourceHalo) * SourceSpan + x + SourceHalo] = map.vertexTerrainAt(wx + x, wy + y);
+					for (int y = 0; y < ChunkTiles; ++y)
+						for (int x = 0; x < ChunkTiles; ++x)
+						{
+							auto &t = page->tiles[y * ChunkTiles + x];
+							t.discovered = wholeMap ||
+								map.isMapPartiallyDiscovered(wx + x - 1, wy + y - 1, wx + x + 1, wy + y + 1, visibleTeams);
+							if (t.discovered)
+								t.recipe = compositor.describe(map, wx + x, wy + y);
+						}
+					if (!sheetsReady(page->tiles))
+						return;
+					page->base = true;
+					page->ahead = true;
+					page->x = wx;
+					page->y = wy;
+					page->downsample = baseReduction;
+					page->mixedAtDensity = mixedCellsAtDensity();
+					page->seed = map.terrainSeed();
+					page->terrainRevision = terrainRevision;
+					page->materials = frameMaterials();
+					page->discoveryRevision = map.discoveryRevision();
+					page->discoveryTeams = visibleTeams;
+					page->discoveryWhole = wholeMap;
+					page->pixels.reset(SDL_CreateSurface(side, side, SDL_PIXELFORMAT_ARGB8888));
+					if (!page->pixels)
+						throw std::bad_alloc();
+					auto *pixels = static_cast<Uint8 *>(page->pixels->pixels);
+					page->pitch = page->pixels->pitch;
+					page->results.reserve(page->tiles.size());
+					for (unsigned i = 0; i < page->tiles.size(); ++i)
+					{
+						TerrainCellResult result{};
+						result.index = i;
+						result.input = page->tiles[i];
+						result.pixels = pixels + (i / ChunkTiles) * n * page->pitch + (i % ChunkTiles) * n * 4;
+						page->results.push_back(std::move(result));
+					}
+					page->cellsPerJob = 16;
+					page->jobs = (page->results.size() + page->cellsPerJob - 1) / page->cellsPerJob;
+					page->remaining.store(page->jobs, std::memory_order_relaxed);
+					page->wanted = frame;
+					pending.push_back(page);
+					submitPage(page, BackgroundWork::Priority::Ahead);
+				});
+				launchUnits += ChunkTiles * ChunkTiles;
+			}
 		// A view that has stopped launching work lets its snapshot's texture
 		// copies go, and densities it left let their animated tiles go.
 		if (pending.empty() && frame > materialsUsed + 120)
@@ -2612,7 +2839,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 		// Pages the view has left for a few frames are no longer worth composing.
 		std::erase_if(pending, [&](const std::shared_ptr<TerrainPendingPage> &page)
 		{
-			if (page->wanted + 8 >= frame)
+			if (page->base || page->wanted + 8 >= frame)
 				return false;
 			page->cancelled.store(true, std::memory_order_relaxed);
 			return true;
@@ -2792,7 +3019,7 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 				// pixels only while animation writes them.
 				if (deferBuilds && !(copy.chunk->scale == 1 && copy.chunk->downsample == 1) &&
 					copy.chunk->image->hasPixels() && overlayCompositor && !copy.chunk->hasStaged &&
-					!needsPagePixels(*copy.chunk, *overlayCompositor))
+					(copy.chunk->resident || !needsPagePixels(*copy.chunk, *overlayCompositor)))
 					copy.chunk->image->releasePortablePixels();
 				// Uniform animated cells over the page, from their shared tiles.
 				if (overlayCompositor)
@@ -2908,6 +3135,31 @@ std::size_t SoftwareTerrainCache::pixelBytes() const
 		if (chunk->image) add(chunk->image->getSDLSurface());
 		add(chunk->parked.get());
 	}
+	return total;
+}
+
+void SoftwareTerrainCache::clearBase()
+{
+	basePages.clear();
+	baseReduction = baseColumns = baseRows = 0;
+}
+
+std::size_t SoftwareTerrainCache::baseTextureBytes() const
+{
+	std::size_t total = 0;
+	for (const auto &page : basePages)
+		if (page && page->image)
+			total += std::size_t(page->pixels()) * page->pixels() * 4;
+	return total;
+}
+
+std::size_t SoftwareTerrainCache::basePixelBytes() const
+{
+	std::size_t total = 0;
+	for (const auto &page : basePages)
+		if (page && page->image)
+			if (const auto *pixels = page->image->getSDLSurface())
+				total += std::size_t(pixels->pitch) * pixels->h;
 	return total;
 }
 

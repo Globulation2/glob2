@@ -36,6 +36,8 @@ std::string fields(const MapRenderState &render)
 		" gpu_terrain_page_bytes=" + std::to_string(pages ? pages->residentTextureBytes() : 0) +
 		" gpu_direct_terrain_bytes=" + std::to_string(direct ? direct->textureBytes() : 0) +
 		" cpu_terrain_page_pixel_bytes=" + std::to_string(pages ? pages->pixelBytes() : 0) +
+		" gpu_terrain_base_bytes=" + std::to_string(pages ? pages->baseTextureBytes() : 0) +
+		" cpu_terrain_base_pixel_bytes=" + std::to_string(pages ? pages->basePixelBytes() : 0) +
 		" gpu_backend_texture_bytes=" + std::to_string(backend.first) +
 		" gpu_backend_peak_texture_bytes=" + std::to_string(backend.second);
 }

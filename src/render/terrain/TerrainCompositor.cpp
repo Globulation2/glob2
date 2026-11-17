@@ -825,14 +825,17 @@ void Compositor::requestMapTerrain(const SceneMap& map)
 #endif
 void Compositor::prepareVisible(bool hd, int time, const SceneMap &map,
                                 int left, int top, int right, int bottom, bool nativeComposition,
-                                bool decor)
+                                bool decor, std::span<const SDL_Point> extraPages)
 {
 #ifdef __EMSCRIPTEN__
     if (hd && GAGCore::Sprite::highResolutionRequested()) requestMapTerrain(map);
 #endif
     refreshSheets();
     advanceScan(map, 65536);
-    const auto usage = visibleUsage(map, left, top, right, bottom);
+    auto usage = visibleUsage(map, left, top, right, bottom);
+    for (const auto &page : extraPages)
+        for (const auto entry : pageUsage(map, page.x & map.getMaskW(), page.y & map.getMaskH()))
+            usage[entry >> 16][entry & 0xFFFF] = 1;
     if (hd && decor) collectVisibleDecor(map, left, top, right, bottom);
     prepareSelected(hd, time, &usage, nativeComposition, decor);
     visibleDecorSet = false;
