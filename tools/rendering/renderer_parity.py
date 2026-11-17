@@ -908,8 +908,8 @@ def run_pass(args, names, renderers, output):
                           if record['status'] == 'unavailable'})
     summary = {'binary': str(binary), 'platform': platform.platform(), 'settle_frames': args.settle_frames,
                'interval_ms': args.interval_ms, 'window_size': args.window_size, 'hidpi': args.hidpi,
-               'device_tier': args.device_tier, 'hd': args.hd, 'shift': args.shift, 'max_over_8': args.max_over_8,
-               'jobs': args.jobs, 'wall_seconds': round(wall, 1), 'scenes': results, 'unavailable': unavailable,
+               'device_tier': args.device_tier, 'hd': args.hd, 'compression': args.compression, 'shift': args.shift,
+               'max_over_8': args.max_over_8, 'jobs': args.jobs, 'wall_seconds': round(wall, 1), 'scenes': results, 'unavailable': unavailable,
                'failures': failures}
     (output / 'summary.json').write_text(json.dumps(summary, indent=1) + '\n')
     (output / 'report.md').write_text(report + '\n')
