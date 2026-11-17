@@ -25,6 +25,7 @@
 #endif
 #endif
 #include <SDL3_image/SDL_image.h>
+#include <algorithm>
 #include <array>
 #include <cstring>
 #include <filesystem>
@@ -319,6 +320,89 @@ void checkHighResolutionPolicyOn(GAGCore::RendererBackend backend)
     const auto back = draw(1);
     CHECK(differing(back, native) == 0);
 }
+}
+namespace {
+// Draws the unit sheet's HD frames on a device with the phone budget until its
+// room for retained HD frames runs out, then moves to other frames: the idle
+// blocks are evicted, oldest first, so the new frames draw HD, and the evicted
+// ones reload when they are drawn again.
+void checkIdleHighResolutionEviction(GAGCore::RendererBackend backend)
+{
+    glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", "");
+    glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+    // Chosen once a process: the case runs isolated.
+    glob2test::ScopedEnvironment budget("GLOB2_RENDER_BUDGET", "mobile");
+    const std::string name(GAGCore::rendererBackendName(backend));
+    glob2test::ScopedEnvironment selection("GLOB2_RENDERER", name.c_str());
+    glob2test::ToolkitScope toolkit;
+    auto *gfx = GAGCore::Toolkit::initGraphic(64, 64, 0, "HD eviction");
+    if (gfx->backendSwitchStatus().active != backend || !gfx->renderDevice()) {
+        MESSAGE("HD eviction coverage unavailable on ", name);
+        return;
+    }
+    struct Restore {
+        std::int64_t delay = GAGCore::Sprite::highResolutionDetailDelay();
+        ~Restore() { GAGCore::Sprite::setHighResolutionDetailDelay(delay); GAGCore::Sprite::setHighResolution(false); }
+    } restore;
+    GAGCore::Sprite::setHighResolutionDetailDelay(0);
+    GAGCore::Sprite::resetHighResolutionPolicy(2);
+    GAGCore::Sprite::setHighResolution(true);
+    GAGCore::Sprite units;
+    REQUIRE(units.load("data/gfx/unit"));
+    const unsigned frames = unsigned(units.images.size()), blocks = (frames + 31) / 32;
+    REQUIRE(blocks >= 8);
+    const auto range = [&](unsigned firstBlock, unsigned lastBlock) {
+        std::vector<unsigned> indices;
+        for (unsigned i = firstBlock * 32; i < std::min(frames, lastBlock * 32); ++i)
+            if (units.images[i]) indices.push_back(i);
+        return indices;
+    };
+    const auto earlier = range(0, blocks / 2), later = range(blocks / 2, blocks);
+    const auto frame = [&](const std::vector<unsigned> &indices) {
+        GAGCore::Sprite::setHighResolutionDensity(2);
+        gfx->beginMapTransform(2, 0, 0, 0, 0, gfx->getW(), gfx->getH());
+        for (auto index : indices) gfx->drawSprite(0.f, 0.f, &units, index);
+        GAGCore::Sprite::flushBatches(gfx);
+        gfx->endMapTransform();
+        gfx->nextFrame();
+        GAGCore::Toolkit::pollAssets(4);
+        GAGCore::Sprite::pollHighResolution(4);
+    };
+    const auto counts = GAGCore::Sprite::highResolutionDrawCounts;
+    const auto resident = [&](const std::vector<unsigned> &indices) {
+        return std::count_if(indices.begin(), indices.end(), [&](unsigned i) { return units.experimentImages[i] != nullptr; });
+    };
+    // The earlier half fills the room the device keeps for HD frames.
+    const auto roomBefore = counts().room;
+    for (unsigned i = 0; i < 4000 && counts().room == roomBefore; ++i) frame(earlier);
+    REQUIRE(counts().room > roomBefore);
+    CHECK_FALSE(gfx->deviceHighResolutionRoom());
+    const auto evictedBefore = counts().evicted;
+    // While it is still being drawn, nothing goes, though new frames want room.
+    for (unsigned i = 0; i < 60; ++i) frame(later);
+    CHECK(counts().evicted == evictedBefore);
+    // Idle long enough, the earlier blocks make room for the later ones.
+    const auto drawnBefore = counts().drawn;
+    for (unsigned i = 0; i < 4000 && (counts().evicted == evictedBefore || counts().drawn == drawnBefore); ++i)
+        frame(later);
+    CHECK(counts().evicted > evictedBefore);
+    CHECK(counts().drawn > drawnBefore);
+    CHECK(resident(earlier) < std::ptrdiff_t(earlier.size()));
+    CHECK(resident(later) > 0);
+    // Drawn again, an evicted block reloads and draws HD.
+    const auto evicted = std::find_if(earlier.begin(), earlier.end(),
+        [&](unsigned i) { return units.experimentImages[i] == nullptr; });
+    REQUIRE(evicted != earlier.end());
+    const unsigned evictedFrame = *evicted;
+    for (unsigned i = 0; i < 4000 && !units.experimentImages[evictedFrame]; ++i) frame({evictedFrame});
+    CHECK(units.experimentImages[evictedFrame] != nullptr);
+}
+}
+TEST_CASE("SDL GPU evicts idle HD blocks when its room for HD frames runs out [display][isolated]") {
+    checkIdleHighResolutionEviction(GAGCore::RendererBackend::SDLGPU);
+}
+TEST_CASE("programmable GL evicts idle HD blocks when its room for HD frames runs out [display][isolated]") {
+    checkIdleHighResolutionEviction(GAGCore::RendererBackend::ProgrammableGL);
 }
 TEST_CASE("legacy GL draws native frames at density one and HD at two [display]") {
     checkHighResolutionPolicyOn(GAGCore::RendererBackend::LegacyGL);
