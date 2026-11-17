@@ -214,7 +214,8 @@ test('terrain creation workspace fits desktop and phone and submits one revision
   });
   expect(writes[2]).toMatchObject({ references: [referenceHash] });
   const directory = resolve(
-    process.env['SCREENSHOT_DIR'] ?? '../../../artifacts/terrain-studio/screenshots',
+    process.env['SCREENSHOT_DIR'] ??
+      resolve(import.meta.dirname, '../../../../../artifacts/terrain-studio/screenshots'),
   );
   mkdirSync(directory, { recursive: true });
   await page.emulateMedia({ reducedMotion: 'reduce' });

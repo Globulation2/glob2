@@ -27,6 +27,10 @@ Glob2-*.dmg
 /build-server/
 
 /artifacts/
+# Web e2e specs write under /artifacts/; these catch working-directory-relative
+# paths that would otherwise dirty the checkout and trip provenance-gated checks.
+/services/artifacts/
+/services/online/artifacts/
 
 # Local documentation and review work. Durable documentation belongs in the
 # categorized docs/ directories; generated evidence belongs in /artifacts/.
