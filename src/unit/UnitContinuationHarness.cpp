@@ -465,3 +465,37 @@ TEST_SUITE("UnitContinuation")
 	    for (int checkpoint : {0, 1, 31, 64, 127}) checkContinuation(checkpoint);
 	}
 }
+
+TEST_CASE("an explorer orbits its flag around lava instead of through it" * doctest::test_suite("UnitContinuation"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=6,.hDec=6,.clearImmobile=true,.header=true,.seed=4921});
+    // Lava fills the east side of the flag's stay range.
+    for (int y=0; y<64; ++y) for (int x=36; x<52; ++x) world.game.map.paintCell(x,y,LAVA);
+    REQUIRE(world.game.map.hasAirRoutingConstraints());
+    auto* unit=world.addUnit(EXPLORER,8,8); REQUIRE(unit);
+    auto* flag=world.addBuilding("explorationflag",32,32); REQUIRE(flag);
+    flag->unitsWorking.push_back(unit);
+    unit->subscriptionSuccess(flag,false,true,UnitJobPurpose::Explore);
+    const int fullHp=unit->hp;
+    const int range2=int(flag->unitStayRange)*flag->unitStayRange;
+    int orbitTicks=0, minX=64, maxY=0, minY=64;
+    for (int tick=0; tick<2400; ++tick)
+    {
+        world.step(1);
+        REQUIRE(unit->activity==Unit::ACT_FLAG);
+        REQUIRE(world.game.map.terrainPropertiesAt(unit->posX,unit->posY).airHealthQ8>=0);
+        if (unit->displacement==Unit::DIS_REMOVING_BLACK_AROUND)
+        {
+            ++orbitTicks;
+            CHECK(world.game.map.warpDistSquare(unit->posX,unit->posY,32,32)<=range2);
+            minX=std::min(minX,int(unit->posX)); minY=std::min(minY,int(unit->posY)); maxY=std::max(maxY,int(unit->posY));
+        }
+    }
+    CHECK(unit->hp==fullHp);
+    CHECK(unit->medical==Unit::MED_FREE);
+    // Most of the time is spent orbiting, and the loop still circles the flag on
+    // its safe side: the lava edge, four cells east, bounds it.
+    CHECK(orbitTicks>1600);
+    CHECK(minX<=28); CHECK(minY<=29); CHECK(maxY>=36);
+}
