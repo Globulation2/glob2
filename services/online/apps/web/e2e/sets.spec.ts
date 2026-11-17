@@ -1,3 +1,4 @@
+import { resolve } from 'node:path';
 import { deflateSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
 import { expect, test } from '@playwright/test';
@@ -150,7 +151,11 @@ test('custom definitions and PNG mappings survive save and reload', async ({
     ).toEqual([80, 140, 90, 255]);
     await page.getByRole('button', { name: 'Terrain', exact: true }).click();
     await preview.screenshot({
-      path: '../../../artifacts/sets/' + test.info().project.name + '-engine-preview.png',
+      path:
+        resolve(import.meta.dirname, '../../../../../artifacts/sets/') +
+        '/' +
+        test.info().project.name +
+        '-engine-preview.png',
     });
   }
   await page.getByLabel('Name', { exact: true }).fill('Edited moss');
@@ -163,7 +168,11 @@ test('custom definitions and PNG mappings survive save and reload', async ({
     ),
   ).toBeLessThanOrEqual(0);
   await page.screenshot({
-    path: '../../../artifacts/sets/' + test.info().project.name + '-workspace.png',
+    path:
+      resolve(import.meta.dirname, '../../../../../artifacts/sets/') +
+      '/' +
+      test.info().project.name +
+      '-workspace.png',
     fullPage: true,
   });
   await page.setViewportSize({ width: 320, height: 860 });
@@ -173,7 +182,11 @@ test('custom definitions and PNG mappings survive save and reload', async ({
     ),
   ).toBeLessThanOrEqual(0);
   await page.screenshot({
-    path: '../../../artifacts/sets/' + test.info().project.name + '-workspace-320.png',
+    path:
+      resolve(import.meta.dirname, '../../../../../artifacts/sets/') +
+      '/' +
+      test.info().project.name +
+      '-workspace-320.png',
     fullPage: true,
   });
 });
@@ -189,7 +202,11 @@ test('shared map credits remain available on narrow screens', async ({ page, req
   await expect(credits.getByText('Moss theme · CC-BY-4.0', { exact: true })).toBeVisible();
   await expect(credits.getByText('Fixture artist · CC-BY-4.0', { exact: false })).toBeVisible();
   await page.screenshot({
-    path: '../../../artifacts/sets/' + test.info().project.name + '-map-credits.png',
+    path:
+      resolve(import.meta.dirname, '../../../../../artifacts/sets/') +
+      '/' +
+      test.info().project.name +
+      '-map-credits.png',
     fullPage: true,
   });
   expect(
