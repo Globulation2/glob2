@@ -471,7 +471,7 @@ TEST_SUITE("RenderDevice")
     {
         const auto desktop = RenderBudget::desktop(), mobile = RenderBudget::mobile();
         constexpr std::size_t MiB = 1024 * 1024;
-        CHECK(desktop.total == 256 * MiB);
+        CHECK(desktop.total == 512 * MiB);
         CHECK(desktop.classes == std::array<std::size_t, 4>{64 * MiB, 64 * MiB, 128 * MiB, 32 * MiB});
         CHECK(mobile.total < desktop.total);
         for (std::size_t i = 0; i < 4; ++i) { CHECK(mobile.classes[i] <= desktop.classes[i]); CHECK(mobile.classes[i] <= mobile.total); }

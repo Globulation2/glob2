@@ -18,7 +18,7 @@ information only.
     python3 tools/rendering/renderer_parity.py --list-scenes
 
 A scene fails when a GPU renderer is more than --max-over-8 percent of its
-pixels (2% by default) more than 8 levels from the consensus, or when two GPU
+pixels (5% by default with HD block compression, 2% without) more than 8 levels from the consensus, or when two GPU
 renderers are that far apart. Results go to artifacts/renderer-parity/<label>/:
 index.html (every scene's contact sheet, to scroll through), <scene>.png (the
 captures side by side, heat maps against the consensus and zoomed crops of the
@@ -224,6 +224,7 @@ def scene_environment(args, name, directory, renderer):
         'GLOB2_USER_DATA_DIR': str(profile),
         'GLOB2_DEVICE_TIER': args.device_tier,
         'GLOB2_BENCH_HD': '1' if hd else '0',
+        'GLOB2_HD_BLOCK_COMPRESSION': '1' if args.compression == 'on' else '0',
         'GLOB2_MOBILE_UI': '0',
         'GLOB2_BENCH_FLAT': '1',
         'GLOB2_BENCH_MODE': '2D no clouds',
@@ -748,9 +749,17 @@ def main():
                         help='HD artwork as each scene says (default), or pinned on or off for all')
     parser.add_argument('--shift', type=int, default=1,
                         help='Pixels a difference may move and still match (default 1)')
-    parser.add_argument('--max-over-8', type=float, default=2.0,
-                        help='Bar: percent of pixels more than 8 levels from the consensus or between two GPU '
-                             'renderers (default 2.0)')
+    parser.add_argument('--max-over-8', type=float, default=5.0,
+                        help='Bar with HD block compression on: percent of pixels more than 8 levels from the '
+                             'consensus or between two GPU renderers (default 5.0)')
+    parser.add_argument('--max-over-8-uncompressed', type=float, default=2.0,
+                        help='Bar with HD block compression off (default 2.0): what the renderers must agree on '
+                             'before compression differences are allowed for')
+    parser.add_argument('--compression', choices=('both', 'on', 'off'), default='both',
+                        help='HD block compression for the drawn scenes: both (default) draws every scene with '
+                             'it off (bar --max-over-8-uncompressed) and on (bar --max-over-8) under '
+                             '<label>/off and <label>/on, and measures each renderer against itself across '
+                             'the two, so any difference beyond compression shows; on or off draws one pass')
     parser.add_argument('--shader-dir', default=os.environ.get('GLOB2_RENDERER_SHADER_DIR'),
                         help='SDL GPU / programmable GL shader directory (GLOB2_RENDERER_SHADER_DIR)')
     parser.add_argument('--glslang', help='Pinned glslangValidator: generate shaders into the output first')
@@ -779,7 +788,60 @@ def main():
     if missing:
         raise SystemExit(f'{", ".join(missing)} missing; pass --prepare to generate the standard saves '
                          '(needs a perf build of glob2)')
-    output = OUTPUT / args.label
+    if args.compression != 'both':
+        if args.compression == 'off':
+            args.max_over_8 = args.max_over_8_uncompressed
+        failures = run_pass(args, names, renderers, OUTPUT / args.label)
+        return 1 if failures else 0
+    passes = {}
+    for mode, bar in (('off', args.max_over_8_uncompressed), ('on', args.max_over_8)):
+        pass_args = argparse.Namespace(**vars(args))
+        pass_args.compression, pass_args.max_over_8 = mode, bar
+        print(f'== HD block compression {mode} (bar {bar}%)', flush=True)
+        passes[mode] = run_pass(pass_args, names, renderers, OUTPUT / args.label / mode)
+    changed = compression_report(args, names, renderers, OUTPUT / args.label)
+    failed = bool(passes['off'] or passes['on'] or changed)
+    print(f'\nHD block compression off: {"FAILED " + ", ".join(passes["off"]) if passes["off"] else "ok"}; '
+          f'on: {"FAILED " + ", ".join(passes["on"]) if passes["on"] else "ok"}; '
+          f'renderers changed beyond the bar by compression: {", ".join(changed) or "none"}')
+    return 1 if failed else 0
+
+
+def compression_report(args, names, renderers, root):
+    """Each renderer's capture with HD block compression on, against its own capture without it.
+
+    Renderers that never compress (portable SDL, software) must match themselves
+    exactly; on the others the difference is what compression alone costs.
+    Returns the renderer/scene pairs whose difference exceeds --max-over-8.
+    """
+    rows, changed = [], []
+    for name in names:
+        for renderer in renderers:
+            off, on = root / 'off' / name / f'{renderer}.png', root / 'on' / name / f'{renderer}.png'
+            if not (off.exists() and on.exists()):
+                continue
+            a = np.asarray(Image.open(off).convert('RGB'))
+            b = np.asarray(Image.open(on).convert('RGB'))
+            if a.shape != b.shape:
+                rows.append((name, renderer, None)); changed.append(f'{name}/{renderer}'); continue
+            value = metrics(difference(a, b, args.shift))
+            rows.append((name, renderer, value))
+            if value['over_8_percent'] > args.max_over_8:
+                changed.append(f'{name}/{renderer}')
+    lines = ['| scene | renderer | on vs off: % over 8 | % over 32 | mean |', '| --- | --- | --- | --- | --- |']
+    for name, renderer, value in rows:
+        lines.append(f'| {name} | {renderer} | ' + ('size differs | | |' if value is None else
+                     f'{value["over_8_percent"]} | {value["over_32_percent"]} | {value["mean"]} |'))
+    report = '\n'.join(lines)
+    (root / 'compression.md').write_text(report + '\n')
+    (root / 'compression.json').write_text(json.dumps(
+        [{'scene': n, 'renderer': r, **(v or {'size_differs': True})} for n, r, v in rows], indent=1) + '\n')
+    print('\nHD block compression on vs off, each renderer against itself:\n' + report)
+    return changed
+
+
+def run_pass(args, names, renderers, output):
+    """Draws and compares every scene once; returns the failing scene names."""
     previous, drawn = {}, {}
     if args.reanalyse:
         binary = '(reanalysed captures)'
@@ -859,8 +921,7 @@ def main():
     if failures:
         print(f'\nFAILED ({len(failures)}): ' + ', '.join(
             f'{name} ({results[name].get("outlier", "?")})' for name in failures))
-        return 1
-    return 0
+    return failures
 
 
 if __name__ == '__main__':
