@@ -472,7 +472,7 @@ TEST_SUITE("RenderDevice")
         const auto desktop = RenderBudget::desktop(), mobile = RenderBudget::mobile();
         constexpr std::size_t MiB = 1024 * 1024;
         CHECK(desktop.total == 512 * MiB);
-        CHECK(desktop.classes == std::array<std::size_t, 4>{64 * MiB, 64 * MiB, 128 * MiB, 32 * MiB});
+        CHECK(desktop.classes == std::array<std::size_t, 4>{256 * MiB, 64 * MiB, 128 * MiB, 32 * MiB});
         CHECK(mobile.total < desktop.total);
         for (std::size_t i = 0; i < 4; ++i) { CHECK(mobile.classes[i] <= desktop.classes[i]); CHECK(mobile.classes[i] <= mobile.total); }
         // The authored HD terrain block (22.4 MiB with mips), skin atlas pages
@@ -576,9 +576,13 @@ TEST_SUITE("RenderDevice")
     }
     TEST_CASE("texture categories enforce independent limits and explicit total budgets")
     {
-        auto large=surface(4096,4097); REQUIRE(large);
+        // Each class refuses a texture past its own limit and admits one under it.
         RenderResources resources; TextureDescriptor descriptor;
-        CHECK_FALSE(resources.create(large.get(),1,descriptor));
+        const auto generalLimit=platformRenderBudget().classLimit(TextureDescriptor::BudgetClass::General);
+        auto huge=surface(4096,int(generalLimit/(4*4096))+1); REQUIRE(huge);
+        CHECK_FALSE(resources.create(huge.get(),1,descriptor));
+        huge.reset();
+        auto large=surface(4096,4097); REQUIRE(large);
         descriptor.budgetClass=TextureDescriptor::BudgetClass::SkinAtlas;
         CHECK_FALSE(resources.create(large.get(),1,descriptor));
         descriptor.budgetClass=TextureDescriptor::BudgetClass::TerrainPage;

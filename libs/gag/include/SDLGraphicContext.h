@@ -1274,6 +1274,12 @@ namespace GAGCore
         //! Native, on-demand renderers release what drawing loaded. Call once
         //! a frame.
         static void setHighResolutionDensity(double screenPixelsPerLogicalPixel);
+        //! On-demand HD draws since the process started (highResolutionDrawable):
+        //! drawn in HD, or native because the frame's block had not loaded, the
+        //! frame's first draws this frame were spent, or the device had no room
+        //! left for retained HD frames (GraphicContext::deviceHighResolutionRoom).
+        struct HighResolutionDrawCounts { std::size_t drawn = 0, notLoaded = 0, firstDrawCap = 0, room = 0; };
+        static HighResolutionDrawCounts highResolutionDrawCounts();
         //! Levels the current band leaves out: 0 for full detail, up to 2.
         static unsigned highResolutionDetailSkip();
         //! How long the view must want less detail before the band drops (tests shorten it).

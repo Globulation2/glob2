@@ -19,7 +19,10 @@ constexpr std::size_t MiB = 1024 * 1024;
 // Desktop GPUs hold gigabytes. At a 2x display density a game holds 200 to
 // 230 MiB (HD sprites, direct terrain, staging), and the direct pass grows its
 // art atlas to 4096 (64 MiB, twice while it fills) only within this total.
-RenderBudget RenderBudget::desktop() { return {512 * MiB, {64 * MiB, 64 * MiB, 128 * MiB, 32 * MiB}, 64 * MiB}; }
+// General keeps every HD unit animation resident: on-demand devices retain
+// uploaded HD frames within 3/8 of the class (deviceHighResolutionRoom), and
+// the 3,680 HD unit frames take about 77 MiB block-compressed with mips.
+RenderBudget RenderBudget::desktop() { return {512 * MiB, {256 * MiB, 64 * MiB, 128 * MiB, 32 * MiB}, 64 * MiB}; }
 // Phones share one memory pool between the CPU and GPU, and Android starts
 // killing a backgrounded game long before desktop limits. Each class keeps at
 // least twice its largest single texture: the 22.4 MiB authored HD terrain
