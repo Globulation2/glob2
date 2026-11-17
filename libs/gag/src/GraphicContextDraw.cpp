@@ -363,16 +363,6 @@ namespace GAGCore
 #endif
     }
 
-	// GL rasterises lines at a width in the target's pixels, which the viewport
-	// transform does not scale the way it scales filled geometry.
-	void GraphicContext::setScaledLineWidth(float width)
-	{
-		if (renderBatch)
-			renderBatch->barrier();
-		#ifdef HAVE_OPENGL
-		glLineWidth(width * rasterScale() * mapScale);
-		#endif
-	}
 
 	void GraphicContext::setClipRect(int x, int y, int w, int h)
 	{
@@ -479,56 +469,23 @@ namespace GAGCore
 
 	void GraphicContext::drawRect(float x, float y, float w, float h, const Color& color)
 	{
-		if (renderBatch && renderBatch->active())
+		// The outline is the rectangle's own edge pixels, one logical unit
+		// wide, on every accelerated renderer: four fills that do not overlap,
+		// so a translucent outline blends once. Lines centred on the edges
+		// would straddle the pixels outside the rectangle as well.
+		if (renderer || (optionFlags & GraphicContext::USEGPU))
 		{
-			std::array<QueueVertex, 8> v{};
-			float xx[8] = {x, x + w, x + w, x + w, x + w, x, x, x},
-				  yy[8] = {y, y, y, y + h, y + h, y + h, y + h, y};
-			for (int i = 0; i < 8; ++i)
+			if (w <= 0 || h <= 0) return;
+			drawFilledRect(x, y, w, 1.0f, color);
+			if (h > 1) drawFilledRect(x, y + h - 1, w, 1.0f, color);
+			if (h > 2)
 			{
-				v[i].x = xx[i];
-				v[i].y = yy[i];
-				v[i].color = color;
+				drawFilledRect(x, y + 1, 1.0f, h - 2, color);
+				if (w > 1) drawFilledRect(x + w - 1, y + 1, 1.0f, h - 2, color);
 			}
-			renderBatch->append(
-				{QueueKey::Outline, 0, 0, false, false, true, rasterScale() * mapScale}, v, 8);
 			return;
 		}
-
-		if (renderer) prepareDraw();
-        if (renderer) {
-            if (w <= 0 || h <= 0) return;
-            drawFilledRect(x,y,w,1.0f,color);
-            if (h > 1) drawFilledRect(x,y+h-1,w,1.0f,color);
-            if (h > 2) { drawFilledRect(x,y+1,1.0f,h-2,color); if(w > 1) drawFilledRect(x+w-1,y+1,1.0f,h-2,color); }
-            return;
-        }
-		#ifdef HAVE_OPENGL
-		if (optionFlags & GraphicContext::USEGPU)
-		{
-			if (rectangleBatch.owns(this)) rectangleBatch.flush();
-			// state change
-			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glState.doBlend(true);
-			glState.doTexture(false);
-			setScaledLineWidth(1.0f);
-
-			// draw
-			++drawCalls;
-			if (color.a < 255)
-				glColor4ub(color.r, color.g, color.b, color.a);
-			else
-				glColor3ub(color.r, color.g, color.b);
-			glBegin(GL_LINES);
-			glVertex2f(x, y);     glVertex2f(x+w, y);
-			glVertex2f(x+w, y);   glVertex2f(x+w, y+h);
-			glVertex2f(x+w, y+h); glVertex2f(x, y+h);
-			glVertex2f(x, y+h);   glVertex2f(x, y);
-			glEnd();
-		}
-		else
-		#endif
-			DrawableSurface::drawRect(static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h), color);
+		DrawableSurface::drawRect(static_cast<int>(x), static_cast<int>(y), static_cast<int>(w), static_cast<int>(h), color);
 	}
 
 
@@ -643,41 +600,18 @@ namespace GAGCore
 			glState.doBlend(true);
 			glState.doTexture(false);
 
-			// Drivers only antialias 1 px lines, so a scaled line is built from
-			// several 1 px smooth lines spread across the scaled thickness.
-			const float scale = rasterScale();
-			const int passes = std::max(1, static_cast<int>(std::ceil(scale)));
-			float nx = 0.0f, ny = 0.0f;
-			if (passes > 1)
-			{
-				const float ddx = x2 - x1, ddy = y2 - y1;
-				const float len = std::sqrt(ddx * ddx + ddy * ddy);
-				if (len > 0.0f)
-				{
-					nx = -ddy / len;
-					ny = ddx / len;
-				}
-			}
-			glLineWidth(1.0f);
-
-			// draw
+			// The quad every other accelerated renderer draws: one logical unit
+			// wide, centred on the segment, without line smoothing. GL_LINES
+			// rasterise by the driver's own rules (smoothed here, dotted
+			// diagonals on Apple's GL) and at the target's pixel width.
+			const float dx = x2 - x1, dy = y2 - y1, length = std::hypot(dx, dy);
+			if (length == 0) { drawPixel(x1, y1, color); return; }
+			const float nx = -dy / (2 * length), ny = dx / (2 * length);
 			++drawCalls;
-			if (color.a < 255)
-			{
-				// the passes overlap, so each carries the alpha that composes back to the requested one
-				const float a = 1.0f - std::pow(1.0f - color.a / 255.0f, 1.0f / passes);
-				glColor4ub(color.r, color.g, color.b, static_cast<Uint8>(a * 255.0f + 0.5f));
-			}
-			else
-				glColor3ub(color.r, color.g, color.b);
-			glBegin(GL_LINES);
-			for (int i = 0; i < passes; ++i)
-			{
-				// offsets in target pixels from -(scale-1)/2 to +(scale-1)/2, mapped back to logical units
-				const float off = passes > 1 ? ((scale - 1.0f) * (static_cast<float>(i) / (passes - 1) - 0.5f)) / scale : 0.0f;
-				glVertex2f(x1 + nx * off, y1 + ny * off);
-				glVertex2f(x2 + nx * off, y2 + ny * off);
-			}
+			glColor4ub(color.r, color.g, color.b, color.a);
+			glBegin(GL_TRIANGLES);
+			glVertex2f(x1 + nx, y1 + ny); glVertex2f(x2 + nx, y2 + ny); glVertex2f(x2 - nx, y2 - ny);
+			glVertex2f(x1 + nx, y1 + ny); glVertex2f(x2 - nx, y2 - ny); glVertex2f(x1 - nx, y1 - ny);
 			glEnd();
 		}
 		else
@@ -717,30 +651,15 @@ namespace GAGCore
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 		{
-			glState.doBlend(true);
-			glState.doTexture(false);
-			setScaledLineWidth(2.0f);
-
-			double tot = radius;
-			double fx = x;
-			double fy = y;
-			double fray = radius;
-
-			++drawCalls;
-			if (color.a < 255)
-				glColor4ub(color.r, color.g, color.b, color.a);
-			else
-				glColor3ub(color.r, color.g, color.b);
-			glBegin(GL_LINES);
-			for (int i=0; i<tot; i++)
+			// The segments every other accelerated renderer draws.
+			if (radius <= 0) return;
+			const int segments = std::max(12, int(std::ceil(radius * 2)));
+			for (int i = 0; i < segments; ++i)
 			{
-				double angle0 = (2*M_PI*(double)i)/((double)tot);
-				double angle1 = (2*M_PI*(double)(i+1))/((double)tot);
-				glVertex2f(fx+fray*sin(angle0), fy+fray*cos(angle0));
-				glVertex2f(fx+fray*sin(angle1), fy+fray*cos(angle1));
+				const float a = 2 * M_PI * i / segments, b = 2 * M_PI * (i + 1) / segments;
+				drawLine(x + radius * std::cos(a), y + radius * std::sin(a), x + radius * std::cos(b),
+						 y + radius * std::sin(b), color);
 			}
-			glEnd();
-			setScaledLineWidth(1.0f);
 		}
 		else
 		#endif

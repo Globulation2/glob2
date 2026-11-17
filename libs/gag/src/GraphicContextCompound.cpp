@@ -581,8 +581,12 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 			// sprites and atlas frames. A symmetric inset crosses texel boundaries
 			// in opposite directions depending on floating-point atlas offsets.
 			// sqrt(2)/1000 texels avoids alignment with common fractional HiDPI scales.
-			const float biasX = 0.00141421356f * surface->texMultX;
-			const float biasY = 0.00141421356f * surface->texMultY;
+			// The bias is toward the lower texel, the one the render devices and
+			// the portable renderer take: at half zoom every pixel centre falls on
+			// a texel boundary, and the upper texel drew a native resource sprite
+			// at a different per-cell pattern from theirs.
+			const float biasX = -0.00141421356f * surface->texMultX;
+			const float biasY = -0.00141421356f * surface->texMultY;
 			const float u0 = static_cast<float>(sx) * surface->texMultX + biasX;
 			const float u1 = static_cast<float>(sx + sw) * surface->texMultX + biasX;
 			const float v0 = static_cast<float>(sy) * surface->texMultY + biasY;

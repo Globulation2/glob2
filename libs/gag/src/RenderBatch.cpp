@@ -2,6 +2,7 @@
 #include "GraphicContextPrivate.h"
 #include <RenderBatch.h>
 #include <MapGeometryCache.h>
+#include <array>
 #include <algorithm>
 #include <cmath>
 #include <cassert>
@@ -56,7 +57,17 @@ struct RenderBatch::State
 	float pixelWorld = 1, margin = .5;
 	Bounds clip{};
 	unsigned queueProgram = 0, arrayUnitProgram = 0, arrayPlainProgram = 0;
-	int queueHasBase = -1, queueHasTeam = -1, arrayHasBase = -1, arrayHasTeam = -1;
+	int queueHasBase = -1, queueHasTeam = -1, arrayHasBase = -1, arrayHasTeam = -1, arrayPlainTexel = -1;
+	// Per array page: one texel's size in texture coordinates, and whether the
+	// plain program filters it itself (a single linearly sampled level).
+	std::unordered_map<unsigned, std::array<float, 3>> pageTexel;
+	void plainTexel(unsigned texture) const
+	{
+		const auto found = pageTexel.find(texture);
+		const std::array<float, 3> none{1, 1, 0};
+		const auto &texel = found == pageTexel.end() ? none : found->second;
+		glUniform3f(arrayPlainTexel, texel[0], texel[1], texel[2]);
+	}
 	using ArrayDescriptor = std::tuple<int, int, int, int, int, int, int, int>;
 	struct Page
 	{
@@ -110,6 +121,8 @@ struct RenderBatch::State
 				glActiveTexture(GL_TEXTURE1);
 				glBindTexture(GL_TEXTURE_2D_ARRAY_EXT, k.team);
 				glActiveTexture(GL_TEXTURE0);
+				if (k.kind == QueueKey::ArrayTexture)
+					plainTexel(k.base);
 				if (k.kind == QueueKey::ArrayTeamSprite)
 				{
 					if (hasBase != k.hasBase)
@@ -500,6 +513,8 @@ ArrayView RenderBatch::pack(unsigned texture)
 					return fallback();
 				}
 				pages.push_back({tex, 0, bytes, layers});
+				s.pageTexel[tex] = {1.f / w, 1.f / h,
+					maxLevel == 0 && magFilter == GL_LINEAR && minFilter != GL_NEAREST ? 1.f : 0.f};
 				s.bytes += bytes;
 				++GAGCore::glState.allocatedTextureCount;
 				GAGCore::glState.allocatedTextureBytes += bytes;
@@ -618,11 +633,23 @@ void RenderBatch::configure(unsigned p, int b, int t, const char *vertex, const 
 	replaceAll(fs, "texture2D(uBase, vBaseUV)", "texture2DArray(uBase, vec3(vBaseUV,vLayers.x))");
 	replaceAll(fs, "texture2D(uTeam, vTeamUV)", "texture2DArray(uTeam, vec3(vTeamUV,vLayers.y))");
 	s.arrayUnitProgram = makeProgram(vs, fs);
+	// A page holding one linearly sampled level (an HD sprite frame's band)
+	// filters its four texels here in premultiplied colour, as the render
+	// devices and the portable renderer filter their premultiplied textures,
+	// then un-premultiplies for this pass's straight-alpha blending. Hardware
+	// filtering of straight alpha blends the colour of transparent texels
+	// (mostly black in the artwork) into every edge, darkening it.
 	s.arrayPlainProgram = makeProgram(
 		vs,
 		"#version 120\n#extension GL_EXT_texture_array : require\nuniform sampler2DArray "
-		"uBase;varying vec2 vBaseUV;varying vec2 vLayers;varying vec2 vHueAlpha;void main(){vec4 "
-		"c=texture2DArray(uBase,vec3(vBaseUV,vLayers.x));gl_FragColor=vec4(c.rgb,c.a*vHueAlpha.y);"
+		"uBase;uniform vec3 uTexel;varying vec2 vBaseUV;varying vec2 vLayers;varying vec2 vHueAlpha;"
+		"vec4 premultiplied(vec2 uv){vec4 t=texture2DArray(uBase,vec3(uv,vLayers.x));return vec4(t.rgb*t.a,t.a);}"
+		"void main(){vec4 c;if(uTexel.z>0.5){vec2 p=vBaseUV/uTexel.xy-0.5;vec2 f=fract(p);"
+		"vec2 o=(floor(p)+0.5)*uTexel.xy;"
+		"vec4 m=mix(mix(premultiplied(o),premultiplied(o+vec2(uTexel.x,0.0)),f.x),"
+		"mix(premultiplied(o+vec2(0.0,uTexel.y)),premultiplied(o+uTexel.xy),f.x),f.y);"
+		"c=vec4(m.a>0.0?m.rgb/m.a:vec3(0.0),m.a);}"
+		"else c=texture2DArray(uBase,vec3(vBaseUV,vLayers.x));gl_FragColor=vec4(c.rgb,c.a*vHueAlpha.y);"
 		"}");
 	if (!s.arrayUnitProgram || !s.arrayPlainProgram)
 	{
@@ -634,6 +661,7 @@ void RenderBatch::configure(unsigned p, int b, int t, const char *vertex, const 
 		return;
 	}
 	s.arrayHasBase = glGetUniformLocation(s.arrayUnitProgram, "uHasBase");
+	s.arrayPlainTexel = glGetUniformLocation(s.arrayPlainProgram, "uTexel");
 	s.arrayHasTeam = glGetUniformLocation(s.arrayUnitProgram, "uHasTeam");
 }
 void RenderBatch::beginFrame()
@@ -812,7 +840,10 @@ void RenderBatch::bind(const QueueKey &k)
 	glState.doTexture(k.kind == QueueKey::Texture);
 	glUseProgram(k.kind == QueueKey::ArrayTexture ? s.arrayPlainProgram : 0);
 	if (k.kind == QueueKey::ArrayTexture)
+	{
 		glBindTexture(GL_TEXTURE_2D_ARRAY_EXT, k.base);
+		s.plainTexel(k.base);
+	}
 	else
 		glState.setTexture(k.base);
 }
