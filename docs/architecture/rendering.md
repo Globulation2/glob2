@@ -1283,8 +1283,11 @@ texture (the 22.4 MiB authored HD terrain block, 16 MiB skin atlas pages, sixtee
 downsampled 1024x1024 terrain pages), since a class limit is also the largest
 texture it admits; GPU terrain composition falls back to CPU pages when the view's
 pages exceed the TerrainPage class. `GLOB2_RENDER_BUDGET=mobile` (or `desktop`)
-overrides the choice to measure one platform's budget on another; WebGPU keeps
-its own limits.
+overrides the choice to measure one platform's budget on another, and
+`GLOB2_RENDER_BUDGET_TOTAL_MIB` replaces the total alone (the class limits stay),
+for tests and memory experiments that need the combined limit to bind: the
+desktop classes add up to 288 MiB, so nothing but depth and transient work fills
+its 512 MiB. WebGPU keeps its own limits.
 
 `SDL_EVENT_LOW_MEMORY` and backgrounding (`SDL_EVENT_WILL_ENTER_BACKGROUND`,
 `SDL_EVENT_DID_ENTER_BACKGROUND`) call `GraphicContext::trimPresentationMemory`,

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include "DirectTerrainReadbackFixture.h"
+#include "ScopedEnvironment.h"
 #include <cstring>
 #include <SDLGPUDevice.h>
 #include <RenderBackend.h>
@@ -859,7 +860,7 @@ TEST_SUITE("SDLGPUDevice")
             DrawPacket depth;depth.kind=DrawPacket::Kind::Clear;depth.target=pages[i];depth.clearDepth=true;frame.packets.push_back(depth);
             auto paint=fill({0,0,2048,2048},{Uint8(40+i*30),0,0,255});paint.target=pages[i];frame.packets.push_back(paint);
         }
-        REQUIRE(gpu->submit(frame));gpu->present();CHECK(gpu->telemetry().resourceBytes<=256*1024*1024);
+        REQUIRE(gpu->submit(frame));gpu->present();CHECK(gpu->telemetry().resourceBytes<=platformRenderBudget().total);
         for(std::size_t i=0;i<pages.size();++i) {
             CaptureRequest request;request.identity=1;request.target=pages[i];request.pixelRegion=SDL_Rect{1000,1000,1,1};
             Surface captured(gpu->captureSynchronously(request),SDL_DestroySurface);REQUIRE(captured);
@@ -869,6 +870,11 @@ TEST_SUITE("SDLGPUDevice")
     GLOB2_TEST_CASE("Vulkan four depth atlases coexist with full4096 authored terrain mip uploads", "[display][isolated]")
     {
         const char *shaders=std::getenv("GLOB2_TEST_SHADER_DIRECTORY");if(!shaders)return;
+        // Four 2048 depth atlases and a 4096 mip chain overflow a 256 MiB total,
+        // so the chain uploads in bounded slices. The desktop total is larger and
+        // its classes cannot fill it, so this isolated case sets the total itself.
+        glob2test::ScopedEnvironment total("GLOB2_RENDER_BUDGET_TOTAL_MIB","256");
+        REQUIRE(platformRenderBudget().total==256u*1024*1024);
         Video video;auto gpu=makeSDLGPUDevice(nullptr,16,16,shaders);RenderResources resources;
         auto atlas=surface(2048,2048);REQUIRE(atlas);REQUIRE(SDL_FillSurfaceRect(atlas.get(),nullptr,0));
         TextureDescriptor atlasDescriptor;atlasDescriptor.alpha=TextureDescriptor::Alpha::Premultiplied;
@@ -898,7 +904,7 @@ TEST_SUITE("SDLGPUDevice")
         bool accepted=false;unsigned deferred=0;std::size_t peak=0;const auto uploadsBefore=gpu->telemetry().uploadBytes;
         for(unsigned attempt=0;attempt<1000 && !accepted;++attempt) {
             try {accepted=bool(gpu->submit(frame));} catch(const RenderAdmissionDeferred &) {++deferred;gpu->discardFrame();}
-            peak=std::max(peak,gpu->telemetry().resourceBytes);CHECK(peak<=256*1024*1024);
+            peak=std::max(peak,gpu->telemetry().resourceBytes);CHECK(peak<=platformRenderBudget().total);
             if(!accepted)SDL_Delay(1); // Test polling only; production upload must never wait.
         }
         INFO("Deferred upload attempts: ",deferred);REQUIRE(accepted);CHECK(deferred>0);gpu->present();
@@ -922,7 +928,7 @@ TEST_SUITE("SDLGPUDevice")
         packet=blit(terrain,{0,0,16,16});packet.linear=true;frame.packets.push_back(packet);accepted=false;deferred=0;peak=0;
         for(unsigned attempt=0;attempt<1000 && !accepted;++attempt) {
             try {accepted=bool(gpu->submit(frame));}catch(const RenderAdmissionDeferred &){++deferred;gpu->discardFrame();}
-            peak=std::max(peak,gpu->telemetry().resourceBytes);CHECK(peak<=256*1024*1024);if(!accepted)SDL_Delay(1);
+            peak=std::max(peak,gpu->telemetry().resourceBytes);CHECK(peak<=platformRenderBudget().total);if(!accepted)SDL_Delay(1);
         }
         INFO("Cold combined deferred attempts: ",deferred);REQUIRE(accepted);gpu->present();
         MESSAGE("Cold combined upload deferred attempts=",deferred," peak bytes=",peak);
@@ -942,14 +948,14 @@ TEST_SUITE("SDLGPUDevice")
         auto generalTexture=resources.snapshot(resources.create(general.get(),1));
         DrawPacket clear; clear.kind=DrawPacket::Kind::Clear; clear.target=atlasTexture; clear.clearColor=clear.clearDepth=true; clear.clearValue={0,0,1,1};
         RenderFrame frame; frame.identity=1; frame.logicalWidth=32; frame.logicalHeight=24; frame.packets={clear,blit(generalTexture,{0,0,32,24})};
-        REQUIRE(gpu->submit(frame)); CHECK(gpu->telemetry().resourceBytes<=256*1024*1024);
+        REQUIRE(gpu->submit(frame)); CHECK(gpu->telemetry().resourceBytes<=platformRenderBudget().total);
         CaptureRequest request; request.identity=1; request.target=atlasTexture; request.pixelRegion=SDL_Rect{4000,4000,1,1};
         Surface captured(gpu->captureSynchronously(request),SDL_DestroySurface); REQUIRE(captured); CHECK(pixel(captured.get(),0,0).b==255);
         // Bypass the registry's same class guard to test independent device admission.
         auto overflow=std::make_shared<TextureRevision>(*resources.snapshot(resources.create(extra.get(),1)));
         overflow->descriptor.budgetClass=TextureDescriptor::BudgetClass::SkinAtlas;
         frame.packets={blit(overflow,{0,0,1,1})};
-        CHECK_THROWS_AS(gpu->submit(frame),RenderAdmissionDeferred); CHECK(gpu->telemetry().resourceBytes<=256*1024*1024);
+        CHECK_THROWS_AS(gpu->submit(frame),RenderAdmissionDeferred); CHECK(gpu->telemetry().resourceBytes<=platformRenderBudget().total);
         request.target={}; request.pixelRegion={}; captured.reset(gpu->captureSynchronously(request)); REQUIRE(captured); CHECK(pixel(captured.get(),12,12).g==255);
     }
 
@@ -1022,7 +1028,7 @@ TEST_SUITE("SDLGPUDevice")
             }
             resources.erase(target->handle);
         }
-        CHECK(gpu->telemetry().resourceBytes<=256*1024*1024);
+        CHECK(gpu->telemetry().resourceBytes<=platformRenderBudget().total);
     }
 
     GLOB2_TEST_CASE("Vulkan uploads authored mip levels and samples trilinear without generation", "[display][isolated]")

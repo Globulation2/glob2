@@ -29,16 +29,22 @@ RenderBudget RenderBudget::mobile() { return {160 * MiB, {48 * MiB, 32 * MiB, 64
 const RenderBudget &platformRenderBudget()
 {
     static const RenderBudget chosen = [] {
+        RenderBudget budget =
+#if defined(GLOB2_MOBILE) || defined(__ANDROID__)
+            RenderBudget::mobile();
+#else
+            RenderBudget::desktop();
+#endif
         if (const char *value = std::getenv("GLOB2_RENDER_BUDGET")) {
             const std::string_view name(value);
-            if (name == "mobile") return RenderBudget::mobile();
-            if (name == "desktop") return RenderBudget::desktop();
+            if (name == "mobile") budget = RenderBudget::mobile();
+            if (name == "desktop") budget = RenderBudget::desktop();
         }
-#if defined(GLOB2_MOBILE) || defined(__ANDROID__)
-        return RenderBudget::mobile();
-#else
-        return RenderBudget::desktop();
-#endif
+        // GLOB2_RENDER_BUDGET_TOTAL_MIB replaces the total alone, for tests
+        // and memory experiments that need the combined limit to bind.
+        if (const char *total = std::getenv("GLOB2_RENDER_BUDGET_TOTAL_MIB"))
+            if (const long mib = std::strtol(total, nullptr, 10); mib > 0) budget.total = std::size_t(mib) * MiB;
+        return budget;
     }();
     return chosen;
 }
