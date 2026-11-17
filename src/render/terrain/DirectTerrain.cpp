@@ -28,6 +28,7 @@
 #include <PresentationWork.h>
 #include <DirectTerrainShader.h>
 #include <RenderDevice.h>
+#include <RenderResources.h>
 #include <SDL3/SDL.h>
 #include <algorithm>
 #include <array>
@@ -48,6 +49,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <tuple>
 
 namespace
 {
@@ -164,9 +166,12 @@ struct DirectTerrain::State
     // Vertex terrain the tables describe, to find what an edit changed.
     std::vector<Uint32> vertices;
     // Both atlases start at 2048 and grow once to 4096 when a view needs more
-    // tiles at its density, rather than drawing coarser. Devices stay at 2048,
-    // within their texture budgets: a view that needs more takes coarser tiles.
-    int maxAtlasSize = 4096;
+    // tiles at its density, rather than drawing coarser. Devices keep the mask
+    // atlas at 2048, within their texture budgets, and grow the art atlas
+    // only under the desktop budget and while the device has room for it.
+    int maxAtlasSize = 4096, maxArtAtlasSize = 4096;
+    // The last art admission logged (DIRECT_TERRAIN_ADMISSION), to log changes only.
+    std::tuple<int, int, int, const char *> admission{};
     struct Animation {
         int size = 2048;
         // Static variants take one tile rather than a pair
@@ -1224,7 +1229,16 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
         state->assets = assets;
         state->registry = registry;
         state->streaming = streaming;
-        if (streaming) state->maxAtlasSize = 2048;
+        if (streaming)
+        {
+            state->maxAtlasSize = 2048;
+            // The art atlas grows as Legacy GL's does, so a view draws its
+            // variants at the same density on every desktop renderer (see
+            // prepare). A mobile budget, or a device without 4096 textures,
+            // keeps it at 2048.
+            state->maxArtAtlasSize = capabilities.maximumTextureSize >= 4096 &&
+                GAGCore::platformRenderBudget().total >= GAGCore::RenderBudget::desktop().total ? 4096 : 2048;
+        }
     }
     if (state->failed)
         return false;
@@ -1437,10 +1451,41 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
     int wantedSize = out.size;
     if (out.size > SmallAtlasSize && out.pixels != pixels && tilesWanted * 2 <= tilesAt(SmallAtlasSize))
         wantedSize = SmallAtlasSize;
-    if (wantedSize < state->maxAtlasSize && tilesWanted > tilesAt(wantedSize))
-        wantedSize = state->maxAtlasSize;
+    const int densityPixels = pixels;
+    const char *coarser = "";
+    if (wantedSize < state->maxArtAtlasSize && tilesWanted > tilesAt(wantedSize))
+    {
+        // A device charges the new atlas to its combined budget beside the one
+        // still drawing; grow only while that leaves the budget a margin.
+        const auto *device = gfx.renderDevice();
+        const std::size_t grown = std::size_t(state->maxArtAtlasSize) * state->maxArtAtlasSize * sizeof(Pixel);
+        const std::size_t resident = state->streaming && device ? device->telemetry().resourceBytes : 0;
+        const std::size_t total = GAGCore::platformRenderBudget().total;
+        // An atlas already growing (filled over frames in nextArt) is counted
+        // in `resident`: keep growing it rather than drop it half filled.
+        const bool growing = state->nextArt.size == state->maxArtAtlasSize;
+        if (!state->streaming || growing || resident + 2 * grown + total / 8 <= total)
+            wantedSize = state->maxArtAtlasSize;
+        else
+            coarser = "device budget";
+    }
     while (pixels > 8 && tilesWanted > tilesAt(wantedSize))
+    {
         pixels /= 2;
+        if (!*coarser) coarser = wantedSize < state->maxArtAtlasSize ? "atlas size" : "atlas full";
+    }
+    // One line whenever the view's art admission (atlas, tile density or the
+    // reason it is coarser than the display wants) changes, so a renderer
+    // that draws coarser terrain than another says why.
+    const std::tuple<int, int, int, const char *> admission{wantedSize, densityPixels, pixels, coarser};
+    if (admission != state->admission)
+    {
+        state->admission = admission;
+        std::fprintf(stderr, "DIRECT_TERRAIN_ADMISSION renderer=%s atlas=%d wanted_tile=%d tile=%d tiles=%zu "
+                     "capacity=%zu max_atlas=%d coarser=%s\n",
+                     state->streaming ? "device" : "legacy-gl", wantedSize, densityPixels, pixels, tilesWanted,
+                     tilesAt(wantedSize), state->maxArtAtlasSize, *coarser ? coarser : "-");
+    }
     // An interactive view whose atlas already draws builds the new one in
     // `nextArt` over several frames and keeps drawing the old one meanwhile;
     // a complete draw, or a view with nothing yet, rebuilds it at once.
