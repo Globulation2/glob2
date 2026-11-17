@@ -311,7 +311,11 @@ the render loop blocks on them: a view without that load, or one whose device
 lost its streamed textures, builds the tables in 3 ms slices and the base on the
 mask workers (ahead of the view's masks, with 2 ms of recipes a frame), and
 draws the overview, with its always-resident whole-map base beneath, until every
-base mask is back. Workers take base jobs (cells an edit invalidated) ahead of
+base mask is back. A complete draw (a capture, the editor) at the base's density
+or below builds the base first and draws from it alone; one finer than the base,
+such as a torus capture's own view, builds its visible masks at its density and
+not a whole-map base it would never sample, unless its cells overflow the mask
+atlas. Workers take base jobs (cells an edit invalidated) ahead of
 the view's masks. View masks queue 64 per worker, nearest the view centre first,
 and upload within a few milliseconds a frame (at most 16 MiB) rather than a fixed
 count. When the device loses a streamed texture (a reset, or staging that stays
