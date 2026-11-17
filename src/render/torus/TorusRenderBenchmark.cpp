@@ -104,6 +104,16 @@ class TorusRenderBenchmark
             camera.event = "zoom_out";
         if (t >= 360 && t < 420 && (t - 360) % 10 == 0)
             camera.event = "zoom_in";
+        // GLOB2_BENCH_RAPID_ZOOM=N: a player spinning the wheel, one step every
+        // N frames, out to six steps and back without pause, over the zoom window.
+        static const int rapid = std::getenv("GLOB2_BENCH_RAPID_ZOOM") ? std::atoi(std::getenv("GLOB2_BENCH_RAPID_ZOOM")) : 0;
+        if (rapid > 0 && t >= 240 && t < 420)
+        {
+            static const int depth = std::getenv("GLOB2_BENCH_RAPID_DEPTH") ? std::atoi(std::getenv("GLOB2_BENCH_RAPID_DEPTH")) : 6;
+            const int step = (t - 240) / rapid, phase = step % (2 * depth);
+            steps = phase <= depth ? phase : 2 * depth - phase;
+            camera.event = (t - 240) % rapid ? nullptr : phase < depth ? "zoom_out" : "zoom_in";
+        }
         // Wheel steps keep the view's centre where it was.
         const double scale = std::pow(0.7, steps);
         camera.zoom = zoom * scale;
@@ -699,6 +709,9 @@ static int run(int argc, char **argv)
                         std::printf("FRAME_DIRECT_TERRAIN frame=%d draws=%u texture_bytes=%zu uploaded_bytes=%zu split_cells=%zu base_pending=%zu restarts=%u\n",
                             i, direct->draws(), direct->textureBytes(), direct->uploadBytes(), direct->splitCells(),
                             direct->pendingBaseMasks(), direct->restartCount());
+                        const auto art = direct->artMetrics();
+                        std::printf("FRAME_DIRECT_ART frame=%d visible=%zu absent=%zu stale=%zu low_art_bytes=%zu\n",
+                            i, art.visible, art.absent, art.stale, art.lowArtBytes);
                         const auto fog = direct->discoveryMetrics();
                         std::printf("FRAME_DIRECT_DISCOVERY frame=%d rebuilt_cells=%zu\n",
                             i, fog.rebuilt);
@@ -884,6 +897,11 @@ static int run(int argc, char **argv)
                         crossedDiscovery = true;
                     }
                     Uint32 frameOptions = options;
+                    // GLOB2_BENCH_COMPLETE_TERRAIN: every frame finishes its terrain
+                    // first (as captures do), the reference a moving view is
+                    // compared with (tools/rendering/motion_parity.py).
+                    static const bool completeTerrain = std::getenv("GLOB2_BENCH_COMPLETE_TERRAIN");
+                    if (completeTerrain) frameOptions |= Game::DRAW_COMPLETE_TERRAIN;
                     if (const auto *terrainSwitch = std::getenv("GLOB2_BENCH_TERRAIN_SWITCH"))
                     {
                         const bool switchToHD = std::string_view(terrainSwitch) == "hd";

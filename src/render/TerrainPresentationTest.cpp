@@ -1826,6 +1826,168 @@ TEST_SUITE("TerrainPresentation")
 		checkStreamedDirectTerrain(GAGCore::RendererBackend::ProgrammableGL);
 	}
 
+	// One direct terrain frame over the whole 640x480 screen, as RGBA rows top
+	// down, or nothing when the pass drew nothing this frame.
+	std::vector<Uint8> directTerrainFrame(GAGCore::GraphicContext &gfx, DirectTerrain &atlas, const SceneMap &scene,
+										  Uint32 teams, float zoom, int right, int bottom, bool complete)
+	{
+		const bool legacy = gfx.isLegacyGLScreen();
+		gfx.setClipRect();
+		gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
+		gfx.beginMapTransform(zoom, 0, 0, 0, 0, 640, 480);
+		const bool ready = atlas.prepare(gfx, scene, 0, 0, right, bottom, 0, 0, teams, true, 0, complete);
+		if (ready) atlas.drawPrepared(gfx, 0, 0, true, 0);
+		gfx.endMapTransform();
+		// Captures run at the display's pixel density (twice 640x480 on a
+		// Retina display); one sample per logical pixel keeps every check in
+		// logical pixels.
+		std::vector<Uint8> rows(std::size_t(640) * 480 * 4);
+		const auto sample = [&](const Uint8 *pixels, int width, int height, std::size_t pitch, bool bottomUp)
+		{
+			REQUIRE(width * 480 == height * 640);
+			const int scale = width / 640;
+			for (int y = 0; y < 480; ++y)
+			{
+				const int source = bottomUp ? height - 1 - y * scale : y * scale;
+				for (int x = 0; x < 640; ++x)
+					std::memcpy(rows.data() + (std::size_t(y) * 640 + x) * 4, pixels + source * pitch + std::size_t(x) * scale * 4, 4);
+			}
+		};
+		if (legacy)
+		{
+			if (!ready) return {};
+			const auto pixels = terrainPixels(true);
+			GLint viewport[4];
+			glGetIntegerv(GL_VIEWPORT, viewport);
+			// glReadPixels rows run bottom-up.
+			sample(pixels.data(), viewport[2], viewport[3], std::size_t(viewport[2]) * 4, true);
+			return rows;
+		}
+		gfx.renderer->flush();
+		const bool drawn = ready && GAGCore::didRecordDeviceFrame(*gfx.renderer);
+		if (drawn)
+		{
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> captured(gfx.renderer->capture(), SDL_DestroySurface);
+			REQUIRE(captured);
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
+				SDL_ConvertSurface(captured.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+			REQUIRE(rgba);
+			sample(static_cast<const Uint8 *>(rgba->pixels), rgba->w, rgba->h, std::size_t(rgba->pitch), false);
+		}
+		gfx.nextFrame();
+		return drawn ? rows : std::vector<Uint8>{};
+	}
+
+	// A fast zoom out changes the art density, and the art atlas refills at the
+	// new one over several frames while the old one keeps drawing. Variants the
+	// old atlas never held draw the resident low-resolution art meanwhile: every
+	// frame of the refill shows each cell's own materials, never another
+	// variant's tile or an empty one (the stale-record zoom glitch). Compared in
+	// 16-pixel blocks with the completed frame, low-resolution art only softens
+	// detail; a foreign tile changes a block's colour outright.
+	void checkZoomDrawsOwnArt(GAGCore::RendererBackend backend)
+	{
+		const auto name = std::string(GAGCore::rendererBackendName(backend));
+		const bool legacyBackend = backend == GAGCore::RendererBackend::LegacyGL;
+		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
+			.screenFlags = legacyBackend ? Uint32(GAGCore::GraphicContext::USEGPU) : 0u,
+			.beforeLoad = [backend](GlobalContainer &g) { g.settings.rendererBackend = backend; }});
+		auto &gfx = *globals->gfx;
+		if (legacyBackend ? !gfx.isLegacyGLScreen() || !DirectTerrain::legacyPassAvailable()
+						  : !DirectTerrain::streamedPassAvailable(gfx))
+		{
+			MESSAGE(name << " direct terrain unavailable; zoom check omitted");
+			return;
+		}
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 6, .terrain = WATER, .discovered = true});
+		// Blocks of water, grass and sand: shores of every orientation, so the
+		// whole map holds many more variants than a few cells do.
+		const TerrainType kinds[] = {WATER, GRASS, SAND};
+		for (int y = 0; y < 64; ++y)
+			for (int x = 0; x < 64; ++x)
+				fixture.game.map.setVertexTerrain(x, y, kinds[((x / 3) * 7 + (y / 3) * 5) % 3]);
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		DirectTerrain atlas;
+		const Uint32 teams = fixture.team->me;
+		// Settled close up: a few cells' variants at 128 pixels a cell.
+		bool settled = false;
+		for (Patience waiting; waiting() && !settled;)
+		{
+			const auto frame = directTerrainFrame(gfx, atlas, scene, teams, 4.f, 4, 3, false);
+			settled = !frame.empty() && !atlas.pendingHdMasks() && !atlas.artMetrics().absent;
+			if (!settled) SDL_Delay(1);
+		}
+		REQUIRE(settled);
+		// Out to the whole map at 16 pixels a cell, frame after frame while
+		// the atlas refills.
+		constexpr float far = .3f;
+		std::vector<std::vector<Uint8>> refilling;
+		std::size_t mostAbsent = 0;
+		for (Patience waiting; waiting();)
+		{
+			auto frame = directTerrainFrame(gfx, atlas, scene, teams, far, 63, 63, false);
+			const auto art = atlas.artMetrics();
+			CAPTURE(art.visible);
+			CAPTURE(art.absent);
+			REQUIRE(art.stale == 0);
+			mostAbsent = std::max(mostAbsent, art.absent);
+			if (!frame.empty() && art.absent) refilling.push_back(std::move(frame));
+			if (!art.absent && !atlas.pendingHdMasks()) break;
+			SDL_Delay(1);
+		}
+		CAPTURE(mostAbsent);
+		REQUIRE(mostAbsent > 0); // The zoom drew variants the drawing atlas did not hold.
+		REQUIRE_FALSE(refilling.empty());
+		const auto complete = directTerrainFrame(gfx, atlas, scene, teams, far, 63, 63, true);
+		REQUIRE_FALSE(complete.empty());
+		const auto blockMean = [](const std::vector<Uint8> &rows, int bx, int by, int channel)
+		{
+			unsigned sum = 0;
+			for (int y = by * 16; y < by * 16 + 16; ++y)
+				for (int x = bx * 16; x < bx * 16 + 16; ++x)
+					sum += rows[(std::size_t(y) * 640 + x) * 4 + channel];
+			return int(sum / 256);
+		};
+		// The map covers 64 cells of 9.6 pixels: 38 blocks across, and the
+		// screen's 30 down.
+		constexpr int blocksWide = 38, blocksHigh = 30;
+		for (std::size_t index = 0; index < refilling.size(); ++index)
+		{
+			std::size_t foreign = 0;
+			int largest = 0;
+			for (int by = 0; by < blocksHigh; ++by)
+				for (int bx = 0; bx < blocksWide; ++bx)
+				{
+					int difference = 0;
+					for (int k = 0; k < 3; ++k)
+						difference = std::max(difference, std::abs(blockMean(refilling[index], bx, by, k) -
+																	blockMean(complete, bx, by, k)));
+					largest = std::max(largest, difference);
+					foreign += difference > 24;
+				}
+			CAPTURE(index);
+			CAPTURE(largest);
+			CAPTURE(foreign);
+			CHECK(foreign == 0);
+		}
+	}
+
+	TEST_CASE("Legacy GL zoom refills the art atlas without drawing foreign or empty tiles [display]")
+	{
+		checkZoomDrawsOwnArt(GAGCore::RendererBackend::LegacyGL);
+	}
+
+	TEST_CASE("SDL GPU zoom refills the art atlas without drawing foreign or empty tiles [display]")
+	{
+		checkZoomDrawsOwnArt(GAGCore::RendererBackend::SDLGPU);
+	}
+
+	TEST_CASE("Programmable GL zoom refills the art atlas without drawing foreign or empty tiles [display]")
+	{
+		checkZoomDrawsOwnArt(GAGCore::RendererBackend::ProgrammableGL);
+	}
+
 	TEST_CASE("generated terrain mip uploads stay uncompressed across animation updates [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true, .width = 256, .height = 256,

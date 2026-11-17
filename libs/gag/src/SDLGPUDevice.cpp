@@ -1433,10 +1433,9 @@ void SDLGPUDevice::drawDirectTerrain(SDL_GPUCommandBuffer *commands, Work &entry
         const auto pair = [&](std::size_t offset, const float (&value)[2]) {
             fragment[offset / sizeof(float)] = value[0]; fragment[offset / sizeof(float) + 1] = value[1];
         };
-        const float unused[2]{1, 1};
         pair(Shader::terrain_direct_hd_fragment_mapSize_offset, hd.mapSize);
         pair(Shader::terrain_direct_hd_fragment_artSize_offset, hd.artSize);
-        pair(Shader::terrain_direct_hd_fragment_coverageSize_offset, unused);
+        pair(Shader::terrain_direct_hd_fragment_coverageSize_offset, hd.lowArtSize);
         pair(Shader::terrain_direct_hd_fragment_variantSize_offset, hd.variantSize);
         pair(Shader::terrain_direct_hd_fragment_hdCoverageSize_offset, hd.hdCoverageSize);
         pair(Shader::terrain_direct_hd_fragment_hdPreviousSize_offset, hd.hdPreviousSize);
