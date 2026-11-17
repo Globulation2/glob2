@@ -174,10 +174,23 @@ class SoftwareTerrainCache
 	static constexpr Uint64 FadeMs = 150;
 	//! The opacity the portable renderer draws an animated cell's next keyframe
 	//! at over its current one: the page's opacity times the share of the
-	//! keyframe interval elapsed (AnimationTime::cycle), continuous in time.
+	//! keyframe interval elapsed (keyframeBlend), continuous in time.
 	static Uint8 keyframeAlpha(Uint8 pageAlpha, float weight)
 	{
 		return Uint8(std::lround(float(pageAlpha) * std::clamp(weight, 0.f, 1.f)));
+	}
+	//! The keyframe the portable renderer draws an animated cell from at
+	//! `time` (keys are `interval` ticks apart) and the weight of the next one:
+	//! the share of the interval elapsed, fraction of a tick included.
+	struct KeyframeBlend
+	{
+		std::int64_t key;
+		float weight;
+	};
+	static KeyframeBlend keyframeBlend(AnimationTime time, int interval)
+	{
+		const auto cycle = time.cycle(interval);
+		return {cycle.index, cycle.within};
 	}
 
   private:

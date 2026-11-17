@@ -532,9 +532,10 @@ TEST_SUITE("TerrainAnimation")
 					const AnimationTime now{steps, clock.fraction()};
 					// What SoftwareTerrainCache::updateKeyframes draws: keyframe
 					// `index` beneath `index + 1` at keyframeAlpha.
-					const auto a = previous.cycle(interval), b = now.cycle(interval);
-					const auto alpha = [](const AnimationTime::Cycle &c) {
-						return double(c.index) * 255 + SoftwareTerrainCache::keyframeAlpha(255, c.within);
+					const auto a = SoftwareTerrainCache::keyframeBlend(previous, interval);
+					const auto b = SoftwareTerrainCache::keyframeBlend(now, interval);
+					const auto alpha = [](const SoftwareTerrainCache::KeyframeBlend &blend) {
+						return double(blend.key) * 255 + SoftwareTerrainCache::keyframeAlpha(255, blend.weight);
 					};
 					const double expected = (now.value() - previous.value()) / interval * 255;
 					const double drawn = alpha(b) - alpha(a);

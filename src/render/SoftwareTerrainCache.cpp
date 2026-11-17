@@ -1579,9 +1579,7 @@ void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor
 	const int interval = keyframeInterval;
 	// The key before the presentation time and the share of the interval
 	// to the next one elapsed: continuous, like the direct pass's crossfade.
-	const auto cycle = time.cycle(interval);
-	const std::int64_t now = cycle.index;
-	const float weight = cycle.within;
+	const auto [now, weight] = keyframeBlend(time, interval);
 	// Finished keyframes go into their slots, uploaded as dirty rectangles.
 	std::vector<std::shared_ptr<KeyframeSet>> written;
 	std::erase_if(keyframeJobs, [&](const std::shared_ptr<KeyframeJob> &job)
