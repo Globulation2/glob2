@@ -4,7 +4,9 @@ const {clickMainMenu,gameURL,clickSettingsDone,clickSettingsCancel,clickControl,
 const {hasDarkText}=require('./pixels');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>(await state(page)).screen).toContain(name);
-const {preferences,lowPreferences,cloudPreferences}=require('./settings-preferences');
+const {preferences,freshPreferences,cloudToggled}=require('./settings-preferences');
+// Reads a new profile's first save and checks it is the uniform adaptive default.
+const fresh=async page=>{const saved=await preferences(page); expect(saved).toEqual(freshPreferences(saved.effects.clouds)); return saved;};
 // Settings controls carry the setting ids; the Display & graphics category is
 // selected by default when Settings opens.
 const AUDIO_TAB=(page)=>clickControl(page,'nav.1'); // Sidebar "Audio" entry.
@@ -15,7 +17,7 @@ test('new browser profiles are muted and an explicit unmute survives reload',asy
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'settings');await screen(page,'SettingsScreen');
   await clickSettingsDone(page);await screen(page,'MainMenuScreen');
-  expect(await preferences(page)).toEqual(lowPreferences);
+  await fresh(page);
   await clickMainMenu(page,'settings');await screen(page,'SettingsScreen');
   await AUDIO_TAB(page);
   await MUTE_ROW(page); // Actual Mute toggle, in the Audio category.
@@ -31,7 +33,7 @@ for (const fault of ['quota','aborted transaction']) test(`settings survive ${fa
   await page.goto(gameURL()); await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'settings'); await screen(page,'SettingsScreen');
   await clickSettingsDone(page); await screen(page,'MainMenuScreen');
-  expect(await preferences(page)).toEqual(lowPreferences);
+  const initial=await fresh(page);
   await clickMainMenu(page,'settings'); await screen(page,'SettingsScreen');
   // Inject the fault before the change: every edit auto-saves immediately
   // (that's the whole point of the redesigned screen), so injecting after
@@ -60,12 +62,12 @@ for (const fault of ['quota','aborted transaction']) test(`settings survive ${fa
   await expect.poll(()=>hasDarkText(page,{x:panel.x,y:done.y,width:Math.max(24,done.x-panel.x-160),height:done.height},180)).toBe(true);
   await page.screenshot({path:info.outputPath('settings-save-failure.png')});
   const restored=await context.newPage(); await restored.goto(gameURL()); await screen(restored,'MainMenuScreen');
-  expect(await preferences(restored)).toEqual(lowPreferences); await restored.close();
+  expect(await preferences(restored)).toEqual(initial); await restored.close();
   await page.evaluate(()=>window.settingsStorageFault=false);
   await clickSettingsDone(page); await screen(page,'MainMenuScreen');
-  expect(await preferences(page)).toEqual(cloudPreferences);
+  expect(await preferences(page)).toEqual(cloudToggled(initial));
   await page.reload(); await screen(page,'MainMenuScreen');
-  expect(await preferences(page)).toEqual(cloudPreferences);
+  expect(await preferences(page)).toEqual(cloudToggled(initial));
 });
 
 test('settings wait for durable storage before closing',async({page})=>{
@@ -92,6 +94,7 @@ test('settings can continue after failure without claiming a durable save',async
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'settings');await screen(page,'SettingsScreen');
   await clickSettingsDone(page);await screen(page,'MainMenuScreen');
+  const initial=await fresh(page);
   await clickMainMenu(page,'settings');await screen(page,'SettingsScreen');
   await page.evaluate(()=>{IDBObjectStore.prototype.put=function(){throw new DOMException('Injected quota exhaustion','QuotaExceededError');};});
   await toggleClouds(page);
@@ -113,7 +116,7 @@ test('settings can continue after failure without claiming a durable save',async
   await clickControl(page,'cancel',{click:{delay:500}});await screen(page,'MainMenuScreen');
   expect((await state(page)).persistence).toBe('failed');
   const restored=await context.newPage();await restored.goto(gameURL());await screen(restored,'MainMenuScreen');
-  expect(await preferences(restored)).toEqual(lowPreferences);
+  expect(await preferences(restored)).toEqual(initial);
 });
 
 for (const failLatest of [false,true]) test(`Done waits for the latest settings write (${failLatest?'failure':'success'})`,async({page})=>{

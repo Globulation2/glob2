@@ -635,6 +635,14 @@ before Auto wrote `highResolutionArtwork=1` whether or not the player chose it,
 so `1` migrates to Auto and `0`, which departs from the old default, stays an
 explicit Off; on mid and high devices Auto resolves to the old value.
 
+**Browser graphics detail.** In the browser, the eight detail effects (clouds,
+cloud shadows, building particles, full magic effects, translucent panels and
+path lines, smooth progress indicators, decorative animations) start on a
+shared adaptive default: all on, except all off on a Low device. Changing any
+one of them in Settings, or launching with `--graphics-detail`, ends the
+default for good, and preferences store it as `graphicsDetailAdaptive`. Native
+builds start with every effect on and no adaptive default.
+
 The map size is gameplay, so only the defaults adapt: a custom game without a
 saved lobby, Reset to defaults, and a new map in the editor start at the tier's
 size where the landscape can host the colonies at it (otherwise they keep 256×256,

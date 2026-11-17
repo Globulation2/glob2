@@ -146,6 +146,68 @@ TEST_SUITE("AdaptiveSettings")
 		CHECK_FALSE(settings.highResolutionArtwork);
 	}
 
+	TEST_CASE("adaptive graphics detail follows the device tier until the player picks an effect [writes-preferences]")
+	{
+		glob2test::HeadlessGlobals globals;
+		const bool Settings::*effects[] = {&Settings::clouds, &Settings::cloudShadows, &Settings::buildingParticles,
+			&Settings::fullMagicEffects, &Settings::translucentPanels, &Settings::translucentPathLines,
+			&Settings::smoothProgressIndicators, &Settings::decorativeAnimations};
+		const auto all = [&](const Settings &s, bool on) {
+			for (auto field : effects)
+				CHECK(s.*field == on);
+		};
+		{
+			ScopedDevice low(device(1024));
+			REQUIRE(DeviceProfile::current().tier == DeviceTier::Low);
+			Settings fresh;
+#ifdef __EMSCRIPTEN__
+			CHECK(fresh.graphicsDetailAdaptive);
+			all(fresh, false);
+#else
+			CHECK_FALSE(fresh.graphicsDetailAdaptive);
+			all(fresh, true);
+#endif
+			Settings settings;
+			settings.graphicsDetailAdaptive = true;
+			settings.resolveAdaptiveDefaults();
+			all(settings, false);
+			{
+				ScopedDevice high(device(16384));
+				settings.resolveAdaptiveDefaults();
+				all(settings, true);
+			}
+			settings.resolveAdaptiveDefaults();
+			all(settings, false);
+
+			// Choosing one effect ends the adaptive default; the rest stay as they were.
+			settings.chooseEffect(&Settings::cloudShadows, true);
+			CHECK_FALSE(settings.graphicsDetailAdaptive);
+			CHECK(settings.cloudShadows);
+			settings.resolveAdaptiveDefaults();
+			CHECK(settings.cloudShadows);
+			CHECK_FALSE(settings.clouds);
+
+			const std::string name = "adaptive-detail.txt";
+			REQUIRE(settings.save(name));
+			CHECK(readText(name).find("graphicsDetailAdaptive=0") != std::string::npos);
+			const Settings reloaded = loadText(name, readText(name));
+			CHECK_FALSE(reloaded.graphicsDetailAdaptive);
+			CHECK(reloaded.cloudShadows);
+			CHECK_FALSE(reloaded.clouds);
+
+			Settings adaptive;
+			adaptive.graphicsDetailAdaptive = true;
+			REQUIRE(adaptive.save(name));
+			{
+				ScopedDevice high(device(16384));
+				const Settings loaded = loadText(name, readText(name));
+				CHECK(loaded.graphicsDetailAdaptive);
+				all(loaded, true);
+			}
+			std::filesystem::remove(profileFile(name));
+		}
+	}
+
 	TEST_CASE("settings show Auto's value and reason; the session steps down and offers to keep it [display][writes-preferences]")
 	{
 		glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI", "0");

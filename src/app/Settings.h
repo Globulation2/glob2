@@ -111,6 +111,14 @@ public:
 	bool smoothFog = true;
 	void setGraphicsDetail(bool full);
 	static constexpr Uint32 LEGACY_LOW_DETAIL = 0x1;
+	//! The eight effects setGraphicsDetail sets together follow the device
+	//! tier (on except on a Low device) until the player changes one of them.
+	//! On by default in the browser, whose build used to start with them all
+	//! off; native builds start with full detail and leave this off.
+	bool graphicsDetailAdaptive;
+	static bool isGraphicsDetailEffect(bool Settings::*field);
+	//! A player's choice of one effect; a detail effect ends the adaptive default.
+	void chooseEffect(bool Settings::*field, bool on);
 	/// Periodically saves the game in progress as "Auto save".
 	bool autosaveGames;
 	// Local compute preference. An absent value defaults off in both graphical and headless sessions.

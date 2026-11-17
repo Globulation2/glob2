@@ -168,7 +168,7 @@ void SettingsScreen::buildGeneral()
 		{
 			toggle(id, label, help, s.*field, [this, field](int v)
 			{
-				globalContainer->settings.*field = v != 0;
+				globalContainer->settings.chooseEffect(field, v != 0);
 				commit();
 			});
 		};
@@ -177,7 +177,7 @@ void SettingsScreen::buildGeneral()
 		{
 			choice(id, label, help, s.*field, {tr(off), tr(on)}, [this, field](int v)
 			{
-				globalContainer->settings.*field = v != 0;
+				globalContainer->settings.chooseEffect(field, v != 0);
 				commit();
 			});
 		};

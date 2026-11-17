@@ -41,10 +41,11 @@ Settings::Settings()
 	screenHeight = 600;
 	uiScale = 0;
 	optionFlags = 0;
-#ifdef __EMSCRIPTEN__
-	setGraphicsDetail(false);
-#else
 	setGraphicsDetail(true);
+#ifdef __EMSCRIPTEN__
+	graphicsDetailAdaptive = true;
+#else
+	graphicsDetailAdaptive = false;
 #endif
 	automaticTorus = false;
 	language.clear(); // follow the system until the player picks one
@@ -135,8 +136,25 @@ std::optional<Settings::AdaptiveChoice> Settings::parseAdaptiveChoice(const std:
 	return std::nullopt;
 }
 
+bool Settings::isGraphicsDetailEffect(bool Settings::*field)
+{
+	return field == &Settings::clouds || field == &Settings::cloudShadows ||
+		field == &Settings::buildingParticles || field == &Settings::fullMagicEffects ||
+		field == &Settings::translucentPanels || field == &Settings::translucentPathLines ||
+		field == &Settings::smoothProgressIndicators || field == &Settings::decorativeAnimations;
+}
+
+void Settings::chooseEffect(bool Settings::*field, bool on)
+{
+	this->*field = on;
+	if (isGraphicsDetailEffect(field))
+		graphicsDetailAdaptive = false;
+}
+
 void Settings::resolveAdaptiveDefaults()
 {
+	if (graphicsDetailAdaptive)
+		setGraphicsDetail(DeviceProfile::current().tier != DeviceTier::Low);
 	if (highResolutionArtworkChoice == AdaptiveChoice::Auto)
 		highResolutionArtwork = DeviceProfile::current().highResolutionArtwork().on && !highResolutionArtworkSteppedDown;
 	else
@@ -173,10 +191,11 @@ void Settings::load(std::string filename)
     introductionOffered = false;
     rendererBackend = GAGCore::RendererBackend::Auto;
     targetRenderFps = 60;
-#ifdef __EMSCRIPTEN__
-	setGraphicsDetail(false);
-#else
 	setGraphicsDetail(true);
+#ifdef __EMSCRIPTEN__
+	graphicsDetailAdaptive = true;
+#else
+	graphicsDetailAdaptive = false;
 #endif
     interfacePresentation="automatic";
     menuTheme="light";
@@ -272,6 +291,8 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(translucentPathLines);
 		READ_PARSED_INT(smoothProgressIndicators);
 		READ_PARSED_INT(decorativeAnimations);
+		// Absent in older profiles: the platform default stands.
+		READ_PARSED_INT(graphicsDetailAdaptive);
 		READ_PARSED_INT(unitInterpolation);
 		READ_PARSED_INT(adaptiveZoomDetail);
 		READ_PARSED_INT(smoothFog);
@@ -486,6 +507,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "translucentPathLines=%d\n", translucentPathLines);
 		Utilities::streamprintf(stream, "smoothProgressIndicators=%d\n", smoothProgressIndicators);
 		Utilities::streamprintf(stream, "decorativeAnimations=%d\n", decorativeAnimations);
+		Utilities::streamprintf(stream, "graphicsDetailAdaptive=%d\n", graphicsDetailAdaptive);
 		Utilities::streamprintf(stream, "unitInterpolation=%d\n", unitInterpolation);
         Utilities::streamprintf(stream, "targetRenderFps=%d\n", targetRenderFps);
 		Utilities::streamprintf(stream, "adaptiveZoomDetail=%d\n", adaptiveZoomDetail);
