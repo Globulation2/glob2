@@ -11,12 +11,12 @@
         {
           "file": "swarm0b0.png",
           "role": "base",
-          "sha256": "8586b89b95f5feb84520fd48b3ce5c6ef3f696758eba8c8b8ed973deb03a2ce9"
+          "sha256": "020d2feff9a5a0f8b291f3992b569c54cf4ec0b786e102fa9169386a513b3c3b"
         },
         {
           "file": "swarm0b0r.png",
           "role": "team",
-          "sha256": "7fddfffbe675b7b2b7fdaf87e78f6b8ca52f83ca3ac07e2c2b07724829beed92"
+          "sha256": "8b8757ea1bb7ffb6583567e7fb3da7ada50a28b9305287a811af96c4fc314fbf"
         }
       ],
       "sources": [
@@ -40,12 +40,12 @@
         {
           "file": "swarm0c0.png",
           "role": "base",
-          "sha256": "7535de51a77fd4e4415e9a45a30cbfdaf61157ed9ad42b5ee6b486cbf047bbe0"
+          "sha256": "a5f91696027b0d7c58bb8c9df88557adaa58018771da7573c4777dfeed349dc8"
         },
         {
           "file": "swarm0c0r.png",
           "role": "team",
-          "sha256": "35379ff139ab075a00d6348e7af14316ed7b8e342300737275e8d6738be81414"
+          "sha256": "1efe3a6e76d39e51f82da285995cc959ed596f01dd3e399528d9f8dacb63c565"
         }
       ],
       "sources": [
@@ -74,7 +74,7 @@
         {
           "file": "warflag0r.png",
           "role": "team",
-          "sha256": "2f7ab6fe190662a4dcd2e0acd21f423a50c8faf635aa2e89579784d8ed937cd0"
+          "sha256": "c0bd8f36a9131a4daaa10c1a4a02323f7d71027f5af0d8144c71f31e542aaa8c"
         }
       ],
       "sources": [
@@ -103,7 +103,7 @@
         {
           "file": "explorationflag0r.png",
           "role": "team",
-          "sha256": "1eb3f170e7455f8621e15f6637a01383c1ff18a3b87b380ae9aebac5e12b4ffc"
+          "sha256": "79ddf3fe7d111b0dea1bfacfc2ac698a067853ece1b140d1b5a967e3208ef2c9"
         }
       ],
       "sources": [
@@ -127,12 +127,12 @@
         {
           "file": "clearingflag0.png",
           "role": "base",
-          "sha256": "cd8968966745ded953dd027154adc39ef3bcd5995a05969acf866e7df057799e"
+          "sha256": "1594258d650464372a84556d099c6f0fad9551bbf0efe58e7403336fee183eee"
         },
         {
           "file": "clearingflag0r.png",
           "role": "team",
-          "sha256": "59b0d491345cd52279daf8052b3f8b59a35b7af21750355151e1d175fa7772a6"
+          "sha256": "20d99c9e2ce787dac3feb27ab45d234862af24d99d4b209103b078ae5ec01147"
         }
       ],
       "sources": [

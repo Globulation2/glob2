@@ -20,20 +20,40 @@ def unmatte(rgb, alpha):
     color[alpha == 0] = 0
     return np.dstack((color, alpha))
 
-def green_on_white(a):
-    rgb = a[..., :3]
-    chroma = rgb.max(axis=2) - rgb.min(axis=2)
+def green_on_white(a, work_size):
     # Source art is green with neutral projected shadows. Work from the native
     # render, never the misregistered generated sprites or a classic-size mask.
-    object_mask = (chroma > 0.025) & (a[..., 3] > 0)
-    interior = ndimage.binary_erosion(object_mask, iterations=1)
-    # Keep interior highlights opaque; remove white contamination on edge pixels.
-    alpha = 1 - rgb.min(axis=2)
-    alpha[interior] = 1
-    alpha *= a[..., 3]
-    result = unmatte(rgb, alpha)
-    team = result.copy(); team[~object_mask] = 0
-    base = result.copy(); base[object_mask] = 0
+    # Interpolate the render on its white ground to at least twice the output
+    # size first, so the matte below follows smooth edges instead of the native
+    # pixel staircase.
+    white = a[..., :3] * a[..., 3:] + (1 - a[..., 3:])
+    native = Image.fromarray(np.uint8(np.rint(white * 255)), 'RGB')
+    if native.size[0] < work_size:
+        native = native.resize((work_size, work_size), Image.Resampling.LANCZOS)
+    rgb = np.asarray(native, dtype=float) / 255
+    cover = 1 - rgb.min(axis=2)
+    # Over white, a pixel's chroma and coverage scale together, so their ratio
+    # is its own saturation however little of the pixel it covers. Green object
+    # and neutral shadow therefore split softly along anti-aliased edges.
+    saturation = (rgb.max(axis=2) - rgb.min(axis=2)) / np.maximum(cover, 1e-3)
+    team_weight = np.clip((saturation - 0.10) / 0.20, 0, 1)
+    team_weight[cover < 0.01] = 0
+    object_mask = (team_weight > 0.5) & (cover > 0.03)
+    # Fill small specular highlights, not the background seen through a frame.
+    holes, count = ndimage.label(ndimage.binary_fill_holes(object_mask) & ~object_mask)
+    sizes = ndimage.sum(np.ones(holes.shape), holes, range(1, count + 1))
+    small = np.flatnonzero(sizes < (work_size / 32) ** 2) + 1
+    object_mask |= np.isin(holes, small)
+    # Keep interior highlights opaque at their rendered color; remove white
+    # contamination only on edge pixels.
+    interior = ndimage.binary_erosion(object_mask, iterations=max(1, work_size // 256))
+    color = unmatte(rgb, cover)[..., :3]
+    team = np.dstack((color, cover * team_weight))
+    team[interior] = np.dstack((rgb, np.ones(cover.shape)))[interior]
+    team[team[..., 3] == 0] = 0
+    shadow = cover * (1 - team_weight)
+    shadow[interior] = 0
+    base = np.dstack((color, shadow))
     # Match the classic game's subdued shadow style, using only its color and
     # opacity, not its low-resolution silhouette. Native render defines geometry.
     base[..., :3] = np.array([65, 66, 69]) / 255
@@ -57,6 +77,8 @@ def export():
             if role == 'base' and 'team' in arrays:
                 pixels = np.array(img)
                 pixels[..., 3] = np.minimum(pixels[..., 3], 144)
+                # Drop invisible resampling residue so shadowless frames stay empty.
+                pixels[pixels[..., 3] < 4] = 0
                 pixels[..., :3] = [65, 66, 69]
                 pixels[pixels[..., 3] == 0] = 0
                 img = Image.fromarray(pixels, 'RGBA')
@@ -70,7 +92,8 @@ def export():
                             ('warflag0','WarFlag.png'), ('explorationflag0','ExploFlag.png'),
                             ('clearingflag0','RemoveFlag.png')]:
         source = SOURCE / ('swarm' if frame.startswith('swarm') else 'flags') / filename
-        base, team = green_on_white(read(source))
+        classic = ROOT / 'content/data/gfx' / (frame + 'r.png')
+        base, team = green_on_white(read(source), Image.open(classic).size[0] * 8)
         save(frame, dict(base=base, team=team), [source], 'native white-matte removal; green team / neutral shadow separation')
     for frame, number in [('buildingsite1',64),('buildingsite2',96),('buildingsite3',128),
                           ('buildingsite4',192),('buildingsite5',256)]:
