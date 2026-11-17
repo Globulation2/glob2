@@ -193,6 +193,10 @@ namespace GAGCore
 		bool releasedOnDevice = false;
 		//! Prepared mip levels left out of the legacy GL upload (a detail band).
 		std::uint8_t uploadSkipLevels = 0;
+		//! An HD sprite frame: every renderer samples only the one level the
+		//! HD sprite policy names (legacy GL its band's first level, devices
+		//! the first prepared level), linearly, as the portable renderer does.
+		bool singleLevelSampling = false;
 		//! texture divisor
 		float texMultX, texMultY;
 		
@@ -230,6 +234,11 @@ namespace GAGCore
         //! callers must own the image payload; other callers receive a pixel copy.
         static std::unique_ptr<DrawableSurface> fromAssetImage(const AssetImage& image,
             bool exclusive = false, bool allocateGPU = true);
+        //! A surface of the top-left `width` by `height` pixels of the image's
+        //! prepared mip `level`: the reduced HD frame renderers without mip
+        //! chains draw (see HighResolutionPolicy). It keeps no upload preparation.
+        static std::unique_ptr<DrawableSurface> fromReducedLevel(const AssetImage& image, unsigned level,
+            int width, int height);
         void adoptUploadPreparation(const AssetImage& image, bool exclusive = false);
         void prepareTexture();
 		DrawableSurface *clone(void);
@@ -339,9 +348,10 @@ namespace GAGCore
 		void drawSprite(int x, int y, Sprite *sprite, unsigned index = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
 		//! Draws a frame's base and team layers as one team-colour shader quad; false when it cannot.
 		bool drawTeamShaderSprite(float x, float y, float w, float h, Sprite *sprite, unsigned index, Uint8 alpha);
-		// The portable renderer zoomed in: the frame's HD layers at its logical
-		// size, when they can draw now (Sprite::highResolutionDrawable).
-		bool drawPortableHighResolution(float x, float y, float w, float h, Sprite *sprite, unsigned index, Uint8 alpha);
+		// An on-demand renderer (every one but legacy GL) where the HD sprite
+		// policy shows HD: the frame's HD layers at its logical size, when they
+		// can draw now (Sprite::highResolutionDrawable); false draws native.
+		bool drawHighResolution(float x, float y, float w, float h, Sprite *sprite, unsigned index, Uint8 alpha);
 		// A device renderer with a team-colour shader: the frame's team layer
 		// (HD when `experiment` and it has pixels, as prepareDrawSurface picks)
 		// recoloured on the GPU, with no CPU recolour. A negative w draws it at
@@ -455,6 +465,11 @@ namespace GAGCore
     public:
         RenderDevice *renderDevice() const { return renderer == deviceRenderer.get() ? presentationDevice.get() : nullptr; }
         RenderResources *renderResources() const { return deviceResources.get(); }
+        //! Whether the device renderer has room to keep another HD sprite frame
+        //! as the only copy of its pixels (its retained General textures under
+        //! three eighths of that class, a quarter below the cap retainDeviceTexture
+        //! enforces); true on other renderers.
+        bool deviceHighResolutionRoom() const;
         //! Snapshots the device adapter retains for surfaces whose pixels it released.
         std::size_t retainedDeviceSnapshotBytes() const;
         //! Frees presentation memory that can be rebuilt, without a renderer
@@ -1118,7 +1133,7 @@ namespace GAGCore
             if (!highResolutionDemanded) demandHighResolution();
             return prepareDrawSurface(index, false, true);
         }
-        //! After a portable or presentation-device draw: frees frame `index`'s
+        //! After an on-demand renderer's draw: frees frame `index`'s
         //! HD base pixels, which only its texture (portable) or the device's
         //! retained snapshot then holds, unless the CPU may sample them.
         void releaseDrawnHighResolution(unsigned index);
@@ -1126,23 +1141,39 @@ namespace GAGCore
         //! (in the current colour): frees the cached copy's pixels, which its
         //! texture then holds alone; a lost texture recolours it again.
         void releaseDrawnTeamColor(unsigned index);
-        //! Only legacy OpenGL draws sprite frames from their HD layers; other
-        //! backends sample them solely through baseFrame (terrain composition,
-        //! skin shadows, editor swatches). There, a sprite loads its HD layers
-        //! once something demands them. Returns true when this queued a reload.
+        //! Legacy OpenGL loads every sprite's HD layers with it; other backends
+        //! load them on demand: what their draws reach while the HD sprite
+        //! policy shows HD (highResolutionDrawable) and what baseFrame samples
+        //! (terrain composition, skin shadows, editor swatches). Returns true
+        //! when this queued a reload.
         bool demandHighResolution();
         //! On those backends, drops the HD layers a demand loaded (or cancels
         //! their reload) until the next baseFrame demands them again. Deferred
         //! banks retire frames through their windows instead; elsewhere this
         //! does nothing.
         void releaseHighResolutionDemand();
-        //! Whether the portable renderer's view is zoomed in enough to draw sprite
-        //! frames from their HD layers.
-        static bool portableHighResolution();
-        //! On the portable renderer, zoomed in: demands this sprite's HD layers
+        //! The HD sprite policy's level for the current view (a
+        //! HighResolutionPolicy::Level): FullHD, HalfHD or Native; Native
+        //! whenever the HD setting is off. Every renderer draws by it.
+        static unsigned highResolutionLevel();
+        //! Whether the policy draws sprite frames from their HD layers now.
+        static bool highResolutionShown();
+        //! Grows whenever highResolutionShown() may have changed: caches that
+        //! recorded which layer a frame drew add it to their artwork revision.
+        static std::uint64_t highResolutionPolicyRevision();
+        //! Whether an on-demand renderer (every one but legacy OpenGL) draws
+        //! sprite frames from their HD layers now: the policy shows HD and the
+        //! renderer can load them.
+        static bool drawsHighResolutionOnDemand();
+        //! Puts the policy at the level of `density` at once, with no pending
+        //! change (tests, and views that must not wait out the hysteresis).
+        static void resetHighResolutionPolicy(double density);
+        //! On an on-demand renderer showing HD: demands this sprite's HD layers
         //! (team layers included) and answers whether frame `index` can draw from
-        //! them now. False until they load, for a unit whose action is not
-        //! complete in HD, and for a first draw beyond this frame's upload budget.
+        //! them now. False, so the native frame draws, until every layer the
+        //! native frame has is HD, for a unit whose action is not complete in
+        //! HD, for a first draw beyond this frame's upload budget, and on a
+        //! device whose budget for HD frames is full.
         bool highResolutionDrawable(unsigned index);
     private:
         DrawableSurface *sampleBaseFrame(unsigned index);
@@ -1229,13 +1260,15 @@ namespace GAGCore
         static void setRetiredHighResolutionBudget(RetiredHighResolutionBudget budget);
         static size_t retiredHighResolutionBytes();
         static void refreshHighResolutionForRenderer();
-        //! Detail bands for standalone HD frames drawn at map scale on desktop
-        //! legacy GL: from the screen pixels a logical pixel covers at the
-        //! current zoom (or the display's scale, for interface drawing, if
-        //! larger), the mip levels a texture needs. More detail is loaded at
-        //! once; less only after the view has wanted it for ten seconds. Each
-        //! change reloads the sprites in the background, and their current
-        //! textures draw until the new ones are published. Call once a frame.
+        //! Feeds the HD sprite policy (HighResolutionPolicy) the view's screen
+        //! pixels a logical pixel at the current zoom (or the display's scale,
+        //! for interface drawing, if larger). More detail is taken at once;
+        //! less only after the view has wanted it for ten seconds. A change
+        //! reloads what needs another level in the background (legacy GL's
+        //! bands, the reduced frames of renderers without mip chains), and the
+        //! current frames draw until the new ones are published; back at
+        //! Native, on-demand renderers release what drawing loaded. Call once
+        //! a frame.
         static void setHighResolutionDensity(double screenPixelsPerLogicalPixel);
         //! Levels the current band leaves out: 0 for full detail, up to 2.
         static unsigned highResolutionDetailSkip();

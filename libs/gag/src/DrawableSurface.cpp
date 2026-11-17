@@ -96,6 +96,29 @@ namespace GAGCore
         return result;
     }
 
+    std::unique_ptr<DrawableSurface> DrawableSurface::fromReducedLevel(const AssetImage& image, unsigned level,
+            int width, int height)
+    {
+        if (level >= image.mips.size()) throw std::invalid_argument("No such prepared mip level");
+        const auto &mip = image.mips[level];
+        if (width <= 0 || height <= 0 || width > mip.width || height > mip.height ||
+            mip.pixels.size() < size_t(mip.width) * mip.height * 4)
+            throw std::invalid_argument("Reduced level outside its prepared mip");
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
+            SDL_CreateSurface(width, height, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+        if (!pixels) throw std::runtime_error(SDL_GetError());
+        // Levels hold the decoded surface's byte order, or RGBA where the
+        // workers prepared RGBA upload pixels (AssetImage::prepareUpload). The
+        // content is the level's top-left corner: the chain pads to powers of two.
+        const auto format = image.uploadPixels.empty() ? SDL_PIXELFORMAT_ARGB8888 : SDL_PIXELFORMAT_RGBA32;
+        if (!SDL_ConvertPixels(width, height, format, mip.pixels.data(), mip.width * 4,
+                               SDL_PIXELFORMAT_ARGB8888, pixels->pixels, pixels->pitch))
+            throw std::runtime_error(SDL_GetError());
+        auto result = std::make_unique<DrawableSurface>(pixels.get(), AdoptPixels{}, true);
+        pixels.release();
+        return result;
+    }
+
     void DrawableSurface::adoptUploadPreparation(const AssetImage& image, bool exclusive)
     {
         if (exclusive) { preparedUploadPixels = std::move(image.uploadPixels); preparedMips = std::move(image.mips); }
@@ -488,7 +511,10 @@ namespace GAGCore
                     // same normalized coordinates. Blocks need 4x4 levels.
                     size_t first = std::min<size_t>(uploadSkipLevels, levels->empty() ? 0 : levels->size() - 1);
                     while (compress && first > 0 && ((*levels)[first].width < 4 || (*levels)[first].height < 4)) --first;
-                    for (size_t mip = first; mip < levels->size(); ++mip) {
+                    // An HD sprite frame samples its band's level alone.
+                    const size_t end = singleLevelSampling ? first + 1 : levels->size();
+                    if (singleLevelSampling) glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+                    for (size_t mip = first; mip < end; ++mip) {
                         const auto &level = (*levels)[mip];
                         const int w = level.width, h = level.height, glLevel = int(mip - first);
                         if (compress && (w < 4 || h < 4)) { glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, glLevel - 1); break; }

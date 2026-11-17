@@ -56,8 +56,9 @@ class RenderBackend
     // blitMipmapped, empty for nearest sampling. Returns false, drawing
     // nothing, when the backend has no team-colour shader: the caller then
     // draws a CPU-recoloured copy instead.
+    // `linear` samples a texture without mip levels linearly (an HD sprite frame).
     virtual bool blitTeamColor(const void *, SDL_Surface *, std::uint64_t, std::span<const RenderMipLevel>,
-                               const SDL_Rect &, const SDL_FRect &, Uint8, float) { return false; }
+                               const SDL_Rect &, const SDL_FRect &, Uint8, float, bool /*linear*/ = false) { return false; }
     // Textured triangles (a radial fade's grid) whose texels take the same
     // recolour; vertex colours carry tint and opacity as in triangles().
     virtual bool trianglesTeamColor(std::span<const SDL_Vertex>, const void *, SDL_Surface *, std::uint64_t, float)

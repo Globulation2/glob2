@@ -287,8 +287,10 @@ bool portableRenderer()
 }
 // Whether this view's pages compose HD material frames. Accelerated renderers
 // do, except the portable SDL renderer at one screen pixel per logical pixel
-// or fewer (Compositor::highResolutionPages), where HD pages only cost.
-// Captures draw once at their own density and keep HD.
+// or fewer (Compositor::highResolutionPages, the HD sprite policy's
+// threshold), where HD pages only cost. The software renderer composes native
+// pages: its CPU composition holds no HD page budget. Captures draw once at
+// their own density and keep HD.
 bool composeHighResolution(TerrainVisual::Compositor &compositor, bool tiledCapture)
 {
 	auto &gfx = *globalContainer->gfx;
@@ -1163,8 +1165,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 		compositor.prepareVisible(highResolution, time, map,
 			px0 * ChunkTiles, py0 * ChunkTiles, (px1 + 1) * ChunkTiles - 1, (py1 + 1) * ChunkTiles - 1,
 			reducedLegacyView,
-			// Portable draws decor HD frames only zoomed in past its sprite threshold.
-			!portable || GAGCore::Sprite::portableHighResolution());
+			// Portable draws decor HD frames only where the HD sprite policy shows HD.
+			!portable || GAGCore::Sprite::drawsHighResolutionOnDemand());
 	};
 	// A capture is drawn once: it waits for the material sheets the map holds.
 	if (tiledCapture) compositor.finishMaterials(map);

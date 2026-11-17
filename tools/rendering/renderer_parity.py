@@ -43,6 +43,10 @@ OUTPUT = ROOT / 'artifacts/renderer-parity'
 SAVE = ROOT / 'artifacts/render-memory/honeycomb-256-tick-30000.game.gz'
 RENDERERS = ('legacy-gl', 'portable-sdl', 'sdl-gpu', 'programmable-gl', 'software')
 REFERENCES = ('portable-sdl', 'legacy-gl')
+# Drawn and reported, but outside the parity bar: the software renderer has no
+# filtering, draws native artwork only and leaves out several effects. Its
+# column still shows a crash or a blank capture.
+INFORMATIONAL = ('software',)
 
 # Every scene holds one camera. `gui` scenes draw the whole in-game screen
 # (GameGUI::drawAll: map, HUD panel, minimap, top bar, health bars and the
@@ -54,6 +58,16 @@ SCENES = {
     'gui-far': dict(description='Game screen at the overview zoom', zoom=0, gui=True),
     'gui-default': dict(description='Game screen at the default zoom, a unit selected', zoom=1, gui=True,
                         env={'GLOB2_BENCH_SELECT': 'unit'}),
+    # Either side of the HD sprite policy's threshold (one screen pixel a
+    # logical pixel, docs/architecture/rendering.md#hd-sprite-policy): native
+    # frames just below it, the half-resolution HD level just above.
+    'gui-below-1x': dict(description='Game screen just below the HD sprite threshold (0.9 screen pixels a '
+                                     'logical pixel): native frames', zoom=0.9, gui=True),
+    'gui-above-1x': dict(description='Game screen just above the HD sprite threshold (1.1 screen pixels a '
+                                     'logical pixel): HD frames, half-resolution level', zoom=1.1, gui=True),
+    'gui-2x-display': dict(description='Game screen at the default zoom on a 2x display (Retina): two screen '
+                                       'pixels a logical pixel, HD terrain and sprites', zoom=1, gui=True,
+                           env={'GLOB2_UI_SCALE': '2'}),
     'gui-zoomed': dict(description='Game screen zoomed in: HD terrain, units, resources, health bars', zoom=3,
                        gui=True),
     'gui-panned': dict(description='Game screen at the default zoom, panned 24 by 16 tiles', zoom=1, gui=True,
@@ -259,6 +273,8 @@ def table(results):
             elif 'metrics' in record:
                 metrics = record['metrics']
                 verdict = 'ok' if record['within_tolerance'] else '**over tolerance**'
+                if name in INFORMATIONAL:
+                    verdict = 'info'
                 lines.append(f'| {scene} | {name} | {metrics["over_8_percent"]:.2f}% | '
                              f'{metrics["over_32_percent"]:.2f}% | {metrics["mean"]:.2f} | {verdict} |')
     return '\n'.join(lines)
@@ -336,7 +352,8 @@ def main():
         print(table({scene: results[scene]}).split('\n', 2)[2], flush=True)
     report = table(results)
     failures = [(scene, record['renderer']) for scene, result in results.items() for record in result['renderers']
-                if record['status'] == 'failed' or record.get('within_tolerance') is False]
+                if record['renderer'] not in INFORMATIONAL and
+                (record['status'] == 'failed' or record.get('within_tolerance') is False)]
     unavailable = sorted({record['renderer'] for result in results.values() for record in result['renderers']
                           if record['status'] == 'unavailable'})
     summary = {'binary': str(binary), 'platform': platform.platform(), 'settle_frames': args.settle_frames,

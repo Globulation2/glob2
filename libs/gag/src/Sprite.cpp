@@ -17,6 +17,7 @@
 #include <SpriteLoad.h>
 #include <SteadyClock.h>
 #include <DetailHysteresis.h>
+#include <HighResolutionPolicy.h>
 #include <chrono>
 #include <AssetLoader.h>
 #ifdef __GLIBC__
@@ -84,13 +85,24 @@ namespace GAGCore
     // Sprites whose HD frames were discarded with their textures; see
     // discardUnbackedHighResolution().
     static std::set<Sprite*> lostHighResolution;
-    // The detail band (mip levels left out) frames are loaded at. A view takes
-    // a sharper band at once and a coarser one only after wanting it for
-    // lowerDetailDelay, so zooming across a band edge does not re-decode.
-    static DetailHysteresis highResolutionSkip;
+    // The HD sprite policy every renderer follows: whether the view draws HD
+    // frames and at which level, which is also the detail band (mip levels
+    // left out) legacy GL loads frames at. A view takes a sharper level at
+    // once and a coarser one only after wanting it for lowerDetailDelay, so
+    // zooming across a threshold does not re-decode.
+    static HighResolutionPolicy highResolutionPolicy;
     static bool highResolutionSkipChosen = false;
     static std::int64_t lowerDetailDelay = 10'000'000'000;
-    static unsigned detailSkipFor(double density) { return density > 2 ? 0 : density > 1 ? 1 : 2; }
+    // Before any map view chooses a level, the display's scale does: the
+    // interface draws sprites at their logical size.
+    static const HighResolutionPolicy &currentHighResolutionPolicy()
+    {
+        if (!highResolutionSkipChosen && _gc) {
+            highResolutionPolicy.reset(HighResolutionPolicy::levelFor(_gc->getRasterScale()));
+            highResolutionSkipChosen = true;
+        }
+        return highResolutionPolicy;
+    }
     // A band change re-decodes every banded sprite on the asset workers; once
     // the last is published, their freed buffers go back to the system.
     static bool trimAfterBandReload = false;
@@ -136,32 +148,31 @@ namespace GAGCore
     static Sprite *deferredHighResolutionCursor = nullptr;
     static bool validHighResolutionFile(const std::string& file);
 
-    // Source decoding and standalone frame preparation work with either texture
-    // backend. Only packing those frames into the legacy atlas requires GL.
-    // SDL's portable renderer consumes only the base image; requesting a mip
-    // chain there duplicates work and prevents adopting the base-only prefetch.
+    // Source decoding and standalone frame preparation work with every
+    // filtering backend. Only packing those frames into the legacy atlas
+    // requires GL. The portable renderer decodes the base image alone at full
+    // HD, and the chain only for its half-resolution level. The software
+    // renderer draws native artwork only.
     static bool highResolutionFramesSupported()
     {
         return _gc && _gc->rendererCapabilities().textureFiltering;
     }
-    // Legacy OpenGL draws sprite frames from their HD layers directly. Every
-    // other backend reaches them only through Sprite::baseFrame.
+    // Legacy OpenGL loads every sprite's HD layers with the sprite. Every other
+    // backend loads them on demand: the 32-frame blocks its draws reach while
+    // the policy shows HD (Sprite::highResolutionDrawable), and what
+    // Sprite::baseFrame samples.
     static bool highResolutionOnDemand()
     {
         return !_gc || !(_gc->getOptionFlags() & GraphicContext::USEGPU);
     }
-    // Sprites the portable renderer draws from their HD layers while zoomed in
-    // (Sprite::drawHighResolution), and their names: those load team layers too.
+    // Sprites an on-demand renderer draws from their HD layers while the policy
+    // shows HD (Sprite::highResolutionDrawable), and their names: those load
+    // team layers too.
     static std::set<Sprite*> drawDemandedSprites;
     static std::set<std::string> drawDemandedNames;
-    // Portable draws load only the blocks they reach: those requested so far
+    // On-demand draws load only the blocks they reach: those requested so far
     // per sprite, and those wanted since its last reload began.
     static std::map<const Sprite*, std::set<unsigned>> portableBlocks, portableWaitingBlocks;
-    // Portable sprite detail: 0 draws HD frames, 1 native. HD frames hold four
-    // texels a logical pixel and portable textures have no mip chain, so HD
-    // starts above two screen pixels a logical pixel, where it shrinks at most
-    // twice. Lowered only after lowerDetailDelay, like the legacy GL bands.
-    static DetailHysteresis portableSpriteDetail(1);
     // Frames whose HD textures were first drawn, and how many first draws this
     // frame admitted: each one uploads (and may recolour) a frame.
     static std::set<std::pair<const Sprite*, unsigned>> portableDrawnFrames;
@@ -246,7 +257,10 @@ namespace GAGCore
     }
     bool highResolutionWantedAtLoad(const std::string& name)
     {
-        return !demandLoadedHighResolutionNames.contains(name);
+        // On-demand renderers load HD layers when a draw or baseFrame first
+        // asks for them, not with the sprite.
+        return !demandLoadedHighResolutionNames.contains(name) &&
+            (!requestedHighResolutionOnDemand || demandedHighResolutionNames.contains(name));
     }
     bool highResolutionNeedsAsyncLoad(const std::string& name, size_t frames)
     {
@@ -805,14 +819,52 @@ namespace GAGCore
         return false;
 #endif
     }
-    unsigned Sprite::highResolutionDetailSkip() { return highResolutionSkip.level(); }
+    unsigned Sprite::highResolutionDetailSkip() { return currentHighResolutionPolicy().reduction(); }
     void Sprite::setHighResolutionDetailDelay(std::int64_t nanoseconds) { lowerDetailDelay = nanoseconds; }
     std::int64_t Sprite::highResolutionDetailDelay() { return lowerDetailDelay; }
-    bool Sprite::portableHighResolution()
+    static bool highResolutionSettingOn()
     {
-        return highResolutionEnabled && _gc && !(_gc->getOptionFlags() & GraphicContext::USEGPU) &&
-            _gc->backendSwitchStatus().active == RendererBackend::PortableSDL && highResolutionFramesSupported() &&
-            portableSpriteDetail.level() == 0;
+        return highResolutionEnabled || std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+    }
+    unsigned Sprite::highResolutionLevel()
+    {
+        return currentHighResolutionPolicy().level(highResolutionSettingOn());
+    }
+    bool Sprite::highResolutionShown() { return highResolutionLevel() != HighResolutionPolicy::Native; }
+    static std::uint64_t policyRevision = 0;
+    std::uint64_t Sprite::highResolutionPolicyRevision() { return policyRevision; }
+    bool Sprite::drawsHighResolutionOnDemand()
+    {
+        return highResolutionShown() && _gc && !(_gc->getOptionFlags() & GraphicContext::USEGPU) &&
+            highResolutionFramesSupported();
+    }
+    void Sprite::resetHighResolutionPolicy(double density)
+    {
+        ++policyRevision;
+        highResolutionPolicy.reset(HighResolutionPolicy::levelFor(density));
+        highResolutionSkipChosen = true;
+    }
+    // On-demand renderers (every filtering one but legacy GL) draw the HD level the
+    // policy names as the frame itself: below full HD, the frame is replaced
+    // by its half-resolution level, the second of the CPU chain the asset
+    // workers build. Legacy GL reaches the same level through its bands.
+    static bool reducedHighResolutionBackend()
+    {
+        return _gc && !(_gc->getOptionFlags() & GraphicContext::USEGPU);
+    }
+    static bool reducedHighResolutionWanted(const std::string &name)
+    {
+        return reducedHighResolutionBackend() && !Sprite::highResolutionDeferred(name) &&
+            !pixelSampledHighResolutionNames.contains(name) &&
+            currentHighResolutionPolicy().reduction() == HighResolutionPolicy::HalfHD;
+    }
+    // Whether HD inputs are decoded with their CPU mip chain: for renderers
+    // that sample mip chains, and for a reduced level, which is the chain's
+    // second level.
+    static bool highResolutionInputMipmaps(const std::string &name)
+    {
+        if (Sprite::highResolutionDeferred(name)) return false;
+        return _gc->rendererCapabilities().textureMipmaps || reducedHighResolutionWanted(name);
     }
     void Sprite::setHighResolutionDensity(double density)
     {
@@ -826,8 +878,12 @@ namespace GAGCore
             sprite->queueHighResolutionBlocks(it->second);
             it = portableWaitingBlocks.erase(it);
         }
-        if (portableSpriteDetail.update(density > 2 ? 0 : 1, GAGCore::steadyClockNanoseconds(), lowerDetailDelay) &&
-            portableSpriteDetail.level() == 1)
+        currentHighResolutionPolicy();
+        const auto previous = HighResolutionPolicy::Level(highResolutionPolicy.reduction());
+        if (!highResolutionPolicy.update(density, GAGCore::steadyClockNanoseconds(), lowerDetailDelay)) return;
+        const auto level = HighResolutionPolicy::Level(highResolutionPolicy.reduction());
+        if ((level == HighResolutionPolicy::Native) != (previous == HighResolutionPolicy::Native)) ++policyRevision;
+        if (level == HighResolutionPolicy::Native)
         {
             // Back on native frames: what drawing demanded goes again.
             const auto demanded = std::exchange(drawDemandedSprites, {});
@@ -836,12 +892,16 @@ namespace GAGCore
             for (auto *sprite : demanded)
                 if (loadedSprites.contains(sprite)) sprite->releaseHighResolutionDemand();
         }
-        // HD frames hold four texels for each logical pixel; each band halves that.
-        const unsigned wanted = detailSkipFor(density);
-        highResolutionSkipChosen = true;
-        const unsigned previousSkip = highResolutionSkip.level();
-        if (!highResolutionSkip.update(wanted, GAGCore::steadyClockNanoseconds(), lowerDetailDelay)) return;
-        const bool moreDetail = highResolutionSkip.level() < previousSkip;
+        else if (previous != HighResolutionPolicy::Native && reducedHighResolutionBackend())
+        {
+            // Between full and half resolution: the blocks drawing reached
+            // load again at the new level; the current frames draw meanwhile.
+            for (auto *sprite : drawDemandedSprites)
+                if (loadedSprites.contains(sprite) && !highResolutionDeferred(sprite->fileName) &&
+                    portableBlocks.contains(sprite) && !portableBlocks[sprite].empty())
+                    sprite->queueHighResolutionBlocks(portableBlocks[sprite]);
+        }
+        const bool moreDetail = level < previous;
         if (!highResolutionEnabled || !highResolutionFramesSupported()) return;
         trimAfterBandReload = true;
         bandReloadQueue.clear();
@@ -1083,6 +1143,7 @@ namespace GAGCore
         const bool retainPublishedOnFailure = sameSource;
         requestedHighResolutionMipmaps = mipmaps;
         requestedHighResolutionOnDemand = onDemand;
+        if (highResolutionEnabled != enabled) ++policyRevision;
         highResolutionEnabled = enabled;
         packIndexes.clear();
         pendingHighResolution.clear();
@@ -1157,7 +1218,7 @@ namespace GAGCore
     }
     bool Sprite::highResolutionDrawable(unsigned index)
     {
-        if (!portableHighResolution()) return false;
+        if (!drawsHighResolutionOnDemand()) return false;
         const bool deferred = highResolutionDeferred(fileName);
         if (!drawDemandedNames.contains(fileName))
         {
@@ -1185,14 +1246,18 @@ namespace GAGCore
             return false;
         };
         // Every layer the native frame has, in HD; a frame may be team layer only.
-        if (index >= experimentImages.size() || (!experimentImages[index] && !experimentRotated[index])) return want();
-        if (images[index] && !experimentImages[index]) return want();
-        if (rotated[index] && (!experimentRotated[index] || !experimentRotated[index]->orig->hasPixels())) return want();
+        if (index >= experimentImages.size()) return want();
+        if (!HighResolutionPolicy::frameDrawsHighResolution(true, images[index], rotated[index],
+                experimentImages[index], experimentRotated[index] && experimentRotated[index]->orig->hasPixels()))
+            return want();
         if (dynamicTeamColor && !blockHasCompleteHD(index)) return want();
         // A first draw uploads the frame; a few per frame keep zooming in smooth.
         const auto key = std::make_pair(static_cast<const Sprite*>(this), index);
         if (portableDrawnFrames.contains(key)) return true;
         if (portableFirstDraws >= PortableFirstDrawsPerFrame) return false;
+        // A device keeps an uploaded HD frame as the only copy of its pixels,
+        // within half of its General budget; past that, new frames stay native.
+        if (!_gc->deviceHighResolutionRoom()) return false;
         ++portableFirstDraws;
         portableDrawnFrames.insert(key);
         return true;
@@ -1604,7 +1669,7 @@ namespace GAGCore
         const auto* packEntries = readPack(directory, name);
         if (!packEntries) return inputs;
         const auto prefix = name.substr(name.find_last_of('/') + 1);
-        const bool mipmaps = _gc->rendererCapabilities().textureMipmaps && !Sprite::highResolutionDeferred(name);
+        const bool mipmaps = highResolutionInputMipmaps(name);
         size_t firstFrame = frames;
         auto add = [&](const std::string& path, bool mipmaps) {
             inputs.add(path, mipmaps);
@@ -1647,7 +1712,7 @@ namespace GAGCore
         const auto* packEntries = readPack(directory, name);
         if (!packEntries) return true;
         const auto prefix = name.substr(name.find_last_of('/') + 1);
-        const bool mipmaps = _gc->rendererCapabilities().textureMipmaps && !Sprite::highResolutionDeferred(name);
+        const bool mipmaps = highResolutionInputMipmaps(name);
         // Deferred sparse inputs own one frame; numeric lookahead only adds
         // repeated failed lookups there. Ordinary sprite prefetch keeps eight.
         const size_t lookahead = Sprite::highResolutionDeferred(name) ? 1 : 8;
@@ -1695,7 +1760,7 @@ namespace GAGCore
         const auto &entry = found->second;
         if (entry.width != getW(index) || entry.height != getH(index) || entry.scale != (dynamicTeamColor ? 0 : 4)) return;
         const bool deferred = highResolutionDeferred(fileName);
-        const bool mipmaps = _gc->rendererCapabilities().textureMipmaps && !deferred;
+        const bool mipmaps = highResolutionInputMipmaps(fileName);
         // Desktop legacy OpenGL draws a standalone HD layer from its texture
         // alone, so its pixels go once uploaded (releasePixels refuses on every
         // other renderer). The exceptions read pixels later: frames an atlas is
@@ -1705,12 +1770,10 @@ namespace GAGCore
             !pixelSampledHighResolutionNames.contains(fileName);
         const bool releaseTeam = releaseBase && _gc->hasUnitShader();
         const bool banded = highResolutionBanded(fileName);
-        // Before any map view chooses a band, the display's scale does: the
-        // interface draws sprites at their logical size.
-        if (banded && !highResolutionSkipChosen) {
-            highResolutionSkip = DetailHysteresis(detailSkipFor(_gc->getRasterScale()));
-            highResolutionSkipChosen = true;
-        }
+        const auto &policy = currentHighResolutionPolicy();
+        // Renderers without mip chains draw the policy's level as the frame:
+        // its half-resolution level is the second of the chain the workers built.
+        const bool reduce = reducedHighResolutionWanted(fileName) && !sampledByBaseFrame;
         auto load = [&](const std::string& name, DrawableSurface *original, bool release) -> DrawableSurface* {
             if (!validHighResolutionFile(name)) return nullptr;
             // A partial pack may have no usable prepacked atlas. Every accepted
@@ -1721,9 +1784,17 @@ namespace GAGCore
             const int width = dynamicTeamColor ? highResolutionTextureSize : (original ? original->getW() : entry.width) * entry.scale;
             const int height = dynamicTeamColor ? highResolutionTextureSize : (original ? original->getH() : entry.height) * entry.scale;
             if (surface->w != width || surface->h != height) return nullptr;
-            auto result = DrawableSurface::fromAssetImage(*image.value, image.exclusive, !deferred);
+            std::unique_ptr<DrawableSurface> result;
+            const auto &mips = image.value->mips;
+            if (reduce && mips.size() > 1 && (!mips[1].pixels.empty()))
+                result = DrawableSurface::fromReducedLevel(*image.value, 1, width / 2, height / 2);
+            else
+                result = DrawableSurface::fromAssetImage(*image.value, image.exclusive, !deferred);
             result->highResolutionSampling = true;
-            if (banded) result->uploadSkipLevels = std::uint8_t(highResolutionSkip.level());
+            // Every renderer samples a drawn HD frame's one level linearly, so
+            // all show the same pixels (devices draw it with blitLinear).
+            if (!deferred && (banded || highResolutionOnDemand())) result->singleLevelSampling = true;
+            if (banded) result->uploadSkipLevels = std::uint8_t(policy.reduction());
             // Deferred terrain feeds CPU composition; only composed pages need
             // GPU textures. On-demand backends reach HD layers through baseFrame,
             // mostly for CPU composition too. A direct draw uploads lazily.

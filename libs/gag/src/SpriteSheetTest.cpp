@@ -10,6 +10,7 @@
 #include "SpriteHighResolution.h"
 #include <AssetLoader.h>
 #include <DetailHysteresis.h>
+#include <HighResolutionPolicy.h>
 #include <RenderMemory.h>
 #include <FileManager.h>
 #include <GraphicContext.h>
@@ -148,6 +149,188 @@ TEST_CASE("detail hysteresis raises detail at once and lowers it after the delay
     CHECK_FALSE(fromZero.update(1, 0, 50));
     CHECK_FALSE(fromZero.update(1, 49, 50));
     CHECK(fromZero.update(1, 50, 50));
+}
+TEST_CASE("the HD sprite policy shows HD above one screen pixel a logical pixel, native at or below") {
+    using Policy = GAGCore::HighResolutionPolicy;
+    // Thresholds: native up to and at density one, half resolution to two, full beyond.
+    CHECK(Policy::levelFor(0.5) == Policy::Native);
+    CHECK(Policy::levelFor(1.0) == Policy::Native);
+    CHECK(Policy::levelFor(1.01) == Policy::HalfHD);
+    CHECK(Policy::levelFor(2.0) == Policy::HalfHD);
+    CHECK(Policy::levelFor(2.01) == Policy::FullHD);
+    CHECK_FALSE(Policy::wantsHighResolution(1.0));
+    CHECK(Policy::wantsHighResolution(1.1));
+    // Density counts the drawable's pixels, not the window's points: a
+    // 2560x1600 drawable in a 1280x800 window (a 2x display) at the default
+    // zoom is two screen pixels a logical pixel, the same window on a 1x
+    // display one. Zoomed out, the interface's own scale is the floor.
+    CHECK(Policy::density(1, 2560.0 / 1280) == 2);
+    CHECK(Policy::levelFor(Policy::density(1, 2560.0 / 1280)) == Policy::HalfHD);
+    CHECK(Policy::levelFor(Policy::density(1, 1280.0 / 1280)) == Policy::Native);
+    CHECK(Policy::density(0.5, 2) == 2);
+    CHECK(Policy::density(1.5, 1) == 1.5);
+    CHECK(Policy::levelFor(Policy::density(3, 1)) == Policy::FullHD);
+    // Hysteresis: up at once, down only after the delay.
+    Policy policy;
+    CHECK(policy.level() == Policy::Native);
+    CHECK_FALSE(policy.shown());
+    CHECK(policy.update(1.1, 100, 50));
+    CHECK(policy.level() == Policy::HalfHD);
+    CHECK(policy.update(3, 110, 50));
+    CHECK(policy.level() == Policy::FullHD);
+    CHECK_FALSE(policy.update(0.9, 120, 50));
+    CHECK(policy.level() == Policy::FullHD);
+    CHECK(policy.shown());
+    CHECK(policy.update(0.9, 170, 50));
+    CHECK(policy.level() == Policy::Native);
+    CHECK(policy.reduction() == 2);
+    // The HD setting off forces native, whatever the view.
+    policy.reset(Policy::FullHD);
+    CHECK(policy.shown());
+    CHECK(policy.level(false) == Policy::Native);
+    CHECK_FALSE(policy.shown(false));
+}
+TEST_CASE("a frame draws HD only once every layer its native frame has is HD") {
+    using Policy = GAGCore::HighResolutionPolicy;
+    // Base and team layers both HD: HD.
+    CHECK(Policy::frameDrawsHighResolution(true, true, true, true, true));
+    // Not shown (zoomed out, or the setting off): native.
+    CHECK_FALSE(Policy::frameDrawsHighResolution(false, true, true, true, true));
+    // Missing, streaming or evicted HD: native, never a mix of resolutions.
+    CHECK_FALSE(Policy::frameDrawsHighResolution(true, true, true, true, false));
+    CHECK_FALSE(Policy::frameDrawsHighResolution(true, true, true, false, true));
+    CHECK_FALSE(Policy::frameDrawsHighResolution(true, true, false, false, false));
+    // A frame with only a base layer, or only a team layer, needs only that one.
+    CHECK(Policy::frameDrawsHighResolution(true, true, false, true, false));
+    CHECK(Policy::frameDrawsHighResolution(true, false, true, false, true));
+}
+namespace {
+// The HD sprite policy on one renderer: the same frame, drawn at the same
+// screen size, shows its native pixels while the view's density is one and its
+// HD pixels once the density is two, and with HD off it is the native frame.
+void checkHighResolutionPolicyOn(GAGCore::RendererBackend backend)
+{
+    glob2test::TempDir scratch("hd-policy");
+    const auto artwork = scratch.path / "data/gfx";
+    const auto hd = scratch.path / "data/highres/v1";
+    std::filesystem::create_directories(artwork);
+    std::filesystem::create_directories(hd);
+    std::filesystem::copy_file(glob2test::sourceRoot() / "test/fixtures/image-assets/native-sheet.webp",
+        artwork / "native-sheet.webp");
+    std::ofstream(artwork / "policy-sheet.sheet") << "native-sheet.webp image 0 4 4 2\n";
+    std::ofstream frame(hd / "frame.webp", std::ios::binary);
+    frame.write(reinterpret_cast<const char*>(lossyAlphaFixture::webp), sizeof(lossyAlphaFixture::webp));
+    frame.close();
+    std::ofstream index(hd / "frames.txt");
+    index << "GLOB2_HIGHRES 1\n";
+    for (unsigned i = 0; i < 4; ++i) index << "policy-sheet" << i << " 4 2 4 frame.webp -\n";
+    index.close();
+    glob2test::ScopedEnvironment assets("GLOB2_ASSET_DIR", scratch.path.string().c_str());
+    glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
+    glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+    const std::string name(GAGCore::rendererBackendName(backend));
+    glob2test::ScopedEnvironment selection("GLOB2_RENDERER", name.c_str());
+    glob2test::ToolkitScope toolkit;
+    auto *gfx = GAGCore::Toolkit::initGraphic(64, 64, backend == GAGCore::RendererBackend::LegacyGL ?
+        GAGCore::GraphicContext::USEGPU : backend == GAGCore::RendererBackend::PortableSDL ?
+        GAGCore::GraphicContext::PORTABLEGPU : 0, "HD sprite policy");
+    if (gfx->backendSwitchStatus().active != backend) {
+        MESSAGE("HD sprite policy coverage unavailable on ", name);
+        return;
+    }
+    struct Restore {
+        std::int64_t delay = GAGCore::Sprite::highResolutionDetailDelay();
+        ~Restore() { GAGCore::Sprite::setHighResolutionDetailDelay(delay); GAGCore::Sprite::setHighResolution(false); }
+    } restore;
+    GAGCore::Sprite::setHighResolutionDetailDelay(0);
+    GAGCore::Sprite::resetHighResolutionPolicy(1);
+    GAGCore::Sprite sprite;
+    REQUIRE(sprite.load("data/gfx/policy-sheet"));
+    const auto capture = [&] {
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> shot(nullptr, SDL_DestroySurface);
+        if (gfx->renderer) gfx->renderer->flush();
+        if (auto *device = gfx->renderDevice()) shot.reset(device->captureSynchronously({}));
+        else if (backend == GAGCore::RendererBackend::PortableSDL) shot.reset(gfx->renderer->capture());
+        else if (!gfx->rendererCapabilities().accelerated) shot.reset(SDL_DuplicateSurface(gfx->getSDLSurface()));
+#ifdef HAVE_OPENGL
+        else {
+            GLint viewport[4];
+            glGetIntegerv(GL_VIEWPORT, viewport);
+            shot.reset(SDL_CreateSurface(viewport[2], viewport[3], SDL_PIXELFORMAT_RGBA32));
+            REQUIRE(shot);
+            glPixelStorei(GL_PACK_ALIGNMENT, 1);
+            glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGBA, GL_UNSIGNED_BYTE, shot->pixels);
+        }
+#endif
+        REQUIRE(shot);
+        std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
+            SDL_ConvertSurface(shot.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+        REQUIRE(rgba);
+        std::vector<Uint8> pixels(size_t(rgba->w) * rgba->h * 4);
+        for (int row = 0; row < rgba->h; ++row)
+            std::memcpy(pixels.data() + size_t(row) * rgba->w * 4,
+                static_cast<Uint8 *>(rgba->pixels) + row * rgba->pitch, size_t(rgba->w) * 4);
+        return pixels;
+    };
+    // Draws frame 0 at twice its logical size for a view of `density`, until
+    // the HD layers the policy may want are published and drawn.
+    const auto draw = [&](double density) {
+        std::vector<Uint8> pixels;
+        const auto deadline = SDL_GetTicks() + 20000;
+        for (unsigned settled = 0; settled < 4 && SDL_GetTicks() < deadline;) {
+            GAGCore::Sprite::setHighResolutionDensity(density);
+            gfx->setClipRect();
+            gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), GAGCore::Color(0, 0, 0));
+            gfx->beginMapTransform(2, 0, 0, 0, 0, gfx->getW(), gfx->getH());
+            gfx->drawSprite(4.f, 4.f, &sprite, 0);
+            GAGCore::Sprite::flushBatches(gfx);
+            gfx->endMapTransform();
+            pixels = capture();
+            gfx->nextFrame();
+            GAGCore::Toolkit::pollAssets(2);
+            GAGCore::Sprite::pollHighResolution(2);
+            const bool ready = !GAGCore::Sprite::highResolutionShown() || sprite.experimentImages[0];
+            settled = ready ? settled + 1 : 0;
+        }
+        return pixels;
+    };
+    const auto differing = [](const std::vector<Uint8> &a, const std::vector<Uint8> &b) {
+        REQUIRE(a.size() == b.size());
+        unsigned count = 0;
+        for (size_t i = 0; i < a.size(); i += 4) {
+            int most = 0;
+            for (int c = 0; c < 3; ++c) most = std::max(most, std::abs(int(a[i + c]) - int(b[i + c])));
+            count += most > 8;
+        }
+        return count;
+    };
+    GAGCore::Sprite::setHighResolution(false);
+    const auto native = draw(2);
+    CHECK(GAGCore::Sprite::highResolutionLevel() == GAGCore::HighResolutionPolicy::Native);
+    GAGCore::Sprite::setHighResolution(true);
+    const auto one = draw(1);
+    CHECK_FALSE(GAGCore::Sprite::highResolutionShown());
+    CHECK(differing(one, native) == 0);
+    const auto two = draw(2);
+    CHECK(GAGCore::Sprite::highResolutionLevel() == GAGCore::HighResolutionPolicy::HalfHD);
+    REQUIRE(sprite.experimentImages[0]);
+    CHECK(differing(two, native) > 4);
+    // Back at one (the test's delay is zero): native again.
+    const auto back = draw(1);
+    CHECK(differing(back, native) == 0);
+}
+}
+TEST_CASE("legacy GL draws native frames at density one and HD at two [display]") {
+    checkHighResolutionPolicyOn(GAGCore::RendererBackend::LegacyGL);
+}
+TEST_CASE("portable SDL draws native frames at density one and HD at two [display]") {
+    checkHighResolutionPolicyOn(GAGCore::RendererBackend::PortableSDL);
+}
+TEST_CASE("SDL GPU draws native frames at density one and HD at two [display]") {
+    checkHighResolutionPolicyOn(GAGCore::RendererBackend::SDLGPU);
+}
+TEST_CASE("programmable GL draws native frames at density one and HD at two [display]") {
+    checkHighResolutionPolicyOn(GAGCore::RendererBackend::ProgrammableGL);
 }
 TEST_CASE("an on-demand HD sheet releases its layers until a base frame demands them again [display]") {
     glob2test::TempDir scratch("released-demand-hd");
@@ -346,7 +529,7 @@ TEST_CASE("drawn deferred HD frames free their pixels and return after the porta
     // Zoomed in past the portable sprite threshold, a draw uploads the frame;
     // the next one finds it uploaded and frees its pixels.
     GAGCore::Sprite::setHighResolutionDensity(4);
-    REQUIRE(GAGCore::Sprite::portableHighResolution());
+    REQUIRE(GAGCore::Sprite::drawsHighResolutionOnDemand());
     for (int pass = 0; pass < 3; ++pass) {
         GAGCore::Sprite::setHighResolutionDensity(4);
         context->drawSprite(0.f, 0.f, &sprite, 1);

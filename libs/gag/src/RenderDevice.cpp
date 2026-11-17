@@ -211,7 +211,10 @@ class DeviceRenderBackend final : public RenderBackend
     RenderOperations counts;
     std::uint64_t frameIdentity = 1, captureIdentity = 0, submittedFrameIdentity = 0, presentedFrameIdentity = 0;
     int width, height;
-    TextureSnapshot texture(const void *key, SDL_Surface *source, std::uint64_t revision, bool opaque, std::span<const RenderMipLevel> mipLevels = {})
+    // `linear` records linear sampling for a texture without mip levels, so a
+    // released owner's cached draw (blitCached) samples it the same way.
+    TextureSnapshot texture(const void *key, SDL_Surface *source, std::uint64_t revision, bool opaque, std::span<const RenderMipLevel> mipLevels = {},
+                            bool linear = false)
     {
         if(aborted) throw RenderAdmissionDeferred("Presentation frame already deferred");
         if (!source) return {};
@@ -237,6 +240,7 @@ class DeviceRenderBackend final : public RenderBackend
         }
         descriptor.alpha = opaque ? TextureDescriptor::Alpha::Opaque : TextureDescriptor::Alpha::Straight;
         descriptor.budgetClass = budgetClass;
+        if (linear) descriptor.sampling = TextureDescriptor::Sampling::Linear;
         // Borrowed terrain-run views often reuse the same surface address and
         // revision zero with new pixels. A missing logical key never caches them.
         if (!key) {
@@ -359,7 +363,7 @@ class DeviceRenderBackend final : public RenderBackend
                     const SDL_Rect &src, const SDL_FRect &dst, Uint8 alpha) override
     {
         if(aborted)return;
-        auto value = packet(DrawPacket::Kind::Blit); try{value.texture = texture(key, source, revision, false);}catch(const RenderAdmissionDeferred &){abort();return;}
+        auto value = packet(DrawPacket::Kind::Blit); try{value.texture = texture(key, source, revision, false, {}, true);}catch(const RenderAdmissionDeferred &){abort();return;}
         value.source = src; value.destination = dst; value.alpha = alpha; value.linear = true;
         append(std::move(value)); ++counts.blits;
     }
@@ -386,15 +390,15 @@ class DeviceRenderBackend final : public RenderBackend
     }
     bool blitTeamColor(const void *key, SDL_Surface *source, std::uint64_t revision,
                        std::span<const RenderMipLevel> mipLevels, const SDL_Rect &src,
-                       const SDL_FRect &dst, Uint8 alpha, float hue) override
+                       const SDL_FRect &dst, Uint8 alpha, float hue, bool linear) override
     {
         if (!device.capabilities().teamColor || !std::isfinite(hue)) return false;
         if (aborted) return true;
         auto value = packet(DrawPacket::Kind::Blit);
-        try { value.texture = texture(key, source, revision, false, mipLevels); }
+        try { value.texture = texture(key, source, revision, false, mipLevels, linear); }
         catch (const RenderAdmissionDeferred &) { abort(); return true; }
         value.material = DrawPacket::Material::TeamColor; value.teamHue = hue;
-        value.source = src; value.destination = dst; value.alpha = alpha; value.linear = !mipLevels.empty();
+        value.source = src; value.destination = dst; value.alpha = alpha; value.linear = linear || !mipLevels.empty();
         append(std::move(value)); ++counts.blits;
         return true;
     }
@@ -470,6 +474,11 @@ class DeviceRenderBackend final : public RenderBackend
         held += snapshot->bytes;
         return true;
     }
+    std::size_t retainedTextureBytes(TextureDescriptor::BudgetClass category) const
+    {
+        return retainedBytes[std::size_t(category)];
+    }
+    std::size_t classLimit(TextureDescriptor::BudgetClass category) const { return resources.classLimit(category); }
     std::size_t retainedTextureBytes() const
     {
         std::size_t total = 0;
@@ -498,7 +507,8 @@ class DeviceRenderBackend final : public RenderBackend
         if (aborted) return true;
         // The sampling the texture was recorded with: authored chains are linear.
         auto value = packet(DrawPacket::Kind::Blit);
-        value.linear = snapshot->descriptor.mips == TextureDescriptor::Mips::Generated;
+        value.linear = snapshot->descriptor.mips == TextureDescriptor::Mips::Generated ||
+            snapshot->descriptor.sampling == TextureDescriptor::Sampling::Linear;
         value.opaque = snapshot->descriptor.alpha == TextureDescriptor::Alpha::Opaque;
         value.texture = std::move(snapshot);
         value.source = src; value.destination = dst; value.alpha = alpha;
@@ -572,6 +582,16 @@ std::size_t retainedDeviceTextureBytes(const RenderBackend &backend)
 {
     auto *device = dynamic_cast<const DeviceRenderBackend *>(&backend);
     return device ? device->retainedTextureBytes() : 0;
+}
+std::size_t retainedDeviceTextureBytes(const RenderBackend &backend, TextureDescriptor::BudgetClass category)
+{
+    auto *device = dynamic_cast<const DeviceRenderBackend *>(&backend);
+    return device ? device->retainedTextureBytes(category) : 0;
+}
+std::size_t deviceTextureClassLimit(const RenderBackend &backend, TextureDescriptor::BudgetClass category)
+{
+    auto *device = dynamic_cast<const DeviceRenderBackend *>(&backend);
+    return device ? device->classLimit(category) : 0;
 }
 void adoptDeviceTextures(RenderBackend &previous, RenderBackend &replacement)
 {

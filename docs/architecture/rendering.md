@@ -53,34 +53,86 @@ Preference changes, a new asset source generation or a different pack directory
 start a reload; unchanged requests do not. Explicit synchronous reloads used by
 tools still refresh unchanged artwork. Disabling the preference releases the
 optional layers through asset polling, rather than through screen destruction.
-Desktop legacy OpenGL draws sprite frames from their HD layers at every zoom.
-The portable SDL renderer draws them once the view exceeds two screen pixels a
-logical pixel (`Sprite::highResolutionDrawable`): HD frames hold four texels a
-logical pixel and its textures have no mip chain, so they shrink at most twice.
-It drops back to native frames after ten seconds below that, like the legacy
-GL bands, and then releases the layers that drawing demanded. A drawn sprite
-loads only the 32-frame blocks its draws reach (a unit's action), batched into
-one reload a frame, and demands its team layers with its base ones; once a
-frame's HD base layer is uploaded its CPU pixels go, unless something samples
-them through `Sprite::baseFrame` (a released frame then answers with its native
-frame and reloads with pixels; `Sprite::drawFrame` serves draw-only callers such
-as skin shadows), and a renderer reset, a lost device or rebuilding the portable
-renderer reloads frames that had only textures (a capture's offscreen pass draws
-such a frame's native layer); a frame draws in HD only once every
-layer its native frame has is loaded (a unit only once its whole action is), at
-most eight frames a frame draw in HD for the first time (each one uploads), and
-HD layers sample linearly with premultiplied alpha. Recoloured HD team layers,
+Every renderer chooses between HD and native sprite frames by the
+[HD sprite policy](#hd-sprite-policy) below. Legacy OpenGL loads every
+sprite's HD layers with the sprite; every other renderer loads them on demand.
+There a drawn sprite loads only the 32-frame blocks its draws reach (a unit's
+action), batched into one reload a frame, and demands its team layers with its
+base ones; back on native frames (ten seconds below the threshold) it releases
+the layers that drawing demanded. Once a frame's HD base layer is uploaded its
+CPU pixels go (into the portable renderer's texture or the device's retained
+snapshot), unless something samples them through `Sprite::baseFrame` (a
+released frame then answers with its native frame and reloads with pixels;
+`Sprite::drawFrame` serves draw-only callers such as skin shadows), and a
+renderer reset, a lost device or rebuilding the portable renderer reloads frames
+that had only textures (a capture's offscreen pass draws such a frame's native
+layer). A unit draws HD only once its whole action is; at most eight frames a
+frame draw in HD for the first time (each one uploads), and a device renderer
+admits new HD frames only while its retained General textures stay under three
+eighths of that class's budget, so a full budget leaves frames native. HD layers
+sample linearly with premultiplied alpha. Device renderers with the team-colour
+material sample the HD team layer directly; elsewhere recoloured HD team layers,
 buildings' included, share each sprite's 64 MiB recolour cache; once drawn, a
 cached recolour keeps only its texture, and one whose texture a reset took is
 recoloured again from the HD team layer, which keeps its pixels for the other
-colours (device renderers with the team-colour material make no recolours; see
-below). Otherwise the
-portable renderer and the presentation devices reach HD layers solely through
-`Sprite::baseFrame` (terrain composition, skin shadows and editor swatches), so
-there a sprite loads only its uncolored base layers, once `baseFrame` or an HD
-window first asks for them, and uploads them on the first direct draw. The first
-answers can be native frames, as with any streamed layer. Switching to legacy
-OpenGL reloads every sprite; switching away releases layers nothing asked for.
+colours. A sprite that only `Sprite::baseFrame` reaches (terrain composition,
+skin shadows and editor swatches) loads only its uncolored base layers, once
+`baseFrame` or an HD window first asks for them. The first answers can be native
+frames, as with any streamed layer. Switching to legacy OpenGL reloads every
+sprite; switching away releases layers nothing asked for.
+
+### HD sprite policy
+
+HD artwork is drawn at the zooms where it shows, and native artwork otherwise
+and as the fallback. One policy, `GAGCore::HighResolutionPolicy`
+(`libs/gag/include/HighResolutionPolicy.h`), held by `Sprite` and fed once a
+frame by the map view (`Sprite::setHighResolutionDensity`), decides it for
+every renderer; no renderer keeps a threshold of its own.
+
+- **Density** is the screen pixels one logical pixel covers: map scale times the
+  display's raster scale (the display's scale alone for interface drawing, and
+  before any map view). HD frames hold four texels a logical pixel.
+- **Above a density of one** sprite frames draw from their HD layers: up to two,
+  at half resolution (two texels a logical pixel), beyond two at full
+  resolution. **At or below one** native frames draw: HD would only be shrunk
+  back to them. Terrain pages take HD materials at the same threshold
+  (`HighResolutionPolicy::wantsHighResolution`).
+- **Hysteresis**: a level with more detail is taken at once; one with less only
+  after the view has wanted it for ten seconds (`DetailHysteresis`), so zooming
+  across a threshold and back reloads nothing.
+- **Fallback is always native**: where the policy wants HD but a frame's HD
+  layers are not all there (still streaming, evicted, failed, missing from the
+  pack, or past a device's budget), the native frame draws, never nothing and
+  never a wait. A frame draws HD only once every layer its native frame has
+  (base and team colour) is HD (`HighResolutionPolicy::frameDrawsHighResolution`),
+  and a unit only once its whole action is. The HD setting off draws native
+  everywhere.
+
+Every renderer samples the one level the policy names, so all settle to the
+same pixels (`DrawableSurface::singleLevelSampling`):
+
+| Renderer | Half resolution (1 to 2) | Full resolution (above 2) |
+| --- | --- | --- |
+| Legacy OpenGL | detail band 1: the chain's second level alone, sampled linearly | band 0: the first level alone |
+| SDL GPU, programmable OpenGL, portable SDL | the frame's half-resolution level, sampled linearly | the full frame, sampled linearly |
+
+The software renderer draws native frames (and native terrain pages) at every
+zoom: it has no filtering, and it is exempt from renderer parity.
+
+Legacy OpenGL's bands load the HD frames with the levels a view needs left out
+(band 2, a quarter of the frame, while the policy is native), reloading in the
+background on a band change while the current textures draw. The on-demand
+renderers take the half-resolution level from the CPU mip chain the asset
+workers build with the frame (`DrawableSurface::fromReducedLevel`); a change between half and full resolution
+reloads the blocks drawing reached, and the current frames draw until the new
+ones are published. Sprites a caller samples on the CPU keep their full frames.
+One level sampled linearly shrinks a frame at most twice, which a mip chain
+would only blur further.
+
+`tools/rendering/renderer_parity.py` holds scenes on either side of the
+threshold (`gui-below-1x`, `gui-above-1x`) besides the zoomed-out, default and
+zoomed-in ones, and `SpriteSheetTest.cpp` checks the policy and that each
+available renderer draws native at density one and HD at two.
 
 The portable SDL renderer's terrain pages ask for HD material frames only where
 they show: above one screen pixel per logical pixel (map scale times raster
@@ -94,8 +146,8 @@ and back recomposes nothing. Then pages compose from native frames, the HD pages
 are discarded, the streamed banks' frames retire into the shared budget for
 [retired frames](../development/rendering-benchmarks.md#direct-terrain) and whole sheets a page demanded through `Sprite::baseFrame`
 release their layers until the next demand. Decor HD frames stream there only
-while the portable renderer draws sprites from HD layers (past two screen pixels
-a logical pixel); below that it draws decor from native frames and retires them.
+while the [HD sprite policy](#hd-sprite-policy) shows HD; below that it draws
+decor from native frames and retires them.
 A view's decor window holds only the frames its cells draw (each 16 by 16
 cell page's decor frames are kept until the terrain changes, and the view widens
 by the decor's reach), not every frame of every material in view. Drawn decor
@@ -1018,8 +1070,12 @@ with explicit depth passes and premultiplied atlas composition. Paint and materi
 revisions remain immutable for submitted draws. Source, geometry and atlas caches
 are rebuilt after switching or recovery.
 
-SDL GPU and programmable GL sample block-compressed HD artwork where the device
-reports the format (`RenderDeviceCapabilities::bc3Textures`, `astc4x4Textures`;
+HD sprite frames draw uncompressed on SDL GPU, programmable GL and legacy GL: blocks of
+premultiplied colour step along the edges where a frame's base and team layers
+meet (2% of the zoomed-in game screen differed from the portable renderer in the
+parity scenes). `GLOB2_HD_BLOCK_COMPRESSION=1` restores the compressed path
+below, a quarter of the memory. With it, SDL GPU and programmable GL sample
+block-compressed HD artwork where the device reports the format (`RenderDeviceCapabilities::bc3Textures`, `astc4x4Textures`;
 programmable GL reports BC3 with `GL_EXT_texture_compression_s3tc` and ASTC 4x4 on
 GL ES contexts with `GL_KHR_texture_compression_astc_ldr`, never in the browser). On entering the device,
 asset workers prepare each HD chain as premultiplied BC3 (`PremultipliedBC3`,
@@ -1365,8 +1421,9 @@ mip chains keep their existing upload and compression path. Unsupported contexts
 creation retain CPU preparation. Native scratch textures and shaders are released
 before their owning context is destroyed.
 
-Asset workers also compress each authored level into 4x4 blocks with the
-vendored etcpak encoders (`AssetImage::compressBlocks`,
+With `GLOB2_HD_BLOCK_COMPRESSION=1` (HD sprite frames are uncompressed by
+default, see above), asset workers also compress each authored level into 4x4
+blocks with the vendored etcpak encoders (`AssetImage::compressBlocks`,
 [inventory](../../third_party/README.md#texture-block-compression)), so the
 graphics thread uploads blocks and the driver never encodes. Desktop legacy
 OpenGL picks the format at context creation: BC3 where the device has S3TC, as

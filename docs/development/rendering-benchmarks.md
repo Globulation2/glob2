@@ -283,7 +283,10 @@ The scenes use the memory scenario's Honeycomb 256 save (`--prepare` makes it):
 the bare map at the overview zoom with health bars (`map-far`), and the whole
 in-game screen (`GameGUI::drawAll`: HUD panel, minimap, top bar, health and food
 bars, the selection) at the overview zoom, the default zoom with a unit
-selected, zoomed in to HD terrain, panned, and on the small SmallForTwo map.
+selected, either side of the HD sprite policy's threshold (`gui-below-1x`,
+`gui-above-1x`), at the default zoom on a 2x display (`gui-2x-display`,
+`GLOB2_UI_SCALE=2`), zoomed in to HD terrain, panned, and on the small
+SmallForTwo map.
 `--scenes` picks a subset and `--renderers` a list of backends.
 
 Inputs are pinned so renderers draw the same thing: device tier `high`
@@ -305,7 +308,13 @@ A pixel takes the smallest difference to the other image within `--shift`
 pixels (1 by default), so an edge one pixel out of place does not count while a
 missing sprite or a wrong colour does. The run exits 1 when a renderer fails or
 more than `--max-over-8` percent of its pixels (2% by default; the maintainer's parity bar) differ by more
-than 8 levels; `--max-over-32` adds a limit on the share over 32 levels.
+than 8 levels; `--max-over-32` adds a limit on the share over 32 levels. The bar
+covers the GPU-backed renderers (legacy GL, portable SDL, SDL GPU, programmable
+GL), with HD on and off. The software renderer is drawn and reported in an
+`info` column, so a crash or a blank capture still shows, but it is left out of
+the exit status: it has no filtering, draws native artwork at every zoom (see
+the [HD sprite policy](../architecture/rendering.md#hd-sprite-policy)) and
+leaves out several effects.
 
 The benchmark options behind it: `GLOB2_BENCH_GUI=1` draws the game screen in
 the flat fixture, centred on the local colony at `GLOB2_BENCH_ZOOM`, with

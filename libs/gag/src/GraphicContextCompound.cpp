@@ -418,6 +418,15 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 		for (auto &level : surface->preparedMips) std::vector<unsigned char>().swap(level.pixels);
 	}
 
+	bool GraphicContext::deviceHighResolutionRoom() const
+	{
+		if (!deviceRenderer || renderer != deviceRenderer.get()) return true;
+		constexpr auto General = TextureDescriptor::BudgetClass::General;
+		// retainDeviceTexture admits up to half the class; new HD frames stop
+		// a quarter short of that, so other released surfaces keep their room.
+		return retainedDeviceTextureBytes(*deviceRenderer, General) < deviceTextureClassLimit(*deviceRenderer, General) / 8 * 3;
+	}
+
 	bool GraphicContext::hasDeviceTeamColor() const
 	{
 		// GLOB2_DISABLE_UNIT_SHADER selects the CPU team-colour cache here too,
@@ -444,9 +453,11 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 			return true;
 		}
 		std::vector<RenderMipLevel> levels;
-		if (team->highResolutionSampling) levels = deviceMipLevels(team, pixels);
+		// An HD sprite frame samples its one level linearly (HighResolutionPolicy).
+		if (team->highResolutionSampling && !team->singleLevelSampling) levels = deviceMipLevels(team, pixels);
 		const SDL_Rect source{team->getTexX(), team->getTexY(), team->getW(), team->getH()};
-		if (!renderer->blitTeamColor(team, pixels, team->contentRevision(), levels, source, SDL_FRect{x, y, w, h}, alpha, hueShift))
+		if (!renderer->blitTeamColor(team, pixels, team->contentRevision(), levels, source, SDL_FRect{x, y, w, h}, alpha, hueShift,
+		                             team->singleLevelSampling))
 			return false;
 		releaseDeviceRgbaLevels(team, levels);
 		++drawCalls;
@@ -485,6 +496,16 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
                     float(source.x)/pixels->w, float(source.y)/pixels->h,
                     float(source.x+source.w)/pixels->w, float(source.y+source.h)/pixels->h, alpha/255.f),
                     uploadSource, pixels, uploadSource->contentRevision());
+                ++drawCalls;
+                return;
+            }
+            if (renderer == deviceRenderer.get() && surface->singleLevelSampling) {
+                // An HD sprite frame: its one level, sampled linearly, as every
+                // renderer samples it (HighResolutionPolicy).
+                if (spriteBatch.owner == this) spriteBatch.flush();
+                BudgetClassScope budget(*renderer, surface->deviceBudgetClass);
+                renderer->blitLinear(surface, pixels, surface->contentRevision(), SDL_Rect{sx,sy,sw,sh},
+                                     SDL_FRect{x,y,w,h}, alpha);
                 ++drawCalls;
                 return;
             }
