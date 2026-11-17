@@ -185,7 +185,7 @@ void MapDrawer::prepareSceneMapFrame(const PresentationFrame &scene, int localTe
 {
     view.render.skinPreview().setVisible(globalContainer->settings.showColonySkins);
     view.render.skinPreview().poll();
-    view.render.animationTime += view.render.animationClock.advance(paused);
+    view.render.advanceAnimation(paused);
     const Uint32 visibleTeams = globalContainer->isViewingGame() ? globalContainer->replayVisibleTeams
         : scene.entities.teams[localTeam].mask;
     if (globalContainer->settings.smoothFog && !(drawOptions & Game::DRAW_WHOLE_MAP))
@@ -239,6 +239,9 @@ void MapDrawer::drawSceneMapRegion(const PresentationFrame& scene, int sx, int s
 	GAGCore::FrameDrawBatch frameBatch(globalContainer->gfx);
 	const SceneMap& map = scene.map;
 	int& time = view.render.animationTime;
+	// Terrain animation interpolates within steps: its crossfades and surf move
+	// by exactly the time elapsed every frame (AnimationClock).
+	const AnimationTime presentation = view.render.animationNow();
 	int left = (sx >> 5);
 	int top = (sy >> 5);
 	int right = ((sx + sw + 31) >> 5);
@@ -357,10 +360,10 @@ void MapDrawer::drawSceneMapRegion(const PresentationFrame& scene, int sx, int s
 			if (terrain.needsBackdrop(frame.target, scene.map))
 				drawBackdrop();
 			if (terrain.prepare(frame.target, scene.map, frame.left, frame.top, frame.right, frame.bottom,
-				frame.viewportX, frame.viewportY, frame.visibleTeams, frame.options & Game::DRAW_WHOLE_MAP, time, complete))
+				frame.viewportX, frame.viewportY, frame.visibleTeams, frame.options & Game::DRAW_WHOLE_MAP, presentation, complete))
 			{
 				terrain.drawPrepared(frame.target, frame.viewportX, frame.viewportY,
-					frame.options & Game::DRAW_WHOLE_MAP, time);
+					frame.options & Game::DRAW_WHOLE_MAP, presentation);
 				direct = true;
 			}
 		}
@@ -376,7 +379,7 @@ void MapDrawer::drawSceneMapRegion(const PresentationFrame& scene, int sx, int s
 		{
 			direct = view.render.directTerrain().draw(frame.target, scene.map, frame.left, frame.top,
 				frame.right, frame.bottom, frame.viewportX, frame.viewportY, frame.visibleTeams,
-				frame.options & Game::DRAW_WHOLE_MAP, time);
+				frame.options & Game::DRAW_WHOLE_MAP, presentation);
 		}
 		catch (const std::bad_alloc &) { /* Pages remain available. */ }
 	}
@@ -398,7 +401,7 @@ void MapDrawer::drawSceneMapRegion(const PresentationFrame& scene, int sx, int s
 			!(frame.options & (Game::DRAW_TILED_CAPTURE | Game::DRAW_COMPLETE_TERRAIN));
 	const bool cached = pagesForView && pagesForView->prepare(scene.map, frame.terrain,
 		frame.left, frame.top, frame.right, frame.bottom, frame.viewportX, frame.viewportY,
-		frame.visibleTeams, frame.options & Game::DRAW_WHOLE_MAP, time,
+		frame.visibleTeams, frame.options & Game::DRAW_WHOLE_MAP, presentation,
 		frame.options & Game::DRAW_TILED_CAPTURE);
 	if (cached)
 	{

@@ -457,12 +457,16 @@ profile, a low-roughness contour, so the waterline is a gentle curve the wash ca
 follow instead of a row of teeth. A material with surf counts as
 animated: its pages re-blend whenever the wash advances, also without texture
 animation. The optional `ticks` (default 1, at most `period`) advances the wash
-only once per that many animation ticks, so a material with still artwork can
-re-blend its pages about ten times a second (`ticks` 6) instead of every frame.
-The shipped waters all animate and re-blend every frame for their texture
-crossfade, so they keep `ticks` 1 for the smoothest wash. Surf is presentation only and never touches the
-simulation. `TerrainVisual::applySurf` is the integer reference that the
-`terrain-compose` shader mirrors exactly.
+of composed pages only once per that many animation ticks, so a material with
+still artwork can re-blend its pages about ten times a second (`ticks` 6)
+instead of every frame. The shipped waters all animate and re-blend every frame
+for their texture crossfade, so they keep `ticks` 1. Surf is presentation only
+and never touches the simulation. `TerrainVisual::applySurf` is the integer
+reference that the `terrain-compose` shader mirrors exactly. The direct pass
+moves the wash continuously instead: its phase is the reference's at every
+whole surf step and interpolates linearly between them (see
+[animation clock and smoothness](#animation-clock-and-smoothness)), so it
+matches the reference to well under one 1024th of a wash at whole steps.
 
 ## Caches and compatibility
 
@@ -690,6 +694,65 @@ metadata.
 Keep reference screenshots, benchmark output and temporary compiled tilesets under
 `artifacts/`; publish review evidence separately from durable documentation.
 
+## Animation clock and smoothness
+
+Water, surf and lava move by exactly the time elapsed on every presented frame,
+at any frame rate, and in step across the view and the renderers.
+`AnimationClock` (`src/render/AnimationClock.h`) counts real time in steps of
+1/60 s, the rate the materials' `animation_ticks` were tuned at; each frame it
+returns the whole steps and the fraction of the next step already elapsed. A
+view's presentation time (`MapRenderState::animationNow()`, an `AnimationTime`)
+is those steps plus that fraction, the same for every consumer of the frame. A
+long frame counts as at most 0.1 s, a pause freezes both parts, and
+`fixedSteps` (whole steps, no fraction), `simulatedFrameNs` (a fixed frame
+interval, fractions included) and `presetNext` keep tests and captures
+deterministic.
+
+What reads it:
+
+- **Direct pass** (SDL GPU, Programmable GL, Legacy OpenGL). `DirectTerrain`
+  hands the shaders the time wrapped at `TerrainVisual::animationPeriod`, the
+  least common multiple of every flipbook cycle (frames × ticks) and surf period
+  of the catalogue (81600 ticks, 22.7 minutes, for the shipped one). Every
+  animation repeats within it, so the wrap is seamless, and a float resolves
+  1/128 of a tick there however long a session runs. `material()` in
+  `DirectTerrainShader.h` crossfades by the elapsed share of the flipbook frame,
+  and `surf()` takes the wash phase from the continuous time; authored blend
+  steps and surf `ticks` quantise composed pages only.
+- **Portable SDL** draws each animated cell's next keyframe at the elapsed share
+  of the keyframe interval (`AnimationTime::cycle`,
+  `SoftwareTerrainCache::keyframeAlpha`), from the same presentation time.
+- **Whole-step consumers** read `steps`: flipbook frame selection and the HD
+  streaming window, composed pages (the software renderer and browser Legacy
+  OpenGL, which stay correct and in phase but move only on frames that cross a
+  step), fertile-glint overlays, area markers and clouds.
+
+These guards must stay green; they fail if any link of the chain rounds time
+back to whole steps:
+
+- `AnimationClock` unit cases (headless): at 30, 60, 120 and 144 Hz, with and
+  without jitter, every frame's presentation time advances by exactly the
+  elapsed time; crossfade weights move by the elapsed share of their interval;
+  the wrapped time stays continuous and precise after a month of steps.
+- `TerrainAnimation` headless cases: the shipped catalogue's animations all
+  repeat within its wrap period; the direct pass's crossfade weight and wash
+  phase, computed as `DirectTerrainShader.h` computes them (whose expressions the
+  case also pins) from the uniform `DirectTerrain` passes, move by exactly the
+  elapsed time every frame and across the wrap; the portable keyframe alpha
+  moves by the elapsed share every frame.
+- `TerrainAnimation` display cases, one per renderer: a sand island in water
+  drawn through the whole map draw path for 24 frames at each rate, starting
+  just before the wrap. Each frame waits until terrain has settled at its time,
+  then: the open water changes by an amount proportional to the frame's
+  interval, never zero; shore and open water change in proportion, with no
+  shoreline flashes; open-water cells in different pages that matched at the
+  start stay identical. The software renderer instead changes exactly on the
+  frames that cross a step. A last case draws the same scene on every renderer
+  at a whole step and half a step later and checks they agree, and that each
+  interpolating renderer's half-step image is nearer the reference's at that
+  time than at the step before. `GLOB2_ANIMATION_TEST_RENDERERS` limits the
+  renderers on a machine where some must not run.
+
 ## Animated terrain on the portable renderer
 
 The portable SDL renderer has only 2D textures and blend modes, so it cannot
@@ -706,10 +769,13 @@ page's opacity and `k + 1` over it at the fraction of `K` elapsed, the weight th
 direct pass blends its two endpoints with. Composition is linear in each
 animated texel, so this crossfade equals the composition of the crossfaded
 textures: for water, whose blend steps equal its ticks, it is the direct pass's
-image to within 8-bit alpha rounding. Surf is interpolated linearly between
-keyframes 0.1 s apart, well under a pixel of wash. Lava (16 ticks, 4 blend
-steps) is sampled every 6 ticks and so blends between its own steps, within a
-quarter of its frame difference.
+image to within 8-bit alpha rounding. The weight comes from the
+presentation time, fraction included, so the crossfade moves every frame (see
+[animation clock and smoothness](#animation-clock-and-smoothness)). Surf is
+interpolated linearly between keyframes 0.1 s apart, well under a pixel of
+wash. Lava (16 ticks, 4 blend steps) is sampled every 6 ticks and so blends
+between its own composed steps: smooth, and within an eighth of its frame
+difference of the direct pass's continuous crossfade.
 
 Keyframes compose on the presentation workers from a material snapshot of the
 compositor prepared at the keyframe's time: the view prepares the compositor

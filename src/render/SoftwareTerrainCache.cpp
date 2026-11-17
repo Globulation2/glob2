@@ -794,7 +794,7 @@ int SoftwareTerrainCache::capturePixelsPerCell(int width, int height)
 
 bool SoftwareTerrainCache::prepare(const SceneMap &map, GAGCore::Sprite &sprite, int left, int top,
 								   int right, int bottom, int vx, int vy, Uint32 visibleTeams,
-								   bool wholeMap, int time, bool tiledCapture)
+								   bool wholeMap, AnimationTime time, bool tiledCapture)
 {
 	const bool fixedDensity = benchmarkDownsample > 0 && !tiledCapture;
 	return prepareAtResolution(map, sprite, left, top, right, bottom, vx, vy, visibleTeams,
@@ -1574,11 +1574,14 @@ std::size_t SoftwareTerrainCache::keyframeBytes() const
 	return total;
 }
 
-void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor, int time, bool highResolution)
+void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor, AnimationTime time, bool highResolution)
 {
 	const int interval = keyframeInterval;
-	const std::int64_t now = floorDivide(time, interval);
-	const int weight = int(std::int64_t(time) - now * interval);
+	// The key before the presentation time and the share of the interval
+	// to the next one elapsed: continuous, like the direct pass's crossfade.
+	const auto cycle = time.cycle(interval);
+	const std::int64_t now = cycle.index;
+	const float weight = cycle.within;
 	// Finished keyframes go into their slots, uploaded as dirty rectangles.
 	std::vector<std::shared_ptr<KeyframeSet>> written;
 	std::erase_if(keyframeJobs, [&](const std::shared_ptr<KeyframeJob> &job)
@@ -1648,6 +1651,7 @@ void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor
 	};
 	std::vector<Want> wants;
 	keyframeDraws.clear();
+	keyframeMisses = 0;
 	const Uint64 ticks = SDL_GetTicks();
 	const SDL_Rect margin{paintBounds.x - 64, paintBounds.y - 64, paintBounds.w + 128, paintBounds.h + 128};
 	const auto &catalog = compositor.catalog();
@@ -1705,6 +1709,7 @@ void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor
 				const auto &slots = set->entries[entry].slots;
 				const bool first = slots[ringSlot(now)].key == now, second = slots[ringSlot(now + 1)].key == now + 1;
 				ready = ready && first && second;
+				keyframeMisses += !(first && second);
 				if (!first && !second)
 					continue; // The page's own pixels show until a keyframe arrives.
 				const auto source = [&](std::int64_t key)
@@ -1714,9 +1719,8 @@ void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor
 									shown.w * scale / reduction, shown.h * scale / reduction};
 				};
 				KeyframeDraw draw{set.get(), shown, source(first ? now : now + 1), source(now + 1), copy.alpha, 0};
-				if (first && second && weight)
-					draw.secondAlpha = Uint8((unsigned(copy.alpha) * unsigned(weight) * 2 + unsigned(interval)) /
-											 (2 * unsigned(interval)));
+				if (first && second && weight > 0)
+					draw.secondAlpha = keyframeAlpha(copy.alpha, weight);
 				keyframeDraws.push_back(draw);
 			}
 		// A page arriving over a fallback fades in once its animated cells
@@ -1835,10 +1839,12 @@ void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor
 
 bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Sprite &, int left,
 											   int top, int right, int bottom, int vx, int vy,
-											   Uint32 visibleTeams, bool wholeMap, int time,
+											   Uint32 visibleTeams, bool wholeMap, AnimationTime presentation,
 											   int preferredResolution, bool tiledCapture,
 											   int preferredDownsample)
 {
+	// Pages compose at whole steps; only the keyframe crossfade interpolates.
+	const int time = presentation.steps;
 	if (registry.get() != &map.terrainRegistry() || assets != map.frozenAssetBundle())
 	{
         chunks.clear();
@@ -3558,7 +3564,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				launchUnits += ChunkTiles * ChunkTiles;
 			}
 		if (keyframing)
-			updateKeyframes(compositor, time, highResolution);
+			updateKeyframes(compositor, presentation, highResolution);
 		// A view that has stopped launching work lets its snapshot's texture
 		// copies go, and densities it left let their animated tiles go.
 		if (pending.empty() && frame > materialsUsed + 120)

@@ -220,6 +220,7 @@ ENGINE_TESTS = [
     '#src/render/terrain/TerrainStonesTest.cpp',
     '#src/render/terrain/TerrainContinuityTest.cpp',
     ('#src/render/TerrainPresentationTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('#src/render/TerrainAnimationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#libs/gag/src/RuntimePackCheck.cpp', dict(require={'opengl'})),
     ('#libs/gag/src/TextRasterHarness.cpp', dict(require={'opengl'})),
     ('#src/render/torus/TorusRenderIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),

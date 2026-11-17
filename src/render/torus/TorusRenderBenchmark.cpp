@@ -239,7 +239,7 @@ class TorusRenderBenchmark
         gui.tickRate.sample(now - TickRateMeter::UPDATE_MS, 0, 0);
         gui.tickRate.sample(now, 0, 0);
         AnimationClock::fixedSteps = 1;
-        gui.view.render.animationTime = 21;
+        gui.view.render.pinAnimation(21);
         gui.drawAll(gui.localTeamNo);
     }
 
@@ -593,6 +593,11 @@ static int run(int argc, char **argv)
             // so memory measurements pace frames like a display would.
             const int frameIntervalMs = std::max(0, std::getenv("GLOB2_BENCH_FRAME_INTERVAL_MS")
                 ? std::atoi(std::getenv("GLOB2_BENCH_FRAME_INTERVAL_MS")) : 0);
+            // GLOB2_BENCH_ANIMATION_FRAME_US: map animation advances by exactly this
+            // many microseconds each frame instead of the wall clock, as a display
+            // at that rate would, so frame sequences are reproducible.
+            if (const char *animationFrame = std::getenv("GLOB2_BENCH_ANIMATION_FRAME_US"))
+                AnimationClock::simulatedFrameNs = std::uint64_t(std::max(0.0, std::atof(animationFrame) * 1000.0));
             benchmarkStart = SDL_GetPerformanceCounter();
             // A low-memory trim at one measured frame (GLOB2_BENCH_TRIM_AT=frame).
             // Unset means never: warmup frames are negative, so -1 would trim
@@ -987,7 +992,7 @@ static int run(int argc, char **argv)
                         -(pan ? cameraFrame % 8 * 4.f : fraction)*zoom,
                         -(pan ? cameraFrame % 16 * 2.f : fraction)*zoom, 0, 0, width, height);
                     const bool pausePresentation = std::getenv("GLOB2_BENCH_PAUSE_PRESENTATION");
-                    if (pausePresentation) gui.view.render.animationTime = 22;
+                    if (pausePresentation) gui.view.render.pinAnimation(22);
                     MapDrawer::drawMap(0, 0, drawW, drawH, 0, 0,
                         panX, panY, 0, gui.view, frameOptions, nullptr, nullptr, pausePresentation,
                         detailForZoom(gui.game, zoom));
@@ -1041,7 +1046,7 @@ static int run(int argc, char **argv)
                             gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), GAGCore::Color(0, 0, 0));
                             gfx->resetDrawCallCount();
                             gfx->beginMapTransform(zoom, 0, 0, 0, 0, width, height);
-                            gui.view.render.animationTime = 22;
+                            gui.view.render.pinAnimation(22);
                             glFinish();
                             const auto cpuStart = std::clock();
                             MapDrawer::drawMap(0, 0, drawW, drawH, 0, 0, panX, panY, 0,
@@ -1110,13 +1115,13 @@ static int run(int argc, char **argv)
         {
             const bool pausePresentation=std::getenv("GLOB2_BENCH_PAUSE_PRESENTATION");
             gui.gamePaused=pausePresentation;
-            if(pausePresentation)gui.view.render.animationTime=22;
+            if(pausePresentation)gui.view.render.pinAnimation(22);
             const Uint32 initialChecksum = gui.game.checkSum(nullptr, nullptr, nullptr, true);
             globalContainer->settings.clouds = clouds;
             globalContainer->settings.cloudShadows = clouds;
             measure(clouds ? "2D clouds" : "2D no clouds", [&](int) {
                 globalContainer->gfx->setClipRect();
-                if(pausePresentation)gui.view.render.animationTime=22;
+                if(pausePresentation)gui.view.render.pinAnimation(22);
                 MapDrawer::drawMap(0, 0, width, height, 0, 0, x, y, 0, gui.view, Game::DRAW_WHOLE_MAP,
                     nullptr,nullptr,pausePresentation);
             });
@@ -1130,7 +1135,7 @@ static int run(int argc, char **argv)
                 ringZoom = std::clamp(float(std::atof(zoom)), ringZoom, float(MapCamera::MAX_ZOOM));
             assert(view.draw(gui.view.drawnScene(),gui.game.gui, 0, Game::DRAW_WHOLE_MAP, x, y, width, height, ringZoom));
             measure(clouds ? "Torus clouds" : "Torus no clouds", [&](int) {
-                if(pausePresentation)gui.view.render.animationTime=22;
+                if(pausePresentation)gui.view.render.pinAnimation(22);
                 view.amount = 1;
                 view.lastFrame = SDL_GetTicks();
                 view.setViewport((x + 1) & gui.game.map.getMaskW(), (y + 1) & gui.game.map.getMaskH());

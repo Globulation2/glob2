@@ -3,6 +3,7 @@
 
 #include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_rect.h>
+#include "render/AnimationClock.h"
 #include <cstddef>
 #include <memory>
 #include <span>
@@ -22,7 +23,7 @@ public:
     // packet for the view.
     bool draw(GAGCore::GraphicContext &, const SceneMap &, int left, int top,
               int right, int bottom, int viewportX, int viewportY,
-              Uint32 visibleTeams, bool wholeMap, int animationTime);
+              Uint32 visibleTeams, bool wholeMap, AnimationTime animationTime);
     bool preparing() const;
     // A device or budget limit stopped direct terrain for this map.
     bool failed() const;
@@ -36,14 +37,14 @@ public:
     // streamed HD artwork.
     bool prepare(GAGCore::GraphicContext &, const SceneMap &, int left, int top,
                  int right, int bottom, int viewportX, int viewportY,
-                 Uint32 visibleTeams, bool wholeMap, int animationTime, bool complete = false);
+                 Uint32 visibleTeams, bool wholeMap, AnimationTime animationTime, bool complete = false);
     std::span<const SDL_Rect> preparedRegions() const;
     // Game loading: builds the map's per-cell tables and its whole-map base
     // masks now, so the first frame finds them (SDL GPU and Legacy GL).
     void preload(GAGCore::GraphicContext &, const SceneMap &);
     // Draw the prepared view, with the time and view prepare used.
     void drawPrepared(GAGCore::GraphicContext &, int viewportX, int viewportY,
-                      bool wholeMap, int animationTime);
+                      bool wholeMap, AnimationTime animationTime);
     // Mixed visible cells still waiting for their masks after the last prepare.
     std::size_t pendingHdMasks() const;
     // Mixed cells of the whole map whose low-density base mask is still missing.
@@ -83,7 +84,7 @@ private:
                         int viewportX, int viewportY, Uint32 visibleTeams, bool wholeMap, int tile, bool complete);
     bool drawInternal(GAGCore::GraphicContext &, const SceneMap &, int left, int top,
                       int right, int bottom, int viewportX, int viewportY,
-                      Uint32 visibleTeams, bool wholeMap, int animationTime,
+                      Uint32 visibleTeams, bool wholeMap, AnimationTime animationTime,
                       bool complete, bool prepareOnly);
     struct State;
     std::unique_ptr<State> state;

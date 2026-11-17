@@ -2,8 +2,10 @@
 #pragma once
 #include <SDLGraphicContext.h>
 #include "terrain/TerrainCompositor.h"
+#include "AnimationClock.h"
 #include <algorithm>
 #include <atomic>
+#include <cmath>
 #include <array>
 #include <cstdint>
 #include <map>
@@ -170,6 +172,13 @@ class SoftwareTerrainCache
 	};
 	//! How long a page that arrives over a fallback takes to fade in.
 	static constexpr Uint64 FadeMs = 150;
+	//! The opacity the portable renderer draws an animated cell's next keyframe
+	//! at over its current one: the page's opacity times the share of the
+	//! keyframe interval elapsed (AnimationTime::cycle), continuous in time.
+	static Uint8 keyframeAlpha(Uint8 pageAlpha, float weight)
+	{
+		return Uint8(std::lround(float(pageAlpha) * std::clamp(weight, 0.f, 1.f)));
+	}
 
   private:
     bool tryBuildCpuPage(Chunk&, const std::array<Tile, ChunkTiles*ChunkTiles>&,
@@ -177,7 +186,7 @@ class SoftwareTerrainCache
         bool nativeAvailable = false, std::array<bool, ChunkTiles*ChunkTiles> *dirty = nullptr);
 	bool prepareAtResolution(const SceneMap &, GAGCore::Sprite &, int left, int top, int right,
 							 int bottom, int vx, int vy, Uint32 visibleTeams, bool wholeMap,
-							 int animationTime, int preferredResolution, bool tiledCapture = false,
+							 AnimationTime animationTime, int preferredResolution, bool tiledCapture = false,
 							 int preferredDownsample = 0);
 	// Frees kept masks of pages not drawn this frame, oldest first, until
 	// `needed` more bytes fit the mask budget. Returns whether they now fit.
@@ -259,6 +268,7 @@ class SoftwareTerrainCache
 		Uint8 firstAlpha, secondAlpha; // 0: not drawn.
 	};
 	std::vector<KeyframeDraw> keyframeDraws;
+	std::size_t keyframeMisses = 0;
 	// The keyframe this frame's animation time prepares the compositor for.
 	std::int64_t keyframeTarget(int time);
 	// Takes or refreshes that keyframe's snapshot after the compositor prepared it.
@@ -269,7 +279,7 @@ class SoftwareTerrainCache
 	KeySnapshot *keySnapshot(std::int64_t key);
 	// Installs finished keyframes, launches missing ones for the cells the
 	// view shows (and a margin) and lists this frame's keyframe draws.
-	void updateKeyframes(TerrainVisual::Compositor &, int time, bool highResolution);
+	void updateKeyframes(TerrainVisual::Compositor &, AnimationTime time, bool highResolution);
 	void classifyKeyframes(Chunk &, const TerrainVisual::Compositor &);
 	void dropKeyframes();
 	// The revision a page records for a material: animated materials do not
@@ -361,11 +371,14 @@ class SoftwareTerrainCache
 	// editor and other complete draws leave this off.
 	bool deferBuilds = false;
 	bool complete() const { return !incomplete; }
+	//! Animated cells the last prepare showed without both of their current
+	//! keyframes (portable renderer): they hold a still or a single keyframe.
+	std::size_t missingKeyframeCells() const { return keyframeMisses; }
 	std::size_t pendingPages() const { return pending.size(); }
 	// Benchmark override for comparing stable page density with adaptive sampling.
 	int benchmarkDownsample = 0;
 	bool prepare(const SceneMap &, GAGCore::Sprite &, int left, int top, int right, int bottom,
-				 int vx, int vy, Uint32 visibleTeams, bool wholeMap, int animationTime = 0,
+				 int vx, int vy, Uint32 visibleTeams, bool wholeMap, AnimationTime animationTime = {},
 				 bool tiledCapture = false);
 	void draw(GAGCore::GraphicContext &);
 	std::size_t bytes() const;
