@@ -1155,6 +1155,8 @@ class SDLGPUDevice final : public RenderDevice
         reap(); return submission.identity <= completed ? RenderCompletion::Complete : RenderCompletion::Pending;
     }
     void present() override;
+    void setPresentationHeld(bool held) override { presentationHeld = held; }
+    bool presentationHeld = false;
     void discardFrame() override;
     void reset() override
     {
@@ -2090,7 +2092,8 @@ void SDLGPUDevice::present()
     if (work.size() > SubmissionLimit) throw RenderAdmissionDeferred("SDL GPU completion slot busy");
     Work entry; auto *commands = SDL_AcquireGPUCommandBuffer(device); if (!commands) fail("acquire presentation commands");
     SDL_GPUTexture *swapchain = nullptr; Uint32 w = 0, h = 0;
-    if (!SDL_WaitAndAcquireGPUSwapchainTexture(commands, window, &swapchain, &w, &h)) {
+    // A held frame completes like any other but leaves the window's image.
+    if (!presentationHeld && !SDL_WaitAndAcquireGPUSwapchainTexture(commands, window, &swapchain, &w, &h)) {
         SDL_CancelGPUCommandBuffer(commands); fail("acquire swapchain");
     }
     if (swapchain) {
@@ -2104,6 +2107,9 @@ void SDLGPUDevice::present()
     }
     try { submitWork(commands, entry); frameOpen=false; }
     catch (...) { if (commands) SDL_CancelGPUCommandBuffer(commands); release(entry); throw; }
+    // Without the swapchain wait nothing paces held frames: each waits for its
+    // work, so its uploads have landed and the next frame finds room to submit.
+    if (presentationHeld) { if (!SDL_WaitForGPUIdle(device)) fail("wait for held frame"); reap(); }
 }
 void SDLGPUDevice::discardFrame()
 {

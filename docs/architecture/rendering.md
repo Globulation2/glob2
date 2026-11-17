@@ -1153,6 +1153,17 @@ the new device commits the preference. Failure restores the previous family, wit
 software as the final fallback; failure does not save the unsuccessful preference.
 Rendering preference changes do not require restarting the game.
 
+After the loading screen, the first screen's first 30 frames (the main menu
+and its colony, or a first-run question in front of them) are drawn but not
+shown (`GraphicContext::holdPresentation`, from `Application`): every renderer
+streams terrain, HD artwork and atlases and settles while the last loading-screen
+frame stays up, about half a second. A held frame is recorded, submitted and
+completed like any other; only the final step differs: SDL GPU acquires no
+swapchain image and waits for the frame's work (the swapchain wait normally
+paces it), programmable GL skips its screen blit and swap, the portable renderer
+flushes instead of presenting, and legacy OpenGL and the software renderer skip
+their swap. `PRESENTATION_HOLD released ms=` logs when it ends.
+
 Switch status also reports the completed transition duration. Context recovery
 recreates the device and shader objects before restoring logical resources. A fatal
 submission error schedules fallback at a presentation boundary; an unavailable
