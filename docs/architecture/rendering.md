@@ -1159,7 +1159,7 @@ not the renderer's architecture; the per-platform rows live in one table,
 | --- | --- |
 | Linux, Windows | programmable GL, Legacy GL (builds with OpenGL), SDL GPU, Portable SDL, Software |
 | macOS | programmable GL, SDL GPU, Legacy GL, Portable SDL, Software |
-| Android, iOS | Portable SDL, Software |
+| Android, iOS | SDL GPU (Vulkan, Metal), Portable SDL, Software |
 | Browser | on a probed WebGL2 adapter: programmable GL, Legacy GL (builds with it), Software; otherwise Software. WebGPU stays opt-in |
 
 The Linux row comes from a 1x perf build (master `d6488cac13`): the honeycomb-256
@@ -1188,10 +1188,11 @@ comes from the same memory scenario on a Retina Mac (master `5524479f28`, a
 | Portable SDL | 4.5 ms | 57.7 ms | 418 ms | 2347 MiB | 2730 MiB |
 
 Programmable GL has the best tail, SDL GPU the smallest footprint, and Legacy GL
-the largest footprint. Phones have no device measurements, so Android and iOS keep
-Portable SDL, though their packages ship the SDL GPU shaders (Android requires the
-Vulkan set, iOS device builds the Metal set). Revisit the rows when phone
-measurements or the SDL GPU memory and HD-stall investigation land.
+the largest footprint. Phones put SDL GPU first (user decision, 2026-11-17): it is the fully GPU
+renderer on Vulkan and Metal, and the packages ship and verify its shaders
+(Android requires the Vulkan set, iOS device builds the Metal set). Portable SDL
+follows where the device or shaders are unavailable, as in the iOS Simulator, or
+when the device is lost. Revisit the rows when phone measurements land.
 
 In the browser, programmable GL leads on a probed WebGL2 adapter (user decision,
 2026-11-17): Legacy GL there runs on Emscripten's fixed-function emulation, which

@@ -396,7 +396,7 @@ TEST_SUITE("SettingsGraphics")
         CHECK(flags == settings.screenFlags);
 #elif defined(GLOB2_MOBILE)
         CHECK((flags & GraphicContext::PREFERDEVICE) != 0);
-        CHECK(order == std::vector{RendererBackend::PortableSDL, RendererBackend::Software});
+        CHECK(order == std::vector{RendererBackend::SDLGPU, RendererBackend::PortableSDL, RendererBackend::Software});
 #else
         CHECK((flags & GraphicContext::USEGPU) != 0);
         CHECK((flags & GraphicContext::PREFERDEVICE) != 0);
