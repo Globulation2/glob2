@@ -127,16 +127,22 @@ static void tiledCapture(bool hd = false)
     baseline.render.areaAnimationTick = 0;
     // A fresh view draws the overview until its terrain tables are ready, and
     // mixed cells their first material until their masks land: draw the
-    // reference until it is complete.
-    for (int attempt = 0; attempt < 400; ++attempt)
+    // reference until it is complete. Wait on a clock, not an attempt count:
+    // slow runners (software GL on CI) outlast a fixed number of short sleeps,
+    // and an incomplete reference would show up as a misleading pixel diff.
+    const auto referenceDeadline = std::chrono::steady_clock::now() + std::chrono::minutes(2);
+    bool referenceComplete = false;
+    while (!referenceComplete && std::chrono::steady_clock::now() < referenceDeadline)
     {
         glob2test::drawMap(game,0, 0, 2048, 2048, 0, 0, view.originX, view.originY, 0,
                      baseline, options | Game::DRAW_NO_CLOUD_LAYER, nullptr, nullptr, true, 128);
         Sprite::flushBatches(globalContainer->gfx);
         const auto *direct = baseline.render.existingDirectTerrain();
-        if (!direct || (!direct->preparing() && direct->pendingHdMasks() == 0)) break;
-        std::this_thread::sleep_for(std::chrono::milliseconds(2));
+        referenceComplete = !direct || (!direct->preparing() && direct->pendingHdMasks() == 0);
+        if (!referenceComplete) std::this_thread::sleep_for(std::chrono::milliseconds(2));
     }
+    INFO("The whole-map reference never finished preparing its terrain within two minutes");
+    REQUIRE(referenceComplete);
     std::vector<unsigned char> pixels(2048 * 2048 * 4);
     glReadPixels(0, 0, 2048, 2048, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -498,12 +504,13 @@ static void liveTerrainPressure(GAGCore::RendererBackend backend)
     const auto requested=SoftwareTerrainCache::capturePixelsPerCell(256,256);
     TorusView view;view.textureLimit=2048;view.toggle();
     // A capture is a complete draw: its map view builds the whole-map terrain
-    // base and its masks inside view.draw (over 100 s each under coverage
-    // instrumentation, and again after view.reset), and each later draw
-    // advances its regions. Bound the attempts, not the time: slow builds
-    // lengthen draws without adding any, and the runner's timeout catches a hang.
+    // base and its masks (over 100 s each under coverage instrumentation, and
+    // again after view.reset), and each later draw advances its regions. The
+    // base can build off the drawing thread, so short draws can run out any
+    // fixed attempt count first (8 s on a CI runner): bound the time instead.
     auto render=[&]{
-        for(unsigned attempt=0;attempt<256;++attempt){
+        const auto deadline=std::chrono::steady_clock::now()+std::chrono::minutes(10);
+        while(std::chrono::steady_clock::now()<deadline){
             if(!view.active())view.toggle();
             int vx=128,vy=128;
             REQUIRE(view.draw(glob2test::sceneOf(game),nullptr,0,Game::DRAW_WHOLE_MAP,
@@ -525,7 +532,7 @@ static void liveTerrainPressure(GAGCore::RendererBackend backend)
             if(recorded)return;
             SDL_Delay(1);
         }
-        FAIL("Torus never completed under pressure within 256 draws");
+        FAIL("Torus never completed under pressure within ten minutes");
     };
     render();REQUIRE(view.pixelsPerCell>0);REQUIRE(view.pixelsPerCell<requested);
     const auto reduced=view.pixelsPerCell;
