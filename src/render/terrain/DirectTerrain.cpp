@@ -188,6 +188,14 @@ struct DirectTerrain::State
             unsigned tile;
             std::array<unsigned, 2> phases{~0u, ~0u};
             std::array<TerrainVisual::Compositor::PhaseSource, 2> stamps{};
+            // The endpoint after next of an animated variant, filtered by the
+            // workers while the current two draw, so the step that needs it
+            // writes it at once instead of drawing a stale endpoint meanwhile.
+            struct Ahead {
+                unsigned phase = ~0u;
+                TerrainVisual::Compositor::PhaseSource stamp{};
+                std::vector<Pixel> tile;
+            } ahead;
         };
         Surface art, variants;
         std::size_t bytes = 0, variantBytes = 0; // bytes includes the variant table's.
@@ -315,6 +323,7 @@ struct DirectTerrain::State
             TerrainVisual::Compositor::PhaseSource stamp;
             TerrainVisual::Compositor::MaterialPixels input;
             std::vector<Pixel> tile;
+            bool ahead = false; // Kept with its entry (Entry::ahead), not written.
         };
         std::vector<Job> jobs;
         int pixels = 0;
@@ -1700,6 +1709,11 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
                 {
                     auto found = target->entries.find(job.slot);
                     if (found == target->entries.end() || found->second.tile != job.first) continue;
+                    if (job.ahead)
+                    {
+                        found->second.ahead = {job.phase, job.stamp, std::move(job.tile)};
+                        continue;
+                    }
                     const unsigned index = job.first + job.parity;
                     state->write(target->art, State::Art, int(index % targetColumns) * batch->pixels,
                                  int(index / targetColumns) * batch->pixels, batch->pixels, batch->pixels, job.tile.data());
@@ -1810,6 +1824,15 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
                 const bool native = !highResolutionFrames;
                 const auto stamp = compositor.phaseSource(source.material, source.variant, phase, native);
                 if (entry.phases[parity] == phase && entry.stamps[parity] == stamp) continue;
+                // An animation step whose endpoint the workers filtered ahead:
+                // written now, so the crossfade never draws a stale endpoint.
+                if (entry.ahead.phase == phase && entry.ahead.stamp == stamp &&
+                    entry.ahead.tile.size() == std::size_t(pixels) * pixels)
+                {
+                    jobs.push_back({&entry, parity, phase, stamp, nullptr, {}, std::move(entry.ahead.tile)});
+                    entry.ahead = {};
+                    continue;
+                }
                 // A variant new to the drawing atlas gets its tiles now, with
                 // its record; animation steps and a filling atlas go to the
                 // workers, one batch at a time, the old tiles drawing meanwhile.
@@ -1848,13 +1871,42 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
                 jobs.push_back({&entry, parity, phase, stamp,
                                 surface ? static_cast<const Uint32 *>(surface->pixels) : nullptr, std::move(input), {}});
             }
+            // While the current endpoints draw, the workers filter the one the
+            // next animation step needs (it replaces the current phase's tile).
+            if (endpoints == 2 && !complete && !transition && !batchBusy && background->jobs.size() < PhaseTiles)
+            {
+                const unsigned phase = (absolutePhase + 2) % material.animationFrames;
+                const unsigned parity = absolutePhase % 2;
+                const auto stamp = compositor.phaseSource(source.material, source.variant, phase, !highResolutionFrames);
+                const bool held = entry.phases[parity] == phase && entry.stamps[parity] == stamp;
+                const bool fetched = entry.ahead.phase == phase && entry.ahead.stamp == stamp;
+                if (!held && !fetched)
+                {
+                    const auto *surface = compositor.phaseSurface(source.material, source.variant, phase, !highResolutionFrames);
+                    TerrainVisual::Compositor::MaterialPixels input;
+                    if (!surface)
+                        input = compositor.phasePixels(source.material, source.variant, phase, !highResolutionFrames);
+                    else if (surface->w == stamp.size)
+                    {
+                        input.resize(std::size_t(stamp.size) * stamp.size);
+                        const auto *argb = static_cast<const Uint32 *>(surface->pixels);
+                        for (std::size_t i = 0; i < input.size(); ++i)
+                            input[i] = {Uint8(argb[i] >> 16), Uint8(argb[i] >> 8), Uint8(argb[i]), Uint8(argb[i] >> 24)};
+                    }
+                    if (input.size() == std::size_t(stamp.size) * stamp.size)
+                        background->jobs.push_back({slot, entry.tile, parity, phase, stamp, std::move(input), {}, true});
+                }
+            }
         }
         // Box-filter each block in premultiplied colour. Point samples at a
         // block's corner would read a tile's two edges asymmetrically, so
         // neighbouring variants, blended to meet at their borders, would not.
         // Workers only read the gathered sources and write their own tiles.
         const auto filter = [pixels](TileJob &job)
-        { State::filterTile(pixels, job.stamp.size, job.surfacePixels, job.input, job.tile); };
+        {
+            if (job.tile.empty()) // Not filtered ahead (Entry::ahead).
+                State::filterTile(pixels, job.stamp.size, job.surfacePixels, job.input, job.tile);
+        };
         state->filterTiles(jobs.size(), [&](std::size_t i) { filter(jobs[i]); });
         if (!background->jobs.empty())
         {

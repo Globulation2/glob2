@@ -582,6 +582,9 @@ to that many recompositions per phase (see
 reuses their pixels. Interactive HD terrain on Legacy OpenGL draws animated
 cells, including mixed shorelines, through the atlas shader. A separate source
 atlas holds visible current/next HD phases within 16 MiB and blends every frame.
+While a phase draws, the workers filter the endpoint after next
+(`Animation::Entry::ahead`), so the step that needs it writes it at once: a
+step never draws a stale endpoint while its new one is filtered.
 Static page draws omit those complete cells, so alpha and fog apply once.
 Shore calming fades wave contrast over two tiles from the shoreline.
 Device composition keeps up to 1024 material source
@@ -745,18 +748,27 @@ back to whole steps:
   case also pins) from the uniform `DirectTerrain` passes, move by exactly the
   elapsed time every frame and across the wrap; the portable keyframe alpha
   moves by the elapsed share every frame.
-- `TerrainAnimation` display cases, one per renderer: a sand island in water
+- `TerrainAnimation` display cases, two per renderer: a sand island in water
   drawn through the whole map draw path for 24 frames at each rate, starting
-  just before the wrap. Each frame waits until terrain has settled at its time,
-  then: the open water changes by an amount proportional to the frame's
-  interval, never zero; shore and open water change in proportion, with no
-  shoreline flashes; open-water cells in different pages that matched at the
-  start stay identical. The software renderer instead changes exactly on the
-  frames that cross a step. A last case draws the same scene on every renderer
-  at a whole step and half a step later and checks they agree, and that each
-  interpolating renderer's half-step image is nearer the reference's at that
-  time than at the step before. `GLOB2_ANIMATION_TEST_RENDERERS` limits the
-  renderers on a machine where some must not run.
+  just before the wrap. The first case waits until terrain has settled at each
+  frame's time; the second draws the frames back to back at the display's pace
+  while background work lands when it lands. For each frame, the crossfade
+  weight the open water shows between the two flipbook frames around its time
+  (a least-squares fit over the channels those frames differ in by 12 levels or
+  more, so 8-bit rounding averages out) must be within 0.03 of the share of the
+  flipbook frame elapsed. The water and the wash change every frame; the wash
+  moves at a steady pace with no shoreline flashes; open-water cells in
+  different pages that matched at the start stay identical. The software
+  renderer instead shows the weight of the whole step and changes exactly on
+  the frames that cross a step. The mean change of one 8-bit frame is no
+  measure of smoothness at high frame rates: a water frame differs from the next
+  by a few levels, so most pixels move by less than one level a frame, and
+  rounding, not the animation, sets which frames change most. A last case
+  draws the same scene on every renderer at a whole step and half a step later
+  and checks they agree, and that each interpolating renderer's half-step image
+  is nearer the reference's at that time than at the step before.
+  `GLOB2_ANIMATION_TEST_RENDERERS` limits the renderers on a machine where some
+  must not run.
 
 ## Animated terrain on the portable renderer
 
