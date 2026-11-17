@@ -169,8 +169,11 @@ struct DirectTerrain::State
     int maxAtlasSize = 4096;
     struct Animation {
         int size = 2048;
+        // Static variants take one tile rather than a pair
+        // (DirectTerrainData::ArtTiles), so a view of them fits twice as many
+        // tiles at the display density.
         struct Entry {
-            unsigned pair;
+            unsigned tile;
             std::array<unsigned, 2> phases{~0u, ~0u};
             std::array<TerrainVisual::Compositor::PhaseSource, 2> stamps{};
         };
@@ -180,8 +183,11 @@ struct DirectTerrain::State
         unsigned serial = 0; // Which atlas a background filter batch belongs to.
         bool failed = false;
         std::map<unsigned, Entry> entries;
-        std::vector<unsigned> freePairs;
+        DirectTerrainData::ArtTiles tiles;
         std::vector<SDL_Rect> regions;
+        // Tiles a variant needs: two endpoints when it animates, else one.
+        static unsigned span(const TerrainVisual::Material &material)
+        { return material.animationFrames > 1 ? 2 : 1; }
     } animation;
     // The atlas a density or size change fills over several frames, a bounded
     // number of tiles each, while `animation` keeps drawing; it replaces
@@ -193,7 +199,7 @@ struct DirectTerrain::State
     {
         struct Job
         {
-            unsigned slot, pair, parity, phase;
+            unsigned slot, first, parity, phase; // first: the entry's first tile.
             TerrainVisual::Compositor::PhaseSource stamp;
             TerrainVisual::Compositor::MaterialPixels input;
             std::vector<Pixel> tile;
@@ -1405,7 +1411,11 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
     }
     if (wanted.empty()) return true;
 
-    // Two endpoints per visible material variant at that density, in one 16 MiB atlas.
+    // Each visible variant at that density, in one 16 MiB atlas: two
+    // endpoint tiles for an animated variant, one for a static one.
+    std::size_t tilesWanted = 0;
+    for (auto slot : wanted)
+        tilesWanted += State::Animation::span(catalog.materials[state->palette.sources[slot].material]);
     const auto restartAtlas = [&](int size)
     {
         // The atlas and its variant table start again at the new size.
@@ -1415,21 +1425,21 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
         out.bytes = out.variantBytes = 0;
         out.size = size;
         out.entries.clear();
-        out.freePairs.clear();
+        out.tiles = {};
         out.pixels = 0;
         state->uploadedVariants = 0;
     };
     constexpr int SmallAtlasSize = 2048;
-    const auto pairsAt = [&](int size) { return std::size_t(size / pixels) * (size / pixels); };
+    const auto tilesAt = [&](int size) { return std::size_t(size / pixels) * (size / pixels); };
     // The atlas this view wants: a density change refilters every tile
     // anyway, so take the small atlas again when the view fits it twice over
     // (a pan does not grow it straight back), and grow once when it is full.
     int wantedSize = out.size;
-    if (out.size > SmallAtlasSize && out.pixels != pixels && wanted.size() * 4 <= pairsAt(SmallAtlasSize))
+    if (out.size > SmallAtlasSize && out.pixels != pixels && tilesWanted * 2 <= tilesAt(SmallAtlasSize))
         wantedSize = SmallAtlasSize;
-    if (wantedSize < state->maxAtlasSize && wanted.size() * 2 > pairsAt(wantedSize))
+    if (wantedSize < state->maxAtlasSize && tilesWanted > tilesAt(wantedSize))
         wantedSize = state->maxAtlasSize;
-    while (pixels > 8 && wanted.size() * 2 > std::size_t(wantedSize / pixels) * (wantedSize / pixels))
+    while (pixels > 8 && tilesWanted > tilesAt(wantedSize))
         pixels /= 2;
     // An interactive view whose atlas already draws builds the new one in
     // `nextArt` over several frames and keeps drawing the old one meanwhile;
@@ -1449,7 +1459,7 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
         if (next.pixels) // The view came back to the drawing atlas: its records again.
         {
             for (const auto &[slot, entry] : out.entries)
-                state->palette.variants[slot * DirectTerrainData::VariantRecords][0] = Uint16(entry.pair * 2);
+                state->palette.variants[slot * DirectTerrainData::VariantRecords][0] = Uint16(entry.tile);
         }
         dropNext();
         if (out.size != wantedSize) restartAtlas(wantedSize);
@@ -1461,8 +1471,9 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
     }
     auto &art = transition ? next : out;
     const int atlasSize = art.size;
-    const unsigned pairs = (atlasSize / pixels) * (atlasSize / pixels) / 2;
-    if (wanted.size() > pairs) { out.regions.clear(); return false; }
+    // Whole pairs: an odd last tile is never claimed.
+    const unsigned tiles = (atlasSize / pixels) * (atlasSize / pixels) / 2 * 2;
+    if (tilesWanted > tiles) { out.regions.clear(); return false; }
     std::optional<RestoreGL> restore;
 #ifdef DIRECT_TERRAIN_LEGACY_GL
     if (!state->streaming)
@@ -1501,8 +1512,7 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
         if (art.pixels != pixels)
         {
             art.entries.clear();
-            art.freePairs.clear();
-            for (unsigned pair = pairs; pair > 0; --pair) art.freePairs.push_back(pair - 1);
+            art.tiles.reset(tiles);
             art.pixels = pixels;
             art.serial = ++state->artSerial;
         }
@@ -1518,8 +1528,8 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
                 for (auto &job : batch->jobs)
                 {
                     auto found = target->entries.find(job.slot);
-                    if (found == target->entries.end() || found->second.pair != job.pair) continue;
-                    const unsigned index = job.pair * 2 + job.parity;
+                    if (found == target->entries.end() || found->second.tile != job.first) continue;
+                    const unsigned index = job.first + job.parity;
                     state->write(target->art, State::Art, int(index % targetColumns) * batch->pixels,
                                  int(index / targetColumns) * batch->pixels, batch->pixels, batch->pixels, job.tile.data());
                     found->second.phases[job.parity] = job.phase;
@@ -1531,7 +1541,7 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
         auto background = std::make_shared<State::ArtBatch>();
         background->pixels = pixels;
         background->serial = art.serial;
-        // Three passes: claim atlas pairs and gather each tile's source here,
+        // Three passes: claim atlas tiles and gather each tile's source here,
         // box-filter the tiles on worker threads, then upload them here. A
         // density change refilters every visible variant (over a thousand
         // tiles from 128-pixel HD frames), which one thread took 110 ms for.
@@ -1546,31 +1556,55 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
         };
         std::vector<TileJob> jobs;
         std::vector<std::pair<unsigned, State::Animation::Entry *>> added;
+        std::unordered_set<unsigned> fresh; // The slots in `added`.
         // A filling atlas takes a bounded number of tiles a frame, and so do
         // animation steps of variants the atlas already holds (they draw their
         // previous phase a frame longer); a variant new to the drawing atlas
         // gets its tiles at once, since its record is written with them.
         constexpr std::size_t TransitionTiles = 192, PhaseTiles = 192;
         bool filled = true;
-        for (auto slot : wanted)
-        {
-            auto it = art.entries.find(slot);
-            if (it == art.entries.end())
+        const auto spanOf = [&](unsigned slot)
+        { return State::Animation::span(catalog.materials[state->palette.sources[slot].material]); };
+        // Tiles for variants new to the atlas, animated ones first since they
+        // need whole pairs, evicting variants the view no longer shows.
+        for (const unsigned span : {2u, 1u})
+            for (auto slot : wanted)
             {
-                if (art.freePairs.empty())
+                if (spanOf(slot) != span || art.entries.contains(slot)) continue;
+                unsigned tile = 0;
+                while (!art.tiles.claim(slot, span, tile))
                 {
                     const auto idle = std::find_if(art.entries.begin(), art.entries.end(),
                         [&](const auto &item) { return !wanted.contains(item.first); });
-                    art.freePairs.push_back(idle->second.pair);
-                    art.entries.erase(idle);
+                    if (idle != art.entries.end())
+                    {
+                        art.tiles.release(idle->second.tile, spanOf(idle->first));
+                        art.entries.erase(idle);
+                        continue;
+                    }
+                    // Every free tile is the half of a pair whose other half
+                    // holds a static variant: move one such variant next to
+                    // another, freeing its pair, and refilter it. The tile
+                    // count check leaves at least two free tiles for a pair
+                    // still to claim.
+                    unsigned moved = 0;
+                    if (!art.tiles.freePair(moved, tile))
+                        throw std::logic_error("Animated terrain atlas has no room");
+                    auto &entry = art.entries.at(moved);
+                    entry.tile = tile;
+                    entry.phases = {~0u, ~0u};
+                    entry.stamps = {};
+                    if (fresh.insert(moved).second)
+                        added.push_back({moved, &entry});
                 }
-                const auto pair = art.freePairs.back();
-                art.freePairs.pop_back();
-                it = art.entries.emplace(slot, State::Animation::Entry{pair}).first;
-                added.push_back({slot, &it->second});
+                auto &entry = art.entries.emplace(slot, State::Animation::Entry{tile}).first->second;
+                fresh.insert(slot);
+                added.push_back({slot, &entry});
             }
-            const bool fresh = !added.empty() && added.back().second == &it->second;
-            auto &entry = it->second;
+        for (auto slot : wanted)
+        {
+            auto &entry = art.entries.at(slot);
+            const bool isFresh = fresh.contains(slot);
             const auto source = state->palette.sources[slot];
             const auto &material = catalog.materials[source.material];
             const unsigned absolutePhase = unsigned(animationTime) / material.animationTicks;
@@ -1588,7 +1622,7 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
                 // A variant new to the drawing atlas gets its tiles now, with
                 // its record; animation steps and a filling atlas go to the
                 // workers, one batch at a time, the old tiles drawing meanwhile.
-                const bool async = !complete && (transition || !fresh);
+                const bool async = !complete && (transition || !isFresh);
                 if (async && (batchBusy || background->jobs.size() >= (transition ? TransitionTiles : PhaseTiles)))
                 {
                     filled = false;
@@ -1616,7 +1650,7 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
                         for (std::size_t i = 0; i < input.size(); ++i)
                             input[i] = {Uint8(argb[i] >> 16), Uint8(argb[i] >> 8), Uint8(argb[i]), Uint8(argb[i] >> 24)};
                     }
-                    background->jobs.push_back({slot, entry.pair, parity, phase, stamp, std::move(input), {}});
+                    background->jobs.push_back({slot, entry.tile, parity, phase, stamp, std::move(input), {}});
                     filled = false;
                     continue;
                 }
@@ -1652,7 +1686,7 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
         const int columns = atlasSize / pixels;
         for (auto &job : jobs)
         {
-            const unsigned index = job.entry->pair * 2 + job.parity;
+            const unsigned index = job.entry->tile + job.parity;
             state->write(art.art, State::Art, int(index % columns) * pixels, int(index / columns) * pixels,
                          pixels, pixels, job.tile.data());
             job.entry->phases[job.parity] = job.phase;
@@ -1664,7 +1698,7 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
             const auto &material = catalog.materials[source.material];
             const auto recordIndex = slot * DirectTerrainData::VariantRecords;
             auto &record = state->palette.variants[recordIndex];
-            record[0] = Uint16(entry->pair * 2);
+            record[0] = Uint16(entry->tile);
             // Parity addresses the streamed current/next endpoints independently
             // of the material's original loop length, including odd-length loops.
             record[1] = Uint16(material.animationFrames > 1 ? 2 : 1);
@@ -1861,7 +1895,7 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
             size = state->maxAtlasSize; // Grow once rather than draw coarser.
         while (tile > 8 && !fits(size) && !baseTakesOverflow)
             tile /= 2;
-        if (hd.tile != tile || hd.size != size || !hd.coverage)
+            if (hd.tile != tile || hd.size != size || !hd.coverage)
             state->restartHdAtlas(tile, size, current > 0 && current >= previous);
     }
     const int atlasSize = hd.size;
