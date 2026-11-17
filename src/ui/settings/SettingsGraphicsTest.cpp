@@ -408,7 +408,7 @@ TEST_SUITE("SettingsGraphics")
             RendererBackend::PortableSDL, RendererBackend::Software});
         if (withoutLegacy.size() != order.size())
 #ifdef __APPLE__
-            CHECK(order.front() == RendererBackend::LegacyGL);
+            CHECK(order[2] == RendererBackend::LegacyGL);
 #else
             CHECK(order[1] == RendererBackend::LegacyGL);
 #endif
