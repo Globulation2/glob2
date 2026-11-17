@@ -504,12 +504,13 @@ static void liveTerrainPressure(GAGCore::RendererBackend backend)
     const auto requested=SoftwareTerrainCache::capturePixelsPerCell(256,256);
     TorusView view;view.textureLimit=2048;view.toggle();
     // A capture is a complete draw: its map view builds the whole-map terrain
-    // base and its masks inside view.draw (over 100 s each under coverage
-    // instrumentation, and again after view.reset), and each later draw
-    // advances its regions. Bound the attempts, not the time: slow builds
-    // lengthen draws without adding any, and the runner's timeout catches a hang.
+    // base and its masks (over 100 s each under coverage instrumentation, and
+    // again after view.reset), and each later draw advances its regions. The
+    // base can build off the drawing thread, so short draws can run out any
+    // fixed attempt count first (8 s on a CI runner): bound the time instead.
     auto render=[&]{
-        for(unsigned attempt=0;attempt<256;++attempt){
+        const auto deadline=std::chrono::steady_clock::now()+std::chrono::minutes(10);
+        while(std::chrono::steady_clock::now()<deadline){
             if(!view.active())view.toggle();
             int vx=128,vy=128;
             REQUIRE(view.draw(glob2test::sceneOf(game),nullptr,0,Game::DRAW_WHOLE_MAP,
@@ -531,7 +532,7 @@ static void liveTerrainPressure(GAGCore::RendererBackend backend)
             if(recorded)return;
             SDL_Delay(1);
         }
-        FAIL("Torus never completed under pressure within 256 draws");
+        FAIL("Torus never completed under pressure within ten minutes");
     };
     render();REQUIRE(view.pixelsPerCell>0);REQUIRE(view.pixelsPerCell<requested);
     const auto reduced=view.pixelsPerCell;
