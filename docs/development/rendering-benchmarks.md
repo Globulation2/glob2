@@ -338,7 +338,17 @@ GPU renderers that agree within the bar and names the outlier: the odd one out
 in a three-to-one split, or `split: a+b / c+d` when they divide evenly. The
 consensus is a majority, not the truth: when two or three renderers share a
 defect (say, blurred terrain), the correct one is the outlier, which is why the
-sheets must be looked at. `--reference NAME` adds each renderer's distance from one renderer. The
+sheets must be looked at. A failing scene therefore also compares the detail
+each GPU renderer holds over the pixels where they disagree (the luminance's
+squared difference from its 3x3 neighbourhood). Where one group holds less than
+`--sharpness-split` (0.6) of the detail of the next sharper one, the report
+names the split instead of the outlier: `HD residency mismatch: sharp a /
+soft b+c+d` in a scene above a density of one with HD on, where the
+[HD sprite policy](../architecture/rendering.md#hd-sprite-policy) has every
+renderer draw HD, and `detail split` elsewhere. It adds `(the consensus
+follows the soft ...)` when the soft renderers are the majority, so the bar
+blames the renderer that does draw HD. `summary.json` keeps each renderer's
+detail relative to the sharpest (`sharpness`). `--reference NAME` adds each renderer's distance from one renderer. The
 software renderer is drawn and measured for information only, so a crash or a
 blank capture still shows, but it is left out of the consensus and the exit
 status: it has no filtering, draws native artwork at every zoom and leaves out
