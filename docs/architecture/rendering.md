@@ -170,12 +170,24 @@ an HD page holds four times the texels, composed and uploaded for nothing. A
 view starts on native frames and takes HD at once when it zooms in, but drops back
 only after it has wanted native frames for ten seconds (`GAGCore::DetailHysteresis`
 on the clock of the legacy OpenGL sprite bands), so zooming across the threshold
-and back recomposes nothing. Then pages compose from native frames, the HD pages
+and back streams nothing again; pages meanwhile compose the HD frames at the
+display density (below). Then pages compose from native frames, the HD pages
 are discarded, the streamed banks' frames retire into the shared budget for
 [retired frames](../development/rendering-benchmarks.md#direct-terrain) and whole sheets a page demanded through `Sprite::baseFrame`
 release their layers until the next demand. Decor HD frames stream there only
 while the [HD sprite policy](#hd-sprite-policy) shows HD; below that it draws
 decor from native frames and retires them.
+
+Whatever frames they use, the portable renderer's pages compose at the
+density the direct pass draws its art tiles and coverage masks at: the
+smallest power of two at least the display density, up to four times native.
+HD frames compose below their size box-filtered, as the direct pass filters
+its art tiles, so at zoom 1.5 a page holds 64 pixels a cell rather than HD's
+128, which drawn at 48 without mips aliased where the other renderers draw
+filtered tiles. With HD artwork off at zoom 3 a page composes four times
+native density from native frames, sampled nearest as the direct pass samples
+them, so shorelines and borders are as smooth as on the other renderers
+rather than native coverage magnified into steps.
 A view's decor window holds only the frames its cells draw (each 16 by 16
 cell page's decor frames are kept until the terrain changes, and the view widens
 by the decor's reach), not every frame of every material in view. Drawn decor
