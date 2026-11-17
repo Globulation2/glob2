@@ -29,6 +29,7 @@
 #include <DirectTerrainShader.h>
 #include <RenderDevice.h>
 #include <RenderResources.h>
+#include <RenderMemory.h>
 #include <SDL3/SDL.h>
 #include <algorithm>
 #include <array>
@@ -165,11 +166,12 @@ struct DirectTerrain::State
     int variantRows = 1;
     // Vertex terrain the tables describe, to find what an edit changed.
     std::vector<Uint32> vertices;
-    // Both atlases start at 2048 and grow once to 4096 when a view needs more
-    // tiles at its density, rather than drawing coarser. Devices keep the mask
-    // atlas at 2048, within their texture budgets, and grow the art atlas
-    // only under the desktop budget and while the device has room for it.
-    int maxAtlasSize = 4096, maxArtAtlasSize = 4096;
+    // Both atlases start at 2048. The mask atlas stays there, and the art
+    // atlas grows once to 4096 when a view needs more tiles at its density,
+    // only under the desktop budget and while the renderer has room for it
+    // (prepare); otherwise the view takes coarser tiles. Legacy GL and the
+    // devices share these limits so they coarsen alike.
+    int maxAtlasSize = 2048, maxArtAtlasSize = 4096;
     // The last art admission logged (DIRECT_TERRAIN_ADMISSION), to log changes only.
     std::tuple<int, int, int, const char *> admission{};
     struct Animation {
@@ -1229,16 +1231,13 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
         state->assets = assets;
         state->registry = registry;
         state->streaming = streaming;
-        if (streaming)
-        {
-            state->maxAtlasSize = 2048;
-            // The art atlas grows as Legacy GL's does, so a view draws its
-            // variants at the same density on every desktop renderer (see
-            // prepare). A mobile budget, or a device without 4096 textures,
-            // keeps it at 2048.
-            state->maxArtAtlasSize = capabilities.maximumTextureSize >= 4096 &&
-                GAGCore::platformRenderBudget().total >= GAGCore::RenderBudget::desktop().total ? 4096 : 2048;
-        }
+        // The art atlas grows under the desktop budget alone, on every
+        // renderer, so a view draws its variants at the same density on each
+        // (see prepare). A mobile budget, or a device without 4096 textures,
+        // keeps it at 2048.
+        const int textureLimit = streaming ? capabilities.maximumTextureSize : 4096;
+        state->maxArtAtlasSize = textureLimit >= 4096 &&
+            GAGCore::platformRenderBudget().total >= GAGCore::RenderBudget::desktop().total ? 4096 : 2048;
     }
     if (state->failed)
         return false;
@@ -1455,16 +1454,23 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
     const char *coarser = "";
     if (wantedSize < state->maxArtAtlasSize && tilesWanted > tilesAt(wantedSize))
     {
-        // A device charges the new atlas to its combined budget beside the one
-        // still drawing; grow only while that leaves the budget a margin.
+        // The new atlas is charged to the platform's combined budget beside
+        // the one still drawing; grow only while that leaves the budget a
+        // margin. A device counts its resident resources. Legacy GL has no
+        // device budget, so it counts as one would hold it: its direct terrain
+        // and its other textures up to the General class a device keeps them in.
         const auto *device = gfx.renderDevice();
+        const auto &budget = GAGCore::platformRenderBudget();
         const std::size_t grown = std::size_t(state->maxArtAtlasSize) * state->maxArtAtlasSize * sizeof(Pixel);
-        const std::size_t resident = state->streaming && device ? device->telemetry().resourceBytes : 0;
-        const std::size_t total = GAGCore::platformRenderBudget().total;
+        const std::size_t resident = state->streaming
+            ? (device ? device->telemetry().resourceBytes : 0)
+            : state->bytes + std::min(GAGCore::RenderMemory::trackedGpuBytes(),
+                                      budget.classLimit(GAGCore::TextureDescriptor::BudgetClass::General));
+        const std::size_t total = budget.total;
         // An atlas already growing (filled over frames in nextArt) is counted
         // in `resident`: keep growing it rather than drop it half filled.
         const bool growing = state->nextArt.size == state->maxArtAtlasSize;
-        if (!state->streaming || growing || resident + 2 * grown + total / 8 <= total)
+        if (growing || resident + 2 * grown + total / 8 <= total)
             wantedSize = state->maxArtAtlasSize;
         else
             coarser = "device budget";

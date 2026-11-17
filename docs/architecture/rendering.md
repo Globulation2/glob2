@@ -247,15 +247,17 @@ copy, charges the textures to its total budget and never evicts them; it loads
 the generated `terrain-direct-hd` GLSL (desktop 3.30 or ES 3.00) and needs 14
 texture units. A device
 that advertises `directTerrainStreaming` takes this pass at every zoom, with HD
-artwork on or off. Its mask atlas stays at 2048 square. Its art atlas starts
-at 2048 and, like legacy OpenGL's, grows once to 4096 when the view's variants
-do not fit: at 128 pixels a cell (zoom 2 on a 2x display) a 2048 atlas holds
-only 256 tiles, fewer than a typical view's variants, and a device that stopped
-there drew native-density terrain where legacy OpenGL drew HD. A device grows
-it only under the desktop budget, with 4096 textures, and while its resident
-resources leave room for twice the new atlas and an eighth of the budget
+artwork on or off. Legacy OpenGL and the devices share one atlas policy, so
+they coarsen alike. The mask atlas stays at 2048 square. The art atlas starts
+at 2048 and grows once to 4096 when the view's variants do not fit: at 128
+pixels a cell (zoom 2 on a 2x display) a 2048 atlas holds only 256 tiles, fewer
+than a typical view's variants. It grows only under the desktop budget, with
+4096 textures, and while the renderer's resident bytes leave room in the
+platform's `RenderBudget` for twice the new atlas and an eighth of the budget
 besides (the old atlas draws while the new one fills); otherwise the view takes
-coarser tiles. `DIRECT_TERRAIN_ADMISSION` on stderr records each change of a
+coarser tiles. A device counts its resident resources; legacy OpenGL, which has
+no device budget, counts its direct terrain and its other textures up to the
+General class a device would keep them in. `DIRECT_TERRAIN_ADMISSION` on stderr records each change of a
 view's art atlas, tile density and the reason it is coarser than the display
 wants (`device budget`, `atlas size`, `atlas full`), for legacy OpenGL and the
 devices alike. An
