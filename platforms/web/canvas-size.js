@@ -142,6 +142,16 @@ addToLibrary({
     const memory = globalThis.navigator?.deviceMemory;
     return memory > 0 ? memory : 0;
   },
+  // 1 on a phone or tablet: Android, iPhone and iPad (iPadOS reports a Mac
+  // user agent, but Macs have no touch points). Asked in the DOM realm, whose
+  // navigator has maxTouchPoints. GAGCore::platformIsMobile reads it.
+  glob2_browser_mobile__proxy: 'sync',
+  glob2_browser_mobile: () => {
+    const nav = globalThis.navigator;
+    const agent = nav?.userAgent || '';
+    return +(nav?.userAgentData?.mobile === true || /Android|iPhone|iPad|iPod/.test(agent) ||
+             (/Macintosh/.test(agent) && nav?.maxTouchPoints > 1));
+  },
   // The startup choice belongs to the DOM realm, not the pthread's Module.
   glob2_surface_startup_uses_gl__proxy: 'sync',
   glob2_surface_startup_uses_gl: () => +(Module.renderer === 'webgl2'),
