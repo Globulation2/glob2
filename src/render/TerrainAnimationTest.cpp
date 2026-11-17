@@ -254,10 +254,23 @@ struct Scene
 			const bool ready = terrainSettled();
 			auto next = frame(true);
 			stable = ready && next == last ? stable + 1 : 0;
+			auto previousFrame = std::move(last);
 			last = std::move(next);
 			if (stable >= 2)
 				return last;
-			REQUIRE(std::chrono::steady_clock::now() < end);
+			if (std::chrono::steady_clock::now() >= end)
+			{
+				const auto *pages = view.render.existingTerrainCache();
+				const auto *direct = view.render.existingDirectTerrain();
+				std::size_t differing = 0;
+				for (std::size_t i = 0; i < last.size(); ++i) differing += last[i] != previousFrame[i];
+				FAIL("terrain never settled: pages " << (pages ? 1 : 0) << " complete " << (pages && pages->complete())
+					 << " pending " << (pages ? pages->pendingPages() : 0) << " missing keyframes "
+					 << (pages ? pages->missingKeyframeCells() : 0) << " direct " << (direct ? 1 : 0)
+					 << " preparing " << (direct && direct->preparing()) << " masks "
+					 << (direct ? direct->pendingHdMasks() : 0) << "/" << (direct ? direct->pendingBaseMasks() : 0)
+					 << " differing bytes " << differing);
+			}
 			std::this_thread::sleep_for(std::chrono::milliseconds(3));
 		}
 	}

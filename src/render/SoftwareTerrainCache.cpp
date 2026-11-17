@@ -1173,6 +1173,16 @@ bool snapshotCovers(const TerrainVisual::Compositor::CpuMaterials &materials, co
 		const auto id = palette[k];
 		if (id >= materials.textures.size())
 			return false;
+		// A halo material is listed for its surf bands and never covers a
+		// sample (CpuMaterials::compose), so the view never prepares its
+		// texture there: requiring it held such cells (open water beside a
+		// shore cell) without keyframes forever.
+		const auto halo = recipe.halo.begin(), haloEnd = recipe.halo.begin() + recipe.haloCount;
+		const bool covers = std::find(recipe.corners.begin(), recipe.corners.end(), id) != recipe.corners.end() ||
+			std::any_of(recipe.stoneLayers.begin(), recipe.stoneLayers.begin() + recipe.stoneLayerCount,
+						[&](const auto &layer) { return layer.material == id || layer.ground == id; });
+		if (!covers && std::find(halo, haloEnd, id) != haloEnd)
+			continue;
 		const auto variant = materials.definitions->variantIndex(id, recipe.x, recipe.y, recipe.seed);
 		if (variant >= materials.textures[id].size() || !materials.textures[id][variant].pixels)
 			return false;
