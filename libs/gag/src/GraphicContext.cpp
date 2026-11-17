@@ -151,15 +151,14 @@ int GraphicContext::maximumTextureSize() const
 		return AssetImage::BlockCompression::Uncompressed;
 	}
 	// The chains workers prepare are HD sprite frames, drawn only where the HD
-	// sprite policy shows HD. Their blocks show: 4x4 blocks step along the
-	// edges where a frame's base and team layers meet (2% of the zoomed-in
-	// game screen in the renderer parity scenes, on devices and legacy GL
-	// alike). They draw uncompressed, like the portable renderer's;
-	// GLOB2_HD_BLOCK_COMPRESSION=1 trades that for a quarter of the memory.
+	// sprite policy shows HD. Block compression stores them in a quarter of
+	// the memory; its 4x4 blocks step slightly along the edges where a frame's
+	// base and team layers meet. GLOB2_HD_BLOCK_COMPRESSION=0 draws them
+	// uncompressed instead, like the portable renderer's.
 	static bool highResolutionBlocksWanted()
 	{
 		const char *wanted = SDL_getenv_unsafe("GLOB2_HD_BLOCK_COMPRESSION");
-		return wanted && std::string_view(wanted) == "1";
+		return !wanted || std::string_view(wanted) != "0";
 	}
 	void selectDeviceBlockCompression(const RenderDevice &device)
 	{
