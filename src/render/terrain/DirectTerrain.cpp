@@ -1000,7 +1000,11 @@ struct DirectTerrain::State
     // which the shader resolves to the base.
     void suspendHdAtlas()
     {
-        write(hd.index, Hd::FirstUnit, 0, 0, width, height, cellMasks.data());
+        // A complete first draw at the base's density may suspend an atlas it never started.
+        if (!hd.index)
+            create(hd.index, Hd::FirstUnit, width, height, Format::Scalar16, false, cellMasks.data(), true);
+        else
+            write(hd.index, Hd::FirstUnit, 0, 0, width, height, cellMasks.data());
         auto &old = hd.previous;
         for (Surface *texture : {&hd.coverage, &hd.edges, &old.index, &old.coverage, &old.edges})
             drop(*texture);
@@ -1026,12 +1030,18 @@ struct DirectTerrain::State
 
     // The base atlas: map-shaped, zero (unbuilt) everywhere until workers
     // fill it. Large maps take smaller tiles so it stays within 2048 square.
+    // The base's tile for this map, or zero where no base fits.
+    int baseTile() const
+    {
+        int tile = 8;
+        while (tile > 2 && std::max(width, height) * tile > 2048) tile /= 2;
+        return std::max(width, height) * tile > maxAtlasSize ? 0 : tile;
+    }
     void createBase(int centreX, int centreY)
     {
         auto &b = hd.base;
-        int tile = 8;
-        while (tile > 2 && std::max(width, height) * tile > 2048) tile /= 2;
-        if (std::max(width, height) * tile > maxAtlasSize) return;
+        const int tile = baseTile();
+        if (!tile) return;
         b.tile = tile;
         const int w = width * tile, h = height * tile;
         create(b.coverage, Coverage, w, h, Format::Rgba8, true);
@@ -2039,9 +2049,16 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
     // Every visible mixed cell must fit in the atlas with headroom for a pan,
     // so a wide view takes coarser tiles rather than leaving some cells native.
     int size = hd.size;
+    auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
+    const int centreX = ((left + right) / 2 + viewportX) % width, centreY = ((top + bottom) / 2 + viewportY) % height;
+    // A complete draw at the base's density or below draws from the base:
+    // build it first, rather than this view's masks and then the base too.
+    const int wholeMapTile = state->baseTile();
+    if (complete && wholeMapTile && tile <= wholeMapTile)
+        state->ensureBase(map, compositor, centreX, centreY, true);
     // Once the base mask covers the map it serves any view at its density or
     // below. Edits there rebuild their base cells; the atlas stays away.
-    const bool baseServes = hd.index && hd.base.tile && tile <= hd.base.tile &&
+    const bool baseServes = hd.base.tile && tile <= hd.base.tile &&
         (hd.suspended || (!hd.base.remaining && hd.base.redo.empty()));
     if (baseServes)
     {
@@ -2082,13 +2099,14 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
             state->restartHdAtlas(tile, size, current > 0 && current >= previous);
     }
     const int atlasSize = hd.size;
-    auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
     // The low-resolution masks of the whole map. Game loading builds them
-    // (DirectTerrain::preload), and a complete draw builds them now; otherwise
-    // (a restart after a device loss, a view without that load) the workers
-    // build them, ahead of any view mask.
-    state->ensureBase(map, compositor, ((left + right) / 2 + viewportX) % width,
-                      ((top + bottom) / 2 + viewportY) % height, complete);
+    // (DirectTerrain::preload), and a complete draw at their density builds
+    // them now; otherwise (a restart after a device loss, a view without that
+    // load) the workers build them, ahead of any view mask. A complete draw
+    // finer than the base (a capture's own view) builds every visible mask
+    // at its density and would draw no base texel: it does not wait for one.
+    if (!complete || tile <= wholeMapTile)
+        state->ensureBase(map, compositor, centreX, centreY, complete);
     ++hd.frame;
     // Visible mixed cells: keep resident ones, and queue the rest nearest the
     // view centre first, so a zoom or pan fills in from the middle outwards.
@@ -2125,6 +2143,10 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
     // They count as pending only until the base that draws them is complete.
     const std::size_t free = hd.cellOf.size() - std::min(hd.cellOf.size(), resident);
     const std::size_t wantedMasks = missing.size();
+    // A complete draw finer than the base that still overflows the atlas
+    // draws its farthest cells from the base after all.
+    if (complete && missing.size() > free)
+        state->ensureBase(map, compositor, centreX, centreY, true);
     if (missing.size() > free) missing.resize(free);
     const bool baseComplete = hd.base.tile && hd.base.reported && !hd.base.remaining && hd.base.redo.empty();
     hd.pending = baseComplete ? missing.size() : wantedMasks;
