@@ -1683,8 +1683,8 @@ void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor
 				if (!kind)
 					continue;
 				const SDL_Rect cell{copy.x + x * 32, copy.y + y * 32, 32, 32};
-				SDL_Rect near, shown;
-				if (!SDL_GetRectIntersection(&cell, &margin, &near))
+				SDL_Rect inMargin, shown;
+				if (!SDL_GetRectIntersection(&cell, &margin, &inMargin))
 					continue;
 				const auto &tile = page.tiles[i];
 				std::shared_ptr<KeyframeSet> set;
