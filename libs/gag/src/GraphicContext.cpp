@@ -1371,8 +1371,22 @@ int GraphicContext::maximumTextureSize() const
         deviceMipBuildBytesThisFrame = 0;
 	}
 
+	void GraphicContext::holdPresentation(unsigned frames)
+	{
+		presentationHoldFrames = frames;
+	}
+
 	void GraphicContext::nextFrame(void)
 	{
+        // A held frame is drawn, submitted and completed like any other, but
+        // the window keeps showing the last presented one (holdPresentation).
+        const bool held = presentationHoldFrames > 0;
+        if (held && !heldPresentationStart) heldPresentationStart = SDL_GetTicks();
+        if (held && !--presentationHoldFrames)
+        {
+            SDL_Log("PRESENTATION_HOLD released ms=%llu", (unsigned long long)(SDL_GetTicks() - heldPresentationStart));
+            heldPresentationStart = 0;
+        }
         ++captureFrameIdentity;
         resetFrameAllowances();
         endBrowserTextFrame();
@@ -1411,8 +1425,13 @@ int GraphicContext::maximumTextureSize() const
 			{
 				if (renderer == portableRenderer.get() || renderer == deviceRenderer.get())
 				{
-					try { renderer->present(); }
-                    catch (const std::exception &error) { handleDeviceFailure(error.what()); return; }
+					try
+					{
+						renderer->setPresentationHeld(held);
+						renderer->present();
+						renderer->setPresentationHeld(false);
+					}
+                    catch (const std::exception &error) { renderer->setPresentationHeld(false); handleDeviceFailure(error.what()); return; }
                     // Budget deferral retains allocations so sliced uploads can progress.
                     // Only content recorded by an aborted frame needs regeneration.
                     if (presentationDevice && !didPresentDeviceFrame(*renderer) &&
@@ -1434,7 +1453,13 @@ int GraphicContext::maximumTextureSize() const
             // at every CPU frame boundary, independent of that borrowed pointer.
             if (softwareRasterizer) softwareRasterizer->present();
 			cacheFrame();
-			if (optionFlags & USEGPU)
+			if (held)
+			{
+#ifdef HAVE_OPENGL
+				if (optionFlags & USEGPU) glFlush(); // Run the frame's work without showing it.
+#endif
+			}
+			else if (optionFlags & USEGPU)
 				swapBuffers();
 			else
 				presentLastFrame();

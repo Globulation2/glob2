@@ -62,9 +62,16 @@ not require image editing applications or this source export step.
 
 Construction color renders use their matching grayscale matte for alpha. White
 background contamination is removed before premultiplied-alpha Lanczos resizing.
-Hives and flags use their native green chroma to separate the recolorable object
-from neutral projected shadows. Interior highlights remain opaque; boundary
-pixels have the white matte removed. Shadows use the classic hive’s subdued RGB
+Hives and flags are first Lanczos-interpolated on their white ground to twice
+the output size (the 256-pixel `Ruche.png` is the only source below 4×), so the
+matte follows smooth contours rather than the native pixel staircase. Coverage
+is the distance from white; the ratio of chroma to coverage, which an
+anti-aliased edge does not dilute, splits each pixel softly between the
+recolorable green object and the neutral projected shadow. Interior and small
+enclosed highlights remain opaque at their rendered color; boundary pixels have
+the white matte removed. Background seen through a frame stays transparent.
+`swarm0b0` therefore remains a 2× render resampled to 4×: smooth, but softer
+than the native 4× frames until a larger render is available. Shadows use the classic hive’s subdued RGB
 (65, 66, 69), capped at alpha 144, on the recovered silhouette. No generated
 geometry or old low-resolution team mask is mixed into these replacements.
 

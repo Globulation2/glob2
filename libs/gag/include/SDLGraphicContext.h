@@ -722,6 +722,8 @@ namespace GAGCore
         std::vector<DeviceTargetState> deviceTargetStates;
         std::map<std::uint64_t, Recording::CaptureTicket> recordingCaptures;
 		std::uint64_t captureFrameIdentity = 0;
+		unsigned presentationHoldFrames = 0; // holdPresentation
+		Uint64 heldPresentationStart = 0;
 		std::uint64_t screenshotIdentity = UINT64_MAX / 2;
 		std::map<std::uint64_t, std::string> screenshotCaptures;
 		struct MemoryCapture
@@ -894,6 +896,12 @@ namespace GAGCore
         std::pair<std::uint64_t, std::uint64_t> portableTextureMemory() const;
         SDL_Surface* completedFrame() const;
         virtual void nextFrame(void);
+        //! Draws the next `frames` frames in full (uploads, streaming, device
+        //! submission and completion) without presenting them: the window keeps
+        //! showing the last presented frame meanwhile. Startup holds the main
+        //! menu's first frames so every renderer settles before it shows.
+        void holdPresentation(unsigned frames);
+        unsigned heldPresentationFrames() const { return presentationHoldFrames; }
         //! Starts the per-frame device upload, release and mip-build allowances
         //! again. nextFrame does this; tools that present frames through the
         //! backend directly call it once a frame.
@@ -1287,6 +1295,12 @@ namespace GAGCore
         //! Native, on-demand renderers release what drawing loaded. Call once
         //! a frame.
         static void setHighResolutionDensity(double screenPixelsPerLogicalPixel);
+        //! On-demand HD draws since the process started (highResolutionDrawable):
+        //! drawn in HD, or native because the frame's block had not loaded, the
+        //! frame's first draws this frame were spent, or the device had no room
+        //! left for retained HD frames (GraphicContext::deviceHighResolutionRoom).
+        struct HighResolutionDrawCounts { std::size_t drawn = 0, notLoaded = 0, firstDrawCap = 0, room = 0; };
+        static HighResolutionDrawCounts highResolutionDrawCounts();
         //! Levels the current band leaves out: 0 for full detail, up to 2.
         static unsigned highResolutionDetailSkip();
         //! How long the view must want less detail before the band drops (tests shorten it).

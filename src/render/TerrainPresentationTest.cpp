@@ -1474,6 +1474,49 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(share < .03);
 	}
 
+	// Before the whole-map base is built (and with no retired atlas), some of
+	// the pass's samplers have no texture. Legacy GL binds a 1x1 placeholder
+	// there: a unit without a texture is "unloadable" to the driver even on
+	// branches the shader skips, and some drivers fault on it.
+	TEST_CASE("Legacy GL binds a placeholder to every sampler without a texture on its first draw [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
+			.screenFlags = Uint32(GAGCore::GraphicContext::USEGPU),
+			.beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::LegacyGL; }});
+		auto &gfx = *globals->gfx;
+		if (!gfx.isLegacyGLScreen() || !DirectTerrain::legacyPassAvailable())
+		{
+			MESSAGE("Legacy GL direct terrain unavailable; placeholder check omitted");
+			return;
+		}
+		glob2test::HeadlessGame fixture({.wDec = 6, .hDec = 5, .terrain = WATER, .discovered = true});
+		const TerrainType kinds[] = {WATER, GRASS, SAND};
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 64; ++x)
+				fixture.game.map.setVertexTerrain(x, y, kinds[((x / 3) * 7 + (y / 3) * 5) % 3]);
+		SceneMap scene;
+		glob2test::observeMap(fixture.game.map, scene);
+		DirectTerrain atlas;
+		while (glGetError() != GL_NO_ERROR) {}
+		bool drawn = false;
+		for (Patience waiting; waiting() && !drawn;)
+		{
+			gfx.beginMapTransform(1.f, 0, 0, 0, 0, 640, 480);
+			if (atlas.prepare(gfx, scene, 0, 0, 19, 14, 0, 0, fixture.team->me, true, 0))
+			{
+				atlas.drawPrepared(gfx, 0, 0, true, 0);
+				drawn = true;
+			}
+			gfx.endMapTransform();
+			if (!drawn) SDL_Delay(1);
+		}
+		REQUIRE(drawn);
+		terrainPixels(true); // Finishes the draw.
+		CHECK(glGetError() == GL_NO_ERROR);
+		// No retired atlas yet, at least: those units take the placeholder.
+		CHECK(atlas.placeholderBindings() >= 3);
+	}
+
 	TEST_CASE("Legacy GL frees the spare mask atlas once the view has been still [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480,
@@ -2745,11 +2788,15 @@ TEST_SUITE("TerrainPresentation")
 				{
 					const auto *pixels = chunkPixels(*chunk);
 					REQUIRE(pixels);
+					// Cells water reaches animate: the portable renderer's
+					// interactive pages hold them at a keyframe's time and draw
+					// keyframes over them, so only the still cells compare.
+					const int still = 4 * 32 / chunk->downsample;
 					for (int y = 0; y < pixels->h; ++y)
 					{
 						const auto *row = reinterpret_cast<const Uint32 *>(
 							static_cast<const Uint8 *>(pixels->pixels) + y * pixels->pitch);
-						result.pixels.insert(result.pixels.end(), row, row + pixels->w);
+						result.pixels.insert(result.pixels.end(), row + still, row + pixels->w);
 					}
 				}
 			return result;

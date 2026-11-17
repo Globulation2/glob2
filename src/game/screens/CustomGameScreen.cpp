@@ -3,7 +3,6 @@
 #include "ui/LibraryText.h"
 #include "CustomGameScreen.h"
 #include "OnlineServices.h"
-#include "BuildingLibraryScreen.h"
 #include "BuildingLibrary.h"
 #include "OnlineStorage.h"
 #include "PlatformClient.h"
@@ -554,13 +553,6 @@ void CustomGameScreen::invalidatePreview()
 	previewPending = setup.random;
 	previewDue = SDL_GetTicks() + 500;
 	message.clear();
-	invalidate();
-}
-
-void CustomGameScreen::buildingSelectionChanged()
-{
-	// Rebuild generated previews, but retain a loaded map's immutable catalog.
-	if (setup.random) invalidatePreview();
 	invalidate();
 }
 
@@ -1338,23 +1330,6 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 					{.enabled = validMap && !previewBusy(), .flat = true, .alignLeft = true, .icon = fe::uiIcon(fe::UIIcon::Settings)}));
 		}
 	}
-	// Room generators run on the server and cannot consult this profile's selection.
-	// A locally generated map can still be shared through the map library.
-	if (!forRoom)
-		left.push_back(fe::button("map/buildings", Glob2UI::libraryText("Building families"),
-								  [this]
-								  {
-									  screens.push(std::make_unique<BuildingLibraryScreen>(),
-												   [this](GAGGUI::Screen &, int result)
-												   {
-													   if (result == QUIT_APPLICATION)
-													   {
-														   endExecute(QUIT_APPLICATION);
-														   return;
-													   }
-													   buildingSelectionChanged();
-												   });
-								  }));
 	auto leftParts = left;
 	auto leftColumn = fe::column(std::move(left), {p.pt(8)});
 

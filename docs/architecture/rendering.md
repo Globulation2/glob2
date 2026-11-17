@@ -586,7 +586,10 @@ path reads it, so simulation checksums and `SIM_REVISION` are unaffected.
 Inputs: `SDL_GetSystemRAM` (on iOS this is `hw.memsize`, the same figure as
 `NSProcessInfo.physicalMemory`; browsers use `navigator.deviceMemory`, because SDL
 reports the WebAssembly heap limit there) and the hardware thread count, which
-`AssetLoader::Options::environment` also budgets from; on Android
+`AssetLoader::Options::environment` also budgets from; whether the device is a
+phone or tablet (`GAGCore::platformIsMobile`; in a browser `userAgentData.mobile`,
+an Android, iPhone or iPad user agent, or a Mac user agent with touch points,
+which is iPadOS); on Android
 `ActivityManager.isLowRamDevice()`, `getMemoryClass()`, `getLargeMemoryClass()`
 and `MemoryInfo.totalMem` through `Glob2Activity.getMemoryProfile` (totalMem
 replaces SDL's figure when known); on Windows and Linux windowed runs, the largest
@@ -601,9 +604,11 @@ live in `deviceThresholds`:
 | Tier | Rule | Auto artwork | New-map default |
 | --- | --- | --- | --- |
 | Low | under 3 GiB or an Android low-RAM device; or at most 2 hardware threads (map size only) | original (high resolution when only the cores are low) | 128×128 |
-| Mid | 3 to 6 GiB | high resolution | 128×128 on phones, 256×256 elsewhere |
-| High | over 6 GiB, or nothing reported | high resolution | 256×256 |
+| Mid | 3 to 6 GiB, or a phone that reports nothing | high resolution | 128×128 on phones, 256×256 elsewhere |
+| High | over 6 GiB, or nothing reported off phones | high resolution | 256×256 |
 
+A phone or tablet that reports no memory is Mid: Safari, every iOS browser and
+Firefox have no `navigator.deviceMemory`, and most such phones hold 4 to 8 GB.
 A discrete desktop GPU with less than 1 GiB of device-local memory also starts
 with original artwork. `GLOB2_DEVICE_TIER=low|mid|high` or
 `play --device-tier low|mid|high` overrides the tier for testing.
@@ -1206,6 +1211,17 @@ the new device commits the preference. Failure restores the previous family, wit
 software as the final fallback; failure does not save the unsuccessful preference.
 Rendering preference changes do not require restarting the game.
 
+After the loading screen, the first screen's first 30 frames (the main menu
+and its colony, or a first-run question in front of them) are drawn but not
+shown (`GraphicContext::holdPresentation`, from `Application`): every renderer
+streams terrain, HD artwork and atlases and settles while the last loading-screen
+frame stays up, about half a second. A held frame is recorded, submitted and
+completed like any other; only the final step differs: SDL GPU acquires no
+swapchain image and waits for the frame's work (the swapchain wait normally
+paces it), programmable GL skips its screen blit and swap, the portable renderer
+flushes instead of presenting, and legacy OpenGL and the software renderer skip
+their swap. `PRESENTATION_HOLD released ms=` logs when it ends.
+
 Switch status also reports the completed transition duration. Context recovery
 recreates the device and shader objects before restoring logical resources. A fatal
 submission error schedules fallback at a presentation boundary; an unavailable
@@ -1332,9 +1348,18 @@ Offscreen CPU exports cannot draw a device-released surface.
 
 SDL GPU, programmable GL, the CPU restoration registry (`RenderResources`) and
 the terrain page and torus planners share one `RenderBudget`
-(`platformRenderBudget()`). Desktop keeps 512 MiB in total, General and SkinAtlas
-64 MiB, TerrainPage 128 MiB, TerrainMask 32 MiB and 64 MiB of geometry. Android
-and iOS builds use 160 MiB, 48, 32, 64 and 16 MiB and 32 MiB of geometry: phones
+(`platformRenderBudget()`). Desktop keeps 512 MiB in total, General 256 MiB, SkinAtlas
+64 MiB, TerrainPage 128 MiB, TerrainMask 32 MiB and 64 MiB of geometry. On-demand
+renderers (every renderer but legacy OpenGL) keep uploaded HD sprite frames within
+3/8 of General (`GraphicContext::deviceHighResolutionRoom`); 256 MiB holds all
+3,680 HD unit frames (about 77 MiB block-compressed with mips), so every unit
+animation stays HD however many the game has shown. Under the former 64 MiB the
+first frames drawn filled the room and the rest (harvesting, warriors, explorers)
+drew native until restart; `Sprite::highResolutionDrawCounts` counts HD draws and
+native ones by reason (`FRAME_HD_SPRITES` in the torus benchmark). Phones
+and tablets (`GAGCore::platformIsMobile`: the Android and iOS builds, and the
+browser build on Android, iPhone or iPad) use 160 MiB, 48, 32, 64 and 16 MiB and
+32 MiB of geometry: phones
 share one memory pool between CPU and GPU, and the system kills a large
 backgrounded game first. Each mobile class still holds twice its largest single
 texture (the 22.4 MiB authored HD terrain block, 16 MiB skin atlas pages, sixteen
@@ -1343,9 +1368,7 @@ texture it admits; GPU terrain composition falls back to CPU pages when the view
 pages exceed the TerrainPage class. `GLOB2_RENDER_BUDGET=mobile` (or `desktop`)
 overrides the choice to measure one platform's budget on another, and
 `GLOB2_RENDER_BUDGET_TOTAL_MIB` replaces the total alone (the class limits stay),
-for tests and memory experiments that need the combined limit to bind: the
-desktop classes add up to 288 MiB, so nothing but depth and transient work fills
-its 512 MiB. WebGPU keeps its own limits.
+for tests and memory experiments that need the combined limit to bind. WebGPU keeps its own limits.
 
 `SDL_EVENT_LOW_MEMORY` and backgrounding (`SDL_EVENT_WILL_ENTER_BACKGROUND`,
 `SDL_EVENT_DID_ENTER_BACKGROUND`) call `GraphicContext::trimPresentationMemory`,
@@ -1425,13 +1448,13 @@ owned arrays, supporting shared memory and memory growth. Logical resource
 revisions use independent device allocations; submitted frames retain snapshots
 until queue completion. Discard fences also cover uploads prepared before packet
 submission; backend recreation shares the adapter’s issued completion timeline.
-Texture/depth allocations are bounded to 512 MiB in total on desktop, with General and
-SkinAtlas class budgets of 64 MiB, TerrainPage 128 MiB, and TerrainMask 32 MiB;
+Texture/depth allocations are bounded to 512 MiB in total on desktop, with class
+budgets of General 256 MiB, SkinAtlas 64 MiB, TerrainPage 128 MiB, and TerrainMask 32 MiB;
 persistent geometry to 32 MiB. Terrain imagery the CPU composes (view pages,
 overview pages and animated tiles, `TerrainVisual::Surface`) is admitted in the
 TerrainPage class on every device, matching the page cache's own 128 MiB plan;
-in the General class a view's high-density pages alone could exceed 64 MiB,
-deferring every frame. Eight pending presentation frames and three capture
+in the General class they would compete with HD sprites, and on phones a view's
+high-density pages alone could exceed its 48 MiB, deferring every frame. Eight pending presentation frames and three capture
 requests bound GPU admission. Recorder flushes within one presentation share a
 fence and admission slot; all transient buffers also count toward that
 aggregate device limit. Capture maps complete asynchronously in admission

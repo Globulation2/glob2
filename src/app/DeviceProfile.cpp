@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "DeviceProfile.h"
 
+#include <MobilePlatform.h>
+
 #include <SDL3/SDL_cpuinfo.h>
 #include <SDL3/SDL_log.h>
 #include <SDL3/SDL_timer.h>
@@ -77,7 +79,11 @@ DeviceProfile DeviceProfile::classify(const DeviceInputs &inputs, std::optional<
 		p.reason = DeviceReason::Memory;
 		p.reasonValue = memory;
 	}
-	// Nothing reported: keep today's defaults.
+	// A phone or tablet that reports no memory (Safari and Firefox, which have
+	// no navigator.deviceMemory) starts Mid: high-resolution artwork, the phone
+	// map size. Elsewhere nothing reported keeps today's defaults.
+	else if (inputs.mobile)
+		p.tier = DeviceTier::Mid;
 	return p;
 }
 
@@ -201,13 +207,11 @@ DeviceInputs probeCheap()
 #ifdef __EMSCRIPTEN__
 	// In a browser SDL reports the WebAssembly heap limit, not the device's
 	// memory. navigator.deviceMemory (Chromium; rounded, at most 8 GiB) is the
-	// device's own figure; elsewhere memory stays unknown (today's defaults).
+	// device's own figure; elsewhere memory stays unknown (Mid on a phone).
 	inputs.systemRamMiB = std::uint64_t(glob2_device_memory_gib() * 1024);
 #endif
 	inputs.cores = std::thread::hardware_concurrency();
-#ifdef GLOB2_MOBILE
-	inputs.mobile = true;
-#endif
+	inputs.mobile = GAGCore::platformIsMobile();
 #ifdef __ANDROID__
 	probeAndroid(inputs);
 #endif
