@@ -538,6 +538,7 @@ class DeviceRenderBackend final : public RenderBackend
         if(!fatalReason.empty())throw std::runtime_error(fatalReason);
         if(aborted){device.discardFrame();submittedFrameIdentity=presentedFrameIdentity;}else{device.present();presentedFrameIdentity=submittedFrameIdentity;lastPresented=true;}
         aborted=false;intentionalDefer=false;deferrableFrame=false;recorder.begin(++frameIdentity,width,height); }
+    void setPresentationHeld(bool held) override { device.setPresentationHeld(held); }
     void allowDeferral() {deferrableFrame=true;}
     std::uint64_t submittedIdentity() const {return submittedFrameIdentity;}
     bool defer() {

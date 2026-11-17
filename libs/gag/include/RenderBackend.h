@@ -97,6 +97,9 @@ class RenderBackend
 	virtual void forget(const void *key) = 0;
 	virtual void reset() = 0;
 	virtual void present() = 0;
+    // While held, present() completes and submits the frame as usual but leaves
+    // the window showing what it showed (GraphicContext::holdPresentation).
+    virtual void setPresentationHeld(bool) {}
     // Complete deferred drawing before accessing borrowed target pixels outside
     // this backend. Capture, presentation and target binding fence themselves.
 	virtual void flush() = 0;

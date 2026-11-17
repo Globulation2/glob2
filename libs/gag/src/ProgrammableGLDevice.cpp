@@ -217,6 +217,7 @@ class ProgrammableGLDevice final : public RenderDevice
     std::uint64_t epoch = 1, issued = 0, completed = 0;
     bool frameOpen = false;
     bool swappedForFrame = false;
+    bool presentationHeld = false;
     using TextureKey = std::tuple<std::uint32_t, std::uint32_t, std::uint64_t>;
     static TextureKey key(const TextureSnapshot &snapshot)
     { return {snapshot->handle.slot, snapshot->handle.generation, snapshot->contentRevision}; }
@@ -1707,9 +1708,12 @@ void main() {
     {
         detail::RenderCpuTimer timing(counts.cpuPresentNanoseconds);
         current(); screen();
-        gl.glDisable(GL_SCISSOR_TEST); gl.glBindFramebuffer(GL_READ_FRAMEBUFFER, screenFramebuffer); gl.glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-        gl.glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-        check("Present renderer frame");
+        // A held frame completes like any other but leaves the window's image.
+        if (!presentationHeld) {
+            gl.glDisable(GL_SCISSOR_TEST); gl.glBindFramebuffer(GL_READ_FRAMEBUFFER, screenFramebuffer); gl.glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+            gl.glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+            check("Present renderer frame");
+        }
         endTiming();
         if (frameOpen) {
             GLsync fence = gl.glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
@@ -1717,9 +1721,10 @@ void main() {
             pending.push_back({{issued, epoch}, fence}); frameOpen = false; gl.glFlush();
             endFrameCreations();
         }
-        if (!SDL_GL_SwapWindow(window)) throw std::runtime_error(SDL_GetError());
+        if (!presentationHeld && !SDL_GL_SwapWindow(window)) throw std::runtime_error(SDL_GetError());
         poll(); trim();
     }
+    void setPresentationHeld(bool held) override { presentationHeld = held; }
     void discardFrame() override
     {
         current();screen();

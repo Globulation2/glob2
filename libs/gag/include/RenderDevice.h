@@ -88,6 +88,9 @@ class RenderDevice
     virtual RenderSubmission submit(RenderFrame) = 0;
     virtual RenderCompletion completion(RenderSubmission) = 0;
     virtual void present() = 0;
+    // While held, present() finishes and submits the frame but does not show
+    // it: the window keeps its last presented image.
+    virtual void setPresentationHeld(bool) {}
     // Abandon current chunks without displaying partial output. Hardware
     // implementations fence their leases and retain the previous completed
     // output and earlier captures; the fallback resets a simple device.

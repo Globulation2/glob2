@@ -1059,11 +1059,15 @@ class SDLRenderBackend final : public RenderBackend
 	{
 		discardRuns();
 	}
+	void setPresentationHeld(bool held) override { presentationHeld = held; }
+	bool presentationHeld = false;
 	void present() override
 	{
 		submitBatch();
 		lastTexture = nullptr;
-		SDL_RenderPresent(renderer);
+		// A held frame completes its drawing but leaves the window's image.
+		if (presentationHeld) check(SDL_FlushRenderer(renderer));
+		else SDL_RenderPresent(renderer);
 		// Staging textures (a page's can be 16 MiB) go after 300 frames unused.
 		++presents;
 		std::erase_if(staging, [&](const Staging &entry)
