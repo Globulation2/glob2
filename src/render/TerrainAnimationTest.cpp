@@ -41,6 +41,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
+#include <map>
 #include <memory>
 #include <optional>
 #include <string>
@@ -293,6 +294,16 @@ struct Scene
 		frame(false);
 		return settled();
 	}
+	// Draws one frame `ns` after the last, then waits that long, as a display
+	// would: background work lands when it lands.
+	std::vector<Uint8> live(std::uint64_t ns)
+	{
+		ClockOverride clock;
+		AnimationClock::simulatedFrameNs = ns;
+		auto image = frame(false);
+		std::this_thread::sleep_for(std::chrono::nanoseconds(ns));
+		return image;
+	}
 };
 
 // Mean absolute channel difference over `pixels`, in 8-bit levels.
@@ -355,7 +366,34 @@ std::vector<Scene::Pair> lockstepPairs(const std::vector<Uint8> &image)
 	return pairs;
 }
 
-void checkSmoothWater(RendererBackend backend)
+// The crossfade weight an image shows between the flipbook endpoints A and B,
+// over `pixels`: the least-squares w of I = A + w (B - A). Thousands of pixels
+// average out 8-bit rounding, which dominates the change of one frame at high
+// frame rates, so this reads the phase each frame actually shows.
+double shownWeight(const std::vector<Uint8> &image, const std::vector<Uint8> &a, const std::vector<Uint8> &b,
+				   const std::vector<std::size_t> &pixels)
+{
+	double along = 0, length = 0;
+	for (auto p : pixels)
+		for (int k = 0; k < 3; ++k)
+		{
+			const double d = double(b[p + k]) - double(a[p + k]);
+			// Channels that change by a few levels show more of the 8-bit
+			// rounding (which renderers do differently) than of the weight.
+			if (std::abs(d) < 12)
+				continue;
+			along += (double(image[p + k]) - double(a[p + k])) * d;
+			length += d * d;
+		}
+	return length > 0 ? along / length : 0;
+}
+
+// How the frames of a sequence are drawn: each settled at its time (the
+// rendering of a time), or back to back at the display's pace while terrain
+// work runs in the background, as in play.
+enum class Pace { Settled, Live };
+
+void checkSmoothWater(RendererBackend backend, Pace pace)
 {
 	const auto name = std::string(GAGCore::rendererBackendName(backend));
 	if (!wanted(backend))
@@ -371,40 +409,59 @@ void checkSmoothWater(RendererBackend backend)
 	}
 	REQUIRE(scene.open.size() > 10000);
 	REQUIRE(scene.shore.size() > 5000);
+	const auto &catalog = globalContainer->terrainCompositor(scene.fixture->game.map.frozenAssetBundle()).catalog();
+	const int ticks = catalog.materials[catalog.find("water")].animationTicks;
+	REQUIRE(ticks > 1);
 	const bool smooth = continuous(backend);
+	constexpr int Frames = 24;
+	constexpr int Start = 81590; // just before the shipped catalogue's wrap period
 	for (const auto &rate : Rates)
 	{
 		CAPTURE(name);
 		CAPTURE(rate.name);
-		// Start just before the shipped catalogue's wrap period, so the frames
-		// cross the shaders' time wrap.
-		auto previous = scene.at(81590, 0.3f);
+		// The flipbook's endpoints over the sequence: each whole frame of it.
+		double end = Start + 0.3;
+		for (int i = 0; i < Frames; ++i)
+			end += stepsOf(intervalNs(rate, i));
+		std::map<std::int64_t, std::vector<Uint8>> keys;
+		for (auto key = std::int64_t(Start / ticks); key <= std::int64_t(end / ticks) + 1; ++key)
+			keys[key] = scene.at(int(key * ticks), 0.f);
+		auto previous = scene.at(Start, 0.3f);
 		const auto pairs = lockstepPairs(previous);
 		CAPTURE(pairs.size());
 		REQUIRE(pairs.size() >= 2);
-		std::vector<double> rates, shoreRatios;
+		std::vector<double> shoreRates;
 		double before = scene.view.render.animationNow().value();
-		for (int i = 0; i < 24; ++i)
+		for (int i = 0; i < Frames; ++i)
 		{
 			CAPTURE(i);
 			const auto ns = intervalNs(rate, i);
-			auto image = scene.advance(ns);
+			auto image = pace == Pace::Settled ? scene.advance(ns) : scene.live(ns);
 			const double now = scene.view.render.animationNow().value();
 			// The view's presentation time moved by exactly the frame.
 			CHECK(now - before == doctest::Approx(stepsOf(ns)).epsilon(1e-4));
 			const bool stepped = int(std::floor(now)) != int(std::floor(before));
 			before = now;
+			// The water shows this frame's time: the crossfade weight between
+			// the flipbook frames around it is the share of the frame elapsed.
+			const double shown = smooth ? now : std::floor(now);
+			const auto key = std::int64_t(std::floor(shown / ticks));
+			const double expected = (shown - double(key * ticks)) / ticks;
+			const double weight = shownWeight(image, keys.at(key), keys.at(key + 1), scene.open);
 			const double open = change(previous, image, scene.open);
 			const double shore = change(previous, image, scene.shore);
+			CAPTURE(now);
+			CAPTURE(expected);
+			CAPTURE(weight);
 			CAPTURE(open);
 			CAPTURE(shore);
+			CHECK(std::abs(weight - expected) < 0.03);
 			if (smooth || stepped)
 			{
 				// Every frame moves the water: no frozen frame.
-				CHECK(open > 0.05);
-				CHECK(shore > 0.05);
-				rates.push_back(open / (smooth ? stepsOf(ns) : 1.0));
-				shoreRatios.push_back(shore / std::max(open, 1e-6));
+				CHECK(open > 0);
+				CHECK(shore > 0);
+				shoreRates.push_back(shore / (smooth ? stepsOf(ns) : 1.0));
 			}
 			else
 				CHECK(open == 0); // whole steps: nothing moves between them
@@ -418,19 +475,15 @@ void checkSmoothWater(RendererBackend backend)
 			}
 			previous = std::move(image);
 		}
-		// The change per animation step stays near constant: no frame moves
-		// twice as far as its time, none a small part of it.
-		const double typical = median(rates), ratio = median(shoreRatios);
+		// The wash moves at a steady pace: no frame of the shore moves several
+		// times as far as its time, or a small part of it.
+		const double typical = median(shoreRates);
 		CAPTURE(typical);
-		CAPTURE(ratio);
-		for (std::size_t i = 0; i < rates.size(); ++i)
+		for (std::size_t i = 0; i < shoreRates.size(); ++i)
 		{
 			CAPTURE(i);
-			CHECK(rates[i] >= 0.4 * typical);
-			CHECK(rates[i] <= 2.5 * typical);
-			// Shore and open water move in proportion.
-			CHECK(shoreRatios[i] >= 0.4 * ratio);
-			CHECK(shoreRatios[i] <= 2.5 * ratio);
+			CHECK(shoreRates[i] >= 0.25 * typical);
+			CHECK(shoreRates[i] <= 4 * typical);
 		}
 	}
 }
@@ -565,23 +618,42 @@ TEST_SUITE("TerrainAnimation")
 
 	TEST_CASE("portable SDL water animates smoothly and in step every frame at every rate [display]")
 	{
-		checkSmoothWater(RendererBackend::PortableSDL);
+		checkSmoothWater(RendererBackend::PortableSDL, Pace::Settled);
 	}
 	TEST_CASE("SDL GPU water animates smoothly and in step every frame at every rate [display]")
 	{
-		checkSmoothWater(RendererBackend::SDLGPU);
+		checkSmoothWater(RendererBackend::SDLGPU, Pace::Settled);
 	}
 	TEST_CASE("Programmable GL water animates smoothly and in step every frame at every rate [display]")
 	{
-		checkSmoothWater(RendererBackend::ProgrammableGL);
+		checkSmoothWater(RendererBackend::ProgrammableGL, Pace::Settled);
 	}
 	TEST_CASE("Legacy GL water animates smoothly and in step every frame at every rate [display]")
 	{
-		checkSmoothWater(RendererBackend::LegacyGL);
+		checkSmoothWater(RendererBackend::LegacyGL, Pace::Settled);
 	}
 	TEST_CASE("software water advances in whole steps and in step at every rate [display]")
 	{
-		checkSmoothWater(RendererBackend::Software);
+		checkSmoothWater(RendererBackend::Software, Pace::Settled);
+	}
+	// The same, drawn back to back at the display's pace without waiting for
+	// background terrain work: the time each frame shows must not depend on
+	// when workers finish (flipbook endpoints, keyframes).
+	TEST_CASE("portable SDL water keeps its phase while terrain work runs in the background [display]")
+	{
+		checkSmoothWater(RendererBackend::PortableSDL, Pace::Live);
+	}
+	TEST_CASE("SDL GPU water keeps its phase while terrain work runs in the background [display]")
+	{
+		checkSmoothWater(RendererBackend::SDLGPU, Pace::Live);
+	}
+	TEST_CASE("Programmable GL water keeps its phase while terrain work runs in the background [display]")
+	{
+		checkSmoothWater(RendererBackend::ProgrammableGL, Pace::Live);
+	}
+	TEST_CASE("Legacy GL water keeps its phase while terrain work runs in the background [display]")
+	{
+		checkSmoothWater(RendererBackend::LegacyGL, Pace::Live);
 	}
 
 	TEST_CASE("renderers show water at the same fractional time [display]")
