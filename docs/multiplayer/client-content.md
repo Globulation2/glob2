@@ -4,14 +4,14 @@ Downloading, installing and caching shared building, map, music, terrain and gen
 
 ## Building-family installation
 
-**Building families** on local new-game and editor new-map screens opens
+**Building families** on the editor new-map screen opens
 `src/online/screens/BuildingLibraryScreen.cpp`. It browses the selected instance's
 public library, installs compatible validated releases and lets the player choose
 which families to add to stock buildings. **Family link or ID** also opens an
 unlisted family directly; page links must use the selected instance's origin.
 Private families require that owner's sign-in through Online. Online browsing needs that instance;
 already installed families remain available offline. Selection is stored in the
-local profile and applies to subsequent new maps in both flows.
+local profile and applies to subsequent new maps and generated new games.
 
 `src/building/BuildingLibrary.cpp` writes pinned releases and the selection index
 under `online/buildings/` through `OnlineStorage`. Installation verifies the exact
