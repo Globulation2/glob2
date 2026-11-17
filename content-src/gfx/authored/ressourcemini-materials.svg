@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later
+     Copyright (C) 2026 glob2 contributors
+
+     Carried-material icons, frames 8-11 (gold, metal, glass, fabric): the
+     later materials' classic icons are 16x16 frames holding a small lump in
+     the middle. Hand-authored for glob2 on a 64x64 canvas, the 4x
+     high-resolution size of data/gfx/ressourcemini8-11.png. Each is drawn in
+     the style of its map resource (faceted gold and iron ore, silica crystals,
+     cotton bolls), at the classic icon's size and place, with light from the
+     upper left; the classic icons are much duller than that art, so these keep
+     its brightness and lean only halfway toward the classic colour. The classic frames stay as they are.
+     tools/artwork/render_authored.py renders group "frameN" to
+     data/highres/v1/ressourceminiN.png. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <radialGradient id="puff" cx="0.36" cy="0.3" r="0.7"><stop offset="0" stop-color="#dfd5cf"/><stop offset="0.6" stop-color="#d4c5b7"/><stop offset="1" stop-color="#af9c89"/></radialGradient>
+  </defs>
+
+  <!-- Gold: faceted gold ore with lavender rock between its facets, like the map's gold ore. -->
+
+  <g id="frame8" class="frame">
+    <g transform="translate(32 32) scale(0.8) translate(-32 -32)">
+    <path d="M20.0 30.0 L25.0 24.6 L23.3 25.9 L20.8 28.6 Z" fill="#efbb70"/>
+    <path d="M25.0 24.6 L32.0 25.0 L26.8 26.1 L23.3 25.9 Z" fill="#ecb460"/>
+    <path d="M32.0 25.0 L34.6 31.0 L28.1 29.1 L26.8 26.1 Z" fill="#ce8b25"/>
+    <path d="M34.6 31.0 L32.0 38.6 L26.8 32.9 L28.1 29.1 Z" fill="#6a5d67"/>
+    <path d="M32.0 38.6 L24.0 40.0 L22.8 33.6 L26.8 32.9 Z" fill="#8f601a"/>
+    <path d="M24.0 40.0 L19.4 36.0 L20.5 31.6 L22.8 33.6 Z" fill="#958191"/>
+    <path d="M19.4 36.0 L20.0 30.0 L20.8 28.6 L20.5 31.6 Z" fill="#ecb15b"/>
+    <polygon points="20.8,28.6 23.3,25.9 26.8,26.1 28.1,29.1 26.8,32.9 22.8,33.6 20.5,31.6" fill="#ecb460"/>
+    <polygon points="20,30 25,24.6 32,25 34.6,31 32,38.6 24,40 19.4,36" fill="none" stroke="#724d14" stroke-width="0.6" stroke-linejoin="round" opacity="0.6"/>
+    <path d="M32.0 25.0 L36.0 20.4 L34.5 21.8 L32.5 24.1 Z" fill="#f3c372"/>
+    <path d="M36.0 20.4 L42.0 21.6 L37.5 22.4 L34.5 21.8 Z" fill="#bca8af"/>
+    <path d="M42.0 21.6 L45.0 28.0 L39.0 25.6 L37.5 22.4 Z" fill="#d89929"/>
+    <path d="M45.0 28.0 L42.6 35.0 L37.8 29.1 L39.0 25.6 Z" fill="#9b6d1d"/>
+    <path d="M42.6 35.0 L36.0 36.0 L34.5 29.6 L37.8 29.1 Z" fill="#95691b"/>
+    <path d="M36.0 36.0 L34.6 31.0 L33.8 27.1 L34.5 29.6 Z" fill="#efb246"/>
+    <path d="M34.6 31.0 L32.0 25.0 L32.5 24.1 L33.8 27.1 Z" fill="#eeae3d"/>
+    <polygon points="32.5,24.1 34.5,21.8 37.5,22.4 39.0,25.6 37.8,29.1 34.5,29.6 33.8,27.1" fill="#f2bc62"/>
+    <polygon points="32,25 36,20.4 42,21.6 45,28 42.6,35 36,36 34.6,31" fill="none" stroke="#765315" stroke-width="0.6" stroke-linejoin="round" opacity="0.6"/>
+    <path d="M32.0 38.6 L34.6 31.0 L33.1 32.1 L31.8 35.9 Z" fill="#e3ad60"/>
+    <path d="M34.6 31.0 L36.0 36.0 L33.8 34.6 L33.1 32.1 Z" fill="#b4771d"/>
+    <path d="M36.0 36.0 L42.6 35.0 L37.1 34.1 L33.8 34.6 Z" fill="#e3ae65"/>
+    <path d="M42.6 35.0 L43.0 41.0 L37.3 37.1 L37.1 34.1 Z" fill="#a56c1a"/>
+    <path d="M43.0 41.0 L38.0 44.4 L34.8 38.8 L37.3 37.1 Z" fill="#564954"/>
+    <path d="M38.0 44.4 L31.0 43.4 L31.3 38.3 L34.8 38.8 Z" fill="#966218"/>
+    <path d="M31.0 43.4 L32.0 38.6 L31.8 35.9 L31.3 38.3 Z" fill="#e1aa5b"/>
+    <polygon points="31.8,35.9 33.1,32.1 33.8,34.6 37.1,34.1 37.3,37.1 34.8,38.8 31.3,38.3" fill="#b4a1a7"/>
+    <polygon points="32,38.6 34.6,31 36,36 42.6,35 43,41 38,44.4 31,43.4" fill="none" stroke="#6a4610" stroke-width="0.6" stroke-linejoin="round" opacity="0.6"/>
+    <path d="M24 28 L27 26.6 M37 23 L40 23.4" stroke="#fbdb92" stroke-width="1" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- Metal: three faceted iron-ore chunks with rust faces, like the map's iron ore. -->
+
+  <g id="frame9" class="frame">
+    <path d="M23.0 30.0 L27.0 22.4 L25.6 22.0 L23.6 25.8 Z" fill="#8c8f92"/>
+    <path d="M27.0 22.4 L34.0 21.0 L29.1 21.3 L25.6 22.0 Z" fill="#8c8e92"/>
+    <path d="M34.0 21.0 L39.0 26.0 L31.6 23.8 L29.1 21.3 Z" fill="#975433"/>
+    <path d="M39.0 26.0 L37.4 33.0 L30.8 27.3 L31.6 23.8 Z" fill="#414045"/>
+    <path d="M37.4 33.0 L29.0 34.6 L26.6 28.1 L30.8 27.3 Z" fill="#3b3b3f"/>
+    <path d="M29.0 34.6 L23.0 30.0 L23.6 25.8 L26.6 28.1 Z" fill="#56555b"/>
+    <polygon points="23.6,25.8 25.6,22.0 29.1,21.3 31.6,23.8 30.8,27.3 26.6,28.1" fill="#85868b"/>
+    <polygon points="23,30 27,22.4 34,21 39,26 37.4,33 29,34.6" fill="none" stroke="#302f33" stroke-width="0.6" stroke-linejoin="round" opacity="0.6"/>
+    <path d="M17.4 38.0 L20.4 31.0 L19.8 31.2 L18.3 34.7 Z" fill="#85878a"/>
+    <path d="M20.4 31.0 L27.0 30.0 L23.1 30.7 L19.8 31.2 Z" fill="#85888b"/>
+    <path d="M27.0 30.0 L31.0 35.4 L25.1 33.4 L23.1 30.7 Z" fill="#58575d"/>
+    <path d="M31.0 35.4 L28.6 42.0 L23.9 36.7 L25.1 33.4 Z" fill="#38383b"/>
+    <path d="M28.6 42.0 L20.0 42.6 L19.6 37.0 L23.9 36.7 Z" fill="#582c18"/>
+    <path d="M20.0 42.6 L17.4 38.0 L18.3 34.7 L19.6 37.0 Z" fill="#5e5e64"/>
+    <polygon points="18.3,34.7 19.8,31.2 23.1,30.7 25.1,33.4 23.9,36.7 19.6,37.0" fill="#7e8184"/>
+    <polygon points="17.4,38 20.4,31 27,30 31,35.4 28.6,42 20,42.6" fill="none" stroke="#2b2b2d" stroke-width="0.6" stroke-linejoin="round" opacity="0.6"/>
+    <path d="M32.0 36.0 L35.0 30.0 L34.4 30.5 L32.9 33.5 Z" fill="#808286"/>
+    <path d="M35.0 30.0 L42.0 29.4 L37.9 30.2 L34.4 30.5 Z" fill="#aa7e68"/>
+    <path d="M42.0 29.4 L46.6 34.4 L40.2 32.7 L37.9 30.2 Z" fill="#55555a"/>
+    <path d="M46.6 34.4 L44.6 41.4 L39.2 36.2 L40.2 32.7 Z" fill="#343438"/>
+    <path d="M44.6 41.4 L35.4 42.0 L34.6 36.5 L39.2 36.2 Z" fill="#333336"/>
+    <path d="M35.4 42.0 L32.0 36.0 L32.9 33.5 L34.6 36.5 Z" fill="#975333"/>
+    <polygon points="32.9,33.5 34.4,30.5 37.9,30.2 40.2,32.7 39.2,36.2 34.6,36.5" fill="#787b7e"/>
+    <polygon points="32,36 35,30 42,29.4 46.6,34.4 44.6,41.4 35.4,42" fill="none" stroke="#262629" stroke-width="0.6" stroke-linejoin="round" opacity="0.6"/>
+  </g>
+
+  <!-- Glass: a cluster of pale blue silica crystals on a frosted base, like the map's silica. -->
+
+  <g id="frame10" class="frame">
+    <g transform="translate(32 33) scale(0.76) translate(-32 -33)">
+    <path d="M23.0 40.8 L17.7 27.7 L18.6 24.0 L25.0 40.0 Z" fill="#88a5bb"/>
+    <path d="M25.0 40.0 L18.6 24.0 L21.8 26.1 L27.0 39.2 Z" fill="#b8ceda"/>
+    <path d="M25.0 40.0 L18.6 24.0" stroke="#dbe0e4" stroke-width="0.6" opacity="0.8"/>
+    <path d="M37.0 39.1 L42.7 26.8 L46.0 25.0 L39.0 40.0 Z" fill="#88a5bb"/>
+    <path d="M39.0 40.0 L46.0 25.0 L46.7 28.6 L41.0 40.9 Z" fill="#b8ceda"/>
+    <path d="M39.0 40.0 L46.0 25.0" stroke="#dbe0e4" stroke-width="0.6" opacity="0.8"/>
+    <path d="M26.4 41.3 L24.0 22.5 L26.0 18.0 L29.0 41.0 Z" fill="#88a5bb"/>
+    <path d="M29.0 41.0 L26.0 18.0 L29.1 21.8 L31.6 40.7 Z" fill="#b8ceda"/>
+    <path d="M29.0 41.0 L26.0 18.0" stroke="#dbe0e4" stroke-width="0.6" opacity="0.8"/>
+    <path d="M33.4 40.7 L35.9 20.5 L39.0 16.4 L36.0 41.0 Z" fill="#88a5bb"/>
+    <path d="M36.0 41.0 L39.0 16.4 L41.0 21.1 L38.6 41.3 Z" fill="#b8ceda"/>
+    <path d="M36.0 41.0 L39.0 16.4" stroke="#dbe0e4" stroke-width="0.6" opacity="0.8"/>
+    <path d="M29.3 42.0 L29.5 17.4 L32.6 12.0 L32.4 42.0 Z" fill="#88a5bb"/>
+    <path d="M32.4 42.0 L32.6 12.0 L35.7 17.4 L35.5 42.0 Z" fill="#b8ceda"/>
+    <path d="M32.4 42.0 L32.6 12.0" stroke="#dbe0e4" stroke-width="0.6" opacity="0.8"/>
+    <path d="M21 41 Q32 37 44 41 Q40 45.6 32 45.6 Q24 45.6 21 41 Z" fill="#abbeca"/>
+    <path d="M23 41.6 Q32 39 42 41.6" stroke="#d2dde4" stroke-width="0.8" fill="none"/>
+    </g>
+  </g>
+
+  <!-- Fabric: three white cotton bolls on brown husks between two leaves, like the map's cotton. -->
+
+  <g id="frame11" class="frame">
+    <path d="M22 38 Q20 30 26 28 Q30 34 22 38 Z" fill="#43652f"/>
+    <path d="M42.6 38 Q45 30 39 28 Q35 34 42.6 38 Z" fill="#4e7235"/>
+    <path d="M24 30 Q32 24 41 30" stroke="#5c3c28" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="24.8" cy="32.7" r="3.5" fill="url(#puff)"/>
+    <circle cx="23.9" cy="29.6" r="2.2" fill="url(#puff)"/>
+    <circle cx="29.8" cy="29.3" r="2.2" fill="url(#puff)"/>
+    <circle cx="30.1" cy="33.0" r="2.1" fill="url(#puff)"/>
+    <circle cx="26.7" cy="27.9" r="2.1" fill="url(#puff)"/>
+    <path d="M24.2 34.4 L27.0 32.4 L29.8 34.4" stroke="#6a4a32" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.8"/>
+    <circle cx="35.4" cy="31.6" r="3.3" fill="url(#puff)"/>
+    <circle cx="34.6" cy="28.6" r="2.1" fill="url(#puff)"/>
+    <circle cx="40.3" cy="28.4" r="2.1" fill="url(#puff)"/>
+    <circle cx="40.6" cy="31.9" r="2.0" fill="url(#puff)"/>
+    <circle cx="37.3" cy="27.0" r="2.0" fill="url(#puff)"/>
+    <path d="M34.9 33.2 L37.6 31.4 L40.3 33.2" stroke="#6a4a32" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.8"/>
+    <circle cx="29.9" cy="40.5" r="3.8" fill="url(#puff)"/>
+    <circle cx="29.0" cy="37.1" r="2.4" fill="url(#puff)"/>
+    <circle cx="35.5" cy="36.7" r="2.4" fill="url(#puff)"/>
+    <circle cx="35.8" cy="40.8" r="2.3" fill="url(#puff)"/>
+    <circle cx="32.1" cy="35.2" r="2.3" fill="url(#puff)"/>
+    <path d="M29.3 42.3 L32.4 40.1 L35.5 42.3" stroke="#6a4a32" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.8"/>
+  </g>
+</svg>

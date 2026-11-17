@@ -2,7 +2,7 @@
 
 3,665 registered frames combine approved original-derived artwork, 2,016
 unit poses rendered from preserved Blender sources, eight SVG farm markers,
-AI-enhanced sprite finals, generated terrain/water materials and resampled masks.
+twelve SVG carried-material icons, AI-enhanced sprite finals, generated terrain/water materials and resampled masks.
 Native sprites remain in `data/gfx`; logical sizes, team colors and animation
 cadence are preserved. Unsupported backends and missing frames use classic art.
 

@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later
+     Copyright (C) 2026 glob2 contributors
+
+     Carried-material icons, frames 0-7 (wood, food, paper, stone, algae,
+     cherries, oranges, prunes): the badge drawn beside a harvesting unit and in
+     the unit panel. Hand-authored for glob2 on a 32x32 canvas, the 4x
+     high-resolution size of the 8x8 classic data/gfx/ressourcemini0-7.png. Each
+     keeps its classic icon's layout and overall colour and is drawn in the style
+     of the map resource it comes from (the bubble trees, papyrus, faceted
+     rocks, star algae), with light from the upper left. The classic frames stay as they are; only the
+     high-resolution frames are rendered from here. tools/artwork/render_authored.py
+     renders group "frameN" to data/highres/v1/ressourceminiN.png. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="peach" cx="0.35" cy="0.3" r="0.75">
+      <stop offset="0" stop-color="#fde3c8"/><stop offset="0.55" stop-color="#f8c49a"/><stop offset="1" stop-color="#f0a070"/>
+    </radialGradient>
+    <radialGradient id="lilac" cx="0.35" cy="0.3" r="0.75">
+      <stop offset="0" stop-color="#fbeefc"/><stop offset="0.5" stop-color="#ebbdf6"/><stop offset="1" stop-color="#c88ae0"/>
+    </radialGradient>
+    <radialGradient id="violet" cx="0.3" cy="0.3" r="0.8">
+      <stop offset="0" stop-color="#c58ae0"/><stop offset="0.55" stop-color="#9b6bae"/><stop offset="1" stop-color="#6a2896"/>
+    </radialGradient>
+    <radialGradient id="mint" cx="0.35" cy="0.25" r="0.8">
+      <stop offset="0" stop-color="#d6f4ef"/><stop offset="0.4" stop-color="#78e2cc"/><stop offset="0.8" stop-color="#5bbf96"/><stop offset="1" stop-color="#3a7a5c"/>
+    </radialGradient>
+    <linearGradient id="bark" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#7e6a09"/><stop offset="0.5" stop-color="#695601"/><stop offset="1" stop-color="#503d01"/>
+    </linearGradient>
+    <radialGradient id="tomato" cx="0.35" cy="0.3" r="0.75">
+      <stop offset="0" stop-color="#e98759"/><stop offset="0.35" stop-color="#e94d1c"/><stop offset="0.8" stop-color="#da3708"/><stop offset="1" stop-color="#9f2605"/>
+    </radialGradient>
+    <radialGradient id="lime" cx="0.4" cy="0.3" r="0.75">
+      <stop offset="0" stop-color="#d8df90"/><stop offset="0.35" stop-color="#badd3d"/><stop offset="0.8" stop-color="#9fc92a"/><stop offset="1" stop-color="#5f7918"/>
+    </radialGradient>
+    <radialGradient id="squash" cx="0.35" cy="0.3" r="0.75">
+      <stop offset="0" stop-color="#e7ca7a"/><stop offset="0.35" stop-color="#e5b139"/><stop offset="0.8" stop-color="#e1a62c"/><stop offset="1" stop-color="#a76a10"/>
+    </radialGradient>
+    <radialGradient id="rock" cx="0.32" cy="0.28" r="0.8">
+      <stop offset="0" stop-color="#9d98a1"/><stop offset="0.45" stop-color="#87838b"/><stop offset="0.8" stop-color="#706d75"/><stop offset="1" stop-color="#5d5b62"/>
+    </radialGradient>
+    <radialGradient id="weed" cx="0.4" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#6c047e"/><stop offset="0.6" stop-color="#5a0169"/><stop offset="1" stop-color="#4d0155"/>
+    </radialGradient>
+    <radialGradient id="cherry" cx="0.35" cy="0.3" r="0.7">
+      <stop offset="0" stop-color="#ff0000"/><stop offset="0.3" stop-color="#ff0000"/><stop offset="0.85" stop-color="#ff0000"/><stop offset="1" stop-color="#e50000"/>
+    </radialGradient>
+    <radialGradient id="orange" cx="0.35" cy="0.3" r="0.72">
+      <stop offset="0" stop-color="#ffed00"/><stop offset="0.35" stop-color="#ffde00"/><stop offset="0.85" stop-color="#ffd800"/><stop offset="1" stop-color="#efbd00"/>
+    </radialGradient>
+    <radialGradient id="plum" cx="0.35" cy="0.3" r="0.72">
+      <stop offset="0" stop-color="#c1aae3"/><stop offset="0.35" stop-color="#9b7acc"/><stop offset="0.85" stop-color="#8f6dc0"/><stop offset="1" stop-color="#7252a6"/>
+    </radialGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="1.6"/></filter>
+    <filter id="haze" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2.2"/></filter>
+    <clipPath id="crown">
+      <path d="M16 1.4 C21 1.4 23.4 4.6 22.8 8 C25 10.4 24.6 16 24.2 20 C23.6 23.4 20 24.8 16 24.4 C10 24.8 4.4 23.8 4.4 18.4 C3.8 14.4 5 11 8.6 10 C9.2 5 11.6 1.4 16 1.4 Z"/>
+    </clipPath>
+    
+    
+    
+    
+    
+    <radialGradient id="bpeach" cx="0.36" cy="0.32" r="0.68"><stop offset="0" stop-color="#f5fbf2"/><stop offset="0.22" stop-color="#f0cda9"/><stop offset="0.7" stop-color="#eeb381"/><stop offset="1" stop-color="#ac815d"/></radialGradient><radialGradient id="bmint" cx="0.36" cy="0.32" r="0.68"><stop offset="0" stop-color="#f5fbf2"/><stop offset="0.22" stop-color="#a0e5ce"/><stop offset="0.7" stop-color="#73d9ba"/><stop offset="1" stop-color="#529c85"/></radialGradient><radialGradient id="bteal" cx="0.36" cy="0.32" r="0.68"><stop offset="0" stop-color="#f5fbf2"/><stop offset="0.22" stop-color="#83c2a9"/><stop offset="0.7" stop-color="#47a481"/><stop offset="1" stop-color="#32765d"/></radialGradient><radialGradient id="bwhite" cx="0.36" cy="0.32" r="0.68"><stop offset="0" stop-color="#f5fbf2"/><stop offset="0.22" stop-color="#ebe9eb"/><stop offset="0.7" stop-color="#e5dfe7"/><stop offset="1" stop-color="#a5a1a7"/></radialGradient><radialGradient id="bviolet" cx="0.36" cy="0.32" r="0.68"><stop offset="0" stop-color="#f5fbf2"/><stop offset="0.22" stop-color="#b996d3"/><stop offset="0.7" stop-color="#995fc1"/><stop offset="1" stop-color="#6e448b"/></radialGradient><radialGradient id="blilac" cx="0.36" cy="0.32" r="0.68"><stop offset="0" stop-color="#f5fbf2"/><stop offset="0.22" stop-color="#e4c7eb"/><stop offset="0.7" stop-color="#dbace7"/><stop offset="1" stop-color="#9d7ba7"/></radialGradient><radialGradient id="bice" cx="0.36" cy="0.32" r="0.68"><stop offset="0" stop-color="#f5fbf2"/><stop offset="0.22" stop-color="#daf2e7"/><stop offset="0.7" stop-color="#cbede2"/><stop offset="1" stop-color="#93aba2"/></radialGradient><filter id="crisp" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="0.9"/></filter><clipPath id="boulder"><path d="M8 4.6 L12.4 2.6 L17 2 L21.4 2.8 L24.8 3.2 L28.6 7.4 L30.2 13 L30.2 18 L29.6 22 L27.6 26.8 L21.4 30.4 L16 30.6 L11.6 30.2 L6.4 27.8 L2.8 21.6 L2.4 14 L4.6 7.6 Z"/></clipPath><linearGradient id="stoneshade" x1="0.15" y1="0.1" x2="0.9" y2="0.95"><stop offset="0" stop-color="#c5c1ce"/><stop offset="0.35" stop-color="#a195b5"/><stop offset="0.65" stop-color="#7c6b97"/><stop offset="1" stop-color="#2c1c49"/></linearGradient>
+  </defs>
+
+  <!-- Wood: one of the map's glossy pastel bubble trees, peach to the left,
+       lilac and violet above, mint below, on a short brown trunk. -->
+
+  <g id="frame0" class="frame">
+    <path d="M13.6 22 L13 32 L19.4 32 L18.8 22 Z" fill="url(#bark)"/>
+    <path d="M14.8 24 L14.6 31" stroke="#b88e1e" stroke-width="0.8" opacity="0.6"/>
+    <path d="M5.4 21.4 Q8 24.4 12 24" stroke="#adba48" stroke-width="1.8" fill="none" opacity="0.55" stroke-linecap="round"/>
+    <circle cx="10.2" cy="21" r="3.6" fill="url(#bpeach)"/>
+    <circle cx="15.6" cy="21.4" r="3.8" fill="url(#bmint)"/>
+    <circle cx="21" cy="20.8" r="3.5" fill="url(#bteal)"/>
+    <circle cx="8.4" cy="17" r="3.7" fill="url(#bpeach)"/>
+    <circle cx="14" cy="16.8" r="4" fill="url(#bwhite)"/>
+    <circle cx="19.8" cy="16.8" r="3.7" fill="url(#bmint)"/>
+    <circle cx="10.2" cy="12.6" r="3.7" fill="url(#bpeach)"/>
+    <circle cx="16" cy="12.2" r="3.8" fill="url(#bwhite)"/>
+    <circle cx="21.2" cy="12.4" r="3.4" fill="url(#bviolet)"/>
+    <circle cx="13.2" cy="8.2" r="3.5" fill="url(#blilac)"/>
+    <circle cx="19" cy="8" r="3.4" fill="url(#bviolet)"/>
+    <circle cx="16" cy="4.4" r="3.3" fill="url(#bice)"/>
+  </g>
+
+  <!-- Food: a red tomato, a lime-green gourd and a golden squash. -->
+  <g id="frame1" class="frame">
+    <circle cx="8.8" cy="8.8" r="8" fill="url(#tomato)"/>
+    <circle cx="23.6" cy="8.4" r="7.6" fill="url(#lime)"/>
+    <circle cx="18.2" cy="22.4" r="8.8" fill="url(#squash)"/>
+    <path d="M22.2 2.6 Q23.6 1.4 25.2 2.2" stroke="#5f7618" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    <ellipse cx="5.4" cy="5.4" rx="2.4" ry="1.4" fill="#e9a981" opacity="0.7" transform="rotate(-30 5.4 5.4)"/>
+    <ellipse cx="22" cy="4.6" rx="2.2" ry="1.3" fill="#e2e1ad" opacity="0.8" transform="rotate(-30 22 4.6)"/>
+    <ellipse cx="15.6" cy="19" rx="2.6" ry="1.5" fill="#e9d393" opacity="0.8" transform="rotate(-30 15.6 19)"/>
+    <path d="M13.4 25.6 Q18.6 30 25 26.6" stroke="#d49423" stroke-width="0.8" fill="none" opacity="0.6"/>
+  </g>
+
+  <!-- Paper: a fine papyrus tuft fanning from a dark base, like the map's papyrus. -->
+
+  <g id="frame2" class="frame">
+    <ellipse cx="17" cy="16" rx="11" ry="13" fill="#93b088" opacity="0.3" filter="url(#haze)"/>
+    <path d="M17 30 Q13.3 27.0 2.4 24.5" stroke="#b1cba0" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.75"/>
+    <path d="M17 30 Q13.3 23.3 2.4 17.9" stroke="#9ec08e" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.75"/>
+    <path d="M17 30 Q13.3 20.4 2.4 12.6" stroke="#b1cba0" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.75"/>
+    <path d="M17 30 Q13.5 18.6 3.0 9.2" stroke="#9ec08e" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.75"/>
+    <path d="M17 30 Q15.0 17.1 8.9 6.6" stroke="#b1cba0" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.75"/>
+    <path d="M17 30 Q16.6 17.2 15.4 6.7" stroke="#9ec08e" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.75"/>
+    <path d="M17 30 Q18.6 16.0 23.5 4.5" stroke="#b1cba0" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.75"/>
+    <path d="M17 30 Q19.7 18.3 27.7 8.6" stroke="#9ec08e" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.75"/>
+    <path d="M17 30 Q20.4 19.8 30.6 11.4" stroke="#b1cba0" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.75"/>
+    <path d="M17 30 Q20.4 23.4 30.6 18.0" stroke="#9ec08e" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.75"/>
+    <path d="M17 30 Q20.4 27.6 30.6 25.7" stroke="#b1cba0" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.75"/>
+    <path d="M17 30 Q13.3 22.4 2.4 16.2" stroke="#88b476" stroke-width="1.3" fill="none" stroke-linecap="round" opacity="0.9"/>
+    <path d="M17 30 Q13.3 21.7 2.4 14.8" stroke="#77a465" stroke-width="1.3" fill="none" stroke-linecap="round" opacity="0.9"/>
+    <path d="M17 30 Q13.5 18.7 3.1 9.5" stroke="#88b476" stroke-width="1.3" fill="none" stroke-linecap="round" opacity="0.9"/>
+    <path d="M17 30 Q14.6 18.0 7.3 8.3" stroke="#77a465" stroke-width="1.3" fill="none" stroke-linecap="round" opacity="0.9"/>
+    <path d="M17 30 Q16.0 17.6 13.0 7.4" stroke="#88b476" stroke-width="1.3" fill="none" stroke-linecap="round" opacity="0.9"/>
+    <path d="M17 30 Q17.0 18.0 17.1 8.2" stroke="#77a465" stroke-width="1.3" fill="none" stroke-linecap="round" opacity="0.9"/>
+    <path d="M17 30 Q17.8 17.8 20.1 7.9" stroke="#88b476" stroke-width="1.3" fill="none" stroke-linecap="round" opacity="0.9"/>
+    <path d="M17 30 Q19.3 18.3 26.1 8.7" stroke="#77a465" stroke-width="1.3" fill="none" stroke-linecap="round" opacity="0.9"/>
+    <path d="M17 30 Q20.1 18.9 29.6 9.7" stroke="#88b476" stroke-width="1.3" fill="none" stroke-linecap="round" opacity="0.9"/>
+    <path d="M17 30 Q20.4 21.0 30.6 13.6" stroke="#77a465" stroke-width="1.3" fill="none" stroke-linecap="round" opacity="0.9"/>
+    <path d="M17 30 Q20.4 22.7 30.6 16.7" stroke="#88b476" stroke-width="1.3" fill="none" stroke-linecap="round" opacity="0.9"/>
+    <path d="M17 30 Q13.7 20.1 3.9 12.0" stroke="#65974f" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="1"/>
+    <path d="M17 30 Q14.3 18.6 6.0 9.2" stroke="#71a25a" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="1"/>
+    <path d="M17 30 Q15.2 19.1 9.8 10.1" stroke="#65974f" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="1"/>
+    <path d="M17 30 Q15.9 19.0 12.7 10.0" stroke="#71a25a" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="1"/>
+    <path d="M17 30 Q16.3 17.4 14.1 7.2" stroke="#65974f" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="1"/>
+    <path d="M17 30 Q16.9 17.9 16.4 8.1" stroke="#71a25a" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="1"/>
+    <path d="M17 30 Q17.5 17.6 19.0 7.4" stroke="#65974f" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="1"/>
+    <path d="M17 30 Q18.5 18.2 22.8 8.5" stroke="#71a25a" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="1"/>
+    <path d="M17 30 Q19.0 19.2 25.2 10.4" stroke="#65974f" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="1"/>
+    <path d="M17 30 Q19.7 19.2 27.8 10.4" stroke="#71a25a" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="1"/>
+    <path d="M17 30 Q20.2 20.2 29.6 12.2" stroke="#65974f" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="1"/>
+    <path d="M15.4 25 L15 32 L18.8 32 L18.6 25 Z" fill="#4b6631"/>
+    <path d="M15.4 25 L18.6 25 L17 23 Z" fill="#658740"/>
+  </g>
+
+  <!-- Stone: a rough lavender boulder like the map's stones: speckled, lit from the
+       upper left, falling into a deep indigo shadow to the lower right. -->
+
+  <g id="frame3" class="frame">
+    <path d="M8 4.6 L12.4 2.6 L17 2 L21.4 2.8 L24.8 3.2 L28.6 7.4 L30.2 13 L30.2 18 L29.6 22 L27.6 26.8 L21.4 30.4 L16 30.6 L11.6 30.2 L6.4 27.8 L2.8 21.6 L2.4 14 L4.6 7.6 Z" fill="url(#stoneshade)"/>
+    <g clip-path="url(#boulder)">
+    <ellipse cx="12" cy="10" rx="9" ry="6" fill="#d1ccd7" opacity="0.55" filter="url(#haze)"/>
+    <path d="M25.4 2 Q23.6 10 22 16.6 Q18.4 24.6 4 27 L4 33 L33 33 L33 2 Z" fill="#261544" opacity="0.82" filter="url(#crisp)"/>
+    <path d="M24.6 3.4 Q22.8 10.6 21.2 16.4 Q17.4 23.8 5.6 26.2" stroke="#dedcdc" stroke-width="0.9" fill="none" opacity="0.35" filter="url(#crisp)"/>
+    <circle cx="8.8" cy="17.5" r="0.42" fill="#9081aa" opacity="0.32"/>
+    <circle cx="15.5" cy="18.6" r="0.52" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="9.4" cy="8.7" r="0.70" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="17.4" cy="17.7" r="0.43" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="8.6" cy="6.3" r="0.67" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="23.1" cy="21.1" r="0.28" fill="#9081aa" opacity="0.32"/>
+    <circle cx="3.2" cy="24.2" r="0.62" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="15.5" cy="22.5" r="0.65" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="13.3" cy="24.8" r="0.45" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="27.0" cy="4.8" r="0.31" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="9.4" cy="21.2" r="0.60" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="14.0" cy="25.8" r="0.51" fill="#9081aa" opacity="0.32"/>
+    <circle cx="18.7" cy="18.7" r="0.66" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="26.4" cy="30.2" r="0.55" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="21.9" cy="11.3" r="0.49" fill="#9081aa" opacity="0.32"/>
+    <circle cx="18.2" cy="22.3" r="0.35" fill="#9081aa" opacity="0.32"/>
+    <circle cx="9.6" cy="5.5" r="0.47" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="4.5" cy="24.8" r="0.43" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="2.6" cy="14.2" r="0.44" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="3.3" cy="19.5" r="0.27" fill="#9081aa" opacity="0.32"/>
+    <circle cx="11.4" cy="27.1" r="0.69" fill="#9081aa" opacity="0.32"/>
+    <circle cx="8.7" cy="3.0" r="0.25" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="19.1" cy="2.9" r="0.34" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="10.3" cy="9.5" r="0.56" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="10.9" cy="29.3" r="0.65" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="12.7" cy="26.8" r="0.42" fill="#9081aa" opacity="0.32"/>
+    <circle cx="21.4" cy="4.9" r="0.69" fill="#9081aa" opacity="0.32"/>
+    <circle cx="9.7" cy="20.1" r="0.57" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="14.5" cy="9.4" r="0.39" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="2.3" cy="13.8" r="0.51" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="12.7" cy="18.8" r="0.31" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="15.3" cy="21.4" r="0.41" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="23.0" cy="2.6" r="0.28" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="29.5" cy="9.2" r="0.46" fill="#9081aa" opacity="0.32"/>
+    <circle cx="19.1" cy="7.1" r="0.33" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="26.0" cy="9.5" r="0.60" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="24.0" cy="2.8" r="0.51" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="10.8" cy="8.3" r="0.61" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="11.3" cy="21.3" r="0.54" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="4.9" cy="11.2" r="0.40" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="14.5" cy="26.4" r="0.33" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="23.1" cy="8.2" r="0.51" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="8.4" cy="5.4" r="0.49" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="11.0" cy="25.8" r="0.51" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="11.7" cy="25.6" r="0.29" fill="#9081aa" opacity="0.32"/>
+    <circle cx="11.8" cy="5.7" r="0.38" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="15.2" cy="20.1" r="0.38" fill="#9081aa" opacity="0.32"/>
+    <circle cx="13.7" cy="28.2" r="0.32" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="15.6" cy="25.7" r="0.53" fill="#9081aa" opacity="0.32"/>
+    <circle cx="14.4" cy="29.1" r="0.67" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="2.9" cy="15.0" r="0.59" fill="#9081aa" opacity="0.32"/>
+    <circle cx="29.5" cy="17.5" r="0.65" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="26.5" cy="29.7" r="0.30" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="3.3" cy="27.8" r="0.56" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="27.6" cy="27.6" r="0.51" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="15.7" cy="5.4" r="0.48" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="20.9" cy="17.0" r="0.44" fill="#9081aa" opacity="0.32"/>
+    <circle cx="5.2" cy="5.6" r="0.69" fill="#9081aa" opacity="0.32"/>
+    <circle cx="15.6" cy="24.3" r="0.41" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="5.5" cy="27.3" r="0.30" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="24.6" cy="28.3" r="0.61" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="15.9" cy="18.3" r="0.43" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="9.1" cy="19.6" r="0.48" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="15.5" cy="24.1" r="0.25" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="24.1" cy="3.3" r="0.27" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="29.8" cy="26.4" r="0.29" fill="#9081aa" opacity="0.32"/>
+    <circle cx="16.0" cy="6.5" r="0.28" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="20.4" cy="18.7" r="0.41" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="30.2" cy="14.2" r="0.31" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="22.4" cy="12.8" r="0.29" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="3.2" cy="15.1" r="0.54" fill="#9081aa" opacity="0.32"/>
+    <circle cx="12.8" cy="24.8" r="0.53" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="3.5" cy="19.9" r="0.59" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="14.0" cy="21.8" r="0.46" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="8.2" cy="9.7" r="0.52" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="8.4" cy="5.7" r="0.26" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="12.7" cy="27.6" r="0.61" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="5.5" cy="21.7" r="0.67" fill="#9081aa" opacity="0.32"/>
+    <circle cx="24.6" cy="21.0" r="0.58" fill="#9081aa" opacity="0.32"/>
+    <circle cx="17.2" cy="25.1" r="0.57" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="6.1" cy="24.1" r="0.27" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="18.1" cy="20.8" r="0.42" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="11.7" cy="26.3" r="0.26" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="21.2" cy="25.8" r="0.68" fill="#9081aa" opacity="0.32"/>
+    <circle cx="10.5" cy="4.5" r="0.70" fill="#9081aa" opacity="0.32"/>
+    <circle cx="16.6" cy="22.4" r="0.30" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="28.6" cy="3.7" r="0.40" fill="#9081aa" opacity="0.32"/>
+    <circle cx="7.1" cy="4.2" r="0.70" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="14.9" cy="22.0" r="0.67" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="12.5" cy="13.3" r="0.41" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="29.5" cy="12.7" r="0.36" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="26.0" cy="29.6" r="0.44" fill="#9081aa" opacity="0.32"/>
+    <circle cx="23.5" cy="21.2" r="0.48" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="6.5" cy="13.4" r="0.65" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="4.7" cy="23.3" r="0.66" fill="#9081aa" opacity="0.32"/>
+    <circle cx="29.1" cy="18.7" r="0.64" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="9.6" cy="7.7" r="0.51" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="28.6" cy="26.3" r="0.49" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="21.1" cy="26.4" r="0.52" fill="#9081aa" opacity="0.32"/>
+    <circle cx="18.7" cy="9.6" r="0.35" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="9.6" cy="24.9" r="0.34" fill="#9081aa" opacity="0.32"/>
+    <circle cx="12.3" cy="11.2" r="0.60" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="13.9" cy="21.9" r="0.57" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="15.3" cy="25.8" r="0.62" fill="#9081aa" opacity="0.32"/>
+    <circle cx="2.8" cy="30.3" r="0.28" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="24.3" cy="27.1" r="0.27" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="27.4" cy="20.5" r="0.60" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="29.3" cy="26.3" r="0.36" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="24.1" cy="5.9" r="0.53" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="27.6" cy="9.3" r="0.64" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="7.2" cy="4.6" r="0.61" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="4.6" cy="25.8" r="0.38" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="14.9" cy="22.9" r="0.40" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="11.5" cy="14.4" r="0.47" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="20.4" cy="23.2" r="0.47" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="17.5" cy="5.4" r="0.37" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="5.2" cy="27.3" r="0.66" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="17.0" cy="22.0" r="0.56" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="23.6" cy="10.4" r="0.55" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="5.1" cy="28.9" r="0.40" fill="#9081aa" opacity="0.32"/>
+    <circle cx="17.3" cy="5.2" r="0.47" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="3.7" cy="10.4" r="0.58" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="20.4" cy="22.8" r="0.32" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="27.4" cy="20.7" r="0.31" fill="#9081aa" opacity="0.32"/>
+    <circle cx="6.0" cy="11.4" r="0.57" fill="#9081aa" opacity="0.32"/>
+    <circle cx="14.0" cy="10.6" r="0.33" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="10.9" cy="7.0" r="0.28" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="23.5" cy="17.5" r="0.58" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="4.8" cy="9.7" r="0.27" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="3.2" cy="16.4" r="0.36" fill="#9081aa" opacity="0.32"/>
+    <circle cx="12.1" cy="11.5" r="0.43" fill="#9081aa" opacity="0.32"/>
+    <circle cx="25.1" cy="4.0" r="0.47" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="6.3" cy="18.8" r="0.56" fill="#9081aa" opacity="0.32"/>
+    <circle cx="24.2" cy="22.7" r="0.33" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="18.2" cy="21.1" r="0.43" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="18.9" cy="6.2" r="0.43" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="17.5" cy="6.9" r="0.33" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="12.5" cy="10.4" r="0.63" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="27.4" cy="29.1" r="0.42" fill="#9081aa" opacity="0.32"/>
+    <circle cx="27.8" cy="10.8" r="0.47" fill="#9081aa" opacity="0.32"/>
+    <circle cx="21.6" cy="10.5" r="0.64" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="2.9" cy="7.4" r="0.54" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="24.0" cy="20.9" r="0.47" fill="#9081aa" opacity="0.32"/>
+    <circle cx="19.8" cy="7.7" r="0.60" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="3.1" cy="16.3" r="0.54" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="5.2" cy="10.1" r="0.55" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="5.9" cy="24.6" r="0.53" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="2.7" cy="19.6" r="0.48" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="17.4" cy="28.5" r="0.40" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="21.8" cy="5.8" r="0.64" fill="#9081aa" opacity="0.32"/>
+    <circle cx="24.1" cy="3.0" r="0.29" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="30.4" cy="7.8" r="0.28" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="14.5" cy="23.6" r="0.47" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="24.4" cy="13.6" r="0.63" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="13.2" cy="15.5" r="0.28" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="7.9" cy="15.9" r="0.26" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="23.6" cy="13.4" r="0.33" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="22.5" cy="12.5" r="0.42" fill="#9081aa" opacity="0.32"/>
+    <circle cx="12.3" cy="13.5" r="0.69" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="9.4" cy="12.5" r="0.63" fill="#9081aa" opacity="0.32"/>
+    <circle cx="7.6" cy="8.0" r="0.33" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="16.4" cy="20.1" r="0.31" fill="#9081aa" opacity="0.32"/>
+    <circle cx="6.8" cy="16.0" r="0.28" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="13.5" cy="11.1" r="0.26" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="8.8" cy="3.1" r="0.47" fill="#eef4e4" opacity="0.32"/>
+    <circle cx="8.9" cy="13.1" r="0.34" fill="#4e3b6f" opacity="0.32"/>
+    <circle cx="19.7" cy="11.9" r="0.31" fill="#e2e2de" opacity="0.32"/>
+    <circle cx="25.0" cy="10.3" r="0.69" fill="#2e1e49" opacity="0.32"/>
+    <circle cx="24.5" cy="29.4" r="0.47" fill="#9081aa" opacity="0.32"/>
+    <circle cx="9.6" cy="25.2" r="0.53" fill="#4e3b6f" opacity="0.32"/>
+    </g>
+    <path d="M30.2 18 L29.6 22 L27.6 26.8 L21.4 30.4 L16 30.6 L11.6 30.2" stroke="#180c2c" stroke-width="0.8" fill="none" opacity="0.5" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Algae: three violet star-shaped fronds with green hearts, like the map's algae. -->
+
+  <g id="frame4" class="frame">
+    <path d="M18.47 11.13 L13.17 12.43 L12.81 17.87 L9.04 13.93 L4.14 16.34 L5.67 11.10 L1.13 8.07 L6.43 6.77 L6.79 1.33 L10.56 5.27 L15.46 2.86 L13.93 8.10 Z" fill="url(#weed)" stroke="#490250" stroke-width="0.6" stroke-linejoin="round"/>
+    <path d="M9.8 9.6 L16.9 10.9" stroke="#9e2bb8" stroke-width="0.8" stroke-linecap="round" opacity="0.8"/>
+    <path d="M9.8 9.6 L12.3 16.4" stroke="#9e2bb8" stroke-width="0.8" stroke-linecap="round" opacity="0.8"/>
+    <path d="M9.8 9.6 L5.2 15.1" stroke="#9e2bb8" stroke-width="0.8" stroke-linecap="round" opacity="0.8"/>
+    <path d="M9.8 9.6 L2.7 8.3" stroke="#9e2bb8" stroke-width="0.8" stroke-linecap="round" opacity="0.8"/>
+    <path d="M9.8 9.6 L7.3 2.8" stroke="#9e2bb8" stroke-width="0.8" stroke-linecap="round" opacity="0.8"/>
+    <path d="M9.8 9.6 L14.4 4.1" stroke="#9e2bb8" stroke-width="0.8" stroke-linecap="round" opacity="0.8"/>
+    <circle cx="9.8" cy="9.6" r="2" fill="#6b6e3a"/><circle cx="9.3" cy="9.0" r="0.9" fill="#b4a170"/>
+    <path d="M30.52 9.60 L25.99 12.41 L27.29 17.58 L22.60 15.06 L18.78 18.77 L18.61 13.45 L13.48 12.00 L18.01 9.19 L16.71 4.02 L21.40 6.54 L25.22 2.83 L25.39 8.15 Z" fill="url(#weed)" stroke="#490250" stroke-width="0.6" stroke-linejoin="round"/>
+    <path d="M22.0 10.8 L29.0 9.8" stroke="#9e2bb8" stroke-width="0.8" stroke-linecap="round" opacity="0.8"/>
+    <path d="M22.0 10.8 L26.3 16.4" stroke="#9e2bb8" stroke-width="0.8" stroke-linecap="round" opacity="0.8"/>
+    <path d="M22.0 10.8 L19.4 17.3" stroke="#9e2bb8" stroke-width="0.8" stroke-linecap="round" opacity="0.8"/>
+    <path d="M22.0 10.8 L15.0 11.8" stroke="#9e2bb8" stroke-width="0.8" stroke-linecap="round" opacity="0.8"/>
+    <path d="M22.0 10.8 L17.7 5.2" stroke="#9e2bb8" stroke-width="0.8" stroke-linecap="round" opacity="0.8"/>
+    <path d="M22.0 10.8 L24.6 4.3" stroke="#9e2bb8" stroke-width="0.8" stroke-linecap="round" opacity="0.8"/>
+    <circle cx="22" cy="10.8" r="2" fill="#6b6e3a"/><circle cx="21.5" cy="10.200000000000001" r="0.9" fill="#b4a170"/>
+    <path d="M21.79 25.03 L16.47 24.92 L14.75 29.97 L12.18 25.30 L6.96 26.33 L9.72 21.77 L6.21 17.77 L11.53 17.88 L13.25 12.83 L15.82 17.50 L21.04 16.47 L18.28 21.03 Z" fill="url(#weed)" stroke="#490250" stroke-width="0.6" stroke-linejoin="round"/>
+    <path d="M14.0 21.4 L20.4 24.4" stroke="#9e2bb8" stroke-width="0.8" stroke-linecap="round" opacity="0.8"/>
+    <path d="M14.0 21.4 L14.6 28.4" stroke="#9e2bb8" stroke-width="0.8" stroke-linecap="round" opacity="0.8"/>
+    <path d="M14.0 21.4 L8.2 25.4" stroke="#9e2bb8" stroke-width="0.8" stroke-linecap="round" opacity="0.8"/>
+    <path d="M14.0 21.4 L7.6 18.4" stroke="#9e2bb8" stroke-width="0.8" stroke-linecap="round" opacity="0.8"/>
+    <path d="M14.0 21.4 L13.4 14.4" stroke="#9e2bb8" stroke-width="0.8" stroke-linecap="round" opacity="0.8"/>
+    <path d="M14.0 21.4 L19.8 17.4" stroke="#9e2bb8" stroke-width="0.8" stroke-linecap="round" opacity="0.8"/>
+    <circle cx="14" cy="21.4" r="2" fill="#6b6e3a"/><circle cx="13.5" cy="20.799999999999997" r="0.9" fill="#b4a170"/>
+  </g>
+
+  <!-- Cherries: four bright red cherries on thin stems. -->
+  <g id="frame5" class="frame">
+    <g stroke="#bf0000" stroke-width="0.9" fill="none" stroke-linecap="round" opacity="0.55">
+      <path d="M8 6 Q13 1 20 9"/>
+      <path d="M8 21 Q17 19 27 23"/>
+    </g>
+    <circle cx="8" cy="8.6" r="3.9" fill="url(#cherry)"/>
+    <circle cx="19.8" cy="11.4" r="3.6" fill="url(#cherry)"/>
+    <circle cx="7.6" cy="23.6" r="3.9" fill="url(#cherry)"/>
+    <circle cx="27" cy="26.4" r="3.8" fill="url(#cherry)"/>
+    <g fill="#ffffff" opacity="0.6"><ellipse cx="5.7" cy="6.3" rx="1.2" ry="0.8" transform="rotate(-35 5.7 6.3)"/><ellipse cx="17.5" cy="9.1" rx="1.2" ry="0.8" transform="rotate(-35 17.5 9.1)"/><ellipse cx="5.3" cy="21.3" rx="1.2" ry="0.8" transform="rotate(-35 5.3 21.3)"/><ellipse cx="24.7" cy="24.1" rx="1.2" ry="0.8" transform="rotate(-35 24.7 24.1)"/></g>
+  </g>
+
+  <!-- Oranges: three round yellow-orange fruit stacked in a pyramid. -->
+  <g id="frame6" class="frame">
+    <circle cx="16" cy="8.2" r="6.4" fill="url(#orange)"/>
+    <circle cx="7.6" cy="24.2" r="6.4" fill="url(#orange)"/>
+    <circle cx="24.4" cy="24.2" r="6.4" fill="url(#orange)"/>
+    <g fill="#deb200" opacity="0.7">
+      <circle cx="16.6" cy="2.4" r="0.7"/><circle cx="7.4" cy="18.4" r="0.7"/><circle cx="25.8" cy="18.4" r="0.7"/>
+    </g>
+    <g fill="#ffffff" opacity="0.6"><ellipse cx="12.2" cy="4.4" rx="2.0" ry="1.4" transform="rotate(-35 12.2 4.4)"/><ellipse cx="3.8" cy="20.4" rx="2.0" ry="1.4" transform="rotate(-35 3.8 20.4)"/><ellipse cx="20.6" cy="20.4" rx="2.0" ry="1.4" transform="rotate(-35 20.6 20.4)"/></g>
+  </g>
+
+  <!-- Prunes: four lavender plums, the each with a short dark stalk. -->
+  <g id="frame7" class="frame">
+    <path d="M12.4 4.6 C16.6 4.6 18 8.4 17 11.6 C16 14.6 13.6 15.4 12.4 15.4 C10.6 15.4 7.6 14 7.6 10.6 C7.6 7 9.4 4.6 12.4 4.6 Z" fill="url(#plum)"/>
+    <path d="M25.4 5 C29.6 5 31.2 9 30.6 12.6 C30 16 27.4 18.4 25.4 18.4 C23 18.4 20.4 15.6 20.4 11.6 C20.4 7.6 22.4 5 25.4 5 Z" fill="url(#plum)"/>
+    <ellipse cx="7.6" cy="25.2" rx="6" ry="5.8" fill="url(#plum)"/>
+    <ellipse cx="21" cy="25.2" rx="5.6" ry="5.6" fill="url(#plum)"/>
+    <g stroke="#7252a6" stroke-width="0.8" fill="none" opacity="0.6">
+      <path d="M12.6 5.6 Q11.6 10 12.4 14.6"/><path d="M25.6 6 Q24.4 11.4 25.4 17.4"/>
+      <path d="M7.8 20 Q6.8 25 7.8 30.6"/><path d="M21.2 20.2 Q20.2 25 21.2 30.4"/>
+    </g>
+    <path d="M12.6 4.8 Q13.4 3 14.8 2.4 M25.6 5.2 Q26.4 3.4 27.8 2.8 M7.8 19.6 Q8.6 17.8 10 17.2 M21.2 19.8 Q22 18 23.4 17.4" stroke="#573f7d" stroke-width="1" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>

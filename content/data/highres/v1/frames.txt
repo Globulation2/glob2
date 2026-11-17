@@ -31540,3 +31540,15 @@ terrain-glint92 64 64 4 terrain-glint92.png -
 terrain-glint93 64 64 4 terrain-glint93.png -
 terrain-glint94 64 64 4 terrain-glint94.png -
 terrain-glint95 64 64 4 terrain-glint95.png -
+ressourcemini0 8 8 4 ressourcemini0.png -
+ressourcemini1 8 8 4 ressourcemini1.png -
+ressourcemini2 8 8 4 ressourcemini2.png -
+ressourcemini3 8 8 4 ressourcemini3.png -
+ressourcemini4 8 8 4 ressourcemini4.png -
+ressourcemini5 8 8 4 ressourcemini5.png -
+ressourcemini6 8 8 4 ressourcemini6.png -
+ressourcemini7 8 8 4 ressourcemini7.png -
+ressourcemini8 16 16 4 ressourcemini8.png -
+ressourcemini9 16 16 4 ressourcemini9.png -
+ressourcemini10 16 16 4 ressourcemini10.png -
+ressourcemini11 16 16 4 ressourcemini11.png -

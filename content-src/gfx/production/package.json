@@ -2764,17 +2764,17 @@
     {
       "runtime": "manifest.json",
       "source": "pack-metadata/manifest.json",
-      "sha256": "ceebf6c7703943da5d10b280a3565ab9420a5738d352b161502490d2d40bb507"
+      "sha256": "cd4c15c0c40ef708950ea1a809b47b878b8ddf57bb8a440c8d93e92e8c163a66"
     },
     {
       "runtime": "frames.txt",
       "source": "pack-metadata/frames.txt",
-      "sha256": "5f9c491f67929d2a3872f755df555cbbdbedc446e48e5eb88615b5fad2500c7a"
+      "sha256": "9b61881b4b1fdbdd1148b6280689959f2f5be757b53dc0bd9289dc4710a67a5a"
     },
     {
       "runtime": "README.md",
       "source": "pack-metadata/README.md",
-      "sha256": "5ffd562ba051b3eb4b4d5bf662cfc6e4587fe7ffed5cdb8ae020946f80b0f05a"
+      "sha256": "f197c11b8b6423400eedf146b04085857fc37fcedb73afbd853d214e33beffb6"
     },
     {
       "runtime": "area-farm0.png",
@@ -163815,6 +163815,66 @@
       "runtime": "terrain-glint95.png",
       "source": "procedural-materials/terrain-glint95.png",
       "sha256": "3bcebf378fab5ce5c50ca0c36c779fb9f84f13ba9e8ca184116360df8130769f"
+    },
+    {
+      "runtime": "ressourcemini0.png",
+      "source": "authored/ressourcemini0.png",
+      "sha256": "e7e9ab91831b23443377590e9f9dd03a1d5a2d74db4f8a66106f3f790662eb38"
+    },
+    {
+      "runtime": "ressourcemini1.png",
+      "source": "authored/ressourcemini1.png",
+      "sha256": "bd4a1b66884f36fc6bb608abc50c89cfdaf487c35049e88f5ea8c10480f69aa6"
+    },
+    {
+      "runtime": "ressourcemini2.png",
+      "source": "authored/ressourcemini2.png",
+      "sha256": "55abdb3fadb8ef63dcc6e9d6d55dea2db953841fb5a3dafbf60f392d2779b5ac"
+    },
+    {
+      "runtime": "ressourcemini3.png",
+      "source": "authored/ressourcemini3.png",
+      "sha256": "926407e6c82243a7f9c1230f64f89354bad6576e593b2cc71d827b8caf688426"
+    },
+    {
+      "runtime": "ressourcemini4.png",
+      "source": "authored/ressourcemini4.png",
+      "sha256": "b30297d05a00ad7472b7b1a18626ba244fa644eb510cf47bdfe0bb1ac8904e0f"
+    },
+    {
+      "runtime": "ressourcemini5.png",
+      "source": "authored/ressourcemini5.png",
+      "sha256": "c0adc941ba1793c45979404010e2494d3c3128c23428333ac60dd704ae63c906"
+    },
+    {
+      "runtime": "ressourcemini6.png",
+      "source": "authored/ressourcemini6.png",
+      "sha256": "bbb74639dc529ee40d27a0f02203976af822985d1e47c652e2177b16f9afba16"
+    },
+    {
+      "runtime": "ressourcemini7.png",
+      "source": "authored/ressourcemini7.png",
+      "sha256": "4b0a6c7ab33fa8c028c727770f4c982b0da0cdc3ef35034c761534e3c64e4e66"
+    },
+    {
+      "runtime": "ressourcemini8.png",
+      "source": "authored/ressourcemini8.png",
+      "sha256": "1a0966f4d65c96ad3e54b06ac97ef068abfd031a612f91cd1cea8ae370015eee"
+    },
+    {
+      "runtime": "ressourcemini9.png",
+      "source": "authored/ressourcemini9.png",
+      "sha256": "0ca14211e74e635569cd86a6091fbd1b151a81b9f36b49ca58688d55715add95"
+    },
+    {
+      "runtime": "ressourcemini10.png",
+      "source": "authored/ressourcemini10.png",
+      "sha256": "d8e5ea12fc7d32f4c5f511614cf0408eeb67db59bb82c492bf963e41a31e3b28"
+    },
+    {
+      "runtime": "ressourcemini11.png",
+      "source": "authored/ressourcemini11.png",
+      "sha256": "b15f67ff440a94b9175df18175e81fd4fbb5a09bae1c73ffa8421f54b36af621"
     }
   ]
 }
