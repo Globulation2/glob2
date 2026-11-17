@@ -199,9 +199,18 @@ constexpr RB PreferredRendererOrder[] = {RB::ProgrammableGL, RB::LegacyGL, RB::S
 std::vector<RendererBackend> GraphicContext::automaticRendererOrder(Uint32 flags)
 {
 #ifdef __EMSCRIPTEN__
-    // Browsers keep the probed WebGL2 or Software surface; WebGPU stays opt-in.
+    // On a probed WebGL2 surface browsers prefer programmable GL, which needs no
+    // fixed-function emulation, then Legacy GL (builds with it), then Software.
+    // WebGPU stays opt-in.
     (void)flags;
-    if (glob2_surface_startup_uses_gl()) return {RendererBackend::LegacyGL, RendererBackend::Software};
+    if (glob2_surface_startup_uses_gl()) {
+        std::vector<RendererBackend> order{RendererBackend::ProgrammableGL};
+#ifdef HAVE_OPENGL
+        order.push_back(RendererBackend::LegacyGL);
+#endif
+        order.push_back(RendererBackend::Software);
+        return order;
+    }
     return {RendererBackend::Software};
 #else
     std::vector<RendererBackend> order;

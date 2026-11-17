@@ -1140,7 +1140,7 @@ not the renderer's architecture; the per-platform rows live in one table,
 | Linux, Windows | programmable GL, Legacy GL (builds with OpenGL), SDL GPU, Portable SDL, Software |
 | macOS | programmable GL, SDL GPU, Legacy GL, Portable SDL, Software |
 | Android, iOS | Portable SDL, Software |
-| Browser | WebGL2 Legacy GL or Software, by the probed adapter; WebGPU stays opt-in |
+| Browser | on a probed WebGL2 adapter: programmable GL, Legacy GL (builds with it), Software; otherwise Software. WebGPU stays opt-in |
 
 The Linux row comes from a 1x perf build (master `d6488cac13`): the honeycomb-256
 memory scenario (3,600 pan and zoom frames) and the fast wheel zoom of the motion
@@ -1172,6 +1172,12 @@ the largest footprint. Phones have no device measurements, so Android and iOS ke
 Portable SDL, though their packages ship the SDL GPU shaders (Android requires the
 Vulkan set, iOS device builds the Metal set). Revisit the rows when phone
 measurements or the SDL GPU memory and HD-stall investigation land.
+
+In the browser, programmable GL leads on a probed WebGL2 adapter (user decision,
+2026-11-17): Legacy GL there runs on Emscripten's fixed-function emulation, which
+warns that it may not work, and builds without it (`web_legacy_gl=0`) previously
+fell to Software even with WebGL2 available. There are no real-GPU browser
+measurements yet; revisit with them.
 
 The game asks for this order with the `PREFERDEVICE` startup flag, which
 `startupScreenFlags()` adds without persisting it; tools and tests that create a
