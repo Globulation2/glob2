@@ -586,7 +586,10 @@ path reads it, so simulation checksums and `SIM_REVISION` are unaffected.
 Inputs: `SDL_GetSystemRAM` (on iOS this is `hw.memsize`, the same figure as
 `NSProcessInfo.physicalMemory`; browsers use `navigator.deviceMemory`, because SDL
 reports the WebAssembly heap limit there) and the hardware thread count, which
-`AssetLoader::Options::environment` also budgets from; on Android
+`AssetLoader::Options::environment` also budgets from; whether the device is a
+phone or tablet (`GAGCore::platformIsMobile`; in a browser `userAgentData.mobile`,
+an Android, iPhone or iPad user agent, or a Mac user agent with touch points,
+which is iPadOS); on Android
 `ActivityManager.isLowRamDevice()`, `getMemoryClass()`, `getLargeMemoryClass()`
 and `MemoryInfo.totalMem` through `Glob2Activity.getMemoryProfile` (totalMem
 replaces SDL's figure when known); on Windows and Linux windowed runs, the largest
@@ -601,9 +604,11 @@ live in `deviceThresholds`:
 | Tier | Rule | Auto artwork | New-map default |
 | --- | --- | --- | --- |
 | Low | under 3 GiB or an Android low-RAM device; or at most 2 hardware threads (map size only) | original (high resolution when only the cores are low) | 128×128 |
-| Mid | 3 to 6 GiB | high resolution | 128×128 on phones, 256×256 elsewhere |
-| High | over 6 GiB, or nothing reported | high resolution | 256×256 |
+| Mid | 3 to 6 GiB, or a phone that reports nothing | high resolution | 128×128 on phones, 256×256 elsewhere |
+| High | over 6 GiB, or nothing reported off phones | high resolution | 256×256 |
 
+A phone or tablet that reports no memory is Mid: Safari, every iOS browser and
+Firefox have no `navigator.deviceMemory`, and most such phones hold 4 to 8 GB.
 A discrete desktop GPU with less than 1 GiB of device-local memory also starts
 with original artwork. `GLOB2_DEVICE_TIER=low|mid|high` or
 `play --device-tier low|mid|high` overrides the tier for testing.
@@ -1275,8 +1280,10 @@ Offscreen CPU exports cannot draw a device-released surface.
 SDL GPU, programmable GL, the CPU restoration registry (`RenderResources`) and
 the terrain page and torus planners share one `RenderBudget`
 (`platformRenderBudget()`). Desktop keeps 512 MiB in total, General and SkinAtlas
-64 MiB, TerrainPage 128 MiB, TerrainMask 32 MiB and 64 MiB of geometry. Android
-and iOS builds use 160 MiB, 48, 32, 64 and 16 MiB and 32 MiB of geometry: phones
+64 MiB, TerrainPage 128 MiB, TerrainMask 32 MiB and 64 MiB of geometry. Phones
+and tablets (`GAGCore::platformIsMobile`: the Android and iOS builds, and the
+browser build on Android, iPhone or iPad) use 160 MiB, 48, 32, 64 and 16 MiB and
+32 MiB of geometry: phones
 share one memory pool between CPU and GPU, and the system kills a large
 backgrounded game first. Each mobile class still holds twice its largest single
 texture (the 22.4 MiB authored HD terrain block, 16 MiB skin atlas pages, sixteen

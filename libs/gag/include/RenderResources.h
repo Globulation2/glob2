@@ -83,8 +83,9 @@ struct RenderBudget
     static RenderBudget desktop();
     static RenderBudget mobile();
 };
-// The budget of this build: mobile on Android and iOS builds, desktop
-// elsewhere. GLOB2_RENDER_BUDGET=mobile or desktop overrides it (measurement).
+// The budget of this device: mobile on phones and tablets (the Android and
+// iOS builds, and the browser build on them; GAGCore::platformIsMobile),
+// desktop elsewhere. GLOB2_RENDER_BUDGET=mobile or desktop overrides it (measurement).
 const RenderBudget &platformRenderBudget();
 enum class GeometryLayout { Primitive32, World48, Skin40, SkinRig72 };
 struct GeometryRevision

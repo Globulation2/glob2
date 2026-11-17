@@ -52,7 +52,7 @@ inline constexpr DeviceThresholds deviceThresholds{};
 // What a default was decided from, for the settings screen and telemetry.
 enum class DeviceReason : std::uint8_t
 {
-	Unknown,       // nothing reported; today's defaults
+	Unknown,       // nothing reported; today's defaults (Mid on a phone)
 	Memory,        // value = MiB of memory
 	AndroidLowRam, // ActivityManager.isLowRamDevice()
 	Cores,         // value = hardware threads
@@ -66,7 +66,7 @@ struct DeviceInputs
 	// navigator.deviceMemory, as SDL reports the heap limit there); 0 unknown.
 	std::uint64_t systemRamMiB = 0;
 	unsigned cores = 0;             // std::thread::hardware_concurrency; 0 unknown
-	bool mobile = false;            // Android or iOS build
+	bool mobile = false;            // phone or tablet: GAGCore::platformIsMobile
 	// Android ActivityManager, through Glob2Activity.getMemoryProfile.
 	std::optional<bool> androidLowRam;
 	unsigned androidMemoryClassMiB = 0, androidLargeMemoryClassMiB = 0;

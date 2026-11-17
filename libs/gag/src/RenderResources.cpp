@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <RenderResources.h>
+#include <MobilePlatform.h>
 #include <algorithm>
 #include <limits>
 #include <stdexcept>
@@ -29,12 +30,7 @@ RenderBudget RenderBudget::mobile() { return {160 * MiB, {48 * MiB, 32 * MiB, 64
 const RenderBudget &platformRenderBudget()
 {
     static const RenderBudget chosen = [] {
-        RenderBudget budget =
-#if defined(GLOB2_MOBILE) || defined(__ANDROID__)
-            RenderBudget::mobile();
-#else
-            RenderBudget::desktop();
-#endif
+        RenderBudget budget = platformIsMobile() ? RenderBudget::mobile() : RenderBudget::desktop();
         if (const char *value = std::getenv("GLOB2_RENDER_BUDGET")) {
             const std::string_view name(value);
             if (name == "mobile") budget = RenderBudget::mobile();
