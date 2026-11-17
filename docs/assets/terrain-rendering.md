@@ -529,7 +529,8 @@ missing page whose other densities do not cover it draws its base page, with any
 nearer partial density over it, so a fast zoom or jump shows textured terrain at
 no coarser than 16 pixels a cell rather than the flat-coloured overview. A base
 page whose cells' terrain or discovery changed draws nothing and composes again;
-it never animates. A page that arrives where the view drew either fallback
+its animated cells animate like any page's (see
+[Animated terrain on the portable renderer](#animated-terrain-on-the-portable-renderer)). A page that arrives where the view drew either fallback
 fades in over it in 150 ms rather than popping. Pages around the view also
 compose ahead of the camera: a ring one page wide, widened in the direction of a
 pan by about half a second of its recent motion and all round while the view is
@@ -539,12 +540,14 @@ arrived, use only the frame's leftover launch budget and half the in-flight room
 admit a finished page only into free cache room or room held by pages the view
 has not used for two seconds, so they never displace a stand-in. A page composing
 ahead that the view reaches is queued again as visible work; each job runs once,
-whichever lane takes it. Visible pages install before pages composed ahead. Uniform animated cells (open water) draw over
+whichever lane takes it. Visible pages install before pages composed ahead. On
+browser Legacy OpenGL composing HD pages, uniform animated cells (open water) draw over
 their page from one shared tile per material variant at the page's density, so
 an animation step recomposes and uploads those few tiles, not the pages. Any
 other animation or surf step of a valid page (shorelines) queues its changed
 cells the same way while the view keeps drawing the current pixels; finished
-cells upload as dirty rectangles. Each frame describes at most
+cells upload as dirty rectangles. The portable renderer animates from keyframes
+instead (below). Each frame describes at most
 4096 cells for launches (a native page copied for a reduction counts as 64)
 within 2 ms of graphics-thread time spent describing (one launch always goes),
 keeps at most four visible pages per worker plus four in flight and 64 MiB of
@@ -686,5 +689,48 @@ decoding. Map image interchange colors and editor experiment gates remain semant
 metadata.
 Keep reference screenshots, benchmark output and temporary compiled tilesets under
 `artifacts/`; publish review evidence separately from durable documentation.
+
+## Animated terrain on the portable renderer
+
+The portable SDL renderer has only 2D textures and blend modes, so it cannot
+evaluate the animation per pixel as the direct pass's shader does. Its
+interactive views keep animation out of the pages altogether: a page holds
+still pixels, and animation changes no page's recorded revisions. Every
+discovered cell that an animated material covers, or whose surf band reaches
+from a halo neighbour, draws over its page each frame as a crossfade of two
+**keyframes**: its composition at the animation times `k * K` and
+`(k + 1) * K`, where `k` is the current time divided by `K`, the shortest
+`animation_ticks` of the catalogue's animated materials (6 for the shipped
+waters; 6 for a material whose surf alone moves). The keyframe `k` draws at the
+page's opacity and `k + 1` over it at the fraction of `K` elapsed, the weight the
+direct pass blends its two endpoints with. Composition is linear in each
+animated texel, so this crossfade equals the composition of the crossfaded
+textures: for water, whose blend steps equal its ticks, it is the direct pass's
+image to within 8-bit alpha rounding. Surf is interpolated linearly between
+keyframes 0.1 s apart, well under a pixel of wash. Lava (16 ticks, 4 blend
+steps) is sampled every 6 ticks and so blends between its own steps, within a
+quarter of its frame difference.
+
+Keyframes compose on the presentation workers from a material snapshot of the
+compositor prepared at the keyframe's time: the view prepares the compositor
+for `k + 2`, the keyframe needed next, so each one composes a whole interval
+before it shows, and keeps the snapshots of `k` and `k + 1`. A missing snapshot
+(after a jump, or with the clock stopped) is prepared first; one taken from older
+artwork (HD frames that have since arrived, or changed still materials) or
+without a variant a cell needs is prepared again at most every ten frames, and its
+cells' keyframes compose again. A uniform uncalmed cell shares one keyframe per
+variant with every cell of its material at its page's density; a mixed,
+calmed or halo cell has its own, composed from the page's kept coverage mask
+and, where an earlier keyframe of the cell holds the same still artwork, only
+over the samples animation changes. Each set of keyframes is an atlas with a
+band per keyframe of a three-slot ring, every slot bordered by a copy of its
+edge for linear sampling; the keyframes a frame installs upload as one rectangle
+per band. The cells the view shows and a margin of two cells want the keyframes
+`k` to `k + 2`, the current one first, at most 2048 cells a frame and 8192 in
+flight. Stand-ins (other densities and the resident base) animate the same way
+at their own density. A cell with neither keyframe yet shows its page's still
+pixels; a page arriving over a fallback holds its fade, for at most 500 ms,
+until its visible animated cells have keyframes. Keyframe sets of pages the view
+left for two seconds, and shared sets unused for ten, are released.
 
 Related: [asset production](README.md).

@@ -2745,11 +2745,15 @@ TEST_SUITE("TerrainPresentation")
 				{
 					const auto *pixels = chunkPixels(*chunk);
 					REQUIRE(pixels);
+					// Cells water reaches animate: the portable renderer's
+					// interactive pages hold them at a keyframe's time and draw
+					// keyframes over them, so only the still cells compare.
+					const int still = 4 * 32 / chunk->downsample;
 					for (int y = 0; y < pixels->h; ++y)
 					{
 						const auto *row = reinterpret_cast<const Uint32 *>(
 							static_cast<const Uint8 *>(pixels->pixels) + y * pixels->pitch);
-						result.pixels.insert(result.pixels.end(), row, row + pixels->w);
+						result.pixels.insert(result.pixels.end(), row + still, row + pixels->w);
 					}
 				}
 			return result;
