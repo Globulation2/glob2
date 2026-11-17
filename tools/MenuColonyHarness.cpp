@@ -168,6 +168,40 @@ void checkMenuPainting()
 	}
 }
 
+// The colony's looks: lush grass and pale sand, the same rules as grass and sand.
+void retextureColony(Game &game)
+{
+	for (int y = 0; y < game.map.getH(); ++y)
+		for (int x = 0; x < game.map.getW(); ++x)
+		{
+			const auto terrain = game.map.vertexTerrainAt(x, y);
+			if (terrain == GRASS) game.map.setVertexTerrain(x, y, LUSH_GRASS);
+			else if (terrain == SAND) game.map.setVertexTerrain(x, y, PALE_SAND);
+		}
+}
+
+// Rewrites a saved colony with retextureColony's looks and nothing else: the
+// same island, buildings, units, tick and random state.
+void retexture(const char *input, const char *output)
+{
+	std::unique_ptr<Game> game;
+	std::string rng;
+	{
+		BinaryInputStream in(Toolkit::getFileManager()->openInputStreamBackend(input));
+		require(!in.isEndOfStream() && in.readText("format") == "glob2-menu-colony-1", "menu colony snapshot");
+		game = std::make_unique<Game>(nullptr);
+		require(game->load(&in), "load menu colony");
+		rng = in.readText("rng");
+	}
+	const auto tick = game->stepCounter;
+	retextureColony(*game);
+	BinaryOutputStream out(Toolkit::getFileManager()->openOutputStreamBackend(output));
+	out.writeText("glob2-menu-colony-1", "format");
+	game->save(&out, false, "Menu colony");
+	out.writeText(rng, "rng");
+	std::cout << "Retextured colony at tick " << tick << '\n';
+}
+
 void generate(const char *path)
 {
 	setSyncRandSeed(481516);
@@ -208,6 +242,7 @@ void generate(const char *path)
 				game.map.setResource(x, y, resource, 3);
 			}
 		}
+	retextureColony(game);
 	game.sgslScript.compileScript(&game);
 	FertilityCalculator::compute(game.map, {});
 	GameHeader header;
@@ -547,7 +582,7 @@ Uint32 SDLCALL exitSession(void *data, SDL_TimerID, Uint32)
 
 int main(int argc, char **argv)
 {
-	require(argc >= 3, "usage: MenuColonyHarness generate PATH | check PATH | capture SCREEN "
+	require(argc >= 3, "usage: MenuColonyHarness generate PATH | retexture INPUT OUTPUT | check PATH | capture SCREEN "
 					   "OUTPUT [W H] | record-colony DIR FRAMES [W H] | soak SECONDS");
 	const std::string mode = argv[1];
 	// These contracts exercise the complete desktop keyboard routes.
@@ -574,6 +609,12 @@ int main(int argc, char **argv)
 	if (mode == "generate")
 	{
 		generate(argv[2]);
+		return 0;
+	}
+	if (mode == "retexture")
+	{
+		require(argc >= 4, "usage: MenuColonyHarness retexture INPUT OUTPUT");
+		retexture(argv[2], argv[3]);
 		return 0;
 	}
 	std::cout << "global_assets_ms="
