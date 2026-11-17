@@ -1232,6 +1232,16 @@ namespace GAGCore
 		//! One bit per 32-phase block, recomputed whenever the HD layer arrays
 		//! change (load and atomic HD publication); backs blockHasCompleteHD.
 		std::vector<bool> blockCompleteHD;
+		//! The HD frame clock (one tick per setHighResolutionDensity) when each
+		//! 32-frame block last drew HD on an on-demand renderer: the oldest idle
+		//! blocks go first when a device runs out of room for HD frames.
+		std::vector<std::uint64_t> highResolutionBlockDrawn;
+		//! Drops one block's HD layers (they draw native until drawing reaches
+		//! the block again, which reloads it); returns whether it held any.
+		bool evictHighResolutionBlock(unsigned block);
+		//! Evicts idle blocks, least recently drawn first, until the device
+		//! has room for new HD frames again (setHighResolutionDensity).
+		static void evictIdleHighResolution();
 		void recomputeBlockCompleteHD();
 		//! Revisions of the HD layers that became drawable: one counter for the
 		//! sprite and the value it had when each frame last gained or replaced
@@ -1307,8 +1317,9 @@ namespace GAGCore
         //! On-demand HD draws since the process started (highResolutionDrawable):
         //! drawn in HD, or native because the frame's block had not loaded, the
         //! frame's first draws this frame were spent, or the device had no room
-        //! left for retained HD frames (GraphicContext::deviceHighResolutionRoom).
-        struct HighResolutionDrawCounts { std::size_t drawn = 0, notLoaded = 0, firstDrawCap = 0, room = 0; };
+        //! left for retained HD frames (GraphicContext::deviceHighResolutionRoom),
+        //! and the blocks evicted to make that room (evictIdleHighResolution).
+        struct HighResolutionDrawCounts { std::size_t drawn = 0, notLoaded = 0, firstDrawCap = 0, room = 0, evicted = 0; };
         static HighResolutionDrawCounts highResolutionDrawCounts();
         //! Levels the current band leaves out: 0 for full detail, up to 2.
         static unsigned highResolutionDetailSkip();

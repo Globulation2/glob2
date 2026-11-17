@@ -179,6 +179,14 @@ namespace GAGCore
     static unsigned portableFirstDraws = 0;
     static Sprite::HighResolutionDrawCounts drawCounts;
     static constexpr unsigned PortableFirstDrawsPerFrame = 8;
+    // A device holds uploaded HD frames as the only copy of their pixels, up to
+    // deviceHighResolutionRoom. When a new frame finds no room, the next frame
+    // evicts the blocks drawn longest ago, among those idle for at least this
+    // many frames (about two seconds), so what is on screen never thrashes.
+    static std::uint64_t highResolutionFrameClock = 0;
+    static bool highResolutionRoomShort = false;
+    static constexpr std::uint64_t HighResolutionIdleFrames = 120;
+    static constexpr unsigned HighResolutionEvictionsPerFrame = 16;
     // On-demand backends sample only uncolored base layers (baseFrame), so
     // they neither decode nor retain team-colour layers, unless the portable
     // renderer draws that sprite's HD frames.
@@ -868,9 +876,58 @@ namespace GAGCore
         return _gc->rendererCapabilities().textureMipmaps || reducedHighResolutionWanted(name);
     }
     Sprite::HighResolutionDrawCounts Sprite::highResolutionDrawCounts() { return drawCounts; }
+    void Sprite::evictIdleHighResolution()
+    {
+        if (!_gc || _gc->deviceHighResolutionRoom()) return;
+        struct Candidate { std::uint64_t drawn; Sprite *sprite; unsigned block; };
+        std::vector<Candidate> candidates;
+        for (auto *sprite : drawDemandedSprites) {
+            // Deferred banks retire their own frames; a reload in flight
+            // publishes into these blocks.
+            if (!loadedSprites.contains(sprite) || Sprite::highResolutionDeferred(sprite->fileName) ||
+                pendingHighResolution.contains(sprite)) continue;
+            for (unsigned block = 0; block < sprite->highResolutionBlockDrawn.size(); ++block) {
+                const auto drawn = sprite->highResolutionBlockDrawn[block];
+                if (drawn && drawn + HighResolutionIdleFrames <= highResolutionFrameClock)
+                    candidates.push_back({drawn, sprite, block});
+            }
+        }
+        std::sort(candidates.begin(), candidates.end(),
+            [](const Candidate &a, const Candidate &b) { return a.drawn < b.drawn; });
+        unsigned evicted = 0;
+        for (const auto &candidate : candidates) {
+            if (evicted >= HighResolutionEvictionsPerFrame || _gc->deviceHighResolutionRoom()) break;
+            if (candidate.sprite->evictHighResolutionBlock(candidate.block)) ++evicted;
+        }
+        drawCounts.evicted += evicted;
+    }
+    bool Sprite::evictHighResolutionBlock(unsigned block)
+    {
+        if (block < highResolutionBlockDrawn.size()) highResolutionBlockDrawn[block] = 0;
+        // A sheet a base frame samples keeps its pixels, and an atlas sheet its
+        // pages: neither holds retained textures to give back.
+        if (sampledByBaseFrame || highResolutionAtlas || highResolutionAtlasWanted(fileName)) return false;
+        bool held = false;
+        const size_t end = std::min<size_t>(size_t(block + 1) * HighResolutionBlock, experimentImages.size());
+        for (size_t frame = size_t(block) * HighResolutionBlock; frame < end; ++frame) {
+            auto *&image = experimentImages[frame];
+            held = held || image || (frame < experimentRotated.size() && experimentRotated[frame]);
+            delete image; image = nullptr;
+            if (frame < experimentRotated.size()) { delete experimentRotated[frame]; experimentRotated[frame] = nullptr; }
+            portableDrawnFrames.erase({this, unsigned(frame)});
+        }
+        if (!held) return false;
+        // Drawing it again queues the block for a reload (highResolutionDrawable).
+        if (auto found = portableBlocks.find(this); found != portableBlocks.end()) found->second.erase(block);
+        clearTeamColorCache();
+        recomputeBlockCompleteHD();
+        return true;
+    }
     void Sprite::setHighResolutionDensity(double density)
     {
         portableFirstDraws = 0;
+        ++highResolutionFrameClock;
+        if (std::exchange(highResolutionRoomShort, false)) evictIdleHighResolution();
         // The blocks last frame's draws reached load together, one reload a sprite.
         for (auto it = portableWaitingBlocks.begin(); it != portableWaitingBlocks.end();) {
             auto *sprite = const_cast<Sprite*>(it->first);
@@ -1256,15 +1313,22 @@ namespace GAGCore
         if (dynamicTeamColor && !blockHasCompleteHD(index)) return want();
         // A first draw uploads the frame; a few per frame keep zooming in smooth.
         const auto key = std::make_pair(static_cast<const Sprite*>(this), index);
-        if (portableDrawnFrames.contains(key)) { ++drawCounts.drawn; return true; }
+        const auto noteDrawn = [&] {
+            const unsigned block = index / HighResolutionBlock;
+            if (highResolutionBlockDrawn.size() <= block) highResolutionBlockDrawn.resize(block + 1);
+            highResolutionBlockDrawn[block] = highResolutionFrameClock;
+            ++drawCounts.drawn;
+            return true;
+        };
+        if (portableDrawnFrames.contains(key)) return noteDrawn();
         if (portableFirstDraws >= PortableFirstDrawsPerFrame) { ++drawCounts.firstDrawCap; return false; }
         // A device keeps an uploaded HD frame as the only copy of its pixels,
-        // within half of its General budget; past that, new frames stay native.
-        if (!_gc->deviceHighResolutionRoom()) { ++drawCounts.room; return false; }
+        // within 3/8 of its General budget; past that, new frames stay native
+        // and the next frame evicts idle blocks to make room.
+        if (!_gc->deviceHighResolutionRoom()) { ++drawCounts.room; highResolutionRoomShort = true; return false; }
         ++portableFirstDraws;
         portableDrawnFrames.insert(key);
-        ++drawCounts.drawn;
-        return true;
+        return noteDrawn();
     }
     DrawableSurface *Sprite::sampleBaseFrame(unsigned index)
     {
@@ -1324,6 +1388,7 @@ namespace GAGCore
         drawDemandedSprites.erase(this);
         portableBlocks.erase(this);
         portableWaitingBlocks.erase(this);
+        highResolutionBlockDrawn.clear();
         clearTeamColorCache();
         for (auto *&image : experimentImages) { delete image; image = nullptr; }
         for (auto *&image : experimentRotated) { delete image; image = nullptr; }

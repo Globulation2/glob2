@@ -107,6 +107,16 @@ every renderer; no renderer keeps a threshold of its own.
   (base and team colour) is HD (`HighResolutionPolicy::frameDrawsHighResolution`),
   and a unit only once its whole action is. The HD setting off draws native
   everywhere.
+- **Room on devices**: the on-demand device renderers upload at most eight new
+  HD frames a frame and keep each one as the only copy of its pixels, within
+  3/8 of the General budget class (`GraphicContext::deviceHighResolutionRoom`;
+  about 96 MiB on desktop, 18 MiB on phones). When a new frame finds no room it
+  draws native, and the next frame evicts the sprites' 32-frame blocks drawn
+  longest ago, among those idle for at least 120 frames, until there is room
+  (`Sprite::evictIdleHighResolution`). A block's base and team layers go
+  together, and drawing it again reloads it. Units and buildings share this
+  room, so frames that left the view give way to the ones in it. Terrain banks
+  retire their frames through their own windows instead.
 
 Every renderer samples the one level the policy names, so all settle to the
 same pixels (`DrawableSurface::singleLevelSampling`):
