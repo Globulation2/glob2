@@ -18,7 +18,7 @@ information only.
     python3 tools/rendering/renderer_parity.py --list-scenes
 
 A scene fails when a GPU renderer is more than --max-over-8 percent of its
-pixels (3% by default) more than 8 levels from the consensus, or when two GPU
+pixels (5% by default with HD block compression, 2% without) more than 8 levels from the consensus, or when two GPU
 renderers are that far apart. Results go to artifacts/renderer-parity/<label>/:
 index.html (every scene's contact sheet, to scroll through), <scene>.png (the
 captures side by side, heat maps against the consensus and zoomed crops of the
@@ -749,9 +749,9 @@ def main():
                         help='HD artwork as each scene says (default), or pinned on or off for all')
     parser.add_argument('--shift', type=int, default=1,
                         help='Pixels a difference may move and still match (default 1)')
-    parser.add_argument('--max-over-8', type=float, default=3.0,
+    parser.add_argument('--max-over-8', type=float, default=5.0,
                         help='Bar with HD block compression on: percent of pixels more than 8 levels from the '
-                             'consensus or between two GPU renderers (default 3.0)')
+                             'consensus or between two GPU renderers (default 5.0)')
     parser.add_argument('--max-over-8-uncompressed', type=float, default=2.0,
                         help='Bar with HD block compression off (default 2.0): what the renderers must agree on '
                              'before compression differences are allowed for')

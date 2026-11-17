@@ -331,15 +331,15 @@ GPU renderers' captures, and measures each renderer against it and each GPU
 pair against each other. A pixel takes the smallest difference to the other
 image within `--shift` pixels (1 by default), so an edge one pixel out of place
 does not count while a missing sprite or a wrong colour does. **The bar:** a
-scene fails when a GPU renderer has more than 3% of its pixels
-(`--max-over-8`) more than 8 levels from the consensus, or two GPU renderers
+scene fails when a GPU renderer has more than the bar's share of its pixels
+(2% without HD block compression, 5% with it) more than 8 levels from the consensus, or two GPU renderers
 are that far apart, or a GPU renderer fails to draw it. HD sprite frames are
 block-compressed by default (`GLOB2_HD_BLOCK_COMPRESSION=0` turns that off), and
 their 4x4 blocks differ from the portable renderer's RGBA at team-colour edges by
-up to about 2.6% of a zoomed-in screen. So the runner draws every scene twice by
+up to about 2.6% of a zoomed-in screen (legacy GL, which uploads plain BC3, up to 3.9%). So the runner draws every scene twice by
 default (`--compression both`): with compression off under `<label>/off`, where
 the renderers must agree within 2% (`--max-over-8-uncompressed`), and with it on
-under `<label>/on`, the shipped configuration, within 3% (`--max-over-8`). It then
+under `<label>/on`, the shipped configuration, within 5% (`--max-over-8`). It then
 measures each renderer against itself across the two passes
 (`<label>/compression.md`): portable SDL and the software renderer never
 compress and must match themselves exactly, so any difference there is renderer
@@ -379,7 +379,7 @@ worst pair, and `summary.json` holds every metric, crop position and the
 seconds each renderer took; each scene's directory keeps the captures (PNG)
 and gzipped logs.
 
-**Look at the sheets, not only the numbers.** A pass under 3% can still hide a
+**Look at the sheets, not only the numbers.** A pass under the bar can still hide a
 visible bug (a blurred texture, a missing overlay, a wrong scale or team
 colour), and a fail can be harmless sub-pixel noise. A renderer PR includes a
 visual review: open `index.html`, look at every failing scene and a sample of
