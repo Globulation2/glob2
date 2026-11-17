@@ -182,8 +182,10 @@ namespace
 // Legacy GL is dropped from builds without OpenGL.
 using RB = RendererBackend;
 #if defined(GLOB2_MOBILE)
-// Android and iOS: unmeasured on devices, so phones keep Portable SDL.
-constexpr RB PreferredRendererOrder[] = {RB::PortableSDL};
+// Android and iOS: SDL GPU (Vulkan, Metal) first, as the fully GPU renderer
+// (user decision, 2026-11-17); Portable SDL when its device or shaders are
+// unavailable, as in the iOS Simulator.
+constexpr RB PreferredRendererOrder[] = {RB::SDLGPU, RB::PortableSDL};
 #elif defined(__APPLE__)
 // macOS: the Retina memory scenario gave programmable GL the best tail (p99
 // 29.3 ms, max 108); SDL GPU (Metal) the smallest footprint; Legacy GL the
