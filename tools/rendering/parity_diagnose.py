@@ -5,8 +5,11 @@ renderer_parity.py says how much differs; this says what kind of difference
 it is, for a region such as the HUD panel's text or the far-zoom map:
 
     python3 tools/rendering/parity_diagnose.py \\
-        artifacts/renderer-parity/<label>/gui-default/portable-sdl.png \\
-        artifacts/renderer-parity/<label>/gui-default/sdl-gpu.png --region panel
+        artifacts/renderer-parity/<label>/colony-1x/portable-sdl.png \\
+        artifacts/renderer-parity/<label>/colony-1x/sdl-gpu.png --region panel
+
+A contact sheet's crops give regions as x0,y0,x1,y1 (summary.json lists each
+scene's crop positions); pass --scale 2 for a -hidpi scene's captures.
 
 It reports, over the pixels more than 8 levels apart:
 - position: how many still differ after the best whole-pixel shift (up to
@@ -36,15 +39,16 @@ PANEL_WIDTH = 160  # GameGUI::RIGHT_MENU_WIDTH
 TOP_BAR = 16
 
 
-def region_box(name, width, height):
+def region_box(name, width, height, scale=1):
+    panel, top = PANEL_WIDTH * scale, TOP_BAR * scale
     if name == 'all':
         return 0, 0, width, height
     if name == 'panel':
-        return width - PANEL_WIDTH, 0, width, height
+        return width - panel, 0, width, height
     if name == 'topbar':
-        return 0, 0, width - PANEL_WIDTH, TOP_BAR
+        return 0, 0, width - panel, top
     if name == 'map':
-        return 0, TOP_BAR, width - PANEL_WIDTH, height
+        return 0, top, width - panel, height
     x0, y0, x1, y1 = (int(v) for v in name.split(','))
     return x0, y0, x1, y1
 
@@ -78,12 +82,14 @@ def main():
     parser.add_argument('--region', default='all', help='all, panel, topbar, map, or x0,y0,x1,y1')
     parser.add_argument('--threshold', type=int, default=8, help='Levels that count as different (default 8)')
     parser.add_argument('--max-shift', type=int, default=2)
+    parser.add_argument('--scale', type=int, default=1,
+                        help='Display scale of the captures (2 for renderer_parity.py\'s -hidpi scenes)')
     args = parser.parse_args()
     first = np.asarray(Image.open(args.first).convert('RGB')).astype(np.float64)
     second = np.asarray(Image.open(args.second).convert('RGB')).astype(np.float64)
     if first.shape != second.shape:
         raise SystemExit(f'sizes differ: {first.shape[1]}x{first.shape[0]} and {second.shape[1]}x{second.shape[0]}')
-    x0, y0, x1, y1 = region_box(args.region, first.shape[1], first.shape[0])
+    x0, y0, x1, y1 = region_box(args.region, first.shape[1], first.shape[0], args.scale)
     a, b = first[y0:y1, x0:x1], second[y0:y1, x0:x1]
     delta = np.abs(a - b).max(axis=2)
     differing = delta > args.threshold
