@@ -182,13 +182,13 @@ namespace
 // Legacy GL is dropped from builds without OpenGL.
 using RB = RendererBackend;
 #if defined(GLOB2_MOBILE)
-// Android and iOS: unmeasured on devices; SDL GPU on Metal was the slowest
-// renderer on a Retina Mac, so phones keep Portable SDL.
+// Android and iOS: unmeasured on devices, so phones keep Portable SDL.
 constexpr RB PreferredRendererOrder[] = {RB::PortableSDL};
 #elif defined(__APPLE__)
-// macOS: Retina still-camera medians put Legacy GL ahead of programmable GL and
-// SDL GPU (1.28, 2.03, 4.67 ms); keep it first until tail and memory data land.
-constexpr RB PreferredRendererOrder[] = {RB::LegacyGL, RB::ProgrammableGL, RB::SDLGPU, RB::PortableSDL};
+// macOS: the Retina memory scenario gave programmable GL the best tail (p99
+// 29.3 ms, max 108); SDL GPU (Metal) the smallest footprint; Legacy GL the
+// largest footprint and a 163 ms max.
+constexpr RB PreferredRendererOrder[] = {RB::ProgrammableGL, RB::SDLGPU, RB::LegacyGL, RB::PortableSDL};
 #else
 // Linux and Windows: programmable GL had the lowest median and memory with a
 // p99 close to Legacy GL's; SDL GPU had the worst tail.

@@ -1131,7 +1131,7 @@ not the renderer's architecture; the per-platform rows live in one table,
 | Platform | Auto order |
 | --- | --- |
 | Linux, Windows | programmable GL, Legacy GL (builds with OpenGL), SDL GPU, Portable SDL, Software |
-| macOS | Legacy GL, programmable GL, SDL GPU, Portable SDL, Software |
+| macOS | programmable GL, SDL GPU, Legacy GL, Portable SDL, Software |
 | Android, iOS | Portable SDL, Software |
 | Browser | WebGL2 Legacy GL or Software, by the probed adapter; WebGPU stays opt-in |
 
@@ -1149,16 +1149,22 @@ parity timing run.
 Programmable GL has the lowest median and resident memory with a tail close to
 Legacy GL's, so it leads; SDL GPU's tail (p99, maximum and zoom frames over budget)
 is the worst, so it follows both GL renderers. Windows runs the same GL renderers
-and has no measurements of its own yet, so it shares the Linux row. On a Retina Mac
-the still-camera medians were Portable SDL 0.69 ms, Legacy GL 1.28, programmable GL
-2.03 and SDL GPU (Metal) 4.67; Portable SDL's moving median was 2.36 ms with a 33 ms
-p99. Without Retina tail and memory figures that would justify a change, macOS keeps
-Legacy GL first, ordering the device renderers by those medians. Phones have no
-device measurements, and SDL GPU on Metal was the slowest Mac renderer, so Android
-and iOS keep Portable SDL, though their packages ship the SDL GPU shaders (Android
-requires the Vulkan set, iOS device builds the Metal set). Revisit the rows when the
-Retina memory and tail numbers, phone measurements, the SDL GPU memory and HD-stall
-investigation, or a settle-time p99 (`tools/rendering/settle_scenario.py`) land.
+and has no measurements of its own yet, so it shares the Linux row. The macOS row
+comes from the same memory scenario on a Retina Mac (master `5524479f28`, a
+3840x2160 drawable; footprint counts unified GPU memory):
+
+| Renderer | Frame p50 | p99 | Max | Peak RSS | Peak footprint |
+| --- | --- | --- | --- | --- | --- |
+| programmable GL | 11.2 ms | 29.3 ms | 108 ms | 1346 MiB | 1562 MiB |
+| SDL GPU (Metal) | 11.3 ms | 33.7 ms | 173 ms | 1163 MiB | 1419 MiB |
+| Legacy GL | 11.5 ms | 27.6 ms | 163 ms | 1218 MiB | 1651 MiB |
+| Portable SDL | 4.5 ms | 57.7 ms | 418 ms | 2347 MiB | 2730 MiB |
+
+Programmable GL has the best tail, SDL GPU the smallest footprint, and Legacy GL
+the largest footprint. Phones have no device measurements, so Android and iOS keep
+Portable SDL, though their packages ship the SDL GPU shaders (Android requires the
+Vulkan set, iOS device builds the Metal set). Revisit the rows when phone
+measurements or the SDL GPU memory and HD-stall investigation land.
 
 The game asks for this order with the `PREFERDEVICE` startup flag, which
 `startupScreenFlags()` adds without persisting it; tools and tests that create a
