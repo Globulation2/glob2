@@ -230,6 +230,7 @@ protected:
 	// original 555-line switch; keep helpers in lockstep with the dispatcher.
 	bool tryClaimClearingAreaForHarvesting();
 	void handleMovementRemovingBlackAround();
+	void steerExplorerAroundAirHazards();
 	void handleMovementAttackingAround();
 	void handleMovementClearingResources();
 	void handleMovementRandom();

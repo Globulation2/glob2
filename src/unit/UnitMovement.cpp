@@ -177,6 +177,45 @@ bool Unit::tryClaimClearingAreaForHarvesting()
 	return false;
 }
 
+// Exploring steers by the explored map alone, so on its own it orbits a flag
+// straight across lava and burns its explorers until they leave to heal. Keep
+// the chosen step unless it would enter terrain that hurts fliers, then take the
+// nearest safe heading, turning toward the flag first so the orbit tightens
+// around a hazard instead of drifting out of range. Leaving a hazard is always
+// allowed. With no safe heading, random flight's terrain-safety search takes over.
+void Unit::steerExplorerAroundAirHazards()
+{
+	const Map& map=*owner->map;
+	const auto hurts=[&](int x,int y){ return map.terrainPropertiesAt(x,y).airHealthQ8<0; };
+	if (!map.hasAirTerrainConstraints() || !hurts(posX+dx,posY+dy))
+		return;
+	const int preferred=directionFromDxDy(dx,dy);
+	if (preferred==UNIT_DIRECTION_NONE)
+		return;
+	int inward=1;
+	if (attachedBuilding)
+	{
+		int fx, fy;
+		simplifyDirection(attachedBuilding->posX-posX, attachedBuilding->posY-posY, &fx, &fy);
+		if ((fx || fy) && ((directionFromDxDy(fx,fy)-preferred)&UNIT_DIRECTION_MASK)>4)
+			inward=-1;
+	}
+	for (const int offset : {1, 2, 3, 4})
+		for (const int sign : {inward, -inward})
+		{
+			const int candidate=(preferred+sign*offset)&UNIT_DIRECTION_MASK;
+			int cx, cy;
+			dxDyFromDirection(candidate, &cx, &cy);
+			if (hurts(posX+cx,posY+cy) || !map.isFreeForMovement(posX+cx,posY+cy,AIR_MOVEMENT_CLASS,owner->me))
+				continue;
+			dx=cx;
+			dy=cy;
+			direction=candidate;
+			return;
+		}
+	movement=MOV_RANDOM_FLY;
+}
+
 void Unit::handleMovementRemovingBlackAround()
 {
 	if (attachedBuilding)
@@ -272,6 +311,7 @@ void Unit::handleMovementRemovingBlackAround()
 	const bool canWalk=performance[WALK]>0;
 	const bool canSwim=performance[SWIM]>0;
 	if (flying) {
+		if (movement==MOV_GOING_DX_DY) steerExplorerAroundAirHazards();
 		if (movement!=MOV_GOING_DX_DY || !owner->map->isFreeForMovement(posX+dx,posY+dy,AIR_MOVEMENT_CLASS,owner->me)) movement=MOV_RANDOM_FLY;
 	} else if (movement!=MOV_GOING_DX_DY
 		|| (!canWalk && (!canSwim || !owner->map->terrainPropertiesAt(posX+dx,posY+dy).swimmable))
