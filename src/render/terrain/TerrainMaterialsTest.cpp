@@ -80,6 +80,32 @@ std::array<unsigned, 128> materialWeights(const TerrainVisual::Coverage &coverag
 } // namespace
 TEST_SUITE("TerrainMaterials")
 {
+	TEST_CASE("HD sources composed below their size are box-filtered in premultiplied colour")
+	{
+		using TerrainVisual::Compositor;
+		// A 4x4 source composed at 2x2: each output texel averages a 2x2 block.
+		Compositor::MaterialPixels source(16);
+		for (int y = 0; y < 4; ++y)
+			for (int x = 0; x < 4; ++x)
+				source[y * 4 + x] = {(unsigned char)(x * 60), (unsigned char)(y * 60), 100, 255};
+		// One block mixes an opaque texel with transparent ones: their colour
+		// must not tint it.
+		source[2] = {200, 10, 10, 255};
+		source[3] = {0, 255, 0, 0};
+		source[6] = {0, 255, 0, 0};
+		source[7] = {0, 255, 0, 0};
+		const Compositor::PreparedMaterialView view{0, 0, 4, source, 2};
+		Compositor::MaterialPixels out;
+		Compositor::boxFilter(view, 2, out);
+		REQUIRE(out.size() == 4);
+		// Top-left: x 0..1, y 0..1, all opaque.
+		CHECK(out[0] == std::array<unsigned char, 4>{30, 30, 100, 255});
+		// Top-right: one opaque texel among three transparent ones.
+		CHECK(out[1] == std::array<unsigned char, 4>{200, 10, 10, 64});
+		// Bottom-right: x 2..3, y 2..3.
+		CHECK(out[3] == std::array<unsigned char, 4>{150, 150, 100, 255});
+	}
+
 	TEST_CASE("connected foliage selects the requested corner mask and keeps legacy decor")
 	{
 		glob2test::HeadlessGlobals globals;

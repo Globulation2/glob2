@@ -992,7 +992,17 @@ TEST_SUITE("SDLGPUDevice")
             std::array<std::array<unsigned,4>,size*size> composed{};
             for(unsigned y=0;y<size;++y)for(unsigned x=0;x<size;++x) {
                 auto &out=composed[y*size+x];
-                auto fetch=[&](unsigned slot){return data->materials[slot]?pixel(source[slot].get(),x*source[slot]->w/size,y*source[slot]->h/size):SDL_Color{0,0,0,0};};
+                // A source an exact multiple of the composition size is box-filtered
+                // in premultiplied colour (Compositor::boxFilter); any other scales.
+                auto fetch=[&](unsigned slot) {
+                    if(!data->materials[slot])return SDL_Color{0,0,0,0};
+                    const int w=source[slot]->w;
+                    if(w<=size||w%size)return pixel(source[slot].get(),x*w/size,y*source[slot]->h/size);
+                    const unsigned step=unsigned(w/size),count=step*step;unsigned sum[4]{};
+                    for(unsigned dy=0;dy<step;++dy)for(unsigned dx=0;dx<step;++dx){const auto v=pixel(source[slot].get(),x*step+dx,y*step+dy);sum[0]+=v.r*v.a;sum[1]+=v.g*v.a;sum[2]+=v.b*v.a;sum[3]+=v.a;}
+                    const auto channel=[&](unsigned k){return Uint8(sum[3]?(sum[k]+sum[3]/2)/sum[3]:0);};
+                    return SDL_Color{channel(0),channel(1),channel(2),Uint8((sum[3]+count/2)/count)};
+                };
                 if(uniform) {const auto value=fetch(0);out={value.r,value.g,value.b,value.a};continue;}
                 const auto &sample=coverage->samples[y*size+x];unsigned weights[4]{},rest=65536,other=0;
                 for(unsigned slot=0;slot<4;++slot)if(slot!=(sample.slots&3)){weights[slot]=sample.others[other++];rest-=weights[slot];}
