@@ -345,6 +345,15 @@ SamplingPlan samplingPlan(const SceneMap &map, int left, int top, int right, int
 		// Offscreen captures can override the window DPI. Use the active
 		// target's raster scale so atlas detail is independent of window size.
 		const double density = target.mapTransformScale() * target.getRasterScale();
+		// The portable renderer, which samples a native page linearly only once
+		// it is reduced, keeps the density the direct terrain pass's art tiles
+		// take below one screen pixel per logical pixel: the smallest power of
+		// two at least 32 * density pixels a cell (8 at least), box-filtered from
+		// the native cell. Drawn unreduced, a zoomed-out native page is sampled
+		// nearest: grainy sand and a different pattern from the other renderers.
+		if (portableRenderer())
+			while (downsample < 4 && 32.0 / (downsample * 2) >= 32 * density)
+				downsample *= 2;
 		while (downsample < NativeTilePixels && density <= std::sqrt(2.0) / (downsample * 2) &&
 			   visiblePages * pageStorage(resolution, gpu, downsample) > budget)
 			downsample *= 2;
