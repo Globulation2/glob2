@@ -576,9 +576,13 @@ TEST_SUITE("RenderDevice")
     }
     TEST_CASE("texture categories enforce independent limits and explicit total budgets")
     {
-        auto large=surface(4096,4097); REQUIRE(large);
+        // Each class refuses a texture past its own limit and admits one under it.
         RenderResources resources; TextureDescriptor descriptor;
-        CHECK_FALSE(resources.create(large.get(),1,descriptor));
+        const auto generalLimit=platformRenderBudget().classLimit(TextureDescriptor::BudgetClass::General);
+        auto huge=surface(4096,int(generalLimit/(4*4096))+1); REQUIRE(huge);
+        CHECK_FALSE(resources.create(huge.get(),1,descriptor));
+        huge.reset();
+        auto large=surface(4096,4097); REQUIRE(large);
         descriptor.budgetClass=TextureDescriptor::BudgetClass::SkinAtlas;
         CHECK_FALSE(resources.create(large.get(),1,descriptor));
         descriptor.budgetClass=TextureDescriptor::BudgetClass::TerrainPage;
