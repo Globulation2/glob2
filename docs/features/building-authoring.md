@@ -18,7 +18,7 @@ To create and share a family:
 5. Choose a description and visibility, then publish the saved revision. Wait for
    native validation; rejected releases explain the error. Further draft changes
    need another publication to appear in the library.
-6. In the game, open **Building families** on a local new-game or editor new-map
+6. In the game, open **Building families** on the editor new-map
    screen, browse public families or paste the family's page link into **Family
    link or ID** and choose **Open family**. Private families need sign-in to the
    same instance. Install the compatible release and enable it. Selection applies to new
@@ -145,7 +145,7 @@ Unavailable engines leave publication unavailable; pending/rejected releases
 cannot be downloaded. Families retain at most 50 releases and publishing/forking
 is limited to 20 requests per account per hour. Reports are limited to 10/hour.
 
-The native new-game and new-map screens open **Building families**. The picker
+The editor new-map screen opens **Building families**. The picker
 installs a chosen compatible release, verifies its package and artwork hashes
 and resolved catalog, and lets players explicitly enable or remove families.
 Unlisted families open by their page link or ID; links must belong to the
