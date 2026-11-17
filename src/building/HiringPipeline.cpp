@@ -415,10 +415,11 @@ void HiringPipeline::compute(void *context, std::size_t)
 		{
 			if (route.initialize)
 				route.preparation->initialize();
+			// An unused route keeps its snapshot until RoutePool::reclaim()
+			// drops it on the owner thread; a worker write here would race
+			// with that reclaim once this worker releases its reference.
 			if (route.preparation->job.data)
 				w.gradients.push_back(route.preparation);
-			else
-				route.preparation->snapshot.reset(); // Only this team's worker touches it.
 		}
 	w.input.reset();
 }
