@@ -46,7 +46,10 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
         rendererLaunchOverride = GAGCore::parseRendererBackend(r.get("--renderer"));
 	}
 	if (r.has("--graphics-detail"))
+	{
 		settings.setGraphicsDetail(r.get("--graphics-detail") == "full");
+		settings.graphicsDetailAdaptive = false;
+	}
 	if (r.has("--mute"))
 		settings.mute = 1;
 	if (r.has("--no-mute"))
