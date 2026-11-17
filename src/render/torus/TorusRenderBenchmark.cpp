@@ -117,8 +117,58 @@ class TorusRenderBenchmark
         gui.view.scene = &gui.view.render.ownScene;
     }
 
+    // GLOB2_BENCH_FOCUS names what a parity scene frames: tile:X,Y, or the
+    // first building (site, upgrade, repair, damaged, complete, flag) or unit
+    // (carrying, explorer, warrior, fighting, swimming) of that kind, the
+    // local team's first. Returns the world pixel to centre on. Read only.
+    static std::pair<double, double> focusPoint(Game &game, int localTeam, std::string_view kind)
+    {
+        int tileX = 0, tileY = 0;
+        if (std::sscanf(std::string(kind).c_str(), "tile:%d,%d", &tileX, &tileY) == 2)
+            return {tileX * 32.0 + 16, tileY * 32.0 + 16};
+        const auto buildingMatches = [&](const Building &b) {
+            const BuildingType &t = *b.type;
+            if (kind == "flag") return t.isVirtual != 0;
+            if (t.isVirtual) return false;
+            if (kind == "site") return t.isBuildingSite && b.constructionResultState == Building::NEW_BUILDING;
+            if (kind == "upgrade") return t.isBuildingSite && b.constructionResultState == Building::UPGRADE;
+            if (kind == "repair") return t.isBuildingSite && b.constructionResultState == Building::REPAIR;
+            if (kind == "damaged") return !t.isBuildingSite && t.hpMax && b.hp < t.hpMax;
+            if (kind == "complete") return !t.isBuildingSite && t.maxUnitWorking && b.hp == t.hpMax;
+            return false;
+        };
+        const auto unitMatches = [&](const Unit &u) {
+            if (u.movement == Unit::MOV_INSIDE) return false;
+            if (kind == "carrying") return u.typeNum == WORKER && u.carriedMaterial >= 0;
+            if (kind == "explorer") return u.typeNum == EXPLORER;
+            if (kind == "warrior") return u.typeNum == WARRIOR;
+            if (kind == "fighting") return u.typeNum == WARRIOR && u.action == ATTACK_SPEED;
+            if (kind == "swimming") return u.action == SWIM;
+            return false;
+        };
+        const int teams = game.mapHeader.getNumberOfTeams();
+        for (int i = 0; i < teams; ++i)
+        {
+            Team *team = game.teams[(localTeam + i) % teams];
+            for (Building *b : team->liveBuildings.entries())
+                if (buildingMatches(*b))
+                {
+                    std::printf("BENCH_FOCUS kind=%.*s team=%d tile=%d,%d\n", int(kind.size()), kind.data(), team->teamNumber, b->posX, b->posY);
+                    return {b->posX * 32.0 + b->type->width * 16.0, b->posY * 32.0 + b->type->height * 16.0};
+                }
+            for (Unit *u : team->liveUnits.entries())
+                if (unitMatches(*u))
+                {
+                    std::printf("BENCH_FOCUS kind=%.*s team=%d tile=%d,%d\n", int(kind.size()), kind.data(), team->teamNumber, u->posX, u->posY);
+                    return {u->posX * 32.0 + 16, u->posY * 32.0 + 16};
+                }
+        }
+        throw std::invalid_argument("GLOB2_BENCH_FOCUS found no " + std::string(kind));
+    }
+
     // The game's initial view (the local team's colony) at the requested
-    // zoom; GLOB2_BENCH_PAN_X/Y move its top-left tile by that many tiles.
+    // zoom; GLOB2_BENCH_FOCUS centres it elsewhere, and GLOB2_BENCH_PAN_X/Y
+    // move its top-left tile by that many tiles.
     static void prepareGuiScreen(GameGUI &gui, double zoom)
     {
         auto &settings = globalContainer->settings;
@@ -128,6 +178,12 @@ class TorusRenderBenchmark
         gui.prepareLocalPresentation();
         gui.updateCamera();
         gui.camera.setZoom(zoom, gui.camera.offsetX + gui.camera.width / 2, gui.camera.offsetY + gui.camera.height / 2);
+        if (const char *focus = std::getenv("GLOB2_BENCH_FOCUS"))
+        {
+            const auto [x, y] = focusPoint(gui.game, gui.localTeamNo, focus);
+            gui.camera.originX = x - gui.camera.visibleW() / 2;
+            gui.camera.originY = y - gui.camera.visibleH() / 2;
+        }
         if (const char *x = std::getenv("GLOB2_BENCH_PAN_X")) gui.camera.originX += 32.0 * std::atoi(x);
         if (const char *y = std::getenv("GLOB2_BENCH_PAN_Y")) gui.camera.originY += 32.0 * std::atoi(y);
         // Whole tiles, so sub-pixel camera offsets do not differ by renderer.
@@ -491,7 +547,9 @@ static int run(int argc, char **argv)
             assert(gui.loadFromHeaders(mapHeader, gameHeader, true, true));
         }
         gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
-        gui.localPlayer = gui.localTeamNo = 0;
+        // GLOB2_BENCH_TEAM=N views the game as team N's player (its fog,
+        // colour and panel), so a scene can frame another team's units.
+        gui.localPlayer = gui.localTeamNo = std::getenv("GLOB2_BENCH_TEAM") ? std::atoi(std::getenv("GLOB2_BENCH_TEAM")) : 0;
         gui.adjustLocalTeam();
         gui.adjustInitialViewport();
         gui.loadTerrainArtwork(); // As Engine::finalAdjustments does.

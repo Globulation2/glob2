@@ -263,73 +263,128 @@ See [skin rendering](skin-rendering.md) for production sprite export and skin pr
 ## Renderer parity
 
 Every renderer may draw by its own path, but once a view has been held still
-long enough for streaming and background composition to finish, they must all
-show the same picture to within a few pixels.
-`tools/rendering/renderer_parity.py` checks that side by side. It draws a fixed
-set of scenes with each renderer (`legacy-gl`, `portable-sdl`, `sdl-gpu`,
-`programmable-gl`, `software`; any the host cannot create are skipped and
-listed), each in a fresh process and profile, holds the camera for
-`--settle-frames` (600 by default, about ten seconds: long enough for legacy GL's HD band reload after a zoom), captures the last frame and
-compares it with the reference renderer (the first available of `portable-sdl`,
-`legacy-gl`).
+long enough for streaming and background composition to finish, the GPU-backed
+renderers (`legacy-gl`, `portable-sdl`, `sdl-gpu`, `programmable-gl`) must
+show the same picture. `tools/rendering/renderer_parity.py` checks that over a
+matrix of scenes. It draws each scene with each renderer in a fresh process and
+profile (renderers the host cannot create are skipped and listed), holds the
+camera for `--settle-frames` (600 by default, about ten seconds: long enough
+for legacy GL's HD band reload after a zoom) and captures the last frame.
 
 ```sh
-python3 tools/dev_build.py perf=1 torus-render-benchmark
-python3 tools/rendering/renderer_parity.py --prepare --label master
+python3 tools/dev_build.py perf=1 glob2 torus-render-benchmark
+python3 tools/rendering/renderer_parity.py --prepare --quick --label mine   # everyday: ten scenes
+python3 tools/rendering/renderer_parity.py --label mine                    # renderer PRs: the whole matrix
 python3 tools/rendering/renderer_parity.py --list-scenes
 ```
 
-The scenes use the memory scenario's Honeycomb 256 save (`--prepare` makes it):
-the bare map at the overview zoom with health bars (`map-far`), and the whole
-in-game screen (`GameGUI::drawAll`: HUD panel, minimap, top bar, health and food
-bars, the selection) at the overview zoom, the default zoom with a unit
-selected, either side of the HD sprite policy's threshold (`gui-below-1x`,
-`gui-above-1x`), at the default zoom on a 2x display (`gui-2x-display`,
-`GLOB2_UI_SCALE=2`), zoomed in to HD terrain, panned, and on the small
-SmallForTwo map.
-`--scenes` picks a subset and `--renderers` a list of backends.
+`--quick` runs the everyday subset (ten scenes, about two and a half minutes
+with `--jobs 8` on a 32-thread Linux desktop with one discrete GPU); renderer
+PRs run the whole matrix (65 scenes, about sixteen minutes there). A renderer
+process takes 15 to 25 seconds per scene, most of it the settle frames;
+`--timeout` (300 seconds) bounds a hang. Repeated runs give identical numbers. `--scenes` names scenes and `--filter` takes a
+regular expression over their names, such as `--filter hidpi` or
+`--filter '^unit-'`; `--renderers` limits the backends. `--prepare` makes the
+saves the scenes load: the memory scenario's Honeycomb 256 save at tick 30000,
+and the same game played on to tick 40000 (`honeycomb-256-tick-40000.game.gz`),
+which has fights, damaged buildings and swimmers. It needs a perf `glob2`.
+
+The matrix (`matrix()` in the script) covers:
+
+- the local colony at every zoom (overview, far, 0.5x, 1x, 1.5x, 2x, 3x, 4x),
+  either side of the [HD sprite policy's](../architecture/rendering.md#hd-sprite-policy)
+  threshold (0.9x, 1.1x), on a 2x display, and with HD artwork off;
+- building states and unit actions, framed by the benchmark's
+  `GLOB2_BENCH_FOCUS` as their owner sees them (`GLOB2_BENCH_TEAM`): a
+  construction site, an upgrade, a complete building selected, a damaged
+  building, a flag, a worker carrying a resource, an explorer, a warrior,
+  warriors fighting and a swimmer, some also on a 2x display or with HD off;
+- the bare map with every tile visible: the torus corner and wrap seams, the
+  Honeycomb hexes (stone, sand, forest and fields, a bridge, a shore with
+  algae), Oazis, Archipelago, Sand River, Wild River (not square), Mazury and
+  SmallForTwo, at several zooms, with areas and with health bars.
 
 Inputs are pinned so renderers draw the same thing: device tier `high`
-(`--device-tier`), HD artwork on (`--no-hd` pins it off), the desktop HUD
-(`GLOB2_MOBILE_UI=0`), a fixed animation phase, no clouds, particles or unit
-interpolation, and whole-tile camera positions. Each log's `BENCH_SETTINGS` line
-records the resolved settings. SDL GPU and programmable GL need their shaders:
-pass `--shader-dir` (or set `GLOB2_RENDERER_SHADER_DIR`), or `--glslang PATH`
-to generate them with `tools/shaders/generate.py` first. On Linux the runner sets
-`SDL_VIDEO_DRIVER=x11` when a display is available; runs need a real display (in
-an agent session, outside its sandbox). On macOS the windows are created hidden.
+(`--device-tier`), HD artwork as each scene says (`--hd on|off` pins it for
+all), the desktop HUD (`GLOB2_MOBILE_UI=0`), a fixed animation phase, no
+clouds, particles or unit interpolation, and whole-tile camera positions. Each
+log's `BENCH_SETTINGS` line records the resolved settings. A `-hidpi` scene
+emulates a 2x display the way a Retina screen behaves: the window is twice
+`--window-size` in pixels and `GLOB2_UI_SCALE=2` keeps the interface at
+`--window-size` logical points, so the captures are 2560 by 1600 pixels of a
+1280 by 800 screen. On macOS `--hidpi native` (the default there) draws them
+like the other scenes, relying on a real HiDPI display. SDL GPU and
+programmable GL need their shaders: pass `--shader-dir` (or set
+`GLOB2_RENDERER_SHADER_DIR`), or `--glslang PATH` to generate them with
+`tools/shaders/generate.py` first. On Linux the runner sets
+`SDL_VIDEO_DRIVER=x11` when a display is available, and turns off waiting for
+vertical blank (`__GL_SYNC_TO_VBLANK=0`, `vblank_mode=0`): a swap on the hidden
+window otherwise costs legacy GL over a minute of start-up. Runs need a real
+display (in an agent session, outside its sandbox). On macOS the windows are
+created hidden. `--jobs` (6 by default) draws that many renderer processes at
+once across scenes; the captures do not depend on it. `--reanalyse` compares
+a label's existing captures again without drawing them, for example after
+changing `--max-over-8` or `--shift`.
 
-Results go to `artifacts/renderer-parity/<label>/`: `<scene>.png` is a contact
-sheet with each renderer's capture above a heat map of its differences from the
-reference (yellow to red where a pixel differs by more than 8 levels), next to
-the captures, logs, `summary.json` and `report.md`, a table of the share of
-pixels more than 8 and 32 levels from the reference and the mean difference.
-A pixel takes the smallest difference to the other image within `--shift`
-pixels (1 by default), so an edge one pixel out of place does not count while a
-missing sprite or a wrong colour does. The run exits 1 when a renderer fails or
-more than `--max-over-8` percent of its pixels (2% by default; the maintainer's parity bar) differ by more
-than 8 levels; `--max-over-32` adds a limit on the share over 32 levels. The bar
-covers the GPU-backed renderers (legacy GL, portable SDL, SDL GPU, programmable
-GL), with HD on and off. The software renderer is drawn and reported in an
-`info` column, so a crash or a blank capture still shows, but it is left out of
-the exit status: it has no filtering, draws native artwork at every zoom (see
-the [HD sprite policy](../architecture/rendering.md#hd-sprite-policy)) and
-leaves out several effects.
+For each scene the runner builds a consensus image, the per-pixel median of the
+GPU renderers' captures, and measures each renderer against it and each GPU
+pair against each other. A pixel takes the smallest difference to the other
+image within `--shift` pixels (1 by default), so an edge one pixel out of place
+does not count while a missing sprite or a wrong colour does. **The bar:** a
+scene fails when a GPU renderer has more than 2% of its pixels
+(`--max-over-8`) more than 8 levels from the consensus, or two GPU renderers
+are that far apart, or a GPU renderer fails to draw it. The report groups the
+GPU renderers that agree within the bar and names the outlier: the odd one out
+in a three-to-one split, or `split: a+b / c+d` when they divide evenly. The
+consensus is a majority, not the truth: when two or three renderers share a
+defect (say, blurred terrain), the correct one is the outlier, which is why the
+sheets must be looked at. `--reference NAME` adds each renderer's distance from one renderer. The
+software renderer is drawn and measured for information only, so a crash or a
+blank capture still shows, but it is left out of the consensus and the exit
+status: it has no filtering, draws native artwork at every zoom and leaves out
+several effects. The run exits 1 when any scene fails.
+
+Results go to `artifacts/renderer-parity/<label>/`: `index.html` shows every
+scene's contact sheet in one page to scroll through, failures marked;
+`<scene>.png` is the sheet: the GPU captures side by side at full logical size
+(2x scenes at half their pixels), each renderer's heat map against the
+consensus (yellow to red where a pixel differs by more than 8 levels), the
+software capture, then nearest-upscaled crops, every renderer side by side
+with the consensus and a difference panel, of the densest differences, a
+stretch of flat terrain and the view's centre (the framed unit or building).
+`report.md` is the scene-by-renderer table of consensus distances with the
+worst pair, and `summary.json` holds every metric, crop position and the
+seconds each renderer took; each scene's directory keeps the captures (PNG)
+and gzipped logs.
+
+**Look at the sheets, not only the numbers.** A pass under 2% can still hide a
+visible bug (a blurred texture, a missing overlay, a wrong scale or team
+colour), and a fail can be harmless sub-pixel noise. A renderer PR includes a
+visual review: open `index.html`, look at every failing scene and a sample of
+passing ones across zooms, 2x display and HD on and off, and say in the PR what
+the crops show, with the most telling sheets attached.
+
+`tools/rendering/parity_diagnose.py FIRST.png SECOND.png --region panel|topbar|map|all|x0,y0,x1,y1`
+explains one difference that the parity run found (`--scale 2` for a 2x
+scene's captures). It reports how much of the difference remains after the
+best whole-pixel and half-pixel shifts (position or rounding), the share on
+edges as against flat areas (filtering lives on edges; a wrong colour, blend
+or missing layer shows on flat areas too), the mean signed difference on
+differing edges (premultiplication or blending darkens or brightens fringes
+consistently), and the ratio of gradient energy (one side softer: linear
+against nearest sampling, or another mip level).
 
 The benchmark options behind it: `GLOB2_BENCH_GUI=1` draws the game screen in
 the flat fixture, centred on the local colony at `GLOB2_BENCH_ZOOM`, with
-`GLOB2_BENCH_PAN_X`/`_Y` moving it by that many tiles; `GLOB2_BENCH_SELECT=unit`
-or `building` selects the local team's first one; `GLOB2_BENCH_HD=0|1` pins HD
-artwork. `torus-render-benchmark` also captures the software renderer.
-
-`tools/rendering/parity_diagnose.py FIRST.png SECOND.png --region panel|topbar|map|all|x0,y0,x1,y1`
-explains one difference that the parity run found. It reports how much of the
-difference remains after the best whole-pixel and half-pixel shifts (position or rounding),
-the share on edges as against flat areas (filtering lives on edges; a wrong
-colour, blend or missing layer shows on flat areas too), the mean signed
-difference on differing edges (premultiplication or blending darkens or
-brightens fringes consistently), and the ratio of gradient energy (one side
-softer: linear against nearest sampling, or another mip level).
+`GLOB2_BENCH_PAN_X`/`_Y` moving it by that many tiles;
+`GLOB2_BENCH_FOCUS=tile:X,Y` or a kind (`site`, `upgrade`, `repair`,
+`damaged`, `complete`, `flag`, `carrying`, `explorer`, `warrior`, `fighting`,
+`swimming`) centres it on that tile or on the first such building or unit, the
+local team's first, and fails when there is none; `GLOB2_BENCH_TEAM=N` views
+the game as team N's player; `GLOB2_BENCH_SELECT=unit` or `building` selects
+the local team's first one; `GLOB2_BENCH_HD=0|1` pins HD artwork. In the bare
+map, `GLOB2_BENCH_PAN_X`/`_Y` give the top-left tile. All of them only read the
+game state. `torus-render-benchmark` also captures the software renderer.
 
 ## Terrain fallbacks
 
