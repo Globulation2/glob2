@@ -92,6 +92,7 @@ class SoftwareTerrainCache
 		SDL_Rect rect;
 		std::unique_ptr<GAGCore::DrawableSurface> image;
 	};
+	struct KeyframeSet;
 	struct Chunk
 	{
 		int x = 0, y = 0, scale = 1, downsample = 1;
@@ -132,6 +133,9 @@ class SoftwareTerrainCache
 		// When (SDL_GetTicks) a page arrived where the view had drawn a stand-in
 		// or the overview; it fades in over FadeMs. Zero once settled.
 		Uint64 arrived = 0;
+		// When the portable renderer first held a fade until the keyframes of
+		// the page's animated cells arrived (see updateKeyframes).
+		Uint64 arrivalHeld = 0;
 		// Cells an animation round wrote into the pixels but not yet to the
 		// texture, which keeps the shown phase until the round publishes.
 		std::array<bool, ChunkTiles * ChunkTiles> staged{};
@@ -139,9 +143,13 @@ class SoftwareTerrainCache
 		// Cells out of view that rounds left at an earlier phase than the
 		// page's revisions; a round recomposes them once the view shows them.
 		std::array<bool, ChunkTiles * ChunkTiles> stale{};
-		// A page of the resident base (see basePages): never animated, and its
-		// pixels go once its texture holds them.
+		// A page of the resident base (see basePages): its pixels go once its
+		// texture holds them.
 		bool resident = false;
+		// The portable renderer's keyframes of this page's animated cells
+		// (see KeyframeSet), and a count of changes to `tiles` they follow.
+		std::shared_ptr<KeyframeSet> keyframes;
+		std::uint64_t tileStamp = 0;
 	};
 	static constexpr std::size_t ChunkStorageBytes =
 		ChunkPixels * ChunkPixels * 4 + sizeof(Chunk) +
@@ -157,6 +165,8 @@ class SoftwareTerrainCache
 		// The part of the page drawn, in logical pixels from its origin: a
 		// coarser stand-in draws only the cells of the page it stands in for.
 		SDL_Rect clip{0, 0, ChunkPixels, ChunkPixels};
+		// The page's keyframe draws (keyframeDraws), drawn over it.
+		std::uint32_t keyframeBegin = 0, keyframeEnd = 0;
 	};
 	//! How long a page that arrives over a fallback takes to fade in.
 	static constexpr Uint64 FadeMs = 150;
@@ -212,6 +222,59 @@ class SoftwareTerrainCache
 	std::optional<AnimationRound> round;
 	// Writes the staged cells of every page to its texture; returns their bytes.
 	std::size_t publishStaged();
+	// The portable renderer's animated terrain (see "Animated terrain on the
+	// portable renderer" in docs/assets/terrain-rendering.md). Pages hold
+	// still pixels; every animated cell draws over its page each frame as a
+	// crossfade of two keyframes, composed by the workers at fixed animation
+	// times, keyframeInterval ticks apart, ahead of when they show.
+	bool keyframing = false;
+	int keyframeInterval = 0; // Animation ticks between keyframes; 0 without animated materials.
+	// The material snapshot a keyframe composes from: the compositor
+	// prepared at the keyframe's time.
+	struct KeySnapshot
+	{
+		std::int64_t key = 0;
+		std::shared_ptr<const TerrainVisual::Compositor::CpuMaterials> materials;
+		// Changes when the snapshot's pixels do; a keyframe composed from an
+		// older generation is drawn until one from this generation replaces it.
+		std::uint64_t generation = 0;
+		// Revisions of the still materials, which every keyframe also holds.
+		std::uint64_t epoch = 0;
+		// Per animated material, per variant: the artwork the snapshot holds (0: none).
+		std::vector<std::vector<std::uint64_t>> stamps;
+		bool stale = false; // Taken from older artwork, or missing a variant a cell needs.
+		std::uint64_t taken = 0; // Frame.
+	};
+	std::vector<KeySnapshot> keySnapshots;
+	std::uint64_t keyGeneration = 0;
+	struct KeyframeJob;
+	std::vector<std::shared_ptr<KeyframeJob>> keyframeJobs;
+	// Uniform uncalmed animated cells share one keyframe per variant at each
+	// page density: by material, scale and reduction.
+	std::map<std::tuple<unsigned, int, int>, std::shared_ptr<KeyframeSet>> uniformKeyframes;
+	struct KeyframeDraw
+	{
+		KeyframeSet *set;
+		SDL_Rect destination, first, second;
+		Uint8 firstAlpha, secondAlpha; // 0: not drawn.
+	};
+	std::vector<KeyframeDraw> keyframeDraws;
+	// The keyframe this frame's animation time prepares the compositor for.
+	std::int64_t keyframeTarget(int time);
+	// Takes or refreshes that keyframe's snapshot after the compositor prepared it.
+	void takeKeySnapshot(TerrainVisual::Compositor &, std::int64_t key, bool highResolution);
+	std::uint64_t keyStamp(TerrainVisual::Compositor &, TerrainVisual::MaterialId, unsigned variant,
+						   std::int64_t key, bool highResolution);
+	std::uint64_t stillEpoch(const TerrainVisual::Compositor &) const;
+	KeySnapshot *keySnapshot(std::int64_t key);
+	// Installs finished keyframes, launches missing ones for the cells the
+	// view shows (and a margin) and lists this frame's keyframe draws.
+	void updateKeyframes(TerrainVisual::Compositor &, int time, bool highResolution);
+	void classifyKeyframes(Chunk &, const TerrainVisual::Compositor &);
+	void dropKeyframes();
+	// The revision a page records for a material: animated materials do not
+	// change keyframed pages, so they record none.
+	std::uint64_t pageRevision(const TerrainVisual::Compositor &, TerrainVisual::MaterialId) const;
 	// The overlay tile of a uniform cell, composed for the current revision.
 	// Null when its material does not animate or its tile is not opaque.
 	AnimatedTiles *animatedTile(TerrainVisual::Compositor &, const TerrainVisual::Recipe &, SDL_Rect &source,
@@ -327,6 +390,9 @@ class SoftwareTerrainCache
 	//! holds, outside the page budget (see basePages).
 	std::size_t baseTextureBytes() const;
 	std::size_t basePixelBytes() const;
+	//! Bytes of the portable renderer's animation keyframes: their textures
+	//! and the CPU pixels they upload from (each half of it).
+	std::size_t keyframeBytes() const;
 	//! Pixels per cell of the resident base, or 0 without one.
 	int basePixelsPerCell() const { return baseReduction ? 32 / baseReduction : 0; }
 	// A torus visits every page each frame. Keep its complete terrain working

@@ -11,6 +11,7 @@
 #include <cmath>
 #include <optional>
 #include <cstring>
+#include <limits>
 #include <stdexcept>
 #include <map>
 #include <set>
@@ -773,6 +774,7 @@ void SoftwareTerrainCache::cancelPending()
     round.reset();
     shownPhase = {};
     publishStaged();
+    dropKeyframes();
 }
 
 int SoftwareTerrainCache::capturePixelsPerCell(int width, int height)
@@ -917,7 +919,7 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
         const auto old = std::find_if(page.materialRevisions.begin(), page.materialRevisions.end(),
                                       [id](const auto &revision) { return revision.first == id; });
         return old == page.materialRevisions.end() ||
-               old->second != compositor.textureRevision(id);
+               old->second != pageRevision(compositor, id);
     };
     // Keep oversized HD cells and the optimized reduction path
     // serial. A CPU job covers at most 16K sampled pixels.
@@ -937,7 +939,7 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
         if (wasValid && page.tiles[i] == tile && !page.stale[i] &&
             (!tile.discovered || (std::none_of(tile.recipe.corners.begin(),
                                                tile.recipe.corners.end(), materialChanged) &&
-                                  !tileSurfChanged(tile.recipe, page.surfTime, compositor))))
+                                  (keyframing || !tileSurfChanged(tile.recipe, page.surfTime, compositor)))))
             continue;
         changed.push_back(i);
         hasDiscoveredChanges = hasDiscoveredChanges || tile.discovered;
@@ -1126,6 +1128,711 @@ SoftwareTerrainCache::AnimatedTiles *SoftwareTerrainCache::animatedTile(TerrainV
     }
     return set.opaque[variant] ? &set : nullptr;
 }
+// Animated terrain on the portable renderer. Pages hold still pixels; each
+// animated cell draws over its page every frame as a crossfade of two
+// keyframes: its composition at the animation times key * keyframeInterval
+// and (key + 1) * keyframeInterval, which workers compose from a material
+// snapshot prepared at that time, ahead of when the view needs them. The
+// crossfade weight is the GPU renderers' own (the fraction of the interval
+// elapsed), and composition is linear in each animated texel, so the
+// crossfade of two keyframes is the composition of the crossfaded textures:
+// shorelines, open water and stand-ins all show one clock.
+namespace
+{
+constexpr std::int64_t NoKey = std::numeric_limits<std::int64_t>::min();
+std::int64_t floorDivide(std::int64_t value, std::int64_t divisor)
+{
+	const auto quotient = value / divisor;
+	return quotient * divisor > value ? quotient - 1 : quotient;
+}
+// Keyframes ring through three slots: the two the view crossfades and the next.
+constexpr int KeyframeRing = 3;
+int ringSlot(std::int64_t key) { return int(((key % KeyframeRing) + KeyframeRing) % KeyframeRing); }
+// Animation ticks between keyframes of a material whose artwork is still
+// (surf alone moves): the surf advances well under a pixel in this many.
+constexpr int StillArtKeyframeTicks = 6;
+// Whether a discovered cell's pixels change over time: an animated corner or
+// stone layer, or a halo material whose surf band reaches into the cell.
+bool animatesCell(const TerrainVisual::Recipe &recipe, const TerrainVisual::Compositor &compositor)
+{
+	std::array<TerrainVisual::MaterialId, 4> palette;
+	const unsigned count = recipe.palette(palette);
+	for (unsigned k = 0; k < count; ++k)
+		if (compositor.animated(palette[k])) return true;
+	for (unsigned k = 0; k < recipe.haloCount; ++k)
+		if (compositor.animated(recipe.halo[k])) return true;
+	return false;
+}
+// Whether a snapshot holds the texture of every material a recipe samples.
+bool snapshotCovers(const TerrainVisual::Compositor::CpuMaterials &materials, const TerrainVisual::Recipe &recipe)
+{
+	std::array<TerrainVisual::MaterialId, 4> palette;
+	const unsigned count = recipe.palette(palette);
+	for (unsigned k = 0; k < count; ++k)
+	{
+		const auto id = palette[k];
+		if (id >= materials.textures.size())
+			return false;
+		const auto variant = materials.definitions->variantIndex(id, recipe.x, recipe.y, recipe.seed);
+		if (variant >= materials.textures[id].size() || !materials.textures[id][variant].pixels)
+			return false;
+	}
+	return true;
+}
+// Keyframe stamps: the artwork's identity, and the size of its smaller endpoint.
+struct KeyStampValue
+{
+	std::uint64_t hash = 0;
+	int size = 0;
+};
+KeyStampValue unpackStamp(std::uint64_t packed) { return {packed >> 12, int(packed & 0xfff)}; }
+std::uint64_t packStamp(std::uint64_t hash, int size) { return (hash << 12) | std::uint64_t(std::clamp(size, 1, 0xfff)); }
+} // namespace
+
+// Keyframes of a page's own animated cells, or of the uniform cells of one
+// material at one density (one entry per variant). Each entry has a slot for
+// each of three keyframes in one atlas, a row of Columns entries wide; each
+// slot is bordered by a copy of its edge so that linear sampling of a scaled
+// view never reads its neighbour. The atlas keeps its CPU pixels: finished
+// keyframes write into them and upload as dirty rectangles.
+struct SoftwareTerrainCache::KeyframeSet
+{
+	static constexpr int Columns = 8;
+	struct Slot
+	{
+		std::int64_t key = NoKey;     // The keyframe the slot holds.
+		std::int64_t pending = NoKey; // The keyframe workers compose into it.
+		std::uint64_t generation = 0, epoch = 0;
+	};
+	struct Entry
+	{
+		std::array<Slot, KeyframeRing> slots;
+		std::uint32_t serial = 0; // Changes when the entry stands for another cell.
+		Tile tile;
+		// Coverage kept for keyframes of a mixed cell its page holds none for.
+		std::shared_ptr<HeldMask> mask;
+	};
+	int scale, reduction, n;
+	std::unique_ptr<TerrainVisual::Surface> atlas;
+	std::vector<Entry> entries;
+	std::vector<int> entryOf; // By cell (page sets) or variant (uniform sets); -1 none.
+	std::vector<SDL_Rect> dirty;
+	std::uint64_t used = 0;
+	// Page sets: the page's tileStamp `kind` was classified for, and each
+	// cell's kind: 0 still, 1 a uniform set's, 2 its own entry.
+	std::uint64_t tileStamp = ~std::uint64_t(0);
+	std::array<std::uint8_t, ChunkTiles * ChunkTiles> kind{};
+	std::uint32_t serials = 0;
+	KeyframeSet(int scale, int reduction, std::size_t keys)
+		: scale(scale), reduction(reduction), n(NativeTilePixels * scale / reduction), entryOf(keys, -1) {}
+	// Each keyframe of the ring has a band of the atlas, entries in rows of
+	// Columns within it, so the keyframes of one key upload as one rectangle.
+	int bandRows = 0;
+	SDL_Rect slot(int entry, int ring) const
+	{
+		return {entry % Columns * (n + 2) + 1, (ring * bandRows + entry / Columns) * (n + 2) + 1, n, n};
+	}
+	// Room for `count` entries: a taller atlas holding each band's slots at
+	// their places in its new band, uploaded whole on its first draw.
+	void reserve(std::size_t count)
+	{
+		const int wanted = int((count + Columns - 1) / Columns);
+		if (wanted <= bandRows)
+			return;
+		const int rows = std::max(wanted, bandRows * 2), width = Columns * (n + 2);
+		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
+			SDL_CreateSurface(width, KeyframeRing * rows * (n + 2), SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+		if (!pixels)
+			throw std::bad_alloc();
+		SDL_FillSurfaceRect(pixels.get(), nullptr, 0);
+		if (atlas)
+		{
+			const auto *old = atlas->getSDLSurface();
+			const int bandHeight = bandRows * (n + 2);
+			for (int ring = 0; ring < KeyframeRing; ++ring)
+				for (int y = 0; y < bandHeight; ++y)
+					std::memcpy(static_cast<Uint8 *>(pixels->pixels) + (ring * rows * (n + 2) + y) * pixels->pitch,
+								static_cast<const Uint8 *>(old->pixels) + (ring * bandHeight + y) * old->pitch,
+								std::size_t(width) * 4);
+		}
+		bandRows = rows;
+		atlas = std::make_unique<TerrainVisual::Surface>(pixels.get(), scale > 1 || reduction > 1);
+		pixels.release();
+		dirty.clear();
+	}
+	// The entry of a cell or variant; a cell's entry forgets its keyframes
+	// when the cell changed. Uniform sets keep the first cell of a variant.
+	int entryFor(std::size_t key, const Tile &tile, bool shared)
+	{
+		int &index = entryOf[key];
+		if (index < 0)
+		{
+			reserve(entries.size() + 1);
+			index = int(entries.size());
+			auto &entry = entries.emplace_back();
+			entry.serial = ++serials;
+			entry.tile = tile;
+		}
+		else if (!shared && !(entries[index].tile == tile))
+		{
+			auto &entry = entries[index];
+			entry.slots = {};
+			entry.serial = ++serials;
+			entry.tile = tile;
+			entry.mask.reset();
+		}
+		return index;
+	}
+	Uint32 *row(int y) const
+	{
+		auto *surface = atlas->getSDLSurface();
+		return reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(surface->pixels) + y * surface->pitch);
+	}
+	void write(int entry, int ring, const Uint32 *pixels)
+	{
+		const SDL_Rect r = slot(entry, ring);
+		for (int y = 0; y < n; ++y)
+		{
+			Uint32 *out = row(r.y + y);
+			std::memcpy(out + r.x, pixels + std::size_t(y) * n, std::size_t(n) * 4);
+			out[r.x - 1] = out[r.x];
+			out[r.x + n] = out[r.x + n - 1];
+		}
+		std::memcpy(row(r.y - 1) + r.x - 1, row(r.y) + r.x - 1, std::size_t(n + 2) * 4);
+		std::memcpy(row(r.y + n) + r.x - 1, row(r.y + n - 1) + r.x - 1, std::size_t(n + 2) * 4);
+		dirty.push_back({r.x - 1, r.y - 1, n + 2, n + 2});
+	}
+	void read(int entry, int ring, Uint32 *pixels) const
+	{
+		const SDL_Rect r = slot(entry, ring);
+		for (int y = 0; y < n; ++y)
+			std::memcpy(pixels + std::size_t(y) * n, row(r.y + y) + r.x, std::size_t(n) * 4);
+	}
+	// Uploads what keyframes wrote: within each band, the rows holding them.
+	void flush()
+	{
+		if (!atlas || dirty.empty())
+			return;
+		std::array<SDL_Rect, KeyframeRing> bands{};
+		const int bandHeight = bandRows * (n + 2);
+		for (const auto &rect : dirty)
+		{
+			auto &band = bands[std::size_t(rect.y / bandHeight)];
+			if (!band.w)
+				band = rect;
+			else
+				SDL_GetRectUnion(&band, &rect, &band);
+		}
+		std::vector<SDL_Rect> rows;
+		for (const auto &band : bands)
+			if (band.w)
+				rows.push_back({0, band.y, Columns * (n + 2), band.h});
+		atlas->markPixelsChanged(rows);
+		dirty.clear();
+	}
+	// The atlas's CPU pixels and its texture.
+	std::size_t bytes() const
+	{
+		const auto *pixels = atlas ? atlas->getSDLSurface() : nullptr;
+		return pixels ? std::size_t(pixels->pitch) * pixels->h * 2 : 0;
+	}
+};
+
+// Keyframes of one key at one density, composed by a worker. Entries whose
+// slot moved on by the time it finishes are not installed.
+struct SoftwareTerrainCache::KeyframeJob
+{
+	std::shared_ptr<const TerrainVisual::Compositor::CpuMaterials> materials;
+	std::int64_t key = 0;
+	std::uint64_t generation = 0, epoch = 0;
+	int scale = 1, reduction = 1;
+	struct Item
+	{
+		std::weak_ptr<KeyframeSet> set;
+		int entry = 0;
+		std::uint32_t serial = 0;
+		TerrainVisual::Recipe recipe;
+		// Coverage to compose from, shared with its page; else built here
+		// and kept when keepMask.
+		std::shared_ptr<HeldMask> held;
+		bool keepMask = false, composed = false;
+		// Pixels holds an earlier keyframe of this cell: only the samples
+		// animation changes are composed again.
+		std::optional<TerrainVisual::Compositor::Refresh> refresh;
+		std::unique_ptr<Uint32[]> pixels;
+		std::optional<TerrainVisual::Compositor::CellMask> mask;
+	};
+	std::vector<Item> items;
+	std::size_t pixels = 0;
+	std::atomic<bool> cancelled{false}, failed{false}, done{false};
+	void run()
+	{
+		try
+		{
+			TerrainVisual::Compositor::CpuScratch scratch;
+			std::vector<Uint32> native;
+			for (auto &item : items)
+			{
+				if (cancelled.load(std::memory_order_relaxed))
+					break;
+				const int n = NativeTilePixels * scale / reduction;
+				SDL_Surface out{};
+				out.format = SDL_PIXELFORMAT_ARGB8888;
+				out.w = out.h = n;
+				out.pitch = n * 4;
+				out.pixels = item.pixels.get();
+				const bool uniform = item.recipe.uniform();
+				const TerrainVisual::Compositor::CellMask *mask = item.held ? &item.held->mask : nullptr;
+				if (!uniform && !mask && item.keepMask)
+				{
+					item.mask = materials->mask(item.recipe, scale);
+					mask = &*item.mask;
+				}
+				if (reduction > 1 && uniform)
+				{
+					// As the page reduces its uniform cells: native composition, box-filtered.
+					native.resize(std::size_t(NativeTilePixels) * NativeTilePixels);
+					SDL_Surface tile{};
+					tile.format = SDL_PIXELFORMAT_ARGB8888;
+					tile.w = tile.h = NativeTilePixels;
+					tile.pitch = NativeTilePixels * 4;
+					tile.pixels = native.data();
+					materials->compose(item.recipe, &tile, 1, scratch);
+					reduceTile(&tile, &out, 0, 0, reduction);
+				}
+				else
+					materials->compose(item.recipe, &out, scale, scratch, uniform ? nullptr : mask,
+									   item.refresh ? &*item.refresh : nullptr, uniform ? 1 : reduction);
+				item.composed = true;
+			}
+		}
+		catch (...)
+		{
+			failed.store(true, std::memory_order_relaxed);
+		}
+		done.store(true, std::memory_order_release);
+	}
+};
+
+std::uint64_t SoftwareTerrainCache::pageRevision(const TerrainVisual::Compositor &compositor,
+												 TerrainVisual::MaterialId id) const
+{
+	return keyframing && compositor.animated(id) ? 0 : compositor.textureRevision(id);
+}
+
+SoftwareTerrainCache::KeySnapshot *SoftwareTerrainCache::keySnapshot(std::int64_t key)
+{
+	for (auto &snapshot : keySnapshots)
+		if (snapshot.key == key)
+			return &snapshot;
+	return nullptr;
+}
+
+std::int64_t SoftwareTerrainCache::keyframeTarget(int time)
+{
+	const auto now = floorDivide(time, keyframeInterval);
+	std::erase_if(keySnapshots, [&](const KeySnapshot &snapshot) { return snapshot.key < now || snapshot.key > now + 2; });
+	// A missing snapshot first (after a jump, or on a still clock), then one
+	// taken from older artwork, a few frames apart; otherwise the next key.
+	for (auto key = now; key <= now + 2; ++key)
+		if (!keySnapshot(key))
+			return key;
+	for (auto key = now; key <= now + 2; ++key)
+		if (const auto *snapshot = keySnapshot(key); snapshot->stale && frame >= snapshot->taken + 10)
+			return key;
+	return now + 2;
+}
+
+std::uint64_t SoftwareTerrainCache::keyStamp(TerrainVisual::Compositor &compositor, TerrainVisual::MaterialId id,
+											 unsigned variant, std::int64_t key, bool highResolution)
+{
+	const auto &material = compositor.catalog().materials[id];
+	// As Compositor::prepareSelected selects the endpoints of a time.
+	const unsigned time = unsigned(key * keyframeInterval);
+	const unsigned frames = unsigned(std::max(1, material.animationFrames));
+	const unsigned phase = time / unsigned(std::max(1, material.animationTicks)) % frames;
+	std::uint64_t hash = 1469598103934665603ull;
+	int size = 0xfff;
+	const auto mix = [&](std::uint64_t value) { hash = (hash ^ value) * 1099511628211ull; };
+	for (unsigned k = 0; k < (frames > 1 ? 2u : 1u); ++k)
+	{
+		const auto source = compositor.phaseSource(id, variant, (phase + k) % frames, !highResolution);
+		mix(source.identity);
+		mix(source.revision);
+		mix(source.edgeIdentity);
+		mix(source.edgeRevision);
+		size = std::min(size, source.size);
+	}
+	return packStamp(hash, size);
+}
+
+std::uint64_t SoftwareTerrainCache::stillEpoch(const TerrainVisual::Compositor &compositor) const
+{
+	std::uint64_t epoch = 0;
+	for (std::size_t id = 0; id < compositor.catalog().materials.size(); ++id)
+		if (!compositor.animated(TerrainVisual::MaterialId(id)))
+			epoch += compositor.textureRevision(TerrainVisual::MaterialId(id));
+	return epoch;
+}
+
+void SoftwareTerrainCache::takeKeySnapshot(TerrainVisual::Compositor &compositor, std::int64_t key, bool highResolution)
+{
+	auto materials = compositor.cpuMaterials();
+	auto *snapshot = keySnapshot(key);
+	if (snapshot && snapshot->materials == materials && !snapshot->stale)
+		return;
+	const auto &catalog = compositor.catalog();
+	std::vector<std::vector<std::uint64_t>> stamps(catalog.materials.size());
+	for (std::size_t id = 0; id < catalog.materials.size() && id < materials->textures.size(); ++id)
+	{
+		if (!compositor.animated(TerrainVisual::MaterialId(id)))
+			continue;
+		const auto &textures = materials->textures[id];
+		stamps[id].assign(textures.size(), 0);
+		for (std::size_t variant = 0; variant < textures.size(); ++variant)
+			if (textures[variant].pixels)
+				stamps[id][variant] = keyStamp(compositor, TerrainVisual::MaterialId(id), unsigned(variant), key, highResolution);
+	}
+	const auto epoch = stillEpoch(compositor);
+	if (!snapshot)
+	{
+		keySnapshots.push_back({key, std::move(materials), ++keyGeneration, epoch, std::move(stamps), false, frame});
+		return;
+	}
+	// New pixels of artwork a snapshot already held make a new generation;
+	// variants it gains (a view moving on) do not.
+	bool changed = snapshot->epoch != epoch;
+	for (std::size_t id = 0; id < stamps.size() && !changed && id < snapshot->stamps.size(); ++id)
+		for (std::size_t variant = 0; variant < stamps[id].size() && variant < snapshot->stamps[id].size(); ++variant)
+			if (stamps[id][variant] && snapshot->stamps[id][variant] && stamps[id][variant] != snapshot->stamps[id][variant])
+			{
+				changed = true;
+				break;
+			}
+	snapshot->materials = std::move(materials);
+	snapshot->stamps = std::move(stamps);
+	snapshot->epoch = epoch;
+	snapshot->stale = false;
+	snapshot->taken = frame;
+	if (changed)
+		snapshot->generation = ++keyGeneration;
+}
+
+void SoftwareTerrainCache::classifyKeyframes(Chunk &page, const TerrainVisual::Compositor &compositor)
+{
+	if (!page.keyframes)
+		page.keyframes = std::make_shared<KeyframeSet>(page.scale, page.downsample, std::size_t(ChunkTiles) * ChunkTiles);
+	auto &set = *page.keyframes;
+	if (set.tileStamp == page.tileStamp)
+		return;
+	set.tileStamp = page.tileStamp;
+	std::size_t own = 0;
+	for (int i = 0; i < ChunkTiles * ChunkTiles; ++i)
+	{
+		const auto &tile = page.tiles[i];
+		std::uint8_t kind = 0;
+		if (i % ChunkTiles < page.span && i / ChunkTiles < page.span && tile.discovered &&
+			animatesCell(tile.recipe, compositor))
+			kind = tile.recipe.uniform() && !tile.recipe.calmed() ? 1 : 2;
+		set.kind[i] = kind;
+		own += kind == 2;
+	}
+	// The atlas holds every cell of the page that needs one at once.
+	if (own)
+		set.reserve(std::max(own, set.entries.size()));
+}
+
+void SoftwareTerrainCache::dropKeyframes()
+{
+	for (auto &job : keyframeJobs)
+		job->cancelled.store(true, std::memory_order_relaxed);
+	if (keyframeJobs.empty() && keySnapshots.empty() && uniformKeyframes.empty() && keyframeDraws.empty())
+		return;
+	keyframeJobs.clear();
+	keySnapshots.clear();
+	keyframeDraws.clear();
+	uniformKeyframes.clear();
+	// Slots awaiting the cancelled jobs would wait for ever: start again.
+	for (auto &chunk : chunks)
+		chunk->keyframes.reset();
+	for (auto &page : basePages)
+		if (page)
+			page->keyframes.reset();
+}
+
+std::size_t SoftwareTerrainCache::keyframeBytes() const
+{
+	std::size_t total = 0;
+	for (const auto &chunk : chunks)
+		if (chunk->keyframes)
+			total += chunk->keyframes->bytes();
+	for (const auto &page : basePages)
+		if (page && page->keyframes)
+			total += page->keyframes->bytes();
+	for (const auto &[key, set] : uniformKeyframes)
+		total += set->bytes();
+	return total;
+}
+
+void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor, int time, bool highResolution)
+{
+	const int interval = keyframeInterval;
+	const std::int64_t now = floorDivide(time, interval);
+	const int weight = int(std::int64_t(time) - now * interval);
+	// Finished keyframes go into their slots, uploaded as dirty rectangles.
+	std::vector<std::shared_ptr<KeyframeSet>> written;
+	std::erase_if(keyframeJobs, [&](const std::shared_ptr<KeyframeJob> &job)
+	{
+		if (!job->done.load(std::memory_order_acquire))
+			return false;
+		const int ring = ringSlot(job->key);
+		const bool failed = job->failed.load(std::memory_order_relaxed);
+		for (auto &item : job->items)
+		{
+			auto set = item.set.lock();
+			if (!set || item.entry >= int(set->entries.size()))
+				continue;
+			auto &entry = set->entries[item.entry];
+			auto &slot = entry.slots[ring];
+			if (entry.serial != item.serial || slot.pending != job->key)
+				continue;
+			slot.pending = NoKey;
+			if (failed || !item.composed)
+				continue;
+			set->write(item.entry, ring, item.pixels.get());
+			slot.key = job->key;
+			slot.generation = job->generation;
+			slot.epoch = job->epoch;
+			if (item.mask && !entry.mask && releaseMasks(item.mask->bytes()))
+				entry.mask = std::make_shared<HeldMask>(std::move(*item.mask), maskTotal);
+			if (std::find(written.begin(), written.end(), set) == written.end())
+				written.push_back(set);
+		}
+		return true;
+	});
+	for (auto &set : written)
+		set->flush();
+	// Snapshots of other keys than the one prepared this frame are checked
+	// now and then: still artwork that changed, or HD frames that arrived
+	// where a snapshot holds native ones, compose their keyframes again.
+	if (frame % 8 == 0)
+	{
+		const auto epoch = stillEpoch(compositor);
+		for (auto &snapshot : keySnapshots)
+		{
+			if (snapshot.stale)
+				continue;
+			snapshot.stale = snapshot.epoch != epoch;
+			for (std::size_t id = 0; id < snapshot.stamps.size() && !snapshot.stale; ++id)
+				for (std::size_t variant = 0; variant < snapshot.stamps[id].size(); ++variant)
+				{
+					const auto held = snapshot.stamps[id][variant];
+					if (held && unpackStamp(keyStamp(compositor, TerrainVisual::MaterialId(id), unsigned(variant),
+												   snapshot.key, highResolution)).size > unpackStamp(held).size)
+					{
+						snapshot.stale = true;
+						break;
+					}
+				}
+		}
+	}
+	// The cells each copy shows, and a margin of two cells for the camera's
+	// next steps, want the keyframes from the current one to the next but one.
+	struct Want
+	{
+		std::shared_ptr<KeyframeSet> set;
+		int entry;
+		std::int64_t key;
+		Chunk *page;
+		int cell;
+	};
+	std::vector<Want> wants;
+	keyframeDraws.clear();
+	const Uint64 ticks = SDL_GetTicks();
+	const SDL_Rect margin{paintBounds.x - 64, paintBounds.y - 64, paintBounds.w + 128, paintBounds.h + 128};
+	const auto &catalog = compositor.catalog();
+	for (auto &copy : copies)
+	{
+		copy.keyframeBegin = copy.keyframeEnd = std::uint32_t(keyframeDraws.size());
+		Chunk &page = *copy.chunk;
+		if (!page.valid || !page.cpuComposed)
+			continue;
+		classifyKeyframes(page, compositor);
+		const auto own = page.keyframes;
+		own->used = frame;
+		bool ready = true;
+		const SDL_Rect cells = drawnCells(copy);
+		const int scale = page.scale, reduction = page.downsample;
+		for (int y = cells.y; y < cells.y + cells.h; ++y)
+			for (int x = cells.x; x < cells.x + cells.w; ++x)
+			{
+				const int i = y * ChunkTiles + x;
+				const auto kind = own->kind[i];
+				if (!kind)
+					continue;
+				const SDL_Rect cell{copy.x + x * 32, copy.y + y * 32, 32, 32};
+				SDL_Rect near, shown;
+				if (!SDL_GetRectIntersection(&cell, &margin, &near))
+					continue;
+				const auto &tile = page.tiles[i];
+				std::shared_ptr<KeyframeSet> set;
+				int entry;
+				if (kind == 1)
+				{
+					const auto id = tile.recipe.corners[0];
+					auto &shared = uniformKeyframes[{unsigned(id), scale, reduction}];
+					if (!shared)
+						shared = std::make_shared<KeyframeSet>(scale, reduction, catalog.materials[id].variants.size());
+					set = shared;
+					entry = set->entryFor(catalog.variantIndex(id, tile.recipe.x, tile.recipe.y, tile.recipe.seed), tile, true);
+				}
+				else
+				{
+					set = own;
+					entry = set->entryFor(std::size_t(i), tile, false);
+				}
+				set->used = frame;
+				for (auto key = now; key <= now + 2; ++key)
+				{
+					const auto &slot = set->entries[entry].slots[ringSlot(key)];
+					const auto *snapshot = keySnapshot(key);
+					if (!snapshot || slot.pending == key || (slot.key == key && slot.generation == snapshot->generation))
+						continue;
+					wants.push_back({set, entry, key, &page, i});
+				}
+				if (!SDL_GetRectIntersection(&cell, &paintBounds, &shown))
+					continue;
+				const auto &slots = set->entries[entry].slots;
+				const bool first = slots[ringSlot(now)].key == now, second = slots[ringSlot(now + 1)].key == now + 1;
+				ready = ready && first && second;
+				if (!first && !second)
+					continue; // The page's own pixels show until a keyframe arrives.
+				const auto source = [&](std::int64_t key)
+				{
+					const SDL_Rect r = set->slot(entry, ringSlot(key));
+					return SDL_Rect{r.x + (shown.x - cell.x) * scale / reduction, r.y + (shown.y - cell.y) * scale / reduction,
+									shown.w * scale / reduction, shown.h * scale / reduction};
+				};
+				KeyframeDraw draw{set.get(), shown, source(first ? now : now + 1), source(now + 1), copy.alpha, 0};
+				if (first && second && weight)
+					draw.secondAlpha = Uint8((unsigned(copy.alpha) * unsigned(weight) * 2 + unsigned(interval)) /
+											 (2 * unsigned(interval)));
+				keyframeDraws.push_back(draw);
+			}
+		// A page arriving over a fallback fades in once its animated cells
+		// can animate, rather than showing them still meanwhile (for at
+		// most HoldMs): until then the fallback beneath shows alone.
+		constexpr Uint64 HoldMs = 500;
+		if (copy.alpha < 255 && page.arrived && !ready && (!page.arrivalHeld || ticks - page.arrivalHeld < HoldMs))
+		{
+			if (!page.arrivalHeld)
+				page.arrivalHeld = ticks;
+			page.arrived = ticks;
+			copy.alpha = 0;
+			keyframeDraws.resize(copy.keyframeBegin);
+		}
+		copy.keyframeEnd = std::uint32_t(keyframeDraws.size());
+		// The page's cells do not overlap: draw them atlas by atlas.
+		std::sort(keyframeDraws.begin() + copy.keyframeBegin, keyframeDraws.end(),
+				  [](const KeyframeDraw &a, const KeyframeDraw &b) { return std::less<>()(a.set, b.set); });
+	}
+	// Launch the wanted keyframes, the current key first, in jobs of one key
+	// and density, within a bound on what is in flight and on this frame's
+	// graphics-thread work.
+	constexpr std::size_t ItemsPerJob = 16, PixelsPerJob = 64 * 1024;
+	constexpr std::size_t ItemsPerFrame = 2048, ItemsInFlight = 8192;
+	std::size_t inFlight = 0;
+	for (const auto &job : keyframeJobs)
+		inFlight += job->items.size();
+	std::stable_sort(wants.begin(), wants.end(), [](const Want &a, const Want &b) { return a.key < b.key; });
+	std::map<std::tuple<std::int64_t, int, int>, std::shared_ptr<KeyframeJob>> filling;
+	const auto submit = [&](std::shared_ptr<KeyframeJob> job)
+	{
+		keyframeJobs.push_back(job);
+		BackgroundWork::submit([job] { job->run(); }, BackgroundWork::Priority::Visible);
+	};
+	std::size_t launched = 0;
+	for (auto &want : wants)
+	{
+		if (launched >= ItemsPerFrame || inFlight + launched >= ItemsInFlight)
+			break;
+		auto *snapshot = keySnapshot(want.key);
+		auto &set = *want.set;
+		auto &entry = set.entries[want.entry];
+		auto &slot = entry.slots[ringSlot(want.key)];
+		if (slot.pending == want.key)
+			continue; // Wanted by another copy of the same set this frame.
+		const auto &recipe = entry.tile.recipe;
+		if (!snapshotCovers(*snapshot->materials, recipe))
+		{
+			// The view moved on to variants the snapshot was taken without.
+			snapshot->stale = true;
+			continue;
+		}
+		auto &job = filling[{want.key, set.scale, set.reduction}];
+		if (!job)
+		{
+			job = std::make_shared<KeyframeJob>();
+			job->materials = snapshot->materials;
+			job->key = want.key;
+			job->generation = snapshot->generation;
+			job->epoch = snapshot->epoch;
+			job->scale = set.scale;
+			job->reduction = set.reduction;
+		}
+		KeyframeJob::Item item;
+		item.set = want.set;
+		item.entry = want.entry;
+		item.serial = entry.serial;
+		item.recipe = recipe;
+		item.pixels.reset(new Uint32[std::size_t(set.n) * set.n]);
+		if (!recipe.uniform())
+		{
+			const auto matches = [&](const std::shared_ptr<HeldMask> &held)
+			{ return held && held->mask.recipe == recipe && held->mask.scale == set.scale; };
+			if (want.set == want.page->keyframes && matches(want.page->masks[want.cell]))
+				item.held = want.page->masks[want.cell];
+			else if (matches(entry.mask))
+				item.held = entry.mask;
+			item.keepMask = !item.held;
+			// An earlier keyframe of this cell from the same still artwork:
+			// compose only the samples animation changes over it.
+			if (item.held && set.reduction == 1)
+				for (const auto &other : entry.slots)
+					if (other.key != NoKey && other.epoch == snapshot->epoch)
+					{
+						const int ring = int(&other - entry.slots.data());
+						set.read(want.entry, ring, item.pixels.get());
+						const unsigned animatedSlots = compositor.animatedSlots(item.held->mask);
+						item.refresh = TerrainVisual::Compositor::Refresh{animatedSlots, animatedSlots,
+																		  &item.held->animatedSamples(compositor)};
+						break;
+					}
+		}
+		slot.pending = want.key;
+		job->pixels += std::size_t(set.n) * set.n;
+		job->items.push_back(std::move(item));
+		++launched;
+		if (job->items.size() >= ItemsPerJob || job->pixels >= PixelsPerJob)
+		{
+			submit(std::move(job));
+			job.reset();
+		}
+	}
+	for (auto &[key, job] : filling)
+		if (job)
+			submit(job);
+	// Keyframes of pages the view has left for two seconds, and of uniform
+	// cells at a density it left for ten, go.
+	for (auto &chunk : chunks)
+		if (chunk->keyframes && chunk->keyframes->used + 120 < frame)
+			chunk->keyframes.reset();
+	for (auto &page : basePages)
+		if (page && page->keyframes && page->keyframes->used + 120 < frame)
+			page->keyframes.reset();
+	std::erase_if(uniformKeyframes, [&](const auto &entry) { return entry.second->used + 600 < frame; });
+}
+
 bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Sprite &, int left,
 											   int top, int right, int bottom, int vx, int vy,
 											   Uint32 visibleTeams, bool wholeMap, int time,
@@ -1140,6 +1847,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
         cpuMaterialLease.reset();
         animatedTiles.clear();
         cancelPending();
+        dropKeyframes();
 		registry = map.frozenTerrainRegistry();
         assets = map.frozenAssetBundle();
 	}
@@ -1235,6 +1943,25 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 		samplingPlan(map, left, top, right, bottom, vx, vy, 1).downsample > 1;
 	const bool portable = portableRenderer();
 	const bool highResolution = composeHighResolution(compositor, tiledCapture);
+	// The portable renderer's interactive views draw animated terrain from
+	// keyframes (see updateKeyframes): the compositor is prepared at the time
+	// of the keyframe the view needs next, not the live one.
+	{
+		int interval = 0;
+		for (const auto &material : compositor.catalog().materials)
+		{
+			const int ticks = material.animationFrames > 1 ? std::max(1, material.animationTicks)
+				: material.surf.period > 0 ? StillArtKeyframeTicks : 0;
+			if (ticks) interval = interval ? std::min(interval, ticks) : ticks;
+		}
+		const bool wanted = composeAhead && portable && interval > 0;
+		if (!wanted || interval != keyframeInterval)
+			dropKeyframes();
+		keyframing = wanted;
+		keyframeInterval = interval;
+	}
+	const std::int64_t keyTarget = keyframing ? keyframeTarget(time) : 0;
+	const int preparedTime = keyframing ? int(keyTarget * keyframeInterval) : time;
 	// The portable renderer's resident base (see basePages): the finest
 	// reduction of native density whose whole map fits half the platform's
 	// terrain page allowance (16 pixels a cell for maps up to 256 cells square
@@ -1303,7 +2030,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 		const int py0 = composeAhead ? std::min(around.y0, chunkOf(top + vy)) : chunkOf(top + vy);
 		const int px1 = composeAhead ? std::max(around.x1, chunkOf(right + vx)) : chunkOf(right + vx);
 		const int py1 = composeAhead ? std::max(around.y1, chunkOf(bottom + vy)) : chunkOf(bottom + vy);
-		compositor.prepareVisible(highResolution, time, map,
+		compositor.prepareVisible(highResolution, preparedTime, map,
 			px0 * ChunkTiles, py0 * ChunkTiles, (px1 + 1) * ChunkTiles - 1, (py1 + 1) * ChunkTiles - 1,
 			reducedLegacyView,
 			// Portable draws decor HD frames only where the HD sprite policy shows HD.
@@ -1319,6 +2046,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 		GAGCore::Sprite::finishHighResolution();
 		prepareMaterials();
 	}
+	if (keyframing)
+		takeKeySnapshot(compositor, keyTarget, highResolution);
     }
 	const auto plan =
 		viewSamplingPlan(map, left, top, right, bottom, vx, vy,
@@ -1530,6 +2259,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 			resolution <= 4 && (downsample == 1 || resolution == 1);
 		if (!deferring)
 			cancelPending();
+		keyframing = keyframing && deferring;
 		const auto storageFor = [&](int scale, int reduction)
 		{
 			return pageStorage(scale, false, reduction) +
@@ -1622,15 +2352,15 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					// never needs the page itself recomposed or uploaded.
 					SDL_Rect tileSource;
 					const auto &recipe = result.input.recipe;
-					fresh->overlay[result.index] = result.input.discovered && recipe.uniform() && !recipe.calmed() &&
-						animatedTile(compositor, recipe, tileSource, page->scale, page->downsample);
+					fresh->overlay[result.index] = !keyframing && result.input.discovered && recipe.uniform() &&
+						!recipe.calmed() && animatedTile(compositor, recipe, tileSource, page->scale, page->downsample);
 					if (result.mask && releaseMasks(result.mask->bytes()))
 						fresh->masks[result.index] = std::make_unique<HeldMask>(std::move(*result.mask), maskTotal);
 				}
 				fresh->materialRevisions = std::move(page->materialRevisions);
 				fresh->surfTime = page->materials->surfTime;
 				for (const auto &tile : fresh->tiles)
-					if (tile.discovered)
+					if (tile.discovered && !keyframing)
 						fresh->hasShoreline |= hasShoreline(tile.recipe, compositor);
 				fresh->parked = std::move(page->pixels);
 				if (!page->native.empty()) ++reductions;
@@ -1861,7 +2591,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				if (!tile.discovered || (entry.overlay[i] && !bordersPage(i)))
 					continue;
 				if (entry.stale[i] || std::any_of(tile.recipe.corners.begin(), tile.recipe.corners.end(), materialChanged) ||
-					tileSurfChanged(tile.recipe, entry.surfTime, compositor, now))
+					(!keyframing && tileSurfChanged(tile.recipe, entry.surfTime, compositor, now)))
 				{
 					if (shown[i])
 						changed.push_back(i);
@@ -1943,7 +2673,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				for (unsigned k = 0, n = tile.recipe.palette(palette); k < n; ++k)
 					if (std::none_of(page->materialRevisions.begin(), page->materialRevisions.end(),
 									 [&](const auto &revision) { return revision.first == palette[k]; }))
-						page->materialRevisions.emplace_back(palette[k], compositor.textureRevision(palette[k]));
+						page->materialRevisions.emplace_back(palette[k], pageRevision(compositor, palette[k]));
 			}
 			page->materials = frameMaterials();
 			page->discoveryRevision = map.discoveryRevision();
@@ -2080,7 +2810,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							sources[(y + SourceHalo) * SourceSpan + x + SourceHalo] = map.vertexTerrainAt(wx + x, wy + y);
 				}
 				const auto revisionChanged = [&](const auto &revision)
-				{ return compositor.textureRevision(revision.first) != revision.second; };
+				{ return pageRevision(compositor, revision.first) != revision.second; };
 				const auto pageChanged = [&](const Chunk &page)
 				{
 					return std::any_of(page.materialRevisions.begin(), page.materialRevisions.end(),
@@ -2376,7 +3106,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							// Device pages draw uniform animated cells from shared tiles
 							// at their density; the page keeps an earlier frame below.
 							SDL_Rect tileSource;
-							const bool overlay = gpu && tiles[i].discovered &&
+							const bool overlay = !keyframing && gpu && tiles[i].discovered &&
 								tiles[i].recipe.uniform() && !tiles[i].recipe.calmed() &&
 								animatedTile(compositor, tiles[i].recipe, tileSource, resolution, downsample);
 							if (wasValid && overlay && entry->overlay[i] && entry->tiles[i] == tiles[i])
@@ -2385,7 +3115,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 								(!tiles[i].discovered ||
 								 std::none_of(tiles[i].recipe.corners.begin(),
 											  tiles[i].recipe.corners.end(), materialChanged) &&
-                                 !tileSurfChanged(tiles[i].recipe, entry->surfTime, compositor)))
+                                 (keyframing || !tileSurfChanged(tiles[i].recipe, entry->surfTime, compositor))))
 								continue;
 							dirty[i] = true;
 							entry->overlay[i] = overlay;
@@ -2486,6 +3216,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 							entry->image->markPixelsChanged(dirtyRects(dirty, 32 * resolution / downsample));
 					}
 					entry->tiles = tiles;
+					++entry->tileStamp;
 					stampDiscovery(*entry);
 					entry->discoveryStamped = true;
 					entry->materialRevisions.clear();
@@ -2496,14 +3227,14 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 					{
 						if (!tile.discovered)
 							continue;
-						entry->hasShoreline |= hasShoreline(tile.recipe, compositor);
+						entry->hasShoreline |= !keyframing && hasShoreline(tile.recipe, compositor);
 						std::array<TerrainVisual::MaterialId, 4> palette;
 						for (unsigned k = 0, n = tile.recipe.palette(palette); k < n; ++k)
 						{
 							const auto id = palette[k];
 							if (std::none_of(entry->materialRevisions.begin(), entry->materialRevisions.end(),
 										 [id](const auto &revision) { return revision.first == id; }))
-								entry->materialRevisions.emplace_back(id, compositor.textureRevision(id));
+								entry->materialRevisions.emplace_back(id, pageRevision(compositor, id));
 						}
 					}
 					if (!gpu)
@@ -2576,7 +3307,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				{
 					std::vector<std::uint64_t> live(compositor.catalog().materials.size());
 					for (std::size_t id = 0; id < live.size(); ++id)
-						live[id] = compositor.textureRevision(TerrainVisual::MaterialId(id));
+						live[id] = pageRevision(compositor, TerrainVisual::MaterialId(id));
 					bool any = false;
 					for (std::size_t k = 0; k < drawn.size() && !any; ++k)
 						any = behind(k, live, compositor.surfTime());
@@ -2826,6 +3557,8 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				});
 				launchUnits += ChunkTiles * ChunkTiles;
 			}
+		if (keyframing)
+			updateKeyframes(compositor, time, highResolution);
 		// A view that has stopped launching work lets its snapshot's texture
 		// copies go, and densities it left let their animated tiles go.
 		if (pending.empty() && frame > materialsUsed + 120)
@@ -3040,6 +3773,21 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 							shown.w * scale / reduction, shown.h * scale / reduction, copy.alpha);
 					}
 			}
+			// Animated cells over the page: this frame's keyframe, then the
+			// next one over it as far as the animation has gone towards it.
+			// Each pass's cells do not overlap, so each atlas batches per pass.
+			for (int pass = 0; pass < 2; ++pass)
+				for (auto k = copy.keyframeBegin; k < copy.keyframeEnd; ++k)
+				{
+					const auto &cell = keyframeDraws[k];
+					auto *atlas = cell.set->atlas.get();
+					const auto &source = pass ? cell.second : cell.first;
+					const Uint8 alpha = pass ? cell.secondAlpha : cell.firstAlpha;
+					if (!atlas || !alpha)
+						continue;
+					const auto &d = cell.destination;
+					target.drawSurface(d.x, d.y, d.w, d.h, atlas, source.x, source.y, source.w, source.h, alpha);
+				}
 			continue;
 		}
 		const SDL_Rect cells = drawnCells(copy);
@@ -3083,6 +3831,9 @@ bool SoftwareTerrainCache::releaseMasks(std::size_t needed)
 	for (auto &chunk : chunks)
 		if (chunk->used != frame)
 			idle.push_back(chunk.get());
+	for (auto &page : basePages)
+		if (page && page->keyframes && page->used != frame)
+			idle.push_back(page.get());
 	std::sort(idle.begin(), idle.end(), [](auto *a, auto *b) { return a->used < b->used; });
 	for (auto *chunk : idle)
 	{
@@ -3090,6 +3841,9 @@ bool SoftwareTerrainCache::releaseMasks(std::size_t needed)
 			break;
 		for (auto &held : chunk->masks)
 			held.reset();
+		if (chunk->keyframes)
+			for (auto &entry : chunk->keyframes->entries)
+				entry.mask.reset();
 	}
 	return *maskTotal + needed <= budget;
 }
@@ -3106,6 +3860,7 @@ void SoftwareTerrainCache::trimIdlePages(std::size_t limit)
 	// Every idle page is gone: so are the idle animated tiles and, without
 	// pending pages, the material snapshot workers composed from.
 	std::erase_if(animatedTiles, [&](const auto &entry) { return entry.second.used < trimBefore; });
+	std::erase_if(uniformKeyframes, [&](const auto &entry) { return entry.second->used < trimBefore; });
 	if (pending.empty()) workerMaterials.reset();
 	trimBefore = 0;
 }
