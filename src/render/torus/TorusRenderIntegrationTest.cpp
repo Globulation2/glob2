@@ -394,7 +394,11 @@ static void devicePhaseFallback(GAGCore::RendererBackend backend)
     REQUIRE(gfx->backendSwitchStatus().active==backend);
 }
 
-static void deviceCapture(GAGCore::RendererBackend backend)
+// One texture limit a case: each capture is a new TorusView whose own map
+// view builds the whole-map terrain base and every mask at the capture's
+// density, minutes under coverage instrumentation, so each limit gets its own
+// case and its own timeout.
+static void deviceCapture(GAGCore::RendererBackend backend, int limit)
 {
     glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 640, .height = 480,
         .beforeLoad = [backend](GlobalContainer &container) { container.settings.rendererBackend = backend; }});
@@ -411,7 +415,7 @@ static void deviceCapture(GAGCore::RendererBackend backend)
     // The logical capture is over 8,000 pixels high, independently of the
     // window and the bounded physical tile resolution. Its centre must receive
     // terrain rather than retain the black initial target contents.
-    for (int limit : {4096, 2048, 1024}) {
+    {
         TorusView view;
         view.textureLimit = limit;
         view.toggle();
@@ -493,12 +497,13 @@ static void liveTerrainPressure(GAGCore::RendererBackend backend)
     Game game(nullptr);makeTorusMapFixture(game,256,256);game.map.setMapDiscovered();
     const auto requested=SoftwareTerrainCache::capturePixelsPerCell(256,256);
     TorusView view;view.textureLimit=2048;view.toggle();
-    // The whole-map terrain base builds on background workers: seconds in a
-    // dev build, over 100 s under coverage instrumentation. Wait on a clock,
-    // not an attempt count.
+    // A capture is a complete draw: its map view builds the whole-map terrain
+    // base and its masks inside view.draw (over 100 s each under coverage
+    // instrumentation, and again after view.reset), and each later draw
+    // advances its regions. Bound the attempts, not the time: slow builds
+    // lengthen draws without adding any, and the runner's timeout catches a hang.
     auto render=[&]{
-        const auto deadline=std::chrono::steady_clock::now()+std::chrono::minutes(5);
-        while(std::chrono::steady_clock::now()<deadline){
+        for(unsigned attempt=0;attempt<256;++attempt){
             if(!view.active())view.toggle();
             int vx=128,vy=128;
             REQUIRE(view.draw(glob2test::sceneOf(game),nullptr,0,Game::DRAW_WHOLE_MAP,
@@ -520,7 +525,7 @@ static void liveTerrainPressure(GAGCore::RendererBackend backend)
             if(recorded)return;
             SDL_Delay(1);
         }
-        FAIL("Torus never completed under pressure within five minutes");
+        FAIL("Torus never completed under pressure within 256 draws");
     };
     render();REQUIRE(view.pixelsPerCell>0);REQUIRE(view.pixelsPerCell<requested);
     const auto reduced=view.pixelsPerCell;
@@ -1232,11 +1237,23 @@ TEST_SUITE("TorusRender")
     TEST_CASE("SDL GPU retries a submitted final torus overlay coherently [display][isolated]") {
         TorusRenderIntegrationTest::deviceOverlayRetry(GAGCore::RendererBackend::SDLGPU);
     }
-    TEST_CASE("programmable GL captures large logical maps beyond the window [display][isolated][artifacts]") {
-        TorusRenderIntegrationTest::deviceCapture(GAGCore::RendererBackend::ProgrammableGL);
+    TEST_CASE("programmable GL captures large logical maps beyond the window at texture limit 4096 [display][isolated][artifacts]") {
+        TorusRenderIntegrationTest::deviceCapture(GAGCore::RendererBackend::ProgrammableGL, 4096);
     }
-    TEST_CASE("SDL GPU captures large logical maps beyond the window [display][isolated][artifacts]") {
-        TorusRenderIntegrationTest::deviceCapture(GAGCore::RendererBackend::SDLGPU);
+    TEST_CASE("programmable GL captures large logical maps beyond the window at texture limit 2048 [display][isolated][artifacts]") {
+        TorusRenderIntegrationTest::deviceCapture(GAGCore::RendererBackend::ProgrammableGL, 2048);
+    }
+    TEST_CASE("programmable GL captures large logical maps beyond the window at texture limit 1024 [display][isolated][artifacts]") {
+        TorusRenderIntegrationTest::deviceCapture(GAGCore::RendererBackend::ProgrammableGL, 1024);
+    }
+    TEST_CASE("SDL GPU captures large logical maps beyond the window at texture limit 4096 [display][isolated][artifacts]") {
+        TorusRenderIntegrationTest::deviceCapture(GAGCore::RendererBackend::SDLGPU, 4096);
+    }
+    TEST_CASE("SDL GPU captures large logical maps beyond the window at texture limit 2048 [display][isolated][artifacts]") {
+        TorusRenderIntegrationTest::deviceCapture(GAGCore::RendererBackend::SDLGPU, 2048);
+    }
+    TEST_CASE("SDL GPU captures large logical maps beyond the window at texture limit 1024 [display][isolated][artifacts]") {
+        TorusRenderIntegrationTest::deviceCapture(GAGCore::RendererBackend::SDLGPU, 1024);
     }
     TEST_CASE("programmable GL torus progresses under live terrain page pressure [display][isolated][artifacts]") {
         TorusRenderIntegrationTest::liveTerrainPressure(GAGCore::RendererBackend::ProgrammableGL);
