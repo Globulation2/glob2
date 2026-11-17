@@ -137,9 +137,14 @@ still select a discrete frame.
 the crossfade down to that many weights per phase, each held for an equal share
 of the phase: with `animation_ticks 8` and 4 steps the blend moves every second
 tick. Every step recomposes the terrain pages that show the material, so fewer
-steps trade crossfade smoothness for less page work. 1 cuts between phases
-without blending. Omitting the field blends on every tick, as before. Custom map
-artwork bundles do not accept the field.
+steps trade crossfade smoothness for less page work. The steps apply only to
+composed pages (the software renderer, browser Legacy OpenGL and the portable
+renderer's keyframes): the direct pass of SDL GPU, Programmable GL and Legacy
+OpenGL blends continuously in presentation time whatever the field says (see
+[animation clock and smoothness](terrain-rendering.md#animation-clock-and-smoothness)).
+1 cuts between phases without blending on composed pages. Omitting the field
+blends on every tick, as before. Custom map artwork bundles do not accept the
+field.
 
 ## Validate and inspect
 

@@ -174,6 +174,9 @@ struct DirectTerrain::State
     // (prepare); otherwise the view takes coarser tiles. Legacy GL and the
     // devices share these limits so they coarsen alike.
     int maxAtlasSize = 2048, maxArtAtlasSize = 4096;
+    // The shaders' animation time wraps at this common period of the
+    // catalogue's animations (TerrainVisual::animationPeriod).
+    int animationPeriod = 0;
     // The last art admission logged (DIRECT_TERRAIN_ADMISSION), to log changes only.
     std::tuple<int, int, int, const char *> admission{};
     struct Animation {
@@ -1266,7 +1269,7 @@ DirectTerrain::~DirectTerrain() = default;
 
 bool DirectTerrain::draw(GAGCore::GraphicContext &gfx, const SceneMap &map, int left, int top,
                          int right, int bottom, int viewportX, int viewportY,
-                         Uint32 visibleTeams, bool wholeMap, int animationTime)
+                         Uint32 visibleTeams, bool wholeMap, AnimationTime animationTime)
 {
     return drawInternal(gfx, map, left, top, right, bottom, viewportX, viewportY,
                         visibleTeams, wholeMap, animationTime, false, false);
@@ -1274,7 +1277,7 @@ bool DirectTerrain::draw(GAGCore::GraphicContext &gfx, const SceneMap &map, int 
 
 bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &map, int left, int top,
                          int right, int bottom, int viewportX, int viewportY,
-                         Uint32 visibleTeams, bool wholeMap, int animationTime,
+                         Uint32 visibleTeams, bool wholeMap, AnimationTime animationTime,
                          bool complete, bool prepareOnly)
 {
 #ifdef DIRECT_TERRAIN_LEGACY_GL
@@ -1344,6 +1347,7 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
         state->assets = assets;
         state->registry = registry;
         state->streaming = streaming;
+        state->animationPeriod = TerrainVisual::animationPeriod(sheets.catalog());
         // The art atlas grows under the desktop budget alone, on every
         // renderer, so a view draws its variants at the same density on each
         // (see prepare). A mobile budget, or a device without 4096 textures,
@@ -1382,7 +1386,7 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
         for (unsigned i = 0; i < data->textures.size(); ++i)
             data->textures[i] = resources->snapshot(state->handles[i]);
         data->wholeMap = wholeMap;
-        data->animationTime = float(animationTime);
+        data->animationTime = animationTime.wrapped(state->animationPeriod);
 
         GAGCore::DrawPacket packet;
         packet.kind = GAGCore::DrawPacket::Kind::DirectTerrain;
@@ -1479,7 +1483,7 @@ bool DirectTerrain::drawInternal(GAGCore::GraphicContext &gfx, const SceneMap &m
 
 bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
     int left, int top, int right, int bottom, int viewportX, int viewportY,
-    Uint32 visibleTeams, bool wholeMap, int animationTime, bool complete)
+    Uint32 visibleTeams, bool wholeMap, AnimationTime animationTime, bool complete)
 {
     if (left > right || top > bottom) return false;
     if (!drawInternal(gfx, map, left, top, right, bottom, viewportX, viewportY,
@@ -1502,7 +1506,7 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
     while (pixels < 128 && pixels < 32 * density) pixels *= 2;
     const bool highResolutionFrames = pixels > 32;
     const auto declare = [&] {
-        compositor.declareVisible(animationTime, map,
+        compositor.declareVisible(animationTime.steps, map,
             page(left + viewportX) * pageTiles, page(top + viewportY) * pageTiles,
             (page(right + viewportX) + 1) * pageTiles - 1,
             (page(bottom + viewportY) + 1) * pageTiles - 1, highResolutionFrames);
@@ -1794,7 +1798,7 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
             const bool isFresh = fresh.contains(slot);
             const auto source = state->palette.sources[slot];
             const auto &material = catalog.materials[source.material];
-            const unsigned absolutePhase = unsigned(animationTime) / material.animationTicks;
+            const unsigned absolutePhase = unsigned(animationTime.steps) / material.animationTicks;
             const unsigned endpoints = material.animationFrames > 1 ? 2 : 1;
             for (unsigned ahead = 0; ahead < endpoints; ++ahead)
             {
@@ -2337,7 +2341,7 @@ std::span<const SDL_Rect> DirectTerrain::preparedRegions() const
 }
 
 void DirectTerrain::drawPrepared(GAGCore::GraphicContext &gfx, int viewportX, int viewportY,
-                                 bool wholeMap, int animationTime)
+                                 bool wholeMap, AnimationTime animationTime)
 {
     if (!state || state->animation.regions.empty() || !state->hd.ready || state->hd.failed) return;
     const auto &previous = state->hd.previous;
@@ -2379,7 +2383,7 @@ void DirectTerrain::drawPrepared(GAGCore::GraphicContext &gfx, int viewportX, in
         u.hdPreviousTile = float(previous.tile); // Zero: no fallback atlas.
         u.hdBaseTile = float(base.tile);         // Zero: no base atlas.
         data->wholeMap = wholeMap;
-        data->animationTime = float(animationTime);
+        data->animationTime = animationTime.wrapped(state->animationPeriod);
         SDL_Rect bounds = state->animation.regions.front();
         for (const auto &rect : state->animation.regions)
             SDL_GetRectUnion(&bounds, &rect, &bounds);
@@ -2448,7 +2452,7 @@ void DirectTerrain::drawPrepared(GAGCore::GraphicContext &gfx, int viewportX, in
     glUniform2f(uniforms[2], float(std::max(1, state->lowArt.width)), float(std::max(1, state->lowArt.height)));
     glUniform2f(uniforms[7], float(state->hd.size), float(state->hd.size));
     glUniform2f(uniforms[3], DirectTerrainData::VariantWidth, float(state->variantRows));
-    glUniform1f(uniforms[4], float(animationTime));
+    glUniform1f(uniforms[4], animationTime.wrapped(state->animationPeriod));
     glUniform1i(uniforms[5], wholeMap);
     glUniform1f(uniforms[6], float(state->animation.pixels));
     glUniform1f(uniforms[8], float(state->hd.tile));

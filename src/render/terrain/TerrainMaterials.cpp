@@ -5,6 +5,7 @@
 #include "map/TerrainPresentation.h"
 #include <nlohmann/json.hpp>
 #include <algorithm>
+#include <numeric>
 #include <array>
 #include <cstdlib>
 #include <iterator>
@@ -655,6 +656,24 @@ int surfPhase(const Surf &s, unsigned time)
 	// The wash advances in whole steps of `ticks`, matching its page re-blends.
 	time -= time % unsigned(s.ticks);
 	return int(time % unsigned(s.period) * 1024 / unsigned(s.period));
+}
+int animationPeriod(const Catalog &catalog)
+{
+	std::int64_t period = 1;
+	bool animated = false;
+	const auto include = [&](std::int64_t cycle) {
+		if (cycle <= 1 || period > MaxAnimationPeriod) return;
+		animated = true;
+		period = std::lcm(period, cycle);
+	};
+	for (const auto &material : catalog.materials)
+	{
+		if (material.animationFrames > 1)
+			include(std::int64_t(material.animationFrames) * std::max(1, material.animationTicks));
+		if (material.surf.period > 0)
+			include(material.surf.period);
+	}
+	return animated && period <= MaxAnimationPeriod ? int(period) : 0;
 }
 int surfReach(const Surf &s, bool surfSide)
 {

@@ -62,18 +62,19 @@ class SourceMapPhaseScope
     unsigned options;
     bool paused;
     int initialAnimation;
+    float initialFraction;
     AnimationClock initialClock;
     int exceptions;
 public:
     SourceMapPhaseScope(MapRenderState &state,unsigned drawOptions,bool animationsPaused)
         : render(state),options(drawOptions),paused(animationsPaused),
-          initialAnimation(state.animationTime),initialClock(state.animationClock),exceptions(std::uncaught_exceptions())
-    { render.animationTime+=render.animationClock.advance(paused); }
+          initialAnimation(state.animationTime),initialFraction(state.animationFraction),initialClock(state.animationClock),exceptions(std::uncaught_exceptions())
+    { render.advanceAnimation(paused); }
     ~SourceMapPhaseScope()
     {
         // The caller draws the ordinary map after a fatal torus exception.
         // Leave that fallback to advance the source phases once for this turn.
-        if(std::uncaught_exceptions()>exceptions){render.animationTime=initialAnimation;render.animationClock=initialClock;}
+        if(std::uncaught_exceptions()>exceptions){render.animationTime=initialAnimation;render.animationFraction=initialFraction;render.animationClock=initialClock;}
         else MapDrawer::finishMapCapture(render,options,paused);
     }
 };
@@ -337,7 +338,7 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
         // advancing on holds.
         const int sourceSteps = sourcePaused ? 0 : sourceRender.animationClock.steps();
         captureRender.animationTime = sourceRender.animationTime-sourceSteps;
-        captureRender.animationClock.presetNext(sourceSteps);
+        captureRender.animationClock.presetNext(sourceSteps, sourceRender.animationFraction);
         captureRender.areaAnimationTick = sourceRender.areaAnimationTick;
         captureRender.areaClock = sourceRender.areaClock;
         captureRender.unitMotion = sourceRender.unitMotion;

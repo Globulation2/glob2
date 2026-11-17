@@ -213,6 +213,7 @@ set(GLOB2_ENGINE_TESTS_2_SOURCES
     src/ai/maxima/MaximaEconomyRegressionTest.cpp
     src/ai/maxima/MaximaImplementationIntegrationTest.cpp
     src/render/TerrainPresentationTest.cpp
+    src/render/TerrainAnimationTest.cpp
     src/render/torus/TorusRenderIntegrationTest.cpp
     src/app/AdaptiveSettingsTest.cpp
     src/game/orders/FarmAreaTest.cpp
@@ -1477,6 +1478,7 @@ set(GLOB2_ANDROID_ENGINE_TESTS_1_SOURCES
     src/ai/maxima/MaximaEconomyRegressionTest.cpp
     src/ai/maxima/MaximaImplementationIntegrationTest.cpp
     src/render/TerrainPresentationTest.cpp
+    src/render/TerrainAnimationTest.cpp
     src/render/torus/TorusRenderIntegrationTest.cpp
     src/app/AdaptiveSettingsTest.cpp
     src/game/orders/FarmAreaTest.cpp

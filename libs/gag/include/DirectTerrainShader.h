@@ -198,13 +198,18 @@ vec4 material(float index, vec2 uv, float calm) {
     } else
 #endif
     {
+    // animationTime is continuous (whole clock steps plus the elapsed
+    // fraction, wrapped at a common period of every animation), so the
+    // crossfade moves by exactly the time elapsed each frame. data.w (the
+    // authored blend steps) only enables it here: the steps quantise page
+    // composition, not this pass.
     float stepTime = mod(animationTime, data.z);
     float phase = mod(floor(animationTime / data.z), data.y);
     color = DIRECT_TERRAIN_SAMPLE(art, atlasUV(data.x + phase, uv, artSize));
     // Blend premultiplied endpoints so transparent artwork cannot tint a fade.
     color.rgb *= color.a;
     if (data.w > 0.0) {
-        float blend = floor(stepTime * data.w / data.z) / data.w;
+        float blend = clamp(stepTime / data.z, 0.0, 1.0);
         vec4 nextColor = DIRECT_TERRAIN_SAMPLE(art, atlasUV(data.x + mod(phase + 1.0, data.y), uv, artSize));
         nextColor.rgb *= nextColor.a;
         color = mix(color, nextColor, blend);
@@ -284,8 +289,10 @@ vec3 surf(vec4 indices, vec2 uv, vec3 edge, vec3 color) {
     vec3 foam = variantRecord(index, 4.0).rgb / 255.0;
     // Q8 shore wash of the land material across the shoreline, stored as its damping.
     float land = 256.0 - variantRecord(liquidSide ? indices[neighbor] : indices[dominant], 4.0).w;
-    float time = animationTime - mod(animationTime, shallow.w);
-    float phase = floor(mod(time, shape.x) * 1024.0 / shape.x);
+    // The wash moves continuously: its phase is the integer reference's
+    // (TerrainVisual::surfPhase) at whole surf steps and interpolates
+    // linearly between them, rather than holding each step (shallow.w).
+    float phase = mod(animationTime, shape.x) * 1024.0 / shape.x;
     vec2 position = mod(floor(world), mapSize) * 8192.0 + floor(uv) * 256.0 + 128.0;
     float offset = bump(mod(floor(position.x / 128.0), 1024.0)) +
                    bump(mod(floor(position.y / 128.0), 1024.0)) +
