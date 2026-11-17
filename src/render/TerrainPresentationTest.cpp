@@ -1689,6 +1689,59 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(share < .14);
 	}
 
+	// One direct terrain frame over the whole 640x480 screen, as RGBA rows top
+	// down, or nothing when the pass drew nothing this frame.
+	std::vector<Uint8> directTerrainFrame(GAGCore::GraphicContext &gfx, DirectTerrain &atlas, const SceneMap &scene,
+										  Uint32 teams, float zoom, int right, int bottom, bool complete,
+										  bool whole = true, int time = 0)
+	{
+		const bool legacy = gfx.isLegacyGLScreen();
+		gfx.setClipRect();
+		gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
+		gfx.beginMapTransform(zoom, 0, 0, 0, 0, 640, 480);
+		const bool ready = atlas.prepare(gfx, scene, 0, 0, right, bottom, 0, 0, teams, whole, time, complete);
+		if (ready) atlas.drawPrepared(gfx, 0, 0, whole, time);
+		gfx.endMapTransform();
+		// Captures run at the display's pixel density (twice 640x480 on a
+		// Retina display); one sample per logical pixel keeps every check in
+		// logical pixels.
+		std::vector<Uint8> rows(std::size_t(640) * 480 * 4);
+		const auto sample = [&](const Uint8 *pixels, int width, int height, std::size_t pitch, bool bottomUp)
+		{
+			REQUIRE(width * 480 == height * 640);
+			const int scale = width / 640;
+			for (int y = 0; y < 480; ++y)
+			{
+				const int source = bottomUp ? height - 1 - y * scale : y * scale;
+				for (int x = 0; x < 640; ++x)
+					std::memcpy(rows.data() + (std::size_t(y) * 640 + x) * 4, pixels + source * pitch + std::size_t(x) * scale * 4, 4);
+			}
+		};
+		if (legacy)
+		{
+			if (!ready) return {};
+			const auto pixels = terrainPixels(true);
+			GLint viewport[4];
+			glGetIntegerv(GL_VIEWPORT, viewport);
+			// glReadPixels rows run bottom-up.
+			sample(pixels.data(), viewport[2], viewport[3], std::size_t(viewport[2]) * 4, true);
+			return rows;
+		}
+		gfx.renderer->flush();
+		const bool drawn = ready && GAGCore::didRecordDeviceFrame(*gfx.renderer);
+		if (drawn)
+		{
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> captured(gfx.renderer->capture(), SDL_DestroySurface);
+			REQUIRE(captured);
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
+				SDL_ConvertSurface(captured.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+			REQUIRE(rgba);
+			sample(static_cast<const Uint8 *>(rgba->pixels), rgba->w, rgba->h, std::size_t(rgba->pitch), false);
+		}
+		gfx.nextFrame();
+		return drawn ? rows : std::vector<Uint8>{};
+	}
+
 	// SDL GPU and Programmable GL draw Legacy GL's streamed pass through
 	// streamed device textures and terrain-direct-hd: the same HD artwork and
 	// display-density masks, from 16 to 128 texels a cell, animated and with
@@ -1735,19 +1788,10 @@ TEST_SUITE("TerrainPresentation")
 			DirectTerrain atlas;
 			for (const auto &view : views)
 			{
-				gfx.beginMapTransform(view.zoom, 0, 0, 0, 0, 640, 480);
-				gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
-				REQUIRE(atlas.prepare(gfx, scene, 0, 0, view.right, view.bottom, 0, 0, fixture.team->me,
-									  view.whole, view.time, true));
+				auto rows = directTerrainFrame(gfx, atlas, scene, fixture.team->me, view.zoom, view.right, view.bottom,
+											   true, view.whole, view.time);
+				REQUIRE_FALSE(rows.empty());
 				REQUIRE_FALSE(atlas.pendingHdMasks());
-				atlas.drawPrepared(gfx, 0, 0, view.whole, view.time);
-				gfx.endMapTransform();
-				auto pixels = terrainPixels(true);
-				// glReadPixels rows run bottom-up.
-				std::vector<Uint8> rows(pixels.size());
-				const std::size_t pitch = 640 * 4;
-				for (std::size_t y = 0; y < 480; ++y)
-					std::memcpy(rows.data() + y * pitch, pixels.data() + (479 - y) * pitch, pitch);
 				expected.push_back(std::move(rows));
 			}
 		}
@@ -1770,36 +1814,19 @@ TEST_SUITE("TerrainPresentation")
 			const auto &view = views[index];
 			CAPTURE(view.zoom);
 			CAPTURE(view.whole);
-			bool drawn = false;
-			for (int attempt = 0; attempt < 32 && !drawn; ++attempt)
-			{
-				gfx.setClipRect();
-				gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
-				gfx.beginMapTransform(view.zoom, 0, 0, 0, 0, 640, 480);
-				const bool ready = atlas.prepare(gfx, scene, 0, 0, view.right, view.bottom, 0, 0, fixture.team->me,
-												 view.whole, view.time, true);
-				if (ready) atlas.drawPrepared(gfx, 0, 0, view.whole, view.time);
-				gfx.endMapTransform();
-				gfx.renderer->flush();
-				drawn = ready && GAGCore::didRecordDeviceFrame(*gfx.renderer);
-				if (!drawn) gfx.nextFrame();
-			}
-			REQUIRE(drawn);
+			std::vector<Uint8> frame;
+			for (int attempt = 0; attempt < 32 && frame.empty(); ++attempt)
+				frame = directTerrainFrame(gfx, atlas, scene, fixture.team->me, view.zoom, view.right, view.bottom,
+										   true, view.whole, view.time);
+			REQUIRE_FALSE(frame.empty());
 			REQUIRE_FALSE(atlas.failed());
 			REQUIRE_FALSE(atlas.pendingHdMasks());
-			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> captured(gfx.renderer->capture(), SDL_DestroySurface);
-			REQUIRE(captured);
-			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
-				SDL_ConvertSurface(captured.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
-			REQUIRE(rgba);
-			REQUIRE(rgba->w == 640);
-			REQUIRE(rgba->h == 480);
 			unsigned maximum = 0;
 			std::size_t differing = 0;
 			for (int y = 0; y < 480; ++y)
 				for (int x = 0; x < 640; ++x)
 				{
-					const auto *actual = static_cast<const Uint8 *>(rgba->pixels) + y * rgba->pitch + x * 4;
+					const auto *actual = frame.data() + (std::size_t(y) * 640 + x) * 4;
 					const auto *reference = expected[index].data() + (std::size_t(y) * 640 + x) * 4;
 					unsigned largest = 0;
 					for (int k = 0; k < 3; ++k)
@@ -1812,7 +1839,6 @@ TEST_SUITE("TerrainPresentation")
 			// Both draw the one shared shader over the same texel values; only
 			// interpolation rounding differs between drivers.
 			CHECK(differing <= 640 * 480 / 1000);
-			gfx.nextFrame();
 		}
 	}
 
@@ -1824,58 +1850,6 @@ TEST_SUITE("TerrainPresentation")
 	TEST_CASE("Programmable GL streamed direct terrain matches Legacy GL's HD pass at every density [display]")
 	{
 		checkStreamedDirectTerrain(GAGCore::RendererBackend::ProgrammableGL);
-	}
-
-	// One direct terrain frame over the whole 640x480 screen, as RGBA rows top
-	// down, or nothing when the pass drew nothing this frame.
-	std::vector<Uint8> directTerrainFrame(GAGCore::GraphicContext &gfx, DirectTerrain &atlas, const SceneMap &scene,
-										  Uint32 teams, float zoom, int right, int bottom, bool complete)
-	{
-		const bool legacy = gfx.isLegacyGLScreen();
-		gfx.setClipRect();
-		gfx.drawFilledRect(0, 0, 640, 480, 11, 23, 37);
-		gfx.beginMapTransform(zoom, 0, 0, 0, 0, 640, 480);
-		const bool ready = atlas.prepare(gfx, scene, 0, 0, right, bottom, 0, 0, teams, true, 0, complete);
-		if (ready) atlas.drawPrepared(gfx, 0, 0, true, 0);
-		gfx.endMapTransform();
-		// Captures run at the display's pixel density (twice 640x480 on a
-		// Retina display); one sample per logical pixel keeps every check in
-		// logical pixels.
-		std::vector<Uint8> rows(std::size_t(640) * 480 * 4);
-		const auto sample = [&](const Uint8 *pixels, int width, int height, std::size_t pitch, bool bottomUp)
-		{
-			REQUIRE(width * 480 == height * 640);
-			const int scale = width / 640;
-			for (int y = 0; y < 480; ++y)
-			{
-				const int source = bottomUp ? height - 1 - y * scale : y * scale;
-				for (int x = 0; x < 640; ++x)
-					std::memcpy(rows.data() + (std::size_t(y) * 640 + x) * 4, pixels + source * pitch + std::size_t(x) * scale * 4, 4);
-			}
-		};
-		if (legacy)
-		{
-			if (!ready) return {};
-			const auto pixels = terrainPixels(true);
-			GLint viewport[4];
-			glGetIntegerv(GL_VIEWPORT, viewport);
-			// glReadPixels rows run bottom-up.
-			sample(pixels.data(), viewport[2], viewport[3], std::size_t(viewport[2]) * 4, true);
-			return rows;
-		}
-		gfx.renderer->flush();
-		const bool drawn = ready && GAGCore::didRecordDeviceFrame(*gfx.renderer);
-		if (drawn)
-		{
-			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> captured(gfx.renderer->capture(), SDL_DestroySurface);
-			REQUIRE(captured);
-			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
-				SDL_ConvertSurface(captured.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
-			REQUIRE(rgba);
-			sample(static_cast<const Uint8 *>(rgba->pixels), rgba->w, rgba->h, std::size_t(rgba->pitch), false);
-		}
-		gfx.nextFrame();
-		return drawn ? rows : std::vector<Uint8>{};
 	}
 
 	// A fast zoom out changes the art density, and the art atlas refills at the
@@ -2053,8 +2027,10 @@ TEST_SUITE("TerrainPresentation")
 		// An independently sized strip fits HD pages, unlike its whole capture.
 		SoftwareTerrainCache independent;
 		{
-			// Portable views compose HD only zoomed in past a pixel per pixel.
-			const GAGCore::MapTransformScope zoomed(*globals->gfx, 2, 0, 0, {0, 0, 256, 256});
+			// Portable views compose HD only zoomed in past a screen pixel per
+			// logical pixel: two of them here, whatever the display density.
+			const float screenPixel = 1.f / float(globals->gfx->getRasterScale());
+			const GAGCore::MapTransformScope zoomed(*globals->gfx, 2 * screenPixel, 0, 0, {0, 0, 256, 256});
 			// Interactive pages show native art until the declared HD window streams.
 			independent.prepare(scene, *globals->terrain, 0, 0, 6, 63, 0, 0, fixture.team->me, true);
 			GAGCore::Sprite::finishHighResolution();
@@ -2062,7 +2038,8 @@ TEST_SUITE("TerrainPresentation")
 										true));
 		}
 		CHECK(globals->terrainCompositor().scale() == 4);
-		// Portable pages compose at the display density (twice native here).
+		// Portable pages compose at the display density (two screen pixels per
+		// logical pixel here).
 		CHECK(independent.resolution == 2);
 		SoftwareTerrainCache tiled;
 		REQUIRE(tiled.prepare(scene, *globals->terrain, 0, 0, 63, 63, 0, 0, fixture.team->me, true,
@@ -2094,8 +2071,10 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::observeMap(fixture.game.map,scene);
 		ScopedTerrainDeviceLimit device(*globals->gfx);
 		auto &backend = device.backend();
-		// Portable views compose HD only zoomed in past a pixel per pixel.
-		const GAGCore::MapTransformScope zoomed(*globals->gfx, 2, 0, 0, {0, 0, 256, 256});
+		// Portable views compose HD only zoomed in past a screen pixel per
+		// logical pixel: two of them here, whatever the display density.
+		const float screenPixel = 1.f / float(globals->gfx->getRasterScale());
+		const GAGCore::MapTransformScope zoomed(*globals->gfx, 2 * screenPixel, 0, 0, {0, 0, 256, 256});
 		for (int limit : {1024, 512, 128, 32})
 		{
 			CAPTURE(limit);
@@ -2725,6 +2704,8 @@ TEST_SUITE("TerrainPresentation")
 				map.paintCell(x, y, x >= 16 || y >= 16 ? GRASS : x < 3 ? WATER : ((x + y) % 3 ? ICE : GRASS));
 		SceneMap scene;
 		glob2test::observeMap(map, scene);
+		// Zooms below are screen pixels per logical pixel.
+		const float screenPixel = 1.f / float(globals->gfx->getRasterScale());
 		struct Reduced
 		{
 			std::vector<Uint32> pixels;
@@ -2751,10 +2732,10 @@ TEST_SUITE("TerrainPresentation")
 				}
 				FAIL("the interactive view never completed");
 			};
-			settle(1, 7, 7);
+			settle(screenPixel, 7, 7);
 			REQUIRE(cache.samplingReduction() == 1);
 			// The whole map exceeds the page budget at native density.
-			settle(.25f, 127, 127);
+			settle(.25f * screenPixel, 127, 127);
 			REQUIRE(cache.samplingReduction() > 1);
 			Reduced result;
 			result.reductions = cache.cacheReductions();
@@ -2791,9 +2772,11 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::observeMap(fixture.game.map, scene);
 		SoftwareTerrainCache cache;
 		cache.deferBuilds = true;
+		// Zooms below are screen pixels per logical pixel.
+		const float screenPixel = 1.f / float(globals->gfx->getRasterScale());
 		const auto frame = [&](float zoom, int right, int bottom)
 		{
-			globals->gfx->beginMapTransform(zoom, 0, 0, 0, 0, 256, 256);
+			globals->gfx->beginMapTransform(zoom * screenPixel, 0, 0, 0, 0, 256, 256);
 			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, right, bottom, 0, 0, fixture.team->me, true));
 			cache.draw(*globals->gfx);
 			globals->gfx->endMapTransform();
@@ -2897,12 +2880,14 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::observeMap(fixture.game.map, scene);
 		// Native material frames throughout; the pages' composition scale
 		// follows the direct pass's mask density: a power of two at least the
-		// display density, up to four.
+		// display density, up to four. Zooms are screen pixels per logical
+		// pixel.
+		const float screenPixel = 1.f / float(globals->gfx->getRasterScale());
 		for (const auto &[zoom, scale] : {std::pair{1.f, 1}, {1.5f, 2}, {2.f, 2}, {3.f, 4}, {4.f, 4}})
 		{
 			CAPTURE(zoom);
 			SoftwareTerrainCache cache;
-			globals->gfx->beginMapTransform(zoom, 0, 0, 0, 0, 256, 256);
+			globals->gfx->beginMapTransform(zoom * screenPixel, 0, 0, 0, 0, 256, 256);
 			REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 7, 7, 0, 0, fixture.team->me, true));
 			cache.draw(*globals->gfx);
 			globals->gfx->endMapTransform();
