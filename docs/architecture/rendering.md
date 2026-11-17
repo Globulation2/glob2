@@ -214,11 +214,21 @@ copy, charges the textures to its total budget and never evicts them; it loads
 the generated `terrain-direct-hd` GLSL (desktop 3.30 or ES 3.00) and needs 14
 texture units. A device
 that advertises `directTerrainStreaming` takes this pass at every zoom, with HD
-artwork on or off; its atlases stay at 2048 square, so a view that needs more
-takes coarser tiles. An animated variant holds a pair of art tiles (its current
-and next phase) and a static one a single tile, so at 64 pixels a cell (the
-default zoom on a 2x display) the 2048 atlas holds about a thousand static
-variants and draws the same density as legacy OpenGL's 4096 atlas. Art tiles are box-filtered on the background workers
+artwork on or off. Its mask atlas stays at 2048 square. Its art atlas starts
+at 2048 and, like legacy OpenGL's, grows once to 4096 when the view's variants
+do not fit: at 128 pixels a cell (zoom 2 on a 2x display) a 2048 atlas holds
+only 256 tiles, fewer than a typical view's variants, and a device that stopped
+there drew native-density terrain where legacy OpenGL drew HD. A device grows
+it only under the desktop budget, with 4096 textures, and while its resident
+resources leave room for twice the new atlas and an eighth of the budget
+besides (the old atlas draws while the new one fills); otherwise the view takes
+coarser tiles. `DIRECT_TERRAIN_ADMISSION` on stderr records each change of a
+view's art atlas, tile density and the reason it is coarser than the display
+wants (`device budget`, `atlas size`, `atlas full`), for legacy OpenGL and the
+devices alike. An
+animated variant holds a pair of art tiles (its current and next phase) and a
+static one a single tile, so at 64 pixels a cell (the default zoom on a 2x
+display) the 2048 atlas holds about a thousand static variants. Art tiles are box-filtered on the background workers
 (`BackgroundWork`), from copies of their sources, up to 192 a batch and one
 batch at a time; the graphics thread only copies the sources and uploads the
 finished tiles. An interactive view whose artwork density or atlas size
