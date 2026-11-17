@@ -72,6 +72,67 @@ struct DirectTerrainData
     static void appendRecords(std::vector<Record> &variants, const TerrainVisual::Material &, Uint16 firstArt);
     Palette palette; // Tables mode only; variants and sources stay empty then.
 
+    // Tiles of a streamed art atlas, in pairs. An animated variant holds a
+    // whole pair (its current and next phase, the first tile even); a static
+    // one holds a single tile, sharing its pair with another static variant.
+    struct ArtTiles
+    {
+        std::vector<unsigned> freePairs;  // Pairs with both tiles free.
+        std::vector<unsigned> freeHalves; // Free tiles whose partner holds a static variant.
+        std::vector<unsigned> owners;     // Each tile's variant slot plus one, or zero.
+
+        void reset(unsigned tiles)
+        {
+            freeHalves.clear();
+            freePairs.clear();
+            for (unsigned pair = tiles / 2; pair > 0; --pair) freePairs.push_back(pair - 1);
+            owners.assign(tiles / 2 * 2, 0);
+        }
+        // The first tile for a variant of `span` tiles (1 or 2), or false when
+        // no free pair, or for a static variant no free tile, is left.
+        bool claim(unsigned slot, unsigned span, unsigned &tile)
+        {
+            if (span == 1 && !freeHalves.empty())
+            {
+                tile = freeHalves.back();
+                freeHalves.pop_back();
+            }
+            else if (!freePairs.empty())
+            {
+                tile = freePairs.back() * 2;
+                freePairs.pop_back();
+                if (span == 1) freeHalves.push_back(tile + 1);
+            }
+            else
+                return false;
+            for (unsigned i = 0; i < span; ++i) owners[tile + i] = slot + 1;
+            return true;
+        }
+        void release(unsigned tile, unsigned span)
+        {
+            for (unsigned i = 0; i < span; ++i) owners[tile + i] = 0;
+            if (span == 2) { freePairs.push_back(tile / 2); return; }
+            const unsigned partner = tile ^ 1u;
+            if (owners[partner]) { freeHalves.push_back(tile); return; }
+            // Both tiles of the pair are free again.
+            std::erase(freeHalves, partner);
+            freePairs.push_back(tile / 2);
+        }
+        // When every free tile is the half of a pair whose other half holds a
+        // static variant, moves one such variant into another free half,
+        // freeing a whole pair. Returns false when fewer than two tiles are
+        // free; otherwise `slot` is the variant moved and `tile` its new tile.
+        bool freePair(unsigned &slot, unsigned &tile)
+        {
+            if (!freePairs.empty()) return false;
+            if (freeHalves.size() < 2) return false;
+            const unsigned from = freeHalves.back() ^ 1u;
+            slot = owners[from] - 1;
+            release(from, 1);
+            return claim(slot, 1, tile);
+        }
+    };
+
     class Build;
     // Tables mode builds only the per-cell tables and the palette: no native
     // artwork or coverage, which Legacy GL streams at the display density.

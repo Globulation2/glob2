@@ -208,7 +208,10 @@ the generated `terrain-direct-hd` GLSL (desktop 3.30 or ES 3.00) and needs 14
 texture units. A device
 that advertises `directTerrainStreaming` takes this pass at every zoom, with HD
 artwork on or off; its atlases stay at 2048 square, so a view that needs more
-takes coarser tiles. Art tiles are box-filtered on the background workers
+takes coarser tiles. An animated variant holds a pair of art tiles (its current
+and next phase) and a static one a single tile, so at 64 pixels a cell (the
+default zoom on a 2x display) the 2048 atlas holds about a thousand static
+variants and draws the same density as legacy OpenGL's 4096 atlas. Art tiles are box-filtered on the background workers
 (`BackgroundWork`), from copies of their sources, up to 192 a batch and one
 batch at a time; the graphics thread only copies the sources and uploads the
 finished tiles. An interactive view whose artwork density or atlas size

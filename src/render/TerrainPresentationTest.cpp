@@ -17,6 +17,7 @@
 #include "TerrainCornerPresentation.h"
 #include "terrain/TerrainCompositor.h"
 #include "terrain/DirectTerrain.h"
+#include "terrain/DirectTerrainData.h"
 #include "terrain/TerrainCatalogIO.h"
 #include "scene/SceneMap.h"
 #include "SoftwareTerrainCache.h"
@@ -478,6 +479,50 @@ void layeredCache(bool gpu, bool hd = false)
 } // namespace
 TEST_SUITE("TerrainPresentation")
 {
+	TEST_CASE("streamed art tiles give static variants one tile and animated ones a whole pair")
+	{
+		DirectTerrainData::ArtTiles tiles;
+		tiles.reset(8);
+		unsigned tile = 0;
+		// Four static variants fill two pairs, not four.
+		std::vector<unsigned> placed;
+		for (unsigned slot = 1; slot <= 4; ++slot)
+		{
+			REQUIRE(tiles.claim(slot, 1, tile));
+			placed.push_back(tile);
+		}
+		std::sort(placed.begin(), placed.end());
+		CHECK(placed == std::vector<unsigned>{0, 1, 2, 3});
+		// An animated variant takes an even-aligned pair.
+		REQUIRE(tiles.claim(5, 2, tile));
+		CHECK(tile % 2 == 0);
+		CHECK(tiles.owners[tile] == 6);
+		CHECK(tiles.owners[tile + 1] == 6);
+		// Releasing one static tile of each full pair leaves no whole pair
+		// free: a second animated variant cannot claim one ...
+		tiles.release(placed[0], 1);
+		tiles.release(placed[2], 1);
+		REQUIRE(tiles.freePairs.size() == 1);
+		REQUIRE(tiles.claim(6, 2, tile));
+		CHECK_FALSE(tiles.claim(7, 2, tile));
+		REQUIRE(tiles.freeHalves.size() == 2);
+		// ... until one static variant moves beside the other.
+		unsigned moved = 0, to = 0;
+		REQUIRE(tiles.freePair(moved, to));
+		CHECK(tiles.owners[to] == moved + 1);
+		CHECK(tiles.owners[to ^ 1u] != 0);
+		CHECK(tiles.freeHalves.empty());
+		REQUIRE(tiles.claim(7, 2, tile));
+		CHECK(tile % 2 == 0);
+		CHECK(tiles.owners[tile] == 8);
+		// Full: nothing is left to free.
+		CHECK_FALSE(tiles.freePair(moved, to));
+		CHECK_FALSE(tiles.claim(8, 1, tile));
+		// Releasing both halves of a pair frees the pair.
+		tiles.release(tile, 2);
+		CHECK(tiles.freePairs.size() == 1);
+	}
+
 	TEST_CASE("resource artwork requests are lazy and captures can wait for them [display]")
 	{
 		glob2test::HeadlessGlobals globals({.display = true});
