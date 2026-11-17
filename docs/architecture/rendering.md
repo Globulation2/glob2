@@ -1156,11 +1156,11 @@ with explicit depth passes and premultiplied atlas composition. Paint and materi
 revisions remain immutable for submitted draws. Source, geometry and atlas caches
 are rebuilt after switching or recovery.
 
-HD sprite frames draw uncompressed on SDL GPU, programmable GL and legacy GL: blocks of
-premultiplied colour step along the edges where a frame's base and team layers
-meet (2% of the zoomed-in game screen differed from the portable renderer in the
-parity scenes). `GLOB2_HD_BLOCK_COMPRESSION=1` restores the compressed path
-below, a quarter of the memory. With it, SDL GPU and programmable GL sample
+HD sprite frames are block-compressed on SDL GPU, programmable GL and legacy GL,
+in a quarter of the memory of RGBA. The 4x4 blocks of premultiplied colour step
+slightly along the edges where a frame's base and team layers meet (about 2% of the
+zoomed-in game screen differs from the portable renderer in the parity scenes).
+`GLOB2_HD_BLOCK_COMPRESSION=0` draws them uncompressed instead. SDL GPU and programmable GL sample
 block-compressed HD artwork where the device reports the format (`RenderDeviceCapabilities::bc3Textures`, `astc4x4Textures`;
 programmable GL reports BC3 with `GL_EXT_texture_compression_s3tc` and ASTC 4x4 on
 GL ES contexts with `GL_KHR_texture_compression_astc_ldr`, never in the browser). On entering the device,
@@ -1507,8 +1507,7 @@ mip chains keep their existing upload and compression path. Unsupported contexts
 creation retain CPU preparation. Native scratch textures and shaders are released
 before their owning context is destroyed.
 
-With `GLOB2_HD_BLOCK_COMPRESSION=1` (HD sprite frames are uncompressed by
-default, see above), asset workers also compress each authored level into 4x4
+Unless `GLOB2_HD_BLOCK_COMPRESSION=0` (see above), asset workers also compress each authored level into 4x4
 blocks with the vendored etcpak encoders (`AssetImage::compressBlocks`,
 [inventory](../../third_party/README.md#texture-block-compression)), so the
 graphics thread uploads blocks and the driver never encodes. Desktop legacy
