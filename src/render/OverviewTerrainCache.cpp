@@ -118,6 +118,9 @@ void OverviewTerrainCache::resetForMap(const SceneMap &map)
 	capacities.clear();
 	output.reset();
 	mapIdentity = map.identity();
+	mapWidth = std::max(1, map.getW());
+	mapHeight = std::max(1, map.getH());
+	side = std::min({Tiles, mapWidth, mapHeight});
 	terrain = map.frozenTerrainRegistry();
 	resources = map.frozenResourceRegistry();
 	assets = map.frozenAssetBundle();
@@ -136,7 +139,7 @@ OverviewTerrainCache::Page &OverviewTerrainCache::page(const SceneMap &map, int 
 	auto found = pages.find(key);
 	if (found == pages.end())
 	{
-		const int pixels = Tiles * samples;
+		const int pixels = side * samples;
 		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> surface(
 			SDL_CreateSurface(pixels, pixels, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
 		if (!surface)
@@ -145,6 +148,7 @@ OverviewTerrainCache::Page &OverviewTerrainCache::page(const SceneMap &map, int 
 		std::memset(surface->pixels, 0, std::size_t(surface->pitch) * pixels);
 		Page fresh;
 		fresh.samples = samples;
+		fresh.uncomposed = side * side;
 		fresh.resources.fill(Uncomposed);
 		fresh.inFlight.fill(Uncomposed);
 		fresh.image = std::make_unique<TerrainVisual::Surface>(surface.get(), false);
@@ -156,10 +160,10 @@ OverviewTerrainCache::Page &OverviewTerrainCache::page(const SceneMap &map, int 
 	return found->second;
 }
 
-std::size_t OverviewTerrainCache::pageStorage(int samples)
+std::size_t OverviewTerrainCache::pageStorage(int samples) const
 {
 	// CPU pixels plus the texture a drawn page uploads.
-	return sizeof(Page) + std::size_t(Tiles * samples) * (Tiles * samples) * 4 * 2;
+	return sizeof(Page) + std::size_t(side * samples) * (side * samples) * 4 * 2;
 }
 
 int OverviewTerrainCache::cellCode(const SceneMap &map, int mx, int my, Uint32 visibleTeams, bool wholeMap,
@@ -179,21 +183,21 @@ int OverviewTerrainCache::cellCode(const SceneMap &map, int mx, int my, Uint32 v
 
 bool OverviewTerrainCache::validate(const SceneMap &map, Page &page, int wx, int wy, const Region &region,
 									Uint32 visibleTeams, bool wholeMap, std::vector<CellJob> &jobs,
-									std::size_t jobLimit)
+									std::size_t jobLimit, Uint64 deadline)
 {
 	const int samples = page.samples;
 	const bool fresh = !page.valid || page.seed != map.terrainSeed();
 	if (fresh || page.terrainRevision != map.terrainRevision())
 	{
 		std::array<Uint32, (Tiles + 3) * (Tiles + 3)> vertices{};
-		for (int y = -1; y <= Tiles + 1; ++y)
-			for (int x = -1; x <= Tiles + 1; ++x)
+		for (int y = -1; y <= side + 1; ++y)
+			for (int x = -1; x <= side + 1; ++x)
 				vertices[(y + 1) * (Tiles + 3) + x + 1] = map.vertexTerrainAt(wx + x, wy + y);
 		if (fresh || vertices != page.vertices)
 		{
 			page.resources.fill(Uncomposed);
 			page.inFlight.fill(Uncomposed);
-			page.uncomposed = Tiles * Tiles;
+			page.uncomposed = side * side;
 			page.vertices = vertices;
 		}
 		page.seed = map.terrainSeed();
@@ -208,8 +212,8 @@ bool OverviewTerrainCache::validate(const SceneMap &map, Page &page, int wx, int
 	{
 		// Composed cells outside the view must not outlive the new stamp: those
 		// whose resource changed compose again once they are shown.
-		for (int y = 0; y < Tiles; ++y)
-			for (int x = 0; x < Tiles; ++x)
+		for (int y = 0; y < side; ++y)
+			for (int x = 0; x < side; ++x)
 			{
 				const int i = y * Tiles + x;
 				if (page.resources[i] == Uncomposed)
@@ -246,7 +250,10 @@ bool OverviewTerrainCache::validate(const SceneMap &map, Page &page, int wx, int
 			const bool complete = jobLimit == std::numeric_limits<std::size_t>::max();
 			if (page.resources[i] == code || (!complete && page.inFlight[i] == code))
 				continue;
-			if (jobs.size() >= jobLimit)
+			// A page holds 4096 cells: past the deadline the rest wait for a
+			// later frame (checked every 64 described cells).
+			if (jobs.size() >= jobLimit ||
+				(jobs.size() % 64 == 63 && SDL_GetTicksNS() > deadline))
 			{
 				// Cells after this one were not checked against the new stamp.
 				if (!stamped)
@@ -425,11 +432,12 @@ void OverviewTerrainCache::trim(std::size_t keepBytes)
 
 template <class Visit>
 void OverviewTerrainCache::forEachPage(const SceneMap &map, int left, int top, int right, int bottom, int vx,
-									   int vy, bool centreFirst, Visit visit)
+									   int vy, bool centreFirst, int step, Visit visit)
 {
-	const auto chunkOf = [](int tile) { return int(std::floor(double(tile) / Tiles)); };
-	const int cy0 = chunkOf(top + vy), cy1 = chunkOf(bottom + vy);
-	const int cx0 = chunkOf(left + vx), cx1 = chunkOf(right + vx);
+	// Blocks of `step` cells, each within one page of `side` (a multiple of it).
+	const auto chunkOf = [](int tile, int size) { return int(std::floor(double(tile) / size)); };
+	const int cy0 = chunkOf(top + vy, step), cy1 = chunkOf(bottom + vy, step);
+	const int cx0 = chunkOf(left + vx, step), cx1 = chunkOf(right + vx, step);
 	const int columns = cx1 - cx0 + 1;
 	std::vector<int> order(std::size_t(columns) * (cy1 - cy0 + 1));
 	for (std::size_t i = 0; i < order.size(); ++i)
@@ -439,8 +447,8 @@ void OverviewTerrainCache::forEachPage(const SceneMap &map, int left, int top, i
 		const double centreX = (left + right + 1) * .5 + vx, centreY = (top + bottom + 1) * .5 + vy;
 		const auto distance = [&](int i)
 		{
-			const double dx = (cx0 + i % columns) * Tiles + Tiles * .5 - centreX;
-			const double dy = (cy0 + i / columns) * Tiles + Tiles * .5 - centreY;
+			const double dx = (cx0 + i % columns) * step + step * .5 - centreX;
+			const double dy = (cy0 + i / columns) * step + step * .5 - centreY;
 			return dx * dx + dy * dy;
 		};
 		std::stable_sort(order.begin(), order.end(), [&](int a, int b) { return distance(a) < distance(b); });
@@ -448,11 +456,13 @@ void OverviewTerrainCache::forEachPage(const SceneMap &map, int left, int top, i
 	for (const int i : order)
 	{
 		const int cx = cx0 + i % columns, cy = cy0 + i / columns;
-		const int wx = (cx * Tiles) & map.getMaskW(), wy = (cy * Tiles) & map.getMaskH();
-		// The visible part of the page, in unwrapped and in page-wrapped tiles.
-		const int x0 = std::max(left + vx, cx * Tiles), x1 = std::min(right + vx + 1, (cx + 1) * Tiles);
-		const int y0 = std::max(top + vy, cy * Tiles), y1 = std::min(bottom + vy + 1, (cy + 1) * Tiles);
-		const Region region{wx + x0 - cx * Tiles, wy + y0 - cy * Tiles, wx + x1 - cx * Tiles, wy + y1 - cy * Tiles};
+		// The page holding the block, unwrapped, and its wrapped origin.
+		const int px = chunkOf(cx * step, side) * side, py = chunkOf(cy * step, side) * side;
+		const int wx = px & map.getMaskW(), wy = py & map.getMaskH();
+		// The visible part of the block, in unwrapped and in page-wrapped tiles.
+		const int x0 = std::max(left + vx, cx * step), x1 = std::min(right + vx + 1, (cx + 1) * step);
+		const int y0 = std::max(top + vy, cy * step), y1 = std::min(bottom + vy + 1, (cy + 1) * step);
+		const Region region{wx + x0 - px, wy + y0 - py, wx + x1 - px, wy + y1 - py};
 		visit(wx, wy, region, x0 - vx, y0 - vy);
 	}
 }
@@ -488,7 +498,7 @@ void OverviewTerrainCache::update(const SceneMap &map, int left, int top, int ri
 	std::size_t keptBytes = 0;
 	std::vector<CellJob> jobs;
 	auto *pixels = target.getSDLSurface();
-	forEachPage(map, left, top, right, bottom, vx, vy, false,
+	forEachPage(map, left, top, right, bottom, vx, vy, false, side,
 				[&](int wx, int wy, const Region &region, int screenX, int screenY)
 	{
 		auto &page = this->page(map, wx, wy, samples);
@@ -529,20 +539,29 @@ void OverviewTerrainCache::draw(const SceneMap &map, int left, int top, int righ
 	// Cells described per frame for the workers; visible batches still running count too.
 	std::size_t queued = queuedCells(false);
 	const std::size_t queueLimit = std::size_t(std::max(1u, BackgroundWork::workers())) * CellsPerBatch * 4;
-	// A backdrop draws, and composes, only the pages it shows through.
+	// A backdrop draws, and composes, only the blocks it shows through.
 	std::unordered_set<std::uint64_t> shownKeys;
 	if (shownPages)
 		for (const auto &origin : *shownPages)
 			shownKeys.insert(pageKey(0, origin.x, origin.y));
+	const int step = shownPages ? std::min(int(BackdropTiles), side) : side;
+	if (!complete && !shownPages)
+	{
+		viewX = ((left + right) / 2 + vx) & map.getMaskW();
+		viewY = ((top + bottom) / 2 + vy) & map.getMaskH();
+	}
 	std::size_t keptBytes = 0;
+	std::unordered_set<std::uint64_t> kept;
 	std::vector<std::uint64_t> wanted; // Visible pages still waiting for cells.
 	std::vector<CellJob> jobs;
-	forEachPage(map, left, top, right, bottom, vx, vy, !complete,
+	forEachPage(map, left, top, right, bottom, vx, vy, !complete, step,
 				[&](int wx, int wy, const Region &region, int screenX, int screenY)
 	{
-		if (shownPages && !shownKeys.count(pageKey(0, wx, wy)))
+		if (shownPages && !shownKeys.count(pageKey(0, wx + (region.x0 - wx) / step * step,
+													 wy + (region.y0 - wy) / step * step)))
 			return;
-		keptBytes += pageStorage(samples);
+		if (kept.insert(pageKey(samples, wx, wy)).second)
+			keptBytes += pageStorage(samples);
 		auto *page = &this->page(map, wx, wy, samples);
 		bool shown = true;
 		if (complete)
@@ -554,7 +573,9 @@ void OverviewTerrainCache::draw(const SceneMap &map, int left, int top, int righ
 		{
 			const auto started = std::chrono::steady_clock::now();
 			const std::size_t limit = queueLimit - queued;
-			if (!validate(map, *page, wx, wy, region, visibleTeams, wholeMap, jobs, limit))
+			const auto remaining = std::chrono::duration_cast<std::chrono::nanoseconds>(FrameBudget - describing);
+			if (!validate(map, *page, wx, wy, region, visibleTeams, wholeMap, jobs, limit,
+						  SDL_GetTicksNS() + Uint64(std::max<std::int64_t>(0, remaining.count()))))
 				shown = false;
 			if (jobs.size() >= CellsPerBatch)
 			{
@@ -592,8 +613,9 @@ void OverviewTerrainCache::draw(const SceneMap &map, int left, int top, int righ
 		if (!shown)
 			wanted.push_back(pageKey(samples, wx, wy));
 		// A page drawn empty fades its first cells in; one composed before the
-		// view reached it (prewarmed) shows at once.
-		if (!composed)
+		// view reached it (prewarmed) shows at once. Emptiness is the whole
+		// page's, so blocks of one page agree.
+		if (page->uncomposed == side * side)
 			page->shownEmpty = true;
 		else if (page->shownEmpty)
 		{
@@ -802,8 +824,10 @@ void OverviewTerrainCache::prewarm(const SceneMap &map, Uint32 visibleTeams, boo
 	updateBase(map);
 	if (samples != FewSamples && samples != ManySamples)
 		throw std::invalid_argument("Overview samples must be 4 or 8 per cell");
-	const int columns = std::max(1, map.getW() / Tiles), rows = std::max(1, map.getH() / Tiles);
-	const int cx = int(unsigned(centreX & map.getMaskW()) / Tiles), cy = int(unsigned(centreY & map.getMaskH()) / Tiles);
+	viewX = centreX & map.getMaskW();
+	viewY = centreY & map.getMaskH();
+	const int columns = std::max(1, map.getW() / side), rows = std::max(1, map.getH() / side);
+	const int cx = int(unsigned(centreX & map.getMaskW()) / side), cy = int(unsigned(centreY & map.getMaskH()) / side);
 	// Spiral again around a centre that moved two pages or more (a jump or a
 	// pan), or for another density; pages composed already cost only a check.
 	const auto apart = [](int a, int b, int period)
@@ -838,11 +862,11 @@ void OverviewTerrainCache::prewarm(const SceneMap &map, Uint32 visibleTeams, boo
 		   std::chrono::steady_clock::now() - started < FrameBudget && queued + jobs.size() < queueLimit)
 	{
 		// Step `prewarmStep` of ring `prewarmRing` around the centre page.
-		const int ring = prewarmRing, side = std::max(1, 2 * ring);
+		const int ring = prewarmRing, edgeSteps = std::max(1, 2 * ring);
 		int dx = 0, dy = 0;
 		if (ring)
 		{
-			const int edge = prewarmStep / side, along = prewarmStep % side;
+			const int edge = prewarmStep / edgeSteps, along = prewarmStep % edgeSteps;
 			dx = edge == 0 ? -ring + along : edge == 1 ? ring : edge == 2 ? ring - along : -ring;
 			dy = edge == 0 ? -ring : edge == 1 ? -ring + along : edge == 2 ? ring : ring - along;
 		}
@@ -861,13 +885,14 @@ void OverviewTerrainCache::prewarm(const SceneMap &map, Uint32 visibleTeams, boo
 			advance();
 			continue;
 		}
-		const int wx = ((cx + dx) % columns + columns) % columns * Tiles;
-		const int wy = ((cy + dy) % rows + rows) % rows * Tiles;
+		const int wx = ((cx + dx) % columns + columns) % columns * side;
+		const int wy = ((cy + dy) % rows + rows) % rows * side;
 		// Stamped as used now: the view's own pages, drawn after this, stay more
 		// recent, and the pages farthest from the camera go first.
 		auto &page = this->page(map, wx, wy, samples);
-		if (!validate(map, page, wx, wy, Region{wx, wy, wx + Tiles, wy + Tiles}, visibleTeams, wholeMap, jobs,
-					  queueLimit - queued))
+		if (!validate(map, page, wx, wy, Region{wx, wy, wx + side, wy + side}, visibleTeams, wholeMap, jobs,
+					  queueLimit - queued,
+					  SDL_GetTicksNS() + Uint64(std::chrono::duration_cast<std::chrono::nanoseconds>(FrameBudget).count())))
 			break; // Resume this page next frame.
 		advance();
 		++prewarmVisited;
@@ -881,4 +906,50 @@ void OverviewTerrainCache::prewarm(const SceneMap &map, Uint32 visibleTeams, boo
 		submit(jobs, true);
 	trim(viewBytes);
 	prewarmDone = prewarmVisited >= limit || prewarmRing > lastRing;
+}
+
+void OverviewTerrainCache::uploadAhead()
+{
+	if (!prewarmSamples)
+		return;
+	// Complete pages of the prewarmed density the device does not hold, each
+	// revision tried once: a page the device evicted since uploads again when
+	// a view draws it, never in a loop against the textures that evicted it.
+	std::vector<std::pair<int, Page *>> waiting;
+	const int w = mapWidth, h = mapHeight;
+	for (auto &[key, page] : pages)
+	{
+		if (page.samples != prewarmSamples || !page.valid || page.uncomposed || !page.image ||
+			page.aheadRevision == page.image->contentRevision() + (page.changed ? 1 : 0))
+			continue;
+		if (page.image->deviceHoldsPixels())
+		{
+			// Held already (or a renderer that uploads as it draws).
+			page.aheadRevision = page.image->contentRevision() + (page.changed ? 1 : 0);
+			continue;
+		}
+		const auto apart = [](int a, int b, int period)
+		{
+			const int d = std::abs(a - b) % period;
+			return std::min(d, period - d);
+		};
+		const int x = int(key & 0xFFFFFF), y = int(key >> 24 & 0xFFFFFF);
+		const int dx = apart(x + side / 2, viewX, w), dy = apart(y + side / 2, viewY, h);
+		waiting.emplace_back(dx * dx + dy * dy, &page);
+	}
+	std::sort(waiting.begin(), waiting.end(),
+			  [](const auto &a, const auto &b) { return a.first < b.first; });
+	for (auto &[distance, page] : waiting)
+	{
+		(void)distance;
+		if (page->changed)
+		{
+			page->image->markPixelsChanged();
+			page->changed = false;
+		}
+		if (!page->image->prepareDeviceTexture())
+			break; // The frame's allowance is spent.
+		page->aheadRevision = page->image->contentRevision();
+		++uploadedAhead;
+	}
 }

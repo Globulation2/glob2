@@ -113,6 +113,17 @@ class TorusRenderBenchmark
             const int step = (t - 240) / rapid, phase = step % (2 * depth);
             steps = phase <= depth ? phase : 2 * depth - phase;
             camera.event = (t - 240) % rapid ? nullptr : phase < depth ? "zoom_out" : "zoom_in";
+            // GLOB2_BENCH_RAPID_HOLD: spin out once and hold the far zoom until
+            // frame 360 of the cycle, then spin back in, to watch what the
+            // farthest zoom shows on each frame after it arrives.
+            static const bool hold = std::getenv("GLOB2_BENCH_RAPID_HOLD");
+            if (hold)
+            {
+                const int in = t < 360 ? 0 : (t - 360) / rapid + 1;
+                steps = t < 360 ? std::min(depth, step) : std::max(0, depth - in);
+                camera.event = (t - 240) % rapid ? nullptr
+                    : t < 360 ? (step < depth ? "zoom_out" : nullptr) : (in <= depth ? "zoom_in" : nullptr);
+            }
         }
         // Wheel steps keep the view's centre where it was.
         const double scale = std::pow(0.7, steps);
@@ -717,8 +728,9 @@ static int run(int argc, char **argv)
                             i, fog.rebuilt);
                     }
                     if (gui.view.render.overviewCache)
-                        std::printf("FRAME_OVERVIEW frame=%d composed_cells=%llu\n", i,
-                            static_cast<unsigned long long>(gui.view.render.overviewCache->composedCells()));
+                        std::printf("FRAME_OVERVIEW frame=%d composed_cells=%llu uploaded_ahead=%llu\n", i,
+                            static_cast<unsigned long long>(gui.view.render.overviewCache->composedCells()),
+                            static_cast<unsigned long long>(gui.view.render.overviewCache->pagesUploadedAhead()));
                     {
                         const auto &fallback = gui.view.render.fallback;
                         std::printf("FRAME_FALLBACK frame=%d time_ms=%.3f event=%s page_cells=%llu stand_in_cells=%llu "

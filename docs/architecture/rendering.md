@@ -346,8 +346,16 @@ on the graphics thread.
 Pages and overview pages that arrive over a fallback fade in over 150 ms with
 presentation-only alpha on their ordinary draw. On a presentation device at most
 eight new overview page textures upload a frame (`DrawableSurface::takeDeviceUpload`):
-past that a page draws its previous upload over the base, or the base alone, so
-a first zoom out to some 150 pages spreads their uploads over a few frames.
+past that a page draws its previous upload over the base, or the base alone. An
+overview page covers 64 by 64 cells (16 textures for a 256 by 256 map), and the
+pages prewarmed at the farthest zoom's density are admitted to the device adapter
+ahead of the zoom out with whatever allowance the frame leaves
+(`OverviewTerrainCache::uploadAhead`, through `DrawableSurface::prepareDeviceTexture`,
+which keeps the adapter's texture snapshot; the GPU copy happens in the first frame
+that draws the page), each content revision once, so a fast
+zoom out on SDL GPU or Programmable GL draws every overview page, its contours
+and resource squares, on its first frame, as Legacy GL and the portable renderer
+already did; a page the device evicted since uploads again within a frame or two.
 Likewise a changed HD surface (a terrain page animation rewrote) builds its mip
 chain on the graphics thread within 8 MiB of level-zero pixels a frame; past
 that a surface the device adapter already holds draws its previous upload. Pages and overview cells ahead of
@@ -356,11 +364,15 @@ the camera compose on the workers' lower priority lane. Each frame's
 from each fallback; `tools/rendering/fallback_scenario.py` reports them for a
 scripted game of jumps, pans and zooms, see
 [terrain rendering](../assets/terrain-rendering.md).
-Fully revealed resources use canonical map rows, with sorted source-tile indices
+Resources, decor and ground overlays draw from canonical map rows of recorded
+frames (`ResourceRowCache`) on every renderer: Legacy GL replays each row's cached
+geometry, and renderers without that cache draw the recorded frames sprite by
+sprite, checking partial discovery per drawn cell, so a frame does no per-cell
+decor, overlay or resource lookups. On Legacy GL, fully revealed resources use canonical map rows, with sorted source-tile indices
 selecting the contiguous visible vertex range. Translation places a canonical row
 at its wrapped-map position, so camera panning does not change its vertices.
 Cached rows reuse frame data until their resource or terrain revisions change. Animated cells update their selected frames as the scene tick advances.
-Partial-discovery resources keep the ordinary drawing path. The resource geometry budget
+Partial-discovery resources keep the ordinary drawing path there. The resource geometry budget
 is 32 MiB of buffer payload with at most 4096 entries and least-recently-used
 eviction; CPU metadata and driver allocation overhead are additional. Each scene
 attempts at most 16 geometry builds under a separate soft 2 ms budget; validated

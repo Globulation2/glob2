@@ -1285,6 +1285,80 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(settled.other == 0);
 		CHECK(settled.holes == 0);
 	}
+	GLOB2_TEST_CASE("prewarmed overview pages upload ahead so a zoom out draws every page on its first frame",
+					"[display][isolated][writes-preferences]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .width = 512, .height = 512,
+			.beforeLoad = [](GlobalContainer &container)
+			{ container.settings.rendererBackend = RendererBackend::Software; }});
+		auto &gfx = *globals->gfx;
+		// The first presentation device that starts here (SDL GPU, then Programmable GL).
+		bool device = false;
+		for (const auto &choice : gfx.rendererAvailability())
+			if (!device && choice.available &&
+				(choice.backend == RendererBackend::SDLGPU || choice.backend == RendererBackend::ProgrammableGL) &&
+				gfx.requestBackendSwitch(choice.backend))
+			{
+				gfx.nextFrame();
+				device = gfx.backendSwitchStatus().phase == RendererSwitchPhase::Complete &&
+					gfx.backendSwitchStatus().active == choice.backend;
+			}
+		if (!device)
+		{
+			MESSAGE("No presentation device: overview upload-ahead coverage skipped");
+			return;
+		}
+		// 256 by 256 cells: sixteen pages, twice what a device uploads in a frame.
+		glob2test::HeadlessGame fixture({.wDec = 8, .hDec = 8, .discovered = true});
+		auto &map = fixture.game.map;
+		for (int y = 40; y < 90; ++y)
+			for (int x = 100; x < 180; ++x)
+				map.setVertexTerrain(x, y, WATER);
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		globals->terrainCompositor().prepare(false, 0);
+		constexpr int samples = OverviewTerrainCache::FewSamples;
+		const auto zoomOut = [&](OverviewTerrainCache &cache)
+		{
+			gfx.nextFrame();
+			cache.draw(scene, 0, 0, 255, 255, 0, 0, fixture.team->me, true, samples, gfx, 255, false);
+			return cache.drawMetrics();
+		};
+		// Frames before the zoom out: the cache prewarms the farthest zoom's
+		// density and uploads its complete pages with each frame's allowance.
+		const auto warm = [&](OverviewTerrainCache &cache, bool ahead)
+		{
+			for (Patience waiting; waiting() && (!cache.baseReady() || cache.composedCells() < 256u * 256u ||
+												 (ahead && cache.pagesUploadedAhead() < 16));)
+			{
+				gfx.nextFrame();
+				cache.prewarm(scene, fixture.team->me, true, 128, 128, samples);
+				if (ahead)
+					cache.uploadAhead();
+				SDL_Delay(1);
+			}
+			REQUIRE(cache.baseReady());
+			REQUIRE(cache.composedCells() >= 256u * 256u);
+		};
+		CHECK(OverviewTerrainCache::PageTiles == 64);
+		OverviewTerrainCache ahead;
+		warm(ahead, true);
+		CHECK(ahead.pagesUploadedAhead() == 16);
+		const auto first = zoomOut(ahead);
+		CHECK(first.cells == 256u * 256u);
+		CHECK(first.base == 0);
+		CHECK(first.other == 0);
+		CHECK(first.holes == 0);
+		CHECK(first.fading == 0);
+		// Without the uploads ahead, the first frame shows the base where the
+		// allowance ran out, and the next one completes the view.
+		OverviewTerrainCache onDemand;
+		warm(onDemand, false);
+		CHECK(zoomOut(onDemand).base > 0);
+		const auto second = zoomOut(onDemand);
+		CHECK(second.base == 0);
+		CHECK(second.other == 0);
+	}
 #if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
 
 	TEST_CASE("Legacy GL game-load preload leaves sprites and fills drawing as before [display]")

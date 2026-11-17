@@ -638,12 +638,17 @@ map loads and again after a terrain edit (4 bytes a cell, twice for its texture;
 2 MiB for a 512 by 512 map). The overview therefore never shows a transparent
 patch once the base is ready, a frame or two after the map loads. A page whose
 first cells arrive after it was drawn empty fades in over the base in 150 ms.
-From the start of a game the cache also prewarms pages at the density the
+A page covers 64 by 64 cells (the whole map when it is smaller), so a whole 256
+by 256 map is 16 page textures. From the start of a game the cache also prewarms pages at the density the
 farthest zoom draws, spiralling out from the view's centre within three
 quarters of its allowance (less what the view holds) on the workers' lower priority lane, and
 starts the spiral again around a new centre after a jump or a pan of two pages;
 a prewarming batch for a page the view then waits on is queued again as visible
-work. Captures, exports and other one-shot draws compose every cell first. Its pages keep canonical world coordinates across
+work. On a presentation device the complete prewarmed pages are then admitted to
+the device adapter ahead of the zoom, nearest the view first, with the upload
+allowance the frame leaves, so a zoom out draws all of them on its first frame (that
+frame copies them to the GPU, 4 MiB for a 256 by 256 map at four samples). Describing cells stops at the frame budget
+even within a page, checked every 64 described cells. Captures, exports and other one-shot draws compose every cell first. Its pages keep canonical world coordinates across
 viewport movement, atlas tiles and zooms that keep the same samples per cell. Vertex windows include the contextual
 contour halo; terrain seeds, immutable terrain/resource registries and map asset
 bundles also invalidate the samples. Texture animation and blend opacity do not

@@ -19,6 +19,12 @@ class MapAssetBundle;
 // Canonical CPU palette pages, each its own texture. Neither depends on HD
 // artwork or animation phase.
 //
+// A page covers 64 by 64 cells (the whole map when it is smaller): a 256 by
+// 256 map is 16 textures, so a device that uploads a few new textures a frame
+// (DrawableSurface::takeDeviceUpload) fills a view in a frame or two rather
+// than in seconds, and prewarmed pages upload ahead of the zoom that shows
+// them (uploadAhead).
+//
 // Each cell is `samples` x `samples` palette samples. A visible resource adds a
 // square in its minimap colour, centred in the cell and growing with its stock,
 // so the terrain around it stays readable.
@@ -43,9 +49,9 @@ class OverviewTerrainCache
 	//! its own texture, so panning and zooming upload nothing new. Unless
 	//! `complete`, cold pages compose within a per-frame budget; until they are
 	//! ready a page draws its other density, or nothing.
-	//! `shownPages`, when given, lists the world tile origins (multiples of 16)
-	//! of the only pages whose drawing shows, such as a backdrop beneath missing
-	//! detailed pages; metrics count only those.
+	//! `shownPages`, when given, lists the world tile origins (multiples of
+	//! BackdropTiles) of the only blocks whose drawing shows, such as a backdrop
+	//! beneath missing detailed pages; metrics count only those.
 	void draw(const SceneMap &, int left, int top, int right, int bottom, int vx, int vy,
 			  Uint32 visibleTeams, bool wholeMap, int samples, GAGCore::DrawableSurface &target,
 			  Uint8 alpha, bool complete, const std::vector<SDL_Point> *shownPages = nullptr);
@@ -63,10 +69,25 @@ class OverviewTerrainCache
 	//! holds), and starts again around a new centre after a jump or a pan.
 	//! It also keeps the whole-map base current (see drawBase).
 	void prewarm(const SceneMap &, Uint32 visibleTeams, bool wholeMap, int centreX, int centreY, int samples);
+	//! Admits complete pages at the prewarmed density, nearest the view first,
+	//! to a presentation device adapter with what remains of the frame's upload
+	//! allowance (DrawableSurface::prepareDeviceTexture), so the zoom out that
+	//! shows them draws every page on its first frame. That frame copies them
+	//! to the GPU: at most the prewarm allowance, 4 MiB for a 256 by 256 map.
+	//! Call after the frame's overview draw. Does nothing on renderers that
+	//! upload as they draw.
+	void uploadAhead();
+	//! Side of the blocks `shownPages` lists (SoftwareTerrainCache::ChunkTiles).
+	static constexpr int BackdropTiles = 16;
+	//! Cells along a page's side: PageTiles, or the map's shorter side when smaller.
+	static constexpr int PageTiles = 64;
+	int pageTiles() const { return side; }
 	//! Fades a page in over this long once its first cells arrive where the view
 	//! showed the base or the other density.
 	static constexpr Uint64 FadeMs = 150;
 	std::uint64_t composedCells() const { return compositions; }
+	//! Pages uploadAhead has uploaded.
+	std::uint64_t pagesUploadedAhead() const { return uploadedAhead; }
 	//! Whether the whole-map base, one sample per cell composed by a worker as
 	//! the map loads, is ready. It draws beneath cells not composed yet, so the
 	//! overview never shows a transparent patch.
@@ -76,7 +97,8 @@ class OverviewTerrainCache
 	~OverviewTerrainCache();
 
   private:
-	static constexpr int Tiles = 16;
+	static constexpr int Tiles = PageTiles; // Stride of a page's cell arrays.
+	int side = Tiles;					   // Cells along a page's side for this map.
 	struct Page
 	{
 		int samples = 0;
@@ -91,12 +113,14 @@ class OverviewTerrainCache
 		// Per cell: resource type and square size last composed, -1 for none, or
 		// the minimum for a cell not composed yet; and the code being composed.
 		std::array<int, Tiles * Tiles> resources{}, inFlight{};
-		int uncomposed = Tiles * Tiles; // Cells of `resources` still Uncomposed.
+		int uncomposed = 0; // Cells of `resources` still Uncomposed.
 		std::unique_ptr<TerrainVisual::Surface> image;
 		// Drawn with nothing composed in view; its first cells then fade in from
 		// fadeStart (SDL_GetTicks).
 		bool shownEmpty = false;
 		Uint64 fadeStart = 0;
+		// The content revision uploadAhead last uploaded or found held.
+		std::uint64_t aheadRevision = ~std::uint64_t(0);
 	};
 	struct BaseJob;
 	struct CellJob;
@@ -113,16 +137,17 @@ class OverviewTerrainCache
 		Uint64 terrainRevision, resourceRevision, discoveryRevision, surfaceIdentity, surfaceRevision;
 		bool operator==(const Output &) const = default;
 	};
-	static std::size_t pageStorage(int samples);
+	std::size_t pageStorage(int samples) const;
 	static void composeCell(const TerrainVisual::Catalog &, const CellJob &, SDL_Surface *, int x, int y);
 	void resetForMap(const SceneMap &);
 	Page &page(const SceneMap &, int wx, int wy, int samples);
 	int cellCode(const SceneMap &, int mx, int my, Uint32 visibleTeams, bool wholeMap, int samples, int &type,
 				 int &square) const;
 	//! Checks a page against the map and queues, up to `jobLimit` in all, its
-	//! cells in `region` that need composing. False when the limit stopped it.
+	//! cells in `region` that need composing, describing cells until `deadline`
+	//! (SDL_GetTicksNS). False when the limit or the deadline stopped it.
 	bool validate(const SceneMap &, Page &, int wx, int wy, const Region &, Uint32 visibleTeams, bool wholeMap,
-				  std::vector<CellJob> &jobs, std::size_t jobLimit);
+				  std::vector<CellJob> &jobs, std::size_t jobLimit, Uint64 deadline = ~Uint64(0));
 	void composeNow(std::vector<CellJob> &jobs);
 	void submit(std::vector<CellJob> &jobs, bool ahead = false);
 	void updateBase(const SceneMap &);
@@ -136,9 +161,11 @@ class OverviewTerrainCache
 	Admission admit(Page &);
 	void drawPage(Page &, int wx, int wy, const Region &, int screenX, int screenY, GAGCore::DrawableSurface &,
 				  Uint8 alpha);
+	//! Visits the view in blocks of `step` cells (a page, or BackdropTiles),
+	//! each with the origin of the page holding it.
 	template <class Visit>
 	void forEachPage(const SceneMap &, int left, int top, int right, int bottom, int vx, int vy, bool centreFirst,
-					 Visit visit);
+					 int step, Visit visit);
 	void trim(std::size_t keepBytes);
 	std::size_t queuedCells(bool ahead) const;
 	std::unordered_map<std::uint64_t, Page> pages;
@@ -151,13 +178,15 @@ class OverviewTerrainCache
 	// Total yield capacity per resource type of `resources`, built on first use.
 	std::vector<unsigned> capacities;
 	std::shared_ptr<const MapAssetBundle> assets;
-	std::uint64_t use = 0, compositions = 0;
+	std::uint64_t use = 0, compositions = 0, uploadedAhead = 0;
+	int mapWidth = 1, mapHeight = 1;
 	DrawMetrics metrics;
 	std::size_t pageBytes = 0;
 	int pageSamples = 0;
 	// The prewarm spiral: its centre page, ring and step within the ring, and
 	// pages visited; done once it has covered the map or its allowance.
 	int prewarmX = 0, prewarmY = 0, prewarmSamples = 0, prewarmRing = 0, prewarmStep = 0;
+	int viewX = 0, viewY = 0; // World tile at the centre of the last interactive draw or prewarm.
 	std::size_t prewarmVisited = 0;
 	bool prewarmDone = false;
 	std::size_t viewBytes = 0; // Page storage the last interactive draw kept.
