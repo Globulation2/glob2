@@ -2081,7 +2081,7 @@ void Compositor::CpuMaterials::compose(const Recipe &recipe, SDL_Surface *target
 }
 void Compositor::CpuMaterials::compose(const Recipe &recipe, SDL_Surface *target, int scale,
                                        CpuScratch &scratch, const CellMask *mask,
-                                       const Refresh *refresh) const
+                                       const Refresh *refresh, int reduction) const
 {
     scratch.sources.resize(definitions->materials.size());
     auto &sources = scratch.sources;
@@ -2113,7 +2113,7 @@ void Compositor::CpuMaterials::compose(const Recipe &recipe, SDL_Surface *target
         mask = &scratch.mask;
     }
     composePixels(*definitions, *stones, recipe, target, 0, 0, scale, sources, mask, surfTime,
-                  mask ? refresh : nullptr);
+                  mask ? refresh : nullptr, reduction);
 }
 Compositor::CellMask Compositor::CpuMaterials::mask(const Recipe &recipe, int scale) const
 {
@@ -2122,7 +2122,7 @@ Compositor::CellMask Compositor::CpuMaterials::mask(const Recipe &recipe, int sc
     return result;
 }
 void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, int scale,
-						 const CellMask *mask, const Refresh *refresh) const
+						 const CellMask *mask, const Refresh *refresh, int reduction) const
 {
     thread_local std::vector<PreparedMaterialView> sources;
     sources.resize(definitions.materials.size());
@@ -2138,7 +2138,7 @@ void Compositor::compose(const Recipe &r, SDL_Surface *target, int ox, int oy, i
             sources[id] = decimated(id, sources[id], scale, decimatedPixels[i]);
     }
     composePixels(definitions, *stoneMaps, r, target, ox, oy, scale, sources, mask, preparedTime,
-                  mask ? refresh : nullptr);
+                  mask ? refresh : nullptr, reduction);
 }
 namespace
 {
@@ -2224,11 +2224,13 @@ void Compositor::composePixels(const Catalog &definitions, const StoneMaps &ston
                                SDL_Surface *target,
                                int ox, int oy, int scale,
                                std::span<const PreparedMaterialView> prepared, const CellMask *mask,
-                               unsigned surfTime, const Refresh *refresh)
+                               unsigned surfTime, const Refresh *refresh, int reduction)
 {
 	if (target->format != SDL_PIXELFORMAT_ARGB8888)
 		throw std::runtime_error("Terrain compositor requires ARGB8888");
 	const int size = 32 * scale;
+	if (reduction > 1 && (r.uniform() || refresh || size % reduction))
+		throw std::logic_error("Only a mixed terrain cell composes reduced");
 	// Resolve immutable pixel storage once per tile, rather than through
 	// vector/array accessors for every channel of every instrumented pixel.
     const auto *sources = prepared.data();
@@ -2381,15 +2383,10 @@ void Compositor::composePixels(const Catalog &definitions, const StoneMaps &ston
 										  (oy + y) * target->pitch)[ox + x];
 	};
 	constexpr unsigned opaqueAlpha = 255u * 65536;
-	// The complete sample: blend, seam, then surf.
-	const auto composeSample = [&](int x, int y, const CellMask::Sample &sample, const SampleWeights &weights)
+	// A sample's blend of its palette textures: each texel premultiplied by
+	// its Q16 weight times its alpha, summed into rgb and alpha.
+	const auto blendSample = [&](int x, int y, const SampleWeights &weights, std::uint64_t (&rgb)[3], auto &alpha)
 	{
-		const unsigned dominantSlot = sample.slots >> 2 & 3, neighborSlot = sample.slots >> 4 & 3;
-		const auto &dominantMaterial = *slots[dominantSlot].material;
-		const auto &neighborMaterial = *slots[neighborSlot].material;
-		const int margin = sample.margin;
-		std::uint64_t rgb[3] = {};
-		unsigned alpha = 0;
 		for (unsigned slot = 0; slot < cell.colors; ++slot)
 			if (weights.weight[slot] && slots[slot].texture)
 			{
@@ -2401,6 +2398,16 @@ void Compositor::composePixels(const Catalog &definitions, const StoneMaps &ston
 				for (int k = 0; k < 3; ++k)
 					rgb[k] += std::uint64_t(channels[k]) * a;
 			}
+	};
+	// The seam and surf of the sample at (x, y) over a blend, written with
+	// the blend's alpha to output pixel (outX, outY).
+	const auto finishSample = [&](int x, int y, const CellMask::Sample &sample, const std::uint64_t (&rgb)[3],
+								  auto alpha, unsigned outAlpha, int outX, int outY)
+	{
+		const unsigned dominantSlot = sample.slots >> 2 & 3, neighborSlot = sample.slots >> 4 & 3;
+		const auto &dominantMaterial = *slots[dominantSlot].material;
+		const auto &neighborMaterial = *slots[neighborSlot].material;
+		const int margin = sample.margin;
 		// Seam treatment: the dominant material darkens under a higher
 		// neighbor's edge and takes that neighbor's fringe tint. Textures are
 		// never blended across the seam; only the contact band is toned.
@@ -2429,8 +2436,41 @@ void Compositor::composePixels(const Catalog &definitions, const StoneMaps &ston
 						r.y * 8192 + (2 * y + 1) * 4096 / size,
 						slots[surfSide ? dominantSlot : neighborSlot].surfPhase, value, land);
 		}
-		pixel(x, y) = ((alpha + 32768) / 65536 << 24) | (value[0] << 16) | (value[1] << 8) | value[2];
+		pixel(outX, outY) = (outAlpha << 24) | (value[0] << 16) | (value[1] << 8) | value[2];
 	};
+	// The complete sample: blend, seam, then surf.
+	const auto composeSample = [&](int x, int y, const CellMask::Sample &sample, const SampleWeights &weights)
+	{
+		std::uint64_t rgb[3] = {};
+		unsigned alpha = 0;
+		blendSample(x, y, weights, rgb, alpha);
+		finishSample(x, y, sample, rgb, alpha, (alpha + 32768) / 65536, x, y);
+	};
+	if (reduction > 1)
+	{
+		// A reduced cell, as the direct pass draws it at that density: each
+		// output pixel is the alpha-weighted mean blend of its block, toned
+		// by the seam and surf of the block's centre sample, so contact lines
+		// and surf bands keep their width rather than being averaged with
+		// their surroundings into a wider, paler band.
+		const int out = size / reduction;
+		const std::uint64_t count = std::uint64_t(reduction) * reduction;
+		for (int by = 0; by < out; ++by)
+			for (int bx = 0; bx < out; ++bx)
+			{
+				std::uint64_t rgb[3] = {}, alpha = 0;
+				for (int dy = 0; dy < reduction; ++dy)
+					for (int dx = 0; dx < reduction; ++dx)
+					{
+						const int x = bx * reduction + dx, y = by * reduction + dy;
+						blendSample(x, y, SampleWeights(cell.samples[std::size_t(y) * size + x]), rgb, alpha);
+					}
+				const int cx = bx * reduction + reduction / 2, cy = by * reduction + reduction / 2;
+				finishSample(cx, cy, cell.samples[std::size_t(cy) * size + cx], rgb, alpha,
+							 unsigned((alpha / count + 32768) / 65536), bx, by);
+			}
+		return;
+	}
 	if (refresh && refresh->samples)
 	{
 		// Only the samples animation can change, prepared from this same mask.

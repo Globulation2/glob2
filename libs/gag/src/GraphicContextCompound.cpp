@@ -541,10 +541,24 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
                 ++drawCalls;
                 return;
             }
+            // The portable renderer's nearest sampling leaves a pixel centre on
+            // a texel boundary (every one at half zoom) to the driver's
+            // interpolation, which took the upper texel in some sprites (algae,
+            // some trees) where the devices take the lower. Bias plain sprites
+            // toward the lower texel as legacy GL does (drawSurface below).
+            // Team-coloured building frames stay unbiased: the driver already
+            // resolves their ties as the devices do, at every zoom.
+            // The biased coordinates stay within the texture: SDL repeats one
+            // that leaves it, which drew the far edge's texels along the near
+            // edge. A clamped end keeps the bias for every interior tie.
+            const bool portable = renderer == portableRenderer.get();
+            const float tie = portable && !nearestTiesUnbiased ? -0.00141421356f : 0.f;
+            const auto coordinate = [tie](int texel, int size)
+            { return std::clamp((float(texel) + tie) / size, 0.f, 1.f); };
+            const float u0 = coordinate(sx, pixels->w), v0 = coordinate(sy, pixels->h);
+            const float u1 = coordinate(sx + sw, pixels->w), v1 = coordinate(sy + sh, pixels->h);
             if (spriteBatch.owner == this && renderer != deviceRenderer.get())
             {
-                const float u0 = float(sx)/pixels->w, v0 = float(sy)/pixels->h;
-                const float u1 = float(sx+sw)/pixels->w, v1 = float(sy+sh)/pixels->h;
                 spriteBatch.backend = renderer;
                 if (spriteBatch.append({surface, 0, pixels, surface->contentRevision()},
                                        alpha, x, y, w, h, u0, v0, u1, v1)) ++drawCalls;
@@ -556,6 +570,17 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
                 surface->spriteSource->resolveDeviceAtlas(*surface,source,uploadSource))
                 pixels=const_cast<DrawableSurface*>(uploadSource)->getSDLSurface();
             BudgetClassScope budget(*renderer, uploadSource->deviceBudgetClass);
+            if (portable)
+            {
+                // A blit's whole-texel source rectangle cannot carry the bias.
+                const SDL_FColor c{1, 1, 1, alpha / 255.0f};
+                const SDL_Vertex a{{x, y}, c, {u0, v0}}, b{{x + w, y}, c, {u1, v0}},
+                    d{{x, y + h}, c, {u0, v1}}, e{{x + w, y + h}, c, {u1, v1}};
+                const SDL_Vertex quad[] = {a, b, e, a, e, d};
+                renderer->triangles(quad, surface, pixels, surface->contentRevision());
+                ++drawCalls;
+                return;
+            }
             renderer->blit(uploadSource, pixels, uploadSource->contentRevision(),
                            renderer == softwareRasterizer.get() && surface->hasOpaquePixels(),
                            source, SDL_FRect{x,y,w,h}, alpha);

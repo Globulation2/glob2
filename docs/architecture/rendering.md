@@ -128,7 +128,13 @@ transparent texels (black in most artwork) into every sprite edge. The
 resource sheet draws from standalone frames on legacy OpenGL too, not from a
 trilinearly sampled HD atlas. Native frames are sampled nearest; at half zoom
 every pixel centre falls on a texel boundary, and legacy OpenGL biases those
-ties to the lower texel, as the other renderers resolve them. Lines, circles
+ties to the lower texel, as the other renderers resolve them. The portable
+renderer biases the texture coordinates of its nearest-sampled quads the same
+way (`GraphicContext::drawSurface`): left to the driver, it took the upper
+texel in some frames (the resource sheet's algae, some trees) where the devices
+take the lower. Team-coloured building frames stay unbiased there
+(`nearestTiesUnbiased`), since the driver already resolves their ties as the
+devices do, at half zoom and at others such as 0.9. Lines, circles
 and rectangle outlines are one logical unit wide on every accelerated
 renderer: a quad along the line, circles of such segments, and outlines of
 the rectangle's own edge pixels.
@@ -158,9 +164,16 @@ available renderer draws native at density one and HD at two.
 Below one screen pixel per logical pixel the portable renderer's native pages
 are reduced to the density the direct pass's art tiles take there: the smallest
 power of two at least 32 times the density pixels a cell (16 at half zoom, 8 at
-a quarter), each cell box-filtered from its native composition, and sampled
-linearly. An unreduced native page is sampled nearest there, which drew grainy,
-high-contrast sand where the other renderers draw filtered terrain.
+a quarter), and sampled linearly. A uniform cell is box-filtered from its native
+composition. A mixed cell composes at that density as the direct pass draws its
+masks there: each pixel blends the alpha-weighted mean of its block of samples,
+then takes the contact shade, fringe and surf of the block's centre sample
+(`Compositor::compose` with a reduction). Box-filtering the composed cell
+instead averaged the one-sample dark contact line and pale surf band with their
+surroundings into a wider, paler shore. The render devices' page fallback keeps
+the box filter, which their own page composition (`terrain-reduce`) mirrors. An unreduced native page is sampled
+nearest there, which drew grainy, high-contrast sand where the other renderers
+draw filtered terrain.
 
 The portable SDL renderer's terrain pages ask for HD material frames only where
 they show: above one screen pixel per logical pixel (map scale times raster

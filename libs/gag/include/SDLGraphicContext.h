@@ -577,6 +577,10 @@ namespace GAGCore
 		//! transform, but still clips to the map's rectangle.
 		bool cpuMapClip=false;
         bool periodicCopy=false;
+		//! The portable renderer biases nearest-sampling ties (every pixel
+		//! centre at half zoom) toward the lower texel, except while a
+		//! team-coloured building frame draws (see drawSurface).
+		bool nearestTiesUnbiased=false;
 		float mapScale=1, mapTranslateX=0, mapTranslateY=0;
 		void drawMapSnappedRect(int x1, int y1, int x2, int y2, const Color& color, bool stroked, float maxStrokePoints);
 		float overlayScale=1;
@@ -840,6 +844,8 @@ namespace GAGCore
         // state once; subsequent invocations must only draw.
         void drawMapCopies(int periodW,int periodH,int viewW,int viewH,const std::function<void()> &draw, bool advance = true);
         bool isPeriodicCopy() const {return periodicCopy;}
+		//! Sets nearestTiesUnbiased and returns its previous value.
+		bool exchangeNearestTiesUnbiased(bool unbiased) { std::swap(unbiased, nearestTiesUnbiased); return unbiased; }
 		void beginScreenOverlay(int &x,int &y,int &sx,int &sy,int &sw,int &sh);
 		//! Scale of the active map transform; 1 outside a map pass.
 		float mapTransformScale() const { return mapTransformActive ? mapScale : 1.f; }

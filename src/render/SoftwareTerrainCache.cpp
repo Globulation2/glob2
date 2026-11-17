@@ -607,12 +607,21 @@ std::pair<bool, bool> classifyAlpha(const SDL_Surface &surface, SDL_Rect rect)
     if (*first >> 24 == 0) return {false, allAlpha<0>(surface, rect)};
     return {false, false};
 }
+// Whether a reduced page composes its mixed cells at the page's density, as
+// the direct pass draws them (Compositor::compose with a reduction), rather
+// than box-filtering their native composition. The render devices keep the
+// box filter, which their own page composition (terrain-reduce) mirrors.
+bool mixedCellsAtDensity()
+{
+    return !globalContainer->gfx->renderDevice();
+}
 // A reduced page (downsample > 1) composes each cell at native size into a
-// job-local tile and box-filters it into the page, as the serial path does.
+// job-local tile and box-filters it into the page, as the serial path does,
+// or a mixed cell at the page's density (mixedCellsAtDensity).
 void buildTerrainJob(std::span<TerrainCellResult> results,
                      const TerrainVisual::Compositor::CpuMaterials &materials, int samplingScale,
                      int downsample, int pitch, std::size_t cellsPerJob, std::size_t job,
-                     const Uint32 *nativePage = nullptr)
+                     bool mixedAtDensity, const Uint32 *nativePage = nullptr)
 {
     TerrainVisual::Compositor::CpuScratch scratch;
     std::vector<Uint32> native;
@@ -633,7 +642,8 @@ void buildTerrainJob(std::span<TerrainCellResult> results,
         output.w = output.h = 32 * samplingScale / downsample;
         output.pitch = pitch;
         output.pixels = result.pixels;
-        if (result.input.discovered && nativePage)
+        const bool reduceMixed = mixedAtDensity && downsample > 1 && !result.input.recipe.uniform();
+        if (result.input.discovered && nativePage && !reduceMixed)
         {
             // A retained native page already holds this cell's composition.
             SDL_Surface tile{};
@@ -650,13 +660,15 @@ void buildTerrainJob(std::span<TerrainCellResult> results,
         {
             if (!result.reused && result.keepMask)
                 result.mask = materials.mask(result.input.recipe, samplingScale);
-            materials.compose(result.input.recipe, downsample > 1 ? &nativeTile : &output, samplingScale,
+            // A mixed cell composes at the page's density (Compositor::compose).
+            materials.compose(result.input.recipe, downsample > 1 && !reduceMixed ? &nativeTile : &output, samplingScale,
                               scratch,
                               result.reused ? result.reused
                               : result.mask ? &*result.mask
                                             : nullptr,
-                              downsample > 1 || !result.refresh ? nullptr : &*result.refresh);
-            if (downsample > 1)
+                              downsample > 1 || !result.refresh ? nullptr : &*result.refresh,
+                              reduceMixed ? downsample : 1);
+            if (downsample > 1 && !reduceMixed)
                 reduceTile(&nativeTile, &output, 0, 0, downsample);
             std::tie(result.opaque, result.empty) =
                 classifyAlpha(output, {0, 0, output.w, output.h});
@@ -681,6 +693,7 @@ void buildTerrainJob(std::span<TerrainCellResult> results,
 struct TerrainPendingPage
 {
     int x = 0, y = 0, scale = 1, downsample = 1;
+    bool mixedAtDensity = false; // mixedCellsAtDensity() when it was launched.
     Uint32 seed = 0;
     Uint64 terrainRevision = 0;
     std::array<Uint32, SoftwareTerrainCache::SourceSpan * SoftwareTerrainCache::SourceSpan> sources{};
@@ -735,7 +748,7 @@ void submitPage(const std::shared_ptr<TerrainPendingPage> &page,
                 try
                 {
                     buildTerrainJob(page->results, *page->materials, page->scale, page->downsample,
-                                    page->pitch, page->cellsPerJob, job,
+                                    page->pitch, page->cellsPerJob, job, page->mixedAtDensity,
                                     page->native.empty() ? nullptr : page->native.data());
                 }
                 catch (...)
@@ -1010,8 +1023,9 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
             GAGCore::executePresentationJobs(
                 (results.size() + cellsPerJob - 1) / cellsPerJob,
                 [&results, materials, samplingScale = resolution, reduction = downsample, pitch,
-                 cellsPerJob](std::size_t job)
-                { buildTerrainJob(results, *materials, samplingScale, reduction, pitch, cellsPerJob, job); });
+                 cellsPerJob, mixedAtDensity = mixedCellsAtDensity()](std::size_t job)
+                { buildTerrainJob(results, *materials, samplingScale, reduction, pitch, cellsPerJob, job,
+                                  mixedAtDensity); });
         }
         ++workMetrics.batches;
         workMetrics.jobs += (results.size() + cellsPerJob - 1) / cellsPerJob;
@@ -1657,6 +1671,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 			page->y = entry.y;
 			page->scale = entry.scale;
 			page->downsample = entry.downsample;
+			page->mixedAtDensity = mixedCellsAtDensity();
 			page->seed = entry.seed;
 			page->terrainRevision = entry.recipeTerrainRevision;
 			page->tiles = tiles;
@@ -1754,6 +1769,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 			page->y = wy;
 			page->scale = resolution;
 			page->downsample = downsample;
+			page->mixedAtDensity = mixedCellsAtDensity();
 			page->seed = map.terrainSeed();
 			page->terrainRevision = terrainRevision;
 			page->sources = sources;
@@ -2242,6 +2258,15 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 								// Calmed shore cells vary within a variant; compose those.
 								if (gpu && downsample > 1 && !native && !recipe.calmed() && recipe.uniform())
 									copyUniform(recipe, target, x * n, y * n, n);
+								else if (downsample > 1 && !recipe.uniform() && mixedCellsAtDensity())
+								{
+									// Seams and surf at the page's density, as the
+									// direct pass draws them (Compositor::compose).
+									SDL_Surface tile = *target;
+									tile.w = tile.h = n;
+									tile.pixels = static_cast<Uint8 *>(target->pixels) + y * n * target->pitch + x * n * 4;
+									compositor.compose(recipe, &tile, 0, 0, maskScale, cellMask, nullptr, downsample);
+								}
 								else if (downsample > 1)
 								{
 									if (native)

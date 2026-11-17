@@ -375,6 +375,29 @@ namespace GAGCore
 		return true;
 	}
 
+	namespace
+	{
+		// Team-coloured building frames leave nearest-sampling ties unbiased
+		// while they draw (GraphicContext::nearestTiesUnbiased).
+		struct NearestTieScope
+		{
+			GraphicContext *context = nullptr;
+			bool previous = false;
+			NearestTieScope(DrawableSurface *target, GraphicContext *gc, bool building)
+			{
+				if (target != gc || !building)
+					return;
+				context = gc;
+				previous = gc->exchangeNearestTiesUnbiased(true);
+			}
+			~NearestTieScope()
+			{
+				if (context)
+					context->exchangeNearestTiesUnbiased(previous);
+			}
+		};
+	}
+
 	void DrawableSurface::drawSprite(float x, float y, Sprite *sprite, unsigned index,  Uint8 alpha)
 	{
 		// check bounds
@@ -403,6 +426,7 @@ namespace GAGCore
 		// Plain fallback: native only. Reached by the software renderer, by a
 		// shader-unavailable GPU without an HD counterpart to fall back to via
 		// the sized overload above, and by every sprite with no team layer.
+		NearestTieScope tie(this, _gc, sprite->rotated[index] && !sprite->dynamicTeamColor);
 		if (sprite->images[index])
 			drawSurface(x, y, sprite->images[index], alpha);
 		if (sprite->rotated[index] && !drawDeviceTeamLayer(x, y, -1, -1, sprite, index, false, alpha))
@@ -425,6 +449,7 @@ namespace GAGCore
 		// Legacy GL draws HD layers only where the HD sprite policy shows them.
 		bool experiment = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU) &&
 			Sprite::highResolutionShown();
+		NearestTieScope tie(this, _gc, sprite->rotated[index] && !sprite->dynamicTeamColor);
 		if (auto surface = sprite->prepareDrawSurface(index, false, experiment))
 			drawSurface(x, y, w, h, surface, alpha);
 		// The team layer draws into the exact same destination box as the base
@@ -453,6 +478,7 @@ namespace GAGCore
 		// Legacy GL draws HD layers only where the HD sprite policy shows them.
 		bool experiment = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU) &&
 			Sprite::highResolutionShown();
+		NearestTieScope tie(this, _gc, sprite->rotated[index] && !sprite->dynamicTeamColor);
 		if (auto surface = sprite->prepareDrawSurface(index, false, experiment))
 			drawSurface(x, y, w, h, surface, alpha);
 		if (drawDeviceTeamLayer(x, y, w, h, sprite, index, experiment, alpha))
