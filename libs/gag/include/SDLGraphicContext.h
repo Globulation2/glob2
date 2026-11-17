@@ -444,6 +444,9 @@ namespace GAGCore
         std::function<void(RendererBackend)> backendPreferenceCallback;
         static std::optional<RendererBackend> initialBackend;
         RendererBackend automaticBackend = RendererBackend::Software;
+        //! Families Auto tries in order at startup; a lost device falls to the next.
+        std::vector<RendererBackend> automaticOrder;
+        RendererBackend fallbackAfter(RendererBackend failed) const;
         bool awaitingBrowserSurface = false;
         bool awaitingDevicePreparation = false, awaitingSwitchCapture = false;
         RendererBackend switchingFrom = RendererBackend::Software, switchingTo = RendererBackend::Software;
@@ -502,6 +505,11 @@ namespace GAGCore
         const RendererSwitchStatus &backendSwitchStatus() const { return backendStatus; }
         RendererCapabilities rendererCapabilities() const;
         std::vector<RendererAvailability> rendererAvailability() const;
+        //! The families Auto tries, best first, for a context created with \p flags.
+        //! Unavailable entries are skipped and Software always ends the list.
+        static std::vector<RendererBackend> automaticRendererOrder(Uint32 flags);
+        //! What Auto resolves to in this context (the family it started on when Auto was requested).
+        RendererBackend automaticRenderer() const { return automaticBackend; }
         void setBackendPreferenceCallback(std::function<void(RendererBackend)> callback) { backendPreferenceCallback = std::move(callback); }
 		// Interactive hosts reserve drawing before painting; exports and benchmarks
 		// leave the context's default uncapped. Zero means Unlimited.
@@ -527,6 +535,11 @@ namespace GAGCore
             NOAUDIO = 128, // Offline artwork export creates only the video context.
             //! Opt out of high-density backing pixels for fixed-pixel profiling.
             LOWPIXELDENSITY = 64,
+            //! Let Auto follow the game's measured per-platform renderer order
+            //! (automaticRendererOrder). The game sets it at startup; it is never
+            //! persisted. Without it Auto keeps the historical mapping of USEGPU
+            //! and PORTABLEGPU for tools and tests.
+            PREFERDEVICE = 256,
 		};
 		
 	protected:

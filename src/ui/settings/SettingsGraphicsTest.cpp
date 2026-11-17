@@ -357,11 +357,13 @@ TEST_SUITE("SettingsGraphics")
         for (const auto &[flags, expected] : std::array{
 #if defined(GLOB2_MOBILE) || defined(__EMSCRIPTEN__)
             std::pair{0, GAGCore::RendererBackend::Software},
-#else
-            // The historical desktop default never set a GPU flag; it is not a Software choice.
-            std::pair{int(GAGCore::GraphicContext::RESIZABLE | GAGCore::GraphicContext::CUSTOMCURSOR), GAGCore::RendererBackend::Auto},
-#endif
             std::pair{int(GAGCore::GraphicContext::USEGPU), GAGCore::RendererBackend::LegacyGL},
+#else
+            // The historical desktop toggle offered Software (its default, no GPU
+            // flag) or OpenGL; neither pins a family, so both migrate to Auto.
+            std::pair{int(GAGCore::GraphicContext::RESIZABLE | GAGCore::GraphicContext::CUSTOMCURSOR), GAGCore::RendererBackend::Auto},
+            std::pair{int(GAGCore::GraphicContext::USEGPU), GAGCore::RendererBackend::Auto},
+#endif
             std::pair{int(GAGCore::GraphicContext::PORTABLEGPU), GAGCore::RendererBackend::PortableSDL}}) {
             { std::ofstream out(path); out << "screenFlags=" << flags << '\n'; }
             settings.load(file);
@@ -378,17 +380,38 @@ TEST_SUITE("SettingsGraphics")
         CHECK(settings.rendererBackend == GAGCore::RendererBackend::Auto);
         std::filesystem::remove(path);
     }
-    TEST_CASE("desktop startup requests the GL surface so Auto resolves to Legacy GL")
+    TEST_CASE("startup lets Auto follow the measured renderer order without persisting the request")
     {
+        using GAGCore::GraphicContext;
+        using GAGCore::RendererBackend;
         const Settings settings;
         const unsigned flags = startupScreenFlags(settings.screenFlags);
         CHECK((flags & settings.screenFlags) == settings.screenFlags);
-        CHECK((flags & GAGCore::GraphicContext::PORTABLEGPU) == 0);
-#if defined(GLOB2_MOBILE) || defined(__EMSCRIPTEN__)
+        CHECK((flags & GraphicContext::PORTABLEGPU) == 0);
+        CHECK((settings.screenFlags & (GraphicContext::USEGPU | GraphicContext::PREFERDEVICE)) == 0); // not persisted
+        const auto order = GraphicContext::automaticRendererOrder(flags);
+        REQUIRE(!order.empty());
+        CHECK(order.back() == RendererBackend::Software);
+#if defined(__EMSCRIPTEN__)
         CHECK(flags == settings.screenFlags);
+#elif defined(GLOB2_MOBILE)
+        CHECK((flags & GraphicContext::PREFERDEVICE) != 0);
+        CHECK(order == std::vector{RendererBackend::PortableSDL, RendererBackend::Software});
 #else
-        CHECK((flags & GAGCore::GraphicContext::USEGPU) != 0);
-        CHECK((settings.screenFlags & GAGCore::GraphicContext::USEGPU) == 0); // not persisted
+        CHECK((flags & GraphicContext::USEGPU) != 0);
+        CHECK((flags & GraphicContext::PREFERDEVICE) != 0);
+        // The measured desktop orders (docs/architecture/rendering.md); Legacy
+        // GL drops out of builds without OpenGL.
+        auto withoutLegacy = order;
+        std::erase(withoutLegacy, RendererBackend::LegacyGL);
+        CHECK(withoutLegacy == std::vector{RendererBackend::ProgrammableGL, RendererBackend::SDLGPU,
+            RendererBackend::PortableSDL, RendererBackend::Software});
+        if (withoutLegacy.size() != order.size())
+#ifdef __APPLE__
+            CHECK(order[2] == RendererBackend::LegacyGL);
+#else
+            CHECK(order[1] == RendererBackend::LegacyGL);
+#endif
 #endif
     }
     TEST_CASE("render ceiling defaults migrates validates and round trips")

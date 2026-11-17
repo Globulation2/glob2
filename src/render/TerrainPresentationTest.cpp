@@ -1939,12 +1939,12 @@ TEST_SUITE("TerrainPresentation")
 		REQUIRE(settled);
 		// Out to the whole map at 16 pixels a cell, frame after frame while
 		// the atlas refills.
-		constexpr float far = .3f;
+		constexpr float wholeMapZoom = .3f; // Not `far`: a Windows header macro.
 		std::vector<std::vector<Uint8>> refilling;
 		std::size_t mostAbsent = 0;
 		for (Patience waiting; waiting();)
 		{
-			auto frame = directTerrainFrame(gfx, atlas, scene, teams, far, 63, 63, false);
+			auto frame = directTerrainFrame(gfx, atlas, scene, teams, wholeMapZoom, 63, 63, false);
 			const auto art = atlas.artMetrics();
 			CAPTURE(art.visible);
 			CAPTURE(art.absent);
@@ -1957,7 +1957,7 @@ TEST_SUITE("TerrainPresentation")
 		CAPTURE(mostAbsent);
 		REQUIRE(mostAbsent > 0); // The zoom drew variants the drawing atlas did not hold.
 		REQUIRE_FALSE(refilling.empty());
-		const auto complete = directTerrainFrame(gfx, atlas, scene, teams, far, 63, 63, true);
+		const auto complete = directTerrainFrame(gfx, atlas, scene, teams, wholeMapZoom, 63, 63, true);
 		REQUIRE_FALSE(complete.empty());
 		const auto blockMean = [](const std::vector<Uint8> &rows, int bx, int by, int channel)
 		{

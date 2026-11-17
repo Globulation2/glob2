@@ -30,7 +30,7 @@ version, and fails rather than package an APK without the complete Vulkan shader
 set; `build` and `bundle` then check the packaged SPIR-V against its receipts.
 The Android SDL dependency is built with its `vulkan` feature
 (`platforms/mobile/vcpkg.json`); without it SDL GPU reports the Vulkan driver as
-unsupported and the game falls back to software rendering.
+unsupported and it cannot be selected.
 
 Install the Android SDK platform and build-tools versions listed in the toolchain
 manifest using `sdkmanager`, accepting the SDK license yourself. Then package:

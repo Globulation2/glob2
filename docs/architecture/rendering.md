@@ -1128,19 +1128,83 @@ validation remains a separate release gate.
 `RendererBackend` stores stable family identifiers: `auto`, `sdl-gpu`,
 `programmable-gl`, `webgpu`, `portable-sdl`, `software`, and `legacy-gl`.
 Availability depends on the build, shader assets, device and presentation surface.
-A family listed as unavailable cannot be selected. New devices remain experimental
-until their full feature and hardware release gates pass. Auto resolves to Legacy GL
-on desktop builds with OpenGL (Software without it), to WebGL2 Legacy GL or Software
-in browsers depending on the probed adapter, and to Portable SDL on mobile. Desktop
-startup requests the GL surface without persisting it in `screenFlags`, so a
-presentation failure still falls back to Software.
+A family listed as unavailable cannot be selected.
+
+Auto tries an ordered list (`GraphicContext::automaticRendererOrder()`) and starts
+on the first family that is available and starts. Measurements choose the order,
+not the renderer's architecture; the per-platform rows live in one table,
+`PreferredRendererOrder` in `libs/gag/src/GraphicContextRenderer.cpp`:
+
+| Platform | Auto order |
+| --- | --- |
+| Linux, Windows | programmable GL, Legacy GL (builds with OpenGL), SDL GPU, Portable SDL, Software |
+| macOS | programmable GL, SDL GPU, Legacy GL, Portable SDL, Software |
+| Android, iOS | Portable SDL, Software |
+| Browser | on a probed WebGL2 adapter: programmable GL, Legacy GL (builds with it), Software; otherwise Software. WebGPU stays opt-in |
+
+The Linux row comes from a 1x perf build (master `d6488cac13`): the honeycomb-256
+memory scenario (3,600 pan and zoom frames) and the fast wheel zoom of the motion
+parity timing run.
+
+| Renderer | Frame p50 | p99 | Max | Peak RSS | Peak GPU driver | Zoom median | Zoom p99 | Zoom max | Zoom frames over 16.7 ms |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| programmable GL | 5.4 ms | 26.9 ms | 64 ms | 539 MiB | 217 MiB | 5.0 ms | 19.9 ms | 50 ms | 11 |
+| Legacy GL | 6.2 ms | 23.5 ms | 50 ms | 626 MiB | 233 MiB | 4.8 ms | 20.6 ms | 48 ms | 7 |
+| SDL GPU | 6.0 ms | 33.3 ms | 146 ms | 604 MiB | 202 MiB | 6.1 ms | 27.2 ms | 163 ms | 45 |
+| Portable SDL | 8.5 ms | 34.7 ms | 75 ms | 867 MiB | 177 MiB | 5.7 ms | 19.3 ms | 76 ms | 7 |
+
+Programmable GL has the lowest median and resident memory with a tail close to
+Legacy GL's, so it leads; SDL GPU's tail (p99, maximum and zoom frames over budget)
+is the worst, so it follows both GL renderers. Windows runs the same GL renderers
+and has no measurements of its own yet, so it shares the Linux row. The macOS row
+comes from the same memory scenario on a Retina Mac (master `5524479f28`, a
+3840x2160 drawable; footprint counts unified GPU memory):
+
+| Renderer | Frame p50 | p99 | Max | Peak RSS | Peak footprint |
+| --- | --- | --- | --- | --- | --- |
+| programmable GL | 11.2 ms | 29.3 ms | 108 ms | 1346 MiB | 1562 MiB |
+| SDL GPU (Metal) | 11.3 ms | 33.7 ms | 173 ms | 1163 MiB | 1419 MiB |
+| Legacy GL | 11.5 ms | 27.6 ms | 163 ms | 1218 MiB | 1651 MiB |
+| Portable SDL | 4.5 ms | 57.7 ms | 418 ms | 2347 MiB | 2730 MiB |
+
+Programmable GL has the best tail, SDL GPU the smallest footprint, and Legacy GL
+the largest footprint. Phones have no device measurements, so Android and iOS keep
+Portable SDL, though their packages ship the SDL GPU shaders (Android requires the
+Vulkan set, iOS device builds the Metal set). Revisit the rows when phone
+measurements or the SDL GPU memory and HD-stall investigation land.
+
+In the browser, programmable GL leads on a probed WebGL2 adapter (user decision,
+2026-11-17): Legacy GL there runs on Emscripten's fixed-function emulation, which
+warns that it may not work, and builds without it (`web_legacy_gl=0`) previously
+fell to Software even with WebGL2 available. There are no real-GPU browser
+measurements yet; revisit with them.
+
+The game asks for this order with the `PREFERDEVICE` startup flag, which
+`startupScreenFlags()` adds without persisting it; tools and tests that create a
+context without it keep the historical mapping (`USEGPU` to Legacy GL,
+`PORTABLEGPU` to Portable SDL, otherwise Software, Portable SDL on mobile).
+
+A family that is unavailable, or whose device, shaders or surface fail at startup,
+falls through to the next; Software ends every order, so startup never leaves a
+black window. Each skipped family adds `family: reason` to the switch status reason,
+which the game logs at startup and benchmarks print as
+`BACKEND requested=... active=... fallback_reason=...`. Auto falling through is not a
+failed choice: the status phase stays idle and Settings shows the active renderer
+without an "unavailable" notice. An explicit choice is tried first and, if it
+cannot start, falls into Auto's order with a failed status. A device lost while
+running falls to the next available family in the same order (WebGPU still falls to
+programmable GL), not straight to Software.
 
 Startup precedence is an explicit command-line option or browser query, then the
 native `GLOB2_RENDERER` environment variable, persisted preference, and Auto. Existing
 `gpu`, `webgl2`, `opengl` and `sdl` aliases remain accepted. Startup overrides are
-session state. Settings without the new preference migrate their previous renderer
-flags; a desktop profile without a GPU flag (the historical default) and a new profile
-use Auto.
+session state. A new profile uses Auto. Settings without the `rendererBackend`
+preference migrate their previous renderer flags: on desktop, where the old toggle
+offered only Software (the default, no GPU flag) or OpenGL, both answers migrate to
+Auto, since either meant "what this machine draws best with" rather than a family;
+a saved `PORTABLEGPU` flag stays Portable SDL. Browsers and mobile keep mapping
+`USEGPU` to Legacy GL and no flag to Software. A saved `rendererBackend`, including
+`legacy-gl`, is an explicit choice and is kept.
 
 Graphics settings request a transition through `requestBackendSwitch()`. The status
 reports requested and active families, phase and failure reason. Requests coalesce
@@ -1598,7 +1662,7 @@ string services remain alive until the context has delivered completed captures
 and retired its presentation surface. A completed asynchronous screenshot can
 still need these services while the context is being destroyed.
 
-`RendererSelection` defines stable backend-family identifiers, aliases, capabilities and startup precedence. The application coordinator applies this policy through the live-switch transaction described above. Auto defaults remain unchanged, and renderer selection stays outside simulation state.
+`RendererSelection` defines stable backend-family identifiers, aliases, capabilities and startup precedence. The application coordinator applies this policy through the live-switch transaction described above. Auto's per-platform order is described in [Runtime backend selection](#runtime-backend-selection), and renderer selection stays outside simulation state.
 
 ### CPU presentation batches
 

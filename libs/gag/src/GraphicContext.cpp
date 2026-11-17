@@ -400,34 +400,38 @@ int GraphicContext::maximumTextureSize() const
 		sdlsurface = NULL;
 		optionFlags = DEFAULT;
         backendStatus.requested = initialBackend.value_or(RendererBackend::Auto);
-        automaticBackend = (flags & USEGPU) ? RendererBackend::LegacyGL :
-            (flags & PORTABLEGPU) ? RendererBackend::PortableSDL : RendererBackend::Software;
-#ifdef __EMSCRIPTEN__
-        automaticBackend = glob2_surface_startup_uses_gl() ? RendererBackend::LegacyGL : RendererBackend::Software;
-#endif
-#ifndef HAVE_OPENGL
-        if (automaticBackend == RendererBackend::LegacyGL) automaticBackend = RendererBackend::Software;
-#endif
-#ifdef GLOB2_MOBILE
-        automaticBackend = RendererBackend::PortableSDL;
-#endif
+        automaticOrder = automaticRendererOrder(flags);
         const bool explicitBackend = initialBackend.has_value();
         initialBackend.reset();
         if (!explicitBackend)
             if (const char *selected = SDL_getenv_unsafe("GLOB2_RENDERER"))
                 backendStatus.requested = parseRendererBackend(selected).value_or(RendererBackend::Auto);
-        configuredBackend = backendStatus.requested == RendererBackend::Auto ? automaticBackend : backendStatus.requested;
+        // An explicit choice is tried first; Auto's order follows it as the
+        // fallback chain. Each family that is unavailable or fails to start
+        // adds its reason, which the BACKEND line reports as fallback_reason.
         const auto available = rendererAvailability();
-        const auto chosen = std::find_if(available.begin(), available.end(), [&](const auto &entry) { return entry.backend == configuredBackend; });
-        if (chosen == available.end() || !chosen->available) {
-            backendStatus.reason = chosen == available.end() ? "Unknown rendering backend." : chosen->reason;
-            backendStatus.phase = RendererSwitchPhase::Failed;
-            configuredBackend = automaticBackend;
+        std::vector<RendererBackend> candidates;
+        // Why each family was passed over, in attempt order; only those ahead of
+        // the family that starts are reported.
+        std::vector<RendererBackend> attempts;
+        std::vector<std::pair<RendererBackend, std::string>> skipped;
+        const auto noteFallback = [&](RendererBackend backend, const std::string &why) {
+            skipped.emplace_back(backend, why.empty() ? "failed to start" : why);
+        };
+        {
+            if (backendStatus.requested != RendererBackend::Auto) attempts.push_back(backendStatus.requested);
+            for (auto backend : automaticOrder)
+                if (std::find(attempts.begin(), attempts.end(), backend) == attempts.end()) attempts.push_back(backend);
+            for (auto backend : attempts) {
+                const auto chosen = std::find_if(available.begin(), available.end(), [&](const auto &entry) { return entry.backend == backend; });
+                if (chosen != available.end() && chosen->available) candidates.push_back(backend);
+                else noteFallback(backend, chosen == available.end() ? "Unknown rendering backend." : chosen->reason);
+            }
         }
-        if (configuredBackend == RendererBackend::ProgrammableGL || configuredBackend == RendererBackend::SDLGPU || configuredBackend == RendererBackend::WebGPU) flags &= ~(USEGPU | PORTABLEGPU);
-        if (configuredBackend == RendererBackend::Software) flags &= ~(USEGPU | PORTABLEGPU);
-        if (configuredBackend == RendererBackend::LegacyGL) { flags |= USEGPU; flags &= ~PORTABLEGPU; }
-        if (configuredBackend == RendererBackend::PortableSDL) { flags |= PORTABLEGPU; flags &= ~USEGPU; }
+        // Auto resolves to the first available family until startup proves otherwise.
+        automaticBackend = RendererBackend::Software;
+        for (auto backend : automaticOrder)
+            if (std::find(candidates.begin(), candidates.end(), backend) != candidates.end()) { automaticBackend = backend; break; }
 
 		// Request native Mac momentum before Cocoa registers application defaults.
 		SDL_SetHint(SDL_HINT_MAC_SCROLL_MOMENTUM, "1");
@@ -459,22 +463,46 @@ int GraphicContext::maximumTextureSize() const
 		}
 
 #ifdef __EMSCRIPTEN__
-        const bool delayedWebGPU = configuredBackend == RendererBackend::WebGPU;
-        if (delayedWebGPU) {
-            configuredBackend = RendererBackend::Software;
-            flags &= ~(USEGPU | PORTABLEGPU);
-        }
+        // WebGPU prepares asynchronously: start on Software and queue it.
+        const bool delayedWebGPU = !candidates.empty() && candidates.front() == RendererBackend::WebGPU;
+        if (delayedWebGPU) candidates.front() = RendererBackend::Software;
 #endif
-        if (!setRes(w, h, flags)) {
-            backendStatus.reason = SDL_GetError();
-            backendStatus.phase = RendererSwitchPhase::Failed;
+        const auto startupFlags = [flags](RendererBackend backend) {
+            Uint32 result = flags & ~(USEGPU | PORTABLEGPU);
+            if (backend == RendererBackend::LegacyGL) result |= USEGPU;
+            if (backend == RendererBackend::PortableSDL) result |= PORTABLEGPU;
+            return result;
+        };
+        bool started = false;
+        for (auto backend : candidates) {
+            configuredBackend = backend;
+            if (setRes(w, h, startupFlags(backend))) { started = true; break; }
+            const std::string error = SDL_GetError();
+            SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Renderer %s failed to start: %s",
+                std::string(rendererBackendName(backend)).c_str(), error.c_str());
+            noteFallback(backend, error);
+        }
+        if (!started) {
             configuredBackend = RendererBackend::Software;
-            if (!setRes(w, h, flags & ~(USEGPU | PORTABLEGPU)) &&
-                !setRes(800, 600, flags & ~(USEGPU | PORTABLEGPU))) {
+            if (!setRes(800, 600, startupFlags(RendererBackend::Software))) {
                 fprintf(stderr, "Toolkit: no presentation surface available: %s\n", SDL_GetError());
                 exit(1);
             }
         }
+        if (backendStatus.requested == RendererBackend::Auto) automaticBackend = configuredBackend;
+        std::string fallbackReason;
+        for (auto backend : attempts) {
+            if (backend == configuredBackend) break;
+            const auto found = std::find_if(skipped.begin(), skipped.end(), [&](const auto &entry) { return entry.first == backend; });
+            if (found == skipped.end()) continue;
+            if (!fallbackReason.empty()) fallbackReason += "; ";
+            fallbackReason += std::string(rendererBackendName(backend)) + ": " + found->second;
+        }
+        backendStatus.reason = fallbackReason;
+        // Auto falling through its order is not a failed choice; an explicit
+        // family that could not start is.
+        if (backendStatus.requested != RendererBackend::Auto && configuredBackend != backendStatus.requested)
+            backendStatus.phase = RendererSwitchPhase::Failed;
 #ifdef __EMSCRIPTEN__
         if (delayedWebGPU) { nextBackend = RendererBackend::WebGPU; nextBackendPersists = false; backendStatus.phase = RendererSwitchPhase::Queued; }
 #endif
