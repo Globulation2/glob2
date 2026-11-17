@@ -3,7 +3,7 @@
 %global _lto_cflags %{nil}
 
 Name:           glob2
-Version:        0.11.5.0
+Version:        0.11.6.0
 Release:        1%{?dist}
 Summary:        Real time strategy game with automatic unit task assignment
 License:        GPL-3.0-or-later

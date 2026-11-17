@@ -358,6 +358,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.11.6.0" date="2026-11-17">
+      <description>
+        <p>Made every renderer draw the same high-detail artwork with smooth animated terrain and water; cut graphics memory and picked the fastest renderer for each device automatically, including SDL GPU on Android and iOS; sharpened sprites and made shadows, status badges and the minimap clearer; set stone walls to 500 HP for 4 stone; added prestige to the win chance readout; and fixed crashes and replay checks.</p>
+      </description>
+    </release>
     <release version="0.11.5.0" date="2026-11-13">
       <description>
         <p>Rebuilt the map generators on a new terrain catalogue with new natural landscapes, cliffs, glaciers and animated shorelines; replaced the old tutorial with training lessons; added twelve languages; redesigned in-game statistics with a win chance readout; made AI opponents stronger and faster; made stone walls tougher and starting towers armed; and improved rendering and performance throughout.</p>
