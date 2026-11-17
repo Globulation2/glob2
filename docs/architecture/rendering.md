@@ -141,6 +141,13 @@ threshold (`gui-below-1x`, `gui-above-1x`) besides the zoomed-out, default and
 zoomed-in ones, and `SpriteSheetTest.cpp` checks the policy and that each
 available renderer draws native at density one and HD at two.
 
+Below one screen pixel per logical pixel the portable renderer's native pages
+are reduced to the density the direct pass's art tiles take there: the smallest
+power of two at least 32 times the density pixels a cell (16 at half zoom, 8 at
+a quarter), each cell box-filtered from its native composition, and sampled
+linearly. An unreduced native page is sampled nearest there, which drew grainy,
+high-contrast sand where the other renderers draw filtered terrain.
+
 The portable SDL renderer's terrain pages ask for HD material frames only where
 they show: above one screen pixel per logical pixel (map scale times raster
 scale, 32 pixels a cell on a 1x display), the threshold legacy OpenGL's direct
