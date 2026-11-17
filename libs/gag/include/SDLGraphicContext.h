@@ -297,6 +297,15 @@ namespace GAGCore
 		//! or keeps drawing a held older revision, when this is false: SDL GPU
 		//! submits a command buffer for every texture it creates.
 		bool takeDeviceUpload();
+		//! Admits this revision to the presentation device adapter ahead of its
+		//! first draw, within takeDeviceUpload's allowance: the adapter keeps
+		//! its texture snapshot (a copy of the pixels), so a later frame draws it
+		//! without taking an allowance; the device copies it to the GPU in the
+		//! command buffer of the first frame that draws it, as for any draw.
+		//! True once the adapter holds it; false on other renderers (which upload
+		//! when they draw), for linear or mipmapped surfaces, and while the
+		//! allowance is spent.
+		bool prepareDeviceTexture();
         std::uint64_t lifetimeIdentity() const { return surfaceIdentity; }
         std::uint64_t contentRevision() const { return pixelRevision; }
         virtual void prepareDraw() {}

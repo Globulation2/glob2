@@ -243,6 +243,23 @@ namespace GAGCore
         return true;
     }
 
+    bool DrawableSurface::prepareDeviceTexture()
+    {
+        // Plain nearest-sampled surfaces only: linear and mipmapped ones admit
+        // other texture descriptors when they draw.
+        if (!sdlsurface || !_gc || !_gc->deviceRenderer || _gc->renderer != _gc->deviceRenderer.get() ||
+            _gc->offscreenPass || highResolutionSampling || singleLevelSampling || spriteSource)
+            return false;
+        if (deviceHoldsPixels()) return true;
+        if (!takeDeviceUpload()) return false;
+        // The budget class and alpha a draw admits it with (GraphicContext::drawSurface).
+        auto &backend = *_gc->deviceRenderer;
+        backend.textureBudgetClass(deviceBudgetClass);
+        backend.prepareTexture(this, sdlsurface, pixelRevision);
+        backend.textureBudgetClass(TextureDescriptor::BudgetClass::General);
+        return deviceHoldsPixels();
+    }
+
     bool DrawableSurface::deviceBacked() const
     {
         return releasedOnDevice && !sdlsurface && _gc && _gc->deviceRenderer &&
