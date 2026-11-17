@@ -11,6 +11,12 @@ World artwork includes both hives, 3 flags, 5 construction frames, 10 trees, 10 
 `tools/artwork/ripen_wheat.py`), 5 papyrus,
 completed middle school, first two racetracks and 24 area markers, plus the
 hand-authored farm-area marker (8 frames drawn as SVG in `content-src/gfx/authored`).
+The 12 carried-material icons (`ressourcemini`, drawn beside a harvesting unit
+and in the unit panel) are SVG too, drawn in the style of each material's map
+resource. Their classic icons stay as they are; `render_authored.py --check`
+keeps each icon's downscaled mean colour within CIEDE2000 2 of its classic
+icon, or within 12 for stone and the later materials, whose classic icons are
+far duller than their map art.
 
 Assemble approved PNG sources: `python3 tools/artwork/package_runtime.py`.
 Client builds encode those sources with the shared WebP pipeline. For a complete

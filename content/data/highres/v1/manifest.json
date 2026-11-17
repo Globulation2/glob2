@@ -1066632,6 +1066632,342 @@
           "sha256": "f560b0b940b1af14a9fc5bc96da8c20bc3c0fbb9b1e80c83232fc3cd6dcf288a"
         }
       ]
+    },
+    {
+      "id": "ressourcemini0",
+      "width": 8,
+      "height": 8,
+      "scale": 4,
+      "recipe": "hand-authored SVG carried-material icon: rendered from content-src/gfx/authored/ressourcemini.svg; drawn in the style of its map resource, coloured toward the classic icon",
+      "sources": [
+        {
+          "path": "content-src/gfx/authored/ressourcemini.svg",
+          "sha256": "aac58af07332b4f6245752f9f9655bd401db33fc52d4d2bfde95e9aa4e40a042",
+          "native_size": [
+            32,
+            32
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressourcemini0.png",
+          "role": "base",
+          "sha256": "e7e9ab91831b23443377590e9f9dd03a1d5a2d74db4f8a66106f3f790662eb38",
+          "source_sha256": "e7e9ab91831b23443377590e9f9dd03a1d5a2d74db4f8a66106f3f790662eb38",
+          "logical_width": 8,
+          "logical_height": 8,
+          "original_sha256": "69d677be5ef20e401c27f445acdec53f62df7f9f16347bc3a1e616e3b29cfc2f"
+        }
+      ]
+    },
+    {
+      "id": "ressourcemini1",
+      "width": 8,
+      "height": 8,
+      "scale": 4,
+      "recipe": "hand-authored SVG carried-material icon: rendered from content-src/gfx/authored/ressourcemini.svg; drawn in the style of its map resource, coloured toward the classic icon",
+      "sources": [
+        {
+          "path": "content-src/gfx/authored/ressourcemini.svg",
+          "sha256": "aac58af07332b4f6245752f9f9655bd401db33fc52d4d2bfde95e9aa4e40a042",
+          "native_size": [
+            32,
+            32
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressourcemini1.png",
+          "role": "base",
+          "sha256": "bd4a1b66884f36fc6bb608abc50c89cfdaf487c35049e88f5ea8c10480f69aa6",
+          "source_sha256": "bd4a1b66884f36fc6bb608abc50c89cfdaf487c35049e88f5ea8c10480f69aa6",
+          "logical_width": 8,
+          "logical_height": 8,
+          "original_sha256": "363634dcaf1ab9d76578174c8b120888d1a73885f93ae1823ce7ba8fe5d5755c"
+        }
+      ]
+    },
+    {
+      "id": "ressourcemini2",
+      "width": 8,
+      "height": 8,
+      "scale": 4,
+      "recipe": "hand-authored SVG carried-material icon: rendered from content-src/gfx/authored/ressourcemini.svg; drawn in the style of its map resource, coloured toward the classic icon",
+      "sources": [
+        {
+          "path": "content-src/gfx/authored/ressourcemini.svg",
+          "sha256": "aac58af07332b4f6245752f9f9655bd401db33fc52d4d2bfde95e9aa4e40a042",
+          "native_size": [
+            32,
+            32
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressourcemini2.png",
+          "role": "base",
+          "sha256": "55abdb3fadb8ef63dcc6e9d6d55dea2db953841fb5a3dafbf60f392d2779b5ac",
+          "source_sha256": "55abdb3fadb8ef63dcc6e9d6d55dea2db953841fb5a3dafbf60f392d2779b5ac",
+          "logical_width": 8,
+          "logical_height": 8,
+          "original_sha256": "fc5db5f48c03e515af9b41e0f57c4258142773f2b88b0a52eb1a28d7158117da"
+        }
+      ]
+    },
+    {
+      "id": "ressourcemini3",
+      "width": 8,
+      "height": 8,
+      "scale": 4,
+      "recipe": "hand-authored SVG carried-material icon: rendered from content-src/gfx/authored/ressourcemini.svg; drawn in the style of its map resource, coloured toward the classic icon",
+      "sources": [
+        {
+          "path": "content-src/gfx/authored/ressourcemini.svg",
+          "sha256": "aac58af07332b4f6245752f9f9655bd401db33fc52d4d2bfde95e9aa4e40a042",
+          "native_size": [
+            32,
+            32
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressourcemini3.png",
+          "role": "base",
+          "sha256": "926407e6c82243a7f9c1230f64f89354bad6576e593b2cc71d827b8caf688426",
+          "source_sha256": "926407e6c82243a7f9c1230f64f89354bad6576e593b2cc71d827b8caf688426",
+          "logical_width": 8,
+          "logical_height": 8,
+          "original_sha256": "f375f64e5de131bfe1409baa813e008c08d637fad03eb7ae2d8ad2d11c5d0da1"
+        }
+      ]
+    },
+    {
+      "id": "ressourcemini4",
+      "width": 8,
+      "height": 8,
+      "scale": 4,
+      "recipe": "hand-authored SVG carried-material icon: rendered from content-src/gfx/authored/ressourcemini.svg; drawn in the style of its map resource, coloured toward the classic icon",
+      "sources": [
+        {
+          "path": "content-src/gfx/authored/ressourcemini.svg",
+          "sha256": "aac58af07332b4f6245752f9f9655bd401db33fc52d4d2bfde95e9aa4e40a042",
+          "native_size": [
+            32,
+            32
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressourcemini4.png",
+          "role": "base",
+          "sha256": "b30297d05a00ad7472b7b1a18626ba244fa644eb510cf47bdfe0bb1ac8904e0f",
+          "source_sha256": "b30297d05a00ad7472b7b1a18626ba244fa644eb510cf47bdfe0bb1ac8904e0f",
+          "logical_width": 8,
+          "logical_height": 8,
+          "original_sha256": "a8308fcb5fe1523789c74762351cabb1d9eb09a6e694ca105150aa008068ae67"
+        }
+      ]
+    },
+    {
+      "id": "ressourcemini5",
+      "width": 8,
+      "height": 8,
+      "scale": 4,
+      "recipe": "hand-authored SVG carried-material icon: rendered from content-src/gfx/authored/ressourcemini.svg; drawn in the style of its map resource, coloured toward the classic icon",
+      "sources": [
+        {
+          "path": "content-src/gfx/authored/ressourcemini.svg",
+          "sha256": "aac58af07332b4f6245752f9f9655bd401db33fc52d4d2bfde95e9aa4e40a042",
+          "native_size": [
+            32,
+            32
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressourcemini5.png",
+          "role": "base",
+          "sha256": "c0adc941ba1793c45979404010e2494d3c3128c23428333ac60dd704ae63c906",
+          "source_sha256": "c0adc941ba1793c45979404010e2494d3c3128c23428333ac60dd704ae63c906",
+          "logical_width": 8,
+          "logical_height": 8,
+          "original_sha256": "2417ab7fa6269299e19e058d5db19837fec62d7be97a3d65228f6342499886c8"
+        }
+      ]
+    },
+    {
+      "id": "ressourcemini6",
+      "width": 8,
+      "height": 8,
+      "scale": 4,
+      "recipe": "hand-authored SVG carried-material icon: rendered from content-src/gfx/authored/ressourcemini.svg; drawn in the style of its map resource, coloured toward the classic icon",
+      "sources": [
+        {
+          "path": "content-src/gfx/authored/ressourcemini.svg",
+          "sha256": "aac58af07332b4f6245752f9f9655bd401db33fc52d4d2bfde95e9aa4e40a042",
+          "native_size": [
+            32,
+            32
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressourcemini6.png",
+          "role": "base",
+          "sha256": "bbb74639dc529ee40d27a0f02203976af822985d1e47c652e2177b16f9afba16",
+          "source_sha256": "bbb74639dc529ee40d27a0f02203976af822985d1e47c652e2177b16f9afba16",
+          "logical_width": 8,
+          "logical_height": 8,
+          "original_sha256": "f09eefd4c2de46d7b154ce291d9758ad0bfde784afbd2c80fb04239281c0c4c9"
+        }
+      ]
+    },
+    {
+      "id": "ressourcemini7",
+      "width": 8,
+      "height": 8,
+      "scale": 4,
+      "recipe": "hand-authored SVG carried-material icon: rendered from content-src/gfx/authored/ressourcemini.svg; drawn in the style of its map resource, coloured toward the classic icon",
+      "sources": [
+        {
+          "path": "content-src/gfx/authored/ressourcemini.svg",
+          "sha256": "aac58af07332b4f6245752f9f9655bd401db33fc52d4d2bfde95e9aa4e40a042",
+          "native_size": [
+            32,
+            32
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressourcemini7.png",
+          "role": "base",
+          "sha256": "4b0a6c7ab33fa8c028c727770f4c982b0da0cdc3ef35034c761534e3c64e4e66",
+          "source_sha256": "4b0a6c7ab33fa8c028c727770f4c982b0da0cdc3ef35034c761534e3c64e4e66",
+          "logical_width": 8,
+          "logical_height": 8,
+          "original_sha256": "6422d4926f6f9ab61b6554a36004a4c45fbc8bdcebb98b4c5606938ebf8667ad"
+        }
+      ]
+    },
+    {
+      "id": "ressourcemini8",
+      "width": 16,
+      "height": 16,
+      "scale": 4,
+      "recipe": "hand-authored SVG carried-material icon: rendered from content-src/gfx/authored/ressourcemini-materials.svg; drawn in the style of its map resource, coloured toward the classic icon",
+      "sources": [
+        {
+          "path": "content-src/gfx/authored/ressourcemini-materials.svg",
+          "sha256": "6cbf11933b439b5a98846be5093224f85ff6256b0f8d43ef36daebc089cc56ff",
+          "native_size": [
+            64,
+            64
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressourcemini8.png",
+          "role": "base",
+          "sha256": "1a0966f4d65c96ad3e54b06ac97ef068abfd031a612f91cd1cea8ae370015eee",
+          "source_sha256": "1a0966f4d65c96ad3e54b06ac97ef068abfd031a612f91cd1cea8ae370015eee",
+          "logical_width": 16,
+          "logical_height": 16,
+          "original_sha256": "c2a49cc6134e3d786388ec3525918c748d483f32f78b98d65b8ac6523515ec57"
+        }
+      ]
+    },
+    {
+      "id": "ressourcemini9",
+      "width": 16,
+      "height": 16,
+      "scale": 4,
+      "recipe": "hand-authored SVG carried-material icon: rendered from content-src/gfx/authored/ressourcemini-materials.svg; drawn in the style of its map resource, coloured toward the classic icon",
+      "sources": [
+        {
+          "path": "content-src/gfx/authored/ressourcemini-materials.svg",
+          "sha256": "6cbf11933b439b5a98846be5093224f85ff6256b0f8d43ef36daebc089cc56ff",
+          "native_size": [
+            64,
+            64
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressourcemini9.png",
+          "role": "base",
+          "sha256": "0ca14211e74e635569cd86a6091fbd1b151a81b9f36b49ca58688d55715add95",
+          "source_sha256": "0ca14211e74e635569cd86a6091fbd1b151a81b9f36b49ca58688d55715add95",
+          "logical_width": 16,
+          "logical_height": 16,
+          "original_sha256": "08e3bd65dc5e8a0c77d9545ec2e167ff26e08cf486887134ccdc3158219048e4"
+        }
+      ]
+    },
+    {
+      "id": "ressourcemini10",
+      "width": 16,
+      "height": 16,
+      "scale": 4,
+      "recipe": "hand-authored SVG carried-material icon: rendered from content-src/gfx/authored/ressourcemini-materials.svg; drawn in the style of its map resource, coloured toward the classic icon",
+      "sources": [
+        {
+          "path": "content-src/gfx/authored/ressourcemini-materials.svg",
+          "sha256": "6cbf11933b439b5a98846be5093224f85ff6256b0f8d43ef36daebc089cc56ff",
+          "native_size": [
+            64,
+            64
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressourcemini10.png",
+          "role": "base",
+          "sha256": "d8e5ea12fc7d32f4c5f511614cf0408eeb67db59bb82c492bf963e41a31e3b28",
+          "source_sha256": "d8e5ea12fc7d32f4c5f511614cf0408eeb67db59bb82c492bf963e41a31e3b28",
+          "logical_width": 16,
+          "logical_height": 16,
+          "original_sha256": "2dbd671e7e8900fed3a2a4ba654ad44c2a52e5e8324a6e8362e6c653ac605535"
+        }
+      ]
+    },
+    {
+      "id": "ressourcemini11",
+      "width": 16,
+      "height": 16,
+      "scale": 4,
+      "recipe": "hand-authored SVG carried-material icon: rendered from content-src/gfx/authored/ressourcemini-materials.svg; drawn in the style of its map resource, coloured toward the classic icon",
+      "sources": [
+        {
+          "path": "content-src/gfx/authored/ressourcemini-materials.svg",
+          "sha256": "6cbf11933b439b5a98846be5093224f85ff6256b0f8d43ef36daebc089cc56ff",
+          "native_size": [
+            64,
+            64
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressourcemini11.png",
+          "role": "base",
+          "sha256": "b15f67ff440a94b9175df18175e81fd4fbb5a09bae1c73ffa8421f54b36af621",
+          "source_sha256": "b15f67ff440a94b9175df18175e81fd4fbb5a09bae1c73ffa8421f54b36af621",
+          "logical_width": 16,
+          "logical_height": 16,
+          "original_sha256": "1d10932dd3ebd50911806caece40ddc510f9feb6e695e1920ac3c839b5ed1347"
+        }
+      ]
     }
   ],
   "terrain_atlas": {
