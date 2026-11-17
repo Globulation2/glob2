@@ -177,6 +177,7 @@ namespace GAGCore
     // frame admitted: each one uploads (and may recolour) a frame.
     static std::set<std::pair<const Sprite*, unsigned>> portableDrawnFrames;
     static unsigned portableFirstDraws = 0;
+    static Sprite::HighResolutionDrawCounts drawCounts;
     static constexpr unsigned PortableFirstDrawsPerFrame = 8;
     // On-demand backends sample only uncolored base layers (baseFrame), so
     // they neither decode nor retain team-colour layers, unless the portable
@@ -866,6 +867,7 @@ namespace GAGCore
         if (Sprite::highResolutionDeferred(name)) return false;
         return _gc->rendererCapabilities().textureMipmaps || reducedHighResolutionWanted(name);
     }
+    Sprite::HighResolutionDrawCounts Sprite::highResolutionDrawCounts() { return drawCounts; }
     void Sprite::setHighResolutionDensity(double density)
     {
         portableFirstDraws = 0;
@@ -1241,6 +1243,7 @@ namespace GAGCore
             }
         }
         const auto want = [&] {
+            ++drawCounts.notLoaded;
             const unsigned block = index / HighResolutionBlock;
             if (!deferred && !portableBlocks[this].contains(block)) portableWaitingBlocks[this].insert(block);
             return false;
@@ -1253,13 +1256,14 @@ namespace GAGCore
         if (dynamicTeamColor && !blockHasCompleteHD(index)) return want();
         // A first draw uploads the frame; a few per frame keep zooming in smooth.
         const auto key = std::make_pair(static_cast<const Sprite*>(this), index);
-        if (portableDrawnFrames.contains(key)) return true;
-        if (portableFirstDraws >= PortableFirstDrawsPerFrame) return false;
+        if (portableDrawnFrames.contains(key)) { ++drawCounts.drawn; return true; }
+        if (portableFirstDraws >= PortableFirstDrawsPerFrame) { ++drawCounts.firstDrawCap; return false; }
         // A device keeps an uploaded HD frame as the only copy of its pixels,
         // within half of its General budget; past that, new frames stay native.
-        if (!_gc->deviceHighResolutionRoom()) return false;
+        if (!_gc->deviceHighResolutionRoom()) { ++drawCounts.room; return false; }
         ++portableFirstDraws;
         portableDrawnFrames.insert(key);
+        ++drawCounts.drawn;
         return true;
     }
     DrawableSurface *Sprite::sampleBaseFrame(unsigned index)

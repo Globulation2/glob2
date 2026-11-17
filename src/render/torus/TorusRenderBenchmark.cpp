@@ -700,6 +700,11 @@ static int run(int argc, char **argv)
                         pages ? pages->bytes() : 0, gui.view.render.peakTerrainTextureBytes,
                         pages ? pages->pixelBytes() : 0);
                     std::printf("FRAME_RENDER_MEMORY frame=%d %s\n", i, RenderMemoryReport::fields(gui.view.render).c_str());
+                    {
+                        const auto hd = GAGCore::Sprite::highResolutionDrawCounts();
+                        std::printf("FRAME_HD_SPRITES frame=%d drawn=%zu not_loaded=%zu first_draw_cap=%zu room=%zu\n",
+                            i, hd.drawn, hd.notLoaded, hd.firstDrawCap, hd.room);
+                    }
                     const auto &rows = gui.view.render.resourceRowMetrics;
                     std::printf("FRAME_RESOURCE_ROWS frame=%d eligibility_cells=%llu frame_cells=%llu animated_cells=%llu\n", i,
                         static_cast<unsigned long long>(rows.eligibilityCells), static_cast<unsigned long long>(rows.frameCells),
