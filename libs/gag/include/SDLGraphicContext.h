@@ -851,8 +851,6 @@ namespace GAGCore
 		void resetDrawCallCount(){drawCalls=0;}
 		//! convert window pixel coordinates (as delivered by SDL) to logical coordinates
 		void windowToLogical(float &x, float &y);
-		//! set a GL line width in logical pixels; GL rasterises lines in window pixels, which the viewport does not scale
-		void setScaledLineWidth(float width);
 		//! declare that drawing now goes to an offscreen target with this many of its pixels per logical pixel; 0 restores the window
 		void setRenderTargetScale(float pixelsPerLogicalPixel) {renderTargetScale = pixelsPerLogicalPixel;}
 		//! target pixels per logical pixel the rasteriser is drawing at right now

@@ -448,6 +448,11 @@ void GlobalContainer::requestGameGraphics()
     // standalone frames: its HD atlas would cost about 90 MiB in memory and
     // again on the GPU and never be drawn. The browser's pages still use it.
     Sprite::skipHighResolutionAtlas("data/gfx/terrain");
+    // Resources draw from standalone frames, like every other sprite: their
+    // atlas sampled its whole mip chain trilinearly, where the HD sprite
+    // policy has every renderer sample one level (its fruit and trees drew
+    // in a different per-cell pattern from the other renderers).
+    Sprite::skipHighResolutionAtlas("data/gfx/ressource");
 #endif
     for (const char *name : {"terrain", "cloud", "black", "shade", "ressource", "ressourcemini",
         "mapicon", "statusicon", "area-clearing", "area-forbidden", "area-guard", "area-farm", "bullet", "explosion", "death",

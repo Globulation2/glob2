@@ -119,6 +119,20 @@ same pixels (`DrawableSurface::singleLevelSampling`):
 The software renderer draws native frames (and native terrain pages) at every
 zoom: it has no filtering, and it is exempt from renderer parity.
 
+Filtering is in premultiplied colour everywhere. The devices and the portable
+renderer premultiply their textures; legacy OpenGL keeps straight alpha, so
+its texture-array program filters a page holding one linear level itself,
+premultiplying its four texels, and un-premultiplies the result for its
+blending. Hardware filtering of straight alpha would blend the colour of
+transparent texels (black in most artwork) into every sprite edge. The
+resource sheet draws from standalone frames on legacy OpenGL too, not from a
+trilinearly sampled HD atlas. Native frames are sampled nearest; at half zoom
+every pixel centre falls on a texel boundary, and legacy OpenGL biases those
+ties to the lower texel, as the other renderers resolve them. Lines, circles
+and rectangle outlines are one logical unit wide on every accelerated
+renderer: a quad along the line, circles of such segments, and outlines of
+the rectangle's own edge pixels.
+
 Terrain takes its half-resolution level the same way everywhere: an HD
 material composed or streamed below its own size is box-filtered in
 premultiplied colour, one output texel the average of the block it covers.
