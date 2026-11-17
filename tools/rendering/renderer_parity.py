@@ -417,6 +417,48 @@ def flat_region(image, size, box):
     return x0 + int(x) * stride, y0 + int(y) * stride
 
 
+def sharpness(image, mask):
+    """Fine detail where `mask` is set: the mean squared difference of each pixel's
+    luminance from its 3x3 neighbourhood. HD artwork drawn at its density holds
+    several times the detail of native artwork magnified to the same size."""
+    lum = image.astype(np.float32) @ np.array([0.299, 0.587, 0.114], np.float32)
+    padded = np.pad(lum, 1, mode='edge')
+    height, width = lum.shape
+    blur = sum(padded[dy:dy + height, dx:dx + width] for dy in range(3) for dx in range(3)) / 9
+    return float(np.mean(((lum - blur) ** 2)[mask]))
+
+
+def residency_split(args, gpu, images, deltas):
+    """Splits the GPU renderers into sharp and soft groups where they disagree.
+
+    A renderer that draws native (low-resolution) artwork where the others draw
+    HD, or the other way round, differs from them over whole stretches of
+    terrain or sprites. The median consensus sides with the majority even when
+    the majority is the one missing HD, so the pixel bar alone can blame the
+    one renderer that is right. Comparing the detail each holds over the pixels
+    that differ names the split directly. Returns {renderer: detail relative to
+    the sharpest} and the sharp group, or an empty group without a clear split.
+    """
+    mask = np.zeros(next(iter(deltas.values())).shape, bool)
+    for renderer in gpu:
+        mask |= deltas[renderer] > 8
+    if mask.mean() * 100 < args.max_over_8 / 4:
+        return {}, []
+    energy = {renderer: sharpness(images[renderer], mask) for renderer in gpu}
+    top = max(energy.values())
+    if top <= 0:
+        return {}, []
+    relative = {renderer: round(value / top, 3) for renderer, value in energy.items()}
+    ordered = sorted(gpu, key=lambda r: -relative[r])
+    # The widest drop in detail between neighbours in that order, if any is
+    # steeper than the split ratio, separates the sharp group from the soft.
+    drops = [(relative[ordered[i + 1]] / max(relative[ordered[i]], 1e-9), i) for i in range(len(ordered) - 1)]
+    ratio, index = min(drops)
+    if ratio >= args.sharpness_split:
+        return relative, []
+    return relative, ordered[:index + 1]
+
+
 def compare_scene(args, name, directory, records):
     """Consensus and pairwise distances; marks records and returns the scene verdict."""
     available = {record['renderer']: record for record in records if record['status'] == 'ok'}
@@ -475,6 +517,24 @@ def compare_scene(args, name, directory, records):
             result['outlier'] = next(iter(groups[1]))
         else:
             result['outlier'] = 'split: ' + ' / '.join('+'.join(g) for g in result['groups'])
+    if len(gpu) > 1 and result['problems']:
+        result['sharpness'], sharp = residency_split(args, gpu, images, deltas)
+        if sharp:
+            soft = [r for r in gpu if r not in sharp]
+            result['residency'] = {'sharp': sharp, 'soft': soft}
+            # Above a density of one with HD on, the policy has every renderer
+            # draw HD: a split there is HD present on some and missing on others.
+            spec = SCENES[name]
+            hd_scene = spec['hd'] and spec['zoom'] * spec['display'] > 1
+            kind = 'HD residency mismatch' if hd_scene else 'detail split'
+            text = f'{kind}: sharp {"+".join(sharp)} / soft {"+".join(soft)}'
+            result['problems'].append(text + ' (detail ' + ', '.join(
+                f'{r} {result["sharpness"][r]:.2f}' for r in sharp + soft) + ')')
+            # The consensus follows the majority; when the majority is the soft
+            # group it blames the renderers that do draw HD.
+            if len(sharp) < len(soft):
+                text += f' (the consensus follows the soft {"+".join(soft)})'
+            result['outlier'] = text
     if result['problems']:
         result['verdict'] = 'fail'
     return result, images, consensus, deltas
@@ -700,6 +760,9 @@ def main():
     parser.add_argument('--crop', type=int, default=64, help='Crop size in logical pixels (default 64)')
     parser.add_argument('--crop-zoom', type=int, default=4, help='Nearest-neighbour magnification of crops')
     parser.add_argument('--worst-crops', type=int, default=3, help='Crops of the densest differences per scene')
+    parser.add_argument('--sharpness-split', type=float, default=0.6,
+                        help='Where a failing scene\'s renderers disagree, flag an HD residency mismatch when one '
+                             'group holds less than this fraction of the detail of the next sharper one (default 0.6)')
     parser.add_argument('--reanalyse', action='store_true',
                         help='Compare the captures already under the label again instead of drawing them')
     args = parser.parse_args()
