@@ -287,6 +287,20 @@ previous phase until the workers deliver the next. A variant new to the drawing
 atlas is filtered at once, with its record, and a complete draw refilters
 everything at once.
 
+A variant record names a tile only while the drawing atlas holds that
+variant's art in every tile it draws. Every other record holds tile 65535, and
+the shader draws that variant from the resident low-resolution art: every
+palette variant's first native frame at 16 pixels a cell, built at game load
+(`DIRECT_TERRAIN_LOW_ART`, about 7 MB for a 256 by 256 map) and extended when an
+edit adds variants. The streamed pass binds it in the native mask index's slot,
+which that pass does not use. So while a fast zoom fills the second atlas, the
+variants the old atlas never held (most of them, zooming out) draw softer art,
+never another variant's tile or an empty one. Uploads build the table from the
+atlas's entries, an eviction marks its record absent, and a visible variant the
+atlas holds without filled tiles gets them at once. `DirectTerrain::artMetrics`
+counts the visible variants drawing the low-resolution art (`absent`) and any
+record pointing at a tile its atlas does not hold for it (`stale`, always zero).
+
 The streamed devices always have a low-resolution version of the whole map to draw: only HD
 masks and artwork stream in and out. Game loading (`GameGUI::prepareDirectTerrain`,
 from `Engine::finalAdjustments`) builds the map's per-cell tables and then the

@@ -423,6 +423,37 @@ python3 tools/rendering/fallback_scenario.py --label change --renderer portable-
 `--workers N` measures a phone-class worker count, `--hd` switches HD terrain on
 after about a second, and results go to `artifacts/render-fallback/<label>/`.
 
+`GLOB2_BENCH_RAPID_ZOOM=N` replaces the script's slow wheel with a player
+spinning it: a step every N frames, out `GLOB2_BENCH_RAPID_DEPTH` steps (6 by
+default) and straight back, over the cycle's zoom window. That is the case where
+an art atlas is still filling when the next density change arrives.
+
+## Terrain in motion
+
+The parity matrix compares settled frames, so it cannot see what a moving view
+draws while terrain refills. `tools/rendering/motion_parity.py` plays the
+fallback script with a fast wheel (two frames a step, three steps out) twice
+per renderer: once as a player sees it, and once with
+`GLOB2_BENCH_COMPLETE_TERRAIN=1`, which completes every frame's terrain first.
+It compares the captured frames of the pan and the wheel in blocks of 1/80 of
+the width. Stand-ins may be softer, but a block whose mean colour differs by more
+than 24 levels in a channel shows foreign art: another variant's tile, an empty
+slot or a hole. It also reports frame times (median, p99, maximum, frames over
+16.7 and 33.3 ms) from a third run without captures, whose readbacks would stall
+frames, and the direct pass's `FRAME_DIRECT_ART`
+counters (variants drawing the resident low-resolution art, and stale records,
+which must be zero).
+
+```sh
+python3 tools/dev_build.py perf=1 torus-render-benchmark
+python3 tools/rendering/motion_parity.py --label master
+```
+
+It exits 1 when a renderer shows foreign blocks or a stale record, and writes
+`summary.json` and each renderer's worst frame beside its complete frame to
+`artifacts/render-motion/<label>/`. Run it with the parity matrix for any change
+to terrain streaming, atlases or stand-ins.
+
 ## Renderer memory
 
 `tools/rendering/memory_scenario.py` runs the standard memory scenario and reports

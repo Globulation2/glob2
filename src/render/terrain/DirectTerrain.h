@@ -71,6 +71,12 @@ public:
     unsigned restartCount() const;
     struct DiscoveryMetrics { std::size_t rebuilt = 0; };
     DiscoveryMetrics discoveryMetrics() const;
+    // The last prepare's visible variants: how many draw the resident
+    // low-resolution art (absent from the drawing atlas, as during a zoom) and
+    // how many records point at a tile the atlas does not hold for them (stale:
+    // another variant's art; always zero). lowArtBytes: that art's texture.
+    struct ArtMetrics { std::size_t visible = 0, absent = 0, stale = 0, lowArtBytes = 0; };
+    ArtMetrics artMetrics() const;
 
 private:
     void prepareHdMasks(const SceneMap &, int left, int top, int right, int bottom,

@@ -952,11 +952,10 @@ void main() {
         const auto pair = [&](unsigned uniform, const float (&value)[2]) {
             gl.glUniform2f(directTerrainHdUniforms[uniform], value[0], value[1]);
         };
-        const float unused[2]{1, 1};
         gl.glUniform2f(directTerrainHdUniforms[0], logicalW, logicalH);
         pair(1, hd.mapSize);
         pair(2, hd.artSize);
-        pair(3, unused);
+        pair(3, hd.lowArtSize);
         pair(4, hd.variantSize);
         pair(5, hd.hdCoverageSize);
         pair(6, hd.hdPreviousSize);

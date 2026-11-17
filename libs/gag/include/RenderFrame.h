@@ -137,7 +137,8 @@ struct DirectTerrainDraw
     // Streamed draws (devices with directTerrainStreaming) use the terrain-direct-hd
     // shader: artwork and coverage masks streamed at the display density, as
     // Legacy GL draws them. Every texture is then streamed; Coverage and Edges
-    // hold the whole-map base masks, MaskIndex is unused, and a null entry
+    // hold the whole-map base masks, MaskIndex the low-resolution art of every
+    // variant (drawn for variants the art atlas does not hold), and a null entry
     // (no fallback or base atlas) binds a placeholder.
     enum HdTexture { HdIndex = Count, HdCoverage, HdEdges, HdPreviousIndex, HdPreviousCoverage, HdPreviousEdges, StreamedCount };
     std::array<std::shared_ptr<StreamedTexture>, StreamedCount> streamed;
@@ -145,6 +146,8 @@ struct DirectTerrainDraw
     struct HdUniforms
     {
         float mapSize[2]{}, artSize[2]{}, variantSize[2]{}, hdCoverageSize[2]{}, hdPreviousSize[2]{}, hdBaseSize[2]{};
+        // The resident low-resolution art bound at MaskIndex, as the shader's coverageSize.
+        float lowArtSize[2]{1, 1};
         float artTilePixels = 32, hdTilePixels = 0, hdPreviousTile = 0, hdBaseTile = 0;
     } hd;
     bool isStreamed() const { return streamed[Cells] != nullptr; }

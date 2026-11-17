@@ -55,6 +55,8 @@
 namespace
 {
 constexpr int TilePixels = DirectTerrainData::TilePixels;
+// The resident low-resolution art's pixels a cell (LowArtTile in the shader).
+constexpr int LowArtTile = 16;
 using Pixel = DirectTerrainData::Pixel;
 using Record = DirectTerrainData::Record;
 
@@ -200,6 +202,98 @@ struct DirectTerrain::State
     // number of tiles each, while `animation` keeps drawing; it replaces
     // `animation` once every visible variant is in it.
     Animation nextArt;
+    // Every palette variant at LowArtTile pixels a cell, from its native first
+    // frame, resident for the map: the art a cell draws whenever the drawing
+    // atlas does not hold its variant (the variant table marks it AbsentTile),
+    // as while a zoom fills `nextArt` over several frames. The streamed pass
+    // binds it in place of the native mask index, which it does not use.
+    struct LowArt {
+        Surface surface;
+        int width = 0, height = 0;
+        std::size_t count = 0, bytes = 0; // Variants written; texture bytes.
+    } lowArt;
+    // A variant record's tile when the drawing atlas does not hold the variant.
+    static constexpr Uint16 AbsentTile = 65535;
+    // Whether an atlas entry has art in every tile it draws: both endpoints of
+    // an animated variant.
+    static bool filledTiles(const Animation::Entry &entry, bool animated)
+    { return entry.phases[0] != ~0u && (!animated || entry.phases[1] != ~0u); }
+    // The drawing atlas's variant table: each record's tile is its tile in
+    // `atlas`, or AbsentTile when the atlas does not hold the variant or has
+    // not filled its tiles yet.
+    std::vector<Record> variantTable(const Animation &atlas, int rows)
+    {
+        std::vector<Record> padded(palette.variants);
+        padded.resize(std::size_t(rows) * DirectTerrainData::VariantWidth);
+        const std::size_t slots = palette.variants.size() / DirectTerrainData::VariantRecords;
+        tableTiles.assign(slots, AbsentTile);
+        for (std::size_t slot = 1; slot < slots; ++slot)
+        {
+            const auto found = atlas.entries.find(unsigned(slot));
+            auto &record = padded[slot * DirectTerrainData::VariantRecords];
+            record[0] = found != atlas.entries.end() && filledTiles(found->second, record[1] > 1)
+                ? Uint16(found->second.tile) : AbsentTile;
+            tableTiles[slot] = record[0];
+        }
+        return padded;
+    }
+    // The drawing atlas's uploaded record tiles, per variant slot, mirrored to
+    // check that no visible variant draws a tile its atlas does not hold.
+    std::vector<Uint16> tableTiles;
+    struct ArtStats { std::size_t visible = 0, absent = 0, stale = 0; } artStats;
+    // Writes every variant the palette gained since the last call into the
+    // low-resolution atlas, growing it as needed (64 to 256 tiles a row).
+    void updateLowArt(TerrainVisual::Compositor &compositor)
+    {
+        const std::size_t count = palette.sources.size();
+        if (lowArt.count == count && lowArt.surface) return;
+        const auto started = SDL_GetTicksNS();
+        const int columns = count <= 4096 ? 64 : count <= 16384 ? 128 : 256;
+        const int width = columns * LowArtTile;
+        const int rows = std::max(1, int((count + columns - 1) / columns));
+        std::size_t from = lowArt.count;
+        std::vector<Pixel> initial;
+        if (!lowArt.surface || width != lowArt.width || rows * LowArtTile > lowArt.height)
+        {
+            // Room for a quarter more variants, so edits rarely regrow it.
+            const int height = (rows + std::max(1, rows / 4)) * LowArtTile;
+            bytes -= lowArt.bytes;
+            lowArt.width = width;
+            lowArt.height = height;
+            lowArt.bytes = std::size_t(width) * height * sizeof(Pixel);
+            bytes += lowArt.bytes;
+            initial.resize(std::size_t(width) * height);
+            from = 0;
+        }
+        std::vector<Pixel> tile;
+        for (std::size_t slot = std::max<std::size_t>(from, 1); slot < count; ++slot)
+        {
+            const auto source = palette.sources[slot];
+            const auto stamp = compositor.phaseSource(source.material, source.variant, 0, true);
+            const auto *surface = compositor.phaseSurface(source.material, source.variant, 0, true);
+            TerrainVisual::Compositor::MaterialPixels input;
+            if (!surface) input = compositor.phasePixels(source.material, source.variant, 0, true);
+            if (stamp.size <= 0 || (surface ? surface->w != stamp.size : input.size() != std::size_t(stamp.size) * stamp.size))
+                continue; // No art: the tile stays transparent.
+            filterTile(LowArtTile, stamp.size, surface ? static_cast<const Uint32 *>(surface->pixels) : nullptr, input, tile);
+            const int x = int(slot % columns) * LowArtTile, y = int(slot / columns) * LowArtTile;
+            if (!initial.empty())
+            {
+                for (int row = 0; row < LowArtTile; ++row)
+                    std::copy_n(tile.data() + row * LowArtTile, LowArtTile,
+                                initial.data() + std::size_t(y + row) * width + x);
+            }
+            else
+                write(lowArt.surface, MaskIndex, x, y, LowArtTile, LowArtTile, tile.data());
+        }
+        if (!initial.empty())
+        {
+            create(lowArt.surface, MaskIndex, lowArt.width, lowArt.height, Format::Rgba8, true, initial.data());
+            std::fprintf(stderr, "DIRECT_TERRAIN_LOW_ART variants=%zu size=%dx%d bytes=%zu ms=%.1f\n", count,
+                         lowArt.width, lowArt.height, lowArt.bytes, double(SDL_GetTicksNS() - started) / 1e6);
+        }
+        lowArt.count = count;
+    }
     // Art tiles box-filtered on the background workers, from copies of their
     // sources, for the atlas whose serial they carry; one batch at a time.
     struct ArtBatch
@@ -422,12 +516,12 @@ struct DirectTerrain::State
                 }
     }
 
-    std::array<Surface *, 12 + Count> surfaces()
+    std::array<Surface *, 13 + Count> surfaces()
     {
-        std::array<Surface *, 12 + Count> all{&animation.art, &animation.variants, &hd.index, &hd.coverage, &hd.edges,
+        std::array<Surface *, 13 + Count> all{&animation.art, &animation.variants, &hd.index, &hd.coverage, &hd.edges,
             &hd.previous.index, &hd.previous.coverage, &hd.previous.edges, &hd.base.coverage, &hd.base.edges,
-            &nextArt.art, &nextArt.variants};
-        for (unsigned i = 0; i < Count; ++i) all[12 + i] = &textures[i];
+            &nextArt.art, &nextArt.variants, &lowArt.surface};
+        for (unsigned i = 0; i < Count; ++i) all[13 + i] = &textures[i];
         return all;
     }
 
@@ -1522,8 +1616,9 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
     }
     auto &art = transition ? next : out;
     const int atlasSize = art.size;
-    // Whole pairs: an odd last tile is never claimed.
-    const unsigned tiles = (atlasSize / pixels) * (atlasSize / pixels) / 2 * 2;
+    // Whole pairs: an odd last tile is never claimed. Records hold sixteen-bit
+    // tile numbers below AbsentTile.
+    const unsigned tiles = std::min(unsigned((atlasSize / pixels) * (atlasSize / pixels)), unsigned(State::AbsentTile)) / 2 * 2;
     if (tilesWanted > tiles) { out.regions.clear(); return false; }
     std::optional<RestoreGL> restore;
 #ifdef DIRECT_TERRAIN_LEGACY_GL
@@ -1536,6 +1631,7 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
 #endif
     try
     {
+        state->updateLowArt(compositor);
         if (!art.art)
         {
             state->create(art.art, State::Art, atlasSize, atlasSize, Format::Rgba8, true);
@@ -1543,14 +1639,15 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
             art.variantBytes = 0;
             state->bytes += art.bytes;
         }
-        // The variant table, again whenever an edit added variants (the
-        // drawing atlas's; a filling atlas gets its own when it takes over).
+        // The drawing atlas's variant table, again whenever an edit added
+        // variants, during a transition too: every visible cell's variant must
+        // have a record, its tile here or AbsentTile (a filling atlas gets its
+        // own table when it takes over).
         auto &variants = state->palette.variants;
-        if (!transition && state->uploadedVariants != variants.size())
+        if (out.art && state->uploadedVariants != variants.size())
         {
             const int rows = int((variants.size() + DirectTerrainData::VariantWidth - 1) / DirectTerrainData::VariantWidth);
-            std::vector<Record> padded(variants);
-            padded.resize(std::size_t(rows) * DirectTerrainData::VariantWidth);
+            const auto padded = state->variantTable(out, rows);
             state->create(out.variants, State::Variants, DirectTerrainData::VariantWidth, rows, Format::Record16,
                           false, padded.data());
             const auto variantBytes = padded.size() * sizeof(Record);
@@ -1616,6 +1713,23 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
         bool filled = true;
         const auto spanOf = [&](unsigned slot)
         { return State::Animation::span(catalog.materials[state->palette.sources[slot].material]); };
+        const auto markAbsent = [&](unsigned slot)
+        {
+            auto record = state->palette.variants[slot * DirectTerrainData::VariantRecords];
+            record[0] = State::AbsentTile;
+            if (slot < state->tableTiles.size()) state->tableTiles[slot] = State::AbsentTile;
+            const auto recordIndex = slot * DirectTerrainData::VariantRecords;
+            state->write(out.variants, State::Variants, int(recordIndex % DirectTerrainData::VariantWidth),
+                         int(recordIndex / DirectTerrainData::VariantWidth), 1, 1, record.data());
+        };
+        // A visible variant the drawing atlas holds without tiles yet (it was
+        // claimed while not visible) gets them now, with its record, as a new one.
+        if (!transition)
+            for (auto slot : wanted)
+                if (const auto found = out.entries.find(slot);
+                    found != out.entries.end() && !State::filledTiles(found->second, spanOf(slot) == 2) &&
+                    fresh.insert(slot).second)
+                    added.push_back({slot, &found->second});
         // Tiles for variants new to the atlas, animated ones first since they
         // need whole pairs, evicting variants the view no longer shows.
         for (const unsigned span : {2u, 1u})
@@ -1630,6 +1744,9 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
                     if (idle != art.entries.end())
                     {
                         art.tiles.release(idle->second.tile, spanOf(idle->first));
+                        // The drawing atlas's record leaves the tile it no longer owns.
+                        if (!transition && out.variants)
+                            markAbsent(idle->first);
                         art.entries.erase(idle);
                         continue;
                     }
@@ -1754,8 +1871,11 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
             // of the material's original loop length, including odd-length loops.
             record[1] = Uint16(material.animationFrames > 1 ? 2 : 1);
             if (!transition)
+            {
                 state->write(out.variants, State::Variants, int(recordIndex % DirectTerrainData::VariantWidth),
                              int(recordIndex / DirectTerrainData::VariantWidth), 1, 1, record.data());
+                if (slot < state->tableTiles.size()) state->tableTiles[slot] = record[0];
+            }
         }
         // Every visible variant is in the filling atlas: it takes over, with
         // a variant table of its records.
@@ -1769,8 +1889,7 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
             next = {};
             out.regions = std::move(regions);
             const int rows = int((variants.size() + DirectTerrainData::VariantWidth - 1) / DirectTerrainData::VariantWidth);
-            std::vector<Record> padded(variants);
-            padded.resize(std::size_t(rows) * DirectTerrainData::VariantWidth);
+            const auto padded = state->variantTable(out, rows);
             state->create(out.variants, State::Variants, DirectTerrainData::VariantWidth, rows, Format::Record16,
                           false, padded.data());
             out.variantBytes = padded.size() * sizeof(Record);
@@ -1778,6 +1897,18 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
             state->bytes += out.variantBytes;
             state->variantRows = rows;
             state->uploadedVariants = variants.size();
+        }
+        // What the visible variants draw: the drawing atlas's tile, or the
+        // low-resolution art. A stale record (a tile the atlas does not hold
+        // for it) would draw another variant's art: never.
+        state->artStats = {wanted.size(), 0, 0};
+        for (auto slot : wanted)
+        {
+            const Uint16 drawn = slot < state->tableTiles.size() ? state->tableTiles[slot] : State::AbsentTile;
+            const auto found = out.entries.find(slot);
+            const bool holds = found != out.entries.end() && State::filledTiles(found->second, spanOf(slot) == 2);
+            if (drawn == State::AbsentTile) ++state->artStats.absent;
+            else if (!holds || drawn != found->second.tile) ++state->artStats.stale;
         }
         if (state->glFailed())
             throw std::runtime_error("Animated terrain source upload failed");
@@ -1836,6 +1967,8 @@ void DirectTerrain::preload(GAGCore::GraphicContext &gfx, const SceneMap &map)
     if (!drawInternal(gfx, map, 0, 0, 0, 0, 0, 0, 0, true, 0, true, true) || !state || !state->tablesReady) return;
     auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
     state->ensureBase(map, compositor, state->width / 2, state->height / 2, true);
+    // Every variant's low-resolution art, so no visible frame builds it.
+    state->updateLowArt(compositor);
     std::fprintf(stderr, "DIRECT_TERRAIN_PRELOAD ms=%llu\n", (unsigned long long)(SDL_GetTicks() - started));
 }
 
@@ -1897,7 +2030,6 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
         for (unsigned i = 0; i < hd.uniforms.size(); ++i)
             hd.uniforms[i] = glGetUniformLocation(hd.program, names[i]);
         glUniform2f(hd.uniforms[0], float(width), float(height));
-        glUniform2f(hd.uniforms[2], DirectTerrainData::AtlasWidth, 1.f); // Native masks are not used.
     }
 #endif
     hd.ready = true;
@@ -2186,6 +2318,7 @@ void DirectTerrain::drawPrepared(GAGCore::GraphicContext &gfx, int viewportX, in
         auto data = std::make_shared<Draw>();
         const auto bind = [&](unsigned slot, const Surface &surface) { data->streamed[slot] = surface.streamed; };
         bind(Draw::Cells, state->textures[Draw::Cells]);
+        bind(Draw::MaskIndex, state->lowArt.surface); // The low-resolution art (see State::LowArt).
         bind(Draw::Discovery, state->textures[Draw::Discovery]);
         bind(Draw::ShoreCalm, state->textures[Draw::ShoreCalm]);
         bind(Draw::Art, state->animation.art);
@@ -2209,6 +2342,7 @@ void DirectTerrain::drawPrepared(GAGCore::GraphicContext &gfx, int viewportX, in
         pair(u.hdCoverageSize, float(state->hd.size), float(state->hd.size));
         pair(u.hdPreviousSize, float(previous.size), float(previous.size));
         pair(u.hdBaseSize, float(state->width * base.tile), float(state->height * base.tile));
+        pair(u.lowArtSize, float(std::max(1, state->lowArt.width)), float(std::max(1, state->lowArt.height)));
         u.artTilePixels = float(state->animation.pixels);
         u.hdTilePixels = float(state->hd.tile);
         u.hdPreviousTile = float(previous.tile); // Zero: no fallback atlas.
@@ -2248,7 +2382,8 @@ void DirectTerrain::drawPrepared(GAGCore::GraphicContext &gfx, int viewportX, in
         const auto &texture = unit == State::Art ? state->animation.art
             : unit == State::Variants ? state->animation.variants
             : unit == State::Coverage ? state->hd.base.coverage
-            : unit == State::Edges ? state->hd.base.edges : state->textures[unit];
+            : unit == State::Edges ? state->hd.base.edges
+            : unit == State::MaskIndex ? state->lowArt.surface : state->textures[unit];
         glBindTexture(GL_TEXTURE_2D, texture.name);
     }
     const GLuint extra[] = {state->hd.index.name, state->hd.coverage.name, state->hd.edges.name,
@@ -2259,6 +2394,7 @@ void DirectTerrain::drawPrepared(GAGCore::GraphicContext &gfx, int viewportX, in
         glBindTexture(GL_TEXTURE_2D, extra[i]);
     }
     glUniform2f(uniforms[1], float(state->animation.size), float(state->animation.size));
+    glUniform2f(uniforms[2], float(std::max(1, state->lowArt.width)), float(std::max(1, state->lowArt.height)));
     glUniform2f(uniforms[7], float(state->hd.size), float(state->hd.size));
     glUniform2f(uniforms[3], DirectTerrainData::VariantWidth, float(state->variantRows));
     glUniform1f(uniforms[4], float(animationTime));
@@ -2347,5 +2483,10 @@ std::size_t DirectTerrain::textureBytes() const { return state ? state->bytes : 
 std::size_t DirectTerrain::uploadBytes() const { return state ? state->uploaded : 0; }
 unsigned DirectTerrain::draws() const { return state ? state->frames : 0; }
 unsigned DirectTerrain::restartCount() const { return restarts; }
+DirectTerrain::ArtMetrics DirectTerrain::artMetrics() const
+{
+    if (!state) return {};
+    return {state->artStats.visible, state->artStats.absent, state->artStats.stale, state->lowArt.bytes};
+}
 DirectTerrain::DiscoveryMetrics DirectTerrain::discoveryMetrics() const
 { return state ? state->discoveryStats : DiscoveryMetrics{}; }

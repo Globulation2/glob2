@@ -174,11 +174,33 @@ vec4 variantRecord(float index, float field) {
     return readRecord(variants, slot, variantSize);
 }
 
+#ifdef DIRECT_TERRAIN_HD_MASKS
+// The streamed pass binds every variant's art at LowArtTile pixels a cell, by
+// variant number, in place of the native mask index (coverageIndex, sized by
+// coverageSize). A record whose tile is 65535 has no tile in the art atlas
+// (it is being replaced at another density): the cell draws that art.
+const float LowArtTile = 16.0;
+vec4 lowArt(float index, vec2 uv) {
+    float columns = coverageSize.x / LowArtTile;
+    vec2 base = vec2(mod(index, columns), floor(index / columns)) * LowArtTile;
+    vec2 pixel = clamp(uv * (LowArtTile / 32.0), vec2(0.5), vec2(LowArtTile - 0.5));
+    return DIRECT_TERRAIN_SAMPLE(coverageIndex, (base + pixel) / coverageSize);
+}
+#endif
+
 vec4 material(float index, vec2 uv, float calm) {
     vec4 data = variantRecord(index, 0.0);
+    vec4 color;
+#ifdef DIRECT_TERRAIN_HD_MASKS
+    if (data.x >= 65535.0) {
+        color = lowArt(index, uv);
+        color.rgb *= color.a;
+    } else
+#endif
+    {
     float stepTime = mod(animationTime, data.z);
     float phase = mod(floor(animationTime / data.z), data.y);
-    vec4 color = DIRECT_TERRAIN_SAMPLE(art, atlasUV(data.x + phase, uv, artSize));
+    color = DIRECT_TERRAIN_SAMPLE(art, atlasUV(data.x + phase, uv, artSize));
     // Blend premultiplied endpoints so transparent artwork cannot tint a fade.
     color.rgb *= color.a;
     if (data.w > 0.0) {
@@ -186,6 +208,7 @@ vec4 material(float index, vec2 uv, float calm) {
         vec4 nextColor = DIRECT_TERRAIN_SAMPLE(art, atlasUV(data.x + mod(phase + 1.0, data.y), uv, artSize));
         nextColor.rgb *= nextColor.a;
         color = mix(color, nextColor, blend);
+    }
     }
     if (calm > 0.0) {
         vec4 quiet = variantRecord(index, 7.0);
