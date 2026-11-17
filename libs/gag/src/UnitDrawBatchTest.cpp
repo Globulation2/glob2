@@ -57,9 +57,16 @@ TEST_CASE("unit batches preserve overlays, clipping and texture lifetime [displa
     REQUIRE(gfx->hasUnitShader());
     struct RestoreNativeArt
     {
-        ~RestoreNativeArt() { GAGCore::Sprite::setHighResolution(false); }
+        ~RestoreNativeArt()
+        {
+            GAGCore::Sprite::setHighResolution(false);
+            GAGCore::Sprite::resetHighResolutionPolicy(1);
+        }
     } restoreNativeArt;
     GAGCore::Sprite::setHighResolution(true);
+    // The HD policy draws native frames at a 1x window's density; this case
+    // checks the HD frames' array path, so it asks for full-HD density.
+    GAGCore::Sprite::resetHighResolutionPolicy(4);
     GAGCore::Sprite units, icons;
     REQUIRE(units.load("data/gfx/unit"));
     REQUIRE(icons.load("data/gfx/ressource"));
