@@ -179,7 +179,8 @@ test('building workspace supports revision-bound chat, previews, restoration and
     true,
   );
   const directory = resolve(
-    process.env['SCREENSHOT_DIR'] ?? '../../../artifacts/building-studio/screenshots',
+    process.env['SCREENSHOT_DIR'] ??
+      resolve(import.meta.dirname, '../../../../../artifacts/building-studio/screenshots'),
   );
   mkdirSync(directory, { recursive: true });
   await page.emulateMedia({ reducedMotion: 'reduce' });
