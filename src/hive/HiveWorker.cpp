@@ -4,6 +4,7 @@
 #include "HiveWorker.h"
 #include "scripting/javascript/ScriptRuntime.h"
 #include <cmath>
+#include <cstdint>
 #include <iostream>
 #include <stdexcept>
 #ifdef __linux__
@@ -27,6 +28,11 @@ Json json(const Script::Value &v)
 	case Script::Value::Boolean:
 		return v.number != 0;
 	case Script::Value::Number:
+		// JavaScript has one number type. Integral values (IDs, ticks, counts)
+		// are published as JSON integers so results read as 3, not 3.0.
+		if (std::isfinite(v.number) && std::trunc(v.number) == v.number &&
+			std::fabs(v.number) <= 9007199254740992.0)
+			return std::int64_t(v.number);
 		return v.number;
 	case Script::Value::String:
 		return v.text;
@@ -217,8 +223,13 @@ Json invoke(const Json &request)
 		if (!effects.is_object())
 			throw std::runtime_error("Return an object containing output and orders");
 		auto orders = effects.value("orders", Json::array());
-		if (!orders.is_array() || orders.size() > 32 || effects.dump().size() > 65536)
-			throw std::runtime_error("Too many orders or too much output");
+		if (!orders.is_array())
+			throw std::runtime_error("orders must be an array of order descriptors");
+		if (orders.size() > 32)
+			throw std::runtime_error("Return at most 32 orders per invocation (returned " +
+									 std::to_string(orders.size()) + ")");
+		if (effects.dump().size() > 65536)
+			throw std::runtime_error("Returned output and orders exceed 64 KiB");
 		return {{"ok", true},
 				{"state", json(result.state)},
 				{"installedState", initialState},
