@@ -191,7 +191,7 @@ if(android)
   list(REMOVE_ITEM client_sources "src/app/Glob2.cpp")
   glob2_objects_of(client_objects glob2_mobile ${client_sources})
   set(library_sources ${GLOB2_ANDROID_SOURCES})
-  list(FILTER library_sources INCLUDE REGEX "^libs/(gag|usl)/")
+  list(FILTER library_sources INCLUDE REGEX "^(libs/(gag|usl)|third_party/(etcpak|astcenc))/")
   glob2_objects_of(library_objects glob2_mobile ${library_sources})
   glob2_objects_of(reused_objects glob2_mobile ${GLOB2_ANDROID_UNIT_REUSED_SOURCES})
   add_executable(glob2-android-engine-tests EXCLUDE_FROM_ALL ${engine_objects}
