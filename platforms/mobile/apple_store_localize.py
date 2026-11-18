@@ -151,7 +151,7 @@ def snapshot(api, plan):
     require(app['attributes'].get('bundleId') == BUNDLE and app['attributes'].get('primaryLocale') == 'en-US', 'Unexpected app or primary locale')
     versions = ordered(api.collect(f"/v1/apps/{app['id']}/appStoreVersions"))
     version = one([v for v in versions if v['attributes'].get('platform') == plan['platform'] and v['attributes'].get('versionString') == plan['version']], 'explicit platform/version draft')
-    require(state(version) == 'PREPARE_FOR_SUBMISSION', 'Target must be an unsubmitted editable draft')
+    require(state(version) in {'PREPARE_FOR_SUBMISSION', 'DEVELOPER_REJECTED'}, 'Target must be an unsubmitted editable draft')
     attached = api.request('GET', f"/v1/appStoreVersions/{version['id']}/relationships/build").get('data')
     require(attached is not None, 'Target draft has no attached build')
     builds = api.collect('/v1/builds?' + urlencode({'filter[app]': app['id'], 'filter[version]': plan['buildNumber'],

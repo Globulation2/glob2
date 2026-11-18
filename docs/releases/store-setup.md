@@ -63,7 +63,10 @@ The owner-only `apple-store-localize.yml` workflow runs `prepare` without Apple
 credentials, then uses the existing protected `ios-testflight` environment for
 `inspect` or `apply`. Its reports contain counts and digests, never raw store
 snapshots, review contacts or authentication material. The explicit platform,
-version and already-attached build must match an unsubmitted editable draft.
+version and already-attached build must match an unsubmitted editable draft
+(`PREPARE_FOR_SUBMISSION` or `DEVELOPER_REJECTED` after withdrawal). The helper
+never withdraws or submits a review; waiting/in-review and distribution states
+remain blocked.
 For the current candidates these are `IOS` / `0.11.601` / `1002501` and
 `MAC_OS` / `0.11.6` / `2026111801`.
 
