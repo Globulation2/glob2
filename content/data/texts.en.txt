@@ -7136,3 +7136,5 @@ memory not reported
 High-resolution artwork is off for this session to keep the game running smoothly. Choose Original in Settings to keep it off.
 [room large map for device]
 This map is larger than this device's default and may run slowly here.
+[leave lan host body]
+You host this game: leaving ends it for everyone.

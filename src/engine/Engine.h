@@ -124,6 +124,8 @@ public:
 		/// Classifies the connection in the ClientNetworkSummary: "online" or "lan",
 		/// and for online games the relay's id and region when known.
 		std::string networkKind = "online";
+		/// This client runs the match's relay (a LAN host): leaving ends it for everyone.
+		bool hostsMatch = false;
 		std::string relayId;
 		std::string relayRegion;
 	};

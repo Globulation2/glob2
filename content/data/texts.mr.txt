@@ -7136,3 +7136,5 @@ MCP सर्व्हर सक्षम करा
 
 [room large map for device]
 
+[leave lan host body]
+

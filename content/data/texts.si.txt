@@ -7136,3 +7136,5 @@ Tundrska tla
 
 [room large map for device]
 
+[leave lan host body]
+

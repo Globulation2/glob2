@@ -7136,3 +7136,5 @@ Ardhi ya tundra
 
 [room large map for device]
 
+[leave lan host body]
+

@@ -7136,3 +7136,5 @@ GL మాత్రమే
 
 [room large map for device]
 
+[leave lan host body]
+

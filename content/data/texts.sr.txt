@@ -7136,3 +7136,5 @@ MCP сервер није доступан у овој апликацији
 
 [room large map for device]
 
+[leave lan host body]
+

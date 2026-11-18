@@ -405,6 +405,7 @@ GAGCore::CooperativeTask LanRoom::initGame(Engine& engine)
 {
 	Engine::TurnMatchStart start;
 	start.networkKind = "lan";
+	start.hostsMatch = static_cast<bool>(hostRoom);
 	if (pending)
 	{
 		start.setup = pending->setup;

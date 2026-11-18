@@ -851,6 +851,28 @@ TEST_SUITE("LanMatchHarness")
 										&match.hostSide()) > 100);
 	}
 
+	GLOB2_TEST_CASE("leaving warns the LAN host that the game ends for everyone", "[network][artifacts]")
+	{
+		// The host runs the relay: when it leaves, every guest's game ends ("The host
+		// left the game."). Its confirmation said the others play on without it.
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		glob2test::ScopedEnvironment address("GLOB2_LAN_ADDRESS", "127.0.0.1");
+		LanMatch m;
+		m.directory = glob2test::artifactDir() / "lan-leave-wording";
+		fs::remove_all(m.directory);
+		fs::create_directories(m.directory);
+		m.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(), m.directory), 101));
+		m.players.push_back(std::make_unique<LanPlayer>(
+			"Guest", guestRoom(m.host().room->shareText(), "Guest", m.directory / "cache"), 102));
+		joinAndStart(m, {});
+		const auto& strings = *GAGCore::Toolkit::getStringTable();
+		const std::string host = GameGUI::leaveConfirmationBody(m.host().engine->gui.networkMatch);
+		const std::string guest = GameGUI::leaveConfirmationBody(m.players[1]->engine->gui.networkMatch);
+		CHECK(guest == strings.getString("[leave lan body]"));
+		CHECK(host != guest);
+		CHECK(host.find("ends it for everyone") != std::string::npos);
+	}
+
 	GLOB2_TEST_CASE("timeout diagnostics tolerate a destroyed guest room", "[network]")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());

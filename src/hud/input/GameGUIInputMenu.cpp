@@ -84,15 +84,21 @@ void GameGUI::openMainMenu()
 	openDialog(IGM_MAIN, std::move(menu));
 }
 
+std::string GameGUI::leaveConfirmationBody(const NetworkMatch &match)
+{
+	const char *body = !match.online && match.hostsMatch ? "[leave lan host body]"
+					   : !match.online                    ? "[leave lan body]"
+					   : match.rated                      ? "[leave rated body]"
+					   : match.fromRoom                   ? "[leave room body]"
+														  : "[leave casual body]";
+	return Toolkit::getStringTable()->getString(body);
+}
+
 std::unique_ptr<Glob2UI::InGameDialog> GameGUI::makeLeaveConfirmation() const
 {
 	auto &strings = *Toolkit::getStringTable();
-	const char *body = !networkMatch.online   ? "[leave lan body]"
-					   : networkMatch.rated   ? "[leave rated body]"
-					   : networkMatch.fromRoom ? "[leave room body]"
-											   : "[leave casual body]";
 	return std::make_unique<InGameConfirmScreen>(strings.getString(networkMatch.online ? "[leave match title]" : "[leave lan title]"),
-												 strings.getString(body), strings.getString("[leave match confirm]"),
+												 leaveConfirmationBody(networkMatch), strings.getString("[leave match confirm]"),
 												 strings.getString("[keep playing]"));
 }
 

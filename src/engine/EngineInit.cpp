@@ -277,6 +277,7 @@ GAGCore::CooperativeTask Engine::initTurnMatchTask(TurnMatchStart start)
     turnMatch = std::move(state);
     // The connection HUD replaces the "waiting for players" notice.
     gui.networkMatch.active = true;
+    gui.networkMatch.hostsMatch = start.hostsMatch;
     gui.connectionOverlay = std::make_unique<ConnectionOverlay>();
     turnPresenter = std::make_unique<TurnMatchPresenter>();
     gui.connectionOverlay->source = [this] {

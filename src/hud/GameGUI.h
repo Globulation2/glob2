@@ -452,7 +452,11 @@ public:
 		bool online = false; ///< on a platform instance (else LAN)
 		bool rated = false;
 		bool fromRoom = true; ///< a room match (else a quick match)
+		/// This client runs the match (a LAN host): leaving ends it for everyone.
+		bool hostsMatch = false;
 	} networkMatch;
+	/// What leaving costs, as the "Leave match?" confirmation says it.
+	static std::string leaveConfirmationBody(const NetworkMatch &match);
 	/// A one-line notice in the message list (connection changes).
 	void addNotice(const std::string &text);
 	/// Pausing in network matches. Queue matches limit pauses per seat; the turn
