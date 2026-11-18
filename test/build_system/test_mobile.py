@@ -105,7 +105,10 @@ class EmulatorSmokeTests(unittest.TestCase):
                 (home/'bin/java').touch()
                 with self.subTest(system=system), patch('developer_apk.platform.system', return_value=system), patch('developer_apk.platform.machine', return_value=machine):
                     with patch.dict('developer_apk.os.environ', {'GLOB2_DEV_MODE':'isolated'}, clear=True):
-                        self.assertEqual(developer_apk.java_environment(task)['JAVA_HOME'], str(home))
+                        environment = developer_apk.java_environment(task)
+                        self.assertEqual(environment['JAVA_HOME'], str(home))
+                        # SDK launchers such as apksigner find java on PATH.
+                        self.assertTrue(environment['PATH'].startswith(str(home/'bin')))
                     with patch.dict('developer_apk.os.environ', {'JAVA_HOME': '/explicit/jdk', 'GLOB2_DEV_MODE':'isolated'}, clear=True):
                         self.assertEqual(developer_apk.java_environment(task)['JAVA_HOME'], '/explicit/jdk')
 
@@ -400,19 +403,28 @@ class EmulatorEnvironmentTests(unittest.TestCase):
             shutil.copyfile(root/'platforms/mobile/android-tools.json', task/'platforms/mobile/android-tools.json')
             lock = json.loads((task/'platforms/mobile/emulator.json').read_text())
             sdk = task/'build/mobile-tools/android-sdk'
-            for path, version in [('emulator', lock['emulator_revision']), ('system-images/android-35/default/x86_64', lock['image_revision'])]:
+            for path, version in [('emulator', lock['emulator_revision']), ('system-images/android-35/default/x86_64', lock['image_revision']), ('cmdline-tools/19.0', '19.0')]:
                 directory = sdk/path
                 directory.mkdir(parents=True)
                 (directory/'source.properties').write_text('Pkg.Revision='+version+'\n')
+            (sdk/'licenses').mkdir()
             config = task/'build/mobile-tools/avd/glob2-api35-x64.avd/config.ini'
+            view = task/'build/mobile-tools/sdk-view'
             def create(*args, **kwargs):
-                self.assertEqual(kwargs['env']['ANDROID_HOME'], str(sdk))
-                self.assertEqual(kwargs['env']['ANDROID_SDK_ROOT'], str(sdk))
+                # avdmanager sees a view whose tools and image directories are real.
+                self.assertEqual(kwargs['env']['ANDROID_HOME'], str(view))
+                self.assertEqual(kwargs['env']['ANDROID_SDK_ROOT'], str(view))
+                for path in ('cmdline-tools/19.0', 'system-images/android-35/default/x86_64'):
+                    self.assertFalse((view/path).is_symlink())
+                    self.assertEqual((view/path/'source.properties').resolve(), (sdk/path/'source.properties').resolve())
                 config.parent.mkdir(parents=True)
-                config.write_text('image.sysdir.1=system-images/android-35/default/x86_64/\n')
+                config.write_text('image.sysdir.1=artifacts/elsewhere/\n')
             with patch.object(emulator, 'ROOT', task), patch.dict(os.environ, {'ANDROID_HOME': '/runner/shared/sdk', 'GLOB2_DEV_MODE':'isolated'}), patch.object(sys, 'argv', ['emulator.py','configure','--arch','x86_64']), patch.object(emulator.subprocess, 'run', side_effect=create):
                 emulator.main()
             self.assertIn('hw.lcd.width=320', config.read_text())
+            self.assertIn('image.sysdir.1=system-images/android-35/default/x86_64/', config.read_text())
+            self.assertFalse(view.exists())
+            self.assertTrue((sdk/'cmdline-tools/19.0/source.properties').is_file())
 
 
 class IOSSmokeFailureTests(unittest.TestCase):

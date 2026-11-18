@@ -20,7 +20,9 @@ def java_environment(root):
         if artifact:
             bundled = mobile_tools(root)/artifact['directory']/artifact.get('java_home', '.')
             if (bundled/'bin/java').is_file(): env['JAVA_HOME'] = str(bundled)
-
+    if 'JAVA_HOME' in env:
+        # SDK launchers such as apksigner run the first java on PATH.
+        env['PATH'] = str(Path(env['JAVA_HOME'])/'bin') + os.pathsep + env.get('PATH', '')
     return env
 
 
