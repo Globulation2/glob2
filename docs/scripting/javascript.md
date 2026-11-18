@@ -226,7 +226,10 @@ query errors inside the script if recovery is useful. Global snapshots and retur
 orders/effects are validated **after** `step` returns, so script code cannot
 catch those host validation errors. A rejected AI decision disables that
 controller, logs a diagnostic and produces no order; later polls also produce
-no order. The disabled status and diagnostic survive saves. Map-script failures
+no order. The disabled status and diagnostic survive saves. In a local game the
+HUD also shows "A JavaScript AI stopped: …" with the AI name, tick and error,
+and **Menu → AI telemetry** keeps the full message under `runtime.status` for
+your own or allied colonies, or every colony while you watch a match. Map-script failures
 stop the session rather than silently skipping scenario logic.
 
 Work exhaustion cannot be bypassed by catching the exception. Native allocation,

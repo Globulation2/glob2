@@ -33,6 +33,10 @@
 #include "GameObjectives.h"
 #include "GameHints.h"
 #include "ScriptCommand.h"
+#include "AI.h"
+#include "ai/engine/AIDecision.h"
+#include "ai/engine/AIOrderScheduler.h"
+#include "sim/ClientEvents.h"
 #include "Glob2Test.h"
 #include <fstream>
 #include <sstream>
@@ -1640,6 +1644,50 @@ TEST_CASE("JavaScript legacy empty resource memories discard unused stock bytes"
     CHECK_NOTHROW(restored.load(&input,FILE_FORMAT_VERSION_RUNTIME_RESOURCES-1));
     CHECK(restored.materialStock(0,0,MaterialId::Food) == 0);
     CHECK(restored.cell(0,0).resource == NO_RES_TYPE);
+}
+
+TEST_CASE("The editor declarations name every field of a building type record" * doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world(glob2test::GameOptions{.loadDefaultRace=true,.header=true});
+    Observations observations(world.game,0);
+    const auto types=observations.query("buildingTypes",{});
+    REQUIRE_FALSE(types.items.empty());
+    // The shipped examples read capabilities and training; checkJs flags any field
+    // the BuildingType interface leaves out.
+    const auto declarations=glob2test::readFile(glob2test::sourceRoot()/"examples/javascript/glob2.d.ts");
+    const auto start=declarations.find("export interface BuildingType {");
+    REQUIRE(start!=std::string::npos);
+    const auto body=declarations.substr(start,declarations.find("\n}",start)-start);
+    std::string missing;
+    for(const auto& field:types.items.front().fields)
+        if(body.find(" "+field.first+":")==std::string::npos && body.find(" "+field.first+"?:")==std::string::npos)
+            missing+=" "+field.first;
+    CHECK_MESSAGE(missing.empty(),"BuildingType lacks:"<<missing);
+}
+
+TEST_CASE("A JavaScript AI that stops tells the client once, naming the AI and its error" * doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world(glob2test::GameOptions{.loadDefaultRace=true,.header=true});
+    ClientEvents events;
+    world.game.clientEvents=&events;
+    world.game.gameHeader.setAIConfig(0,config("export function metadata(){return {apiVersion:2,name:'Stopper'}} "
+                                               "export function step(){ throw new Error('boom'); }",2));
+    AI ai(AI::JAVASCRIPT,world.game.players[0]);
+    for(int poll=0; poll<3; ++poll) {
+        ai.prepareDecision();
+        const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
+        const std::vector<AIEngine::ExecutionReceipt> receipts;
+        ai.publishDecision(ai.decide(AIEngine::DecisionContext{*view,0,0,receipts}));
+    }
+    std::vector<ClientEvent::AIStopped> stopped;
+    events.drain([&](auto event) {
+        if(auto* e=std::get_if<ClientEvent::AIStopped>(&event)) stopped.push_back(*e);
+    });
+    REQUIRE(stopped.size()==1);
+    CHECK(stopped[0].player==0);
+    CHECK(stopped[0].diagnostic=="Stopper at tick 0: Error: boom");
 }
 
 TEST_CASE("JavaScript order diagnostics name an unknown type or a missing building reference" * doctest::test_suite("JavaScriptIntegration"))

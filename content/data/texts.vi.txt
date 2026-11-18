@@ -7137,4 +7137,5 @@ AI cho mọi thuộc địa do máy tính điều khiển
 [room large map for device]
 
 [leave lan host body]
+[javascript ai stopped %0]
 

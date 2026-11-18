@@ -3568,3 +3568,4 @@
 [artwork stepped down notice]
 [room large map for device]
 [leave lan host body]
+[javascript ai stopped %0]

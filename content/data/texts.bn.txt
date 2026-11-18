@@ -7137,4 +7137,5 @@ MCP সার্ভার চালু করুন
 [room large map for device]
 
 [leave lan host body]
+[javascript ai stopped %0]
 

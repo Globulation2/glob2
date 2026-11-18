@@ -7138,3 +7138,5 @@ High-resolution artwork is off for this session to keep the game running smoothl
 This map is larger than this device's default and may run slowly here.
 [leave lan host body]
 You host this game: leaving ends it for everyone.
+[javascript ai stopped %0]
+A JavaScript AI stopped: %0. Its colony receives no more orders; Menu → AI telemetry shows the full error.

@@ -98,11 +98,14 @@ namespace ClientEvent
 	struct BuildingRemoved { Uint16 gid; };
 	//! A unit kept its identity but moved to another team's slot (conversion).
 	struct UnitConverted { UnitRef from, to; };
+	//! A JavaScript AI controller was disabled by a script failure. `diagnostic`
+	//! is the first line of its error (AI name, tick and message).
+	struct AIStopped { int player; std::string diagnostic; };
 }
 
 using ClientEventVariant = std::variant<ClientEvent::TeamEvent, ClientEvent::ChatMessage, ClientEvent::VoiceData,
 	ClientEvent::PlayerQuit, ClientEvent::MapMark, ClientEvent::PauseChanged, ClientEvent::BuildingRequested,
-	ClientEvent::ReplayEnded, ClientEvent::OrderExecuted, ClientEvent::BuildingRemoved, ClientEvent::UnitConverted, ScriptPresentation>;
+	ClientEvent::ReplayEnded, ClientEvent::OrderExecuted, ClientEvent::BuildingRemoved, ClientEvent::UnitConverted, ClientEvent::AIStopped, ScriptPresentation>;
 
 /// Simulation → client channel: a lossless event queue plus latest-value state
 /// that is cheaper to overwrite each tick than to queue.

@@ -275,6 +275,12 @@ void GameGUI::handleClientEvent(ClientEventVariant&& event)
 				isRunning=false;
 			addMessage(Color(200, 200, 200), FormattableString(Toolkit::getStringTable()->getString("[%0 has left the game]")).arg(e.name), true);
 		}
+		else if constexpr (std::is_same_v<T, ClientEvent::AIStopped>)
+			// Custom AIs are local-only; the player testing one needs to know it stopped.
+			addMessage(Color(255, 160, 120),
+					   FormattableString(Toolkit::getStringTable()->getString("[javascript ai stopped %0]"))
+						   .arg(e.diagnostic),
+					   false);
 		else if constexpr (std::is_same_v<T, ClientEvent::MapMark>)
 		{
 			if (e.markingTeamAllies & Team::teamNumberToMask(localTeamNo))

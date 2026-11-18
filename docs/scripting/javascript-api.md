@@ -248,12 +248,12 @@ Unavailable experimental variants are omitted; `offset` still refers to raw IDs.
 | `training` | Ability-indexed records: `enabled`, `unitMask`, `duration`, `targetLevel`, independent `constructionLevel` grant (-1 means none), and `cost` |
 | `production` | Unit-indexed recipe records: `enabled`, `duration`, and `cost` |
 | `repairable`, `regeneration` | Repair support and health regeneration per tick |
-| `projectileDamage`, `projectileRange`, `projectileSpeed`, `projectileRhythm`, `ammunitionResource`, `ammunitionCost` | Damage by target unit type, firing parameters, and ammunition input |
+| `projectileDamage`, `projectileRange`, `projectileSpeed`, `projectileRhythm`, `ammunitionMaterial`, `ammunitionResource`, `ammunitionCost` | Damage by target unit type, firing parameters, and ammunition input (material and legacy resource ID) |
 | `suppliesStock`, `suppliesDirectStock`, `fetchesStock`, `exchangesFruit` | Effective resource-routing and exchange capabilities |
 | `level`, `site`, `virtual` | Variant level, construction-site boolean, flag boolean |
 | `width`, `height` | Footprint in tiles |
 | `maxHp`, `maxWorkers`, `usesWorkers` | Configured health, assignment limit, and whether the building requests hauling/construction labor |
-| `resourceCapacity` | 15-entry configured resource capacity/cost array |
+| `materialCapacity`, `resourceCapacity` | 12-entry configured capacity by material ID; legacy 15-entry resource capacity/cost array |
 
 Discover variants by capabilities and follow explicit transition IDs. Names and legacy family numbers remain available for authored scenarios, but do not imply behavior:
 
