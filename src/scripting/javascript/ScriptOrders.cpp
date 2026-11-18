@@ -33,7 +33,7 @@ std::shared_ptr<Order> order(const AIEngine::AIWorldView &world, int team, const
 		"workerMinimumLevel", "requireBombing", "moveFlag", "clearingResources",
 		"clearingMaterials"};
 	if (std::find(std::begin(supported), std::end(supported), type) == std::end(supported))
-		throw std::runtime_error("Unsupported gameplay order type: " + type.substr(0, 64));
+		throw std::runtime_error("Unsupported order type '" + type.substr(0, 64) + "'");
 	auto number = [&](const char *name, int lo = 0, int hi = 65535)
 	{ return d.integer(name, lo, hi); };
     if(type=="alliance") {
@@ -101,14 +101,6 @@ std::shared_ptr<Order> order(const AIEngine::AIWorldView &world, int team, const
 		}
 		return a;
 	}
-	// Name the script's mistake rather than reporting the first field read below.
-	static const char *const buildingOrders[] = {
-		"workers", "delete", "cancelDelete", "construction", "cancelConstruction",
-		"priority", "production", "exchange", "range", "minimumLevel", "workerMinimumLevel",
-		"requireBombing", "moveFlag", "clearingResources", "clearingMaterials"};
-	if (std::find(std::begin(buildingOrders), std::end(buildingOrders), type) ==
-		std::end(buildingOrders))
-		throw std::runtime_error("Unsupported order type '" + type.substr(0, 64) + "'");
 	const auto &reference = d.get("building");
 	if (reference.kind != Value::Object)
 		throw std::runtime_error("Order '" + type +

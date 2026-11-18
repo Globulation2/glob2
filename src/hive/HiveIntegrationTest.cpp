@@ -1255,7 +1255,7 @@ TEST_CASE("local Hive failures name their source and cards summarize results" *
 	commander.call("hive_run", {{"session", session}, {"operation_key", "teleport"},
 		{"source", "function step(){return {orders:[{type:'teleport'}]};}"}});
 	settle();
-	CHECK(result("teleport").at("error") == "Unsupported gameplay order type: teleport");
+	CHECK(result("teleport").at("error") == "Unsupported order type 'teleport'");
 
 	commander.call("hive_program", {{"session", session}, {"operation_key", "bad-install"},
 		{"action", "install"}, {"name", "broken"}, {"source", "function step(){throw 1;}"}});
