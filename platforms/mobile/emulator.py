@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import shutil
 import subprocess
 import sys
 from developer_apk import java_environment
@@ -66,13 +67,27 @@ def main():
         if (avd/'config.ini').exists():
             print('Existing task-local AVD:',avd);return
         package='system-images;android-'+str(lock['api'])+';'+lock['tag']+';'+args.arch
-        subprocess.run(android_java_command(sdk,'avdmanager',env)+['create','avd','--name',name,
-            '--package',package,'--path',str(avd)],input='no\n',text=True,env=env,check=True)
+        # avdmanager canonicalizes its tools and image directories, which the
+        # managed SDK links from the shared store, and then rejects them as outside
+        # the SDK. Give it a task-local SDK view in which both are real directories.
+        view=tools/'sdk-view'
+        if view.exists(): shutil.rmtree(view)
+        for relative in ('cmdline-tools/19.0','emulator',image.relative_to(sdk).as_posix()):
+            (view/relative).mkdir(parents=True)
+            for entry in (sdk/relative).iterdir():
+                (view/relative/entry.name).symlink_to(entry)
+        (view/'licenses').symlink_to(sdk/'licenses')
+        view_env=dict(env,ANDROID_HOME=str(view),ANDROID_SDK_ROOT=str(view))
+        subprocess.run(android_java_command(view,'avdmanager',view_env)+['create','avd','--name',name,
+            '--package',package,'--path',str(avd)],input='no\n',text=True,env=view_env,check=True)
+        shutil.rmtree(view)
         # A small deterministic surface avoids spending hosted CPU rendering a
         # default high-density handset before the startup checks can run.
         config = avd/'config.ini'
         settings = properties(config)
-        settings.update({'hw.lcd.width': '320', 'hw.lcd.height': '640',
+        # The emulator resolves the image relative to the real SDK root.
+        settings.update({'image.sysdir.1': image.relative_to(sdk).as_posix()+'/',
+                         'hw.lcd.width': '320', 'hw.lcd.height': '640',
                          'hw.lcd.density': '160', 'skin.name': '320x640',
                          'hw.keyboard': 'yes'})
         config.write_text(''.join(key+'='+value+'\n' for key,value in settings.items()))
