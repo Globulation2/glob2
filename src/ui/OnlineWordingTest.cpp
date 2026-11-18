@@ -4,6 +4,9 @@
 // strings and plurals that agree ("1 player"). UX review round 2: H-2, H-3, H-6, P-5,
 // R-8, X-4, X-7, L-1.
 #include "HeadlessGlobals.h"
+#include "ProfileNeeds.h"
+#include <StringTable.h>
+#include <Toolkit.h>
 #include "FrontendTheme.h"
 #include "GlobalContainer.h"
 #include "PlatformRoom.h"
@@ -113,6 +116,22 @@ TEST_SUITE("OnlineWording")
 		CHECK(Glob2UI::regionDisplayName("ca-central") == "Canada, central");
 		CHECK(Glob2UI::regionDisplayName("eu-west") == "Europe, west");
 		CHECK(Glob2UI::regionDisplayName("home-lab") == "Home, lab");
+	}
+
+	TEST_CASE("generated map names in the online screens are translated" * glob2test::needs({"generators"}))
+	{
+		Strings strings;
+		auto *table = GAGCore::Toolkit::getStringTable();
+		const int english = table->getLang();
+		CHECK(Glob2UI::generatorTitle("even-ground") == "Even Ground");
+		REQUIRE(table->hasLanguage("de"));
+		table->setLang(table->getLangCode("de"));
+		const std::string german = Glob2UI::generatorTitle("even-ground");
+		table->setLang(english);
+		CHECK(german == table->getStringInLang("[Even Ground]", table->getLangCode("de")));
+		CHECK(german != "Even Ground");
+		// An id this build does not know still reads as words.
+		CHECK(Glob2UI::generatorTitle("future-lands") == "Future Lands");
 	}
 
 	TEST_CASE("an unrated search shows no ratings; a ranked one explains its range [display]")
