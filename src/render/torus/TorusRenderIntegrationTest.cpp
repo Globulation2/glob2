@@ -81,7 +81,12 @@ static void tiledCapture(bool hd = false)
         .width = 1120, .height = 720, .screenFlags = Uint32(GraphicContext::USEGPU)});
     if (hd) Sprite::setHighResolution(true);
     Game game(nullptr);
-    makeTorusMapFixture(game, 64, 64);
+    // Eight-cell blocks: the whole-map reference must take its masks at the
+    // display density, like each capture tile. Four-cell blocks make nearly
+    // every cell mixed (3725 visible), which overflows the 32-texel mask atlas
+    // with its pan headroom, so the reference drew 16-texel masks and its
+    // saddle cells disagreed with the tiles.
+    makeTorusMapFixture(game, 64, 64, 8);
     REQUIRE(game.addUnit(29, 29, 0, EXPLORER, 0, 128, 1, 1));
     REQUIRE(game.addUnit(63, 63, 0, EXPLORER, 0, 128, 1, 1));
     REQUIRE(game.addBuilding(29, 31, globalContainer->buildingsTypes.getFinishedTypeNum("swarm"), 0));
@@ -101,13 +106,39 @@ static void tiledCapture(bool hd = false)
     int vx = 17, vy = 21; // Initial capture origin is (0,0), boundaries are at cells 30 and 60.
     const unsigned options = Game::DRAW_AREA;
     REQUIRE(view.draw(glob2test::sceneOf(game),game.gui, 0, options, vx, vy, 960, 720));
+    // The captured tiles, like the reference below, show placeholders until
+    // the view's own terrain has finished preparing in the background, which
+    // can outlast the first capture on slow runners (software GL on CI).
+    // Mixed cells draw a corner split until the whole-map base masks land
+    // (about ten seconds on a four-core runner), and pendingHdMasks() covers
+    // only the last tile prepared, so wait for the base masks as well. Redraw
+    // on a clock until it is ready, then capture once more with it.
+    int draws = 1;
+    const auto viewTerrainReady = [&] {
+        const auto *direct = view.standaloneRender.existingDirectTerrain();
+        return !direct || (!direct->preparing() && direct->pendingHdMasks() == 0 && direct->pendingBaseMasks() == 0);
+    };
+    const auto viewDeadline = std::chrono::steady_clock::now() + std::chrono::minutes(2);
+    while (!viewTerrainReady() && std::chrono::steady_clock::now() < viewDeadline)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(2));
+        REQUIRE(view.draw(glob2test::sceneOf(game),game.gui, 0, options, vx, vy, 960, 720));
+        ++draws;
+    }
+    INFO("The torus view's terrain never finished preparing within two minutes");
+    REQUIRE(viewTerrainReady());
+    if (draws > 1)
+    {
+        REQUIRE(view.draw(glob2test::sceneOf(game),game.gui, 0, options, vx, vy, 960, 720));
+        ++draws;
+    }
     // The direct pass samples native material frames at this density (32
     // pixels a cell), where HD frames add nothing; it prepares no pages either.
     REQUIRE(globalContainer->terrainCompositor().scale() == 1);
     REQUIRE(view.tiles.size() == 9);
     REQUIRE(view.pixelsPerCell == 32);
-    REQUIRE(view.standaloneRender.animationTime == 1);
-    REQUIRE(view.standaloneRender.areaAnimationTick == 1);
+    REQUIRE(view.standaloneRender.animationTime == draws);
+    REQUIRE(view.standaloneRender.areaAnimationTick == draws);
     GLint oldViewport[4]; glGetIntegerv(GL_VIEWPORT, oldViewport);
     GLuint reference, framebuffer;
     glGenTextures(1, &reference);
@@ -130,15 +161,18 @@ static void tiledCapture(bool hd = false)
     // reference until it is complete. Wait on a clock, not an attempt count:
     // slow runners (software GL on CI) outlast a fixed number of short sleeps,
     // and an incomplete reference would show up as a misleading pixel diff.
+    // Draw it complete, like the capture, so it builds every visible mask at
+    // its density now rather than reporting an interim coarser set as done.
     const auto referenceDeadline = std::chrono::steady_clock::now() + std::chrono::minutes(2);
     bool referenceComplete = false;
     while (!referenceComplete && std::chrono::steady_clock::now() < referenceDeadline)
     {
         glob2test::drawMap(game,0, 0, 2048, 2048, 0, 0, view.originX, view.originY, 0,
-                     baseline, options | Game::DRAW_NO_CLOUD_LAYER, nullptr, nullptr, true, 128);
+                     baseline, options | Game::DRAW_NO_CLOUD_LAYER | Game::DRAW_COMPLETE_TERRAIN, nullptr, nullptr, true, 128);
         Sprite::flushBatches(globalContainer->gfx);
         const auto *direct = baseline.render.existingDirectTerrain();
-        referenceComplete = !direct || (!direct->preparing() && direct->pendingHdMasks() == 0);
+        referenceComplete = !direct || (!direct->preparing() && direct->pendingHdMasks() == 0
+                                       && direct->pendingBaseMasks() == 0);
         if (!referenceComplete) std::this_thread::sleep_for(std::chrono::milliseconds(2));
     }
     INFO("The whole-map reference never finished preparing its terrain within two minutes");
@@ -147,8 +181,13 @@ static void tiledCapture(bool hd = false)
     glReadPixels(0, 0, 2048, 2048, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     int maximumDifference = 0;
-    for (const auto &tile : view.tiles)
+    // Where the tiles disagree, for a failure only some runners reproduce.
+    std::size_t differing = 0;
+    int minX = 2048, minY = 2048, maxX = -1, maxY = -1, worstTile = -1, worstX = 0, worstY = 0;
+    unsigned char worstActual[3] = {}, worstExpected[3] = {};
+    for (std::size_t tileIndex = 0; tileIndex < view.tiles.size(); ++tileIndex)
     {
+        const auto &tile = view.tiles[tileIndex];
         std::vector<unsigned char> actual(size_t(tile.textureW) * tile.textureH * 4);
         glBindTexture(GL_TEXTURE_2D, tile.texture);
         glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, actual.data());
@@ -158,12 +197,31 @@ static void tiledCapture(bool hd = false)
         {
             int worldX = (tile.x + x - 32 + 2048) % 2048;
             int worldY = (tile.y + tile.textureH - 1 - y - 32 + 2048) % 2048;
-            for (int c = 0; c < 3; ++c)
-                maximumDifference = std::max(maximumDifference, std::abs(int(actual[(size_t(y)*tile.textureW+x)*4+c])
-                    - int(pixels[(size_t(2047-worldY)*2048+worldX)*4+c])));
+            const unsigned char *a = &actual[(size_t(y)*tile.textureW+x)*4];
+            const unsigned char *e = &pixels[(size_t(2047-worldY)*2048+worldX)*4];
+            int difference = 0;
+            for (int c = 0; c < 3; ++c) difference = std::max(difference, std::abs(int(a[c]) - int(e[c])));
+            if (difference > 1)
+            {
+                ++differing;
+                minX = std::min(minX, worldX); maxX = std::max(maxX, worldX);
+                minY = std::min(minY, worldY); maxY = std::max(maxY, worldY);
+            }
+            if (difference > maximumDifference)
+            {
+                maximumDifference = difference;
+                worstTile = int(tileIndex); worstX = worldX; worstY = worldY;
+                std::copy(a, a + 3, worstActual); std::copy(e, e + 3, worstExpected);
+            }
         }
     }
     std::cout << "Native tiled capture maximum RGB difference: " << maximumDifference << "/255\n";
+    if (maximumDifference > 1)
+        std::cout << "Differing pixels: " << differing << " in world x " << minX << ".." << maxX
+                  << ", y " << minY << ".." << maxY << "; worst at tile " << worstTile << " world ("
+                  << worstX << "," << worstY << ") captured " << int(worstActual[0]) << "," << int(worstActual[1])
+                  << "," << int(worstActual[2]) << " reference " << int(worstExpected[0]) << ","
+                  << int(worstExpected[1]) << "," << int(worstExpected[2]) << "\n";
     REQUIRE(maximumDifference <= 1);
     glDeleteTextures(1, &reference); glDeleteFramebuffers(1, &framebuffer);
     globalContainer->gfx->setRenderTargetScale(0);
@@ -171,8 +229,8 @@ static void tiledCapture(bool hd = false)
     glViewport(oldViewport[0], oldViewport[1], oldViewport[2], oldViewport[3]);
     REQUIRE(glGetError() == GL_NO_ERROR);
     REQUIRE(view.draw(glob2test::sceneOf(game),game.gui, 0, options, vx, vy, 960, 720));
-    REQUIRE(view.standaloneRender.animationTime == 2);
-    REQUIRE(view.standaloneRender.areaAnimationTick == 2);
+    REQUIRE(view.standaloneRender.animationTime == draws + 1);
+    REQUIRE(view.standaloneRender.areaAnimationTick == draws + 1);
     view.reset();
     view.allocationPixelLimit = 1500000; // Some native tiles allocate before retrying.
     view.toggle();
