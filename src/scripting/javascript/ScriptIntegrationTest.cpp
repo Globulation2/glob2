@@ -935,6 +935,7 @@ TEST_CASE(
 }
 
 #include "SettingsScreen.h"
+#include "app/ClientFeatures.h"
 #include "GameGUIDialog.h"
 #include "ScopedEnvironment.h"
 #include <GraphicContext.h>
@@ -983,9 +984,10 @@ TEST_CASE("JavaScript custom library and telemetry dialogs render [display:1280x
 					CHECK(row.bounds.x + row.bounds.w <= globals->gfx->getW());
 				}
 			}
-			CHECK(hasImport);
-			CHECK(validate);
-			CHECK(groupedActions == 3);
+			// Store profiles without community AI build an empty Custom AIs page.
+			CHECK(hasImport == ClientFeatures::CommunityAI);
+			CHECK(validate == ClientFeatures::CommunityAI);
+			CHECK(groupedActions == (ClientFeatures::CommunityAI ? 3 : 0));
 			auto filename = "custom-ai-library" + suffix + ".bmp";
 			auto path = (glob2test::artifactDir() / filename).string();
 			globals->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/" + filename);
