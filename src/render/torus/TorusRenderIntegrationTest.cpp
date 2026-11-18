@@ -81,7 +81,12 @@ static void tiledCapture(bool hd = false)
         .width = 1120, .height = 720, .screenFlags = Uint32(GraphicContext::USEGPU)});
     if (hd) Sprite::setHighResolution(true);
     Game game(nullptr);
-    makeTorusMapFixture(game, 64, 64);
+    // Eight-cell blocks: the whole-map reference must take its masks at the
+    // display density, like each capture tile. Four-cell blocks make nearly
+    // every cell mixed (3725 visible), which overflows the 32-texel mask atlas
+    // with its pan headroom, so the reference drew 16-texel masks and its
+    // saddle cells disagreed with the tiles.
+    makeTorusMapFixture(game, 64, 64, 8);
     REQUIRE(game.addUnit(29, 29, 0, EXPLORER, 0, 128, 1, 1));
     REQUIRE(game.addUnit(63, 63, 0, EXPLORER, 0, 128, 1, 1));
     REQUIRE(game.addBuilding(29, 31, globalContainer->buildingsTypes.getFinishedTypeNum("swarm"), 0));
@@ -156,12 +161,14 @@ static void tiledCapture(bool hd = false)
     // reference until it is complete. Wait on a clock, not an attempt count:
     // slow runners (software GL on CI) outlast a fixed number of short sleeps,
     // and an incomplete reference would show up as a misleading pixel diff.
+    // Draw it complete, like the capture, so it builds every visible mask at
+    // its density now rather than reporting an interim coarser set as done.
     const auto referenceDeadline = std::chrono::steady_clock::now() + std::chrono::minutes(2);
     bool referenceComplete = false;
     while (!referenceComplete && std::chrono::steady_clock::now() < referenceDeadline)
     {
         glob2test::drawMap(game,0, 0, 2048, 2048, 0, 0, view.originX, view.originY, 0,
-                     baseline, options | Game::DRAW_NO_CLOUD_LAYER, nullptr, nullptr, true, 128);
+                     baseline, options | Game::DRAW_NO_CLOUD_LAYER | Game::DRAW_COMPLETE_TERRAIN, nullptr, nullptr, true, 128);
         Sprite::flushBatches(globalContainer->gfx);
         const auto *direct = baseline.render.existingDirectTerrain();
         referenceComplete = !direct || (!direct->preparing() && direct->pendingHdMasks() == 0
