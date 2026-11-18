@@ -36,35 +36,37 @@ std::shared_ptr<const ScancodeNames> snapshotScancodeNames()
 // This is not a general JSON Schema engine; extension tools must use this subset.
 void validate(const Json &schema, const Json &value, const std::string &path)
 {
-	auto fail = [&] { throw std::invalid_argument("Invalid argument: " + path); };
+	// Name the offending field and the broken rule, so clients can correct the call.
+	auto fail = [&](const std::string &reason)
+	{ throw std::invalid_argument("Invalid argument: " + path + ": " + reason); };
 	const auto type = schema.value("type", "");
 	if ((type == "object" && !value.is_object()) || (type == "array" && !value.is_array()) ||
 		(type == "string" && !value.is_string()) || (type == "boolean" && !value.is_boolean()) ||
 		(type == "integer" && !value.is_number_integer()) ||
 		(type == "number" && !value.is_number()))
-		fail();
+		fail("expected " + type);
 	if (schema.contains("enum") &&
 		std::find(schema["enum"].begin(), schema["enum"].end(), value) == schema["enum"].end())
-		fail();
+		fail("expected one of " + schema["enum"].dump());
 	if (value.is_number())
 	{
 		const double n = value.get<double>();
 		if (!std::isfinite(n) ||
 			(schema.contains("minimum") && n < schema["minimum"].get<double>()) ||
 			(schema.contains("maximum") && n > schema["maximum"].get<double>()))
-			fail();
+			fail("out of range");
 	}
 	if (value.is_string() && schema.contains("maxLength") &&
 		std::size_t(std::count_if(value.get_ref<const std::string &>().begin(),
 								  value.get_ref<const std::string &>().end(),
 								  [](unsigned char c) { return (c & 0xc0) != 0x80; })) >
 			schema["maxLength"].get<std::size_t>())
-		fail();
+		fail("longer than " + schema["maxLength"].dump() + " characters");
 	if (value.is_array())
 	{
 		if ((schema.contains("minItems") && value.size() < schema["minItems"].get<std::size_t>()) ||
 			(schema.contains("maxItems") && value.size() > schema["maxItems"].get<std::size_t>()))
-			fail();
+			fail("wrong number of items");
 		for (const auto &item : value)
 			validate(schema.at("items"), item, path + "[]");
 	}
@@ -72,14 +74,14 @@ void validate(const Json &schema, const Json &value, const std::string &path)
 	{
 		for (const auto &key : schema.value("required", Json::array()))
 			if (!value.contains(key.get<std::string>()))
-				fail();
+				fail("missing required property \"" + key.get<std::string>() + "\"");
 		const auto properties = schema.value("properties", Json::object());
 		for (const auto &[key, item] : value.items())
 		{
 			if (!properties.contains(key))
 			{
 				if (!schema.value("additionalProperties", true))
-					fail();
+					fail("unknown property \"" + key + "\"");
 			}
 			else
 				validate(properties[key], item, path + "." + key);

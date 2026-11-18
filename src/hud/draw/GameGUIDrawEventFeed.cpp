@@ -14,6 +14,7 @@
 #include "GameGUI.h"
 #include "GameGUIEventLayout.h"
 #include "ConnectionOverlay.h"
+#include "tutorial/TutorialGuidance.h"
 #include <Toolkit.h>
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
@@ -59,6 +60,13 @@ std::optional<int> GameGUI::eventFeedStartY()
 	}
 	const auto &hud = drawnScene().panels.hud;
 	const bool mobile = touch && touch->usesHUD();
+	// Desktop lesson cards sit in the same corner; start messages below them.
+	if (tutorialGuidance && !mobile)
+	{
+		const auto panel = tutorialGuidance->panelBounds();
+		if (panel.h > 0 && panel.x < 232)
+			y = std::max(y, panel.y + panel.h + 12);
+	}
 	if (hud.state().legacyScriptTextShown && !mobile)
 	{
 		std::vector<std::string> lines;

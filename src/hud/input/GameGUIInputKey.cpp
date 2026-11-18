@@ -214,7 +214,11 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 					break;
 				case GameGUIKeyActions::ShowMainMenu:
 				{
-					if (inGameMenu==IGM_NONE)
+					// The first press clears a selection or leaves building, flag or area
+					// placement, as the secondary mouse button does; the next opens the menu.
+					if (pressed && selectionMode!=NO_SELECTION)
+						clearSelection();
+					else if (inGameMenu==IGM_NONE)
 						openMainMenu();
 				}
 				break;

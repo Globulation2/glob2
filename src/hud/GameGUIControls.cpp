@@ -24,6 +24,8 @@
 #include "GameGUIDialog.h"
 #include "TorusView.h"
 #include "GameGUIToolManager.h"
+#include "BuildingPresentation.h"
+#include "render/scene/BuildingCatalogView.h"
 
 using namespace GAGGUI::ui;
 namespace
@@ -687,8 +689,12 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 		for (size_t i = 0; i < names.size(); ++i)
 		{
 			auto r = choiceControlBounds(top, i, columns);
+			// Label palette entries with the player-facing name, not the sprite key.
+			const BuildingCatalogView catalog(*drawnScene().buildingTypes);
+			const int placeable = catalog.getPlaceableTypeNum(names[i]);
 			button(
-				std::string(flags ? "game/flags/" : "game/buildings/") + names[i], names[i], r,
+				std::string(flags ? "game/flags/" : "game/buildings/") + names[i],
+				placeable >= 0 ? buildingDisplayName(*catalog.get(placeable)) : names[i], r,
 				[this, name = names[i]] { setSelection(TOOL_SELECTION, (void *)name.c_str()); },
 				states[i]);
 			controls.back().clip = Rect{left, top, RIGHT_MENU_WIDTH, rows * 46};

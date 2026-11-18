@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "id": "defensive-tactics",
-  "version": 1,
+  "version": 2,
   "map": "campaigns/defensive-tactics.map.gz",
   "name": "Guard zones and flag tactics",
   "title": "[lesson defensive-tactics title]",
@@ -34,6 +34,13 @@
       "kind": "area",
       "region": "enemyOutpost"
     },
+    "enemySurroundings": {
+      "kind": "area",
+      "x": 97,
+      "y": 81,
+      "width": 30,
+      "height": 32
+    },
     "scoutFlags": {
       "kind": "building",
       "team": 0,
@@ -44,13 +51,14 @@
           "op": "gte",
           "value": 1
         }
-      ]
+      ],
+      "within": "enemyBase"
     },
     "scouts": {
       "kind": "unit",
       "team": 0,
       "type": 1,
-      "within": "enemyBase",
+      "within": "enemySurroundings",
       "assignedTo": "scoutFlags"
     },
     "guards": {
@@ -124,7 +132,8 @@
       "touchHelp": "[lesson defensive-tactics scout help]",
       "complete": {
         "type": "exists",
-        "target": "scouts"
+        "target": "scouts",
+        "latch": true
       },
       "activeOnly": true,
       "highlights": [

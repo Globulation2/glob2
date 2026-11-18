@@ -106,7 +106,9 @@ steps, and releases temporary holds. A screen transition that truncates an event
 fails the call; undelivered releases remain queued for a later dispatch boundary.
 Failures such as stale viewport, lost control, unavailable frames and cancelled capture
 are tool results with isError; malformed JSON, invalid arguments and protocol errors
-are JSON-RPC errors. An error may report input_started when earlier gesture steps were
+are JSON-RPC errors. An invalid-argument message names the field and the broken rule,
+for example `Invalid argument: ui_drag.points[]: missing required property "x"`. An
+error may report input_started when earlier gesture steps were
 emitted; never infer that a failure guarantees no side effects. Screenshots include
 in-game dialogs and overlays, with native output resolution and top-left orientation.
 Buffers are owned through worker PNG encoding; recording and ordinary screenshots
@@ -234,7 +236,11 @@ that ownership. Building/editor targets bind entity generations, and compact pla
 confirmation binds the construction type and world position. Informational unit and
 resource panels remain read-only. Map, minimap and replay progress are canvas controls;
 use captured-image coordinates for spatial gestures and Hive for player-visible world
-records. Native OS dialogs remain outside this interface.
+records. A control reports `blocked` when any overlay intersects it, so the map canvas
+reads as blocked while a lesson card or other panel covers part of it; coordinate
+gestures still reach its uncovered part. Building and flag palette entries are labelled
+with the player-facing names; their keys keep the stable type names. Native OS dialogs
+remain outside this interface.
 
 ## Linux stdio launcher
 
