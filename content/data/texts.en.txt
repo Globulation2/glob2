@@ -3134,6 +3134,8 @@ Brush %0
 Team %0
 [Your colony]
 Your colony
+[Practice colony]
+Practice colony
 [%0 / %1 HP · %2]
 %0 / %1 HP · %2
 [Units: %0]

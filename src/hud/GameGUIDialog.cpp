@@ -64,7 +64,7 @@ Element InGameMainScreen::build(const Presentation &p)
 		buttons.push_back(item("save", fe::tr("[save game]"), SAVE_GAME));
 	if (files)
 		buttons.push_back(item("load", loadLabel, LOAD_GAME));
-	if(hiveMind)buttons.push_back(item("hive","Hive Mind",HIVE_MIND));
+	if(hiveMind)buttons.push_back(item("hive",fe::tr("[settings Hive Mind]"),HIVE_MIND));
 
 	buttons.push_back(item("telemetry", fe::tr("[AI telemetry]"), AI_TELEMETRY));
 	buttons.push_back(item("options", fe::tr("[Options]"), OPTIONS));

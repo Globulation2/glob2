@@ -124,7 +124,7 @@ void ChooseMapScreen::select(int index)
 void ChooseMapScreen::editMapParameters(const std::string &path)
 {
 	parametersOnly = true;
-	title = tr("Size and parameters");
+	title = tr("[Size and parameters]");
 	selectFile(path);
 	showTiling = true;
 }
@@ -438,7 +438,7 @@ Element ChooseMapScreen::tilingControls(const Presentation &p, bool busy)
 	disclosure.alignLeft = true;
 	std::vector<Element> controls;
 	if (!parametersOnly)
-		controls.push_back(button("tiling/parameters", tr("Size and parameters"),
+		controls.push_back(button("tiling/parameters", tr("[Size and parameters]"),
 			[this] { showTiling = !showTiling; invalidate(); }, disclosure));
 	if (!showTiling)
 		return column(std::move(controls));
@@ -471,7 +471,7 @@ Element ChooseMapScreen::tilingControls(const Presentation &p, bool busy)
 	// advanced adjustment at the bottom, starting at one in both directions.
 	controls.push_back(repeat("tiling/x", "[repeat map horizontally]", tilingSource.w, tileX, true));
 	controls.push_back(repeat("tiling/y", "[repeat map vertically]", tilingSource.h, tileY, false));
-	controls.push_back(button("tiling/reset", tr("Reset"), [this]
+	controls.push_back(button("tiling/reset", tr("[Reset]"), [this]
 		{
 			tileX = tileY = tileBases = 1;
 			tileTeams = tilingSource.header.getNumberOfTeams();

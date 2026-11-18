@@ -26,6 +26,7 @@
 #include "GameGUIToolManager.h"
 #include "BuildingPresentation.h"
 #include "render/scene/BuildingCatalogView.h"
+#include "draw/PriorityRadioLayout.h"
 
 using namespace GAGGUI::ui;
 namespace
@@ -503,14 +504,19 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 			y += YOFFSET_BAR + YOFFSET_B_SEP;
 			y += YOFFSET_B_SEP;
 			if (allied && b->state().buildingState == Building::ALIVE)
+			{
+				const auto layout = buildingPriorityLayout();
 				for (int i = -1; i <= 1; ++i)
 					option("priority/" + std::to_string(i),
 						   i < 0 ? "Low priority"
 						   : i   ? "High priority"
 								 : "Medium priority",
-						   {content + (i + 1) * (128 / 3), y + 16 - buildingInfoScroll, 12, 12},
+						   {content + layout.x[i + 1], y + layout.y[i + 1] - buildingInfoScroll,
+							PriorityRadioLayout::RADIO_SIZE, PriorityRadioLayout::RADIO_SIZE},
 						   displayedPriority(*b) == i,
 						   [this, i](const auto &p) { requestBuildingPriority(p, i); });
+				y += layout.extraHeight;
+			}
 			y += YOFFSET_BAR + YOFFSET_B_SEP;
 		}
 		if (type->maxUnitStayRange > 0 &&
@@ -716,11 +722,16 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 		{
 			auto r = choiceControlBounds(top, i, columns);
 			// Label palette entries with the player-facing name, not the sprite key.
-			const BuildingCatalogView catalog(*drawnScene().buildingTypes);
-			const int placeable = catalog.getPlaceableTypeNum(names[i]);
+			// The scene has no building types until it is first extracted.
+			std::string label = names[i];
+			if (const auto *types = drawnScene().buildingTypes.get())
+			{
+				const BuildingCatalogView catalog(*types);
+				if (const int placeable = catalog.getPlaceableTypeNum(names[i]); placeable >= 0)
+					label = buildingDisplayName(*catalog.get(placeable));
+			}
 			button(
-				std::string(flags ? "game/flags/" : "game/buildings/") + names[i],
-				placeable >= 0 ? buildingDisplayName(*catalog.get(placeable)) : names[i], r,
+				std::string(flags ? "game/flags/" : "game/buildings/") + names[i], label, r,
 				[this, name = names[i]] { setSelection(TOOL_SELECTION, (void *)name.c_str()); },
 				states[i]);
 			controls.back().clip = Rect{left, top, RIGHT_MENU_WIDTH, rows * 46};

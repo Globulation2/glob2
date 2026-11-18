@@ -506,19 +506,29 @@ std::vector<GAGGUI::ui::Host *> GameGUI::inspectionHosts()
 	return hosts;
 }
 
-// The opening cover's title, taken once from the session as the game starts;
-// drawing then reads only this snapshot.
-void GameGUI::beginIntroCover(Uint64 now)
+IntroCover::Title GameGUI::introCoverTitle() const
 {
 	IntroCover::Title title;
 	title.map = game.mapHeader.getMapName();
+	auto *strings = Toolkit::getStringTable();
+	bool lesson = false;
+	for (const auto &entry : Tutorial::lessonCatalog())
+		if (!title.map.empty() && (entry.mapName == title.map ||
+			entry.map == "campaigns/" + title.map + ".map.gz"))
+		{
+			title.map = strings->getString(entry.title.c_str());
+			lesson = true;
+			break;
+		}
 	for (int i = 0; i < game.gameHeader.getNumberOfPlayers(); ++i)
 	{
 		const BasePlayer &base = game.gameHeader.getBasePlayer(i);
 		IntroCover::Player player;
 		player.name = base.name;
+		if (lesson)
+			player.name = strings->getString(base.type == BasePlayer::P_LOCAL ? "[Your colony]" : "[Practice colony]");
 		// Custom games name AIs "Maxima / 1 - Red"; the dot shows the colony.
-		if (base.type >= BasePlayer::P_AI)
+		else if (base.type >= BasePlayer::P_AI)
 			if (const auto cut = player.name.find(" / "); cut != std::string::npos)
 				player.name.resize(cut);
 		if (base.teamNumber >= 0 && base.teamNumber < Team::MAX_COUNT && game.teams[base.teamNumber])
@@ -530,6 +540,14 @@ void GameGUI::beginIntroCover(Uint64 now)
 		}
 		title.players.push_back(std::move(player));
 	}
+	return title;
+}
+
+// The opening cover's title, taken once from the session as the game starts;
+// drawing then reads only this snapshot.
+void GameGUI::beginIntroCover(Uint64 now)
+{
+	auto title = introCoverTitle();
 	introCover.begin(now, std::move(title));
 	if (globalContainer->gfx && globalContainer->gfx->rendererCapabilities().cloudLayers && !globalContainer->reducedMotion)
 		introCover.prepare(*globalContainer->gfx, globalContainer->gfx->getW(), globalContainer->gfx->getH());

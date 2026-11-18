@@ -632,6 +632,7 @@ set(GLOB2_UNIT_TESTS_0_SOURCES
     src/map/generator/shared/PerlinNoiseTest.cpp
     src/audio/PlayerVoiceDrainTest.cpp
     src/hud/draw/SpriteCenteringTest.cpp
+    src/hud/draw/PriorityRadioLayoutTest.cpp
     libs/gag/src/SkinMeshTest.cpp
     libs/gag/src/SkinModelTest.cpp
     libs/gag/src/SkinShapeModelTest.cpp
@@ -1910,6 +1911,7 @@ set(GLOB2_ANDROID_UNIT_TESTS_0_SOURCES
     src/map/generator/shared/PerlinNoiseTest.cpp
     src/audio/PlayerVoiceDrainTest.cpp
     src/hud/draw/SpriteCenteringTest.cpp
+    src/hud/draw/PriorityRadioLayoutTest.cpp
     libs/gag/src/SkinMeshTest.cpp
     libs/gag/src/SkinModelTest.cpp
     libs/gag/src/SkinShapeModelTest.cpp

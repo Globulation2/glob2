@@ -13,6 +13,7 @@
 #include "BuildingPresentation.h"
 #include "GameGUI.h"
 #include "GameGUIInternal.h"
+#include "PriorityRadioLayout.h"
 #include "GlobalContainer.h"
 #include "SpriteCentering.h"
 #include "TeamDisplay.h"
@@ -235,6 +236,15 @@ void GameGUI::drawBuildingWorkingControls(const SceneBuildingPanel* selBuild, co
 	ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 }
 
+PriorityRadioLayout GameGUI::buildingPriorityLayout() const
+{
+	auto *font = globalContainer->littleFont;
+	auto *strings = Toolkit::getStringTable();
+	return priorityRadioLayout({font->getStringWidth(strings->getString("[low priority]")),
+		font->getStringWidth(strings->getString("[medium priority]")),
+		font->getStringWidth(strings->getString("[high priority]"))});
+}
+
 void GameGUI::drawBuildingPriorityControls(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, int& ypos)
 {
 	if (!buildingType->maxUnitWorking)
@@ -249,26 +259,23 @@ void GameGUI::drawBuildingPriorityControls(const SceneBuildingPanel* selBuild, c
 
 	ypos += YOFFSET_B_SEP;
 
-	int width = 128/3;
 	std::string prioritystr = Toolkit::getStringTable()->getString("[priority]");
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, prioritystr);
 
-	std::string lowstr = Toolkit::getStringTable()->getString("[low priority]");
-	std::string medstr = Toolkit::getStringTable()->getString("[medium priority]");
-	std::string highstr = Toolkit::getStringTable()->getString("[high priority]");
+	const std::string labels[3] = {Toolkit::getStringTable()->getString("[low priority]"),
+		Toolkit::getStringTable()->getString("[medium priority]"),
+		Toolkit::getStringTable()->getString("[high priority]")};
+	const auto layout = buildingPriorityLayout();
+	const int left = globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET;
+	for (int i = 0; i < 3; ++i)
+	{
+		const auto bounds=hudControlBounds("building/priority/"+std::to_string(i-1),
+			{left+layout.x[i],ypos+layout.y[i]-buildingInfoScroll,PriorityRadioLayout::RADIO_SIZE,PriorityRadioLayout::RADIO_SIZE});
+		drawRadioButton(bounds.x,bounds.y+buildingInfoScroll,(priority==i-1));
+		globalContainer->gfx->drawString(left+layout.x[i]+PriorityRadioLayout::LABEL_GAP, ypos+layout.y[i]-2, globalContainer->littleFont, labels[i]);
+	}
 
-	const auto priority0=hudControlBounds("building/priority/-1",{globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET,ypos+16-buildingInfoScroll,12,12});
-	drawRadioButton(priority0.x,priority0.y+buildingInfoScroll,(priority==-1));
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+14, ypos+12+2, globalContainer->littleFont, lowstr);
-
-	const auto priority1=hudControlBounds("building/priority/0",{globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+width,ypos+16-buildingInfoScroll,12,12});
-	drawRadioButton(priority1.x,priority1.y+buildingInfoScroll,(priority==0));
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+14+width, ypos+12+2, globalContainer->littleFont, medstr);
-
-	const auto priority2=hudControlBounds("building/priority/1",{globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+width*2,ypos+16-buildingInfoScroll,12,12});
-	drawRadioButton(priority2.x,priority2.y+buildingInfoScroll,(priority==1));
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+14+width*2, ypos+12+2, globalContainer->littleFont, highstr);
-
+	ypos += layout.extraHeight;
 	ypos += YOFFSET_BAR+YOFFSET_B_SEP;
 }
 

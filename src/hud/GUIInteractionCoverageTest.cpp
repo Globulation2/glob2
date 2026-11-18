@@ -1172,6 +1172,75 @@ TEST_CASE("tutorial semantic controls bind lesson step and destination [display]
     CHECK(guidance.host().event(oldHelp->event()));CHECK_FALSE(oldHelp->error.empty());
 }
 
+// Lesson maps carry English map and seat names baked by the lesson builder. The
+// opening cover must show the translated lesson title and colony names instead.
+TEST_CASE("lesson opening cover shows translated lesson and colony names [display][writes-preferences]" *
+          doctest::test_suite("GUIInteractionCoverage"))
+{
+    glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 800, .height = 600,
+        .beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::Software; }});
+    auto *strings = Toolkit::getStringTable();
+    struct RestoreLanguage { GAGCore::StringTable *table; int index; ~RestoreLanguage() { table->setLang(index); } }
+        restore{strings, strings->getLang()};
+    strings->setLang(strings->getLangCode("de"));
+    const auto lessons = Tutorial::lessonCatalog();
+    REQUIRE(lessons.size() >= 10);
+    const auto &lesson = lessons.at(2);
+    GameGUI gui;
+    auto map = Engine::loadMapHeader(lesson.map);
+    auto players = Engine::loadGameHeader(lesson.map);
+    REQUIRE(gui.loadFromHeaders(map, players, true, true));
+    const auto title = gui.introCoverTitle();
+    CHECK(title.map == strings->getString(lesson.title.c_str()));
+    CHECK(title.map != lesson.mapName);
+    REQUIRE(title.players.size() >= 2);
+    int local = 0;
+    for (int i = 0; i < int(title.players.size()); ++i) {
+        const bool isLocal = players.getBasePlayer(i).type == BasePlayer::P_LOCAL;
+        local += isLocal;
+        CHECK(title.players[i].name == strings->getString(isLocal ? "[Your colony]" : "[Practice colony]"));
+        CHECK(title.players[i].name != players.getBasePlayer(i).name);
+    }
+    CHECK(local == 1);
+}
+
+// MCP inspection can lay out the HUD while a game is still loading, before the
+// first scene carries the local team's statistics; the top bar must not read them.
+TEST_CASE("HUD inspection before the first scene does not read missing statistics [display][writes-preferences]" *
+          doctest::test_suite("GUIInteractionCoverage"))
+{
+    glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 800, .height = 600,
+        .beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::Software; }});
+    glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI", "0");
+    GameGUI gui;
+    auto map = Engine::loadMapHeader("maps/balanced.map");
+    GameHeader players;
+    players.setNumberOfPlayers(1);
+    players.getBasePlayer(0) = BasePlayer(0, "Loading", 0, BasePlayer::P_LOCAL);
+    REQUIRE(gui.loadFromHeaders(map, players, true, true));
+    gui.localPlayer = gui.localTeamNo = 0;
+    gui.adjustLocalTeam();
+    REQUIRE_FALSE(gui.drawnScene().panels.localStats);
+    REQUIRE_FALSE(gui.drawnScene().buildingTypes);
+    // Unit counts are placeholders until statistics exist.
+    const auto layout = gui.topBarLayout();
+    for (int i = 0; i < 3; ++i) CHECK(layout.values[i] == "-/-");
+    CHECK(gui.topBarSpeedX() > 0);
+    // The building palette falls back to its stable type names.
+    gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
+    const auto snapshot = gui.hudInspectionHost().inspect();
+    CHECK_FALSE(snapshot.controls.empty());
+    bool palette = false;
+    auto visit = [&](auto &&self, const auto &nodes) -> void {
+        for (const auto &node : nodes) {
+            if (node.key == "game/buildings/inn.0.site") { palette = true; CHECK(node.label == "inn.0.site"); }
+            self(self, node.children);
+        }
+    };
+    visit(visit, snapshot.controls);
+    CHECK(palette);
+}
+
 TEST_CASE("desktop zoom speed and events share higher-surface ownership for semantic and human input [display][writes-preferences]" *
           doctest::test_suite("GUIInteractionCoverage"))
 {

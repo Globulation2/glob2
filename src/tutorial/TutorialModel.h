@@ -26,4 +26,10 @@ Script::Value contentJson(const std::string &text);
 std::shared_ptr<const Model> parse(const Script::Value &value);
 // Only a scenario's published presentation can activate tutorial guidance.
 std::shared_ptr<const Model> view(const SimulationSnapshot::Session &session);
+// One lesson of the packaged catalog (scripts/tutorials/catalog.json). Title and
+// briefing are translation keys; mapName is the English name the lesson builder
+// bakes into the map. A running lesson's map name is that or the map's file stem.
+// Empty when the catalog is missing or invalid.
+struct CatalogEntry { std::string map,title,briefing,mapName; };
+std::vector<CatalogEntry> lessonCatalog();
 }

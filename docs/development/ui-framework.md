@@ -121,6 +121,14 @@ maintained. Loading a save preserves its script bytes, execution offsets and
 progress; old displayed messages may retain their original wording or language
 fallback until the script emits another message.
 
+The committed catalogs do not record which English text a translation was made
+from, so no check notices a translation that went stale when its English changed.
+A change that alters what an English value says (not just its wording) updates
+every catalog's value in the same change, or blanks it and lists the key in
+`texts.pending.txt`; lesson text must stay translated in every catalog.
+Frozen translation-program kits hash their sources, which only helps work done
+through a kit.
+
 Campaign mission titles are localized for display while selection still uses
 original mission IDs. A fresh campaign editor uses the translated new-campaign
 label as its initial editable title, stripping native soft word-break hints before
@@ -463,6 +471,14 @@ Hints prefer whole-word wrapping without adding visible spaces, and the renderer
 omits them from measurements and drawing. Oversized words retain cluster-safe
 emergency wrapping. Keep online catalog text unannotated and use browser Thai line
 breaking. Review hint changes as catalog changes and refresh affected sign-offs.
+
+In every language, a hyphen inside a word is also a wrap opportunity
+("Discord-|Community"); minus signs and numeric ranges are not. `TextAlign::Left`
+means the start of the line: labels and paragraphs whose first strong character
+is right-to-left (Arabic, Persian, Urdu, Hebrew) sit against the right edge.
+Screen layouts themselves are not mirrored. Store Arabic-script catalog values as
+ordinary letters in logical order, never as presentation forms; the renderer
+shapes and orders them.
 
 Bulgarian and Thai diagnostic surfaces keep raw errors in the diagnostic log and display
 an existing reviewed native message where available, otherwise the reviewed
