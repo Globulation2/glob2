@@ -35,6 +35,18 @@
   <summary xml:lang="vi">Xây dựng một thuộc địa thịnh vượng</summary>
   <summary xml:lang="ja">繁栄するコロニーを築こう</summary>
   <summary xml:lang="ko">번성하는 식민지를 건설하세요</summary>
+  <summary xml:lang="hi">एक फलती-फूलती कॉलोनी बसाएँ</summary>
+  <summary xml:lang="ur">ایک پھلتی پھولتی آبادی بسائیں</summary>
+  <summary xml:lang="sw">Jenga koloni linalostawi</summary>
+  <summary xml:lang="bn">সমৃদ্ধ উপনিবেশ গড়ুন</summary>
+  <summary xml:lang="nb">Bygg en blomstrende koloni</summary>
+  <summary xml:lang="ms">Bina koloni yang makmur</summary>
+  <summary xml:lang="mr">भरभराटीची वसाहत उभारा</summary>
+  <summary xml:lang="ta">செழிப்பான குடியிருப்பை உருவாக்குங்கள்</summary>
+  <summary xml:lang="te">వర్ధిల్లే కాలనీని నిర్మించండి</summary>
+  <summary xml:lang="fil">Magtayo ng maunlad na kolonya</summary>
+  <summary xml:lang="bg">Изградете процъфтяваща колония</summary>
+  <summary xml:lang="th">สร้างอาณานิคมให้รุ่งเรือง</summary>
   <developer id="org.globulation2">
     <name>Globulation 2 contributors</name>
   </developer>
@@ -191,7 +203,7 @@
     <p xml:lang="id">Jadikan peta sebagai bagian dari strategi Anda. Peta yang berbeda membutuhkan strategi yang berbeda pula. Sesuaikan ekspansi Anda dengan medan, pilih apa yang perlu dipertahankan, dan temukan rute serta sumber daya yang dibutuhkan koloni Anda.</p>
     <p xml:lang="id">Pertahankan yang telah Anda bangun. Perekonomian Anda mendukung pertumbuhan dan pertahanan. Seimbangkan kebutuhan koloni Anda sementara para pesaing berebut lahan dan sumber daya, dan bersiaplah untuk konflik yang dapat menentukan hasil pertandingan.</p>
     <p xml:lang="id">Globulation 2 gratis dan bersifat open source.</p>
-    <p xml:lang="vi">Globulation 2 là một trò chơi chiến lược thời gian thực, nơi lương thực, công nhân và không gian định hình sự bành trướng của bạn. Phát triển một thuộc địa rộng lớn, cân bằng các nhu cầu cạnh tranh và cạnh tranh với các đối thủ để giành đất đai và tài nguyên. Các sinh vật của bạn hoạt động tự chủ, cho phép bạn dẫn dắt toàn bộ thuộc địa.</p>
+    <p xml:lang="vi">Globulation 2 là một trò chơi chiến lược thời gian thực, nơi lương thực, nhân công và không gian định hình sự bành trướng của bạn. Phát triển một thuộc địa rộng lớn, cân bằng các nhu cầu cạnh tranh và cạnh tranh với các đối thủ để giành đất đai và tài nguyên. Các sinh vật của bạn hoạt động tự chủ, cho phép bạn dẫn dắt toàn bộ thuộc địa.</p>
     <p xml:lang="vi">Xây dựng một nền kinh tế có thể duy trì những tham vọng của bạn. Lương thực, xây dựng và huấn luyện cùng cần đến nhân công của bạn. Hãy quyết định nơi cần nhân công và cân bằng tham vọng mới với nhu cầu của thuộc địa hiện tại.</p>
     <p xml:lang="vi">Hãy biến bản đồ thành một phần trong chiến lược của bạn. Các bản đồ khác nhau đòi hỏi các chiến lược khác nhau. Hãy điều chỉnh kế hoạch mở rộng của bạn cho phù hợp với địa hình, lựa chọn những khu vực cần phòng thủ và tìm kiếm các tuyến đường cũng như nguồn tài nguyên mà thuộc địa của bạn cần.</p>
     <p xml:lang="vi">Hãy bảo vệ những gì bạn đã gây dựng. Nền kinh tế của bạn hỗ trợ cả tăng trưởng và quốc phòng. Cân bằng nhu cầu của thuộc địa trong khi các đối thủ tranh giành đất đai và tài nguyên, và chuẩn bị cho những cuộc xung đột có thể quyết định kết quả trận đấu.</p>
@@ -206,6 +218,66 @@
     <p xml:lang="ko">지도를 전략의 일부로 활용하세요. 지도마다 필요한 전략이 다릅니다. 지형에 맞춰 확장 계획을 세우고, 방어할 곳을 선택하고, 식민지에 필요한 경로와 자원을 확보하세요.</p>
     <p xml:lang="ko">당신이 일궈온 것을 지켜내세요. 당신의 경제는 성장과 방어를 모두 뒷받침해야 합니다. 경쟁자들이 땅과 자원을 놓고 경쟁하는 동안 식민지의 필요를 균형 있게 유지하고, 전세를 결정지을 수 있는 중요한 분쟁에 대비하세요.</p>
     <p xml:lang="ko">Globulation 2는 무료 오픈 소스 소프트웨어입니다.</p>
+    <p xml:lang="hi">Globulation 2 एक रियल-टाइम रणनीति गेम है, जिसमें भोजन, कामगार और जगह आपके विस्तार को आकार देते हैं। एक विशाल कॉलोनी विकसित करें, उसकी अलग-अलग ज़रूरतों में संतुलन रखें और ज़मीन व संसाधनों के लिए प्रतिद्वंद्वियों से प्रतिस्पर्धा करें। आपके जीव अपने आप काम करते हैं, जिससे आप पूरी कॉलोनी का मार्गदर्शन कर सकते हैं।</p>
+    <p xml:lang="hi">ऐसी अर्थव्यवस्था विकसित करें जो आपकी महत्वाकांक्षाओं को सहारा दे सके। भोजन, निर्माण और प्रशिक्षण—सभी को आपके कामगारों की ज़रूरत है। तय करें कि कामगारों की कहाँ ज़रूरत है और अपनी नई महत्वाकांक्षाओं के साथ मौजूदा कॉलोनी की ज़रूरतों का संतुलन बनाएँ।</p>
+    <p xml:lang="hi">नक्शे को अपनी रणनीति का हिस्सा बनाएँ। अलग-अलग नक्शों के लिए अलग-अलग रणनीतियाँ चाहिए। भूभाग के अनुसार अपना विस्तार ढालें, तय करें कि किसकी रक्षा करनी है और अपनी कॉलोनी के लिए ज़रूरी रास्ते व संसाधन खोजें।</p>
+    <p xml:lang="hi">आपने जो बनाया है, उसकी रक्षा करें। आपकी अर्थव्यवस्था विकास और रक्षा, दोनों को सहारा देती है। जब प्रतिद्वंद्वी ज़मीन व संसाधनों के लिए प्रतिस्पर्धा करें, तो अपनी कॉलोनी की ज़रूरतों में संतुलन बनाए रखें और उन संघर्षों के लिए तैयार रहें जो मैच का फ़ैसला कर सकते हैं।</p>
+    <p xml:lang="hi">Globulation 2 मुफ़्त और ओपन सोर्स है।</p>
+    <p xml:lang="ur">Globulation 2 ایک حقیقی وقت کی حکمت عملی کا کھیل ہے جس میں خوراک، کارکن اور جگہ آپ کے پھیلاؤ کو شکل دیتے ہیں۔ ایک وسیع آبادی پروان چڑھائیں، اس کی مختلف ضروریات میں توازن رکھیں اور زمین و وسائل کے لیے حریفوں سے مقابلہ کریں۔ آپ کی مخلوقات خود کام کرتی ہیں، جس سے آپ پوری آبادی کی رہنمائی کر سکتے ہیں۔</p>
+    <p xml:lang="ur">ایسی معیشت پروان چڑھائیں جو آپ کے عزائم کو سہارا دے سکے۔ خوراک، تعمیر اور تربیت، سب کو آپ کی افرادی قوت کی ضرورت ہے۔ فیصلہ کریں کہ کارکن کہاں درکار ہیں اور نئے عزائم کے ساتھ اپنی موجودہ آبادی کی ضروریات میں توازن رکھیں۔</p>
+    <p xml:lang="ur">نقشے کو اپنی حکمت عملی کا حصہ بنائیں۔ مختلف نقشے مختلف حکمت عملیوں کا تقاضا کرتے ہیں۔ زمینی ساخت کے مطابق اپنا پھیلاؤ ڈھالیں، طے کریں کہ کس کی حفاظت کرنی ہے اور اپنی آبادی کے لیے ضروری راستے اور وسائل تلاش کریں۔</p>
+    <p xml:lang="ur">جو کچھ آپ نے بنایا ہے اس کی حفاظت کریں۔ آپ کی معیشت بڑھوتری اور دفاع، دونوں کو سہارا دیتی ہے۔ جب حریف زمین و وسائل کے لیے مقابلہ کریں تو اپنی آبادی کی ضروریات میں توازن رکھیں اور ان لڑائیوں کے لیے تیار رہیں جو مقابلے کا فیصلہ کر سکتی ہیں۔</p>
+    <p xml:lang="ur">Globulation 2 مفت اور اوپن سورس ہے۔</p>
+    <p xml:lang="sw">Globulation 2 ni mchezo wa mikakati wa wakati halisi ambapo chakula, wafanyakazi na nafasi huamua upanuzi wako. Kuza koloni linaloenea, sawazisha mahitaji yake yanayoshindana, na shindana na wapinzani kwa ardhi na rasilimali. Viumbe wako hutenda wenyewe, huku wewe ukiongoza koloni kwa ujumla.</p>
+    <p xml:lang="sw">Kuza uchumi unaoweza kutimiza malengo yako. Uzalishaji wa chakula, ujenzi na mafunzo vinashindania wafanyakazi wako. Amua wafanyakazi wanahitajika wapi na sawazisha malengo mapya na mahitaji ya koloni ulilo nalo tayari.</p>
+    <p xml:lang="sw">Ifanye ramani kuwa sehemu ya mkakati wako. Ramani tofauti zinahitaji mikakati tofauti. Rekebisha upanuzi wako kulingana na mandhari, chagua utakacholinda, na tafuta njia na rasilimali zinazohitajika na koloni lako.</p>
+    <p xml:lang="sw">Linda ulichojenga. Uchumi wako unawezesha ukuaji na ulinzi. Sawazisha mahitaji ya koloni lako huku wapinzani wakishindania ardhi na rasilimali, na jiandae kwa migogoro inayoweza kuamua matokeo ya mechi.</p>
+    <p xml:lang="sw">Globulation 2 ni bure na una msimbo huria.</p>
+    <p xml:lang="bn">Globulation 2 একটি রিয়েল-টাইম কৌশলভিত্তিক গেম, যেখানে খাদ্য, শ্রমিক ও জায়গার ওপর নির্ভর করে আপনার বিস্তার। একটি বিস্তৃত উপনিবেশ গড়ে তুলুন, তার বিভিন্ন চাহিদার মধ্যে ভারসাম্য রাখুন এবং জমি ও সম্পদের জন্য প্রতিদ্বন্দ্বীদের মোকাবিলা করুন। আপনার প্রাণীরা নিজেরাই কাজ করে, ফলে আপনি পুরো উপনিবেশকে দিকনির্দেশনা দিতে পারেন।</p>
+    <p xml:lang="bn">আপনার উচ্চাকাঙ্ক্ষাকে টিকিয়ে রাখার মতো অর্থনীতি গড়ুন। খাদ্য উৎপাদন, নির্মাণ ও প্রশিক্ষণ—সব ক্ষেত্রেই আপনার শ্রমিকদের প্রয়োজন। কোথায় শ্রমিক দরকার তা ঠিক করুন এবং নতুন লক্ষ্য ও বিদ্যমান উপনিবেশের চাহিদার মধ্যে ভারসাম্য রাখুন।</p>
+    <p xml:lang="bn">মানচিত্রকে আপনার কৌশলের অংশ করুন। ভিন্ন মানচিত্রে ভিন্ন কৌশল দরকার। ভূপ্রকৃতি অনুযায়ী বিস্তারের পরিকল্পনা করুন, কী রক্ষা করবেন তা বেছে নিন এবং আপনার উপনিবেশের প্রয়োজনীয় পথ ও সম্পদ খুঁজে নিন।</p>
+    <p xml:lang="bn">যা গড়েছেন তা রক্ষা করুন। আপনার অর্থনীতি বৃদ্ধি ও প্রতিরক্ষা—দুটোকেই সহায়তা করে। প্রতিদ্বন্দ্বীরা জমি ও সম্পদের জন্য প্রতিযোগিতা করার সময় উপনিবেশের চাহিদার মধ্যে ভারসাম্য রাখুন এবং ম্যাচের ফল নির্ধারণ করতে পারে এমন সংঘাতের জন্য প্রস্তুত থাকুন।</p>
+    <p xml:lang="bn">Globulation 2 বিনামূল্যে পাওয়া যায় এবং এর সোর্স উন্মুক্ত।</p>
+    <p xml:lang="nb">Globulation 2 er et sanntidsstrategispill der mat, arbeidere og plass former utvidelsen din. Utvikle en vidstrakt koloni, balanser de ulike behovene og konkurrer med rivaler om land og ressurser. Skapningene dine handler selvstendig, slik at du kan styre kolonien som helhet.</p>
+    <p xml:lang="nb">Bygg en økonomi som kan støtte ambisjonene dine. Mat, bygging og trening konkurrerer om arbeidskraften din. Bestem hvor arbeiderne trengs, og balanser nye ambisjoner med behovene til kolonien du allerede har.</p>
+    <p xml:lang="nb">Gjør kartet til en del av strategien din. Ulike kart krever ulike strategier. Tilpass utvidelsen til terrenget, velg hva du vil forsvare, og finn rutene og ressursene kolonien din trenger.</p>
+    <p xml:lang="nb">Forsvar det du har bygget. Økonomien din støtter både vekst og forsvar. Balanser koloniens behov mens rivaler konkurrerer om land og ressurser, og forbered deg på konflikter som kan avgjøre kampen.</p>
+    <p xml:lang="nb">Globulation 2 er gratis og har åpen kildekode.</p>
+    <p xml:lang="ms">Globulation 2 ialah permainan strategi masa nyata dengan peluasan yang dibentuk oleh makanan, pekerja dan ruang. Bangunkan koloni yang luas, imbangkan pelbagai keperluannya, dan bersaing dengan lawan untuk wilayah dan sumber. Makhluk anda bertindak secara autonomi, membolehkan anda membimbing koloni secara keseluruhan.</p>
+    <p xml:lang="ms">Bangunkan ekonomi yang mampu menyokong cita-cita anda. Makanan, pembinaan dan latihan bersaing untuk mendapatkan tenaga kerja anda. Tentukan tempat pekerja diperlukan dan imbangkan cita-cita baharu dengan keperluan koloni yang sedia ada.</p>
+    <p xml:lang="ms">Jadikan peta sebahagian daripada strategi anda. Peta yang berbeza memerlukan strategi yang berbeza. Sesuaikan peluasan anda dengan rupa bumi, pilih perkara yang hendak dipertahankan, dan cari laluan serta sumber yang diperlukan oleh koloni anda.</p>
+    <p xml:lang="ms">Pertahankan apa yang telah anda bina. Ekonomi anda menyokong pertumbuhan dan pertahanan. Imbangkan keperluan koloni anda sementara pihak lawan bersaing untuk wilayah dan sumber, dan bersedia untuk konflik yang boleh menentukan keputusan perlawanan.</p>
+    <p xml:lang="ms">Globulation 2 adalah percuma dan sumber terbuka.</p>
+    <p xml:lang="mr">Globulation 2 हा रिअल-टाइम रणनीतीचा खेळ आहे, ज्यात अन्न, कामगार आणि जागा तुमच्या विस्ताराला आकार देतात. विस्तीर्ण वसाहत वाढवा, तिच्या परस्परविरोधी गरजांचा समतोल साधा आणि जमीन व संसाधनांसाठी प्रतिस्पर्ध्यांचा सामना करा. तुमचे जीव स्वतःहून काम करतात, त्यामुळे तुम्ही संपूर्ण वसाहतीला दिशा देऊ शकता.</p>
+    <p xml:lang="mr">तुमच्या महत्त्वाकांक्षांना आधार देणारी अर्थव्यवस्था उभारा. अन्न उत्पादन, बांधकाम आणि प्रशिक्षण या सर्वांसाठी तुमच्या कामगारांची गरज असते. कामगार कुठे हवेत ते ठरवा आणि नव्या महत्त्वाकांक्षा व आधीपासून असलेल्या वसाहतीच्या गरजा यांचा समतोल साधा.</p>
+    <p xml:lang="mr">नकाशाला तुमच्या रणनीतीचा भाग बनवा. वेगवेगळ्या नकाशांसाठी वेगवेगळ्या रणनीती लागतात. भूप्रदेशानुसार विस्तार करा, कशाचे रक्षण करायचे ते निवडा आणि तुमच्या वसाहतीला आवश्यक असलेले मार्ग व संसाधने शोधा.</p>
+    <p xml:lang="mr">तुम्ही उभारलेल्या गोष्टींचे रक्षण करा. तुमची अर्थव्यवस्था वाढ आणि संरक्षण या दोन्हींना आधार देते. प्रतिस्पर्धी जमीन व संसाधनांसाठी स्पर्धा करत असताना वसाहतीच्या गरजांचा समतोल साधा आणि सामन्याचा निकाल ठरवू शकणाऱ्या संघर्षांसाठी तयार राहा.</p>
+    <p xml:lang="mr">Globulation 2 विनामूल्य आणि मुक्त स्रोत आहे.</p>
+    <p xml:lang="ta">Globulation 2 என்பது நிகழ்நேர உத்தி விளையாட்டு. இதில் உணவு, தொழிலாளர்கள், இடம் ஆகியவை உங்கள் விரிவாக்கத்தை வடிவமைக்கின்றன. பரந்து விரியும் குடியிருப்பை வளர்த்து, ஒன்றுடன் ஒன்று போட்டியிடும் அதன் தேவைகளைச் சமநிலைப்படுத்தி, நிலத்திற்கும் வளங்களுக்கும் போட்டியாளர்களை எதிர்கொள்ளுங்கள். உங்கள் உயிரினங்கள் தாமாகவே செயல்படுவதால், குடியிருப்பு முழுவதையும் நீங்கள் வழிநடத்தலாம்.</p>
+    <p xml:lang="ta">உங்கள் இலக்குகளைத் தாங்கும் பொருளாதாரத்தை வளர்த்தெடுங்கள். உணவு உற்பத்தி, கட்டுமானம், பயிற்சி ஆகிய அனைத்திற்கும் உங்கள் தொழிலாளர்கள் தேவைப்படுகிறார்கள். எந்த இடத்தில் தொழிலாளர்கள் தேவை என்பதை முடிவுசெய்து, புதிய இலக்குகளுக்கும் ஏற்கெனவே உள்ள குடியிருப்பின் தேவைகளுக்கும் இடையே சமநிலை பேணுங்கள்.</p>
+    <p xml:lang="ta">வரைபடத்தை உங்கள் உத்தியின் பகுதியாக்குங்கள். வெவ்வேறு வரைபடங்களுக்கு வெவ்வேறு உத்திகள் தேவை. நிலப்பரப்புக்கு ஏற்ப விரிவாக்கத்தை மாற்றியமைத்து, எதைப் பாதுகாக்க வேண்டும் என்பதைத் தேர்ந்தெடுத்து, குடியிருப்புக்குத் தேவையான வழிகளையும் வளங்களையும் கண்டறியுங்கள்.</p>
+    <p xml:lang="ta">நீங்கள் உருவாக்கியதைப் பாதுகாத்திடுங்கள். உங்கள் பொருளாதாரம் வளர்ச்சிக்கும் பாதுகாப்புக்கும் துணைநிற்கிறது. போட்டியாளர்கள் நிலத்திற்கும் வளங்களுக்கும் போட்டியிடும்போது, உங்கள் குடியிருப்பின் தேவைகளைச் சமநிலைப்படுத்தி, ஆட்டத்தின் முடிவைத் தீர்மானிக்கக்கூடிய மோதல்களுக்குத் தயாராகுங்கள்.</p>
+    <p xml:lang="ta">Globulation 2 இலவசமான, திறந்த மூல விளையாட்டு.</p>
+    <p xml:lang="te">Globulation 2 ఒక రియల్-టైమ్ వ్యూహాత్మక ఆట. ఇందులో ఆహారం, కార్మికులు, స్థలం మీ విస్తరణను నిర్దేశిస్తాయి. విశాలమైన కాలనీని అభివృద్ధి చేయండి, దాని పరస్పర పోటీ అవసరాలను సమతుల్యం చేయండి, భూమి మరియు వనరుల కోసం ప్రత్యర్థులను ఎదుర్కోండి. మీ జీవులు తమంతట తామే పనిచేస్తాయి, కాబట్టి మీరు కాలనీ మొత్తానికి దిశానిర్దేశం చేయవచ్చు.</p>
+    <p xml:lang="te">మీ ఆశయాలకు మద్దతునిచ్చే ఆర్థిక వ్యవస్థను అభివృద్ధి చేయండి. ఆహార ఉత్పత్తి, నిర్మాణం, శిక్షణ అన్నింటికీ మీ కార్మికులు అవసరం. కార్మికులు ఎక్కడ అవసరమో నిర్ణయించండి, కొత్త ఆశయాలకు మరియు ఇప్పటికే ఉన్న కాలనీ అవసరాలకు మధ్య సమతుల్యతను పాటించండి.</p>
+    <p xml:lang="te">మ్యాప్‌ను మీ వ్యూహంలో భాగం చేసుకోండి. వేర్వేరు మ్యాప్‌లకు వేర్వేరు వ్యూహాలు అవసరం. భూభాగానికి తగినట్లుగా విస్తరణను మలచండి, దేనిని రక్షించాలో ఎంచుకోండి, మీ కాలనీకి అవసరమైన మార్గాలు మరియు వనరులను కనుగొనండి.</p>
+    <p xml:lang="te">మీరు నిర్మించిన దాన్ని రక్షించండి. మీ ఆర్థిక వ్యవస్థ అభివృద్ధికి, రక్షణకు మద్దతునిస్తుంది. ప్రత్యర్థులు భూమి మరియు వనరుల కోసం పోటీపడుతున్నప్పుడు మీ కాలనీ అవసరాలను సమతుల్యం చేయండి, మ్యాచ్ ఫలితాన్ని నిర్ణయించగల సంఘర్షణలకు సిద్ధంగా ఉండండి.</p>
+    <p xml:lang="te">Globulation 2 ఉచితం మరియు ఓపెన్ సోర్స్.</p>
+    <p xml:lang="fil">Ang Globulation 2 ay isang larong estratehiya sa real time kung saan pagkain, mga manggagawa at espasyo ang humuhubog sa iyong pagpapalawak. Palaguin ang isang malawak na kolonya, balansehin ang magkakatunggali nitong pangangailangan, at makipag-agawan sa mga karibal para sa lupain at mga yaman. Kusang kumikilos ang iyong mga nilalang, kaya magagabayan mo ang kolonya sa kabuuan.</p>
+    <p xml:lang="fil">Palaguin ang ekonomiyang kayang sumuporta sa iyong mga ambisyon. Nag-uunahan sa iyong lakas-paggawa ang produksyon ng pagkain, pagtatayo at pagsasanay. Magpasya kung saan kailangan ang mga manggagawa at balansehin ang mga bagong ambisyon sa pangangailangan ng kolonya na mayroon ka na.</p>
+    <p xml:lang="fil">Gawing bahagi ng iyong estratehiya ang mapa. Iba-ibang estratehiya ang kailangan sa iba-ibang mapa. Iangkop ang pagpapalawak sa lupain, piliin kung ano ang ipagtatanggol, at hanapin ang mga ruta at yamang kailangan ng iyong kolonya.</p>
+    <p xml:lang="fil">Ipagtanggol ang iyong naitayo. Sinusuportahan ng iyong ekonomiya ang paglago at depensa. Balansehin ang mga pangangailangan ng iyong kolonya habang nakikipag-agawan ang mga karibal para sa lupain at mga yaman, at maghanda para sa mga labanang maaaring magtakda ng resulta ng laro.</p>
+    <p xml:lang="fil">Libre ang Globulation 2 at bukas ang source code nito.</p>
+    <p xml:lang="bg">Globulation 2 е стратегическа игра в реално време, в която храната, работниците и пространството определят разширяването ви. Развивайте обширна колония, балансирайте различните ѝ нужди и се борете със съперници за земя и ресурси. Създанията ви действат самостоятелно, което ви позволява да направлявате колонията като цяло.</p>
+    <p xml:lang="bg">Развийте икономика, която да поддържа амбициите ви. Производството на храна, строителството и обучението се конкурират за работната ви сила. Решавайте къде са нужни работници и балансирайте новите амбиции с нуждите на вече изградената колония.</p>
+    <p xml:lang="bg">Превърнете картата в част от стратегията си. Различните карти изискват различни стратегии. Съобразявайте разширяването си с терена, избирайте какво да защитавате и намирайте пътищата и ресурсите, от които колонията ви се нуждае.</p>
+    <p xml:lang="bg">Защитете изграденото. Икономиката ви поддържа както растежа, така и отбраната. Балансирайте нуждите на колонията си, докато съперниците се съревновават за земя и ресурси, и се подгответе за конфликти, които могат да решат изхода на мача.</p>
+    <p xml:lang="bg">Globulation 2 е безплатна и с отворен код.</p>
+    <p xml:lang="th">Globulation 2 คือเกมกลยุทธ์แบบเรียลไทม์ที่อาหาร คนงาน และพื้นที่เป็นตัวกำหนดการขยายอาณานิคมของคุณ สร้างอาณานิคมที่แผ่ขยายออกไป จัดสมดุลความต้องการที่แข่งขันกัน และต่อกรกับคู่แข่งเพื่อแย่งชิงที่ดินและทรัพยากร สิ่งมีชีวิตของคุณลงมือทำงานเอง คุณจึงสามารถกำหนดทิศทางของอาณานิคมโดยรวมได้</p>
+    <p xml:lang="th">พัฒนาเศรษฐกิจให้รองรับความมุ่งหมายของคุณ การผลิตอาหาร การก่อสร้าง และการฝึกฝนต่างต้องใช้กำลังคนของคุณ ตัดสินใจว่าที่ใดต้องการคนงาน และจัดสมดุลเป้าหมายใหม่กับความต้องการของอาณานิคมที่คุณมีอยู่แล้ว</p>
+    <p xml:lang="th">ใช้แผนที่เป็นส่วนหนึ่งของกลยุทธ์ แผนที่ที่ต่างกันต้องใช้กลยุทธ์ที่ต่างกัน ปรับการขยายอาณานิคมให้เข้ากับภูมิประเทศ เลือกสิ่งที่ต้องปกป้อง และค้นหาเส้นทางกับทรัพยากรที่อาณานิคมของคุณต้องการ</p>
+    <p xml:lang="th">ปกป้องสิ่งที่คุณสร้างมา เศรษฐกิจของคุณรองรับทั้งการเติบโตและการป้องกัน จัดสมดุลความต้องการของอาณานิคมขณะที่คู่แข่งแย่งชิงที่ดินและทรัพยากร และเตรียมรับมือกับความขัดแย้งที่อาจตัดสินผลการแข่งขัน</p>
+    <p xml:lang="th">Globulation 2 เล่นฟรีและเป็นโอเพนซอร์ส</p>
   </description>
   <launchable type="desktop-id">org.globulation2.Globulation2.desktop</launchable>
   <url type="homepage">https://glob2.online/</url>
@@ -244,9 +316,21 @@
       <caption xml:lang="zh_CN">一个不断发展的殖民地，拥有工人、建筑物和食物供应。</caption>
       <caption xml:lang="uk">Зростаюча колонія з робітниками, будівлями та запасами їжі</caption>
       <caption xml:lang="id">Koloni yang berkembang dengan pekerja, bangunan, dan persediaan makanan.</caption>
-      <caption xml:lang="vi">Một thuộc địa đang phát triển với công nhân, các tòa nhà và nguồn cung cấp lương thực.</caption>
+      <caption xml:lang="vi">Một thuộc địa đang phát triển với nhân công, các tòa nhà và nguồn cung cấp lương thực.</caption>
       <caption xml:lang="ja">働き手、建物、食料供給を備えた、成長を続けるコロニー</caption>
       <caption xml:lang="ko">일꾼, 건물, 식량 공급이 늘어나는 식민지</caption>
+      <caption xml:lang="hi">कामगारों, इमारतों और भोजन के भंडार वाली बढ़ती कॉलोनी</caption>
+      <caption xml:lang="ur">کارکنوں، عمارتوں اور خوراک کے ذخائر کے ساتھ بڑھتی ہوئی آبادی</caption>
+      <caption xml:lang="sw">Koloni linalokua lenye wafanyakazi, majengo na akiba ya chakula</caption>
+      <caption xml:lang="bn">শ্রমিক, ভবন ও খাদ্যের মজুতসহ একটি বর্ধমান উপনিবেশ</caption>
+      <caption xml:lang="nb">En voksende koloni med arbeidere, bygninger og matforsyninger</caption>
+      <caption xml:lang="ms">Koloni yang sedang berkembang dengan pekerja, bangunan dan bekalan makanan</caption>
+      <caption xml:lang="mr">कामगार, इमारती आणि अन्नसाठे असलेली वाढती वसाहत</caption>
+      <caption xml:lang="ta">தொழிலாளர்கள், கட்டடங்கள், உணவுக் கையிருப்புகளுடன் வளர்ந்துவரும் குடியிருப்பு</caption>
+      <caption xml:lang="te">కార్మికులు, భవనాలు, ఆహార నిల్వలతో అభివృద్ధి చెందుతున్న కాలనీ</caption>
+      <caption xml:lang="fil">Isang lumalagong kolonya na may mga manggagawa, gusali at suplay ng pagkain</caption>
+      <caption xml:lang="bg">Разрастваща се колония с работници, сгради и хранителни запаси</caption>
+      <caption xml:lang="th">อาณานิคมที่กำลังเติบโตพร้อมคนงาน อาคาร และเสบียงอาหาร</caption>
     </screenshot>
     <screenshot>
       <image>https://raw.githubusercontent.com/Globulation2/glob2-marketing/a968359dc95d51e998f63ba4d984d33b04560b39/assets/storefront-approved-v1/02-river-battle.png</image>
@@ -283,6 +367,18 @@
       <caption xml:lang="vi">Các chiến binh xanh dương và vàng giao tranh trên River.</caption>
       <caption xml:lang="ja">Riverで激突する青と金の戦士たち</caption>
       <caption xml:lang="ko">파란색과 금색 전사들이 River에서 격돌합니다</caption>
+      <caption xml:lang="hi">River पर नीले और सुनहरे योद्धाओं की भिड़ंत</caption>
+      <caption xml:lang="ur">River پر نیلے اور سنہری جنگجوؤں کی جھڑپ</caption>
+      <caption xml:lang="sw">Mashujaa wa bluu na dhahabu wapambana kwenye River</caption>
+      <caption xml:lang="bn">River-এ নীল ও সোনালি যোদ্ধাদের সংঘর্ষ</caption>
+      <caption xml:lang="nb">Blå og gylne krigere kjemper på River</caption>
+      <caption xml:lang="ms">Pahlawan biru dan emas bertempur di River</caption>
+      <caption xml:lang="mr">River वर निळ्या आणि सोनेरी योद्ध्यांची झुंज</caption>
+      <caption xml:lang="ta">River இல் நீல மற்றும் பொன்னிறப் போர்வீரர்கள் மோதுகின்றனர்</caption>
+      <caption xml:lang="te">Riverలో నీలం మరియు బంగారు రంగు యోధులు తలపడుతున్నారు</caption>
+      <caption xml:lang="fil">Naglalaban ang mga bughaw at gintong mandirigma sa River</caption>
+      <caption xml:lang="bg">Сини и златни воини се сблъскват на River</caption>
+      <caption xml:lang="th">นักรบสีน้ำเงินและสีทองปะทะกันบน River</caption>
     </screenshot>
     <screenshot>
       <image>https://raw.githubusercontent.com/Globulation2/glob2-marketing/a968359dc95d51e998f63ba4d984d33b04560b39/assets/storefront-approved-v1/03-four-squares-strategic.png</image>
@@ -319,6 +415,18 @@
       <caption xml:lang="vi">Các thuộc địa phát triển và quân đội trong chế độ xem chiến lược Four Squares.</caption>
       <caption xml:lang="ja">Four Squaresの戦略ビューに映る発展したコロニーと軍隊</caption>
       <caption xml:lang="ko">Four Squares 전략 보기의 발전한 식민지와 군대</caption>
+      <caption xml:lang="hi">Four Squares के रणनीतिक दृश्य में विकसित कॉलोनियाँ और सेनाएँ</caption>
+      <caption xml:lang="ur">Four Squares کے حکمت عملی والے منظر میں ترقی یافتہ آبادیاں اور فوجیں</caption>
+      <caption xml:lang="sw">Makoloni yaliyoendelea na majeshi katika mwonekano wa kimkakati wa Four Squares</caption>
+      <caption xml:lang="bn">Four Squares-এর কৌশলগত দৃশ্যে উন্নত উপনিবেশ ও সেনাবাহিনী</caption>
+      <caption xml:lang="nb">Utviklede kolonier og hærer i strategivisningen på Four Squares</caption>
+      <caption xml:lang="ms">Koloni dan tentera yang telah berkembang dalam paparan strategik Four Squares</caption>
+      <caption xml:lang="mr">Four Squares च्या रणनीतिक दृश्यात विकसित वसाहती आणि सैन्ये</caption>
+      <caption xml:lang="ta">Four Squares இன் உத்திக் காட்சியில் வளர்ச்சியடைந்த குடியிருப்புகளும் படைகளும்</caption>
+      <caption xml:lang="te">Four Squares వ్యూహాత్మక వీక్షణలో అభివృద్ధి చెందిన కాలనీలు మరియు సైన్యాలు</caption>
+      <caption xml:lang="fil">Mga maunlad na kolonya at hukbo sa estratehikong tanaw ng Four Squares</caption>
+      <caption xml:lang="bg">Развити колонии и армии в стратегическия изглед на Four Squares</caption>
+      <caption xml:lang="th">อาณานิคมและกองทัพที่พัฒนาแล้วในมุมมองกลยุทธ์ของ Four Squares</caption>
     </screenshot>
     <screenshot>
       <image>https://raw.githubusercontent.com/Globulation2/glob2-marketing/a968359dc95d51e998f63ba4d984d33b04560b39/assets/storefront-approved-v1/04-lava-shield-terrain.png</image>
@@ -355,6 +463,18 @@
       <caption xml:lang="vi">Hoạt động thuộc địa và đường đi quanh địa hình Lava Shield.</caption>
       <caption xml:lang="ja">Lava Shieldの地形周辺に広がるコロニーの活動とルート</caption>
       <caption xml:lang="ko">Lava Shield 지형 주변의 식민지 활동과 이동 경로</caption>
+      <caption xml:lang="hi">Lava Shield भूभाग के आसपास कॉलोनी की गतिविधियाँ और रास्ते</caption>
+      <caption xml:lang="ur">Lava Shield کی زمینی ساخت کے ارد گرد آبادی کی سرگرمیاں اور راستے</caption>
+      <caption xml:lang="sw">Shughuli za koloni na njia kuzunguka mandhari ya Lava Shield</caption>
+      <caption xml:lang="bn">Lava Shield ভূপ্রকৃতির চারপাশে উপনিবেশের কার্যকলাপ ও পথ</caption>
+      <caption xml:lang="nb">Koloniaktivitet og ruter rundt terrenget på Lava Shield</caption>
+      <caption xml:lang="ms">Aktiviti koloni dan laluan di sekitar rupa bumi Lava Shield</caption>
+      <caption xml:lang="mr">Lava Shield च्या भूप्रदेशाभोवती वसाहतीतील कामे आणि मार्ग</caption>
+      <caption xml:lang="ta">Lava Shield நிலப்பரப்பைச் சுற்றிய குடியிருப்பின் செயல்பாடுகளும் வழிகளும்</caption>
+      <caption xml:lang="te">Lava Shield భూభాగం చుట్టూ కాలనీ కార్యకలాపాలు మరియు మార్గాలు</caption>
+      <caption xml:lang="fil">Gawain ng kolonya at mga ruta sa paligid ng lupain ng Lava Shield</caption>
+      <caption xml:lang="bg">Дейности на колонията и маршрути около терена на Lava Shield</caption>
+      <caption xml:lang="th">กิจกรรมของอาณานิคมและเส้นทางรอบภูมิประเทศของ Lava Shield</caption>
     </screenshot>
   </screenshots>
   <releases>

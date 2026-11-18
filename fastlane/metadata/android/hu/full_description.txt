@@ -13,4 +13,4 @@ Gazdaságod a növekedést és a védelmet egyaránt támogatja. Tartsd egyensú
 
 A Globulation 2 ingyenes és nyílt forráskódú.
 
-Ez az Android-kiadás érintőképernyőkre hozza el a klasszikus asztali játékot.
+Ez az Android-kiadás érintőképernyőkre hozza el a klasszikus számítógépes játékot.
