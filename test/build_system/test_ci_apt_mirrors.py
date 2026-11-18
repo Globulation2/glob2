@@ -75,6 +75,12 @@ class AptMirrorTest(unittest.TestCase):
             with self.subTest(line=number + 1):
                 self.assertTrue('ci_apt_network.sh' in window or 'archive.ubuntu.com/ubuntu#g' in window,
                                 f'build.yml:{number + 1} updates apt without the mirror rewrite')
+        # Jobs may set a default working directory (platform runs in
+        # services/online), so the script is always reached from the workspace.
+        for number, line in enumerate(lines):
+            if 'ci_apt_network.sh' in line:
+                with self.subTest(call=number + 1):
+                    self.assertIn('"$GITHUB_WORKSPACE/.github/scripts/ci_apt_network.sh"', line)
 
 
 if __name__ == '__main__':
