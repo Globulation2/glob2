@@ -1337,15 +1337,40 @@ TEST_CASE("desktop zoom speed and events share higher-surface ownership for sema
     REQUIRE(eventRows.size() == 1);
     const auto row = eventRows.front();
     REQUIRE(row.bounds.w > 4);
+    // Lesson cards move the feed below themselves, so a Hive card panel, which the
+    // feed does not avoid, covers the left half of this row instead.
+    gui.tutorialGuidance.reset();
+    struct HiveView final : Hive::CommanderView
+    {
+        bool available() const override { return true; }
+        bool local() const override { return true; }
+        Hive::Json standingOrders() const override { return Hive::Json::array(); }
+        void stop() override {}
+        void change(const std::string &, const std::string &) override {}
+    };
     const GAGGUI::ui::Rect rowCover{row.bounds.x, row.bounds.y, row.bounds.w / 2, row.bounds.h};
     const GAGGUI::ui::Point rowHit{row.bounds.x + row.bounds.w * 3 / 4, row.bounds.center().y};
-    const auto rowCoverPanel = cover(rowCover);
+    gui.hiveCards = std::make_unique<Hive::Dialog>(std::make_shared<HiveView>());
+    gui.hiveCards->attach(*globals->gfx);
+    {
+        auto &cards = gui.hiveCards->host();
+        cards.layoutIfNeeded();
+        const int padding = cards.metrics().padding;
+        const int width = std::max(1, std::min(240, rowCover.right() - 2 * padding));
+        const GAGGUI::ui::Rect inner{rowCover.right() - padding - width, rowCover.y + padding, width, 120};
+        cards.setAvailable([inner](const auto &, const auto &) { return inner; });
+        cards.setPlacement([](GAGGUI::ui::Size, GAGGUI::ui::Rect bounds) { return bounds; });
+        cards.invalidate(); cards.layoutIfNeeded();
+    }
+    gui.prepareLocalPresentation(gui.frameScene);
+    const auto rowCoverPanel = gui.hiveCards->panelBounds();
+    REQUIRE(gui.describeEventControls().front().bounds == row.bounds);
     const auto rowCoverOverlap = row.bounds.intersect(rowCoverPanel);
     REQUIRE(rowCoverOverlap.w > 0);
     REQUIRE(rowCoverOverlap.h > 0);
     REQUIRE(rowCoverOverlap.w < row.bounds.w);
     REQUIRE(row.bounds.contains(rowHit));
-    REQUIRE_FALSE(gui.tutorialGuidance->panelBounds().contains(rowHit));
+    REQUIRE_FALSE(rowCoverPanel.contains(rowHit));
     const auto rowSnapshot = gui.hudInspectionHost().inspect();
     const auto *blockedRow = findControl(findControl, rowSnapshot.controls, row.key);
     REQUIRE(blockedRow); CHECK(blockedRow->enabled); CHECK(blockedRow->blocked);
@@ -1355,7 +1380,7 @@ TEST_CASE("desktop zoom speed and events share higher-surface ownership for sema
     CHECK(error.find("blocked") != std::string::npos);
     click(rowHit);
     CHECK((std::pair{gui.viewportX, gui.viewportY} == origin));
-    gui.tutorialGuidance.reset();
+    gui.hiveCards.reset();
     click(rowHit);
     const auto humanOrigin = std::pair{gui.viewportX, gui.viewportY};
     CHECK(humanOrigin != origin);
