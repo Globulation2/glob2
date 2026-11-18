@@ -5,6 +5,7 @@
 class HandPreferenceScreen : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "hand_preference"; }
 	Glob2UI::Element build(const Glob2UI::Presentation &p) override;
 	void choose(int side);
 

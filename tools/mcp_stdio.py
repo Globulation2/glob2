@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
-"""Bridge newline-delimited stdio MCP to Glob2's loopback HTTP server.
+"""Connect a stdio MCP client (an AI agent) to the Globulation 2 game.
 
-The game must have Settings > MCP server enabled. Desktop environment variables
-are inherited unchanged. EOF detaches from the game; forwarded requests are never
-retried, even if a connection fails after sending input.
+Globulation 2 is an open-source real-time strategy game. Its desktop builds embed
+a Model Context Protocol server on loopback HTTP that lets an agent read the game's
+screens as typed controls, take screenshots and send mouse and keyboard input. This
+launcher bridges newline-delimited stdio MCP to that server: it reuses a game that
+is already listening at --url, or starts the game with --mcp-port so the server is
+enabled for that run. Once connected, agents should call the game_guide tool.
+
+Desktop environment variables are inherited unchanged. EOF detaches from the game;
+forwarded requests are never retried, even if a connection fails after sending input.
 """
 from __future__ import annotations
 import argparse
@@ -18,6 +24,20 @@ import threading
 import urllib.parse
 
 PROTOCOL = '2025-11-25'
+REPOSITORY = 'https://github.com/Globulation2/glob2'
+SERVER_GUIDE = REPOSITORY + '/blob/master/docs/development/mcp-ui-server.md'
+EPILOG = f'''examples:
+  python3 tools/mcp_stdio.py
+      start glob2 from PATH (or reuse a running game) on the default port
+  python3 tools/mcp_stdio.py --executable /opt/glob2/bin/glob2 -- play --data-dir /opt/glob2/share/glob2
+      start a specific installation; arguments after -- go to the game
+
+A running game must already listen at --url (Settings > MCP server, or
+glob2 play --mcp-port PORT). Diagnostics go to stderr; stdout carries MCP JSON only.
+
+MCP server guide: {SERVER_GUIDE}
+Source code and documentation: {REPOSITORY}
+'''
 MAX_REQUEST = 1024 * 1024
 REQUIRED_TOOLS = frozenset({
     'ui_status', 'ui_screenshot', 'ui_acquire_control', 'ui_release_control',
@@ -109,7 +129,8 @@ class Bridge:
                               'params': {'protocolVersion': PROTOCOL, 'capabilities': {},
                                          'clientInfo': {'name': 'glob2-launcher', 'version': '1'}}}, deadline=deadline)
         if not reply or 'result' not in reply or reply['result'].get('serverInfo', {}).get('name') != 'globulation2-ui':
-            raise RuntimeError('Endpoint is not a compatible Globulation 2 MCP server')
+            raise RuntimeError('Endpoint is not a compatible Globulation 2 MCP server; check --url '
+                               '(another program may use that port)')
         try:
             discovery = self.forward({'jsonrpc': '2.0', 'id': 'launcher-capabilities',
                                       'method': 'tools/list'}, deadline=deadline)
@@ -145,22 +166,47 @@ def ensure_running(bridge, executable, arguments, cwd, startup_timeout):
             return process
         except ConnectionRefusedError:
             time.sleep(min(0.1, max(0, deadline - time.monotonic())))
-    raise RuntimeError('Glob2 MCP startup timed out. Enable Settings > MCP server and verify the URL. The game was left running.')
+    raise RuntimeError('Glob2 MCP startup timed out. The game was left running: enable Settings > MCP server '
+                       'with the port from --url (or start it with glob2 play --mcp-port PORT) and verify '
+                       f'the URL. See {SERVER_GUIDE}')
+
+
+def launch_arguments(game_args, port, enable=True):
+    """Arguments for a game this launcher starts: enable MCP on the URL's port for that run.
+
+    Only the play command (the default with no arguments) takes --mcp-port; other
+    commands and explicit --mcp-port arguments are passed through unchanged.
+    """
+    if not enable or '--mcp-port' in game_args or any(a.startswith('--mcp-port=') for a in game_args):
+        return list(game_args)
+    if not game_args:
+        return ['play', '--mcp-port', str(port)]
+    if game_args[0] == 'play':
+        return [*game_args, '--mcp-port', str(port)]
+    return list(game_args)
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--executable', default='glob2')
-    parser.add_argument('--cwd')
-    parser.add_argument('--url', default='http://127.0.0.1:27202/mcp')
-    parser.add_argument('--startup-timeout', type=float, default=30)
-    parser.add_argument('game_args', nargs=argparse.REMAINDER, help='Game arguments after -- (including --data-dir)')
+    parser = argparse.ArgumentParser(description=__doc__, epilog=EPILOG,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('--executable', default='glob2',
+                        help='game executable to start when nothing listens at --url (default: glob2 from PATH)')
+    parser.add_argument('--cwd', help='working directory for a started game')
+    parser.add_argument('--url', default='http://127.0.0.1:27202/mcp',
+                        help='game MCP endpoint, loopback only (default: %(default)s)')
+    parser.add_argument('--startup-timeout', type=float, default=30,
+                        help='seconds to wait for the game to answer, at most 120 (default: %(default)s)')
+    parser.add_argument('--no-launch-flag', action='store_true',
+                        help='start the game without --mcp-port and rely on its saved Settings > MCP server')
+    parser.add_argument('game_args', nargs=argparse.REMAINDER,
+                        help='game arguments after -- (for example play --data-dir DIR)')
     args = parser.parse_args(argv)
     if not 0 < args.startup_timeout <= 120:
         parser.error('--startup-timeout must be greater than zero and at most 120 seconds')
     game_args = args.game_args[1:] if args.game_args[:1] == ['--'] else args.game_args
     try:
         bridge = Bridge(args.url)
+        game_args = launch_arguments(game_args, bridge.port, not args.no_launch_flag)
         ensure_running(bridge, args.executable, game_args, args.cwd, args.startup_timeout)
         bridge.timeout = 35
         output_lock = threading.Lock()

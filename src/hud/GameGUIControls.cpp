@@ -344,6 +344,32 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 		};
 		controls.push_back(std::move(speed));
 	}
+	{
+		// The top bar's counters are drawn as icons and numbers; describe them so
+		// inspection can read the colony's state without a screenshot.
+		const auto layout = topBarLayout();
+		// The tick rate (index 7) is left out: it changes every frame and would churn
+		// the surface revision that revision_after waits observe.
+		static const char *const keys[] = {"worker-count", "explorer-count", "warrior-count",
+										   "prestige",	 "win-chance",	"converted-in",
+										   "converted-out"};
+		static const char *const labels[] = {
+			"Workers free/total", "Explorers free/total", "Warriors free/total", "Prestige",
+			"Win chance (%)", "Units converted to you", "Units converted away"};
+		for (int i = 0; i < 7; ++i)
+		{
+			PositionedControl stat;
+			stat.key = std::string("game/stats/") + keys[i];
+			stat.role = "label";
+			stat.label = labels[i];
+			const int x = int(layout.x[i]);
+			const int next = int(layout.x[i + 1]);
+			stat.bounds = {x, 0, std::max(1, next - x), 16};
+			stat.value = layout.values[i];
+			stat.actions.clear();
+			controls.push_back(std::move(stat));
+		}
+	}
 	if (globalContainer->replaying)
 	{
 		PositionedControl track;

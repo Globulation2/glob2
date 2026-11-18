@@ -282,6 +282,35 @@ TEST_SUITE("CommandLine")
 			CHECK(script.find("game run") != std::string::npos);
 		}
 	}
+	TEST_CASE("help explains the MCP option and links the source and guide")
+	{
+		const std::string repository = "https://github.com/Globulation2/glob2";
+		const std::string guide = "docs/development/mcp-ui-server.md";
+		for (const std::string path : {"", "play", "replay"})
+		{
+			INFO(path);
+			const auto text = Cli::help(path);
+			CHECK(text.find("--mcp-port") != std::string::npos);
+			CHECK(text.find("MCP") != std::string::npos);
+			CHECK(text.find("game_guide") != std::string::npos);
+			CHECK(text.find(repository + "/blob/master/" + guide) != std::string::npos);
+		}
+		// Every help page links the source; only game launches describe MCP.
+		const auto map = Cli::help("map generate");
+		CHECK(map.find(repository) != std::string::npos);
+		CHECK(map.find("--mcp-port") == std::string::npos);
+	}
+	TEST_CASE("play accepts an MCP port for one run and rejects invalid ports")
+	{
+		CHECK_EQ(Cli::parse({"play", "--mcp-port", "27216"}).get("--mcp-port"), "27216");
+		CHECK_EQ(Cli::parse({"replay", "match.replay", "--mcp-port=27217"}).get("--mcp-port"),
+				 "27217");
+		CHECK_FALSE(Cli::parse({"play"}).has("--mcp-port"));
+		for (const char *port : {"0", "65536", "port", "-1"})
+			CHECK_THROWS_AS(Cli::parse({"play", "--mcp-port", port}), std::invalid_argument);
+		CHECK_THROWS_AS(Cli::parse({"map", "generate", "river", "--mcp-port", "27216"}),
+						std::invalid_argument);
+	}
 }
 
 TEST_SUITE("GradientCollectionCommandLine") {

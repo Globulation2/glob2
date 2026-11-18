@@ -697,6 +697,7 @@ set(GLOB2_CLIENT_SOURCES
     src/online/UserDirectoryStorage.cpp
     src/app/CompileProfile.cpp
     src/mcp/Tools.cpp
+    src/mcp/Guide.cpp
     src/mcp/Protocol.cpp
     src/mcp/HttpServer.cpp
 )

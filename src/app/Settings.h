@@ -141,6 +141,19 @@ public:
     // Local desktop automation preferences; never part of simulation or saved games.
     bool mcpEnabled = false;
     int mcpPort = 27202;
+    // glob2 play --mcp-port: enables the listener on that port for this run only.
+    // Never saved; editing the MCP settings replaces it with the saved choice.
+    int mcpLaunchPort = 0;
+    bool mcpActive() const { return mcpEnabled || mcpLaunchPort; }
+    int mcpActivePort() const { return mcpLaunchPort ? mcpLaunchPort : mcpPort; }
+    // Turn a launch override into the saved choice, before the player edits it.
+    void adoptMcpLaunchOverride()
+    {
+        if (!mcpLaunchPort) return;
+        mcpEnabled = true;
+        mcpPort = mcpLaunchPort;
+        mcpLaunchPort = 0;
+    }
     // Interface theme ids (data/themes) for menus and for matches and the editor.
     std::string menuTheme = "light";
     std::string gameTheme = "dark";

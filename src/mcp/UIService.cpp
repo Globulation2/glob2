@@ -14,6 +14,9 @@ UIService *current = nullptr;
 // HTTP retains at most 16 sessions; bounded observers leave room for actions
 // and inspections that can satisfy them, including direct HTTP clients.
 constexpr std::size_t MaxWaitObservers = 8;
+constexpr auto LeaseLost = "Controller lease lost or token invalid: control expired, was "
+						   "revoked or was released. Call ui_acquire_control for a new token "
+						   "and ui_inspect before acting again";
 bool inputTool(const std::string &tool)
 {
 	return tool != "ui_status" && tool != "ui_screenshot" && tool != "ui_inspect" &&
@@ -90,7 +93,9 @@ std::shared_ptr<Request> UIService::submit(const std::string &tool, Json args, s
 	if (!accepting || queue.size() + observers.size() >= 64)
 	{
 		Result result;
-		result.error = accepting ? "UI request queue full" : "MCP server disabled";
+		result.error = accepting ? "UI request queue full (64 pending); nothing was sent, try again "
+								   "once earlier calls complete"
+								 : "MCP server disabled; enable Settings > MCP server in the game";
 		r->completion.set_value(std::move(result));
 	}
 	else if (tool == "ui_wait")
@@ -123,7 +128,7 @@ std::shared_ptr<Request> UIService::enqueue(std::function<Result()> execute, std
 	if (!accepting || queue.size() + observers.size() >= 64)
 	{
 		Result result;
-		result.error = "MCP unavailable or queue full";
+		result.error = "MCP unavailable or queue full; nothing was sent, try again shortly";
 		r->completion.set_value(std::move(result));
 	}
 	else
@@ -219,7 +224,8 @@ void UIService::revoke()
 {
 	token.clear();
 	controller.clear();
-	cancelControllerWork("Control revoked");
+	cancelControllerWork("Control revoked by the person at the computer; call "
+						 "ui_acquire_control to request it again");
 }
 void UIService::cancelControllerWork(const std::string &reason)
 {
@@ -413,7 +419,7 @@ void UIService::finish(std::string error)
 	if (result.error.empty() && dispatchComplete && r->tool == "ui_act")
 		// Input was consumed. A read failure must not disguise confirmed
 		// delivery and encourage replaying the mutation.
-		addInspection(result);
+		addInspection(result, {{"compact", r->arguments.value("compact", false)}});
 	if (!result.error.empty())
 		r->cancelled = true;
 	r->completion.set_value(std::move(result));
@@ -458,7 +464,9 @@ void UIService::startCapture()
 					captures.pop_front();
 			}
 			if (request->tool == "ui_inspect" || request->tool == "ui_act")
-				if (!addInspection(result, request->tool == "ui_inspect" ? request->arguments : Json::object()) && request->tool == "ui_inspect")
+				if (!addInspection(result, request->tool == "ui_inspect"
+										   ? request->arguments
+										   : Json{{"compact", request->arguments.value("compact", false)}}) && request->tool == "ui_inspect")
 					error = result.data["inspection_error"].get<std::string>();
 			result.pixels = std::move(pixels);
 			result.error = std::move(error);
@@ -509,8 +517,10 @@ Json UIService::inspection(const Json &arguments)
 			}
 			surfaces.push_back(std::move(surface));
 		}
-	return {{"screen", inspectionScreen ? inspectionScreen() : "unavailable"},
-			{"surfaces", surfaces}};
+	Json snapshot = {{"screen", inspectionScreen ? inspectionScreen() : "unavailable"},
+					 {"surfaces", surfaces}};
+	return arguments.is_object() && arguments.value("compact", false) ? compactInspection(snapshot)
+																	   : snapshot;
 }
 void UIService::observe()
 {
@@ -528,13 +538,16 @@ void UIService::observe()
 		if (request->cancelled)
 			result.error = "Wait cancelled";
 		else if (args.contains("token") && (token.empty() || args.value("token", "") != token))
-			result.error = "Controller lease lost or token invalid";
+			result.error = LeaseLost;
 		else
 		{
 			if (args.contains("token"))
 				renewed = Clock::now();
-			auto snapshot = inspection(args);
-			result.data["inspection"] = snapshot;
+			auto full = args;
+			full.erase("compact");
+			auto snapshot = inspection(full);
+			result.data["inspection"] =
+				args.value("compact", false) ? compactInspection(snapshot) : snapshot;
 			const auto &condition = args["condition"];
 			bool matches =
 				!condition.contains("screen") || snapshot["screen"] == condition["screen"];
@@ -576,7 +589,8 @@ void UIService::observe()
 			else if (Clock::now() >= request->deadline - std::chrono::seconds(1))
 			{
 				result.data["satisfied"] = false;
-				result.error = "Wait timed out; latest inspection returned";
+				result.error = "Wait timed out; the condition did not hold. The latest inspection "
+							   "is returned: check it, then act or wait again";
 			}
 			else
 				continue;
@@ -890,7 +904,7 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 	{
 		if (token.empty() || a.value("token", "") != token)
 		{
-			finish("Controller lease lost or token invalid");
+			finish(LeaseLost);
 			return;
 		}
 		renewed = now;
@@ -904,7 +918,10 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 	{
 		if (!token.empty())
 		{
-			finish("Another client controls the game");
+			finish("Another client controls the game (" + controller +
+				   "); wait for it to call ui_release_control or for its 300 s lease to "
+				   "expire, or ask the person at the computer to use Settings > MCP server > "
+				   "Revoke control. Reads need no control.");
 			return;
 		}
 		try
@@ -924,7 +941,7 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 		result.data["lease_seconds"] = 300;
 		auto request = std::move(active);
 		if (a.is_object() && a.value("inspect", false))
-			addInspection(result);
+			addInspection(result, {{"compact", a.value("compact", false)}});
 		request->completion.set_value(std::move(result));
 		return;
 	}
@@ -935,7 +952,7 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 	{
 		if (token.empty() || a.value("token", "") != token)
 		{
-			finish("Controller lease lost or token invalid");
+			finish(LeaseLost);
 			return;
 		}
 		if (dragIndex == 0)
@@ -998,7 +1015,8 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 	}
 	if (!available || !gfx.getWindow() || !gfx.getSDLSurface())
 	{
-		finish("Game UI unavailable (hidden, native dialog or graphics transition)");
+		finish("Game UI unavailable (hidden, native dialog or graphics transition); ask the "
+			   "person to restore the window or close the dialog, then check ui_status");
 		return;
 	}
 	if (tool == "ui_screenshot")
@@ -1014,28 +1032,10 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 	}
 	if (tool == "ui_act")
 	{
-		auto snapshot = inspection({});
-		bool found = false;
-		for (const auto &surface : snapshot["surfaces"])
-			if (surface["instance"] == a["surface"])
-			{
-				auto check = [&](auto &&self, const Json &items) -> void
-				{
-					for (const auto &item : items)
-					{
-						if (item["key"] == a["key"] && item["revision"] == a["revision"] &&
-							item["enabled"] == true && item["blocked"] == false &&
-							item["visible"]["w"].get<int>() > 0 &&
-							item["visible"]["h"].get<int>() > 0)
-							found = true;
-						self(self, item["children"]);
-					}
-				};
-				check(check, surface["controls"]);
-			}
-		if (!found)
+		const auto problem = actionTargetProblem(inspection({}), a);
+		if (!problem.empty())
 		{
-			finish("Stale, hidden, disabled or blocked control; inspect again");
+			finish(problem);
 			return;
 		}
 		semantic = GAGGUI::ui::semanticDispatch();
@@ -1099,7 +1099,9 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 				valid = convert(point) && valid;
 		if (!valid)
 		{
-			finish("Coordinates outside capture");
+			finish("Coordinates outside capture " + std::to_string(found->id) + " (" +
+				   std::to_string(found->width) + "x" + std::to_string(found->height) +
+				   " pixels); use that image's pixel coordinates");
 			return;
 		}
 		coordinatesConverted = true;
@@ -1111,7 +1113,9 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 											 [&](const Json &p) { return !validPoint(p); })))
 	{
 		releaseTemporary(events);
-		finish("Coordinates outside viewport");
+		finish("Coordinates outside viewport (" + std::to_string(width) + "x" +
+			   std::to_string(height) +
+			   " native pixels); pass capture_id to use screenshot pixels");
 		return;
 	}
 	r.inputStarted = true;
@@ -1325,8 +1329,10 @@ void UIService::afterDispatch(bool complete, std::size_t consumed, std::optional
 	{
 		if (!semantic->consumed || !semantic->error.empty())
 		{
-			finish(semantic->consumed ? semantic->error
-									  : "Control surface no longer owns input; inspect again");
+			finish(semantic->consumed
+					   ? semantic->error
+					   : "Control surface no longer owns input (a dialog or screen change took "
+						 "over); ui_inspect again");
 			return;
 		}
 	}

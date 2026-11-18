@@ -149,6 +149,7 @@ complete -c glob2 -n "__glob2_at 'play'" -l compute-telemetry -r -f -a 'off wait
 complete -c glob2 -n "__glob2_at 'play'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'play'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
 complete -c glob2 -n "__glob2_at 'play'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
+complete -c glob2 -n "__glob2_at 'play'" -l mcp-port -r
 complete -c glob2 -n "__glob2_at 'play'" -l help
 complete -c glob2 -n "__glob2_at 'replay'" -l fullscreen
 complete -c glob2 -n "__glob2_at 'replay'" -l no-fullscreen
@@ -178,6 +179,7 @@ complete -c glob2 -n "__glob2_at 'replay'" -l compute-telemetry -r -f -a 'off wa
 complete -c glob2 -n "__glob2_at 'replay'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'replay'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
 complete -c glob2 -n "__glob2_at 'replay'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
+complete -c glob2 -n "__glob2_at 'replay'" -l mcp-port -r
 complete -c glob2 -n "__glob2_at 'replay'" -l help
 complete -c glob2 -n "__glob2_at 'map generate'" -l seed -r
 complete -c glob2 -n "__glob2_at 'map generate'" -l set -r
@@ -393,6 +395,7 @@ complete -c glob2 -n "__glob2_at 'online join'" -l compute-telemetry -r -f -a 'o
 complete -c glob2 -n "__glob2_at 'online join'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'online join'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
 complete -c glob2 -n "__glob2_at 'online join'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
+complete -c glob2 -n "__glob2_at 'online join'" -l mcp-port -r
 complete -c glob2 -n "__glob2_at 'online join'" -l instance -r
 complete -c glob2 -n "__glob2_at 'online join'" -l help
 complete -c glob2 -n "__glob2_at 'online play-map'" -l fullscreen
@@ -423,6 +426,7 @@ complete -c glob2 -n "__glob2_at 'online play-map'" -l compute-telemetry -r -f -
 complete -c glob2 -n "__glob2_at 'online play-map'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'online play-map'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
 complete -c glob2 -n "__glob2_at 'online play-map'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
+complete -c glob2 -n "__glob2_at 'online play-map'" -l mcp-port -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l instance -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l hash -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l title -r
@@ -455,6 +459,7 @@ complete -c glob2 -n "__glob2_at 'online host-map'" -l compute-telemetry -r -f -
 complete -c glob2 -n "__glob2_at 'online host-map'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'online host-map'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
 complete -c glob2 -n "__glob2_at 'online host-map'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
+complete -c glob2 -n "__glob2_at 'online host-map'" -l mcp-port -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l instance -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l hash -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l title -r
@@ -551,6 +556,7 @@ complete -c glob2 -n "__glob2_at 'dev textshots'" -l compute-telemetry -r -f -a 
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
+complete -c glob2 -n "__glob2_at 'dev textshots'" -l mcp-port -r
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l output-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l help
 complete -c glob2 -n "__glob2_at 'dev dump-resources'" -l data-dir -r -f -a '(__fish_complete_directories)'

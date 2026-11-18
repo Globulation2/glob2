@@ -10,19 +10,23 @@ void SettingsScreen::buildMCP()
 #if GLOB2_DESKTOP_MCP
 	auto &settings = globalContainer->settings;
 	info(tr("Enabling the MCP server permits local clients to see and operate the game."));
-	toggle("mcp.enabled", "Enable MCP server", "", settings.mcpEnabled,
+	// Show the effective listener. A --mcp-port launch override ends at the first
+	// edit here, which saves the visible state as the player's own choice.
+	toggle("mcp.enabled", "Enable MCP server", "", settings.mcpActive(),
 		   [this](int value)
 		   {
 			   auto &settings = globalContainer->settings;
+			   settings.adoptMcpLaunchOverride();
 			   settings.mcpEnabled = value;
 			   if (auto *service = MCP::service())
 				   service->configure(settings.mcpEnabled, settings.mcpPort);
 			   commit();
 		   });
-	number("mcp.port", tr("Port"), settings.mcpPort, 1, 65535,
+	number("mcp.port", tr("Port"), settings.mcpActivePort(), 1, 65535,
 		   [this](int value)
 		   {
 			   auto &settings = globalContainer->settings;
+			   settings.adoptMcpLaunchOverride();
 			   settings.mcpPort = value;
 			   if (auto *service = MCP::service())
 				   service->configure(settings.mcpEnabled, settings.mcpPort);
@@ -65,7 +69,7 @@ void SettingsScreen::buildMCP()
 		   {
 			   const auto &settings = globalContainer->settings;
 			   if (auto *service = MCP::service())
-				   service->configure(settings.mcpEnabled, settings.mcpPort, true);
+				   service->configure(settings.mcpActive(), settings.mcpActivePort(), true);
 			   invalidate();
 		   });
 	button("mcp.revoke", tr("Revoke control"),

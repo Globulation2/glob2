@@ -3,7 +3,9 @@
 Desktop builds expose the game's mouse and keyboard interface to local MCP clients.
 Enable **Settings → MCP server**, then copy the endpoint. The default is disabled, with
 port 27202 and endpoint `http://127.0.0.1:27202/mcp`. Enablement and port are stored in
-the local settings profile. Changes take effect immediately; a failed bind is shown in
+the local settings profile. `glob2 play --mcp-port PORT` (also `replay`) enables the
+listener on PORT for that run only and saves nothing; the first edit to the MCP
+settings during that run adopts the launch values as the saved choice. Changes take effect immediately; a failed bind is shown in
 the submenu and **Retry listener** attempts it again. During a restart, **Starting**
 means the prior listener is draining before the replacement binds; this does not block
 the game loop. Browser, Android, iOS and relay builds do not expose this category or
@@ -33,6 +35,27 @@ uses `server/discover` and stateless requests. Supply `MCP-Protocol-Version`,
 version. Results contain resultType and serverInfo metadata. Header mismatch returns
 -32020, unsupported protocol version -32022, and unknown methods -32601. Tools discovery
 supplies cache metadata.
+
+## Self-description
+
+The server is written for agents that know nothing about the game and cannot read this
+repository. Both protocol versions return `instructions` (what the game is, the call
+sequence, where to start and links to the repository and this guide) and a
+`serverInfo` with `title`, `description` and `websiteUrl`: in the 2025-11-25
+`initialize` result and in the 2026-07-28 `server/discover` result. The read-only
+`game_guide` tool serves longer topics (`overview`, `gameplay`, `screens`, `hud`,
+`actions`, `control`, `hive`, `troubleshooting`, `links`); every topic carries the
+links to the repository, these guides, Hive scripting and the tutorial lesson
+scripts. Its text lives in `src/mcp/Guide.cpp` and must stay true to the game's
+behavior: update it with the HUD, menus or rules it describes.
+
+Tool descriptions say what each tool is for in game terms. Only `ui_status`,
+`ui_acquire_control` and `ui_screenshot` publish an output schema, which keeps
+`tools/list` under the 20,000-byte budget that `MCP/tools explain themselves within a
+discovery size budget` enforces. Error results name what failed and the next step,
+for example which ui_act check failed (unknown surface, missing key, stale revision
+with the current one, disabled, hidden, blocked or unsupported action) or how to
+regain control.
 
 The 2025-11-25 adapter supports `initialize`, `notifications/initialized`, `ping`,
 `tools/list` and `tools/call`. Initialize supplies protocolVersion, capabilities, and
@@ -65,6 +88,7 @@ not depend on the OS pointer position.
 
 | Tool | Semantics |
 | --- | --- |
+| game_guide | Game rules, menus, HUD, placement, control and errors by topic, with links. No lease required. |
 | ui_status | Dimensions, availability, frame_id, viewport_id and controller. No lease required. |
 | ui_screenshot | Next capturable complete game frame, as inline base64 PNG plus metadata. No lease required. |
 | ui_acquire_control / ui_release_control | Acquire a token / release its lease and inputs. |
@@ -187,7 +211,11 @@ and renderer checks are separate from simulation/save/replay continuity.
 ## Typed interaction and scaled captures
 
 `ui_inspect` accepts `surface` (an instance ID), `subtree` (a stable key), `token`
-(optional) and `screenshot` (default false). Controls report their own `revision`.
+(optional), `screenshot` (default false) and `compact` (default false). `compact`
+also applies to `ui_act`, `ui_wait` and `ui_acquire_control` inspections: it replaces
+keyless, unlabelled, inert layout containers with their children, omits fields at
+their defaults, keeps `revision` only on actionable controls and marks controls with
+no visible area as `hidden`. Typical menu inspections shrink to a third of their size. Controls report their own `revision`.
 Snapshot bounds use the owning surface's logical pixels; `viewport` records that
 space. They can differ from native screenshot pixels under interface scaling or
 HiDPI. Prefer semantic actions for controls and captured-image coordinates for
@@ -238,15 +266,19 @@ resource panels remain read-only. Map, minimap and replay progress are canvas co
 use captured-image coordinates for spatial gestures and Hive for player-visible world
 records. A control reports `blocked` when any overlay intersects it, so the map canvas
 reads as blocked while a lesson card or other panel covers part of it; coordinate
-gestures still reach its uncovered part. Building and flag palette entries are labelled
+gestures still reach its uncovered part. The desktop HUD's top-bar counters are
+read-only `label` controls under `game/stats/` (workers, explorers and warriors as
+free/total, prestige, win chance, converted in and out). Building and flag palette entries are labelled
 with the player-facing names; their keys keep the stable type names. Native OS dialogs
 remain outside this interface.
 
 ## Linux stdio launcher
 
 `python3 tools/mcp_stdio.py` connects to the default loopback endpoint, reusing a
-compatible running game or starting `glob2` from `PATH`. Enable Settings → MCP server
-in the game profile first. Startup defaults to one 30-second budget (maximum 120),
+compatible running game or starting `glob2` from `PATH`. A game it starts receives
+`play --mcp-port PORT` (from `--url`) unless the arguments name another command or
+their own `--mcp-port`; `--no-launch-flag` instead relies on Settings → MCP server.
+`--help` describes the options and links the repository and this guide. Startup defaults to one 30-second budget (maximum 120),
 including the initial probe and capability discovery. A listening but unresponsive or
 incompatible endpoint fails without starting a second game; only connection refusal
 starts the configured executable. Override the

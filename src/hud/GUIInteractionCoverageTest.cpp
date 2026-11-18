@@ -2089,3 +2089,45 @@ TEST_CASE("lesson cards keep messages and exits visible and markers aim at build
 	CHECK(ex == doctest::Approx(40.5));
 	CHECK(ey == doctest::Approx(40.5));
 }
+
+TEST_CASE("desktop HUD top bar counters are readable through inspection [display]" *
+		  doctest::test_suite("GUIInteractionCoverage"))
+{
+	glob2test::HeadlessGlobals globals(
+		{.display = true, .loadStrings = true, .width = 1024, .height = 768});
+	glob2test::HeadlessGame world(
+		{.discovered = true, .clearImmobile = true, .loadDefaultRace = true, .header = true});
+	auto &gui = world.gui;
+	gui.localTeamNo = 0;
+	gui.localPlayer = 0;
+	gui.localTeam = world.team;
+	gui.prepareLocalPresentation(gui.frameScene);
+	const auto descriptors = gui.describeHudControls();
+	auto find = [&](const std::string &key)
+	{
+		const auto found = std::find_if(descriptors.begin(), descriptors.end(),
+										[&](const auto &c) { return c.key == key; });
+		return found == descriptors.end() ? nullptr : &*found;
+	};
+	// Each drawn counter is a read-only, labelled value, so an agent can read the
+	// colony's state without a screenshot.
+	for (const char *key : {"game/stats/worker-count", "game/stats/explorer-count", "game/stats/warrior-count",
+							"game/stats/prestige", "game/stats/win-chance",
+							"game/stats/converted-in", "game/stats/converted-out"})
+	{
+		INFO(key);
+		const auto *stat = find(key);
+		REQUIRE(stat);
+		CHECK(stat->role == "label");
+		CHECK_FALSE(stat->label.empty());
+		CHECK(stat->actions.empty());
+		REQUIRE(std::holds_alternative<std::string>(stat->value));
+		CHECK_FALSE(std::get<std::string>(stat->value).empty());
+		CHECK(stat->bounds.y + stat->bounds.h <= 16); // Inside the top bar, off the map.
+	}
+	const auto workers = std::get<std::string>(find("game/stats/worker-count")->value);
+	CHECK(workers.find('/') != std::string::npos);
+	const auto *map = find("game/map");
+	REQUIRE(map);
+	CHECK(map->bounds.y >= 16); // The counters never overlap the map canvas.
+}

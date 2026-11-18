@@ -25,6 +25,7 @@ class IntroductionOfferScreen : public Glob2UI::Screen
     }
     void failure() { persistence.reset(); failed=true; invalidate(); }
   public:
+    const char *recordingId() const override { return "introduction_offer"; }
     IntroductionOfferScreen() = default;
     Glob2UI::Element build(const Glob2UI::Presentation &p) override
     {

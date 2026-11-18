@@ -186,7 +186,7 @@ Application::Application()
 		return screens.top() ? std::string(screens.top()->recordingId())
 							 : std::string("unavailable");
 	};
-	mcp->configure(globalContainer->settings.mcpEnabled, globalContainer->settings.mcpPort);
+	mcp->configure(globalContainer->settings.mcpActive(), globalContainer->settings.mcpActivePort());
 #endif
 	// The first screen's first frames after loading (the main menu and the
 	// colony behind it, or a first-run question in front of it) are drawn but
@@ -376,8 +376,8 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 #if GLOB2_DESKTOP_MCP
 	if (hidden)
 		screens.pollInputReceipts();
-	mcp->configure(!quitting && globalContainer->settings.mcpEnabled,
-				   globalContainer->settings.mcpPort);
+	mcp->configure(!quitting && globalContainer->settings.mcpActive(),
+				   globalContainer->settings.mcpActivePort());
 	const auto mcpAvailable = [this]
 	{
 		auto *window = globalContainer->gfx->getWindow();

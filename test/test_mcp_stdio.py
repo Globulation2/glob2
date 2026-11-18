@@ -213,5 +213,44 @@ class BridgeTests(unittest.TestCase):
         process.terminate.assert_not_called()
 
 
+class LaunchAndHelpTests(unittest.TestCase):
+    def test_started_game_enables_mcp_on_the_url_port_for_play_only(self):
+        self.assertEqual(launcher.launch_arguments([], 27216), ['play', '--mcp-port', '27216'])
+        self.assertEqual(launcher.launch_arguments(['play', '--data-dir', '/d'], 27216),
+                         ['play', '--data-dir', '/d', '--mcp-port', '27216'])
+        for unchanged in (['replay', 'x.replay'], ['play', '--mcp-port', '1'], ['play', '--mcp-port=1']):
+            self.assertEqual(launcher.launch_arguments(unchanged, 27216), unchanged)
+        self.assertEqual(launcher.launch_arguments([], 27216, enable=False), [])
+
+    def test_main_passes_the_url_port_to_a_started_game(self):
+        with patch.object(launcher, 'ensure_running', side_effect=RuntimeError('stop')) as ensure:
+            self.assertEqual(launcher.main(['--url', 'http://127.0.0.1:27299/mcp']), 1)
+        self.assertEqual(ensure.call_args.args[2], ['play', '--mcp-port', '27299'])
+        with patch.object(launcher, 'ensure_running', side_effect=RuntimeError('stop')) as ensure:
+            launcher.main(['--no-launch-flag', '--', 'play'])
+        self.assertEqual(ensure.call_args.args[2], ['play'])
+
+    def test_help_explains_the_game_and_links_source_and_guide(self):
+        result = subprocess.run([sys.executable, str(Path(launcher.__file__)), '--help'],
+                                capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0)
+        for text in ('Globulation 2', 'game_guide', '--mcp-port', 'Settings > MCP server',
+                     launcher.REPOSITORY, launcher.SERVER_GUIDE):
+            self.assertIn(text, result.stdout)
+        self.assertTrue(launcher.SERVER_GUIDE.startswith(launcher.REPOSITORY))
+
+    def test_startup_timeout_says_how_to_enable_the_server(self):
+        fake = Mock()
+        fake.ready.side_effect = ConnectionRefusedError()
+        process = Mock()
+        process.poll.return_value = None
+        with patch.object(launcher.subprocess, 'Popen', return_value=process), \
+                patch.object(launcher.time, 'sleep'):
+            with self.assertRaises(RuntimeError) as raised:
+                launcher.ensure_running(fake, 'glob2', [], None, 0.05)
+        for text in ('Settings > MCP server', '--mcp-port', launcher.SERVER_GUIDE):
+            self.assertIn(text, str(raised.exception))
+
+
 if __name__ == '__main__':
     unittest.main()

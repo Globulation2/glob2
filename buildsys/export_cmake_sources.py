@@ -31,7 +31,7 @@ registry = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(registry)
 
 # Native builds add these sources (the MCP server) to CLIENT_SOURCES.
-NATIVE_CLIENT_SOURCES = ('mcp/Tools.cpp', 'mcp/Protocol.cpp', 'mcp/HttpServer.cpp')
+NATIVE_CLIENT_SOURCES = ('mcp/Tools.cpp', 'mcp/Guide.cpp', 'mcp/Protocol.cpp', 'mcp/HttpServer.cpp')
 ENTRY_POINT = 'app/Glob2.cpp'
 
 

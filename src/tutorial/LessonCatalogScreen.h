@@ -13,6 +13,7 @@ namespace Tutorial
 class LessonCatalogScreen : public Glob2UI::Screen
 {
   public:
+    const char *recordingId() const override { return "tutorial_catalog"; }
     struct Entry { std::string map,title,briefing; };
     std::vector<Entry> entries;
     static Script::Value read(const std::string &path)
