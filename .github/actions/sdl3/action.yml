@@ -16,7 +16,7 @@ runs:
     - id: identity
       shell: ${{ inputs.shell }}
       run: python3 .github/scripts/ci_dependency_cache.py key --cc '${{ inputs.cc }}' --cxx '${{ inputs.cxx }}'
-    - uses: actions/cache/restore@v4
+    - uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7
       id: restore
       with:
         path: build/sdl3-ci/prefix
@@ -31,7 +31,7 @@ runs:
         python3 buildsys/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
         python3 buildsys/recording_dependencies.py --prefix build/sdl3-ci/prefix/recording --work build/recording-ci/sources --jobs 2
         python3 .github/scripts/ci_dependency_cache.py seal --key '${{ steps.identity.outputs.key }}'
-    - uses: actions/cache/save@v4
+    - uses: actions/cache/save@668228422ae6a00e4ad889ee87cd7109ec5666a7
       if: ${{ !cancelled() && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && steps.restore.outputs.cache-hit != 'true' }}
       with:
         path: build/sdl3-ci/prefix
