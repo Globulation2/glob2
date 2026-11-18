@@ -436,7 +436,10 @@ int LanClient::localSeat() const
 {
 	if (start)
 		return start->seat;
-	if (!room)
+	if (startedSeat >= 0)
+		return startedSeat;
+	// A guest rejoining a started game is never welcomed; member 0 is the host.
+	if (!room || !member)
 		return -1;
 	const Member* m = room->member(member);
 	return m ? m->seat : -1;
@@ -482,6 +485,7 @@ std::optional<LanClient::StartInfo> LanClient::takeStart()
 		return std::nullopt;
 	StartInfo info = std::move(*start);
 	start.reset();
+	startedSeat = info.seat;
 	info.mapFile = cachedMap;
 	info.transport = std::make_shared<GuestTurnTransport>(connection, options.hostLossGiveUpMicros, options.silenceMicros);
 	if (options.wrapTransport)

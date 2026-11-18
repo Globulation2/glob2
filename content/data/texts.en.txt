@@ -3875,7 +3875,7 @@ Joining on this network
 [room lan badge]
 Local network · not rated
 [room lan list hint %0]
-Others on the same network see %0 in the LAN game list on the main menu.
+To join %0, players on this network open LAN Game, then Join a game, and paste the host's pairing link.
 [room leave]
 Leave
 [room map changed %0]
@@ -4619,11 +4619,11 @@ You have no pauses left in this match
 [room rules otherwise standard]
 Every other rule is as in Standard.
 [room browser link]
-Link for browser players
+Pairing link
 [room browser link hint]
-Players in a browser paste this link to join.
+Other players paste this link to join, in the game or in a browser.
 [room browser link code %0]
-Players in a browser paste this link to join. Their game shows code %0.
+Other players paste this link to join, in the game or in a browser. Its code %0 identifies this host.
 [room copy link]
 Copy link
 [room lan open seat detail]

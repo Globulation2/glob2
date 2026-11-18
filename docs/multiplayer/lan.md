@@ -79,6 +79,12 @@ embedded building catalog without changing the turn-message frame size.
 | `leave` | guest → host |  |
 | `closed` | host → all | `reason`: `host-left` or `cancelled` |
 
+The host fills open seats with AIs (or changes or removes one) from each seat's
+occupant choice in the room. A LAN room has no closed seats: a colony nobody takes stays
+inactive. The guest's join screen keeps a pasted pairing string when the player then
+picks the same discovered host, and asks for the pairing string instead of connecting
+to a discovered host's bare endpoint, which cannot be verified.
+
 The room state is the `MatchSetup` the match will start from, so starting needs no
 conversion: every player calls `Engine::initTurnMatchTask` with the setup, its seat and
 its ticket. The map source is `upload` (format `map` or `save`). A saved game keeps its
@@ -99,10 +105,12 @@ with `version`.
   relays do by default.
 - **Reconnect.** A guest whose connection drops reconnects to the same pinned endpoint by
   itself and resumes from its horizon. A guest that hears nothing from the host for 5 s
-  treats the connection as lost. After 2 minutes without reaching the host, the guest's
+  treats the connection as lost. After 3 minutes (the relay's grace, which keeps its seat as
+  long and which the connection card counts down) without reaching the host, the guest's
   game ends.
 - **Rejoin after a restart.** A guest whose game restarted joins the room again under the
-  same name. While its seat is reconnecting or not yet connected, the host sends `start`
+  same name. While its seat is reconnecting or not yet connected, the host sends the room
+  `state` (the guest's session screen opens the room only once it has one) and `start`
   again with the seat's ticket, and the guest fast-forwards from tick 0.
 - **Host leaving.** When the host's game ends (or the host quits), the relay finishes
   (final bundle) and every connection gets `closed` with `host-left`. Shutdown drains

@@ -32,7 +32,7 @@ Element LANFindScreen::build(const Presentation &p)
 									 [this](int i)
 									 {
 										 selectedGame = i;
-										 serverName = listener.getIPAddress(i);
+										 serverName = Lan::pickDiscoveredHost(serverName, listener.getIPAddress(i));
 									 },
 									 {{}, {}, {}, [this](int) { connect(); }, {}, 6, tr("[No items]")})});
 	Element body = adaptive(
@@ -57,6 +57,14 @@ void LANFindScreen::setServer(const std::string &address)
 
 void LANFindScreen::connect()
 {
+	std::vector<std::string> discovered;
+	for (const auto &host : listener.getLANHosts())
+		discovered.push_back(host.endpoint);
+	if (Lan::needsPairing(serverName, discovered))
+	{
+		screens.push(std::make_unique<MessageScreen>(tr("[lan discovery instructions]"), std::vector<std::string>{tr("[ok]")}));
+		return;
+	}
 	try {
         const auto endpoint = NetEndpoint::parse(serverName);
         if (endpoint.route != "/yog") throw Glob2UI::PresentedError(tr("[lan lobby endpoint required]"));

@@ -516,8 +516,14 @@ Element RoomScreen::seatControls(const RoomBackend::Slot &slot, const Presentati
 	std::vector<Element> controls;
 	if (room->canSetOccupant(slot))
 	{
-		std::vector<std::string> options{tr("[room open for a person]"), tr("[room closed seat]")};
-		std::vector<std::string> ids{"@open", "@closed"};
+		std::vector<std::string> options{tr("[room open for a person]")};
+		std::vector<std::string> ids{"@open"};
+		if (room->canCloseSeats())
+		{
+			options.push_back(tr("[room closed seat]"));
+			ids.push_back("@closed");
+		}
+		const std::size_t firstAI = ids.size();
 		for (int ai : AINames::selectionOrder())
 		{
 			if (ai == AI::NONE || ai >= AI::JAVASCRIPT)
@@ -525,9 +531,9 @@ Element RoomScreen::seatControls(const RoomBackend::Slot &slot, const Presentati
 			options.push_back(formatted("[room ai %0]", AINames::getAIText(ai)));
 			ids.push_back(AINames::getCLIName(ai));
 		}
-		int selected = slot.locked ? 1 : 0;
+		int selected = slot.locked && room->canCloseSeats() ? 1 : 0;
 		if (slot.ai)
-			for (std::size_t i = 2; i < ids.size(); ++i)
+			for (std::size_t i = firstAI; i < ids.size(); ++i)
 				if (ids[i] == slot.aiId)
 					selected = int(i);
 		if (!slot.ai && !slot.open && !slot.locked)

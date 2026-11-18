@@ -147,4 +147,13 @@ namespace Lan
 	std::uint64_t nowMicros();
 	/// Truncates to at most `limit` bytes without splitting a UTF-8 sequence.
 	std::string clampUtf8(const std::string& text, std::size_t limit);
+
+	/// Discovery announces a host's endpoint without its certificate fingerprint, so
+	/// only the pairing string can verify a LAN host. What the join screen's host field
+	/// holds after the player picks a discovered host: the pairing string already
+	/// entered when it pins that same host, else the discovered endpoint.
+	std::string pickDiscoveredHost(const std::string& entered, const std::string& discovered);
+	/// Whether `entered` names one of the `discovered` hosts without a fingerprint, so
+	/// connecting cannot verify it and the player must paste the pairing string.
+	bool needsPairing(const std::string& entered, const std::vector<std::string>& discovered);
 }

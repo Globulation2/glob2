@@ -8,7 +8,9 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 #include "FrontendTheme.h"
+#include "Engine.h"
 #include "GlobalContainer.h"
+#include "LanRoom.h"
 #include "PlatformRoom.h"
 #include "RoomScreen.h"
 #include "UIRecordingCanvas.h"
@@ -191,7 +193,61 @@ TEST_SUITE("OnlineWording")
 		const auto lan = paintedTexts(std::make_unique<RoomScreen>(stack, std::make_shared<OnlineUIFixtures::LanRoomFixture>()));
 		INFO(joined(lan));
 		CHECK_FALSE(anyContains(lan, "ws://"));
-		CHECK(anyContains(lan, "Link for browser players"));
+		CHECK(anyContains(lan, "Pairing link"));
+	}
+
+	TEST_CASE("a LAN room tells players where to paste the host's pairing link [display]")
+	{
+		// The discovery list names hosts, not maps, and every guest (in the game or in a
+		// browser) needs the pairing link: the room must not send them to a list on the
+		// main menu, nor offer the link to browser players only.
+		Display display;
+		GAGGUI::ScreenStack stack(*globalContainer->gfx);
+		const auto lan = paintedTexts(std::make_unique<RoomScreen>(stack, std::make_shared<OnlineUIFixtures::LanRoomFixture>()));
+		INFO(joined(lan));
+		CHECK(anyContains(lan, "Join a game"));
+		CHECK(anyContains(lan, "pairing link"));
+		CHECK_FALSE(anyContains(lan, "on the main menu"));
+		CHECK_FALSE(anyContains(lan, "browser players"));
+	}
+
+	TEST_CASE("a LAN host puts AIs in open seats from the room [display]")
+	{
+		Display display;
+		Lan::LanHost::Options options;
+		options.hostName = "Host";
+		options.map = Engine().loadMapHeader("maps/balanced.map");
+		options.network = false;
+		auto room = Lan::LanRoom::host(std::move(options));
+		room->update();
+		GAGGUI::ScreenStack stack(*globalContainer->gfx);
+		auto owned = std::make_unique<RoomScreen>(stack, room);
+		auto *screen = owned.get();
+		stack.push(std::move(owned));
+		const Uint32 tick = SDL_GetTicks();
+		stack.frame(tick, {});
+		stack.frame(tick + 40, {});
+		REQUIRE(room->slots().size() >= 2);
+		const RoomBackend::Slot open = room->slots()[1];
+		REQUIRE(open.open);
+		// The open seat offers its occupants; the host's own seat does not.
+		CHECK(room->canSetOccupant(open));
+		CHECK(screen->host().find("seat/1/controller") != nullptr);
+		CHECK_FALSE(room->canSetOccupant(room->slots()[0]));
+
+		room->setOccupant(1, RoomBackend::Occupant::AI, "castor");
+		room->update();
+		REQUIRE(room->slots()[1].ai);
+		CHECK(room->slots()[1].aiId == "castor");
+		room->setOccupant(1, RoomBackend::Occupant::AI, "nicowar");
+		room->update();
+		CHECK(room->slots()[1].aiId == "nicowar");
+		// Opening the seat again removes the AI.
+		room->setOccupant(1, RoomBackend::Occupant::Open);
+		room->update();
+		CHECK(room->slots()[1].open);
+		// A LAN room has no closed seats to offer.
+		CHECK_FALSE(room->canCloseSeats());
 	}
 
 	TEST_CASE("an unserved version blames the side that is out of date [display]")

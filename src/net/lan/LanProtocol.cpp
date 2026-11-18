@@ -376,4 +376,44 @@ std::string clampUtf8(const std::string& text, std::size_t limit)
 		--end;
 	return text.substr(0, end);
 }
+
+namespace
+{
+std::optional<NetEndpoint> parseEndpoint(const std::string& text)
+{
+	try
+	{
+		return NetEndpoint::parse(text);
+	}
+	catch (const std::exception&)
+	{
+		return std::nullopt;
+	}
+}
+
+bool sameHost(const NetEndpoint& a, const NetEndpoint& b)
+{
+	return a.authority == b.authority && a.route == b.route;
+}
+}
+
+std::string pickDiscoveredHost(const std::string& entered, const std::string& discovered)
+{
+	const auto current = parseEndpoint(entered);
+	const auto picked = parseEndpoint(discovered);
+	if (current && picked && !current->fingerprint.empty() && sameHost(*current, *picked))
+		return entered;
+	return discovered;
+}
+
+bool needsPairing(const std::string& entered, const std::vector<std::string>& discovered)
+{
+	const auto current = parseEndpoint(entered);
+	if (!current || !current->fingerprint.empty())
+		return false;
+	return std::any_of(discovered.begin(), discovered.end(), [&](const std::string& host) {
+		const auto found = parseEndpoint(host);
+		return found && sameHost(*current, *found);
+	});
+}
 }
