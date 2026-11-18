@@ -24,7 +24,9 @@ class AptMirrorTest(unittest.TestCase):
                     'sources.list': 'deb http://azure.archive.ubuntu.com/ubuntu noble main\n',
                     'sources.list.d/legacy.list': 'deb https://azure.archive.ubuntu.com/ubuntu jammy main\n',
                     'sources.list.d/ubuntu.sources': 'Types: deb\nURIs: mirror+file:/etc/apt/apt-mirrors.txt\nSuites: noble noble-updates\nComponents: main\nSigned-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg\n',
-                    'apt-mirrors.txt': 'http://azure.archive.ubuntu.com/ubuntu\thttp://archive.ubuntu.com/ubuntu\n',
+                    'apt-mirrors.txt': 'http://azure.archive.ubuntu.com/ubuntu\thttp://archive.ubuntu.com/ubuntu\n'
+                                       'http://us-east-2.ec2.archive.ubuntu.com/ubuntu\tpriority:1\n',
+                    'sources.list.d/regional.list': 'deb http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble main\n',
                     'apt-mirrors-security.txt': 'https://azure.archive.ubuntu.com/ubuntu\nhttp://security.ubuntu.com/ubuntu\n',
                 }
                 for path, value in entries.items():
@@ -34,7 +36,7 @@ class AptMirrorTest(unittest.TestCase):
                 command = block.replace('/etc/apt', str(apt)).replace('sudo sed', 'sed')
                 subprocess.run(['bash', '-eu', '-c', command], check=True)
                 for path, value in entries.items():
-                    expected = re.sub(r'https?://azure.archive.ubuntu.com/ubuntu',
+                    expected = re.sub(r'https?://(azure|[a-z0-9-]+\.ec2)\.archive\.ubuntu\.com/ubuntu',
                                       'https://archive.ubuntu.com/ubuntu', value)
                     self.assertEqual((apt / path).read_text(), expected, path)
 
