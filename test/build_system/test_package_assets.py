@@ -244,7 +244,8 @@ class AssetExportTests(unittest.TestCase):
                             raise PermissionError("Concurrent cache reader")
                         return replace(source, destination)
 
-                    with patch("tools.package_assets.os.replace", side_effect=reader_blocks_replacement):
+                    with patch("tools.package_assets.os.replace", side_effect=reader_blocks_replacement), \
+                            patch("tools.package_assets.time.sleep"):
                         if identical:
                             blob, record = package_assets.encode_image(self.image, "data/gfx/frame0.png", cache, False)
                             self.assertEqual(hashlib.sha256(blob.read_bytes()).hexdigest(), record["sha256"])
@@ -258,6 +259,30 @@ class AssetExportTests(unittest.TestCase):
                     # repaired by an ordinary subsequent cache validation.
                     blob, record = package_assets.encode_image(self.image, "data/gfx/frame0.png", cache, False)
                     self.assertEqual(hashlib.sha256(blob.read_bytes()).hexdigest(), record["sha256"])
+
+    def test_shared_cache_publication_retries_while_a_racing_writer_holds_the_entry(self):
+        import hashlib
+        import os
+
+        replace = os.replace
+        denials = {"image.webp": 3}
+
+        def writer_still_replacing(source, destination):
+            destination = Path(destination)
+            if denials.get(destination.name, 0) > 0:
+                # Another exporter is mid-replacement: the entry is neither
+                # replaceable nor readable yet.
+                denials[destination.name] -= 1
+                raise PermissionError("Concurrent cache writer")
+            return replace(source, destination)
+
+        with patch("tools.package_assets.os.replace", side_effect=writer_still_replacing), \
+                patch("tools.package_assets.time.sleep") as sleep:
+            blob, record = package_assets.encode_image(self.image, "data/gfx/frame0.png", self.cache, False)
+        self.assertEqual(denials["image.webp"], 0)
+        self.assertEqual(sleep.call_count, 3)
+        self.assertEqual(hashlib.sha256(blob.read_bytes()).hexdigest(), record["sha256"])
+        self.assertTrue(all(p.name in ("image.webp", "selection.json") for p in blob.parent.iterdir()))
 
     def test_source_change_invalidates_cache(self):
         first = self.export()
