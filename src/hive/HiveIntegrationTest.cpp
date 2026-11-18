@@ -1223,3 +1223,61 @@ TEST_CASE("local Hive publishes player API separately from local control rules" 
     CHECK(control.find("Replacement resets globals") != std::string::npos);
     CHECK(control.find("local_events") != std::string::npos);
 }
+
+TEST_CASE("local Hive failures name their source and cards summarize results" *
+		  doctest::test_suite("HiveMindIntegration"))
+{
+	glob2test::HeadlessGlobals globals({.seed = 19});
+	glob2test::HeadlessGame world({.loadDefaultRace = true, .header = true});
+	world.addBuilding("swarm", 4, 4);
+	world.gui.localPlayer = world.gui.localTeamNo = 0;
+	world.game.players[0]->type = BasePlayer::P_LOCAL;
+	Hive::LocalCommander commander(world.gui, [](Json input)
+	{
+		std::promise<Json> ready;
+		ready.set_value(Hive::invoke(input));
+		return ready.get_future();
+	});
+	const auto session = commander.status().at("session");
+	const auto settle = [&] { commander.update(); commander.update(); };
+	const auto result = [&](const char *key)
+	{ return commander.call("hive_result", {{"session", session}, {"operation_key", key}}); };
+
+	commander.call("hive_run", {{"session", session}, {"operation_key", "boom-run"},
+		{"source", "function step(){throw new Error('boom');}"}});
+	settle();
+	REQUIRE_FALSE(commander.reports.empty());
+	// The report names the operation and drops the stack trace; the journal keeps it.
+	CHECK(commander.reports.back() == "boom-run: Error: boom");
+	CHECK(result("boom-run").at("error").get<std::string>().find("at step") != std::string::npos);
+
+	// A misspelled order type is named instead of failing on a field it never needed.
+	commander.call("hive_run", {{"session", session}, {"operation_key", "teleport"},
+		{"source", "function step(){return {orders:[{type:'teleport'}]};}"}});
+	settle();
+	CHECK(result("teleport").at("error") == "Unsupported gameplay order type: teleport");
+
+	commander.call("hive_program", {{"session", session}, {"operation_key", "bad-install"},
+		{"action", "install"}, {"name", "broken"}, {"source", "function step(){throw 1;}"}});
+	settle();
+	CHECK(commander.reports.back() == "broken: 1");
+	CHECK(commander.standingOrders().empty());
+
+	commander.call("hive_program", {{"session", session}, {"operation_key", "install"},
+		{"action", "install"}, {"name", "count"},
+		{"source", "let n=0;function step(ctx){n++;return {output:{n,tick:ctx.tick}};}"}});
+	settle();
+	world.game.stepCounter += 25;
+	settle();
+	const auto recent = commander.standingOrders().at(0).at("recent");
+	REQUIRE(recent.at("status") == "completed");
+	// Cards show the program's own output, not the raw journal record.
+	CHECK(Hive::recentSummary(recent) ==
+		  Json{{"n", 1}, {"tick", world.game.stepCounter}}.dump());
+	CHECK(Hive::recentSummary({{"status", "failed"}, {"error", "TypeError: x\n    at step"},
+							   {"output", nullptr}}) == "TypeError: x");
+	// Online cards store {tick, output}.
+	CHECK(Hive::recentSummary({{"tick", 75}, {"output", {{"swarms", 1}}}}) == R"({"swarms":1})");
+	CHECK(Hive::recentSummary(nullptr).empty());
+	CHECK(Hive::recentSummary({{"status", "completed"}, {"output", nullptr}}).empty());
+}

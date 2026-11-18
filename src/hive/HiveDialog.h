@@ -6,6 +6,9 @@
 #include <optional>
 namespace Hive
 {
+// One line for a standing-order card: a failed run's first error line, otherwise
+// its compact output. Empty when there is nothing to show yet.
+std::string recentSummary(const Json &recent);
 // A non-modal HUD stack. Only pointer events inside its bounds are captured.
 class Dialog : public Glob2UI::InGameDialog
 {

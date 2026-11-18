@@ -395,7 +395,14 @@ void LocalCommander::finish(Json result)
 	remember(current.key, record);
 	if (!error.empty())
 	{
-		reports.push_back(error);
+		// Name the failing program or operation; a bare diagnostic such as "1"
+		// or a stack trace cannot be traced back to its source in the HUD.
+		const auto subject = !name.empty() ? name
+							 : current.request.contains("name") && current.request.at("name").is_string()
+								 ? current.request.at("name").get<std::string>()
+								 : current.key;
+		const auto line = error.substr(0, error.find('\n'));
+		reports.push_back(subject.empty() ? line : subject + ": " + line);
 		if (reports.size() > 32)
 			reports.erase(reports.begin());
 	}
