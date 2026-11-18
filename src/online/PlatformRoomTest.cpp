@@ -16,6 +16,7 @@
 #include "PlatformClient.h"
 #include "PlatformApi.h"
 #include "PlatformRoom.h"
+#include "OnlineMatch.h"
 #include "CustomGameSetup.h"
 #include "RoomSetup.h"
 
@@ -376,6 +377,52 @@ TEST_SUITE("PlatformRoom")
 		CHECK_FALSE(r->localUnseated());
 		CHECK(r->unseatedMembers().empty());
 		CHECK(r->readyBlocker().empty());
+	}
+
+	TEST_CASE("a seated player who joins a room whose match is running rejoins it, once")
+	{
+		// The game was restarted mid-match; the player opens the room again by its code.
+		Fixture f;
+		const std::string matchId = "7a1e2b3c-0000-4d5e-8f60-000000000042";
+		Json state = room(9, OTHER, Json::array({seat(0, OTHER, "Bradley"), seat(1, ME, "Guest-1234")}),
+						  Json::array({member(OTHER, "Bradley"), member(ME, "Guest-1234")}));
+		state["status"] = "in_match";
+		state["matchId"] = matchId;
+		auto r = f.join(state);
+		auto reconnect = f.world.socket().find("match.reconnect");
+		REQUIRE(!reconnect.is_null());
+		CHECK(reconnect["params"]["matchId"] == matchId);
+		f.world.socket().respond(reconnect, Json{{"matchId", matchId}});
+		f.client.update();
+		bool launched = false;
+		while (auto e = r->takeEvent())
+			launched = launched || e->kind == RoomBackend::Event::Launch;
+		CHECK(launched);
+		REQUIRE(r->takeMatch());
+		CHECK(r->takeMatch()->matchId() == matchId);
+
+		// Back in the room after leaving that match, which the others still play: the
+		// room never asks for the seat again.
+		r->gameEnded(false);
+		const std::size_t sent = f.world.socket().sent.size();
+		state["revision"] = 10;
+		f.world.socket().event("room.state", Json{{"room", state}});
+		f.client.update();
+		for (std::size_t i = sent; i < f.world.socket().sent.size(); ++i)
+			CHECK(Json::parse(f.world.socket().sent[i])["method"] != "match.reconnect");
+		CHECK_FALSE(r->takeMatch());
+	}
+
+	TEST_CASE("a member without a seat in a running match's room is not sent into it")
+	{
+		Fixture f;
+		Json state = room(9, OTHER, Json::array({seat(0, OTHER, "Bradley"), seat(1, OTHER + "x", "Ana")}),
+						  Json::array({member(OTHER, "Bradley"), member(ME, "Guest-1234")}));
+		state["status"] = "in_match";
+		state["matchId"] = "7a1e2b3c-0000-4d5e-8f60-000000000042";
+		auto r = f.join(state);
+		CHECK(f.world.socket().find("match.reconnect").is_null());
+		CHECK_FALSE(r->takeMatch());
 	}
 
 	TEST_CASE("a room's teams are named from their alliances, in team order")
