@@ -9,6 +9,7 @@
 #include <Toolkit.h>
 #include "FrontendTheme.h"
 #include "Engine.h"
+#include "GameLoadScreen.h"
 #include "GlobalContainer.h"
 #include "LanRoom.h"
 #include "PlatformRoom.h"
@@ -209,6 +210,30 @@ TEST_SUITE("OnlineWording")
 		CHECK(anyContains(lan, "pairing link"));
 		CHECK_FALSE(anyContains(lan, "on the main menu"));
 		CHECK_FALSE(anyContains(lan, "browser players"));
+	}
+
+	TEST_CASE("a room whose game is ready as it opens shows the game, not the room [display]")
+	{
+		// A guest rejoining a started LAN game opens the room with its launch already
+		// queued. Handled in the room's constructor, the game's load screen went onto
+		// the stack before the room itself, so the room covered it and the game never
+		// loaded.
+		Display display;
+		Lan::LanHost::Options options;
+		options.hostName = "Host";
+		options.map = Engine().loadMapHeader("maps/balanced.map");
+		options.network = false;
+		auto room = Lan::LanRoom::host(std::move(options));
+		room->update();
+		REQUIRE(room->canStart());
+		room->start(); // queues the launch
+		GAGGUI::ScreenStack stack(*globalContainer->gfx);
+		stack.push(std::make_unique<RoomScreen>(stack, room));
+		const Uint32 tick = SDL_GetTicks();
+		for (Uint32 frame = 0; frame < 3; ++frame)
+			stack.frame(tick + frame * 40, {});
+		CHECK(dynamic_cast<GameLoadScreen *>(stack.top()) != nullptr);
+		CHECK(dynamic_cast<RoomScreen *>(stack.top()) == nullptr);
 	}
 
 	TEST_CASE("a LAN host puts AIs in open seats from the room [display]")

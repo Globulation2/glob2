@@ -84,7 +84,9 @@ RoomScreen::RoomScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<RoomBackend
 		Online::setRoomMapHandler([this](const Online::RoomMapChoice &choice)
 								  { pendingCatalogMap = choice; });
 	// Pick up what the backend already queued (preview fixtures, early chat).
+	constructing = true;
 	onTimer(0);
+	constructing = false;
 }
 
 RoomScreen::~RoomScreen()
@@ -268,7 +270,10 @@ void RoomScreen::handle(const RoomBackend::Event &event)
 		break;
 	}
 	case RoomBackend::Event::Launch:
-		launch();
+		if (constructing)
+			launchPending = true;
+		else
+			launch();
 		break;
 	case RoomBackend::Event::Message:
 		screens.push(std::make_unique<MessageScreen>(event.text, std::vector<std::string>{tr("[ok]")}));
@@ -286,6 +291,11 @@ void RoomScreen::onTimer(Uint32 tick)
 	room->update();
 	while (auto event = room->takeEvent())
 		handle(*event);
+	if (launchPending && !constructing)
+	{
+		launchPending = false;
+		launch();
+	}
 	// A map kept for the next room ("Play this map" on the web app, or "Use in a room"
 	// with no room open) goes to the first online room this player hosts.
 	if (!pendingCatalogMap && room->kind() == RoomBackend::Kind::Online && room->lobbyReady() && room->canEditSetup() &&
