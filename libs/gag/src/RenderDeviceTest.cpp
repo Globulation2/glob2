@@ -576,21 +576,45 @@ TEST_SUITE("RenderDevice")
     }
     TEST_CASE("texture categories enforce independent limits and explicit total budgets")
     {
-        // Each class refuses a texture past its own limit and admits one under it.
-        RenderResources resources; TextureDescriptor descriptor;
-        const auto generalLimit=platformRenderBudget().classLimit(TextureDescriptor::BudgetClass::General);
-        auto huge=surface(4096,int(generalLimit/(4*4096))+1); REQUIRE(huge);
-        CHECK_FALSE(resources.create(huge.get(),1,descriptor));
-        huge.reset();
-        auto large=surface(4096,4097); REQUIRE(large);
-        descriptor.budgetClass=TextureDescriptor::BudgetClass::SkinAtlas;
-        CHECK_FALSE(resources.create(large.get(),1,descriptor));
-        descriptor.budgetClass=TextureDescriptor::BudgetClass::TerrainPage;
-        auto terrain=resources.create(large.get(),1,descriptor); REQUIRE(terrain);
-        CHECK(resources.retainedBytes()==std::size_t(large->pitch)*large->h);
-        CHECK(resources.erase(terrain)); CHECK(resources.retainedBytes()==0);
-        auto small=surface(); RenderResources bounded(4); descriptor.budgetClass=TextureDescriptor::BudgetClass::SkinAtlas;
-        CHECK_FALSE(bounded.create(small.get(),1,descriptor));
+        // Sizes come from the budget under test, and both platform budgets are
+        // checked on every platform, so desktop runs also guard the mobile one.
+        using BudgetClass = TextureDescriptor::BudgetClass;
+        constexpr int width = 4096;
+        const auto rowsWithin = [](std::size_t bytes) { return int(bytes / (4 * width)); };
+        for (const bool mobile : {false, true}) {
+            CAPTURE(mobile);
+            const RenderBudget budget = mobile ? RenderBudget::mobile() : RenderBudget::desktop();
+            RenderResources resources(budget); TextureDescriptor descriptor;
+            // Each class refuses a texture one row past its own limit and admits one at it.
+            for (const auto category : {BudgetClass::General, BudgetClass::SkinAtlas, BudgetClass::TerrainPage, BudgetClass::TerrainMask}) {
+                CAPTURE(int(category));
+                const auto limit = budget.classLimit(category);
+                REQUIRE(limit % (4 * width) == 0); REQUIRE(limit <= budget.total);
+                descriptor.budgetClass = category;
+                {
+                    auto over = surface(width, rowsWithin(limit) + 1); REQUIRE(over);
+                    CHECK_FALSE(resources.create(over.get(), 1, descriptor));
+                }
+                auto fits = surface(width, rowsWithin(limit)); REQUIRE(fits);
+                auto handle = resources.create(fits.get(), 1, descriptor); REQUIRE(handle);
+                CHECK(resources.retainedBytes() == std::size_t(fits->pitch) * fits->h);
+                CHECK(resources.erase(handle)); CHECK(resources.retainedBytes() == 0);
+            }
+            // Limits are independent: a texture past the skin atlas limit still
+            // fits the larger terrain page class.
+            REQUIRE(budget.classLimit(BudgetClass::SkinAtlas) < budget.classLimit(BudgetClass::TerrainPage));
+            auto large = surface(width, rowsWithin(budget.classLimit(BudgetClass::SkinAtlas)) + 1); REQUIRE(large);
+            descriptor.budgetClass = BudgetClass::SkinAtlas;
+            CHECK_FALSE(resources.create(large.get(), 1, descriptor));
+            descriptor.budgetClass = BudgetClass::TerrainPage;
+            auto terrain = resources.create(large.get(), 1, descriptor); REQUIRE(terrain);
+            CHECK(resources.retainedBytes() == std::size_t(large->pitch) * large->h);
+            CHECK(resources.erase(terrain)); CHECK(resources.retainedBytes() == 0);
+        }
+        // An explicit total caps every class.
+        auto small = surface(); RenderResources bounded(4); TextureDescriptor descriptor;
+        descriptor.budgetClass = TextureDescriptor::BudgetClass::SkinAtlas;
+        CHECK_FALSE(bounded.create(small.get(), 1, descriptor));
     }
     TEST_CASE("rig geometry rejects invalid GPU palette indexing")
     {
