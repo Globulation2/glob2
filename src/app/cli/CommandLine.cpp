@@ -645,7 +645,7 @@ const std::vector<Command> &commands()
 					  integer("--seed", "Synthetic-order seed", 0, 4294967295LL, "1")});
 		add("online turn-client", "Play a relay assignment headlessly", {"ASSIGNMENT"}, 1, turn,
 			"result.json, network/trace artifacts and replay");
-		add("ai check", "Validate JavaScript AI startup, metadata and callbacks", {"FILE"}, 1,
+		add("ai check", "Validate JavaScript AI startup, metadata, step definition and globals", {"FILE"}, 1,
 			{format()}, "Validation text or existing JSON validation payload");
 		add("script check", "Compile a JavaScript map script", {"FILE"}, 1, {},
 			"Validation message");

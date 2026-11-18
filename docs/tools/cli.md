@@ -1129,7 +1129,7 @@ glob2 online turn-client assignment.json --map-file map.map.gz --output-dir arti
 
 ### `glob2 ai check`
 
-Validate JavaScript AI startup, metadata and callbacks.
+Validate JavaScript AI startup, metadata, step definition and globals.
 
 ```text
 glob2 ai check FILE [OPTIONS]

@@ -32,6 +32,10 @@
 #include "MapScript.h"
 #include "GameObjectives.h"
 #include "GameHints.h"
+#include "ScriptCommand.h"
+#include "Glob2Test.h"
+#include <fstream>
+#include <sstream>
 using namespace Script;
 using namespace GAGCore;
 static std::string save(Game &game)
@@ -1614,6 +1618,26 @@ TEST_CASE("JavaScript legacy empty resource memories discard unused stock bytes"
     CHECK(restored.cell(0,0).resource == NO_RES_TYPE);
 }
 
+TEST_CASE("JavaScript order diagnostics name an unknown type or a missing building reference" * doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world(glob2test::GameOptions{.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto* inn=world.game.addBuilding(4,4,world.game.buildingsTypes.getFinishedTypeNum("inn"),0,1,1);
+    REQUIRE(inn);
+    const auto ref=Value::object().set("id",unsigned(inn->gid)).set("generation",inn->scriptIdentity);
+    // A misspelled type is reported by name, whether or not a building is attached.
+    CHECK_THROWS_WITH(Script::order(world.game,0,Value::object().set("type","teleport").set("x",1)),
+                      "Unsupported order type 'teleport'");
+    CHECK_THROWS_WITH(Script::order(world.game,0,Value::object().set("type","worker").set("building",ref).set("workers",2)),
+                      "Unsupported order type 'worker'");
+    // Passing the numeric ID, or nothing, instead of the building record.
+    CHECK_THROWS_WITH(Script::order(world.game,0,Value::object().set("type","workers").set("building",unsigned(inn->gid)).set("workers",2)),
+                      "Order 'workers' requires a building reference {id, generation}");
+    CHECK_THROWS_WITH(Script::order(world.game,0,Value::object().set("type","priority").set("priority",1)),
+                      "Order 'priority' requires a building reference {id, generation}");
+    CHECK_NOTHROW(Script::order(world.game,0,Value::object().set("type","workers").set("building",ref).set("workers",2)));
+}
+
 TEST_CASE("JavaScript custom building descriptors and orders follow services" * doctest::test_suite("JavaScriptIntegration"))
 {
     glob2test::HeadlessGlobals globals;
@@ -1947,4 +1971,58 @@ TEST_CASE("JavaScript flag orders use explicit custom attraction roles" * doctes
         .set("x",20).set("y",20).set("workers",1).set("futureWorkers",1).set("range",9));
     const auto* parsed=dynamic_cast<const OrderCreate*>(create.get()); REQUIRE(parsed);
     CHECK(parsed->flagRadius==9);
+}
+
+namespace
+{
+struct AICheckRun
+{
+	int exit = 0;
+	std::string out, err;
+};
+AICheckRun runAICheck(const std::filesystem::path &file)
+{
+	std::ostringstream out, err;
+	struct Restore
+	{
+		std::streambuf *out, *err;
+		~Restore() { std::cout.rdbuf(out); std::cerr.rdbuf(err); }
+	} restore{std::cout.rdbuf(out.rdbuf()), std::cerr.rdbuf(err.rdbuf())};
+	AICheckRun run;
+	run.exit = runScriptCommand(Cli::parse(std::vector<std::string>{"ai", "check", file.string()}));
+	run.out = out.str();
+	run.err = err.str();
+	return run;
+}
+} // namespace
+
+TEST_CASE("JavaScript ai check passes the shipped AI examples and says step was not run" *
+		  doctest::test_suite("JavaScriptIntegration"))
+{
+	for (const char *example : {"ai.js", "studio-starter.js"})
+	{
+		INFO(example);
+		const auto run = runAICheck(glob2test::sourceRoot() / "examples/javascript" / example);
+		CHECK(run.exit == 0);
+		CHECK(run.err.empty());
+		CHECK(run.out.find("step(ctx) itself was not run") != std::string::npos);
+	}
+	// Profile 1 has no metadata; the report must not print an empty name.
+	const auto unnamed = runAICheck(glob2test::sourceRoot() / "examples/javascript/ai.js");
+	CHECK(unnamed.out.find("profile 1: (unnamed") != std::string::npos);
+	const auto named = runAICheck(glob2test::sourceRoot() / "examples/javascript/studio-starter.js");
+	CHECK(named.out.find("profile 2: My Colony \xE2\x80\x94") != std::string::npos);
+}
+
+TEST_CASE("JavaScript ai check reports a broken script as rejected input naming the file" *
+		  doctest::test_suite("JavaScriptIntegration"))
+{
+	glob2test::TempDir directory("ai-check");
+	const auto broken = directory.path / "broken.js";
+	std::ofstream(broken) << "export function step(ctx) {\n  let x = ;\n}\n";
+	const auto run = runAICheck(broken);
+	// The help documents 2 for rejected input and 3 for operational failures only.
+	CHECK(run.exit == 2);
+	CHECK(run.out.empty());
+	CHECK(run.err.rfind(broken.string() + ": SyntaxError", 0) == 0);
 }

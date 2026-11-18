@@ -8,6 +8,8 @@
 #include "Brush.h"
 #include "AIRuleOrders.h"
 #include "ai/observation/AIWorldView.h"
+#include <algorithm>
+#include <iterator>
 #include <stdexcept>
 #include <algorithm>
 #include <iterator>
@@ -99,7 +101,18 @@ std::shared_ptr<Order> order(const AIEngine::AIWorldView &world, int team, const
 		}
 		return a;
 	}
+	// Name the script's mistake rather than reporting the first field read below.
+	static const char *const buildingOrders[] = {
+		"workers", "delete", "cancelDelete", "construction", "cancelConstruction",
+		"priority", "production", "exchange", "range", "minimumLevel", "workerMinimumLevel",
+		"requireBombing", "moveFlag", "clearingResources", "clearingMaterials"};
+	if (std::find(std::begin(buildingOrders), std::end(buildingOrders), type) ==
+		std::end(buildingOrders))
+		throw std::runtime_error("Unsupported order type '" + type.substr(0, 64) + "'");
 	const auto &reference = d.get("building");
+	if (reference.kind != Value::Object)
+		throw std::runtime_error("Order '" + type +
+								 "' requires a building reference {id, generation}");
 	int gid = reference.integer("id", 0, Building::MAX_COUNT * Team::MAX_COUNT - 1);
 	if (Building::GIDtoTeam(gid) != team)
 		throw std::runtime_error("Order requires an owned building");
