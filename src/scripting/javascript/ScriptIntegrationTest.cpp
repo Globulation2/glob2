@@ -701,6 +701,35 @@ TEST_CASE("JavaScript custom library refusals name the rejected file" *
 	CHECK(library.entries().empty());
 }
 
+TEST_CASE("JavaScript linked AI broken after linking names itself when frozen for a game" *
+		  doctest::test_suite("JavaScriptIntegration"))
+{
+	Online::MemoryStorage storage;
+	Library library(storage);
+	glob2test::TempDir directory("linked-ai");
+	const auto path = directory.path / "linked.js";
+	const std::string good = "export function metadata(){return {apiVersion:2,name:'Linked AI'}} "
+							 "export function step(){}";
+	std::ofstream(path) << good;
+	const auto id = library.put(good, "linked.js", {}, path.string());
+	CHECK_NOTHROW(library.configuration(id));
+	std::ofstream(path) << "export function step(ctx) { let = ; }";
+	std::string message;
+	try
+	{
+		library.configuration(id);
+	}
+	catch (const std::exception &e)
+	{
+		message = e.what();
+	}
+	CHECK(message.rfind("Linked AI (" + path.string() + "): SyntaxError", 0) == 0);
+	std::filesystem::remove(path);
+	CHECK_THROWS_WITH(library.configuration(id),
+					  ("Linked AI (" + path.string() + "): Cannot open script: " + path.string())
+						  .c_str());
+}
+
 TEST_CASE("JavaScript profile two spatial cache and queued save continuity" *
 		  doctest::test_suite("JavaScriptIntegration"))
 {

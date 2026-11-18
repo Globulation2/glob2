@@ -186,13 +186,27 @@ std::string Library::source(const std::string &id) const
 		return readSource(e.path);
 	std::string text;
 	if (!storage.read(e.path, text))
-		throw std::runtime_error("Imported AI source is missing: " + e.metadata.name);
+		throw std::runtime_error("Imported AI source is missing");
 	return text;
 }
 std::string Library::configuration(const std::string &id) const
 {
-	const auto text = source(id);
-	return config(text, inspectAI(text).apiVersion);
+	const auto &entry = get(id);
+	try
+	{
+		const auto text = source(id);
+		return config(text, inspectAI(text).apiVersion);
+	}
+	catch (const HostFailure &)
+	{
+		throw;
+	}
+	catch (const std::exception &e)
+	{
+		// Game setup and Validate show only this message: name the AI it concerns.
+		throw std::runtime_error(entry.metadata.name + (entry.linked ? " (" + entry.path + ")" : "") +
+								 ": " + e.what());
+	}
 }
 void Library::rollback(const std::string &before)
 {
