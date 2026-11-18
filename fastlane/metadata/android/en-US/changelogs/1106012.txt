@@ -1,0 +1,1 @@
+Sharper high-detail art and smooth animated terrain and water on every renderer; lower graphics memory and automatic renderer choice for each device; clearer shadows, status badges and minimap; 500 HP stone walls; prestige in the win chance readout; and many fixes.

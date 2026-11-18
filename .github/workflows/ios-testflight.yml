@@ -196,7 +196,7 @@ jobs:
             sdl_gpu=(--allow-missing-sdl-gpu)
           fi
           python3 platforms/mobile/ios.py configure --environment device --release \
-            --unsigned --build-number "$BUILD_NUMBER" --jobs 2 "${sdl_gpu[@]}"
+            --unsigned --build-number "$BUILD_NUMBER" --jobs 2 ${sdl_gpu[@]+"${sdl_gpu[@]}"}
 
       - name: Archive iPhone app
         run: |
