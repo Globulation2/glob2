@@ -162,8 +162,22 @@ def snapshot(api, plan):
     prerelease = compact(api.request('GET', f"/v1/builds/{build['id']}/preReleaseVersion")['data'])
     require(prerelease['attributes'].get('platform') == plan['platform'] and prerelease['attributes'].get('version') == plan['version'], 'Attached build platform/version differs')
     infos = ordered(api.collect(f"/v1/apps/{app['id']}/appInfos"))
-    info = one([v for v in infos if (v['attributes'].get('state') or v['attributes'].get('appStoreState')) in INFO_EDITABLE], 'editable shared AppInfo (never the live record)')
+    candidates = [v for v in infos if (v['attributes'].get('state') or v['attributes'].get('appStoreState')) in INFO_EDITABLE]
+    require(len(candidates) <= 1, 'Ambiguous editable shared AppInfo')
     info_locales = {v['id']: ordered(api.collect(f"/v1/appInfos/{v['id']}/appInfoLocalizations")) for v in infos}
+    if not candidates:
+        # Another platform may already have submitted the shared text. It may
+        # be read for invariants only when every planned name/subtitle is exact;
+        # operations() then emits no shared-info writes. Never select live info.
+        for candidate in infos:
+            if (candidate['attributes'].get('state') or candidate['attributes'].get('appStoreState')) not in {'WAITING_FOR_REVIEW', 'IN_REVIEW'}:
+                continue
+            records = locale_map(info_locales[candidate['id']])
+            if all(locale in records and all(records[locale]['attributes'].get(k) == value
+                   for k, value in wanted['appInfo'].items()) for locale, wanted in plan['locales'].items()):
+                candidates.append(candidate)
+    require(len(candidates) == 1, 'Exactly one editable or already-matching pending shared AppInfo is required; never the live record')
+    info = candidates[0]
     version_locales, assets = {}, {}
     for v in versions:
         records = ordered(api.collect(f"/v1/appStoreVersions/{v['id']}/appStoreVersionLocalizations"))

@@ -75,6 +75,9 @@ the identical source/target inputs. Any intervening listing, media, build or
 release-option change invalidates that baseline. Run platforms sequentially:
 iOS inspect/apply, then a fresh Mac inspect/apply, because AppInfo is shared and
 Apple may automatically create related localization records on other platforms.
+If another platform has already submitted the shared AppInfo, the helper may
+read that pending record only when all 38 reviewed names/subtitles already
+match exactly; it never changes pending shared information or selects live info.
 After an interrupted apply, inspect again; already-correct fields are skipped
 and existing resources are never deleted or blindly recreated.
 
