@@ -810,7 +810,7 @@ struct BuildingLibraryScreenHarness
 		const std::string origin = "https://play.example.org",
 						  id = "11111111-1111-4111-8111-111111111111";
 		OnlineFakes::World world;
-		Online::ServicesOwner owner;
+		OnlineFakes::IsolatedServices owner;
 		auto &client = owner.get().client;
 		client.replaceEnvironment(world.environment());
 		client.start(origin);

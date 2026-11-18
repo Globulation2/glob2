@@ -14,6 +14,7 @@
 
 #include <SDL3/SDL.h>
 #include <algorithm>
+#include <cassert>
 #include <memory>
 #include <vector>
 
@@ -216,6 +217,16 @@ Services &services()
 MapCache &sharedMapCache()
 {
 	return *localFiles().maps;
+}
+
+void releaseProcessServices()
+{
+	assert(!currentOwner);
+	// The fallback services refer to the shared storage and map cache.
+	delete fallback;
+	fallback = nullptr;
+	delete local;
+	local = nullptr;
 }
 
 bool servicesCreated()

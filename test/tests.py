@@ -183,6 +183,7 @@ ENGINE_TESTS = [
     ('#src/map/generator/CombGeneratorTest.cpp', dict(require={'generators'})),
     ('#src/map/generator/OrchardCommonsConversionTest.cpp', dict(require={'generators'})),
     'PortableGameHarness.cpp',
+    'support/HeadlessGlobalsTest.cpp',
     ('#src/team/stats/TeamStatsPipelineTest.cpp', {}),
     '#src/team/RoutingRatioPolicyTest.cpp',
     ('#src/team/stats/TeamStatsSaveHarness.cpp', dict(cxxflags=['-fno-access-control'])),

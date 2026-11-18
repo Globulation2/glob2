@@ -11,6 +11,7 @@
 #include "Glob2Style.h"
 #include "KeyboardManager.h"
 #include "MapEditKeyActions.h"
+#include "OnlineServices.h"
 #include "render/ResourceSprites.h"
 #include "SoundMixer.h"
 #include "ThemeCatalog.h"
@@ -25,6 +26,8 @@ void Glob2UI::applyThemes(const std::string&, const std::string&) {}
 void ResourceSprites::clear() {}
 void GameGUIKeyActions::init() {}
 void MapEditKeyActions::init() {}
+// This binary links no online services, so there are none to release.
+void Online::releaseProcessServices() {}
 
 // GlobalContainer::load() and the drawing paths only.
 bool Glob2UI::touchPresentation() { std::abort(); }

@@ -7,6 +7,7 @@
 #include "GameGUIKeyActions.h"
 #include "IntBuildingType.h"
 #include "MapEditKeyActions.h"
+#include "OnlineServices.h"
 #include "PerformanceTelemetry.h"
 #include "Race.h"
 #include "Utilities.h"
@@ -18,6 +19,22 @@ namespace glob2test
 	{
 		REQUIRE_MESSAGE(globalContainer == nullptr, "a HeadlessGlobals is already live in this process");
 		globalContainer = &globals;
+		// The destructor does not run when the constructor throws (a failed load(),
+		// a throwing beforeLoad): release the process-wide state here instead, or
+		// every later case in the process would find a stale globalContainer.
+		try
+		{
+			configure(options);
+		}
+		catch (...)
+		{
+			releaseProcessState();
+			throw;
+		}
+	}
+
+	void HeadlessGlobals::configure(const Options &options)
+	{
 		if (options.addSourceRoot)
 			globals.fileManager->addDir(sourceRoot().string());
 		globals.runNoX = !options.display;
@@ -58,6 +75,14 @@ namespace glob2test
 
 	HeadlessGlobals::~HeadlessGlobals()
 	{
+		releaseProcessState();
+	}
+
+	void HeadlessGlobals::releaseProcessState()
+	{
+		// The online storage and map cache hold the file manager that globals
+		// closes with Toolkit; the next case must not reach this one's.
+		Online::releaseProcessServices();
 		PerformanceTelemetry::collector().reset();
 		globalContainer = nullptr;
 	}
