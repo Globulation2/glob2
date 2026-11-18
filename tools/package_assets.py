@@ -16,6 +16,7 @@ import struct
 import zlib
 import sys
 import tempfile
+import time
 
 ROOT = Path(__file__).resolve().parents[1]
 # The runtime tree lives under content/ in a checkout; packages hold its
@@ -266,21 +267,27 @@ def decoded_rgba(raw):
     return Image.frombytes("RGBA", image.size, bytes(pixels))
 
 
-def publish_cache_file(temporary, destination):
+def publish_cache_file(temporary, destination, attempts=50, delay=0.05):
     """Publish an immutable cache file, tolerating an identical racing writer."""
     try:
-        try:
-            os.replace(temporary, destination)
-        except PermissionError:
-            # Windows readers can deny replacement after another exporter has
-            # already published this content-addressed entry. Accept only the
-            # exact bytes we were about to publish; real conflicts still fail.
+        for attempt in range(attempts):
             try:
-                identical = destination.read_bytes() == temporary.read_bytes()
-            except OSError:
-                identical = False
-            if not identical:
-                raise
+                os.replace(temporary, destination)
+                return
+            except PermissionError:
+                # Windows denies replacement while another exporter holds this
+                # content-addressed entry open or is still replacing it, which
+                # can also leave it briefly unreadable. Accept only the exact
+                # bytes we were about to publish; otherwise wait for the other
+                # writer and retry, so a lasting conflict still fails.
+                try:
+                    if destination.read_bytes() == temporary.read_bytes():
+                        return
+                except OSError:
+                    pass
+                if attempt + 1 == attempts:
+                    raise
+                time.sleep(delay)
     finally:
         temporary.unlink(missing_ok=True)
 
