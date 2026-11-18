@@ -747,6 +747,16 @@ bool CustomGameScreen::generateMap()
 		initial.setBuildingCatalogSnapshot(game->gameHeader.getBuildingCatalogSnapshot());
 		initial.setRandomSeed(generationResult.seed);
 		setup.writeHeader(initial, username);
+		// The preview world only needs its roster. A JavaScript controller cannot start
+		// without the source frozen at launch, and getGameHeader() replaces every
+		// controller then, so it stands in as an inactive one here.
+		for (int i = 0; i < initial.getNumberOfPlayers(); ++i)
+		{
+			auto &player = initial.getBasePlayer(i);
+			if (player.type != BasePlayer::P_LOCAL &&
+				BasePlayer::implementationIdFromPlayerType(player.type) == AI::JAVASCRIPT)
+				player.type = BasePlayer::playerTypeFromImplementationID(AI::NONE);
+		}
 		Engine::applyLocalExperiments(initial, game->mapHeader);
 		game->setGameHeader(initial);
 		gameHeader.setBuildingCatalogSnapshot(initial.getBuildingCatalogSnapshot());
