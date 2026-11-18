@@ -200,6 +200,10 @@ def operations(before, plan):
             item = existing.get(locale)
             if item:
                 changed = {k: v for k, v in attrs.items() if item['attributes'].get(k) != v}
+                # Shared AppInfo creation can leave platform locales with no
+                # required support URL. Preserve populated URLs, fill only blanks.
+                if kind == 'appStoreVersionLocalizations' and not item['attributes'].get('supportUrl'):
+                    changed['supportUrl'] = inheritance['supportUrl']
                 if changed:
                     result.append(dict(kind=kind, parent=parent, locale=locale, id=item['id'], attributes=changed,
                                        beforeAttributes=item['attributes']))
@@ -231,6 +235,8 @@ def verify(before, after, plan):
                 attrs = dict(item['attributes'])
                 if parent == selected and locale in plan['locales']:
                     attrs.update(plan['locales'][locale][desired_key])
+                    if section == 'versionLocalizations' and not attrs.get('supportUrl'):
+                        attrs['supportUrl'] = old['en-US']['attributes']['supportUrl']
                 require(attrs == new[locale]['attributes'], 'Saved text or untouched localized fields differ')
             for locale in set(new) - set(old):
                 require(locale in plan['locales'], 'Unexpected new locale')

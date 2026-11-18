@@ -81,7 +81,9 @@ and existing resources are never deleted or blindly recreated.
 Writes are limited to AppInfo name/subtitle and version description, promotional
 text and keywords, plus reviewed iOS What's New. Mac What's New is preserved.
 New locale URLs inherit the current English privacy/support/marketing values;
-existing URLs, privacy text and other fields remain exact. New screenshot and
+populated existing URLs, privacy text and other fields remain exact. Existing
+mapped platform locales with a blank required support URL also inherit the
+current primary-locale support URL; optional blank URLs stay blank. New screenshot and
 preview sets stay empty for primary-language fallback. Complete readback checks
 all intended values, existing asset identities/order and unchanged fields, and
 accepts only explained empty/primary-inherited automatically created locales.

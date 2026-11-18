@@ -184,6 +184,36 @@ class AppleLocalizationTests(unittest.TestCase):
         result=self.inspect_apply(api)
         self.assertEqual(result['pendingWrites'],0);self.assertFalse(api.writes())
 
+    def test_existing_empty_support_urls_are_filled_without_touching_other_urls(self):
+        api = FakeAPI(plan('MAC_OS'))
+        self.inspect_apply(api)
+        records = tool.locale_map(api.version_locales['target'])
+        records['ca']['attributes']['supportUrl'] = None
+        records['ru']['attributes']['supportUrl'] = ''
+        records['th']['attributes']['supportUrl'] = 'https://example.com/custom-support'
+        records['ca']['attributes']['marketingUrl'] = None
+        original_other = copy.deepcopy(api.version_locales['other'])
+        original_info = copy.deepcopy(api.info_locales)
+        api.calls = []
+        result = self.inspect_apply(api)
+        self.assertEqual(result['pendingWrites'], 2)
+        for method, path, body in api.writes():
+            self.assertEqual(method, 'PATCH')
+            self.assertEqual(body['data']['attributes'], {'supportUrl': 'https://example.com/target/support'})
+            self.assertIn(body['data']['id'], (records['ca']['id'], records['ru']['id']))
+        records = tool.locale_map(api.version_locales['target'])
+        self.assertIsNone(records['ca']['attributes']['marketingUrl'])
+        self.assertEqual(records['th']['attributes']['supportUrl'], 'https://example.com/custom-support')
+        self.assertEqual(api.version_locales['other'], original_other)
+        self.assertEqual(api.info_locales, original_info)
+
+    def test_missing_primary_support_url_refuses_every_write(self):
+        api = FakeAPI()
+        api.version_locales['target'][0]['attributes']['supportUrl'] = None
+        with self.assertRaisesRegex(ValueError, 'inheritance URL'):
+            tool.run(api, api.plan, 'inspect')
+        self.assertFalse(api.writes())
+
     def test_explained_server_auto_creation_is_updated_without_duplicate_posts(self):
         api=FakeAPI(automatic=True);self.inspect_apply(api)
         posts=[body for method,path,body in api.writes() if method=='POST' and path=='/v1/appStoreVersionLocalizations']
