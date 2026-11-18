@@ -673,6 +673,30 @@ TEST_CASE("JavaScript custom library atomic updates and frozen source" *
 	CHECK_THROWS(restored.configuration(first));
 }
 
+TEST_CASE("JavaScript custom library refusals name the rejected file" *
+		  doctest::test_suite("JavaScriptIntegration"))
+{
+	Online::MemoryStorage storage;
+	Library library(storage);
+	const auto refusal = [&](const std::string &source, const std::string &file)
+	{
+		try
+		{
+			library.put(source, file);
+		}
+		catch (const std::exception &e)
+		{
+			return std::string(e.what());
+		}
+		return std::string();
+	};
+	const auto syntax = refusal("function step(ctx) { let x = ; }", "my-colony.js");
+	CHECK(syntax.rfind("Could not add my-colony.js: SyntaxError", 0) == 0);
+	CHECK(refusal("let unused = 1;", "no-step.js") ==
+		  "Could not add no-step.js: AI must define step(ctx) or main(ctx)");
+	CHECK(library.entries().empty());
+}
+
 TEST_CASE("JavaScript profile two spatial cache and queued save continuity" *
 		  doctest::test_suite("JavaScriptIntegration"))
 {

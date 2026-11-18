@@ -92,7 +92,20 @@ std::string Library::put(const std::string &text, const std::string &filename,
 	if (online && (!externalPath.empty() || !Online::Sha256::isHexDigest(online->hash) ||
 				   Online::Sha256::hex(text) != online->hash))
 		throw std::runtime_error("Downloaded AI hash does not match its published version");
-	auto metadata = inspectAI(text);
+	Metadata metadata;
+	try
+	{
+		metadata = inspectAI(text);
+	}
+	catch (const HostFailure &)
+	{
+		throw;
+	}
+	catch (const std::exception &e)
+	{
+		// The settings screen shows only this message: say which file was refused.
+		throw std::runtime_error("Could not add " + filename + ": " + e.what());
+	}
 	if (metadata.name.empty())
 	{
 		const auto label = std::filesystem::u8path(filename).stem().u8string();
