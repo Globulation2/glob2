@@ -5,6 +5,7 @@
 
 #include "Glob2Test.h"
 #include "OnlineResources.h"
+#include "TurnProtocol.h"
 
 #include <filesystem>
 #include <set>
@@ -233,7 +234,7 @@ TEST_SUITE("OnlineResources")
 		CHECK(summary.recent == 11);
 		CHECK(summary.wins == 7);
 		CHECK(summary.losses == 4);
-		CHECK(summary.medianMinutes == 24); // 36000 ticks
+		CHECK(summary.medianMinutes == 20); // 36000 ticks at 30 ticks/s
 		CHECK(summary.bestMap == "evenGround");
 		CHECK(summary.bestMapWins == 4);
 
@@ -241,6 +242,25 @@ TEST_SUITE("OnlineResources")
 		REQUIRE(guest);
 		CHECK_FALSE(guest->full);
 		CHECK(summarizeProfile(*guest, {}).ladders.empty());
+	}
+
+	TEST_CASE("typical game length counts the relay's ticks at its real rate")
+	{
+		// Two room games of 5:26 and 5:50, measured in the relay's ticks.
+		const auto ticksFor = [](int seconds) {
+			return std::int64_t(seconds) * Turn::DEFAULT_TICK_RATE_MILLIHZ / 1000;
+		};
+		std::vector<MatchSummary> matches{match("b", "me", "won", 0, 0, "Even Ground", 0, false),
+										  match("a", "me", "lost", 0, 0, "Even Ground", 0, false)};
+		matches[0].durationTicks = ticksFor(5 * 60 + 50);
+		matches[1].durationTicks = ticksFor(5 * 60 + 26);
+		CHECK(summarizeProfile("me", matches).medianMinutes == 6);
+
+		// The server's median (a profile aggregate) reads the same way: 20 minutes.
+		PlayerProfile profile;
+		profile.full = true; // a registered player: the server sends aggregates
+		profile.medianTicks = double(ticksFor(20 * 60));
+		CHECK(summarizeProfile(profile, {}).medianMinutes == 20);
 	}
 
 	TEST_CASE("the profile summary follows the ladders and recent results")

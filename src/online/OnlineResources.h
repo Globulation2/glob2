@@ -269,6 +269,7 @@ struct PlayerProfile
 // The profile figures from the server's aggregates; matches (the history
 // list) only fill what the profile leaves out.
 ProfileSummary summarizeProfile(const PlayerProfile &profile, const std::vector<MatchSummary> &matches);
-// Ticks per second of online matches (the relay clock).
-inline constexpr int MATCH_TICKS_PER_SECOND = 25;
+// Ticks per second of online matches: the relay clock, which is the engine's
+// GAME_TICKS_PER_SECOND (checked in OnlineResources.cpp).
+inline constexpr int MATCH_TICKS_PER_SECOND = 30;
 } // namespace Online

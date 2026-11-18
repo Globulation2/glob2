@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OnlineResources.h"
+#include "EngineTiming.h"
 
 #include <algorithm>
 #include <cmath>
 #include <map>
+
+static_assert(Online::MATCH_TICKS_PER_SECOND == GAME_TICKS_PER_SECOND, "online durations use the engine tick rate");
 
 namespace Online
 {
