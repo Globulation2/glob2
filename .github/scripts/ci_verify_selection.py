@@ -6,6 +6,7 @@ import os
 import re
 import sys
 import time
+import urllib.error
 import urllib.request
 
 import ci_check_inventory as inventory
@@ -149,17 +150,34 @@ def _request_json(url, token):
 
 
 def fetch_jobs(repository, run_id, attempt, token, request_json=None):
-    """Fetch every page from the exact attempt endpoint, never latest-attempt."""
+    """Fetch every page from the exact attempt endpoint, never latest-attempt.
+
+    The jobs API can answer a full 100-job page of a large run with a server
+    error every time while smaller pages succeed, so a 5xx retries the whole
+    listing at a smaller page size."""
     if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repository):
         raise ValueError("Invalid GitHub repository")
     if type(run_id) is not int or run_id < 1 or type(attempt) is not int or attempt < 1 or not token:
         raise ValueError("Missing GitHub run credentials")
     request_json = request_json or _request_json
+    for per_page in PAGE_SIZES:
+        try:
+            return _fetch_pages(repository, run_id, attempt, token, request_json, per_page)
+        except urllib.error.HTTPError as error:
+            if error.code < 500 or per_page == PAGE_SIZES[-1]:
+                raise
+    raise AssertionError("unreachable")
+
+
+PAGE_SIZES = (100, 50, 25)
+
+
+def _fetch_pages(repository, run_id, attempt, token, request_json, per_page):
     found = []
     identities = set()
     total = None
-    for page in range(1, 101):
-        url = f"https://api.github.com/repos/{repository}/actions/runs/{run_id}/attempts/{attempt}/jobs?per_page=100&page={page}"
+    for page in range(1, 401):
+        url = f"https://api.github.com/repos/{repository}/actions/runs/{run_id}/attempts/{attempt}/jobs?per_page={per_page}&page={page}"
         data = request_json(url, token)
         if (not isinstance(data, dict) or type(data.get("total_count")) is not int
                 or data["total_count"] < 0 or not isinstance(data.get("jobs"), list)):

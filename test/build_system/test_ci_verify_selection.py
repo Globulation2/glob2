@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import sys
 import unittest
+import urllib.error
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -119,6 +120,28 @@ class VerifySelectionTest(unittest.TestCase):
             gate.fetch_jobs("example/project", 44, 2, "test-token", incomplete)
         data = {"total_count": 2, "jobs": [{"id": 1, "name": "old", "run_attempt": 1}, {"id": 2, "name": "new", "run_attempt": 2}]}
         self.assertEqual([job["id"] for job in gate.fetch_jobs("example/project", 44, 2, "test-token", lambda *_: data)], [2])
+
+    def test_server_errors_on_full_pages_retry_with_smaller_pages(self):
+        calls = []
+        def request(url, token):
+            calls.append(url)
+            if "per_page=100&" in url:
+                raise urllib.error.HTTPError(url, 502, "Bad Gateway", {}, None)
+            page = int(url.rsplit("=", 1)[1])
+            size = int(url.split("per_page=")[1].split("&")[0])
+            ids = range((page - 1) * size + 1, min(page * size, 120) + 1)
+            return {"total_count": 120, "jobs": [{"id": i, "name": str(i), "run_attempt": 2} for i in ids]}
+        jobs = gate.fetch_jobs("example/project", 44, 2, "test-token", request)
+        self.assertEqual(sorted(job["id"] for job in jobs), list(range(1, 121)))
+        self.assertIn("per_page=50&page=3", calls[-1])
+        def missing(url, token):
+            raise urllib.error.HTTPError(url, 404, "Not Found", {}, None)
+        with self.assertRaises(urllib.error.HTTPError):
+            gate.fetch_jobs("example/project", 44, 2, "test-token", missing)
+        def always(url, token):
+            raise urllib.error.HTTPError(url, 502, "Bad Gateway", {}, None)
+        with self.assertRaises(urllib.error.HTTPError):
+            gate.fetch_jobs("example/project", 44, 2, "test-token", always)
 
     def test_cli_cheap_avoids_api_and_api_failure_is_red(self):
         plan, needs = plan_and_needs([])
