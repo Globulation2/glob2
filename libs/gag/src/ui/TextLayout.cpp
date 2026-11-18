@@ -144,6 +144,18 @@ std::vector<std::string> wrapText(const TextMeasurer &measurer, FontRole role,
 			continue;
 		}
 		const char c = i < text.size() ? text[i] : '\n';
+		// A hyphen inside a word is a break opportunity after it ("Discord-|Community"),
+		// so a long compound wraps there instead of mid-syllable. A minus sign or a
+		// numeric range ("-5", "1-2") stays together.
+		if (c == '-' && !word.empty() && word.back() != '-' && i + 1 < text.size() &&
+			text[i + 1] != ' ' && text[i + 1] != '\n' && text[i + 1] != '-' &&
+			!(text[i + 1] >= '0' && text[i + 1] <= '9'))
+		{
+			word += c;
+			placeWord();
+			pendingSpace = false;
+			continue;
+		}
 		if (c == ' ' || c == '\n')
 		{
 			placeWord();
@@ -157,6 +169,35 @@ std::vector<std::string> wrapText(const TextMeasurer &measurer, FontRole role,
 	if (!line.empty() || lines.empty())
 		flush();
 	return lines;
+}
+
+bool rightToLeftParagraph(const std::string &text)
+{
+	for (std::size_t at = 0; at < text.size();)
+	{
+		const auto lead = static_cast<unsigned char>(text[at]);
+		const std::size_t length = lead < 0x80 ? 1 : lead >= 0xf0 ? 4 : lead >= 0xe0 ? 3 : lead >= 0xc0 ? 2 : 1;
+		char32_t cp = length == 1 ? lead : lead & (0x7f >> length);
+		for (std::size_t i = 1; i < length && at + i < text.size(); ++i)
+			cp = (cp << 6) | (static_cast<unsigned char>(text[at + i]) & 0x3f);
+		at += length;
+		// Hebrew, Arabic, Syriac, Thaana, NKo, Samaritan, Mandaic and their
+		// presentation forms, plus the supplementary right-to-left blocks.
+		if ((cp >= 0x0590 && cp <= 0x08ff) || (cp >= 0xfb1d && cp <= 0xfdff) ||
+			(cp >= 0xfe70 && cp <= 0xfefe) || (cp >= 0x10800 && cp <= 0x10fff) ||
+			(cp >= 0x1e800 && cp <= 0x1efff))
+			return true;
+		const bool latin = (cp >= 'A' && cp <= 'Z') || (cp >= 'a' && cp <= 'z');
+		// Other letters: Latin-1 and later alphabets, Indic, CJK and the rest,
+		// skipping combining marks, general punctuation, symbols and CJK punctuation.
+		const bool otherLetter = cp >= 0xc0 && cp != 0xd7 && cp != 0xf7 &&
+			!(cp >= 0x0300 && cp <= 0x036f) && !(cp >= 0x2000 && cp <= 0x2bff) &&
+			!(cp >= 0x3000 && cp <= 0x303f) && !(cp >= 0xfe00 && cp <= 0xfe6f) &&
+			!(cp >= 0xff00 && cp <= 0xff20);
+		if (latin || otherLetter)
+			return false;
+	}
+	return false;
 }
 
 std::string ellipsize(const TextMeasurer &measurer, FontRole role, const std::string &text,
