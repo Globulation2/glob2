@@ -41,5 +41,41 @@ class AptMirrorTest(unittest.TestCase):
                     self.assertEqual((apt / path).read_text(), expected, path)
 
 
+    def entries(self):
+        return {
+            'sources.list': 'deb http://azure.archive.ubuntu.com/ubuntu noble main\n',
+            'sources.list.d/legacy.list': 'deb https://azure.archive.ubuntu.com/ubuntu jammy main\n',
+            'sources.list.d/regional.list': 'deb http://us-east-2.ec2.archive.ubuntu.com/ubuntu noble main\n',
+            'apt-mirrors.txt': 'http://us-east-2.ec2.archive.ubuntu.com/ubuntu\tpriority:1\n',
+            'apt-mirrors-security.txt': 'http://security.ubuntu.com/ubuntu\n',
+        }
+
+    def test_shared_script_rewrites_mirrors_and_bounds_stalls(self):
+        with tempfile.TemporaryDirectory() as directory:
+            apt = Path(directory)
+            (apt / 'sources.list.d').mkdir()
+            for path, value in self.entries().items():
+                (apt / path).write_text(value)
+            subprocess.run(['bash', str(ROOT / '.github/scripts/ci_apt_network.sh')], check=True,
+                           env={'APT_ROOT': str(apt), 'PATH': '/usr/bin:/bin'})
+            for path, value in self.entries().items():
+                expected = re.sub(r'https?://(azure|[a-z0-9-]+\.ec2)\.archive\.ubuntu\.com/ubuntu',
+                                  'https://archive.ubuntu.com/ubuntu', value)
+                self.assertEqual((apt / path).read_text(), expected, path)
+            self.assertIn('Acquire::http::Timeout "30";', (apt / 'apt.conf.d/80-ci-network').read_text())
+
+    def test_every_build_apt_update_is_guarded(self):
+        # A runner's slow regional mirror stalled unguarded steps past their
+        # job timeouts, so every update first rewrites the mirrors.
+        lines = (ROOT / '.github/workflows/build.yml').read_text().splitlines()
+        for number, line in enumerate(lines):
+            if 'apt-get update' not in line:
+                continue
+            window = '\n'.join(lines[max(0, number - 20):number])
+            with self.subTest(line=number + 1):
+                self.assertTrue('ci_apt_network.sh' in window or 'archive.ubuntu.com/ubuntu#g' in window,
+                                f'build.yml:{number + 1} updates apt without the mirror rewrite')
+
+
 if __name__ == '__main__':
     unittest.main()

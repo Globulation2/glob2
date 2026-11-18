@@ -197,6 +197,7 @@ jobs:
           ref: ${{ inputs.revision || github.sha }}
       - name: Install matching compiler and coverage tools
         run: |
+          bash .github/scripts/ci_apt_network.sh
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
             clang-18 llvm-18 python3 ninja-build pkg-config nasm libva-dev git cmake \
@@ -865,6 +866,7 @@ jobs:
           sudo rm -f \
             /etc/apt/sources.list.d/google-chrome.list \
             /etc/apt/sources.list.d/google-chrome.sources
+          bash .github/scripts/ci_apt_network.sh
           sudo apt-get update -qq
           sudo apt-get install -y python3-venv ninja-build nasm libva-dev ccache g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libopusfile-dev libopus-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       - name: Install pinned Emscripten
@@ -1062,6 +1064,7 @@ jobs:
       - name: Install native build dependencies
         id: install_native_build_dependencies
         run: |
+          bash .github/scripts/ci_apt_network.sh
           sudo apt-get update -qq
           sudo apt-get install -y python3-venv ninja-build nasm libva-dev ccache g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libopusfile-dev libopus-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       # Reuse the native client objects already populated by the main Linux job.
@@ -1201,7 +1204,8 @@ jobs:
     needs: [changes, web-build, web-native]
     if: ${{ !cancelled() && needs.changes.outputs.run_web_test == 'true' && needs.web-build.result == 'success' && needs.web-native.result == 'success' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    # The slowest entries (webkit) take up to 59 minutes on a hosted runner.
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       # Leave runner capacity for Linux test shards once the browser build
@@ -1230,6 +1234,7 @@ jobs:
         run: tar -xzf artifacts/ci-native/web-native.tar.gz
       - name: Install executable runtime libraries
         run: |
+          bash .github/scripts/ci_apt_network.sh
           sudo apt-get update -qq
           xargs sudo apt-get install -y --no-install-recommends < artifacts/ci-native/runtime-packages.txt
           sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri mesa-vulkan-drivers xvfb xauth openbox x11-utils gdb ffmpeg
@@ -1431,6 +1436,7 @@ jobs:
       - name: Install music and terrain artwork processing tools
         id: install_music_upload_processing_tools
         run: |
+          bash .github/scripts/ci_apt_network.sh
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends ffmpeg python3-pil
       - name: Install platform dependencies
@@ -1480,6 +1486,7 @@ jobs:
       - name: Install ffmpeg
         id: install_ffmpeg
         run: |
+          bash .github/scripts/ci_apt_network.sh
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends ffmpeg g++ pkg-config libopusfile-dev zlib1g-dev
       - name: Create the pipeline venv from requirements.txt
