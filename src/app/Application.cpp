@@ -22,6 +22,7 @@
 #include "CampaignMenuScreen.h"
 #include "SettingsScreen.h"
 #include "RecordingFilesScreen.h"
+#include "ui/RecordingNotice.h"
 #include "KeyboardManager.h"
 #include "GameGUIKeyActions.h"
 #include "CreditScreen.h"
@@ -345,6 +346,7 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 {
 	lastFrame = tick;
 	if (GAGCore::Recording::takeFilesRequest()) screens.push(std::make_unique<RecordingFilesScreen>());
+	Glob2UI::deliverFinishedRecordings();
 	// Invite links opened while running (macOS and iOS URL events) arrive as
 	// dropped "files"; they become the pending join instead. SDL3 owns the
 	// event's text, so nothing is freed here.

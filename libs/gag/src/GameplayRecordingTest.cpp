@@ -385,4 +385,91 @@ TEST_SUITE("GameplayRecording")
 		recorder.shutdown();
 		CHECK(recorder.status().state == State::Failed);
 	}
+	TEST_CASE("recording names are readable local times that sort chronologically")
+	{
+		std::tm afternoon{};
+		afternoon.tm_year = 2026 - 1900; afternoon.tm_mon = 10; afternoon.tm_mday = 18;
+		afternoon.tm_hour = 14; afternoon.tm_min = 5; afternoon.tm_sec = 2;
+		CHECK(recordingFileName(afternoon) == std::string("glob2-2026-11-18_14-05-02") + Extension);
+		CHECK(recordingFileName(afternoon, 2) == std::string("glob2-2026-11-18_14-05-02-2") + Extension);
+		std::tm evening = afternoon;
+		evening.tm_hour = 21;
+		std::tm nextYear = afternoon;
+		nextYear.tm_year += 1; nextYear.tm_mon = 0; nextYear.tm_mday = 2;
+		CHECK(recordingFileName(afternoon) < recordingFileName(evening));
+		CHECK(recordingFileName(evening) < recordingFileName(nextYear));
+	}
+	TEST_CASE("a new recording never takes the name of a saved or interrupted recording")
+	{
+		glob2test::TempDir folder("recording-names");
+		std::tm when{};
+		when.tm_year = 2026 - 1900; when.tm_mon = 10; when.tm_mday = 18; when.tm_hour = 9;
+		const auto first = uniqueRecordingPath(folder.path.string(), when);
+		CHECK(std::filesystem::u8path(first).filename() == recordingFileName(when));
+		CHECK(std::filesystem::u8path(first).parent_path() == folder.path);
+		std::ofstream(first) << "saved";
+		std::filesystem::create_directory(folder.path / (recordingFileName(when, 2) + ".recording"));
+		const auto third = uniqueRecordingPath(folder.path.string(), when);
+		CHECK(std::filesystem::u8path(third).filename() == recordingFileName(when, 3));
+	}
+	TEST_CASE("recordings list newest first with size, time and duration even when older names sort later")
+	{
+		glob2test::TempDir folder("recording-list");
+		const auto save = [&](const std::string &name, std::size_t bytes, std::int64_t duration, int ageSeconds)
+		{
+			const auto video = folder.path / name;
+			std::ofstream(video, std::ios::binary) << std::string(bytes, 'v');
+			std::ofstream(video.string() + ".json") << "{\"version\":1,\"duration_us\":" << duration << "}";
+			std::filesystem::last_write_time(video, std::filesystem::file_time_type::clock::now() - std::chrono::seconds(ageSeconds));
+			return video.string();
+		};
+		// Names from older versions came from a clock that restarts with the computer.
+		const auto beforeReboot = save(std::string("capture-900000000") + Extension, 2048, 23266666, 3600);
+		const auto afterReboot = save(std::string("capture-1000") + Extension, 4096, 5000000, 60);
+		std::filesystem::create_directories(folder.path / (std::string("glob2-2026-11-18_10-00-00") + Extension + ".recording"));
+		std::ofstream(folder.path / (std::string("glob2-2026-11-18_10-00-00") + Extension + ".recording") / "manifest.json") << "{}";
+		std::ofstream(folder.path / "notes.txt") << "not a recording";
+		const auto files = scanRecordings(folder.path.string());
+		REQUIRE(files.size() == 3);
+		CHECK(files[0].recoverable);
+		CHECK(std::filesystem::u8path(files[0].path).filename() == std::string("glob2-2026-11-18_10-00-00") + Extension);
+		CHECK(files[1].path == afterReboot);
+		CHECK(files[2].path == beforeReboot);
+		CHECK(files[1].bytes == 4096);
+		CHECK(files[1].durationUs == 5000000);
+		CHECK(files[2].durationUs == 23266666);
+		const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+		CHECK(std::abs(files[2].modified - (now - 3600)) <= 5);
+	}
+	TEST_CASE("each recording ending is reported once with its saved files or its error [recording]")
+	{
+		if (!supported()) return;
+		Recorder recorder;
+		CHECK(recorder.completion().serial == 0);
+		recorder.options.encoder = EncoderPreference::Software;
+		auto pixels = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>(
+			SDL_CreateSurface(64, 48, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+		REQUIRE(pixels);
+		const auto path = output("completion");
+		REQUIRE(recorder.start(path.string()));
+		awaitRecording(recorder, *pixels);
+		draw(recorder, pixels.get(), 200);
+		CHECK(recorder.completion().serial == 0);
+		recorder.stop();
+		recorder.shutdown();
+		REQUIRE(recorder.status().state == State::Complete);
+		auto saved = recorder.completion();
+		CHECK(saved.serial == 1);
+		CHECK_FALSE(saved.failed);
+		REQUIRE(saved.outputs.size() == 1);
+		CHECK(std::filesystem::equivalent(saved.outputs.front(), path));
+		CHECK(recorder.completion().serial == 1);
+		// Reusing the saved name fails; the failure is a second, distinct ending.
+		CHECK_FALSE(recorder.start(path.string()));
+		auto failed = recorder.completion();
+		CHECK(failed.serial == 2);
+		CHECK(failed.failed);
+		CHECK(failed.outputs.empty());
+		CHECK_FALSE(failed.error.empty());
+	}
 }

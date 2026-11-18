@@ -37,12 +37,20 @@ for (const variant of ['serial','threaded']) {
   });
   const existing=new Set(await completed());
   const sessionOutputs=async()=>(await completed()).filter(path=>!existing.has(path));
+  // Each saved segment downloads by itself, under a readable dated name.
+  const downloads=[];page.on('download',download=>downloads.push(download));
   await clickControl(page,'recording/toggle');
   await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().controls['recording/toggle']?.label)).toMatch(/Stop recording/i);
   await page.waitForTimeout(1500);
   await page.setViewportSize({width:1001,height:701});await page.waitForTimeout(1500);
   await clickControl(page,'recording/toggle');
   await expect.poll(async()=>(await sessionOutputs()).length,{timeout:30000}).toBe(2);
+  await expect.poll(()=>downloads.length,{timeout:30000}).toBe(2);
+  const downloaded=downloads.map(download=>download.suggestedFilename()).sort();
+  expect(downloaded).toEqual((await sessionOutputs()).sort());
+  for(const name of downloaded) expect(name).toMatch(/^glob2-\d{4}-\d\d-\d\d_\d\d-\d\d-\d\d(\.part\d{4})?\.mp4$/);
+  const automatic=info.outputPath('automatic.mp4');await downloads[0].saveAs(automatic);
+  expect(fs.statSync(automatic).size).toBeGreaterThan(1000);
   const audioEvidence=await page.evaluate(()=>({nonzero:window.recordedMusic,captures:window.musicCaptureCalls,activeChecks:window.recordingChecks,gain:Module.glob2Music.gain,status:Module.glob2Music.status}));
   await info.attach('recorded-music',{body:JSON.stringify(audioEvidence),contentType:'application/json'});
   expect(audioEvidence.nonzero,JSON.stringify(audioEvidence)).toBe(true);

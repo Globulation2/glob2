@@ -349,6 +349,9 @@ bool openUrl(const std::string& url)
         return false;
     return MAIN_THREAD_EM_ASM_INT({ return Module.glob2OpenUrl(UTF8ToString($0)); }, url.c_str()) != 0;
 }
+bool canOpenFolder() { return false; }
+bool openFolder(const std::string&) { return false; }
+std::string fileUrl(const std::string& path) { return "file://" + path; }
 void prepareUrlWindow()
 {
     MAIN_THREAD_EM_ASM({ Module.glob2PrepareWindow(); });

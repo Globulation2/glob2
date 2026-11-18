@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "FrontendUI.h"
+#include "ui/RecordingNotice.h"
 #include <GameplayRecording.h>
 
 namespace Glob2UI
@@ -26,6 +27,10 @@ inline Element recordingControls(bool always = false)
 	std::vector<Element> parts{button(
 		"recording/toggle", tr(GAGCore::Recording::controlLabel()),
 		[] { GAGCore::Recording::toggle(); }, options)};
+	// Where the current or last recording goes, so the player never has to guess.
+	const auto location = recordingLocationLine(status, GAGCore::Recording::recorder().completion());
+	if (!location.empty() && status.error.empty())
+		parts.push_back(paragraph(location, {FontRole::Support, true}));
 	parts.push_back(button("recording/files",tr("[recordings]"),[] { GAGCore::Recording::requestFiles(); }));
 	if (!status.error.empty())
 	{

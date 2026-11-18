@@ -12,6 +12,7 @@
 #include <chrono>
 #include <condition_variable>
 #include <cstring>
+#include <ctime>
 #include <deque>
 #include <filesystem>
 #include <fstream>
@@ -95,6 +96,7 @@ struct Recorder::Impl
 	std::size_t audioRead = 0, audioWrite = 0, audioCount = 0, audioSamples = 0;
 	std::string path, error;
 	Status published;
+	Completion completed;
 	Context context;
 	struct MatchIdentity
 	{
@@ -112,13 +114,28 @@ struct Recorder::Impl
 		auto s = state.load();
 		return s == State::Starting || s == State::Recording;
 	}
+	// Record the end of a recording once, when the state first becomes terminal.
+	// The caller holds mutex.
+	void settle(State previous)
+	{
+		const auto current = state.load();
+		const auto terminal = [](State s) { return s == State::Complete || s == State::Failed; };
+		if (!terminal(current) || terminal(previous))
+			return;
+		++completed.serial;
+		completed.failed = current == State::Failed;
+		completed.outputs = completed.failed ? std::vector<std::string>{} : published.outputs;
+		completed.error = completed.failed ? error : std::string();
+	}
 	void fail(const std::string &message)
 	{
 		{
 			std::lock_guard<std::mutex> lock(mutex);
+			const auto previous = state.load();
 			error = message;
 			stoppedAt = now();
 			state = State::Failed;
+			settle(previous);
 		}
 		wake.notify_all();
 		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Recording: %s", message.c_str());
@@ -143,8 +160,10 @@ struct Recorder::Impl
 				published.droppedFrames = s.value("droppedFrames",std::uint64_t(0));
 				published.droppedAudioSamples = s.value("droppedAudioSamples",std::uint64_t(0));
 				published.outputs = s.value("outputs",std::vector<std::string>{});
+				const auto previous = state.load();
 				if (state != State::Failed && (state != State::Finalizing || published.state >= State::Complete)) state = published.state;
 				error = published.error; finished = state == State::Complete || state == State::Failed;
+				settle(previous);
 			}
 			catch (...) { fail("Invalid recording worker status"); }
 			std::free(value);
@@ -202,6 +221,8 @@ bool Recorder::start(const std::string &requestedPath)
 	}
 	try
 	{
+		// Each start is a new recording: even one that cannot begin ends once.
+		impl->state = State::Starting;
 		if (!supported())
 			throw std::runtime_error("Recording worker is unavailable");
 		if (options.fps < 1 || options.fps > 240 || options.crf < 0 || options.crf > MaxCrf || !options.chapterTicks)
@@ -321,6 +342,14 @@ Status Recorder::status() const
 	result.state = impl->state.load(); result.path = result.path.empty() ? impl->path : result.path;
 	result.error = impl->error; result.droppedFrames = std::max(result.droppedFrames,impl->droppedFrames.load()); result.droppedAudioSamples = std::max(result.droppedAudioSamples,impl->droppedAudio.load());
 	return result;
+}
+Completion Recorder::completion() const
+{
+#ifdef __EMSCRIPTEN__
+	impl->pump();
+#endif
+	std::lock_guard<std::mutex> lock(impl->mutex);
+	return impl->completed;
 }
 bool Recorder::active() const
 {
@@ -515,6 +544,42 @@ void Recorder::event(const std::string &kind, const std::string &value)
 		impl->events.push_back({now(), kind, value});
 #endif
 }
+std::string recordingDirectory()
+{
+	return utf8(std::filesystem::u8path(Toolkit::getFileManager()->getDir(0)) / "videoshots");
+}
+std::string recordingFileName(const std::tm &local, unsigned attempt)
+{
+	char stamp[32];
+	std::strftime(stamp, sizeof stamp, "%Y-%m-%d_%H-%M-%S", &local);
+	std::string name = std::string("glob2-") + stamp;
+	if (attempt > 1)
+		name += "-" + std::to_string(attempt);
+	return name + Extension;
+}
+std::string uniqueRecordingPath(const std::string &directory, const std::tm &local,
+								const std::function<bool(const std::string &)> &taken)
+{
+	for (unsigned attempt = 1;; ++attempt)
+	{
+		auto path = utf8(std::filesystem::u8path(directory) / std::filesystem::u8path(recordingFileName(local, attempt)));
+		if (!taken(path))
+			return path;
+	}
+}
+#ifndef __EMSCRIPTEN__
+std::string uniqueRecordingPath(const std::string &directory, const std::tm &local)
+{
+	return uniqueRecordingPath(directory, local, [](const std::string &candidate)
+	{
+		std::error_code error;
+		auto file = std::filesystem::u8path(candidate);
+		if (std::filesystem::exists(file, error))
+			return true;
+		return std::filesystem::exists(file += ".recording", error);
+	});
+}
+#endif
 bool toggle()
 {
 	auto &r = recorder();
@@ -525,9 +590,28 @@ bool toggle()
 	}
 	if (r.status().state == State::Finalizing || !supported())
 		return false;
-	auto root = Toolkit::getFileManager()->getDir(0);
-	return r.start(utf8(std::filesystem::u8path(root) / "videoshots" /
-						("capture-" + std::to_string(now()) + Extension)));
+	const std::time_t clock = std::time(nullptr);
+	std::tm local{};
+#if defined(_WIN32)
+	localtime_s(&local, &clock);
+#else
+	localtime_r(&clock, &local);
+#endif
+#ifdef __EMSCRIPTEN__
+	// Browser storage is asynchronous; avoid names this page started or listed.
+	static std::set<std::string> started;
+	const auto listed = filesStatus().files;
+	auto path = uniqueRecordingPath(recordingDirectory(), local, [&](const std::string &candidate)
+	{
+		const auto name = std::filesystem::u8path(candidate).filename();
+		return started.count(candidate) || std::any_of(listed.begin(), listed.end(), [&](const RecordingFileEntry &file)
+			{ return std::filesystem::u8path(file.path).filename() == name; });
+	});
+	started.insert(path);
+#else
+	auto path = uniqueRecordingPath(recordingDirectory(), local);
+#endif
+	return r.start(path);
 }
 std::string controlLabel()
 {
@@ -546,9 +630,11 @@ void Recorder::Impl::run(Options options)
 		published = status;
 		if (state != State::Failed)
 		{
+			const auto previous = state.load();
+			error = status.error;
 			if (state != State::Finalizing || status.state == State::Complete || status.state == State::Failed)
 				state = status.state;
-			error = status.error;
+			settle(previous);
 		}
 	});
 	try

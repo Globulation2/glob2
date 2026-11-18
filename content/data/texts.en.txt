@@ -6376,6 +6376,26 @@ Could not export recording.
 Delete recording
 [recording refresh]
 Refresh
+[recording to %0]
+Recording to %0
+[recording browser to %0]
+Recording %0. It downloads when you stop.
+[recording saving %0]
+Saving %0…
+[recording saved %0]
+Recording saved to %0
+[recording downloaded %0]
+Recording downloaded as %0
+[recording failed %0]
+Recording failed: %0
+[recording open folder]
+Open folder
+[recording open folder failed]
+Could not open the recordings folder.
+[recording browser storage]
+Recordings are kept in this browser and download when they finish. Download one again here; clearing this site's data deletes them.
+[recording download]
+Download video
 [library  Could not restore the previous library: %0]
  Could not restore the previous library: %0
 [library  The previous library is retained.]

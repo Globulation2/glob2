@@ -516,6 +516,9 @@ private:
 	//! Tick of this session's latest autosave, or -1 before the first.
 	std::atomic<Sint64> lastAutosaveStep{-1};
     std::atomic<bool> autosavePending{false};
+    // Last recording ending announced in the message area (see announceRecordingEnding).
+    std::optional<std::uint64_t> recordingEndingSeen;
+    void announceRecordingEnding();
 	//! Writes autosaves off the game thread; created by the first autosave.
 	std::unique_ptr<GAGCore::BackgroundFileWriter> autosaveWriter;
 

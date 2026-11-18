@@ -106,6 +106,7 @@ set(GLOB2_ENGINE_TESTS_0_SOURCES
     libs/gag/src/DrawableSurfaceBlendTest.cpp
     libs/gag/src/FontKerningTest.cpp
     src/ui/OnlineWordingTest.cpp
+    src/ui/RecordingNoticeTest.cpp
     libs/gag/src/FullscreenAspectHarness.cpp
     libs/gag/src/PortableRendererHarness.cpp
     src/render/SoftwareRendererTest.cpp
@@ -1389,6 +1390,7 @@ set(GLOB2_ANDROID_ENGINE_TESTS_0_SOURCES
     libs/gag/src/DrawableSurfaceBlendTest.cpp
     libs/gag/src/FontKerningTest.cpp
     src/ui/OnlineWordingTest.cpp
+    src/ui/RecordingNoticeTest.cpp
     libs/gag/src/FullscreenAspectHarness.cpp
     libs/gag/src/PortableRendererHarness.cpp
     src/render/SoftwareRendererTest.cpp

@@ -209,6 +209,7 @@ ENGINE_TESTS = [
     '#libs/gag/src/DrawableSurfaceBlendTest.cpp',
     '#libs/gag/src/FontKerningTest.cpp',
     '#src/ui/OnlineWordingTest.cpp',
+    '#src/ui/RecordingNoticeTest.cpp',
     ('#src/render/EnteringUnitDrawHarness.cpp', dict(require={'opengl'})),
     ('#src/render/UnitEffectDrawHarness.cpp', dict(require={'opengl'})),
     ('#src/render/FailingUnitMarkersHarness.cpp', dict(require={'opengl'})),

@@ -6398,6 +6398,26 @@ Nu s-a putut exporta înregistrarea.
 Șterge înregistrarea
 [recording refresh]
 Reîmprospătează
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Nu s-a putut restabili biblioteca anterioară: %0
 [library  The previous library is retained.]

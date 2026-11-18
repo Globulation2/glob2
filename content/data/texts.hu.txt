@@ -6398,6 +6398,26 @@ Nem sikerült exportálni a felvételt.
 Felvétel törlése
 [recording refresh]
 Frissítés
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Az előző könyvtárat nem sikerült visszaállítani: %0
 [library  The previous library is retained.]

@@ -6398,6 +6398,26 @@ Ezin izan da grabazioa esportatu.
 Ezabatu grabazioa
 [recording refresh]
 Freskatu
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library Fit]
 Egokitu
 [library GL only]
