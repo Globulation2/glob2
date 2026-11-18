@@ -11,9 +11,13 @@
 #include <set>
 
 class GameGUI;
+struct PresentationFrame;
 namespace Tutorial
 {
 void drawDestination(GameGUI &gui);
+// Where a destination marker points, in map tiles: the footprint centre when the
+// destination names a building's origin tile, otherwise the destination itself.
+std::pair<double,double> destinationCentre(const PresentationFrame &scene, const Destination &target);
 // A nonmodal, client-owned card. No callbacks enter the scenario interpreter.
 class Guidance : public Glob2UI::InGameDialog
 {

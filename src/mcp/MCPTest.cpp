@@ -150,6 +150,81 @@ TEST_CASE("MCP/protocol adapters validate metadata and discover all tools")
 					std::invalid_argument);
 	CHECK(randomToken() != randomToken());
 }
+TEST_CASE("MCP/tool schemas are well formed for strict clients")
+{
+	// Strict clients (Claude Code among them) reject the whole tool list when any
+	// object schema carries null properties or required members.
+	ToolRegistry registry;
+	registerUITools(registry);
+	Context context;
+	Protocol p(registry, context);
+	auto requireWellFormed = [](auto &&self, const Json &schema, const std::string &path) -> void
+	{
+		INFO(path);
+		REQUIRE(schema.is_object());
+		if (schema.value("type", "") == "object")
+		{
+			CHECK(schema.contains("properties"));
+			CHECK(schema.value("properties", Json()).is_object());
+			if (schema.contains("required"))
+				CHECK(schema["required"].is_array());
+			const Json properties = schema.value("properties", Json::object());
+			for (const auto &[key, property] : properties.items())
+				self(self, property, path + "." + key);
+		}
+		if (schema.contains("items"))
+			self(self, schema["items"], path + "[]");
+	};
+	auto checkListed = [&](const Json &tools)
+	{
+		REQUIRE(tools.is_array());
+		REQUIRE_FALSE(tools.empty());
+		for (const auto &tool : tools)
+		{
+			requireWellFormed(requireWellFormed, tool["inputSchema"], tool["name"].get<std::string>());
+			if (tool.contains("outputSchema"))
+				requireWellFormed(requireWellFormed, tool["outputSchema"],
+								  tool["name"].get<std::string>() + "->");
+		}
+	};
+	checkListed(p.receive(modern("tools/list").dump(), {"2026-07-28", "tools/list", ""})
+					.body["result"]["tools"]);
+	const Json legacyList = {{"jsonrpc", "2.0"}, {"id", 3}, {"method", "tools/list"}};
+	checkListed(p.receive(legacyList.dump(), {"2025-11-25", "", ""}).body["result"]["tools"]);
+}
+TEST_CASE("MCP/argument errors name the field and the broken rule")
+{
+	ToolRegistry registry;
+	registerUITools(registry);
+	Context context;
+	auto message = [&](const std::string &tool, const Json &arguments)
+	{
+		try
+		{
+			registry.call(context, tool, arguments, "test");
+		}
+		catch (const std::invalid_argument &error)
+		{
+			return std::string(error.what());
+		}
+		return std::string("accepted");
+	};
+	// Drag points are objects; a client sending coordinate pairs needs to see why.
+	const auto pairs = message("ui_drag", {{"token", "t"}, {"points", {{1, 2}, {3, 4}}}});
+	CHECK(pairs.find("ui_drag.points[]") != std::string::npos);
+	CHECK(pairs.find("expected object") != std::string::npos);
+	const auto missing = message("ui_drag", {{"token", "t"}, {"points", {{{"x", 1}}, {{"x", 2}, {"y", 3}}}}});
+	CHECK(missing.find("ui_drag.points[]") != std::string::npos);
+	CHECK(missing.find("missing required property \"y\"") != std::string::npos);
+	const auto unknown = message("ui_status", {{"token", "t"}});
+	CHECK(unknown.find("unknown property \"token\"") != std::string::npos);
+	const auto range = message("ui_move", {{"token", "t"}, {"x", -1}, {"y", 2}});
+	CHECK(range.find("ui_move.x") != std::string::npos);
+	CHECK(range.find("out of range") != std::string::npos);
+	const auto choice = message("ui_click", {{"token", "t"}, {"x", 1}, {"y", 2}, {"button", "thumb"}});
+	CHECK(choice.find("ui_click.button") != std::string::npos);
+	CHECK(choice.find("expected one of") != std::string::npos);
+}
 namespace
 {
 // These completions must be ready after the explicit pump/dispatch/frame above them.
