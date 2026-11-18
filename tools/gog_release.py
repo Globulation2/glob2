@@ -40,6 +40,13 @@ SYSTEM_LIBRARY_PREFIXES = (
 
 # Reviewed public binaries, not a request to rebuild the current source tree.
 RELEASES = {
+    "v0.11.6.1": {
+        "source_commit": "1b60514218218c89516b6c6f26f2fcefc9c8f974",
+        "windows-x86_64": ("glob2-0.11.6.1-windows-x86_64.zip", "c706dce3c57f9e0f91950ffffe835b8e781aace25c536455d7818c4993622bba"),
+        "linux-x86_64": ("glob2-0.11.6.1-linux-x86_64-ubuntu22.04.tar.gz", "406d89ac1ecd8e80e3b91897167ede4c5d2a1bf462b7122e94cbedaeb9206548"),
+        "macos-arm64": ("Glob2-0.11.6.1-macos-arm64.dmg", "b1f5dd7990547051b6965c06a30d2b137b052deb55d2a4a72abf5657dec2ef8d"),
+        "macos-x86_64": ("Glob2-0.11.6.1-macos-x86_64.dmg", "4486f198a28d7765c4160561930e0c47a51e28e43dbbc91d2301ef4cd634919a"),
+    },
     "v0.11.5.0": {
         "source_commit": "11d46bdd48eff8d9233b2e66e7536726fc260d3f",
         "windows-x86_64": ("glob2-0.11.5.0-windows-x86_64.zip", "7429b6e5e3d0f99aeef9cbc6859b58fa4683ae7a73965dd08336761164e9b27b"),
