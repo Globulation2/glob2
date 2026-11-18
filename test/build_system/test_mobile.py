@@ -427,6 +427,65 @@ class EmulatorEnvironmentTests(unittest.TestCase):
             self.assertTrue((sdk/'cmdline-tools/19.0/source.properties').is_file())
 
 
+class AndroidDeviceRunnerTests(unittest.TestCase):
+    """The device-side chunk script, run here with the host shell and a stand-in binary."""
+
+    def run_chunk(self, cases, binary):
+        import os
+        import subprocess
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'platforms/mobile'))
+        import android_device_tests as runner
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        root = Path(directory.name)
+        (root / 'bin').mkdir()
+        (root / 'source').mkdir()
+        (root / 'run-cases.sh').write_text(runner.DEVICE_SCRIPT)
+        fake = root / 'bin/fake-tests'
+        fake.write_text('#!/bin/sh\n' + binary)
+        fake.chmod(0o755)
+        lines = [runner.SEPARATOR.join((str(index), str(limit), runner.run_tests.doctest_pattern(suite),
+                                        runner.run_tests.doctest_pattern(name)))
+                 for index, (limit, suite, name) in enumerate(cases)]
+        (root / 'cases.list').write_text('\n'.join(lines) + '\n')
+        env = dict(os.environ, PATH=str(root / 'bin') + os.pathsep + os.environ['PATH'])
+        subprocess.run(['sh', str(root / 'run-cases.sh'), 'fake-tests', str(root / 'cases.list'), str(root / 'out')],
+                       check=True, env=env, timeout=60)
+        out = root / 'out'
+        self.assertTrue((out / 'finished').is_file())
+        return runner, out
+
+    def test_each_case_runs_alone_with_its_suite_and_a_timeout(self):
+        # Prints its arguments one per line; "sleep" in a case name hangs it.
+        binary = ('for argument in "$@"; do echo "$argument"; done\n'
+                  'case "$*" in *sleep*) sleep 30;; *fails*) exit 1;; esac\n'
+                  'for argument in "$@"; do case "$argument" in -o=*) echo "<testsuites><testcase name=\'x\'/></testsuites>" > "${argument#-o=}";; esac; done\n')
+        runner, out = self.run_chunk([(30, 'Suite, A', 'first, with comma [tag]'), (30, '', 'no suite fails'),
+                                      (1, 'Hang', 'sleep forever')], binary)
+        first = (out / '0.log').read_text().splitlines()
+        self.assertIn('-tc=first\\, with comma [tag]', first)
+        self.assertIn('-ts=Suite\\, A', first)
+        self.assertFalse(any(line.startswith('-ts=') for line in (out / '1.log').read_text().splitlines()))
+        codes = [int((out / f'{index}.exit').read_text()) for index in range(3)]
+        self.assertEqual(codes[0], 0)
+        self.assertEqual(runner.outcome(codes[0], (out / '0.xml').read_text()), 'pass')
+        self.assertEqual(runner.outcome(codes[1], ''), 'crash')
+        self.assertEqual(runner.outcome(codes[2], ''), 'timeout')
+
+    def test_outcomes_need_an_executed_case(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'platforms/mobile'))
+        import android_device_tests as runner
+        passed = '<testsuites><testcase name="a"/></testsuites>'
+        failed = '<testsuites><testcase name="a"><failure message="CHECK"/></testcase></testsuites>'
+        skipped = '<testsuites><testcase name="a"><skipped/></testcase></testsuites>'
+        self.assertEqual(runner.outcome(0, passed), 'pass')
+        self.assertEqual(runner.outcome(0, skipped), 'fail')
+        self.assertEqual(runner.outcome(1, failed), 'fail')
+        self.assertEqual(runner.outcome(134, ''), 'crash')
+        self.assertEqual(runner.outcome(None, ''), 'crash')
+        self.assertEqual(runner.failure_details(failed, 'log')[0], 'CHECK')
+
+
 class IOSSmokeFailureTests(unittest.TestCase):
     def test_screenshot_failure_retains_display_inventory_and_actual_error_output(self):
         import json

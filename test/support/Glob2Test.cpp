@@ -178,6 +178,34 @@ namespace glob2test
 		return value && *value && std::string(value) != "0";
 	}
 
+	doctest::skip needsHardLinks()
+	{
+		// Probe once, where artifactDir() writes: the binary's artifact root or the
+		// case's own directory. Without either, the checkout's filesystem is assumed.
+		static const bool supported = []
+		{
+			const char* root = std::getenv("GLOB2_TEST_ARTIFACTS_ROOT");
+			if (!root || !*root)
+				root = std::getenv("GLOB2_TEST_ARTIFACTS");
+			if (!root || !*root)
+				return true;
+			const auto probe = std::filesystem::path(root) / (".hard-link-probe-" + std::to_string(SDL_GetCurrentThreadID()));
+			std::error_code error;
+			std::filesystem::create_directories(probe, error);
+			if (!error)
+				std::ofstream(probe / "file") << "probe";
+			if (!error)
+				std::filesystem::create_hard_link(probe / "file", probe / "link", error);
+			std::error_code ignored;
+			std::filesystem::remove_all(probe, ignored);
+			if (error)
+				std::fprintf(stderr, "glob2test: hard links are unavailable in %s (%s); "
+					"cases that publish with them are skipped\n", root, error.message().c_str());
+			return !error;
+		}();
+		return doctest::skip(!supported);
+	}
+
 	bool fullscreenEnabled()
 	{
 		const char* value = std::getenv("GLOB2_TEST_FULLSCREEN");

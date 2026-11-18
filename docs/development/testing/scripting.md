@@ -65,7 +65,8 @@ committed revision; `--allow-dirty` is for development evidence only. Use fresh
 output directories and compare identical final revisions across platforms.
 
 Android: build `android-tests` for API 24 and the selected ABI, then run
-`python3 platforms/mobile/android_device_tests.py --android-sdk SDK --serial SERIAL --arch ABI --suite 'JavaScript*' --output artifacts/js-android`.
+`python3 platforms/mobile/android_device_tests.py --serial SERIAL --arch ABI --suite 'JavaScript*' --output artifacts/js-android`
+([native tests on Android](../../mobile/android.md#native-tests-on-a-connected-android-device)).
 The runner uses disposable shell directories, retrieves artifacts even after
 failure and never accesses installed game data. Use a fresh Android output
 directory; failed artifact transfers fail the run and retain its remote evidence

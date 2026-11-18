@@ -133,7 +133,7 @@ TEST_SUITE("RecordingSession")
 		CHECK(std::string(std::istreambuf_iterator<char>(saved), {}) == original);
 	}
 
-	TEST_CASE("control events wait for delayed video chapters without changing their timestamps")
+	TEST_CASE("control events wait for delayed video chapters without changing their timestamps" * glob2test::needsHardLinks())
 	{
 		const auto path=output("event-order"); auto files=nativeSessionStorage(); files.reserve(path);
 		Options options; options.encoder=EncoderPreference::Software;
@@ -161,7 +161,7 @@ TEST_SUITE("RecordingSession")
 		CHECK(entries[2]["time_us"]==1033333); CHECK(entries[2]["kind"]=="chapter");
 		CHECK(entries[3]["time_us"]==1036673); CHECK(entries[3]["kind"]=="paused");
 	}
-	TEST_CASE("resize carries future controls to the new segment and journals one transition")
+	TEST_CASE("resize carries future controls to the new segment and journals one transition" * glob2test::needsHardLinks())
 	{
 		const auto path=output("resize-events"); auto files=nativeSessionStorage(); files.reserve(path);
 		Options options; options.encoder=EncoderPreference::Software;
@@ -228,7 +228,7 @@ TEST_SUITE("RecordingSession")
 		const auto entries=journal(path+".recording/events.jsonl"); checkJournalOrder(entries);
 		REQUIRE(entries.size()==1025); CHECK(entries.back()["time_us"]==1001023);
 	}
-	TEST_CASE("resize coalescing preserves full resolution and numbers completed segments")
+	TEST_CASE("resize coalescing preserves full resolution and numbers completed segments" * glob2test::needsHardLinks())
 	{
 		auto path=output("resize"); auto files=nativeSessionStorage(); files.reserve(path);
 		Options options; options.encoder=EncoderPreference::Software;
@@ -268,7 +268,7 @@ TEST_SUITE("RecordingSession")
 			CHECK(decode.finish()==0);
 		}
 	}
-	TEST_CASE("worker normalizes capture color layout and bottom-up orientation")
+	TEST_CASE("worker normalizes capture color layout and bottom-up orientation" * glob2test::needsHardLinks())
 	{
 		auto path=output("orientation"); auto files=nativeSessionStorage(); files.reserve(path);
 		std::vector<unsigned char> captured; Status status;
@@ -281,7 +281,7 @@ TEST_SUITE("RecordingSession")
 		session.stop(1033333); CHECK(session.step(1100000));
 		CHECK(status.state==State::Complete);
 	}
-	TEST_CASE("asynchronous encoder flush is polled before publishing the output")
+	TEST_CASE("asynchronous encoder flush is polled before publishing the output" * glob2test::needsHardLinks())
 	{
 		auto path=output("deferred"); auto files=nativeSessionStorage(); files.reserve(path);
 		Status status;
@@ -291,7 +291,7 @@ TEST_SUITE("RecordingSession")
 		CHECK_FALSE(std::filesystem::exists(path));
 		CHECK(session.step(1100001)); CHECK(status.state==State::Complete);
 	}
-	TEST_CASE("long scheduling gaps preserve time without an encoding catch-up burst")
+	TEST_CASE("long scheduling gaps preserve time without an encoding catch-up burst" * glob2test::needsHardLinks())
 	{
 		auto path=output("gap"); auto files=nativeSessionStorage(); files.reserve(path);
 		Options options; options.encoder=EncoderPreference::Software;
@@ -312,7 +312,7 @@ TEST_SUITE("RecordingSession")
 			CHECK(end>=3600000000);
 		}
 	}
-	TEST_CASE("device failure closes its stream and starts a software segment")
+	TEST_CASE("device failure closes its stream and starts a software segment" * glob2test::needsHardLinks())
 	{
 		auto path=output("device-loss"); auto files=nativeSessionStorage(); files.reserve(path);
 		Status status;
@@ -324,7 +324,7 @@ TEST_SUITE("RecordingSession")
 		CHECK(manifest(status.outputs.front()+".json")["encoder"]=="test-hardware");
 		CHECK(manifest(status.outputs.back()+".json")["encoder"]==SoftwareEncoder);
 	}
-	TEST_CASE("hardware flush failure during resize continues with a software segment")
+	TEST_CASE("hardware flush failure during resize continues with a software segment" * glob2test::needsHardLinks())
 	{
 		auto path=output("flush-loss"); auto files=nativeSessionStorage(); files.reserve(path); Status status;
 		Session session(path,{},files,[&](const Status &s) { status=s; },std::make_unique<FailingHardware>(VideoConfiguration{66,38,30,23,true},true));
@@ -333,7 +333,7 @@ TEST_SUITE("RecordingSession")
 		REQUIRE(status.state==State::Complete); REQUIRE(status.outputs.size()==2);
 		CHECK(status.encoder==SoftwareEncoder); CHECK(status.fallbackReason=="forced asynchronous flush failure");
 	}
-	TEST_CASE("capture pressure rejects input within the three-frame budget")
+	TEST_CASE("capture pressure rejects input within the three-frame budget" * glob2test::needsHardLinks())
 	{
 		auto path=output("pressure"); auto files=nativeSessionStorage(); files.reserve(path);
 		Status status; Options options; options.encoder=EncoderPreference::Software;
@@ -345,7 +345,7 @@ TEST_SUITE("RecordingSession")
 		CHECK(complete);
 		CHECK(status.state==State::Complete);
 	}
-	TEST_CASE("interrupted fragmented media recovers without a finalized trailer")
+	TEST_CASE("interrupted fragmented media recovers without a finalized trailer" * glob2test::needsHardLinks())
 	{
 		for (bool interruptedMetadata : {false,true})
 		{
@@ -394,7 +394,7 @@ TEST_SUITE("RecordingSession")
 		std::ifstream rate(path + ".probe.log"); std::string value; rate >> value;
 		CHECK(value == "44100");
 	}
-	TEST_CASE("publication failure retains media that can be recovered without overwriting")
+	TEST_CASE("publication failure retains media that can be recovered without overwriting" * glob2test::needsHardLinks())
 	{
 		auto path=output("recover"); auto files=nativeSessionStorage(); files.reserve(path);
 		files.publish=[](const auto &,const auto &) { throw std::runtime_error("forced publication failure"); };

@@ -84,8 +84,11 @@ TEST_SUITE("TerrainStones")
 		glob2test::HeadlessGlobals globals;
 		const auto root = glob2test::artifactDir() / "packaged-stones";
 		std::filesystem::create_directories(root / "data/terrain/stones");
-		std::filesystem::copy_file(glob2test::sourceRoot() / "content/data/terrain/stones/brick_path.png",
-								   root / "data/terrain/stones/packaged_probe.webp",
+		// The authored PNG in a checkout, its WebP in a packaged runtime tree.
+		auto source = glob2test::contentRoot() / "data/terrain/stones/brick_path.png";
+		if (!std::filesystem::exists(source))
+			source.replace_extension(".webp");
+		std::filesystem::copy_file(source, root / "data/terrain/stones/packaged_probe.webp",
 								   std::filesystem::copy_options::overwrite_existing);
 		globals->fileManager->addDir(root.string());
 		TerrainVisual::Catalog catalog;

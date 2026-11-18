@@ -92,6 +92,13 @@ namespace glob2test
 	struct CapturedStdout : CapturedStream { CapturedStdout() : CapturedStream(stdout) {} };
 	struct CapturedStderr : CapturedStream { CapturedStderr() : CapturedStream(stderr) {} };
 
+	// Decorator for cases whose code publishes files with hard links, as recordings do:
+	//     TEST_CASE("..." * glob2test::needsHardLinks())
+	// Skips the case when the artifact directory refuses hard links (Android's shell
+	// SELinux domain under /data/local/tmp) and says why once on stderr. A skipped case
+	// is not listed, so runners leave it out.
+	doctest::skip needsHardLinks();
+
 	// GLOB2_TEST_UPDATE_FIXTURES=1 (run_tests.py --update-fixtures): golden comparisons
 	// rewrite their expected text instead of checking it.
 	bool updatingFixtures();
