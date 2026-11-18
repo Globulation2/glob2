@@ -1281,3 +1281,40 @@ TEST_CASE("local Hive failures name their source and cards summarize results" *
 	CHECK(Hive::recentSummary(nullptr).empty());
 	CHECK(Hive::recentSummary({{"status", "completed"}, {"output", nullptr}}).empty());
 }
+
+TEST_CASE("local Hive standing-order reads reject a previous match session" *
+		  doctest::test_suite("HiveMindIntegration"))
+{
+	glob2test::HeadlessGlobals globals({.seed = 19});
+	glob2test::HeadlessGame world({.loadDefaultRace = true, .header = true});
+	world.gui.localPlayer = world.gui.localTeamNo = 0;
+	world.game.players[0]->type = BasePlayer::P_LOCAL;
+	const auto worker = [](Json input)
+	{
+		std::promise<Json> ready;
+		ready.set_value(Hive::invoke(input));
+		return ready.get_future();
+	};
+	Json previous;
+	{
+		Hive::LocalCommander earlier(world.gui, worker);
+		previous = earlier.status().at("session");
+	}
+	Hive::LocalCommander current(world.gui, worker);
+	const auto session = current.status().at("session");
+	REQUIRE(session != previous);
+	current.call("hive_program", {{"session", session}, {"operation_key", "install"},
+		{"action", "install"}, {"name", "keep"}, {"source", "function step(){return {};}"}});
+	current.update(); current.update();
+	REQUIRE(current.standingOrders().size() == 1);
+	// An agent still holding the earlier match's session must not read this
+	// match's programs as its own.
+	CHECK_THROWS_WITH(current.call("hive_program", {{"action", "list"}, {"session", previous}}),
+					  "Match session expired; inspect hive_status");
+	CHECK_THROWS_WITH(current.call("hive_program",
+					  {{"action", "inspect"}, {"session", previous}, {"name", "keep"}}),
+					  "Match session expired; inspect hive_status");
+	CHECK(current.call("hive_program", {{"action", "list"}, {"session", session}})
+			  .at("programs").size() == 1);
+	CHECK(current.call("hive_program", {{"action", "list"}}).at("programs").size() == 1);
+}
