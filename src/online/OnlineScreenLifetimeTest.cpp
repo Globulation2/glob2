@@ -44,8 +44,11 @@ const std::string ORIGIN = "https://play.example.org";
 
 struct ScriptedPlatform
 {
+	// Online::services() for the screens, without the user directory's instance
+	// record: an earlier case's sign-in would make this one refresh instead.
+	OnlineFakes::IsolatedServices services;
 	OnlineFakes::World world;
-	Online::PlatformClient &client = Online::services().client;
+	Online::PlatformClient &client = services.get().client;
 
 	ScriptedPlatform()
 	{
@@ -70,7 +73,7 @@ struct ScriptedPlatform
 	}
 	~ScriptedPlatform()
 	{
-		// Back to the real network for any later test in this process.
+		// Stop the client before the world it talks to goes.
 		client.replaceEnvironment(Online::ClientEnvironment::native());
 	}
 	// Answers every outstanding HTTP request and realtime request, then lets the

@@ -570,7 +570,7 @@ void aiLibraryPresentation(int width, int height, const char *themeName)
 		g.settings.menuTheme = themeName;
 	};
 	glob2test::HeadlessGlobals globals(options);
-	Online::ServicesOwner services;
+	OnlineFakes::IsolatedServices services;
 	OnlineFakes::World world;
 	auto &client = services.get().client;
 	client.replaceEnvironment(world.environment());

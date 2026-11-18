@@ -92,6 +92,7 @@ set(GLOB2_ENGINE_TESTS_0_SOURCES
     src/unit/UnitContinuationHarness.cpp
     test/SavegameSafetyHarness.cpp
     test/PortableGameHarness.cpp
+    test/support/HeadlessGlobalsTest.cpp
     src/team/stats/TeamStatsPipelineTest.cpp
     src/team/RoutingRatioPolicyTest.cpp
     src/team/stats/TeamLabourStatsTest.cpp
@@ -1373,6 +1374,7 @@ set(GLOB2_ANDROID_ENGINE_TESTS_0_SOURCES
     src/unit/UnitContinuationHarness.cpp
     test/SavegameSafetyHarness.cpp
     test/PortableGameHarness.cpp
+    test/support/HeadlessGlobalsTest.cpp
     src/team/stats/TeamStatsPipelineTest.cpp
     src/team/RoutingRatioPolicyTest.cpp
     src/team/stats/TeamLabourStatsTest.cpp

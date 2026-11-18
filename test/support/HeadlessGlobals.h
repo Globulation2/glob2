@@ -46,5 +46,11 @@ namespace glob2test
 
 		GlobalContainer* operator->() { return &globals; }
 		GlobalContainer& operator*() { return globals; }
+
+	  private:
+		void configure(const Options& options);
+		// Everything this fixture set process-wide, undone by the destructor and by
+		// a constructor that throws.
+		void releaseProcessState();
 	};
 }

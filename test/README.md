@@ -288,7 +288,12 @@ game or GUI does not compile against them:
 - `HeadlessGlobals.h`: `HeadlessGlobals`, the RAII `GlobalContainer` every headless
   harness used to bootstrap by hand (`runNoX`, building types, races, key actions,
   the repository on the data path, a seeded simulation RNG; `Options` select a real
-  display, string loading, screen size and seed);
+  display, string loading, screen size and seed). It releases what it set
+  process-wide when it closes, and also when its constructor throws: the global
+  container pointer, performance telemetry and the online services bound to its
+  file manager (`Online::releaseProcessServices`). A test that signs in uses
+  `OnlineFakes::IsolatedServices` (in-memory storage) so no account state reaches
+  the profile that later cases share;
 - `HeadlessGame.h`: `HeadlessGame`, a one-colony game on a small grass torus owned
   by its `GameGUI`, with `addBuilding`, `addUnit`, `step` and `checksum`;
 - `GameFixtures.h`: helpers that drive any `Game` and need no GUI: `BoundGameRandom`,

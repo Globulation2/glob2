@@ -3,7 +3,10 @@
 #pragma once
 
 #include "HttpFetch.h"
+#include "MapCache.h"
 #include "NetTransport.h"
+#include "OnlineServices.h"
+#include "OnlineStorage.h"
 #include "PlatformClient.h"
 
 #include <nlohmann/json.hpp>
@@ -300,4 +303,20 @@ inline Json tokens(const std::string &refresh, std::int64_t iat = 1790000000,
 				{"refreshToken", refresh},
 				{"refreshTokenExpiresAt", "2026-11-21T15:00:00Z"}};
 }
+
+// Application services (what Online::services() returns while this lives) over
+// in-memory storage, so that signing in neither reads nor writes the user
+// directory: no instance record, refresh token or device credential is shared
+// with a later case in the process, or with a later process using the same
+// profile. Maps are never downloaded.
+struct IsolatedServices
+{
+	Online::MemoryStorage storage;
+	Online::MapCache maps{storage, nullptr};
+	Online::ServicesOwner owner{[this] { return std::make_unique<Online::Services>(storage, maps); }};
+	Online::Services &get()
+	{
+		return owner.get();
+	}
+};
 } // namespace OnlineFakes

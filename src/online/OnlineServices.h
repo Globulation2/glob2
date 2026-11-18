@@ -91,6 +91,13 @@ bool servicesCreated();
 // services().maps, without creating the platform client or reading
 // online/instances.json: for LAN games.
 MapCache &sharedMapCache();
+// Drops the process-lifetime services and the user directory's storage and map
+// cache. They hold the Toolkit file manager they were created with, so whoever
+// closes that file manager (GlobalContainer's owner, as a test fixture does once
+// per case) releases them first; the next use recreates them for the current
+// user directory. No ServicesOwner may be live, and nothing may still hold
+// references from services() or sharedMapCache().
+void releaseProcessServices();
 // Advances the application's services (when created) and picks up invite links
 // delivered while running (macOS/iOS URL events arrive as SDL_EVENT_DROP_FILE
 // through acceptDroppedText; Android intents and iOS universal links are polled
