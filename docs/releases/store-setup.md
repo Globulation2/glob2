@@ -16,9 +16,10 @@ operations; preserve each platform's existing release controls.
 ## Canonical listing translations
 
 The [marketing translation repository](https://github.com/Globulation2/glob2-marketing/tree/main/translations)
-owns the approved English master, terminology, 32 translated catalogs, source
-fingerprints and independent AI review records. Change that source first when
-editing listing language; translations need renewed review when their English
+owns the approved English master, terminology, 44 translated catalogs
+(45 including English), source fingerprints and independent AI review records.
+Change that source first when editing listing language; translations need renewed
+review when their English
 source or translated text changes. AI review is not native-speaker validation.
 
 In a checkout of the marketing repository, validate and generate merge inputs:
@@ -30,8 +31,10 @@ python3 translations/tools/storefront.py export --out /tmp/glob2-storefront-expo
 
 Merge the generated Fastlane locale text into `fastlane/metadata/android/`,
 preserving existing changelogs and release metadata. This tree feeds F-Droid;
-its neutral locale directories are deliberate. The separate `google-play/`
-export uses Play locale identifiers and still requires console verification.
+its neutral locale directories are deliberate and cover all 45 canonical locales.
+Keep F-Droid directory mappings separate from console locale identifiers.
+The separate `google-play/` export uses Play locale identifiers and still
+requires console verification.
 Do not upload the F-Droid directory tree as ready Play metadata. Merge AppStream summary,
 description paragraphs and screenshot captions into the corresponding existing
 nodes in `content/data/org.globulation2.Globulation2.metainfo.xml`; the exported fragment
