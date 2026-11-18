@@ -101,13 +101,36 @@ static void tiledCapture(bool hd = false)
     int vx = 17, vy = 21; // Initial capture origin is (0,0), boundaries are at cells 30 and 60.
     const unsigned options = Game::DRAW_AREA;
     REQUIRE(view.draw(glob2test::sceneOf(game),game.gui, 0, options, vx, vy, 960, 720));
+    // The captured tiles, like the reference below, show placeholders until
+    // the view's own terrain has finished preparing in the background, which
+    // can outlast the first capture on slow runners (software GL on CI).
+    // Redraw on a clock until it is ready, then capture once more with it.
+    int draws = 1;
+    const auto viewTerrainReady = [&] {
+        const auto *direct = view.standaloneRender.existingDirectTerrain();
+        return !direct || (!direct->preparing() && direct->pendingHdMasks() == 0);
+    };
+    const auto viewDeadline = std::chrono::steady_clock::now() + std::chrono::minutes(2);
+    while (!viewTerrainReady() && std::chrono::steady_clock::now() < viewDeadline)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(2));
+        REQUIRE(view.draw(glob2test::sceneOf(game),game.gui, 0, options, vx, vy, 960, 720));
+        ++draws;
+    }
+    INFO("The torus view's terrain never finished preparing within two minutes");
+    REQUIRE(viewTerrainReady());
+    if (draws > 1)
+    {
+        REQUIRE(view.draw(glob2test::sceneOf(game),game.gui, 0, options, vx, vy, 960, 720));
+        ++draws;
+    }
     // The direct pass samples native material frames at this density (32
     // pixels a cell), where HD frames add nothing; it prepares no pages either.
     REQUIRE(globalContainer->terrainCompositor().scale() == 1);
     REQUIRE(view.tiles.size() == 9);
     REQUIRE(view.pixelsPerCell == 32);
-    REQUIRE(view.standaloneRender.animationTime == 1);
-    REQUIRE(view.standaloneRender.areaAnimationTick == 1);
+    REQUIRE(view.standaloneRender.animationTime == draws);
+    REQUIRE(view.standaloneRender.areaAnimationTick == draws);
     GLint oldViewport[4]; glGetIntegerv(GL_VIEWPORT, oldViewport);
     GLuint reference, framebuffer;
     glGenTextures(1, &reference);
@@ -171,8 +194,8 @@ static void tiledCapture(bool hd = false)
     glViewport(oldViewport[0], oldViewport[1], oldViewport[2], oldViewport[3]);
     REQUIRE(glGetError() == GL_NO_ERROR);
     REQUIRE(view.draw(glob2test::sceneOf(game),game.gui, 0, options, vx, vy, 960, 720));
-    REQUIRE(view.standaloneRender.animationTime == 2);
-    REQUIRE(view.standaloneRender.areaAnimationTick == 2);
+    REQUIRE(view.standaloneRender.animationTime == draws + 1);
+    REQUIRE(view.standaloneRender.areaAnimationTick == draws + 1);
     view.reset();
     view.allocationPixelLimit = 1500000; // Some native tiles allocate before retrying.
     view.toggle();
