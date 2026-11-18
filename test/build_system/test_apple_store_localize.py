@@ -126,6 +126,27 @@ class AppleLocalizationTests(unittest.TestCase):
             with self.subTest(change=change),self.assertRaisesRegex(ValueError,'baseline'):tool.run(api,api.plan,'apply',baseline)
             self.assertFalse(api.writes())
 
+    def test_withdrawn_version_can_be_localized_without_changing_review_or_build(self):
+        api = FakeAPI()
+        api.versions[0]['attributes']['appVersionState'] = 'DEVELOPER_REJECTED'
+        api.infos[0]['attributes']['state'] = 'DEVELOPER_REJECTED'
+        original_versions = copy.deepcopy(api.versions)
+        original_build = copy.deepcopy(api.attached)
+        result = self.inspect_apply(api)
+        self.assertTrue(result['verified'])
+        self.assertEqual(api.versions, original_versions)
+        self.assertEqual(api.attached, original_build)
+        self.assertFalse(any('/reviewSubmissions' in path for _, path, _ in api.calls))
+
+    def test_review_and_distribution_states_refuse_every_write(self):
+        for state in ('WAITING_FOR_REVIEW', 'IN_REVIEW', 'READY_FOR_DISTRIBUTION',
+                      'PENDING_DEVELOPER_RELEASE', 'PENDING_APPLE_RELEASE', 'READY_FOR_REVIEW'):
+            api = FakeAPI()
+            api.versions[0]['attributes']['appVersionState'] = state
+            with self.subTest(state=state), self.assertRaisesRegex(ValueError, 'editable draft'):
+                tool.run(api, api.plan, 'inspect')
+            self.assertFalse(api.writes())
+
     def test_wrong_state_build_platform_and_ambiguous_info_refuse_writes(self):
         for failure in ('review','build','platform','ambiguous','live-only','bundle'):
             api=FakeAPI()
