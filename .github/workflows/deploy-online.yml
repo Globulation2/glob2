@@ -122,8 +122,9 @@ jobs:
       github.ref == 'refs/heads/master'
     runs-on: ubuntu-24.04
     # Mostly waiting: the host rebuilds the images and both web client variants
-    # with CMake (about five hours on the current host).
-    timeout-minutes: 440
+    # with CMake (about five hours on the current host). GitHub-hosted jobs
+    # stop at 360 minutes whatever this says, so the wait below ends first.
+    timeout-minutes: 360
     environment:
       name: online-production
       url: https://app.glob2.online
@@ -197,7 +198,7 @@ jobs:
       - name: Wait for the deploy
         id: wait
         if: steps.host.outputs.skip != 'true'
-        timeout-minutes: 420
+        timeout-minutes: 330
         run: |
           set -uo pipefail
           polls=0
