@@ -2,6 +2,7 @@
 #include "Glob2Test.h"
 #include <nlohmann/json.hpp>
 #include "CommandLine.h"
+#include <fstream>
 #include <sstream>
 #include <algorithm>
 TEST_SUITE("CommandLine")
@@ -143,6 +144,45 @@ TEST_SUITE("CommandLine")
 		CHECK_EQ(r.get("--ticks"), "4096"); CHECK_EQ(r.positionals.at(0), "saved.game.gz");
 		CHECK_FALSE(Cli::parse({"game", "repeat", "saved.game.gz"}).has("--display"));
 		CHECK_THROWS_AS(Cli::parse({"game", "repeat", "saved.game.gz", "--record=out.mp4"}), std::invalid_argument);
+	}
+	TEST_CASE("the LAN guides' glob2 commands parse")
+	{
+		// The playtest guide told players to verify the match record with a removed
+		// --map option. Every documented `.../src/glob2 <command> ...` line must parse.
+		std::size_t commands = 0;
+		for (const char *guide : {"docs/multiplayer/lan-playtest.md", "docs/multiplayer/lan.md"})
+		{
+			std::ifstream in(glob2test::sourceRoot() / guide);
+			REQUIRE(in);
+			std::string line, command;
+			while (std::getline(in, line))
+			{
+				command += line;
+				if (!command.empty() && command.back() == '\\')
+				{
+					command.pop_back();
+					command += ' ';
+					continue;
+				}
+				const auto binary = command.find("src/glob2 ");
+				if (binary != std::string::npos)
+				{
+					std::string rest = command.substr(binary + 10);
+					// Placeholders such as <the map> stand for one argument.
+					for (std::size_t open; (open = rest.find('<')) != std::string::npos;)
+						rest.replace(open, rest.find('>', open) - open + 1, "fixture");
+					std::istringstream words(rest);
+					std::vector<std::string> args;
+					for (std::string word; words >> word;)
+						args.push_back(word);
+					INFO(guide << ": " << command);
+					CHECK_NOTHROW(Cli::parse(args));
+					++commands;
+				}
+				command.clear();
+			}
+		}
+		CHECK(commands > 0);
 	}
 	TEST_CASE("malformed input fails before handlers")
 	{
