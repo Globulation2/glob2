@@ -88,6 +88,11 @@ void validate(const Json &schema, const Json &value, const std::string &path)
 }
 Json object(Json properties, Json required = Json::array())
 {
+	// A braced {} argument arrives as JSON null; MCP clients require an object and an array.
+	if (properties.is_null())
+		properties = Json::object();
+	if (required.is_null())
+		required = Json::array();
 	return {{"type", "object"},
 			{"properties", properties},
 			{"required", required},
