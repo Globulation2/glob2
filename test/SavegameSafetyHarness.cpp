@@ -336,6 +336,32 @@ static void checkBackgroundWriter(FileManager& files, const fs::path& directory)
         writer.waitUntilIdle();
         REQUIRE(contents(path) == previous);
     }
+    for (bool cooperative : {false, true})
+    {
+        // A finish step belongs to its own write. libc++ leaves a small callable
+        // in a moved-from std::function, so the writer must clear it explicitly;
+        // otherwise it runs again on the next snapshot or legacy write.
+        BackgroundFileWriter writer(&files, cooperative);
+        unsigned finished = 0;
+        ChunkedBuffer bytes; bytes.writeAt(0, "with finish", 11);
+        writer.write(path, std::move(bytes), [&finished](ChunkedBuffer&) { ++finished; });
+        writer.waitUntilIdle();
+        REQUIRE(finished == 1);
+        auto job = writer.submit(path, [](ChunkedBuffer& out) -> CooperativeTask {
+            out.writeAt(0, "snapshot", 8);
+            co_return true;
+        });
+        writer.waitUntilIdle();
+        CHECK(finished == 1);
+        REQUIRE(job->state == BackgroundFileWriter::State::Succeeded);
+        ChunkedBuffer plain; plain.writeAt(0, "plain", 5);
+        writer.write(path, std::move(plain));
+        writer.waitUntilIdle();
+        CHECK(finished == 1);
+        std::string decoded;
+        REQUIRE(gzipDecompress(contents(path), decoded));
+        CHECK(decoded == "plain");
+    }
 
     for(bool cooperative:{false,true}) {
         BackgroundFileWriter writer(&files,cooperative);

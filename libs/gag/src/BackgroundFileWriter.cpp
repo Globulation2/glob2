@@ -6,6 +6,7 @@
 #include <ChunkedStreamBackend.h>
 #include <iostream>
 #include <system_error>
+#include <utility>
 #include <ThreadSupport.h>
 
 namespace GAGCore
@@ -136,6 +137,11 @@ namespace GAGCore
             result->state = State::Failed;
             return result;
         }
+        // A snapshot job never carries a legacy write's bytes or finish step.
+        pendingChunks.reset();
+        pendingChunkFinish = {};
+        pendingFinish = {};
+        std::string().swap(pendingContents);
         pendingName = filename;
         pendingEncode = std::move(encode);
         pendingResult = result;
@@ -164,8 +170,8 @@ namespace GAGCore
                 try
                 {
                     cooperative = std::make_unique<CooperativeTask>(runSnapshot(
-                        std::move(pendingName), std::move(pendingEncode), std::move(pendingResult),
-                        pendingMeasured, queuedAt));
+                        std::exchange(pendingName, {}), std::exchange(pendingEncode, {}),
+                        std::exchange(pendingResult, {}), pendingMeasured, queuedAt));
                 }
                 catch (...)
                 {
@@ -233,15 +239,17 @@ namespace GAGCore
         std::unique_lock<std::mutex> lock(mutex);
         while (pending)
         {
-            const std::string name = std::move(pendingName);
+            // Take every field with std::exchange: a moved-from std::function
+            // is unspecified, and libc++ keeps small callables in it. A stale
+            // finish step would otherwise run again on the next job.
+            const std::string name = std::exchange(pendingName, {});
             const bool gzip = pendingGzip;
-            auto encode = std::move(pendingEncode);
-            auto result = std::move(pendingResult);
-            std::string contents = std::move(pendingContents);
-            const std::function<void(std::string &)> finish = std::move(pendingFinish);
-            auto chunks = std::move(pendingChunks);
-            const auto chunkFinish = std::move(pendingChunkFinish);
-            pendingFinish = nullptr;
+            auto encode = std::exchange(pendingEncode, {});
+            auto result = std::exchange(pendingResult, {});
+            std::string contents = std::exchange(pendingContents, {});
+            const auto finish = std::exchange(pendingFinish, {});
+            auto chunks = std::exchange(pendingChunks, {});
+            const auto chunkFinish = std::exchange(pendingChunkFinish, {});
             const bool measured = pendingMeasured;
             const auto started = measured ? PerformanceTelemetry::now() : 0;
             if (measured)
