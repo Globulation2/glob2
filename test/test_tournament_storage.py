@@ -214,6 +214,33 @@ class QuotaTests(unittest.TestCase):
         self.assertEqual(self.coordinator.dispatch('host',self.status),[])
 
 
+class StoredBytesTests(unittest.TestCase):
+    def test_the_results_total_is_walked_once_per_interval_and_counts_new_artifacts(self):
+        from tools.tournaments import coordinator as C
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'artifacts').mkdir(); (root / 'transfers').mkdir()
+            (root / 'artifacts' / 'a').write_bytes(b'x' * 100)
+            self.assertEqual(C.stored_bytes(root, fresh=True), 100)
+            (root / 'artifacts' / 'b').write_bytes(b'y' * 50)
+            with patch.object(C, 'directory_bytes', side_effect=AssertionError('walked again')):
+                self.assertEqual(C.stored_bytes(root), 100)   # cached, not walked
+                C.count_stored(root, 50)                      # a committed transfer is counted at once
+                self.assertEqual(C.stored_bytes(root), 150)
+            self.assertEqual(C.stored_bytes(root, fresh=True), 150)
+            with patch.object(C.time, 'monotonic', return_value=C.time.monotonic() + C.STORAGE_WALK_SECONDS + 1):
+                (root / 'artifacts' / 'c').write_bytes(b'z' * 10)
+                self.assertEqual(C.stored_bytes(root), 160)   # stale totals are walked again
+
+    def test_a_soft_write_still_replaces_atomically(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'reservations.json'
+            atomic_json(path, {'a': 1}, durable=False)
+            atomic_json(path, {'a': 2}, durable=False)
+            self.assertEqual(read_json(path), {'a': 2})
+            self.assertEqual([p.name for p in Path(directory).iterdir()], ['reservations.json'])
+
+
 class SupervisorTests(unittest.TestCase):
     def scenario(self, scenario, *, log_limit=65536, artifact_limit=1024*1024, probability=False, inherited_file_limit=None):
         temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup);root=Path(temp.name);source=root/'source';source.mkdir()

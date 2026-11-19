@@ -37,7 +37,8 @@ def fsync_directory(path):
         os.close(fd)
 
 
-def atomic_bytes(path, data):
+def atomic_bytes(path, data, durable=True):
+    """Replace path with data atomically; durable also survives power loss."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, tmp = tempfile.mkstemp(prefix='.' + path.name, dir=path.parent)
@@ -45,16 +46,18 @@ def atomic_bytes(path, data):
         with os.fdopen(fd, 'wb') as stream:
             stream.write(data)
             stream.flush()
-            os.fsync(stream.fileno())
+            if durable:
+                os.fsync(stream.fileno())
         os.replace(tmp, path)
-        fsync_directory(path.parent)
+        if durable:
+            fsync_directory(path.parent)
     finally:
         with contextlib.suppress(FileNotFoundError):
             os.unlink(tmp)
 
 
-def atomic_json(path, value):
-    atomic_bytes(path, canonical(value) + b'\n')
+def atomic_json(path, value, durable=True):
+    atomic_bytes(path, canonical(value) + b'\n', durable)
 
 
 def read_json(path):
