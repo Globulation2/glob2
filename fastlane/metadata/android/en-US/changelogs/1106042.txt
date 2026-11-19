@@ -1,0 +1,1 @@
+Faster graphics on phones with Mali GPUs, much faster artwork loading at startup on phones and tablets, and smoother single-player games.
