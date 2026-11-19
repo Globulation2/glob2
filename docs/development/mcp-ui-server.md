@@ -112,7 +112,8 @@ not depend on the OS pointer position.
 
 The `game_*` tools follow fog of war: they report only what the player's colony sees
 now or has seen. Other teams' buildings out of sight are reported as last seen (from a
-memory refreshed every 50 ticks from the same visibility as Hive observations, and
+memory refreshed every 50 ticks, once an agent first calls `game_world`, from the same
+visibility as Hive observations, and
 corrected only when the tile is in view again); resources come from the same
 last-seen memory; another team's hit points and warrior training are never reported.
 | hive_status | Local scripting availability, match-session identity and limits. |

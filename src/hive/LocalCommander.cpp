@@ -439,6 +439,7 @@ void LocalCommander::update()
 		clear();
 		return;
 	}
+	if (memoryTracked)
 	{
 		const auto observedTick = gui.simulationThreaded ? gui.drawnScene().tick : gui.game.stepCounter;
 		if (observedTick >= nextMemoryTick)
@@ -662,6 +663,7 @@ Json LocalCommander::world(const Json &args)
 										 {"height", type ? type->height : 1}});
 				}
 			// Other teams' buildings seen earlier and now under fog, as last seen.
+			memoryTracked = true;
 			refreshMemory();
 			std::set<int> listed;
 			for (const auto &b : others)
