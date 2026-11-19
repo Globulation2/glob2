@@ -707,16 +707,18 @@ TEST_SUITE("WinProbability")
             slot.feeding = fields.at("feeding");
             slot.explorers = fields.at("explorers");
             slot.barracksLevels = fields.at("barracksLevels");
+            slot.schoolLevels = fields.at("schoolLevels");
             slot.delivered = fields.at("delivered");
             slot.innWalkDistance = fields.at("innWalkDistance");
             slot.swarmFilling = fields.at("swarmFilling");
             slot.attack = fields.at("attack");
             slot.prestigeNeeded = fields.at("prestigeNeeded");
+            slot.prestigeLead = fields.at("prestigeLead");
             REQUIRE(fields.at("alliance") == int(samples[fields.at("tick")].size()));
             samples[fields.at("tick")].push_back(slot);
             expected[fields.at("tick")].push_back(fields.at("permille"));
         }
-        REQUIRE(samples.size() == 10);
+        REQUIRE(samples.size() == 20);
         for (const auto &[tick, slots] : samples)
         {
             INFO(tick);
