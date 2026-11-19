@@ -13,6 +13,7 @@
 #endif
 #include <cstring>
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstdint>
 #include <condition_variable>
@@ -262,6 +263,9 @@ struct AssetLoader::Impl {
         bool read;
         Priority priority;
         size_t reserved = 0;
+        // Dependencies before this index have settled; each settles only once.
+        size_t settled = 0;
+        bool estimated = false, runnable = false;
     };
     std::vector<std::string> directories;
     Options options;
@@ -277,7 +281,15 @@ struct AssetLoader::Impl {
     void changed() { ++*changes; }
     std::condition_variable ioWake;
     std::shared_ptr<std::atomic<size_t>> encodedBytes = std::make_shared<std::atomic<size_t>>(0);
-    std::deque<std::unique_ptr<Job>> jobs;
+    // Queued jobs are either runnable, in submission order per pool and
+    // priority, or parked on the result of their first unsettled dependency
+    // until it settles. take() never rescans waiting work: on a phone,
+    // rescanning thousands of queued decodes for every read held this mutex
+    // for nearly all of startup.
+    std::array<std::array<std::deque<std::unique_ptr<Job>>, 3>, 2> runnable; // [read][priority]
+    std::unordered_map<const Result*, std::vector<std::unique_ptr<Job>>> blocked;
+    std::unordered_map<const Result*, Job*> queued;
+    Clock::time_point lastSweep = Clock::now();
     struct Finalizer { Dependency dependency; std::weak_ptr<void> lifetime; std::function<void()> run; };
     std::deque<Finalizer> finalizers;
     std::unordered_map<std::string, std::weak_ptr<Result>> cache;
@@ -294,7 +306,8 @@ struct AssetLoader::Impl {
         if (auto result = cache[cacheKey].lock()) {
             if (readyOnly && result->state != State::Ready) return {};
             if (result->state != State::Failed && result->state != State::Cancelled && result->consumers) {
-                for (auto &job : jobs) if (job->result == result && priority < job->priority) job->priority = priority;
+                if (const auto found = queued.find(result.get()); found != queued.end() && priority < found->second->priority)
+                    promote(*found->second, priority);
                 ++result->consumers;
                 changed();
                 (read ? ioWake : *cpuWake).notify_one();
@@ -353,53 +366,112 @@ struct AssetLoader::Impl {
         ready->notify_all();
         cpuWake->notify_one();
     }
+    void promote(Job& job, Priority priority) {
+        if (!job.runnable) { job.priority = priority; return; }
+        auto &from = runnable[job.read][int(job.priority)];
+        const auto it = std::find_if(from.begin(), from.end(), [&](const auto &entry) { return entry.get() == &job; });
+        auto owned = std::move(*it);
+        from.erase(it);
+        job.priority = priority;
+        runnable[job.read][int(priority)].push_back(std::move(owned));
+    }
+    // The first unsettled dependency's state, or Ready once all have settled.
+    // A failed or cancelled optional dependency counts as settled.
+    static State dependencyState(Job& job) {
+        while (job.settled < job.dependencies.size()) {
+            const auto &dependency = job.dependencies[job.settled];
+            const auto current = dependency.state();
+            if (current == State::Pending) return current;
+            if (dependency.required && current != State::Ready) return current;
+            ++job.settled;
+        }
+        return State::Ready;
+    }
+    void finish(std::unique_ptr<Job> job, State terminal, std::string error) {
+        queued.erase(job->result.get());
+        job->result->error = std::move(error);
+        job->result->state.store(terminal, std::memory_order_release);
+        if (terminal == State::Failed) ++totals.failed; else ++totals.cancelled;
+        wakeDependents(job->result.get());
+    }
+    // Queues a job as runnable, parks it on its next pending dependency, or
+    // finishes it when its demand or a required dependency is gone.
+    void schedule(std::unique_ptr<Job> job) {
+        job->runnable = false;
+        queued[job->result.get()] = job.get();
+        const auto state = job->result->consumers ? dependencyState(*job) : State::Cancelled;
+        if (state == State::Pending) {
+            const auto *awaited = job->dependencies[job->settled].subscription->result.get();
+            blocked[awaited].push_back(std::move(job));
+        } else if (state == State::Ready) {
+            job->runnable = true;
+            auto &bucket = runnable[job->read][int(job->priority)];
+            bucket.push_back(std::move(job));
+        } else if (state == State::Failed && job->result->consumers)
+            finish(std::move(job), State::Failed, "Asset dependency failed");
+        else
+            finish(std::move(job), State::Cancelled, "Asset request cancelled");
+    }
+    void wakeDependents(const Result* result) {
+        const auto found = blocked.find(result);
+        if (found == blocked.end()) return;
+        auto waiting = std::move(found->second);
+        blocked.erase(found);
+        for (auto &job : waiting) schedule(std::move(job));
+        ioWake.notify_one();
+        cpuWake->notify_one();
+    }
+    // Results settled outside this loader's jobs, cancelled subscriptions and
+    // abandoned parked jobs would otherwise wait for an event that never
+    // comes. Recheck them a few times a second; this is not the hot path.
+    void sweepBlocked() {
+        const auto now = Clock::now();
+        if (blocked.empty() || now - lastSweep < std::chrono::milliseconds(200)) return;
+        lastSweep = now;
+        std::vector<std::unique_ptr<Job>> recheck;
+        for (auto it = blocked.begin(); it != blocked.end();) {
+            auto &jobs = it->second;
+            const bool settled = it->first->state.load(std::memory_order_acquire) != State::Pending;
+            for (size_t i = 0; i < jobs.size();)
+                if (settled || !jobs[i]->result->consumers ||
+                        jobs[i]->dependencies[jobs[i]->settled].state() != State::Pending) {
+                    recheck.push_back(std::move(jobs[i]));
+                    jobs[i] = std::move(jobs.back()); jobs.pop_back();
+                } else ++i;
+            it = jobs.empty() ? blocked.erase(it) : std::next(it);
+        }
+        for (auto &job : recheck) schedule(std::move(job));
+    }
     std::unique_ptr<Job> take(bool read) {
-        auto best = jobs.end();
-        for (auto it = jobs.begin(); it != jobs.end();) {
-            auto &job = **it;
-            State state = State::Ready;
-            for (const auto &dependency : job.dependencies) {
-                const auto current = dependency.state();
-                if (!dependency.required && (current == State::Failed || current == State::Cancelled)) continue;
-                if (current == State::Failed || current == State::Cancelled) { state = current; break; }
-                if (current == State::Pending) state = State::Pending;
-            }
-            if (!job.result->consumers || state == State::Failed || state == State::Cancelled) {
-                job.result->error = state == State::Failed ? "Asset dependency failed" : "Asset request cancelled";
-                const auto terminal = state == State::Failed ? State::Failed : State::Cancelled;
-                job.result->state.store(terminal, std::memory_order_release);
-                if (terminal == State::Failed) ++totals.failed; else ++totals.cancelled;
-                it = jobs.erase(it);
-                best = jobs.end();
-                continue;
-            }
-            if (job.read == read && state == State::Ready &&
-                (best == jobs.end() || job.priority < (*best)->priority)) {
-                try {
-                    job.reserved = job.estimate();
-                    if (fits(job.reserved)) {
-                        best = it;
-                        if (job.priority == Priority::Required) break;
-                    }
-                } catch (const std::exception& error) {
-                    job.result->error = error.what();
-                    job.result->state.store(State::Failed, std::memory_order_release);
-                    ++totals.failed;
-                    it = jobs.erase(it);
-                    best = jobs.end();
+        sweepBlocked();
+        for (auto &bucket : runnable[read]) {
+            for (auto it = bucket.begin(); it != bucket.end();) {
+                auto &job = **it;
+                if (!job.result->consumers) {
+                    auto owned = std::move(*it); it = bucket.erase(it);
+                    finish(std::move(owned), State::Cancelled, "Asset request cancelled");
                     continue;
                 }
+                try {
+                    if (!job.estimated) { job.reserved = job.estimate(); job.estimated = true; }
+                } catch (const std::exception& error) {
+                    auto owned = std::move(*it); it = bucket.erase(it);
+                    finish(std::move(owned), State::Failed, error.what());
+                    continue;
+                }
+                if (!fits(job.reserved)) { ++it; continue; }
+                auto result = std::move(*it);
+                bucket.erase(it);
+                queued.erase(result->result.get());
+                result->runnable = false;
+                reserve(result->reserved);
+                auto &active = read ? totals.activeReads : totals.activeCpu;
+                auto &peak = read ? totals.peakReads : totals.peakCpu;
+                peak = std::max(peak, ++active);
+                return result;
             }
-            ++it;
         }
-        if (best == jobs.end()) return {};
-        auto result = std::move(*best);
-        jobs.erase(best);
-        reserve(result->reserved);
-        auto &active = read ? totals.activeReads : totals.activeCpu;
-        auto &peak = read ? totals.peakReads : totals.peakCpu;
-        peak = std::max(peak, ++active);
-        return result;
+        return {};
     }
     bool execute(std::unique_ptr<Job> job) {
         const auto start = Clock::now();
@@ -413,7 +485,7 @@ struct AssetLoader::Impl {
             std::lock_guard lock(mutex);
             totals.workingBytes -= job->reserved;
             --totals.activeReads;
-            jobs.push_back(std::move(job));
+            schedule(std::move(job));
             changed();
             return false;
         } catch (const std::exception& error) {
@@ -432,6 +504,7 @@ struct AssetLoader::Impl {
             // Readiness also means input credits and preparation scratch have
             // been released. Owners can consume immediately after this store.
             job->result->state.store(succeeded ? State::Ready : State::Failed, std::memory_order_release);
+            wakeDependents(job->result.get());
         }
         changed();
         ready->notify_all();
@@ -505,7 +578,7 @@ std::shared_ptr<AssetLoader::Result> AssetLoader::submit(const std::string& key,
     // subscription immediately below; workers may otherwise see zero consumers.
     ++result->consumers;
     impl->cache[cacheKey] = result;
-    impl->jobs.push_back(std::make_unique<Impl::Job>(Impl::Job{result, std::move(dependencies),
+    impl->schedule(std::make_unique<Impl::Job>(Impl::Job{result, std::move(dependencies),
         std::move(work), std::move(estimate), read, priority}));
     ++impl->totals.submitted;
     impl->changed();
@@ -686,6 +759,12 @@ void AssetLoader::poll(std::int64_t budgetMilliseconds) {
         if (ran && Clock::now() - start >= budget) break;
     }
 }
+#ifdef __EMSCRIPTEN__
+void AssetLoader::wakeDependents(const Result* result) {
+    std::lock_guard lock(impl->mutex);
+    impl->wakeDependents(result);
+}
+#endif
 void AssetLoader::yieldWhileWaiting() {
     if (!impl->cpu.empty()) std::this_thread::sleep_for(std::chrono::milliseconds(1));
 }
@@ -715,7 +794,11 @@ void AssetLoader::shutdown() {
     for (auto &thread : impl->io) if (thread.joinable()) thread.join();
     impl->cpu.clear(); impl->io.clear();
     std::lock_guard lock(impl->mutex);
-    for (const auto &job : impl->jobs) job->result->state.store(State::Cancelled, std::memory_order_release);
-    impl->jobs.clear(); impl->cache.clear(); impl->finalizers.clear();
+    for (const auto &pool : impl->runnable) for (const auto &bucket : pool) for (const auto &job : bucket)
+        job->result->state.store(State::Cancelled, std::memory_order_release);
+    for (const auto &[result, jobs] : impl->blocked) for (const auto &job : jobs)
+        job->result->state.store(State::Cancelled, std::memory_order_release);
+    for (auto &pool : impl->runnable) for (auto &bucket : pool) bucket.clear();
+    impl->blocked.clear(); impl->queued.clear(); impl->cache.clear(); impl->finalizers.clear();
 }
 }

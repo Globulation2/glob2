@@ -121,7 +121,10 @@ occupancy, admitted scratch, buffered inputs, jobs and cumulative stage times.
 For new asset types, submit immutable inputs and dependency continuations through
 this service, estimate preparation scratch, and finalize on the owner thread.
 Estimation runs under the scheduler lock: keep it quick and do not call service
-APIs from it. Sprite estimates include padded atlas cells at the maximum frame
+APIs from it. A job waits on its first unfinished dependency and is queued as
+runnable when that settles, so picking work never rescans the queue; results
+settled outside the service (browser video) wake their dependents directly, and
+a fifth-of-a-second recheck covers cancelled subscriptions. Sprite estimates include padded atlas cells at the maximum frame
 dimensions and any upload copies. Expired weak cache keys are periodically removed
 so unique preview and music requests do not accumulate session metadata.
 Never wait inside a worker or capture a mutable screen, FileManager or renderer.
