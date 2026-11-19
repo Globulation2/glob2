@@ -7,6 +7,7 @@
 #include "FrontendTheme.h"
 #include "ui/ThemeCatalog.h"
 #include "MenuColony.h"
+#include "render/AnimationClock.h"
 #include <StringTable.h>
 #include "MainMenuScreen.h"
 #include <GameplayRecording.h>
@@ -1014,17 +1015,58 @@ int main(int argc, char **argv)
 		FrontendScope scope;
 		Preview<MainMenuScreen> menu;
 		require(globals.ensureGameGraphics(), "load colony artwork");
+		// Water, shorelines and clouds follow the presentation clock. Advance it by the
+		// same 40 ms each recorded frame as the simulation, not by however long capture
+		// takes, so the recording plays at real speed at 25 fps.
+		constexpr std::uint64_t frameNs = 40'000'000;
+		AnimationClock::simulatedFrameNs = frameNs;
 		for (int i = 0; i < std::atoi(argv[3]); ++i)
 		{
 			theme.colony->update(1000 + i * 40);
-			if (mode == "record-colony")
-				theme.colony->draw(globals.gfx->getW(), globals.gfx->getH(), false);
-			else
-				menu.render();
-			DrawableSurface shot(globals.gfx->getW(), globals.gfx->getH());
-			shot.drawSurface(0, 0, globals.gfx);
+			// GLOB2_COLONY_STATUS keeps the unit/building status bars the menu shows.
+			const bool status = std::getenv("GLOB2_COLONY_STATUS") != nullptr;
+			const auto drawFrame = [&]
+			{
+				if (mode == "record-colony")
+					theme.colony->draw(globals.gfx->getW(), globals.gfx->getH(), status);
+				else
+					menu.render();
+			};
+			drawFrame();
 			char name[32];
 			const bool clean = mode == "record-colony";
+			if (clean && std::getenv("GLOB2_PRESENTED_CAPTURE"))
+			{
+				// GPU backends do not expose their frame as a CPU surface: read back the
+				// presented frame at native pixel size instead.
+				std::shared_ptr<SDL_Surface> pixels;
+				std::string error;
+				bool done = false;
+				globals.gfx->requestMemoryCapture(
+					[&](std::shared_ptr<SDL_Surface> p, std::uint64_t, std::string e)
+					{
+						pixels = std::move(p);
+						error = std::move(e);
+						done = true;
+					});
+				for (int attempt = 0; !done && attempt < 120; ++attempt)
+				{
+					if (attempt)
+					{
+						// Redraws while the readback is pending must not advance animation time.
+						AnimationClock::simulatedFrameNs = 1;
+						drawFrame();
+						AnimationClock::simulatedFrameNs = frameNs;
+					}
+					globals.gfx->nextFrame();
+				}
+				require(done && pixels, ("presented capture: " + error).c_str());
+				std::snprintf(name, sizeof(name), "/%04d.bmp", i);
+				require(SDL_SaveBMP(pixels.get(), (std::string(argv[2]) + name).c_str()), "record frame");
+				continue;
+			}
+			DrawableSurface shot(globals.gfx->getW(), globals.gfx->getH());
+			shot.drawSurface(0, 0, globals.gfx);
 			std::snprintf(name, sizeof(name), clean ? "/%04d.bmp" : "/%04d.png", i);
 			const auto path = std::string(argv[2]) + name;
 			// Lossless BMP avoids spending most of capture time compressing PNGs
