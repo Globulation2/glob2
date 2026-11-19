@@ -18,6 +18,7 @@
 #include <StringTable.h>
 #include <algorithm>
 #include <limits>
+#include <optional>
 #include "Building.h"
 #include "Unit.h"
 #include "Team.h"
@@ -371,6 +372,32 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 			controls.push_back(std::move(stat));
 		}
 	}
+	{
+		// The active placement tool is otherwise visible only as a cursor ghost.
+		// Escape or the secondary button leaves it; both are described in game_guide.
+		PositionedControl placement;
+		placement.key = "game/placement";
+		placement.role = "label";
+		placement.label = "Placement tool";
+		std::string value = "none";
+		if (selectionMode == TOOL_SELECTION && !toolManager.getBuildingName().empty())
+		{
+			const auto &name = toolManager.getBuildingName();
+			value = std::string(name.find("flag") != std::string::npos ? "flag:" : "building:") +
+					name.substr(0, name.find('.'));
+		}
+		else if (selectionMode == BRUSH_SELECTION)
+		{
+			static const char *const zones[] = {"forbidden", "guard", "clearing", "farm"};
+			const int zone = int(toolManager.getZoneType());
+			value = std::string("zone:") + (zone >= 0 && zone < 4 ? zones[zone] : "area") +
+					(brush.getType() == BrushTool::MODE_DEL ? ":erase" : ":paint");
+		}
+		placement.value = value;
+		placement.bounds = {0, 0, 1, 1};
+		placement.actions.clear();
+		controls.push_back(std::move(placement));
+	}
 	if (globalContainer->replaying)
 	{
 		PositionedControl track;
@@ -497,7 +524,13 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 		if (type->maxUnitWorking)
 		{
 			if (allied && b->state().buildingState == Building::ALIVE)
-				numeric("workers", "Assigned workers", bar(), displayedMaxUnitWorking(*b), 0,
+				// Flags request the unit type they attract; name it, not "workers".
+				numeric("workers",
+						!type->isVirtual		  ? "Assigned workers"
+						: type->zonable[WARRIOR]  ? "Assigned warriors"
+						: type->zonable[EXPLORER] ? "Assigned explorers"
+												  : "Assigned workers",
+						bar(), displayedMaxUnitWorking(*b), 0,
 						type->semantics.assignmentLimit,
 						[this](const auto &p) { return displayedMaxUnitWorking(p); },
 						[this](const auto &p, int v) { return requestWorkerAllocation(p, v); });
@@ -887,4 +920,124 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 						std::make_move_iterator(placement.end()));
 	}
 	return compose();
+}
+
+std::string GameGUI::placeFromAutomation(const std::string &requested, int x, int y, int searchRadius,
+										 std::pair<int, int> *placedAt,
+										 const std::vector<std::array<int, 4>> &reserved,
+										 std::pair<int, int> *placedSize)
+{
+	if (globalContainer->isViewingGame() || globalContainer->liveSpectating)
+		return "Placement is unavailable while watching a game";
+	struct Choice
+	{
+		std::string key;
+		bool enabled;
+	};
+	std::optional<Choice> found;
+	std::string available;
+	auto scan = [&](const std::vector<std::string> &names, const std::vector<bool> &states)
+	{
+		for (size_t i = 0; i < names.size(); ++i)
+		{
+			const auto shortName = names[i].substr(0, names[i].find('.'));
+			if (states[i])
+				available += (available.empty() ? "" : ", ") + shortName;
+			if (!found && (names[i] == requested || shortName == requested))
+				found = Choice{names[i], bool(states[i])};
+		}
+	};
+	scan(buildingsChoiceName, buildingsChoiceState);
+	scan(flagsChoiceName, flagsChoiceState);
+	if (!found)
+		return "Unknown building or flag \"" + requested + "\"; placeable here: " + available;
+	const BuildingCatalogView catalog(*drawnScene().buildingTypes);
+	const auto typeNum = catalog.getPlaceableTypeNum(found->key);
+	const auto *type = typeNum >= 0 ? catalog.get(typeNum) : nullptr;
+	if (!type)
+		return "Unknown building or flag \"" + requested + "\"; placeable here: " + available;
+	const auto name = buildingDisplayName(*type);
+	if (!found->enabled)
+		return name + " is not available in this game (a lesson or scenario restriction); "
+					  "placeable here: " + available;
+	const auto &map = drawnScene().map;
+	if (x < 0 || y < 0 || x >= int(map.getW()) || y >= int(map.getH()))
+		return "Tile (" + std::to_string(x) + ", " + std::to_string(y) + ") is outside the " +
+			   std::to_string(map.getW()) + "x" + std::to_string(map.getH()) + " map";
+	// A building needs ground this colony has explored (as the map shows it), and
+	// never overlaps the caller's pending placements, which the click path cannot
+	// see once their orders have left the queue. Flags go anywhere, as for a player.
+	const Uint32 explored = Team::teamNumberToMask(localTeamNo);
+	auto overlaps = [&](int ax, int aw, int bx, int bw, int size)
+	{
+		const int d = ((bx - ax) % size + size) % size;
+		return d < aw || size - d < bw;
+	};
+	auto usable = [&](int tx, int ty)
+	{
+		for (const auto &r : reserved)
+			if (overlaps(tx, type->width, r[0], r[2], int(map.getW())) &&
+				overlaps(ty, type->height, r[1], r[3], int(map.getH())))
+				return false;
+		if (type->isVirtual)
+			return true;
+		for (int dy = 0; dy < type->height; ++dy)
+			for (int dx = 0; dx < type->width; ++dx)
+				if (!map.isMapDiscovered(tx + dx, ty + dy, explored))
+					return false;
+		return true;
+	};
+	if (placedSize)
+		*placedSize = {type->width, type->height};
+	// Place through the click path, then restore whatever tool the player had.
+	const auto previousMode = selectionMode;
+	const auto previousBuilding = toolManager.getBuildingName();
+	const auto previousZone = toolManager.getZoneType();
+	toolManager.activateBuildingTool(found->key);
+	// With a search radius, try rings of tiles around (x, y), nearest first.
+	bool placed = false;
+	const int w = int(map.getW()), h = int(map.getH());
+	for (int r = 0; r <= searchRadius && !placed; ++r)
+		for (int dy = -r; dy <= r && !placed; ++dy)
+			for (int dx = -r; dx <= r && !placed; ++dx)
+			{
+				if (std::max(std::abs(dx), std::abs(dy)) != r)
+					continue;
+				const int tx = ((x + dx) % w + w) % w, ty = ((y + dy) % h + h) % h;
+				if (!usable(tx, ty))
+					continue;
+				if (toolManager.placeBuildingTopLeft(tx, ty, localTeamNo))
+				{
+					placed = true;
+					if (placedAt)
+						*placedAt = {tx, ty};
+				}
+			}
+	if (previousMode == TOOL_SELECTION && !previousBuilding.empty())
+		toolManager.activateBuildingTool(previousBuilding);
+	else if (previousMode == BRUSH_SELECTION)
+		toolManager.activateZoneTool(previousZone);
+	else
+		toolManager.deactivateTool();
+	if (placed)
+		return {};
+	if (drawnScene().panels.local.state().noMoreBuildingSitesCountdown != 0)
+		return "Too many new construction sites at once; wait a moment and try again";
+	return "No room for " + name + " (" + std::to_string(type->width) + "x" +
+		   std::to_string(type->height) + " tiles) with its top-left at (" + std::to_string(x) +
+		   ", " + std::to_string(y) + ")" +
+		   (searchRadius ? " or within " + std::to_string(searchRadius) + " tiles of it" : "") +
+		   ": a building needs clear, explored ground away from your pending placements, and a "
+		   "flag cannot share a tile with another of your flags. Pass near to search around it";
+}
+
+void GameGUI::centreViewOnTile(double x, double y)
+{
+	const int oldX = viewportX, oldY = viewportY;
+	camera.originX = x * 32 - camera.visibleW() / 2;
+	camera.originY = y * 32 - camera.visibleH() / 2;
+	camera.normalize();
+	viewportX = camera.tileX();
+	viewportY = camera.tileY();
+	viewportChanged(oldX, viewportX, oldY, viewportY);
 }

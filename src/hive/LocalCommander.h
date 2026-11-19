@@ -46,6 +46,27 @@ class LocalCommander : public CommanderView
 	void boundary(const std::function<void()> &work);
 	void finish(Json result);
 	void remember(const std::string &key, Json result);
+	// MCP game_world / game_place / game_view: fog-filtered world state and tile-based
+	// placement and camera moves, without writing a script.
+	Json world(const Json &arguments);
+	Json place(const Json &arguments);
+	Json view(const Json &arguments);
+	Json building(const Json &arguments);
+	Json zone(const Json &arguments);
+	void submit(const std::vector<Json> &descriptors);
+	// Recent game_place requests, followed up in game_world until resolved.
+	struct Placement
+	{
+		std::string building;
+		int x, y, width, height;
+		unsigned tick;
+	};
+	std::deque<Placement> placements;
+	// What this player has seen of other teams' buildings, kept as last seen (fog of
+	// war): refreshed every 50 ticks from the same visibility as Hive observations.
+	std::map<int, Json> seenBuildings;
+	unsigned nextMemoryTick = 0;
+	void refreshMemory();
 
   public:
 	explicit LocalCommander(GameGUI &gui, std::function<std::future<Json>(Json)> launch = {});

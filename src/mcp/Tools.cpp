@@ -219,6 +219,10 @@ void registerUITools(ToolRegistry &registry)
 			 std::move(output),
 			 {{"readOnlyHint", !input && std::string(name) != "hive_run" &&
 								   std::string(name) != "hive_program" &&
+								   std::string(name) != "game_place" &&
+								   std::string(name) != "game_view" &&
+								   std::string(name) != "game_building" &&
+								   std::string(name) != "game_zone" &&
 								   std::string(name) != "ui_renew_control" &&
 								   std::string(name) != "ui_acquire_control" &&
 								   std::string(name) != "ui_release_control"},
@@ -387,6 +391,67 @@ void registerUITools(ToolRegistry &registry)
 		"on timeout returns the latest snapshot with satisfied=false.",
 		wait, {"condition"}, false);
 
+	add("game_world",
+		"In a match, read your colony in map tiles: status (free/total units, win chance), "
+		"alerts (attacks with tiles), buildings (id, type, top-left x/y, size, site, workers), "
+		"unit counts, known resources (nearest tile), other teams' visible and remembered "
+		"buildings, recent placements, placeable names. detail full adds unit lists. No token.",
+		{{"detail", enumeration({"summary", "full"})},
+		 {"limit", {{"type", "integer"}, {"minimum", 1}, {"maximum", 500}, {"default", 100}}},
+		 {"resource_radius", {{"type", "integer"}, {"minimum", 1}, {"maximum", 64}, {"default", 24}}},
+		 {"area", object({{"x", {{"type", "integer"}, {"minimum", 0}}},
+						  {"y", {{"type", "integer"}, {"minimum", 0}}},
+						  {"width", {{"type", "integer"}, {"minimum", 1}}},
+						  {"height", {{"type", "integer"}, {"minimum", 1}}}},
+						 {"x", "y", "width", "height"})}},
+		{}, false);
+	add("game_place",
+		"Place a building site or flag by tile, as a click would: building is a game_world "
+		"placeable name, x/y its top-left tile; near searches nearby for room and returns "
+		"where it went. Refusals say why. Needs token.",
+		{{"token", token},
+		 {"building", {{"type", "string"}, {"maxLength", 64}}},
+		 {"x", {{"type", "integer"}, {"minimum", 0}}},
+		 {"y", {{"type", "integer"}, {"minimum", 0}}},
+		 {"near", {{"type", "boolean"}, {"default", false}}},
+		 {"search_radius", {{"type", "integer"}, {"minimum", 1}, {"maximum", 32}, {"default", 12}}}},
+		{"token", "building", "x", "y"}, false);
+	add("game_building",
+		"Change one of your buildings or flags by its game_world id and generation: workers "
+		"(units requested), priority, production ratios (Swarm), range (flags), or action "
+		"upgrade, repair, cancel_upgrade, destroy, cancel_destroy, move (flag to x/y). Needs token.",
+		{{"token", token},
+		 {"id", {{"type", "integer"}, {"minimum", 0}}},
+		 {"generation", {{"type", "integer"}, {"minimum", 0}}},
+		 {"workers", {{"type", "integer"}, {"minimum", 0}, {"maximum", 255}}},
+		 {"priority", enumeration({"low", "medium", "high"})},
+		 {"production", object({{"workers", {{"type", "integer"}, {"minimum", 0}, {"maximum", 16}}},
+								{"explorers", {{"type", "integer"}, {"minimum", 0}, {"maximum", 16}}},
+								{"warriors", {{"type", "integer"}, {"minimum", 0}, {"maximum", 16}}}})},
+		 {"range", {{"type", "integer"}, {"minimum", 0}, {"maximum", 64}}},
+		 {"action", enumeration({"upgrade", "repair", "cancel_upgrade", "destroy", "cancel_destroy", "move"})},
+		 {"x", {{"type", "integer"}, {"minimum", 0}}},
+		 {"y", {{"type", "integer"}, {"minimum", 0}}},
+		 {"builders", {{"type", "integer"}, {"minimum", 0}, {"maximum", 255}}}},
+		{"token", "id", "generation"}, false);
+	add("game_zone",
+		"Paint or erase a zone over a tile rectangle: forbidden (units keep out), guard "
+		"(warriors defend it) or clearing (workers clear resources). Needs token.",
+		{{"token", token},
+		 {"zone", enumeration({"forbidden", "guard", "clearing"})},
+		 {"mode", enumeration({"paint", "erase"})},
+		 {"x", {{"type", "integer"}, {"minimum", 0}}},
+		 {"y", {{"type", "integer"}, {"minimum", 0}}},
+		 {"width", {{"type", "integer"}, {"minimum", 1}, {"maximum", 64}}},
+		 {"height", {{"type", "integer"}, {"minimum", 1}, {"maximum", 64}}}},
+		{"token", "zone", "x", "y", "width", "height"}, false);
+	add("game_view",
+		"Centre the camera on a tile; returns its screen point (tile_screen) for clicking "
+		"what is there. Needs token.",
+		{{"token", token},
+		 {"x", {{"type", "integer"}, {"minimum", 0}}},
+		 {"y", {{"type", "integer"}, {"minimum", 0}}}},
+		{"token", "x", "y"}, false);
 	add("hive_status", "Whether colony scripting (Hive) is available in the current local match, and its "
 		"session id, required by hive_run/hive_result/hive_program. No token needed.", {}, {},
 		false);

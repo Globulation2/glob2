@@ -329,25 +329,32 @@ std::string GameGUI::localWinChanceText() const
 	return std::string{char('0' + percent / 10), char('0' + percent % 10)};
 }
 
-GameGUI::TopBarLayout GameGUI::topBarLayout() const
+std::array<std::string, 8> GameGUI::topBarValues() const
 {
 	// Inspection can lay out the HUD before draw() refreshes the legacy pointer.
 	// Read the statistics owned by the same immutable scene as the other panels.
 	// Before the first scene is extracted (MCP inspection while a game loads)
 	// there are no statistics yet; show placeholders rather than read them.
 	const TeamStats *stats = drawnScene().panels.localStats.get();
-	TopBarLayout layout;
+	std::array<std::string, 8> values;
 	for (int i = 0; i < 3; ++i)
-		layout.values[i] = stats ? std::to_string(stats->getFreeUnits(i) -
+		values[i] = stats ? std::to_string(stats->getFreeUnits(i) -
 			(i == 0 ? stats->getWorkersNeeded() : 0)) + "/" +
 			std::to_string(stats->getTotalUnits(i)) : "-/-";
 	const auto &colony = drawnScene().panels.local.state();
-	layout.values[3] = std::to_string(colony.prestige);
-	layout.values[4] = localWinChanceText();
-	layout.values[5] = std::to_string(colony.unitConversionGained);
-	layout.values[6] = std::to_string(colony.unitConversionLost);
+	values[3] = std::to_string(colony.prestige);
+	values[4] = localWinChanceText();
+	values[5] = std::to_string(colony.unitConversionGained);
+	values[6] = std::to_string(colony.unitConversionLost);
 	const auto rate = tickRate.rate();
-	layout.values[7] = rate ? TickRateMeter::format(*rate) : "-";
+	values[7] = rate ? TickRateMeter::format(*rate) : "-";
+	return values;
+}
+
+GameGUI::TopBarLayout GameGUI::topBarLayout() const
+{
+	TopBarLayout layout;
+	layout.values = topBarValues();
 	// Measure complete icon/value groups. Keep real gutters even when large
 	// counters require the compact bar's contents to shrink to fit.
 	auto *font = globalContainer->littleFont;

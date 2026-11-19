@@ -51,7 +51,7 @@ behavior: update it with the HUD, menus or rules it describes.
 
 Tool descriptions say what each tool is for in game terms. Only `ui_status`,
 `ui_acquire_control` and `ui_screenshot` publish an output schema, which keeps
-`tools/list` under the 20,000-byte budget that `MCP/tools explain themselves within a
+`tools/list` under the 25,000-byte budget that `MCP/tools explain themselves within a
 discovery size budget` enforces. Error results name what failed and the next step,
 for example which ui_act check failed (unknown surface, missing key, stale revision
 with the current one, disabled, hidden, blocked or unsupported action) or how to
@@ -104,6 +104,17 @@ not depend on the OS pointer position.
 | ui_act | Activate, select, set a value or scroll an inspected control; target revision required. |
 | ui_wait | Observe a screen, control state or revision; default 10 seconds, maximum 30. |
 | ui_renew_control | Renew the current token's five-minute control lease. |
+| game_world | Your colony in map tiles: status (free/total units, prestige, win chance), recent alerts (attacks, completions) with tiles, buildings with id, top-left tile, size, level, site and workers, unit counts and your warriors by training level, hungry and injured units, known resources with the nearest tile, other teams' buildings in sight and remembered under fog, recent placements and the placeable names with sizes. `detail: full` adds unit lists; `area` filters by tiles. No lease required. |
+| game_place | Place a building site or flag by name with its top-left on a tile, through the same checks as a click; `near` searches outward for room. Buildings need explored ground and never overlap the caller's pending placements; refusals say why. |
+| game_building | Change one of your buildings or flags by id and generation: worker request (capped at the building's limit, reported), priority, Swarm production ratios, flag range, upgrade, repair, cancel_upgrade, destroy, cancel_destroy, or move a flag. Uses the validated script order path. |
+| game_zone | Paint or erase a forbidden, guard or clearing zone over a tile rectangle. |
+| game_view | Centre the camera on a tile and return its screen point (`tile_screen`, in inspection logical pixels). |
+
+The `game_*` tools follow fog of war: they report only what the player's colony sees
+now or has seen. Other teams' buildings out of sight are reported as last seen (from a
+memory refreshed every 50 ticks from the same visibility as Hive observations, and
+corrected only when the tile is in view again); resources come from the same
+last-seen memory; another team's hit points and warrior training are never reported.
 | hive_status | Local scripting availability, match-session identity and limits. |
 | hive_api | Shared player JavaScript API and authoritative local control contract. |
 | hive_run | Queue one bounded script invocation with a deduplicated operation key. |
@@ -238,7 +249,9 @@ fails after input was consumed, `inspection_error` reports that separately;
 `ui_wait` accepts `timeout_ms` (default 10000, maximum 30000) and `condition`.
 A condition can name `screen`, `key`, `enabled`, `selected`, `focused`, `blocked`,
 `visible`, `value`, and/or `revision_after`. It may use the same surface/subtree
-filters. Waits do not occupy the action queue. Timeout returns the latest relevant
+filters. A control that has disappeared counts as not visible, so `{key, visible:
+false}` is satisfied by its absence unless the condition also names another property
+of that control. Waits do not occupy the action queue. Timeout returns the latest relevant
 inspection with `satisfied: false`. At most eight waits may remain pending; excess
 waits fail immediately with an actionable error. This leaves HTTP connections and
 request capacity available for actions and inspections that can satisfy observers.
@@ -268,7 +281,10 @@ records. A control reports `blocked` when any overlay intersects it, so the map 
 reads as blocked while a lesson card or other panel covers part of it; coordinate
 gestures still reach its uncovered part. The desktop HUD's top-bar counters are
 read-only `label` controls under `game/stats/` (workers, explorers and warriors as
-free/total, prestige, win chance, converted in and out). Building and flag palette entries are labelled
+free/total, prestige, win chance, converted in and out). `game/placement` is a read-only
+label naming the active placement tool: `none`, `building:<type>`, `flag:<type>` or
+`zone:<kind>:paint|erase`. A flag's assignment slider is labelled for the unit it
+requests (Assigned warriors or explorers). Building and flag palette entries are labelled
 with the player-facing names; their keys keep the stable type names. Native OS dialogs
 remain outside this interface.
 

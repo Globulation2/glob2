@@ -91,6 +91,8 @@ inspect again. A lesson or scenario may open with a briefing dialog: press its o
 (game/minimap), panel tabs Construction (game/panel/0), Flags and areas
 (game/panel/1), Statistics (game/panel/2), Graphs (game/panel/3), then the open
 panel's contents (lesson text calls these panels Build and Flags). Icons beside the minimap: Menu (game/menu), Alliance, Objectives.
+game/placement (read-only) names the active placement tool: none, building:<type>,
+flag:<type> or zone:<kind>:paint|erase.
 Top bar labels (read-only, key game/stats/...): workers, explorers and warriors as
 free/total (negative free means unmet requests), prestige, win chance in percent,
 and units converted to and from your colony.
@@ -104,8 +106,9 @@ Selecting a building or flag on the map replaces the panel with its details, key
 building/<id>/<generation>/...: workers ("Assigned workers": units requested, of
 the flag's kind on flags), priority/-1..1,
 range (flags), production/0..2 (Swarm ratios for Workers, Explorers, Warriors),
-construction (upgrade or repair) and destroy. Resource stock, hit points and progress
-are drawn but not listed: read them from a screenshot or with hive_run.
+construction (upgrade or repair) and destroy. game_world lists your buildings and units
+and what your colony sees, in map tiles; resource stock and other details come from
+hive_run.
 Lesson card (tutorial only): a separate surface with the step text, intro/destination
 (marks the target on the map) and intro/help. Its body key (intro/body/N) changes
 with each step, so wait on the new key to detect progress.)"},
@@ -116,10 +119,22 @@ activate (buttons, options, tabs), select (integer index of a choice), set_value
 (slider/stepper integer, toggle boolean, text string) and scroll (signed pixels for a
 scroll container; scroll one into view before acting on a control it hides).
 
+In a match, think in map tiles. game_world reports your status (free/total units,
+win chance), alerts such as attacks with their tiles, your buildings with ids, unit
+counts and warrior training, known resources with their nearest tile, other teams'
+buildings in sight and those remembered under fog, and how recent placements went.
+It follows fog of war: only what your colony sees or has seen, never another team's
+health or training. game_place puts a building site or flag with its top-left on a
+tile through the click path (near searches around it for room; buildings need
+explored ground). game_building changes a building or flag by id: workers, priority,
+Swarm production, flag range, upgrade, repair, destroy, move a flag. game_zone paints
+or erases forbidden, guard or clearing zones over a tile rectangle. game_view centres
+the camera on a tile and returns its screen point.
 The map, minimap and replay bar are canvases: use coordinates. Take ui_screenshot
 (max_width keeps it small) and pass its capture_id with x/y in that image's pixels.
-- Place: activate a palette button, then ui_click on the map. Placement stays active
-  for further clicks; ui_key Escape (or a right click) leaves it.
+- Place by hand: activate a palette button, then ui_click on the map. Placement stays
+  active for further clicks (game/placement shows it); ui_key Escape or a right click
+  leaves it.
 - Paint a zone: pick zone, mode and brush, then ui_click or ui_drag over the map.
 - Select: with no placement active, ui_click a building, flag or unit on the map;
   its details appear in the right panel. Escape clears the selection; a further
@@ -129,8 +144,8 @@ The map, minimap and replay bar are canvases: use coordinates. Take ui_screensho
 Prefer the palette and panel controls to keyboard shortcuts: inspection describes
 them and ui_act confirms each one.)"},
 	{"control", "The control lease and token workflow",
-	 R"(Reads (ui_status, ui_screenshot, ui_inspect, ui_wait, game_guide, hive_status,
-hive_api, hive_result) need no control. Everything that sends input needs the token
+	 R"(Reads (ui_status, ui_screenshot, ui_inspect, ui_wait, game_guide, game_world,
+hive_status, hive_api, hive_result) need no control. Everything that sends input needs the token
 from ui_acquire_control. Only one client holds control; a second acquisition fails
 until the first releases it, its lease expires, or the person at the computer uses
 Settings > MCP server > Revoke control. The lease lasts 300 seconds after the last
@@ -145,8 +160,9 @@ hive_status reports availability and the current session id (a match identity);
 hive_api returns the full API contract, including world queries such as
 ctx.game.units(), ctx.game.buildings() and order descriptors. hive_run executes one
 script (token, session, a fresh operation_key, source) and hive_result fetches its
-output. hive_program installs standing scripts that run every N ticks. Use it to read
-exact unit, building and resource records that the UI shows only as pixels.)"},
+output. hive_program installs standing scripts that run every N ticks. The game_*
+tools cover the common reads and orders without a script; use Hive for full records
+(stocks, skills, terrain) and for standing logic that reacts between your turns.)"},
 	{"troubleshooting", "What common errors mean and what to do next",
 	 R"(available=false: the window is minimized, hidden or showing an OS dialog; ask the
 person to restore it, then call ui_status again.
@@ -188,8 +204,10 @@ const std::string &serverInstructions()
 		"These tools operate the real game window. Workflow: ui_status; "
 		"ui_acquire_control (keep the token); ui_inspect {\"compact\":true} for the "
 		"screen name and controls; ui_act on a control's surface, key and revision; "
-		"ui_wait for screen changes; ui_screenshot plus ui_click with its capture_id "
-		"for map positions; ui_release_control when done. Never retry input calls.\n"
+		"ui_wait for screen changes; in a match, game_world reads your colony and what it "
+		"sees in map tiles and game_place / game_view act on tiles; ui_screenshot plus "
+		"ui_click with its capture_id for other map positions; ui_release_control when "
+		"done. Never retry input calls.\n"
 		"New here? From main_menu activate Tutorial (menu/1), then Introduction "
 		"(tutorial/lesson/0); a first launch may instead offer intro/start. Call game_guide for rules, screens, the HUD, placement "
 		"and errors (topics: ") +
