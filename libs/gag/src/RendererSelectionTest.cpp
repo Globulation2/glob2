@@ -105,15 +105,17 @@ TEST_SUITE("RendererSelection")
             CHECK(std::find(order.begin(), order.end(), RendererBackend::Auto) == order.end());
             CHECK(std::find(order.begin(), order.end(), RendererBackend::WebGPU) == order.end());
 #if !defined(__EMSCRIPTEN__)
-            // The game's order holds both device renderers ahead of Portable SDL on desktop.
-#if !defined(GLOB2_MOBILE)
+            // The game's order holds both device renderers ahead of Portable SDL on
+            // every platform; phones fall from SDL GPU to programmable GL.
             if (flags & GraphicContext::PREFERDEVICE) {
                 const auto at = [&](RendererBackend b) { return std::find(order.begin(), order.end(), b) - order.begin(); };
                 CHECK(at(RendererBackend::ProgrammableGL) < at(RendererBackend::PortableSDL));
                 CHECK(at(RendererBackend::SDLGPU) < at(RendererBackend::PortableSDL));
                 CHECK(at(RendererBackend::PortableSDL) < std::ptrdiff_t(order.size()));
-            }
+#if defined(GLOB2_MOBILE)
+                CHECK(at(RendererBackend::SDLGPU) < at(RendererBackend::ProgrammableGL));
 #endif
+            }
 #if !defined(GLOB2_MOBILE)
             if (!(flags & GraphicContext::PREFERDEVICE))
                 CHECK(std::find(order.begin(), order.end(), RendererBackend::SDLGPU) == order.end());
