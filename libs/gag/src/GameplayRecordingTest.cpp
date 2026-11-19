@@ -83,6 +83,45 @@ void awaitRecording(Recorder &recorder, SDL_Surface &pixels)
 } // namespace
 TEST_SUITE("GameplayRecording")
 {
+	TEST_CASE("publication without hard links copies metadata and moves the video without replacing")
+	{
+		const auto video = output("publish-fallback");
+		const auto work = std::filesystem::path(video).concat(".recording");
+		std::filesystem::create_directories(work);
+		const auto write = [](const std::filesystem::path &path, const std::string &bytes)
+		{ std::ofstream(path, std::ios::binary) << bytes; };
+		write(work / "manifest.json", "{}");
+		write(work / "events.jsonl", "{\"e\":1}\n");
+		write(work / ("final" + video.extension().string()), "video");
+
+		Detail::publishCompletedRecording(work, video, false);
+		CHECK(read(video) == "video");
+		CHECK(read(std::filesystem::path(video).concat(".json")) == "{}");
+		CHECK(read(std::filesystem::path(video).concat(".events.jsonl")) == "{\"e\":1}\n");
+		CHECK_FALSE(std::filesystem::exists(work / ("final" + video.extension().string())));
+		CHECK(std::filesystem::exists(work / "manifest.json"));
+	}
+
+	TEST_CASE("publication without hard links leaves a foreign video and restores its own files")
+	{
+		const auto video = output("publish-fallback-collision");
+		const auto work = std::filesystem::path(video).concat(".recording");
+		std::filesystem::create_directories(work);
+		const auto write = [](const std::filesystem::path &path, const std::string &bytes)
+		{ std::ofstream(path, std::ios::binary) << bytes; };
+		const auto finalVideo = work / ("final" + video.extension().string());
+		write(work / "manifest.json", "{}");
+		write(work / "events.jsonl", "");
+		write(finalVideo, "ours");
+		write(video, "foreign");
+
+		CHECK_THROWS(Detail::publishCompletedRecording(work, video, false));
+		CHECK(read(video) == "foreign");
+		CHECK(read(finalVideo) == "ours");
+		CHECK_FALSE(std::filesystem::exists(std::filesystem::path(video).concat(".json")));
+		CHECK_FALSE(std::filesystem::exists(std::filesystem::path(video).concat(".events.jsonl")));
+	}
+
     TEST_CASE("capture context restores active match identity after settings [recording]")
     {
         if (!supported()) return;
