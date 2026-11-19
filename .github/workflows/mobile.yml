@@ -147,6 +147,18 @@ jobs:
           path: build/mobile-tools/gradle-home/caches/modules-2
           key: android-gradle-v1-${{ runner.os }}-${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/android/**/*.gradle', 'platforms/mobile/android/gradle.properties') }}
           restore-keys: android-gradle-v1-${{ runner.os }}-
+      # CI only: try Google's mirror of Maven Central before Maven Central,
+      # which has answered parallel CI builds with 429s and spurious misses.
+      - name: Prefer the Google Maven Central mirror
+        run: |
+          mkdir -p build/mobile-tools/gradle-home/init.d
+          cat > build/mobile-tools/gradle-home/init.d/glob2-maven-central-mirror.gradle <<'GRADLE'
+          beforeSettings { settings ->
+              def mirror = { handler -> handler.maven { name = 'GoogleMavenCentralMirror'; url = 'https://maven-central.storage-download.googleapis.com/maven2/' } }
+              mirror(settings.pluginManagement.repositories)
+              mirror(settings.dependencyResolutionManagement.repositories)
+          }
+          GRADLE
       - name: Restore Android compiler cache
         id: restore_android_compiler_cache
         continue-on-error: true
@@ -215,7 +227,7 @@ jobs:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-android-${{ matrix.arch }}-${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/vcpkg.json', 'platforms/mobile/triplets/**') }}-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Save Gradle dependency cache
-        if: ${{ !cancelled() && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && matrix.arch == 'arm64-v8a' && steps.compile_and_stage_native_application.outcome == 'success' && steps.restore_gradle_dependencies.outputs.cache-hit != 'true' }}
+        if: ${{ !cancelled() && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && steps.compile_and_stage_native_application.outcome == 'success' && steps.restore_gradle_dependencies.outputs.cache-hit != 'true' }}
         continue-on-error: true
         uses: actions/cache/save@v4
         with:
