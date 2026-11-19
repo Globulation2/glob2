@@ -14,9 +14,12 @@
 
 Every competitor still standing gets a fitness
 
-    F_i = intercept + sum_k coefficient_k * transform_k(state_k(competitor_i))
+    F_i(t) = intercept + sum_k (coefficient_k + slope_k * c(t)) * transform_k(state_k(competitor_i))
 
-and its probability of winning is `softmax(F)` over the competitors. Allies are
+where t is the decision tick and c(t) = min(t, 180,000) / 180,000 runs from 0 at
+the start of a game to 1 at the tournament cap the games ran to, and holds there.
+Only `prestige_lead` has a slope; every other coefficient is constant (see
+[the clock](#the-clock)). Its probability of winning is `softmax(F)` over the competitors. Allies are
 one competitor, because they win or lose together.
 
 The fitted terms, ordered by how much a typical gap between rivals on that term
@@ -24,19 +27,20 @@ moves the odds (coefficient times the within-contest standard deviation):
 
 | Term | Reads | Coefficient | Typical gap's effect |
 | --- | --- | ---: | ---: |
-| `delivered_window` (share) | its share of resources delivered over the last 2,048 ticks | +1.448 | 0.29 |
-| `feeding` (sqrt) | units eating at an inn | +0.205 | 0.25 |
-| `school_levels` | schools and their sites, weighted from 1 (a level-1 site) to 6 (a finished level-3 school) | +0.0293 | 0.18 |
-| `prestige_lead` (signed log1p) | its prestige less the most any surviving opponent holds | +0.0626 | 0.14 (0.23 where it differs) |
-| `prestige_needed` (log1p) | prestige it would still have to add to win by prestige | −1.70 | 0.14 (0.70 where it differs) |
-| `attack` (share) | its share of all attack strength | +0.582 | 0.12 |
-| `swarm_filling_window` (sqrt) | worker-ticks spent filling swarms over the last 2,048 ticks | +0.0018 | 0.10 |
-| `explorers` (sqrt) | living explorers | +0.0494 | 0.06 |
-| `inn_walk_distance_window` (share) | its share of the distance walked to inns over the last 2,048 ticks | +0.190 | 0.05 |
-| `barracks_levels` | warrior training buildings and their sites, weighted from 1 (a level-1 site) to 6 (a finished level-3 building) | +0.0047 | 0.04 |
+| `prestige_lead` (signed log1p) | its prestige less the most any surviving opponent holds | −0.103 at tick 0 → +0.297 by tick 180,000 | 0.68 with its late coefficient (1.10 where it differs) |
+| `delivered_window` (share) | its share of resources delivered over the last 2,048 ticks | +1.499 | 0.30 |
+| `feeding` (sqrt) | units eating at an inn | +0.203 | 0.24 |
+| `school_levels` | schools and their sites, weighted from 1 (a level-1 site) to 6 (a finished level-3 school) | +0.0238 | 0.15 |
+| `attack` (share) | its share of all attack strength | +0.599 | 0.12 |
+| `prestige_needed` (log1p) | prestige it would still have to add to win by prestige | −1.252 | 0.10 (0.52 where it differs) |
+| `swarm_filling_window` (sqrt) | worker-ticks spent filling swarms over the last 2,048 ticks | +0.0019 | 0.10 |
+| `explorers` (sqrt) | living explorers | +0.0620 | 0.08 |
+| `inn_walk_distance_window` (share) | its share of the distance walked to inns over the last 2,048 ticks | +0.191 | 0.05 |
+| `barracks_levels` | warrior training buildings and their sites, weighted from 1 (a level-1 site) to 6 (a finished level-3 building) | +0.0042 | 0.03 |
 
-A fed, working economy carries the most weight, then the school and prestige
-terms, then military strength. The windowed terms describe what a colony has been
+A fed, working economy carries the most steady weight; late in a game a prestige
+lead outweighs everything else, and military strength comes after the school
+and prestige terms. The windowed terms describe what a colony has been
 doing recently rather than what it owns.
 
 Prestige comes only from finished level-3 schools (`school2` in the catalog), 50
@@ -102,14 +106,15 @@ Three choices matter:
   views of one outcome; splitting them across folds would let the fit see its own
   test set and report an accuracy nobody could reproduce.
 
-Cross-validated, grouped by game: McFadden R² 0.288, top-1 accuracy 68.0%
-against 40.2% for guessing. On the same games the previous eight-term model
-scores 0.266 with its shipped coefficients and 0.268 refitted, so the two new
-terms add about 0.02. They help most where strategy is held equal: on the mirror
-half, 0.232 against 0.206 for the refitted eight terms; on the random half, 0.357
-against 0.343. Mirror games are harder to call at all (64% top-1 against 72%),
-which is what they are for: they keep the model from learning which AI is
-playing instead of how well each side is doing.
+Cross-validated, grouped by game: McFadden R² 0.295, top-1 accuracy 68.3%
+against 40.2% for guessing. The same ten terms with constant coefficients score
+0.288, and the previous eight-term model 0.266 with its shipped
+coefficients and 0.268 refitted, so the two new terms add about 0.02 and the clock
+on `prestige_lead` a little more. They help most where strategy is held equal: on
+the mirror half, 0.238 against 0.206 for the refitted eight terms; on the
+random half, 0.369 against 0.343. Mirror games are harder to call at all
+(65% top-1 against 73%), which is what they are for: they keep the model
+from learning which AI is playing instead of how well each side is doing.
 
 ### How the terms were chosen
 
@@ -160,16 +165,43 @@ fixed held-out set shows the seven-term model is flat from about 100 training
 games, so more data would not improve it; the boosted model was still improving
 at 1,373.
 
+### The clock
+
+A coefficient may change through the game: β(t) = coefficient + slope × c(t), a
+straight line in the decision tick, clamped at the 180,000-tick cap. The clock
+is absolute ticks because a live game does not know how long it will run. Fitting
+it keeps the model a conditional logit: each timed term gains a second column,
+its value scaled by c(t).
+
+Allowing a slope on every term fitted the data better (CV R² 0.290 against
+0.284 at every fourth sample), but a bootstrap over games showed most slopes
+were noise or shared between correlated terms, and the random and mirror halves
+disagreed on them. Forward selection on game-grouped cross-validation, adding
+one slope at a time while it gained at least 0.0005, kept only `prestige_lead`:
+alone it reached 0.291, more than all ten slopes together, and no other slope
+added more than 0.0002. Its slope is +0.399 (bootstrap 95% interval +0.27 to +0.55;
++0.45 on the random half and +0.36 on the mirror half). The coefficient starts
+slightly negative, −0.103: an early prestige lead means a colony rushed a
+level-3 school, which costs its economy. It crosses zero near tick 46,000
+and reaches +0.297 by the cap, when a lead is usually the decisive one. The
+ridge penalty, which shrinks slopes toward constant coefficients, made no
+difference between 1e-4 and 1.
+
+A time curve does not fix the model's late-game caution (below): that caution
+is measured against the fraction of each game played, which a live model cannot
+know, and a 1v1 at tick 40,000 is nearly over while an eight-colony game has
+barely begun.
+
 ### It is calibrated, and that is what matters here
 
 A winning condition needs the number to mean what it says, not merely to rank
 correctly. Held out by game, predicted and observed win rates:
 
-| Predicted | 0.016 | 0.053 | 0.086 | 0.114 | 0.141 | 0.186 | 0.248 | 0.331 | 0.449 | 0.570 | 0.755 | 0.948 |
+| Predicted | 0.023 | 0.076 | 0.141 | 0.247 | 0.348 | 0.451 | 0.543 | 0.648 | 0.748 | 0.852 | 0.927 | 0.979 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Observed | 0.015 | 0.034 | 0.059 | 0.104 | 0.131 | 0.194 | 0.277 | 0.343 | 0.465 | 0.603 | 0.779 | 0.940 |
+| Observed | 0.018 | 0.051 | 0.136 | 0.277 | 0.360 | 0.462 | 0.564 | 0.696 | 0.772 | 0.856 | 0.921 | 0.965 |
 
-The top bucket, where the threshold lives, reads 0.948 predicted against 0.940
+The top bucket, where the threshold lives, reads 0.979 predicted against 0.965
 observed. Mid-range predictions are slightly cautious and the low buckets
 overstate a losing side's chances.
 
@@ -179,7 +211,7 @@ sample-weighted gap between predicted and observed):
 
 | Phase | 0–10% | 10–20% | 20–30% | 30–40% | 40–50% | 50–60% | 60–70% | 70–80% | 80–90% | 90–100% |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| ECE | 1.3% | 2.0% | 1.8% | 1.9% | 2.5% | 2.8% | 3.1% | 3.7% | 4.2% | 4.2% |
+| ECE | 1.4% | 2.0% | 1.9% | 1.8% | 2.4% | 2.8% | 3.1% | 3.5% | 3.6% | 3.8% |
 
 Early, the rare confident predictions are slightly overconfident; from about
 halfway the model is increasingly cautious (late in the game a predicted 65%
@@ -206,7 +238,11 @@ So there is no floating point in the decision path:
   fitter read the same table. `prestige_lead` is clamped to ±2,400 and is the one
   signed measurement: its table holds the transform of the magnitude, and the
   engine restores the sign (`WinProbability::signedTableValue`), so only odd
-  transforms can apply to it. The emitter refuses any other transform it cannot
+  transforms can apply to it.
+- A timed coefficient is `coefficient + slope × min(t, 180,000) / 180,000` in
+  fixed point: one 64-bit multiply and one division truncated toward zero
+  (`WinProbability::timeScaled`), mirrored in the fitter, before the term's own
+  arithmetic. Each competitor's slot carries the decision tick. The emitter refuses any other transform it cannot
   do exactly rather than quietly falling back on an approximation.
 - Coefficients are emitted twice — as a `double` for display and reporting, and
   as a fixed-point integer rounded **at generation time**, so the rounding is the
@@ -325,9 +361,9 @@ The threshold is the only dial:
 
 | Threshold | Compute saved | Calls on the wrong side |
 | --- | ---: | ---: |
-| **95% (tournament default)** | **15.6%** | **1.9%** (13 of 694) |
-| 97% | 11.3% | 1.1% (6 of 533) |
-| 99% | 4.8% | 0.4% (1 of 263) |
+| **95% (tournament default)** | **17.5%** | **2.2% (16 of 730)** |
+| 97% | 12.6% | 1.1% (6 of 565) |
+| 99% | 5.8% | 0.7% (2 of 283) |
 
 Measured over the 1,029 games, cross-fitted so no game is scored by a model that
 saw it, with three consecutive qualifying samples required. Errors sit below
