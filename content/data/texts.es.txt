@@ -5054,6 +5054,16 @@ El prestigio de la colonia, que se obtiene con edificios de nivel máximo. Una p
 Prestigio necesario para ganar
 [stat prestige needed about]
 El prestigio que la colonia aún tendría que obtener para ganar por prestigio: suficiente para que el prestigio conjunto de la partida alcance el objetivo y para superar a todas las demás colonias supervivientes. Solo se registra cuando la partida tiene objetivo de prestigio.
+[stat prestige lead]
+Prestige lead
+[stat prestige lead about]
+The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+[stat school levels]
+School levels
+[stat school levels about]
+The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+[stat unit levels]
+levels
 [stat band combat]
 Combate
 [stat band starvation]

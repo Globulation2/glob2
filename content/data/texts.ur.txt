@@ -5022,6 +5022,16 @@ AI کی قابلِ رسائی ٹیلی میٹری نہیں۔
 جیتنے کے لیے درکار وقار
 [stat prestige needed about]
 وہ وقار جو بستی کو وقار سے جیتنے کے لیے ابھی مزید کمانا ہوگا: اتنا کہ میچ کا مجموعی وقار ہدف تک پہنچ جائے، اور باقی بچی ہر دوسری بستی سے آگے نکل جائے۔ صرف تب درج ہوتا ہے جب میچ میں وقار کا ہدف ہو۔
+[stat prestige lead]
+Prestige lead
+[stat prestige lead about]
+The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+[stat school levels]
+School levels
+[stat school levels about]
+The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+[stat unit levels]
+levels
 [stat band combat]
 لڑائی
 [stat band starvation]

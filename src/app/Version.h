@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 217
+#define VERSION_MINOR 218
+// version 218 saves each team's signed prestige lead history.
 // version 217 saves each team's prestige-needed-to-win history.
 // version 216 adds built-in steppe grass and moor grass; custom terrain IDs move up by two.
 // version 215 saves Maxima's last maintenance-clearing tick and its farming request flag.

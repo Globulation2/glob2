@@ -210,6 +210,10 @@ namespace WinProbability
 		for (const CombatProvider &provider : providers)
 			if (provider.variant < now.variants.size())
 				inputs.barracksLevels += Sint64(now.variants[provider.variant].count) * provider.weight;
+		// Schools and their sites by long level, weighted like barracks: the same
+		// per-family counts GLOB2_MEASURE reports as buildings_<family>_<level>.
+		for (int level = 0; level < NB_BUILDING_LONG_LEVELS; ++level)
+			inputs.schoolLevels += Sint64(now.buildings[IntBuildingType::SCIENCE_BUILDING][level]) * (level + 1);
 		for (int material = 0; material < MaterialSlotCount; ++material)
 			inputs.delivered += window(now.delivered[material], then ? then->delivered[material] : 0);
 		inputs.innWalkDistance = window(now.eatWalkDistance, then ? then->eatWalkDistance : 0);
@@ -227,17 +231,51 @@ namespace WinProbability
 		return false;
 	}
 
+	namespace
+	{
+		bool opponents(const Game &game, int a, int b)
+		{
+			return game.gameHeader.getAllyTeamNumber(a) != game.gameHeader.getAllyTeamNumber(b);
+		}
+
+		/// The most prestige any surviving opponent of `team` holds, or false if
+		/// no opponent survives.
+		bool bestOpponentPrestige(const Game &game, int team, int &best)
+		{
+			bool found = false;
+			for (int i = 0; i < game.mapHeader.getNumberOfTeams(); ++i)
+				if (i != team && game.teams[i] && game.teams[i]->isAlive && opponents(game, team, i))
+				{
+					if (!found || game.teams[i]->prestige > best)
+						best = game.teams[i]->prestige;
+					found = true;
+				}
+			return found;
+		}
+	}
+
 	int prestigeNeeded(const Game &game, int team)
 	{
 		// Mirrors WinningConditionPrestige: the threshold is on everyone's prestige
-		// combined, and the winner is the surviving leader. Beating rather than tying
-		// the leader is the target, so a tie still needs one more point.
+		// combined, and the winner is the surviving leader (with its allies).
+		// Prestige comes a whole school at a time, so passing the leading opponent
+		// takes one more school than it has, not one more point.
 		int needed = std::max(0, game.prestigeToReach - game.totalPrestige);
-		const int own = game.teams[team]->prestige;
-		for (int i = 0; i < game.mapHeader.getNumberOfTeams(); ++i)
-			if (i != team && game.teams[i] && game.teams[i]->isAlive)
-				needed = std::max(needed, game.teams[i]->prestige - own + 1);
+		int best = 0;
+		if (bestOpponentPrestige(game, team, best))
+			needed = std::max(needed, best - game.teams[team]->prestige + PRESTIGE_AWARD);
 		return needed;
+	}
+
+	int prestigeLead(const Game &game, int team)
+	{
+		// Own prestige less the best surviving opponent's: the leader's margin
+		// over the runner-up, or everyone else's deficit to the leader.
+		int best = 0;
+		if (!bestOpponentPrestige(game, team, best))
+			return 0;
+		const Sint64 lead = Sint64(game.teams[team]->prestige) - best;
+		return int(std::clamp<Sint64>(lead, -PRESTIGE_LEAD_LIMIT, PRESTIGE_LEAD_LIMIT));
 	}
 
 	std::vector<Slot> slotsOf(const Game &game, std::vector<int> &allianceOf, Uint32 ignoreLostTeams)
@@ -260,6 +298,8 @@ namespace WinProbability
 				allianceOf[t] = (int)(found - alliances.begin());
 		}
 		std::vector<Slot> slots(alliances.size());
+		for (Slot &slot : slots)
+			slot.tick = game.stepCounter;
 		const std::vector<CombatProvider> providers = combatProviders(game.buildingsTypes);
 		const auto add = [](Sint32 &total, Sint64 value) {
 			total = Sint32(std::min<Sint64>(Sint64(total) + clampCount(value), std::numeric_limits<Sint32>::max()));
@@ -277,16 +317,20 @@ namespace WinProbability
 				continue;
 			const TeamStat *stat = std::as_const(team->stats).getLatestStat();
 			const TeamInputs inputs = teamInputs(team->stats, providers);
-			// Allies are as close to a prestige win as their closest member.
+			// Allies are as close to a prestige win as their closest member,
 			if (countsPrestige)
 			{
 				const Sint32 needed = Sint32(clampCount(prestigeNeeded(game, t)));
 				slot.prestigeNeeded = slot.alive ? std::min(slot.prestigeNeeded, needed) : needed;
+				// ... and as far ahead as their furthest-ahead member.
+				const Sint32 lead = Sint32(prestigeLead(game, t));
+				slot.prestigeLead = slot.alive ? std::max(slot.prestigeLead, lead) : lead;
 			}
 			slot.alive = true;
 			add(slot.feeding, inputs.feeding);
 			add(slot.explorers, stat->scouts);
 			add(slot.barracksLevels, inputs.barracksLevels);
+			add(slot.schoolLevels, inputs.schoolLevels);
 			add(slot.delivered, inputs.delivered);
 			add(slot.innWalkDistance, inputs.innWalkDistance);
 			add(slot.swarmFilling, inputs.swarmFilling);

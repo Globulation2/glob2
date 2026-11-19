@@ -5054,6 +5054,16 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 勝利に必要な名声
 [stat prestige needed about]
 名声で勝つためにコロニーがまだ獲得する必要のある名声です。試合全体の名声の合計が目標に達し、生き残っている他のすべてのコロニーを上回るのに足りる量です。試合に名声目標がある場合のみ記録されます。
+[stat prestige lead]
+Prestige lead
+[stat prestige lead about]
+The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+[stat school levels]
+School levels
+[stat school levels about]
+The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+[stat unit levels]
+levels
 [stat band combat]
 戦闘
 [stat band starvation]

@@ -450,3 +450,7 @@ static constexpr int FILE_FORMAT_VERSION_STEPPE_GRASS = 216;
 //! Team statistics save the prestige-needed-to-win history (PrestigeNeededSample).
 //! Earlier files load with an empty history; the model reads live state.
 static constexpr int FILE_FORMAT_VERSION_PRESTIGE_NEEDED = 217;
+
+//! Team statistics save the signed prestige lead history beside prestige needed.
+//! Earlier files load with an empty history; the model reads live state.
+static constexpr int FILE_FORMAT_VERSION_PRESTIGE_LEAD = 218;

@@ -40,7 +40,8 @@ def published():
     for name, transform in W.FINAL_FEATURES:
         constant = f'WIN_PROBABILITY_{name.upper()}_{transform.upper()}'
         value = float(re.search(constant + r' = ([-\d.e+]+);', text)[1])
-        features.append({'name': name, 'transform': transform, 'coefficient': value})
+        slope = float(re.search(constant + r'_SLOPE = ([-\d.e+]+);', text)[1])
+        features.append({'name': name, 'transform': transform, 'coefficient': value, 'slope': slope})
     return {'intercept': intercept, 'features': features}, text
 
 
@@ -203,6 +204,7 @@ class Engine(unittest.TestCase):
                 slot = {name: int(fields[W.CPP_MEASUREMENT[name].split('.', 1)[1]])
                         for name, _ in W.FINAL_FEATURES}
                 slot['alive'] = fields['alive'] == '1'
+                slot['tick'] = tick
                 slots.append(slot)
                 expected.append(int(fields['permille']))
             self.assertEqual(W.fixed_permille(model, slots), expected,
@@ -221,6 +223,8 @@ class Engine(unittest.TestCase):
             constant = f'WIN_PROBABILITY_{item["name"].upper()}_{item["transform"].upper()}_FIXED'
             value = int(re.search(constant + r' = (-?\d+)LL;', text)[1])
             self.assertEqual(value, W.to_fixed(item['coefficient']), item['name'])
+            slope = int(re.search(constant.replace('_FIXED', '_SLOPE_FIXED') + r' = (-?\d+)LL;', text)[1])
+            self.assertEqual(slope, W.to_fixed(item['slope']), item['name'])
 
     def test_the_minimum_decision_tick_agrees_with_the_engine(self):
         header = (ROOT / 'src' / 'team' / 'stats' / 'WinProbability.h').read_text()
@@ -231,7 +235,7 @@ class Engine(unittest.TestCase):
         for name, transform in W.FINAL_FEATURES:
             kind, expressions, _ = W.cpp_kind(name, transform)
             self.assertTrue(all(expressions), (name, transform))
-            self.assertIn(kind, ('identity', 'share', 'sqrt', 'ratio', 'table'))
+            self.assertIn(kind, ('identity', 'share', 'sqrt', 'ratio', 'table', 'signed_identity', 'signed_table'))
 
 
 class Emission(unittest.TestCase):
@@ -321,6 +325,78 @@ class Tables(unittest.TestCase):
         self.assertIn('WIN_PROBABILITY_PRESTIGE_NEEDED_LOG_TABLE_LIMIT)]) >> TABLE_SHIFT', text)
 
 
+class SignedTerms(unittest.TestCase):
+    def test_a_signed_table_is_odd_and_clamps_its_magnitude(self):
+        for transform, function in W.SIGNED_TABLE_TRANSFORMS.items():
+            table = W.table_of(W.PRESTIGE_LEAD, transform)
+            self.assertEqual(len(table), W.TABLE_BOUNDS[W.PRESTIGE_LEAD] + 1)
+            for value in (0, 50, 350, 2400):
+                self.assertEqual(W.signed_table_value(table, value), table[value])
+                self.assertEqual(W.signed_table_value(table, -value), -table[value])
+            self.assertEqual(W.signed_table_value(table, -10 ** 6), -table[-1])
+
+    def test_a_signed_term_tracks_the_float_model_both_ways(self):
+        from tools.conditional_logit import TRANSFORMS
+        for transform in W.SIGNED_TABLE_TRANSFORMS:
+            model = {'intercept': 0.0, 'features': [{'name': W.PRESTIGE_LEAD, 'transform': transform, 'coefficient': 0.7}]}
+            for value in (-1200, -50, 0, 100, 2400):
+                fixed = W.fixed_term(model, [{W.PRESTIGE_LEAD: value}], 0, 0) / W.FITNESS_ONE
+                self.assertAlmostEqual(fixed, 0.7 * TRANSFORMS[transform](value, 0), places=4)
+        model = {'intercept': 0.0, 'features': [{'name': W.PRESTIGE_LEAD, 'transform': 'identity', 'coefficient': 0.5}]}
+        self.assertEqual(W.fixed_term(model, [{W.PRESTIGE_LEAD: -100}], 0, 0), -50 * W.FITNESS_ONE)
+
+    def test_a_signed_measurement_takes_only_odd_transforms(self):
+        self.assertEqual(W.cpp_kind(W.PRESTIGE_LEAD, 'identity')[0], 'signed_identity')
+        self.assertEqual(W.cpp_kind(W.PRESTIGE_LEAD, 'slog')[0], 'signed_table')
+        for transform in ('sqrt', 'share', 'log'):
+            with self.assertRaises(ValueError):
+                W.cpp_kind(W.PRESTIGE_LEAD, transform)
+        with self.assertRaises(ValueError):
+            W.cpp_kind(W.PRESTIGE_NEEDED, 'slog')
+        self.assertEqual(set(W.transform_candidates(W.PRESTIGE_LEAD)), set(W.SIGNED_TRANSFORMS))
+
+    def test_the_emitted_header_restores_the_sign(self):
+        model, _ = published()
+        model['features'].append({'name': W.PRESTIGE_LEAD, 'transform': 'slog', 'coefficient': 0.4})
+        model['games'], model['samples'] = 1, 1
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'WinProbabilityModel.h'
+            W.emit_header(model, path, ['fitted for a test'])
+            text = path.read_text()
+        self.assertIn('WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_TABLE[2401]', text)
+        self.assertIn('signedTableValue(WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_TABLE, '
+                      'WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_TABLE_LIMIT, slot.prestigeLead)) >> TABLE_SHIFT', text)
+
+
+class Clock(unittest.TestCase):
+    """Coefficients move linearly with the decision tick, and the engine agrees."""
+
+    def test_the_clock_runs_from_zero_to_the_cap_and_holds(self):
+        item = {'coefficient': 0.5, 'slope': -0.25}
+        self.assertEqual(W.fixed_coefficient(item, 0), W.to_fixed(0.5))
+        self.assertEqual(W.fixed_coefficient(item, W.TIME_CAP_TICKS), W.to_fixed(0.5) + W.to_fixed(-0.25))
+        self.assertEqual(W.fixed_coefficient(item, 10 ** 7), W.fixed_coefficient(item, W.TIME_CAP_TICKS))
+        halfway = W.fixed_coefficient(item, W.TIME_CAP_TICKS // 2)
+        self.assertAlmostEqual(halfway / W.FITNESS_ONE, 0.375, places=8)
+
+    def test_negative_slopes_truncate_toward_zero_like_cpp(self):
+        self.assertEqual(W.truncating_divide(-7, 2), -3)
+        self.assertEqual(W.truncating_divide(7, 2), 3)
+        item = {'coefficient': 0.0, 'slope': -1e-9}
+        self.assertEqual(W.fixed_coefficient(item, 1), 0)  # -4/180000 truncates to 0, not -1
+
+    def test_the_engine_reads_the_same_cap(self):
+        engine = (ROOT / 'src/team/stats/WinProbability.h').read_text()
+        self.assertIn(f'TIME_CAP_TICKS = {W.TIME_CAP_TICKS};', engine)
+
+    def test_a_late_sample_weighs_its_terms_by_the_late_coefficients(self):
+        model = {'intercept': 0.0, 'features': [{'name': 'attack', 'transform': 'identity', 'coefficient': 1.0, 'slope': -1.0}]}
+        early = [{'attack': 3, 'tick': 0}, {'attack': 0, 'tick': 0}]
+        late = [{'attack': 3, 'tick': W.TIME_CAP_TICKS}, {'attack': 0, 'tick': W.TIME_CAP_TICKS}]
+        self.assertGreater(W.fixed_permille(model, early)[0], 900)
+        self.assertEqual(W.fixed_permille(model, late), [500, 500])
+
+
 class Labels(unittest.TestCase):
     def test_every_term_has_a_phrase_a_player_can_read(self):
         for name, _ in W.FINAL_FEATURES:
@@ -341,6 +417,7 @@ class GameplayInputs(unittest.TestCase):
     def record(self, step, **extra):
         fields = {'feeding': 4, 'eatWalkDistance': 10 * step,
                   f'buildings_{W.ATTACK_BUILDING}_0': 1, f'buildings_{W.ATTACK_BUILDING}_4': 2,
+                  f'buildings_{W.SCIENCE_BUILDING}_2': 3, f'buildings_{W.SCIENCE_BUILDING}_5': 1,
                   'delivered_0': 10 * step, 'delivered_3': 10 * step,
                   f'filling_{W.SWARM_JOB}_1': 10 * step}
         fields.update(extra)
@@ -350,6 +427,7 @@ class GameplayInputs(unittest.TestCase):
         inputs = W.gameplay_inputs(self.record(9), self.record(9 - W.WINDOW_SAMPLES))
         self.assertEqual(inputs['feeding'], 4)
         self.assertEqual(inputs['barracks_levels'], 1 * 1 + 2 * 5)
+        self.assertEqual(inputs['school_levels'], 3 * 3 + 1 * 6)  # three level-2 sites, one finished level 3
         self.assertEqual(inputs['delivered_window'], 2 * 10 * W.WINDOW_SAMPLES)
         self.assertEqual(inputs['inn_walk_distance_window'], 10 * W.WINDOW_SAMPLES)
         self.assertEqual(inputs['swarm_filling_window'], 10 * W.WINDOW_SAMPLES)
@@ -367,6 +445,7 @@ class GameplayInputs(unittest.TestCase):
             return (ROOT / path).read_text()
         building = source('src/building/IntBuildingType.h')
         self.assertIn(f'ATTACK_BUILDING={W.ATTACK_BUILDING},', building.replace(' ', ''))
+        self.assertIn(f'SCIENCE_BUILDING={W.SCIENCE_BUILDING},', building.replace(' ', ''))
         self.assertIn(f'NB_BUILDING_LONG_LEVELS = {W.BUILDING_LEVELS};', source('src/team/stats/TeamStat.h'))
         self.assertIn(f'MaterialSlotCount = {W.MATERIAL_SLOTS};', source('src/resource/Material.h'))
         engine = source('src/team/stats/WinProbability.h')
@@ -398,6 +477,22 @@ class GameplayInputs(unittest.TestCase):
         self.assertEqual(W.measurements_of(pair)[W.PRESTIGE_NEEDED], 0)
         pair['tl']['prestigeNeeded'] = 37
         self.assertEqual(W.measurements_of(pair)[W.PRESTIGE_NEEDED], 37)
+
+    def test_prestige_lead_is_signed_and_clamped(self):
+        pair = {'tl': {}, 'econ': {'food': '0/0', 'fooded': '0/0'}}
+        for which, field in W.TIMELINE_FIELDS.values():
+            pair[which][field] = 1
+        self.assertEqual(W.measurements_of(pair)[W.PRESTIGE_LEAD], 0)
+        pair['tl']['prestigeLead'] = -150
+        self.assertEqual(W.measurements_of(pair)[W.PRESTIGE_LEAD], -150)
+        pair['tl']['prestigeLead'] = -10 ** 6
+        self.assertEqual(W.measurements_of(pair)[W.PRESTIGE_LEAD], -W.TABLE_BOUNDS[W.PRESTIGE_LEAD])
+
+    def test_allies_take_their_furthest_ahead_prestige_lead(self):
+        grouped = W.group_allies({0: {W.PRESTIGE_LEAD: -40.0}, 1: {W.PRESTIGE_LEAD: 10.0},
+                                  2: {W.PRESTIGE_LEAD: -10.0}}, {0: 'a', 1: 'a', 2: 'b'})
+        self.assertEqual(grouped['a'][W.PRESTIGE_LEAD], 10.0)
+        self.assertEqual(grouped['b'][W.PRESTIGE_LEAD], -10.0)
 
     def test_allies_sum_amounts_but_take_their_closest_prestige_distance(self):
         grouped = W.group_allies({0: {'attack': 3.0, W.PRESTIGE_NEEDED: 40.0},

@@ -5054,6 +5054,16 @@ FFmpeg није доступан, па је снимање искључено. �
 Престиж потребан за победу
 [stat prestige needed about]
 Престиж који би колонија још морала да стекне да би победила престижом: довољно да укупни престиж меча достигне циљ и да претекне сваку другу преживелу колонију. Бележи се само када меч има циљ престижа.
+[stat prestige lead]
+Prestige lead
+[stat prestige lead about]
+The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+[stat school levels]
+School levels
+[stat school levels about]
+The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+[stat unit levels]
+levels
 [stat band combat]
 Борба
 [stat band starvation]

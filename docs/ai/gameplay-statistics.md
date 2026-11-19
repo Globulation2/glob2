@@ -164,8 +164,8 @@ still supports the durable format-58 floor.
 ## Existing timeline output
 
 Set `GLOB2_TEAM_TIMELINE=1` to include measurements with the existing output.
-`GLOB2_FINAL` keeps its existing fields. `GLOB2_TL` adds `prestigeNeeded` on
-samples where it was recorded (see below). `GLOB2_ECON` emits
+`GLOB2_FINAL` keeps its existing fields. `GLOB2_TL` adds `prestigeNeeded` and
+`prestigeLead` on samples where they were recorded (see below). `GLOB2_ECON` emits
 `variant_<id>` counts for every concrete catalog variant. Its historical named
 columns remain model/log aliases for capabilities: `swarm` is production, `inn`
 is feeding, `hospital` is healing, `school` is worker construction training,
@@ -255,11 +255,17 @@ about 20 seconds. The chart painter is `TeamStatChart`.
 
 The Score group also includes **Prestige needed to win**: the prestige a colony
 would still have to add to win by prestige, the larger of what the match needs
-for its combined prestige to reach the goal and what the colony needs to pass
-every other surviving colony (`Game::prestigeNeeded`). It is recorded with
+for its combined prestige to reach the goal and what the colony needs to hold
+one school's prestige (50) more than every surviving opponent
+(`WinProbability::prestigeNeeded`). Prestige only arrives a school at a time, so
+passing the leader takes a whole school, not one point. It is recorded with
 explicit ticks every 512 ticks, only in matches with a prestige goal, so the chart
-is absent otherwise and in saves from before format 217. It is the win
-probability model's prestige term.
+is absent otherwise and in saves from before format 217. Beside it, and on the
+same terms, each colony's signed **prestige lead** is recorded
+(`WinProbability::prestigeLead`, saved from format 218, not charted): its
+prestige less the most any surviving opponent holds, so the leader's margin over
+the runner-up or everyone else's deficit to the leader. Both are terms of the win
+probability model.
 
 The Score group also includes **Win probability**, an alliance-wide estimate on
 a fixed 0–100% axis. It is recorded automatically every 512 ticks, with explicit

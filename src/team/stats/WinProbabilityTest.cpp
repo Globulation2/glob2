@@ -26,13 +26,20 @@ namespace
 // A measurement sample as the statistics pipeline retains it every 512 ticks,
 // holding `barracks` finished level-1 barracks (weight 2 each). The model reads
 // the latest retained sample.
-void retainBarracks(Game &game, Team *team, Uint64 barracks, Uint32 tick = 0)
+// A clear lead the model must call whatever its fitted weights and whenever it
+// decides: `count` finished barracks, as many finished level-3 schools and a
+// hundred times as many units eating, terms from three families whose weights
+// peak at different times of the game, so the tests depend neither on which one
+// a refit weights most nor on the decision tick.
+void retainAdvantage(Game &game, Team *team, Uint64 count, Uint32 tick = 0)
 {
     GameplayMeasurements sample = team->stats.measurements();
     sample.tick = tick;
     if (sample.variants.size() < game.buildingsTypes.size())
         sample.variants.resize(game.buildingsTypes.size());
-    sample.variants[game.buildingsTypes.getFinishedTypeNum("barracks")].count = barracks;
+    sample.variants[game.buildingsTypes.getFinishedTypeNum("barracks")].count = count;
+    sample.buildings[IntBuildingType::SCIENCE_BUILDING][NB_BUILDING_LONG_LEVELS - 1] = count;
+    sample.feeding = count * 100;
     team->stats.measurementHistory.assign(1, sample);
 }
 }
@@ -145,7 +152,8 @@ TEST_SUITE("WinProbability")
         glob2test::HeadlessGame world({.teams=2, .header=true});
         auto &game = world.game;
         game.stepCounter = WinProbability::MINIMUM_DECISION_TICK;
-        retainBarracks(game, game.teams[0], 70);
+        // Confident but not certain, so the retained value is the model's own.
+        retainAdvantage(game, game.teams[0], 6);
         std::vector<int> allianceOf;
         const auto expected = WinProbability::permille(WinProbability::slotsOf(game, allianceOf));
         REQUIRE(expected[0] >= 950);
@@ -165,7 +173,7 @@ TEST_SUITE("WinProbability")
         glob2test::HeadlessGame world({.teams=2, .header=true});
         auto &game = world.game;
         game.stepCounter = WinProbability::MINIMUM_DECISION_TICK;
-        retainBarracks(game, game.teams[0], 3);
+        retainAdvantage(game, game.teams[0], 3);
         game.winProbabilitySyncStep();
         const int before[2] = {game.teams[0]->stats.winProbabilityHistory.back().permille,
                                game.teams[1]->stats.winProbabilityHistory.back().permille};
@@ -301,7 +309,30 @@ TEST_SUITE("WinProbability")
         }
     }
 
-    TEST_CASE("prestige needed is the larger of the threshold gap and beating the surviving leader")
+    TEST_CASE("school levels weight each school and site by its level, as GLOB2_MEASURE reports them")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.header=true});
+        GameplayMeasurements sample = world.team->stats.measurements();
+        sample.buildings[IntBuildingType::SCIENCE_BUILDING][0] = 2; // weight 1: level-1 sites
+        sample.buildings[IntBuildingType::SCIENCE_BUILDING][3] = 1; // weight 4: finished level 2
+        sample.buildings[IntBuildingType::SCIENCE_BUILDING][5] = 3; // weight 6: finished level 3
+        sample.buildings[IntBuildingType::ATTACK_BUILDING][5] = 9;  // barracks are not schools
+        world.team->stats.measurementHistory.assign(1, sample);
+        std::vector<int> alliances;
+        const auto slots = WinProbability::slotsOf(world.game, alliances);
+        REQUIRE(slots.size() == 1);
+        CHECK(slots[0].schoolLevels == 2 * 1 + 1 * 4 + 3 * 6);
+        std::ostringstream log;
+        {
+            glob2test::ScopedEnvironment enabled("GLOB2_TEAM_TIMELINE", "1");
+            struct Capture {std::streambuf* previous; ~Capture(){std::cout.rdbuf(previous);}} capture{std::cout.rdbuf(log.rdbuf())};
+            world.game.winProbabilitySyncStep();
+        }
+        CHECK(log.str().find(" schoolLevels=24 ") != std::string::npos);
+    }
+
+    TEST_CASE("prestige needed is the larger of the threshold gap and one school more than the surviving leader")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world({.teams = 3, .header = true});
@@ -311,20 +342,54 @@ TEST_SUITE("WinProbability")
             game.totalPrestige = a + b + c;
             game.prestigeToReach = reach;
         };
+        CHECK(WinProbability::PRESTIGE_AWARD == 50);
         set(100, 40, 10, 500); // the threshold dominates everyone
         CHECK(WinProbability::prestigeNeeded(game, 0) == 350);
         CHECK(WinProbability::prestigeNeeded(game, 1) == 350);
-        set(100, 40, 10, 160); // catching the leader dominates; the leader needs only the threshold
+        set(100, 40, 10, 160); // passing the leader dominates; the leader needs only the threshold
         CHECK(WinProbability::prestigeNeeded(game, 0) == 10);
-        CHECK(WinProbability::prestigeNeeded(game, 1) == 61);
-        CHECK(WinProbability::prestigeNeeded(game, 2) == 91);
-        set(100, 100, 10, 150); // past the threshold: a tie still needs one point
-        CHECK(WinProbability::prestigeNeeded(game, 0) == 1);
-        CHECK(WinProbability::prestigeNeeded(game, 2) == 91);
+        CHECK(WinProbability::prestigeNeeded(game, 1) == 110);
+        CHECK(WinProbability::prestigeNeeded(game, 2) == 140);
+        set(100, 100, 10, 150); // past the threshold: a tie still needs a school
+        CHECK(WinProbability::prestigeNeeded(game, 0) == 50);
+        CHECK(WinProbability::prestigeNeeded(game, 2) == 140);
         set(300, 100, 10, 150); // a defeated leader does not count
         game.teams[0]->isAlive = false;
         CHECK(WinProbability::prestigeNeeded(game, 1) == 0);
-        CHECK(WinProbability::prestigeNeeded(game, 2) == 91);
+        CHECK(WinProbability::prestigeNeeded(game, 2) == 140);
+    }
+
+    TEST_CASE("prestige lead is the margin over the best surviving opponent, or the deficit to it")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams = 3, .header = true});
+        auto &game = world.game;
+        game.teams[0]->prestige = 150; game.teams[1]->prestige = 50; game.teams[2]->prestige = 0;
+        CHECK(WinProbability::prestigeLead(game, 0) == 100);   // the leader, over the runner-up
+        CHECK(WinProbability::prestigeLead(game, 1) == -100);  // behind the leader
+        CHECK(WinProbability::prestigeLead(game, 2) == -150);
+        game.teams[1]->prestige = 150;                         // a shared lead is no lead
+        CHECK(WinProbability::prestigeLead(game, 0) == 0);
+        CHECK(WinProbability::prestigeLead(game, 1) == 0);
+        game.teams[0]->isAlive = false;                        // a defeated leader does not count
+        CHECK(WinProbability::prestigeLead(game, 1) == 150);
+        CHECK(WinProbability::prestigeLead(game, 2) == -150);
+        game.teams[0]->isAlive = true;
+        game.teams[0]->prestige = 100000;                      // clamped to the table bound
+        CHECK(WinProbability::prestigeLead(game, 0) == WinProbability::PRESTIGE_LEAD_LIMIT);
+        CHECK(WinProbability::prestigeLead(game, 2) == -WinProbability::PRESTIGE_LEAD_LIMIT);
+
+        // Allies are not opponents: they neither block a lead nor need passing.
+        game.teams[0]->prestige = 150; game.teams[1]->prestige = 150; game.teams[2]->prestige = 50;
+        game.gameHeader.setAllyTeamNumber(0, 1);
+        game.gameHeader.setAllyTeamNumber(1, 1);
+        game.gameHeader.setAllyTeamNumber(2, 2);
+        CHECK(WinProbability::prestigeLead(game, 0) == 100);
+        CHECK(WinProbability::prestigeLead(game, 2) == -100);
+        game.totalPrestige = 350;
+        game.prestigeToReach = 350;
+        CHECK(WinProbability::prestigeNeeded(game, 0) == 0);
+        CHECK(WinProbability::prestigeNeeded(game, 2) == 150);
     }
 
     TEST_CASE("prestige needed is recorded and modelled only while prestige can end the game")
@@ -361,11 +426,19 @@ TEST_SUITE("WinProbability")
             REQUIRE(history.size() == 1);
             CHECK(history[0].tick == 1536);
             CHECK(history[0].value == WinProbability::prestigeNeeded(game, t));
+            const auto &lead = game.teams[t]->stats.getPrestigeLeadHistory();
+            REQUIRE(lead.size() == 1);
+            CHECK(lead[0].tick == 1536);
+            CHECK(lead[0].value == WinProbability::prestigeLead(game, t));
         }
+        CHECK(game.teams[2]->stats.getPrestigeLeadHistory()[0].value == -10);
         // The alliance is as close as its closest member.
         slots = WinProbability::slotsOf(game, allianceOf);
         CHECK(slots[0].prestigeNeeded == std::min(WinProbability::prestigeNeeded(game, 0), WinProbability::prestigeNeeded(game, 1)));
         CHECK(slots[1].prestigeNeeded == WinProbability::prestigeNeeded(game, 2));
+        // ... and as far ahead as its furthest-ahead member.
+        CHECK(slots[0].prestigeLead == 10);
+        CHECK(slots[1].prestigeLead == -10);
         game.teams[1]->hasLost = true;
         slots = WinProbability::slotsOf(game, allianceOf);
         CHECK(slots[0].prestigeNeeded == WinProbability::prestigeNeeded(game, 0));
@@ -380,6 +453,8 @@ TEST_SUITE("WinProbability")
         stats.recordPrestigeNeeded(1024, 120);
         stats.recordPrestigeNeeded(1024, 999); // a repeated boundary is ignored
         CHECK_THROWS(stats.recordPrestigeNeeded(1536, -1));
+        stats.recordPrestigeLead(512, 50);
+        stats.recordPrestigeLead(1024, -150); // a lead is signed
         auto *backend = new GAGCore::MemoryStreamBackend;
         GAGCore::BinaryOutputStream output(backend);
         stats.save(&output);
@@ -392,6 +467,10 @@ TEST_SUITE("WinProbability")
         REQUIRE(history.size() == 2);
         CHECK(history[1].tick == 1024);
         CHECK(history[1].value == 120);
+        const auto &lead = loaded.getPrestigeLeadHistory();
+        REQUIRE(lead.size() == 2);
+        CHECK(lead[1].tick == 1024);
+        CHECK(lead[1].value == -150);
 
         const auto &catalog = Stats::catalog();
         const auto metric = std::find_if(catalog.begin(), catalog.end(), [](const auto &m) { return m.prestigeNeeded; });
@@ -438,7 +517,7 @@ TEST_SUITE("WinProbability")
         game.gameHeader.setAllyTeamNumber(0, 1);
         game.gameHeader.setAllyTeamNumber(1, 1);
         game.gameHeader.setAllyTeamNumber(2, 2);
-        retainBarracks(game, game.teams[0], 100);
+        retainAdvantage(game, game.teams[0], 100);
         WinningConditionWinProbability condition;
         CHECK(condition.thresholdPermille == 950);
         game.stepCounter = WinProbability::MINIMUM_DECISION_TICK - 512;
@@ -471,7 +550,7 @@ TEST_SUITE("WinProbability")
             for (int t = 0; t < 3; ++t)
             {
                 auto *team = game.teams[t];
-                retainBarracks(game, team, roles[t] == 0 ? 100 : 0);
+                retainAdvantage(game, team, roles[t] == 0 ? 100 : 0);
                 team->stats.getLatestStat()->totalAttackPower = roles[t] == 0 ? 1 : roles[t] == 1 ? 1000 : 100;
                 team->hasLost = team->hasWon = false;
                 team->winCondition = WCUnknown;
@@ -532,7 +611,7 @@ TEST_SUITE("WinProbability")
         WinningCondition::setWinProbabilityWinCondition(game.gameHeader.getWinningConditions(), 970);
         game.stepCounter = WinProbability::MINIMUM_DECISION_TICK - 64;
         // The sample the decision at MINIMUM_DECISION_TICK reads.
-        retainBarracks(game, game.teams[0], 100, WinProbability::MINIMUM_DECISION_TICK - 512);
+        retainAdvantage(game, game.teams[0], 100, WinProbability::MINIMUM_DECISION_TICK - 512);
         std::ostringstream trace;
         for (int tick = 0; tick < 128; ++tick)
         {
@@ -571,7 +650,7 @@ TEST_SUITE("WinProbability")
             game.gameHeader.getWinningConditions().clear();
             WinningCondition::setWinProbabilityWinCondition(game.gameHeader.getWinningConditions(), 970);
             game.stepCounter = WinProbability::MINIMUM_DECISION_TICK - 64;
-            retainBarracks(game, game.teams[favoured], 100, WinProbability::MINIMUM_DECISION_TICK - 512);
+            retainAdvantage(game, game.teams[favoured], 100, WinProbability::MINIMUM_DECISION_TICK - 512);
             int decidedAt = -1, expectedWinner = -1;
             for (int tick = 0; tick < 128 && !game.isGameEnded; ++tick)
             {
@@ -632,16 +711,19 @@ TEST_SUITE("WinProbability")
             slot.feeding = fields.at("feeding");
             slot.explorers = fields.at("explorers");
             slot.barracksLevels = fields.at("barracksLevels");
+            slot.schoolLevels = fields.at("schoolLevels");
             slot.delivered = fields.at("delivered");
             slot.innWalkDistance = fields.at("innWalkDistance");
             slot.swarmFilling = fields.at("swarmFilling");
             slot.attack = fields.at("attack");
             slot.prestigeNeeded = fields.at("prestigeNeeded");
+            slot.prestigeLead = fields.at("prestigeLead");
+            slot.tick = Uint32(fields.at("tick"));
             REQUIRE(fields.at("alliance") == int(samples[fields.at("tick")].size()));
             samples[fields.at("tick")].push_back(slot);
             expected[fields.at("tick")].push_back(fields.at("permille"));
         }
-        REQUIRE(samples.size() == 10);
+        REQUIRE(samples.size() == 20);
         for (const auto &[tick, slots] : samples)
         {
             INFO(tick);
