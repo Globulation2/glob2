@@ -478,6 +478,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.11.6.5" date="2026-11-19">
+      <description>
+        <p>Made the win chance readout more accurate: it now weighs the prestige lead over the best opponent and school levels, and the statistics screen charts both. Also starts the faster SDL GPU renderer on phones with Mali graphics, loads game artwork much faster at startup, and keeps single-player games smooth. Online play requires 0.11.6.5 on every player.</p>
+      </description>
+    </release>
     <release version="0.11.6.4" date="2026-11-19">
       <description>
         <p>Started the faster SDL GPU renderer on phones with Mali graphics, falling back to programmable OpenGL on other phones; made game artwork load much faster at startup, especially on phones and tablets; and stopped single-player games from pausing the simulation to refresh an unused building record.</p>
