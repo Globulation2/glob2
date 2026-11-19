@@ -171,7 +171,7 @@ jobs:
           KEY=$RUNNER_TEMP/online-deploy-key
           echo "KEY=$KEY" >> "$GITHUB_ENV"
           ssh-keygen -q -t ed25519 -N '' -C glob2-online-deploy -f "$KEY"
-          python3 deploy/online_remote.py add-key --key "$KEY.pub" --hours 3
+          python3 deploy/online_remote.py add-key --key "$KEY.pub" --hours 6.5
       - name: Check the host
         id: host
         env:
