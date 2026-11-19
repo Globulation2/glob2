@@ -105,27 +105,68 @@ binaries (`glob2-unit-tests` and `glob2-engine-tests`, from `test/tests.py`):
 ```sh
 python3 platforms/mobile/dependencies.py --arch arm64-v8a --release
 python3 tools/dev_build.py target=android arch=arm64-v8a release=1 android-tests -j4
-python3 platforms/mobile/android_device_tests.py --serial DEVICE_SERIAL \
-  --android-sdk "$ANDROID_SDK_ROOT" --output artifacts/android/device-tests
+python3 platforms/mobile/android_device_tests.py --serial DEVICE_SERIAL --arch arm64-v8a \
+  --output artifacts/android/device-tests
 ```
 
-For an SDK outside the default task-local directory, pass `--android-sdk PATH`
-to the Python build commands and `android_sdk=PATH` to `tools/dev_build.py`. Keep the dependency,
-project and test architecture consistent. `--binary NAME` runs one of the two.
-The runner checks the device ABI, stages stripped binaries and packaged assets in
-an isolated `/data/local/tmp` directory, runs every case except the `[display]`
-ones in-process, and records each exit code, log and JUnit report. It retains
-those fixtures for diagnosis and never clears the installed app's data.
+The runner uses the managed SDK unless `--android-sdk PATH` names another, and the
+dependency prefix the binaries were linked against unless `--mobile-deps PATH`
+does. Keep the dependency, project and test architecture consistent.
+`--binary NAME` runs one of the two; `--suite`, `--filter`, `--tag` and
+`--exclude-tag` select cases as `test/run_tests.py` does.
 
-The engine binary reuses the production client objects. `platforms/mobile/NativeTestMain.cpp` supplies only the
-shell platform bridges: filesystem assets, SDL main readiness, explicit app
-metadata and absent Activity. Audio uses SDL's real dummy driver. Its event poll drains SDL's
-queue without pumping the absent Java lifecycle queue. SDL3 renderer creation
-waits for a Java Activity, so native dummy-video tools retain software rendering.
-These tests execute
-on the device CPU but do **not** establish real rendering, audio, native keyboard,
-IME composition, lifecycle or physical gesture comfort. Test those separately in
-the installed APK, including rotation, background/resume, save/load and editor
-text entry. Keep device screenshots and logs with the test results.
+The runner checks the device ABI and stages, in an isolated `/data/local/tmp`
+directory, the stripped binaries, the runtime tree the APK ships (exported by
+`android.py`'s packager, so sprites are the packaged WebP files) and the
+repository fixtures the cases read through `glob2test::sourceRoot()`. Like the
+desktop runner it runs every case in its own process with a fresh profile and a
+timeout: four times the desktop runner's limit from the recorded CI durations
+(`--timeout-scale`), or `--case-timeout SECONDS` for every case. Cases run in
+chunks of 20 per device invocation (`--chunk`), so a hang or crash costs one case.
+If the device reboots during a chunk, its results are discarded and the cases run
+again one at a time; a case during which the device reboots twice is recorded as
+a crash. After every chunk the runner writes `result.json`, one JUnit file per
+binary and each case's log under `logs/`; `--resume` continues an interrupted run
+in the same `--output`. At the end it retrieves the artifacts the cases wrote.
+It retains the remote directory after any failure and never clears the
+installed app's data.
+
+The default selection matches CI's: `[display]` cases need a real window and
+are reported as skipped, `[slow]` cases run only with `--slow`, and
+`[map-generators]` cases, which CI runs in a separate Linux job, are left out
+unless selected with `--tag map-generators`.
+
+The engine binary reuses the production client objects. `platforms/mobile/NativeTestMain.cpp`
+supplies only the shell platform bridges: filesystem assets, SDL main readiness,
+explicit app metadata, an absent Activity and SDL's Android lifecycle queue. SDL
+creates that queue from Java, and renderer creation and event pumping wait on it;
+the bridge creates it through SDL's own `nativeSetupJNI` with a minimal stand-in
+VM that offers no Java environment afterwards. Audio uses SDL's real dummy
+driver and rendering the software renderer. These tests execute on the device CPU
+but do **not** establish GPU rendering, audio, native keyboard, IME composition,
+lifecycle or physical gesture comfort. Test those separately in the installed
+APK, including rotation, background/resume, save/load and editor text entry.
+Keep device screenshots and logs with the test results.
+
+### Emulator
+
+`platforms/mobile/emulator.py` runs the pinned emulator and system image
+(`platforms/mobile/emulator.json`) with its own ADB server, so it never attaches
+to USB devices or other emulators:
+
+```sh
+python3 platforms/mobile/emulator.py configure --arch x86_64
+python3 platforms/mobile/emulator.py adb-server &
+python3 platforms/mobile/emulator.py run --arch x86_64 &
+python3 platforms/mobile/emulator.py status --arch x86_64   # prints 1 once booted
+python3 platforms/mobile/android_device_tests.py --serial emulator-5580 --adb-port 15037 --arch x86_64
+python3 platforms/mobile/emulator.py stop --arch x86_64
+```
+
+The AVD and the emulator's state live under `build/mobile-tools/`. The emulator
+renders with SwiftShader on the CPU (`-gpu swiftshader`), so it does not
+use the host GPU, and needs KVM: on Linux it cannot run while a VirtualBox VM
+holds the virtualization extensions. On a two-core emulator the full unit and
+engine suites take several hours.
 
 [Mobile index](README.md) · [Documentation index](../README.md).

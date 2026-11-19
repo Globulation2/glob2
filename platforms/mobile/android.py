@@ -37,6 +37,26 @@ def without_invite_links(manifest):
     return stripped
 
 
+def export_packaged_assets(output, release, sprite_packing='auto', jobs=8):
+    """Export the runtime tree an APK ships into OUTPUT/runtime-assets and return it.
+
+    The native build in OUTPUT supplies the shaders and recording licences. The
+    device test runner stages this same tree, so shell tests read what players get.
+    """
+    sys.path.insert(0, str(ROOT))
+    from tools.package_assets import export_assets
+    from runtime_assets import sprite_packing_profile
+    packing = sprite_packing_profile(sprite_packing, release)
+    exported = output/'runtime-assets'
+    export_assets(ROOT, exported, platform='android', optimized=True, lossy=release, jobs=jobs,
+                  terrain_sheets=packing != 'legacy', packed_hd_sprites=packing != 'legacy',
+                  video_sprites=packing == 'video')
+    shutil.copytree(output/'shaders', exported/'shaders', dirs_exist_ok=True,
+                    ignore=shutil.ignore_patterns('.*', 'RendererShaderLayouts.h', 'native-sources', '*.air'))
+    shutil.copytree(output/'licenses/recording',exported/'licenses/recording',dirs_exist_ok=True)
+    return exported
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('command',choices=['configure','build','bundle','sign','sign-bundle','install','launch'])
@@ -201,17 +221,7 @@ def main():
         validate_bundle(prefixes[args.arch], dependency_identities[args.arch], dependency_toolchains[args.arch])
         if not java.is_dir(): raise ValueError('Dependency bundle lacks pinned SDL Java sources; rebuild dependencies')
         shutil.copytree(java,generated/'java')
-        sys.path.insert(0, str(ROOT))
-        from tools.package_assets import export_assets
-        from runtime_assets import sprite_packing_profile
-        packing = sprite_packing_profile(args.sprite_packing, args.release)
-        exported = output/'runtime-assets'
-        export_assets(ROOT, exported, platform='android', optimized=True, lossy=args.release, jobs=args.jobs,
-                      terrain_sheets=packing != 'legacy', packed_hd_sprites=packing != 'legacy',
-                      video_sprites=packing == 'video')
-        shutil.copytree(output/'shaders', exported/'shaders', dirs_exist_ok=True,
-                        ignore=shutil.ignore_patterns('.*', 'RendererShaderLayouts.h', 'native-sources', '*.air'))
-        shutil.copytree(output/'licenses/recording',exported/'licenses/recording',dirs_exist_ok=True)
+        exported = export_packaged_assets(output, args.release, args.sprite_packing, args.jobs)
         assets=generated/'assets/glob2-bundle'
         if assets.exists(): shutil.rmtree(assets)
         assets.parent.mkdir(parents=True, exist_ok=True)

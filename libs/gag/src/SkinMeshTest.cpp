@@ -59,9 +59,15 @@ TEST_SUITE("SkinMesh")
             const std::string name = Online::SkinSpriteClips[clip];
             for (const auto &extension : {std::string(".gsk"), GAGCore::skinClipFile(name).substr(name.size())})
             {
+                const auto path = glob2test::contentRoot()/"data/skins/colony-v1"/(name+extension);
+                // Packaged runtime trees (the APK, the device runner) omit the authoring
+                // .gsk meshes their fitted clips supersede; see tools/package_assets.py.
+                if (extension == ".gsk" && !std::filesystem::exists(path) &&
+                    GAGCore::skinClipFile(name) != name + ".gsk")
+                    continue;
                 GAGCore::SkinMesh mesh;
                 std::string error;
-                REQUIRE(mesh.load((glob2test::contentRoot()/"data/skins/colony-v1"/(name+extension)).string(), error));
+                REQUIRE(mesh.load(path.string(), error));
                 std::vector<float> original;
                 REQUIRE(mesh.evaluate(0, original));
                 const auto identity = mesh.identity;
