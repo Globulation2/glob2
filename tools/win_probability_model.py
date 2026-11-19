@@ -200,6 +200,47 @@ FINAL_FEATURES = [
     ('barracks_levels', 'identity'),
 ]
 
+# Every published coefficient moves linearly through the game:
+# beta(t) = coefficient + slope * min(t, TIME_CAP_TICKS) / TIME_CAP_TICKS, where t
+# is the decision tick. The game's length is unknown while it is played, so the
+# clock is absolute ticks, clamped at the tournament cap the games ran to. A
+# straight line keeps the fit a conditional logit (each term gains a column scaled
+# by the clock) and the engine exact (one multiply and one division per term).
+# Kept in step with WinProbability::TIME_CAP_TICKS.
+TIME_CAP_TICKS = 180000
+
+
+def time_fraction(tick):
+    return min(max(tick, 0), TIME_CAP_TICKS) / TIME_CAP_TICKS
+
+
+def time_column(dataset, name, transform):
+    """Columns named NAME@t are the transformed measurement scaled by the clock."""
+    if not name.endswith('@t'):
+        return feature_column(dataset, name, transform)
+    values = feature_column(dataset, name[:-2], transform)
+    return [[value * time_fraction(game['tick']) for value in row] for row, game in zip(values, dataset['games'])]
+
+
+# The terms whose coefficient moves with the clock. Forward selection on
+# game-grouped CV over all ten slopes kept only this one: it alone lifted CV R2
+# from 0.284 to 0.291 (every 4th sample), more than all ten slopes together
+# (0.290); no other slope added 0.0005. Every other term has a slope of 0.
+TIMED_TERMS = (PRESTIGE_LEAD,)
+
+
+def published_columns(features, timed=TIMED_TERMS):
+    return list(features) + [(name + '@t', transform) for name, transform in features if name in timed]
+
+
+def fit_published(dataset, features, ridge=1e-3, timed=TIMED_TERMS):
+    """Fit the published form: each term's coefficient, and a clock slope for the timed ones."""
+    model = fit_model(dataset, published_columns(features, timed), ridge, column=time_column)
+    by_name = {item['name']: item['coefficient'] for item in model['features']}
+    model['features'] = [{'name': name, 'transform': transform, 'coefficient': by_name[name],
+                          'slope': by_name.get(name + '@t', 0.0)} for name, transform in features]
+    return model
+
 # What each term reads, for the in-game breakdown. Phrases a player can read.
 LABELS = {
     'barracks_levels': 'Barracks, counted by level',
@@ -563,10 +604,11 @@ def select(data, candidates, limit=6, folds=5, ridge=1e-3, tolerance=0.0005):
 def probabilities(model, data):
     """Per-contest fitness and win probability under a fitted model."""
     features = [(item['name'], item['transform']) for item in model['features']]
-    coefficients = [item['coefficient'] for item in model['features']]
     columns = [feature_column(data, name, transform) for name, transform in features]
     output = []
     for position, game in enumerate(data['games']):
+        clock = time_fraction(game['tick'])
+        coefficients = [item['coefficient'] + item.get('slope', 0.0) * clock for item in model['features']]
         fitnesses = []
         for member in range(len(game['entries'])):
             # The intercept is the same for every entry of a contest, so softmax
@@ -624,7 +666,7 @@ def savings(cache, features, threshold=0.97, dwell=3, folds=4, ridge=1e-3, seed=
                          stride=2, minimum_tick=MINIMUM_DECISION_TICK)
         if not train['games']:
             continue
-        model = fit_model(train, features, ridge)
+        model = fit_published(train, features, ridge)
         for game in games:
             if fold_of[game['job_id']] != fold:
                 continue
@@ -756,12 +798,24 @@ def exp_negative(value):
     return (result << (FITNESS_SHIFT - SERIES_SHIFT)) >> whole
 
 
+def truncating_divide(numerator, denominator):
+    """C++ integer division: rounds toward zero, unlike Python's //."""
+    quotient = abs(numerator) // abs(denominator)
+    return quotient if (numerator >= 0) == (denominator > 0) else -quotient
+
+
+def fixed_coefficient(item, tick):
+    """A term's fixed-point coefficient at a decision tick (WinProbability::timeScaled)."""
+    clock = min(max(int(tick), 0), TIME_CAP_TICKS)
+    return to_fixed(item['coefficient']) + truncating_divide(to_fixed(item.get('slope', 0.0)) * clock, TIME_CAP_TICKS)
+
+
 def fixed_term(model, slots, index, term):
     """One term's contribution to a slot's fitness, as the engine computes it."""
     item = model['features'][term]
     name, transform = item['name'], item['transform']
-    coefficient = to_fixed(item['coefficient'])
     slot = slots[index]
+    coefficient = fixed_coefficient(item, slot.get('tick', 0))
     if name in RATIOS:
         top, bottom = RATIOS[name]
         return (coefficient * ratio_value(slot[top], slot[bottom])) >> FRACTION_SHIFT
@@ -896,7 +950,8 @@ def emit_header(model, path, provenance):
     add('namespace WinProbability')
     add('{')
     identity = json.dumps({'intercept': to_fixed(model['intercept']),
-                           'features': [(f['name'], f['transform'], to_fixed(f['coefficient'])) for f in features]},
+                           'features': [(f['name'], f['transform'], to_fixed(f['coefficient']),
+                                         to_fixed(f.get('slope', 0.0))) for f in features]},
                           sort_keys=True, separators=(',', ':')).encode()
     add('inline constexpr char MODEL_ID[] = "conditional-logit-v1-' + hashlib.sha256(identity).hexdigest() + '";')
     add('/// Softmax fixes the scale of F but not its zero, so this level is a')
@@ -908,9 +963,11 @@ def emit_header(model, path, provenance):
     for item in features:
         name, transform = item['name'], item['transform']
         constant = constant_name(name, transform)
-        add(f'/// {name} ({transform})')
+        add(f'/// {name} ({transform}): coefficient at tick 0, and its change by TIME_CAP_TICKS')
         add(f'constexpr double {constant} = {item["coefficient"]!r};')
         add(f'const Sint64 {constant}_FIXED = {to_fixed(item["coefficient"])}LL;')
+        add(f'constexpr double {constant}_SLOPE = {item.get("slope", 0.0)!r};')
+        add(f'const Sint64 {constant}_SLOPE_FIXED = {to_fixed(item.get("slope", 0.0))}LL;')
         kind = cpp_kind(name, transform)[0]
         if kind in ('table', 'signed_table'):
             values = table_of(name, transform)
@@ -936,7 +993,8 @@ def emit_header(model, path, provenance):
     add('\tconst char *name;')
     add('\tconst char *transform;')
     add('\tconst char *label;   ///< a phrase a player can read')
-    add('\tdouble coefficient;')
+    add('\tdouble coefficient;   ///< at tick 0')
+    add('\tdouble slope;         ///< change by TIME_CAP_TICKS')
     add('};')
     add('inline const WinProbabilityTerm *winProbabilityTerms()')
     add('{')
@@ -944,7 +1002,7 @@ def emit_header(model, path, provenance):
     for item in features:
         name, transform = item['name'], item['transform']
         label = LABELS.get(name, name)
-        add(f'\t\t{{"{name}", "{transform}", "{label}", {constant_name(name, transform)}}},')
+        add(f'\t\t{{"{name}", "{transform}", "{label}", {constant_name(name, transform)}, {constant_name(name, transform)}_SLOPE}},')
     add('\t};')
     add('\treturn terms;')
     add('}')
@@ -962,8 +1020,11 @@ def emit_header(model, path, provenance):
     for position, item in enumerate(features):
         name, transform = item['name'], item['transform']
         kind, expressions, shift = cpp_kind(name, transform)
-        constant = constant_name(name, transform) + '_FIXED'
+        constant = 'coefficient'
         add(f'\tcase {position}: // {name} ({transform})')
+        add('\t{')
+        add(f'\t\tconst Sint64 coefficient = {constant_name(name, transform)}_FIXED + '
+            f'timeScaled({constant_name(name, transform)}_SLOPE_FIXED, slot.tick);')
         if kind == 'identity':
             add(f'\t\treturn {constant} * countValue({expressions[0]});')
         elif kind == 'signed_identity':
@@ -988,6 +1049,7 @@ def emit_header(model, path, provenance):
             add(f'\t\t\t\ttotal += clampCount(slots[i].{field});')
             add(f'\t\treturn ({constant} * shareValue({expressions[0]}, total)) >> {shift};')
             add('\t}')
+        add('\t}')
     add('\t}')
     add('\treturn 0;')
     add('}')

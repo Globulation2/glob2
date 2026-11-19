@@ -10,8 +10,9 @@
 // every format (1v1, 2v2, free-for-all with 4 or 8 colonies), every playable map
 // generator at 128x128 and 256x256 -- sampled every 512 ticks, at SIM revision 168.
 // Games ran to a 180,000-tick cap; those that reached it are labelled by the
-// economic adjudication the ratings use.
-// Cross-validated grouped by game: McFadden R2 0.288, top-1 accuracy 68.0%
+// economic adjudication the ratings use. The prestige lead coefficient moves
+// linearly with the decision tick up to that cap; the others are constant.
+// Cross-validated grouped by game: McFadden R2 0.295, top-1 accuracy 68.3%
 // against 40.2% for guessing.
 // See docs/ai/architecture/win-probability-model.md.
 #pragma once
@@ -22,25 +23,33 @@
 
 namespace WinProbability
 {
-inline constexpr char MODEL_ID[] = "conditional-logit-v1-e7b7828b4f2f1d70b5ba8daa0a77e69306a1299ab8a395c52d609b6506f06dd6";
+inline constexpr char MODEL_ID[] = "conditional-logit-v1-591f3d0303b166cc173f51f77e349ab945052820f482268895b97d306abc20f0";
 /// Softmax fixes the scale of F but not its zero, so this level is a
 /// convention and cancels between competitors. Differences are what the
 /// games determined.
-constexpr double WIN_PROBABILITY_INTERCEPT = 9.16492695150011;
-const Sint64 WIN_PROBABILITY_INTERCEPT_FIXED = 39363061527LL;
+constexpr double WIN_PROBABILITY_INTERCEPT = 6.301698827890307;
+const Sint64 WIN_PROBABILITY_INTERCEPT_FIXED = 27065590375LL;
 
-/// delivered_window (share)
-constexpr double WIN_PROBABILITY_DELIVERED_WINDOW_SHARE = 1.447767492310407;
-const Sint64 WIN_PROBABILITY_DELIVERED_WINDOW_SHARE_FIXED = 6218114032LL;
-/// feeding (sqrt)
-constexpr double WIN_PROBABILITY_FEEDING_SQRT = 0.20488884119627054;
-const Sint64 WIN_PROBABILITY_FEEDING_SQRT_FIXED = 879990872LL;
-/// school_levels (identity)
-constexpr double WIN_PROBABILITY_SCHOOL_LEVELS_IDENTITY = 0.029294149241215317;
-const Sint64 WIN_PROBABILITY_SCHOOL_LEVELS_IDENTITY_FIXED = 125817413LL;
-/// prestige_lead (slog)
-constexpr double WIN_PROBABILITY_PRESTIGE_LEAD_SLOG = 0.0625987113569778;
-const Sint64 WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_FIXED = 268859418LL;
+/// delivered_window (share): coefficient at tick 0, and its change by TIME_CAP_TICKS
+constexpr double WIN_PROBABILITY_DELIVERED_WINDOW_SHARE = 1.4990760562954326;
+const Sint64 WIN_PROBABILITY_DELIVERED_WINDOW_SHARE_FIXED = 6438482636LL;
+constexpr double WIN_PROBABILITY_DELIVERED_WINDOW_SHARE_SLOPE = 0.0;
+const Sint64 WIN_PROBABILITY_DELIVERED_WINDOW_SHARE_SLOPE_FIXED = 0LL;
+/// feeding (sqrt): coefficient at tick 0, and its change by TIME_CAP_TICKS
+constexpr double WIN_PROBABILITY_FEEDING_SQRT = 0.20343116588931512;
+const Sint64 WIN_PROBABILITY_FEEDING_SQRT_FIXED = 873730204LL;
+constexpr double WIN_PROBABILITY_FEEDING_SQRT_SLOPE = 0.0;
+const Sint64 WIN_PROBABILITY_FEEDING_SQRT_SLOPE_FIXED = 0LL;
+/// school_levels (identity): coefficient at tick 0, and its change by TIME_CAP_TICKS
+constexpr double WIN_PROBABILITY_SCHOOL_LEVELS_IDENTITY = 0.023791955182987563;
+const Sint64 WIN_PROBABILITY_SCHOOL_LEVELS_IDENTITY_FIXED = 102185669LL;
+constexpr double WIN_PROBABILITY_SCHOOL_LEVELS_IDENTITY_SLOPE = 0.0;
+const Sint64 WIN_PROBABILITY_SCHOOL_LEVELS_IDENTITY_SLOPE_FIXED = 0LL;
+/// prestige_lead (slog): coefficient at tick 0, and its change by TIME_CAP_TICKS
+constexpr double WIN_PROBABILITY_PRESTIGE_LEAD_SLOG = -0.10275611993851225;
+const Sint64 WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_FIXED = -441334175LL;
+constexpr double WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_SLOPE = 0.39937744810859094;
+const Sint64 WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_SLOPE_FIXED = 1715313078LL;
 /// slog: the transform of |value| for 0..2400, with TABLE_SHIFT fractional
 /// bits; larger magnitudes read the last entry, and the value's sign is restored.
 constexpr Sint64 WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_TABLE_LIMIT = 2400;
@@ -247,9 +256,11 @@ inline constexpr Sint32 WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_TABLE[2401] = {
 	8156485, 8156924, 8157362, 8157801, 8158239, 8158677, 8159115, 8159553, 8159990, 8160428, 8160865, 8161302,
 	8161739,
 };
-/// prestige_needed (log)
-constexpr double WIN_PROBABILITY_PRESTIGE_NEEDED_LOG = -1.696045612746697;
-const Sint64 WIN_PROBABILITY_PRESTIGE_NEEDED_LOG_FIXED = -7284460439LL;
+/// prestige_needed (log): coefficient at tick 0, and its change by TIME_CAP_TICKS
+constexpr double WIN_PROBABILITY_PRESTIGE_NEEDED_LOG = -1.2524098033731799;
+const Sint64 WIN_PROBABILITY_PRESTIGE_NEEDED_LOG_FIXED = -5379059147LL;
+constexpr double WIN_PROBABILITY_PRESTIGE_NEEDED_LOG_SLOPE = 0.0;
+const Sint64 WIN_PROBABILITY_PRESTIGE_NEEDED_LOG_SLOPE_FIXED = 0LL;
 /// log(value) for value 0..2400, with TABLE_SHIFT fractional bits;
 /// larger values read the last entry. Generated, so every platform reads the same numbers.
 constexpr Sint64 WIN_PROBABILITY_PRESTIGE_NEEDED_LOG_TABLE_LIMIT = 2400;
@@ -456,21 +467,31 @@ inline constexpr Sint32 WIN_PROBABILITY_PRESTIGE_NEEDED_LOG_TABLE[2401] = {
 	8156485, 8156924, 8157362, 8157801, 8158239, 8158677, 8159115, 8159553, 8159990, 8160428, 8160865, 8161302,
 	8161739,
 };
-/// attack (share)
-constexpr double WIN_PROBABILITY_ATTACK_SHARE = 0.5818760245681808;
-const Sint64 WIN_PROBABILITY_ATTACK_SHARE_FIXED = 2499138496LL;
-/// swarm_filling_window (sqrt)
-constexpr double WIN_PROBABILITY_SWARM_FILLING_WINDOW_SQRT = 0.0018260088752558125;
-const Sint64 WIN_PROBABILITY_SWARM_FILLING_WINDOW_SQRT_FIXED = 7842648LL;
-/// explorers (sqrt)
-constexpr double WIN_PROBABILITY_EXPLORERS_SQRT = 0.049420762483396746;
-const Sint64 WIN_PROBABILITY_EXPLORERS_SQRT_FIXED = 212260559LL;
-/// inn_walk_distance_window (share)
-constexpr double WIN_PROBABILITY_INN_WALK_DISTANCE_WINDOW_SHARE = 0.18957626272184883;
-const Sint64 WIN_PROBABILITY_INN_WALK_DISTANCE_WINDOW_SHARE_FIXED = 814223848LL;
-/// barracks_levels (identity)
-constexpr double WIN_PROBABILITY_BARRACKS_LEVELS_IDENTITY = 0.004737293013109273;
-const Sint64 WIN_PROBABILITY_BARRACKS_LEVELS_IDENTITY_FIXED = 20346519LL;
+/// attack (share): coefficient at tick 0, and its change by TIME_CAP_TICKS
+constexpr double WIN_PROBABILITY_ATTACK_SHARE = 0.5994519333075224;
+const Sint64 WIN_PROBABILITY_ATTACK_SHARE_FIXED = 2574626449LL;
+constexpr double WIN_PROBABILITY_ATTACK_SHARE_SLOPE = 0.0;
+const Sint64 WIN_PROBABILITY_ATTACK_SHARE_SLOPE_FIXED = 0LL;
+/// swarm_filling_window (sqrt): coefficient at tick 0, and its change by TIME_CAP_TICKS
+constexpr double WIN_PROBABILITY_SWARM_FILLING_WINDOW_SQRT = 0.0018840222491545437;
+const Sint64 WIN_PROBABILITY_SWARM_FILLING_WINDOW_SQRT_FIXED = 8091814LL;
+constexpr double WIN_PROBABILITY_SWARM_FILLING_WINDOW_SQRT_SLOPE = 0.0;
+const Sint64 WIN_PROBABILITY_SWARM_FILLING_WINDOW_SQRT_SLOPE_FIXED = 0LL;
+/// explorers (sqrt): coefficient at tick 0, and its change by TIME_CAP_TICKS
+constexpr double WIN_PROBABILITY_EXPLORERS_SQRT = 0.062047137654988795;
+const Sint64 WIN_PROBABILITY_EXPLORERS_SQRT_FIXED = 266490427LL;
+constexpr double WIN_PROBABILITY_EXPLORERS_SQRT_SLOPE = 0.0;
+const Sint64 WIN_PROBABILITY_EXPLORERS_SQRT_SLOPE_FIXED = 0LL;
+/// inn_walk_distance_window (share): coefficient at tick 0, and its change by TIME_CAP_TICKS
+constexpr double WIN_PROBABILITY_INN_WALK_DISTANCE_WINDOW_SHARE = 0.1908314989343761;
+const Sint64 WIN_PROBABILITY_INN_WALK_DISTANCE_WINDOW_SHARE_FIXED = 819615047LL;
+constexpr double WIN_PROBABILITY_INN_WALK_DISTANCE_WINDOW_SHARE_SLOPE = 0.0;
+const Sint64 WIN_PROBABILITY_INN_WALK_DISTANCE_WINDOW_SHARE_SLOPE_FIXED = 0LL;
+/// barracks_levels (identity): coefficient at tick 0, and its change by TIME_CAP_TICKS
+constexpr double WIN_PROBABILITY_BARRACKS_LEVELS_IDENTITY = 0.004236217383236087;
+const Sint64 WIN_PROBABILITY_BARRACKS_LEVELS_IDENTITY_FIXED = 18194415LL;
+constexpr double WIN_PROBABILITY_BARRACKS_LEVELS_IDENTITY_SLOPE = 0.0;
+const Sint64 WIN_PROBABILITY_BARRACKS_LEVELS_IDENTITY_SLOPE_FIXED = 0LL;
 
 constexpr int WIN_PROBABILITY_FEATURE_COUNT = 10;
 constexpr int WIN_PROBABILITY_GAMES = 1029;
@@ -482,21 +503,22 @@ struct WinProbabilityTerm
 	const char *name;
 	const char *transform;
 	const char *label;   ///< a phrase a player can read
-	double coefficient;
+	double coefficient;   ///< at tick 0
+	double slope;         ///< change by TIME_CAP_TICKS
 };
 inline const WinProbabilityTerm *winProbabilityTerms()
 {
 	static const WinProbabilityTerm terms[] = {
-		{"delivered_window", "share", "Share of recent deliveries", WIN_PROBABILITY_DELIVERED_WINDOW_SHARE},
-		{"feeding", "sqrt", "Units eating at inns", WIN_PROBABILITY_FEEDING_SQRT},
-		{"school_levels", "identity", "Schools, counted by level", WIN_PROBABILITY_SCHOOL_LEVELS_IDENTITY},
-		{"prestige_lead", "slog", "Prestige lead over the best opponent", WIN_PROBABILITY_PRESTIGE_LEAD_SLOG},
-		{"prestige_needed", "log", "Prestige still needed to win", WIN_PROBABILITY_PRESTIGE_NEEDED_LOG},
-		{"attack", "share", "Share of all attack strength", WIN_PROBABILITY_ATTACK_SHARE},
-		{"swarm_filling_window", "sqrt", "Recent work feeding swarms", WIN_PROBABILITY_SWARM_FILLING_WINDOW_SQRT},
-		{"explorers", "sqrt", "Explorers", WIN_PROBABILITY_EXPLORERS_SQRT},
-		{"inn_walk_distance_window", "share", "Share of recent walking to inns", WIN_PROBABILITY_INN_WALK_DISTANCE_WINDOW_SHARE},
-		{"barracks_levels", "identity", "Barracks, counted by level", WIN_PROBABILITY_BARRACKS_LEVELS_IDENTITY},
+		{"delivered_window", "share", "Share of recent deliveries", WIN_PROBABILITY_DELIVERED_WINDOW_SHARE, WIN_PROBABILITY_DELIVERED_WINDOW_SHARE_SLOPE},
+		{"feeding", "sqrt", "Units eating at inns", WIN_PROBABILITY_FEEDING_SQRT, WIN_PROBABILITY_FEEDING_SQRT_SLOPE},
+		{"school_levels", "identity", "Schools, counted by level", WIN_PROBABILITY_SCHOOL_LEVELS_IDENTITY, WIN_PROBABILITY_SCHOOL_LEVELS_IDENTITY_SLOPE},
+		{"prestige_lead", "slog", "Prestige lead over the best opponent", WIN_PROBABILITY_PRESTIGE_LEAD_SLOG, WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_SLOPE},
+		{"prestige_needed", "log", "Prestige still needed to win", WIN_PROBABILITY_PRESTIGE_NEEDED_LOG, WIN_PROBABILITY_PRESTIGE_NEEDED_LOG_SLOPE},
+		{"attack", "share", "Share of all attack strength", WIN_PROBABILITY_ATTACK_SHARE, WIN_PROBABILITY_ATTACK_SHARE_SLOPE},
+		{"swarm_filling_window", "sqrt", "Recent work feeding swarms", WIN_PROBABILITY_SWARM_FILLING_WINDOW_SQRT, WIN_PROBABILITY_SWARM_FILLING_WINDOW_SQRT_SLOPE},
+		{"explorers", "sqrt", "Explorers", WIN_PROBABILITY_EXPLORERS_SQRT, WIN_PROBABILITY_EXPLORERS_SQRT_SLOPE},
+		{"inn_walk_distance_window", "share", "Share of recent walking to inns", WIN_PROBABILITY_INN_WALK_DISTANCE_WINDOW_SHARE, WIN_PROBABILITY_INN_WALK_DISTANCE_WINDOW_SHARE_SLOPE},
+		{"barracks_levels", "identity", "Barracks, counted by level", WIN_PROBABILITY_BARRACKS_LEVELS_IDENTITY, WIN_PROBABILITY_BARRACKS_LEVELS_IDENTITY_SLOPE},
 	};
 	return terms;
 }
@@ -513,42 +535,72 @@ inline Sint64 winProbabilityTermFixed(const std::vector<Slot> &slots, std::size_
 	{
 	case 0: // delivered_window (share)
 	{
+		const Sint64 coefficient = WIN_PROBABILITY_DELIVERED_WINDOW_SHARE_FIXED + timeScaled(WIN_PROBABILITY_DELIVERED_WINDOW_SHARE_SLOPE_FIXED, slot.tick);
+	{
 		Sint64 total = 0;
 		for (std::size_t i = 0; i < slots.size(); ++i)
 			if (slots[i].alive)
 				total += clampCount(slots[i].delivered);
-		return (WIN_PROBABILITY_DELIVERED_WINDOW_SHARE_FIXED * shareValue(slot.delivered, total)) >> FRACTION_SHIFT;
+		return (coefficient * shareValue(slot.delivered, total)) >> FRACTION_SHIFT;
+	}
 	}
 	case 1: // feeding (sqrt)
-		return (WIN_PROBABILITY_FEEDING_SQRT_FIXED * rootValue(slot.feeding)) >> ROOT_SHIFT;
+	{
+		const Sint64 coefficient = WIN_PROBABILITY_FEEDING_SQRT_FIXED + timeScaled(WIN_PROBABILITY_FEEDING_SQRT_SLOPE_FIXED, slot.tick);
+		return (coefficient * rootValue(slot.feeding)) >> ROOT_SHIFT;
+	}
 	case 2: // school_levels (identity)
-		return WIN_PROBABILITY_SCHOOL_LEVELS_IDENTITY_FIXED * countValue(slot.schoolLevels);
+	{
+		const Sint64 coefficient = WIN_PROBABILITY_SCHOOL_LEVELS_IDENTITY_FIXED + timeScaled(WIN_PROBABILITY_SCHOOL_LEVELS_IDENTITY_SLOPE_FIXED, slot.tick);
+		return coefficient * countValue(slot.schoolLevels);
+	}
 	case 3: // prestige_lead (slog)
-		return (WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_FIXED * signedTableValue(WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_TABLE, WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_TABLE_LIMIT, slot.prestigeLead)) >> TABLE_SHIFT;
+	{
+		const Sint64 coefficient = WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_FIXED + timeScaled(WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_SLOPE_FIXED, slot.tick);
+		return (coefficient * signedTableValue(WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_TABLE, WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_TABLE_LIMIT, slot.prestigeLead)) >> TABLE_SHIFT;
+	}
 	case 4: // prestige_needed (log)
-		return (WIN_PROBABILITY_PRESTIGE_NEEDED_LOG_FIXED * WIN_PROBABILITY_PRESTIGE_NEEDED_LOG_TABLE[std::min<Sint64>(countValue(slot.prestigeNeeded), WIN_PROBABILITY_PRESTIGE_NEEDED_LOG_TABLE_LIMIT)]) >> TABLE_SHIFT;
+	{
+		const Sint64 coefficient = WIN_PROBABILITY_PRESTIGE_NEEDED_LOG_FIXED + timeScaled(WIN_PROBABILITY_PRESTIGE_NEEDED_LOG_SLOPE_FIXED, slot.tick);
+		return (coefficient * WIN_PROBABILITY_PRESTIGE_NEEDED_LOG_TABLE[std::min<Sint64>(countValue(slot.prestigeNeeded), WIN_PROBABILITY_PRESTIGE_NEEDED_LOG_TABLE_LIMIT)]) >> TABLE_SHIFT;
+	}
 	case 5: // attack (share)
+	{
+		const Sint64 coefficient = WIN_PROBABILITY_ATTACK_SHARE_FIXED + timeScaled(WIN_PROBABILITY_ATTACK_SHARE_SLOPE_FIXED, slot.tick);
 	{
 		Sint64 total = 0;
 		for (std::size_t i = 0; i < slots.size(); ++i)
 			if (slots[i].alive)
 				total += clampCount(slots[i].attack);
-		return (WIN_PROBABILITY_ATTACK_SHARE_FIXED * shareValue(slot.attack, total)) >> FRACTION_SHIFT;
+		return (coefficient * shareValue(slot.attack, total)) >> FRACTION_SHIFT;
+	}
 	}
 	case 6: // swarm_filling_window (sqrt)
-		return (WIN_PROBABILITY_SWARM_FILLING_WINDOW_SQRT_FIXED * rootValue(slot.swarmFilling)) >> ROOT_SHIFT;
+	{
+		const Sint64 coefficient = WIN_PROBABILITY_SWARM_FILLING_WINDOW_SQRT_FIXED + timeScaled(WIN_PROBABILITY_SWARM_FILLING_WINDOW_SQRT_SLOPE_FIXED, slot.tick);
+		return (coefficient * rootValue(slot.swarmFilling)) >> ROOT_SHIFT;
+	}
 	case 7: // explorers (sqrt)
-		return (WIN_PROBABILITY_EXPLORERS_SQRT_FIXED * rootValue(slot.explorers)) >> ROOT_SHIFT;
+	{
+		const Sint64 coefficient = WIN_PROBABILITY_EXPLORERS_SQRT_FIXED + timeScaled(WIN_PROBABILITY_EXPLORERS_SQRT_SLOPE_FIXED, slot.tick);
+		return (coefficient * rootValue(slot.explorers)) >> ROOT_SHIFT;
+	}
 	case 8: // inn_walk_distance_window (share)
+	{
+		const Sint64 coefficient = WIN_PROBABILITY_INN_WALK_DISTANCE_WINDOW_SHARE_FIXED + timeScaled(WIN_PROBABILITY_INN_WALK_DISTANCE_WINDOW_SHARE_SLOPE_FIXED, slot.tick);
 	{
 		Sint64 total = 0;
 		for (std::size_t i = 0; i < slots.size(); ++i)
 			if (slots[i].alive)
 				total += clampCount(slots[i].innWalkDistance);
-		return (WIN_PROBABILITY_INN_WALK_DISTANCE_WINDOW_SHARE_FIXED * shareValue(slot.innWalkDistance, total)) >> FRACTION_SHIFT;
+		return (coefficient * shareValue(slot.innWalkDistance, total)) >> FRACTION_SHIFT;
+	}
 	}
 	case 9: // barracks_levels (identity)
-		return WIN_PROBABILITY_BARRACKS_LEVELS_IDENTITY_FIXED * countValue(slot.barracksLevels);
+	{
+		const Sint64 coefficient = WIN_PROBABILITY_BARRACKS_LEVELS_IDENTITY_FIXED + timeScaled(WIN_PROBABILITY_BARRACKS_LEVELS_IDENTITY_SLOPE_FIXED, slot.tick);
+		return coefficient * countValue(slot.barracksLevels);
+	}
 	}
 	return 0;
 }

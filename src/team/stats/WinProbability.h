@@ -72,6 +72,21 @@ namespace WinProbability
 	/// however strange the state gets.
 	const Sint64 COUNT_CLAMP = (Sint64)1 << 24;
 
+	/// Every coefficient moves linearly through the game, from its value at tick 0
+	/// to coefficient + slope at this tick, and holds there: the cap the fitted
+	/// games ran to. A live game does not know its length, so the clock is the
+	/// absolute decision tick. Kept in step with TIME_CAP_TICKS in
+	/// tools/win_probability_model.py.
+	const Sint64 TIME_CAP_TICKS = 180000;
+
+	/// slope * min(tick, TIME_CAP_TICKS) / TIME_CAP_TICKS, truncated toward zero.
+	/// A fixed-point slope stays below 2^34, so the product stays below 2^52.
+	inline Sint64 timeScaled(Sint64 slope, Uint32 tick)
+	{
+		const Sint64 clock = Sint64(tick) > TIME_CAP_TICKS ? TIME_CAP_TICKS : Sint64(tick);
+		return slope * clock / TIME_CAP_TICKS;
+	}
+
 	/// Prestige arrives a whole school at a time: a finished top-level school
 	/// (level 3 in the game, `school2` in the catalog) awards this much, and no
 	/// other building or school level awards any. Passing the leading
@@ -117,10 +132,11 @@ namespace WinProbability
 		Sint32 attack;           ///< total attack power
 		Sint32 prestigeNeeded;   ///< prestige still needed to win (Game::prestigeNeeded), prestigeNeeded() of the alliance's closest member; 0 for everyone when prestige cannot end the game
 		Sint32 prestigeLead;     ///< signed: prestigeLead() of the alliance's furthest-ahead member; 0 for everyone when prestige cannot end the game
+		Uint32 tick;             ///< the decision tick, which sets every coefficient (TIME_CAP_TICKS)
 		bool alive;              ///< still a competitor; eliminated sides are excluded
 
 		Slot() : feeding(0), explorers(0), barracksLevels(0), schoolLevels(0), delivered(0),
-		         innWalkDistance(0), swarmFilling(0), attack(0), prestigeNeeded(0), prestigeLead(0), alive(false) {}
+		         innWalkDistance(0), swarmFilling(0), attack(0), prestigeNeeded(0), prestigeLead(0), tick(0), alive(false) {}
 	};
 
 	/// The retained measurement samples the model reads for one team: the latest

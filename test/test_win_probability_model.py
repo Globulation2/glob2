@@ -40,7 +40,8 @@ def published():
     for name, transform in W.FINAL_FEATURES:
         constant = f'WIN_PROBABILITY_{name.upper()}_{transform.upper()}'
         value = float(re.search(constant + r' = ([-\d.e+]+);', text)[1])
-        features.append({'name': name, 'transform': transform, 'coefficient': value})
+        slope = float(re.search(constant + r'_SLOPE = ([-\d.e+]+);', text)[1])
+        features.append({'name': name, 'transform': transform, 'coefficient': value, 'slope': slope})
     return {'intercept': intercept, 'features': features}, text
 
 
@@ -203,6 +204,7 @@ class Engine(unittest.TestCase):
                 slot = {name: int(fields[W.CPP_MEASUREMENT[name].split('.', 1)[1]])
                         for name, _ in W.FINAL_FEATURES}
                 slot['alive'] = fields['alive'] == '1'
+                slot['tick'] = tick
                 slots.append(slot)
                 expected.append(int(fields['permille']))
             self.assertEqual(W.fixed_permille(model, slots), expected,
@@ -221,6 +223,8 @@ class Engine(unittest.TestCase):
             constant = f'WIN_PROBABILITY_{item["name"].upper()}_{item["transform"].upper()}_FIXED'
             value = int(re.search(constant + r' = (-?\d+)LL;', text)[1])
             self.assertEqual(value, W.to_fixed(item['coefficient']), item['name'])
+            slope = int(re.search(constant.replace('_FIXED', '_SLOPE_FIXED') + r' = (-?\d+)LL;', text)[1])
+            self.assertEqual(slope, W.to_fixed(item['slope']), item['name'])
 
     def test_the_minimum_decision_tick_agrees_with_the_engine(self):
         header = (ROOT / 'src' / 'team' / 'stats' / 'WinProbability.h').read_text()
@@ -362,6 +366,35 @@ class SignedTerms(unittest.TestCase):
         self.assertIn('WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_TABLE[2401]', text)
         self.assertIn('signedTableValue(WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_TABLE, '
                       'WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_TABLE_LIMIT, slot.prestigeLead)) >> TABLE_SHIFT', text)
+
+
+class Clock(unittest.TestCase):
+    """Coefficients move linearly with the decision tick, and the engine agrees."""
+
+    def test_the_clock_runs_from_zero_to_the_cap_and_holds(self):
+        item = {'coefficient': 0.5, 'slope': -0.25}
+        self.assertEqual(W.fixed_coefficient(item, 0), W.to_fixed(0.5))
+        self.assertEqual(W.fixed_coefficient(item, W.TIME_CAP_TICKS), W.to_fixed(0.5) + W.to_fixed(-0.25))
+        self.assertEqual(W.fixed_coefficient(item, 10 ** 7), W.fixed_coefficient(item, W.TIME_CAP_TICKS))
+        halfway = W.fixed_coefficient(item, W.TIME_CAP_TICKS // 2)
+        self.assertAlmostEqual(halfway / W.FITNESS_ONE, 0.375, places=8)
+
+    def test_negative_slopes_truncate_toward_zero_like_cpp(self):
+        self.assertEqual(W.truncating_divide(-7, 2), -3)
+        self.assertEqual(W.truncating_divide(7, 2), 3)
+        item = {'coefficient': 0.0, 'slope': -1e-9}
+        self.assertEqual(W.fixed_coefficient(item, 1), 0)  # -4/180000 truncates to 0, not -1
+
+    def test_the_engine_reads_the_same_cap(self):
+        engine = (ROOT / 'src/team/stats/WinProbability.h').read_text()
+        self.assertIn(f'TIME_CAP_TICKS = {W.TIME_CAP_TICKS};', engine)
+
+    def test_a_late_sample_weighs_its_terms_by_the_late_coefficients(self):
+        model = {'intercept': 0.0, 'features': [{'name': 'attack', 'transform': 'identity', 'coefficient': 1.0, 'slope': -1.0}]}
+        early = [{'attack': 3, 'tick': 0}, {'attack': 0, 'tick': 0}]
+        late = [{'attack': 3, 'tick': W.TIME_CAP_TICKS}, {'attack': 0, 'tick': W.TIME_CAP_TICKS}]
+        self.assertGreater(W.fixed_permille(model, early)[0], 900)
+        self.assertEqual(W.fixed_permille(model, late), [500, 500])
 
 
 class Labels(unittest.TestCase):

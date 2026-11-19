@@ -26,9 +26,11 @@ namespace
 // A measurement sample as the statistics pipeline retains it every 512 ticks,
 // holding `barracks` finished level-1 barracks (weight 2 each). The model reads
 // the latest retained sample.
-// A clear lead the model must call whatever its fitted weights: `count` finished
-// barracks and as many finished level-3 schools, two terms of different families,
-// so the tests do not depend on which one a refit happens to weight most.
+// A clear lead the model must call whatever its fitted weights and whenever it
+// decides: `count` finished barracks, as many finished level-3 schools and a
+// hundred times as many units eating, terms from three families whose weights
+// peak at different times of the game, so the tests depend neither on which one
+// a refit weights most nor on the decision tick.
 void retainAdvantage(Game &game, Team *team, Uint64 count, Uint32 tick = 0)
 {
     GameplayMeasurements sample = team->stats.measurements();
@@ -37,6 +39,7 @@ void retainAdvantage(Game &game, Team *team, Uint64 count, Uint32 tick = 0)
         sample.variants.resize(game.buildingsTypes.size());
     sample.variants[game.buildingsTypes.getFinishedTypeNum("barracks")].count = count;
     sample.buildings[IntBuildingType::SCIENCE_BUILDING][NB_BUILDING_LONG_LEVELS - 1] = count;
+    sample.feeding = count * 100;
     team->stats.measurementHistory.assign(1, sample);
 }
 }
@@ -149,7 +152,8 @@ TEST_SUITE("WinProbability")
         glob2test::HeadlessGame world({.teams=2, .header=true});
         auto &game = world.game;
         game.stepCounter = WinProbability::MINIMUM_DECISION_TICK;
-        retainAdvantage(game, game.teams[0], 70);
+        // Confident but not certain, so the retained value is the model's own.
+        retainAdvantage(game, game.teams[0], 6);
         std::vector<int> allianceOf;
         const auto expected = WinProbability::permille(WinProbability::slotsOf(game, allianceOf));
         REQUIRE(expected[0] >= 950);
@@ -714,6 +718,7 @@ TEST_SUITE("WinProbability")
             slot.attack = fields.at("attack");
             slot.prestigeNeeded = fields.at("prestigeNeeded");
             slot.prestigeLead = fields.at("prestigeLead");
+            slot.tick = Uint32(fields.at("tick"));
             REQUIRE(fields.at("alliance") == int(samples[fields.at("tick")].size()));
             samples[fields.at("tick")].push_back(slot);
             expected[fields.at("tick")].push_back(fields.at("permille"));

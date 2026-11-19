@@ -298,6 +298,8 @@ namespace WinProbability
 				allianceOf[t] = (int)(found - alliances.begin());
 		}
 		std::vector<Slot> slots(alliances.size());
+		for (Slot &slot : slots)
+			slot.tick = game.stepCounter;
 		const std::vector<CombatProvider> providers = combatProviders(game.buildingsTypes);
 		const auto add = [](Sint32 &total, Sint64 value) {
 			total = Sint32(std::min<Sint64>(Sint64(total) + clampCount(value), std::numeric_limits<Sint32>::max()));
