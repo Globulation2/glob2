@@ -1,0 +1,1 @@
+More accurate win chance using prestige lead and school levels, faster graphics on phones with Mali GPUs, much faster artwork loading at startup, and smoother single-player games. Online play needs 0.11.6.5 on every player.
