@@ -72,6 +72,30 @@ namespace WinProbability
 	/// however strange the state gets.
 	const Sint64 COUNT_CLAMP = (Sint64)1 << 24;
 
+	/// Prestige arrives a whole school at a time: a finished top-level school
+	/// (level 3 in the game, `school2` in the catalog) awards this much, and no
+	/// other building or school level awards any. Passing the leading
+	/// opponent therefore takes this much more than it holds.
+	const int PRESTIGE_AWARD = 50;
+	/// prestigeLead() is clamped to plus or minus this: the largest prestige goal
+	/// (MAX_PRESTIGE times Team::MAX_COUNT), the bound of its lookup tables.
+	const int PRESTIGE_LEAD_LIMIT = 2400;
+
+	/// value, clamped to plus or minus COUNT_CLAMP: a signed measurement.
+	inline Sint64 signedCountValue(Sint64 value)
+	{
+		return value < -COUNT_CLAMP ? -COUNT_CLAMP : value > COUNT_CLAMP ? COUNT_CLAMP : value;
+	}
+
+	/// table[|value|] carrying value's sign, |value| clamped to limit: an odd
+	/// extension of a tabulated transform, for a signed bounded measurement.
+	inline Sint64 signedTableValue(const Sint32 *table, Sint64 limit, Sint64 value)
+	{
+		const Sint64 magnitude = value < 0 ? -value : value;
+		const Sint64 entry = table[magnitude > limit ? limit : magnitude];
+		return value < 0 ? -entry : entry;
+	}
+
 	/// The window, in 512-tick samples, over which recent activity is counted.
 	const int ACTIVITY_WINDOW_SAMPLES = 4;
 
@@ -86,15 +110,17 @@ namespace WinProbability
 		Sint32 feeding;          ///< units eating at an inn at the latest sample
 		Sint32 explorers;        ///< living explorers
 		Sint32 barracksLevels;   ///< warrior training buildings and their sites, weighted 1 (level-1 site) to 6 (finished level 3)
+		Sint32 schoolLevels;     ///< schools and their sites, weighted 1 (level-1 site) to 6 (finished level 3)
 		Sint32 delivered;        ///< resources delivered to buildings over the activity window
 		Sint32 innWalkDistance;  ///< distance hungry workers walked to inns over the window
 		Sint32 swarmFilling;     ///< worker-ticks spent filling swarms over the window
 		Sint32 attack;           ///< total attack power
 		Sint32 prestigeNeeded;   ///< prestige still needed to win (Game::prestigeNeeded), prestigeNeeded() of the alliance's closest member; 0 for everyone when prestige cannot end the game
+		Sint32 prestigeLead;     ///< signed: prestigeLead() of the alliance's furthest-ahead member; 0 for everyone when prestige cannot end the game
 		bool alive;              ///< still a competitor; eliminated sides are excluded
 
-		Slot() : feeding(0), explorers(0), barracksLevels(0), delivered(0),
-		         innWalkDistance(0), swarmFilling(0), attack(0), prestigeNeeded(0), alive(false) {}
+		Slot() : feeding(0), explorers(0), barracksLevels(0), schoolLevels(0), delivered(0),
+		         innWalkDistance(0), swarmFilling(0), attack(0), prestigeNeeded(0), prestigeLead(0), alive(false) {}
 	};
 
 	/// The retained measurement samples the model reads for one team: the latest
@@ -126,7 +152,7 @@ namespace WinProbability
 	/// from the alliance's totals.
 	struct TeamInputs
 	{
-		Sint64 feeding = 0, barracksLevels = 0, delivered = 0, innWalkDistance = 0, swarmFilling = 0;
+		Sint64 feeding = 0, barracksLevels = 0, schoolLevels = 0, delivered = 0, innWalkDistance = 0, swarmFilling = 0;
 	};
 	TeamInputs teamInputs(const TeamStats &stats, const std::vector<CombatProvider> &providers);
 
@@ -166,9 +192,15 @@ namespace WinProbability
 	bool prestigeCounts(const Game &game);
 
 	/// Prestige the team would still have to add to win by prestige: enough to
-	/// trip the shared threshold and to lead every other surviving team outright.
-	/// Reads live prestige; game.totalPrestige must be current (prestigeSyncStep).
+	/// trip the shared threshold and to hold PRESTIGE_AWARD (one school) more than
+	/// every surviving opponent. Reads live prestige; game.totalPrestige must be
+	/// current (prestigeSyncStep).
 	int prestigeNeeded(const Game &game, int team);
+
+	/// The team's prestige less the most any surviving opponent holds: positive
+	/// for the leader's margin over the runner-up, negative for a deficit to the
+	/// leader, 0 with no surviving opponent. Clamped to PRESTIGE_LEAD_LIMIT.
+	int prestigeLead(const Game &game, int team);
 
 	/// The slots for a game, one per alliance, summed over its teams.
 	///

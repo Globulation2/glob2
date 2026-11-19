@@ -231,7 +231,7 @@ class Engine(unittest.TestCase):
         for name, transform in W.FINAL_FEATURES:
             kind, expressions, _ = W.cpp_kind(name, transform)
             self.assertTrue(all(expressions), (name, transform))
-            self.assertIn(kind, ('identity', 'share', 'sqrt', 'ratio', 'table'))
+            self.assertIn(kind, ('identity', 'share', 'sqrt', 'ratio', 'table', 'signed_identity', 'signed_table'))
 
 
 class Emission(unittest.TestCase):
@@ -321,6 +321,49 @@ class Tables(unittest.TestCase):
         self.assertIn('WIN_PROBABILITY_PRESTIGE_NEEDED_LOG_TABLE_LIMIT)]) >> TABLE_SHIFT', text)
 
 
+class SignedTerms(unittest.TestCase):
+    def test_a_signed_table_is_odd_and_clamps_its_magnitude(self):
+        for transform, function in W.SIGNED_TABLE_TRANSFORMS.items():
+            table = W.table_of(W.PRESTIGE_LEAD, transform)
+            self.assertEqual(len(table), W.TABLE_BOUNDS[W.PRESTIGE_LEAD] + 1)
+            for value in (0, 50, 350, 2400):
+                self.assertEqual(W.signed_table_value(table, value), table[value])
+                self.assertEqual(W.signed_table_value(table, -value), -table[value])
+            self.assertEqual(W.signed_table_value(table, -10 ** 6), -table[-1])
+
+    def test_a_signed_term_tracks_the_float_model_both_ways(self):
+        from tools.conditional_logit import TRANSFORMS
+        for transform in W.SIGNED_TABLE_TRANSFORMS:
+            model = {'intercept': 0.0, 'features': [{'name': W.PRESTIGE_LEAD, 'transform': transform, 'coefficient': 0.7}]}
+            for value in (-1200, -50, 0, 100, 2400):
+                fixed = W.fixed_term(model, [{W.PRESTIGE_LEAD: value}], 0, 0) / W.FITNESS_ONE
+                self.assertAlmostEqual(fixed, 0.7 * TRANSFORMS[transform](value, 0), places=4)
+        model = {'intercept': 0.0, 'features': [{'name': W.PRESTIGE_LEAD, 'transform': 'identity', 'coefficient': 0.5}]}
+        self.assertEqual(W.fixed_term(model, [{W.PRESTIGE_LEAD: -100}], 0, 0), -50 * W.FITNESS_ONE)
+
+    def test_a_signed_measurement_takes_only_odd_transforms(self):
+        self.assertEqual(W.cpp_kind(W.PRESTIGE_LEAD, 'identity')[0], 'signed_identity')
+        self.assertEqual(W.cpp_kind(W.PRESTIGE_LEAD, 'slog')[0], 'signed_table')
+        for transform in ('sqrt', 'share', 'log'):
+            with self.assertRaises(ValueError):
+                W.cpp_kind(W.PRESTIGE_LEAD, transform)
+        with self.assertRaises(ValueError):
+            W.cpp_kind(W.PRESTIGE_NEEDED, 'slog')
+        self.assertEqual(set(W.transform_candidates(W.PRESTIGE_LEAD)), set(W.SIGNED_TRANSFORMS))
+
+    def test_the_emitted_header_restores_the_sign(self):
+        model, _ = published()
+        model['features'].append({'name': W.PRESTIGE_LEAD, 'transform': 'slog', 'coefficient': 0.4})
+        model['games'], model['samples'] = 1, 1
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'WinProbabilityModel.h'
+            W.emit_header(model, path, ['fitted for a test'])
+            text = path.read_text()
+        self.assertIn('WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_TABLE[2401]', text)
+        self.assertIn('signedTableValue(WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_TABLE, '
+                      'WIN_PROBABILITY_PRESTIGE_LEAD_SLOG_TABLE_LIMIT, slot.prestigeLead)) >> TABLE_SHIFT', text)
+
+
 class Labels(unittest.TestCase):
     def test_every_term_has_a_phrase_a_player_can_read(self):
         for name, _ in W.FINAL_FEATURES:
@@ -341,6 +384,7 @@ class GameplayInputs(unittest.TestCase):
     def record(self, step, **extra):
         fields = {'feeding': 4, 'eatWalkDistance': 10 * step,
                   f'buildings_{W.ATTACK_BUILDING}_0': 1, f'buildings_{W.ATTACK_BUILDING}_4': 2,
+                  f'buildings_{W.SCIENCE_BUILDING}_2': 3, f'buildings_{W.SCIENCE_BUILDING}_5': 1,
                   'delivered_0': 10 * step, 'delivered_3': 10 * step,
                   f'filling_{W.SWARM_JOB}_1': 10 * step}
         fields.update(extra)
@@ -350,6 +394,7 @@ class GameplayInputs(unittest.TestCase):
         inputs = W.gameplay_inputs(self.record(9), self.record(9 - W.WINDOW_SAMPLES))
         self.assertEqual(inputs['feeding'], 4)
         self.assertEqual(inputs['barracks_levels'], 1 * 1 + 2 * 5)
+        self.assertEqual(inputs['school_levels'], 3 * 3 + 1 * 6)  # three level-2 sites, one finished level 3
         self.assertEqual(inputs['delivered_window'], 2 * 10 * W.WINDOW_SAMPLES)
         self.assertEqual(inputs['inn_walk_distance_window'], 10 * W.WINDOW_SAMPLES)
         self.assertEqual(inputs['swarm_filling_window'], 10 * W.WINDOW_SAMPLES)
@@ -367,6 +412,7 @@ class GameplayInputs(unittest.TestCase):
             return (ROOT / path).read_text()
         building = source('src/building/IntBuildingType.h')
         self.assertIn(f'ATTACK_BUILDING={W.ATTACK_BUILDING},', building.replace(' ', ''))
+        self.assertIn(f'SCIENCE_BUILDING={W.SCIENCE_BUILDING},', building.replace(' ', ''))
         self.assertIn(f'NB_BUILDING_LONG_LEVELS = {W.BUILDING_LEVELS};', source('src/team/stats/TeamStat.h'))
         self.assertIn(f'MaterialSlotCount = {W.MATERIAL_SLOTS};', source('src/resource/Material.h'))
         engine = source('src/team/stats/WinProbability.h')
@@ -398,6 +444,22 @@ class GameplayInputs(unittest.TestCase):
         self.assertEqual(W.measurements_of(pair)[W.PRESTIGE_NEEDED], 0)
         pair['tl']['prestigeNeeded'] = 37
         self.assertEqual(W.measurements_of(pair)[W.PRESTIGE_NEEDED], 37)
+
+    def test_prestige_lead_is_signed_and_clamped(self):
+        pair = {'tl': {}, 'econ': {'food': '0/0', 'fooded': '0/0'}}
+        for which, field in W.TIMELINE_FIELDS.values():
+            pair[which][field] = 1
+        self.assertEqual(W.measurements_of(pair)[W.PRESTIGE_LEAD], 0)
+        pair['tl']['prestigeLead'] = -150
+        self.assertEqual(W.measurements_of(pair)[W.PRESTIGE_LEAD], -150)
+        pair['tl']['prestigeLead'] = -10 ** 6
+        self.assertEqual(W.measurements_of(pair)[W.PRESTIGE_LEAD], -W.TABLE_BOUNDS[W.PRESTIGE_LEAD])
+
+    def test_allies_take_their_furthest_ahead_prestige_lead(self):
+        grouped = W.group_allies({0: {W.PRESTIGE_LEAD: -40.0}, 1: {W.PRESTIGE_LEAD: 10.0},
+                                  2: {W.PRESTIGE_LEAD: -10.0}}, {0: 'a', 1: 'a', 2: 'b'})
+        self.assertEqual(grouped['a'][W.PRESTIGE_LEAD], 10.0)
+        self.assertEqual(grouped['b'][W.PRESTIGE_LEAD], -10.0)
 
     def test_allies_sum_amounts_but_take_their_closest_prestige_distance(self):
         grouped = W.group_allies({0: {'attack': 3.0, W.PRESTIGE_NEEDED: 40.0},

@@ -587,7 +587,9 @@ unsupported combinations remain reported failures rather than being filtered out
   independent AI draws, allowing repeated AI implementations even when the pool
   contains enough distinct entries. The default `"distinct"` samples without
   replacement when possible and falls back to replacement for smaller pools.
-  In 2v2, the two team AIs are sampled, preserving homogeneous pairs. These two
+  In 2v2, the two team AIs are sampled, preserving homogeneous pairs.
+  `"mirror"` draws one AI per game and seats it everywhere, so every side plays
+  the same strategy (the win probability refit uses this). These two
   controls require `sample_games` and cannot be combined with `balanced_duels`.
   Explicit `ffa_colonies` requires an `ffa` entry in `formats`. Counts above four
   need the same generator/size preflight as any other nonstandard cohort.

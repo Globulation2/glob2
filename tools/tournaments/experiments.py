@@ -79,7 +79,12 @@ class Planner:
         if fmt == 'ffa' and 'ffa_colonies' in config:
             n = rng.choice(config['ffa_colonies'])
         replacement = config.get('seat_sampling', 'distinct') == 'with_replacement'
-        if fmt == '2v2':
+        if config.get('seat_sampling') == 'mirror':
+            # Every seat plays the same AI, so differences between sides come from
+            # the position and the game rather than from differing strategies.
+            ai = rng.choice(ais)
+            players, alliances = [ai] * n, ([1, 1, 2, 2] if fmt == '2v2' else None)
+        elif fmt == '2v2':
             a, b = ([rng.choice(ais), rng.choice(ais)] if replacement else
                     rng.sample(ais, 2) if len(ais) >= 2 else (ais[0], ais[0]))
             players, alliances = [a, a, b, b], [1, 1, 2, 2]
@@ -230,8 +235,8 @@ class Planner:
                     raise ValueError('ffa_colonies and seat_sampling require sample_games')
                 if config.get('balanced_duels'):
                     raise ValueError('balanced_duels does not accept ffa_colonies or seat_sampling')
-                if config.get('seat_sampling', 'distinct') not in ('distinct', 'with_replacement'):
-                    raise ValueError('seat_sampling must be distinct or with_replacement')
+                if config.get('seat_sampling', 'distinct') not in ('distinct', 'with_replacement', 'mirror'):
+                    raise ValueError('seat_sampling must be distinct, with_replacement or mirror')
                 if 'ffa_colonies' in config:
                     counts = config['ffa_colonies']
                     if (not isinstance(counts, list) or not counts or

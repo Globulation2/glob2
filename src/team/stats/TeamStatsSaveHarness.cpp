@@ -1152,6 +1152,8 @@ static void measurementScreenshots(const std::string &directory)
             stats.recordWinProbability(tick, t == 0 ? leader : (1000-leader)/(Team::MAX_COUNT-1), "screenshot-model");
             // The goal for sixteen colonies is 2,400: the leader closes in fastest.
             stats.recordPrestigeNeeded(tick, std::max(50, 2400 - int(tick) * (t == 0 ? 2200 : 400 + 60 * t) / 4096));
+            // The leader pulls ahead a school at a time; everyone else falls behind it.
+            stats.recordPrestigeLead(tick, t == 0 ? 50 * int(tick / 1024) : -50 * int(tick / 1024) * (t + 1));
 			stats.editMeasurements().births[WORKER] = (Uint64(1) << 40) + (t + 1) * tick;
 			stats.editMeasurements().harvested[WHEAT] = (t + 1) * tick;
 			stats.editMeasurements().completed[Measurements::NEW_BUILDING][0][0] = (t + 1) * tick / 512;
@@ -1168,6 +1170,9 @@ static void measurementScreenshots(const std::string &directory)
             sample.movementClassesKnown=true;
             for (int c=0;c<SWIM_CLASS_COUNT;++c)
                 sample.groundUnitsByMovementClass[c]=(c+1)*(1+t%3)+sample.tick/512;
+			// Schools go up over the game: a site or two, then finished level-2 schools.
+			sample.buildings[IntBuildingType::SCIENCE_BUILDING][2] = (sample.tick / 1024 + t) % 3;
+			sample.buildings[IntBuildingType::SCIENCE_BUILDING][3] = sample.tick * (Team::MAX_COUNT - t) / 8192;
 			sample.growthGlobal[1][WHEAT] = Uint64(t+1) * sample.tick;
 			sample.growthAmount[1][WHEAT] = Uint64(t+1) * sample.tick / 2;
 			sample.trappedUnits[1][WORKER] = t+1;
@@ -1210,7 +1215,7 @@ static void measurementScreenshots(const std::string &directory)
 			// The overview, then one chart of each form: a level, a smoothed rate, a
 			// split counter, bands of the population, a net value and a global series.
 			const std::pair<const char *, bool> charts[] = {{"population", false}, {"births", false}, {"births", true},
-															{"hunger", false},	 {"net growth", false}, {"growth map", false}, {"ground movement", true}, {"win probability", false}, {"prestige needed", false}};
+															{"hunger", false},	 {"net growth", false}, {"growth map", false}, {"ground movement", true}, {"win probability", false}, {"prestige needed", false}, {"prestige lead", false}, {"school levels", false}};
 			screen.selectMetric(EndGameScreen::OVERVIEW);
 			screen.paintFrame(0);
 			require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(), (directory + "/overview-" + suffix).c_str()),

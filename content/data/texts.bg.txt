@@ -5022,6 +5022,16 @@ FFmpeg не е наличен, така че записът е изключен.
 Престиж, нужен за победа
 [stat prestige needed about]
 Престижът, който колонията още трябва да спечели, за да победи чрез престиж: достатъчно, за да достигне общият престиж в мача целта, и да изпревари всяка друга оцеляла колония. Записва се само когато мачът има цел за престиж.
+[stat prestige lead]
+Prestige lead
+[stat prestige lead about]
+The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+[stat school levels]
+School levels
+[stat school levels about]
+The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+[stat unit levels]
+levels
 [stat band combat]
 Бой
 [stat band starvation]

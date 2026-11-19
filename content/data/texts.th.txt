@@ -5022,6 +5022,16 @@ FFmpeg ไม่​พร้อม​ใช้งาน ดังนั้น​
 เกียรติยศ​ที่​ต้อง​ใช้​เพื่อ​ชนะ
 [stat prestige needed about]
 เกียรติยศ​ที่​อาณานิคม​ยัง​ต้อง​ได้​เพิ่ม​เพื่อ​ชนะ​ด้วย​เกียรติยศ คือ​มาก​พอ​ให้​เกียรติยศ​รวม​ของ​แมตช์​ถึง​เป้า​และ​แซง​อาณานิคม​อื่น​ทุก​แห่ง​ที่​ยัง​อยู่​รอด บันทึก​เฉพาะ​เมื่อ​แมตช์​ตั้งเป้า​เกียรติยศ
+[stat prestige lead]
+Prestige lead
+[stat prestige lead about]
+The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+[stat school levels]
+School levels
+[stat school levels about]
+The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+[stat unit levels]
+levels
 [stat band combat]
 การต่อสู้
 [stat band starvation]

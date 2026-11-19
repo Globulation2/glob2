@@ -442,7 +442,7 @@ TEST_SUITE("MetricCatalog")
 			CAPTURE(m.id);
 			CHECK(ids.insert(m.id).second);
 			CHECK(int(m.group) < int(Stats::Group::Count));
-			CHECK((m.sampled >= 0 || m.value || m.winProbability || m.prestigeNeeded));
+			CHECK((m.sampled >= 0 || m.value || m.winProbability || m.prestigeNeeded || m.prestigeLead));
 			for (const auto &band : m.bands)
 				CHECK((!band.labelKey.empty() && band.value));
 			// A composition opens split, as percentages, and stays split.

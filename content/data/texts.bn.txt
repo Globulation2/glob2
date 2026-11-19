@@ -5022,6 +5022,16 @@ JavaScript এআই আমদানি করুন
 জয়ের জন্য প্রয়োজনীয় মর্যাদা
 [stat prestige needed about]
 মর্যাদার মাধ্যমে জিততে উপনিবেশকে এখনও যে মর্যাদা অর্জন করতে হবে: যথেষ্ট পরিমাণ, যাতে ম্যাচের মোট মর্যাদা লক্ষ্যমাত্রায় পৌঁছায় এবং টিকে থাকা অন্য প্রতিটি উপনিবেশকে ছাড়িয়ে যায়। কেবল ম্যাচে মর্যাদার লক্ষ্যমাত্রা থাকলেই রেকর্ড করা হয়।
+[stat prestige lead]
+Prestige lead
+[stat prestige lead about]
+The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+[stat school levels]
+School levels
+[stat school levels about]
+The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+[stat unit levels]
+levels
 [stat band combat]
 যুদ্ধ
 [stat band starvation]

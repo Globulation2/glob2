@@ -119,8 +119,9 @@ struct WinProbabilitySample
     int permille = 0;
 };
 
-// Prestige a team still had to add to win by prestige, sampled on the 512-tick
-// cadence while the prestige condition is on (Game::prestigeNeeded).
+// A prestige reading sampled on the 512-tick cadence while the prestige condition
+// is on: prestige still needed to win (WinProbability::prestigeNeeded, never
+// negative) or the signed lead over the best opponent (prestigeLead).
 struct PrestigeNeededSample
 {
     Uint32 tick = 0;
@@ -496,6 +497,7 @@ private:
     std::vector<WinProbabilitySample> winProbabilityHistory;
     std::string winProbabilityModel;
     std::vector<PrestigeNeededSample> prestigeNeededHistory;
+    std::vector<PrestigeNeededSample> prestigeLeadHistory;
 	
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor,bool privateAdaptive174=false);
 	void save(GAGCore::OutputStream *stream);
@@ -508,6 +510,8 @@ public:
     Uint64 winProbabilityAreaTwice() const;
     void recordPrestigeNeeded(Uint32 tick, Sint32 value);
     const std::vector<PrestigeNeededSample> &getPrestigeNeededHistory() const { return prestigeNeededHistory; }
+    void recordPrestigeLead(Uint32 tick, Sint32 value);
+    const std::vector<PrestigeNeededSample> &getPrestigeLeadHistory() const { return prestigeLeadHistory; }
 	TeamStat *getLatestStat(void) { displaySnapshot.reset(); return &(stats[statsIndex]); }
 	//! Read-only access for code that only measures, such as the win probability
 	//! model, so it does not need friendship to reach the sample ring.

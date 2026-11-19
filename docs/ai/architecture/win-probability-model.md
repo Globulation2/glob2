@@ -24,27 +24,37 @@ moves the odds (coefficient times the within-contest standard deviation):
 
 | Term | Reads | Coefficient | Typical gap's effect |
 | --- | --- | ---: | ---: |
-| `attack` (share) | its share of all attack strength | +0.907 | 0.27 |
-| `barracks_levels` | warrior training buildings and their sites, weighted from 1 (a level-1 site) to 6 (a finished level-3 building) | +0.0244 | 0.23 |
-| `delivered_window` (share) | its share of resources delivered over the last 2,048 ticks | +0.950 | 0.23 |
-| `feeding` (sqrt) | units eating at an inn | +0.139 | 0.19 |
-| `prestige_needed` (log1p) | prestige it would still have to add to win by prestige | −3.70 | 0.17 (1.15 where it differs) |
-| `swarm_filling_window` (sqrt) | worker-ticks spent filling swarms over the last 2,048 ticks | +0.0025 | 0.16 |
-| `explorers` (sqrt) | living explorers | +0.107 | 0.15 |
-| `inn_walk_distance_window` (share) | its share of the distance walked to inns over the last 2,048 ticks | +0.186 | 0.06 |
+| `delivered_window` (share) | its share of resources delivered over the last 2,048 ticks | +1.448 | 0.29 |
+| `feeding` (sqrt) | units eating at an inn | +0.205 | 0.25 |
+| `school_levels` | schools and their sites, weighted from 1 (a level-1 site) to 6 (a finished level-3 school) | +0.0293 | 0.18 |
+| `prestige_lead` (signed log1p) | its prestige less the most any surviving opponent holds | +0.0626 | 0.14 (0.23 where it differs) |
+| `prestige_needed` (log1p) | prestige it would still have to add to win by prestige | −1.70 | 0.14 (0.70 where it differs) |
+| `attack` (share) | its share of all attack strength | +0.582 | 0.12 |
+| `swarm_filling_window` (sqrt) | worker-ticks spent filling swarms over the last 2,048 ticks | +0.0018 | 0.10 |
+| `explorers` (sqrt) | living explorers | +0.0494 | 0.06 |
+| `inn_walk_distance_window` (share) | its share of the distance walked to inns over the last 2,048 ticks | +0.190 | 0.05 |
+| `barracks_levels` | warrior training buildings and their sites, weighted from 1 (a level-1 site) to 6 (a finished level-3 building) | +0.0047 | 0.04 |
 
-Military investment (barracks, attack), scouting and a fed, working economy each
-carry weight; no single term dominates. The windowed terms describe what a colony
-has been doing recently rather than what it owns.
+A fed, working economy carries the most weight, then the school and prestige
+terms, then military strength. The windowed terms describe what a colony has been
+doing recently rather than what it owns.
 
-`prestige_needed` is the larger of two distances: what the match's combined
-prestige still lacks to reach the prestige goal, and what the colony needs to pass
-every other surviving colony (`WinProbability::prestigeNeeded`; an alliance takes
-its closest member). Its coefficient is the only negative one, because the
-distance shrinks as a colony closes in. It is the same for every side until
-someone earns prestige, so it cancels in about 98% of samples; where it does
-differ it is the strongest term. Its job is smoothness: without it the model can
-favour one colony right up to the moment another wins by prestige.
+Prestige comes only from finished level-3 schools (`school2` in the catalog), 50
+each, so three terms describe it. `prestige_lead` is the steady advantage: the
+leader's margin over the runner-up, or everyone else's deficit to the leader
+(`WinProbability::prestigeLead`; an alliance takes its furthest-ahead member).
+It is the only signed term, and it enters through an odd transform, so a lead
+and an equal deficit mirror each other. `prestige_needed` is the end-game
+distance: the larger of what the match's combined prestige still lacks to reach
+the goal and what the colony needs to hold one school's prestige (50) more than
+every surviving opponent (`WinProbability::prestigeNeeded`; an alliance takes its
+closest member). Prestige arrives a whole school at a time, so passing the leader
+takes a school, not a point. Both are 0 for every side when prestige cannot end
+the game, so they cancel. `prestige_needed` differs between sides in only about
+4% of samples, but where it does it is the strongest term; its job is
+smoothness, so the model does not favour one colony right up to the moment
+another wins by prestige. `school_levels` is the pipeline behind them: sites and
+lower-level schools that have not paid out prestige yet.
 
 ### What the fitness does and does not mean
 
@@ -60,13 +70,20 @@ symptom rather than a cause.
 
 ## Where the coefficients come from
 
-501 games, sampled every 512 ticks, giving 218,109 training samples, played at
-SIM revision 159 with the prestige-needed statistic recorded. The games are a random draw over all eight AIs, three formats
-(1v1, 2v2, and free-for-all with 4 or 8 colonies), every playable map generator
-and both 128x128 and 256x256 maps. They ran with `--win-probability 0` to a
-180,000-tick cap, twice the default, so that most games reach a real result:
-18% hit the cap and are labelled by adjudication. Nine (1.8%) ended in a prestige
-victory and 210 earned some prestige.
+1,029 games, sampled every 512 ticks, giving 518,019 training samples, played at
+SIM revision 168. Only the four strongest AIs play: Maxima, Cortex, Nicowar and
+Cabino. Numbi, Castor, Econo and Warrush are left out, because how weaker AIs
+lose says little about how strong play is won. Half the games (514) are a random
+draw of AIs, formats (1v1, 2v2, and free-for-all with 4 or 8 colonies), every
+playable map generator and both 128x128 and 256x256 maps. The other half (515)
+draw the same way except that every seat plays the same AI (`seat_sampling:
+"mirror"` in the tournament planner), so differences between sides come from
+the position and how the game went rather than from differing strategies. The
+games ran with `--win-probability 0` to a 180,000-tick cap, twice the default,
+so that most games reach a real result: 15% hit the cap and are labelled by
+adjudication. 79% ended in conquest and 6% in a prestige victory; prestige also
+decided 7% of games at the cap, where the winner held strictly the most of it,
+so prestige settled about 13% of games in all (30% of eight-colony games).
 
 Each 512-tick sample is one contest: the surviving competitors are its entries,
 their live state is the evidence, and the finishing order the game eventually
@@ -85,13 +102,14 @@ Three choices matter:
   views of one outcome; splitting them across folds would let the fit see its own
   test set and report an accuracy nobody could reproduce.
 
-Cross-validated, grouped by game: McFadden R² 0.306, top-1 accuracy 72.2%
-against 41.9% for guessing. The seven terms without `prestige_needed`, refitted on
-the same games, score 0.306 and 72.2%: the new term is not meant to move the
-average, and does not. The previous coefficients, fitted on 1,716 games at
-revision 155, score 0.315 on these games. Refitting on fewer current games costs a
-little overall fit; the full refit was preferred over keeping those coefficients
-and adding one term, so the model is one consistent fit on the current simulation.
+Cross-validated, grouped by game: McFadden R² 0.288, top-1 accuracy 68.0%
+against 40.2% for guessing. On the same games the previous eight-term model
+scores 0.266 with its shipped coefficients and 0.268 refitted, so the two new
+terms add about 0.02. They help most where strategy is held equal: on the mirror
+half, 0.232 against 0.206 for the refitted eight terms; on the random half, 0.357
+against 0.343. Mirror games are harder to call at all (64% top-1 against 72%),
+which is what they are for: they keep the model from learning which AI is
+playing instead of how well each side is doing.
 
 ### How the terms were chosen
 
@@ -104,8 +122,27 @@ and adding new ones, until no change improved cross-validated fit by 0.0005. The
 refinement replaced worker share, which had come in with a negative sign, by
 attack share, and total hit points by units eating.
 
-`prestige_needed` was added afterwards by design rather than by selection, to
-remove the late swings in games won by prestige. Its transform was chosen among
+The prestige and school terms were added afterwards by design rather than by
+selection. `prestige_needed` came first, to remove the late swings in games won
+by prestige; `prestige_lead` and `school_levels` followed, because a term that
+only wakes up at the end of a game cannot see a colony building a steady
+prestige advantage. The three interact, so their transforms were chosen together:
+every combination of `prestige_needed` (left out, identity, sqrt, log1p, x^0.25),
+`prestige_lead` (left out, identity, signed sqrt, signed log1p, signed x^0.25)
+and `school_levels` (left out, identity, sqrt, share), 100 in all, was refitted
+with the seven other terms and scored by cross-validated fit and by how much the
+eventual winner's chance jumped at the end of games prestige decided. Concave
+transforms of the lead beat a linear one clearly (a linear lead over-weights the
+long margins of large free-for-alls); among log1p, sqrt and x^0.25 for
+`prestige_needed`, log1p gave the smallest end-of-game jump in prestige
+victories (0.134 against 0.144 and 0.160); `school_levels` is best linear. The
+chosen three score within 0.0001 of the best combination: with them the
+eventual winner's average chance over its last ten samples in prestige-decided
+games rises from 0.77 (`prestige_needed` alone) to 0.81. With the lead in the
+model, `prestige_needed`'s coefficient falls from about −2.5 to −1.7: the lead
+carries the steady advantage and `prestige_needed` the final approach.
+
+The earlier history of `prestige_needed`: Its transform was chosen among
 identity, square root, log1p, x^0.25, x^0.75 and the square by how much each
 removed those swings without costing overall fit. The concave transforms did
 best: log1p cut the mean end-of-game jump in prestige-won games from 0.146 to
@@ -128,15 +165,28 @@ at 1,373.
 A winning condition needs the number to mean what it says, not merely to rank
 correctly. Held out by game, predicted and observed win rates:
 
-| Predicted | 0.019 | 0.056 | 0.088 | 0.117 | 0.149 | 0.199 | 0.276 | 0.384 | 0.516 | 0.672 | 0.826 | 0.949 |
+| Predicted | 0.016 | 0.053 | 0.086 | 0.114 | 0.141 | 0.186 | 0.248 | 0.331 | 0.449 | 0.570 | 0.755 | 0.948 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Observed | 0.024 | 0.046 | 0.054 | 0.084 | 0.139 | 0.204 | 0.287 | 0.411 | 0.545 | 0.707 | 0.819 | 0.931 |
+| Observed | 0.015 | 0.034 | 0.059 | 0.104 | 0.131 | 0.194 | 0.277 | 0.343 | 0.465 | 0.603 | 0.779 | 0.940 |
 
-The top bucket, where the threshold lives, reads 0.949 predicted against 0.931
-observed: slightly overconfident, unlike the previous fit (0.968 against 0.966).
-The seven-term refit on the same games is the same, so this reflects the current
-simulation rather than the new term. Mid-range predictions are slightly cautious
-and the low buckets overstate a losing side's chances.
+The top bucket, where the threshold lives, reads 0.948 predicted against 0.940
+observed. Mid-range predictions are slightly cautious and the low buckets
+overstate a losing side's chances.
+
+Calibration also depends on how far into the game a sample is (the sample's tick
+divided by the game's length; expected calibration error, ECE, is the
+sample-weighted gap between predicted and observed):
+
+| Phase | 0–10% | 10–20% | 20–30% | 30–40% | 40–50% | 50–60% | 60–70% | 70–80% | 80–90% | 90–100% |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ECE | 1.3% | 2.0% | 1.8% | 1.9% | 2.5% | 2.8% | 3.1% | 3.7% | 4.2% | 4.2% |
+
+Early, the rare confident predictions are slightly overconfident; from about
+halfway the model is increasingly cautious (late in the game a predicted 65%
+wins about 80% of the time, and a predicted 7% about 2%). One scale serves the
+whole game, while the same gap in the inputs means more when there is less time
+left to recover. For the winning condition the late error is on the safe side:
+when it fires late, the real win rate is above the threshold.
 
 ## Why the arithmetic is all integers
 
@@ -153,7 +203,10 @@ So there is no floating point in the decision path:
   through a lookup table: `prestige_needed` cannot exceed the largest prestige
   goal (150 × 16 teams = 2,400), so the emitter writes `log1p` of every integer
   up to it into the header in fixed point (`TABLE_SHIFT`), and the engine and the
-  fitter read the same table. The emitter refuses any other transform it cannot
+  fitter read the same table. `prestige_lead` is clamped to ±2,400 and is the one
+  signed measurement: its table holds the transform of the magnitude, and the
+  engine restores the sign (`WinProbability::signedTableValue`), so only odd
+  transforms can apply to it. The emitter refuses any other transform it cannot
   do exactly rather than quietly falling back on an approximation.
 - Coefficients are emitted twice — as a `double` for display and reporting, and
   as a fixed-point integer rounded **at generation time**, so the rounding is the
@@ -192,8 +245,11 @@ features and the in-engine features are the same quantities.
 
 Collect games with `--win-probability 0` and `team-timeline` telemetry with
 gameplay capture (tournament `outputs` `{"telemetry": ["team-timeline"],
-"log_mode": "gameplay"}`; long free-for-all logs need a larger
-`limits.log_bytes`). Then, from Python:
+"log_mode": "gameplay"}`). Gameplay logs of eight-colony games reach about
+200 MiB, against a 64 MiB default allowance: set `limits.log_bytes` to 512 MiB on
+every job, and a results `artifact_budget_bytes` that fits about 20 MiB per game
+(a thousand-game campaign needs about 60 GiB). Draw the mirror half with
+`seat_sampling: "mirror"`. Then, from Python:
 
 ```python
 from tools import win_probability_model as W
@@ -269,11 +325,11 @@ The threshold is the only dial:
 
 | Threshold | Compute saved | Calls on the wrong side |
 | --- | ---: | ---: |
-| **95% (tournament default)** | **18.8%** | **3.8%** (10 of 265) |
-| 97% | 12.8% | 2.2% (4 of 180) |
-| 99% | 4.6% | 0% (0 of 77) |
+| **95% (tournament default)** | **15.6%** | **1.9%** (13 of 694) |
+| 97% | 11.3% | 1.1% (6 of 533) |
+| 99% | 4.8% | 0.4% (1 of 263) |
 
-Measured over the 501 games, cross-fitted so no game is scored by a model that
+Measured over the 1,029 games, cross-fitted so no game is scored by a model that
 saw it, with three consecutive qualifying samples required. Errors sit below
 what each threshold implies; the confirmation requirement removes most one-sample
 swings.
@@ -285,7 +341,7 @@ swings.
 - It is fitted on the whole random draw, so it describes the average game across
   every generator and size rather than any particular map. Per-generator
   behaviour has not been broken out.
-- It reads eight numbers. Position, terrain, who is adjacent to whom and what is
+- It reads ten numbers. Position, terrain, who is adjacent to whom and what is
   about to happen are all invisible to it, which is part of why a close game
   stays close in its eyes.
 - The windowed terms see 2,048 ticks of activity. A colony that has just lost its

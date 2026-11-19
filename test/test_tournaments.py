@@ -607,6 +607,10 @@ class AnalysisTests(unittest.TestCase):
         self.assertEqual(games, Planner('ai_comparison', config, [bundle]).plan()['jobs'])
         distinct = Planner('ai_comparison', dict(config, seat_sampling='distinct'), [bundle]).plan()['jobs']
         self.assertTrue(all(len(set(g['config']['players'])) == len(g['config']['players']) for g in distinct))
+        mirror = Planner('ai_comparison', dict(config, seat_sampling='mirror', formats=['1v1', '2v2', 'ffa']),
+                         [bundle]).plan()['jobs']
+        self.assertTrue(all(len(set(g['config']['players'])) == 1 for g in mirror))
+        self.assertGreater(len({g['config']['players'][0] for g in mirror}), 1)
         for counts in ([], [True], [1], [17], '8', [8.0]):
             with self.assertRaisesRegex(ValueError, 'ffa_colonies'):
                 Planner('ai_comparison', dict(config, ffa_colonies=counts), [bundle]).plan()

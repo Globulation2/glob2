@@ -99,9 +99,9 @@ TIMELINE_FIELDS = {
 # constants below mirror the C++ enums; a test checks them against the headers.
 WINDOW_SAMPLES = 4
 PUBLICATION_LAG_SAMPLES = 1
-GAMEPLAY_MEASUREMENTS = ('feeding', 'barracks_levels', 'delivered_window',
+GAMEPLAY_MEASUREMENTS = ('feeding', 'barracks_levels', 'school_levels', 'delivered_window',
                          'inn_walk_distance_window', 'swarm_filling_window')
-ATTACK_BUILDING, BUILDING_LEVELS, MATERIAL_SLOTS, SWARM_JOB, LABOUR_PHASES = 5, 6, 15, 0, 4
+ATTACK_BUILDING, SCIENCE_BUILDING, BUILDING_LEVELS, MATERIAL_SLOTS, SWARM_JOB, LABOUR_PHASES = 5, 6, 6, 15, 0, 4
 
 # Fields the engine prints as "stored/capacity"; split into two measurements.
 PAIR_FIELDS = {'food': ('food_stored', 'food_capacity'), 'fooded': ('fed', 'feedable')}
@@ -119,10 +119,17 @@ RATIOS = {
 # value rather than a sum: it is a distance, not an amount.
 PRESTIGE_NEEDED = 'prestige_needed'
 MIN_OVER_ALLIES = (PRESTIGE_NEEDED,)
+# Own prestige less the best surviving opponent's (Game::prestigeLead), from
+# GLOB2_TL: the leader's margin, or a deficit to the leader. Signed, the only
+# signed measurement; allies take their furthest-ahead member. Recorded, and 0
+# otherwise, on the same terms as prestige needed.
+PRESTIGE_LEAD = 'prestige_lead'
+MAX_OVER_ALLIES = (PRESTIGE_LEAD,)
+SIGNED = (PRESTIGE_LEAD,)
 
 MEASUREMENTS = tuple(TIMELINE_FIELDS) + tuple(
     name for pair in PAIR_FIELDS.values() for name in pair) + tuple(RATIOS) + GAMEPLAY_MEASUREMENTS + (
-    PRESTIGE_NEEDED,)
+    PRESTIGE_NEEDED, PRESTIGE_LEAD)
 
 # Measurements that say the same thing in different words. Greedy selection takes
 # one term per family so it cannot fill a model with readings of the same army;
@@ -135,8 +142,8 @@ FAMILIES = {
     'food': ('food_stored', 'food_capacity', 'fed', 'feedable', 'fed_ratio', 'food_fill',
              'food_critical', 'need_food', 'inns', 'starving_ratio', 'feeding',
              'inn_walk_distance_window'),
-    'prestige': ('prestige', PRESTIGE_NEEDED),
-    'schooling': ('schools',),
+    'prestige': ('prestige', PRESTIGE_NEEDED, PRESTIGE_LEAD),
+    'schooling': ('schools', 'school_levels'),
     'fortification': ('barracks', 'towers', 'barracks_levels'),
     'exploration': ('explorers',),
 }
@@ -155,6 +162,7 @@ FAMILY_OF = {name: label for label, names in FAMILIES.items() for name in names}
 # 0.4160 against 0.4149 without it, and slightly worse top-1 accuracy.
 RATIO_TRANSFORMS = ('identity',)
 COUNT_TRANSFORMS = ('identity', 'sqrt', 'share')
+SIGNED_TRANSFORMS = ('identity', 'slog', 'ssqrt', 'spow25')
 
 # A measurement with a hard upper bound can use any transform exactly: the
 # emitter writes its fixed-point values for every integer 0..bound into the
@@ -163,29 +171,39 @@ COUNT_TRANSFORMS = ('identity', 'sqrt', 'share')
 # never exceed the largest prestige goal, MIN/TEAM_MAX_PRESTIGE in Game.h times
 # TEAM_MAX_COUNT teams.
 TABLE_SHIFT = 20
-TABLE_BOUNDS = {PRESTIGE_NEEDED: 150 * 16}
+TABLE_BOUNDS = {PRESTIGE_NEEDED: 150 * 16, PRESTIGE_LEAD: 150 * 16}
 TABLE_TRANSFORMS = {
     'log': math.log1p,
     'pow25': lambda x: x ** 0.25,
+}
+# A signed measurement's table holds the transform of its magnitude; the engine
+# and fixed_term restore the sign (WinProbability::signedTableValue).
+SIGNED_TABLE_TRANSFORMS = {
+    'slog': math.log1p,
+    'ssqrt': math.sqrt,
+    'spow25': lambda x: x ** 0.25,
 }
 
 # The selected, hand-checked model: greedy forward selection followed by
 # stepwise add/drop/swap refinement on cross-validated fit. Ordered by how much a
 # typical within-contest gap on the term moves the odds, largest first.
 FINAL_FEATURES = [
-    ('barracks_levels', 'identity'),
-    ('explorers', 'sqrt'),
-    ('attack', 'share'),
-    ('feeding', 'sqrt'),
     ('delivered_window', 'share'),
-    ('swarm_filling_window', 'sqrt'),
-    ('inn_walk_distance_window', 'share'),
+    ('feeding', 'sqrt'),
+    ('school_levels', 'identity'),
+    (PRESTIGE_LEAD, 'slog'),
     (PRESTIGE_NEEDED, 'log'),
+    ('attack', 'share'),
+    ('swarm_filling_window', 'sqrt'),
+    ('explorers', 'sqrt'),
+    ('inn_walk_distance_window', 'share'),
+    ('barracks_levels', 'identity'),
 ]
 
 # What each term reads, for the in-game breakdown. Phrases a player can read.
 LABELS = {
     'barracks_levels': 'Barracks, counted by level',
+    'school_levels': 'Schools, counted by level',
     'explorers': 'Explorers',
     'attack': 'Share of all attack strength',
     'feeding': 'Units eating at inns',
@@ -193,6 +211,7 @@ LABELS = {
     'swarm_filling_window': 'Recent work feeding swarms',
     'inn_walk_distance_window': 'Share of recent walking to inns',
     PRESTIGE_NEEDED: 'Prestige still needed to win',
+    PRESTIGE_LEAD: 'Prestige lead over the best opponent',
 }
 
 # How the engine reads each measurement off a competitor, as a C++ expression on
@@ -201,11 +220,13 @@ CPP_MEASUREMENT = {
     'feeding': 'slot.feeding',
     'explorers': 'slot.explorers',
     'barracks_levels': 'slot.barracksLevels',
+    'school_levels': 'slot.schoolLevels',
     'delivered_window': 'slot.delivered',
     'inn_walk_distance_window': 'slot.innWalkDistance',
     'swarm_filling_window': 'slot.swarmFilling',
     'attack': 'slot.attack',
     PRESTIGE_NEEDED: 'slot.prestigeNeeded',
+    PRESTIGE_LEAD: 'slot.prestigeLead',
 }
 # Ratios are a division of two of those, done as an integer division in the
 # engine and as the same division here. The published model uses none.
@@ -213,6 +234,8 @@ CPP_RATIO = {}
 
 
 def transform_candidates(name):
+    if name in SIGNED:
+        return SIGNED_TRANSFORMS
     return RATIO_TRANSFORMS if name in RATIOS else COUNT_TRANSFORMS
 
 
@@ -226,7 +249,8 @@ def gameplay_fields(line):
     kept, and the rest are never converted.
     """
     wanted = {'feeding', 'eatWalkDistance'}
-    wanted.update(f'buildings_{ATTACK_BUILDING}_{level}' for level in range(BUILDING_LEVELS))
+    wanted.update(f'buildings_{family}_{level}' for family in (ATTACK_BUILDING, SCIENCE_BUILDING)
+                  for level in range(BUILDING_LEVELS))
     wanted.update(f'delivered_{material}' for material in range(MATERIAL_SLOTS))
     wanted.update(f'filling_{SWARM_JOB}_{phase}' for phase in range(LABOUR_PHASES))
     wanted.update(('team', 'tick', 'final'))
@@ -282,6 +306,9 @@ def gameplay_inputs(now, then):
         'feeding': float(now.get('feeding', 0)),
         'barracks_levels': float(sum(now.get(f'buildings_{ATTACK_BUILDING}_{level}', 0) * (level + 1)
                                      for level in range(BUILDING_LEVELS))),
+        # Schools and their sites, weighted like barracks: 1 (level-1 site) to 6.
+        'school_levels': float(sum(now.get(f'buildings_{SCIENCE_BUILDING}_{level}', 0) * (level + 1)
+                                   for level in range(BUILDING_LEVELS))),
         'delivered_window': sum(window(f'delivered_{material}') for material in range(MATERIAL_SLOTS)),
         'inn_walk_distance_window': window('eatWalkDistance'),
         'swarm_filling_window': sum(window(f'filling_{SWARM_JOB}_{phase}') for phase in range(LABOUR_PHASES)),
@@ -318,6 +345,8 @@ def measurements_of(pair, published=None, earlier=None):
     needed = pair['tl'].get('prestigeNeeded', 0)
     # Clamped to its table bound here so the fit sees what the engine reads.
     values[PRESTIGE_NEEDED] = float(min(max(needed, 0), TABLE_BOUNDS[PRESTIGE_NEEDED])) if isinstance(needed, int) else 0.0
+    lead, bound = pair['tl'].get('prestigeLead', 0), TABLE_BOUNDS[PRESTIGE_LEAD]
+    values[PRESTIGE_LEAD] = float(min(max(lead, -bound), bound)) if isinstance(lead, int) else 0.0
     values.update(gameplay_inputs((published or {}).get('gameplay', {}), (earlier or {}).get('gameplay')))
     return values
 
@@ -349,6 +378,8 @@ def group_allies(by_team, key_of):
         for name, value in values.items():
             if name in MIN_OVER_ALLIES and name in entry:
                 entry[name] = min(entry[name], value)
+            elif name in MAX_OVER_ALLIES and name in entry:
+                entry[name] = max(entry[name], value)
             else:
                 entry[name] += value
     return grouped
@@ -739,19 +770,35 @@ def fixed_term(model, slots, index, term):
         return (coefficient * share_value(slot[name], total)) >> FRACTION_SHIFT
     if transform == 'sqrt':
         return (coefficient * root_value(slot[name])) >> ROOT_SHIFT
+    if transform in SIGNED_TABLE_TRANSFORMS:
+        return (coefficient * signed_table_value(table_of(name, transform), slot[name])) >> TABLE_SHIFT
     if transform in TABLE_TRANSFORMS:
         return (coefficient * table_of(name, transform)[table_index(name, slot[name])]) >> TABLE_SHIFT
+    if name in SIGNED:
+        return coefficient * signed_count(slot[name])
     return coefficient * clamp_count(slot[name])
 
 
 def table_of(name, transform):
     """The fixed-point values of a bounded measurement's transform, 0..bound."""
-    function = TABLE_TRANSFORMS[transform]
+    function = SIGNED_TABLE_TRANSFORMS.get(transform) or TABLE_TRANSFORMS[transform]
     return [int(round(function(float(i)) * (1 << TABLE_SHIFT))) for i in range(TABLE_BOUNDS[name] + 1)]
 
 
 def table_index(name, value):
     return min(clamp_count(value), TABLE_BOUNDS[name])
+
+
+def signed_count(value):
+    """WinProbability::signedCountValue."""
+    return max(-COUNT_CLAMP, min(int(value), COUNT_CLAMP))
+
+
+def signed_table_value(table, value):
+    """WinProbability::signedTableValue: table[|value|] with value's sign."""
+    value = int(value)
+    entry = table[min(abs(value), len(table) - 1)]
+    return -entry if value < 0 else entry
 
 
 def fixed_fitness(model, slots, index):
@@ -798,10 +845,21 @@ def cpp_kind(name, transform):
     if name not in CPP_MEASUREMENT:
         raise ValueError(f'{name} has no engine expression; add one to CPP_MEASUREMENT')
     expression = CPP_MEASUREMENT[name]
+    if name in SIGNED:
+        # share and sqrt read magnitudes; a signed value has only odd forms.
+        if transform == 'identity':
+            return 'signed_identity', (expression,), None
+        if transform in SIGNED_TABLE_TRANSFORMS:
+            if name not in TABLE_BOUNDS:
+                raise ValueError(f'{name} has no bound, so {transform!r} cannot be tabulated exactly')
+            return 'signed_table', (expression,), 'TABLE_SHIFT'
+        raise ValueError(f'{name} is signed; {transform!r} is not an odd transform it can take')
     if transform == 'share':
         return 'share', (expression,), 'FRACTION_SHIFT'
     if transform == 'sqrt':
         return 'sqrt', (expression,), 'ROOT_SHIFT'
+    if transform in SIGNED_TABLE_TRANSFORMS:
+        raise ValueError(f'{transform!r} is for signed measurements; {name} is a count')
     if transform == 'identity':
         return 'identity', (expression,), None
     if transform in TABLE_TRANSFORMS:
@@ -853,10 +911,15 @@ def emit_header(model, path, provenance):
         add(f'/// {name} ({transform})')
         add(f'constexpr double {constant} = {item["coefficient"]!r};')
         add(f'const Sint64 {constant}_FIXED = {to_fixed(item["coefficient"])}LL;')
-        if cpp_kind(name, transform)[0] == 'table':
+        kind = cpp_kind(name, transform)[0]
+        if kind in ('table', 'signed_table'):
             values = table_of(name, transform)
-            add(f'/// {transform}(value) for value 0..{len(values) - 1}, with TABLE_SHIFT fractional bits;')
-            add('/// larger values read the last entry. Generated, so every platform reads the same numbers.')
+            if kind == 'table':
+                add(f'/// {transform}(value) for value 0..{len(values) - 1}, with TABLE_SHIFT fractional bits;')
+                add('/// larger values read the last entry. Generated, so every platform reads the same numbers.')
+            else:
+                add(f'/// {transform}: the transform of |value| for 0..{len(values) - 1}, with TABLE_SHIFT fractional')
+                add('/// bits; larger magnitudes read the last entry, and the value\'s sign is restored.')
             add(f'constexpr Sint64 {constant}_TABLE_LIMIT = {len(values) - 1};')
             add(f'inline constexpr Sint32 {constant}_TABLE[{len(values)}] = {{')
             for start in range(0, len(values), 12):
@@ -903,6 +966,11 @@ def emit_header(model, path, provenance):
         add(f'\tcase {position}: // {name} ({transform})')
         if kind == 'identity':
             add(f'\t\treturn {constant} * countValue({expressions[0]});')
+        elif kind == 'signed_identity':
+            add(f'\t\treturn {constant} * signedCountValue({expressions[0]});')
+        elif kind == 'signed_table':
+            table = constant_name(name, transform) + '_TABLE'
+            add(f'\t\treturn ({constant} * signedTableValue({table}, {table}_LIMIT, {expressions[0]})) >> {shift};')
         elif kind == 'sqrt':
             add(f'\t\treturn ({constant} * rootValue({expressions[0]})) >> {shift};')
         elif kind == 'table':

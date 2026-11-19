@@ -37,6 +37,11 @@ TRANSFORMS = {
     'pow25': lambda x, total: max(x, 0.0) ** 0.25,
     'share': lambda x, total: (x / total) if total > 0 else 0.0,
     'decay24': lambda x, total: math.exp(-max(x, 0.0) / 24.0),
+    # Odd extensions for a signed measurement: the transform of the magnitude,
+    # carrying the sign, so a lead and an equal deficit mirror each other.
+    'slog': lambda x, total: math.copysign(math.log1p(abs(x)), x),
+    'ssqrt': lambda x, total: math.copysign(math.sqrt(abs(x)), x),
+    'spow25': lambda x, total: math.copysign(abs(x) ** 0.25, x),
 }
 
 

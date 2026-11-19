@@ -123,6 +123,9 @@ struct Metric
     //! Prestige still needed to win, likewise recorded with its own ticks, and
     //! only while prestige can end the game (TeamStats::prestigeNeededHistory).
     bool prestigeNeeded = false;
+    //! The signed prestige lead over the best opponent, recorded beside it
+    //! (TeamStats::prestigeLeadHistory).
+    bool prestigeLead = false;
 	//! Text key of the control that splits it into its bands ("By material").
 	const char *splitKey = "[stat view split]";
 
@@ -190,6 +193,7 @@ struct TeamHistory
 	Uint32 labourCoverageStartTick = 0;
     std::vector<WinProbabilitySample> winProbability;
     std::vector<PrestigeNeededSample> prestigeNeeded;
+    std::vector<PrestigeNeededSample> prestigeLead;
 };
 //! A team's sampled values and measurements joined by tick. The pointers refer
 //! into `stats`, which must outlive the history and not record meanwhile.

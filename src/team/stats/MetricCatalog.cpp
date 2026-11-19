@@ -309,6 +309,10 @@ std::vector<Metric> build()
 
 		m.shareable = true;
 	}
+	// Schools weighted by level as the win probability model reads them: 1 for
+	// a level-1 site up to 6 for a finished level-3 school.
+	add({.id = "school levels", .group = Group::Buildings, .unitKey = "[stat unit levels]",
+		 .value = [](const M &s) { double sum = 0; for (int level = 0; level < NB_BUILDING_LONG_LEVELS; ++level) sum += double(s.buildings[IntBuildingType::SCIENCE_BUILDING][level]) * (level + 1); return sum; }});
 	{
 		Metric &m = add({.id = "construction", .group = Group::Buildings, .kind = Metric::Counter, .unitKey = "[stat unit buildings]",
 						 .value = [](const M &s) { if(s.variants.empty()) return total(s.completed); double sum=0; for(const auto& v:s.variants) sum+=total(v.completed); return sum; }});
@@ -462,6 +466,7 @@ std::vector<Metric> build()
 	// Score
 	add({.id = "prestige", .group = Group::Score, .unitKey = "[stat unit prestige]", .sampled = EndOfGameStat::TYPE_PRESTIGE});
     add({.id = "prestige needed", .group = Group::Score, .unitKey = "[stat unit prestige]"}).prestigeNeeded = true;
+    add({.id = "prestige lead", .group = Group::Score, .unitKey = "[stat unit prestige]"}).prestigeLead = true;
     add({.id = "win probability", .group = Group::Score}).winProbability = true;
 	return all;
 }
@@ -648,17 +653,18 @@ Chart chartOf(const Metric &metric, const View &view, const std::vector<TeamHist
             chart.teams.push_back(std::move(series));
             continue;
         }
-        if (metric.prestigeNeeded)
+        if (metric.prestigeNeeded || metric.prestigeLead)
         {
             TeamSeries series;
             series.team = history.team;
             series.values.emplace_back();
-            for (const auto &sample : history.prestigeNeeded)
+            for (const auto &sample : metric.prestigeLead ? history.prestigeLead : history.prestigeNeeded)
             {
                 series.ticks.push_back(sample.tick);
                 series.values[0].push_back(sample.value);
             }
-            // Zero is meaningful here too: that team had the prestige to win.
+            // Zero is meaningful here too: that team had the prestige to win,
+            // or was level with the best opponent.
             chart.any |= !series.ticks.empty();
             chart.teams.push_back(std::move(series));
             continue;
@@ -823,6 +829,7 @@ TeamHistory historyOf(int team, const TeamStats &stats)
 	history.labourCoverageStartTick = stats.labourCoverageStartTick;
     history.winProbability = stats.getWinProbabilityHistory();
     history.prestigeNeeded = stats.getPrestigeNeededHistory();
+    history.prestigeLead = stats.getPrestigeLeadHistory();
 	const auto &sampled = stats.getEndOfGameStats();
 	const auto &measured = stats.measurementHistory;
 	// Both are appended every sample interval, but measurements may start later

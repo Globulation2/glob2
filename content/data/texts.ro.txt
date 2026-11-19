@@ -5054,6 +5054,16 @@ Prestigiul coloniei, obținut prin clădirile de nivel maxim. Un meci cu obiecti
 Prestigiu necesar pentru victorie
 [stat prestige needed about]
 Prestigiul pe care colonia ar mai trebui să-l obțină pentru a câștiga prin prestigiu: suficient pentru ca prestigiul cumulat al meciului să atingă obiectivul și pentru a depăși orice altă colonie supraviețuitoare. Se înregistrează doar când meciul are un obiectiv de prestigiu.
+[stat prestige lead]
+Prestige lead
+[stat prestige lead about]
+The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+[stat school levels]
+School levels
+[stat school levels about]
+The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+[stat unit levels]
+levels
 [stat band combat]
 Luptă
 [stat band starvation]
