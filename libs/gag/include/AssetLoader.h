@@ -230,6 +230,8 @@ private:
     };
     std::deque<BrowserVideoJob> browserVideoJobs;
     void pollBrowserVideo();
+    //! Releases jobs waiting on a result settled outside the job queue.
+    void wakeDependents(const Result*);
 #endif
     friend struct PackedSpriteFrame;
     struct Impl;

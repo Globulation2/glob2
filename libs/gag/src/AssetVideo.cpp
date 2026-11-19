@@ -31,6 +31,7 @@ void AssetLoader::pollBrowserVideo() {
         if (state == State::Failed) job.decoded->error = "Browser asset video decode failed";
         job.decoded->value = std::move(result);
         job.decoded->state.store(state, std::memory_order_release);
+        wakeDependents(job.decoded.get());
         browserVideoJobs.pop_front();
     };
     if (!job.started) {
