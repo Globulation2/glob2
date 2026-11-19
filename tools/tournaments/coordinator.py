@@ -17,6 +17,37 @@ from .resources import plan_from_record, validate_frozen_attempt, validate_game_
 from .transfer import receive_file, send_file
 from .transport import Transport, worker_archive
 from .storage import directory_bytes
+import threading as _threading
+
+# Chunks of CHUNK_BYTES one collection pass may receive for a single artifact.
+RESULT_CHUNKS_PER_PASS = 64
+# How long a measured total of the results directory stands in for a new walk.
+# Each received artifact used to walk every stored file under the storage lock,
+# which grew with the campaign until it was most of the coordinator's CPU.
+# Completed transfers are added as they land, and status reports walk afresh.
+STORAGE_WALK_SECONDS = 30.0
+_stored, _stored_lock = {}, _threading.Lock()
+
+
+def stored_bytes(root, fresh=False):
+    """Bytes under root's artifacts and transfers, walked at most every STORAGE_WALK_SECONDS."""
+    key = str(root)
+    with _stored_lock:
+        cached = _stored.get(key)
+        if cached and not fresh and time.monotonic() - cached[1] < STORAGE_WALK_SECONDS:
+            return cached[0]
+    used = directory_bytes(Path(root) / 'artifacts') + directory_bytes(Path(root) / 'transfers')
+    with _stored_lock:
+        _stored[key] = (used, time.monotonic())
+    return used
+
+
+def count_stored(root, size):
+    """Add a just-committed artifact to the cached total until the next walk."""
+    with _stored_lock:
+        cached = _stored.get(str(root))
+        if cached:
+            _stored[str(root)] = (cached[0] + size, cached[1])
 
 INFRASTRUCTURE = {'transport_failure', 'interrupted', 'disk_pressure', 'artifact_failure', 'invalid_result'}
 PROCESS_FAILURES = {'crash', 'timeout', 'process_failure'}
@@ -421,7 +452,7 @@ class Coordinator:
             item['peak_rss_bytes'] = max(item['peak_rss_bytes'],(record.get('resource_usage') or {}).get('peak_rss_bytes',0))
         for item in measurements.values():
             item['ticks_per_process_second'] = item['simulation_ticks']/item['process_seconds'] if item['process_seconds'] else None
-        return {'experiment': self.manifest['id'], 'mode': self.mode, 'storage': self.storage_status(), 'measurements': measurements,
+        return {'experiment': self.manifest['id'], 'mode': self.mode, 'storage': self.storage_status(fresh=True), 'measurements': measurements,
                 'jobs': dict(self.db.execute('SELECT state,count(*) FROM jobs GROUP BY state').fetchall()),
                 'attempts': dict(self.db.execute('SELECT state,count(*) FROM attempts GROUP BY state').fetchall()),
                 'failures': [dict(row) for row in self.db.execute('SELECT host,category,count(*) AS count FROM attempts WHERE category IS NOT NULL AND category!=\'success\' GROUP BY host,category')],
@@ -481,8 +512,8 @@ class Coordinator:
         if self.mode != 'running': return False
         return transport.rpc('enqueue', attempt=attempt)['enqueued']
 
-    def storage_status(self):
-        used = directory_bytes(self.root / 'artifacts') + directory_bytes(self.root / 'transfers')
+    def storage_status(self, fresh=False):
+        used = stored_bytes(self.root, fresh)
         path = self.root / 'transfers' / 'storage-reservations.json'
         reservations = read_json(path) if path.exists() else {}
         reserved = 0
@@ -524,13 +555,20 @@ class Coordinator:
                         or state['free_bytes'] - state['reserved_bytes'] - remaining - metadata_growth < state['disk_reserve_bytes']):
                     return False
                 reservations[identity] = size
-                atomic_json(path, reservations)
-        complete = receive_file(transport, self.root / 'artifacts', identity, size, budget=8)
+                # A reservation is a soft claim that a resumed transfer renews, so
+                # it is replaced atomically but not fsynced: two directory syncs per
+                # artifact were most of a large campaign's collection time.
+                atomic_json(path, reservations, durable=False)
+        # A pass may move a whole gameplay log (tens of MiB); the round robin
+        # between passes still keeps one large artifact from starving the rest.
+        complete = receive_file(transport, self.root / 'artifacts', identity, size, budget=RESULT_CHUNKS_PER_PASS)
         if complete:
             with lock(self.root / 'transfers' / 'storage.lock', blocking=True):
                 reservations = read_json(path) if path.exists() else {}
-                reservations.pop(identity, None)
-                atomic_json(path, reservations)
+                had_reservation = reservations.pop(identity, None) is not None
+                atomic_json(path, reservations, durable=False)
+                if had_reservation:
+                    count_stored(self.root, size)
         return complete
 
     def collect_attempt(self, transport, item):
