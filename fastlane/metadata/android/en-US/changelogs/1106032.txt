@@ -1,0 +1,1 @@
+Much faster artwork loading at startup, especially on phones and tablets, and smoother single-player games.
