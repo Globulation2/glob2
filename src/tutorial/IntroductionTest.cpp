@@ -518,6 +518,9 @@ TEST_CASE("defensive tactics scouting completes at the default exploration flag 
     order(elsewhere.game,std::make_shared<OrderCreate>(0,100,90,type,1,1,std::nullopt));
     elsewhere.step(6000);
     CHECK_FALSE(elsewhere.game.objectives.isObjectiveComplete(0));
+    // Keep introduction.trace for the introduction lesson's own case: the browser
+    // suite compares each lesson's trace with the native one by name.
+    std::filesystem::rename(glob2test::artifactDir()/"introduction.trace",glob2test::artifactDir()/"defensive-tactics.trace");
 }
 
 TEST_CASE("zone observations and scenario orders preserve map callback validation" * doctest::test_suite("Introduction"))

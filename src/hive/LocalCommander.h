@@ -63,8 +63,11 @@ class LocalCommander : public CommanderView
 	};
 	std::deque<Placement> placements;
 	// What this player has seen of other teams' buildings, kept as last seen (fog of
-	// war): refreshed every 50 ticks from the same visibility as Hive observations.
+	// war): refreshed every 50 ticks from the same visibility as Hive observations,
+	// once an agent has asked for game_world. Until then nothing reads it, and a
+	// periodic refresh would park the simulation in every local game.
 	std::map<int, Json> seenBuildings;
+	bool memoryTracked = false;
 	unsigned nextMemoryTick = 0;
 	void refreshMemory();
 
