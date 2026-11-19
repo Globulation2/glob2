@@ -150,7 +150,9 @@ completed clusters are recoverable after interruption. Alternating metadata
 checkpoints preserve the previous valid copy when storage
 fills or a checkpoint write is interrupted.
 Finalization remuxes compressed packets into a fast-start MP4 or seekable WebM with chapters.
-Native publication uses no-replace hard links; browser publication commits a
+Native publication uses no-replace hard links. Where links are refused, as in
+Android app storage for apps targeting API 28 or later, it copies the metadata and
+renames the video into place, both without replacing; browser publication commits a
 completion marker after streaming bounded chunks into final OPFS files. Failures
 retain staging files and diagnostics. Forced termination can leave a partial last
 fragment, so recovery is best effort.

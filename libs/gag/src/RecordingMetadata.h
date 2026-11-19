@@ -55,7 +55,10 @@ struct Context
 };
 
 // Stage metadata first; the atomic, no-replace video link is the completion point.
-// A failure removes only links created here, leaving foreign files untouched.
+// Where hard links are refused (Android app storage), metadata is copied and the
+// video renamed, both without replacing. A failure undoes only what was published
+// here, leaving foreign files untouched. Tests pass tryHardLinks false to exercise
+// the fallback on filesystems that allow links.
 void publishCompletedRecording(const std::filesystem::path &work,
-							   const std::filesystem::path &video);
+							   const std::filesystem::path &video, bool tryHardLinks = true);
 } // namespace GAGCore::Recording::Detail
