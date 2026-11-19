@@ -136,6 +136,17 @@ jobs:
             build/mobile-tools/android-sdk/platform-tools
             build/mobile-tools/gradle-8.13
           key: android-tools-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/android-tools.json', 'platforms/mobile/setup_ndk.py', 'platforms/mobile/setup_tools.py', 'buildsys/tool_archives.py') }}
+      # Gradle resolves its plugins and libraries from Maven Central and the
+      # plugin portal on every run; three parallel architectures were enough
+      # to draw HTTP 429 rate limits. Reuse the module cache from master.
+      - name: Restore Gradle dependency cache
+        id: restore_gradle_dependencies
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: build/mobile-tools/gradle-home/caches/modules-2
+          key: android-gradle-v1-${{ runner.os }}-${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/android/**/*.gradle', 'platforms/mobile/android/gradle.properties') }}
+          restore-keys: android-gradle-v1-${{ runner.os }}-
       - name: Restore Android compiler cache
         id: restore_android_compiler_cache
         continue-on-error: true
@@ -151,6 +162,10 @@ jobs:
           echo "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"
       - name: Compile and stage native application
         id: compile_and_stage_native_application
+        env:
+          # Back off for minutes rather than milliseconds when a repository
+          # answers 429 or 5xx (Gradle's default is 3 tries from 125 ms).
+          GRADLE_OPTS: -Dorg.gradle.internal.repository.max.retries=6 -Dorg.gradle.internal.repository.initial.backoff=5000
         run: |
           set -o pipefail
           python3 platforms/mobile/android.py build --arch '${{ matrix.arch }}' --release --fdroid --jobs 2 2>&1 \
@@ -199,6 +214,13 @@ jobs:
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-android-${{ matrix.arch }}-${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/vcpkg.json', 'platforms/mobile/triplets/**') }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Save Gradle dependency cache
+        if: ${{ !cancelled() && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && matrix.arch == 'arm64-v8a' && steps.compile_and_stage_native_application.outcome == 'success' && steps.restore_gradle_dependencies.outputs.cache-hit != 'true' }}
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: build/mobile-tools/gradle-home/caches/modules-2
+          key: android-gradle-v1-${{ runner.os }}-${{ hashFiles('platforms/mobile/toolchain.json', 'platforms/mobile/android/**/*.gradle', 'platforms/mobile/android/gradle.properties') }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
