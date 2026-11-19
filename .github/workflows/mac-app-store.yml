@@ -33,7 +33,7 @@ jobs:
     name: Build game and test candidate
     if: ${{ (github.repository == 'genixpro/glob2-release' && github.repository_id == 1397722696 && github.actor == 'genixpro' && github.actor_id == 6193625 && github.triggering_actor == 'genixpro' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master') }}
     runs-on: macos-26
-    timeout-minutes: 90
+    timeout-minutes: 150
     env:
       # Compile SDL GPU's Metal libraries only with a toolchain buildsys/metal-tool-lock.json lists, and fail
       # the build rather than ship an app without them (docs/architecture/rendering.md, "Apple Metal shaders").
