@@ -1169,7 +1169,7 @@ not the renderer's architecture; the per-platform rows live in one table,
 | --- | --- |
 | Linux, Windows | programmable GL, Legacy GL (builds with OpenGL), SDL GPU, Portable SDL, Software |
 | macOS | programmable GL, SDL GPU, Legacy GL, Portable SDL, Software |
-| Android, iOS | SDL GPU (Vulkan, Metal), Portable SDL, Software |
+| Android, iOS | SDL GPU (Vulkan, Metal), programmable GL (OpenGL ES), Portable SDL, Software |
 | Browser | on a probed WebGL2 adapter: programmable GL, Legacy GL (builds with it), Software; otherwise Software. WebGPU stays opt-in |
 
 The Linux row comes from a 1x perf build (master `d6488cac13`): the honeycomb-256
@@ -1200,9 +1200,18 @@ comes from the same memory scenario on a Retina Mac (master `5524479f28`, a
 Programmable GL has the best tail, SDL GPU the smallest footprint, and Legacy GL
 the largest footprint. Phones put SDL GPU first (user decision, 2026-11-17): it is the fully GPU
 renderer on Vulkan and Metal, and the packages ship and verify its shaders
-(Android requires the Vulkan set, iOS device builds the Metal set). Portable SDL
-follows where the device or shaders are unavailable, as in the iOS Simulator, or
-when the device is lost. Revisit the rows when phone measurements land.
+(Android requires the Vulkan set, iOS device builds the Metal set). Programmable
+GL follows where the device or shaders are unavailable or the device is lost
+(user decision, 2026-11-19): on a Galaxy A06 (Mali-G52) it plays far better than
+Portable SDL. Portable SDL follows where neither starts, as in the iOS Simulator.
+Revisit the rows when phone measurements land.
+
+SDL GPU opts out of the Vulkan features SDL requires by default but the renderer
+does not use (clip distances, first-instance indirect draws, anisotropic
+sampling), so it starts on GPUs without them. It asks for depth clamping, which
+keeps the world pipelines' depth behaviour on Metal and Direct3D 12, and on a
+Vulkan device without it (Bifrost Mali, such as the Mali-G52) retries with depth
+clipping instead.
 
 In the browser, programmable GL leads on a probed WebGL2 adapter (user decision,
 2026-11-17): Legacy GL there runs on Emscripten's fixed-function emulation, which

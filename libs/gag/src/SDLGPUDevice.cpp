@@ -61,6 +61,29 @@ static_assert(offsetof(SDL_Vertex, color) == Layout::primitive_attributes[1].off
 static_assert(offsetof(SDL_Vertex, tex_coord) == Layout::primitive_attributes[2].offset);
 
 [[noreturn]] void fail(const char *operation) { throw std::runtime_error(std::string(operation) + ": " + SDL_GetError()); }
+// SDL's Vulkan backend rejects devices without depthClamp, shaderClipDistance,
+// drawIndirectFirstInstance or samplerAnisotropy unless the application opts
+// out. The renderer uses no clip distances, indirect draws or anisotropic
+// sampling, so those are always off. Depth clamping keeps the world pipelines'
+// behaviour on Metal and Direct3D 12, so it is requested and dropped only when
+// the device lacks it, as Bifrost Mali GPUs (Mali-G52) do.
+SDL_GPUDevice *createGPUDevice(SDL_GPUShaderFormat format, const char *driver, bool depthClamping)
+{
+    const SDL_PropertiesID props = SDL_CreateProperties();
+    if (!props) fail("create SDL GPU device properties");
+    SDL_SetBooleanProperty(props, format == SDL_GPU_SHADERFORMAT_SPIRV ? SDL_PROP_GPU_DEVICE_CREATE_SHADERS_SPIRV_BOOLEAN :
+        format == SDL_GPU_SHADERFORMAT_DXIL ? SDL_PROP_GPU_DEVICE_CREATE_SHADERS_DXIL_BOOLEAN :
+        SDL_PROP_GPU_DEVICE_CREATE_SHADERS_METALLIB_BOOLEAN, true);
+    SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_DEBUGMODE_BOOLEAN, false);
+    SDL_SetStringProperty(props, SDL_PROP_GPU_DEVICE_CREATE_NAME_STRING, driver);
+    SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_FEATURE_CLIP_DISTANCE_BOOLEAN, false);
+    SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_FEATURE_INDIRECT_DRAW_FIRST_INSTANCE_BOOLEAN, false);
+    SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_FEATURE_ANISOTROPY_BOOLEAN, false);
+    SDL_SetBooleanProperty(props, SDL_PROP_GPU_DEVICE_CREATE_FEATURE_DEPTH_CLAMPING_BOOLEAN, depthClamping);
+    SDL_GPUDevice *device = SDL_CreateGPUDeviceWithProperties(props);
+    SDL_DestroyProperties(props);
+    return device;
+}
 SDL_GPUTextureFormat gpuFormat(TextureCompression compression)
 {
     switch (compression) {
@@ -314,6 +337,8 @@ class SDLGPUDevice final : public RenderDevice
     std::map<const GeometryRevision *, GeometryPtr> geometryCache;
     bool worldAvailable = false, skinAvailable = false, terrainAvailable = false, teamColorAvailable = false;
     bool bc3Supported = false, astcSupported = false;
+    // False on Vulkan devices without depthClamp: SDL then requires depth clipping.
+    bool depthClamping = true;
     std::array<SDL_GPUShader *,2> terrainShaders{};
     SDL_GPUShader *directTerrainVertex = nullptr, *directTerrainFragment = nullptr;
     SDL_GPUGraphicsPipeline *directTerrainPipeline = nullptr;
@@ -875,6 +900,7 @@ class SDLGPUDevice final : public RenderDevice
         info.vertex_input_state.vertex_attributes = attributes.data(); info.vertex_input_state.num_vertex_attributes = attributes.size();
         info.primitive_type = SDL_GPU_PRIMITIVETYPE_TRIANGLELIST;
         info.rasterizer_state.fill_mode = SDL_GPU_FILLMODE_FILL; info.rasterizer_state.cull_mode = SDL_GPU_CULLMODE_NONE;
+        info.rasterizer_state.enable_depth_clip = !depthClamping;
         info.multisample_state.sample_count = SDL_GPU_SAMPLECOUNT_1;
         info.target_info.color_target_descriptions = &color; info.target_info.num_color_targets = 1;
         auto *result = SDL_CreateGPUGraphicsPipeline(device, &info); if (!result) fail("create primitive pipeline");
@@ -1098,7 +1124,15 @@ class SDLGPUDevice final : public RenderDevice
                 // Never alongside another Vulkan instance being created (the
                 // device profile's VRAM probe thread): see VulkanInstanceLock.h.
                 std::lock_guard instanceLock(vulkanInstanceMutex());
-                device = SDL_CreateGPUDevice(shaderFormat, false, driver);
+                device = createGPUDevice(shaderFormat, driver, true);
+                if (!device && !std::strcmp(driver, "vulkan")) {
+                    const std::string clampError = SDL_GetError();
+                    device = createGPUDevice(shaderFormat, driver, false);
+                    if (device) {
+                        depthClamping = false;
+                        SDL_Log("SDL GPU: device lacks depth clamping (%s); world pipelines clip depth instead", clampError.c_str());
+                    }
+                }
             }
             if (!device) fail("create SDL GPU device");
             texturePool.limit = std::min<std::size_t>(32 * 1024 * 1024, TotalBudget / 8); texturePool.open = true;
@@ -1275,6 +1309,7 @@ void SDLGPUDevice::loadTerrainShaders()
         info.vertex_input_state.vertex_attributes=attributes.data(); info.vertex_input_state.num_vertex_attributes=attributes.size();
         info.primitive_type=SDL_GPU_PRIMITIVETYPE_TRIANGLELIST; info.rasterizer_state.fill_mode=SDL_GPU_FILLMODE_FILL;
         info.rasterizer_state.cull_mode=SDL_GPU_CULLMODE_NONE; info.multisample_state.sample_count=SDL_GPU_SAMPLECOUNT_1;
+        info.rasterizer_state.enable_depth_clip=!depthClamping;
         info.target_info.color_target_descriptions=&color; info.target_info.num_color_targets=1;
         terrainPipelines[i]=SDL_CreateGPUGraphicsPipeline(device,&info); if(!terrainPipelines[i]) fail("create terrain pipeline");
     }
@@ -1729,6 +1764,7 @@ SDL_GPUGraphicsPipeline *SDLGPUDevice::worldPipeline(const DrawPacket &packet)
     info.primitive_type = SDL_GPU_PRIMITIVETYPE_TRIANGLELIST;
     info.rasterizer_state.fill_mode = SDL_GPU_FILLMODE_FILL; info.rasterizer_state.front_face = SDL_GPU_FRONTFACE_COUNTER_CLOCKWISE;
     info.rasterizer_state.cull_mode = packet.cull == DrawPacket::Cull::Back ? SDL_GPU_CULLMODE_BACK : SDL_GPU_CULLMODE_NONE;
+    info.rasterizer_state.enable_depth_clip = !depthClamping;
     info.multisample_state.sample_count = SDL_GPU_SAMPLECOUNT_1;
     info.depth_stencil_state.enable_depth_test = packet.depth != DrawPacket::Depth::Disabled;
     info.depth_stencil_state.enable_depth_write = packet.depthWrite;
