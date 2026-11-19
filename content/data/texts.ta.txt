@@ -5023,15 +5023,15 @@ AI தொலை அளவீடு
 [stat prestige needed about]
 கௌரவத்தால் வெல்ல குடியிருப்பு இன்னும் ஈட்ட வேண்டிய கௌரவம்: ஆட்டத்தின் மொத்தக் கௌரவம் இலக்கை அடையவும், எஞ்சியிருக்கும் மற்ற எல்லாக் குடியிருப்புகளையும் முந்தவும் போதுமான அளவு. ஆட்டத்தில் கௌரவ இலக்கு இருக்கும்போது மட்டுமே பதிவாகும்.
 [stat prestige lead]
-Prestige lead
+கௌரவ முன்னிலை
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+குடியிருப்பின் கௌரவத்திலிருந்து, எஞ்சியுள்ள எந்த எதிராளியிடமும் உள்ள அதிகபட்ச கௌரவத்தைக் கழித்த மதிப்பு: முன்னணியில் இருப்பவர் இரண்டாம் இடத்தை விட எவ்வளவு முன்னால் உள்ளார், அல்லது மற்ற அனைவரும் முன்னணியாளரை விட எவ்வளவு பின்னால் உள்ளனர். ஆட்டத்தில் கௌரவ இலக்கு இருந்தால் மட்டுமே பதிவு செய்யப்படும்.
 [stat school levels]
-School levels
+பள்ளி நிலைகள்
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+குடியிருப்பின் பள்ளிகளும் பள்ளிக் கட்டுமானத் தளங்களும், ஒவ்வொன்றும் அதன் நிலையால் எண்ணப்படும்: நிலை-1 தளத்திற்கு 1 முதல் முடிக்கப்பட்ட நிலை-3 பள்ளிக்கு 6 வரை. முடிக்கப்பட்ட நிலை-3 பள்ளிகள் மட்டுமே கௌரவம் தரும், ஒவ்வொன்றும் 50.
 [stat unit levels]
-levels
+நிலைகள்
 [stat band combat]
 போர்
 [stat band starvation]

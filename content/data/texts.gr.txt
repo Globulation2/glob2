@@ -5055,15 +5055,15 @@ CPU %0%
 [stat prestige needed about]
 Το κύρος που θα έπρεπε ακόμη να κερδίσει η αποικία για να νικήσει με κύρος: αρκετό ώστε το συνολικό κύρος του αγώνα να φτάσει τον στόχο και να ξεπεράσει κάθε άλλη αποικία που επιβιώνει. Καταγράφεται μόνο όταν ο αγώνας έχει στόχο κύρους.
 [stat prestige lead]
-Prestige lead
+Προβάδισμα κύρους
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+Το κύρος της αποικίας μείον το μεγαλύτερο που κατέχει οποιοσδήποτε αντίπαλος παραμένει στο παιχνίδι: πόσο μπροστά είναι ο πρώτος από τον δεύτερο ή πόσο πίσω από τον πρώτο είναι όλοι οι άλλοι. Καταγράφεται μόνο όταν ο αγώνας έχει στόχο κύρους.
 [stat school levels]
-School levels
+Επίπεδα σχολείων
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+Τα σχολεία και τα εργοτάξια σχολείων της αποικίας, το καθένα μετρημένο με το επίπεδό του: από 1 για εργοτάξιο επιπέδου 1 έως 6 για ολοκληρωμένο σχολείο επιπέδου 3. Μόνο τα ολοκληρωμένα σχολεία επιπέδου 3 δίνουν κύρος, 50 το καθένα.
 [stat unit levels]
-levels
+επίπεδα
 [stat band combat]
 Μάχη
 [stat band starvation]

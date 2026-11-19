@@ -5023,15 +5023,15 @@ JavaScript AI आयात करा
 [stat prestige needed about]
 प्रतिष्ठेने जिंकण्यासाठी वसाहतीला अजून मिळवावी लागणारी प्रतिष्ठा: सामन्याची एकूण प्रतिष्ठा ध्येयापर्यंत पोहोचेल आणि टिकून राहिलेल्या प्रत्येक इतर वसाहतीला मागे टाकता येईल इतकी. सामन्याला प्रतिष्ठेचे ध्येय असेल तेव्हाच नोंदवली जाते.
 [stat prestige lead]
-Prestige lead
+प्रतिष्ठेतील आघाडी
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+वसाहतीची प्रतिष्ठा वजा टिकून राहिलेल्या कोणत्याही प्रतिस्पर्ध्याकडील सर्वाधिक प्रतिष्ठा: आघाडीवरील वसाहत दुसऱ्या क्रमांकाच्या किती पुढे आहे, किंवा इतर सर्व आघाडीवरील वसाहतीच्या किती मागे आहेत. सामन्याला प्रतिष्ठेचे ध्येय असेल तेव्हाच नोंदवली जाते.
 [stat school levels]
-School levels
+शाळांचे स्तर
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+वसाहतीच्या शाळा आणि शाळांच्या बांधकाम जागा, प्रत्येकी तिच्या स्तरानुसार मोजलेली: स्तर-1 जागेसाठी 1 पासून पूर्ण झालेल्या स्तर-3 शाळेसाठी 6 पर्यंत. फक्त पूर्ण झालेल्या स्तर-3 शाळाच प्रतिष्ठा देतात, प्रत्येकी 50.
 [stat unit levels]
-levels
+स्तर
 [stat band combat]
 लढाई
 [stat band starvation]

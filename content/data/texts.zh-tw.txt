@@ -5055,15 +5055,15 @@ AI 遙測
 [stat prestige needed about]
 殖民地若要以聲望獲勝仍須取得的聲望：足以讓對局的聲望總和達到目標，並超越其他所有存活的殖民地。僅在對局設有聲望目標時記錄。
 [stat prestige lead]
-Prestige lead
+聲望領先
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+殖民地的聲望減去仍存活對手中的最高聲望：領先者領先第二名多少，或其他所有人落後領先者多少。僅在對局設有聲望目標時記錄。
 [stat school levels]
-School levels
+學校等級
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+殖民地的學校和學校工地，每處依其等級計數：1 級工地計 1，已完工的 3 級學校計 6。只有已完工的 3 級學校提供聲望，每所 50。
 [stat unit levels]
-levels
+級
 [stat band combat]
 戰鬥
 [stat band starvation]

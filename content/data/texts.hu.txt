@@ -5055,15 +5055,15 @@ A győzelemhez szükséges presztízs
 [stat prestige needed about]
 Az a presztízs, amelyet a kolóniának még meg kellene szereznie a presztízsgyőzelemhez: elég ahhoz, hogy a mérkőzés összesített presztízse elérje a célt, és hogy megelőzzön minden más túlélő kolóniát. Csak akkor rögzül, ha a mérkőzésnek van presztízscélja.
 [stat prestige lead]
-Prestige lead
+Presztízselőny
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+A kolónia presztízse mínusz a még életben lévő ellenfelek közül a legtöbb presztízs: mennyivel jár az élen álló a második előtt, vagy mennyivel maradnak le a többiek az élen állótól. Csak akkor rögzül, ha a mérkőzésnek presztízscélja van.
 [stat school levels]
-School levels
+Iskolaszintek
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+A kolónia iskolái és iskolaépítési helyei, mindegyik a szintje szerint számolva: az 1. szintű építési hely 1, a kész 3. szintű iskola 6. Csak a kész 3. szintű iskolák hoznak presztízst, egyenként 50-et.
 [stat unit levels]
-levels
+szint
 [stat band combat]
 Harc
 [stat band starvation]

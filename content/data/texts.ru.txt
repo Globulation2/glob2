@@ -5055,15 +5055,15 @@ FFmpeg недоступен, поэтому запись отключена. У�
 [stat prestige needed about]
 Престиж, который колонии ещё нужно набрать, чтобы победить по престижу: столько, чтобы общий престиж матча достиг цели и чтобы обойти каждую другую выжившую колонию. Записывается, только если у матча есть цель по престижу.
 [stat prestige lead]
-Prestige lead
+Отрыв по престижу
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+Престиж колонии за вычетом наибольшего престижа среди выживших противников: насколько лидер опережает второе место или насколько все остальные отстают от лидера. Записывается, только если у матча есть цель по престижу.
 [stat school levels]
-School levels
+Уровни школ
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+Школы и стройплощадки школ колонии, каждая засчитывается по своему уровню: от 1 за стройплощадку 1-го уровня до 6 за готовую школу 3-го уровня. Престиж дают только готовые школы 3-го уровня, по 50 каждая.
 [stat unit levels]
-levels
+уровни
 [stat band combat]
 Бой
 [stat band starvation]

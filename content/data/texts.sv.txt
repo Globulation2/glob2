@@ -5055,15 +5055,15 @@ Prestige som krävs för att vinna
 [stat prestige needed about]
 Den prestige kolonin fortfarande skulle behöva tjäna in för att vinna på prestige: tillräckligt för att matchens sammanlagda prestige ska nå målet, och för att gå om varje annan överlevande koloni. Registreras bara när matchen har ett prestigemål.
 [stat prestige lead]
-Prestige lead
+Prestigeförsprång
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+Kolonins prestige minus det högsta som någon kvarvarande motståndare har: hur långt ledaren ligger före tvåan, eller hur långt efter ledaren alla andra ligger. Registreras bara när matchen har ett prestigemål.
 [stat school levels]
-School levels
+Skolnivåer
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+Kolonins skolor och skolbyggen, var och en räknad efter sin nivå: 1 för ett bygge på nivå 1 upp till 6 för en färdig skola på nivå 3. Bara färdiga skolor på nivå 3 ger prestige, 50 var.
 [stat unit levels]
-levels
+nivåer
 [stat band combat]
 Strid
 [stat band starvation]

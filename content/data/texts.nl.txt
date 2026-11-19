@@ -5055,15 +5055,15 @@ Roem nodig om te winnen
 [stat prestige needed about]
 De roem die de kolonie nog zou moeten verdienen om op roem te winnen: genoeg om de gezamenlijke roem van de wedstrijd het doel te laten halen, en om elke andere overlevende kolonie te overtreffen. Alleen vastgelegd als de wedstrijd een roemdoel heeft.
 [stat prestige lead]
-Prestige lead
+Roemvoorsprong
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+De roem van de kolonie min de hoogste roem van een overlevende tegenstander: hoe ver de leider voorligt op de nummer twee, of hoe ver alle anderen achter de leider liggen. Alleen vastgelegd als de wedstrijd een roemdoel heeft.
 [stat school levels]
-School levels
+Schoolniveaus
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+De scholen en schoolbouwplaatsen van de kolonie, elk geteld naar niveau: 1 voor een bouwplaats van niveau 1 tot 6 voor een voltooide school van niveau 3. Alleen voltooide scholen van niveau 3 leveren roem op, 50 per stuk.
 [stat unit levels]
-levels
+niveaus
 [stat band combat]
 Gevecht
 [stat band starvation]

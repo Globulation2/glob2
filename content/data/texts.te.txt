@@ -5023,15 +5023,15 @@ AI టెలిమెట్రీ
 [stat prestige needed about]
 ప్రతిష్టతో గెలవడానికి కాలనీ ఇంకా సంపాదించాల్సిన ప్రతిష్ట: మ్యాచ్ మొత్తం ప్రతిష్ట లక్ష్యాన్ని చేరేంత, మిగిలి ఉన్న ప్రతి ఇతర కాలనీని అధిగమించేంత. మ్యాచ్‌కు ప్రతిష్ట లక్ష్యం ఉన్నప్పుడు మాత్రమే నమోదు అవుతుంది.
 [stat prestige lead]
-Prestige lead
+ప్రతిష్ట ఆధిక్యం
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+కాలనీ ప్రతిష్ట నుండి, మిగిలి ఉన్న ఏ ప్రత్యర్థి వద్ద ఉన్న అత్యధిక ప్రతిష్టను తీసివేయగా వచ్చేది: అగ్రస్థానంలో ఉన్నవారు రెండో స్థానం కంటే ఎంత ముందున్నారు, లేదా మిగతా అందరూ అగ్రస్థానంలో ఉన్నవారి కంటే ఎంత వెనుకబడ్డారు. మ్యాచ్‌కు ప్రతిష్ట లక్ష్యం ఉన్నప్పుడు మాత్రమే నమోదవుతుంది.
 [stat school levels]
-School levels
+పాఠశాల స్థాయిలు
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+కాలనీ పాఠశాలలు మరియు పాఠశాల నిర్మాణ స్థలాలు, ఒక్కొక్కటి దాని స్థాయి ప్రకారం లెక్కించబడుతుంది: స్థాయి-1 స్థలానికి 1 నుండి పూర్తయిన స్థాయి-3 పాఠశాలకు 6 వరకు. పూర్తయిన స్థాయి-3 పాఠశాలలు మాత్రమే ప్రతిష్టను ఇస్తాయి, ఒక్కొక్కటి 50.
 [stat unit levels]
-levels
+స్థాయిలు
 [stat band combat]
 పోరాటం
 [stat band starvation]

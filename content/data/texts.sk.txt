@@ -5055,15 +5055,15 @@ Prestíž potrebná na víťazstvo
 [stat prestige needed about]
 Prestíž, ktorú by kolónia ešte musela získať, aby zvíťazila prestížou: dosť na to, aby celková prestíž zápasu dosiahla cieľ, a aby predstihla všetky ostatné prežívajúce kolónie. Zaznamenáva sa, len keď má zápas cieľ prestíže.
 [stat prestige lead]
-Prestige lead
+Náskok v prestíži
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+Prestíž kolónie mínus najvyššia prestíž ktoréhokoľvek prežívajúceho súpera: o koľko vedúci predbieha druhého v poradí, alebo o koľko všetci ostatní zaostávajú za vedúcim. Zaznamenáva sa, len keď má zápas cieľ prestíže.
 [stat school levels]
-School levels
+Úrovne škôl
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+Školy a staveniská škôl kolónie, každá započítaná podľa svojej úrovne: od 1 za stavenisko úrovne 1 po 6 za dokončenú školu úrovne 3. Prestíž prinášajú iba dokončené školy úrovne 3, po 50 za každú.
 [stat unit levels]
-levels
+úrovne
 [stat band combat]
 Boj
 [stat band starvation]

@@ -5023,15 +5023,15 @@ Heshima inayohitajika kushinda
 [stat prestige needed about]
 Heshima ambayo makazi bado yangehitaji kupata ili kushinda kwa heshima: ya kutosha ili heshima ya jumla ya mechi ifikie lengo, na kupita kila makazi mengine yaliyosalia. Hurekodiwa tu wakati mechi ina lengo la heshima.
 [stat prestige lead]
-Prestige lead
+Uongozi wa heshima
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+Heshima ya makazi ukiondoa ile ya juu kabisa inayoshikiliwa na mpinzani yeyote aliyesalia: kiongozi yuko mbele ya wa pili kwa kiasi gani, au wengine wote wako nyuma ya kiongozi kwa kiasi gani. Hurekodiwa tu mechi inapokuwa na lengo la heshima.
 [stat school levels]
-School levels
+Viwango vya shule
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+Shule za makazi na maeneo ya ujenzi wa shule, kila moja ikihesabiwa kwa kiwango chake: 1 kwa eneo la kiwango cha 1 hadi 6 kwa shule iliyokamilika ya kiwango cha 3. Shule zilizokamilika za kiwango cha 3 pekee ndizo hutoa heshima, 50 kila moja.
 [stat unit levels]
-levels
+viwango
 [stat band combat]
 Mapigano
 [stat band starvation]

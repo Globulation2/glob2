@@ -5023,15 +5023,15 @@ JavaScript এআই আমদানি করুন
 [stat prestige needed about]
 মর্যাদার মাধ্যমে জিততে উপনিবেশকে এখনও যে মর্যাদা অর্জন করতে হবে: যথেষ্ট পরিমাণ, যাতে ম্যাচের মোট মর্যাদা লক্ষ্যমাত্রায় পৌঁছায় এবং টিকে থাকা অন্য প্রতিটি উপনিবেশকে ছাড়িয়ে যায়। কেবল ম্যাচে মর্যাদার লক্ষ্যমাত্রা থাকলেই রেকর্ড করা হয়।
 [stat prestige lead]
-Prestige lead
+মর্যাদায় অগ্রগতি
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+উপনিবেশের মর্যাদা থেকে টিকে থাকা যেকোনো প্রতিপক্ষের সর্বোচ্চ মর্যাদা বাদ দিয়ে: নেতা দ্বিতীয় স্থানের থেকে কতটা এগিয়ে, অথবা বাকিরা নেতার থেকে কতটা পিছিয়ে। শুধুমাত্র ম্যাচে মর্যাদার লক্ষ্যমাত্রা থাকলেই রেকর্ড করা হয়।
 [stat school levels]
-School levels
+বিদ্যালয়ের স্তর
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+উপনিবেশের বিদ্যালয় ও বিদ্যালয়ের নির্মাণস্থল, প্রতিটি তার স্তর অনুযায়ী গণনা করা হয়: স্তর-1 নির্মাণস্থলের জন্য 1 থেকে সম্পূর্ণ স্তর-3 বিদ্যালয়ের জন্য 6 পর্যন্ত। শুধুমাত্র সম্পূর্ণ স্তর-3 বিদ্যালয় মর্যাদা দেয়, প্রতিটি 50।
 [stat unit levels]
-levels
+স্তর
 [stat band combat]
 যুদ্ধ
 [stat band starvation]

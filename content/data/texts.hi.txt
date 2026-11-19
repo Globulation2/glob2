@@ -5023,15 +5023,15 @@ AI टेलीमेट्री
 [stat prestige needed about]
 वह प्रतिष्ठा जो बस्ती को प्रतिष्ठा से जीतने के लिए अभी और अर्जित करनी होगी: इतनी कि मैच की कुल प्रतिष्ठा लक्ष्य तक पहुँचे, और बची हुई हर दूसरी बस्ती से आगे निकल जाए। केवल तभी दर्ज होती है जब मैच में प्रतिष्ठा लक्ष्य हो।
 [stat prestige lead]
-Prestige lead
+प्रतिष्ठा में बढ़त
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+बस्ती की प्रतिष्ठा में से किसी भी बचे हुए प्रतिद्वंद्वी की सबसे अधिक प्रतिष्ठा घटाकर: अग्रणी दूसरे स्थान वाले से कितना आगे है, या बाकी सब अग्रणी से कितना पीछे हैं। केवल तब दर्ज होता है जब मैच में प्रतिष्ठा लक्ष्य हो।
 [stat school levels]
-School levels
+विद्यालयों के स्तर
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+बस्ती के विद्यालय और विद्यालय निर्माण स्थल, हर एक अपने स्तर से गिना जाता है: स्तर-1 स्थल के लिए 1 से लेकर पूरे बने स्तर-3 विद्यालय के लिए 6 तक। केवल पूरे बने स्तर-3 विद्यालय प्रतिष्ठा देते हैं, हर एक 50।
 [stat unit levels]
-levels
+स्तर
 [stat band combat]
 युद्ध
 [stat band starvation]

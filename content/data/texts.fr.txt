@@ -5055,15 +5055,15 @@ Prestige requis pour gagner
 [stat prestige needed about]
 Le prestige que la colonie devrait encore gagner pour l'emporter au prestige : assez pour que le prestige cumulé de la partie atteigne l'objectif, et pour dépasser toutes les autres colonies survivantes. Enregistré seulement quand la partie a un objectif de prestige.
 [stat prestige lead]
-Prestige lead
+Avance en prestige
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+Le prestige de la colonie moins le plus élevé détenu par un adversaire encore en vie : l'avance du meneur sur son second, ou le retard de tous les autres sur le meneur. Enregistré uniquement quand la partie a un objectif de prestige.
 [stat school levels]
-School levels
+Niveaux des écoles
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+Les écoles et chantiers d'école de la colonie, chacun compté selon son niveau : de 1 pour un chantier de niveau 1 à 6 pour une école de niveau 3 achevée. Seules les écoles de niveau 3 achevées rapportent du prestige, 50 chacune.
 [stat unit levels]
-levels
+niveaux
 [stat band combat]
 Combats
 [stat band starvation]

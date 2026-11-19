@@ -5055,15 +5055,15 @@ Ugled, potreben za zmago
 [stat prestige needed about]
 Ugled, ki bi ga morala kolonija še pridobiti za zmago z ugledom: dovolj, da skupni ugled tekme doseže cilj, in da prehiti vsako drugo preživelo kolonijo. Beleži se le, če ima tekma cilj ugleda.
 [stat prestige lead]
-Prestige lead
+Prednost v ugledu
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+Ugled kolonije, zmanjšan za največji ugled katerega koli preživelega nasprotnika: koliko je vodilni pred drugouvrščenim oziroma koliko so vsi drugi za vodilnim. Beleži se le, če ima tekma cilj ugleda.
 [stat school levels]
-School levels
+Stopnje šol
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+Šole in gradbišča šol kolonije, vsaka šteta po svoji stopnji: od 1 za gradbišče stopnje 1 do 6 za dokončano šolo stopnje 3. Ugled prinašajo le dokončane šole stopnje 3, po 50 vsaka.
 [stat unit levels]
-levels
+stopnje
 [stat band combat]
 Boj
 [stat band starvation]

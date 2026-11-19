@@ -5055,15 +5055,15 @@ Prestiż potrzebny do zwycięstwa
 [stat prestige needed about]
 Prestiż, który kolonia musiałaby jeszcze zdobyć, aby wygrać prestiżem: tyle, by łączny prestiż meczu osiągnął cel i by wyprzedzić każdą inną ocalałą kolonię. Rejestrowany tylko wtedy, gdy mecz ma cel prestiżu.
 [stat prestige lead]
-Prestige lead
+Przewaga prestiżu
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+Prestiż kolonii pomniejszony o najwyższy prestiż ocalałego przeciwnika: o ile lider wyprzedza drugie miejsce lub o ile wszyscy pozostali ustępują liderowi. Rejestrowana tylko wtedy, gdy mecz ma cel prestiżu.
 [stat school levels]
-School levels
+Poziomy szkół
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+Szkoły i place budowy szkół kolonii, każde liczone według poziomu: od 1 za plac budowy poziomu 1 do 6 za ukończoną szkołę poziomu 3. Prestiż dają tylko ukończone szkoły poziomu 3, po 50 każda.
 [stat unit levels]
-levels
+poziomy
 [stat band combat]
 Walka
 [stat band starvation]
