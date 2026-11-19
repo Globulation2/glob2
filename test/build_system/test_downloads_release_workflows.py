@@ -157,8 +157,11 @@ class ReleaseWorkflowTests(unittest.TestCase):
         self.assertIn('if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }',smoke)
         self.assertIn('tag: ${{ inputs.tag }}',upload)
         self.assertIn('glob2-steam-windows-${{ needs.package.outputs.source_sha }}',upload)
-        self.assertIn("if ($source -ne '${{ needs.package.outputs.source_sha }}')",upload)
-        self.assertLess(upload.index('Depot source identity mismatch'),upload.index('Upload unpublished build'))
+        self.assertIn("--source-sha '${{ needs.package.outputs.source_sha }}'", upload)
+        self.assertIn('python driver/.github/scripts/steam_depot.py', upload)
+        self.assertIn("--source-sha '${{ needs.preflight.outputs.source_sha }}'", package)
+        self.assertIn('ref: ${{ github.sha }}', upload)
+        self.assertLess(upload.index('Extract and verify depot manifest'), upload.index('Upload unpublished build'))
 
     def test_owner_dispatch_master_guard_on_every_new_entrypoint(self):
         for name in ('github-release.yml','macos-signing-retry.yml','macos-downloads-qualification.yml','promote-downloads.yml','android-play-internal.yml','ios-testflight.yml','ios-production.yml','release.yml'):

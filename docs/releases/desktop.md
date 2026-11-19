@@ -139,5 +139,8 @@ required immutable public `tag`. Reusable packaging callers also pass `tag`.
 The workflow resolves that tag in the public repository and pins both the
 build and smoke fixture checkouts to its commit. Depot artifacts use the
 resolved source SHA, include a checksummed `source-commit.txt`, and the upload
-job verifies that identity before SteamPipe runs. The upload creates an
+job verifies that identity before SteamPipe runs. Actions transfers the depot
+as one `windows.tar.gz` file to avoid extracting tens of thousands of individual
+ZIP entries. Both smoke and upload jobs extract it and validate every manifest
+entry, accepting the standard sha256sum text and binary markers. The upload creates an
 unpublished build; it does not promote a live Steam branch.
