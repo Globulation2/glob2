@@ -201,6 +201,14 @@ void AI::publishDecision(const AIEngine::Command& output)
         // observation clock of the delayed decision.
         telemetrySeries->current.tick = player->game->stepCounter;
 	}
+	if (implementationID == JAVASCRIPT && !stopAnnounced)
+		for (const auto& value : output.namedTelemetry)
+			if (value.name == "runtime.status" && value.value == "Disabled")
+			{
+				stopAnnounced = true;
+				player->game->publishClientEvent(ClientEvent::AIStopped{
+					player->number, value.meaning.substr(0, value.meaning.find('\n'))});
+			}
 	for (const auto& diagnostic : output.diagnostics)
 	{
 		if (diagnostic.path.empty()) {

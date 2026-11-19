@@ -3150,6 +3150,8 @@ OpenGL 在此版本中不可用。
 队伍 %0
 [Your colony]
 你的殖民地
+[Practice colony]
+练习殖民地
 [%0 / %1 HP · %2]
 %0 / %1 生命值 · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ MCP 服务器
 删除录像
 [recording refresh]
 刷新
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  无法恢复先前的库： %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ MCP 服务器
 [intro instruction build]
 打开建造，在小麦附近放置食堂。分配空闲工人建造，同时保持原有食堂的补给。
 [intro instruction supply]
-选择建成的新食堂，至少分配一名补给工人。等待工人运来小麦。
+选择建成的新食堂。它会自动请求补给工人；检查其工人需求，并等待工人运来小麦。
 [intro instruction grow]
 选择孢子堆，将工人需求设为至少2，并将生产比例设为仅生产工人。在新工人出生期间，保持两座食堂的补给。
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ MCP 服务器
 [intro help build]
 建造会消耗工人运来的木材。在建筑面板中选择食堂，放在小麦附近的空地上，并请求2名建造工人。工人需求是请求数量，不是已经到场的人数。原有食堂和孢子堆仍需保留补给工人。任何有效位置都算数。
 [intro help supply]
-建造和日常补给的工人需求分别设置。选择建成的食堂，提高其运营工人需求。补给工人会收集小麦并运到这里。饥饿的球球在食堂进食；没有补给工人的建筑最终会耗尽储粮。请保持通往小麦的道路畅通。
+建造和日常补给的工人需求分别设置。建成的食堂会自动请求补给工人；如果小麦运得太慢，请提高其运营工人需求。补给工人会收集小麦并运到这里。饥饿的球球在食堂进食；没有补给工人的建筑最终会耗尽储粮。请保持通往小麦的道路畅通。
 [intro help grow]
 孢子堆消耗小麦来生产单位。将工人生产比例设为1，探索者和战士设为0。将孢子堆工人需求提高至至少2。更多补给工人能加快小麦运输，但也会占用其他任务的人力。请维持两座食堂的食物供应。
 [intro help attack]
@@ -6635,7 +6657,7 @@ MCP 服务器
 [intro hint scout]
 探索者需要东侧石头上已分配单位的探索令旗。请检查令旗目标和探索者数量。
 [intro hint build]
-如果移除了新食堂，请再建一座。否则请检查工地及其工人需求。现有补给任务可能占用工人；在腾出建造工人的同时维持食物供应。
+新食堂尚未建成。如果没有工地，请在小麦附近放置一座食堂。否则请选择工地并检查其工人需求：其他地方的补给任务可能正占用你的工人。
 [intro hint supply]
 选择建成的新食堂。检查工人需求，观察小麦运送。工人可能需要时间赶路或进食。
 [intro hint grow]
@@ -6665,7 +6687,7 @@ MCP 服务器
 [intro help touch build]
 在建造中选择食堂，放在小麦附近的空地上并确认。选择工地，请求2名建造工人。工人需求是请求数量，不是已经到场的人数。保持原有食堂和孢子堆的补给。任何有效位置都算数。
 [intro help touch supply]
-选择建成的新食堂，提高分配工人需求。建造和日常补给的需求分别设置。补给工人收集小麦并运到这里。饥饿的球球在食堂进食；没有补给工人的建筑最终会断粮。保持通往小麦的道路畅通。
+选择建成的新食堂，检查分配工人需求；它会自动请求补给工人。建造和日常补给的需求分别设置。补给工人收集小麦并运到这里。饥饿的球球在食堂进食；没有补给工人的建筑最终会断粮。保持通往小麦的道路畅通。
 [intro help touch grow]
 选择孢子堆，将工人生产比例设为1，探索者和战士设为0。将分配工人需求提高至至少2。补给工人为新单位运来小麦，但也会占用其他任务的人力。请保持两座食堂的补给。
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ MCP 服务器
 [intro compact build]
 建造 → 食堂。放在小麦附近；分配2名建造工人。
 [intro compact supply]
-选择新食堂；至少分配1名补给工人。等待小麦。
+选择新食堂；检查补给工人。等待小麦。
 [intro compact grow]
 选择孢子堆；分配2名补给工人。仅生产工人。
 [intro compact attack]
@@ -6793,13 +6815,13 @@ MCP 服务器
 [lesson schools complete]
 学校提高了工人技能。熟练建造工人可进行升级，更好的采集能力有助于维持不断扩大的经济。
 [lesson schools build hint]
-在空地上建造学校；分配建造工人。 殖民地已有可采集水藻的游泳者。保持通往木材和水域的道路畅通。果树提供声望资源；食物仍然来自小麦。
+还没有建成的学校。检查工地是否在请求建造工人，以及他们能否到达木材和池塘。
 [lesson schools build title]
 建造学校
 [lesson schools build instruction]
 在空地上建造学校；分配建造工人。
 [lesson schools build help]
-殖民地已有可采集水藻的游泳者。保持通往木材和水域的道路畅通。果树提供声望资源；食物仍然来自小麦。
+殖民地已有可采集水藻的游泳者。保持通往木材和水域的道路畅通。果树不是食物；你的食堂仍然需要小麦。
 [lesson schools build marker]
 建造学校
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ MCP 服务器
 [lesson upgrades upgrade marker]
 升级跑道
 [lesson upgrades train hint]
-让一名现有工人在升级后的跑道学习更快行走。 完成升级会改善可用训练。更高级建筑需要更高建造技能；向玩家显示的等级从1开始。
+还没有工人在升级后的跑道训练过。保持跑道可以到达，并留出一些空闲工人。
 [lesson upgrades train title]
 使用升级后的训练
 [lesson upgrades train instruction]
 让一名现有工人在升级后的跑道学习更快行走。
 [lesson upgrades train help]
-完成升级会改善可用训练。更高级建筑需要更高建造技能；向玩家显示的等级从1开始。
+完成升级会改善其提供的训练。更高级建筑需要建造技能更高的建造工人。
 [lesson warrior-training title]
 生产与训练战士
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ MCP 服务器
 [lesson fortifications walls marker]
 用护墙保护防御塔
 [lesson fortifications supply hint]
-选择防御塔并请求补给工人。等待至少2块石头。 建成的防御塔需设置运营工人需求来运送弹药，这与建造工人需求是分开的。
+防御塔中的石头少于2块。选择它并检查其工人需求；补给工人需要一条从石头处过来的畅通道路。
 [lesson fortifications supply title]
 补给弹药
 [lesson fortifications supply instruction]
-选择防御塔并请求补给工人。等待至少2块石头。
+选择建成的防御塔并检查补给工人。等待至少2块石头。
 [lesson fortifications supply help]
-建成的防御塔需设置运营工人需求来运送弹药，这与建造工人需求是分开的。
+建成的防御塔会自动请求补给工人来运送弹药。这与建造工人需求是分开的；如果石头运得慢，请提高运营工人需求。
 [lesson fortifications supply marker]
 补给弹药
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ MCP 服务器
 [lesson fortifications walls compact]
 建造2段墙。保持防御塔西侧通道畅通。
 [lesson fortifications supply compact]
-选择防御塔 → 补给工人。等待2块石头。
+选择防御塔 → 检查补给工人。等待2块石头。
 [lesson fortifications hold compact]
 持续补给防御塔，抵御攻击者。
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ AI
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

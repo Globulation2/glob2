@@ -5,6 +5,9 @@
 #include <BrowserTextInput.h>
 #include <GraphicContext.h>
 #include <SDL3/SDL.h>
+#include <algorithm>
+#include <cctype>
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <mutex>
@@ -206,6 +209,43 @@ bool openUrl(const std::string &url)
 	return SDL_OpenURL(url.c_str());
 }
 void prepareUrlWindow() {}
+std::string fileUrl(const std::string &path)
+{
+	std::string normalized = path;
+	std::replace(normalized.begin(), normalized.end(), '\\', '/');
+	if (normalized.empty() || normalized.front() != '/')
+		normalized.insert(normalized.begin(), '/');
+	static const char hex[] = "0123456789ABCDEF";
+	std::string url = "file://";
+	for (unsigned char c : normalized)
+	{
+		if (std::isalnum(c) || std::strchr("/-._~:", c))
+			url += char(c);
+		else
+		{
+			url += '%';
+			url += hex[c >> 4];
+			url += hex[c & 15];
+		}
+	}
+	return url;
+}
+bool canOpenFolder()
+{
+#ifdef GLOB2_MOBILE
+	return false;
+#else
+	return true;
+#endif
+}
+bool openFolder(const std::string &path)
+{
+	if (!canOpenFolder() || path.empty())
+		return false;
+	std::error_code error;
+	std::filesystem::create_directories(std::filesystem::u8path(path), error);
+	return SDL_OpenURL(fileUrl(path).c_str());
+}
 bool copyText(const std::string &text)
 {
 	return SDL_SetClipboardText(text.c_str());

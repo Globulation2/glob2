@@ -20,6 +20,7 @@ class MapPreview;
 class MatchStartScreen : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "match_start"; }
 	enum
 	{
 		LEFT = 0,

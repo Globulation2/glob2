@@ -23,13 +23,26 @@ build. UI recordings and `--videoshot` choose the build's extension automaticall
 including numbered segments. Manifests identify the actual video and audio codecs.
 
 **Settings > Recording** shows recording controls, the hotkey and the output
-folder. The in-game menu offers **Start recording / Stop recording**, and the
-**Start or stop recording** hotkey (default **Ctrl+Shift+R**, rebindable under
-**Settings > Controls**) works on every screen. Encoder and storage errors appear
-in the recording controls. Each UI start creates a unique video in
-`videoshots/` beneath the current user profile. The window title reports recording,
-finalization, or failure; that status is outside the captured image. Capture
-errors also appear in the recording controls and application log.
+folder, with **Open folder** on desktop. The in-game menu offers **Start recording /
+Stop recording** and **Recordings**, and the **Start or stop recording** hotkey
+(default **Ctrl+Shift+R**, rebindable under **Settings > Controls**) works on every
+screen. Encoder and storage errors appear in the recording controls.
+
+Each UI start creates a video in `videoshots/` beneath the current user profile,
+named after the local time it started: `glob2-2026-11-18_14-05-02.mp4`, with `-2`,
+`-3`, ... when that name is taken by a saved or interrupted recording. The
+recording controls always say where the file goes: "Recording to <full path>"
+while recording, "Saving ..." while finalizing, then "Recording saved to <full
+path>". A recording that ends during a game, from the hotkey or an error, also
+posts that line in the game's message area once it has stopped, so the message
+is not in the video. The window title reports recording, finalization, or
+failure; that status is outside the captured image. Capture errors also appear
+in the recording controls and application log.
+
+In the browser, a saved recording downloads by itself as soon as it is
+finalized, one download per segment, under the same dated name; the controls say
+"Recording downloaded as <name>". The copy in site storage stays under
+**Recordings** for downloading again.
 
 For a complete session, start recording from the command line:
 
@@ -65,9 +78,12 @@ a timestamp gap and resumes without a catch-up burst. Background execution still
 depends on the operating system and browser. Readback and copying have a cost;
 bounded queues reject excess input and report dropped frame/audio counters.
 
-The **Recordings** screen lists completed and interrupted files. Export video,
-metadata and events separately; recovery remuxes available completed fragments.
-Native files remain in the profile's `videoshots/` directory. Mobile recordings
+The **Recordings** screen starts with where recordings are kept: the folder and
+**Open folder** on desktop, or the browser's storage on the web. It lists
+completed and interrupted files newest first, by time rather than name, each with
+its date, duration and size. Export (desktop) or download (web) the video, and
+export metadata and events separately; recovery remuxes available completed
+fragments. Native files remain in the profile's `videoshots/` directory. Mobile recordings
 use app-private storage and native document pickers. Browser recordings stream
 to OPFS outside IDBFS and export a file-backed download; unavailable or exhausted
 storage produces an error. Do not clear browser site storage before exporting.

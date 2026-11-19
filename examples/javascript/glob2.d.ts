@@ -125,11 +125,36 @@ export interface Tile {
   /** AI-only, explored tiles, farm-areas experiment: present and true on own-team farm areas. */
   farmArea?: boolean;
 }
+/** Feeding or healing service; cost is a 15-entry resource array. */
+export interface BuildingService {
+  enabled: boolean; unitMask: number; duration: number; cost: number[];
+}
 export interface BuildingType {
   /** Resolve by name/level/site; do not hardcode variant registry indices. */
-  id: number; name: string; shortType: number; level: number; site: boolean;
+  id: number; key: string; name: string; shortType: number; level: number; site: boolean;
   virtual: boolean; width: number; height: number; maxHp: number;
   maxWorkers: number;
+  /** Whether the building requests hauling/construction labor. */
+  usesWorkers: boolean;
+  /** Semantic operations such as 'feed', 'heal', 'produceWorker', 'trainConstruction'. */
+  capabilities: string[];
+  /** Explicit upgrade/downgrade transitions, or -1. */
+  nextType: number; previousType: number;
+  placeable: boolean; instantPlacement: boolean; occupiesGround: boolean; relocatable: boolean;
+  requiredWorkerLevel: number; admittedUnitMask: number; maxUnitsInside: number; maxRadius: number;
+  feeding: BuildingService; healing: BuildingService;
+  /** Ability-indexed; constructionLevel is -1 when training grants none. */
+  training: (BuildingService & { targetLevel: number; constructionLevel: number })[];
+  /** Unit-indexed (worker, explorer, warrior) recipes. */
+  production: { enabled: boolean; duration: number; cost: number[] }[];
+  repairable: boolean; regeneration: number;
+  /** Damage by target unit type. */
+  projectileDamage: number[];
+  projectileRange: number; projectileSpeed: number; projectileRhythm: number;
+  ammunitionMaterial: number; ammunitionResource: number; ammunitionCost: number;
+  suppliesStock: boolean; suppliesDirectStock: boolean; fetchesStock: boolean; exchangesFruit: boolean;
+  /** 12 configured material capacities, indexed by fixed material ID. */
+  materialCapacity: number[];
   /** 15 configured resource capacities/costs. */
   resourceCapacity: number[];
 }

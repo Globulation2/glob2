@@ -3,6 +3,8 @@
 #include "SettingsScreen.h"
 #include "GameGUIKeyActions.h"
 #include "ui/RecordingControls.h"
+#include "ui/RecordingNotice.h"
+#include <ApplicationHost.h>
 #include <FileManager.h>
 #include <FormatableString.h>
 #include <Toolkit.h>
@@ -30,7 +32,15 @@ void SettingsScreen::buildRecording()
 			   shortcutMode = GameGUIShortcuts;
 			   selectCategory(Category::Controls);
 		   });
-	const auto folder = std::filesystem::u8path(GAGCore::Toolkit::getFileManager()->getDir(0)) / "videoshots";
-	const auto folderText = folder.u8string();
-	info(std::string(GAGCore::FormattableString(tr("Recordings are saved in %0")).arg(std::string(folderText.begin(), folderText.end()))));
+	// The browser's virtual path means nothing to a player; its recordings download.
+	if (recordingsDownload())
+	{
+		info(Glob2UI::tr("[recording browser storage]"));
+		return;
+	}
+	const auto folder = Rec::recordingDirectory();
+	info(std::string(GAGCore::FormattableString(tr("Recordings are saved in %0")).arg(folder)));
+	if (GAGCore::ApplicationHost::canOpenFolder())
+		button("recording.folder", Glob2UI::tr("[recording open folder]"), [folder]
+			   { GAGCore::ApplicationHost::openFolder(folder); });
 }

@@ -3150,6 +3150,8 @@ Fırça %0
 Takım %0
 [Your colony]
 Koloniniz
+[Practice colony]
+Alıştırma kolonisi
 [%0 / %1 HP · %2]
 %0 / %1 can · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ Kayıt dışa aktarılamadı.
 Kaydı sil
 [recording refresh]
 Yenile
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Önceki kitaplık geri yüklenemedi: %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Bayrakları açıp koloninin doğusundaki taşlık alana bir Keşif bayrağı ye
 [intro instruction build]
 İnşa menüsünü açıp buğday yakınında bir Otel yerleştirin. Boştaki işçileri inşaata atayın. Mevcut Otelin ikmalini sürdürün.
 [intro instruction supply]
-Tamamlanan yeni Oteli seçip en az bir ikmalci atayın. Bir işçinin buğday getirmesini bekleyin.
+Tamamlanan yeni Oteli seçin. Otel ikmalcileri kendisi ister; işçi hedefini kontrol edin ve bir işçinin buğday getirmesini bekleyin.
 [intro instruction grow]
 Yuvayı seçin. İşçi hedefini en az 2, üretim oranlarını yalnızca işçi olarak ayarlayın. Yeni işçi doğarken iki Otelin de ikmalini sürdürün.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Küçük haritayla görünümü doğuya taşıyıp taşlık alanı bulun. Bayrak
 [intro help build]
 İnşaat, işçilerin getirdiği odunu tüketir. Bina paletinden Oteli seçin, buğday yakınında açık araziye yerleştirin ve 2 inşaatçı isteyin. İşçi hedefi bir taleptir; orada bulunan işçi sayısı değildir. Mevcut Otel ve Yuvada ikmalci bulundurun. Geçerli her konum sayılır.
 [intro help supply]
-İnşaat ve günlük ikmalin işçi hedefleri ayrıdır. Tamamlanan Oteli seçip işletme hedefini artırın. İkmalci buğday toplayıp buraya taşır. Aç globüller Otellerde yer; ikmalcisiz binanın stoğu sonunda tükenir. Buğdaya erişimi açık tutun.
+İnşaat ve günlük ikmalin işçi hedefleri ayrıdır. Tamamlanan Otel ikmalcileri otomatik olarak ister; buğday çok yavaş geliyorsa işletme hedefini artırın. İkmalci buğday toplayıp buraya taşır. Aç globüller Otellerde yer; ikmalcisiz binanın stoğu sonunda tükenir. Buğdaya erişimi açık tutun.
 [intro help grow]
 Yuva birim üretmek için buğday tüketir. İşçi üretimini 1, kâşif ve savaşçı üretimini 0 yapın. Yuvanın işçi hedefini en az 2'ye çıkarın. Daha fazla ikmalci buğdayı hızla getirir ama diğer işlerle iş gücü için yarışır. İki Otelin de yiyecek ikmalini sürdürün.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Bayraklardan Savaş bayrağını seçip taşların doğusundaki düşman Yuvası
 [intro hint scout]
 Kâşifinizin doğudaki taşlıkta birim atanmış bir Keşif bayrağına ihtiyacı var. Hedefini ve kâşif sayısını kontrol edin.
 [intro hint build]
-Yeni Oteli kaldırdıysanız başka bir tane yapın. Aksi halde şantiyeyi ve işçi hedefini kontrol edin. Mevcut ikmal işleri işçilerinizi meşgul edebilir; yiyecek akışını koruyup inşaatçıları serbest bırakın.
+Yeni Otel henüz tamamlanmadı. Şantiye yoksa buğdayın yakınına bir Otel yerleştirin. Varsa şantiyeyi seçip işçi hedefini kontrol edin: başka yerlerdeki ikmal işleri işçilerinizi meşgul ediyor olabilir.
 [intro hint supply]
 Tamamlanan yeni Oteli seçin. İşçi hedefini kontrol edip buğday teslimatını izleyin. İşçilerin yolculuk veya yemek için zamana ihtiyacı olabilir.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Bayrak yerleştirmeden önce boş araziyi sürükleyerek görünümü taşıyın
 [intro help touch build]
 İnşa menüsünden Oteli seçin. Buğday yakınındaki açık araziye yerleştirip onaylayın. Şantiyeyi seçip 2 inşaatçı isteyin. İşçi hedefi bir taleptir; mevcut işçi sayısı değildir. Mevcut Otel ve Yuvayı besleyin. Geçerli her konum sayılır.
 [intro help touch supply]
-Tamamlanan yeni Oteli seçip atanan işçi hedefini artırın. İnşaat ve günlük ikmal hedefleri ayrıdır. İkmalci buğday toplayıp getirir. Aç globüller Otellerde yer; ikmalcisiz binanın stoğu tükenir. Buğday erişimini koruyun.
+Tamamlanan yeni Oteli seçip atanan işçi hedefini kontrol edin; Otel ikmalcileri kendisi ister. İnşaat ve günlük ikmal hedefleri ayrıdır. İkmalci buğday toplayıp getirir. Aç globüller Otellerde yer; ikmalcisiz binanın stoğu tükenir. Buğday erişimini koruyun.
 [intro help touch grow]
 Yuvayı seçin. İşçi üretimini 1, kâşif ve savaşçı üretimini 0 yapın. Atanan işçi hedefini en az 2'ye çıkarın. İkmalciler yeni birimler için buğday getirir ama diğer işlerle yarışır. İki Oteli de besleyin.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Bayraklar → Keşif bayrağı. Taşlara yerleştirin; 1 kâşif atayın.
 [intro compact build]
 İnşa → Otel. Buğday yakınına yerleştirin; 2 inşaatçı atayın.
 [intro compact supply]
-Yeni Oteli seçin; en az 1 ikmalci atayın. Buğdayı bekleyin.
+Yeni Oteli seçin; ikmalcilerini kontrol edin. Buğdayı bekleyin.
 [intro compact grow]
 Yuvayı seçin; 2 ikmalci atayın. Yalnızca işçi üretin.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Hazır yüzücülerle Akademi inşa edin, ardından işçilerin inşaat ve hasat
 [lesson schools complete]
 Akademiniz işçi becerilerini geliştirdi. Yetenekli inşaatçılar yükseltmeleri açar; daha iyi hasat büyüyen ekonomiyi destekler.
 [lesson schools build hint]
-Açıklığa bir Akademi inşa edin; inşaatçı atayın. Kolonide yosun için yüzücüler zaten var. Oduna ve suya erişim bırakın. Meyve ağaçları prestij kaynağı sağlar; yiyecek hâlâ buğdaydan gelir.
+Henüz tamamlanmış bir Akademi yok. Şantiyenin inşaatçı istediğini ve inşaatçıların oduna ve gölete ulaşabildiğini kontrol edin.
 [lesson schools build title]
 Bir Akademi inşa et
 [lesson schools build instruction]
 Açıklığa bir Akademi inşa edin; inşaatçı atayın.
 [lesson schools build help]
-Kolonide yosun için yüzücüler zaten var. Oduna ve suya erişim bırakın. Meyve ağaçları prestij kaynağı sağlar; yiyecek hâlâ buğdaydan gelir.
+Kolonide yosun için yüzücüler zaten var. Oduna ve suya erişim bırakın. Meyve ağaçları yiyecek değildir; Otelleriniz hâlâ buğdaya ihtiyaç duyar.
 [lesson schools build marker]
 Bir Akademi inşa et
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Bu işçiler Akademinin birinci seviye becerilerini zaten öğrendi. Yükseltmel
 [lesson upgrades upgrade marker]
 Koşu Yolunu yükselt
 [lesson upgrades train hint]
-Mevcut bir işçinin yükseltilmiş Koşu Yolunda daha hızlı yürümeyi öğrenmesini bekleyin. Tamamlanan yükseltme eğitimi geliştirir. Daha yüksek bina seviyeleri daha iyi inşaat becerisi ister; oyuncuya gösterilen seviye 1'den başlar.
+Henüz hiçbir işçi yükseltilmiş Koşu Yolunda eğitim almadı. Oraya erişimi açık tutun ve bazı işçileri boşta bırakın.
 [lesson upgrades train title]
 Gelişmiş eğitimi kullan
 [lesson upgrades train instruction]
 Mevcut bir işçinin yükseltilmiş Koşu Yolunda daha hızlı yürümeyi öğrenmesini bekleyin.
 [lesson upgrades train help]
-Tamamlanan yükseltme eğitimi geliştirir. Daha yüksek bina seviyeleri daha iyi inşaat becerisi ister; oyuncuya gösterilen seviye 1'den başlar.
+Tamamlanan yükseltme, binanın sunduğu eğitimi geliştirir. Daha yüksek bina seviyeleri, daha iyi inşaat becerisine sahip inşaatçılar ister.
 [lesson warrior-training title]
 Savaşçı üretimi ve eğitimi
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Duvarlar taş kullanır ve her şantiye işçi ister. Kuleyi tamamen kapatmayın
 [lesson fortifications walls marker]
 Kuleyi duvarlarla koru
 [lesson fortifications supply hint]
-Kuleyi seçip ikmalci isteyin. En az 2 taş bekleyin. Tamamlanmış kule, cephane için işletme işçi hedefine ihtiyaç duyar. Bu, inşaat hedefinden ayrıdır.
+Kulede 2'den az taş var. Kuleyi seçip işçi hedefini kontrol edin; ikmalcilerin taştan açık bir yola ihtiyacı var.
 [lesson fortifications supply title]
 Cephane sağla
 [lesson fortifications supply instruction]
-Kuleyi seçip ikmalci isteyin. En az 2 taş bekleyin.
+Tamamlanan kuleyi seçip ikmalcilerini kontrol edin. En az 2 taş bekleyin.
 [lesson fortifications supply help]
-Tamamlanmış kule, cephane için işletme işçi hedefine ihtiyaç duyar. Bu, inşaat hedefinden ayrıdır.
+Tamamlanmış kule, cephane getirmek için ikmalcileri kendisi ister. Bu, inşaat hedefinden ayrıdır; taş yavaş geliyorsa işletme hedefini artırın.
 [lesson fortifications supply marker]
 Cephane sağla
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Savaşçının Kışla alıştırmasını bitirmesini bekleyin.
 [lesson fortifications walls compact]
 2 duvar inşa edin. Kulenin batı yolunu açık tutun.
 [lesson fortifications supply compact]
-Kule → İkmalciler. 2 taş bekleyin.
+Kule → İkmalcileri kontrol et. 2 taş bekleyin.
 [lesson fortifications hold compact]
 Saldırgana karşı kulenin ikmalini sürdürün.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Tundra toprağı
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

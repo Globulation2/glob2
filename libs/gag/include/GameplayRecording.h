@@ -4,6 +4,8 @@
 #include <SDL3/SDL.h>
 #include <AudioFormat.h>
 #include <cstdint>
+#include <ctime>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
@@ -46,6 +48,15 @@ struct Status
 	int width = 0, height = 0, sourceWidth = 0, sourceHeight = 0;
 	std::vector<std::string> outputs;
 };
+// The end of one recording, kept until the next one ends. serial counts endings,
+// so a presenter can announce each saved or failed recording exactly once.
+struct Completion
+{
+	std::uint64_t serial = 0;
+	bool failed = false;
+	std::vector<std::string> outputs;
+	std::string error;
+};
 // One local client perspective. No simulation, network, or save-state ownership.
 // Options, context, frame submission, and controls belong to the main thread.
 // status()/active() may be read from any thread. audio() belongs to the SDL
@@ -64,6 +75,7 @@ class Recorder
 	void abort(const std::string &error);
 	void shutdown();
 	Status status() const;
+	Completion completion() const;
 	bool active() const;
 	bool wantsFrame() const;
 	void frame(const SDL_Surface &pixels, bool bottomUp = false);
@@ -93,6 +105,18 @@ bool supported();
 // Recording is built into supported clients; runtime storage/encoder failures
 // are reported by the session.
 bool available();
+// Folder for recordings started from the UI: videoshots/ in the user profile.
+std::string recordingDirectory();
+// A readable name that sorts chronologically: glob2-2026-11-18_14-35-02.mp4, with
+// -2, -3, ... appended for a second recording in the same second.
+std::string recordingFileName(const std::tm &local, unsigned attempt = 1);
+// The first recordingFileName in directory for that time that taken() rejects.
+std::string uniqueRecordingPath(const std::string &directory, const std::tm &local,
+								const std::function<bool(const std::string &path)> &taken);
+#ifndef __EMSCRIPTEN__
+// The first name not used by a video or an interrupted recording in directory.
+std::string uniqueRecordingPath(const std::string &directory, const std::tm &local);
+#endif
 // UI helper: unique profile output; returns false while finalization is pending.
 bool toggle();
 std::string controlLabel();
@@ -100,6 +124,9 @@ struct RecordingFileEntry
 {
 	std::string path;
 	bool recoverable = false;
+	std::uint64_t bytes = 0;			// video size, 0 when unknown
+	std::int64_t modified = 0;			// seconds since the Unix epoch, 0 when unknown
+	std::int64_t durationUs = 0;		// from the manifest, 0 when unknown
 };
 struct RecordingFilesStatus
 {
@@ -107,6 +134,10 @@ struct RecordingFilesStatus
 	std::string error;
 	std::vector<RecordingFileEntry> files;
 };
+#ifndef __EMSCRIPTEN__
+// Completed and interrupted recordings in directory, newest first.
+std::vector<RecordingFileEntry> scanRecordings(const std::string &directory);
+#endif
 void requestFiles();
 bool takeFilesRequest();
 void refreshFiles();

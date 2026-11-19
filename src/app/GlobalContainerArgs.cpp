@@ -54,6 +54,8 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
 		settings.mute = 1;
 	if (r.has("--no-mute"))
 		settings.mute = 0;
+	if (r.has("--mcp-port"))
+		settings.mcpLaunchPort = std::stoi(r.get("--mcp-port"));
 	if (r.has("--username"))
 		settings.setUsername(r.get("--username").c_str());
 	if (r.has("--editor-script"))

@@ -41,7 +41,7 @@
 [AIMaxima-Profile]
 الاستراتيجية الأساسية: يعامل الغذاء والعمال والولادات والتدريب والبناء والقتال كمطالب متنافسة. يحدد حجم جيشه جزئيًا وفق قوة العدو المقدّرة، ثم يحاول إيصال ذلك الجيش بفعالية.\n\nالاقتصاد والتطوير: يوازن الولادات مع الغذاء والعمالة، ويحافظ على فرص الفراغ للتدريب، ويتوقف عن إضافة عمال فائضين عند الحاجة إلى إنتاج عسكري. يوسّع قدرة التدريب ويتجنب تعطيل قدر كبير من البنية التحتية للترقيات.\n\nالاستطلاع والقرارات: يقدّر قوات العدو من الوحدات المرئية والمشاهدات المتذكّرة باستخدام نموذج ملائم للبيانات. تعتمد الأهداف على القيمة والمسافة والأبراج والعمال المكشوفين والاستمرار في الهجوم. تدعم مهام الفاكهة تنوع الغذاء واستمالة الوحدات.\n\nالهجوم والدفاع: يحتفظ بمحاربين للتدريب والدفاع، ثم يجمع القوات البرية المؤهلة قرب بنية الغذاء الصديقة قبل إطلاق الموجات. يستخدم استجابات دفاعية محلية ويقيّم طرق الاقتراب من المستعمرة.\n\nعندما تتعثر الهجمات: بعد أربعة إخفاقات متتالية في إيصال الموجات، ينتقل إلى أعلام هجوم تتلقى تعزيزًا مستمرًا. قد تستخدم الهجمات العابرة للماء تعزيزًا مستمرًا أيضًا. لا يحل هذا البديل كل انسداد يسبق تشكل التجمع.\n\nمقارنة بالذكاءات الأخرى: يدمج الغذاء والتدريب والمعلومات والنشر بصورة أوثق. يركز Cabino على عدة هجمات ضد المباني؛ ويركز Maxima على تقدير الحاجة وإيصال القوات المجمعة.\n\nنقاط القوة والضعف: يحافظ على النمو وتعويض الجيش مع التكيف مع ضغط الغذاء والتهديدات المرصودة. يحتاج إلى غذاء وقدرة تدريب ومساحة تجمع مفتوحة؛ وقد يعرقل الازدحام وطول الطرق إيصال القوات.\n\nمواجهة مقترحة: نازع على القمح والنُزل والثكنات المكشوفة قبل تجمع الموجات. أبقِ قوة دفاعية ممونة مجتمعة وعطّل طرق التعزيز. توقع ضغطًا متكررًا بعد الموجة الأولى.\n\nالاستطلاع: تستخدم تقديرات القوة المشاهدات وسجل الرصد، لا إجمالي قوات العدو المخفي.
 [%0 has left the game]
-ﺧﺮﺝ %0 ﻣﻦ ﺍﻟﻠﻌﺒﺔ
+خرج %0 من اللعبة
 [%0 level %1]
 %0 المستوى %1
 [%0 units can't access building]
@@ -53,41 +53,41 @@
 [%0 units can't access resource]
 تعذر على %0 من الوحدات الوصول إلى المورد
 [%0 units not available]
-ﻻ ﺗﺘﻮﻓﺮ %0 ﻣﻦ ﺍﻟﻮﺣﺪﺍﺕ
+لا تتوفر %0 من الوحدات
 [%0 units too far from building]
-%0 ﻣﻦ ﺍﻟﻮﺣﺪﺍﺕ ﺑﻌﻴﺪﺓ ﻋﻦ ﺍﻟﻤﺒﻨﻰ
+%0 من الوحدات بعيدة عن المبنى
 [%0 units too far from flag]
-%0 ﻣﻦ ﺍﻟﻮﺣﺪﺍﺕ ﺑﻌﻴﺪﺓ ﻋﻦ ﺍﻟﻌﻠﻢ
+%0 من الوحدات بعيدة عن العلم
 [%0 units too far from fruit]
-%0 ﻣﻦ ﺍﻟﻮﺣﺪﺍﺕ ﺑﻌﻴﺪﺓ ﻋﻦ ﺍﻟﻔﺎﻛﻬﺔ
+%0 من الوحدات بعيدة عن الفاكهة
 [%0 units too far from resource]
-%0 ﻣﻦ ﺍﻟﻮﺣﺪﺍﺕ ﺑﻌﻴﺪﺓ ﻋﻦ ﺍﻟﻤﻮﺭﺩ
+%0 من الوحدات بعيدة عن المورد
 [%0 units too low level]
-%0 ﻣﻦ ﺍﻟﻮﺣﺪﺍﺕ ﻣﺴﺘﻮﻳﺎﺗﻬﺎ ﻣﻨﺨﻔﻀﺔ
+%0 من الوحدات مستوياتها منخفضة
 [%0% Uploaded]
 رُفع %0%
 [%0's team unit got converted to your team]
-ﺗﺤﻮﻟﺖ ﻭﺣﺪﺓ ﻣﻦ ﻓﺮﻳﻖ %0 ﺇﻟﻰ ﻓﺮﻳﻘﻚ
+تحولت وحدة من فريق %0 إلى فريقك
 [abreaviation explanation A]
 A: حلفاء
 [abreaviation explanation C]
-C: ﺗُﺮﺳﻞ ﻟﻬﻢ ﺭﺳﺎﺋﻞ ﺍﻟﻤﺤﺎﺩﺛﺎﺕ
+C: تُرسل لهم رسائل المحادثات
 [abreaviation explanation fV]
 fV: إتاحة الرؤية لمباني النُّزل (لاستمالة الوحدات)
 [abreaviation explanation mV]
 mV: إتاحة الرؤية للأسواق (لتبادل الفواكه)
 [abreaviation explanation V]
-V: ﺇﺗﺎﺣﺔ ﺍﻟﺮﺅﻳﺔ ﻟﺠﻤﻴﻊ ﺍﻟﻤﺒﺎﻧﻲ
+V: إتاحة الرؤية لجميع المباني
 [add map]
 أضف خريطة
 [add shortcut]
-ﺃﺿِﻒ ﺍﺧﺘﺼﺎﺭًﺍ
+أضِف اختصارًا
 [AI Descriptions]
 أوصاف الذكاء الاصطناعي
 [AI]
-ﺁﻟﻲ
+آلي
 [ai]
-ﺁﻟﻲ
+آلي
 [AICastor-Description]
 يبني ويدرّب مع ضبط النمو بحسب إمدادات الطعام.
 [AICastor]
@@ -97,9 +97,9 @@ Castor
 [AINicowar]
 Nicowar
 [AINone-Description]
-ﻻ ﺷﻲء - ﻻ ﻳﻔﻌﻞ ﺷﻴﺌًﺎ.
+لا شيء - لا يفعل شيئًا.
 [AINone]
-ﻻ ﺷﻲء
+لا شيء
 [AINumbi-Description]
 خصم متسامح نسبيًا، لكنه يواصل التوسع والهجوم.
 [AINumbi]
@@ -121,127 +121,127 @@ JavaScript
 [AIJavaScript-Description]
 وحدة تحكم تستخدم وحدة مصدر JavaScript مضمّنة.
 [Alga]
-ﻃﺤﺎﻟﺐ
+طحالب
 [algae]
-ﻃﺤﺎﻟﺐ
+طحالب
 [alliances]
-ﺍﻟﺘﺤﺎﻟﻔﺎﺕ
+التحالفات
 [alt %0]
 alt-%0
 [and]
-ﻭ
+و
 [any explorer]
-ﺃﻱ ﻣﺴﺘﻜﺸﻒ
+أي مستكشف
 [are dying hungry]
-ﻳﺘﻀﻮﺭ ﺟﻮﻋًﺎ
+يتضور جوعًا
 [are hungry]
-ﺟﺎﺋﻊ
+جائع
 [are ok]
-ﺟﻴﺪ
+جيد
 [are wonded]
-ﺟﺮﻳﺢ
+جريح
 [armor]
-ﺍﻟﺪﺭﻉ
+الدرع
 [assigned]
-ﻣﻜﻠﻒ
+مكلف
 [At. speed]
-ﺳﺮﻋﺔ ﺍﻟﻬﺠﻮﻡ
+سرعة الهجوم
 [At. strength]
-ﻗﻮﺓ ﺍﻟﻬﺠﻮﻡ
+قوة الهجوم
 [Attack]
-ﺍﻟﻬﺠﻮﻡ
+الهجوم
 [audio]
-ﺍﻟﺼﻮﺕ
+الصوت
 [auto save]
-ﺍﻟﺤﻔﻆ ﺍﻟﺘﻠﻘﺎﺋﻲ
+الحفظ التلقائي
 [available lan games]
 ألعاب الشبكة المحلية المتاحة
 [away:]
 بعيدًا:
 [Back]
-ﻋُﺪ
+عُد
 [backspace]
 backspace
 [barracks explanation 2]
-ﺍﻟﻘﺘﺎﻟﻲ ﻟﻤﺤﺎﺭﺑﻴﻚ
+القتالي لمحاربيك
 [barracks explanation]
-ﺗﻄﻮﺭ ﻣﻦ ﺍﻟﻤﺴﺘﻮﻯ
+تطور من المستوى
 [barracks]
-ﺛﻜﻨﺔ
+ثكنة
 [beach size]
-ﺣﺠﻢ ﺍﻟﺸﺎﻃﺊ
+حجم الشاطئ
 [break]
 break
 [briefing]
-ﺍﻟﻤﻮﺟﺰ
+الموجز
 [build %0 level %1]
-ﺑﻨﺎء %0 ﻟﻠﻤﺴﺘﻮﻯ %1
+بناء %0 للمستوى %1
 [Build]
-ﺍﻟﺒﻨﺎء
+البناء
 [Building Defaults]
-ﺍﻓﺘﺮﺍﺿﻴﺎﺕ ﺍﻟﺒﻨﺎء
+افتراضيات البناء
 [building settings]
-ﺇﻋﺪﺍﺩﺍﺕ ﺍﻟﺒﻨﺎء
+إعدادات البناء
 [building site]
-ﻣﻮﻗﻊ ﺇﻧﺸﺎء
+موقع إنشاء
 [Building Tool Box Explanation]
-ﻣﻔﺘﺎﺡ Shift ﻣﻊ ﺍﻟﺴﺤﺐ = ﺻﻨﺪﻭﻕ
+مفتاح Shift مع السحب = صندوق
 [Building Tool Line Explanation]
-ﻣﻔﺘﺎﺡ Ctrl ﻣﻊ ﺍﻟﺴﺤﺐ = ﺧﻂ
+مفتاح Ctrl مع السحب = خط
 [Buildings]
-ﺍﻟﻤﺒﺎﻧﻲ
+المباني
 [Bullets]
-ﺍﻟﺮﺻﺎﺹ
+الرصاص
 [campaign editor]
-ﻣﺤﺮﺭ ﺍﻟﺤﻤﻼﺕ
+محرر الحملات
 [campaign]
-ﺣﻤﻠﺔ
+حملة
 [Can't connect, can't find host]
-ﺗﻌﺬﺭ ﺍﻻﺗﺼﺎﻝ، ﺗﻌﺬﺭ ﺇﻳﺠﺎﺩ ﻣﻀﻴﻒ
+تعذر الاتصال، تعذر إيجاد مضيف
 [Can't host game, port %0 in use]
-ﺗﻌﺬﺭ ﺍﻟﺘﻀﻴﻴﻒ، ﺍﻟﻤﻨﻔﺬ %0 ﻗﻴﺪ ﺍﻻﺳﺘﺨﺪﺍﻡ
+تعذر التضييف، المنفذ %0 قيد الاستخدام
 [Can't join game, game has started]
-ﺗﻌﺬﺭ ﺍﻻﻧﻀﻤﺎﻡ ﺇﻟﻰ ﺍﻟﻠﻌﺒﺔ، ﺑﺪﺃﺕ ﺍﻟﻠﻌﺒﺔ
+تعذر الانضمام إلى اللعبة، بدأت اللعبة
 [Can't join game, game is full]
-ﺗﻌﺬﺭ ﺍﻻﻧﻀﻤﺎﻡ ﺇﻟﻰ ﺍﻟﻠﻌﺒﺔ، ﺍﻟﻠﻌﺒﺔ ﻣﻤﺘﻠﺌﺔ
+تعذر الانضمام إلى اللعبة، اللعبة ممتلئة
 [cancel destroy]
-ﺃﻟﻎِ ﺍﻟﺘﺤﻄﻴﻢ
+ألغِ التحطيم
 [cancel repair]
-ﺃﻟﻎِ ﺍﻟﺘﺮﻣﻴﻢ
+ألغِ الترميم
 [cancel upgrade]
-ﺃﻟﻎِ ﺍﻟﺘﺮﻗﻴﺔ
+ألغِ الترقية
 [Cancel]
-ﺃﻟﻎِ
+ألغِ
 [caps lock]
 caps lock
 [carry]
-ﻳﺤﻤﻞ:
+يحمل:
 [Change Area Name]
-ﻏﻴِّﺮ ﺍﺳﻢ ﺍﻟﻤﻨﻄﻘﺔ
+غيِّر اسم المنطقة
 [Cherry]
-ﻛﺮﺯ
+كرز
 [choose campaign]
-ﺍﺧﺘﺮ ﺣﻤﻠﺔ
+اختر حملة
 [choose game]
-ﺍﺧﺘﺮ ﻟﻌﺒﺔ
+اختر لعبة
 [choose map]
 اختر خريطة
 [clear area]
-ﻣﻨﻄﻘﺔ ﺗﺼﻔﻴﺔ
+منطقة تصفية
 [farm area]
 منطقة زراعة
 [Clearing:]
-ﻳﺼﻔﻲ:
+يصفي:
 [clearingflag explanation 2]
 
 [clearingflag explanation]
 يزيل الموارد
 [clearingflag]
-ﻋَﻠﻢ ﺍﻟﺘﺼﻔﻴﺔ
+عَلم التصفية
 [closed]
-ﻣﻐﻠﻖ
+مغلق
 [combined vision]
-ﺭﺅﻳﺔ ﻣﺸﺘﺮﻛﺔ
+رؤية مشتركة
 [compile]
 صرّف النص البرمجي
 [compose]
@@ -249,105 +249,105 @@ compose
 [Computing Fertility]
 جارٍ حساب الخصوبة
 [concrete islands terrain]
-ﺟﺰﺭ ﻣﻨﻔﺼﻠﺔ
+جزر منفصلة
 [connect]
-ﺍﺗﺼﻞ
+اتصل
 [connecting to game]
 جارٍ الاتصال باللعبة
 [connecting to]
 جارٍ الاتصال بـ
 [Construction Site Defaults]
-ﺍﻓﺘﺮﺍﺿﻴﺎﺕ ﻣﻮﺍﻗﻊ ﺍﻹﻧﺸﺎء
+افتراضيات مواقع الإنشاء
 [Continue playing]
-ﻭﺍﺻﻞ ﺍﻟﻠﻌﺐ
+واصل اللعب
 [control %0]
 control-%0
 [Corn]
-ﻗﻤﺢ
+قمح
 [crater density]
-ﻋﺪﺩ ﺍﻟﻔﻮﻫﺎﺕ
+عدد الفوهات
 [crater lakes terrain]
-ﺑﺤﻴﺮﺍﺕ ﻓﻮﻫﺎﺕ
+بحيرات فوهات
 [create map]
 أنشئ خريطة
 [credits]
 المساهمون
 [ctrl - line]
-ﻣﻔﺘﺎﺡ Ctrl - ﺧﻂ
+مفتاح Ctrl - خط
 [current speed]
-ﺍﻟﺴﺮﻋﺔ ﺍﻟﺤﺎﻟﻴﺔ
+السرعة الحالية
 [custom game]
-ﻟﻌﺒﺔ ﻣﺨﺼﺼﺔ
+لعبة مخصصة
 [customcur]
 مؤشر مخصص
 [damage]
-ﺍﻟﻀﺮﺭ
+الضرر
 [Damaged Map]
-ﺧﺮﻳﻄﺔ ﺍﻟﺠﺮﺣﻰ
+خريطة الجرحى
 [decrease units working]
-ﻗﻠﻞ ﻋﺪﺩ ﺍﻟﻮﺣﺪﺍﺕ ﺍﻟﻌﺎﻣﻠﺔ
+قلل عدد الوحدات العاملة
 [Defeat Your Oppenents]
-ﺍﻫﺰﻡ ﺧﺼﻮﻣﻚ
+اهزم خصومك
 [defencetower explanation 2]
-ﺍﻟﻤﺒﺎﻧﻲ ﺍﻟﻌﺪﻭﺓ ﺍﻟﻘﺮﻳﺒﺔ
+المباني العدوة القريبة
 [defencetower explanation]
-ﻳﻬﺎﺟﻢ ﺍﻟﻮﺣﺪﺍﺕ ﺃﻭ
+يهاجم الوحدات أو
 [defencetower]
-ﺑﺮﺝ ﺩﻓﺎﻉ
+برج دفاع
 [Defense Map]
 خريطة الدفاع
 [Defense]
-ﺍﻟﺪﻓﺎﻉ
+الدفاع
 [Delete game]
-ﺍﺣﺬﻑ ﺍﻟﻠﻌﺒﺔ ﺍﻟﻤﺨﺘﺎﺭﺓ
+احذف اللعبة المختارة
 [delete]
-ﺍﺣﺬﻑ
+احذف
 [desert]
-ﺻﺤﺮﺍء
+صحراء
 [destroy building]
-ﺣﻄﻢ ﺍﻟﻤﺒﻨﻰ ﺍﻟﻤﺨﺘﺎﺭ
+حطم المبنى المختار
 [destroy]
-ﺣﻄﻢ
+حطم
 [display]
-ﺍﻟﻌﺮﺽ
+العرض
 [do nothing]
-ﻻ ﺗﻔﻌﻞ ﺷﻴﺌًﺎ
+لا تفعل شيئًا
 [don't carry anything]
-ﻻ ﻳﺤﻤﻞ ﺷﻴﺌًﺎ
+لا يحمل شيئًا
 [down]
-ﺃﺳﻔﻞ
+أسفل
 [edit map]
 حرّر الخريطة
 [editing map]
 تحرير الخريطة
 [editor shortcuts]
-ﺍﺧﺘﺼﺎﺭﺍﺕ ﺍﻟﻤﺤﺮﺭ
+اختصارات المحرر
 [editor]
-ﺍﻟﻤﺤﺮﺭ
+المحرر
 [end]
 end
 [enter]
-ﺇﺩﺧﺎﻝ
+إدخال
 [equals]
-ﻳﺴﺎﻭﻱ
+يساوي
 [ERROR_CANT_LOAD_MAP]
-ﺗﻌﺬﺭ ﺗﺤﻤﻴﻞ ﺍﻟﺨﺮﻳﻄﺔ: ﺍﻟﻤﻠﻒ ﺗﺎﻟﻒ ﺃﻭ ﺇﺻﺪﺍﺭﻩ ﻏﻴﺮ ﻣﺘﻮﺍﻓﻖ.
+تعذر تحميل الخريطة: الملف تالف أو إصداره غير متوافق.
 [escape]
 escape
 [explorationflag explanation 2]
 
 [explorationflag explanation]
-ﻳﺠﺬﺏ ﺍﻟﻤﺴﺘﻜﺸﻔﻴﻦ
+يجذب المستكشفين
 [explorationflag]
-ﻋَﻠﻢ ﺍﻻﺳﺘﻜﺸﺎﻑ
+عَلم الاستكشاف
 [Explorer Ratio]
 نسبة المستكشفين
 [Explorer]
-ﻣﺴﺘﻜﺸﻒ
+مستكشف
 [explorers]
 مستكشفين
 [extra islands]
-ﺟُﺰﺭ ﻓﺎﺭﻏﺔ
+جُزر فارغة
 [f10]
 F10
 [f11]
@@ -381,161 +381,161 @@ F9
 [Fertility Map]
 خريطة الخصوبة
 [Flag Defaults]
-ﺍﻓﺘﺮﺍﺿﻴﺎﺕ ﺍﻷﻋﻼﻡ
+افتراضيات الأعلام
 [flag settings explanation]
-ﻧﺼﻒ ﺍﻟﻘﻄﺮ ﺍﻻﻓﺘﺮﺍﺿﻲ ﻟﻠﻌَﻠﻢ
+نصف القطر الافتراضي للعَلم
 [fog of war]
-ﺿﺒﺎﺏ ﺍﻟﺤﺮﺏ
+ضباب الحرب
 [food]
-ﺍﻟﻄﻌﺎﻡ
+الطعام
 [forbidden area]
-ﻣﻨﻄﻘﺔ ﻣﺤﻈﻮﺭﺓ
+منطقة محظورة
 [Free]
-ﺳﻠﻴﻢ
+سليم
 [free]
 متاح
 [from:]
-ﻣﻦ:
+من:
 [fruit]
-ﻓﺎﻛﻬﺔ
+فاكهة
 [fullscreen]
-ﻣﻞء ﺍﻟﺸﺎﺷﺔ
+ملء الشاشة
 [game full]
-ﺍﻟﻠﻌﺒﺔ ﻣﻤﺘﻠﺌﺔ
+اللعبة ممتلئة
 [game shortcuts]
-ﺍﺧﺘﺼﺎﺭﺍﺕ ﺍﻟﻠﻌﺒﺔ
+اختصارات اللعبة
 [Game]
-ﺍﻟﻠﻌﺒﺔ
+اللعبة
 [general settings]
-ﺍﻹﻋﺪﺍﺩﺍﺕ ﺍﻟﻌﺎﻣﺔ
+الإعدادات العامة
 [go to event]
-ﺍﺫﻫﺐ ﺇﻟﻰ ﺍﻟﺤﺪﺙ
+اذهب إلى الحدث
 [go to home]
 اذهب إلى الديار
 [goto main menu]
-ﻋُﺪ ﺇﻟﻰ ﺍﻟﻘﺎﺋﻤﺔ ﺍﻟﺮﺋﻴﺴﻴﺔ
+عُد إلى القائمة الرئيسية
 [grass]
-ﻋﺸﺐ
+عشب
 [ground attack]
-ﺑﻬﺠﻮﻡ ﺃﺭﺿﻲ
+بهجوم أرضي
 [guard area]
-ﻣﻨﻄﻘﺔ ﺣﺮﺍﺳﺔ
+منطقة حراسة
 [GUIMapPreview text 0]
-ﻓﻀﻼً، ﺍﺧﺘﺮ
+فضلاً، اختر
 [GUIMapPreview text 1]
 خريطة
 [handmade map]
 خريطة مصنوعة يدويًا
 [Happyness]
-ﺍﻟﺴﻌﺎﺩﺓ
+السعادة
 [hard pause]
-ﺇﻳﻘﺎﻑ ﻣﺆﻗﺖ ﺗﺎﻡ
+إيقاف مؤقت تام
 [Harvest]
-ﺍﻟﺤﺼﺎﺩ
+الحصاد
 [high priority]
-ﻣﺮﺗﻔﻌﺔ
+مرتفعة
 [hints]
-ﺍﻟﺘﻠﻤﻴﺤﺎﺕ
+التلميحات
 [home]
 home
 [hospital explanation 2]
 
 [hospital explanation]
-ﻳﻌﺎﻟﺞ ﻭﺣﺪﺍﺗﻚ
+يعالج وحداتك
 [hospital]
-ﻣﺴﺘﺸﻔﻰ
+مستشفى
 [host]
-ﺿﻴِّﻒ ﻟﻌﺒﺔ
+ضيِّف لعبة
 [hp]
 الصحة
 [Human]
-ﺇﻧﺴﺎﻥ
+إنسان
 [human]
-ﺇﻧﺴﺎﻥ
+إنسان
 [hungry]
-ﺟﺎﺋﻊ
+جائع
 [hungryness]
-ﺍﻟﺠﻮﻉ
+الجوع
 [In way]
-ﻓﻲ ﺍﻟﻄﺮﻳﻖ
+في الطريق
 [increase units working]
-ﺯِﺩ ﻋﺪﺩ ﺍﻟﻮﺣﺪﺍﺕ ﺍﻟﻌﺎﻣﻠﺔ
+زِد عدد الوحدات العاملة
 [inn explanation 2]
 
 [inn explanation]
-ﻳُﻄﻌﻢ ﻭﺣﺪﺍﺗﻚ
+يُطعم وحداتك
 [inn]
-ﻧُﺰﻝ
+نُزل
 [insert]
 insert
 [inside]
-ﺑﺎﻟﺪﺍﺧﻞ
+بالداخل
 [islands size]
-ﺣﺠﻢ ﺍﻟﺠﺰﻳﺮﺓ
+حجم الجزيرة
 [islands terrain]
-ﺟُﺰﺭ
+جُزر
 [isles terrain]
 جُزيرات
 [iterate selection]
-ﺍﻧﺘﻘﻞ ﺇﻟﻰ ﺍﻟﺘﺤﺪﻳﺪ ﺍﻟﺘﺎﻟﻲ
+انتقل إلى التحديد التالي
 [jobs]
-ﺍﻟﻮﻇﺎﺋﻒ
+الوظائف
 [join a game]
-ﺍﻧﻀﻢ ﺇﻟﻰ ﻟﻌﺒﺔ
+انضم إلى لعبة
 [keyboard settings]
-ﺇﻋﺪﺍﺩﺍﺕ ﻟﻮﺣﺔ ﺍﻟﻤﻔﺎﺗﻴﺢ
+إعدادات لوحة المفاتيح
 [lan]
 لعبة شبكة محلية
 [language incomplete]
-ﺍﻟﻌﺮﺑﻴﺔ - ﻏﻴﺮ ﻣﻜﺘﻤﻠﺔ
+العربية - غير مكتملة
 [language-code]
 ar
 [language-tr]
-ﺍﻟﻠﻐﺔ
+اللغة
 [language]
-ﺍﻟﻌﺮﺑﻴﺔ
+العربية
 [left meta]
 مفتاح ميتا الأيسر
 [left super]
-ﻣﻔﺘﺎﺡ ﻭﻳﻨﺪﻭﺯ ﺍﻷﻳﺴﺮ
+مفتاح ويندوز الأيسر
 [left]
-ﻳﺴﺎﺭ
+يسار
 [level]
-ﺍﻟﻤﺴﺘﻮﻯ
+المستوى
 [levels]
-ﺍﻟﻤﺴﺘﻮﻳﺎﺕ
+المستويات
 [load campaign]
-ﺣﻤِّﻞ ﺣﻤﻠﺔ
+حمِّل حملة
 [load game]
-ﺣﻤِّﻞ ﻟﻌﺒﺔ
+حمِّل لعبة
 [load map]
 حمّل خريطة
 [load replay]
-ﺣﻤِّﻞ ﺇﻋﺎﺩﺓ
+حمِّل إعادة
 [load script]
-ﺣﻤﻞ ﺍﻟﻨﺺ
+حمل النص
 [load]
-ﺣﻤِّﻞ
+حمِّل
 [look around]
-ﺍﻧﻈﺮ ﺣﻮﻟﻚ
+انظر حولك
 [Lost : %0 has more prestige than you]
-ﺧﺴﺮﺕ: ﺣﺼﻞ %0 ﻋﻠﻰ ﻫﻴﺒﺔ ﺃﻛﺜﺮ ﻣﻨﻚ
+خسرت: حصل %0 على هيبة أكثر منك
 [Lost : your colony is dead]
-ﺧﺴﺮﺕ: ﻣﺎﺗﺖ ﻣﺴﺘﻌﻤﺮﺗﻚ
+خسرت: ماتت مستعمرتك
 [low priority]
 منخفضة
 [lowquality]
-ﺟﻮﺩﺓ ﻣﻨﺨﻔﻀﺔ
+جودة منخفضة
 [Magic At. Air]
 ضرر جوي
 [Magic At. Ground]
 ضرر أرضي
 [map description]
-ﺍﻟﻮﺻﻒ
+الوصف
 [Map Discovered]
 الخريطة مكشوفة
 [map name]
-ﺍﻻﺳﻢ
+الاسم
 [map script]
 نص الخريطة
 [map size x]
@@ -545,53 +545,53 @@ ar
 [mark map]
 ضع علامة على الخريطة للحلفاء
 [market explanation 2]
-ﻣﻊ ﺍﻵﺧﺮﻳﻦ
+مع الآخرين
 [market explanation]
-ﻳﺘﻴﺢ ﺗﺒﺎﺩﻝ ﺍﻟﻔﻮﺍﻛﻪ
+يتيح تبادل الفواكه
 [market]
-ﺳﻮﻕ
+سوق
 [medium priority]
 متوسطة
 [meta %0]
 meta-%0
 [Min required level:]
-ﺍﻟﻤﺴﺘﻮﻯ ﺍﻷﺩﻧﻰ ﺍﻟﻤﻄﻠﻮﺏ:
+المستوى الأدنى المطلوب:
 [Minimum Level To Flag]
-ﺃﺩﻧﻰ ﻣﺴﺘﻮﻯ ﻟﻠﻮﺣﺪﺍﺕ
+أدنى مستوى للوحدات
 [Music volume]
-ﻣﺴﺘﻮﻯ ﺍﻟﻤﻮﺳﻴﻘﻰ
+مستوى الموسيقى
 [Mute]
-ﺍﻛﺘﻢ
+اكتم
 [mute]
-ﺍﻛﺘﻢ
+اكتم
 [new campaign]
-ﺣﻤﻠﺔ ﺟﺪﻳﺪﺓ
+حملة جديدة
 [new map]
 خريطة جديدة
 [no fullscreen]
-* ﻻ ﻳﺘﻮﻓﺮ ﻓﻲ ﻃﻮﺭ ﻣﻞء ﺍﻟﺸﺎﺷﺔ
+* لا يتوفر في طور ملء الشاشة
 [No Hints]
-ﻻ ﺗﻮﺟﺪ ﺗﻠﻤﻴﺤﺎﺕ
+لا توجد تلميحات
 [no key]
-ﻻ ﻳﻮﺟﺪ ﻣﻔﺘﺎﺡ ﺑﻌﺪ
+لا يوجد مفتاح بعد
 [No Objectives]
-ﻻ ﺗﻮﺟﺪ ﺃﻫﺪﺍﻑ
+لا توجد أهداف
 [no ressources growth areas]
-ﻣﻨﺎﻃﻖ ﻋﺪﻡ ﺍﻟﻨﻤﻮ
+مناطق عدم النمو
 [No]
-ﻻ
+لا
 [Number Of Buildings]
-ﻋﺪﺩ ﺍﻟﻤﺒﺎﻧﻲ
+عدد المباني
 [number of teams]
-ﻋﺪﺩ ﺍﻟﻔﺮﻕ
+عدد الفرق
 [Number Of Units]
-ﻋﺪﺩ ﺍﻟﻮﺣﺪﺍﺕ
+عدد الوحدات
 [numlock]
-ﻣﻔﺘﺎﺡ NumLock
+مفتاح NumLock
 [objectives]
-ﺍﻷﻫﺪﺍﻑ
+الأهداف
 [of which]
-ﻣﻨﻬﻢ
+منهم
 [ok]
 موافق
 [old islands terrain]
@@ -599,531 +599,531 @@ meta-%0
 [old random terrain]
 الساحل المتشظي
 [on press]
-ﻋﻨﺪ ﺍﻟﻀﻐﻂ
+عند الضغط
 [On the spot]
-ﻫﻨﺎ
+هنا
 [on unpress]
-ﻋﻨﺪ ﺍﻟﺘﺮﻙ
+عند الترك
 [open chat box]
-ﺍﻓﺘﺢ ﺻﻨﺪﻭﻕ ﺍﻟﻤﺤﺎﺩﺛﺔ
+افتح صندوق المحادثة
 [open load menu]
-ﺍﻓﺘﺢ ﻗﺎﺋﻤﺔ ﺍﻟﺘﺤﻤﻴﻞ
+افتح قائمة التحميل
 [open save menu]
-ﺍﻓﺘﺢ ﻗﺎﺋﻤﺔ ﺍﻟﺤﻔﻆ
+افتح قائمة الحفظ
 [open scenario editor]
-ﺍﻓﺘﺢ ﻣﺤﺮﺭ ﺍﻟﺴﻴﻨﺎﺭﻳﻮ
+افتح محرر السيناريو
 [open teams editor]
-ﺍﻓﺘﺢ ﻣﺤﺮﺭ ﺍﻟﻔِﺮَﻕ
+افتح محرر الفِرَق
 [open]
-ﻣﻔﺘﻮﺡ
+مفتوح
 [OpenGL]
 OpenGL
 [Options]
-ﺍﻟﺨﻴﺎﺭﺍﺕ
+الخيارات
 [options]
-ﺍﻟﺨﻴﺎﺭﺍﺕ
+الخيارات
 [Orange]
-ﺑﺮﺗﻘﺎﻝ
+برتقال
 [Other Options]
-ﺧﻴﺎﺭﺍﺕ ﺃﺧﺮﻯ
+خيارات أخرى
 [page down]
-ﻣﻔﺘﺎﺡ PageDown
+مفتاح PageDown
 [page up]
-ﻣﻔﺘﺎﺡ PageUp
+مفتاح PageUp
 [Papyrus]
-ﺑﺮﺩﻱ
+بردي
 [pause game]
 أوقف اللعبة مؤقتًا
 [pause]
-ﻣﻔﺘﺎﺡ Pause
+مفتاح Pause
 [Paused]
-ﺍﻟﻠﻌﺒﺔ ﻣﺘﻮﻗﻔﺔ
+اللعبة متوقفة
 [player name]
-ﺍﺳﻢ ﺍﻟﻼﻋﺐ
+اسم اللاعب
 [players]
-ﺍﻟﻼﻋﺒﻮﻥ
+اللاعبون
 [please wait]
-ﻳُﺮﺟﻰ ﺍﻻﻧﺘﻈﺎﺭ
+يُرجى الانتظار
 [power]
 مفتاح التشغيل
 [press space]
-ﺍﺿﻐﻂ ﺯﺭ ﺍﻟﻤﺴﺎﻓﺔ ﻟﻠﻤﻮﺍﺻﻠﺔ.
+اضغط زر المسافة للمواصلة.
 [Prestige Score]
-ﻧﻘﺎﻁ ﺍﻟﻬﻴﺒﺔ
+نقاط الهيبة
 [Prestige Win Enabled]
-ﺍﻟﻔﻮﺯ ﺑﺎﻟﻬﻴﺒﺔ ﻣﺘﺎﺡ
+الفوز بالهيبة متاح
 [Prestige]
-ﻫﻴﺒﺔ
+هيبة
 [Primary Objectives]
-ﺃﺳﺎﺳﻴﺔ
+أساسية
 [print screen]
 print screen
 [priority]
-ﺍﻷﻭﻟﻮﻳﺔ
+الأولوية
 [Prune]
-ﺑﺮﻗﻮﻕ
+برقوق
 [quit the editor]
-ﺍﺧﺮﺝ ﻣﻦ ﺍﻟﻤﺤﺮﺭ
+اخرج من المحرر
 [quit the game]
-ﺍﺧﺮﺝ ﻣﻦ ﺍﻟﻠﻌﺒﺔ
+اخرج من اللعبة
 [quit the replay]
-ﺍﺧﺮﺝ ﻣﻦ ﺍﻹﻋﺎﺩﺓ
+اخرج من الإعادة
 [quit]
-ﺍﺧﺮﺝ
+اخرج
 [racetrack explanation 2]
-ﺍﻟﻤﺸﻲ ﻟﺪﻯ ﻭﺣﺪﺍﺗﻚ
+المشي لدى وحداتك
 [racetrack explanation]
-ﻳﺰﻳﺪ ﻣﻦ ﺳﺮﻋﺔ
+يزيد من سرعة
 [racetrack]
-ﻣﻴﺪﺍﻥ ﺳﺒﺎﻕ
+ميدان سباق
 [range]
-ﺍﻟﻨﻄﺎﻕ
+النطاق
 [ratios]
-ﺍﻟﻨِﺴَﺐ
+النِسَب
 [remember unit]
-ﺣﻔﻆ ﺃﻋﺪﺍﺩ ﺍﻟﻮﺣﺪﺍﺕ
+حفظ أعداد الوحدات
 [remove map]
 أزل الخريطة
 [remove shortcut]
-ﺃﺯِﻝ ﺍﻻﺧﺘﺼﺎﺭ
+أزِل الاختصار
 [repair building]
-ﺍﺑﺪﺃ ﺃﻭ ﺃﻭﻗﻒ ﺍﻟﺘﺮﻣﻴﻢ
+ابدأ أو أوقف الترميم
 [repair]
-ﺭﻣِّﻢ
+رمِّم
 [repeat area]
-ﻋﺪﺩ ﻣﺮﺍﺕ ﺗﻜﺮﺍﺭ ﻣﻨﻈﺮ ﺍﻷﺭﺽ
+عدد مرات تكرار منظر الأرض
 [replay ended]
-ﺍﻧﺘﻬﺖ ﺍﻹﻋﺎﺩﺓ
+انتهت الإعادة
 [restore default shortcuts]
-ﺍﺳﺘﻌﺪ ﺍﻻﺧﺘﺼﺎﺭﺍﺕ ﺍﻻﻓﺘﺮﺍﺿﻴﺔ ﻟﻠﻮﺣﺔ ﺍﻟﻤﻔﺎﺗﻴﺢ
+استعد الاختصارات الافتراضية للوحة المفاتيح
 [return to editor]
-ﻋُﺪ ﺇﻟﻰ ﺍﻟﻤﺤﺮﺭ
+عُد إلى المحرر
 [return to game]
-ﻋُﺪ ﺇﻟﻰ ﺍﻟﻠﻌﺒﺔ
+عُد إلى اللعبة
 [return to replay]
-ﻋُﺪ ﺇﻟﻰ ﺍﻹﻋﺎﺩﺓ
+عُد إلى الإعادة
 [return]
 إدخال
 [right meta]
 مفتاح ميتا الأيمن
 [right super]
-ﻣﻔﺘﺎﺡ ﻭﻳﻨﺪﻭﺯ ﺍﻷﻳﻤﻦ
+مفتاح ويندوز الأيمن
 [right]
-ﻳﻤﻴﻦ
+يمين
 [river diameter]
-ﻋﺮﺽ ﺍﻟﻨﻬﺮ
+عرض النهر
 [river terrain]
-ﻧﻬﺮ
+نهر
 [sand]
-ﺭﻣﻞ
+رمل
 [save before quit?]
-ﻫﻞ ﺗﻮﺩ ﺍﻟﺤﻔﻆ ﻗﺒﻞ ﺍﻟﺨﺮﻭﺝ؟
+هل تود الحفظ قبل الخروج؟
 [save game]
-ﺍﺣﻔﻆ ﺍﻟﻠﻌﺒﺔ
+احفظ اللعبة
 [save map]
 احفظ الخريطة
 [save replay]
-ﺍﺣﻔﻆ ﺍﻹﻋﺎﺩﺓ
+احفظ الإعادة
 [save script]
-ﺍﺣﻔﻆ ﺍﻟﻨﺺ
+احفظ النص
 [Save]
-ﺍﺣﻔﻆ
+احفظ
 [school explanation 2]
-ﺍﻟﺒﻨﺎء ﻟﺪﻯ ﻋُﻤَّﺎﻟﻚ
+البناء لدى عُمَّالك
 [school explanation]
-ﺗﺰﻳﺪ ﻣﻦ ﻣﺴﺘﻮﻯ
+تزيد من مستوى
 [school]
-ﻣﺪﺭﺳﺔ
+مدرسة
 [Script Areas]
-ﻣﻨﺎﻃﻖ ﻣﺮﺗﺒﻄﺔ ﺑﺎﻟﻨﺺ
+مناطق مرتبطة بالنص
 [scroll lock]
 scroll lock
 [scroll wheel enabled]
-ﻋﺠﻠﺔ ﺍﻟﻔﺄﺭﺓ ﻣﺘﺎﺣﺔ
+عجلة الفأرة متاحة
 [Secondary Objectives]
-ﺛﺎﻧﻮﻳﺔ
+ثانوية
 [seeking a job]
-ﻳﺒﺤﺚ ﻋﻦ ﻭﻇﻴﻔﺔ
+يبحث عن وظيفة
 [seeking]
-ﻳﺒﺤﺚ
+يبحث
 [select barracks building]
-ﺍﺧﺘﺮ ﺍﻟﺜﻜﻨﺔ
+اختر الثكنة
 [select clearingflag]
-ﺍﺧﺘﺮ ﻋَﻠﻢ ﺍﻟﺘﺼﻔﻴﺔ
+اختر عَلم التصفية
 [select construct barracks]
-ﺍﺧﺘﺮ ﺑﻨﺎء ﺍﻟﺜﻜﻨﺔ
+اختر بناء الثكنة
 [select construct defencetower]
-ﺍﺧﺘﺮ ﺑﻨﺎء ﺑﺮﺝ ﺍﻟﺪﻓﺎﻉ
+اختر بناء برج الدفاع
 [select construct hospital]
-ﺍﺧﺘﺮ ﺑﻨﺎء ﺍﻟﻤﺴﺘﺸﻔﻰ
+اختر بناء المستشفى
 [select construct inn]
-ﺍﺧﺘﺮ ﺑﻨﺎء ﺍﻟﻨُﺰﻝ
+اختر بناء النُزل
 [select construct market]
-ﺍﺧﺘﺮ ﺑﻨﺎء ﺍﻟﺴﻮﻕ
+اختر بناء السوق
 [select construct racetrack]
-ﺍﺧﺘﺮ ﺑﻨﺎء ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ
+اختر بناء ميدان السباق
 [select construct school]
-ﺍﺧﺘﺮ ﺑﻨﺎء ﺍﻟﻤﺪﺭﺳﺔ
+اختر بناء المدرسة
 [select construct stonewall]
-ﺍﺧﺘﺮ ﺑﻨﺎء ﺍﻟﺤﺎﺋﻂ ﺍﻟﺤﺠﺮﻱ
+اختر بناء الحائط الحجري
 [select construct swarm]
-ﺍﺧﺘﺮ ﺑﻨﺎء ﺍﻟﻮﻛﺮ
+اختر بناء الوكر
 [select construct swimmingpool]
-ﺍﺧﺘﺮ ﺑﻨﺎء ﺑﺮﻛﺔ ﺍﻟﺴﺒﺎﺣﺔ
+اختر بناء بركة السباحة
 [select delete tool]
-ﺍﺧﺘﺮ ﺃﺩﺍﺓ ﺍﻟﺤﺬﻑ
+اختر أداة الحذف
 [select explorationflag]
-ﺍﺧﺘﺮ ﻋَﻠﻢ ﺍﻻﺳﺘﻜﺸﺎﻑ
+اختر عَلم الاستكشاف
 [select hospital building]
-ﺍﺧﺘﺮ ﺍﻟﻤﺴﺘﺸﻔﻰ
+اختر المستشفى
 [select inn building]
-ﺍﺧﺘﺮ ﺍﻟﻨُﺰﻝ
+اختر النُزل
 [select market building]
-ﺍﺧﺘﺮ ﺍﻟﺴﻮﻕ
+اختر السوق
 [select place clearing area]
-ﺍﺧﺘﺮ ﻭﺿﻊ ﻣﻨﻄﻘﺔ ﺍﻟﺘﺼﻔﻴﺔ
+اختر وضع منطقة التصفية
 [select place farm area]
 اختر وضع منطقة الزراعة
 [select place clearingflag]
-ﺍﺧﺘﺮ ﻭﺿﻊ ﻋﻠﻢ ﺍﻟﺘﺼﻔﻴﺔ
+اختر وضع علم التصفية
 [select place explorationflag]
-ﺍﺧﺘﺮ ﻭﺿﻊ ﻋَﻠﻢ ﺍﻻﺳﺘﻜﺸﺎﻑ
+اختر وضع عَلم الاستكشاف
 [select place forbidden area]
-ﺍﺧﺘﺮ ﻭﺿﻊ ﻣﻨﻄﻘﺔ ﻣﺤﻈﻮﺭﺓ
+اختر وضع منطقة محظورة
 [select place guard area]
-ﺍﺧﺘﺮ ﻭﺿﻊ ﻣﻨﻄﻘﺔ ﺣﺮﺍﺳﺔ
+اختر وضع منطقة حراسة
 [select place warflag]
-ﺍﺧﺘﺮ ﻭﺿﻊ ﻋَﻠﻢ ﺍﻟﺤﺮﺏ
+اختر وضع عَلم الحرب
 [select racetrack building]
-ﺍﺧﺘﺮ ﻣﻴﺪﺍﻥ ﺍﻟﺴﺒﺎﻕ
+اختر ميدان السباق
 [select school building]
-ﺍﺧﺘﺮ ﺍﻟﻤﺪﺭﺳﺔ
+اختر المدرسة
 [select swarm building]
-ﺍﺧﺘﺮ ﺍﻟﻮﻛﺮ
+اختر الوكر
 [select swimmingpool building]
-ﺍﺧﺘﺮ ﺑﺮﻛﺔ ﺍﻟﺴﺒﺎﺣﺔ
+اختر بركة السباحة
 [select tower building]
-ﺍﺧﺘﺮ ﺑﺮﺝ ﺍﻟﺪﻓﺎﻉ
+اختر برج الدفاع
 [select wall building]
-ﺍﺧﺘﺮ ﺍﻟﺤﺎﺋﻂ
+اختر الحائط
 [select warflag]
-ﺍﺧﺘﺮ ﻋَﻠﻢ ﺍﻟﺤﺮﺏ
+اختر عَلم الحرب
 [settings]
-ﺍﻹﻋﺪﺍﺩﺍﺕ
+الإعدادات
 [shift %0]
 shift-%0
 [shortcut explanation enter]
-ﻣﻔﺘﺎﺡ ﺍﻹﺩﺧﺎﻝ: ﺃﺭﺳﻞ ﺭﺳﺎﻟﺔ ﻣﺤﺎﺩﺛﺔ
+مفتاح الإدخال: أرسل رسالة محادثة
 [shortcut explanation v]
 V: اضغط مطولًا للتحدث
 [show areas]
-ﺃﻇﻬﺮ ﺍﻟﻤﻨﺎﻃﻖ
+أظهر المناطق
 [show flags]
-ﺃﻇﻬﺮ ﺍﻷﻋﻼﻡ
+أظهر الأعلام
 [show main menu]
-ﺃﻇﻬﺮ ﺍﻟﻘﺎﺋﻤﺔ ﺍﻟﺮﺋﻴﺴﻴﺔ
+أظهر القائمة الرئيسية
 [skin]
-ﺍﻟﻌﺮﺽ
+العرض
 [smoothing]
-ﺍﻟﺘﻨﻌﻴﻢ
+التنعيم
 [space]
-ﺍﻟﻤﺴﺎﻓﺔ
+المسافة
 [start mission]
-ﺍﺑﺪﺃ ﺍﻟﻤﻬﻤﺔ
+ابدأ المهمة
 [start new campaign]
-ﺍﺑﺪﺃ ﺣﻤﻠﺔ ﺟﺪﻳﺪﺓ
+ابدأ حملة جديدة
 [Start]
-ﺍﺑﺪﺃ
+ابدأ
 [Starving Map]
 خريطة المجاعة
 [starving]
-ﻳﺘﻀﻮﺭ ﺟﻮﻋًﺎ
+يتضور جوعًا
 [Statistics]
-ﺍﻹﺣﺼﺎﺋﻴﺎﺕ
+الإحصائيات
 [Still (i)]
-ﺗﺒﻘﺖ
+تبقت
 [still (w)]
-ﺗﺒﻘﺖ
+تبقت
 [still one unit working]
-ﻣﺎ ﺯﺍﻟﺖ ﻭﺣﺪﺓ ﺗﻌﻤﻞ
+ما زالت وحدة تعمل
 [Still one]
-ﺗﺒﻘﺖ ﻭﺍﺣﺪﺓ
+تبقت واحدة
 [Stone]
-ﺣﺠﺮ
+حجر
 [stone]
-ﺣﺠﺮ
+حجر
 [stonewall explanation 2]
-ﺳﻠﺒﻲ
+سلبي
 [stonewall explanation]
-ﻋﻨﺼﺮ ﺩﻓﺎﻋﻲ
+عنصر دفاعي
 [stonewall]
-ﺣﺎﺋﻂ ﺣﺠﺮﻱ
+حائط حجري
 [svr hostname]
-ﺍﺳﻢ ﺍﻟﻤﻀﻴﻒ
+اسم المضيف
 [swamp terrain]
-ﻣﺴﺘﻨﻘﻊ
+مستنقع
 [swarm explanation 2]
 
 [swarm explanation]
-ﻳﻨﺸﺊ ﻭﺣﺪﺍﺕ ﺟﺪﻳﺪﺓ
+ينشئ وحدات جديدة
 [swarm]
-ﻭﻛﺮ
+وكر
 [Swim]
-ﺍﻟﺴﺒﺎﺣﺔ
+السباحة
 [swimmingpool explanation 2]
-ﺍﻟﺴﺒﺎﺣﺔ ﻟﻮﺣﺪﺍﺗﻚ
+السباحة لوحداتك
 [swimmingpool explanation]
-ﺗﺰﻳﺪ ﻣﻦ ﺳﺮﻋﺔ
+تزيد من سرعة
 [swimmingpool]
-ﺑﺮﻛﺔ ﺳﺒﺎﺣﺔ
+بركة سباحة
 [switch to adding areas]
-ﺑﺪِّﻝ ﺇﻟﻰ ﻭﺿﻊ ﺇﺿﺎﻓﺔ ﺍﻟﻤﻨﺎﻃﻖ
+بدِّل إلى وضع إضافة المناطق
 [switch to area brush 1]
-ﺑﺪِّﻝ ﺇﻟﻰ ﻓﺮﺷﺎﺓ ﺍﻟﻤﻨﺎﻃﻖ ﺭﻗﻢ ١
+بدِّل إلى فرشاة المناطق رقم ١
 [switch to area brush 2]
-ﺑﺪِّﻝ ﺇﻟﻰ ﻓﺮﺷﺎﺓ ﺍﻟﻤﻨﺎﻃﻖ ﺭﻗﻢ ٢
+بدِّل إلى فرشاة المناطق رقم ٢
 [switch to area brush 3]
-ﺑﺪِّﻝ ﺇﻟﻰ ﻓﺮﺷﺎﺓ ﺍﻟﻤﻨﺎﻃﻖ ﺭﻗﻢ ٣
+بدِّل إلى فرشاة المناطق رقم ٣
 [switch to area brush 4]
-ﺑﺪِّﻝ ﺇﻟﻰ ﻓﺮﺷﺎﺓ ﺍﻟﻤﻨﺎﻃﻖ ﺭﻗﻢ ٤
+بدِّل إلى فرشاة المناطق رقم ٤
 [switch to area brush 5]
-ﺑﺪِّﻝ ﺇﻟﻰ ﻓﺮﺷﺎﺓ ﺍﻟﻤﻨﺎﻃﻖ ﺭﻗﻢ ٥
+بدِّل إلى فرشاة المناطق رقم ٥
 [switch to area brush 6]
-ﺑﺪِّﻝ ﺇﻟﻰ ﻓﺮﺷﺎﺓ ﺍﻟﻤﻨﺎﻃﻖ ﺭﻗﻢ ٦
+بدِّل إلى فرشاة المناطق رقم ٦
 [switch to area brush 7]
-ﺑﺪِّﻝ ﺇﻟﻰ ﻓﺮﺷﺎﺓ ﺍﻟﻤﻨﺎﻃﻖ ﺭﻗﻢ ٧
+بدِّل إلى فرشاة المناطق رقم ٧
 [switch to area brush 8]
-ﺑﺪِّﻝ ﺇﻟﻰ ﻓﺮﺷﺎﺓ ﺍﻟﻤﻨﺎﻃﻖ ﺭﻗﻢ ٨
+بدِّل إلى فرشاة المناطق رقم ٨
 [switch to building view]
-ﺑﺪِّﻝ ﺇﻟﻰ ﻣﻨﻈﺮ ﺍﻟﺒﻨﺎء
+بدِّل إلى منظر البناء
 [switch to flag view]
-ﺑﺪِّﻝ ﺇﻟﻰ ﻣﻨﻈﺮ ﺍﻷﻋﻼﻡ
+بدِّل إلى منظر الأعلام
 [switch to removing areas]
-ﺑﺪِّﻝ ﺇﻟﻰ ﻭﺿﻊ ﺇﺯﺍﻟﺔ ﺍﻟﻤﻨﺎﻃﻖ
+بدِّل إلى وضع إزالة المناطق
 [switch to teams view]
-ﺑﺪِّﻝ ﺇﻟﻰ ﻣﻨﻈﺮ ﺍﻟﻔِﺮَﻕ
+بدِّل إلى منظر الفِرَق
 [switch to terrain view]
-ﺑﺪِّﻝ ﺇﻟﻰ ﻣﻨﻈﺮ ﺍﻟﺘﻀﺎﺭﻳﺲ
+بدِّل إلى منظر التضاريس
 [sys req]
 sys req
 [tab]
 tab
 [teams editor]
-ﻣﺤﺮﺭ ﺍﻟﻔِﺮَﻕ
+محرر الفِرَق
 [Teams Fixed]
-ﺍﻟﻔِﺮَﻕ ﻣﺜﺒَّﺘﺔ
+الفِرَق مثبَّتة
 [teams]
- ﻣﻦ ﺍﻟﻔﺮﻕ
+ من الفرق
 [the barracks is finished]
-ﺗﻢ ﺑﻨﺎء ﺛﻜﻨﺔ
+تم بناء ثكنة
 [the barracks is under attack]
-ﺗﺘﻌﺮﺽ ﺛﻜﻨﺔ ﻟﻠﻬﺠﻮﻡ!
+تتعرض ثكنة للهجوم!
 [the building is finished]
-ﺗﻢ ﺍﻟﺒﻨﺎء
+تم البناء
 [the building is under attack]
 يتعرض مبنى للهجوم!
 [the clearingflag is finished]
-ﺗﻢ ﻭﺿﻊ ﻋﻠﻢ ﺍﻟﺘﺼﻔﻴﺔ.
+تم وضع علم التصفية.
 [the clearingflag is under attack]
-ﻳﺘﻌﺮﺽ ﻋﻠﻢ ﺍﻟﺘﺼﻔﻴﺔ ﻟﻠﻬﺠﻮﻡ.
+يتعرض علم التصفية للهجوم.
 [the defencetower is finished]
-ﺗﻢ ﺑﻨﺎء ﺑﺮﺝ ﺩﻓﺎﻉ
+تم بناء برج دفاع
 [the defencetower is under attack]
 يتعرض برج دفاع للهجوم!
 [the explorationflag is finished]
-ﺗﻢ ﻭﺿﻊ ﻋﻠﻢ ﺍﻻﺳﺘﻜﺸﺎﻑ.
+تم وضع علم الاستكشاف.
 [the explorationflag is under attack]
-ﻳﺘﻌﺮﺽ ﻋﻠﻢ ﺍﻻﺳﺘﻜﺸﺎﻑ ﻟﻠﻬﺠﻮﻡ.
+يتعرض علم الاستكشاف للهجوم.
 [The game has not been finished]
-ﻟﻢ ﺗﻨﺘﻪِ ﺍﻟﻠﻌﺒﺔ
+لم تنتهِ اللعبة
 [the games]
-ﺍﻷﻟﻌﺎﺏ
+الألعاب
 [the hospital is finished]
-ﺗﻢ ﺑﻨﺎء ﻣﺴﺘﺸﻔﻰ
+تم بناء مستشفى
 [the hospital is under attack]
-ﻳﺘﻌﺮﺽ ﻣﺴﺘﺸﻔﻰ ﻟﻠﻬﺠﻮﻡ!
+يتعرض مستشفى للهجوم!
 [The host has cancelled the game]
-ﺃﻟﻐﻰ ﺍﻟﻤﻀﻴﻒ ﺍﻟﻠﻌﺒﺔ
+ألغى المضيف اللعبة
 [the inn is finished]
-ﺗﻢ ﺑﻨﺎء ﻧُﺰﻝ
+تم بناء نُزل
 [the inn is under attack]
-ﻳﺘﻌﺮﺽ ﻧُﺰﻝ ﻟﻠﻬﺠﻮﻡ!
+يتعرض نُزل للهجوم!
 [the maps]
-ﺍﻟﺨﺮﺍﺋﻂ
+الخرائط
 [the market is finished]
-ﺗﻢ ﺑﻨﺎء ﺳﻮﻕ
+تم بناء سوق
 [the market is under attack]
-ﻳﺘﻌﺮﺽ ﺳﻮﻕ ﻟﻠﻬﺠﻮﻡ!
+يتعرض سوق للهجوم!
 [the racetrack is finished]
-ﺗﻢ ﺑﻨﺎء ﻣﻴﺪﺍﻥ ﺳﺒﺎﻕ
+تم بناء ميدان سباق
 [the racetrack is under attack]
-ﻳﺘﻌﺮﺽ ﻣﻴﺪﺍﻥ ﺳﺒﺎﻕ ﻟﻠﻬﺠﻮﻡ!
+يتعرض ميدان سباق للهجوم!
 [the replays]
-ﺍﻹﻋﺎﺩﺍﺕ
+الإعادات
 [the school is finished]
-ﺗﻢ ﺑﻨﺎء ﻣﺪﺭﺳﺔ
+تم بناء مدرسة
 [the school is under attack]
-ﺗﺘﻌﺮﺽ ﻣﺪﺭﺳﺔ ﻟﻠﻬﺠﻮﻡ!
+تتعرض مدرسة للهجوم!
 [the stonewall is finished]
-ﺗﻢ ﺑﻨﺎء ﺟﺰء ﻣﻦ ﺣﺎﺋﻂ
+تم بناء جزء من حائط
 [the stonewall is under attack]
-ﺍﻟﻌﺪﻭ ﻳﻬﺎﺟﻢ ﺃﺳﻮﺍﺭﻙ!
+العدو يهاجم أسوارك!
 [the swarm is finished]
-ﺗﻢ ﺑﻨﺎء ﻭﻛﺮ
+تم بناء وكر
 [the swarm is under attack]
-ﻳﺘﻌﺮﺽ ﺍﻟﻮﻛﺮ ﻟﻠﻬﺠﻮﻡ!
+يتعرض الوكر للهجوم!
 [the swimmingpool is finished]
-ﺗﻢ ﺑﻨﺎء ﺑﺮﻛﺔ ﺳﺒﺎﺣﺔ
+تم بناء بركة سباحة
 [the swimmingpool is under attack]
-ﺗﺘﻌﺮﺽ ﺑﺮﻛﺔ ﺳﺒﺎﺣﺔ ﻟﻠﻬﺠﻮﻡ!
+تتعرض بركة سباحة للهجوم!
 [the warflag is finished]
-ﺗﻢ ﻭﺿﻊ ﻋﻠﻢ ﺍﻟﺤﺮﺏ.
+تم وضع علم الحرب.
 [the warflag is under attack]
-ﻳﺘﻌﺮﺽ ﻋﻠﻢ ﺍﻟﺤﺮﺏ ﻟﻠﻬﺠﻮﻡ.
+يتعرض علم الحرب للهجوم.
 [time]
-ﺍﻟﻮﻗﺖ
+الوقت
 [to:]
-ﺇﻟﻰ:
+إلى:
 [toggle draw accessibility aids]
-ﺇﻇﻬﺎﺭ ﺃﺭﻗﺎﻡ ﺍﻟﻔﺮﻕ ﺃﻭ ﺇﺧﻔﺎﺅﻫﺎ
+إظهار أرقام الفرق أو إخفاؤها
 [toggle draw information]
-ﺑﺪِّﻝ ﻭﺿﻊ ﺍﻟﻤﻌﻠﻮﻣﺎﺕ
+بدِّل وضع المعلومات
 [toggle draw unit paths]
-ﺑﺪِّﻝ ﻭﺿﻊ ﻣﺴﺎﺭﺍﺕ ﺍﻟﻮﺣﺪﺍﺕ
+بدِّل وضع مسارات الوحدات
 [toggle menu screen]
-ﺑﺪِّﻝ ﻋﺮﺽ ﺷﺎﺷﺔ ﺍﻟﻘﺎﺋﻤﺔ
+بدِّل عرض شاشة القائمة
 [toggle recording voice]
 ابدأ تسجيل الصوت أو أوقفه
 [Total Attack Power]
-ﻣﺠﻤﻮﻉ ﻗﻮﺓ ﺍﻟﻬﺠﻮﻡ
+مجموع قوة الهجوم
 [Total Defence Power]
-ﻣﺠﻤﻮﻉ ﻗﻮﺓ ﺍﻟﺪﻓﺎﻉ
+مجموع قوة الدفاع
 [Total Hitpoints]
 مجموع نقاط الصحة
 [Total prestige reached]
-ﻣﺠﻤﻮﻉ ﺍﻟﻬﻴﺒﺔ ﺍﻟﻤﺒﻠﻮﻏﺔ
+مجموع الهيبة المبلوغة
 [Total]
-ﺍﻟﻤﺠﻤﻮﻉ
+المجموع
 [tutorial text 1]
 مرحبًا بك في التدريب الأساسي للعبة Globulation 2! سيغطي هذا التدريب كل شيء بدءًا من بناء النُزل واستكشاف المناطق، وحتى تدمير الأعداء! لا نقص في المعلومات المفيدة هنا!
 [tutorial text 2]
-ﺍﻵﻥ، ﻭﺑﻌﺪ ﺃﻥ ﺃﺩﺭﻛﺖ ﺍﻷﺳﺎﺳﻴﺎﺕ، ﺣﺎﻥ ﻭﻗﺖ ﺑﻨﺎء ﺃﺷﻴﺎء ﺃﺧﺮﻯ، ﻛﻤﻴﺎﺩﻳﻦ ﺍﻟﺴﺒﺎﻕ، ﻭﺑﺮﻙ ﺍﻟﺴﺒﺎﺣﺔ، ﻭﺍﻟﻤﺪﺍﺭﺱ.
+الآن، وبعد أن أدركت الأساسيات، حان وقت بناء أشياء أخرى، كميادين السباق، وبرك السباحة، والمدارس.
 [tutorial text 3]
-ﺃﺣﺴﻨﺖ ﺻﻨﻌًﺎ ﺣﺘﻰ ﻭﺻﻠﺖ ﺇﻟﻰ ﻫﻨﺎ. ﺍﻵﻥ ﺳﻨﺘﺠﻪ ﺇﻟﻰ ﺍﻟﻤﺤﺎﺭﺑﻴﻦ، ﻭﺍﻟﺜﻜﻨﺎﺕ، ﻭﺍﻟﺘﺮﻗﻴﺎﺕ.
+أحسنت صنعًا حتى وصلت إلى هنا. الآن سنتجه إلى المحاربين، والثكنات، والترقيات.
 [tutorial text 4]
 لقد شارفنا على الانتهاء. لم يتبقَّ سوى الأعلام والهجوم. بعد ذلك ستعرف ما يكفي لتجربة الألعاب المخصصة، ثم اللعب عبر الإنترنت ضد بعض أفضل لاعبي Globulation 2.
 [tutorial]
-ﺍﻟﺘﺪﺭﻳﺐ
+التدريب
 [Uncontrolled]
-ﺑﻼ ﺗﺤﻜﻢ
+بلا تحكم
 [undo]
-ﺗﺮﺍﺟﻊ
+تراجع
 [uniform terrain]
 تضاريس موحدة
 [Unit editor]
-ﻣﺤﺮﺭ ﺍﻟﻮﺣﺪﺍﺕ
+محرر الوحدات
 [unit settings explanation]
-ﺍﻟﻌﺪﺩ ﺍﻻﻓﺘﺮﺍﺿﻲ ﻟﻠﻮﺣﺪﺍﺕ ﺍﻟﻤﻜﻠﻔﺔ
+العدد الافتراضي للوحدات المكلفة
 [units working]
- ﻣﻦ ﺍﻟﻮﺣﺪﺍﺕ ﺗﻌﻤﻞ
+ من الوحدات تعمل
 [Units]
 الوحدات
 [unlocked at start]
-ﻣﻔﺘﻮﺣﺔ ﻓﻲ ﺍﻟﺒﺪﺍﻳﺔ
+مفتوحة في البداية
 [unlocked by]
-ﺗُﻔﺘﺢ ﺑﻌﺪ ﺇﻧﻬﺎء
+تُفتح بعد إنهاء
 [Unnamed Area]
-{ﻣﻨﻄﻘﺔ ﻏﻴﺮ ﻣﺴﻤﺎﺓ}
+{منطقة غير مسماة}
 [up]
-ﺃﻋﻠﻰ
+أعلى
 [upgrade building]
-ﺍﺑﺪﺃ ﺃﻭ ﺃﻭﻗﻒ ﺗﺮﻗﻴﺔ ﺍﻟﻤﺒﻨﻰ
+ابدأ أو أوقف ترقية المبنى
 [Upgrade Defaults]
-ﺍﻓﺘﺮﺍﺿﻴﺎﺕ ﺍﻟﺘﺮﻗﻴﺔ
+افتراضيات الترقية
 [upgrade]
-ﺭﻕِّ
+رقِّ
 [username]
-ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ
+اسم المستخدم
 [Version]
 الإصدار
 [view history]
-ﻋﺮﺽ ﺍﻟﺴﺠﻞ
+عرض السجل
 [Voice volume]
 مستوى صوت الكلام
 [waiting for %0]
-ﺑﺎﻧﺘﻈﺎﺭ %0
+بانتظار %0
 [waiting for key]
-ﺑﺎﻧﺘﻈﺎﺭ ﺍﻟﻤﻔﺘﺎﺡ ...
+بانتظار المفتاح ...
 [Walk]
-ﺍﻟﻤﺸﻲ
+المشي
 [warflag explanation 2]
 
 [warflag explanation]
-ﻳﺠﺬﺏ ﺍﻟﻤﺤﺎﺭﺑﻴﻦ
+يجذب المحاربين
 [warflag]
-ﻋَﻠﻢ ﺍﻟﺤﺮﺏ
+عَلم الحرب
 [Warning, you need to reboot the game for changes to take effect]
 تنبيه: يجب إعادة تشغيل اللعبة لتطبيق التغييرات
 [Warrior Ratio]
 نسبة المحاربين
 [Warrior]
-ﻣﺤﺎﺭﺏ
+محارب
 [warriors]
 محاربين
 [watch again]
-ﺷﺎﻫﺪ ﻣﺠﺪﺩًﺍ
+شاهد مجددًا
 [watching:]
-ﺃﻧﺖ ﺗﺸﺎﻫﺪ:
+أنت تشاهد:
 [water]
-ﻣﺎء
+ماء
 [Wheat]
-ﻗﻤﺢ
+قمح
 [Won : you defeated your opponents]
-ﻓُﺰﺕ: ﻟﻘﺪ ﻏﻠﺒﺖ ﺧﺼﻮﻣﻚ
+فُزت: لقد غلبت خصومك
 [Won : you have the most prestige]
-ﻓُﺰﺕ: ﻟﻘﺪ ﺣﺼﻠﺖ ﻋﻠﻰ ﺃﻋﻠﻰ ﻫﻴﺒﺔ
+فُزت: لقد حصلت على أعلى هيبة
 [Won : your ally %0 has the most prestige]
 فُزت: حصل حليفك %0 على أعلى هيبة
 [Wood]
-ﺧﺸﺐ
+خشب
 [wood]
-ﺧﺸﺐ
+خشب
 [Worker Ratio]
 نسبة العمال
 [Worker]
-ﻋﺎﻣﻞ
+عامل
 [workers]
 عمال
 [working]
-ﺍﻟﻌﺎﻣﻠﻮﻥ
+العاملون
 [wounded]
-ﺟﺮﻳﺢ
+جريح
 [Yes]
-ﻧﻌﻢ
+نعم
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 رفض خادم YOG الاتصال لأن نسخة Globulation 2 لديك قديمة. يُرجى الحصول على أحدث إصدار من www.globulation2.org للعب عبر الإنترنت.
 [you have lost]
-ﻟﻘﺪ ﺧﺴﺮﺕ!
+لقد خسرت!
 [you have won]
-ﻟﻘﺪ ﻓُﺰﺕ!
+لقد فُزت!
 [You where kicked from the game]
-ﻟﻘﺪ ﻃُﺮﺩﺕ ﻣﻦ ﺍﻟﻠﻌﺒﺔ
+لقد طُردت من اللعبة
 [Your %0 are under attack]
-ﻳﺘﻌﺮﺽ %0 ﻟﻠﻬﺠﻮﻡ!
+يتعرض %0 للهجوم!
 [Your unit got converted to %0's team]
-ﺗﺤﻮﻟﺖ ﻭﺣﺪﺗﻚ ﺇﻟﻰ ﻓﺮﻳﻖ %0
+تحولت وحدتك إلى فريق %0
 [game speed]
-ﺳﺮﻋﺔ ﺍﻟﻠﻌﺒﺔ
+سرعة اللعبة
 [decrease game speed]
 اخفض سرعة اللعبة
 [increase game speed]
 زِد سرعة اللعبة
 [maximum game speed]
-ﺍﻟﻘﺼﻮﻯ
+القصوى
 [multiplayer game speed]
-ﺍﻟﺴﺮﻋﺔ: 1x (ﻟﻌﺐ ﺟﻤﺎﻋﻲ)
+السرعة: 1x (لعب جماعي)
 [game speed help]
-ﻟﻠﻌﺐ ﺍﻟﻔﺮﺩﻱ ﻭﺍﻹﻋﺎﺩﺍﺕ ﻓﻘﻂ. ﻳﻌﻤﻞ ﺍﻟﻠﻌﺐ ﺍﻟﺠﻤﺎﻋﻲ ﺑﺴﺮﻋﺔ 1x.
+للعب الفردي والإعادات فقط. يعمل اللعب الجماعي بسرعة 1x.
 [AICortex-Description]
 يجمع موجات من المحاربين ويدعمها بالطعام والعلاج.
 [AIMaxima-Description]
@@ -1131,13 +1131,13 @@ tab
 [AIMaxima]
 Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
-ﺗﻌﺬﺭ ﺣﻔﻆ ﺍﻟﺤﻤﻠﺔ. ﺗﺤﻘﻖ ﻣﻦ ﻭﺟﻮﺩ ﺍﻟﻤﺠﻠﺪ ﺍﻟﻮﺟﻬﺔ ﻭﺇﻣﻜﺎﻧﻴﺔ ﺍﻟﻜﺘﺎﺑﺔ ﻓﻴﻪ ﻭﺗﻮﻓﺮ ﻣﺴﺎﺣﺔ ﺧﺎﻟﻴﺔ.
+تعذر حفظ الحملة. تحقق من وجود المجلد الوجهة وإمكانية الكتابة فيه وتوفر مساحة خالية.
 [AICortex]
 Cortex
 [Units still inside: %0]
-ﺑﺎﻟﺪﺍﺧﻞ: %0
+بالداخل: %0
 [Units still working: %0]
-ﻭﺣﺪﺍﺕ ﻻ ﺗﺰﺍﻝ ﺗﻌﻤﻞ: %0
+وحدات لا تزال تعمل: %0
 [2 vs 2]
 2 ضد 2
 [AI strategy & counterplay]
@@ -1175,7 +1175,7 @@ Cortex
 [AICabino-Summary]
 ينسق نمو المستعمرة والهجمات المدرّبة، مستهدفًا العلاج والغذاء أولًا.
 [Algae]
-ﻃﺤﺎﻟﺐ
+طحالب
 [Beach size]
 حجم الشاطئ
 [Blue]
@@ -1313,7 +1313,7 @@ Cortex
 [Resources]
 الموارد
 [River]
-ﻧﻬﺮ
+نهر
 [River width]
 عرض النهر
 [Sand weight]
@@ -1333,7 +1333,7 @@ Cortex
 [Starting workers: Game Rules tab.]
 عمال البداية: تبويب قواعد اللعبة.
 [Swamp]
-ﻣﺴﺘﻨﻘﻊ
+مستنقع
 [Team]
 فريق
 [Terrain]
@@ -1475,7 +1475,7 @@ Cortex
 [settings Add key to sequence]
 أضف مفتاحًا إلى التسلسل
 [settings Add shortcut]
-ﺃﺿِﻒ ﺍﺧﺘﺼﺎﺭًﺍ
+أضِف اختصارًا
 [settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
 اضبط الوحدات المكلفة بعجلة الفأرة. عند تعطيله، اضغط Ctrl مطولًا. يضبط Shift نصف قطر العلم. يتحكم أيضًا في العجلة في القوائم الأخرى.
 [settings Adjust music and voice volume.]
@@ -1487,7 +1487,7 @@ Cortex
 [settings Artwork & effects]
 الرسومات والمؤثرات
 [settings Audio]
-ﺍﻟﺼﻮﺕ
+الصوت
 [settings Bind Escape]
 تعيين مفتاح Escape
 [settings Building]
@@ -1495,7 +1495,7 @@ Cortex
 [settings Building defaults]
 الإعدادات الافتراضية للمباني
 [settings Cancel]
-ﺃﻟﻎِ
+ألغِ
 [settings Changes saved automatically]
 تُحفظ التغييرات تلقائيًا
 [settings Changes you make during play update these defaults for future games.]
@@ -1523,7 +1523,7 @@ Cortex
 [settings Default]
 الافتراضي
 [settings Display]
-ﺍﻟﻌﺮﺽ
+العرض
 [settings Display & graphics]
 العرض والرسومات
 [settings Display the Globulation 2 cursor.]
@@ -1539,11 +1539,11 @@ Cortex
 [settings Full]
 التفاصيل الكاملة
 [settings Fullscreen]
-ﻣﻞء ﺍﻟﺸﺎﺷﺔ
+ملء الشاشة
 [settings Game]
-ﺍﻟﻠﻌﺒﺔ
+اللعبة
 [settings Game speed]
-ﺳﺮﻋﺔ ﺍﻟﻠﻌﺒﺔ
+سرعة اللعبة
 [settings Gameplay]
 اللعب
 [settings Graphics detail]
@@ -1563,13 +1563,13 @@ Cortex
 [settings Keys form a sequence in order. Each key can trigger on press or release.]
 تشكّل المفاتيح تسلسلاً حسب ترتيبها. يمكن تفعيل كل خطوة عند الضغط على مفتاحها أو إفلاته.
 [settings Language]
-ﺍﻟﻠﻐﺔ
+اللغة
 [settings Language & player]
 اللغة واللاعب
 [settings Language used throughout the interface.]
 اللغة المستخدمة في جميع أنحاء الواجهة.
 [settings Level]
-ﺍﻟﻤﺴﺘﻮﻯ
+المستوى
 [settings Map editor]
 محرر الخرائط
 [settings Match the desktop]
@@ -1577,7 +1577,7 @@ Cortex
 [settings Missing font]
 الخط مفقود
 [settings Music volume]
-ﻣﺴﺘﻮﻯ ﺍﻟﻤﻮﺳﻴﻘﻰ
+مستوى الموسيقى
 [settings Mute audio]
 كتم الصوت
 [settings Name shown to other players.]
@@ -1589,7 +1589,7 @@ Cortex
 [settings OpenGL is not available in this build.]
 OpenGL غير متوفر في هذا الإصدار.
 [settings Player name]
-ﺍﺳﻢ ﺍﻟﻼﻋﺐ
+اسم اللاعب
 [settings Press]
 ضغط المفتاح
 [settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
@@ -1607,7 +1607,7 @@ OpenGL غير متوفر في هذا الإصدار.
 [settings Remove key]
 أزل المفتاح
 [settings Remove shortcut]
-ﺃﺯِﻝ ﺍﻻﺧﺘﺼﺎﺭ
+أزِل الاختصار
 [settings Renderer]
 عارض الرسومات
 [settings Replace conflicting bindings]
@@ -1617,7 +1617,7 @@ OpenGL غير متوفر في هذا الإصدار.
 [settings Resolution]
 دقة الشاشة
 [settings Restore default shortcuts]
-ﺍﺳﺘﻌﺪ ﺍﻻﺧﺘﺼﺎﺭﺍﺕ ﺍﻻﻓﺘﺮﺍﺿﻴﺔ ﻟﻠﻮﺣﺔ ﺍﻟﻤﻔﺎﺗﻴﺢ
+استعد الاختصارات الافتراضية للوحة المفاتيح
 [settings Retry]
 أعد المحاولة
 [settings Revert]
@@ -1631,15 +1631,15 @@ OpenGL غير متوفر في هذا الإصدار.
 [settings Saving…]
 جارٍ الحفظ…
 [settings Scroll wheel enabled]
-ﻋﺠﻠﺔ ﺍﻟﻔﺄﺭﺓ ﻣﺘﺎﺣﺔ
+عجلة الفأرة متاحة
 [settings Set starting unit assignments by building type and level.]
 حدد عدد الوحدات المخصصة في البداية حسب نوع المبنى ومستواه.
 [settings Set your language and player name.]
 اضبط لغتك واسم اللاعب.
 [settings Settings]
-ﺍﻹﻋﺪﺍﺩﺍﺕ
+الإعدادات
 [settings Single-player and replays only. Multiplayer runs at 1x.]
-ﻟﻠﻌﺐ ﺍﻟﻔﺮﺩﻱ ﻭﺍﻹﻋﺎﺩﺍﺕ ﻓﻘﻂ. ﻳﻌﻤﻞ ﺍﻟﻠﻌﺐ ﺍﻟﺠﻤﺎﻋﻲ ﺑﺴﺮﻋﺔ 1x.
+للعب الفردي والإعادات فقط. يعمل اللعب الجماعي بسرعة 1x.
 [settings Software]
 تصيير برمجي
 [settings Starting unit counts and radius for newly placed flags.]
@@ -1685,7 +1685,7 @@ OpenGL غير متوفر في هذا الإصدار.
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 إظهار نظرة عامة للخريطة على سطح طارة تلقائيًا أثناء التنقل في الخريطة (OpenGL).
 [settings Autosave]
-ﺍﻟﺤﻔﻆ ﺍﻟﺘﻠﻘﺎﺋﻲ
+الحفظ التلقائي
 [settings Save the game automatically about every 10 seconds.]
 حفظ اللعبة تلقائيًا كل 10 ثوانٍ تقريبًا.
 [Channel width]
@@ -3041,7 +3041,7 @@ OpenGL غير متوفر في هذا الإصدار.
 [Speed]
 السرعة
 [Objectives]
-ﺍﻷﻫﺪﺍﻑ
+الأهداف
 [Menu]
 القائمة
 [Goals]
@@ -3055,7 +3055,7 @@ OpenGL غير متوفر في هذا الإصدار.
 [Generating...]
 جارٍ التوليد...
 [Players]
-ﺍﻟﻼﻋﺒﻮﻥ
+اللاعبون
 [Rules]
 القواعد
 [settings Interface layout]
@@ -3085,9 +3085,9 @@ OpenGL غير متوفر في هذا الإصدار.
 [Choose who controls this colony]
 اختر من يتحكم في هذه المستعمرة
 [Settings]
-ﺍﻹﻋﺪﺍﺩﺍﺕ
+الإعدادات
 [settings Back]
-ﻋُﺪ
+عُد
 [settings Save the game automatically about every minute.]
 حفظ اللعبة تلقائيًا كل دقيقة تقريبًا.
 [AI opponents]
@@ -3150,6 +3150,8 @@ OpenGL غير متوفر في هذا الإصدار.
 الفريق %0
 [Your colony]
 مستعمرتك
+[Practice colony]
+مستعمرة التدريب
 [%0 / %1 HP · %2]
 %0 / %1 صحة · %2
 [Units: %0]
@@ -3355,7 +3357,7 @@ OpenGL غير متوفر في هذا الإصدار.
 [settings %0 · %1 Units]
 %0 · الوحدات: %1
 [settings Level %0]
-ﺍﻟﻤﺴﺘﻮﻯ %0
+المستوى %0
 [settings Match the desktop %0]
 مطابقة سطح المكتب (%0)
 [settings Current display %0 %1 %2 %3]
@@ -3369,7 +3371,7 @@ OpenGL غير متوفر في هذا الإصدار.
 [%0 · Contribution: %1]
 %0 · المساهمة: %1
 [Min required level %0]
-ﺍﻟﻤﺴﺘﻮﻯ ﺍﻷﺩﻧﻰ ﺍﻟﻤﻄﻠﻮﺏ: %0
+المستوى الأدنى المطلوب: %0
 [Confirm %0]
 موافق: %0
 [%0 %1]
@@ -6396,6 +6398,26 @@ Globulation 2 على Discord
 حذف التسجيل
 [recording refresh]
 تحديث
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library Fit]
 ملاءمة
 [library GL only]
@@ -6615,7 +6637,7 @@ GL فقط
 [intro instruction build]
 افتح البناء وضع نُزلاً قرب القمح. عيّن عمالاً متاحين لبنائه. أبقِ النُزل الموجود مزوّداً بالإمدادات.
 [intro instruction supply]
-حدد النُزل الجديد المكتمل وعيّن له مموّناً واحداً على الأقل. انتظر حتى يوصل عامل القمح.
+حدد النُزل الجديد المكتمل. فهو يطلب المموّنين من تلقاء نفسه؛ تحقق من عدد عماله المطلوب وانتظر حتى يوصل عامل القمح.
 [intro instruction grow]
 حدد الوكر. اضبط عدد العمال المطلوب على 2 على الأقل، ونسب الإنتاج على العمال فقط. أبقِ النُزلين مزوّدين بالإمدادات أثناء ولادة عامل جديد.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ GL فقط
 [intro help build]
 يستهلك البناء خشباً يوصله العمال. اختر النُزل من لوحة المباني، وضعه على أرض خالية قرب القمح، واطلب عاملَي بناء. العدد المطلوب طلب للعمال وليس عدد الموجودين بالفعل. أبقِ مموّنين عند النُزل الموجود والوكر. يصلح أي موضع صالح للبناء.
 [intro help supply]
-للبناء والإمداد اليومي عددان منفصلان من العمال المطلوبين. حدد النُزل المكتمل وزد عدد عمال تشغيله. يجمع المموّن القمح ويحمله إلى هنا. تأكل الكريات الجائعة في النُزل؛ ومن دون مموّنين ينفد مخزونها في النهاية. أبقِ طريق القمح مفتوحاً.
+للبناء والإمداد اليومي عددان منفصلان من العمال المطلوبين. يطلب النُزل المكتمل المموّنين تلقائياً؛ زد عدد عمال تشغيله إذا وصل القمح ببطء شديد. يجمع المموّن القمح ويحمله إلى هنا. تأكل الكريات الجائعة في النُزل؛ ومن دون مموّنين ينفد مخزونها في النهاية. أبقِ طريق القمح مفتوحاً.
 [intro help grow]
 يستهلك الوكر القمح لإنتاج الوحدات. اضبط إنتاج العمال على 1 وإنتاج المستكشفين والمحاربين على 0. زد عدد عمال الوكر المطلوب إلى 2 أو أكثر. يوصل المموّنون الإضافيون القمح أسرع، لكنهم يتنافسون مع المهام الأخرى. حافظ على إمداد النُزلين.
 [intro help attack]
@@ -6635,7 +6657,7 @@ GL فقط
 [intro hint scout]
 يحتاج مستكشفك إلى عَلم استكشاف يطلب وحدات عند الحجارة الشرقية. تحقق من وجهته وعدد المستكشفين المطلوب.
 [intro hint build]
-إذا أزلت النُزل الجديد، فابنِ آخر. وإلا فتحقق من موقع البناء وعدد عماله المطلوب. قد تشغل مهام الإمداد الحالية العمال؛ حافظ على الطعام مع إتاحة عمال للبناء.
+لم يكتمل النُزل الجديد بعد. إذا لم يكن هناك موقع بناء، فضع نُزلاً قرب القمح. وإلا فحدد الموقع وتحقق من عدد عماله المطلوب: قد تُبقي مهام الإمداد في أماكن أخرى عمالك مشغولين.
 [intro hint supply]
 حدد النُزل الجديد المكتمل. تحقق من عدد عماله المطلوب وراقب وصول القمح. قد يحتاج العمال إلى وقت للتنقل أو الأكل.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ GL فقط
 [intro help touch build]
 اختر النُزل من البناء. ضعه على أرض خالية قرب القمح وأكّد. حدد الموقع واطلب عاملَي بناء. العدد المطلوب ليس عدد العمال الموجودين بالفعل. حافظ على إمداد النُزل الموجود والوكر. يصلح أي موضع صالح للبناء.
 [intro help touch supply]
-حدد النُزل الجديد المكتمل وزد عدد العمال المطلوب. للبناء والإمداد اليومي عددان منفصلان. يجمع المموّن القمح ويحمله إلى هنا. تأكل الكريات الجائعة في النُزل؛ ومن دون مموّنين ينفد المخزون. أبقِ القمح متاحاً.
+حدد النُزل الجديد المكتمل وتحقق من عدد العمال المطلوب؛ فهو يطلب المموّنين من تلقاء نفسه. للبناء والإمداد اليومي عددان منفصلان. يجمع المموّن القمح ويحمله إلى هنا. تأكل الكريات الجائعة في النُزل؛ ومن دون مموّنين ينفد المخزون. أبقِ القمح متاحاً.
 [intro help touch grow]
 حدد الوكر. اضبط إنتاج العمال على 1 وإنتاج المستكشفين والمحاربين على 0. زد عدد العمال المطلوب إلى 2 أو أكثر. يجلب المموّنون القمح للوحدات الجديدة، لكنهم يتنافسون مع المهام الأخرى. حافظ على إمداد النُزلين.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ GL فقط
 [intro compact build]
 البناء → نُزل. ضعه قرب القمح؛ عيّن عاملَي بناء.
 [intro compact supply]
-حدد النُزل الجديد؛ عيّن مموّناً واحداً على الأقل. انتظر القمح.
+حدد النُزل الجديد؛ تحقق من مموّنيه. انتظر القمح.
 [intro compact grow]
 حدد الوكر؛ عيّن مموّنين اثنين. أنتج العمال فقط.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ GL فقط
 [lesson schools complete]
 حسّنت مدرستك مهارات العمال. يتيح البنّاؤون المهرة الترقيات؛ ويساعد الحصاد الأفضل على دعم اقتصاد متوسّع.
 [lesson schools build hint]
-ابنِ مدرسة في الفسحة؛ عيّن عمال بناء. لدى المستعمرة سبّاحون لجمع الطحالب بالفعل. اترك الوصول إلى الخشب والماء مفتوحاً. توفر أشجار الفاكهة موارد الهيبة؛ ويظل القمح مصدر الطعام.
+لا توجد مدرسة مكتملة بعد. تحقق من أن موقعها يطلب عمال بناء وأنهم يستطيعون الوصول إلى الخشب والبركة.
 [lesson schools build title]
 بناء مدرسة
 [lesson schools build instruction]
 ابنِ مدرسة في الفسحة؛ عيّن عمال بناء.
 [lesson schools build help]
-لدى المستعمرة سبّاحون لجمع الطحالب بالفعل. اترك الوصول إلى الخشب والماء مفتوحاً. توفر أشجار الفاكهة موارد الهيبة؛ ويظل القمح مصدر الطعام.
+لدى المستعمرة سبّاحون لجمع الطحالب بالفعل. اترك الوصول إلى الخشب والماء مفتوحاً. أشجار الفاكهة ليست طعاماً؛ وما زالت نُزلك تحتاج إلى القمح.
 [lesson schools build marker]
 بناء مدرسة
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ GL فقط
 [lesson upgrades upgrade marker]
 ترقية ميدان السباق
 [lesson upgrades train hint]
-دع عاملاً موجوداً يتعلّم المشي أسرع في ميدان السباق المرقّى. تحسّن الترقية المكتملة التدريب المتاح. تتطلب مستويات المباني الأعلى مهارات بناء أعلى؛ ويبدأ المستوى المعروض من 1.
+لم يتدرّب أي عامل في ميدان السباق المرقّى بعد. أبقِ الطريق إليه مفتوحاً واترك بعض العمال غير مشغولين.
 [lesson upgrades train title]
 استخدام التدريب المحسّن
 [lesson upgrades train instruction]
 دع عاملاً موجوداً يتعلّم المشي أسرع في ميدان السباق المرقّى.
 [lesson upgrades train help]
-تحسّن الترقية المكتملة التدريب المتاح. تتطلب مستويات المباني الأعلى مهارات بناء أعلى؛ ويبدأ المستوى المعروض من 1.
+تحسّن الترقية المكتملة التدريب الذي يقدّمه المبنى. تتطلب مستويات المباني الأعلى عمال بناء ذوي مهارات بناء أعلى.
 [lesson warrior-training title]
 إنتاج المحاربين وتدريبهم
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ GL فقط
 [lesson fortifications walls marker]
 حماية البرج بالجدران
 [lesson fortifications supply hint]
-حدد البرج واطلب مموّنين. انتظر حجرين على الأقل. يحتاج البرج المكتمل إلى عدد مطلوب من عمال التشغيل لجلب الذخيرة. وهذا منفصل عن عدد عمال البناء.
+في البرج أقل من حجرين. حدده وتحقق من عدد عماله المطلوب؛ يحتاج المموّنون إلى طريق مفتوح من الحجر.
 [lesson fortifications supply title]
 إمداد الذخيرة
 [lesson fortifications supply instruction]
-حدد البرج واطلب مموّنين. انتظر حجرين على الأقل.
+حدد البرج المكتمل وتحقق من مموّنيه. انتظر حجرين على الأقل.
 [lesson fortifications supply help]
-يحتاج البرج المكتمل إلى عدد مطلوب من عمال التشغيل لجلب الذخيرة. وهذا منفصل عن عدد عمال البناء.
+يطلب البرج المكتمل المموّنين من تلقاء نفسه لجلب الذخيرة. وهذا منفصل عن عدد عمال البناء؛ زد عدد عمال التشغيل إذا وصل الحجر ببطء.
 [lesson fortifications supply marker]
 إمداد الذخيرة
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ GL فقط
 [lesson fortifications walls compact]
 ابنِ جدارين. أبقِ الممر الغربي للبرج مفتوحاً.
 [lesson fortifications supply compact]
-البرج → المموّنون. انتظر حجرين.
+البرج → تحقق من المموّنين. انتظر حجرين.
 [lesson fortifications hold compact]
 أبقِ البرج مزوّداً بالإمدادات ضد المهاجم.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ GL فقط
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

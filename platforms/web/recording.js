@@ -40,7 +40,12 @@ if (typeof ENVIRONMENT_IS_PTHREAD === 'undefined' || !ENVIRONMENT_IS_PTHREAD) {
         const path=decodeURIComponent(name);
         let size,modified;
         try { const file=await handle.getFile();size=file.size;modified=file.lastModified; } catch (_) { continue; }
-        if (path.endsWith('.complete') && size) files.push({path:path.slice(0,-9),recoverable:false,modified});
+        if (path.endsWith('.complete') && size) {
+          const video=path.slice(0,-9),entry={path:video,recoverable:false,modified,bytes:0,durationUs:0};
+          try { entry.bytes=(await(await root.getFileHandle(encodeURIComponent(video))).getFile()).size; } catch (_) {}
+          try { entry.durationUs=JSON.parse(await(await(await root.getFileHandle(encodeURIComponent(video+'.json'))).getFile()).text()).duration_us || 0; } catch (_) {}
+          files.push(entry);
+        }
         else if (path.endsWith('.recording/manifest.json')) {
           if (!size) {
             for (const suffix of ['manifest.1.json','manifest.2.json']) {

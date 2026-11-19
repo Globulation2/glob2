@@ -98,6 +98,9 @@ Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, w
 .B \-\-gradient\-algorithm
 Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
 .TP
+.B \-\-mcp\-port
+Enable the MCP server for AI agents on 127.0.0.1:PORT for this run only; saved settings are unchanged (desktop builds) Type: integer. Range: 1..65535.
+.TP
 .B \-\-help
 Show this command's help (also \-h) Default: false.
 .PP
@@ -123,6 +126,10 @@ Choose at most one: \-\-record, \-\-videoshot
 .PP
 .nf
 glob2 play \-\-window\-size 1280x720 \-\-no\-fullscreen
+.fi
+.PP
+.nf
+glob2 play \-\-mcp\-port 27202
 .fi
 .PP
 Outputs: Interactive game
@@ -216,6 +223,9 @@ Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, w
 .TP
 .B \-\-gradient\-algorithm
 Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
+.TP
+.B \-\-mcp\-port
+Enable the MCP server for AI agents on 127.0.0.1:PORT for this run only; saved settings are unchanged (desktop builds) Type: integer. Range: 1..65535.
 .TP
 .B \-\-help
 Show this command's help (also \-h) Default: false.
@@ -1130,6 +1140,9 @@ Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, w
 .B \-\-gradient\-algorithm
 Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
 .TP
+.B \-\-mcp\-port
+Enable the MCP server for AI agents on 127.0.0.1:PORT for this run only; saved settings are unchanged (desktop builds) Type: integer. Range: 1..65535.
+.TP
 .B \-\-instance
 Online instance origin Type: string.
 .TP
@@ -1251,6 +1264,9 @@ Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, w
 .TP
 .B \-\-gradient\-algorithm
 Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
+.TP
+.B \-\-mcp\-port
+Enable the MCP server for AI agents on 127.0.0.1:PORT for this run only; saved settings are unchanged (desktop builds) Type: integer. Range: 1..65535.
 .TP
 .B \-\-instance
 Online instance origin Type: string.
@@ -1380,6 +1396,9 @@ Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, w
 .B \-\-gradient\-algorithm
 Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
 .TP
+.B \-\-mcp\-port
+Enable the MCP server for AI agents on 127.0.0.1:PORT for this run only; saved settings are unchanged (desktop builds) Type: integer. Range: 1..65535.
+.TP
 .B \-\-instance
 Online instance origin Type: string.
 .TP
@@ -1456,7 +1475,7 @@ Outputs: result.json, network/trace artifacts and replay
 .PP
 Platform: all
 .SS "ai check"
-Validate JavaScript AI startup, metadata and callbacks
+Validate JavaScript AI startup, metadata, step definition and globals
 .PP
 Usage: glob2 ai check FILE [OPTIONS]
 .TP
@@ -1835,6 +1854,9 @@ Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, w
 .TP
 .B \-\-gradient\-algorithm
 Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
+.TP
+.B \-\-mcp\-port
+Enable the MCP server for AI agents on 127.0.0.1:PORT for this run only; saved settings are unchanged (desktop builds) Type: integer. Range: 1..65535.
 .TP
 .B \-\-output\-dir
 Translation screenshot directory Default: .. Type: directory.

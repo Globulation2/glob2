@@ -29,6 +29,31 @@ class TranslationAuditTest(unittest.TestCase):
             with self.subTest(catalog=name):
                 self.assertEqual(sorted(key for key in keys if not table.get(key, '').strip()), [])
 
+    def test_in_game_menu_entries_are_distinct(self):
+        # The in-game menu lists quick Options and full Settings side by side;
+        # translating both to the same word left two identical buttons.
+        root = Path(__file__).resolve().parents[1]
+        for name in checker.read_lines(root / 'content/data/texts.list.txt')[1:]:
+            table, errors = checker.read_table(root / 'content' / name)
+            self.assertEqual(errors, [])
+            with self.subTest(catalog=name):
+                labels = [table[key].casefold() for key in ('[save game]', '[AI telemetry]', '[Options]',
+                          '[settings]', '[tutorial restart]', '[settings Hive Mind]')]
+                self.assertEqual(len(labels), len(set(labels)))
+
+    def test_catalogs_store_logical_letters_not_presentation_forms(self):
+        # Legacy Arabic entries were pre-shaped into presentation forms. The
+        # renderer shapes and orders text itself, and inspection, search and font
+        # fallback need the ordinary letters, so catalogs must not contain them.
+        import re
+        root = Path(__file__).resolve().parents[1]
+        forms = re.compile('[ﭐ-﷿ﹰ-﻾]')
+        for name in checker.read_lines(root / 'content/data/texts.list.txt')[1:]:
+            table, errors = checker.read_table(root / 'content' / name)
+            self.assertEqual(errors, [])
+            with self.subTest(catalog=name):
+                self.assertEqual(sorted(key for key, value in table.items() if forms.search(value)), [])
+
     def test_catalogs_do_not_reintroduce_english_fallbacks(self):
         root = Path(__file__).resolve().parents[1]
         allowed = json.loads((root / 'test/translation_shared_values.json').read_text())
@@ -110,10 +135,33 @@ label(player.name);
 paragraph(tr("[localized]"));
 choice("mode", {"Untranslated option", tr("[localized]")}, 0, {});
 panel.actions = {{"id", "Untranslated action", [] {}}, {"ok", tr("[localized]"), [] {}}};
+buttons.push_back(item("hive", "Untranslated menu item", HIVE_MIND));
+buttons.push_back(item("load", loadLabel, LOAD_GAME));
 // paragraph("Comment only");
 ''', encoding='utf-8')
             self.assertEqual({value for value, _ in checker.source_ui_literals(path)},
-                {'Untranslated control', 'First branch', 'Second branch', 'Untranslated option', 'Untranslated action'})
+                {'Untranslated control', 'First branch', 'Second branch', 'Untranslated option', 'Untranslated action',
+                 'Untranslated menu item'})
+
+    def test_frontend_tr_of_prose_instead_of_a_key_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            plain = Path(directory) / 'ChooseMapScreen.cpp'
+            plain.write_text(r'''title = tr("Size and parameters");
+button("ok", tr("[ok]"), {});
+other = fe::tr("Qualified prose");
+self.tr("member call");
+std::string label = tr(dynamicKey);
+''', encoding='utf-8')
+            self.assertEqual({value for value, _ in checker.unbracketed_tr_calls(plain)},
+                             {'Size and parameters', 'Qualified prose'})
+            wrapped = Path(directory) / 'CustomGameScreen.cpp'
+            wrapped.write_text(r'''namespace {
+std::string tr(const std::string &s) { return fe::tr("[" + s + "]"); }
+}
+title = tr("Landscape");
+other = fe::tr("Still prose");
+''', encoding='utf-8')
+            self.assertEqual({value for value, _ in checker.unbracketed_tr_calls(wrapped)}, {'Still prose'})
 
     def test_computed_catalog_keys_are_checked(self):
         with tempfile.TemporaryDirectory() as directory:

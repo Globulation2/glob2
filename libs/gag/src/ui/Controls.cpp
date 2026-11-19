@@ -65,6 +65,13 @@ GAGCore::Color inkFor(const Frame &frame, bool enabled, bool muted)
 	return !enabled ? p.muted : muted ? p.muted : p.ink;
 }
 
+// TextAlign::Left means the start of the line: the right edge for Arabic,
+// Hebrew and other right-to-left paragraphs.
+TextAlign startAlign(TextAlign align, const std::string &text)
+{
+	return align == TextAlign::Left && rightToLeftParagraph(text) ? TextAlign::Right : align;
+}
+
 int textTop(Rect r, int lineHeight) { return r.y + std::max(0, (r.h - lineHeight) / 2); }
 
 void drawLines(Frame &frame, Rect r, FontRole role, const std::vector<std::string> &lines,
@@ -102,7 +109,7 @@ class Label : public Node
 	{
 		const auto &m = frame.canvas.measurer();
 		const auto shown = ellipsize(m, options.role, text, bounds.w);
-		drawLines(frame, bounds, options.role, {shown}, options.align,
+		drawLines(frame, bounds, options.role, {shown}, startAlign(options.align, text),
 				  options.color.value_or(inkFor(frame, true, options.muted)), 0);
 	}
 
@@ -121,13 +128,14 @@ class Paragraph : public Node
 	{
 		const int limit = c.boundedW() ? c.maxW : ctx.text.width(options.role, text);
 		const auto block = layoutText(ctx.text, options.role, text, std::max(1, limit), ctx.metrics.lineGap);
-		return c.clamp({c.boundedW() && options.align != TextAlign::Left ? c.maxW : block.width, block.height});
+		return c.clamp({c.boundedW() && startAlign(options.align, text) != TextAlign::Left ? c.maxW : block.width,
+						block.height});
 	}
 	void paint(Frame &frame) override
 	{
 		const auto &m = frame.canvas.measurer();
 		const auto block = layoutText(m, options.role, text, std::max(1, bounds.w), frame.layout.metrics.lineGap);
-		drawLines(frame, bounds, options.role, block.lines, options.align,
+		drawLines(frame, bounds, options.role, block.lines, startAlign(options.align, text),
 				  options.color.value_or(inkFor(frame, true, options.muted)),
 				  frame.layout.metrics.lineGap, false);
 	}

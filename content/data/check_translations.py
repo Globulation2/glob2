@@ -158,7 +158,7 @@ def source_ui_literals(path):
     if not any(part in path.parts for part in ('ui', 'hud', 'hive', 'screens', 'overlay')):
         return []
     positions = {'button': 1, 'paragraph': 0, 'caption': 0, 'label': 0,
-                 'page': 0, 'heading': 0, 'field': 0, 'drawString': 3}
+                 'page': 0, 'heading': 0, 'field': 0, 'drawString': 3, 'item': 1}
     technical = {'.opus', 'CC0-1.0', 'CC-BY-4.0', 'CC-BY-SA-4.0'}
     tokens = cpp_tokens(path.read_text(encoding='utf-8'))
     found = set()
@@ -191,6 +191,35 @@ def source_ui_literals(path):
         elif positions[name] < len(args):
             inspect(args[positions[name]])
     return sorted(found, key=lambda item: (item[1], item[0]))
+
+
+LOCAL_TR = re.compile(r'^\s*(?:static\s+|inline\s+)*std::string\s+tr\s*\(|\bauto\s+tr\s*=', re.M)
+
+
+def unbracketed_tr_calls(path):
+    """tr("Prose") through the frontend's tr, which looks up complete "[key]"s.
+
+    The literal is then not a key: the lookup fails and the English stays on
+    screen. Files that define their own tr wrapper (which adds the brackets) and
+    the settings screens (SettingsScreen::tr adds "[settings ...]") are exempt for
+    unqualified calls; qualified Glob2UI::tr / fe::tr calls never are.
+    """
+    text = path.read_text(encoding='utf-8')
+    wrapper = bool(LOCAL_TR.search(text)) or (path.name.startswith('SettingsScreen') and 'settings' in path.parts)
+    tokens = cpp_tokens(text)
+    found = []
+    for index, (name, _, _) in enumerate(tokens[:-2]):
+        if name != 'tr' or tokens[index + 1][0] != '(':
+            continue
+        qualified = index >= 3 and tokens[index - 1][0] == ':' and tokens[index - 3][0] in ('fe', 'Glob2UI')
+        if index and tokens[index - 1][0] in ('.', '>') or (index and tokens[index - 1][0] == ':' and not qualified):
+            continue
+        if wrapper and not qualified:
+            continue
+        _, value, line = tokens[index + 2]
+        if value is not None and tokens[index + 3][0] == ')' and value and not KEY.fullmatch(value):
+            found.append((value, line))
+    return found
 
 
 def read_lines(path):
@@ -323,6 +352,8 @@ def audit(root=ROOT):
             references = source_keys(path)
             for text, number in source_ui_literals(path):
                 errors.append(f'{path.relative_to(root)}:{number}: unlocalized UI text {text!r}')
+            for text, number in unbracketed_tr_calls(path):
+                errors.append(f'{path.relative_to(root)}:{number}: tr() of {text!r} is not a [key]')
             source_files += 1
             source_references += len(references)
             for key, number in references:

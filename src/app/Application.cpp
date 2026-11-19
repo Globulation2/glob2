@@ -22,6 +22,7 @@
 #include "CampaignMenuScreen.h"
 #include "SettingsScreen.h"
 #include "RecordingFilesScreen.h"
+#include "ui/RecordingNotice.h"
 #include "KeyboardManager.h"
 #include "GameGUIKeyActions.h"
 #include "CreditScreen.h"
@@ -186,7 +187,7 @@ Application::Application()
 		return screens.top() ? std::string(screens.top()->recordingId())
 							 : std::string("unavailable");
 	};
-	mcp->configure(globalContainer->settings.mcpEnabled, globalContainer->settings.mcpPort);
+	mcp->configure(globalContainer->settings.mcpActive(), globalContainer->settings.mcpActivePort());
 #endif
 	// The first screen's first frames after loading (the main menu and the
 	// colony behind it, or a first-run question in front of it) are drawn but
@@ -345,6 +346,7 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 {
 	lastFrame = tick;
 	if (GAGCore::Recording::takeFilesRequest()) screens.push(std::make_unique<RecordingFilesScreen>());
+	Glob2UI::deliverFinishedRecordings();
 	// Invite links opened while running (macOS and iOS URL events) arrive as
 	// dropped "files"; they become the pending join instead. SDL3 owns the
 	// event's text, so nothing is freed here.
@@ -376,8 +378,8 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 #if GLOB2_DESKTOP_MCP
 	if (hidden)
 		screens.pollInputReceipts();
-	mcp->configure(!quitting && globalContainer->settings.mcpEnabled,
-				   globalContainer->settings.mcpPort);
+	mcp->configure(!quitting && globalContainer->settings.mcpActive(),
+				   globalContainer->settings.mcpActivePort());
 	const auto mcpAvailable = [this]
 	{
 		auto *window = globalContainer->gfx->getWindow();

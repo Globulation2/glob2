@@ -18,6 +18,8 @@
 #include <FileManager.h>
 #include <SDL3/SDL.h>
 #include <StringTable.h>
+#include <GameplayRecording.h>
+#include "ui/RecordingNotice.h"
 #include <Toolkit.h>
 #include <Stream.h>
 #include <BinaryStream.h>
@@ -117,6 +119,17 @@ void GameGUI::dragStep(int mx, int my, int button)
    information, because we need the information as it was in the
    middle of the event stream.  (There may be many later events we
    have not yet processed.) */
+// A recording stopped by the hotkey, or ended by an error, says where it went.
+// The message appears after the last frame was captured, so it is not recorded.
+void GameGUI::announceRecordingEnding()
+{
+    if (auto done = Glob2UI::takeRecordingEnding(recordingEndingSeen, GAGCore::Recording::recorder().completion()))
+    {
+        const auto message = Glob2UI::recordingFinishedMessage(*done);
+        if (!message.empty()) addNotice(message);
+    }
+}
+
 void GameGUI::step(void)
 {
     GAGCore::EventQueue events;
@@ -133,6 +146,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
             if (autosavePending.exchange(false)) { lastAutosaveStep=game.stepCounter; autosave(); }
         });
     consumeClientEvents();
+    announceRecordingEnding();
     if (inGameMenu == IGM_SAVE && gameMenuScreen &&
         static_cast<LoadSaveDialog*>(gameMenuScreen.get())->pollPersistence())
         closeDialog();

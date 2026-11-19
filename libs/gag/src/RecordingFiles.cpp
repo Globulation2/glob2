@@ -9,13 +9,74 @@
 #include <filesystem>
 #include <mutex>
 #include <thread>
+#include <chrono>
+#include <fstream>
+#include <nlohmann/json.hpp>
 #ifdef __EMSCRIPTEN__
 #include "RecordingPlatform.h"
-#include <nlohmann/json.hpp>
 #endif
 
 namespace GAGCore::Recording
 {
+#ifndef __EMSCRIPTEN__
+namespace
+{
+std::string utf8(const std::filesystem::path &path)
+{
+	auto value = path.u8string();
+	return std::string(reinterpret_cast<const char *>(value.data()), value.size());
+}
+std::int64_t unixSeconds(std::filesystem::file_time_type time)
+{
+	// file_clock has no portable epoch before C++20 clock_cast; translate through now.
+	const auto system = std::chrono::system_clock::now() +
+		std::chrono::duration_cast<std::chrono::system_clock::duration>(time - std::filesystem::file_time_type::clock::now());
+	return std::chrono::duration_cast<std::chrono::seconds>(system.time_since_epoch()).count();
+}
+std::int64_t manifestDuration(const std::filesystem::path &manifest)
+{
+	std::ifstream input(manifest, std::ios::binary);
+	if (!input)
+		return 0;
+	const auto value = nlohmann::json::parse(input, nullptr, false);
+	return value.is_object() ? value.value("duration_us", std::int64_t(0)) : 0;
+}
+} // namespace
+std::vector<RecordingFileEntry> scanRecordings(const std::string &directory)
+{
+	std::vector<RecordingFileEntry> files;
+	const auto root = std::filesystem::u8path(directory);
+	std::error_code error;
+	if (!std::filesystem::is_directory(root, error))
+		return files;
+	for (const auto &entry : std::filesystem::directory_iterator(root, error))
+	{
+		const auto p = entry.path();
+		auto withSuffix = [&](const char *suffix) { auto value = p; return value += suffix; };
+		if (entry.is_regular_file(error) && (p.extension() == ".mp4" || p.extension() == ".webm") &&
+			std::filesystem::exists(withSuffix(".json"), error))
+		{
+			RecordingFileEntry file{utf8(p), false};
+			file.bytes = entry.file_size(error);
+			file.modified = unixSeconds(entry.last_write_time(error));
+			file.durationUs = manifestDuration(withSuffix(".json"));
+			files.push_back(std::move(file));
+		}
+		else if (entry.is_directory(error) && p.extension() == ".recording" && std::filesystem::exists(p / "manifest.json", error))
+		{
+			auto video = p;
+			video.replace_extension();
+			RecordingFileEntry file{utf8(video), true};
+			file.modified = unixSeconds(std::filesystem::last_write_time(p / "manifest.json", error));
+			files.push_back(std::move(file));
+		}
+	}
+	// Newest first by time, never by name: names from older versions do not sort by date.
+	std::sort(files.begin(), files.end(), [](const auto &a, const auto &b)
+			  { return a.modified != b.modified ? a.modified > b.modified : a.path > b.path; });
+	return files;
+}
+#endif
 namespace
 {
 std::atomic<bool> requested{false};
@@ -26,7 +87,6 @@ struct Library
 	RecordingFilesStatus status;
 	std::thread worker;
 	std::atomic<bool> finished{true};
-	std::filesystem::path root = std::filesystem::u8path(Toolkit::getFileManager()->getDir(0)) / "videoshots";
 	~Library() { if (worker.joinable()) worker.join(); }
 	void run(std::function<void()> operation)
 	{
@@ -45,17 +105,11 @@ struct Library
 	}
 	void scan()
 	{
-		std::vector<RecordingFileEntry> files;
-		if (std::filesystem::is_directory(root)) for (const auto &entry : std::filesystem::directory_iterator(root))
-		{
-			auto p = entry.path(); auto value = p.u8string();
-			std::string path(reinterpret_cast<const char *>(value.data()),value.size());
-			if (entry.is_regular_file() && (p.extension() == ".mp4" || p.extension() == ".webm") && std::filesystem::exists(std::filesystem::u8path(path+".json"))) files.push_back({path,false});
-			if (entry.is_directory() && p.extension() == ".recording" && std::filesystem::exists(p/"manifest.json")) files.push_back({path.substr(0,path.size()-10),true});
-		}
+		auto files = scanRecordings(recordingDirectory());
+		// Outputs of a --record path outside the profile folder are listed too.
 		for (const auto &path : recorder().status().outputs)
-			if (std::filesystem::exists(std::filesystem::u8path(path)) && std::none_of(files.begin(),files.end(),[&](const auto &entry) { return entry.path == path; })) files.push_back({path,false});
-		std::sort(files.begin(),files.end(),[](const auto &a,const auto &b) { return a.path > b.path; });
+			if (std::filesystem::exists(std::filesystem::u8path(path)) && std::none_of(files.begin(),files.end(),[&](const auto &entry) { return entry.path == path; }))
+				files.insert(files.begin(), {path,false});
 		std::lock_guard lock(mutex); status.files = std::move(files);
 	}
 };
@@ -83,7 +137,9 @@ RecordingFilesStatus filesStatus()
 	char *data = browserRecordingFilesStatus();
 	RecordingFilesStatus result;
 	try { auto value = nlohmann::json::parse(data); result.busy = value.value("busy",false); result.error = value.value("error","");
-		for (const auto &file : value["files"]) result.files.push_back({file.at("path").get<std::string>(),file.value("recoverable",false)}); }
+		for (const auto &file : value["files"])
+			result.files.push_back({file.at("path").get<std::string>(),file.value("recoverable",false),file.value("bytes",std::uint64_t(0)),
+				std::int64_t(file.value("modified",0.0)/1000),file.value("durationUs",std::int64_t(0))}); }
 	catch (...) { result.error = "Cannot read browser recording files"; }
 	std::free(data); return result;
 #else

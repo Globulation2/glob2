@@ -3134,6 +3134,8 @@ Pensel %0
 Lag %0
 [Your colony]
 Din koloni
+[Practice colony]
+Øvingskoloni
 [%0 / %1 HP · %2]
 %0 / %1 HP · %2
 [Units: %0]
@@ -6372,6 +6374,26 @@ Kunne ikke eksportere opptaket.
 Slett opptak
 [recording refresh]
 Oppdater
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Kunne ikke gjenopprette det forrige biblioteket: %0
 [library  The previous library is retained.]
@@ -6593,7 +6615,7 @@ Forsyn det nye vertshuset
 [intro instruction build]
 Åpne Bygg og plasser et vertshus i nærheten av hvete. Tildel tilgjengelige arbeidere til å bygge det. La det eksisterende vertshuset være forsynt.
 [intro instruction supply]
-Velg det ferdige, nye vertshuset og tildel minst én forsyningsarbeider. Vent til en arbeider leverer hvete.
+Velg det ferdige, nye vertshuset. Det ber selv om forsyningsarbeidere; sjekk måltallet for arbeidere og vent til en arbeider leverer hvete.
 [intro instruction grow]
 Velg svermen. Sett arbeidermålet til minst 2, og produksjonsforholdet kun til arbeidere. Hold begge vertshusene forsynt mens en ny arbeider blir født.
 [intro instruction attack]
@@ -6605,7 +6627,7 @@ Bruk minikartet til å flytte visningen østover og finne steinforekomsten. Velg
 [intro help build]
 Bygging krever trevirke levert av arbeidere. Velg Vertshus fra bygningspaletten, plasser det på ryddet mark nær hvete, og be om 2 byggere. Måltallet er en forespørsel, og viser ikke hvor mange arbeidere som allerede er der. Behold forsyningsarbeidere ved det eksisterende vertshuset og svermen. Alle gyldige plasseringer teller.
 [intro help supply]
-Bygging og daglig forsyning har separate måltall for arbeidere. Velg det ferdige vertshuset og øk måltallet for drift. En forsyningsarbeider samler hvete og bærer den hit. Sultne glober spiser på vertshus; en bygning uten forsyningsarbeidere går til slutt tom. Hold hveteåkeren tilgjengelig.
+Bygging og daglig forsyning har separate måltall for arbeidere. Et ferdig vertshus ber automatisk om forsyningsarbeidere; øk måltallet for drift hvis hveten kommer for sakte. En forsyningsarbeider samler hvete og bærer den hit. Sultne glober spiser på vertshus; en bygning uten forsyningsarbeidere går til slutt tom. Hold hveteåkeren tilgjengelig.
 [intro help grow]
 Svermen bruker hvete til å produsere enheter. Sett andelen arbeidere til 1 og andelen utforskere og krigere til 0. Øk måltallet for arbeidere ved svermen til minst 2. Flere forsyningsarbeidere kan levere hvete raskere, men konkurrerer med andre oppgaver. Hold begge vertshusene forsynt.
 [intro help attack]
@@ -6613,7 +6635,7 @@ Svermen bruker hvete til å produsere enheter. Sett andelen arbeidere til 1 og a
 [intro hint scout]
 Utforskeren trenger et utforskingsflagg med tildelte enheter på steinområdet i øst. Sjekk målet og antallet utforskere.
 [intro hint build]
-Hvis du fjernet det nye vertshuset, bygg et nytt. Ellers må du sjekke byggeplassen og måltallet for arbeidere. Eksisterende forsyningsoppgaver kan oppta arbeiderne; hold matforsyningen i gang mens du frigjør byggere.
+Det nye vertshuset ditt er ikke ferdig ennå. Hvis det ikke finnes noen byggeplass, plasser et vertshus nær hveten. Ellers velger du byggeplassen og sjekker måltallet for arbeidere: forsyningsoppgaver andre steder kan holde arbeiderne dine opptatt.
 [intro hint supply]
 Velg det ferdige nye vertshuset. Sjekk arbeidermålet og se etter hveteleveranser. Arbeiderne kan trenge tid til å reise eller spise.
 [intro hint grow]
@@ -6643,7 +6665,7 @@ Dra på tomt land for å flytte visningen før du plasserer et flagg. Finn stein
 [intro help touch build]
 Velg Vertshus under Bygg. Plasser det på ryddet mark nær hvete og bekreft. Velg byggeplassen og be om 2 byggere. Måltallet er en forespørsel, og viser ikke hvor mange arbeidere som allerede er der. Hold det eksisterende vertshuset og svermen forsynt. Alle gyldige plasseringer teller.
 [intro help touch supply]
-Velg det ferdige nye vertshuset og øk målet for tildelte arbeidere. Bygging og daglig forsyning har separate mål. En forsyningsarbeider samler hvete og bærer den hit. Sultne glober spiser på vertshus; en bygning uten forsyningsarbeidere går til slutt tom. Hold hveten tilgjengelig.
+Velg det ferdige nye vertshuset og sjekk målet for tildelte arbeidere; det ber selv om forsyningsarbeidere. Bygging og daglig forsyning har separate mål. En forsyningsarbeider samler hvete og bærer den hit. Sultne glober spiser på vertshus; en bygning uten forsyningsarbeidere går til slutt tom. Hold hveten tilgjengelig.
 [intro help touch grow]
 Velg svermen. Sett andelen arbeidere til 1 og andelen utforskere og krigere til 0. Øk måltallet for tildelte arbeidere til minst 2. Forsyningsarbeidere leverer hvete til nye enheter, men konkurrerer med andre oppgaver. Hold begge vertshusene forsynt.
 [intro help touch attack]
@@ -6659,7 +6681,7 @@ Flagg → Utforskingsflagg. Plasser det på steinen; tildel 1 utforsker.
 [intro compact build]
 Bygg → Vertshus. Plasser nær hvete; tildel 2 byggere.
 [intro compact supply]
-Velg ditt nye vertshus; tildel minst én forsyningsarbeider. Vent på hvete.
+Velg ditt nye vertshus; sjekk forsyningsarbeiderne. Vent på hvete.
 [intro compact grow]
 Velg svermen; tildel 2 forsyningsarbeidere. Produser kun arbeidere.
 [intro compact attack]
@@ -6771,13 +6793,13 @@ Bruk de forberedte svømmerne til å bygge en skole, og observer deretter arbeid
 [lesson schools complete]
 Skolen din forbedret arbeidernes ferdigheter. Dyktige byggere låser opp oppgraderinger; bedre innhøsting bidrar til å opprettholde en voksende økonomi.
 [lesson schools build hint]
-Bygg en skole i lysningen; utnevne byggere. Kolonien har allerede svømmere for alger. Gi tilgang til tre og vann. Frukttrær gir prestisjeressurser; mat kommer fortsatt fra hvete.
+Ingen ferdig skole ennå. Sjekk at byggeplassen ber om byggere, og at de kan nå trevirket og dammen.
 [lesson schools build title]
 Bygg en skole
 [lesson schools build instruction]
 Bygg en skole i lysningen; tildel byggere.
 [lesson schools build help]
-Kolonien har allerede svømmere som kan hente alger. Sørg for tilgang til trevirke og vann. Frukttrær gir ressurser til prestisje; maten kommer fortsatt fra hvete.
+Kolonien har allerede svømmere som kan hente alger. Sørg for tilgang til trevirke og vann. Frukttrær er ikke mat; vertshusene dine trenger fortsatt hvete.
 [lesson schools build marker]
 Bygg en skole
 [lesson schools learn hint]
@@ -6805,13 +6827,13 @@ Disse arbeiderne har allerede lært ferdigheter på første skolenivå. Oppgrade
 [lesson upgrades upgrade marker]
 Oppgrader løpebanen
 [lesson upgrades train hint]
-La en eksisterende arbeider lære raskere gange på den oppgraderte løpebanen. En fullført oppgradering forbedrer tilgjengelig trening. Høyere bygningsnivåer krever høyere konstruksjonsferdigheter; nivået som vises til spillerne starter på 1.
+Ingen arbeider har trent på den oppgraderte løpebanen ennå. Hold den tilgjengelig og la noen arbeidere være ledige.
 [lesson upgrades train title]
 Bruk den forbedrede treningen
 [lesson upgrades train instruction]
 La en eksisterende arbeider lære seg raskere gange på den oppgraderte løpebanen.
 [lesson upgrades train help]
-En fullført oppgradering forbedrer tilgjengelig trening. Høyere bygningsnivåer krever høyere konstruksjonsferdigheter; nivået som vises til spillerne starter på 1.
+En fullført oppgradering forbedrer treningen den tilbyr. Høyere bygningsnivåer krever byggere med høyere konstruksjonsferdigheter.
 [lesson warrior-training title]
 Produser og tren krigere
 [lesson warrior-training briefing]
@@ -6873,13 +6895,13 @@ Murene er laget av stein, og hvert sted krever arbeidere. Ikke forsegl tårnet: 
 [lesson fortifications walls marker]
 Beskytt tårnet med murer
 [lesson fortifications supply hint]
-Velg tårnet og be om forsyningsarbeidere. Vent på minst 2 steiner. Et ferdig tårn trenger arbeidere til drift for å få ammunisjon. Dette måltallet er separat fra måltallet for bygging.
+Tårnet har færre enn 2 steiner. Velg det og sjekk måltallet for arbeidere; forsyningsarbeidere trenger en åpen vei fra steinen.
 [lesson fortifications supply title]
 Forsyn ammunisjon
 [lesson fortifications supply instruction]
-Velg tårnet og be om forsyningsarbeidere. Vent på minst 2 steiner.
+Velg det ferdige tårnet og sjekk forsyningsarbeiderne. Vent på minst 2 steiner.
 [lesson fortifications supply help]
-Et ferdig tårn trenger arbeidere til drift for å få ammunisjon. Dette måltallet er separat fra måltallet for bygging.
+Et ferdig tårn ber selv om forsyningsarbeidere for å få ammunisjon. Dette er separat fra måltallet for bygging; øk det hvis steinen kommer sakte.
 [lesson fortifications supply marker]
 Forsyn ammunisjon
 [lesson fortifications hold hint]
@@ -6971,7 +6993,7 @@ Bygg → Tårn. Plasser i det markerte området.
 [lesson fortifications walls compact]
 Bygg to murer. Hold tårnets vestre gate åpen.
 [lesson fortifications supply compact]
-Velg tårn → forsyningsarbeidere. Vent på 2 steiner.
+Velg tårn → sjekk forsyningsarbeidere. Vent på 2 steiner.
 [lesson fortifications hold compact]
 Hold tårnet forsynt mot angriperen.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Tundramark
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

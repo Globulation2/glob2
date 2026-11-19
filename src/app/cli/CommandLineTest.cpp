@@ -2,6 +2,7 @@
 #include "Glob2Test.h"
 #include <nlohmann/json.hpp>
 #include "CommandLine.h"
+#include <fstream>
 #include <sstream>
 #include <algorithm>
 TEST_SUITE("CommandLine")
@@ -144,6 +145,45 @@ TEST_SUITE("CommandLine")
 		CHECK_FALSE(Cli::parse({"game", "repeat", "saved.game.gz"}).has("--display"));
 		CHECK_THROWS_AS(Cli::parse({"game", "repeat", "saved.game.gz", "--record=out.mp4"}), std::invalid_argument);
 	}
+	TEST_CASE("the LAN guides' glob2 commands parse")
+	{
+		// The playtest guide told players to verify the match record with a removed
+		// --map option. Every documented `.../src/glob2 <command> ...` line must parse.
+		std::size_t commands = 0;
+		for (const char *guide : {"docs/multiplayer/lan-playtest.md", "docs/multiplayer/lan.md"})
+		{
+			std::ifstream in(glob2test::sourceRoot() / guide);
+			REQUIRE(in);
+			std::string line, command;
+			while (std::getline(in, line))
+			{
+				command += line;
+				if (!command.empty() && command.back() == '\\')
+				{
+					command.pop_back();
+					command += ' ';
+					continue;
+				}
+				const auto binary = command.find("src/glob2 ");
+				if (binary != std::string::npos)
+				{
+					std::string rest = command.substr(binary + 10);
+					// Placeholders such as <the map> stand for one argument.
+					for (std::size_t open; (open = rest.find('<')) != std::string::npos;)
+						rest.replace(open, rest.find('>', open) - open + 1, "fixture");
+					std::istringstream words(rest);
+					std::vector<std::string> args;
+					for (std::string word; words >> word;)
+						args.push_back(word);
+					INFO(guide << ": " << command);
+					CHECK_NOTHROW(Cli::parse(args));
+					++commands;
+				}
+				command.clear();
+			}
+		}
+		CHECK(commands > 0);
+	}
 	TEST_CASE("malformed input fails before handlers")
 	{
 		const std::vector<std::vector<std::string>> invalid = {
@@ -241,6 +281,35 @@ TEST_SUITE("CommandLine")
 			CHECK(script.find("compute-threads") != std::string::npos);
 			CHECK(script.find("game run") != std::string::npos);
 		}
+	}
+	TEST_CASE("help explains the MCP option and links the source and guide")
+	{
+		const std::string repository = "https://github.com/Globulation2/glob2";
+		const std::string guide = "docs/development/mcp-ui-server.md";
+		for (const std::string path : {"", "play", "replay"})
+		{
+			INFO(path);
+			const auto text = Cli::help(path);
+			CHECK(text.find("--mcp-port") != std::string::npos);
+			CHECK(text.find("MCP") != std::string::npos);
+			CHECK(text.find("game_guide") != std::string::npos);
+			CHECK(text.find(repository + "/blob/master/" + guide) != std::string::npos);
+		}
+		// Every help page links the source; only game launches describe MCP.
+		const auto map = Cli::help("map generate");
+		CHECK(map.find(repository) != std::string::npos);
+		CHECK(map.find("--mcp-port") == std::string::npos);
+	}
+	TEST_CASE("play accepts an MCP port for one run and rejects invalid ports")
+	{
+		CHECK_EQ(Cli::parse({"play", "--mcp-port", "27216"}).get("--mcp-port"), "27216");
+		CHECK_EQ(Cli::parse({"replay", "match.replay", "--mcp-port=27217"}).get("--mcp-port"),
+				 "27217");
+		CHECK_FALSE(Cli::parse({"play"}).has("--mcp-port"));
+		for (const char *port : {"0", "65536", "port", "-1"})
+			CHECK_THROWS_AS(Cli::parse({"play", "--mcp-port", port}), std::invalid_argument);
+		CHECK_THROWS_AS(Cli::parse({"map", "generate", "river", "--mcp-port", "27216"}),
+						std::invalid_argument);
 	}
 }
 

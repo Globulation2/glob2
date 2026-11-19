@@ -5,6 +5,7 @@
 class AudioPreferenceScreen : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "audio_preference"; }
 	Glob2UI::Element build(const Glob2UI::Presentation &p) override;
 	void choose(bool sound);
 

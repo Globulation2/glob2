@@ -807,7 +807,7 @@ Selecciona edifici: Mur de pedra
 [select warflag]
 Selecciona bandera de guerra
 [settings]
-Opcions
+Configuració
 [shift %0]
 shift-%0
 [shortcut explanation enter]
@@ -3150,6 +3150,8 @@ Pinzell %0
 Equip %0
 [Your colony]
 La teva colònia
+[Practice colony]
+Colònia de pràctica
 [%0 / %1 HP · %2]
 %0 / %1 PV · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ No s’ha pogut exportar l’enregistrament.
 Suprimeix l’enregistrament
 [recording refresh]
 Actualitza
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  No s’ha pogut restaurar la biblioteca anterior: %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Obre les banderes i posa una Bandera d'exploració sobre les pedres a l'est de l
 [intro instruction build]
 Obre les construccions i posa una Despensa prop del blat. Assigna-hi treballadors disponibles per construir-la. Mantén la Despensa existent abastida.
 [intro instruction supply]
-Selecciona la nova Despensa acabada i assigna-hi almenys un proveïdor. Espera que un treballador hi porti blat.
+Selecciona la nova Despensa acabada. Demana proveïdors per si sola; comprova'n els treballadors demanats i espera que un treballador hi porti blat.
 [intro instruction grow]
 Selecciona la Granja. Demana almenys 2 treballadors i ajusta les proporcions de producció per produir només treballadors. Mantén les dues Despenses abastides mentre neix un nou treballador.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Mou la vista cap a l'est amb el minimapa per trobar les pedres. A les banderes, 
 [intro help build]
 La construcció consumeix fusta portada pels treballadors. Tria Despensa a la paleta d'edificis, posa-la en terreny lliure prop del blat i demana 2 constructors. La quantitat demanada no indica els treballadors que ja hi són. Mantén proveïdors a la Despensa existent i a la Granja. Qualsevol ubicació vàlida serveix.
 [intro help supply]
-La construcció i l'abastiment diari tenen quantitats de treballadors separades. Selecciona la Despensa acabada i augmenta'n la quantitat de funcionament. Un proveïdor recull blat i el porta aquí. Els glòbuls afamats mengen a les Despenses; sense proveïdors, les reserves s'acaben. Mantén el blat accessible.
+La construcció i l'abastiment diari tenen quantitats de treballadors separades. Una Despensa acabada demana proveïdors automàticament; augmenta'n la quantitat de funcionament si el blat arriba massa a poc a poc. Un proveïdor recull blat i el porta aquí. Els glòbuls afamats mengen a les Despenses; sense proveïdors, les reserves s'acaben. Mantén el blat accessible.
 [intro help grow]
 La Granja consumeix blat per produir unitats. Fixa la producció de treballadors a 1 i la d'exploradors i guerrers a 0. Demana almenys 2 treballadors a la Granja. Més proveïdors porten blat més ràpid, però competeixen amb altres tasques. Mantén les dues Despenses abastides.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Obre les banderes, tria Bandera de guerra i posa-la sobre la Granja enemiga a l'
 [intro hint scout]
 L'explorador necessita una Bandera d'exploració amb unitats assignades a les pedres de l'est. Comprova'n la destinació i la quantitat d'exploradors.
 [intro hint build]
-Si has eliminat la nova Despensa, construeix-ne una altra. Si no, comprova l'obra i els treballadors demanats. L'abastiment existent pot ocupar-los; mantén el menjar mentre alliberes constructors.
+La teva nova Despensa encara no està acabada. Si no hi ha cap obra, col·loca una Despensa a prop del blat. Si no, selecciona l'obra i comprova els treballadors demanats: l'abastiment d'altres llocs pot tenir ocupats els teus treballadors.
 [intro hint supply]
 Selecciona la nova Despensa acabada. Comprova els treballadors demanats i les entregues de blat. Els treballadors poden necessitar temps per desplaçar-se o menjar.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Arrossega terreny buit per moure la vista abans de posar una bandera. Troba les 
 [intro help touch build]
 Tria Despensa a les construccions. Posa-la en terreny lliure prop del blat i confirma. Selecciona l'obra i demana 2 constructors. La quantitat demanada no indica els treballadors ja presents. Abasteix la Despensa existent i la Granja. Qualsevol ubicació vàlida serveix.
 [intro help touch supply]
-Selecciona la nova Despensa acabada i augmenta els treballadors demanats. Construcció i abastiment tenen controls separats. Un proveïdor recull blat i el porta aquí. Els glòbuls afamats mengen a les Despenses; sense proveïdors, les reserves s'acaben. Mantén el blat accessible.
+Selecciona la nova Despensa acabada i comprova els treballadors demanats; demana proveïdors per si sola. Construcció i abastiment tenen controls separats. Un proveïdor recull blat i el porta aquí. Els glòbuls afamats mengen a les Despenses; sense proveïdors, les reserves s'acaben. Mantén el blat accessible.
 [intro help touch grow]
 Selecciona la Granja. Fixa la producció de treballadors a 1 i la d'exploradors i guerrers a 0. Demana almenys 2 treballadors. Els proveïdors porten blat per a noves unitats, però competeixen amb altres tasques. Abasteix les dues Despenses.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Banderes → Bandera d'exploració. Posa-la a les pedres; assigna 1 explorador.
 [intro compact build]
 Construeix → Despensa. Posa-la prop del blat; assigna 2 constructors.
 [intro compact supply]
-Selecciona la nova Despensa; assigna almenys 1 proveïdor. Espera el blat.
+Selecciona la nova Despensa; comprova'n els proveïdors. Espera el blat.
 [intro compact grow]
 Selecciona la Granja; assigna 2 proveïdors. Produeix només treballadors.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Utilitza els nedadors preparats per construir una Escola i observa els treballad
 [lesson schools complete]
 L'Escola ha millorat les habilitats dels treballadors. Els constructors qualificats permeten millores; una recol·lecció millor sosté una economia en expansió.
 [lesson schools build hint]
-Construeix una Escola a la clariana; assigna constructors. La colònia ja té nedadors per a les algues. Deixa accés a la fusta i a l'aigua. Els arbres fruiters donen recursos de prestigi; el menjar continua sent blat.
+Encara no hi ha cap Escola acabada. Comprova que l'obra demani constructors i que puguin arribar a la fusta i a l'estany.
 [lesson schools build title]
 Construeix una Escola
 [lesson schools build instruction]
 Construeix una Escola a la clariana; assigna constructors.
 [lesson schools build help]
-La colònia ja té nedadors per a les algues. Deixa accés a la fusta i a l'aigua. Els arbres fruiters donen recursos de prestigi; el menjar continua sent blat.
+La colònia ja té nedadors per a les algues. Deixa accés a la fusta i a l'aigua. Els arbres fruiters no són menjar; les teves Despenses encara necessiten blat.
 [lesson schools build marker]
 Construeix una Escola
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Aquests treballadors ja han après les habilitats de l'Escola de primer nivell. 
 [lesson upgrades upgrade marker]
 Millora el Poliesportiu
 [lesson upgrades train hint]
-Deixa que un treballador existent aprengui a caminar més de pressa al Poliesportiu millorat. Una millora acabada amplia l'entrenament disponible. Els nivells superiors exigeixen més habilitat de construcció; el nivell mostrat comença a 1.
+Encara cap treballador no s'ha entrenat al Poliesportiu millorat. Mantén-lo accessible i deixa alguns treballadors lliures.
 [lesson upgrades train title]
 Utilitza l'entrenament millorat
 [lesson upgrades train instruction]
 Deixa que un treballador existent aprengui a caminar més de pressa al Poliesportiu millorat.
 [lesson upgrades train help]
-Una millora acabada amplia l'entrenament disponible. Els nivells superiors exigeixen més habilitat de construcció; el nivell mostrat comença a 1.
+Una millora acabada amplia l'entrenament que ofereix. Els nivells superiors exigeixen constructors amb més habilitat de construcció.
 [lesson warrior-training title]
 Producció i entrenament de guerrers
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Els murs utilitzen pedra i cada obra demana treballadors. No tanquis la Torre: e
 [lesson fortifications walls marker]
 Protegeix la Torre amb murs
 [lesson fortifications supply hint]
-Selecciona la Torre i demana proveïdors. Espera almenys 2 pedres. Una Torre acabada necessita treballadors de funcionament per portar munició. Aquest control és separat del de construcció.
+La Torre té menys de 2 pedres. Selecciona-la i comprova'n els treballadors demanats; els proveïdors necessiten un camí lliure des de la pedra.
 [lesson fortifications supply title]
 Subministra munició
 [lesson fortifications supply instruction]
-Selecciona la Torre i demana proveïdors. Espera almenys 2 pedres.
+Selecciona la Torre acabada i comprova'n els proveïdors. Espera almenys 2 pedres.
 [lesson fortifications supply help]
-Una Torre acabada necessita treballadors de funcionament per portar munició. Aquest control és separat del de construcció.
+Una Torre acabada demana proveïdors per si sola per portar munició. Aquest control és separat del de construcció; augmenta'l si la pedra arriba a poc a poc.
 [lesson fortifications supply marker]
 Subministra munició
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Construeix → Torre. Posa-la a la zona marcada.
 [lesson fortifications walls compact]
 Construeix 2 murs. Mantén obert el pas oest de la Torre.
 [lesson fortifications supply compact]
-Torre → proveïdors. Espera 2 pedres.
+Torre → comprova proveïdors. Espera 2 pedres.
 [lesson fortifications hold compact]
 Mantén la Torre abastida davant l'atacant.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Sòl de tundra
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

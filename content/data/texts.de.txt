@@ -619,7 +619,7 @@ offen
 [OpenGL]
 OpenGL
 [Options]
-Einstellungen
+Optionen
 [options]
 Einstellungen
 [Orange]
@@ -3150,6 +3150,8 @@ Pinsel %0
 Team %0
 [Your colony]
 Ihre Kolonie
+[Practice colony]
+Übungskolonie
 [%0 / %1 HP · %2]
 %0 / %1 TP · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ Aufnahme konnte nicht exportiert werden.
 Aufnahme löschen
 [recording refresh]
 Aktualisieren
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Die vorherige Bibliothek konnte nicht wiederhergestellt werden: %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Den feindlichen Stock zerstören
 [intro instruction build]
 Öffne Bauen und platziere einen Gasthof nahe dem Weizen. Fordere verfügbare Arbeiter zum Bau an. Halte den bestehenden Gasthof versorgt.
 [intro instruction supply]
-Wähle den fertigen neuen Gasthof und fordere mindestens einen Versorger an. Warte, bis ein Arbeiter Weizen liefert.
+Wähle den fertigen neuen Gasthof. Er fordert selbst Versorger an; prüfe seine Arbeiter-Sollzahl und warte, bis ein Arbeiter Weizen liefert.
 [intro instruction grow]
 Wähle den Stock. Stelle die angeforderte Arbeiterzahl auf mindestens 2 und die Produktionsverhältnisse auf ausschließlich Arbeiter. Versorge beide Gasthöfe, während ein neuer Arbeiter geboren wird.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Bewege die Ansicht mit der Minikarte nach Osten zu den Steinen. Wähle unter Fla
 [intro help build]
 Beim Bauen wird Holz verbraucht, das Arbeiter liefern. Wähle in der Gebäudepalette den Gasthof, setze ihn auf freies Gelände nahe dem Weizen und fordere 2 Bauarbeiter an. Die Sollzahl ist eine Anforderung, keine Zahl bereits anwesender Arbeiter. Lass Versorger am bestehenden Gasthof und am Stock. Jeder gültige Standort zählt.
 [intro help supply]
-Bau und laufende Versorgung haben getrennte Arbeiter-Sollzahlen. Wähle den fertigen Gasthof und erhöhe die Sollzahl für den Betrieb. Ein Versorger erntet Weizen und bringt es hierher. Hungrige Globules essen in Gasthöfen; ohne Versorger gehen deren Vorräte aus. Halte den Zugang zum Weizen frei.
+Bau und laufende Versorgung haben getrennte Arbeiter-Sollzahlen. Ein fertiger Gasthof fordert automatisch Versorger an; erhöhe seine Sollzahl für den Betrieb, wenn der Weizen zu langsam ankommt. Ein Versorger erntet Weizen und bringt es hierher. Hungrige Globules essen in Gasthöfen; ohne Versorger gehen deren Vorräte aus. Halte den Zugang zum Weizen frei.
 [intro help grow]
 Der Stock verbraucht Weizen zur Einheitenproduktion. Stelle die Arbeiterproduktion auf 1 und die Entdecker- und Kriegerproduktion auf 0. Fordere am Stock mindestens 2 Arbeiter an. Mehr Versorger liefern schneller, fehlen dann aber bei anderen Aufgaben. Versorge beide Gasthöfe.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Der Stock verbraucht Weizen zur Einheitenproduktion. Stelle die Arbeiterprodukti
 [intro hint scout]
 Dein Entdecker braucht eine Entdeckerflagge mit Einheitenanforderung an den östlichen Steinen. Prüfe ihren Zielort und die angeforderte Entdeckerzahl.
 [intro hint build]
-Falls du den neuen Gasthof entfernt hast, baue einen weiteren. Prüfe sonst die Baustelle und ihre Arbeiter-Sollzahl. Bestehende Versorgungsaufgaben können Arbeiter binden; halte die Versorgung aufrecht und stelle Bauarbeiter frei.
+Dein neuer Gasthof ist noch nicht fertig. Gibt es keine Baustelle, platziere einen Gasthof nahe beim Weizen. Wähle sonst die Baustelle und prüfe ihre Arbeiter-Sollzahl: Versorgungsaufgaben anderswo können deine Arbeiter binden.
 [intro hint supply]
 Wähle den fertigen neuen Gasthof. Prüfe seine Arbeiter-Sollzahl und beobachte die Weizenlieferungen. Arbeiter brauchen eventuell Zeit zum Laufen oder Essen.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Ziehe vor dem Setzen einer Flagge über freies Gelände, um die Ansicht zu beweg
 [intro help touch build]
 Wähle unter Bauen den Gasthof. Setze ihn auf freies Gelände nahe dem Weizen und bestätige. Wähle die Baustelle und fordere 2 Bauarbeiter an. Die Sollzahl zählt nicht bereits anwesende Arbeiter. Versorge den bestehenden Gasthof und den Stock. Jeder gültige Standort zählt.
 [intro help touch supply]
-Wähle den fertigen neuen Gasthof und erhöhe seine Arbeiter-Sollzahl. Bau und Versorgung haben getrennte Sollzahlen. Ein Versorger erntet Weizen und bringt es hierher. Hungrige Globules essen in Gasthöfen; ohne Versorger gehen die Vorräte aus. Halte den Weizen zugänglich.
+Wähle den fertigen neuen Gasthof und prüfe seine Arbeiter-Sollzahl; er fordert selbst Versorger an. Bau und Versorgung haben getrennte Sollzahlen. Ein Versorger erntet Weizen und bringt es hierher. Hungrige Globules essen in Gasthöfen; ohne Versorger gehen die Vorräte aus. Halte den Weizen zugänglich.
 [intro help touch grow]
 Wähle den Stock. Stelle Arbeiterproduktion auf 1 und Entdecker- und Kriegerproduktion auf 0. Fordere mindestens 2 Arbeiter an. Versorger bringen Weizen für neue Einheiten, fehlen dann aber bei anderen Aufgaben. Versorge beide Gasthöfe.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Flaggen → Entdeckerflagge. Auf die Steine setzen; 1 Entdecker anfordern.
 [intro compact build]
 Bauen → Gasthof. Nahe dem Weizen platzieren; 2 Bauarbeiter anfordern.
 [intro compact supply]
-Neuen Gasthof wählen; mindestens 1 Versorger anfordern. Auf Weizen warten.
+Neuen Gasthof wählen; seine Versorger prüfen. Auf Weizen warten.
 [intro compact grow]
 Stock wählen; 2 Versorger anfordern. Nur Arbeiter produzieren.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Nutze die vorbereiteten Schwimmer zum Schulbau und beobachte dann, wie Arbeiter 
 [lesson schools complete]
 Deine Schule hat die Arbeiterfähigkeiten verbessert. Geschulte Bauarbeiter ermöglichen Ausbauten; bessere Ernte hilft einer wachsenden Wirtschaft.
 [lesson schools build hint]
-Baue eine Schule auf der Lichtung; fordere Bauarbeiter an. Die Kolonie hat bereits Schwimmer für die Algen. Halte Holz und Wasser zugänglich. Obstbäume liefern Prestigeressourcen; Nahrung kommt weiterhin aus Weizen.
+Noch keine fertige Schule. Prüfe, ob ihre Baustelle Bauarbeiter anfordert und ob diese Holz und den Teich erreichen können.
 [lesson schools build title]
 Eine Schule bauen
 [lesson schools build instruction]
 Baue eine Schule auf der Lichtung; fordere Bauarbeiter an.
 [lesson schools build help]
-Die Kolonie hat bereits Schwimmer für die Algen. Halte Holz und Wasser zugänglich. Obstbäume liefern Prestigeressourcen; Nahrung kommt weiterhin aus Weizen.
+Die Kolonie hat bereits Schwimmer für die Algen. Halte Holz und Wasser zugänglich. Obstbäume sind keine Nahrung; deine Gasthöfe brauchen weiterhin Weizen.
 [lesson schools build marker]
 Eine Schule bauen
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Diese Arbeiter haben bereits die Schulfähigkeiten der ersten Stufe gelernt. Aus
 [lesson upgrades upgrade marker]
 Die Rennbahn ausbauen
 [lesson upgrades train hint]
-Lass einen vorhandenen Arbeiter auf der ausgebauten Rennbahn schnelleres Laufen lernen. Ein abgeschlossener Ausbau verbessert die verfügbare Ausbildung. Höhere Gebäudestufen verlangen bessere Baufähigkeiten; die angezeigte Stufe beginnt bei 1.
+Noch kein Arbeiter wurde auf der ausgebauten Rennbahn ausgebildet. Halte sie erreichbar und lass einige Arbeiter frei.
 [lesson upgrades train title]
 Die verbesserte Ausbildung nutzen
 [lesson upgrades train instruction]
 Lass einen vorhandenen Arbeiter auf der ausgebauten Rennbahn schnelleres Laufen lernen.
 [lesson upgrades train help]
-Ein abgeschlossener Ausbau verbessert die verfügbare Ausbildung. Höhere Gebäudestufen verlangen bessere Baufähigkeiten; die angezeigte Stufe beginnt bei 1.
+Ein abgeschlossener Ausbau verbessert die angebotene Ausbildung. Höhere Gebäudestufen verlangen Bauarbeiter mit besseren Baufähigkeiten.
 [lesson warrior-training title]
 Krieger produzieren und ausbilden
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Mauern brauchen Stein und jede Baustelle fordert Arbeiter an. Schließe den Turm
 [lesson fortifications walls marker]
 Den Turm mit Mauern schützen
 [lesson fortifications supply hint]
-Wähle den Turm und fordere Versorger an. Warte auf mindestens 2 Stein. Ein fertiger Turm braucht eine Arbeiter-Sollzahl für den Betrieb, damit Munition geliefert wird. Sie ist von der Bausollzahl getrennt.
+Der Turm hat weniger als 2 Stein. Wähle ihn und prüfe seine Arbeiter-Sollzahl; Versorger brauchen einen freien Weg vom Stein.
 [lesson fortifications supply title]
 Munition liefern
 [lesson fortifications supply instruction]
-Wähle den Turm und fordere Versorger an. Warte auf mindestens 2 Stein.
+Wähle den fertigen Turm und prüfe seine Versorger. Warte auf mindestens 2 Stein.
 [lesson fortifications supply help]
-Ein fertiger Turm braucht eine Arbeiter-Sollzahl für den Betrieb, damit Munition geliefert wird. Sie ist von der Bausollzahl getrennt.
+Ein fertiger Turm fordert selbst Versorger an, damit Munition geliefert wird. Das ist von der Bausollzahl getrennt; erhöhe die Sollzahl, wenn Stein nur langsam ankommt.
 [lesson fortifications supply marker]
 Munition liefern
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Bauen → Turm. Im markierten Bereich platzieren.
 [lesson fortifications walls compact]
 Baue 2 Mauern. Halte die Westgasse des Turms offen.
 [lesson fortifications supply compact]
-Turm → Versorger. Auf 2 Stein warten.
+Turm → Versorger prüfen. Auf 2 Stein warten.
 [lesson fortifications hold compact]
 Halte den Turm gegen den Angreifer versorgt.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Tundraboden
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

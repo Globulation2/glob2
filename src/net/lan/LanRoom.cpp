@@ -10,6 +10,7 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 
+#include "AINames.h"
 #include "Engine.h"
 #include "ExperimentalFeatures.h"
 
@@ -210,6 +211,8 @@ std::vector<RoomBackend::Slot> LanRoom::slots() const
 		slot.name = seat.name;
 		slot.team = seat.team;
 		slot.ai = !seat.human;
+		if (!seat.human)
+			slot.aiId = seat.ai;
 		if (seat.human)
 		{
 			const Member* member = r->memberForSeat(seat.seat);
@@ -251,6 +254,34 @@ void LanRoom::addAI(AI::ImplementationID ai)
 {
 	if (hostRoom)
 		hostRoom->addAI(ai);
+}
+
+void LanRoom::setOccupant(int slot, Occupant occupant, const std::string& aiId)
+{
+	if (!hostRoom || starting())
+		return;
+	const RoomState& r = hostState;
+	const bool seated = slot >= 0 && slot < static_cast<int>(r.setup.seats.size());
+	if (seated && r.setup.seats[slot].human)
+		return;
+	if (occupant == Occupant::AI)
+	{
+		const int ai = AINames::parseAIName(aiId.empty() ? std::string("nicowar") : aiId);
+		if (ai == AINames::AI_UNKNOWN_NAME)
+			return;
+		if (seated)
+			hostRoom->setSeatAI(slot, static_cast<AI::ImplementationID>(ai));
+		else
+			hostRoom->addAI(static_cast<AI::ImplementationID>(ai));
+	}
+	else if (seated)
+		hostRoom->kickSeat(slot); // an AI's seat opens again
+	// Apply at once, so the room shows the change on the next frame.
+	if (hostRoom->takeChanged())
+	{
+		hostState = hostRoom->state();
+		push(Event::Changed);
+	}
 }
 
 void LanRoom::setReady(bool value)
@@ -374,6 +405,7 @@ GAGCore::CooperativeTask LanRoom::initGame(Engine& engine)
 {
 	Engine::TurnMatchStart start;
 	start.networkKind = "lan";
+	start.hostsMatch = static_cast<bool>(hostRoom);
 	if (pending)
 	{
 		start.setup = pending->setup;

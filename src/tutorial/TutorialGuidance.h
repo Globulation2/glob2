@@ -11,9 +11,13 @@
 #include <set>
 
 class GameGUI;
+struct PresentationFrame;
 namespace Tutorial
 {
 void drawDestination(GameGUI &gui);
+// Where a destination marker points, in map tiles: the footprint centre when the
+// destination names a building's origin tile, otherwise the destination itself.
+std::pair<double,double> destinationCentre(const PresentationFrame &scene, const Destination &target);
 // A nonmodal, client-owned card. No callbacks enter the scenario interpreter.
 class Guidance : public Glob2UI::InGameDialog
 {
@@ -125,7 +129,9 @@ class Guidance : public Glob2UI::InGameDialog
             body.push_back(button("intro/help", tr("[intro help]"), [this] { help=!help; invalidate(); }));
             if (help) { auto text=paragraph(tr(p.touch ? lesson->touchHelp : lesson->help)); text->key="intro/help-text"; body.push_back(std::move(text)); }
         }
-        return column({heading, height(p.pt(p.touch ? (p.safe.h>p.pt(560) ? 196 : 112) : 160), scroll("intro/body/"+std::to_string(current), column(std::move(body))))});
+        // The finished card shows its summary and all three exits without scrolling.
+        const int bodyHeight=p.touch ? (p.safe.h>p.pt(560) ? 196 : 112) : (lesson->complete() ? 248 : 160);
+        return column({heading, height(p.pt(bodyHeight), scroll("intro/body/"+std::to_string(current), column(std::move(body))))});
     }
     void cancelInput()
     {

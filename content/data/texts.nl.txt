@@ -3150,6 +3150,8 @@ Penseel %0
 Team %0
 [Your colony]
 Jouw kolonie
+[Practice colony]
+Oefenkolonie
 [%0 / %1 HP · %2]
 %0 / %1 LP · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ Kan de opname niet exporteren.
 Opname verwijderen
 [recording refresh]
 Vernieuwen
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Kan de vorige bibliotheek niet herstellen: %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Open Vlaggen en plaats een Verkenningsvlag op de steenafzetting ten oosten van j
 [intro instruction build]
 Open Bouwen en plaats een Herberg bij tarwe. Wijs beschikbare arbeiders toe om de Herberg te bouwen. Houd je bestaande Herberg bevoorraad.
 [intro instruction supply]
-Selecteer je nieuwe voltooide Herberg en wijs minstens één leverancier toe. Wacht tot een arbeider tarwe brengt.
+Selecteer je nieuwe voltooide Herberg. Die vraagt zelf leveranciers aan; controleer het gevraagde aantal arbeiders en wacht tot een arbeider tarwe brengt.
 [intro instruction grow]
 Selecteer de Zwerm. Vraag minstens 2 arbeiders aan voor de bevoorrading en stel de productie in op alleen arbeiders. Houd beide Herbergen bevoorraad terwijl er een nieuwe arbeider wordt geboren.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Gebruik de minikaart om het zicht naar het oosten te verplaatsen en de steenafze
 [intro help build]
 Bouwen kost hout dat arbeiders aanleveren. Kies Herberg in het gebouwenpalet, plaats deze op open grond bij tarwe en vraag 2 bouwers aan. Het ingestelde aantal arbeiders is een verzoek, niet het aantal dat al aanwezig is. Houd leveranciers bij je bestaande Herberg en Zwerm. Elke geldige locatie telt.
 [intro help supply]
-Voor bouwen en dagelijkse bevoorrading stel je aparte aantallen arbeiders in. Selecteer de voltooide Herberg en verhoog het aantal leveranciers. Een leverancier verzamelt tarwe en brengt die hierheen. Hongerige bolletjes eten in Herbergen; zonder leveranciers raken de voorraden op. Houd de route naar de tarwe vrij.
+Voor bouwen en dagelijkse bevoorrading stel je aparte aantallen arbeiders in. Een voltooide Herberg vraagt automatisch leveranciers aan; verhoog het aantal leveranciers als de tarwe te langzaam binnenkomt. Een leverancier verzamelt tarwe en brengt die hierheen. Hongerige bolletjes eten in Herbergen; zonder leveranciers raken de voorraden op. Houd de route naar de tarwe vrij.
 [intro help grow]
 De Zwerm verbruikt tarwe om eenheden te produceren. Zet de productie van arbeiders op 1 en die van verkenners en krijgers op 0. Verhoog het aangevraagde aantal arbeiders bij de Zwerm naar minstens 2. Meer leveranciers brengen sneller tarwe, maar zijn dan niet beschikbaar voor andere taken. Bevoorraad beide Herbergen.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Open Vlaggen, kies Oorlogsvlag en plaats deze boven de vijandelijke Zwerm ten oo
 [intro hint scout]
 Je verkenner heeft een Verkenningsvlag met toegewezen eenheden nodig op de oostelijke steenafzetting. Controleer de locatie en het aangevraagde aantal verkenners.
 [intro hint build]
-Als je de nieuwe herberg hebt verwijderd, bouw dan een nieuwe. Controleer anders de bouwplaats en het daar gevraagde aantal arbeiders. Andere bevoorradingstaken kunnen je arbeiders in beslag nemen; zorg ervoor dat de kolonie van voedsel wordt voorzien en stel bouwers beschikbaar.
+Je nieuwe Herberg is nog niet af. Als er geen bouwplaats is, plaats dan een Herberg bij de tarwe. Selecteer anders de bouwplaats en controleer het daar gevraagde aantal arbeiders: bevoorradingstaken elders kunnen je arbeiders bezighouden.
 [intro hint supply]
 Selecteer de voltooide nieuwe herberg. Controleer het gevraagde aantal arbeiders en let op tarweleveringen. Arbeiders hebben mogelijk tijd nodig om te reizen of te eten.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Versleep lege grond om de weergave te verplaatsen voordat je een vlag plaatst. Z
 [intro help touch build]
 Kies Herberg in Bouwen. Plaats deze op open grond bij tarwe en bevestig. Selecteer de bouwplaats en vraag 2 bouwers aan. Het ingestelde aantal arbeiders is een verzoek, niet het aantal dat al aanwezig is. Houd je bestaande Herberg en Zwerm bevoorraad. Elke geldige locatie telt.
 [intro help touch supply]
-Selecteer de nieuwe voltooide Herberg en verhoog het aangevraagde aantal arbeiders. Voor bouwen en dagelijkse bevoorrading stel je aparte aantallen in. Een leverancier verzamelt tarwe en brengt die hierheen. Hongerige bolletjes eten in Herbergen; zonder leveranciers raken de voorraden op. Houd de route naar de tarwe vrij.
+Selecteer de nieuwe voltooide Herberg en controleer het aangevraagde aantal arbeiders; die vraagt zelf leveranciers aan. Voor bouwen en dagelijkse bevoorrading stel je aparte aantallen in. Een leverancier verzamelt tarwe en brengt die hierheen. Hongerige bolletjes eten in Herbergen; zonder leveranciers raken de voorraden op. Houd de route naar de tarwe vrij.
 [intro help touch grow]
 Selecteer de Zwerm. Zet de productie van arbeiders op 1 en die van verkenners en krijgers op 0. Verhoog het aantal toegewezen arbeiders naar minstens 2. Leveranciers brengen tarwe voor nieuwe eenheden, maar zijn dan niet beschikbaar voor andere taken. Bevoorraad beide Herbergen.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Vlaggen → Verkenningsvlag. Plaats deze op de steen; wijs 1 verkenner toe.
 [intro compact build]
 Bouwen → Herberg. Plaats in de buurt van tarwe; wijs 2 bouwers toe.
 [intro compact supply]
-Selecteer je nieuwe Herberg; wijs minstens 1 leverancier toe. Wacht op tarwe.
+Selecteer je nieuwe Herberg; controleer de leveranciers. Wacht op tarwe.
 [intro compact grow]
 Selecteer de Zwerm; wijs 2 leveranciers toe. Produceer alleen arbeiders.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Gebruik de voorbereide zwemmers om een school te bouwen en kijk hoe de arbeiders
 [lesson schools complete]
 Je school heeft de vaardigheden van arbeiders verbeterd. Bekwame bouwers ontgrendelen verbeteringen; een betere oogst helpt een groeiende economie in stand te houden.
 [lesson schools build hint]
-Bouw een school op de open plek; wijs bouwers toe. De kolonie heeft al zwemmers die algen kunnen verzamelen. Houd de routes naar hout en water vrij. Fruitbomen leveren prestigegrondstoffen; voedsel komt nog steeds van tarwe.
+Nog geen voltooide School. Controleer of de bouwplaats bouwers aanvraagt en of die het hout en de vijver kunnen bereiken.
 [lesson schools build title]
 Bouw een school
 [lesson schools build instruction]
 Bouw een school op de open plek; wijs bouwers toe.
 [lesson schools build help]
-De kolonie heeft al zwemmers die algen kunnen verzamelen. Houd de routes naar hout en water vrij. Fruitbomen leveren prestigegrondstoffen; voedsel komt nog steeds van tarwe.
+De kolonie heeft al zwemmers die algen kunnen verzamelen. Houd de routes naar hout en water vrij. Fruitbomen zijn geen voedsel; je Herbergen hebben nog steeds tarwe nodig.
 [lesson schools build marker]
 Bouw een school
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Deze arbeiders hebben de vaardigheden van de School op niveau 1 al geleerd. Verb
 [lesson upgrades upgrade marker]
 Verbeter de Racebaan
 [lesson upgrades train hint]
-Laat een bestaande arbeider sneller leren lopen op de verbeterde racebaan. Een voltooide verbetering verbetert de beschikbare training. Hogere bouwniveaus vereisen hogere bouwvaardigheden; het niveau dat aan spelers wordt getoond, begint bij 1.
+Nog geen arbeider heeft getraind op de verbeterde Racebaan. Houd die bereikbaar en laat enkele arbeiders vrij.
 [lesson upgrades train title]
 Gebruik de verbeterde training
 [lesson upgrades train instruction]
 Laat een bestaande arbeider sneller leren lopen op de verbeterde racebaan.
 [lesson upgrades train help]
-Een voltooide verbetering verbetert de beschikbare training. Hogere bouwniveaus vereisen hogere bouwvaardigheden; het niveau dat aan spelers wordt getoond, begint bij 1.
+Een voltooide verbetering verbetert de training die het gebouw biedt. Hogere bouwniveaus vereisen bouwers met hogere bouwvaardigheden.
 [lesson warrior-training title]
 Krijgers produceren en trainen
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Muren zijn van steen en elke locatie vraagt om arbeiders. Sluit de toren niet af
 [lesson fortifications walls marker]
 Bescherm de toren met muren
 [lesson fortifications supply hint]
-Selecteer de toren en vraag leveranciers op. Wacht tot de toren minstens 2 steeneenheden heeft. Een voltooide Toren heeft arbeiders nodig om munitie aan te voeren. Stel dit aantal apart in van het aangevraagde aantal bouwers.
+De toren heeft minder dan 2 stenen. Selecteer hem en controleer het gevraagde aantal arbeiders; leveranciers hebben een vrije route vanaf de steen nodig.
 [lesson fortifications supply title]
 Lever munitie
 [lesson fortifications supply instruction]
-Selecteer de toren en vraag leveranciers op. Wacht tot de toren minstens 2 steeneenheden heeft.
+Selecteer de voltooide toren en controleer de leveranciers. Wacht tot de toren minstens 2 steeneenheden heeft.
 [lesson fortifications supply help]
-Een voltooide Toren heeft arbeiders nodig om munitie aan te voeren. Stel dit aantal apart in van het aangevraagde aantal bouwers.
+Een voltooide Toren vraagt zelf leveranciers aan om munitie aan te voeren. Dit staat los van het aangevraagde aantal bouwers; verhoog het als de steen langzaam binnenkomt.
 [lesson fortifications supply marker]
 Lever munitie
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Bouwen → Toren. Plaats in het gemarkeerde gebied.
 [lesson fortifications walls compact]
 Bouw 2 muren. Houd de westelijke rijstrook van de toren open.
 [lesson fortifications supply compact]
-Selecteer toren → leveranciers. Wacht op 2 stenen.
+Selecteer toren → controleer leveranciers. Wacht op 2 stenen.
 [lesson fortifications hold compact]
 Houd de toren bevoorraad tegen de aanvaller.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Toendrabodem
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

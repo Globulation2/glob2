@@ -3158,6 +3158,8 @@ Brush %0
 Koponan %0
 [Your colony]
 Ang iyong kolonya
+[Practice colony]
+Kolonya para sa pagsasanay
 [%0 / %1 HP · %2]
 %0 / %1 HP · %2
 [Units: %0]
@@ -6324,6 +6326,26 @@ Hindi ma-export ang recording.
 Burahin ang recording
 [recording refresh]
 I-refresh
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Hindi maibalik ang dating library: %0
 [library  The previous library is retained.]
@@ -6545,7 +6567,7 @@ Buksan ang mga Bandila at maglagay ng Bandila ng Paggalugad sa ibabaw ng bahagin
 [intro instruction build]
 Buksan ang Magtayo at maglagay ng Panuluyan malapit sa trigo. Magtalaga ng mga bakanteng manggagawa upang itayo ito. Panatilihing may suplay ang kasalukuyan mong Panuluyan.
 [intro instruction supply]
-Piliin ang iyong natapos na bagong Panuluyan at bigyan ito ng kahit isang tagasuplay. Maghintay para sa isang manggagawa na maghatid ng trigo.
+Piliin ang iyong natapos na bagong Panuluyan. Kusa itong humihingi ng mga tagasuplay; suriin ang target na bilang ng manggagawa nito at maghintay para sa isang manggagawa na maghatid ng trigo.
 [intro instruction grow]
 Piliin ang Pugad. Itakda ang target nitong manggagawa sa kahit 2, at ang ratio ng produksyon nito sa mga manggagawa lamang. Panatilihing may suplay ang parehong Panuluyan habang may bagong manggagawang ipinapanganak.
 [intro instruction attack]
@@ -6557,7 +6579,7 @@ Gamitin ang minimap upang ilipat ang tanaw sa silangan at hanapin ang bahagi ng 
 [intro help build]
 Kumokonsumo ng kahoy na inihahatid ng mga manggagawa ang pagtatayo. Piliin ang Panuluyan sa mga kontrol ng gusali (paleta ng gusali), ilagay ito sa bakanteng lupa malapit sa trigo, at humiling ng 2 tagapagtayo. Kahilingan ang target na bilang ng manggagawa, hindi bilang ng mga naroon na. Panatilihin ang mga tagasuplay sa kasalukuyang Panuluyan at Pugad. Binibilang ang anumang wastong lokasyon.
 [intro help supply]
-Magkahiwalay ang target na bilang ng manggagawa para sa pagtatayo at sa pang-araw-araw na suplay. Piliin ang natapos na Panuluyan at dagdagan ang target nito para sa pagpapatakbo. Nangangalap ng trigo ang tagasuplay at dinadala ito rito. Kumakain ang mga gutom na yunit sa mga Panuluyan; mauubusan kalaunan ang gusaling walang tagasuplay. Panatilihing naaabot ang taniman ng trigo.
+Magkahiwalay ang target na bilang ng manggagawa para sa pagtatayo at sa pang-araw-araw na suplay. Awtomatikong humihingi ng mga tagasuplay ang natapos na Panuluyan; dagdagan ang target nito para sa pagpapatakbo kung masyadong mabagal dumating ang trigo. Nangangalap ng trigo ang tagasuplay at dinadala ito rito. Kumakain ang mga gutom na yunit sa mga Panuluyan; mauubusan kalaunan ang gusaling walang tagasuplay. Panatilihing naaabot ang taniman ng trigo.
 [intro help grow]
 Kumokonsumo ng trigo ang Pugad upang lumikha ng mga yunit. Itakda sa 1 ang proporsyon ng manggagawa, at sa 0 ang tagapaggalugad at mandirigma. Taasan sa 2 o higit pa ang target na bilang ng tagasuplay ng Pugad. Mas mabilis maghatid ng trigo ang mas maraming tagasuplay, ngunit may iba ring gawaing nangangailangan sa kanila. Panatilihin ang pagkain sa parehong Panuluyan.
 [intro help attack]
@@ -6565,7 +6587,7 @@ Buksan ang Mga Bandila, piliin ang Bandila ng Digmaan at ilagay sa ibabaw ng pug
 [intro hint scout]
 Kailangan ng iyong tagapaggalugad ng nakatalagang Bandila ng paggalugad sa silangang bahagi ng bato. Suriin ang target at bilang ng tagapaggalugad nito.
 [intro hint build]
-Kung inalis mo ang bagong Panuluyan, magtayo ng isa pa. Kung hindi, suriin ang pinagtatayuan at target na bilang ng manggagawa nito. Maaaring abala sa pagsusuplay ang mga manggagawa mo; panatilihin ang pagkain habang naglalaan ng mga tagapagtayo.
+Hindi pa tapos ang iyong bagong Panuluyan. Kung walang pinagtatayuan, maglagay ng Panuluyan malapit sa trigo. Kung mayroon, piliin ang pinagtatayuan at suriin ang target na bilang ng manggagawa nito: maaaring abala ang mga manggagawa mo sa pagsusuplay sa ibang lugar.
 [intro hint supply]
 Piliin ang bagong natapos na Panuluyan. Suriin ang target ng mga manggagawa nito at abangan ang mga delivery ng trigo. Maaaring kailanganin ng mga manggagawa ng oras para magbiyahe o kumain.
 [intro hint grow]
@@ -6595,7 +6617,7 @@ I-drag ang walang laman na lupa upang ilipat ang view bago maglagay ng bandila. 
 [intro help touch build]
 Piliin ang Panuluyan sa Magtayo. Ilagay ito sa bakanteng lupa malapit sa trigo at kumpirmahin. Piliin ang pinagtatayuan at humiling ng 2 tagapagtayo. Kahilingan ang target na bilang ng manggagawa, hindi bilang ng mga naroon na. Panatilihing may suplay ang kasalukuyang Panuluyan at Pugad. Binibilang ang anumang wastong lokasyon.
 [intro help touch supply]
-Piliin ang bagong natapos na Panuluyan at dagdagan ang target na bilang ng nakatalagang manggagawa. Magkahiwalay ang target para sa pagtatayo at pang-araw-araw na suplay. Nangangalap ng trigo ang tagasuplay at dinadala ito rito. Kumakain ang mga gutom na yunit sa mga Panuluyan; mauubusan kalaunan ang gusaling walang tagasuplay. Panatilihing naaabot ang trigo.
+Piliin ang bagong natapos na Panuluyan at suriin ang target na bilang ng nakatalagang manggagawa; kusa itong humihingi ng mga tagasuplay. Magkahiwalay ang target para sa pagtatayo at pang-araw-araw na suplay. Nangangalap ng trigo ang tagasuplay at dinadala ito rito. Kumakain ang mga gutom na yunit sa mga Panuluyan; mauubusan kalaunan ang gusaling walang tagasuplay. Panatilihing naaabot ang trigo.
 [intro help touch grow]
 Piliin ang Pugad. Itakda sa 1 ang proporsyon ng manggagawa, at sa 0 ang tagapaggalugad at mandirigma. Taasan sa 2 o higit pa ang target na bilang ng tagasuplay nito. Nagdadala ng trigo para sa bagong yunit ang mga tagasuplay, ngunit may iba ring gawaing nangangailangan sa kanila. Panatilihing may suplay ang parehong Panuluyan.
 [intro help touch attack]
@@ -6609,7 +6631,7 @@ Mga Bandila → Bandila ng Paggalugad. Ilagay ito sa bato; magtalaga ng 1 tagapa
 [intro compact build]
 Magtayo → Panuluyan. Ilagay malapit sa trigo; magtalaga ng 2 tagapagtayo.
 [intro compact supply]
-Piliin ang iyong bagong Panuluyan; magtalaga ng kahit isang tagasuplay. Maghintay para sa trigo.
+Piliin ang iyong bagong Panuluyan; suriin ang mga tagasuplay nito. Maghintay para sa trigo.
 [intro compact grow]
 Piliin ang Pugad; magtalaga ng 2 tagasuplay. Mga manggagawa lamang ang likhain.
 [intro compact attack]
@@ -6721,13 +6743,13 @@ Gamitin ang mga handang manlalangoy upang magtayo ng Paaralan, pagkatapos ay obs
 [lesson schools complete]
 Pinahusay ng inyong Paaralan ang mga kasanayan sa paggawa. Nagbubukas ang mga bihasang tagapagtayo ng mga pagpapabuti; ang mas mahusay na pag-aani ay nakakatulong na mapanatili ang lumalawak na ekonomiya.
 [lesson schools build hint]
-Magtayo ng Paaralan sa bakanteng lugar; magtalaga ng mga tagapagtayo. Mayroon nang mga manlalangoy ang kolonya para kumuha ng lumot. Panatilihin ang daan patungo sa kahoy at tubig. Nagbibigay ng mga materyal para sa prestihiyo ang mga punong namumunga; sa trigo pa rin nanggagaling ang pagkain.
+Wala pang natapos na Paaralan. Suriin kung humihingi ng mga tagapagtayo ang pinagtatayuan nito at kung naaabot nila ang kahoy at ang lawa.
 [lesson schools build title]
 Magtayo ng Paaralan
 [lesson schools build instruction]
 Magtayo ng Paaralan sa bakanteng lugar; magtalaga ng mga tagapagtayo.
 [lesson schools build help]
-Mayroon nang mga manlalangoy ang kolonya para kumuha ng lumot. Panatilihin ang daan patungo sa kahoy at tubig. Nagbibigay ng mga materyal para sa prestihiyo ang mga punong namumunga; sa trigo pa rin nanggagaling ang pagkain.
+Mayroon nang mga manlalangoy ang kolonya para kumuha ng lumot. Panatilihin ang daan patungo sa kahoy at tubig. Hindi pagkain ang mga punong namumunga; kailangan pa rin ng trigo ng iyong mga Panuluyan.
 [lesson schools build marker]
 Magtayo ng Paaralan
 [lesson schools learn hint]
@@ -6755,13 +6777,13 @@ Natuto na ang mga manggagawang ito ng mga kasanayan sa unang antas ng Paaralan. 
 [lesson upgrades upgrade marker]
 I-upgrade ang Karerahan
 [lesson upgrades train hint]
-Hayaang matuto ang dati nang manggagawa ng mas mabilis na paglalakad sa na-upgrade na Karerahan. Pinapahusay ng natapos na upgrade ang pagsasanay. Nangangailangan ng mas mataas na kasanayan sa pagtatayo ang mas mataas na antas ng gusali; nagsisimula sa 1 ang antas na ipinapakita sa manlalaro.
+Wala pang manggagawang nagsanay sa na-upgrade na Karerahan. Panatilihin itong naaabot at mag-iwan ng ilang malayang manggagawa.
 [lesson upgrades train title]
 Gamitin ang na-upgrade na pagsasanay
 [lesson upgrades train instruction]
 Hayaang matuto ang isang kasalukuyang manggagawa ng mas mabilis na paglalakad sa na-upgrade na Karerahan.
 [lesson upgrades train help]
-Ang isang nakumpletong pag-upgrade ay nagpapabuti sa magagamit na pagsasanay. Ang mas mataas na antas ng gusali ay nangangailangan ng mas mataas na kasanayan sa konstruksyon; ang antas na ipinapakita sa mga manlalaro ay nagsisimula sa 1.
+Pinapabuti ng isang nakumpletong pag-upgrade ang pagsasanay na iniaalok ng gusali. Ang mas mataas na antas ng gusali ay nangangailangan ng mga tagapagtayo na may mas mataas na kasanayan sa konstruksyon.
 [lesson warrior-training title]
 Paglikha at pagsasanay ng mga mandirigma
 [lesson warrior-training briefing]
@@ -6823,13 +6845,13 @@ Gumagamit ng bato ang mga pader at humihiling ng manggagawa ang bawat pinagtatay
 [lesson fortifications walls marker]
 Protektahan ang tore gamit ang mga pader
 [lesson fortifications supply hint]
-Piliin ang tore at humiling ng mga tagasuplay. Maghintay hanggang may kahit 2 bato. Kailangan ng tapos nang tore ng target na bilang ng tagasuplay upang maghatid ng bala. Hiwalay ito sa target na bilang para sa pagtatayo.
+Kulang sa 2 bato ang laman ng tore. Piliin ito at suriin ang target na bilang ng manggagawa nito; kailangan ng mga tagasuplay ng bukas na daan mula sa bato.
 [lesson fortifications supply title]
 Maghatid ng bala
 [lesson fortifications supply instruction]
-Piliin ang tore at humingi ng mga tagasuplay. Maghintay ng kahit 2 bato.
+Piliin ang natapos na tore at suriin ang mga tagasuplay nito. Maghintay ng kahit 2 bato.
 [lesson fortifications supply help]
-Kailangan ng tapos nang tore ng target na bilang ng tagasuplay upang maghatid ng bala. Hiwalay ito sa target na bilang para sa pagtatayo.
+Kusang humihingi ng mga tagasuplay ang tapos nang tore upang maghatid ng bala. Hiwalay ito sa target na bilang para sa pagtatayo; dagdagan ang target nito kung mabagal dumating ang bato.
 [lesson fortifications supply marker]
 Maghatid ng bala
 [lesson fortifications hold hint]
@@ -6921,7 +6943,7 @@ Magtayo → Tore. Ilagay sa minarkahang lugar.
 [lesson fortifications walls compact]
 Magtayo ng 2 pader. Panatilihing bukas ang kanlurang daanan ng tore.
 [lesson fortifications supply compact]
-Pumili ng tore → mga tagasuplay. Maghintay ng 2 bato.
+Pumili ng tore → suriin ang mga tagasuplay. Maghintay ng 2 bato.
 [lesson fortifications hold compact]
 Panatilihing may suplay ang tore laban sa umaatake.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Lupang tundra
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

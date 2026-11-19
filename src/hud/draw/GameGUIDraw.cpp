@@ -333,12 +333,14 @@ GameGUI::TopBarLayout GameGUI::topBarLayout() const
 {
 	// Inspection can lay out the HUD before draw() refreshes the legacy pointer.
 	// Read the statistics owned by the same immutable scene as the other panels.
-	const auto &stats = *drawnScene().panels.localStats;
+	// Before the first scene is extracted (MCP inspection while a game loads)
+	// there are no statistics yet; show placeholders rather than read them.
+	const TeamStats *stats = drawnScene().panels.localStats.get();
 	TopBarLayout layout;
 	for (int i = 0; i < 3; ++i)
-		layout.values[i] = std::to_string(stats.getFreeUnits(i) -
-			(i == 0 ? stats.getWorkersNeeded() : 0)) + "/" +
-			std::to_string(stats.getTotalUnits(i));
+		layout.values[i] = stats ? std::to_string(stats->getFreeUnits(i) -
+			(i == 0 ? stats->getWorkersNeeded() : 0)) + "/" +
+			std::to_string(stats->getTotalUnits(i)) : "-/-";
 	const auto &colony = drawnScene().panels.local.state();
 	layout.values[3] = std::to_string(colony.prestige);
 	layout.values[4] = localWinChanceText();

@@ -3150,6 +3150,8 @@ Pensel %0
 Lag %0
 [Your colony]
 Din koloni
+[Practice colony]
+Övningskoloni
 [%0 / %1 HP · %2]
 %0 / %1 HP · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ Det gick inte att exportera inspelningen.
 Ta bort inspelning
 [recording refresh]
 Uppdatera
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Kunde inte återställa föregående bibliotek: %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Förstör fiendens svärm
 [intro instruction build]
 Öppna Bygg och placera ett värdshus nära vete. Tilldela lediga arbetare att bygga det. Fortsätt försörja det befintliga värdshuset.
 [intro instruction supply]
-Välj ditt färdiga nya värdshus och tilldela minst en leverantör. Vänta på att en arbetare levererar vete.
+Välj ditt färdiga nya värdshus. Det begär leverantörer på egen hand; kontrollera dess arbetarmål och vänta på att en arbetare levererar vete.
 [intro instruction grow]
 Välj svärmen. Sätt arbetarmålet till minst 2 och produktionsförhållandet till enbart arbetare. Håll båda värdshusen försörjda medan en ny arbetare föds.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Flytta vyn österut med minikartan och hitta stenfältet. Välj Utforskningsflag
 [intro help build]
 Byggandet förbrukar trä som arbetare levererar. Välj Värdshus i byggpaletten, placera det på öppen mark nära vete och begär 2 byggare. Ett arbetarmål är en begäran, inte antalet arbetare som redan är där. Behåll leverantörer vid ditt befintliga värdshus och din svärm. Alla giltiga platser räknas.
 [intro help supply]
-Byggande och löpande försörjning har separata arbetarmål. Välj det färdiga värdshuset och höj dess driftsmål. En leverantör samlar vete och bär hit det. Hungriga globuler äter på värdshus; utan leverantörer tar förråden så småningom slut. Håll vägen till vetet öppen.
+Byggande och löpande försörjning har separata arbetarmål. Ett färdigt värdshus begär leverantörer automatiskt; höj dess driftsmål om vetet kommer för långsamt. En leverantör samlar vete och bär hit det. Hungriga globuler äter på värdshus; utan leverantörer tar förråden så småningom slut. Håll vägen till vetet öppen.
 [intro help grow]
 Svärmen förbrukar vete för att skapa enheter. Sätt arbetarproduktionen till 1 och utforskar- och krigarproduktionen till 0. Höj svärmens arbetarmål till minst 2. Fler leverantörer kan leverera vete snabbare men konkurrerar med andra uppgifter. Försörj båda värdshusen.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Svärmen förbrukar vete för att skapa enheter. Sätt arbetarproduktionen till 
 [intro hint scout]
 Din utforskare behöver en bemannad utforskningsflagga på det östra stenfältet. Kontrollera dess mål och antal utforskare.
 [intro hint build]
-Om du tog bort det nya värdshuset, bygg ett till. Kontrollera annars byggplatsen och dess arbetarmål. Befintliga leveransuppgifter kan sysselsätta dina arbetare; håll maten igång och frigör byggare.
+Ditt nya värdshus är inte färdigt än. Om det inte finns någon byggplats, placera ett värdshus nära vetet. Välj annars byggplatsen och kontrollera dess arbetarmål: leveransuppgifter på andra ställen kan hålla dina arbetare upptagna.
 [intro hint supply]
 Välj det färdiga nya värdshuset. Kontrollera arbetarmålet och se efter veteleveranser. Arbetare kan behöva tid för att resa eller äta.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Dra på tom mark för att flytta vyn innan du placerar en flagga. Hitta stenfäl
 [intro help touch build]
 Välj Värdshus under Bygg. Placera det på öppen mark nära vete och bekräfta. Välj byggplatsen och begär 2 byggare. Ett arbetarmål är en begäran, inte antalet arbetare som redan är där. Försörj det befintliga värdshuset och svärmen. Alla giltiga platser räknas.
 [intro help touch supply]
-Välj det färdiga nya värdshuset och höj dess arbetarmål. Byggande och löpande försörjning har separata mål. En leverantör samlar vete och bär hit det. Hungriga globuler äter på värdshus; utan leverantörer tar förråden slut. Håll vetet tillgängligt.
+Välj det färdiga nya värdshuset och kontrollera dess arbetarmål; det begär leverantörer på egen hand. Byggande och löpande försörjning har separata mål. En leverantör samlar vete och bär hit det. Hungriga globuler äter på värdshus; utan leverantörer tar förråden slut. Håll vetet tillgängligt.
 [intro help touch grow]
 Välj svärmen. Sätt arbetarproduktionen till 1 och utforskar- och krigarproduktionen till 0. Höj arbetarmålet till minst 2. Leverantörer hämtar vete för nya enheter men konkurrerar med andra uppgifter. Försörj båda värdshusen.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Flaggor → Utforskningsflagga. Placera på stenen; tilldela 1 utforskare.
 [intro compact build]
 Bygg → Värdshus. Placera nära vete; tilldela 2 byggare.
 [intro compact supply]
-Välj ditt nya värdshus; tilldela minst 1 leverantör. Vänta på vete.
+Välj ditt nya värdshus; kontrollera dess leverantörer. Vänta på vete.
 [intro compact grow]
 Välj svärmen; tilldela 2 leverantörer. Skapa bara arbetare.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Använd de förberedda simmarna för att bygga en skola och se arbetarna lära s
 [lesson schools complete]
 Din skola förbättrade arbetarnas färdigheter. Skickliga byggare möjliggör uppgraderingar; bättre skörd stöder en växande ekonomi.
 [lesson schools build hint]
-Bygg en skola i gläntan; tilldela byggare. Kolonin har redan simmare för alger. Håll vägar till trä och vatten öppna. Fruktträd ger prestigeresurser; maten kommer fortfarande från vete.
+Ingen färdig skola än. Kontrollera att byggplatsen begär byggare och att de kan nå trät och dammen.
 [lesson schools build title]
 Bygg en skola
 [lesson schools build instruction]
 Bygg en skola i gläntan; tilldela byggare.
 [lesson schools build help]
-Kolonin har redan simmare för alger. Håll vägar till trä och vatten öppna. Fruktträd ger prestigeresurser; maten kommer fortfarande från vete.
+Kolonin har redan simmare för alger. Håll vägar till trä och vatten öppna. Fruktträd är inte mat; dina värdshus behöver fortfarande vete.
 [lesson schools build marker]
 Bygg en skola
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Arbetarna har redan lärt sig skolans färdigheter på första nivån. Uppgrader
 [lesson upgrades upgrade marker]
 Uppgradera löparbanan
 [lesson upgrades train hint]
-Låt en befintlig arbetare lära sig snabbare gång på den uppgraderade löparbanan. En färdig uppgradering förbättrar tillgänglig träning. Högre byggnadsnivåer kräver bättre byggfärdigheter; nivån som visas för spelare börjar på 1.
+Ingen arbetare har tränat på den uppgraderade löparbanan än. Håll den nåbar och lämna några arbetare lediga.
 [lesson upgrades train title]
 Använd den uppgraderade träningen
 [lesson upgrades train instruction]
 Låt en befintlig arbetare lära sig snabbare gång på den uppgraderade löparbanan.
 [lesson upgrades train help]
-En färdig uppgradering förbättrar tillgänglig träning. Högre byggnadsnivåer kräver bättre byggfärdigheter; nivån som visas för spelare börjar på 1.
+En färdig uppgradering förbättrar träningen den erbjuder. Högre byggnadsnivåer kräver byggare med bättre byggfärdigheter.
 [lesson warrior-training title]
 Skapa och träna krigare
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Murar använder sten och varje byggplats begär arbetare. Stäng inte in tornet:
 [lesson fortifications walls marker]
 Skydda tornet med murar
 [lesson fortifications supply hint]
-Välj tornet och begär leverantörer. Vänta på minst 2 sten. Ett färdigt torn behöver ett arbetarmål för driften för att få ammunition. Det är skilt från byggmålet.
+Tornet har färre än 2 sten. Välj det och kontrollera dess arbetarmål; leverantörer behöver en öppen väg från stenen.
 [lesson fortifications supply title]
 Leverera ammunition
 [lesson fortifications supply instruction]
-Välj tornet och begär leverantörer. Vänta på minst 2 sten.
+Välj det färdiga tornet och kontrollera dess leverantörer. Vänta på minst 2 sten.
 [lesson fortifications supply help]
-Ett färdigt torn behöver ett arbetarmål för driften för att få ammunition. Det är skilt från byggmålet.
+Ett färdigt torn begär leverantörer på egen hand för att få ammunition. Det är skilt från byggmålet; höj det om stenen kommer långsamt.
 [lesson fortifications supply marker]
 Leverera ammunition
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Bygg → Torn. Placera i det markerade området.
 [lesson fortifications walls compact]
 Bygg 2 murar. Håll tornets västra väg öppen.
 [lesson fortifications supply compact]
-Välj torn → Leverantörer. Vänta på 2 sten.
+Välj torn → kontrollera Leverantörer. Vänta på 2 sten.
 [lesson fortifications hold compact]
 Håll tornet försörjt mot angriparen.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Tundramark
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

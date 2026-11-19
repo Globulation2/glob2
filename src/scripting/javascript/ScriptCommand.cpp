@@ -13,6 +13,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <new>
 #include <stdexcept>
 #include "MapScript.h"
 namespace Script
@@ -64,13 +65,19 @@ int runScriptCommand(const Cli::Request &request)
 	}
 	if (command != "script check" && command != "ai check" && command != "script attach")
 		return -1;
+	const bool check = command == "ai check" || command == "script check";
 	try
 	{
 		if (command == "ai check")
 		{
 			auto metadata = Script::inspectAI(Script::readSource(request.positionals.at(0)));
-			std::cout << "JavaScript AI profile " << metadata.apiVersion << ": " << metadata.name
-					  << " — startup, callback and persistent globals validated\n";
+			std::cout << "JavaScript AI profile " << metadata.apiVersion << ": "
+					  << (metadata.name.empty() ? "(unnamed; profile 2 metadata() names it)"
+											   : metadata.name)
+					  << " — startup, metadata, step(ctx) definition and initial globals "
+						 "validated\n"
+						 "step(ctx) itself was not run: play a game to test its decisions and "
+						 "orders.\n";
 			return 0;
 		}
 		if (command == "script check")
@@ -115,7 +122,15 @@ int runScriptCommand(const Cli::Request &request)
 	}
 	catch (const std::exception &ex)
 	{
+		// A check rejects the script it was given (exit 2, as the JSON form does);
+		// only resource failures in the checker itself are operational.
+		if (check)
+			std::cerr << request.positionals.at(0) << ": ";
 		std::cerr << ex.what() << '\n';
+		const bool operational = dynamic_cast<const std::bad_alloc *>(&ex) ||
+								 dynamic_cast<const Script::HostFailure *>(&ex);
+		if (check)
+			return operational ? 3 : 2;
 		return dynamic_cast<const std::invalid_argument *>(&ex) ? 2 : 3;
 	}
 }

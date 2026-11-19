@@ -3150,6 +3150,8 @@ Irismena: %0
 %0. taldea
 [Your colony]
 Zure kolonia
+[Practice colony]
+Praktika-kolonia
 [%0 / %1 HP · %2]
 %0 / %1 BP · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ Ezin izan da grabazioa esportatu.
 Ezabatu grabazioa
 [recording refresh]
 Freskatu
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library Fit]
 Egokitu
 [library GL only]
@@ -6615,7 +6637,7 @@ Ireki banderak eta jarri Miatze-bandera koloniaren ekialdeko harrien gainean. Es
 [intro instruction build]
 Ireki eraikuntza eta jarri Ostatu bat gariaren ondoan. Esleitu langile libreak eraikitzeko. Mantendu lehengo Ostatua hornituta.
 [intro instruction supply]
-Hautatu amaitutako Ostatu berria eta esleitu gutxienez hornitzaile bat. Itxaron langile batek garia ekarri arte.
+Hautatu amaitutako Ostatu berria. Berak eskatzen ditu hornitzaileak; egiaztatu eskatutako langile kopurua eta itxaron langile batek garia ekarri arte.
 [intro instruction grow]
 Hautatu Kofoina. Ezarri eskatutako langile kopurua gutxienez 2an, eta ekoizpen-proportzioak langileak soilik sortzeko. Mantendu bi Ostatuak hornituta langile berria jaio bitartean.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Mugitu ikuspegia ekialdera minimaparekin harriak aurkitzeko. Aukeratu Miatze-ban
 [intro help build]
 Eraikuntzak langileek ekarritako egurra kontsumitzen du. Aukeratu Ostatua eraikinen panelean, jarri lur librean gariaren ondoan, eta eskatu 2 eraikitzaile. Eskatutako kopurua ez da dagoeneko bertan dauden langileen kopurua. Mantendu hornitzaileak lehengo Ostatuan eta Kofoinean. Edozein kokaleku baliozkok balio du.
 [intro help supply]
-Eraikuntzak eta eguneroko hornidurak langile kopuru bereiziak dituzte. Hautatu amaitutako Ostatua eta handitu funtzionamendurako eskatutako kopurua. Hornitzaile batek garia biltzen du eta hona dakar. Globulu gosetiek Ostatuetan jaten dute; hornitzailerik gabe, erreserbak agortzen dira. Mantendu gariaren sarbidea libre.
+Eraikuntzak eta eguneroko hornidurak langile kopuru bereiziak dituzte. Amaitutako Ostatuak automatikoki eskatzen ditu hornitzaileak; handitu funtzionamendurako eskatutako kopurua garia mantsoegi iristen bada. Hornitzaile batek garia biltzen du eta hona dakar. Globulu gosetiek Ostatuetan jaten dute; hornitzailerik gabe, erreserbak agortzen dira. Mantendu gariaren sarbidea libre.
 [intro help grow]
 Kofoinak garia kontsumitzen du unitateak sortzeko. Ezarri langileen ekoizpena 1ean, eta miatzaileena eta gerlariena 0an. Eskatu gutxienez 2 langile Kofoinean. Hornitzaile gehiagok azkarrago dakarte garia, baina beste lanekin lehiatzen dira. Mantendu bi Ostatuak hornituta.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Ireki banderak, aukeratu Gerra-bandera eta jarri harrien ekialdeko etsaiaren Kof
 [intro hint scout]
 Miatzaileak unitateak eskatzen dituen Miatze-bandera behar du ekialdeko harrietan. Egiaztatu helmuga eta eskatutako miatzaile kopurua.
 [intro hint build]
-Ostatu berria kendu baduzu, eraiki beste bat. Bestela, egiaztatu obra eta eskatutako langile kopurua. Lehengo hornidura-lanek langileak okupatuta eduki ditzakete; mantendu janaria eraikitzaileak libre uzten dituzun bitartean.
+Ostatu berria ez dago oraindik amaituta. Obrarik ez badago, jarri Ostatu bat gariaren ondoan. Bestela, hautatu obra eta egiaztatu eskatutako langile kopurua: beste leku batzuetako hornidura-lanek langileak okupatuta eduki ditzakete.
 [intro hint supply]
 Hautatu amaitutako Ostatu berria. Egiaztatu eskatutako langile kopurua eta gariaren entregak. Langileek denbora behar dezakete mugitzeko edo jateko.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Arrastatu lur hutsa ikuspegia mugitzeko bandera jarri aurretik. Aurkitu koloniar
 [intro help touch build]
 Aukeratu Ostatua eraikuntzan. Jarri lur librean gariaren ondoan eta berretsi. Hautatu obra eta eskatu 2 eraikitzaile. Eskatutako kopurua ez da bertan dauden langileen kopurua. Hornitu lehengo Ostatua eta Kofoina. Edozein kokaleku baliozkok balio du.
 [intro help touch supply]
-Hautatu amaitutako Ostatu berria eta handitu eskatutako langile kopurua. Eraikuntzak eta hornidurak kontrol bereiziak dituzte. Hornitzaile batek garia biltzen du eta hona dakar. Globulu gosetiek Ostatuetan jaten dute; hornitzailerik gabe, erreserbak agortzen dira. Mantendu garia eskuragarri.
+Hautatu amaitutako Ostatu berria eta egiaztatu eskatutako langile kopurua; berak eskatzen ditu hornitzaileak. Eraikuntzak eta hornidurak kontrol bereiziak dituzte. Hornitzaile batek garia biltzen du eta hona dakar. Globulu gosetiek Ostatuetan jaten dute; hornitzailerik gabe, erreserbak agortzen dira. Mantendu garia eskuragarri.
 [intro help touch grow]
 Hautatu Kofoina. Ezarri langileen ekoizpena 1ean eta miatzaileena eta gerlariena 0an. Eskatu gutxienez 2 langile. Hornitzaileek unitate berrientzako garia dakarte, baina beste lanekin lehiatzen dira. Hornitu bi Ostatuak.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Banderak → Miatze-bandera. Jarri harrietan; esleitu 1 miatzaile.
 [intro compact build]
 Eraiki → Ostatua. Jarri gariaren ondoan; esleitu 2 eraikitzaile.
 [intro compact supply]
-Hautatu Ostatu berria; esleitu gutxienez 1 hornitzaile. Itxaron gariari.
+Hautatu Ostatu berria; egiaztatu hornitzaileak. Itxaron gariari.
 [intro compact grow]
 Hautatu Kofoina; esleitu 2 hornitzaile. Sortu langileak soilik.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Erabili prestatutako igerilariak Eskola eraikitzeko, eta ikusi langileak eraikit
 [lesson schools complete]
 Eskolak langileen trebetasunak hobetu ditu. Eraikitzaile trebatuek hobekuntzak ahalbidetzen dituzte; uzta hobeak hazten ari den ekonomia sostengatzen laguntzen du.
 [lesson schools build hint]
-Eraiki Eskola bat soilgunean; esleitu eraikitzaileak. Koloniak baditu igerilariak algak biltzeko. Utzi egurrerako eta uretarako sarbidea. Fruta-arbolek ospe-baliabideak ematen dituzte; janaria garitik dator oraindik.
+Oraindik ez dago Eskola amaiturik. Egiaztatu bere obrak eraikitzaileak eskatzen dituela eta egurrera eta urmaelera irits daitezkeela.
 [lesson schools build title]
 Eraiki Eskola bat
 [lesson schools build instruction]
 Eraiki Eskola bat soilgunean; esleitu eraikitzaileak.
 [lesson schools build help]
-Koloniak baditu igerilariak algak biltzeko. Utzi egurrerako eta uretarako sarbidea. Fruta-arbolek ospe-baliabideak ematen dituzte; janaria garitik dator oraindik.
+Koloniak baditu igerilariak algak biltzeko. Utzi egurrerako eta uretarako sarbidea. Fruta-arbolak ez dira janaria; zure Ostatuek garia behar dute oraindik.
 [lesson schools build marker]
 Eraiki Eskola bat
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Langile hauek dagoeneko ikasi dituzte lehen mailako Eskolaren trebetasunak. Hobe
 [lesson upgrades upgrade marker]
 Hobetu Zirkuitua
 [lesson upgrades train hint]
-Utzi lehendik dagoen langile bati Zirkuitu hobetuaren bidez azkarrago ibiltzen ikasten. Amaitutako hobekuntzak entrenamendua hobetzen du. Eraikin-maila altuagoek eraikuntza-trebetasun handiagoa behar dute; erakutsitako maila 1ean hasten da.
+Oraindik ez da langilerik entrenatu Zirkuitu hobetuan. Mantendu irisgarri eta utzi langile batzuk libre.
 [lesson upgrades train title]
 Erabili entrenamendu hobetua
 [lesson upgrades train instruction]
 Utzi lehendik dagoen langile bati Zirkuitu hobetuaren bidez azkarrago ibiltzen ikasten.
 [lesson upgrades train help]
-Amaitutako hobekuntzak entrenamendua hobetzen du. Eraikin-maila altuagoek eraikuntza-trebetasun handiagoa behar dute; erakutsitako maila 1ean hasten da.
+Amaitutako hobekuntzak eraikinak eskaintzen duen entrenamendua hobetzen du. Eraikin-maila altuagoek eraikuntza-trebetasun handiagoa duten eraikitzaileak behar dituzte.
 [lesson warrior-training title]
 Gerlariak sortzea eta entrenatzea
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Hormek harria erabiltzen dute eta obra bakoitzak langileak eskatzen ditu. Ez itx
 [lesson fortifications walls marker]
 Babestu dorrea hormekin
 [lesson fortifications supply hint]
-Hautatu dorrea eta eskatu hornitzaileak. Itxaron gutxienez 2 harri izan arte. Amaitutako dorreak funtzionamendurako langile kopurua behar du munizioa ekartzeko. Eraikuntzako kopurutik bereizita dago.
+Dorreak 2 harri baino gutxiago ditu. Hautatu eta egiaztatu eskatutako langile kopurua; hornitzaileek bide librea behar dute harritik.
 [lesson fortifications supply title]
 Hornitu munizioa
 [lesson fortifications supply instruction]
-Hautatu dorrea eta eskatu hornitzaileak. Itxaron gutxienez 2 harri izan arte.
+Hautatu amaitutako dorrea eta egiaztatu hornitzaileak. Itxaron gutxienez 2 harri izan arte.
 [lesson fortifications supply help]
-Amaitutako dorreak funtzionamendurako langile kopurua behar du munizioa ekartzeko. Eraikuntzako kopurutik bereizita dago.
+Amaitutako dorreak berak eskatzen ditu hornitzaileak munizioa ekartzeko. Eraikuntzako kopurutik bereizita dago; handitu harria mantso iristen bada.
 [lesson fortifications supply marker]
 Hornitu munizioa
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Eraiki → Dorrea. Jarri markatutako eremuan.
 [lesson fortifications walls compact]
 Eraiki 2 horma. Mantendu dorrearen mendebaldeko pasabidea irekita.
 [lesson fortifications supply compact]
-Dorrea → hornitzaileak. Itxaron 2 harriri.
+Dorrea → egiaztatu hornitzaileak. Itxaron 2 harriri.
 [lesson fortifications hold compact]
 Mantendu dorrea hornituta erasotzailearen aurka.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Tundrako lurra
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

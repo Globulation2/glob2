@@ -109,6 +109,8 @@ namespace Lan
 		/// Removes an AI seat, or disconnects the guest in a human seat.
 		void kickSeat(int seat);
 		void addAI(AI::ImplementationID ai);
+		/// Gives an AI seat another AI (human seats are left alone).
+		void setSeatAI(int seat, AI::ImplementationID ai);
 		/// Rules, alliances and experiments edited through a GameHeader (the options screen).
 		void applyOptions(const GameHeader& header);
 		void chat(const std::string& text);

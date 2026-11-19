@@ -133,3 +133,37 @@ TEST_CASE("Hive Mind serves due programs fairly after slow workers without catch
 	CHECK(Hive::scheduleDue(programs, 150).empty());
 	CHECK(Hive::scheduleDue(programs, 175) == "a");
 }
+TEST_CASE("Hive Mind results publish integral script numbers as JSON integers" *
+		  doctest::test_suite("HiveMind"))
+{
+	const std::string source = "let n=0;function step(ctx){n++;return {output:{tick:ctx.tick,n,"
+							   "half:0.5,big:2**60,ids:[1,2]}};}";
+	auto r = run(source);
+	REQUIRE(r.at("ok") == true);
+	const auto &output = r.at("output");
+	// Agents read these records: an ID or tick must not come back as 50.0.
+	CHECK(output.at("tick").is_number_integer());
+	CHECK(output.at("ids").dump() == "[1,2]");
+	CHECK(output.at("half") == 0.5);
+	// Beyond 2^53 a JavaScript number is not an exact integer; keep it a double.
+	CHECK(output.at("big").is_number_float());
+	// Checkpoints round-trip through the same conversion.
+	CHECK(r.at("state").dump().find(".0") == std::string::npos);
+	CHECK(run(source, r.at("state"), true).at("output").at("n") == 2);
+}
+TEST_CASE("Hive Mind explains which invocation limit a result exceeded" *
+		  doctest::test_suite("HiveMind"))
+{
+	const auto diagnostic = [](const char *source)
+	{
+		const auto r = run(source);
+		CHECK(r.at("ok") == false);
+		return r.value("diagnostic", std::string());
+	};
+	CHECK(diagnostic("function step(){return {orders:Array(33).fill(null)}}") ==
+		  "Return at most 32 orders per invocation (returned 33)");
+	CHECK(diagnostic("function step(){return {output:'x'.repeat(65537)}}") ==
+		  "Returned output and orders exceed 64 KiB");
+	CHECK(diagnostic("function step(){return {orders:{type:'delete'}}}") ==
+		  "orders must be an array of order descriptors");
+}

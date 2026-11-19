@@ -3150,6 +3150,8 @@ Igralec %0
 Ekipa %0
 [Your colony]
 Vaša kolonija
+[Practice colony]
+Vadbena kolonija
 [%0 / %1 HP · %2]
 Zdravje %0 / %1 · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ Posnetka ni bilo mogoče izvoziti.
 Izbriši posnetek
 [recording refresh]
 Osveži
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Prejšnje knjižnice ni bilo mogoče obnoviti: %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Odprite Zastave in postavite Raziskovalno zastavo na nahajališče kamna vzhodno
 [intro instruction build]
 Odprite Gradnjo in postavite Restavracijo blizu pšenice. Dodelite razpoložljive delavce za gradnjo. Obstoječo Restavracijo še naprej oskrbujte.
 [intro instruction supply]
-Izberite svojo dokončano novo restavracijo in ji dodelite vsaj enega dobavitelja. Počakajte, da delavec dostavi pšenico.
+Izberite svojo dokončano novo restavracijo. Dobavitelje zahteva sama; preverite zahtevano število delavcev in počakajte, da delavec dostavi pšenico.
 [intro instruction grow]
 Izberite Porodnišnico. Za dobavo zahtevajte vsaj 2 delavca. Nastavite proizvodnjo samo za delavce. Oskrbujte obe restavraciji s hrano, dokler se ne rodi nov delavec.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Z mini zemljevidom premaknite pogled na vzhod in poiščite nahajališče kamna.
 [intro help build]
 Gradnja porablja les, ki ga prinašajo delavci. V paleti zgradb izberite Restavracijo, jo postavite na prosta tla blizu pšenice in zahtevajte 2 graditelja. Zahtevano število delavcev je zahteva, ne število že prisotnih. Ohranite dobavitelje pri obstoječi Restavraciji in Porodnišnici. Vsaka veljavna lokacija šteje.
 [intro help supply]
-Gradnja in vsakodnevna oskrba imata ločeni zahtevani števili delavcev. Izberite dokončano Restavracijo in povečajte zahtevano število delavcev za obratovanje. Dobavitelj zbere pšenico in jo prinese sem. Lačne kroglice jedo v Restavracijah; zgradbi brez dobaviteljev sčasoma zmanjka hrane. Ohranite dostop do pšenice.
+Gradnja in vsakodnevna oskrba imata ločeni zahtevani števili delavcev. Dokončana Restavracija samodejno zahteva dobavitelje; če pšenica prihaja prepočasi, povečajte zahtevano število delavcev za obratovanje. Dobavitelj zbere pšenico in jo prinese sem. Lačne kroglice jedo v Restavracijah; zgradbi brez dobaviteljev sčasoma zmanjka hrane. Ohranite dostop do pšenice.
 [intro help grow]
 Porodnišnica porabi pšenico za proizvodnjo enot. Nastavite proizvodnjo delavcev na 1 ter proizvodnjo raziskovalcev in bojevnikov na 0. Povečajte zahtevano število delavcev v porodnišnici na 2 ali več. Več dobaviteljev lahko pšenico dostavi hitreje, vendar tekmujejo z drugimi deli. Vzdržujte oskrbo s hrano v obeh restavracijah.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Odprite zastave, izberite vojaško zastavo in jo postavite nad sovražnikovo por
 [intro hint scout]
 Raziskovalec potrebuje Raziskovalno zastavo z dodeljenimi enotami na vzhodnem nahajališču kamna. Preverite položaj zastave in zahtevano število raziskovalcev.
 [intro hint build]
-Če ste odstranili novo restavracijo, zgradite novo. V nasprotnem primeru preverite gradbišče in število zahtevanih delavcev. Vaše delavce lahko zasedejo druga oskrbovalna dela; poskrbite, da bo kolonija oskrbovana s hrano, medtem ko bodo graditelji na voljo.
+Vaša nova restavracija še ni dokončana. Če gradbišča ni, postavite restavracijo blizu pšenice. V nasprotnem primeru izberite gradbišče in preverite število zahtevanih delavcev: oskrbovalna dela drugje morda zasedajo vaše delavce.
 [intro hint supply]
 Izberite končano novo restavracijo. Preverite zahtevano število delavcev in pazite na dostavo pšenice. Delavci morda potrebujejo čas za potovanje ali hrano.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Pred postavitvijo zastave povlecite prazna tla, da premaknete pogled. Poiščite
 [intro help touch build]
 V Gradnji izberite Restavracijo. Postavite jo na prosta tla blizu pšenice in potrdite. Izberite gradbišče in zahtevajte 2 graditelja. Zahtevano število delavcev je zahteva, ne število že prisotnih. Oskrbujte obstoječo Restavracijo in Porodnišnico. Vsaka veljavna lokacija šteje.
 [intro help touch supply]
-Izberite dokončano novo Restavracijo in povečajte zahtevano število dodeljenih delavcev. Gradnja in vsakodnevna oskrba imata ločeni nastavitvi. Dobavitelj nabere pšenico in jo prinese sem. Lačne kroglice jedo v Restavracijah; zgradbi brez dobaviteljev sčasoma zmanjka hrane. Ohranite dostop do pšenice.
+Izberite dokončano novo Restavracijo in preverite zahtevano število dodeljenih delavcev; dobavitelje zahteva sama. Gradnja in vsakodnevna oskrba imata ločeni nastavitvi. Dobavitelj nabere pšenico in jo prinese sem. Lačne kroglice jedo v Restavracijah; zgradbi brez dobaviteljev sčasoma zmanjka hrane. Ohranite dostop do pšenice.
 [intro help touch grow]
 Izberite Porodnišnico. Nastavite proizvodnjo delavcev na 1 ter raziskovalcev in bojevnikov na 0. Povečajte zahtevano število dodeljenih delavcev na vsaj 2. Dobavitelji prinašajo pšenico za nove enote, vendar tekmujejo z drugimi nalogami za delavce. Oskrbujte obe Restavraciji.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Zastave → Raziskovalna zastava. Postavite jo na kamen; dodelite 1 raziskovalca
 [intro compact build]
 Gradnja → Restavracija. Postavite blizu pšenice; dodelite 2 graditelja.
 [intro compact supply]
-Izberite svojo novo restavracijo; dodelite vsaj 1 dobavitelja. Počakajte na pšenico.
+Izberite svojo novo restavracijo; preverite njene dobavitelje. Počakajte na pšenico.
 [intro compact grow]
 Izberite Porodnišnico; dodelite 2 dobavitelja. Proizvajajte samo delavce.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Uporabite pripravljene plavalce, da zgradite šolo, nato opazujte delavce, ki se
 [lesson schools complete]
 Vaša šola je izboljšala veščine delavcev. Izurjeni gradbeniki odklenejo nadgradnje; boljša žetev pomaga ohranjati rastoče gospodarstvo.
 [lesson schools build hint]
-Zgradite šolo na jasi; dodelite graditelje. Kolonija že ima plavalce za alge. Pustite dostop do lesa in vode. Sadna drevesa zagotavljajo prestižne vire; hrana je še vedno iz pšenice.
+Dokončane šole še ni. Preverite, ali njeno gradbišče zahteva graditelje in ali lahko pridejo do lesa in ribnika.
 [lesson schools build title]
 Zgradite šolo
 [lesson schools build instruction]
 Zgradite šolo na jasi; dodelite graditelje.
 [lesson schools build help]
-Kolonija že ima plavalce za alge. Pustite dostop do lesa in vode. Sadna drevesa zagotavljajo prestižne vire; hrana je še vedno iz pšenice.
+Kolonija že ima plavalce za alge. Pustite dostop do lesa in vode. Sadna drevesa niso vir hrane; vaše restavracije še vedno potrebujejo pšenico.
 [lesson schools build marker]
 Zgradite šolo
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Ti delavci so že osvojili spretnosti Šole prve stopnje. Nadgradnje zahtevajo d
 [lesson upgrades upgrade marker]
 Nadgradite tekaško stezo
 [lesson upgrades train hint]
-Naj se obstoječi delavec nauči hitrejše hoje na nadgrajeni tekaški stezi. Dokončana nadgradnja izboljša razpoložljivo urjenje. Višje stopnje zgradb zahtevajo boljše gradbene spretnosti; igralcem prikazana stopnja se začne pri 1.
+Noben delavec se še ni uril na nadgrajeni tekaški stezi. Ohranite dostop do nje in pustite nekaj delavcev prostih.
 [lesson upgrades train title]
 Uporabite nadgrajeno usposabljanje
 [lesson upgrades train instruction]
 Naj se obstoječi delavec nauči hitrejše hoje na nadgrajeni tekaški stezi.
 [lesson upgrades train help]
-Dokončana nadgradnja izboljša razpoložljivo urjenje. Višje stopnje zgradb zahtevajo boljše gradbene spretnosti; igralcem prikazana stopnja se začne pri 1.
+Dokončana nadgradnja izboljša urjenje, ki ga zgradba ponuja. Višje stopnje zgradb zahtevajo graditelje z boljšimi gradbenimi spretnostmi.
 [lesson warrior-training title]
 Proizvodnja in urjenje bojevnikov
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Zidovi porabljajo kamen in vsako gradbišče zahteva delavce. Stolpa ne zaprite 
 [lesson fortifications walls marker]
 Zaščitite stolp z obzidjem
 [lesson fortifications supply hint]
-Izberite stolp in zahtevajte dobavitelje. Počakajte, da ima stolp vsaj 2 enoti kamna. Ko je stolp zgrajen, zahtevajte od delavcev, da prinesejo strelivo. To število morate nastaviti ločeno od števila zahtevanih delavcev za gradnjo.
+Stolp ima manj kot 2 enoti kamna. Izberite ga in preverite zahtevano število delavcev; dobavitelji potrebujejo prosto pot od kamna.
 [lesson fortifications supply title]
 Oskrba s strelivom
 [lesson fortifications supply instruction]
-Izberite stolp in zahtevajte dobavitelje. Počakajte, da ima stolp vsaj 2 enoti kamna.
+Izberite dokončani stolp in preverite njegove dobavitelje. Počakajte, da ima stolp vsaj 2 enoti kamna.
 [lesson fortifications supply help]
-Ko je stolp zgrajen, zahtevajte od delavcev, da prinesejo strelivo. To število morate nastaviti ločeno od števila zahtevanih delavcev za gradnjo.
+Dokončani stolp sam zahteva dobavitelje, da prinesejo strelivo. To število je ločeno od števila zahtevanih delavcev za gradnjo; povečajte ga, če kamen prihaja počasi.
 [lesson fortifications supply marker]
 Oskrba s strelivom
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Gradnja → Stolp. Postavite na označeno območje.
 [lesson fortifications walls compact]
 Zgradite 2 zidova. Zahodni dostop do stolpa naj ostane odprt.
 [lesson fortifications supply compact]
-Izberite stolp → dobavitelji. Počakajte na 2 kamna.
+Izberite stolp → preverite dobavitelje. Počakajte na 2 kamna.
 [lesson fortifications hold compact]
 Stolp oskrbujte s strelivom proti napadalcu.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Tundrska tla
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

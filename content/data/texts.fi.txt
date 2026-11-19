@@ -619,7 +619,7 @@ avoin
 [OpenGL]
 OpenGL
 [Options]
-Asetukset
+Valinnat
 [options]
 Asetukset
 [Orange]
@@ -3150,6 +3150,8 @@ Sivellin %0
 Joukkue %0
 [Your colony]
 Oma siirtokuntasi
+[Practice colony]
+Harjoitussiirtokunta
 [%0 / %1 HP · %2]
 %0 / %1 HP · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ Tallennetta ei voitu viedä.
 Poista tallenne
 [recording refresh]
 Päivitä
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Edellistä kirjastoa ei voitu palauttaa: %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Avaa liput ja aseta tiedustelulippu siirtokuntasi itäpuoliselle kivikolle. Mä�
 [intro instruction build]
 Avaa rakentaminen ja sijoita majatalo vehnän lähelle. Määrää vapaita työläisiä rakentamaan se. Huolehdi vanhan majatalon huollosta.
 [intro instruction supply]
-Valitse valmistunut uusi majatalo ja määrää vähintään yksi huoltaja. Odota, että työläinen tuo vehnää.
+Valitse valmistunut uusi majatalo. Se pyytää huoltajia itse; tarkista sen työläistavoite ja odota, että työläinen tuo vehnää.
 [intro instruction grow]
 Valitse pesä. Aseta työläistavoitteeksi vähintään 2 ja tuotanto tuottamaan vain työläisiä. Pidä molemmat majatalot huollettuina uuden työläisen syntyessä.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Siirrä näkymää pienoiskartalla itään ja etsi kivikko. Valitse lipuista tie
 [intro help build]
 Rakentaminen kuluttaa työläisten tuomaa puuta. Valitse rakennusvalikoimasta majatalo, sijoita se avoimelle maalle vehnän lähelle ja pyydä 2 rakentajaa. Työläistavoite on pyyntö, ei paikalla olevien työläisten määrä. Pidä huoltajia vanhassa majatalossa ja pesässä. Mikä tahansa kelvollinen paikka käy.
 [intro help supply]
-Rakentamisella ja päivittäisellä huollolla on eri työläistavoitteet. Valitse valmis majatalo ja nosta käyttötavoitetta. Huoltaja kerää vehnää ja tuo sen tänne. Nälkäiset globulit syövät majataloissa; ilman huoltajia varastot lopulta tyhjenevät. Pidä reitti vehnälle avoimena.
+Rakentamisella ja päivittäisellä huollolla on eri työläistavoitteet. Valmis majatalo pyytää huoltajia automaattisesti; nosta käyttötavoitetta, jos vehnää tulee liian hitaasti. Huoltaja kerää vehnää ja tuo sen tänne. Nälkäiset globulit syövät majataloissa; ilman huoltajia varastot lopulta tyhjenevät. Pidä reitti vehnälle avoimena.
 [intro help grow]
 Pesä kuluttaa vehnää yksiköiden tuottamiseen. Aseta työläisten tuotannoksi 1 sekä tiedustelijoiden ja soturien tuotannoksi 0. Nosta pesän työläistavoite vähintään 2:een. Useampi huoltaja tuo vehnää nopeammin, mutta vie työvoimaa muista tehtävistä. Huolla molempia majataloja.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Avaa liput, valitse sotalippu ja aseta se kivikon itäpuolella olevan vihollispe
 [intro hint scout]
 Tiedustelijasi tarvitsee itäiselle kivikolle asetetun tiedustelulipun, johon on määrätty yksikkö. Tarkista kohde ja tiedustelijoiden määrä.
 [intro hint build]
-Jos poistit uuden majatalon, rakenna toinen. Muuten tarkista rakennustyömaa ja sen työläistavoite. Huoltotyöt voivat sitoa työläiset; pidä ruoan saanti käynnissä ja vapauta rakentajia.
+Uusi majatalo ei ole vielä valmis. Jos rakennustyömaata ei ole, sijoita majatalo vehnän lähelle. Muuten valitse työmaa ja tarkista sen työläistavoite: muualla olevat huoltotyöt voivat pitää työläiset kiireisinä.
 [intro hint supply]
 Valitse valmis uusi majatalo. Tarkista työläistavoite ja seuraa vehnän toimituksia. Työläiset tarvitsevat aikaa liikkumiseen ja syömiseen.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Siirrä näkymää vetämällä tyhjää maata ennen lipun sijoittamista. Etsi k
 [intro help touch build]
 Valitse rakentamisesta majatalo. Sijoita se avoimelle maalle vehnän lähelle ja vahvista. Valitse työmaa ja pyydä 2 rakentajaa. Työläistavoite on pyyntö, ei paikalla olevien työläisten määrä. Huolla vanhaa majataloa ja pesää. Mikä tahansa kelvollinen paikka käy.
 [intro help touch supply]
-Valitse valmis uusi majatalo ja nosta työläistavoitetta. Rakentamisella ja päivittäisellä huollolla on eri tavoitteet. Huoltaja kerää vehnää ja tuo sen tänne. Nälkäiset globulit syövät majataloissa; ilman huoltajia varasto loppuu. Pidä reitti vehnälle avoimena.
+Valitse valmis uusi majatalo ja tarkista työläistavoite; se pyytää huoltajia itse. Rakentamisella ja päivittäisellä huollolla on eri tavoitteet. Huoltaja kerää vehnää ja tuo sen tänne. Nälkäiset globulit syövät majataloissa; ilman huoltajia varasto loppuu. Pidä reitti vehnälle avoimena.
 [intro help touch grow]
 Valitse pesä. Aseta työläisten tuotannoksi 1 sekä tiedustelijoiden ja soturien tuotannoksi 0. Nosta työläistavoite vähintään 2:een. Huoltajat tuovat vehnää uusille yksiköille, mutta kilpailevat muista töistä. Huolla molempia majataloja.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Liput → Tiedustelulippu. Aseta kivikolle; määrää 1 tiedustelija.
 [intro compact build]
 Rakenna → Majatalo. Vehnän lähelle; määrää 2 rakentajaa.
 [intro compact supply]
-Valitse uusi majatalo; määrää vähintään 1 huoltaja. Odota vehnää.
+Valitse uusi majatalo; tarkista huoltajat. Odota vehnää.
 [intro compact grow]
 Valitse pesä; määrää 2 huoltajaa. Tuota vain työläisiä.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Rakenna koulu valmiiden uimareiden avulla ja seuraa työläisten rakennus- ja ko
 [lesson schools complete]
 Koulusi paransi työläisten taitoja. Taitavat rakentajat mahdollistavat parannukset; parempi korjuu tukee kasvavaa taloutta.
 [lesson schools build hint]
-Rakenna koulu aukiolle; määrää rakentajia. Siirtokunnassa on jo uimareita levän keräämiseen. Pidä reitit puulle ja veteen avoimina. Hedelmäpuista saa arvostusvaroja; ruoka tulee yhä vehnästä.
+Valmista koulua ei vielä ole. Tarkista, että työmaa pyytää rakentajia ja että he pääsevät puun ja lammen luo.
 [lesson schools build title]
 Rakenna koulu
 [lesson schools build instruction]
 Rakenna koulu aukiolle; määrää rakentajia.
 [lesson schools build help]
-Siirtokunnassa on jo uimareita levän keräämiseen. Pidä reitit puulle ja veteen avoimina. Hedelmäpuista saa arvostusvaroja; ruoka tulee yhä vehnästä.
+Siirtokunnassa on jo uimareita levän keräämiseen. Pidä reitit puulle ja veteen avoimina. Hedelmäpuut eivät ole ruokaa; majatalosi tarvitsevat yhä vehnää.
 [lesson schools build marker]
 Rakenna koulu
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Nämä työläiset ovat jo oppineet koulun ensimmäisen tason taidot. Parannukse
 [lesson upgrades upgrade marker]
 Paranna kilparataa
 [lesson upgrades train hint]
-Anna nykyisen työläisen oppia nopeampaa kävelyä parannetulla kilparadalla. Valmis parannus kehittää tarjolla olevaa koulutusta. Korkeammat rakennustasot vaativat parempia rakennustaitoja; pelaajalle näytettävä taso alkaa 1:stä.
+Yksikään työläinen ei ole vielä harjoitellut parannetulla kilparadalla. Pidä se saavutettavana ja jätä joitakin työläisiä vapaiksi.
 [lesson upgrades train title]
 Käytä parannettua koulutusta
 [lesson upgrades train instruction]
 Anna nykyisen työläisen oppia nopeampaa kävelyä parannetulla kilparadalla.
 [lesson upgrades train help]
-Valmis parannus kehittää tarjolla olevaa koulutusta. Korkeammat rakennustasot vaativat parempia rakennustaitoja; pelaajalle näytettävä taso alkaa 1:stä.
+Valmis parannus kehittää rakennuksen tarjoamaa koulutusta. Korkeammat rakennustasot vaativat rakentajia, joilla on paremmat rakennustaidot.
 [lesson warrior-training title]
 Soturien tuottaminen ja koulutus
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Muurit kuluttavat kiveä ja jokainen työmaa pyytää työläisiä. Älä sulje 
 [lesson fortifications walls marker]
 Suojaa torni muureilla
 [lesson fortifications supply hint]
-Valitse torni ja pyydä huoltajia. Odota vähintään 2 kiveä. Valmis torni tarvitsee käyttötyöläistavoitteen ammusten tuomista varten. Se on eri tavoite kuin rakentamisen tavoite.
+Tornissa on alle 2 kiveä. Valitse se ja tarkista sen työläistavoite; huoltajat tarvitsevat avoimen reitin kiveltä.
 [lesson fortifications supply title]
 Toimita ammuksia
 [lesson fortifications supply instruction]
-Valitse torni ja pyydä huoltajia. Odota vähintään 2 kiveä.
+Valitse valmis torni ja tarkista sen huoltajat. Odota vähintään 2 kiveä.
 [lesson fortifications supply help]
-Valmis torni tarvitsee käyttötyöläistavoitteen ammusten tuomista varten. Se on eri tavoite kuin rakentamisen tavoite.
+Valmis torni pyytää huoltajia itse ammusten tuomista varten. Se on eri tavoite kuin rakentamisen tavoite; nosta käyttötavoitetta, jos kiveä tulee hitaasti.
 [lesson fortifications supply marker]
 Toimita ammuksia
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Rakenna → Torni. Sijoita merkitylle alueelle.
 [lesson fortifications walls compact]
 Rakenna 2 muuria. Pidä tornin länsiväylä avoimena.
 [lesson fortifications supply compact]
-Valitse torni → Huoltajat. Odota 2 kiveä.
+Valitse torni → tarkista huoltajat. Odota 2 kiveä.
 [lesson fortifications hold compact]
 Huolla tornia hyökkääjää vastaan.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Tundramaa
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

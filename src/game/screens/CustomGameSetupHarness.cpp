@@ -2796,6 +2796,38 @@ struct CustomGameSetupHarness
 		REQUIRE(e.gui.game.gameHeader.getNumberOfPlayers() == controllers);
 		std::cout << "PASS save/load: " << (watching ? "AI-only" : "human/shared") << "\n";
 	}
+	// Choosing a JavaScript AI first and then changing the map regenerates the preview
+	// with that AI already selected; the preview must not need the AI's source.
+	static void previewWithJavaScriptAI()
+	{
+		GAGGUI::ScreenStack stack(*globalContainer->gfx);
+		CustomGameScreen screen(stack);
+		screen.aiStorage = std::make_unique<Online::MemoryStorage>();
+		screen.aiLibrary = std::make_unique<Script::Library>(*screen.aiStorage);
+		const auto id = screen.aiLibrary->put(
+			"export function metadata(){return {apiVersion:2,name:'Preview fixture'}} "
+			"export function step(){}", "preview-fixture.js");
+		screen.setup.random = true;
+		screen.setup.generatorHistory.select(screen.setup.generator, MapGenerationDescriptor::eRIVER);
+		screen.setup.setCapacity(2);
+		screen.setup.generator.wDec = screen.setup.generator.hDec = 7;
+		REQUIRE(screen.setup.setController(1, CustomGameSetup::Computer));
+		screen.setup.colonies[1].ai = AI::JAVASCRIPT;
+		screen.setup.colonies[1].aiLibraryId = id;
+		screen.invalidatePreview();
+		REQUIRE(screen.generateMap());
+		REQUIRE(screen.validMap);
+		// Launch still embeds the frozen source in place of the preview's stand-in.
+		screen.freezeAIs();
+		auto &header = screen.getGameHeader();
+		bool embedded = false;
+		for (int i = 0; i < header.getNumberOfPlayers(); ++i)
+			embedded |= header.getAIConfig(i) == screen.aiLibrary->configuration(id);
+		CHECK(embedded);
+		Engine engine;
+		CHECK(engine.initCustomFromBytesTask(screen.getMapHeader(), header, 0, -1,
+											   screen.generatedSnapshot).run());
+	}
 };
 static void checkPreviewRestart()
 {
@@ -3072,6 +3104,11 @@ TEST_SUITE("CustomGameSetup")
 
 	std::filesystem::remove_all(dir);
 	std::cout << "ALL CUSTOM SETUP TESTS PASSED\n";
+	}
+	TEST_CASE("a random map previews and launches with a JavaScript AI already selected" * glob2test::needs({"generators"}))
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(false));
+		CustomGameSetupHarness::previewWithJavaScriptAI();
 	}
 	TEST_CASE("generated map snapshot launches from memory")
 	{

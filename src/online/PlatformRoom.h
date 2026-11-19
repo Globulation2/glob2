@@ -146,6 +146,8 @@ class PlatformRoom final : public RoomBackend
 	const Json *member(const std::string &accountId) const;
 	std::string myAccount() const;
 	void fetchMap();
+	void launchMatch(const Json &assignment);
+	void rejoinRunningMatch();
 
 	PlatformClient *client;
 	MapCache &maps;
@@ -159,6 +161,8 @@ class PlatformRoom final : public RoomBackend
 	bool left = false, finished = false;
 	std::shared_ptr<OnlineMatch> match;
 	std::string pendingMatchId;
+	// Matches this room has launched or asked to rejoin (match.reconnect), never again.
+	std::set<std::string> playedMatches;
 	// Map preview download.
 	struct MapFetch;
 	std::shared_ptr<MapFetch> mapFetch;

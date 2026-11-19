@@ -278,6 +278,8 @@ TEST_CASE("first-run recommendation can be declined and stays dismissed [display
     application.screens.frame(0,{});
     auto *offer=dynamic_cast<IntroductionOfferScreen*>(application.screens.top());
     REQUIRE(offer);
+    // MCP clients see this id as inspection.screen and wait on it by name.
+    CHECK(std::string(offer->recordingId())=="introduction_offer");
     const auto bounds=offer->host().bounds("intro/menu"); REQUIRE(bounds.w>0);
     SDL_Event down{};down.type=SDL_EVENT_MOUSE_BUTTON_DOWN;down.button.button=SDL_BUTTON_LEFT;
     down.button.x=bounds.x+bounds.w/2;down.button.y=bounds.y+bounds.h/2;
@@ -295,6 +297,7 @@ TEST_CASE("first-run recommendation can be declined and stays dismissed [display
     application.choose(MainMenuScreen::TUTORIAL);
     application.screens.frame(440,{});
     REQUIRE(dynamic_cast<Tutorial::LessonCatalogScreen*>(application.screens.top()));
+    CHECK(std::string(application.screens.top()->recordingId())=="tutorial_catalog");
     CHECK(globals->settings.introductionOffered);
 }
 

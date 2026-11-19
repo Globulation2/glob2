@@ -36,6 +36,7 @@ class MapPreview;
 class QuickMatchScreen : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "quick_match"; }
 	enum
 	{
 		BACK = 1,
@@ -121,6 +122,7 @@ class Ticker
 class MatchFoundScreen : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "match_found"; }
 	enum
 	{
 		CLOSED = 1,

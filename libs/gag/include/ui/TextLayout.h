@@ -50,6 +50,11 @@ std::vector<std::size_t> shapingClusterEnds(const TextMeasurer &measurer, FontRo
 // than the available width remains whole and can overflow; layout reports that width.
 std::vector<std::string> wrapText(const TextMeasurer &measurer, FontRole role,
 								  const std::string &text, int width);
+// True when the first strongly directional character is Arabic, Hebrew or another
+// right-to-left script: the paragraph reads from the right, so start-aligned
+// (TextAlign::Left) text sits against the right edge. Text with no strong
+// character (digits, punctuation) is left to right.
+bool rightToLeftParagraph(const std::string &text);
 // Truncate with an ellipsis when the text is wider than `width`.
 std::string ellipsize(const TextMeasurer &measurer, FontRole role, const std::string &text,
 					  int width);

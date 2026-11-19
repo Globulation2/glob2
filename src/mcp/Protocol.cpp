@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Protocol.h"
+#include "Guide.h"
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 #include <limits>
@@ -11,7 +12,16 @@ namespace
 {
 constexpr auto ModernVersion = "2026-07-28";
 constexpr auto LegacyVersion = "2025-11-25";
-const Json ServerInfo = {{"name", "globulation2-ui"}, {"version", "1.1"}};
+// title, description and websiteUrl let a client that has never heard of the game
+// show what it is connected to; the name stays the launcher's compatibility key.
+const Json ServerInfo = {
+	{"name", "globulation2-ui"},
+	{"title", "Globulation 2"},
+	{"version", "1.2"},
+	{"description", "Play the Globulation 2 real-time strategy game through its own window: "
+					"inspect and operate menus and the in-game HUD, take screenshots, and "
+					"script your colony"},
+	{"websiteUrl", RepositoryUrl}};
 
 bool validID(const Json &id)
 {
@@ -196,11 +206,14 @@ Reply Protocol::receive(const std::string &body, const Headers &headers)
 			return error(400, -32602, "Invalid initialization parameters");
 		result = {{"protocolVersion", LegacyVersion},
 				  {"capabilities", {{"tools", Json::object()}}},
-				  {"serverInfo", ServerInfo}};
+				  {"serverInfo", ServerInfo},
+				  {"instructions", serverInstructions()}};
 	}
 	else if (method == "server/discover" && reply.modern)
 		result = {{"supportedVersions", {ModernVersion, LegacyVersion}},
 				  {"capabilities", {{"tools", Json::object()}}},
+				  {"serverInfo", ServerInfo},
+				  {"instructions", serverInstructions()},
 				  {"ttlMs", 0},
 				  {"cacheScope", "public"}};
 	else if (method == "ping" && !reply.modern)

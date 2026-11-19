@@ -589,6 +589,7 @@ CLIENT_SOURCES = (
     'hud/GameGUITorus.cpp',
     'ui/settings/SettingsScreen.cpp',
     'ui/screens/RecordingFilesScreen.cpp',
+    'ui/RecordingNotice.cpp',
     'ui/settings/SettingsScreenGeneral.cpp',
     'ui/settings/SettingsScreenBuildings.cpp',
     'ui/settings/SettingsScreenKeyboard.cpp',

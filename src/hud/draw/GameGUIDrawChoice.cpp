@@ -26,10 +26,6 @@ namespace {
 // Layout of the choice panel (file-private; the constants drive both the sprite grid
 // and the mouse hit grid, which share one Y origin — the caller's `panelTopY`).
 constexpr int CHOICE_ROW_HEIGHT_PX = 46;
-// Width of the per-cell clip rect used when blitting the building icon. This is a
-// sprite-tile width, not the cell width (which is RIGHT_MENU_WIDTH/numberPerLine).
-constexpr int CHOICE_SPRITE_CLIP_W_PX = 64;
-
 // Selection-highlight sprite IDs in the `gamegui` sheet, and per-orientation Y nudge.
 constexpr int CHOICE_HIGHLIGHT_SPRITE_2COL = 8;
 constexpr int CHOICE_HIGHLIGHT_SPRITE_3COL = 23;
@@ -41,7 +37,8 @@ constexpr int CHOICE_PANEL_CLIP_TOP_Y = 128;
 
 // The info block at the bottom of the right panel is anchored this many pixels above
 // the bottom of the screen.
-constexpr int CHOICE_INFO_BOTTOM_OFFSET_PX = 61; // Four resource rows, including fruit.
+// Four resource rows, including fruit, end above the 26 px map zoom bar at the bottom.
+constexpr int CHOICE_INFO_BOTTOM_OFFSET_PX = 77;
 
 // Find the index of `name` in `types`, or nullopt if absent.
 std::optional<size_t> findChoiceIndex(const std::vector<std::string>& types, const std::string& name)
@@ -111,7 +108,8 @@ void GameGUI::drawChoiceSprites(int panelTopY, const std::vector<std::string>& t
 
 		const auto rect=choiceControlBounds(panelTopY,i,numberPerLine);
 		const int x=rect.x, y=rect.y;
-		globalContainer->gfx->setClipRect(x, y, CHOICE_SPRITE_CLIP_W_PX, CHOICE_ROW_HEIGHT_PX);
+		// Clip to the whole cell: icons are centred in it, so a narrower clip cuts their right edge.
+		globalContainer->gfx->setClipRect(x, y, width, CHOICE_ROW_HEIGHT_PX);
 
 		Sprite *buildingSprite;
 		if (imgid >= 0)

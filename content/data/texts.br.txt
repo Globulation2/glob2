@@ -3150,6 +3150,8 @@ Pincel %0
 Equipe %0
 [Your colony]
 Sua colônia
+[Practice colony]
+Colônia de treino
 [%0 / %1 HP · %2]
 %0 / %1 PV · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ Não foi possível exportar a gravação.
 Excluir gravação
 [recording refresh]
 Atualizar
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Não foi possível restaurar a biblioteca anterior: %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Abra Bandeiras e coloque uma Bandeira de exploração sobre as pedras a leste da
 [intro instruction build]
 Abra Construir e coloque uma Taverna perto do trigo. Designe trabalhadores disponíveis para construí-la. Mantenha a Taverna existente abastecida.
 [intro instruction supply]
-Selecione a nova Taverna concluída e designe pelo menos um abastecedor. Espere um trabalhador entregar trigo.
+Selecione a nova Taverna concluída. Ela solicita abastecedores sozinha; confira a quantidade de trabalhadores solicitada e espere um trabalhador entregar trigo.
 [intro instruction grow]
 Selecione a Colmeia. Defina a quantidade solicitada de trabalhadores como pelo menos 2 e as proporções de produção apenas para trabalhadores. Mantenha as duas Tavernas abastecidas enquanto nasce um novo trabalhador.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Use o minimapa para mover a visão para leste e encontrar as pedras. Em Bandeira
 [intro help build]
 A construção consome madeira entregue por trabalhadores. Escolha Taverna nos controles de construção, coloque-a em terreno livre perto do trigo e solicite 2 construtores. A quantidade solicitada não é a quantidade de trabalhadores já presentes. Mantenha abastecedores na Taverna existente e na Colmeia. Qualquer local válido serve.
 [intro help supply]
-Construção e abastecimento diário têm quantidades solicitadas separadas. Selecione a Taverna concluída e aumente sua quantidade de operação. Um abastecedor colhe trigo e o traz até aqui. Glóbulos famintos comem nas Tavernas; sem abastecedores, o estoque acaba. Mantenha o acesso ao trigo livre.
+Construção e abastecimento diário têm quantidades solicitadas separadas. Uma Taverna concluída solicita abastecedores automaticamente; aumente sua quantidade de operação se o trigo chegar devagar demais. Um abastecedor colhe trigo e o traz até aqui. Glóbulos famintos comem nas Tavernas; sem abastecedores, o estoque acaba. Mantenha o acesso ao trigo livre.
 [intro help grow]
 A Colmeia consome trigo para produzir unidades. Defina a produção de trabalhadores como 1 e a de exploradores e guerreiros como 0. Solicite 2 ou mais trabalhadores na Colmeia. Mais abastecedores entregam trigo mais rápido, mas disputam trabalhadores com outras tarefas. Mantenha as duas Tavernas abastecidas.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Abra Bandeiras, escolha Bandeira de guerra e coloque-a sobre a Colmeia inimiga a
 [intro hint scout]
 Seu explorador precisa de uma Bandeira de exploração com unidades designadas nas pedras a leste. Confira o destino e a quantidade de exploradores solicitada.
 [intro hint build]
-Se removeu a nova Taverna, construa outra. Caso contrário, confira o canteiro e a quantidade de trabalhadores solicitada. O abastecimento existente pode ocupar os trabalhadores; mantenha a comida chegando enquanto libera construtores.
+Sua nova Taverna ainda não está concluída. Se não houver canteiro, posicione uma Taverna perto do trigo. Caso contrário, selecione o canteiro e confira a quantidade de trabalhadores solicitada: tarefas de abastecimento em outros lugares podem estar ocupando seus trabalhadores.
 [intro hint supply]
 Selecione a nova Taverna concluída. Confira a quantidade solicitada de trabalhadores e observe as entregas de trigo. Trabalhadores podem precisar de tempo para viajar ou comer.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Arraste o terreno vazio para mover a visão antes de colocar uma bandeira. Encon
 [intro help touch build]
 Escolha Taverna em Construir. Coloque-a em terreno livre perto do trigo e confirme. Selecione o canteiro e solicite 2 construtores. A quantidade solicitada não é a quantidade de trabalhadores já presentes. Mantenha a Taverna existente e a Colmeia abastecidas. Qualquer local válido serve.
 [intro help touch supply]
-Selecione a nova Taverna concluída e aumente a quantidade solicitada de trabalhadores. Construção e abastecimento têm controles separados. Um abastecedor colhe trigo e o traz até aqui. Glóbulos famintos comem nas Tavernas; sem abastecedores, o estoque acaba. Mantenha o trigo acessível.
+Selecione a nova Taverna concluída e confira a quantidade solicitada de trabalhadores; ela solicita abastecedores sozinha. Construção e abastecimento têm controles separados. Um abastecedor colhe trigo e o traz até aqui. Glóbulos famintos comem nas Tavernas; sem abastecedores, o estoque acaba. Mantenha o trigo acessível.
 [intro help touch grow]
 Selecione a Colmeia. Defina a produção de trabalhadores como 1 e a de exploradores e guerreiros como 0. Solicite 2 ou mais trabalhadores. Abastecedores trazem trigo para novas unidades, mas disputam trabalhadores com outras tarefas. Mantenha as duas Tavernas abastecidas.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Bandeiras → Bandeira de exploração. Coloque-a nas pedras; designe 1 explorad
 [intro compact build]
 Construir → Taverna. Coloque perto do trigo; designe 2 construtores.
 [intro compact supply]
-Selecione a nova Taverna; designe pelo menos 1 abastecedor. Espere o trigo.
+Selecione a nova Taverna; confira os abastecedores. Espere o trigo.
 [intro compact grow]
 Selecione a Colmeia; designe 2 abastecedores. Produza apenas trabalhadores.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Use os nadadores preparados para construir uma Escola e observe os trabalhadores
 [lesson schools complete]
 Sua Escola melhorou as habilidades dos trabalhadores. Construtores qualificados permitem melhorias; colher melhor ajuda a sustentar uma economia em expansão.
 [lesson schools build hint]
-Construa uma Escola na clareira; designe construtores. A colônia já tem nadadores para as algas. Deixe acesso à madeira e à água. Árvores frutíferas fornecem recursos de prestígio; a comida continua vindo do trigo.
+Ainda não há Escola concluída. Confira se o canteiro solicita construtores e se eles conseguem chegar à madeira e ao lago.
 [lesson schools build title]
 Construir uma Escola
 [lesson schools build instruction]
 Construa uma Escola na clareira; designe construtores.
 [lesson schools build help]
-A colônia já tem nadadores para as algas. Deixe acesso à madeira e à água. Árvores frutíferas fornecem recursos de prestígio; a comida continua vindo do trigo.
+A colônia já tem nadadores para as algas. Deixe acesso à madeira e à água. Árvores frutíferas não são comida; suas Tavernas ainda precisam de trigo.
 [lesson schools build marker]
 Construir uma Escola
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Esses trabalhadores já aprenderam as habilidades da Escola de primeiro nível. 
 [lesson upgrades upgrade marker]
 Melhorar a Pista de corrida
 [lesson upgrades train hint]
-Deixe um trabalhador existente aprender a andar mais rápido na Pista de corrida melhorada. Uma melhoria concluída aprimora o treinamento disponível. Níveis mais altos de construção exigem mais habilidade de construção; o nível exibido começa em 1.
+Nenhum trabalhador treinou ainda na Pista de corrida melhorada. Mantenha-a acessível e deixe alguns trabalhadores livres.
 [lesson upgrades train title]
 Usar o treinamento aprimorado
 [lesson upgrades train instruction]
 Deixe um trabalhador existente aprender a andar mais rápido na Pista de corrida melhorada.
 [lesson upgrades train help]
-Uma melhoria concluída aprimora o treinamento disponível. Níveis mais altos de construção exigem mais habilidade de construção; o nível exibido começa em 1.
+Uma melhoria concluída aprimora o treinamento oferecido. Níveis mais altos de construção exigem construtores com mais habilidade de construção.
 [lesson warrior-training title]
 Produção e treinamento de guerreiros
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Muralhas usam pedra e cada canteiro solicita trabalhadores. Não cerque totalmen
 [lesson fortifications walls marker]
 Proteger a torre com muralhas
 [lesson fortifications supply hint]
-Selecione a torre e solicite abastecedores. Espere pelo menos 2 pedras. Uma torre concluída precisa de trabalhadores solicitados para operar e trazer munição. Esse controle é separado do de construção.
+A torre tem menos de 2 pedras. Selecione-a e confira a quantidade de trabalhadores solicitada; os abastecedores precisam de um caminho livre a partir da pedra.
 [lesson fortifications supply title]
 Fornecer munição
 [lesson fortifications supply instruction]
-Selecione a torre e solicite abastecedores. Espere pelo menos 2 pedras.
+Selecione a torre concluída e confira os abastecedores. Espere pelo menos 2 pedras.
 [lesson fortifications supply help]
-Uma torre concluída precisa de trabalhadores solicitados para operar e trazer munição. Esse controle é separado do de construção.
+Uma torre concluída solicita abastecedores sozinha para trazer munição. Esse controle é separado do de construção; aumente-o se a pedra chegar devagar.
 [lesson fortifications supply marker]
 Fornecer munição
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Construir → Torre. Coloque na área marcada.
 [lesson fortifications walls compact]
 Construa 2 muralhas. Mantenha aberta a passagem oeste da torre.
 [lesson fortifications supply compact]
-Torre → abastecedores. Espere 2 pedras.
+Torre → confira abastecedores. Espere 2 pedras.
 [lesson fortifications hold compact]
 Mantenha a torre abastecida contra o atacante.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Solo de tundra
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

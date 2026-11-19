@@ -3150,6 +3150,8 @@ Brosse %0
 Équipe %0
 [Your colony]
 Votre colonie
+[Practice colony]
+Colonie d’entraînement
 [%0 / %1 HP · %2]
 %0 / %1 PV · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ Impossible d’exporter l’enregistrement.
 Supprimer l’enregistrement
 [recording refresh]
 Actualiser
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Impossible de restaurer la bibliothèque précédente : %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Ouvrez les drapeaux et placez un Drapeau d’exploration sur les pierres à l’
 [intro instruction build]
 Ouvrez les constructions et placez une Auberge près du blé. Affectez des ouvrières disponibles à sa construction. Maintenez l’approvisionnement de l’Auberge existante.
 [intro instruction supply]
-Sélectionnez la nouvelle Auberge terminée et affectez-lui au moins une ravitailleuse. Attendez qu’une ouvrière apporte du blé.
+Sélectionnez la nouvelle Auberge terminée. Elle demande des ravitailleuses d’elle-même ; vérifiez son effectif demandé et attendez qu’une ouvrière apporte du blé.
 [intro instruction grow]
 Sélectionnez la Ruche. Demandez au moins 2 ouvrières et réglez les proportions de production sur les ouvrières uniquement. Approvisionnez les deux Auberges pendant la naissance d’une nouvelle ouvrière.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Déplacez la vue vers l’est avec la minicarte pour trouver les pierres. Dans l
 [intro help build]
 La construction consomme du bois apporté par les ouvrières. Dans la palette des bâtiments, choisissez Auberge, placez-la sur un terrain libre près du blé et demandez 2 bâtisseuses. L’effectif demandé n’est pas le nombre d’ouvrières déjà présentes. Gardez des ravitailleuses à l’Auberge existante et à la Ruche. Tout emplacement valide convient.
 [intro help supply]
-La construction et l’approvisionnement ont des effectifs demandés distincts. Sélectionnez l’Auberge terminée et augmentez son effectif de fonctionnement. Un ravitailleuse récolte du blé et l’apporte ici. Les globules affamés mangent aux Auberges ; sans ravitailleuses, leurs réserves finissent par s’épuiser. Gardez l’accès au blé libre.
+La construction et l’approvisionnement ont des effectifs demandés distincts. Une Auberge terminée demande automatiquement des ravitailleuses ; augmentez son effectif de fonctionnement si le blé arrive trop lentement. Une ravitailleuse récolte du blé et l’apporte ici. Les globules affamés mangent aux Auberges ; sans ravitailleuses, leurs réserves finissent par s’épuiser. Gardez l’accès au blé libre.
 [intro help grow]
 La Ruche consomme du blé pour produire des unités. Réglez la production d’ouvrières sur 1 et celles d’exploratrices et de guerrières sur 0. Demandez au moins 2 ouvrières à la Ruche. Davantage de ravitailleuses apportent le blé plus vite, mais concurrencent les autres tâches. Approvisionnez les deux Auberges.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Dans les drapeaux, choisissez Drapeau de guerre et placez-le sur la Ruche ennemi
 [intro hint scout]
 Votre exploratrice a besoin d’un Drapeau d’exploration avec affectation sur les pierres à l’est. Vérifiez sa destination et l’effectif d’exploratrices demandé.
 [intro hint build]
-Si vous avez supprimé la nouvelle Auberge, reconstruisez-en une. Sinon, vérifiez le chantier et son effectif demandé. Les tâches d’approvisionnement occupent peut-être les ouvrières ; maintenez la nourriture tout en libérant des bâtisseuses.
+Votre nouvelle Auberge n’est pas encore terminée. S’il n’y a pas de chantier, placez une Auberge près du blé. Sinon, sélectionnez le chantier et vérifiez son effectif demandé : des tâches d’approvisionnement ailleurs occupent peut-être vos ouvrières.
 [intro hint supply]
 Sélectionnez la nouvelle Auberge terminée. Vérifiez son effectif demandé et les livraisons de blé. Les ouvrières peuvent avoir besoin de temps pour se déplacer ou manger.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Avant de placer un drapeau, faites glisser le terrain vide pour déplacer la vue
 [intro help touch build]
 Dans les constructions, choisissez Auberge. Placez-la sur un terrain libre près du blé et confirmez. Sélectionnez le chantier et demandez 2 bâtisseuses. L’effectif demandé n’est pas le nombre d’ouvrières déjà présentes. Approvisionnez l’Auberge existante et la Ruche. Tout emplacement valide convient.
 [intro help touch supply]
-Sélectionnez la nouvelle Auberge terminée et augmentez l’effectif demandé. La construction et l’approvisionnement ont des réglages distincts. Un ravitailleuse récolte du blé et l’apporte ici. Les globules affamés mangent aux Auberges ; sans ravitailleuses, leurs réserves s’épuisent. Gardez l’accès au blé libre.
+Sélectionnez la nouvelle Auberge terminée et vérifiez l’effectif demandé ; elle demande des ravitailleuses d’elle-même. La construction et l’approvisionnement ont des réglages distincts. Une ravitailleuse récolte du blé et l’apporte ici. Les globules affamés mangent aux Auberges ; sans ravitailleuses, leurs réserves s’épuisent. Gardez l’accès au blé libre.
 [intro help touch grow]
 Sélectionnez la Ruche. Réglez la production d’ouvrières sur 1 et celles d’exploratrices et de guerrières sur 0. Demandez au moins 2 ouvrières. Les ravitailleuses apportent le blé pour les nouvelles unités, mais concurrencent les autres tâches. Approvisionnez les deux Auberges.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Drapeaux → Drapeau d’exploration. Placez-le sur les pierres ; affectez 1 exp
 [intro compact build]
 Construire → Auberge. Placez-la près du blé ; affectez 2 bâtisseuses.
 [intro compact supply]
-Sélectionnez la nouvelle Auberge ; affectez au moins 1 ravitailleuse. Attendez le blé.
+Sélectionnez la nouvelle Auberge ; vérifiez ses ravitailleuses. Attendez le blé.
 [intro compact grow]
 Sélectionnez la Ruche ; affectez 2 ravitailleuses. Produisez uniquement des ouvrières.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Utilisez les nageuses préparées pour construire une École, puis observez les 
 [lesson schools complete]
 Votre École a amélioré les compétences des ouvrières. Les bâtisseuses qualifiées permettent les améliorations ; une meilleure récolte soutient une économie en expansion.
 [lesson schools build hint]
-Construisez une École dans la clairière ; affectez des bâtisseuses. La colonie dispose déjà de nageuses pour les algues. Gardez l’accès au bois et à l’eau libre. Les arbres fruitiers fournissent du prestige ; le blé reste la nourriture.
+Aucune École terminée pour l’instant. Vérifiez que son chantier demande des bâtisseuses et qu’elles peuvent atteindre le bois et l’étang.
 [lesson schools build title]
 Construire une École
 [lesson schools build instruction]
 Construisez une École dans la clairière ; affectez des bâtisseuses.
 [lesson schools build help]
-La colonie dispose déjà de nageuses pour les algues. Gardez l’accès au bois et à l’eau libre. Les arbres fruitiers fournissent du prestige ; le blé reste la nourriture.
+La colonie dispose déjà de nageuses pour les algues. Gardez l’accès au bois et à l’eau libre. Les arbres fruitiers ne sont pas de la nourriture ; vos Auberges ont toujours besoin de blé.
 [lesson schools build marker]
 Construire une École
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Ces ouvrières ont déjà acquis les compétences de l’École de premier nivea
 [lesson upgrades upgrade marker]
 Améliorer la Piste de course
 [lesson upgrades train hint]
-Laissez une ouvrière existante apprendre à marcher plus vite à la Piste de course améliorée. Une amélioration terminée enrichit l’entraînement disponible. Les niveaux supérieurs demandent de meilleures compétences de construction ; le niveau affiché commence à 1.
+Aucune ouvrière ne s’est encore entraînée à la Piste de course améliorée. Gardez-la accessible et laissez quelques ouvrières libres.
 [lesson upgrades train title]
 Utiliser l’entraînement amélioré
 [lesson upgrades train instruction]
 Laissez une ouvrière existante apprendre à marcher plus vite à la Piste de course améliorée.
 [lesson upgrades train help]
-Une amélioration terminée enrichit l’entraînement disponible. Les niveaux supérieurs demandent de meilleures compétences de construction ; le niveau affiché commence à 1.
+Une amélioration terminée enrichit l’entraînement proposé. Les niveaux supérieurs demandent des bâtisseuses aux compétences de construction plus élevées.
 [lesson warrior-training title]
 Production et entraînement des guerrières
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Les murs consomment de la pierre et chaque chantier demande des ouvrières. N’
 [lesson fortifications walls marker]
 Protéger la Tourelle avec des murs
 [lesson fortifications supply hint]
-Sélectionnez la Tourelle et demandez des ravitailleuses. Attendez au moins 2 pierres. Une Tourelle terminée a besoin d’ouvrières affectées à son fonctionnement pour apporter les munitions. Ce réglage est distinct de celui de la construction.
+La Tourelle contient moins de 2 pierres. Sélectionnez-la et vérifiez son effectif demandé ; les ravitailleuses ont besoin d’un chemin libre depuis la pierre.
 [lesson fortifications supply title]
 Fournir des munitions
 [lesson fortifications supply instruction]
-Sélectionnez la Tourelle et demandez des ravitailleuses. Attendez au moins 2 pierres.
+Sélectionnez la Tourelle terminée et vérifiez ses ravitailleuses. Attendez au moins 2 pierres.
 [lesson fortifications supply help]
-Une Tourelle terminée a besoin d’ouvrières affectées à son fonctionnement pour apporter les munitions. Ce réglage est distinct de celui de la construction.
+Une Tourelle terminée demande d’elle-même des ravitailleuses pour apporter les munitions. Ce réglage est distinct de celui de la construction ; augmentez-le si la pierre arrive lentement.
 [lesson fortifications supply marker]
 Fournir des munitions
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Construire → Tourelle. Placez-la dans la zone indiquée.
 [lesson fortifications walls compact]
 Construisez 2 murs. Gardez l’accès ouest de la Tourelle libre.
 [lesson fortifications supply compact]
-Tourelle → ravitailleuses. Attendez 2 pierres.
+Tourelle → vérifiez les ravitailleuses. Attendez 2 pierres.
 [lesson fortifications hold compact]
 Gardez la Tourelle approvisionnée face à l’attaquant.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Sol de toundra
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

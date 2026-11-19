@@ -85,6 +85,19 @@ void Dialog::cancelInput()
 	capturedScroll.reset();
 	InGameDialog::cancelInput();
 }
+std::string recentSummary(const Json &recent)
+{
+	if (!recent.is_object())
+		return {};
+	const auto error = recent.contains("error") && recent.at("error").is_string()
+						   ? recent.at("error").get<std::string>()
+						   : std::string();
+	if (recent.value("status", Json()) == "failed" && !error.empty())
+		return error.substr(0, error.find('\n'));
+	if (!recent.contains("output") || recent.at("output").is_null())
+		return {};
+	return recent.at("output").dump(-1, ' ', false, Json::error_handler_t::replace);
+}
 namespace
 {
 // Client status tokens also drive controls; translate only at the display boundary.
@@ -183,9 +196,8 @@ Element Dialog::build(const Presentation &p)
 		std::vector<Element> body{label(name), caption(missing  ? tr("[hive needs fresh order]")
 													   : paused ? tr("[Paused]")
 																: tr("[hive active]"))};
-		if (order.contains("recent") && !order["recent"].is_null())
-			body.push_back(paragraph(preview(order["recent"].dump(), expanded ? 1000 : 180),
-									 {FontRole::Caption}));
+		if (const auto recent = recentSummary(order.value("recent", Json())); !recent.empty())
+			body.push_back(paragraph(preview(recent, expanded ? 1000 : 180), {FontRole::Caption}));
 		if (!status.empty())
 			body.push_back(caption(controlStatusText(status)));
 		if (expanded)

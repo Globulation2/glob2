@@ -6,6 +6,7 @@
 #include <boost/asio.hpp>
 #include <boost/beast.hpp>
 #include "Protocol.h"
+#include "Guide.h"
 #include "HttpServer.h"
 #include "UIService.h"
 #include <ScreenStack.h>
@@ -14,6 +15,7 @@
 #include "HeadlessGame.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
+#include "CommandLine.h"
 #include "hive/LocalCommander.h"
 #include "hive/HiveWorker.h"
 #include "Player.h"
@@ -54,7 +56,7 @@ TEST_CASE("MCP/protocol adapters validate metadata and discover all tools")
 	CHECK(discover.status == 200);
 	CHECK(discover.body["result"]["resultType"] == "complete");
 	auto listed = p.receive(modern("tools/list").dump(), {"2026-07-28", "tools/list", ""});
-	CHECK(listed.body["result"]["tools"].size() == 21);
+	CHECK(listed.body["result"]["tools"].size() == 22);
 	CHECK(listed.body["result"].contains("cacheScope"));
 	CHECK(
 		p.receive(modern("tools/list").dump(), {"2026-07-28", "wrong", ""}).body["error"]["code"] ==
@@ -149,6 +151,297 @@ TEST_CASE("MCP/protocol adapters validate metadata and discover all tools")
 	CHECK_THROWS_AS(registry.call(context, "ui_key", keyArguments(std::string("A\0", 2)), "test"),
 					std::invalid_argument);
 	CHECK(randomToken() != randomToken());
+}
+TEST_CASE("MCP/tool schemas are well formed for strict clients")
+{
+	// Strict clients (Claude Code among them) reject the whole tool list when any
+	// object schema carries null properties or required members.
+	ToolRegistry registry;
+	registerUITools(registry);
+	Context context;
+	Protocol p(registry, context);
+	auto requireWellFormed = [](auto &&self, const Json &schema, const std::string &path) -> void
+	{
+		INFO(path);
+		REQUIRE(schema.is_object());
+		if (schema.value("type", "") == "object")
+		{
+			CHECK(schema.contains("properties"));
+			CHECK(schema.value("properties", Json()).is_object());
+			if (schema.contains("required"))
+				CHECK(schema["required"].is_array());
+			const Json properties = schema.value("properties", Json::object());
+			for (const auto &[key, property] : properties.items())
+				self(self, property, path + "." + key);
+		}
+		if (schema.contains("items"))
+			self(self, schema["items"], path + "[]");
+	};
+	auto checkListed = [&](const Json &tools)
+	{
+		REQUIRE(tools.is_array());
+		REQUIRE_FALSE(tools.empty());
+		for (const auto &tool : tools)
+		{
+			requireWellFormed(requireWellFormed, tool["inputSchema"], tool["name"].get<std::string>());
+			if (tool.contains("outputSchema"))
+				requireWellFormed(requireWellFormed, tool["outputSchema"],
+								  tool["name"].get<std::string>() + "->");
+		}
+	};
+	checkListed(p.receive(modern("tools/list").dump(), {"2026-07-28", "tools/list", ""})
+					.body["result"]["tools"]);
+	const Json legacyList = {{"jsonrpc", "2.0"}, {"id", 3}, {"method", "tools/list"}};
+	checkListed(p.receive(legacyList.dump(), {"2025-11-25", "", ""}).body["result"]["tools"]);
+}
+TEST_CASE("MCP/argument errors name the field and the broken rule")
+{
+	ToolRegistry registry;
+	registerUITools(registry);
+	Context context;
+	auto message = [&](const std::string &tool, const Json &arguments)
+	{
+		try
+		{
+			registry.call(context, tool, arguments, "test");
+		}
+		catch (const std::invalid_argument &error)
+		{
+			return std::string(error.what());
+		}
+		return std::string("accepted");
+	};
+	// Drag points are objects; a client sending coordinate pairs needs to see why.
+	const auto pairs = message("ui_drag", {{"token", "t"}, {"points", {{1, 2}, {3, 4}}}});
+	CHECK(pairs.find("ui_drag.points[]") != std::string::npos);
+	CHECK(pairs.find("expected object") != std::string::npos);
+	const auto missing = message("ui_drag", {{"token", "t"}, {"points", {{{"x", 1}}, {{"x", 2}, {"y", 3}}}}});
+	CHECK(missing.find("ui_drag.points[]") != std::string::npos);
+	CHECK(missing.find("missing required property \"y\"") != std::string::npos);
+	const auto unknown = message("ui_status", {{"token", "t"}});
+	CHECK(unknown.find("unknown property \"token\"") != std::string::npos);
+	const auto range = message("ui_move", {{"token", "t"}, {"x", -1}, {"y", 2}});
+	CHECK(range.find("ui_move.x") != std::string::npos);
+	CHECK(range.find("out of range") != std::string::npos);
+	const auto choice = message("ui_click", {{"token", "t"}, {"x", 1}, {"y", 2}, {"button", "thumb"}});
+	CHECK(choice.find("ui_click.button") != std::string::npos);
+	CHECK(choice.find("expected one of") != std::string::npos);
+}
+TEST_CASE("MCP/initialize and discover describe the game and link its source for both versions")
+{
+	ToolRegistry registry;
+	registerUITools(registry);
+	Context context;
+	Protocol p(registry, context);
+	Json legacy = {{"jsonrpc", "2.0"},
+				   {"id", 1},
+				   {"method", "initialize"},
+				   {"params",
+					{{"protocolVersion", "2025-11-25"},
+					 {"capabilities", Json::object()},
+					 {"clientInfo", {{"name", "test"}, {"version", "1"}}}}}};
+	const auto initialized = p.receive(legacy.dump(), {}).body["result"];
+	const auto discovered =
+		p.receive(modern("server/discover").dump(), {"2026-07-28", "server/discover", ""})
+			.body["result"];
+	for (const auto &result : {initialized, discovered})
+	{
+		REQUIRE(result["instructions"].is_string());
+		const auto text = result["instructions"].get<std::string>();
+		// An agent that knows nothing must learn what the game is, where to start
+		// and where the source and documentation live.
+		CHECK(text.find("Globulation 2") != std::string::npos);
+		CHECK(text.find("game_guide") != std::string::npos);
+		CHECK(text.find("ui_acquire_control") != std::string::npos);
+		CHECK(text.find(RepositoryUrl) != std::string::npos);
+		CHECK(text.find(ServerGuideUrl) != std::string::npos);
+		CHECK(result["serverInfo"]["name"] == "globulation2-ui");
+		CHECK(result["serverInfo"]["websiteUrl"] == RepositoryUrl);
+		CHECK_FALSE(result["serverInfo"].value("description", "").empty());
+	}
+	// Modern results still carry server metadata alongside the instructions.
+	CHECK(discovered["_meta"]["io.modelcontextprotocol/serverInfo"]["websiteUrl"] ==
+		  RepositoryUrl);
+}
+TEST_CASE("MCP/tools explain themselves within a discovery size budget")
+{
+	ToolRegistry registry;
+	registerUITools(registry);
+	const auto tools = registry.list();
+	bool guide = false;
+	for (const auto &tool : tools)
+	{
+		INFO(tool["name"].get<std::string>());
+		// At least a sentence of purpose; one-line fragments left agents guessing.
+		CHECK(tool["description"].get<std::string>().size() >= 60);
+		CHECK(tool["inputSchema"]["type"] == "object");
+		if (tool.contains("outputSchema"))
+			CHECK(tool["outputSchema"].contains("properties"));
+		const auto &properties = tool["inputSchema"]["properties"];
+		if (properties.contains("token"))
+			CHECK_FALSE(properties["token"].value("description", "").empty());
+		guide = guide || tool["name"] == "game_guide";
+	}
+	CHECK(guide);
+	// Every client pays for discovery in context; keep it bounded.
+	const auto bytes = Json{{"tools", tools}}.dump().size();
+	INFO("tools/list bytes: " << bytes);
+	CHECK(bytes < 20000);
+}
+TEST_CASE("MCP/game guide serves every topic with links and rejects unknown topics")
+{
+	ToolRegistry registry;
+	registerUITools(registry);
+	Context context;
+	auto read = [&](Json args)
+	{
+		auto request = registry.call(context, "game_guide", std::move(args), "test");
+		auto future = request->completion.get_future();
+		REQUIRE(future.wait_for(std::chrono::seconds(0)) == std::future_status::ready);
+		return future.get();
+	};
+	const auto overview = read(Json::object());
+	CHECK(overview.error.empty());
+	CHECK(overview.data["topic"] == "overview");
+	REQUIRE(guideTopics().size() >= 8);
+	for (const auto &topic : guideTopics())
+	{
+		INFO(topic);
+		const auto result = read({{"topic", topic}});
+		CHECK(result.data["topic"] == topic);
+		CHECK(result.data["links"]["repository"] == RepositoryUrl);
+		CHECK(result.data["links"]["mcp_server_guide"] == ServerGuideUrl);
+		CHECK_FALSE(result.data["links"].value("tutorial_lessons", "").empty());
+		CHECK(result.data["other_topics"].size() == guideTopics().size() - 1);
+		if (topic != "links")
+			CHECK(result.data["text"].get<std::string>().size() > 200);
+	}
+	CHECK_THROWS_WITH_AS(registry.call(context, "game_guide", {{"topic", "secrets"}}, "test"),
+						 doctest::Contains("overview"), std::invalid_argument);
+	// The guide needs no control token and is reachable over the protocol.
+	Protocol p(registry, context);
+	auto call = modern("tools/call", {{"name", "game_guide"}, {"arguments", {{"topic", "hud"}}}});
+	CHECK(p.receive(call.dump(), {"2026-07-28", "tools/call", "game_guide"}).pending);
+}
+TEST_CASE("MCP/compact inspection keeps meaning and drops layout noise")
+{
+	const Json box = {{"x", 0}, {"y", 0}, {"w", 10}, {"h", 10}};
+	auto control = [&](std::string key, std::string label, Json actions,
+					   Json children = Json::array())
+	{
+		return Json{{"key", key},		  {"label", label},	  {"role", "button"},
+					{"actions", actions}, {"revision", 4},	  {"enabled", true},
+					{"blocked", false},	  {"focused", false}, {"selected", false},
+					{"value", nullptr},	  {"bounds", box},	  {"visible", box},
+					{"children", children}};
+	};
+	auto hidden = control("menu/9", "Hidden", {"activate"});
+	hidden["visible"] = {{"x", 0}, {"y", 0}, {"w", 0}, {"h", 0}};
+	auto disabled = control("menu/2", "Load", {"activate"});
+	disabled["enabled"] = false;
+	auto container = control("", "", Json::array(),
+							 {control("menu/1", "Tutorial", {"activate"}), hidden, disabled,
+							  control("", "Caption", Json::array())});
+	container["role"] = "column";
+	Json surface = {{"instance", 3}, {"revision", 1}, {"bounds", box}, {"viewport", box}};
+	surface["controls"] = Json::array({container});
+	const Json full = {{"screen", "main_menu"}, {"surfaces", Json::array({surface})}};
+	const auto compact = compactInspection(full);
+	CHECK(compact["screen"] == "main_menu");
+	CHECK(compact["surfaces"][0]["instance"] == 3);
+	const auto &controls = compact["surfaces"][0]["controls"];
+	// The keyless, labelless, inert column is replaced by its children.
+	REQUIRE(controls.size() == 4);
+	CHECK(controls[0] == Json{{"key", "menu/1"},
+							  {"label", "Tutorial"},
+							  {"role", "button"},
+							  {"actions", {"activate"}},
+							  {"revision", 4},
+							  {"bounds", box}});
+	CHECK(controls[1]["hidden"] == true);
+	CHECK(controls[2]["enabled"] == false);
+	CHECK(controls[3]["label"] == "Caption");
+	CHECK_FALSE(controls[3].contains("revision"));
+	CHECK(compact.dump().size() < full.dump().size() / 2);
+}
+TEST_CASE("MCP/rejected semantic targets say which check failed and what to do")
+{
+	const Json box = {{"x", 0}, {"y", 0}, {"w", 10}, {"h", 10}};
+	auto item = [&](std::string key, int revision)
+	{
+		return Json{{"key", key},
+					{"label", key},
+					{"actions", {"activate"}},
+					{"revision", revision},
+					{"enabled", true},
+					{"blocked", false},
+					{"visible", box},
+					{"children", Json::array()}};
+	};
+	Json first = {{"instance", 5}};
+	first["controls"] = Json::array({item("start", 7), item("quit", 2)});
+	Json second = {{"instance", 6}};
+	second["controls"] = Json::array({item("ok", 1)});
+	Json snapshot = {{"screen", "main_menu"}, {"surfaces", Json::array({first, second})}};
+	auto act = [](int surface, std::string key, int revision, std::string action = "activate")
+	{
+		return Json{{"surface", surface}, {"key", key}, {"revision", revision}, {"action", action}};
+	};
+	auto problem = [&](const Json &arguments) { return actionTargetProblem(snapshot, arguments); };
+	auto contains = [](const std::string &text, std::initializer_list<const char *> parts)
+	{
+		INFO(text);
+		for (const auto *part : parts)
+			if (text.find(part) == std::string::npos)
+				return false;
+		return true;
+	};
+	CHECK(problem(act(5, "start", 7)).empty());
+	CHECK(contains(problem(act(9, "start", 7)), {"surface 9", "5, 6", "ui_inspect"}));
+	CHECK(contains(problem(act(5, "ok", 1)), {"\"ok\"", "surface 6"}));
+	CHECK(contains(problem(act(5, "missing", 1)), {"\"missing\"", "ui_inspect"}));
+	CHECK(contains(problem(act(5, "start", 6)), {"revision 7", "not 6"}));
+	CHECK(contains(problem(act(5, "start", 7, "set_value")), {"[\"activate\"]", "set_value"}));
+	auto &start = snapshot["surfaces"][0]["controls"][0];
+	start["enabled"] = false;
+	CHECK(contains(problem(act(5, "start", 7)), {"Disabled"}));
+	start["enabled"] = true;
+	start["visible"]["h"] = 0;
+	CHECK(contains(problem(act(5, "start", 7)), {"Hidden", "scroll"}));
+	start["visible"] = box;
+	start["blocked"] = true;
+	CHECK(contains(problem(act(5, "start", 7)), {"Blocked", "dialog"}));
+}
+TEST_CASE("MCP/argument errors name the field and suggest valid input")
+{
+	ToolRegistry registry;
+	registerUITools(registry);
+	Context context;
+	auto message = [&](const std::string &tool, Json args)
+	{
+		try
+		{
+			registry.call(context, tool, std::move(args), "test");
+		}
+		catch (const std::invalid_argument &e)
+		{
+			return std::string(e.what());
+		}
+		return std::string();
+	};
+	const auto key = message("ui_key", {{"token", "t"}, {"key", "Enter key"}});
+	CHECK(key.find("Enter key") != std::string::npos);
+	CHECK(key.find("Return") != std::string::npos);
+	const auto modifier =
+		message("ui_key", {{"token", "t"}, {"key", "A"}, {"modifiers", Json::array({"A"})}});
+	CHECK(modifier.find("Left Ctrl") != std::string::npos);
+	const auto empty = message("ui_wait", {{"condition", Json::object()}});
+	CHECK(empty.find("game_session") != std::string::npos);
+	const auto state = message("ui_wait", {{"condition", {{"enabled", true}}}});
+	CHECK(state.find("condition.key") != std::string::npos);
+	const auto program = message("hive_program", {{"action", "inspect"}});
+	CHECK(program.find("hive_program.name") != std::string::npos);
+	CHECK(message("no_such_tool", Json::object()).find("tools/list") != std::string::npos);
 }
 namespace
 {
@@ -374,8 +667,15 @@ TEST_CASE("MCP/leases input dispatch cancellation viewport and capture [network]
 	auto acquired = execute("ui_acquire_control");
 	CHECK_FALSE(acquired.data.contains("inspection"));
 	const auto token = acquired.data["token"].get<std::string>();
-	CHECK_FALSE(execute("ui_acquire_control").error.empty());
-	CHECK_FALSE(execute("ui_move", {{"token", "wrong"}, {"x", 10}, {"y", 20}}).error.empty());
+	// Refusals say how to proceed, not only what failed.
+	const auto contested = execute("ui_acquire_control").error;
+	CHECK(contested.find("test client") != std::string::npos);
+	CHECK(contested.find("Revoke control") != std::string::npos);
+	const auto lost = execute("ui_move", {{"token", "wrong"}, {"x", 10}, {"y", 20}}).error;
+	CHECK(lost.find("ui_acquire_control") != std::string::npos);
+	const auto outside = execute("ui_click", {{"token", token}, {"x", 5000}, {"y", 20}}).error;
+	CHECK(outside.find("640x480") != std::string::npos);
+	CHECK(outside.find("capture_id") != std::string::npos);
 	auto request =
 		service.submit("ui_key", {{"token", token}, {"key", "A"}, {"action", "down"}}, "test");
 	auto future = request->completion.get_future();
@@ -1053,6 +1353,27 @@ TEST_CASE("MCP/preferences retain desktop defaults and reject malformed ports")
 	CHECK(loaded.mcpPort == 28123);
 	const auto invalidFile = std::filesystem::path(globalContainer->fileManager->getDir(0)) /
 							 "mcp-invalid-preferences.txt";
+	// glob2 play --mcp-port enables the listener for one run without saving it.
+	Settings launched;
+	launched.mcpLaunchPort = 28124;
+	CHECK(launched.mcpActive());
+	CHECK(launched.mcpActivePort() == 28124);
+	REQUIRE(launched.save("mcp-launch-preferences.txt"));
+	Settings relaunched;
+	relaunched.load("mcp-launch-preferences.txt");
+	CHECK_FALSE(relaunched.mcpActive());
+	CHECK(relaunched.mcpActivePort() == 27202);
+	// Editing the MCP settings adopts what the player saw as the saved choice.
+	launched.adoptMcpLaunchOverride();
+	CHECK(launched.mcpEnabled);
+	CHECK(launched.mcpPort == 28124);
+	CHECK(launched.mcpLaunchPort == 0);
+	const bool savedEnabled = globalContainer->settings.mcpEnabled;
+	globalContainer->applyCommand(Cli::parse({"play", "--mcp-port", "28125"}));
+	CHECK(globalContainer->settings.mcpLaunchPort == 28125);
+	CHECK(globalContainer->settings.mcpEnabled == savedEnabled);
+	CHECK(globalContainer->settings.mcpActive());
+	globalContainer->settings.mcpLaunchPort = 0;
 	for (const auto *invalidPort : {"0", "65536", "27202trailing", "-1", ""})
 	{
 		std::ofstream output(invalidFile);

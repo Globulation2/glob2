@@ -591,6 +591,7 @@ set(GLOB2_CLIENT_SOURCES
     src/hud/GameGUITorus.cpp
     src/ui/settings/SettingsScreen.cpp
     src/ui/screens/RecordingFilesScreen.cpp
+    src/ui/RecordingNotice.cpp
     src/ui/settings/SettingsScreenGeneral.cpp
     src/ui/settings/SettingsScreenBuildings.cpp
     src/ui/settings/SettingsScreenKeyboard.cpp
@@ -697,6 +698,7 @@ set(GLOB2_CLIENT_SOURCES
     src/online/UserDirectoryStorage.cpp
     src/app/CompileProfile.cpp
     src/mcp/Tools.cpp
+    src/mcp/Guide.cpp
     src/mcp/Protocol.cpp
     src/mcp/HttpServer.cpp
 )
@@ -1577,6 +1579,7 @@ set(GLOB2_ANDROID_SOURCES
     src/hud/GameGUITorus.cpp
     src/ui/settings/SettingsScreen.cpp
     src/ui/screens/RecordingFilesScreen.cpp
+    src/ui/RecordingNotice.cpp
     src/ui/settings/SettingsScreenGeneral.cpp
     src/ui/settings/SettingsScreenBuildings.cpp
     src/ui/settings/SettingsScreenKeyboard.cpp
@@ -2397,6 +2400,7 @@ set(GLOB2_IOS_SOURCES
     src/hud/GameGUITorus.cpp
     src/ui/settings/SettingsScreen.cpp
     src/ui/screens/RecordingFilesScreen.cpp
+    src/ui/RecordingNotice.cpp
     src/ui/settings/SettingsScreenGeneral.cpp
     src/ui/settings/SettingsScreenBuildings.cpp
     src/ui/settings/SettingsScreenKeyboard.cpp
@@ -3386,6 +3390,7 @@ set(GLOB2_WEB_SOURCES
     src/hud/GameGUITorus.cpp
     src/ui/settings/SettingsScreen.cpp
     src/ui/screens/RecordingFilesScreen.cpp
+    src/ui/RecordingNotice.cpp
     src/ui/settings/SettingsScreenGeneral.cpp
     src/ui/settings/SettingsScreenBuildings.cpp
     src/ui/settings/SettingsScreenKeyboard.cpp

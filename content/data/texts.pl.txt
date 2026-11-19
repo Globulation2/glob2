@@ -3150,6 +3150,8 @@ Pędzel %0
 Drużyna %0
 [Your colony]
 Twoja kolonia
+[Practice colony]
+Kolonia treningowa
 [%0 / %1 HP · %2]
 %0 / %1 PŻ · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ Nie udało się wyeksportować nagrania.
 Usuń nagranie
 [recording refresh]
 Odśwież
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Nie udało się przywrócić poprzedniej biblioteki: %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Otwórz Flagi i umieść Flagę eksploracji na złożu kamienia na wschód od ko
 [intro instruction build]
 Otwórz Budowę i umieść Gospodę w pobliżu pszenicy. Przydziel dostępnych robotników do budowy Gospody. Utrzymuj zaopatrzenie istniejącej gospody w żywność.
 [intro instruction supply]
-Wybierz ukończoną nową Gospodę i przydziel jej co najmniej jednego dostawcę. Poczekaj, aż robotnik dostarczy pszenicę.
+Wybierz ukończoną nową Gospodę. Sama prosi o dostawców; sprawdź żądaną liczbę robotników i poczekaj, aż robotnik dostarczy pszenicę.
 [intro instruction grow]
 Wybierz Rój. Przydziel do zaopatrzenia co najmniej 2 robotników i ustaw produkcję wyłącznie robotników. Utrzymuj zaopatrzenie obu Gospód, czekając na narodziny nowego robotnika.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Przesuń widok minimapą na wschód i znajdź złoże kamienia. W menu Flagi wyb
 [intro help build]
 Budowa zużywa drewno dostarczane przez robotników. Wybierz Gospodę z palety budynków, umieść ją na wolnym terenie przy pszenicy i przydziel 2 budowniczych. Żądana liczba robotników nie oznacza liczby już obecnych. Zachowaj dostawców przy istniejącej Gospodzie i Roju. Każda prawidłowa lokalizacja jest zaliczana.
 [intro help supply]
-Budowa i codzienne zaopatrzenie mają osobne ustawienia liczby robotników. Wybierz ukończoną Gospodę i zwiększ liczbę dostawców. Dostawca zbiera pszenicę i przynosi ją tutaj. Głodne globulki jedzą w Gospodach; bez dostawców zapasy się wyczerpią. Zachowaj dostęp do pszenicy.
+Budowa i codzienne zaopatrzenie mają osobne ustawienia liczby robotników. Ukończona Gospoda sama prosi o dostawców; zwiększ liczbę dostawców, jeśli pszenica napływa zbyt wolno. Dostawca zbiera pszenicę i przynosi ją tutaj. Głodne globulki jedzą w Gospodach; bez dostawców zapasy się wyczerpią. Zachowaj dostęp do pszenicy.
 [intro help grow]
 Rój zużywa pszenicę do produkcji jednostek. Ustaw produkcję robotników na 1, a odkrywców i wojowników na 0. Zwiększ żądaną liczbę robotników Roju do co najmniej 2. Więcej dostawców szybciej przynosi pszenicę, ale pozostaje wtedy mniej robotników do innych zadań. Zaopatruj obie Gospody.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Otwórz Flagi, wybierz Flagę wojenną i umieść ją nad wrogim Rojem na wschó
 [intro hint scout]
 Twój odkrywca potrzebuje przydzielonej flagi eksploracji na wschodnim kamiennym polu. Sprawdź jego położenie i żądaną liczbę odkrywców.
 [intro hint build]
-Jeśli usunięto nową Gospodę, zbuduj kolejną. W przeciwnym razie sprawdź plac budowy i żądaną liczbę robotników. Robotnicy mogą być zajęci innymi dostawami; utrzymuj zaopatrzenie w żywność, uwalniając część z nich do budowy.
+Twoja nowa Gospoda nie jest jeszcze ukończona. Jeśli nie ma placu budowy, postaw Gospodę w pobliżu pszenicy. W przeciwnym razie wybierz plac budowy i sprawdź żądaną liczbę robotników: robotnicy mogą być zajęci dostawami w innych miejscach.
 [intro hint supply]
 Wybierz ukończoną nową Gospodę. Sprawdź żądaną liczbę robotników i obserwuj dostawy pszenicy. Robotnicy potrzebują czasu na podróż i jedzenie.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Przed umieszczeniem flagi przeciągnij pusty teren, aby przesunąć widok. Znajd
 [intro help touch build]
 Wybierz Gospodę w menu budowy. Umieść ją na wolnym terenie przy pszenicy i potwierdź. Wybierz plac budowy i przydziel 2 budowniczych. Żądana liczba robotników nie oznacza liczby już obecnych. Zaopatruj istniejącą Gospodę i Rój. Każda prawidłowa lokalizacja jest zaliczana.
 [intro help touch supply]
-Wybierz ukończoną nową Gospodę i zwiększ żądaną liczbę robotników. Budowa i codzienne zaopatrzenie mają osobne ustawienia. Dostawca zbiera pszenicę i przynosi ją tutaj. Głodne globulki jedzą w Gospodach; bez dostawców zapasy się wyczerpią. Zachowaj dostęp do pszenicy.
+Wybierz ukończoną nową Gospodę i sprawdź żądaną liczbę robotników; sama prosi o dostawców. Budowa i codzienne zaopatrzenie mają osobne ustawienia. Dostawca zbiera pszenicę i przynosi ją tutaj. Głodne globulki jedzą w Gospodach; bez dostawców zapasy się wyczerpią. Zachowaj dostęp do pszenicy.
 [intro help touch grow]
 Wybierz Rój. Ustaw produkcję robotników na 1, a odkrywców i wojowników na 0. Zwiększ liczbę przydzielonych robotników do co najmniej 2. Dostawcy przynoszą pszenicę do produkcji nowych jednostek, ale pozostaje wtedy mniej robotników do innych zadań. Zaopatruj obie Gospody.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Flagi → Flaga eksploracji. Umieść ją na kamieniu; przydziel 1 odkrywcę.
 [intro compact build]
 Budowa → Gospoda. Umieść ją przy pszenicy; przydziel 2 budowniczych.
 [intro compact supply]
-Wybierz swoją nową Gospodę; przypisz przynajmniej 1 dostawcę. Poczekaj na pszenicę.
+Wybierz swoją nową Gospodę; sprawdź jej dostawców. Poczekaj na pszenicę.
 [intro compact grow]
 Wybierz rój; przypisz 2 dostawców. Produkuj tylko robotników.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Wykorzystaj przygotowanych pływaków do zbudowania szkoły, a następnie obserw
 [lesson schools complete]
 Twoja szkoła poprawiła umiejętności robotników. Wykwalifikowani budowniczowie odblokowują ulepszenia; lepsze zbiory pomagają utrzymać rozwijającą się gospodarkę.
 [lesson schools build hint]
-Zbuduj szkołę na polanie; przydziel budowniczych. Kolonia ma już pływaków mogących zbierać glony. Zachowaj dostęp do drewna i wody. Drzewa owocowe dostarczają surowców prestiżu; żywność nadal pochodzi z pszenicy.
+Nie ma jeszcze ukończonej szkoły. Sprawdź, czy jej plac budowy prosi o budowniczych i czy mogą oni dotrzeć do drewna i stawu.
 [lesson schools build title]
 Zbuduj szkołę
 [lesson schools build instruction]
 Zbuduj szkołę na polanie; przydziel budowniczych.
 [lesson schools build help]
-Kolonia ma już pływaków mogących zbierać glony. Zachowaj dostęp do drewna i wody. Drzewa owocowe dostarczają surowców prestiżu; żywność nadal pochodzi z pszenicy.
+Kolonia ma już pływaków mogących zbierać glony. Zachowaj dostęp do drewna i wody. Drzewa owocowe nie dają żywności; twoje Gospody nadal potrzebują pszenicy.
 [lesson schools build marker]
 Zbuduj szkołę
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Ci robotnicy opanowali już umiejętności ze Szkoły pierwszego poziomu. Rozbud
 [lesson upgrades upgrade marker]
 Ulepsz tor wyścigowy
 [lesson upgrades train hint]
-Pozwól istniejącemu robotnikowi nauczyć się szybszego chodzenia po ulepszonym torze wyścigowym. Ukończona rozbudowa zapewnia lepsze szkolenie. Wyższe poziomy budynków wymagają większych umiejętności budowy; poziom widoczny dla gracza zaczyna się od 1.
+Żaden robotnik nie przeszedł jeszcze szkolenia na ulepszonym torze wyścigowym. Zachowaj do niego dostęp i zostaw część robotników wolnych.
 [lesson upgrades train title]
 Skorzystaj z ulepszonego szkolenia
 [lesson upgrades train instruction]
 Pozwól istniejącemu robotnikowi nauczyć się szybszego chodzenia po ulepszonym torze wyścigowym.
 [lesson upgrades train help]
-Ukończona rozbudowa zapewnia lepsze szkolenie. Wyższe poziomy budynków wymagają większych umiejętności budowy; poziom widoczny dla gracza zaczyna się od 1.
+Ukończona rozbudowa ulepsza szkolenie oferowane przez budynek. Wyższe poziomy budynków wymagają budowniczych o większych umiejętnościach budowy.
 [lesson warrior-training title]
 Produkcja i szkolenie wojowników
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Mury zużywają kamień, a każdy plac budowy żąda robotników. Nie zamykaj wi
 [lesson fortifications walls marker]
 Chroń wieżę murami
 [lesson fortifications supply hint]
-Wybierz wieżę i przydziel dostawców. Poczekaj, aż w wieży znajdą się co najmniej 2 jednostki kamienia. Gdy wieża zostanie zbudowana, poproś robotników o przyniesienie amunicji. Tę liczbę należy ustawić oddzielnie od liczby robotników potrzebnych do budowy.
+W wieży jest mniej niż 2 jednostki kamienia. Wybierz ją i sprawdź żądaną liczbę robotników; dostawcy potrzebują wolnej drogi od kamienia.
 [lesson fortifications supply title]
 Dostarcz amunicję
 [lesson fortifications supply instruction]
-Wybierz wieżę i przydziel dostawców. Poczekaj, aż w wieży znajdą się co najmniej 2 jednostki kamienia.
+Wybierz ukończoną wieżę i sprawdź jej dostawców. Poczekaj, aż w wieży znajdą się co najmniej 2 jednostki kamienia.
 [lesson fortifications supply help]
-Gdy wieża zostanie zbudowana, poproś robotników o przyniesienie amunicji. Tę liczbę należy ustawić oddzielnie od liczby robotników potrzebnych do budowy.
+Ukończona wieża sama prosi o dostawców, którzy przyniosą amunicję. Tę liczbę ustawia się oddzielnie od liczby robotników potrzebnych do budowy; zwiększ ją, jeśli kamień napływa powoli.
 [lesson fortifications supply marker]
 Dostarcz amunicję
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Budowa → Wieża. Umieść w zaznaczonym obszarze.
 [lesson fortifications walls compact]
 Zbuduj 2 mury. Zachowaj otwarty zachodni pas wieży.
 [lesson fortifications supply compact]
-Wybierz wieżę → dostawców. Poczekaj na 2 kamienie.
+Wybierz wieżę → sprawdź dostawców. Poczekaj na 2 kamienie.
 [lesson fortifications hold compact]
 Utrzymuj wieżę zaopatrzoną przeciwko atakującemu.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Gleba tundrowa
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

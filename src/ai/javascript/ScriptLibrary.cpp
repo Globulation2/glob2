@@ -92,7 +92,20 @@ std::string Library::put(const std::string &text, const std::string &filename,
 	if (online && (!externalPath.empty() || !Online::Sha256::isHexDigest(online->hash) ||
 				   Online::Sha256::hex(text) != online->hash))
 		throw std::runtime_error("Downloaded AI hash does not match its published version");
-	auto metadata = inspectAI(text);
+	Metadata metadata;
+	try
+	{
+		metadata = inspectAI(text);
+	}
+	catch (const HostFailure &)
+	{
+		throw;
+	}
+	catch (const std::exception &e)
+	{
+		// The settings screen shows only this message: say which file was refused.
+		throw std::runtime_error("Could not add " + filename + ": " + e.what());
+	}
 	if (metadata.name.empty())
 	{
 		const auto label = std::filesystem::u8path(filename).stem().u8string();
@@ -173,13 +186,27 @@ std::string Library::source(const std::string &id) const
 		return readSource(e.path);
 	std::string text;
 	if (!storage.read(e.path, text))
-		throw std::runtime_error("Imported AI source is missing: " + e.metadata.name);
+		throw std::runtime_error("Imported AI source is missing");
 	return text;
 }
 std::string Library::configuration(const std::string &id) const
 {
-	const auto text = source(id);
-	return config(text, inspectAI(text).apiVersion);
+	const auto &entry = get(id);
+	try
+	{
+		const auto text = source(id);
+		return config(text, inspectAI(text).apiVersion);
+	}
+	catch (const HostFailure &)
+	{
+		throw;
+	}
+	catch (const std::exception &e)
+	{
+		// Game setup and Validate show only this message: name the AI it concerns.
+		throw std::runtime_error(entry.metadata.name + (entry.linked ? " (" + entry.path + ")" : "") +
+								 ": " + e.what());
+	}
 }
 void Library::rollback(const std::string &before)
 {

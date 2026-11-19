@@ -2,7 +2,7 @@
 
 Hive Mind adds a natural-language commander to online matches, including ranked
 matches, alongside ordinary manual controls. Players give commands, receive reports,
-and manage named standing orders. Configure Hive Mind under Settings → Online. Ctrl+Enter opens the chat-style
+and manage named standing orders. Configure Hive Mind under Settings → Hive Mind. Ctrl+Enter opens the chat-style
 commander input; Enter sends and closes it, and Escape keeps the draft for later.
 Ctrl+Shift+Enter stops paid supervision. Both shortcuts are configurable under
 Settings → Controls. A separate Stop commander button provides the same action

@@ -22,6 +22,7 @@
 #include <vector>
 
 #include "LanProtocol.h"
+#include "TurnProtocol.h"
 #include "TurnSession.h"
 
 namespace Online
@@ -45,8 +46,10 @@ namespace Lan
 			/// private Online::MapCache rooted at that absolute directory (tests).
 			Online::MapCache* mapCache = nullptr;
 			std::string cacheDirectory;
-			/// While playing, how long the guest keeps trying to reach a vanished host.
-			std::uint64_t hostLossGiveUpMicros = 120000000;
+			/// While playing, how long the guest keeps trying to reach a vanished host:
+			/// the relay's grace, which keeps the seat as long and which the connection
+			/// card counts down.
+			std::uint64_t hostLossGiveUpMicros = Turn::DEFAULT_GRACE_MICROS;
 			/// While playing, a connection the host has not written to for this long is
 			/// treated as lost (the host sends a bundle every 80 ms).
 			std::uint64_t silenceMicros = 5000000;
@@ -128,7 +131,8 @@ namespace Lan
 		std::string reason, detail;
 		bool helloSent = false;
 		bool wantReady = false;
-		std::uint32_t member = 0;
+		std::uint32_t member = 0; ///< 0 until welcomed (the host is member 0)
+		int startedSeat = -1;     ///< the seat the host started this guest in
 		std::optional<RoomState> room;
 		std::vector<std::string> chatLines;
 		bool changed = true;

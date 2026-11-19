@@ -24,6 +24,9 @@
 #include "GameGUIDialog.h"
 #include "TorusView.h"
 #include "GameGUIToolManager.h"
+#include "BuildingPresentation.h"
+#include "render/scene/BuildingCatalogView.h"
+#include "draw/PriorityRadioLayout.h"
 
 using namespace GAGGUI::ui;
 namespace
@@ -342,6 +345,32 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 		};
 		controls.push_back(std::move(speed));
 	}
+	{
+		// The top bar's counters are drawn as icons and numbers; describe them so
+		// inspection can read the colony's state without a screenshot.
+		const auto layout = topBarLayout();
+		// The tick rate (index 7) is left out: it changes every frame and would churn
+		// the surface revision that revision_after waits observe.
+		static const char *const keys[] = {"worker-count", "explorer-count", "warrior-count",
+										   "prestige",	 "win-chance",	"converted-in",
+										   "converted-out"};
+		static const char *const labels[] = {
+			"Workers free/total", "Explorers free/total", "Warriors free/total", "Prestige",
+			"Win chance (%)", "Units converted to you", "Units converted away"};
+		for (int i = 0; i < 7; ++i)
+		{
+			PositionedControl stat;
+			stat.key = std::string("game/stats/") + keys[i];
+			stat.role = "label";
+			stat.label = labels[i];
+			const int x = int(layout.x[i]);
+			const int next = int(layout.x[i + 1]);
+			stat.bounds = {x, 0, std::max(1, next - x), 16};
+			stat.value = layout.values[i];
+			stat.actions.clear();
+			controls.push_back(std::move(stat));
+		}
+	}
 	if (globalContainer->replaying)
 	{
 		PositionedControl track;
@@ -475,14 +504,19 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 			y += YOFFSET_BAR + YOFFSET_B_SEP;
 			y += YOFFSET_B_SEP;
 			if (allied && b->state().buildingState == Building::ALIVE)
+			{
+				const auto layout = buildingPriorityLayout();
 				for (int i = -1; i <= 1; ++i)
 					option("priority/" + std::to_string(i),
 						   i < 0 ? "Low priority"
 						   : i   ? "High priority"
 								 : "Medium priority",
-						   {content + (i + 1) * (128 / 3), y + 16 - buildingInfoScroll, 12, 12},
+						   {content + layout.x[i + 1], y + layout.y[i + 1] - buildingInfoScroll,
+							PriorityRadioLayout::RADIO_SIZE, PriorityRadioLayout::RADIO_SIZE},
 						   displayedPriority(*b) == i,
 						   [this, i](const auto &p) { requestBuildingPriority(p, i); });
+				y += layout.extraHeight;
+			}
 			y += YOFFSET_BAR + YOFFSET_B_SEP;
 		}
 		if (type->maxUnitStayRange > 0 &&
@@ -687,8 +721,17 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 		for (size_t i = 0; i < names.size(); ++i)
 		{
 			auto r = choiceControlBounds(top, i, columns);
+			// Label palette entries with the player-facing name, not the sprite key.
+			// The scene has no building types until it is first extracted.
+			std::string label = names[i];
+			if (const auto *types = drawnScene().buildingTypes.get())
+			{
+				const BuildingCatalogView catalog(*types);
+				if (const int placeable = catalog.getPlaceableTypeNum(names[i]); placeable >= 0)
+					label = buildingDisplayName(*catalog.get(placeable));
+			}
 			button(
-				std::string(flags ? "game/flags/" : "game/buildings/") + names[i], names[i], r,
+				std::string(flags ? "game/flags/" : "game/buildings/") + names[i], label, r,
 				[this, name = names[i]] { setSelection(TOOL_SELECTION, (void *)name.c_str()); },
 				states[i]);
 			controls.back().clip = Rect{left, top, RIGHT_MENU_WIDTH, rows * 46};

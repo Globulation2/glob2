@@ -194,6 +194,8 @@ public:
 		Closed, ///< locked: nobody, the colony stays inactive
 	};
 	virtual bool canSetOccupant(const Slot&) const { return false; }
+	/// Whether the host's seat controls offer Occupant::Closed.
+	virtual bool canCloseSeats() const { return true; }
 	virtual void setOccupant(int, Occupant, const std::string& /*aiId*/ = {}) {}
 
 	/// Ready: this client's own state (guests toggle it; hosts start instead).

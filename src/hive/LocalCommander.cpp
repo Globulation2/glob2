@@ -204,6 +204,10 @@ Json LocalCommander::call(const std::string &tool, const Json &args)
 	}
 	const auto kind =
 		tool == "hive_run" ? std::string("run") : args.at("action").get<std::string>();
+	// Reads may omit the session, but a stale one must not silently describe
+	// the programs of a later match.
+	if (args.contains("session") && args.at("session") != session)
+		throw std::runtime_error("Match session expired; inspect hive_status");
 	if (kind == "list")
 		return {{"session", session}, {"programs", standingOrders()}};
 	if (kind == "inspect")
@@ -395,7 +399,14 @@ void LocalCommander::finish(Json result)
 	remember(current.key, record);
 	if (!error.empty())
 	{
-		reports.push_back(error);
+		// Name the failing program or operation; a bare diagnostic such as "1"
+		// or a stack trace cannot be traced back to its source in the HUD.
+		const auto subject = !name.empty() ? name
+							 : current.request.contains("name") && current.request.at("name").is_string()
+								 ? current.request.at("name").get<std::string>()
+								 : current.key;
+		const auto line = error.substr(0, error.find('\n'));
+		reports.push_back(subject.empty() ? line : subject + ": " + line);
 		if (reports.size() > 32)
 			reports.erase(reports.begin());
 	}

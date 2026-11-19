@@ -4,8 +4,14 @@
 // strings and plurals that agree ("1 player"). UX review round 2: H-2, H-3, H-6, P-5,
 // R-8, X-4, X-7, L-1.
 #include "HeadlessGlobals.h"
+#include "ProfileNeeds.h"
+#include <StringTable.h>
+#include <Toolkit.h>
 #include "FrontendTheme.h"
+#include "Engine.h"
+#include "GameLoadScreen.h"
 #include "GlobalContainer.h"
+#include "LanRoom.h"
 #include "PlatformRoom.h"
 #include "RoomScreen.h"
 #include "UIRecordingCanvas.h"
@@ -115,6 +121,22 @@ TEST_SUITE("OnlineWording")
 		CHECK(Glob2UI::regionDisplayName("home-lab") == "Home, lab");
 	}
 
+	TEST_CASE("generated map names in the online screens are translated" * glob2test::needs({"generators"}))
+	{
+		Strings strings;
+		auto *table = GAGCore::Toolkit::getStringTable();
+		const int english = table->getLang();
+		CHECK(Glob2UI::generatorTitle("even-ground") == "Even Ground");
+		REQUIRE(table->hasLanguage("de"));
+		table->setLang(table->getLangCode("de"));
+		const std::string german = Glob2UI::generatorTitle("even-ground");
+		table->setLang(english);
+		CHECK(german == table->getStringInLang("[Even Ground]", table->getLangCode("de")));
+		CHECK(german != "Even Ground");
+		// An id this build does not know still reads as words.
+		CHECK(Glob2UI::generatorTitle("future-lands") == "Future Lands");
+	}
+
 	TEST_CASE("an unrated search shows no ratings; a ranked one explains its range [display]")
 	{
 		Display display;
@@ -172,7 +194,85 @@ TEST_SUITE("OnlineWording")
 		const auto lan = paintedTexts(std::make_unique<RoomScreen>(stack, std::make_shared<OnlineUIFixtures::LanRoomFixture>()));
 		INFO(joined(lan));
 		CHECK_FALSE(anyContains(lan, "ws://"));
-		CHECK(anyContains(lan, "Link for browser players"));
+		CHECK(anyContains(lan, "Pairing link"));
+	}
+
+	TEST_CASE("a LAN room tells players where to paste the host's pairing link [display]")
+	{
+		// The discovery list names hosts, not maps, and every guest (in the game or in a
+		// browser) needs the pairing link: the room must not send them to a list on the
+		// main menu, nor offer the link to browser players only.
+		Display display;
+		GAGGUI::ScreenStack stack(*globalContainer->gfx);
+		const auto lan = paintedTexts(std::make_unique<RoomScreen>(stack, std::make_shared<OnlineUIFixtures::LanRoomFixture>()));
+		INFO(joined(lan));
+		CHECK(anyContains(lan, "Join a game"));
+		CHECK(anyContains(lan, "pairing link"));
+		CHECK_FALSE(anyContains(lan, "on the main menu"));
+		CHECK_FALSE(anyContains(lan, "browser players"));
+	}
+
+	TEST_CASE("a room whose game is ready as it opens shows the game, not the room [display]")
+	{
+		// A guest rejoining a started LAN game opens the room with its launch already
+		// queued. Handled in the room's constructor, the game's load screen went onto
+		// the stack before the room itself, so the room covered it and the game never
+		// loaded.
+		Display display;
+		Lan::LanHost::Options options;
+		options.hostName = "Host";
+		options.map = Engine().loadMapHeader("maps/balanced.map");
+		options.network = false;
+		auto room = Lan::LanRoom::host(std::move(options));
+		room->update();
+		REQUIRE(room->canStart());
+		room->start(); // queues the launch
+		GAGGUI::ScreenStack stack(*globalContainer->gfx);
+		stack.push(std::make_unique<RoomScreen>(stack, room));
+		const Uint32 tick = SDL_GetTicks();
+		for (Uint32 frame = 0; frame < 3; ++frame)
+			stack.frame(tick + frame * 40, {});
+		CHECK(dynamic_cast<GameLoadScreen *>(stack.top()) != nullptr);
+		CHECK(dynamic_cast<RoomScreen *>(stack.top()) == nullptr);
+	}
+
+	TEST_CASE("a LAN host puts AIs in open seats from the room [display]")
+	{
+		Display display;
+		Lan::LanHost::Options options;
+		options.hostName = "Host";
+		options.map = Engine().loadMapHeader("maps/balanced.map");
+		options.network = false;
+		auto room = Lan::LanRoom::host(std::move(options));
+		room->update();
+		GAGGUI::ScreenStack stack(*globalContainer->gfx);
+		auto owned = std::make_unique<RoomScreen>(stack, room);
+		auto *screen = owned.get();
+		stack.push(std::move(owned));
+		const Uint32 tick = SDL_GetTicks();
+		stack.frame(tick, {});
+		stack.frame(tick + 40, {});
+		REQUIRE(room->slots().size() >= 2);
+		const RoomBackend::Slot open = room->slots()[1];
+		REQUIRE(open.open);
+		// The open seat offers its occupants; the host's own seat does not.
+		CHECK(room->canSetOccupant(open));
+		CHECK(screen->host().find("seat/1/controller") != nullptr);
+		CHECK_FALSE(room->canSetOccupant(room->slots()[0]));
+
+		room->setOccupant(1, RoomBackend::Occupant::AI, "castor");
+		room->update();
+		REQUIRE(room->slots()[1].ai);
+		CHECK(room->slots()[1].aiId == "castor");
+		room->setOccupant(1, RoomBackend::Occupant::AI, "nicowar");
+		room->update();
+		CHECK(room->slots()[1].aiId == "nicowar");
+		// Opening the seat again removes the AI.
+		room->setOccupant(1, RoomBackend::Occupant::Open);
+		room->update();
+		CHECK(room->slots()[1].open);
+		// A LAN room has no closed seats to offer.
+		CHECK_FALSE(room->canCloseSeats());
 	}
 
 	TEST_CASE("an unserved version blames the side that is out of date [display]")

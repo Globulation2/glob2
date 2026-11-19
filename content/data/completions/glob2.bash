@@ -69,8 +69,8 @@ _glob2_complete() {
     'match') opts='verify';;
     'online') opts='join play-map host-map turn-client';;
     'script') opts='check attach';;
-    'play') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --help ';;
-    'replay') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --help ';;
+    'play') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --mcp-port --help ';;
+    'replay') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --mcp-port --help ';;
     'map generate') opts='--seed --set --width --height --teams --workers --preview --preview-size --preview-scale --data-dir --generator-package --output --report-file --config --scenario --scenario-config --map-image --export-generator-package --compute-threads --help ';;
     'map study') opts='--output-dir --profile --building-catalog --data-dir --generator-package --seed --set --candidates --rotations --write-map --report --perturb --building-artwork --compute-threads --help ';;
     'map study-worker') opts='--data-dir --generator-package --compute-threads --help ';;
@@ -85,9 +85,9 @@ _glob2_complete() {
     'game run') opts='--output-dir --profile --building-catalog --data-dir --generator-package --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --map-file --load-game --generator --game-seed --map-seed --set --candidates --player --ai-param --ai-script --map-script --alliance --win-condition --win-probability --experiment --rule --fork-rule --ticks --gradient-delay --resource-growth-delay --claim-route-delay --ai-order-delay --save --telemetry --write-replay --benchmark-warmup --benchmark-tick-profile --owner-tick-profile --owner-profile-min-ms --owner-profile-from-tick --ai-decision-profile --ai-profile-min-ms --ai-profile-from-tick --ai-profile-gate --gradient-work-stats --resource-claims --resource-gradient-probe --resource-gradient-exploration --resource-gradient-exploration-seed --diagnostic-fields --diagnostic-interval --diagnostic-png --building-artwork --help ';;
     'game repeat') opts='--data-dir --generator-package --fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --display --compute-threads --gpu --gradient-backend --gradient-algorithm --ticks --runs --building-catalog --help ';;
     'match verify') opts='--output-dir --profile --compute-threads --map-file --help ';;
-    'online join') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --instance --help ';;
-    'online play-map') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --instance --hash --title --help ';;
-    'online host-map') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --instance --hash --title --help ';;
+    'online join') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --mcp-port --instance --help ';;
+    'online play-map') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --mcp-port --instance --hash --title --help ';;
+    'online host-map') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --mcp-port --instance --hash --title --help ';;
     'online turn-client') opts='--output-dir --profile --compute-threads --map-file --orders-per-second --max-seconds --seed --help ';;
     'ai check') opts='--format --help ';;
     'script check') opts='--help ';;
@@ -97,7 +97,7 @@ _glob2_complete() {
     'assets skin-info') opts='--format --help ';;
     'dev random-games') opts='--data-dir --generator-package --fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --compute-threads --gpu --gradient-backend --gradient-algorithm --display --runs --ticks --ai-types --map --matchup --save-game-as --building-catalog --help ';;
     'dev stress-maps') opts='--data-dir --generator-package --help ';;
-    'dev textshots') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --output-dir --help ';;
+    'dev textshots') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --mcp-port --output-dir --help ';;
     'dev dump-resources') opts='--data-dir --generator-package --help ';;
     'dev dump-wheat') opts='--data-dir --generator-package --team --help ';;
     'dev dump-tiled') opts='--data-dir --generator-package --repeat-x --repeat-y --colonies --swarms --help ';;
@@ -130,6 +130,7 @@ _glob2_complete() {
     'play|--gpu') kind='enum'; values='on off';;
     'play|--gradient-backend') kind='enum'; values='cpu scalar sse2 neon opencl vulkan webgpu';;
     'play|--gradient-algorithm') kind='enum'; values='buckets frozen8 jacobi';;
+    'play|--mcp-port') kind='integer'; values='';;
     'replay|--renderer') kind='enum'; values='auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl';;
     'replay|--graphics-detail') kind='enum'; values='full reduced';;
     'replay|--device-tier') kind='enum'; values='low mid high';;
@@ -150,6 +151,7 @@ _glob2_complete() {
     'replay|--gpu') kind='enum'; values='on off';;
     'replay|--gradient-backend') kind='enum'; values='cpu scalar sse2 neon opencl vulkan webgpu';;
     'replay|--gradient-algorithm') kind='enum'; values='buckets frozen8 jacobi';;
+    'replay|--mcp-port') kind='integer'; values='';;
     'map generate|--seed') kind='integer'; values='';;
     'map generate|--set') kind='assignment'; values='';;
     'map generate|--width') kind='integer'; values='';;
@@ -325,6 +327,7 @@ _glob2_complete() {
     'online join|--gpu') kind='enum'; values='on off';;
     'online join|--gradient-backend') kind='enum'; values='cpu scalar sse2 neon opencl vulkan webgpu';;
     'online join|--gradient-algorithm') kind='enum'; values='buckets frozen8 jacobi';;
+    'online join|--mcp-port') kind='integer'; values='';;
     'online join|--instance') kind='string'; values='';;
     'online play-map|--renderer') kind='enum'; values='auto sdl-gpu programmable-gl webgpu portable-sdl software legacy-gl gpu webgl2 sdl opengl';;
     'online play-map|--graphics-detail') kind='enum'; values='full reduced';;
@@ -346,6 +349,7 @@ _glob2_complete() {
     'online play-map|--gpu') kind='enum'; values='on off';;
     'online play-map|--gradient-backend') kind='enum'; values='cpu scalar sse2 neon opencl vulkan webgpu';;
     'online play-map|--gradient-algorithm') kind='enum'; values='buckets frozen8 jacobi';;
+    'online play-map|--mcp-port') kind='integer'; values='';;
     'online play-map|--instance') kind='string'; values='';;
     'online play-map|--hash') kind='string'; values='';;
     'online play-map|--title') kind='string'; values='';;
@@ -369,6 +373,7 @@ _glob2_complete() {
     'online host-map|--gpu') kind='enum'; values='on off';;
     'online host-map|--gradient-backend') kind='enum'; values='cpu scalar sse2 neon opencl vulkan webgpu';;
     'online host-map|--gradient-algorithm') kind='enum'; values='buckets frozen8 jacobi';;
+    'online host-map|--mcp-port') kind='integer'; values='';;
     'online host-map|--instance') kind='string'; values='';;
     'online host-map|--hash') kind='string'; values='';;
     'online host-map|--title') kind='string'; values='';;
@@ -438,6 +443,7 @@ _glob2_complete() {
     'dev textshots|--gpu') kind='enum'; values='on off';;
     'dev textshots|--gradient-backend') kind='enum'; values='cpu scalar sse2 neon opencl vulkan webgpu';;
     'dev textshots|--gradient-algorithm') kind='enum'; values='buckets frozen8 jacobi';;
+    'dev textshots|--mcp-port') kind='integer'; values='';;
     'dev textshots|--output-dir') kind='directory'; values='';;
     'dev dump-resources|--data-dir') kind='directory'; values='';;
     'dev dump-resources|--generator-package') kind='file'; values='';;

@@ -7,6 +7,21 @@
 #include "Order.h"
 #include "GameGUIDialog.h"
 #include "render/scene/Scene.h"
+#include <cmath>
+
+// Lesson destinations name a building by its origin tile; aim at the footprint's
+// centre so markers and the camera land on the building rather than its corner.
+std::pair<double,double> Tutorial::destinationCentre(const PresentationFrame &scene, const Tutorial::Destination &target)
+{
+    double x=target.x,y=target.y;
+    const int tx=int(std::floor(x)),ty=int(std::floor(y));
+    if (const auto *b=scene.entities.building(scene.map.getBuilding(tx,ty));
+        b && b->posX==tx && b->posY==ty) {
+        const auto *type=scene.entities.type(*b);
+        x+=type->width/2.0; y+=type->height/2.0;
+    }
+    return {x,y};
+}
 
 void GameGUI::updateTutorial()
 {
@@ -24,8 +39,9 @@ void GameGUI::updateTutorial()
                 const auto target=Tutorial::view(drawnScene().panels.hud.state());
                 if (!target || !target->destination) return;
                 const int oldX=viewportX,oldY=viewportY;
-                camera.originX=target->destination->x*32-camera.visibleW()/2;
-                camera.originY=target->destination->y*32-camera.visibleH()*.7;
+                const auto [x,y]=Tutorial::destinationCentre(drawnScene(),*target->destination);
+                camera.originX=x*32-camera.visibleW()/2;
+                camera.originY=y*32-camera.visibleH()*.7;
                 camera.normalize(); viewportX=camera.tileX(); viewportY=camera.tileY();
                 viewportChanged(oldX,viewportX,oldY,viewportY);
             } else if (destination==0) {
@@ -84,7 +100,7 @@ void Tutorial::drawDestination(GameGUI &gui)
     if (!lesson || !lesson->destination) return;
     const auto &camera=gui.camera;
     const auto &target=*lesson->destination;
-    const double x=target.x,y=target.y;
+    const auto [x,y]=Tutorial::destinationCentre(gui.drawnScene(),target);
     const auto point=camera.worldToScreen(camera.originX+MapCamera::wrap(x*32-camera.originX,camera.mapWidth),
         camera.originY+MapCamera::wrap(y*32-camera.originY,camera.mapHeight));
     if (point.first<camera.offsetX+20 || point.first>camera.offsetX+camera.width-20 ||
@@ -96,6 +112,8 @@ void Tutorial::drawDestination(GameGUI &gui)
     gfx->drawCircle(px,py,20,255,220,80);
     const auto label=Glob2UI::tr(target.label);
     const int labelWidth=globalContainer->standardFont->getStringWidth(label.c_str());
-    gfx->drawString(std::clamp(px-36,8,std::max(8,gfx->getW()-labelWidth-8)),py+24,
+    // Centre the label under the ring and keep it inside the map view, clear of the sidebar.
+    const int left=int(camera.offsetX)+8,right=int(camera.offsetX+camera.width)-labelWidth-8;
+    gfx->drawString(std::clamp(px-labelWidth/2,left,std::max(left,right)),py+24,
         globalContainer->standardFont,label);
 }

@@ -32,6 +32,14 @@
 #include "MapScript.h"
 #include "GameObjectives.h"
 #include "GameHints.h"
+#include "ScriptCommand.h"
+#include "AI.h"
+#include "ai/engine/AIDecision.h"
+#include "ai/engine/AIOrderScheduler.h"
+#include "sim/ClientEvents.h"
+#include "Glob2Test.h"
+#include <fstream>
+#include <sstream>
 using namespace Script;
 using namespace GAGCore;
 static std::string save(Game &game)
@@ -667,6 +675,59 @@ TEST_CASE("JavaScript custom library atomic updates and frozen source" *
 	restored.remove(first);
 	CHECK(restored.entries().size() == 1);
 	CHECK_THROWS(restored.configuration(first));
+}
+
+TEST_CASE("JavaScript custom library refusals name the rejected file" *
+		  doctest::test_suite("JavaScriptIntegration"))
+{
+	Online::MemoryStorage storage;
+	Library library(storage);
+	const auto refusal = [&](const std::string &source, const std::string &file)
+	{
+		try
+		{
+			library.put(source, file);
+		}
+		catch (const std::exception &e)
+		{
+			return std::string(e.what());
+		}
+		return std::string();
+	};
+	const auto syntax = refusal("function step(ctx) { let x = ; }", "my-colony.js");
+	CHECK(syntax.rfind("Could not add my-colony.js: SyntaxError", 0) == 0);
+	CHECK(refusal("let unused = 1;", "no-step.js") ==
+		  "Could not add no-step.js: AI must define step(ctx) or main(ctx)");
+	CHECK(library.entries().empty());
+}
+
+TEST_CASE("JavaScript linked AI broken after linking names itself when frozen for a game" *
+		  doctest::test_suite("JavaScriptIntegration"))
+{
+	Online::MemoryStorage storage;
+	Library library(storage);
+	glob2test::TempDir directory("linked-ai");
+	const auto path = directory.path / "linked.js";
+	const std::string good = "export function metadata(){return {apiVersion:2,name:'Linked AI'}} "
+							 "export function step(){}";
+	std::ofstream(path) << good;
+	const auto id = library.put(good, "linked.js", {}, path.string());
+	CHECK_NOTHROW(library.configuration(id));
+	std::ofstream(path) << "export function step(ctx) { let = ; }";
+	std::string message;
+	try
+	{
+		library.configuration(id);
+	}
+	catch (const std::exception &e)
+	{
+		message = e.what();
+	}
+	CHECK(message.rfind("Linked AI (" + path.string() + "): SyntaxError", 0) == 0);
+	std::filesystem::remove(path);
+	CHECK_THROWS_WITH(library.configuration(id),
+					  ("Linked AI (" + path.string() + "): Cannot open script: " + path.string())
+						  .c_str());
 }
 
 TEST_CASE("JavaScript profile two spatial cache and queued save continuity" *
@@ -1614,6 +1675,70 @@ TEST_CASE("JavaScript legacy empty resource memories discard unused stock bytes"
     CHECK(restored.cell(0,0).resource == NO_RES_TYPE);
 }
 
+TEST_CASE("The editor declarations name every field of a building type record" * doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world(glob2test::GameOptions{.loadDefaultRace=true,.header=true});
+    Observations observations(world.game,0);
+    const auto types=observations.query("buildingTypes",{});
+    REQUIRE_FALSE(types.items.empty());
+    // The shipped examples read capabilities and training; checkJs flags any field
+    // the BuildingType interface leaves out.
+    const auto declarations=glob2test::readFile(glob2test::sourceRoot()/"examples/javascript/glob2.d.ts");
+    const auto start=declarations.find("export interface BuildingType {");
+    REQUIRE(start!=std::string::npos);
+    const auto body=declarations.substr(start,declarations.find("\n}",start)-start);
+    std::string missing;
+    for(const auto& field:types.items.front().fields)
+        if(body.find(" "+field.first+":")==std::string::npos && body.find(" "+field.first+"?:")==std::string::npos)
+            missing+=" "+field.first;
+    CHECK_MESSAGE(missing.empty(),"BuildingType lacks:"<<missing);
+}
+
+TEST_CASE("A JavaScript AI that stops tells the client once, naming the AI and its error" * doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world(glob2test::GameOptions{.loadDefaultRace=true,.header=true});
+    ClientEvents events;
+    world.game.clientEvents=&events;
+    world.game.gameHeader.setAIConfig(0,config("export function metadata(){return {apiVersion:2,name:'Stopper'}} "
+                                               "export function step(){ throw new Error('boom'); }",2));
+    AI ai(AI::JAVASCRIPT,world.game.players[0]);
+    for(int poll=0; poll<3; ++poll) {
+        ai.prepareDecision();
+        const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
+        const std::vector<AIEngine::ExecutionReceipt> receipts;
+        ai.publishDecision(ai.decide(AIEngine::DecisionContext{*view,0,0,receipts}));
+    }
+    std::vector<ClientEvent::AIStopped> stopped;
+    events.drain([&](auto event) {
+        if(auto* e=std::get_if<ClientEvent::AIStopped>(&event)) stopped.push_back(*e);
+    });
+    REQUIRE(stopped.size()==1);
+    CHECK(stopped[0].player==0);
+    CHECK(stopped[0].diagnostic=="Stopper at tick 0: Error: boom");
+}
+
+TEST_CASE("JavaScript order diagnostics name an unknown type or a missing building reference" * doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world(glob2test::GameOptions{.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto* inn=world.game.addBuilding(4,4,world.game.buildingsTypes.getFinishedTypeNum("inn"),0,1,1);
+    REQUIRE(inn);
+    const auto ref=Value::object().set("id",unsigned(inn->gid)).set("generation",inn->scriptIdentity);
+    // A misspelled type is reported by name, whether or not a building is attached.
+    CHECK_THROWS_WITH(Script::order(world.game,0,Value::object().set("type","teleport").set("x",1)),
+                      "Unsupported order type 'teleport'");
+    CHECK_THROWS_WITH(Script::order(world.game,0,Value::object().set("type","worker").set("building",ref).set("workers",2)),
+                      "Unsupported order type 'worker'");
+    // Passing the numeric ID, or nothing, instead of the building record.
+    CHECK_THROWS_WITH(Script::order(world.game,0,Value::object().set("type","workers").set("building",unsigned(inn->gid)).set("workers",2)),
+                      "Order 'workers' requires a building reference {id, generation}");
+    CHECK_THROWS_WITH(Script::order(world.game,0,Value::object().set("type","priority").set("priority",1)),
+                      "Order 'priority' requires a building reference {id, generation}");
+    CHECK_NOTHROW(Script::order(world.game,0,Value::object().set("type","workers").set("building",ref).set("workers",2)));
+}
+
 TEST_CASE("JavaScript custom building descriptors and orders follow services" * doctest::test_suite("JavaScriptIntegration"))
 {
     glob2test::HeadlessGlobals globals;
@@ -1947,4 +2072,58 @@ TEST_CASE("JavaScript flag orders use explicit custom attraction roles" * doctes
         .set("x",20).set("y",20).set("workers",1).set("futureWorkers",1).set("range",9));
     const auto* parsed=dynamic_cast<const OrderCreate*>(create.get()); REQUIRE(parsed);
     CHECK(parsed->flagRadius==9);
+}
+
+namespace
+{
+struct AICheckRun
+{
+	int exit = 0;
+	std::string out, err;
+};
+AICheckRun runAICheck(const std::filesystem::path &file)
+{
+	std::ostringstream out, err;
+	struct Restore
+	{
+		std::streambuf *out, *err;
+		~Restore() { std::cout.rdbuf(out); std::cerr.rdbuf(err); }
+	} restore{std::cout.rdbuf(out.rdbuf()), std::cerr.rdbuf(err.rdbuf())};
+	AICheckRun run;
+	run.exit = runScriptCommand(Cli::parse(std::vector<std::string>{"ai", "check", file.string()}));
+	run.out = out.str();
+	run.err = err.str();
+	return run;
+}
+} // namespace
+
+TEST_CASE("JavaScript ai check passes the shipped AI examples and says step was not run" *
+		  doctest::test_suite("JavaScriptIntegration"))
+{
+	for (const char *example : {"ai.js", "studio-starter.js"})
+	{
+		INFO(example);
+		const auto run = runAICheck(glob2test::sourceRoot() / "examples/javascript" / example);
+		CHECK(run.exit == 0);
+		CHECK(run.err.empty());
+		CHECK(run.out.find("step(ctx) itself was not run") != std::string::npos);
+	}
+	// Profile 1 has no metadata; the report must not print an empty name.
+	const auto unnamed = runAICheck(glob2test::sourceRoot() / "examples/javascript/ai.js");
+	CHECK(unnamed.out.find("profile 1: (unnamed") != std::string::npos);
+	const auto named = runAICheck(glob2test::sourceRoot() / "examples/javascript/studio-starter.js");
+	CHECK(named.out.find("profile 2: My Colony \xE2\x80\x94") != std::string::npos);
+}
+
+TEST_CASE("JavaScript ai check reports a broken script as rejected input naming the file" *
+		  doctest::test_suite("JavaScriptIntegration"))
+{
+	glob2test::TempDir directory("ai-check");
+	const auto broken = directory.path / "broken.js";
+	std::ofstream(broken) << "export function step(ctx) {\n  let x = ;\n}\n";
+	const auto run = runAICheck(broken);
+	// The help documents 2 for rejected input and 3 for operational failures only.
+	CHECK(run.exit == 2);
+	CHECK(run.out.empty());
+	CHECK(run.err.rfind(broken.string() + ": SyntaxError", 0) == 0);
 }

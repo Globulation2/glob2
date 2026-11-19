@@ -3150,6 +3150,8 @@ AI 상대
 팀 %0
 [Your colony]
 내 식민지
+[Practice colony]
+연습용 식민지
 [%0 / %1 HP · %2]
 %0 / %1 체력 · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ MCP 서버 활성화
 녹화 삭제
 [recording refresh]
 새로 고침
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  이전 라이브러리를 복원할 수 없습니다: %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Building Studio에서 만들기
 [intro instruction build]
 건설을 열고 밀 근처에 여관을 놓으세요. 여유 일꾼을 건설에 배정하고 기존 여관에도 계속 보급하세요.
 [intro instruction supply]
-완성된 새 여관을 선택하고 보급 일꾼을 한 명 이상 배정하세요. 일꾼이 밀을 운반할 때까지 기다리세요.
+완성된 새 여관을 선택하세요. 여관은 스스로 보급 일꾼을 요청합니다. 일꾼 배정 목표를 확인하고 일꾼이 밀을 운반할 때까지 기다리세요.
 [intro instruction grow]
 둥지를 선택하세요. 일꾼 배정 목표를 2명 이상으로, 생산 비율을 일꾼만 생산하도록 설정하세요. 새 일꾼이 태어나는 동안 두 여관에 계속 보급하세요.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Building Studio에서 만들기
 [intro help build]
 건설에는 일꾼이 운반하는 목재가 필요합니다. 건물 조작판에서 여관을 골라 밀 근처의 빈 땅에 놓고 건설 일꾼 2명을 요청하세요. 일꾼 목표는 요청 인원이며 이미 도착한 인원수가 아닙니다. 기존 여관과 둥지에 보급 일꾼을 남겨 두세요. 건설 가능한 곳이면 어디든 인정됩니다.
 [intro help supply]
-건설과 일상 보급은 일꾼 배정 목표가 다릅니다. 완성된 여관을 선택하고 운영 인원 목표를 늘리세요. 보급 일꾼이 밀을 거두어 이곳으로 운반합니다. 배고픈 글로뷸은 여관에서 먹으며, 보급 일꾼이 없으면 결국 식량이 바닥납니다. 밀 지대로 가는 길을 열어 두세요.
+건설과 일상 보급은 일꾼 배정 목표가 다릅니다. 완성된 여관은 자동으로 보급 일꾼을 요청하며, 밀이 너무 느리게 도착하면 운영 인원 목표를 늘리세요. 보급 일꾼이 밀을 거두어 이곳으로 운반합니다. 배고픈 글로뷸은 여관에서 먹으며, 보급 일꾼이 없으면 결국 식량이 바닥납니다. 밀 지대로 가는 길을 열어 두세요.
 [intro help grow]
 둥지는 밀을 소비해 유닛을 생산합니다. 일꾼 생산을 1, 탐험가와 전사 생산을 0으로 설정하세요. 둥지의 일꾼 목표를 2명 이상으로 늘리세요. 보급 일꾼이 많으면 밀을 빨리 나르지만 다른 일과 인력을 나누어야 합니다. 두 여관에 식량을 계속 공급하세요.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Building Studio에서 만들기
 [intro hint scout]
 탐험가에게는 동쪽 돌 지대에 놓이고 인원이 배정된 탐험 깃발이 필요합니다. 깃발의 위치와 탐험가 요청 수를 확인하세요.
 [intro hint build]
-새 여관을 철거했다면 다시 지으세요. 그렇지 않다면 건설 현장과 일꾼 배정 목표를 확인하세요. 보급 작업이 일꾼을 모두 차지할 수 있습니다. 식량 공급을 유지하면서 건설 일꾼을 확보하세요.
+새 여관이 아직 완성되지 않았습니다. 건설 현장이 없다면 밀 근처에 여관을 배치하세요. 그렇지 않다면 현장을 선택하고 일꾼 배정 목표를 확인하세요. 다른 곳의 보급 작업이 일꾼을 붙잡고 있을 수 있습니다.
 [intro hint supply]
 완성된 새 여관을 선택하세요. 일꾼 배정 목표를 확인하고 밀이 배달되는지 지켜보세요. 일꾼은 이동하거나 식사하는 데 시간이 필요할 수 있습니다.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Building Studio에서 만들기
 [intro help touch build]
 건설에서 여관을 골라 밀 근처의 빈 땅에 놓고 확정하세요. 현장을 선택하고 건설 일꾼 2명을 요청하세요. 일꾼 목표는 요청 인원이며 이미 도착한 인원수가 아닙니다. 기존 여관과 둥지에도 보급을 유지하세요. 건설 가능한 곳이면 어디든 인정됩니다.
 [intro help touch supply]
-완성된 새 여관을 선택하고 일꾼 배정 목표를 늘리세요. 건설과 일상 보급의 목표는 별개입니다. 보급 일꾼이 밀을 거두어 운반합니다. 배고픈 글로뷸은 여관에서 먹으며, 보급 일꾼이 없으면 식량이 바닥납니다. 밀로 가는 길을 열어 두세요.
+완성된 새 여관을 선택하고 일꾼 배정 목표를 확인하세요. 여관은 스스로 보급 일꾼을 요청합니다. 건설과 일상 보급의 목표는 별개입니다. 보급 일꾼이 밀을 거두어 운반합니다. 배고픈 글로뷸은 여관에서 먹으며, 보급 일꾼이 없으면 식량이 바닥납니다. 밀로 가는 길을 열어 두세요.
 [intro help touch grow]
 둥지를 선택하세요. 일꾼 생산은 1, 탐험가와 전사 생산은 0으로 설정하세요. 일꾼 배정 목표를 2명 이상으로 늘리세요. 보급 일꾼은 새 유닛을 위한 밀을 나르지만 다른 일과 인력을 나누어야 합니다. 두 여관에 계속 보급하세요.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Building Studio에서 만들기
 [intro compact build]
 건설 → 여관. 밀 근처에 놓고 건설 일꾼 2명을 배정하세요.
 [intro compact supply]
-새 여관을 선택하고 보급 일꾼을 1명 이상 배정하세요. 밀을 기다리세요.
+새 여관을 선택하고 보급 일꾼을 확인하세요. 밀을 기다리세요.
 [intro compact grow]
 둥지를 선택하고 보급 일꾼 2명을 배정하세요. 일꾼만 생산하세요.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Building Studio에서 만들기
 [lesson schools complete]
 학교에서 일꾼의 기술이 향상되었습니다. 숙련된 건설 일꾼은 업그레이드를 가능하게 하고 수확 능력 향상은 성장하는 경제를 뒷받침합니다.
 [lesson schools build hint]
-공터에 학교를 짓고 건설 일꾼을 배정하세요. 식민지에는 이미 해조류를 채집할 수영 일꾼이 있습니다. 목재와 물로 가는 길을 남겨 두세요. 과일나무는 명성 자원을 제공하며 식량은 여전히 밀에서 얻습니다.
+아직 완성된 학교가 없습니다. 건설 현장이 건설 일꾼을 요청하고 있는지, 일꾼들이 목재와 연못에 갈 수 있는지 확인하세요.
 [lesson schools build title]
 학교 짓기
 [lesson schools build instruction]
 공터에 학교를 짓고 건설 일꾼을 배정하세요.
 [lesson schools build help]
-식민지에는 이미 해조류를 채집할 수영 일꾼이 있습니다. 목재와 물로 가는 길을 남겨 두세요. 과일나무는 명성 자원을 제공하며 식량은 여전히 밀에서 얻습니다.
+식민지에는 이미 해조류를 채집할 수영 일꾼이 있습니다. 목재와 물로 가는 길을 남겨 두세요. 과일나무는 식량이 아니며, 여관에는 여전히 밀이 필요합니다.
 [lesson schools build marker]
 학교 짓기
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Building Studio에서 만들기
 [lesson upgrades upgrade marker]
 달리기 훈련장 업그레이드하기
 [lesson upgrades train hint]
-기존 일꾼이 업그레이드된 달리기 훈련장에서 더 빨리 걷는 법을 배우도록 하세요. 업그레이드가 완료되면 받을 수 있는 훈련의 수준이 높아집니다. 건물 단계가 높을수록 높은 건설 기술이 필요하며 플레이어에게 표시되는 단계는 1부터 시작합니다.
+아직 업그레이드된 달리기 훈련장에서 훈련한 일꾼이 없습니다. 훈련장으로 가는 길을 열어 두고 일부 일꾼을 한가하게 남겨 두세요.
 [lesson upgrades train title]
 향상된 훈련 활용하기
 [lesson upgrades train instruction]
 기존 일꾼이 업그레이드된 달리기 훈련장에서 더 빨리 걷는 법을 배우도록 하세요.
 [lesson upgrades train help]
-업그레이드가 완료되면 받을 수 있는 훈련의 수준이 높아집니다. 건물 단계가 높을수록 높은 건설 기술이 필요하며 플레이어에게 표시되는 단계는 1부터 시작합니다.
+업그레이드가 완료되면 그 건물에서 받을 수 있는 훈련의 수준이 높아집니다. 건물 단계가 높을수록 건설 기술이 더 높은 건설 일꾼이 필요합니다.
 [lesson warrior-training title]
 전사 생산과 훈련
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Building Studio에서 만들기
 [lesson fortifications walls marker]
 벽으로 탑 보호하기
 [lesson fortifications supply hint]
-탑을 선택하고 보급 일꾼을 요청하세요. 돌이 2개 이상 도착할 때까지 기다리세요. 완성된 탑에 탄약을 운반하려면 운영 일꾼 목표를 설정해야 합니다. 이는 건설 인원 목표와 별개입니다.
+탑에 돌이 2개 미만입니다. 탑을 선택하고 일꾼 배정 목표를 확인하세요. 보급 일꾼에게는 돌에서 오는 열린 길이 필요합니다.
 [lesson fortifications supply title]
 탄약 보급하기
 [lesson fortifications supply instruction]
-탑을 선택하고 보급 일꾼을 요청하세요. 돌이 2개 이상 도착할 때까지 기다리세요.
+완성된 탑을 선택하고 보급 일꾼을 확인하세요. 돌이 2개 이상 도착할 때까지 기다리세요.
 [lesson fortifications supply help]
-완성된 탑에 탄약을 운반하려면 운영 일꾼 목표를 설정해야 합니다. 이는 건설 인원 목표와 별개입니다.
+완성된 탑은 탄약을 운반할 보급 일꾼을 스스로 요청합니다. 이는 건설 인원 목표와 별개이며, 돌이 느리게 도착하면 운영 일꾼 목표를 늘리세요.
 [lesson fortifications supply marker]
 탄약 보급하기
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Building Studio에서 만들기
 [lesson fortifications walls compact]
 벽 2개를 짓고 탑 서쪽 길을 열어 두세요.
 [lesson fortifications supply compact]
-탑 선택 → 보급 일꾼. 돌 2개를 기다리세요.
+탑 선택 → 보급 일꾼 확인. 돌 2개를 기다리세요.
 [lesson fortifications hold compact]
 공격자에 맞서 탑 보급을 유지하세요.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ AI
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

@@ -617,7 +617,7 @@ Voľné
 [OpenGL]
 OpenGL
 [Options]
-Nastavenia
+Možnosti
 [options]
 Nastavenia
 [Orange]
@@ -3150,6 +3150,8 @@ Hráč %0
 Tím %0
 [Your colony]
 Vaša kolónia
+[Practice colony]
+Cvičná kolónia
 [%0 / %1 HP · %2]
 Zdravie %0 / %1 · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ Nahrávku sa nepodarilo exportovať.
 Odstrániť nahrávku
 [recording refresh]
 Obnoviť zobrazenie
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Predchádzajúcu knižnicu sa nepodarilo obnoviť: %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Otvorte vlajky a umiestnite vlajku prieskumu na kamennú plochu východne od va�
 [intro instruction build]
 Otvorte Stavba a umiestnite jedáleň blízko pšenice. Prideľte dostupných pracovníkov na výstavbu jedálne. Udržujte svoju existujúcu jedáleň zásobenú jedlom.
 [intro instruction supply]
-Vyberte si hotovú novú jedáleň a dajte jej aspoň jedného dodávateľa. Počkajte, kým pracovník doručí pšenicu.
+Vyberte si hotovú novú jedáleň. Dodávateľov si vyžiada sama; skontrolujte požadovaný počet pracovníkov a počkajte, kým pracovník doručí pšenicu.
 [intro instruction grow]
 Vyberte Hniezdo. Prideľte aspoň 2 pracovníkov na zásobovanie a nastavte výrobu iba na pracovníkov. Kým sa narodí nový pracovník, udržujte obe Jedálne zásobené.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Pomocou minimapy posuňte pohľad na východ a nájdite ložisko kameňa. Vo Vla
 [intro help build]
 Stavba spotrebuje drevo dodané robotníkmi. Vyberte jedáleň z ovládacích prvkov budovy (paleta budov), umiestnite ju na čistú pôdu blízko pšenice a požiadajte o 2 staviteľov. Požadovaný počet pracovníkov je požiadavka, nie počet už prítomných pracovníkov. Udržujte dodávateľov vo svojej existujúcej jedálni a hniezde. Každá platná poloha sa počíta.
 [intro help supply]
-Výstavba a každodenné zásobovanie majú oddelené požadované počty pracovníkov. Vyberte hotovú jedáleň a zvýšte požadovaný počet prevádzkových pracovníkov. Dodávateľ zbiera pšenicu a nosí ju sem. Hladné guľôčky jedia v jedálňach; budove bez dodávateľov nakoniec dôjdu zásoby. Zachovajte prístup k pšenici.
+Výstavba a každodenné zásobovanie majú oddelené požadované počty pracovníkov. Hotová jedáleň si dodávateľov vyžiada automaticky; ak pšenica prichádza príliš pomaly, zvýšte požadovaný počet prevádzkových pracovníkov. Dodávateľ zbiera pšenicu a nosí ju sem. Hladné guľôčky jedia v jedálňach; budove bez dodávateľov nakoniec dôjdu zásoby. Zachovajte prístup k pšenici.
 [intro help grow]
 Hniezdo spotrebúva pšenicu na výrobu jednotiek. Nastavte produkciu pracovníkov na 1 a produkciu prieskumníkov a bojovníkov na 0. Zvýšte požadovaný počet pracovníkov hniezda na 2 alebo viac. Viac dodávateľov môže priniesť pšenicu rýchlejšie, ale súperia s inými úlohami o pracovníkov. Zásobujte obe jedálne potravinami.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Otvorte Vlajky, vyberte Vlajku vojny a umiestnite ju nad nepriateľské hniezdo 
 [intro hint scout]
 Prieskumník potrebuje vlajku prieskumu s pridelenými jednotkami na východnom ložisku kameňa. Skontrolujte polohu vlajky a požadovaný počet prieskumníkov.
 [intro hint build]
-Ak ste odstránili novú jedáleň, postavte ďalšiu. Inak skontrolujte stavenisko a požadovaný počet pracovníkov. Zásobovacie úlohy môžu zamestnávať vašich pracovníkov; zachovajte prísun jedla a uvoľnite staviteľov.
+Vaša nová jedáleň ešte nie je hotová. Ak neexistuje stavenisko, umiestnite jedáleň blízko pšenice. Inak vyberte stavenisko a skontrolujte požadovaný počet pracovníkov: zásobovacie úlohy inde môžu zamestnávať vašich pracovníkov.
 [intro hint supply]
 Vyberte hotovú novú jedáleň. Skontrolujte požadovaný počet pracovníkov a sledujte dodávky pšenice. Pracovníci môžu potrebovať čas na cestovanie alebo jedlo.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Pred umiestnením vlajky potiahnite prázdnu zem a posuňte pohľad. Nájdite lo
 [intro help touch build]
 V ponuke stavieb vyberte Jedáleň. Umiestnite ju na voľnú pôdu pri pšenici a potvrďte. Vyberte stavenisko a prideľte 2 staviteľov. Požadovaný počet pracovníkov nie je počet už prítomných pracovníkov. Udržujte existujúcu Jedáleň a Hniezdo zásobené. Počíta sa akékoľvek platné miesto.
 [intro help touch supply]
-Vyberte hotovú novú jedáleň a zvýšte požadovaný počet pridelených pracovníkov. Výstavba a každodenné zásobovanie majú samostatné nastavenia. Dodávateľ zbiera pšenicu a nosí ju sem. Hladné guľôčky jedia v jedálňach; budove bez dodávateľov nakoniec dôjdu zásoby. Zachovajte prístup k pšenici.
+Vyberte hotovú novú jedáleň a skontrolujte požadovaný počet pridelených pracovníkov; dodávateľov si vyžiada sama. Výstavba a každodenné zásobovanie majú samostatné nastavenia. Dodávateľ zbiera pšenicu a nosí ju sem. Hladné guľôčky jedia v jedálňach; budove bez dodávateľov nakoniec dôjdu zásoby. Zachovajte prístup k pšenici.
 [intro help touch grow]
 Vyberte hniezdo. Nastavte produkciu pracovníkov na 1, prieskumníkov a bojovníkov na 0. Zvýšte požadovaný počet pridelených pracovníkov aspoň na 2. Dodávatelia prinášajú pšenicu pre nové jednotky, ale súperia s inými úlohami o pracovníkov. Zásobujte obe jedálne.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Vlajky → Vlajka prieskumu. Položte ju na kameň; prideľte 1 prieskumníka.
 [intro compact build]
 Stavba → Jedáleň. Umiestnite pri pšenici; prideľte 2 staviteľov.
 [intro compact supply]
-Vyberte si svoju novú jedáleň; prideľte aspoň 1 dodávateľa. Počkajte na pšenicu.
+Vyberte si svoju novú jedáleň; skontrolujte jej dodávateľov. Počkajte na pšenicu.
 [intro compact grow]
 Vyberte hniezdo; prideľte 2 dodávateľov. Vyrábajte iba robotníkov.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Pomocou pripravených plavcov postavte školu a potom sledujte, ako sa robotníc
 [lesson schools complete]
 Vaša škola zlepšila zručnosti pracovníkov. Zruční stavitelia odomknú vylepšenia; lepšia úroda pomáha udržiavať rastúcu ekonomiku.
 [lesson schools build hint]
-Postavte školu na čistinke; prideľte staviteľov. Kolónia už má plavcov pre riasy. Nechajte prístup k drevu a vode. Ovocné stromy poskytujú zdroje prestíže; potraviny stále pochádzajú z pšenice.
+Zatiaľ nie je hotová žiadna škola. Skontrolujte, či jej stavenisko požaduje staviteľov a či sa dostanú k drevu a k jazierku.
 [lesson schools build title]
 Postavte školu
 [lesson schools build instruction]
 Postavte školu na čistinke; prideľte staviteľov.
 [lesson schools build help]
-Kolónia už má plavcov pre riasy. Nechajte prístup k drevu a vode. Ovocné stromy poskytujú zdroje prestíže; potraviny stále pochádzajú z pšenice.
+Kolónia už má plavcov pre riasy. Nechajte prístup k drevu a vode. Ovocné stromy nie sú zdrojom potravín; vaše jedálne stále potrebujú pšenicu.
 [lesson schools build marker]
 Postavte školu
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Títo pracovníci sa už naučili zručnosti školy prvého stupňa. Vylepšenia
 [lesson upgrades upgrade marker]
 Vylepšite bežeckú dráhu
 [lesson upgrades train hint]
-Nechajte existujúceho pracovníka naučiť sa rýchlejšiu chôdzu na vylepšenej bežeckej dráhe. Dokončené vylepšenie zlepšuje dostupný tréning. Vyššie úrovne budov vyžadujú vyššie stavebné zručnosti; úroveň zobrazovaná hráčom začína na 1.
+Na vylepšenej bežeckej dráhe sa zatiaľ nevycvičil žiadny pracovník. Udržujte ju dostupnú a nechajte niektorých pracovníkov voľných.
 [lesson upgrades train title]
 Použite vylepšený tréning
 [lesson upgrades train instruction]
 Nechajte existujúceho pracovníka naučiť sa rýchlejšiu chôdzu na vylepšenej bežeckej dráhe.
 [lesson upgrades train help]
-Dokončené vylepšenie zlepšuje dostupný tréning. Vyššie úrovne budov vyžadujú vyššie stavebné zručnosti; úroveň zobrazovaná hráčom začína na 1.
+Dokončené vylepšenie zlepšuje tréning, ktorý budova ponúka. Vyššie úrovne budov vyžadujú staviteľov s vyššími stavebnými zručnosťami.
 [lesson warrior-training title]
 Výroba a výcvik bojovníkov
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Múry spotrebúvajú kameň a každé stavenisko žiada pracovníkov. Vežu neuz
 [lesson fortifications walls marker]
 Chráňte vežu múrmi
 [lesson fortifications supply hint]
-Vyberte vežu a požiadajte dodávateľov. Počkajte, kým bude mať veža aspoň 2 jednotky kameňa. Keď je veža postavená, požiadajte robotníkov, aby priniesli muníciu. Toto číslo musíte nastaviť oddelene od počtu pracovníkov požadovaných na výstavbu.
+Veža má menej ako 2 jednotky kameňa. Vyberte ju a skontrolujte požadovaný počet pracovníkov; dodávatelia potrebujú voľnú cestu od kameňa.
 [lesson fortifications supply title]
 Zásobovanie muníciou
 [lesson fortifications supply instruction]
-Vyberte vežu a požiadajte dodávateľov. Počkajte, kým bude mať veža aspoň 2 jednotky kameňa.
+Vyberte hotovú vežu a skontrolujte jej dodávateľov. Počkajte, kým bude mať veža aspoň 2 jednotky kameňa.
 [lesson fortifications supply help]
-Keď je veža postavená, požiadajte robotníkov, aby priniesli muníciu. Toto číslo musíte nastaviť oddelene od počtu pracovníkov požadovaných na výstavbu.
+Hotová veža si dodávateľov na prinášanie munície vyžiada sama. Toto číslo je oddelené od počtu pracovníkov požadovaných na výstavbu; zvýšte ho, ak kameň prichádza pomaly.
 [lesson fortifications supply marker]
 Zásobovanie muníciou
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Stavba → Veža. Umiestnite do označenej oblasti.
 [lesson fortifications walls compact]
 Postavte 2 múry. Západný prístup k veži nechajte otvorený.
 [lesson fortifications supply compact]
-Vyberte vežu → dodávateľov. Počkajte na 2 kamene.
+Vyberte vežu → skontrolujte dodávateľov. Počkajte na 2 kamene.
 [lesson fortifications hold compact]
 Udržujte vežu zásobenú muníciou proti útočníkovi.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Tundrová pôda
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

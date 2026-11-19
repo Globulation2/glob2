@@ -3150,6 +3150,8 @@ Cọ %0
 Đội %0
 [Your colony]
 Thuộc địa của bạn
+[Practice colony]
+Thuộc địa luyện tập
 [%0 / %1 HP · %2]
 %0 / %1 máu · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ Không thể xuất bản ghi.
 Xóa bản ghi
 [recording refresh]
 Làm mới
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Không thể khôi phục thư viện trước đó: %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Mở Cờ và đặt Cờ thám hiểm lên bãi đá phía đông thuộc đị
 [intro instruction build]
 Mở Xây dựng và đặt Quán trọ gần lúa mì. Phân công công nhân rảnh xây dựng. Tiếp tục tiếp tế Quán trọ cũ.
 [intro instruction supply]
-Chọn Quán trọ mới đã xây xong và phân công ít nhất một người tiếp tế. Chờ công nhân mang lúa mì tới.
+Chọn Quán trọ mới đã xây xong. Quán trọ tự yêu cầu người tiếp tế; kiểm tra chỉ tiêu công nhân của nó và chờ công nhân mang lúa mì tới.
 [intro instruction grow]
 Chọn Tổ. Đặt chỉ tiêu công nhân ít nhất là 2 và tỷ lệ sản xuất chỉ tạo công nhân. Tiếp tế cả hai Quán trọ trong khi công nhân mới ra đời.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Dùng bản đồ nhỏ chuyển góc nhìn sang đông và tìm bãi đá. Ch�
 [intro help build]
 Xây dựng tiêu thụ gỗ do công nhân mang tới. Chọn Quán trọ trong bảng công trình, đặt trên đất trống gần lúa mì rồi yêu cầu 2 thợ xây. Chỉ tiêu công nhân là yêu cầu, không phải số người đã có mặt. Giữ người tiếp tế ở Quán trọ cũ và Tổ. Mọi vị trí hợp lệ đều được tính.
 [intro help supply]
-Xây dựng và tiếp tế hằng ngày có chỉ tiêu công nhân riêng. Chọn Quán trọ đã hoàn tất và tăng chỉ tiêu vận hành. Người tiếp tế thu gom lúa mì rồi mang về đây. Globul đói ăn ở Quán trọ; công trình không có người tiếp tế rồi sẽ hết thức ăn. Giữ lối tới lúa mì thông thoáng.
+Xây dựng và tiếp tế hằng ngày có chỉ tiêu công nhân riêng. Quán trọ đã hoàn tất tự động yêu cầu người tiếp tế; hãy tăng chỉ tiêu vận hành nếu lúa mì tới quá chậm. Người tiếp tế thu gom lúa mì rồi mang về đây. Globul đói ăn ở Quán trọ; công trình không có người tiếp tế rồi sẽ hết thức ăn. Giữ lối tới lúa mì thông thoáng.
 [intro help grow]
 Tổ tiêu thụ lúa mì để sinh đơn vị. Đặt sản xuất công nhân là 1, nhà thám hiểm và chiến binh là 0. Tăng chỉ tiêu công nhân của Tổ lên ít nhất 2. Nhiều người tiếp tế đưa lúa mì tới nhanh hơn nhưng cạnh tranh nhân lực với việc khác. Duy trì thức ăn ở cả hai Quán trọ.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Mở Cờ, chọn Cờ chiến đấu và đặt lên Tổ địch phía đông 
 [intro hint scout]
 Nhà thám hiểm cần Cờ thám hiểm được phân công tại bãi đá phía đông. Kiểm tra mục tiêu và số nhà thám hiểm.
 [intro hint build]
-Nếu đã xóa Quán trọ mới, hãy xây lại. Nếu không, kiểm tra công trường và chỉ tiêu công nhân. Việc tiếp tế có thể đang giữ chân công nhân; duy trì thức ăn đồng thời dành người xây dựng.
+Quán trọ mới chưa xây xong. Nếu không có công trường, hãy đặt một Quán trọ gần lúa mì. Nếu có, chọn công trường và kiểm tra chỉ tiêu công nhân: việc tiếp tế ở nơi khác có thể đang giữ chân công nhân.
 [intro hint supply]
 Chọn Quán trọ mới đã hoàn tất. Kiểm tra chỉ tiêu công nhân và theo dõi việc giao lúa mì. Công nhân có thể cần thời gian đi lại hoặc ăn.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Kéo đất trống để chuyển góc nhìn trước khi đặt cờ. Tìm bã
 [intro help touch build]
 Chọn Quán trọ từ Xây dựng. Đặt trên đất trống gần lúa mì và xác nhận. Chọn công trường rồi yêu cầu 2 thợ xây. Chỉ tiêu công nhân là yêu cầu, không phải số đã có mặt. Tiếp tế Quán trọ cũ và Tổ. Mọi vị trí hợp lệ đều được tính.
 [intro help touch supply]
-Chọn Quán trọ mới đã hoàn tất và tăng chỉ tiêu công nhân. Xây dựng và tiếp tế hằng ngày có chỉ tiêu riêng. Người tiếp tế gom lúa mì và mang về đây. Globul đói ăn ở Quán trọ; không có người tiếp tế thì thức ăn sẽ hết. Giữ đường tới lúa mì thông thoáng.
+Chọn Quán trọ mới đã hoàn tất và kiểm tra chỉ tiêu công nhân; nó tự yêu cầu người tiếp tế. Xây dựng và tiếp tế hằng ngày có chỉ tiêu riêng. Người tiếp tế gom lúa mì và mang về đây. Globul đói ăn ở Quán trọ; không có người tiếp tế thì thức ăn sẽ hết. Giữ đường tới lúa mì thông thoáng.
 [intro help touch grow]
 Chọn Tổ. Đặt sản xuất công nhân là 1, nhà thám hiểm và chiến binh là 0. Tăng chỉ tiêu công nhân lên ít nhất 2. Người tiếp tế mang lúa mì cho đơn vị mới nhưng cạnh tranh với việc khác. Tiếp tế cả hai Quán trọ.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Cờ → Cờ thám hiểm. Đặt lên đá; giao 1 nhà thám hiểm.
 [intro compact build]
 Xây dựng → Quán trọ. Gần lúa mì; giao 2 thợ xây.
 [intro compact supply]
-Chọn Quán trọ mới; giao ít nhất 1 người tiếp tế. Chờ lúa mì.
+Chọn Quán trọ mới; kiểm tra người tiếp tế. Chờ lúa mì.
 [intro compact grow]
 Chọn Tổ; giao 2 người tiếp tế. Chỉ tạo công nhân.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Dùng những người bơi có sẵn để xây Trường học, rồi quan sá
 [lesson schools complete]
 Trường học đã cải thiện kỹ năng công nhân. Thợ xây giỏi cho phép nâng cấp; thu hoạch tốt hơn giúp duy trì nền kinh tế mở rộng.
 [lesson schools build hint]
-Xây Trường học trong khoảng trống; phân công thợ xây. Thuộc địa đã có người bơi lấy tảo. Giữ đường tới gỗ và nước. Cây ăn quả cung cấp tài nguyên uy tín; thức ăn vẫn từ lúa mì.
+Chưa có Trường học nào xây xong. Kiểm tra xem công trường có đang yêu cầu thợ xây không và họ có tới được gỗ và ao không.
 [lesson schools build title]
 Xây Trường học
 [lesson schools build instruction]
 Xây Trường học trong khoảng trống; phân công thợ xây.
 [lesson schools build help]
-Thuộc địa đã có người bơi lấy tảo. Giữ đường tới gỗ và nước. Cây ăn quả cung cấp tài nguyên uy tín; thức ăn vẫn từ lúa mì.
+Thuộc địa đã có người bơi lấy tảo. Giữ đường tới gỗ và nước. Cây ăn quả không phải thức ăn; Quán trọ của bạn vẫn cần lúa mì.
 [lesson schools build marker]
 Xây Trường học
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Các công nhân này đã học kỹ năng Trường học cấp một. Nâng c
 [lesson upgrades upgrade marker]
 Nâng cấp Đường chạy
 [lesson upgrades train hint]
-Để công nhân hiện có học đi nhanh hơn tại Đường chạy đã nâng cấp. Nâng cấp hoàn tất cải thiện huấn luyện sẵn có. Công trình cấp cao cần kỹ năng xây dựng cao hơn; cấp hiển thị cho người chơi bắt đầu từ 1.
+Chưa có công nhân nào huấn luyện tại Đường chạy đã nâng cấp. Giữ đường tới đó thông thoáng và để một số công nhân rảnh.
 [lesson upgrades train title]
 Dùng huấn luyện nâng cấp
 [lesson upgrades train instruction]
 Để công nhân hiện có học đi nhanh hơn tại Đường chạy đã nâng cấp.
 [lesson upgrades train help]
-Nâng cấp hoàn tất cải thiện huấn luyện sẵn có. Công trình cấp cao cần kỹ năng xây dựng cao hơn; cấp hiển thị cho người chơi bắt đầu từ 1.
+Nâng cấp hoàn tất cải thiện huấn luyện mà công trình cung cấp. Công trình cấp cao cần thợ xây có kỹ năng xây dựng cao hơn.
 [lesson warrior-training title]
 Tạo và huấn luyện chiến binh
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Tường dùng đá và mỗi công trường yêu cầu công nhân. Đừng b�
 [lesson fortifications walls marker]
 Bảo vệ tháp bằng tường
 [lesson fortifications supply hint]
-Chọn tháp và yêu cầu người tiếp tế. Chờ ít nhất 2 đá. Tháp hoàn tất cần chỉ tiêu công nhân vận hành để mang đạn. Chỉ tiêu này riêng với xây dựng.
+Tháp có ít hơn 2 đá. Chọn tháp và kiểm tra chỉ tiêu công nhân; người tiếp tế cần đường đi thông từ chỗ đá.
 [lesson fortifications supply title]
 Tiếp tế đạn dược
 [lesson fortifications supply instruction]
-Chọn tháp và yêu cầu người tiếp tế. Chờ ít nhất 2 đá.
+Chọn tháp đã xây xong và kiểm tra người tiếp tế. Chờ ít nhất 2 đá.
 [lesson fortifications supply help]
-Tháp hoàn tất cần chỉ tiêu công nhân vận hành để mang đạn. Chỉ tiêu này riêng với xây dựng.
+Tháp hoàn tất tự yêu cầu người tiếp tế để mang đạn. Chỉ tiêu này riêng với xây dựng; hãy tăng nó nếu đá tới chậm.
 [lesson fortifications supply marker]
 Tiếp tế đạn dược
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Xây dựng → Tháp. Đặt trong vùng đánh dấu.
 [lesson fortifications walls compact]
 Xây 2 tường. Giữ lối phía tây tháp thông thoáng.
 [lesson fortifications supply compact]
-Chọn tháp → Người tiếp tế. Chờ 2 đá.
+Chọn tháp → kiểm tra Người tiếp tế. Chờ 2 đá.
 [lesson fortifications hold compact]
 Duy trì tiếp tế tháp để chống kẻ tấn công.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ AI cho mọi thuộc địa do máy tính điều khiển
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

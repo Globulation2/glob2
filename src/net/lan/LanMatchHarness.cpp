@@ -756,6 +756,35 @@ TEST_SUITE("LanMatchHarness")
 		}
 	}
 
+	TEST_CASE("picking a discovered LAN host keeps its pasted pairing string and asks for one when missing")
+	{
+		// Discovery announces hosts without their certificate fingerprint. Picking one
+		// used to replace a pasted pairing string with the bare endpoint, and connecting
+		// then failed with "certificate verify failed (SSL routines)".
+		const std::string discovered = "wss://192.168.1.5:7489/yog";
+		const std::string pairing = discovered + "#sha256=" + std::string(64, 'a');
+		CHECK(Lan::pickDiscoveredHost(pairing, discovered) == pairing);
+		CHECK(Lan::pickDiscoveredHost("", discovered) == discovered);
+		// A pairing string for another host gives way to the one picked.
+		const std::string other = "wss://192.168.1.9:7489/yog#sha256=" + std::string(64, 'b');
+		CHECK(Lan::pickDiscoveredHost(other, discovered) == discovered);
+
+		CHECK(Lan::needsPairing(discovered, {discovered}));
+		CHECK_FALSE(Lan::needsPairing(pairing, {discovered}));
+		// A trusted WSS URL that no LAN host announced is still the player's choice.
+		CHECK_FALSE(Lan::needsPairing("wss://lan.example.org:7489/yog", {discovered}));
+		CHECK_FALSE(Lan::needsPairing("not a url", {discovered}));
+	}
+
+	TEST_CASE("a LAN guest keeps reaching for the host as long as the relay holds its seat")
+	{
+		// The connection card counts the relay's grace down ("You have 2:51 to come
+		// back"); a guest that gave up earlier ended its game with time still showing.
+		const Lan::LanClient::Options guest;
+		const Turn::SequencerConfig relay = Lan::lanSequencerConfig();
+		CHECK(guest.hostLossGiveUpMicros >= relay.graceMicros);
+	}
+
 	TEST_CASE("LAN departure waits for asynchronous transport writes")
 	{
 		class DelayedWrite final : public NetTransport
@@ -822,6 +851,28 @@ TEST_SUITE("LanMatchHarness")
 										&match.hostSide()) > 100);
 	}
 
+	GLOB2_TEST_CASE("leaving warns the LAN host that the game ends for everyone", "[network][artifacts]")
+	{
+		// The host runs the relay: when it leaves, every guest's game ends ("The host
+		// left the game."). Its confirmation said the others play on without it.
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		glob2test::ScopedEnvironment address("GLOB2_LAN_ADDRESS", "127.0.0.1");
+		LanMatch m;
+		m.directory = glob2test::artifactDir() / "lan-leave-wording";
+		fs::remove_all(m.directory);
+		fs::create_directories(m.directory);
+		m.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(), m.directory), 101));
+		m.players.push_back(std::make_unique<LanPlayer>(
+			"Guest", guestRoom(m.host().room->shareText(), "Guest", m.directory / "cache"), 102));
+		joinAndStart(m, {});
+		const auto& strings = *GAGCore::Toolkit::getStringTable();
+		const std::string host = GameGUI::leaveConfirmationBody(m.host().engine->gui.networkMatch);
+		const std::string guest = GameGUI::leaveConfirmationBody(m.players[1]->engine->gui.networkMatch);
+		CHECK(guest == strings.getString("[leave lan body]"));
+		CHECK(host != guest);
+		CHECK(host.find("ends it for everyone") != std::string::npos);
+	}
+
 	GLOB2_TEST_CASE("timeout diagnostics tolerate a destroyed guest room", "[network]")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
@@ -831,6 +882,44 @@ TEST_SUITE("LanMatchHarness")
 		match.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(), match.directory), 101));
 		match.players.push_back(std::make_unique<LanPlayer>("Crashed guest", nullptr, 102));
 		CHECK_FALSE(match.runUntil(0, [] { return false; }));
+	}
+
+	GLOB2_TEST_CASE("a restarted guest rejoining a started LAN game reaches its room", "[network][artifacts]")
+	{
+		// The session screen opens the room (which then launches the game) only once
+		// LanRoom::lobbyReady(); a guest rejoining by name must get there too, or it
+		// times out with "Unable to reach the LAN host".
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		glob2test::ScopedEnvironment address("GLOB2_LAN_ADDRESS", "127.0.0.1");
+		LanMatch m;
+		m.directory = glob2test::artifactDir() / "lan-rejoin-room";
+		fs::remove_all(m.directory);
+		fs::create_directories(m.directory);
+		m.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(), m.directory), 101));
+		const std::string endpoint = m.host().room->shareText();
+		const fs::path cache = m.directory / "cache";
+		m.players.push_back(std::make_unique<LanPlayer>("Guest", guestRoom(endpoint, "Guest", cache), 102));
+		auto& host = m.hostSide();
+		REQUIRE(m.runUntil(15000, [&] { return m.players[1]->room->guestSide()->hasMap(); }));
+		m.players[1]->room->setReady(true);
+		REQUIRE(m.runUntil(5000, [&] { return m.host().room->canStart(); }));
+		m.host().room->start();
+		REQUIRE(m.runUntil(5000, [&] { return m.players[1]->launched; }));
+
+		// The guest's game dies before it says hello to the relay; it comes back under
+		// the same name.
+		m.players[1]->room->guestSide()->dropConnection();
+		m.players[1]->room.reset();
+		m.players[1]->stopped = true;
+		m.runFor(300);
+		m.players.push_back(std::make_unique<LanPlayer>("Guest (restarted)", guestRoom(endpoint, "Guest", cache), 103));
+		auto& rejoined = *m.players.back();
+		REQUIRE(m.runUntil(10000, [&] { return rejoined.room->lobbyReady() || rejoined.finished; }));
+		CHECK_FALSE(rejoined.finished);
+		CHECK(rejoined.room->lobbyReady());
+		CHECK(rejoined.room->mapName() == host.state().mapName);
+		REQUIRE(m.runUntil(5000, [&] { return rejoined.launched; }));
+		CHECK(rejoined.room->guestSide()->localSeat() == 1);
 	}
 
 	// The case name becomes an artifact directory; leave room for the 64-byte

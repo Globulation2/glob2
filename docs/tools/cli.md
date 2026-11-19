@@ -275,6 +275,7 @@ Platform: all.
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
+| `--mcp-port` | integer; 1..65535 | Enable the MCP server for AI agents on 127.0.0.1:PORT for this run only; saved settings are unchanged (desktop builds). |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
@@ -299,6 +300,7 @@ Choose at most one: `--record`, `--videoshot`.
 
 ```sh
 glob2 play --window-size 1280x720 --no-fullscreen
+glob2 play --mcp-port 27202
 ```
 
 ### `glob2 replay`
@@ -343,6 +345,7 @@ Platform: all.
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
+| `--mcp-port` | integer; 1..65535 | Enable the MCP server for AI agents on 127.0.0.1:PORT for this run only; saved settings are unchanged (desktop builds). |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
@@ -931,6 +934,7 @@ Platform: all.
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
+| `--mcp-port` | integer; 1..65535 | Enable the MCP server for AI agents on 127.0.0.1:PORT for this run only; saved settings are unchanged (desktop builds). |
 | `--instance` | string | Online instance origin. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
@@ -1000,6 +1004,7 @@ Platform: all.
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
+| `--mcp-port` | integer; 1..65535 | Enable the MCP server for AI agents on 127.0.0.1:PORT for this run only; saved settings are unchanged (desktop builds). |
 | `--instance` | string | Online instance origin. |
 | `--hash` | string | Catalog map SHA-256. Required. |
 | `--title` | string | Catalog map title. Required. |
@@ -1071,6 +1076,7 @@ Platform: all.
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
+| `--mcp-port` | integer; 1..65535 | Enable the MCP server for AI agents on 127.0.0.1:PORT for this run only; saved settings are unchanged (desktop builds). |
 | `--instance` | string | Online instance origin. |
 | `--hash` | string | Catalog map SHA-256. Required. |
 | `--title` | string | Catalog map title. Required. |
@@ -1129,7 +1135,7 @@ glob2 online turn-client assignment.json --map-file map.map.gz --output-dir arti
 
 ### `glob2 ai check`
 
-Validate JavaScript AI startup, metadata and callbacks.
+Validate JavaScript AI startup, metadata, step definition and globals.
 
 ```text
 glob2 ai check FILE [OPTIONS]
@@ -1405,6 +1411,7 @@ Platform: all.
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
+| `--mcp-port` | integer; 1..65535 | Enable the MCP server for AI agents on 127.0.0.1:PORT for this run only; saved settings are unchanged (desktop builds). |
 | `--output-dir` | directory; default . | Translation screenshot directory. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 

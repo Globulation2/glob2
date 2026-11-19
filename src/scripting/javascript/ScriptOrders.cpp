@@ -8,7 +8,12 @@
 #include "Brush.h"
 #include "AIRuleOrders.h"
 #include "ai/observation/AIWorldView.h"
+#include <algorithm>
+#include <iterator>
 #include <stdexcept>
+#include <algorithm>
+#include <iterator>
+#include <string_view>
 #include "Team.h"
 namespace Script
 {
@@ -19,6 +24,16 @@ std::shared_ptr<Order> order(const AIEngine::AIWorldView &world, int team, const
 	if (d.kind != Value::Object)
 		throw std::runtime_error("Order requires a record");
 	const std::string type = d.string("type");
+	// Name an unknown type before validating fields that only some types read;
+	// otherwise a misspelled type reports a confusing missing building ID.
+	static constexpr std::string_view supported[] = {
+		"alliance", "create", "forbidden", "guardArea", "clearArea", "farmArea",
+		"workers", "delete", "cancelDelete", "construction", "cancelConstruction",
+		"priority", "production", "exchange", "range", "minimumLevel",
+		"workerMinimumLevel", "requireBombing", "moveFlag", "clearingResources",
+		"clearingMaterials"};
+	if (std::find(std::begin(supported), std::end(supported), type) == std::end(supported))
+		throw std::runtime_error("Unsupported order type '" + type.substr(0, 64) + "'");
 	auto number = [&](const char *name, int lo = 0, int hi = 65535)
 	{ return d.integer(name, lo, hi); };
     if(type=="alliance") {
@@ -87,6 +102,9 @@ std::shared_ptr<Order> order(const AIEngine::AIWorldView &world, int team, const
 		return a;
 	}
 	const auto &reference = d.get("building");
+	if (reference.kind != Value::Object)
+		throw std::runtime_error("Order '" + type +
+								 "' requires a building reference {id, generation}");
 	int gid = reference.integer("id", 0, Building::MAX_COUNT * Team::MAX_COUNT - 1);
 	if (Building::GIDtoTeam(gid) != team)
 		throw std::runtime_error("Order requires an owned building");

@@ -617,7 +617,7 @@ Ved slip
 [OpenGL]
 OpenGL
 [Options]
-Indstillinger
+Valgmuligheder
 [options]
 Indstillinger
 [Orange]
@@ -3150,6 +3150,8 @@ Pensel %0
 Hold %0
 [Your colony]
 Din koloni
+[Practice colony]
+Øvelseskoloni
 [%0 / %1 HP · %2]
 %0 / %1 LP · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ Kunne ikke eksportere optagelsen.
 Slet optagelse
 [recording refresh]
 Opdatér
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Kunne ikke gendanne det tidligere bibliotek: %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Forsyn din nye Kro
 [intro instruction build]
 Åbn Byg, og placer en Kro nær hveden. Tildel ledige arbejdere til byggeriet. Hold den eksisterende Kro forsynet.
 [intro instruction supply]
-Vælg den færdige nye Kro, og tildel mindst én forsyningsarbejder. Vent på, at en arbejder leverer hvede.
+Vælg den færdige nye Kro. Den anmoder selv om forsyningsarbejdere; kontrollér det ønskede antal arbejdere, og vent på, at en arbejder leverer hvede.
 [intro instruction grow]
 Vælg Sværmen. Sæt det ønskede antal arbejdere til mindst 2 og produktionsforholdene til kun arbejdere. Hold begge Kroer forsynet, mens en ny arbejder fødes.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Brug minikortet til at flytte udsynet mod øst og finde stenene. Vælg Udforskni
 [intro help build]
 Byggeri bruger træ leveret af arbejdere. Vælg Kro i bygningspaletten, placer den på fri jord nær hvede, og anmod om 2 bygningsarbejdere. Det ønskede antal er en anmodning, ikke antallet af arbejdere, som allerede er til stede. Behold forsyningsarbejdere ved den eksisterende Kro og Sværmen. Enhver gyldig placering tæller.
 [intro help supply]
-Byggeri og daglig forsyning har separate ønskede antal arbejdere. Vælg den færdige Kro, og øg antallet til drift. En forsyningsarbejder høster hvede og bærer den hertil. Sultne globuler spiser på Kroer; uden forsyningsarbejdere slipper lageret op. Hold hveden tilgængelig.
+Byggeri og daglig forsyning har separate ønskede antal arbejdere. En færdig Kro anmoder automatisk om forsyningsarbejdere; øg antallet til drift, hvis hveden kommer for langsomt. En forsyningsarbejder høster hvede og bærer den hertil. Sultne globuler spiser på Kroer; uden forsyningsarbejdere slipper lageret op. Hold hveden tilgængelig.
 [intro help grow]
 Sværmen bruger hvede til at producere enheder. Sæt arbejderproduktion til 1 og udforsker- og krigerproduktion til 0. Øg Sværmens ønskede antal arbejdere til mindst 2. Flere forsyningsarbejdere leverer hurtigere, men konkurrerer med andre opgaver. Hold begge Kroer forsynet.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Sværmen bruger hvede til at producere enheder. Sæt arbejderproduktion til 1 og
 [intro hint scout]
 Din udforsker skal have et Udforskningsflag med tildelte enheder ved stenene mod øst. Kontrollér målet og antallet af udforskere.
 [intro hint build]
-Hvis du fjernede den nye Kro, så byg en anden. Kontrollér ellers byggepladsen og det ønskede antal arbejdere. Eksisterende forsyningsopgaver kan optage arbejderne; hold maden i gang, mens du frigør bygningsarbejdere.
+Din nye Kro er ikke færdig endnu. Hvis der ikke er nogen byggeplads, så placér en Kro nær hveden. Ellers vælg byggepladsen, og kontrollér det ønskede antal arbejdere: forsyningsopgaver andre steder kan holde dine arbejdere optaget.
 [intro hint supply]
 Vælg den færdige nye Kro. Kontrollér det ønskede antal arbejdere, og hold øje med hvedeleverancer. Arbejderne kan have brug for tid til at gå eller spise.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Træk på tom jord for at flytte udsynet, før du placerer et flag. Find stenene
 [intro help touch build]
 Vælg Kro under Byg. Placer den på fri jord nær hvede, og bekræft. Vælg byggepladsen, og anmod om 2 bygningsarbejdere. Det ønskede antal tæller ikke de allerede tilstedeværende arbejdere. Hold den eksisterende Kro og Sværmen forsynet. Enhver gyldig placering tæller.
 [intro help touch supply]
-Vælg den færdige nye Kro, og øg det ønskede antal arbejdere. Byggeri og forsyning har separate indstillinger. En forsyningsarbejder høster hvede og bærer den hertil. Sultne globuler spiser på Kroer; uden forsyningsarbejdere slipper lageret op. Hold hveden tilgængelig.
+Vælg den færdige nye Kro, og kontrollér det ønskede antal arbejdere; den anmoder selv om forsyningsarbejdere. Byggeri og forsyning har separate indstillinger. En forsyningsarbejder høster hvede og bærer den hertil. Sultne globuler spiser på Kroer; uden forsyningsarbejdere slipper lageret op. Hold hveden tilgængelig.
 [intro help touch grow]
 Vælg Sværmen. Sæt arbejderproduktion til 1 og udforsker- og krigerproduktion til 0. Anmod om mindst 2 arbejdere. Forsyningsarbejdere bringer hvede til nye enheder, men konkurrerer med andre opgaver. Hold begge Kroer forsynet.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Flag → Udforskningsflag. Placer på stenene; tildel 1 udforsker.
 [intro compact build]
 Byg → Kro. Placer nær hvede; tildel 2 bygningsarbejdere.
 [intro compact supply]
-Vælg den nye Kro; tildel mindst 1 forsyningsarbejder. Vent på hvede.
+Vælg den nye Kro; kontrollér forsyningsarbejderne. Vent på hvede.
 [intro compact grow]
 Vælg Sværmen; tildel 2 forsyningsarbejdere. Producer kun arbejdere.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Brug de forberedte svømmere til at bygge en Skole, og se derefter arbejderne l�
 [lesson schools complete]
 Din Skole forbedrede arbejdernes færdigheder. Dygtige bygningsarbejdere muliggør opgraderinger; bedre høst understøtter en voksende økonomi.
 [lesson schools build hint]
-Byg en Skole i lysningen; tildel bygningsarbejdere. Kolonien har allerede svømmere til algerne. Hold adgang til træ og vand åben. Frugttræer leverer prestigeressourcer; maden kommer stadig fra hvede.
+Ingen færdig Skole endnu. Kontrollér, at byggepladsen anmoder om bygningsarbejdere, og at de kan nå træet og dammen.
 [lesson schools build title]
 Byg en Skole
 [lesson schools build instruction]
 Byg en Skole i lysningen; tildel bygningsarbejdere.
 [lesson schools build help]
-Kolonien har allerede svømmere til algerne. Hold adgang til træ og vand åben. Frugttræer leverer prestigeressourcer; maden kommer stadig fra hvede.
+Kolonien har allerede svømmere til algerne. Hold adgang til træ og vand åben. Frugttræer er ikke mad; dine Kroer har stadig brug for hvede.
 [lesson schools build marker]
 Byg en Skole
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Disse arbejdere har allerede lært færdigheder på Skolens første niveau. Opgr
 [lesson upgrades upgrade marker]
 Opgrader Træningsbanen
 [lesson upgrades train hint]
-Lad en eksisterende arbejder lære at gå hurtigere på den opgraderede Træningsbane. En færdig opgradering forbedrer den tilgængelige træning. Højere bygningsniveauer kræver bedre byggefærdigheder; det viste niveau starter ved 1.
+Ingen arbejder har trænet på den opgraderede Træningsbane endnu. Hold den tilgængelig, og lad nogle arbejdere være ledige.
 [lesson upgrades train title]
 Brug den forbedrede træning
 [lesson upgrades train instruction]
 Lad en eksisterende arbejder lære at gå hurtigere på den opgraderede Træningsbane.
 [lesson upgrades train help]
-En færdig opgradering forbedrer den tilgængelige træning. Højere bygningsniveauer kræver bedre byggefærdigheder; det viste niveau starter ved 1.
+En færdig opgradering forbedrer den træning, den tilbyder. Højere bygningsniveauer kræver bygningsarbejdere med bedre byggefærdigheder.
 [lesson warrior-training title]
 Produktion og træning af krigere
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Mure bruger sten, og hver byggeplads anmoder om arbejdere. Luk ikke tårnet inde
 [lesson fortifications walls marker]
 Beskyt tårnet med mure
 [lesson fortifications supply hint]
-Vælg tårnet, og anmod om forsyningsarbejdere. Vent på mindst 2 sten. Et færdigt tårn behøver et ønsket antal driftsarbejdere for at få ammunition. Dette er adskilt fra antallet til byggeri.
+Tårnet har færre end 2 sten. Vælg det, og kontrollér det ønskede antal arbejdere; forsyningsarbejdere skal have en åben vej fra stenen.
 [lesson fortifications supply title]
 Lever ammunition
 [lesson fortifications supply instruction]
-Vælg tårnet, og anmod om forsyningsarbejdere. Vent på mindst 2 sten.
+Vælg det færdige tårn, og kontrollér dets forsyningsarbejdere. Vent på mindst 2 sten.
 [lesson fortifications supply help]
-Et færdigt tårn behøver et ønsket antal driftsarbejdere for at få ammunition. Dette er adskilt fra antallet til byggeri.
+Et færdigt tårn anmoder selv om forsyningsarbejdere for at få ammunition. Dette er adskilt fra antallet til byggeri; øg det, hvis stenen kommer langsomt.
 [lesson fortifications supply marker]
 Lever ammunition
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Byg → Tårn. Placer i det markerede område.
 [lesson fortifications walls compact]
 Byg 2 mure. Hold tårnets vestlige passage åben.
 [lesson fortifications supply compact]
-Tårn → forsyningsarbejdere. Vent på 2 sten.
+Tårn → kontrollér forsyningsarbejdere. Vent på 2 sten.
 [lesson fortifications hold compact]
 Hold tårnet forsynet mod angriberen.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Tundrajord
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

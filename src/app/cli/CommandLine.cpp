@@ -440,8 +440,13 @@ const std::vector<Command> &commands()
 		launch.push_back(compute());
         launch.push_back(choice("--compute-telemetry", "Compute wait attribution and scheduler tracing", {"off", "waits", "trace"}, "off"));
 		launch.push_back(gpu());launch.push_back(gradientBackend());launch.push_back(gradientAlgorithm());
+		launch.push_back(integer("--mcp-port",
+								 "Enable the MCP server for AI agents on 127.0.0.1:PORT for this "
+								 "run only; saved settings are unchanged (desktop builds)",
+								 1, 65535));
 		add("play", "Launch the graphical game", {}, 0, launch, "Interactive game",
-			{"glob2 play --window-size 1280x720 --no-fullscreen"});
+			{"glob2 play --window-size 1280x720 --no-fullscreen",
+			 "glob2 play --mcp-port 27202"});
 		add("replay", "Watch a recorded replay", {"FILE"}, 1, launch, "Interactive replay",
 			{"glob2 replay replays/match.replay"});
 		auto gen = mapSettings();
@@ -645,7 +650,7 @@ const std::vector<Command> &commands()
 					  integer("--seed", "Synthetic-order seed", 0, 4294967295LL, "1")});
 		add("online turn-client", "Play a relay assignment headlessly", {"ASSIGNMENT"}, 1, turn,
 			"result.json, network/trace artifacts and replay");
-		add("ai check", "Validate JavaScript AI startup, metadata and callbacks", {"FILE"}, 1,
+		add("ai check", "Validate JavaScript AI startup, metadata, step definition and globals", {"FILE"}, 1,
 			{format()}, "Validation text or existing JSON validation payload");
 		add("script check", "Compile a JavaScript map script", {"FILE"}, 1, {},
 			"Validation message");
@@ -766,6 +771,8 @@ const std::vector<Command> &commands()
 				else if (o.name == "--data-dir" || o.name == "--generator-package" ||
 						 o.name == "--building-catalog")
 					o.group = "Assets";
+				else if (o.name == "--mcp-port")
+					o.group = "AI agents (MCP)";
 				else if (o.name == "--output" || o.name == "--output-dir" ||
 						 o.name == "--report-file" || o.name.rfind("--preview", 0) == 0)
 					o.group = "Outputs";
@@ -1084,6 +1091,8 @@ nlohmann::json describe(const std::string &path)
 		throw std::invalid_argument("Unknown help target " + path);
 	return result;
 }
+#define GLOB2_REPOSITORY_URL "https://github.com/Globulation2/glob2"
+#define MCP_SERVER_GUIDE_URL GLOB2_REPOSITORY_URL "/blob/master/docs/development/mcp-ui-server.md"
 std::string help(const std::string &path)
 {
 	std::ostringstream out;
@@ -1104,7 +1113,7 @@ std::string help(const std::string &path)
 		out << "\nUse glob2 COMMAND --help for complete options and examples.\nUse glob2 help "
 			   "--format json for the machine-readable command tree.\n";
 		if (path.empty())
-			out << "\nExamples:\n  glob2 play --window-size 1280x720\n  glob2 map generators\n  "
+			out << "\nExamples:\n  glob2 play --window-size 1280x720\n  glob2 play --mcp-port 27202\n  glob2 map generators\n  "
 				   "glob2 map generate river --seed 713 --output artifacts/river.map\n  glob2 game "
 				   "run --help\n";
 	}
@@ -1160,6 +1169,15 @@ std::string help(const std::string &path)
 		for (const auto &s : c->examples)
 			out << "  " << s << "\n";
 	}
+	if (path.empty() || path == "play" || path == "replay")
+		out << "\nAI agents (MCP): desktop builds embed a Model Context Protocol server that lets\n"
+			   "a local agent see and operate the game window. Enable it in Settings > MCP\n"
+			   "server, or for one run with glob2 play --mcp-port 27202, then connect an MCP\n"
+			   "client to http://127.0.0.1:27202/mcp (stdio clients: tools/mcp_stdio.py).\n"
+			   "Agents should call the game_guide tool first.\n"
+			   "  Guide: " MCP_SERVER_GUIDE_URL "\n";
+	out << "\nSource and documentation: " GLOB2_REPOSITORY_URL "\n  (docs/README.md "
+		   "indexes the guides; player guides: https://glob2.online/)\n";
 	out << "\nExit codes: 0 success/help; 2 invalid arguments or rejected input; 3 operational "
 		   "failure.\n";
 	return out.str();

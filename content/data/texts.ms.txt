@@ -3158,6 +3158,8 @@ Berus %0
 Pasukan %0
 [Your colony]
 Koloni anda
+[Practice colony]
+Koloni latihan
 [%0 / %1 HP · %2]
 %0 / %1 HP · %2
 [Units: %0]
@@ -6300,6 +6302,26 @@ Tidak dapat mengeksport rakaman.
 Padam rakaman
 [recording refresh]
 Segarkan semula
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Tidak dapat memulihkan pustaka sebelumnya: %0
 [library  The previous library is retained.]
@@ -6521,7 +6543,7 @@ Buka Bendera dan letakkan Bendera penjelajahan di atas tompokan batu di sebelah 
 [intro instruction build]
 Buka Bina dan letakkan Penginapan berhampiran gandum. Tugaskan pekerja yang tersedia untuk membinanya. Kekalkan bekalan ke Penginapan sedia ada.
 [intro instruction supply]
-Pilih Penginapan baharu anda yang telah siap dan tugaskan sekurang-kurangnya seorang pekerja pembekal. Tunggu pekerja menghantar gandum.
+Pilih Penginapan baharu anda yang telah siap. Ia meminta pekerja pembekal dengan sendirinya; periksa sasaran pekerjanya dan tunggu pekerja menghantar gandum.
 [intro instruction grow]
 Pilih Sarang. Tetapkan sasaran pekerjanya kepada sekurang-kurangnya 2, dan nisbah pengeluarannya kepada pekerja sahaja. Pastikan kedua-dua Penginapan dibekalkan semasa pekerja baharu dilahirkan.
 [intro instruction attack]
@@ -6533,7 +6555,7 @@ Gunakan peta mini untuk menggerakkan pandangan ke timur dan cari tompokan batu. 
 [intro help build]
 Pembinaan menggunakan kayu yang dihantar oleh pekerja. Pilih Penginapan daripada kawalan bangunan (palet bangunan), letakkannya di tanah lapang berhampiran gandum dan minta 2 pembina. Sasaran pekerja ialah permintaan, bukannya bilangan pekerja yang sudah hadir. Kekalkan pekerja pembekal di Penginapan dan Sarang sedia ada. Sebarang lokasi yang sah dikira.
 [intro help supply]
-Pembinaan dan bekalan harian mempunyai sasaran pekerja yang berasingan. Pilih Penginapan yang telah siap dan tingkatkan sasaran pekerja operasinya. Pekerja pembekal mengumpulkan gandum dan membawanya ke sini. Globul yang lapar makan di Penginapan; bangunan tanpa pekerja pembekal akhirnya kehabisan bekalan. Pastikan kawasan gandum boleh dicapai.
+Pembinaan dan bekalan harian mempunyai sasaran pekerja yang berasingan. Penginapan yang telah siap meminta pekerja pembekal secara automatik; tingkatkan sasaran pekerja operasinya jika gandum tiba terlalu perlahan. Pekerja pembekal mengumpulkan gandum dan membawanya ke sini. Globul yang lapar makan di Penginapan; bangunan tanpa pekerja pembekal akhirnya kehabisan bekalan. Pastikan kawasan gandum boleh dicapai.
 [intro help grow]
 Sarang menggunakan gandum untuk menghasilkan unit. Tetapkan pengeluaran pekerja kepada 1 dan pengeluaran penjelajah dan pahlawan kepada 0. Tingkatkan sasaran pekerja Sarang kepada 2 atau lebih. Lebih ramai pembekal boleh menghantar gandum dengan lebih cepat, tetapi mereka bersaing dengan pekerjaan lain. Kekalkan bekalan makanan di kedua-dua Penginapan.
 [intro help attack]
@@ -6541,7 +6563,7 @@ Buka Bendera, pilih Bendera serangan, dan letakkannya di atas Sarang musuh di se
 [intro hint scout]
 Penjelajah anda memerlukan Bendera penjelajahan yang ditetapkan di tompokan batu timur. Semak sasaran dan bilangan penjelajahnya.
 [intro hint build]
-Jika anda telah mengalih keluar Penginapan baharu, binalah yang lain. Jika tidak, periksa tapak pembinaan dan sasaran pekerjanya. Kerja pembekalan sedia ada mungkin menyibukkan pekerja anda; pastikan bekalan makanan berterusan sambil menyediakan pembina.
+Penginapan baharu anda belum siap. Jika tiada tapak pembinaan, letakkan Penginapan berhampiran gandum. Jika ada, pilih tapak itu dan periksa sasaran pekerjanya: kerja pembekalan di tempat lain mungkin menyibukkan pekerja anda.
 [intro hint supply]
 Pilih Penginapan baharu yang telah siap. Periksa sasaran pekerjanya dan perhatikan penghantaran gandum. Pekerja mungkin memerlukan masa untuk perjalanan atau makan.
 [intro hint grow]
@@ -6571,7 +6593,7 @@ Seret tanah kosong untuk mengalihkan pandangan sebelum meletakkan bendera. Cari 
 [intro help touch build]
 Pilih Penginapan daripada Bina. Letakkannya di tanah lapang berhampiran gandum dan sahkan. Pilih tapak dan minta 2 pembina. Sasaran pekerja ialah permintaan, bukan kiraan pekerja yang sedia ada. Pastikan Penginapan dan Sarang sedia ada dibekalkan. Sebarang lokasi yang sah dikira.
 [intro help touch supply]
-Pilih Penginapan baharu yang telah siap dan tingkatkan sasaran pekerja yang ditugaskan. Pembinaan dan bekalan harian mempunyai sasaran berasingan. Pekerja pembekal mengumpulkan gandum dan membawanya ke sini. Globul yang lapar makan di Penginapan; bangunan tanpa pekerja pembekal akhirnya kehabisan bekalan. Pastikan gandum boleh dicapai.
+Pilih Penginapan baharu yang telah siap dan periksa sasaran pekerja yang ditugaskan; ia meminta pekerja pembekal dengan sendirinya. Pembinaan dan bekalan harian mempunyai sasaran berasingan. Pekerja pembekal mengumpulkan gandum dan membawanya ke sini. Globul yang lapar makan di Penginapan; bangunan tanpa pekerja pembekal akhirnya kehabisan bekalan. Pastikan gandum boleh dicapai.
 [intro help touch grow]
 Pilih Sarang. Tetapkan pengeluaran pekerja kepada 1 dan pengeluaran penjelajah dan pahlawan kepada 0. Tingkatkan sasaran pekerja yang ditugaskan kepada 2 atau lebih. Pembekal membawa gandum untuk unit baharu, tetapi mereka bersaing dengan pekerjaan lain. Pastikan kedua-dua Penginapan dibekalkan.
 [intro help touch attack]
@@ -6585,7 +6607,7 @@ Bendera → Bendera penjelajahan. Letakkan pada batu; tugaskan 1 penjelajah.
 [intro compact build]
 Bina → Penginapan. Letakkan berhampiran gandum; tugaskan 2 pembina.
 [intro compact supply]
-Pilih Penginapan baharu anda; tugaskan sekurang-kurangnya 1 pekerja pembekal. Tunggu gandum.
+Pilih Penginapan baharu anda; periksa pekerja pembekalnya. Tunggu gandum.
 [intro compact grow]
 Pilih Sarang; tugaskan 2 pekerja pembekal. Lahirkan pekerja sahaja.
 [intro compact attack]
@@ -6697,13 +6719,13 @@ Gunakan perenang yang telah disediakan untuk membina Sekolah, kemudian perhatika
 [lesson schools complete]
 Sekolah anda meningkatkan kemahiran pekerja. Pembina mahir membolehkan naik taraf; penuaian yang lebih baik membantu mengekalkan ekonomi yang berkembang.
 [lesson schools build hint]
-Bina sebuah Sekolah di kawasan lapang; tugaskan pembina. Koloni itu sudah mempunyai perenang untuk alga. Berikan akses kepada kayu dan air. Pokok buah-buahan menyediakan sumber untuk prestij; makanan masih datang daripada gandum.
+Belum ada Sekolah yang siap. Periksa bahawa tapaknya meminta pembina dan mereka boleh mencapai kayu dan kolam.
 [lesson schools build title]
 Bina Sekolah
 [lesson schools build instruction]
 Bina Sekolah di kawasan lapang; tugaskan pembina.
 [lesson schools build help]
-Koloni itu sudah mempunyai perenang untuk alga. Berikan akses kepada kayu dan air. Pokok buah-buahan menyediakan sumber untuk prestij; makanan masih berasal daripada gandum.
+Koloni itu sudah mempunyai perenang untuk alga. Berikan akses kepada kayu dan air. Pokok buah-buahan bukan makanan; Penginapan anda masih memerlukan gandum.
 [lesson schools build marker]
 Bina Sekolah
 [lesson schools learn hint]
@@ -6731,13 +6753,13 @@ Pekerja-pekerja ini telah mempelajari kemahiran Sekolah peringkat pertama. Naik 
 [lesson upgrades upgrade marker]
 Naik taraf Litar Larian
 [lesson upgrades train hint]
-Biarkan pekerja sedia ada belajar berjalan lebih pantas di Litar Larian yang dinaik taraf. Naik taraf yang siap memperbaik latihan yang tersedia. Tahap bangunan yang lebih tinggi memerlukan kemahiran pembinaan yang lebih tinggi; tahap yang ditunjukkan kepada pemain bermula pada 1.
+Belum ada pekerja yang berlatih di Litar Larian yang dinaik taraf. Pastikan ia boleh dicapai dan biarkan beberapa pekerja bebas.
 [lesson upgrades train title]
 Gunakan latihan yang dinaik taraf
 [lesson upgrades train instruction]
 Biarkan pekerja sedia ada belajar berjalan lebih pantas di Litar Larian yang dinaik taraf.
 [lesson upgrades train help]
-Naik taraf yang siap memperbaik latihan yang tersedia. Tahap bangunan yang lebih tinggi memerlukan kemahiran pembinaan yang lebih tinggi; tahap yang ditunjukkan kepada pemain bermula pada 1.
+Naik taraf yang siap memperbaik latihan yang ditawarkannya. Tahap bangunan yang lebih tinggi memerlukan pembina dengan kemahiran pembinaan yang lebih tinggi.
 [lesson warrior-training title]
 Melahirkan dan melatih pahlawan
 [lesson warrior-training briefing]
@@ -6799,13 +6821,13 @@ Tembok menggunakan batu dan setiap tapak memerlukan pekerja. Jangan kepung menar
 [lesson fortifications walls marker]
 Lindungi menara dengan tembok
 [lesson fortifications supply hint]
-Pilih menara dan minta pembekal. Tunggu sekurang-kurangnya 2 batu. Menara yang telah siap memerlukan sasaran pekerja operasi untuk membawa peluru. Ini berasingan daripada sasaran pembinaannya.
+Menara mempunyai kurang daripada 2 batu. Pilih menara itu dan periksa sasaran pekerjanya; pembekal memerlukan laluan terbuka dari batu.
 [lesson fortifications supply title]
 Bekalkan peluru
 [lesson fortifications supply instruction]
-Pilih menara dan minta pembekal. Tunggu sekurang-kurangnya 2 batu.
+Pilih menara yang telah siap dan periksa pembekalnya. Tunggu sekurang-kurangnya 2 batu.
 [lesson fortifications supply help]
-Sebuah menara yang telah siap memerlukan sasaran pekerja operasi untuk membawa peluru. Ini berasingan daripada sasaran pembinaannya.
+Menara yang telah siap meminta pembekal dengan sendirinya untuk membawa peluru. Ini berasingan daripada sasaran pembinaannya; tingkatkan sasaran pekerja operasi jika batu tiba perlahan.
 [lesson fortifications supply marker]
 Bekalkan peluru
 [lesson fortifications hold hint]
@@ -6897,7 +6919,7 @@ Bina → Menara. Letakkan di kawasan yang ditanda.
 [lesson fortifications walls compact]
 Bina 2 tembok. Pastikan lorong barat menara terbuka.
 [lesson fortifications supply compact]
-Pilih menara → pembekal. Tunggu 2 batu tiba.
+Pilih menara → periksa pembekal. Tunggu 2 batu tiba.
 [lesson fortifications hold compact]
 Pastikan menara dibekalkan untuk melawan penyerang.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Tanah tundra
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

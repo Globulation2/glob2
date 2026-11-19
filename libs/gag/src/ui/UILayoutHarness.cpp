@@ -366,6 +366,20 @@ void checkShapingClusterWrapping()
     require(wrapText(fixed, FontRole::Body, "\u200bab \u200bcd\u200b\u200b\nef\u200b", 80) ==
             std::vector<std::string>{"ab cd", "ef"},
             "leading consecutive and trailing hints preserve real spaces and newlines");
+    // "Discord-Community" in a button too narrow for it: break after the hyphen,
+    // never inside a word ("Communi" / "ty").
+    require(wrapText(fixed, FontRole::Body, "Discord-Community", 8 * 12) ==
+            std::vector<std::string>{"Discord-", "Community"},
+            "a hyphenated compound wraps after its hyphen");
+    require(wrapText(fixed, FontRole::Body, "Discord-Community", 8 * 20) ==
+            std::vector<std::string>{"Discord-Community"},
+            "a hyphenated compound that fits stays on one line");
+    require(wrapText(fixed, FontRole::Body, "a Mehrspieler-Modus b", 8 * 15) ==
+            std::vector<std::string>{"a Mehrspieler-", "Modus b"},
+            "a hyphen break keeps the word's leading space and adds none after it");
+    require(wrapText(fixed, FontRole::Body, "ab -5 1-2", 8 * 3) ==
+            std::vector<std::string>{"ab", "-5", "1-2"},
+            "minus signs and numeric ranges are not break opportunities");
     require(ellipsize(fixed, FontRole::Body, annotated, 32) == "abc…",
             "ellipsis neither measures nor emits soft boundary markers");
     require(ellipsize(fixed, FontRole::Body, annotated, 80) == "abcdef",
@@ -423,6 +437,28 @@ void checkParagraphWrapsWithWidth()
 	require(text->bounds.h == 3 * 16 + 2 * theme.lineGap, "paragraph grows to three lines");
 	f.resize(8 * 30, 400);
 	require(f.host.root()->children[0]->bounds.h == 16, "paragraph shrinks to one line after resize");
+}
+
+// Arabic and other right-to-left paragraphs start at the right edge: a short
+// line, the last line of a wrapped paragraph and a label all end flush right.
+void checkRightToLeftTextStartsAtTheRight()
+{
+	const std::string arabic = "الموجز";  // 6 glyphs
+	const std::string wrapped = arabic + " " + arabic + " ب";  // wraps after the 2nd word
+	Fixture f([&](const Presentation &)
+			  { return column({paragraph(arabic), paragraph(wrapped), label(arabic), paragraph("1 " + arabic),
+							   paragraph("Latin " + arabic)}); },
+			  8 * 14, 400);
+	const auto canvas = f.paint();
+	require(canvas.texts.size() == 6, "five text nodes draw six lines");
+	for (std::size_t i = 0; i < 5; ++i)
+		require(canvas.texts[i].first.x + int(glyphCount(canvas.texts[i].second)) * 8 == 8 * 14,
+				"right-to-left lines end at the right edge");
+	require(canvas.texts[5].first.x == 0, "a paragraph that starts with a Latin word stays left aligned");
+	require(rightToLeftParagraph("שלום") && !rightToLeftParagraph("12 abc") &&
+				!rightToLeftParagraph("日本") && !rightToLeftParagraph("") &&
+				rightToLeftParagraph("12 ب"),
+			"direction follows the first strong character");
 }
 
 void checkWrapColumns()
@@ -1269,6 +1305,7 @@ TEST_SUITE("UILayout")
 	TEST_CASE("column and flex") { checkColumnAndFlex(); }
 	TEST_CASE("row cross align") { checkRowCrossAlign(); }
 	TEST_CASE("paragraph wraps with width") { checkParagraphWrapsWithWidth(); }
+	TEST_CASE("right-to-left text starts at the right") { checkRightToLeftTextStartsAtTheRight(); }
 	TEST_CASE("text fields retain the touch target with compact control metrics")
 	{
 		Theme compactTheme = theme;

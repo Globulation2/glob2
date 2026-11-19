@@ -3134,6 +3134,8 @@ Brashi %0
 Timu %0
 [Your colony]
 Makazi yako
+[Practice colony]
+Makazi ya mazoezi
 [%0 / %1 HP · %2]
 %0 / %1 HP · %2
 [Units: %0]
@@ -6372,6 +6374,26 @@ Rekodi haikuweza kuhamishwa.
 Futa rekodi
 [recording refresh]
 Onyesha upya
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Maktaba ya awali haikuweza kurejeshwa: %0
 [library  The previous library is retained.]
@@ -6593,7 +6615,7 @@ Fungua Bendera na uweke Bendera ya uchunguzi juu ya eneo la mawe mashariki mwa m
 [intro instruction build]
 Fungua Jenga na uweke nyumba ya wageni karibu na ngano. Pangia wafanyakazi wanaopatikana kazi ya kuijenga. Endelea kupelekea nyumba yako ya wageni iliyopo mahitaji.
 [intro instruction supply]
-Chagua nyumba yako mpya ya wageni iliyokamilika na uipangie angalau msambazaji mmoja. Subiri mfanyakazi alete ngano.
+Chagua nyumba yako mpya ya wageni iliyokamilika. Huomba wasambazaji yenyewe; kagua idadi yake inayolengwa ya wafanyakazi na subiri mfanyakazi alete ngano.
 [intro instruction grow]
 Chagua Kiota. Weka idadi inayolengwa ya wafanyakazi wake kuwa angalau 2, na uwiano wa uzalishaji uwe wa wafanyakazi pekee. Endelea kupelekea nyumba zote mbili za wageni mahitaji wakati mfanyakazi mpya anazaliwa.
 [intro instruction attack]
@@ -6605,7 +6627,7 @@ Tumia ramani ndogo kusogeza mwonekano mashariki na kutafuta eneo la mawe. Chagua
 [intro help build]
 Ujenzi hutumia kuni zinazoletwa na wafanyakazi. Chagua Nyumba ya wageni katika vidhibiti vya majengo (orodha ya majengo), iweke kwenye ardhi wazi karibu na ngano, na uombe wajenzi 2. Idadi inayolengwa ya wafanyakazi ni ombi, si idadi ya wafanyakazi waliopo tayari. Endelea kupelekea nyumba yako ya wageni iliyopo na Kiota mahitaji. Eneo lolote linaloruhusiwa linakubalika.
 [intro help supply]
-Ujenzi na usambazaji wa kila siku vina malengo tofauti ya idadi ya wafanyakazi. Chagua nyumba ya wageni iliyokamilika na uongeze idadi ya wafanyakazi wa kuihudumia. Msambazaji hukusanya ngano na kuileta hapa. Viumbe wenye njaa hula katika nyumba za wageni; jengo lisilo na wasambazaji hatimaye litaishiwa. Hakikisha eneo la ngano linafikika.
+Ujenzi na usambazaji wa kila siku vina malengo tofauti ya idadi ya wafanyakazi. Nyumba ya wageni iliyokamilika huomba wasambazaji yenyewe; ongeza idadi ya wafanyakazi wa kuihudumia ikiwa ngano inafika polepole mno. Msambazaji hukusanya ngano na kuileta hapa. Viumbe wenye njaa hula katika nyumba za wageni; jengo lisilo na wasambazaji hatimaye litaishiwa. Hakikisha eneo la ngano linafikika.
 [intro help grow]
 Kiota hutumia ngano kuzalisha viumbe. Weka uzalishaji wa wafanyakazi kuwa 1, na wa wagunduzi na mashujaa kuwa 0. Ongeza idadi inayolengwa ya wafanyakazi wa Kiota hadi 2 au zaidi. Wasambazaji wengi wanaweza kuleta ngano haraka zaidi, lakini wanahitajika pia katika kazi nyingine. Dumisha usambazaji wa chakula katika nyumba zote mbili za wageni.
 [intro help attack]
@@ -6613,7 +6635,7 @@ Fungua Bendera, chagua Bendera ya vita, na uiweke juu ya Kiota cha adui masharik
 [intro hint scout]
 Mgunduzi wako anahitaji Bendera ya uchunguzi yenye mgawo wa kazi kwenye eneo la mawe la mashariki. Kagua eneo inalolenga na idadi ya wagunduzi.
 [intro hint build]
-Ikiwa uliondoa nyumba mpya ya wageni, jenga nyingine. Vinginevyo kagua eneo la ujenzi na idadi yake inayolengwa ya wafanyakazi. Kazi za usambazaji zilizopo zinaweza kuwashughulisha wafanyakazi wako; dumisha chakula huku ukiwapata wajenzi.
+Nyumba yako mpya ya wageni bado haijakamilika. Ikiwa hakuna eneo la ujenzi, weka nyumba ya wageni karibu na ngano. Vinginevyo chagua eneo hilo na ukague idadi yake inayolengwa ya wafanyakazi: kazi za usambazaji kwingineko zinaweza kuwa zinawashughulisha wafanyakazi wako.
 [intro hint supply]
 Chagua nyumba mpya ya wageni iliyokamilika. Kagua idadi yake inayolengwa ya wafanyakazi na uangalie ngano ikiletwa. Wafanyakazi wanaweza kuhitaji muda wa kusafiri au kula.
 [intro hint grow]
@@ -6643,7 +6665,7 @@ Buruta ardhi tupu kusogeza mwonekano kabla ya kuweka bendera. Tafuta eneo la maw
 [intro help touch build]
 Chagua Nyumba ya wageni katika Jenga. Iweke kwenye ardhi wazi karibu na ngano na uthibitishe. Chagua eneo la ujenzi na uombe wajenzi 2. Idadi inayolengwa ya wafanyakazi ni ombi, si idadi ya wafanyakazi waliopo tayari. Endelea kupelekea nyumba ya wageni iliyopo na Kiota mahitaji. Eneo lolote linaloruhusiwa linakubalika.
 [intro help touch supply]
-Chagua nyumba mpya ya wageni iliyokamilika na uongeze idadi yake inayolengwa ya wafanyakazi. Ujenzi na usambazaji wa kila siku vina malengo tofauti. Msambazaji hukusanya ngano na kuileta hapa. Viumbe wenye njaa hula katika nyumba za wageni; jengo lisilo na wasambazaji hatimaye litaishiwa. Hakikisha ngano inafikika.
+Chagua nyumba mpya ya wageni iliyokamilika na ukague idadi yake inayolengwa ya wafanyakazi; huomba wasambazaji yenyewe. Ujenzi na usambazaji wa kila siku vina malengo tofauti. Msambazaji hukusanya ngano na kuileta hapa. Viumbe wenye njaa hula katika nyumba za wageni; jengo lisilo na wasambazaji hatimaye litaishiwa. Hakikisha ngano inafikika.
 [intro help touch grow]
 Chagua Kiota. Weka uzalishaji wa wafanyakazi kuwa 1, na wa wagunduzi na mashujaa kuwa 0. Ongeza idadi yake inayolengwa ya wafanyakazi hadi 2 au zaidi. Wasambazaji huleta ngano kwa viumbe wapya, lakini wanahitajika pia katika kazi nyingine. Endelea kupelekea nyumba zote mbili za wageni mahitaji.
 [intro help touch attack]
@@ -6659,7 +6681,7 @@ Bendera → Bendera ya uchunguzi. Weka juu ya mawe; pangia mgunduzi 1.
 [intro compact build]
 Jenga → Nyumba ya wageni. Weka karibu na ngano; pangia wajenzi 2.
 [intro compact supply]
-Chagua nyumba yako mpya ya wageni; pangia angalau msambazaji 1. Subiri ngano.
+Chagua nyumba yako mpya ya wageni; kagua wasambazaji wake. Subiri ngano.
 [intro compact grow]
 Chagua Kiota; pangia wasambazaji 2. Zalisha wafanyakazi pekee.
 [intro compact attack]
@@ -6771,13 +6793,13 @@ Tumia waogeleaji walioandaliwa kujenga Shule, kisha utazame wafanyakazi wakijifu
 [lesson schools complete]
 Shule yako imeboresha ujuzi wa wafanyakazi. Wajenzi wenye ujuzi huwezesha maboresho; ukusanyaji bora wa malighafi husaidia kudumisha uchumi unaopanuka.
 [lesson schools build hint]
-Jenga Shule katika eneo wazi; pangia wajenzi. Makazi tayari yana waogeleaji kwa ajili ya mwani. Acha njia ya kufikia kuni na maji. Miti ya matunda hutoa malighafi za heshima; chakula bado hutokana na ngano.
+Bado hakuna Shule iliyokamilika. Hakikisha eneo lake la ujenzi linaomba wajenzi na kwamba wanaweza kufikia kuni na bwawa.
 [lesson schools build title]
 Jenga Shule
 [lesson schools build instruction]
 Jenga Shule katika eneo wazi; pangia wajenzi.
 [lesson schools build help]
-Makazi tayari yana waogeleaji kwa ajili ya mwani. Acha njia ya kufikia kuni na maji. Miti ya matunda hutoa malighafi za heshima; chakula bado hutokana na ngano.
+Makazi tayari yana waogeleaji kwa ajili ya mwani. Acha njia ya kufikia kuni na maji. Miti ya matunda si chakula; nyumba zako za wageni bado zinahitaji ngano.
 [lesson schools build marker]
 Jenga Shule
 [lesson schools learn hint]
@@ -6805,13 +6827,13 @@ Wafanyakazi hawa tayari wamejifunza ujuzi wa kiwango cha kwanza wa Shule. Mabore
 [lesson upgrades upgrade marker]
 Boresha Uwanja wa mbio
 [lesson upgrades train hint]
-Mpe mfanyakazi aliyepo nafasi ya kujifunza kutembea haraka zaidi katika Uwanja wa mbio ulioboreshwa. Uboreshaji uliokamilika huboresha mafunzo yanayopatikana. Viwango vya juu vya majengo vinahitaji ujuzi wa juu wa ujenzi; kiwango kinachoonyeshwa kwa wachezaji huanza na 1.
+Bado hakuna mfanyakazi aliyepata mafunzo katika Uwanja wa mbio ulioboreshwa. Hakikisha unafikika na uache baadhi ya wafanyakazi huru.
 [lesson upgrades train title]
 Tumia mafunzo yaliyoboreshwa
 [lesson upgrades train instruction]
 Mpe mfanyakazi aliyepo nafasi ya kujifunza kutembea haraka zaidi katika Uwanja wa mbio ulioboreshwa.
 [lesson upgrades train help]
-Uboreshaji uliokamilika huboresha mafunzo yanayopatikana. Viwango vya juu vya majengo vinahitaji ujuzi wa juu wa ujenzi; kiwango kinachoonyeshwa kwa wachezaji huanza na 1.
+Uboreshaji uliokamilika huboresha mafunzo ambayo jengo linatoa. Viwango vya juu vya majengo vinahitaji wajenzi wenye ujuzi wa juu wa ujenzi.
 [lesson warrior-training title]
 Kuzalisha na kufundisha mashujaa
 [lesson warrior-training briefing]
@@ -6873,13 +6895,13 @@ Kuta hutumia mawe na kila eneo la ujenzi huomba wafanyakazi. Usiuzingire mnara b
 [lesson fortifications walls marker]
 Linda mnara kwa kuta
 [lesson fortifications supply hint]
-Chagua mnara na uombe wasambazaji. Subiri angalau mawe 2. Mnara uliokamilika unahitaji uombe wafanyakazi wa kuleta risasi. Idadi hiyo inawekwa tofauti na idadi ya wafanyakazi wa ujenzi.
+Mnara una mawe chini ya 2. Uchague na ukague idadi yake inayolengwa ya wafanyakazi; wasambazaji wanahitaji njia wazi kutoka kwenye mawe.
 [lesson fortifications supply title]
 Leta risasi
 [lesson fortifications supply instruction]
-Chagua mnara na uombe wasambazaji. Subiri angalau mawe 2.
+Chagua mnara uliokamilika na ukague wasambazaji wake. Subiri angalau mawe 2.
 [lesson fortifications supply help]
-Mnara uliokamilika unahitaji uombe wafanyakazi wa kuleta risasi. Idadi hiyo inawekwa tofauti na idadi ya wafanyakazi wa ujenzi.
+Mnara uliokamilika huomba wasambazaji wenyewe ili kuleta risasi. Idadi hiyo inawekwa tofauti na idadi ya wafanyakazi wa ujenzi; iongeze ikiwa mawe yanafika polepole.
 [lesson fortifications supply marker]
 Leta risasi
 [lesson fortifications hold hint]
@@ -6971,7 +6993,7 @@ Jenga → Mnara. Weka katika eneo lililowekwa alama.
 [lesson fortifications walls compact]
 Jenga kuta 2. Acha njia ya magharibi ya mnara wazi.
 [lesson fortifications supply compact]
-Chagua mnara → wasambazaji. Subiri mawe 2.
+Chagua mnara → kagua wasambazaji. Subiri mawe 2.
 [lesson fortifications hold compact]
 Endelea kupelekea mnara mahitaji ili ukabili mshambuliaji.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Ardhi ya tundra
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

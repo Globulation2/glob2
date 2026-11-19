@@ -3150,6 +3150,8 @@ Pincel %0
 Equipo %0
 [Your colony]
 Tu colonia
+[Practice colony]
+Colonia de práctica
 [%0 / %1 HP · %2]
 %0 / %1 PV · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ No se pudo exportar la grabación.
 Eliminar grabación
 [recording refresh]
 Actualizar
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  No se pudo restaurar la biblioteca anterior: %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Abre Banderas y coloca una Bandera de exploración sobre las piedras al este de 
 [intro instruction build]
 Abre Construir y coloca una Posada cerca del trigo. Asigna trabajadores disponibles para construirla. Mantén abastecida la Posada existente.
 [intro instruction supply]
-Selecciona la nueva Posada terminada y asígnale al menos un abastecedor. Espera a que un trabajador entregue trigo.
+Selecciona la nueva Posada terminada. Solicita abastecedores por sí sola; comprueba sus trabajadores solicitados y espera a que un trabajador entregue trigo.
 [intro instruction grow]
 Selecciona la Colmena. Solicita al menos 2 trabajadores y ajusta las proporciones de producción para producir solo trabajadores. Mantén las dos Posadas abastecidas mientras nace un nuevo trabajador.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Usa el minimapa para mover la vista hacia el este y encontrar las piedras. En Ba
 [intro help build]
 La construcción consume madera entregada por trabajadores. Elige Posada en los controles de edificios, colócala en terreno despejado cerca del trigo y solicita 2 constructores. La cantidad solicitada no indica cuántos trabajadores están ya presentes. Mantén abastecedores en la Posada existente y la Colmena. Cualquier ubicación válida sirve.
 [intro help supply]
-La construcción y el abastecimiento diario tienen cantidades solicitadas independientes. Selecciona la Posada terminada y aumenta su cantidad de funcionamiento. Un abastecedor recoge trigo y lo lleva aquí. Los glóbulos hambrientos comen en las Posadas; sin abastecedores, sus reservas se acaban. Mantén accesible el campo de trigo.
+La construcción y el abastecimiento diario tienen cantidades solicitadas independientes. Una Posada terminada solicita abastecedores automáticamente; aumenta su cantidad de funcionamiento si el trigo llega demasiado despacio. Un abastecedor recoge trigo y lo lleva aquí. Los glóbulos hambrientos comen en las Posadas; sin abastecedores, sus reservas se acaban. Mantén accesible el campo de trigo.
 [intro help grow]
 La Colmena consume trigo para producir unidades. Ajusta la producción de trabajadores a 1 y la de exploradores y guerreros a 0. Solicita 2 o más trabajadores en la Colmena. Más abastecedores entregan trigo más rápido, pero compiten con otras tareas. Mantén abastecidas ambas Posadas.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Abre Banderas, elige Bandera de guerra y colócala sobre la Colmena enemiga al e
 [intro hint scout]
 Tu explorador necesita una Bandera de exploración con unidades asignadas sobre las piedras del este. Comprueba su destino y la cantidad de exploradores solicitada.
 [intro hint build]
-Si eliminaste la nueva Posada, construye otra. Si no, comprueba la obra y los trabajadores solicitados. El abastecimiento existente puede ocuparlos; mantén la comida mientras liberas constructores.
+Tu nueva Posada aún no está terminada. Si no hay obra, coloca una Posada cerca del trigo. Si no, selecciona la obra y comprueba los trabajadores solicitados: el abastecimiento en otros lugares puede tener ocupados a tus trabajadores.
 [intro hint supply]
 Selecciona la nueva Posada terminada. Comprueba los trabajadores solicitados y observa las entregas de trigo. Los trabajadores pueden necesitar tiempo para desplazarse o comer.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Arrastra terreno vacío para mover la vista antes de colocar una bandera. Busca 
 [intro help touch build]
 Elige Posada en Construir. Colócala en terreno despejado cerca del trigo y confirma. Selecciona la obra y solicita 2 constructores. La cantidad solicitada no indica los trabajadores ya presentes. Mantén abastecidas la Posada existente y la Colmena. Cualquier ubicación válida sirve.
 [intro help touch supply]
-Selecciona la nueva Posada terminada y aumenta los trabajadores solicitados. Construcción y abastecimiento tienen controles independientes. Un abastecedor recoge trigo y lo lleva aquí. Los glóbulos hambrientos comen en las Posadas; sin abastecedores, las reservas se agotan. Mantén el trigo accesible.
+Selecciona la nueva Posada terminada y comprueba los trabajadores solicitados; solicita abastecedores por sí sola. Construcción y abastecimiento tienen controles independientes. Un abastecedor recoge trigo y lo lleva aquí. Los glóbulos hambrientos comen en las Posadas; sin abastecedores, las reservas se agotan. Mantén el trigo accesible.
 [intro help touch grow]
 Selecciona la Colmena. Ajusta la producción de trabajadores a 1 y la de exploradores y guerreros a 0. Solicita 2 o más trabajadores. Los abastecedores llevan trigo para nuevas unidades, pero compiten con otras tareas. Mantén ambas Posadas abastecidas.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Banderas → Bandera de exploración. Colócala en las piedras; asigna 1 explora
 [intro compact build]
 Construir → Posada. Colócala cerca del trigo; asigna 2 constructores.
 [intro compact supply]
-Selecciona tu nueva Posada; asigna al menos 1 abastecedor. Espera el trigo.
+Selecciona tu nueva Posada; comprueba sus abastecedores. Espera el trigo.
 [intro compact grow]
 Selecciona la Colmena; asigna 2 abastecedores. Produce solo trabajadores.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Usa los nadadores preparados para construir una Escuela y observa a los trabajad
 [lesson schools complete]
 Tu Escuela mejoró las habilidades de los trabajadores. Los constructores expertos permiten mejoras; una mejor recolección sostiene una economía en expansión.
 [lesson schools build hint]
-Construye una Escuela en el claro; asigna constructores. La colonia ya tiene nadadores para las algas. Deja acceso a la madera y el agua. Los árboles frutales proporcionan recursos de prestigio; la comida sigue siendo trigo.
+Aún no hay ninguna Escuela terminada. Comprueba que su obra solicite constructores y que puedan llegar a la madera y al estanque.
 [lesson schools build title]
 Construir una Escuela
 [lesson schools build instruction]
 Construye una Escuela en el claro; asigna constructores.
 [lesson schools build help]
-La colonia ya tiene nadadores para las algas. Deja acceso a la madera y el agua. Los árboles frutales proporcionan recursos de prestigio; la comida sigue siendo trigo.
+La colonia ya tiene nadadores para las algas. Deja acceso a la madera y el agua. Los árboles frutales no son comida; tus Posadas siguen necesitando trigo.
 [lesson schools build marker]
 Construir una Escuela
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Estos trabajadores ya aprendieron las habilidades de la Escuela de primer nivel.
 [lesson upgrades upgrade marker]
 Mejorar el Circuito de entrenamiento
 [lesson upgrades train hint]
-Deja que un trabajador existente aprenda a caminar más rápido en el Circuito de entrenamiento mejorado. Una mejora terminada amplía el entrenamiento disponible. Los edificios de niveles superiores exigen mejores habilidades de construcción; el nivel mostrado empieza en 1.
+Ningún trabajador se ha entrenado aún en el Circuito de entrenamiento mejorado. Mantenlo accesible y deja algunos trabajadores libres.
 [lesson upgrades train title]
 Usar el entrenamiento mejorado
 [lesson upgrades train instruction]
 Deja que un trabajador existente aprenda a caminar más rápido en el Circuito de entrenamiento mejorado.
 [lesson upgrades train help]
-Una mejora terminada amplía el entrenamiento disponible. Los edificios de niveles superiores exigen mejores habilidades de construcción; el nivel mostrado empieza en 1.
+Una mejora terminada amplía el entrenamiento que ofrece. Los edificios de niveles superiores exigen constructores con mejores habilidades de construcción.
 [lesson warrior-training title]
 Producción y entrenamiento de guerreros
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Las murallas usan piedra y cada obra solicita trabajadores. No encierres la torr
 [lesson fortifications walls marker]
 Proteger la torre con murallas
 [lesson fortifications supply hint]
-Selecciona la torre y solicita abastecedores. Espera al menos 2 piedras. Una torre terminada necesita trabajadores solicitados para funcionar y traer munición. Este control es independiente del de construcción.
+La torre tiene menos de 2 piedras. Selecciónala y comprueba sus trabajadores solicitados; los abastecedores necesitan un camino libre desde la piedra.
 [lesson fortifications supply title]
 Suministrar munición
 [lesson fortifications supply instruction]
-Selecciona la torre y solicita abastecedores. Espera al menos 2 piedras.
+Selecciona la torre terminada y comprueba sus abastecedores. Espera al menos 2 piedras.
 [lesson fortifications supply help]
-Una torre terminada necesita trabajadores solicitados para funcionar y traer munición. Este control es independiente del de construcción.
+Una torre terminada solicita abastecedores por sí sola para traer munición. Este control es independiente del de construcción; auméntalo si la piedra llega despacio.
 [lesson fortifications supply marker]
 Suministrar munición
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Construir → Torre. Colócala en la zona marcada.
 [lesson fortifications walls compact]
 Construye 2 murallas. Mantén abierto el paso oeste de la torre.
 [lesson fortifications supply compact]
-Torre → abastecedores. Espera 2 piedras.
+Torre → comprueba abastecedores. Espera 2 piedras.
 [lesson fortifications hold compact]
 Mantén la torre abastecida frente al atacante.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Suelo de tundra
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

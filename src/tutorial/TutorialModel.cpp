@@ -6,6 +6,9 @@
 #include <cmath>
 #include <stdexcept>
 #include <nlohmann/json.hpp>
+#include <FileManager.h>
+#include <Stream.h>
+#include <Toolkit.h>
 namespace Tutorial
 {
 namespace
@@ -81,5 +84,36 @@ std::shared_ptr<const Model> parse(const Script::Value &v)
 std::shared_ptr<const Model> view(const SimulationSnapshot::Session &s)
 {
     return s.tutorial;
+}
+namespace
+{
+Script::Value readContent(const std::string &path)
+{
+    GAGCore::InputLineStream input(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(path));
+    std::string text;
+    while (!input.isEndOfStream()) {
+        text+=input.readLine()+"\n";
+        if(text.size()>Script::SourceLimit) throw std::runtime_error("Oversized lesson catalog");
+    }
+    return contentJson(text);
+}
+}
+
+std::vector<CatalogEntry> lessonCatalog()
+{
+    std::vector<CatalogEntry> entries;
+    try {
+        const auto catalog=readContent("scripts/tutorials/catalog.json");
+        if(catalog.kind!=Script::Value::Array || catalog.items.size()>64) throw std::runtime_error("Invalid tutorial catalog");
+        for(const auto &entry:catalog.items) {
+            const auto path=entry.string("definition");
+            if(!path.starts_with("scripts/tutorials/") || path.find("..")!=std::string::npos) throw std::runtime_error("Invalid lesson path");
+            const auto definition=readContent(path);
+            auto map=definition.string("map");
+            if(!map.starts_with("campaigns/") || !map.ends_with(".map.gz") || map.find("..")!=std::string::npos) throw std::runtime_error("Invalid lesson map");
+            entries.push_back({map,definition.string("title"),definition.string("briefing"),definition.string("name")});
+        }
+    } catch(const std::exception &) { entries.clear(); }
+    return entries;
 }
 }

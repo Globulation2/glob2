@@ -106,6 +106,7 @@ set(GLOB2_ENGINE_TESTS_0_SOURCES
     libs/gag/src/DrawableSurfaceBlendTest.cpp
     libs/gag/src/FontKerningTest.cpp
     src/ui/OnlineWordingTest.cpp
+    src/ui/RecordingNoticeTest.cpp
     libs/gag/src/FullscreenAspectHarness.cpp
     libs/gag/src/PortableRendererHarness.cpp
     src/render/SoftwareRendererTest.cpp
@@ -632,6 +633,7 @@ set(GLOB2_UNIT_TESTS_0_SOURCES
     src/map/generator/shared/PerlinNoiseTest.cpp
     src/audio/PlayerVoiceDrainTest.cpp
     src/hud/draw/SpriteCenteringTest.cpp
+    src/hud/draw/PriorityRadioLayoutTest.cpp
     libs/gag/src/SkinMeshTest.cpp
     libs/gag/src/SkinModelTest.cpp
     libs/gag/src/SkinShapeModelTest.cpp
@@ -1388,6 +1390,7 @@ set(GLOB2_ANDROID_ENGINE_TESTS_0_SOURCES
     libs/gag/src/DrawableSurfaceBlendTest.cpp
     libs/gag/src/FontKerningTest.cpp
     src/ui/OnlineWordingTest.cpp
+    src/ui/RecordingNoticeTest.cpp
     libs/gag/src/FullscreenAspectHarness.cpp
     libs/gag/src/PortableRendererHarness.cpp
     src/render/SoftwareRendererTest.cpp
@@ -1910,6 +1913,7 @@ set(GLOB2_ANDROID_UNIT_TESTS_0_SOURCES
     src/map/generator/shared/PerlinNoiseTest.cpp
     src/audio/PlayerVoiceDrainTest.cpp
     src/hud/draw/SpriteCenteringTest.cpp
+    src/hud/draw/PriorityRadioLayoutTest.cpp
     libs/gag/src/SkinMeshTest.cpp
     libs/gag/src/SkinModelTest.cpp
     libs/gag/src/SkinShapeModelTest.cpp

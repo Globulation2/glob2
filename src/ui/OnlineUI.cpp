@@ -11,6 +11,7 @@
 
 #include <ApplicationHost.h>
 #include <GraphicContext.h>
+#include <StringTable.h>
 #include <Toolkit.h>
 #include <AssetLoader.h>
 #include <SDL3_image/SDL_image.h>
@@ -375,7 +376,10 @@ std::string generatorTitle(const std::string &generatorId)
 	try
 	{
 		const int method = GeneratorRegistry::active().idOf(generatorId);
-		return tr(GenerationRequest::methodName(method));
+		// Generator names are translated under their bracketed key, as everywhere else.
+		const std::string name = GenerationRequest::methodName(method);
+		const auto *strings = GAGCore::Toolkit::getStringTable();
+		return strings && strings->doesStringExist("[" + name + "]") ? strings->getString("[" + name + "]") : name;
 	}
 	catch (const std::exception &)
 	{

@@ -617,7 +617,7 @@ Volné
 [OpenGL]
 OpenGL
 [Options]
-Nastavení
+Možnosti
 [options]
 Nastavení
 [Orange]
@@ -3150,6 +3150,8 @@ Hráč %0
 Tým %0
 [Your colony]
 Vaše kolonie
+[Practice colony]
+Cvičná kolonie
 [%0 / %1 HP · %2]
 %0 / %1 životů · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ Nahrávku se nepodařilo exportovat.
 Smazat nahrávku
 [recording refresh]
 Obnovit seznam
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library Fit]
 Přizp.
 [library GL only]
@@ -6615,7 +6637,7 @@ Otevřete prapory a umístěte Průzkumný prapor na kameny východně od koloni
 [intro instruction build]
 Otevřete stavbu a umístěte Hospodu poblíž pšenice. Přidělte dostupné dělníky ke stavbě. Stávající Hospodu udržujte zásobenou.
 [intro instruction supply]
-Vyberte dokončenou novou Hospodu a přidělte jí alespoň jednoho zásobovače. Počkejte, až dělník doručí pšenici.
+Vyberte dokončenou novou Hospodu. Zásobovače si vyžádá sama; zkontrolujte požadovaný počet dělníků a počkejte, až dělník doručí pšenici.
 [intro instruction grow]
 Vyberte Úl. Nastavte požadovaný počet dělníků alespoň na 2 a výrobní poměry pouze na dělníky. Během narození nového dělníka zásobujte obě Hospody.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Pomocí minimapy posuňte pohled na východ a najděte kameny. V praporech zvolt
 [intro help build]
 Stavba spotřebovává dřevo dodané dělníky. V paletě budov zvolte Hospodu, umístěte ji na volný terén poblíž pšenice a požadujte 2 stavitele. Požadovaný počet není počet již přítomných dělníků. Ponechte zásobovače u stávající Hospody i Úlu. Počítá se každé platné místo.
 [intro help supply]
-Stavba a běžné zásobování mají samostatné požadované počty dělníků. Vyberte dokončenou Hospodu a zvyšte provozní počet. Zásobovač sklízí pšenici a nosí ji sem. Hladoví globulové jedí v Hospodách; bez zásobovačů zásoby časem dojdou. Udržujte přístup k pšenici.
+Stavba a běžné zásobování mají samostatné požadované počty dělníků. Dokončená Hospoda si zásobovače vyžádá automaticky; pokud pšenice přichází příliš pomalu, zvyšte provozní počet. Zásobovač sklízí pšenici a nosí ji sem. Hladoví globulové jedí v Hospodách; bez zásobovačů zásoby časem dojdou. Udržujte přístup k pšenici.
 [intro help grow]
 Úl spotřebovává pšenici na tvorbu jednotek. Nastavte produkci dělníků na 1 a průzkumníků a válečníků na 0. Požadujte u Úlu alespoň 2 dělníky. Více zásobovačů dodá pšenici rychleji, ale chybí u jiných úkolů. Zásobujte obě Hospody.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Otevřete prapory, vyberte Válečný prapor a umístěte jej na nepřátelský 
 [intro hint scout]
 Průzkumník potřebuje Průzkumný prapor s přidělenými jednotkami u východních kamenů. Zkontrolujte jeho cíl a počet průzkumníků.
 [intro hint build]
-Pokud jste novou Hospodu odstranili, postavte další. Jinak zkontrolujte staveniště a požadovaný počet dělníků. Stávající zásobování je může zaměstnávat; zajistěte jídlo a současně uvolněte stavitele.
+Vaše nová Hospoda ještě není dokončená. Pokud neexistuje staveniště, umístěte Hospodu blízko pšenice. Jinak vyberte staveniště a zkontrolujte požadovaný počet dělníků: zásobování jinde může vaše dělníky zaměstnávat.
 [intro hint supply]
 Vyberte dokončenou novou Hospodu. Zkontrolujte požadovaný počet dělníků a sledujte dodávky pšenice. Dělníci potřebují čas na cestu i jídlo.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Před umístěním praporu posuňte pohled tažením po volném terénu. Najdět
 [intro help touch build]
 Ve stavbě zvolte Hospodu. Umístěte ji na volný terén poblíž pšenice a potvrďte. Vyberte staveniště a požadujte 2 stavitele. Požadovaný počet neudává již přítomné dělníky. Zásobujte stávající Hospodu i Úl. Počítá se každé platné místo.
 [intro help touch supply]
-Vyberte dokončenou novou Hospodu a zvyšte požadovaný počet dělníků. Stavba a zásobování mají samostatné počty. Zásobovač sklízí pšenici a nosí ji sem. Hladoví globulové jedí v Hospodách; bez zásobovačů zásoby dojdou. Udržujte přístup k pšenici.
+Vyberte dokončenou novou Hospodu a zkontrolujte požadovaný počet dělníků; zásobovače si vyžádá sama. Stavba a zásobování mají samostatné počty. Zásobovač sklízí pšenici a nosí ji sem. Hladoví globulové jedí v Hospodách; bez zásobovačů zásoby dojdou. Udržujte přístup k pšenici.
 [intro help touch grow]
 Vyberte Úl. Nastavte produkci dělníků na 1 a průzkumníků a válečníků na 0. Požadujte alespoň 2 dělníky. Zásobovači dodávají pšenici pro nové jednotky, ale chybí u jiných úkolů. Zásobujte obě Hospody.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Prapory → Průzkumný prapor. Umístěte na kameny; přidělte 1 průzkumníka
 [intro compact build]
 Stavba → Hospoda. Umístěte poblíž pšenice; přidělte 2 stavitele.
 [intro compact supply]
-Vyberte novou Hospodu; přidělte alespoň 1 zásobovače. Počkejte na pšenici.
+Vyberte novou Hospodu; zkontrolujte její zásobovače. Počkejte na pšenici.
 [intro compact grow]
 Vyberte Úl; přidělte 2 zásobovače. Vytvářejte pouze dělníky.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Využijte připravené plavce ke stavbě Školy a pak sledujte, jak se dělníci
 [lesson schools complete]
 Vaše Škola zlepšila schopnosti dělníků. Zkušení stavitelé umožňují vylepšování; lepší sklizeň podporuje rostoucí hospodářství.
 [lesson schools build hint]
-Postavte Školu na mýtině; přidělte stavitele. Kolonie už má plavce pro řasy. Ponechte přístup ke dřevu a vodě. Ovocné stromy poskytují suroviny pro prestiž; jídlo stále pochází z pšenice.
+Zatím není dokončená žádná Škola. Zkontrolujte, že její staveniště požaduje stavitele a že se dostanou ke dřevu a k rybníku.
 [lesson schools build title]
 Postavit Školu
 [lesson schools build instruction]
 Postavte Školu na mýtině; přidělte stavitele.
 [lesson schools build help]
-Kolonie už má plavce pro řasy. Ponechte přístup ke dřevu a vodě. Ovocné stromy poskytují suroviny pro prestiž; jídlo stále pochází z pšenice.
+Kolonie už má plavce pro řasy. Ponechte přístup ke dřevu a vodě. Ovocné stromy nejsou zdrojem jídla; vaše Hospody stále potřebují pšenici.
 [lesson schools build marker]
 Postavit Školu
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Tito dělníci již získali schopnosti Školy první úrovně. Vylepšení vyž
 [lesson upgrades upgrade marker]
 Vylepšit Závodní dráhu
 [lesson upgrades train hint]
-Nechte stávajícího dělníka naučit se rychlejší chůzi na vylepšené Závodní dráze. Dokončené vylepšení zlepšuje dostupný výcvik. Vyšší úrovně budov vyžadují lepší stavební schopnosti; zobrazená úroveň začíná na 1.
+Na vylepšené Závodní dráze se zatím nevycvičil žádný dělník. Udržujte ji dostupnou a nechte některé dělníky volné.
 [lesson upgrades train title]
 Využít lepší výcvik
 [lesson upgrades train instruction]
 Nechte stávajícího dělníka naučit se rychlejší chůzi na vylepšené Závodní dráze.
 [lesson upgrades train help]
-Dokončené vylepšení zlepšuje dostupný výcvik. Vyšší úrovně budov vyžadují lepší stavební schopnosti; zobrazená úroveň začíná na 1.
+Dokončené vylepšení zlepšuje výcvik, který budova nabízí. Vyšší úrovně budov vyžadují stavitele s lepšími stavebními schopnostmi.
 [lesson warrior-training title]
 Tvorba a výcvik válečníků
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Hradby spotřebovávají kámen a každé staveniště žádá dělníky. Neuzav
 [lesson fortifications walls marker]
 Chránit věž hradbami
 [lesson fortifications supply hint]
-Vyberte věž a požadujte zásobovače. Počkejte alespoň na 2 kameny. Dokončená věž potřebuje provozní počet dělníků pro dodávky munice. Je oddělený od počtu pro stavbu.
+Věž má méně než 2 kameny. Vyberte ji a zkontrolujte požadovaný počet dělníků; zásobovači potřebují volnou cestu od kamene.
 [lesson fortifications supply title]
 Dodávat munici
 [lesson fortifications supply instruction]
-Vyberte věž a požadujte zásobovače. Počkejte alespoň na 2 kameny.
+Vyberte dokončenou věž a zkontrolujte její zásobovače. Počkejte alespoň na 2 kameny.
 [lesson fortifications supply help]
-Dokončená věž potřebuje provozní počet dělníků pro dodávky munice. Je oddělený od počtu pro stavbu.
+Dokončená věž si zásobovače pro dodávky munice vyžádá sama. Tento počet je oddělený od počtu pro stavbu; zvyšte ho, pokud kámen přichází pomalu.
 [lesson fortifications supply marker]
 Dodávat munici
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Stavba → Věž. Umístěte v označené oblasti.
 [lesson fortifications walls compact]
 Postavte 2 hradby. Ponechte západní přístup k věži volný.
 [lesson fortifications supply compact]
-Věž → zásobovači. Počkejte na 2 kameny.
+Věž → zkontrolujte zásobovače. Počkejte na 2 kameny.
 [lesson fortifications hold compact]
 Udržujte věž zásobenou proti útočníkovi.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Tundrová půda
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

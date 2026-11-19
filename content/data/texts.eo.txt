@@ -3150,6 +3150,8 @@ Peniko %0
 Teamo %0
 [Your colony]
 Via kolonio
+[Practice colony]
+Ekzerca kolonio
 [%0 / %1 HP · %2]
 %0 / %1 VP · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ Ne eblis eksporti la registraĵon.
 Forigi registraĵon
 [recording refresh]
 Refreŝigi
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library Back]
 Reen
 [library Installed]
@@ -6615,7 +6637,7 @@ Malfermu Markilojn kaj metu Esplormarkilon sur la ŝtonareon oriente de via kolo
 [intro instruction build]
 Malfermu Konstruadon kaj metu Manĝejon apud tritiko. Asignu disponeblajn laboristojn por konstrui ĝin. Daŭre provizu vian ekzistantan Manĝejon.
 [intro instruction supply]
-Elektu vian finkonstruitan novan Manĝejon kaj asignu al ĝi almenaŭ unu provizanton. Atendu, ĝis laboristo liveros tritikon.
+Elektu vian finkonstruitan novan Manĝejon. Ĝi mem petas provizantojn; kontrolu ĝian celan nombron de laboristoj kaj atendu, ĝis laboristo liveros tritikon.
 [intro instruction grow]
 Elektu la Globulejon. Agordu ĝian celan nombron de laboristoj al almenaŭ 2 kaj ĝiajn produktajn proporciojn al nur laboristoj. Daŭre provizu ambaŭ Manĝejojn dum naskiĝas nova laboristo.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Uzu la etmapon por movi la vidon orienten kaj trovi la ŝtonareon. Elektu Esplor
 [intro help build]
 Konstruado konsumas lignon liveratan de laboristoj. Elektu Manĝejon el la konstruaĵa paletro, metu ĝin sur libera tereno apud tritiko kaj petu 2 konstruistojn. La cela nombro de laboristoj estas peto, ne la nombro de jam ĉeestantaj laboristoj. Lasu provizantojn ĉe viaj ekzistantaj Manĝejo kaj Globulejo. Ĉiu valida loko taŭgas.
 [intro help supply]
-Konstruado kaj ĉiutaga provizado havas apartajn celajn nombrojn de laboristoj. Elektu la finkonstruitan Manĝejon kaj pliigu ĝian funkcian celon. Provizanto rikoltas tritikon kaj portas ĝin ĉi tien. Malsataj globuloj manĝas ĉe Manĝejoj; sen provizantoj, konstruaĵo fine elĉerpos sian stokon. Konservu aliron al la tritiko.
+Konstruado kaj ĉiutaga provizado havas apartajn celajn nombrojn de laboristoj. Finkonstruita Manĝejo aŭtomate petas provizantojn; pliigu ĝian funkcian celon, se tritiko alvenas tro malrapide. Provizanto rikoltas tritikon kaj portas ĝin ĉi tien. Malsataj globuloj manĝas ĉe Manĝejoj; sen provizantoj, konstruaĵo fine elĉerpos sian stokon. Konservu aliron al la tritiko.
 [intro help grow]
 La Globulejo konsumas tritikon por produkti unuojn. Agordu la produktadon de laboristoj al 1 kaj tiun de esploristoj kaj militistoj al 0. Pliigu la celan nombron de laboristoj ĉe la Globulejo al almenaŭ 2. Pli da provizantoj povas liveri tritikon pli rapide, sed ili konkuras kun aliaj taskoj. Daŭre provizu ambaŭ Manĝejojn per manĝaĵo.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Malfermu Markilojn, elektu Militmarkilon kaj metu ĝin sur la malamikan Globulej
 [intro hint scout]
 Via esploristo bezonas Esplormarkilon kun asignita unuo ĉe la orienta ŝtonareo. Kontrolu ĝian lokon kaj la nombron de esploristoj.
 [intro hint build]
-Se vi forigis la novan Manĝejon, konstruu alian. Alie kontrolu la konstruejon kaj ĝian celan nombron de laboristoj. Ekzistantaj provizaj taskoj eble okupas viajn laboristojn; konservu la manĝaĵprovizon dum vi liberigas konstruistojn.
+Via nova Manĝejo ankoraŭ ne estas finkonstruita. Se ne ekzistas konstruejo, metu Manĝejon apud tritiko. Alie elektu la konstruejon kaj kontrolu ĝian celan nombron de laboristoj: provizaj taskoj aliloke eble okupas viajn laboristojn.
 [intro hint supply]
 Elektu la finkonstruitan novan Manĝejon. Kontrolu ĝian celan nombron de laboristoj kaj observu la tritikliverojn. Laboristoj eble bezonas tempon por vojaĝi aŭ manĝi.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Trenu malplenan terenon por movi la vidon antaŭ ol meti markilon. Trovu la ŝto
 [intro help touch build]
 Elektu Manĝejon en Konstruado. Metu ĝin sur libera tereno apud tritiko kaj konfirmu. Elektu la konstruejon kaj petu 2 konstruistojn. La cela nombro de laboristoj estas peto, ne la nombro de jam ĉeestantoj. Daŭre provizu la ekzistantajn Manĝejon kaj Globulejon. Ĉiu valida loko taŭgas.
 [intro help touch supply]
-Elektu la finkonstruitan novan Manĝejon kaj pliigu ĝian celan nombron de asignitaj laboristoj. Konstruado kaj ĉiutaga provizado havas apartajn celojn. Provizanto rikoltas tritikon kaj portas ĝin ĉi tien. Malsataj globuloj manĝas ĉe Manĝejoj; sen provizantoj, la stoko fine elĉerpiĝas. Konservu aliron al la tritiko.
+Elektu la finkonstruitan novan Manĝejon kaj kontrolu ĝian celan nombron de asignitaj laboristoj; ĝi mem petas provizantojn. Konstruado kaj ĉiutaga provizado havas apartajn celojn. Provizanto rikoltas tritikon kaj portas ĝin ĉi tien. Malsataj globuloj manĝas ĉe Manĝejoj; sen provizantoj, la stoko fine elĉerpiĝas. Konservu aliron al la tritiko.
 [intro help touch grow]
 Elektu la Globulejon. Agordu la produktadon de laboristoj al 1 kaj tiun de esploristoj kaj militistoj al 0. Pliigu ĝian celan nombron de asignitaj laboristoj al almenaŭ 2. Provizantoj alportas tritikon por novaj unuoj, sed konkuras kun aliaj taskoj. Daŭre provizu ambaŭ Manĝejojn.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Markiloj → Esplormarkilo. Metu ĝin sur la ŝtonojn; asignu 1 esploriston.
 [intro compact build]
 Konstruado → Manĝejo. Metu ĝin apud tritiko; asignu 2 konstruistojn.
 [intro compact supply]
-Elektu vian novan Manĝejon; asignu almenaŭ 1 provizanton. Atendu tritikon.
+Elektu vian novan Manĝejon; kontrolu ĝiajn provizantojn. Atendu tritikon.
 [intro compact grow]
 Elektu la Globulejon; asignu 2 provizantojn. Produktu nur laboristojn.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Uzu la preparitajn naĝantojn por konstrui Lernejon, poste observu laboristojn l
 [lesson schools complete]
 Via Lernejo plibonigis la kapablojn de laboristoj. Lertaj konstruistoj ebligas plibonigojn; pli bona rikoltado helpas subteni kreskantan ekonomion.
 [lesson schools build hint]
-Konstruu Lernejon en la maldensejo; asignu konstruistojn. La kolonio jam havas naĝantojn por algoj. Lasu aliron al ligno kaj akvo. Fruktarboj liveras prestiĝajn rimedojn; manĝaĵo ankoraŭ venas de tritiko.
+Ankoraŭ neniu finkonstruita Lernejo. Kontrolu, ke ĝia konstruejo petas konstruistojn kaj ke ili povas atingi lignon kaj la lageton.
 [lesson schools build title]
 Konstrui Lernejon
 [lesson schools build instruction]
 Konstruu Lernejon en la maldensejo; asignu konstruistojn.
 [lesson schools build help]
-La kolonio jam havas naĝantojn por algoj. Lasu aliron al ligno kaj akvo. Fruktarboj liveras prestiĝajn rimedojn; manĝaĵo ankoraŭ venas de tritiko.
+La kolonio jam havas naĝantojn por algoj. Lasu aliron al ligno kaj akvo. Fruktarboj ne estas manĝaĵo; viaj Manĝejoj ankoraŭ bezonas tritikon.
 [lesson schools build marker]
 Konstrui Lernejon
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Elektu la Kuregejon, elektu Plibonigi kaj asignu lertajn konstruistojn.
 [lesson upgrades upgrade marker]
 Plibonigi la Kuregejon
 [lesson upgrades train hint]
-Lasu ekzistantan laboriston lerni pli rapidan marŝadon ĉe la plibonigita Kuregejo. Finita plibonigo altigas la disponeblan trejnadon. Pli altaj konstruaĵaj niveloj bezonas pli altajn konstruajn kapablojn; la nivelo montrata al ludantoj komenciĝas ĉe 1.
+Neniu laboristo jam trejniĝis ĉe la plibonigita Kuregejo. Tenu ĝin alirebla kaj lasu kelkajn laboristojn liberaj.
 [lesson upgrades train title]
 Uzi la plibonigitan trejnadon
 [lesson upgrades train instruction]
 Lasu ekzistantan laboriston lerni pli rapidan marŝadon ĉe la plibonigita Kuregejo.
 [lesson upgrades train help]
-Finita plibonigo altigas la disponeblan trejnadon. Pli altaj konstruaĵaj niveloj bezonas pli altajn konstruajn kapablojn; la nivelo montrata al ludantoj komenciĝas ĉe 1.
+Finita plibonigo altigas la trejnadon, kiun la konstruaĵo proponas. Pli altaj konstruaĵaj niveloj bezonas konstruistojn kun pli altaj konstruaj kapabloj.
 [lesson warrior-training title]
 Produktado kaj trejnado de militistoj
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Muroj konsumas ŝtonojn kaj ĉiu konstruejo petas laboristojn. Ne enfermu la tur
 [lesson fortifications walls marker]
 Protekti la turon per muroj
 [lesson fortifications supply hint]
-Elektu la turon kaj petu provizantojn. Atendu almenaŭ 2 ŝtonojn. Finkonstruita turo bezonas funkcian celan nombron de laboristoj por alporti municion. Tio estas aparta de ĝia konstrua celo.
+La turo havas malpli ol 2 ŝtonojn. Elektu ĝin kaj kontrolu ĝian celan nombron de laboristoj; provizantoj bezonas liberan vojon de la ŝtonoj.
 [lesson fortifications supply title]
 Provizi municion
 [lesson fortifications supply instruction]
-Elektu la turon kaj petu provizantojn. Atendu almenaŭ 2 ŝtonojn.
+Elektu la finkonstruitan turon kaj kontrolu ĝiajn provizantojn. Atendu almenaŭ 2 ŝtonojn.
 [lesson fortifications supply help]
-Finkonstruita turo bezonas funkcian celan nombron de laboristoj por alporti municion. Tio estas aparta de ĝia konstrua celo.
+Finkonstruita turo mem petas provizantojn por alporti municion. Tio estas aparta de ĝia konstrua celo; pliigu ĝin, se ŝtonoj alvenas malrapide.
 [lesson fortifications supply marker]
 Provizi municion
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Konstruado → Turo. Metu ĝin en la markitan areon.
 [lesson fortifications walls compact]
 Konstruu 2 murojn. Lasu la okcidentan vojon al la turo libera.
 [lesson fortifications supply compact]
-Elektu turon → provizantoj. Atendu 2 ŝtonojn.
+Elektu turon → kontrolu provizantojn. Atendu 2 ŝtonojn.
 [lesson fortifications hold compact]
 Daŭre provizu la turon kontraŭ la atakanto.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Tundra grundo
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

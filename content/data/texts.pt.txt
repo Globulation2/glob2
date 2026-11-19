@@ -617,7 +617,7 @@ aberto
 [OpenGL]
 OpenGL
 [Options]
-Opções
+Opções de jogo
 [options]
 Opções
 [Orange]
@@ -3150,6 +3150,8 @@ Pincel %0
 Equipa %0
 [Your colony]
 A sua colónia
+[Practice colony]
+Colónia de treino
 [%0 / %1 HP · %2]
 %0 / %1 PV · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ Não foi possível exportar a gravação.
 Eliminar gravação
 [recording refresh]
 Atualizar
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Não foi possível restaurar a biblioteca anterior: %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Abra Bandeiras e coloque uma Bandeira de exploração sobre o depósito de pedra
 [intro instruction build]
 Abra Construir e coloque uma Taberna perto do trigo. Atribua trabalhadores disponíveis à construção. Mantenha a Taberna existente abastecida.
 [intro instruction supply]
-Selecione a nova Taberna concluída e atribua-lhe pelo menos um fornecedor. Espere que um trabalhador entregue trigo.
+Selecione a nova Taberna concluída. Ela solicita fornecedores por si própria; verifique o número de trabalhadores solicitado e espere que um trabalhador entregue trigo.
 [intro instruction grow]
 Selecione a Colmeia. Defina o número de trabalhadores solicitado para pelo menos 2 e as proporções de produção para produzir apenas trabalhadores. Mantenha ambas as Tabernas abastecidas enquanto nasce um novo trabalhador.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Use o minimapa para deslocar a vista para leste e encontrar o depósito de pedra
 [intro help build]
 A construção consome madeira entregue pelos trabalhadores. Escolha Taberna na paleta de edifícios, coloque-a em terreno livre perto do trigo e peça 2 construtores. O número solicitado é um pedido, não o número de trabalhadores já presentes. Mantenha fornecedores na Taberna existente e na Colmeia. Qualquer localização válida conta.
 [intro help supply]
-A construção e o abastecimento diário têm números de trabalhadores solicitados separados. Selecione a Taberna concluída e aumente o número pedido para o seu funcionamento. Um fornecedor colhe trigo e transporta-o para aqui. Os glóbulos com fome comem nas Tabernas; sem fornecedores, as reservas acabam por se esgotar. Mantenha o acesso ao trigo livre.
+A construção e o abastecimento diário têm números de trabalhadores solicitados separados. Uma Taberna concluída solicita fornecedores automaticamente; aumente o número pedido para o seu funcionamento se o trigo chegar demasiado devagar. Um fornecedor colhe trigo e transporta-o para aqui. Os glóbulos com fome comem nas Tabernas; sem fornecedores, as reservas acabam por se esgotar. Mantenha o acesso ao trigo livre.
 [intro help grow]
 A Colmeia consome trigo para produzir unidades. Defina a produção de trabalhadores para 1 e as de exploradores e guerreiros para 0. Aumente o número de trabalhadores solicitado pela Colmeia para 2 ou mais. Mais fornecedores entregam trigo mais depressa, mas disputam trabalhadores com outras tarefas. Mantenha o abastecimento de alimentos em ambas as Tabernas.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Abra Bandeiras, escolha Bandeira de Guerra e coloque-a sobre a Colmeia inimiga a
 [intro hint scout]
 O explorador precisa de uma Bandeira de exploração com unidades atribuídas no depósito de pedra a leste. Verifique a sua localização e o número de exploradores pedido.
 [intro hint build]
-Se removeu a nova Taberna, construa outra. Caso contrário, verifique o estaleiro e o número de trabalhadores solicitado. As tarefas de abastecimento existentes podem ocupar os trabalhadores; mantenha a alimentação enquanto disponibiliza construtores.
+A sua nova Taberna ainda não está concluída. Se não houver estaleiro, coloque uma Taberna perto do trigo. Caso contrário, selecione o estaleiro e verifique o número de trabalhadores solicitado: tarefas de abastecimento noutros locais podem estar a ocupar os seus trabalhadores.
 [intro hint supply]
 Selecione a nova Taberna finalizada. Verifique o número de trabalhadores solicitado e esteja atento às entregas de trigo. Os trabalhadores podem precisar de tempo para viajar ou para comer.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Arraste o terreno vazio para mover a visualização antes de colocar uma bandeir
 [intro help touch build]
 Escolha Taberna em Construir. Coloque-a em terreno livre perto do trigo e confirme. Selecione o estaleiro e peça 2 construtores. O número solicitado é um pedido, não o número de trabalhadores já presentes. Mantenha a Taberna existente e a Colmeia abastecidas. Qualquer localização válida conta.
 [intro help touch supply]
-Selecione a nova Taberna concluída e aumente o número de trabalhadores que lhe pede para o abastecimento. A construção e o abastecimento diário têm metas distintas. Um fornecedor colhe trigo e transporta-o para aqui. Os glóbulos com fome comem nas Tabernas; sem fornecedores, as reservas esgotam-se. Mantenha o trigo acessível.
+Selecione a nova Taberna concluída e verifique o número de trabalhadores que lhe está atribuído; ela solicita fornecedores por si própria. A construção e o abastecimento diário têm metas distintas. Um fornecedor colhe trigo e transporta-o para aqui. Os glóbulos com fome comem nas Tabernas; sem fornecedores, as reservas esgotam-se. Mantenha o trigo acessível.
 [intro help touch grow]
 Selecione a Colmeia. Defina a produção de trabalhadores para 1 e as de exploradores e guerreiros para 0. Aumente o número de trabalhadores solicitado para 2 ou mais. Os fornecedores trazem trigo para novas unidades, mas disputam trabalhadores com outras tarefas. Mantenha ambas as Tabernas abastecidas.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Bandeiras → Bandeira de exploração. Coloque-a na pedra; atribua 1 explorador
 [intro compact build]
 Construir → Taberna. Coloque perto do trigo; atribua 2 construtores.
 [intro compact supply]
-Selecione a sua nova Taberna; atribua pelo menos 1 fornecedor. Espere pelo trigo.
+Selecione a sua nova Taberna; verifique os fornecedores. Espere pelo trigo.
 [intro compact grow]
 Selecione a Colmeia; atribua 2 fornecedores. Produza apenas trabalhadores.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Utilize os nadadores preparados para construir uma Escola e depois observe os tr
 [lesson schools complete]
 A sua escola melhorou as competências dos trabalhadores. Construtores qualificados desbloqueiam melhorias; uma melhor colheita ajuda a manter uma economia em expansão.
 [lesson schools build hint]
-Construa uma Escola na clareira; atribua construtores. A colónia já tem nadadores para recolher algas. Deixe acesso à madeira e à água. As árvores de fruto fornecem recursos de prestígio; os alimentos continuam a vir do trigo.
+Ainda não há nenhuma Escola concluída. Verifique se o estaleiro solicita construtores e se estes conseguem chegar à madeira e ao lago.
 [lesson schools build title]
 Construa uma escola
 [lesson schools build instruction]
 Construa uma Escola na clareira; atribua construtores.
 [lesson schools build help]
-A colónia já tem nadadores para recolher algas. Deixe acesso à madeira e à água. As árvores de fruto fornecem recursos de prestígio; os alimentos continuam a vir do trigo.
+A colónia já tem nadadores para recolher algas. Deixe acesso à madeira e à água. As árvores de fruto não são alimento; as suas Tabernas continuam a precisar de trigo.
 [lesson schools build marker]
 Construa uma escola
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Estes trabalhadores já aprenderam as competências da Escola de nível 1. As me
 [lesson upgrades upgrade marker]
 Melhore a Pista de corrida
 [lesson upgrades train hint]
-Deixe um trabalhador existente aprender a andar mais depressa na Pista de corrida melhorada. Uma melhoria concluída melhora o treino disponível. Níveis mais altos dos edifícios exigem maiores competências de construção; o nível apresentado aos jogadores começa em 1.
+Ainda nenhum trabalhador treinou na Pista de corrida melhorada. Mantenha-a acessível e deixe alguns trabalhadores livres.
 [lesson upgrades train title]
 Utilize o treino melhorado
 [lesson upgrades train instruction]
 Deixe um trabalhador existente aprender a andar mais depressa na Pista de corrida melhorada.
 [lesson upgrades train help]
-Uma melhoria concluída melhora o treino disponível. Níveis mais altos dos edifícios exigem maiores competências de construção; o nível apresentado aos jogadores começa em 1.
+Uma melhoria concluída melhora o treino que oferece. Níveis mais altos dos edifícios exigem construtores com maiores competências de construção.
 [lesson warrior-training title]
 Produção e treino de guerreiros
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Os muros consomem pedra e cada estaleiro pede trabalhadores. Não feche a torre:
 [lesson fortifications walls marker]
 Proteja a torre com muros
 [lesson fortifications supply hint]
-Selecione a torre e solicite fornecedores. Aguarde até que a torre tenha pelo menos 2 unidades de pedra. Assim que a torre estiver construída, peça aos trabalhadores que tragam munições. Deve definir este número separadamente do número de trabalhadores solicitados para a construção.
+A torre tem menos de 2 unidades de pedra. Selecione-a e verifique o número de trabalhadores solicitado; os fornecedores precisam de um caminho livre desde a pedra.
 [lesson fortifications supply title]
 Fornecer munições
 [lesson fortifications supply instruction]
-Selecione a torre e solicite fornecedores. Aguarde até que a torre tenha pelo menos 2 unidades de pedra.
+Selecione a torre concluída e verifique os fornecedores. Aguarde até que a torre tenha pelo menos 2 unidades de pedra.
 [lesson fortifications supply help]
-Assim que a torre estiver construída, peça aos trabalhadores que tragam munições. Deve definir este número separadamente do número de trabalhadores solicitados para a construção.
+Uma torre concluída solicita fornecedores por si própria para trazer munições. Isto é separado do número de trabalhadores solicitados para a construção; aumente-o se a pedra chegar devagar.
 [lesson fortifications supply marker]
 Fornecer munições
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Construir → Torre. Coloque na área marcada.
 [lesson fortifications walls compact]
 Construa 2 muros. Mantenha livre a passagem a oeste da torre.
 [lesson fortifications supply compact]
-Selecione torre → fornecedores. Aguarde por 2 pedras.
+Selecione torre → verifique fornecedores. Aguarde por 2 pedras.
 [lesson fortifications hold compact]
 Mantenha a torre abastecida contra o atacante.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Solo de tundra
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

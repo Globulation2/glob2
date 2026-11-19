@@ -496,6 +496,30 @@ TEST_CASE("expanded lessons complete through player orders and saved continuatio
     std::filesystem::rename(glob2test::artifactDir()/"introduction.trace",glob2test::artifactDir()/"expanded.trace");
 }
 
+TEST_CASE("defensive tactics scouting completes at the default exploration flag range" * doctest::test_suite("Introduction"))
+{
+    // A player's flag keeps the type's default range (10), and its explorer circles
+    // near that range, mostly outside the small outpost box. The step must still
+    // complete; it previously stalled indefinitely without a reduced radius.
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame w({.wDec=6,.hDec=6,.teams=2,.loadDefaultRace=true,.header=true,.seed=20261026});
+    setup(w,"defensive-tactics");w.step(32);
+    const int type=w.game.buildingsTypes.getTypeNum("explorationflag",0,false);
+    REQUIRE(type>=0);
+    order(w.game,std::make_shared<OrderCreate>(0,112,97,type,1,1,std::nullopt));
+    auto *flag=find(w.game,IntBuildingType::EXPLORATION_FLAG);REQUIRE(flag);
+    w.step(1);
+    REQUIRE(flag->unitStayRange==w.game.buildingsTypes.get(type)->defaultUnitStayRange);
+    REQUIRE(flag->unitStayRange>=8);
+    until(w,[&]{return w.game.objectives.isObjectiveComplete(0);},6000);
+    // A flag away from the base must not count, however close its explorer roams.
+    glob2test::HeadlessGame elsewhere({.wDec=6,.hDec=6,.teams=2,.loadDefaultRace=true,.header=true,.seed=20261026});
+    setup(elsewhere,"defensive-tactics");elsewhere.step(32);
+    order(elsewhere.game,std::make_shared<OrderCreate>(0,100,90,type,1,1,std::nullopt));
+    elsewhere.step(6000);
+    CHECK_FALSE(elsewhere.game.objectives.isObjectiveComplete(0));
+}
+
 TEST_CASE("zone observations and scenario orders preserve map callback validation" * doctest::test_suite("Introduction"))
 {
     glob2test::HeadlessGlobals globals;

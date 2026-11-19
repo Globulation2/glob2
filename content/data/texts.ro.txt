@@ -3150,6 +3150,8 @@ Pensulă %0
 Echipa %0
 [Your colony]
 Colonia voastră
+[Practice colony]
+Colonie de antrenament
 [%0 / %1 HP · %2]
 %0 / %1 PV · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ Nu s-a putut exporta înregistrarea.
 Șterge înregistrarea
 [recording refresh]
 Reîmprospătează
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Nu s-a putut restabili biblioteca anterioară: %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Deschideți Steaguri și plasați un Steag de explorare pe depozitul de piatră 
 [intro instruction build]
 Deschideți Construire și plasați un Popas lângă grâu. Alocați muncitorii disponibili pentru construcție. Mențineți Popasul existent aprovizionat.
 [intro instruction supply]
-Selectați noul Popas terminat și alocați-i cel puțin un furnizor. Așteptați ca un muncitor să livreze grâu.
+Selectați noul Popas terminat. Își cere singur furnizori; verificați numărul cerut de muncitori și așteptați ca un muncitor să livreze grâu.
 [intro instruction grow]
 Selectați Stupul. Solicitați cel puțin 2 muncitori pentru aprovizionare și produceți numai muncitori. Mențineți ambele Popasuri aprovizionate până se naște un muncitor nou.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Folosiți minimapa pentru a deplasa vederea spre est și a găsi depozitul de pi
 [intro help build]
 Construcția consumă lemnul livrat de muncitori. Alegeți Popas din paleta de clădiri, plasați-l pe teren liber lângă grâu și solicitați 2 constructori. Numărul cerut de muncitori este o solicitare, nu numărul celor deja prezenți. Păstrați furnizori la Popasul existent și la Stup. Orice locație validă contează.
 [intro help supply]
-Construcția și aprovizionarea zilnică au numere cerute de muncitori separate. Selectați Popasul terminat și măriți numărul cerut pentru funcționare. Un furnizor adună grâu și îl aduce aici. Globulele flămânde mănâncă în Popasuri; fără furnizori, rezervele unei clădiri se epuizează. Mențineți accesul la grâu.
+Construcția și aprovizionarea zilnică au numere cerute de muncitori separate. Un Popas terminat cere automat furnizori; măriți numărul cerut pentru funcționare dacă grâul sosește prea încet. Un furnizor adună grâu și îl aduce aici. Globulele flămânde mănâncă în Popasuri; fără furnizori, rezervele unei clădiri se epuizează. Mențineți accesul la grâu.
 [intro help grow]
 Stupul consumă grâu pentru a produce unități. Setați producția de muncitori la 1, iar producția de exploratori și războinici la 0. Măriți numărul cerut de muncitori ai Stupului la 2 sau mai mult. Mai mulți furnizori livrează grâu mai repede, dar concurează cu alte sarcini pentru muncitori. Aprovizionați ambele Popasuri cu alimente.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Deschideți Steaguri, alegeți Steag de luptă și plasați-l peste Stupul inami
 [intro hint scout]
 Exploratorul are nevoie de un Steag de explorare cu unități alocate pe depozitul de piatră din est. Verificați poziția steagului și numărul de exploratori solicitați.
 [intro hint build]
-Dacă ați eliminat noul Popas, construiți altul. Altfel, verificați șantierul și numărul cerut de muncitori. Sarcinile de aprovizionare vă pot ocupa muncitorii; mențineți hrana disponibilă și eliberați constructori.
+Noul Popas nu este încă terminat. Dacă nu există un șantier, amplasați un Popas lângă grâu. Altfel, selectați șantierul și verificați numărul cerut de muncitori: sarcinile de aprovizionare din alte părți vă pot ține muncitorii ocupați.
 [intro hint supply]
 Selectați noul Popas terminat. Verificați numărul cerut de muncitori și urmăriți livrările de grâu. Muncitorii pot avea nevoie de timp pentru deplasare sau masă.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Trageți pe terenul gol pentru a muta vederea înainte de a plasa un steag. Găs
 [intro help touch build]
 Alegeți Popas din Construire. Plasați-l pe teren liber lângă grâu și confirmați. Selectați șantierul și solicitați 2 constructori. Numărul cerut de muncitori este o solicitare, nu numărul celor deja prezenți. Mențineți Popasul existent și Stupul aprovizionate. Orice locație validă contează.
 [intro help touch supply]
-Selectați noul Popas terminat și măriți numărul cerut de muncitori alocați. Construcția și aprovizionarea zilnică au ținte separate. Un furnizor adună grâu și îl aduce aici. Globulele flămânde mănâncă în Popasuri; fără furnizori, rezervele se epuizează. Mențineți accesul la grâu.
+Selectați noul Popas terminat și verificați numărul cerut de muncitori alocați; își cere singur furnizori. Construcția și aprovizionarea zilnică au ținte separate. Un furnizor adună grâu și îl aduce aici. Globulele flămânde mănâncă în Popasuri; fără furnizori, rezervele se epuizează. Mențineți accesul la grâu.
 [intro help touch grow]
 Selectați Stupul. Setați producția de muncitori la 1, iar pe cea de exploratori și războinici la 0. Măriți numărul cerut de muncitori alocați la cel puțin 2. Furnizorii aduc grâu pentru unități noi, dar concurează cu alte sarcini pentru muncitori. Mențineți ambele Popasuri aprovizionate.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Steaguri → Steag de explorare. Plasați-l pe piatră; alocați 1 explorator.
 [intro compact build]
 Construire → Popas. Plasați lângă grâu; alocați 2 constructori.
 [intro compact supply]
-Selectați noul Popas; alocați cel puțin 1 furnizor. Așteptați grâul.
+Selectați noul Popas; verificați-i furnizorii. Așteptați grâul.
 [intro compact grow]
 Selectați Stupul; alocați 2 furnizori. Produceți numai muncitori.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Utilizați înotătorii pregătiți pentru a construi o școală, apoi observaț
 [lesson schools complete]
 Școala dvs. a îmbunătățit abilitățile lucrătorilor. Constructorii pricepuți deblochează modernizări; o recoltare mai bună ajută la menținerea unei economii în expansiune.
 [lesson schools build hint]
-Construiți o școală în poiană; alocați constructori. Colonia are deja înotători pentru alge. Lăsați accesul la lemn și apă. Pomii fructiferi oferă resurse de prestigiu; mâncarea provine încă din grâu.
+Încă nu există nicio școală terminată. Verificați dacă șantierul ei solicită constructori și dacă aceștia pot ajunge la lemn și la iaz.
 [lesson schools build title]
 Construiți o școală
 [lesson schools build instruction]
 Construiți o școală în poiană; alocați constructori.
 [lesson schools build help]
-Colonia are deja înotători pentru alge. Lăsați accesul la lemn și apă. Pomii fructiferi oferă resurse de prestigiu; mâncarea provine încă din grâu.
+Colonia are deja înotători pentru alge. Lăsați accesul la lemn și apă. Pomii fructiferi nu oferă hrană; Popasurile voastre au în continuare nevoie de grâu.
 [lesson schools build marker]
 Construiți o școală
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Acești muncitori au învățat deja abilitățile Școlii de primul nivel. Mode
 [lesson upgrades upgrade marker]
 Modernizați pista de alergare
 [lesson upgrades train hint]
-Lăsați un muncitor existent să învețe să meargă mai repede pe pista de alergare modernizată. O modernizare finalizată îmbunătățește antrenamentul disponibil. Nivelurile superioare ale clădirilor necesită abilități de construcție mai avansate; nivelul afișat jucătorilor începe de la 1.
+Niciun muncitor nu s-a antrenat încă pe pista de alergare modernizată. Mențineți-o accesibilă și lăsați câțiva muncitori liberi.
 [lesson upgrades train title]
 Utilizați formarea îmbunătățită
 [lesson upgrades train instruction]
 Lăsați un muncitor existent să învețe să meargă mai repede pe pista de alergare modernizată.
 [lesson upgrades train help]
-O modernizare finalizată îmbunătățește antrenamentul disponibil. Nivelurile superioare ale clădirilor necesită abilități de construcție mai avansate; nivelul afișat jucătorilor începe de la 1.
+O modernizare finalizată îmbunătățește antrenamentul oferit de clădire. Nivelurile superioare ale clădirilor necesită constructori cu abilități de construcție mai avansate.
 [lesson warrior-training title]
 Producerea și antrenarea războinicilor
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Zidurile consumă piatră, iar fiecare șantier solicită muncitori. Nu închide
 [lesson fortifications walls marker]
 Protejați turnul cu ziduri
 [lesson fortifications supply hint]
-Selectați turnul și solicitați furnizori. Așteptați până când turnul are cel puțin 2 unități de piatră. Odată ce turnul este construit, cereți muncitorilor să aducă muniție. Trebuie să setați acest număr separat de numărul de muncitori solicitați pentru construcții.
+Turnul are mai puțin de 2 unități de piatră. Selectați-l și verificați numărul cerut de muncitori; furnizorii au nevoie de o cale liberă de la piatră.
 [lesson fortifications supply title]
 Furnizați muniție
 [lesson fortifications supply instruction]
-Selectați turnul și solicitați furnizori. Așteptați până când turnul are cel puțin 2 unități de piatră.
+Selectați turnul terminat și verificați-i furnizorii. Așteptați până când turnul are cel puțin 2 unități de piatră.
 [lesson fortifications supply help]
-Odată ce turnul este construit, cereți muncitorilor să aducă muniție. Trebuie să setați acest număr separat de numărul de muncitori solicitați pentru construcții.
+Un turn terminat își cere singur furnizori care să aducă muniție. Acest număr este separat de numărul de muncitori solicitați pentru construcție; măriți-l dacă piatra sosește încet.
 [lesson fortifications supply marker]
 Furnizați muniție
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Construire → Turn. Așezați în zona marcată.
 [lesson fortifications walls compact]
 Construiți 2 ziduri. Mențineți deschisă calea din vestul turnului.
 [lesson fortifications supply compact]
-Selectați turn → furnizori. Așteptați 2 pietre.
+Selectați turn → verificați furnizorii. Așteptați 2 pietre.
 [lesson fortifications hold compact]
 Mențineți turnul aprovizionat împotriva atacatorului.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Sol de tundră
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

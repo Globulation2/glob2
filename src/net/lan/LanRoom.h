@@ -46,6 +46,11 @@ namespace Lan
 		void kick(int slot) override;
 		bool canAddAI() const override { return isHost() && !starting(); }
 		void addAI(AI::ImplementationID ai) override;
+		/// The host fills open seats with AIs, changes an AI or opens its seat again.
+		/// A LAN room has no closed seats: a seat nobody takes plays no colony.
+		bool canSetOccupant(const Slot& slot) const override { return canAddAI() && (slot.open || slot.ai); }
+		void setOccupant(int slot, Occupant occupant, const std::string& aiId = {}) override;
+		bool canCloseSeats() const override { return false; }
 		void setReady(bool ready) override;
 		bool everyoneReady() const override;
 		bool canStart() const override;

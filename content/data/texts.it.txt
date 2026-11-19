@@ -3150,6 +3150,8 @@ Pennello %0
 Squadra %0
 [Your colony]
 La tua colonia
+[Practice colony]
+Colonia di allenamento
 [%0 / %1 HP · %2]
 %0 / %1 PV · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ Impossibile esportare la registrazione.
 Elimina registrazione
 [recording refresh]
 Aggiorna
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Impossibile ripristinare la libreria precedente: %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Apri le bandiere e posiziona una bandiera di esplorazione sulla zona di pietra a
 [intro instruction build]
 Apri Costruisci e colloca una Mensa vicino al grano. Assegna i lavoratori disponibili alla costruzione. Mantieni rifornita la Mensa esistente.
 [intro instruction supply]
-Seleziona la tua nuova mensa finita e assegnale almeno un rifornitore. Aspetta che un lavoratore consegni il grano.
+Seleziona la tua nuova Mensa finita. Richiede i rifornitori da sola; controlla il numero di lavoratori richiesti e aspetta che un lavoratore consegni il grano.
 [intro instruction grow]
 Seleziona lo Sciame. Imposta il numero richiesto di lavoratori ad almeno 2 e le proporzioni di produzione su soli lavoratori. Mantieni entrambe le Mense rifornite mentre nasce un nuovo lavoratore.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Usa la minimappa per spostare la visuale a est e trovare la zona di pietra. In B
 [intro help build]
 La costruzione consuma legno consegnato dai lavoratori. Scegli Mensa dalla tavolozza degli edifici, collocala su terreno sgombro vicino al grano e richiedi 2 costruttori. Il numero richiesto non è il numero di lavoratori già presenti. Mantieni i ririfornitori presso la Mensa esistente e lo Sciame. Qualsiasi posizione valida conta.
 [intro help supply]
-La costruzione e il rifornimento quotidiano hanno numeri di lavoratori richiesti separati. Seleziona la Mensa completata e aumenta il numero di addetti al rifornimento. Un ririfornitore raccoglie grano e lo porta qui. I globuli affamati mangiano nelle Mense; senza ririfornitori le scorte prima o poi si esauriscono. Mantieni accessibile il campo di grano.
+La costruzione e il rifornimento quotidiano hanno numeri di lavoratori richiesti separati. Una Mensa completata richiede automaticamente i rifornitori; aumenta il numero di addetti al rifornimento se il grano arriva troppo lentamente. Un rifornitore raccoglie grano e lo porta qui. I globuli affamati mangiano nelle Mense; senza rifornitori le scorte prima o poi si esauriscono. Mantieni accessibile il campo di grano.
 [intro help grow]
 Lo Sciame consuma grano per produrre unità. Imposta la produzione di lavoratori su 1 e quelle di esploratori e guerrieri su 0. Porta il numero di lavoratori richiesto dallo Sciame ad almeno 2. Più ririfornitori possono consegnare grano più velocemente, ma sottraggono lavoratori ad altri compiti. Mantieni entrambe le Mense rifornite di cibo.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Apri Bandiere, scegli Bandiera di attacco e collocala sullo Sciame nemico a est 
 [intro hint scout]
 Il tuo esploratore ha bisogno di una bandiera di esplorazione assegnata nella zona di pietra orientale. Controlla la sua posizione e il conteggio degli esploratori richiesti.
 [intro hint build]
-Se hai rimosso la nuova mensa, costruiscine un'altra. Altrimenti controlla il cantiere e il numero di lavoratori ivi richiesti. Altri lavori di fornitura potrebbero occupare i tuoi lavoratori; mantieni la colonia rifornita di cibo rendendo disponibili i costruttori.
+La tua nuova Mensa non è ancora finita. Se non c'è un cantiere, posiziona una Mensa vicino al grano. Altrimenti seleziona il cantiere e controlla il numero di lavoratori richiesti: altri lavori di fornitura potrebbero tenere occupati i tuoi lavoratori.
 [intro hint supply]
 Seleziona la nuova mensa finita. Controlla il numero di lavoratori richiesto e controlla le consegne di grano. I lavoratori potrebbero aver bisogno di tempo per viaggiare o mangiare.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Prima di collocare una bandiera, trascina il terreno vuoto per spostare la visua
 [intro help touch build]
 Scegli Mensa da Costruisci. Collocala su terreno sgombro vicino al grano e conferma. Seleziona il cantiere e richiedi 2 costruttori. Il numero richiesto non è il numero di lavoratori già presenti. Mantieni riforniti la Mensa esistente e lo Sciame. Qualsiasi posizione valida conta.
 [intro help touch supply]
-Seleziona la nuova Mensa completata e aumenta il numero richiesto di lavoratori assegnati. Costruzione e rifornimento quotidiano hanno impostazioni separate. Un ririfornitore raccoglie grano e lo porta qui. I globuli affamati mangiano nelle Mense; senza ririfornitori le scorte si esauriscono. Mantieni accessibile il grano.
+Seleziona la nuova Mensa completata e controlla il numero richiesto di lavoratori assegnati; richiede i rifornitori da sola. Costruzione e rifornimento quotidiano hanno impostazioni separate. Un rifornitore raccoglie grano e lo porta qui. I globuli affamati mangiano nelle Mense; senza rifornitori le scorte si esauriscono. Mantieni accessibile il grano.
 [intro help touch grow]
 Seleziona lo Sciame. Imposta la produzione di lavoratori su 1 e quelle di esploratori e guerrieri su 0. Porta il numero richiesto di lavoratori assegnati ad almeno 2. I ririfornitori portano grano per le nuove unità, ma sottraggono lavoratori ad altri compiti. Mantieni entrambe le Mense rifornite.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Bandiere → Bandiera di esplorazione. Collocala sulla pietra; assegna 1 esplora
 [intro compact build]
 Costruisci → Mensa. Colloca vicino al grano; assegna 2 costruttori.
 [intro compact supply]
-Seleziona la tua nuova Mensa; assegna almeno 1 rifornitore. Aspetta il grano.
+Seleziona la tua nuova Mensa; controlla i rifornitori. Aspetta il grano.
 [intro compact grow]
 Seleziona lo Sciame; assegna 2 rifornitori. Produci solo lavoratori.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Usa i nuotatori preparati per costruire una scuola, quindi osserva i lavoratori 
 [lesson schools complete]
 La tua Scuola ha migliorato le competenze dei lavoratori. I costruttori qualificati permettono di migliorare gli edifici; una raccolta più efficiente sostiene un'economia in espansione.
 [lesson schools build hint]
-Costruisci una scuola nella radura; assegna i costruttori. La colonia dispone già di nuotatori per le alghe. Lascia l'accesso al legno e all'acqua. Gli alberi da frutto forniscono risorse di prestigio; il cibo proviene ancora dal grano.
+Ancora nessuna Scuola finita. Controlla che il cantiere richieda costruttori e che questi possano raggiungere il legno e lo stagno.
 [lesson schools build title]
 Costruisci una scuola
 [lesson schools build instruction]
 Costruisci una scuola nella radura; assegna i costruttori.
 [lesson schools build help]
-La colonia dispone già di nuotatori per le alghe. Lascia l'accesso al legno e all'acqua. Gli alberi da frutto forniscono risorse di prestigio; il cibo proviene ancora dal grano.
+La colonia dispone già di nuotatori per le alghe. Lascia l'accesso al legno e all'acqua. Gli alberi da frutto non sono cibo; le tue Mense hanno ancora bisogno di grano.
 [lesson schools build marker]
 Costruisci una scuola
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Questi lavoratori hanno già appreso le competenze della Scuola di primo livello
 [lesson upgrades upgrade marker]
 Migliora il Circuito
 [lesson upgrades train hint]
-Consenti a un lavoratore esistente di imparare a camminare più velocemente nel Circuito migliorato. Un miglioramento completato offre un addestramento migliore. Livelli più alti degli edifici richiedono competenze costruttive superiori; il livello mostrato ai giocatori parte da 1.
+Nessun lavoratore si è ancora addestrato nel Circuito migliorato. Mantienilo raggiungibile e lascia liberi alcuni lavoratori.
 [lesson upgrades train title]
 Utilizza la formazione migliorata
 [lesson upgrades train instruction]
 Consenti a un lavoratore esistente di imparare a camminare più velocemente nel Circuito migliorato.
 [lesson upgrades train help]
-Un miglioramento completato offre un addestramento migliore. Livelli più alti degli edifici richiedono competenze costruttive superiori; il livello mostrato ai giocatori parte da 1.
+Un miglioramento completato migliora l'addestramento offerto. Livelli più alti degli edifici richiedono costruttori con competenze costruttive superiori.
 [lesson warrior-training title]
 Produzione e addestramento dei guerrieri
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ I muri consumano pietra e ogni cantiere richiede lavoratori. Non chiudere la tor
 [lesson fortifications walls marker]
 Proteggi la torre con mura
 [lesson fortifications supply hint]
-Seleziona la torre e richiedi i rifornitori. Aspetta finché la torre non avrà almeno 2 unità di pietra. Una volta costruita la torre, chiedi ai lavoratori di portare munizioni. È necessario impostare questo numero separatamente dal numero di lavoratori richiesti per la costruzione.
+La torre ha meno di 2 unità di pietra. Selezionala e controlla il numero di lavoratori richiesti; i rifornitori hanno bisogno di un percorso libero dalla pietra.
 [lesson fortifications supply title]
 Rifornisci di munizioni
 [lesson fortifications supply instruction]
-Seleziona la torre e richiedi i rifornitori. Aspetta finché la torre non avrà almeno 2 unità di pietra.
+Seleziona la torre finita e controlla i rifornitori. Aspetta finché la torre non avrà almeno 2 unità di pietra.
 [lesson fortifications supply help]
-Una volta costruita la torre, chiedi ai lavoratori di portare munizioni. È necessario impostare questo numero separatamente dal numero di lavoratori richiesti per la costruzione.
+Una torre finita richiede da sola i rifornitori per portare munizioni. Questo numero è separato da quello richiesto per la costruzione; aumentalo se la pietra arriva lentamente.
 [lesson fortifications supply marker]
 Rifornisci di munizioni
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Costruisci → Torre. Collocala nell'area contrassegnata.
 [lesson fortifications walls compact]
 Costruisci 2 muri. Mantieni aperta la corsia ovest della torre.
 [lesson fortifications supply compact]
-Seleziona torre → rifornitori. Aspetta 2 pietre.
+Seleziona torre → controlla rifornitori. Aspetta 2 pietre.
 [lesson fortifications hold compact]
 Mantieni la torre rifornita contro l'attaccante.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Terreno di tundra
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

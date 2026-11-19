@@ -194,18 +194,58 @@ void PlatformRoom::listen()
 			return;
 		// The room's match (or one the room is about to start).
 		const std::string matchId = data.value("matchId", "");
-		if (match && match->matchId() == matchId)
-			return;
 		if (state.contains("matchId") && state["matchId"].is_string() && state["matchId"] != matchId &&
 			pendingMatchId != matchId)
 			return;
-		OnlineMatch::Context context;
-		context.label = text("[room match label]") + " · " + roomName();
-		context.fromRoom = true;
-		match = std::make_shared<OnlineMatch>(*client, maps, *storage, data, context);
-		Event event;
-		event.kind = Event::Launch;
-		push(std::move(event));
+		launchMatch(data);
+	});
+}
+
+void PlatformRoom::launchMatch(const Json &assignment)
+{
+	const std::string matchId = assignment.value("matchId", "");
+	if (match && match->matchId() == matchId)
+		return;
+	playedMatches.insert(matchId);
+	OnlineMatch::Context context;
+	context.label = text("[room match label]") + " · " + roomName();
+	context.fromRoom = true;
+	match = std::make_shared<OnlineMatch>(*client, maps, *storage, assignment, context);
+	Event event;
+	event.kind = Event::Launch;
+	push(std::move(event));
+}
+
+void PlatformRoom::rejoinRunningMatch()
+{
+	// A seated member who opens a room whose match is already running (the game was
+	// restarted or crashed mid-match, then the player joined the room again) missed
+	// match.start: ask for the seat again, as the relay lets a restarted client rejoin.
+	// At most once per match and room, so returning to the room after leaving a match
+	// never pulls the player back into it.
+	if (!client || !storage || match || state.is_null() || state.value("status", "") != "in_match" ||
+		!state.contains("matchId") || !state["matchId"].is_string())
+		return;
+	const std::string matchId = state["matchId"].get<std::string>();
+	// A room that saw the match start gets its match.start like everyone else.
+	if (playedMatches.count(matchId) || pendingMatchId == matchId)
+		return;
+	bool seated = false;
+	for (const auto &slot : slots())
+		seated = seated || slot.local;
+	if (!seated)
+		return;
+	playedMatches.insert(matchId);
+	calls->request("match.reconnect", Json{{"matchId", matchId}}, [this](const PlatformClient::Response &response) {
+		if (!response.ok)
+		{
+			problem = response.error.message.empty() ? response.error.code : response.error.message;
+			Event event;
+			event.kind = Event::Changed;
+			push(std::move(event));
+			return;
+		}
+		launchMatch(response.result);
 	});
 }
 
@@ -279,6 +319,7 @@ void PlatformRoom::adopt(const Json &room)
 		pendingMatchId = state["matchId"].get<std::string>();
 	fetchMap();
 	fitAutomaticMap();
+	rejoinRunningMatch();
 	Event event;
 	event.kind = Event::Changed;
 	push(std::move(event));

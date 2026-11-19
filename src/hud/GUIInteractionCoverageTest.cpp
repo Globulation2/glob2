@@ -1172,6 +1172,75 @@ TEST_CASE("tutorial semantic controls bind lesson step and destination [display]
     CHECK(guidance.host().event(oldHelp->event()));CHECK_FALSE(oldHelp->error.empty());
 }
 
+// Lesson maps carry English map and seat names baked by the lesson builder. The
+// opening cover must show the translated lesson title and colony names instead.
+TEST_CASE("lesson opening cover shows translated lesson and colony names [display][writes-preferences]" *
+          doctest::test_suite("GUIInteractionCoverage"))
+{
+    glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 800, .height = 600,
+        .beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::Software; }});
+    auto *strings = Toolkit::getStringTable();
+    struct RestoreLanguage { GAGCore::StringTable *table; int index; ~RestoreLanguage() { table->setLang(index); } }
+        restore{strings, strings->getLang()};
+    strings->setLang(strings->getLangCode("de"));
+    const auto lessons = Tutorial::lessonCatalog();
+    REQUIRE(lessons.size() >= 10);
+    const auto &lesson = lessons.at(2);
+    GameGUI gui;
+    auto map = Engine::loadMapHeader(lesson.map);
+    auto players = Engine::loadGameHeader(lesson.map);
+    REQUIRE(gui.loadFromHeaders(map, players, true, true));
+    const auto title = gui.introCoverTitle();
+    CHECK(title.map == strings->getString(lesson.title.c_str()));
+    CHECK(title.map != lesson.mapName);
+    REQUIRE(title.players.size() >= 2);
+    int local = 0;
+    for (int i = 0; i < int(title.players.size()); ++i) {
+        const bool isLocal = players.getBasePlayer(i).type == BasePlayer::P_LOCAL;
+        local += isLocal;
+        CHECK(title.players[i].name == strings->getString(isLocal ? "[Your colony]" : "[Practice colony]"));
+        CHECK(title.players[i].name != players.getBasePlayer(i).name);
+    }
+    CHECK(local == 1);
+}
+
+// MCP inspection can lay out the HUD while a game is still loading, before the
+// first scene carries the local team's statistics; the top bar must not read them.
+TEST_CASE("HUD inspection before the first scene does not read missing statistics [display][writes-preferences]" *
+          doctest::test_suite("GUIInteractionCoverage"))
+{
+    glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 800, .height = 600,
+        .beforeLoad = [](GlobalContainer &g) { g.settings.rendererBackend = GAGCore::RendererBackend::Software; }});
+    glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI", "0");
+    GameGUI gui;
+    auto map = Engine::loadMapHeader("maps/balanced.map");
+    GameHeader players;
+    players.setNumberOfPlayers(1);
+    players.getBasePlayer(0) = BasePlayer(0, "Loading", 0, BasePlayer::P_LOCAL);
+    REQUIRE(gui.loadFromHeaders(map, players, true, true));
+    gui.localPlayer = gui.localTeamNo = 0;
+    gui.adjustLocalTeam();
+    REQUIRE_FALSE(gui.drawnScene().panels.localStats);
+    REQUIRE_FALSE(gui.drawnScene().buildingTypes);
+    // Unit counts are placeholders until statistics exist.
+    const auto layout = gui.topBarLayout();
+    for (int i = 0; i < 3; ++i) CHECK(layout.values[i] == "-/-");
+    CHECK(gui.topBarSpeedX() > 0);
+    // The building palette falls back to its stable type names.
+    gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
+    const auto snapshot = gui.hudInspectionHost().inspect();
+    CHECK_FALSE(snapshot.controls.empty());
+    bool palette = false;
+    auto visit = [&](auto &&self, const auto &nodes) -> void {
+        for (const auto &node : nodes) {
+            if (node.key == "game/buildings/inn.0.site") { palette = true; CHECK(node.label == "inn.0.site"); }
+            self(self, node.children);
+        }
+    };
+    visit(visit, snapshot.controls);
+    CHECK(palette);
+}
+
 TEST_CASE("desktop zoom speed and events share higher-surface ownership for semantic and human input [display][writes-preferences]" *
           doctest::test_suite("GUIInteractionCoverage"))
 {
@@ -1337,15 +1406,40 @@ TEST_CASE("desktop zoom speed and events share higher-surface ownership for sema
     REQUIRE(eventRows.size() == 1);
     const auto row = eventRows.front();
     REQUIRE(row.bounds.w > 4);
+    // Lesson cards move the feed below themselves, so a Hive card panel, which the
+    // feed does not avoid, covers the left half of this row instead.
+    gui.tutorialGuidance.reset();
+    struct HiveView final : Hive::CommanderView
+    {
+        bool available() const override { return true; }
+        bool local() const override { return true; }
+        Hive::Json standingOrders() const override { return Hive::Json::array(); }
+        void stop() override {}
+        void change(const std::string &, const std::string &) override {}
+    };
     const GAGGUI::ui::Rect rowCover{row.bounds.x, row.bounds.y, row.bounds.w / 2, row.bounds.h};
     const GAGGUI::ui::Point rowHit{row.bounds.x + row.bounds.w * 3 / 4, row.bounds.center().y};
-    const auto rowCoverPanel = cover(rowCover);
+    gui.hiveCards = std::make_unique<Hive::Dialog>(std::make_shared<HiveView>());
+    gui.hiveCards->attach(*globals->gfx);
+    {
+        auto &cards = gui.hiveCards->host();
+        cards.layoutIfNeeded();
+        const int padding = cards.metrics().padding;
+        const int width = std::max(1, std::min(240, rowCover.right() - 2 * padding));
+        const GAGGUI::ui::Rect inner{rowCover.right() - padding - width, rowCover.y + padding, width, 120};
+        cards.setAvailable([inner](const auto &, const auto &) { return inner; });
+        cards.setPlacement([](GAGGUI::ui::Size, GAGGUI::ui::Rect bounds) { return bounds; });
+        cards.invalidate(); cards.layoutIfNeeded();
+    }
+    gui.prepareLocalPresentation(gui.frameScene);
+    const auto rowCoverPanel = gui.hiveCards->panelBounds();
+    REQUIRE(gui.describeEventControls().front().bounds == row.bounds);
     const auto rowCoverOverlap = row.bounds.intersect(rowCoverPanel);
     REQUIRE(rowCoverOverlap.w > 0);
     REQUIRE(rowCoverOverlap.h > 0);
     REQUIRE(rowCoverOverlap.w < row.bounds.w);
     REQUIRE(row.bounds.contains(rowHit));
-    REQUIRE_FALSE(gui.tutorialGuidance->panelBounds().contains(rowHit));
+    REQUIRE_FALSE(rowCoverPanel.contains(rowHit));
     const auto rowSnapshot = gui.hudInspectionHost().inspect();
     const auto *blockedRow = findControl(findControl, rowSnapshot.controls, row.key);
     REQUIRE(blockedRow); CHECK(blockedRow->enabled); CHECK(blockedRow->blocked);
@@ -1355,7 +1449,7 @@ TEST_CASE("desktop zoom speed and events share higher-surface ownership for sema
     CHECK(error.find("blocked") != std::string::npos);
     click(rowHit);
     CHECK((std::pair{gui.viewportX, gui.viewportY} == origin));
-    gui.tutorialGuidance.reset();
+    gui.hiveCards.reset();
     click(rowHit);
     const auto humanOrigin = std::pair{gui.viewportX, gui.viewportY};
     CHECK(humanOrigin != origin);
@@ -1860,4 +1954,249 @@ TEST_CASE("Bulgarian empty statistics notices wrap without ink outside their cha
         CHECK(secondLine>0);
         REQUIRE(IMG_SavePNG(pixels,(glob2test::artifactDir()/("empty-chart-"+std::to_string(width)+".png")).string().c_str()));
     }
+}
+
+TEST_CASE("palette controls carry player-facing names and Escape leaves placement before the menu [display]" *
+		  doctest::test_suite("GUIInteractionCoverage"))
+{
+	glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 1024, .height = 768});
+	glob2test::HeadlessGame world({.discovered = true, .clearImmobile = true, .loadDefaultRace = true, .header = true});
+	auto &gui = world.gui;
+	gui.localTeamNo = 0;
+	gui.localPlayer = 0;
+	gui.localTeam = world.team;
+	gui.rebuildBuildingChoices(false);
+	auto label = [&](const std::string &key)
+	{
+		gui.prepareLocalPresentation(gui.frameScene);
+		for (const auto &control : gui.describeHudControls())
+			if (control.key == key)
+				return control.label;
+		return std::string("<missing>");
+	};
+	// Semantic clients see the names a player reads, not sprite keys like inn.0.site.
+	gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
+	CHECK(label("game/buildings/inn.0.site") == Toolkit::getStringTable()->getString("[inn]"));
+	CHECK(label("game/buildings/barracks.0.site") == Toolkit::getStringTable()->getString("[barracks]"));
+	gui.displayMode = GameGUI::FLAG_VIEW;
+	CHECK(label("game/flags/warflag.0.finished") == Toolkit::getStringTable()->getString("[warflag]"));
+
+	auto escape = [&]
+	{
+		SDL_Event e{};
+		e.type = SDL_EVENT_KEY_DOWN;
+		e.key.key = SDLK_ESCAPE;
+		e.key.down = true;
+		gui.processEvent(&e);
+	};
+	const auto inn = std::find(gui.buildingsChoiceName.begin(), gui.buildingsChoiceName.end(), "inn.0.site");
+	REQUIRE(inn != gui.buildingsChoiceName.end());
+	gui.setSelection(GameGUI::TOOL_SELECTION, (void *)inn->c_str());
+	REQUIRE(gui.selectionMode == GameGUI::TOOL_SELECTION);
+	escape();
+	CHECK(gui.selectionMode == GameGUI::NO_SELECTION);
+	CHECK(gui.inGameMenu == GameGUI::IGM_NONE);
+	auto *swarm = world.addBuilding("swarm", 4, 4);
+	REQUIRE(swarm);
+	gui.setSelection(GameGUI::BUILDING_SELECTION, swarm);
+	escape();
+	CHECK(gui.selectionMode == GameGUI::NO_SELECTION);
+	CHECK(gui.inGameMenu == GameGUI::IGM_NONE);
+	escape(); // With nothing selected, Escape still opens the game menu.
+	CHECK(gui.inGameMenu == GameGUI::IGM_MAIN);
+	CHECK(gui.orderQueue.empty());
+}
+
+namespace
+{
+// Counts lit pixels of the last completed frame inside a logical-pixel rectangle.
+int inkIn(int x, int y, int w, int h)
+{
+	auto *gfx = globalContainer->gfx;
+	auto *frame = gfx->completedFrame();
+	REQUIRE(frame);
+	const double sx = double(frame->w) / gfx->getW(), sy = double(frame->h) / gfx->getH();
+	int lit = 0;
+	for (int py = int(y * sy); py < int((y + h) * sy) && py < frame->h; ++py)
+		for (int px = int(x * sx); px < int((x + w) * sx) && px < frame->w; ++px)
+		{
+			Uint8 r, g, b, a;
+			REQUIRE(SDL_ReadSurfacePixel(frame, px, py, &r, &g, &b, &a));
+			lit += (r || g || b) ? 1 : 0;
+		}
+	return lit;
+}
+} // namespace
+
+TEST_CASE("palette icons fill their cells and cost rows clear the zoom bar at 800x600 [display]" *
+		  doctest::test_suite("GUIInteractionCoverage"))
+{
+	glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 800, .height = 600});
+	glob2test::HeadlessGame world({.discovered = true, .clearImmobile = true, .loadDefaultRace = true, .header = true});
+	auto &gui = world.gui;
+	gui.localTeamNo = 0;
+	gui.localPlayer = 0;
+	gui.localTeam = world.team;
+	gui.rebuildBuildingChoices(false);
+	auto *gfx = globalContainer->gfx;
+	auto begin = [&]
+	{
+		gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);
+		gfx->setClipRect();
+		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), GAGCore::Color(0, 0, 0));
+		gui.game.snapshots().invalidateCatalog();
+		gui.prepareLocalPresentation(gui.frameScene);
+	};
+	// Icons are centred in 100 px cells; a fixed 64 px clip cut their right edge off.
+	const auto inn = std::find(gui.buildingsChoiceName.begin(), gui.buildingsChoiceName.end(), "inn.0.site");
+	REQUIRE(inn != gui.buildingsChoiceName.end());
+	const size_t index = size_t(inn - gui.buildingsChoiceName.begin());
+	std::vector<bool> states(gui.buildingsChoiceName.size(), false);
+	states[index] = true;
+	gui.mouseX = gui.mouseY = 0;
+	begin();
+	gui.drawChoice(YPOS_BASE_CONSTRUCTION, gui.buildingsChoiceName, states, 2);
+	gfx->nextFrame();
+	const auto cell = gui.choiceControlBounds(YPOS_BASE_CONSTRUCTION, index, 2);
+	REQUIRE(cell.w > 64);
+	CHECK(inkIn(cell.x, cell.y, 64, cell.h) > 0);
+	CHECK(inkIn(cell.x + 64, cell.y, cell.w - 64, cell.h) > 0);
+
+	// The bottom 26 px hold the map zoom bar; construction costs must end above it,
+	// including when fruit costs add rows.
+	auto *site = world.game.buildingsTypes.getByType("inn", 0, true);
+	REQUIRE(site);
+	const int zoomTop = gfx->getH() - 26;
+	begin();
+	gui.drawChoiceInfoPanel("inn");
+	gfx->nextFrame();
+	CHECK(inkIn(gfx->getW() - GAME_GUI_RIGHT_MENU_WIDTH, YPOS_BASE_CONSTRUCTION, GAME_GUI_RIGHT_MENU_WIDTH,
+				zoomTop - YPOS_BASE_CONSTRUCTION) > 0);
+	CHECK(inkIn(gfx->getW() - GAME_GUI_RIGHT_MENU_WIDTH, zoomTop, GAME_GUI_RIGHT_MENU_WIDTH, 26) == 0);
+	for (int fruit = HAPPINESS_BASE; fruit < MaterialCount; ++fruit)
+	{
+		site->semantics.constructionCost[fruit] = 1;
+		world.team->teamMaterials[fruit] = 1;
+	}
+	begin();
+	gui.drawChoiceInfoPanel("inn");
+	gfx->nextFrame();
+	CHECK(inkIn(gfx->getW() - GAME_GUI_RIGHT_MENU_WIDTH, zoomTop, GAME_GUI_RIGHT_MENU_WIDTH, 26) == 0);
+}
+
+TEST_CASE("lesson cards keep messages and exits visible and markers aim at building centres [display]" *
+		  doctest::test_suite("GUIInteractionCoverage"))
+{
+	glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 800, .height = 600});
+	glob2test::HeadlessGame world({.discovered = true, .clearImmobile = true, .loadDefaultRace = true, .header = true});
+	auto &gui = world.gui;
+	gui.localTeamNo = 0;
+	gui.localPlayer = 0;
+	gui.localTeam = world.team;
+	auto lesson = std::make_shared<Tutorial::Model>();
+	lesson->lessonId = "test";
+	lesson->stepId = "first";
+	lesson->count = 2;
+	lesson->index = 0;
+	lesson->title = "[intro goal scout]";
+	lesson->instruction = "[intro instruction scout]";
+	gui.tutorialGuidance = std::make_unique<Tutorial::Guidance>([](int) {});
+	gui.tutorialGuidance->model(lesson);
+	gui.tutorialGuidance->attach(*globalContainer->gfx);
+	gui.tutorialGuidance->update(0);
+	gui.prepareLocalPresentation(gui.frameScene);
+	// Game messages share the card's corner; they must start below it.
+	const auto card = gui.tutorialGuidance->panelBounds();
+	REQUIRE(card.h > 0);
+	const auto feed = gui.eventFeedStartY();
+	REQUIRE(feed);
+	CHECK(*feed >= card.y + card.h);
+
+	// A finished lesson shows all three exits without scrolling, even at 800x600.
+	auto finished = std::make_shared<Tutorial::Model>(*lesson);
+	finished->index = finished->count;
+	finished->completionTitle = "[intro complete]";
+	finished->completionBody = "[intro complete body]";
+	gui.tutorialGuidance->model(finished);
+	gui.tutorialGuidance->update(0);
+	const auto snapshot = gui.tutorialGuidance->host().inspect();
+	auto find = [&](auto &&self, const auto &nodes, const std::string &key) -> const GAGGUI::ui::ControlSnapshot *
+	{
+		for (const auto &c : nodes)
+		{
+			if (c.key == key)
+				return &c;
+			if (const auto *found = self(self, c.children, key))
+				return found;
+		}
+		return nullptr;
+	};
+	for (const char *key : {"intro/replay", "tutorial/lessons", "intro/menu"})
+	{
+		CAPTURE(key);
+		const auto *exit = find(find, snapshot.controls, key);
+		REQUIRE(exit);
+		CHECK(exit->visible.w == exit->bounds.w);
+		CHECK(exit->visible.h == exit->bounds.h);
+	}
+	gui.tutorialGuidance.reset();
+
+	// Destinations naming a building's origin tile aim at its footprint centre.
+	auto *track = world.addBuilding("racetrack", 10, 10);
+	REQUIRE(track);
+	gui.game.snapshots().invalidateBoundary();
+	gui.prepareLocalPresentation(gui.frameScene);
+	const auto &scene = gui.drawnScene();
+	const auto [cx, cy] = Tutorial::destinationCentre(scene, {10, 10, ""});
+	CHECK(cx == doctest::Approx(10 + track->type->width / 2.0));
+	CHECK(cy == doctest::Approx(10 + track->type->height / 2.0));
+	// Area destinations and tiles that are not a building origin are unchanged.
+	const auto [ix, iy] = Tutorial::destinationCentre(scene, {11, 11, ""});
+	CHECK(ix == doctest::Approx(11));
+	CHECK(iy == doctest::Approx(11));
+	const auto [ex, ey] = Tutorial::destinationCentre(scene, {40.5, 40.5, ""});
+	CHECK(ex == doctest::Approx(40.5));
+	CHECK(ey == doctest::Approx(40.5));
+}
+
+TEST_CASE("desktop HUD top bar counters are readable through inspection [display]" *
+		  doctest::test_suite("GUIInteractionCoverage"))
+{
+	glob2test::HeadlessGlobals globals(
+		{.display = true, .loadStrings = true, .width = 1024, .height = 768});
+	glob2test::HeadlessGame world(
+		{.discovered = true, .clearImmobile = true, .loadDefaultRace = true, .header = true});
+	auto &gui = world.gui;
+	gui.localTeamNo = 0;
+	gui.localPlayer = 0;
+	gui.localTeam = world.team;
+	gui.prepareLocalPresentation(gui.frameScene);
+	const auto descriptors = gui.describeHudControls();
+	auto find = [&](const std::string &key)
+	{
+		const auto found = std::find_if(descriptors.begin(), descriptors.end(),
+										[&](const auto &c) { return c.key == key; });
+		return found == descriptors.end() ? nullptr : &*found;
+	};
+	// Each drawn counter is a read-only, labelled value, so an agent can read the
+	// colony's state without a screenshot.
+	for (const char *key : {"game/stats/worker-count", "game/stats/explorer-count", "game/stats/warrior-count",
+							"game/stats/prestige", "game/stats/win-chance",
+							"game/stats/converted-in", "game/stats/converted-out"})
+	{
+		INFO(key);
+		const auto *stat = find(key);
+		REQUIRE(stat);
+		CHECK(stat->role == "label");
+		CHECK_FALSE(stat->label.empty());
+		CHECK(stat->actions.empty());
+		REQUIRE(std::holds_alternative<std::string>(stat->value));
+		CHECK_FALSE(std::get<std::string>(stat->value).empty());
+		CHECK(stat->bounds.y + stat->bounds.h <= 16); // Inside the top bar, off the map.
+	}
+	const auto workers = std::get<std::string>(find("game/stats/worker-count")->value);
+	CHECK(workers.find('/') != std::string::npos);
+	const auto *map = find("game/map");
+	REQUIRE(map);
+	CHECK(map->bounds.y >= 16); // The counters never overlap the map canvas.
 }

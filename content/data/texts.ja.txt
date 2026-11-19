@@ -641,7 +641,7 @@ OK
 [OpenGL]
 OpenGL
 [Options]
-設定
+オプション
 [options]
 設定
 [Orange]
@@ -3150,6 +3150,8 @@ AI対戦相手
 チーム %0
 [Your colony]
 自分のコロニー
+[Practice colony]
+練習用コロニー
 [%0 / %1 HP · %2]
 %0 / %1 HP · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ MCP サーバーを有効化
 録画を削除
 [recording refresh]
 更新
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  以前のライブラリを復元できませんでした： %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Building Studio で作成
 [intro instruction build]
 「建設」を開き、小麦の近くに食堂を置きます。空いている労働者を建設に割り当てましょう。既存の食堂への補給も続けてください。
 [intro instruction supply]
-完成した新しい食堂を選び、補給係を1体以上割り当てます。労働者が小麦を届けるのを待ちましょう。
+完成した新しい食堂を選びます。食堂は自動で補給係を要請します。労働者の割当目標を確認し、労働者が小麦を届けるのを待ちましょう。
 [intro instruction grow]
 巣を選び、労働者の割当目標を2体以上にします。生産比率は労働者のみとし、新たな労働者が生まれるまで両方の食堂への補給を続けましょう。
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Building Studio で作成
 [intro help build]
 建設には労働者が運ぶ木材を使います。建物の操作パレットで食堂を選び、小麦に近い空き地に置いて建設員を2体要請します。割当目標は要請数であり、すでに現場にいる労働者の数ではありません。既存の食堂と巣にも補給係を残しましょう。建設可能な場所ならどこでも構いません。
 [intro help supply]
-建設時と通常の補給時では、労働者の割当目標は別々です。完成した食堂を選び、稼働時の割当目標を増やしましょう。補給係が小麦を収穫してここに運びます。空腹のグロビュールは食堂で食べますが、補給係がいない建物はいずれ在庫が尽きます。小麦までの道を確保してください。
+建設時と通常の補給時では、労働者の割当目標は別々です。完成した食堂は自動で補給係を要請します。小麦の到着が遅すぎる場合は、稼働時の割当目標を増やしましょう。補給係が小麦を収穫してここに運びます。空腹のグロビュールは食堂で食べますが、補給係がいない建物はいずれ在庫が尽きます。小麦までの道を確保してください。
 [intro help grow]
 巣は小麦を消費してユニットを生みます。労働者の生産を1、偵察兵と戦士の生産を0に設定します。巣の労働者の割当目標を2体以上に増やしましょう。補給係が多いほど小麦を速く運べますが、ほかの仕事との取り合いになります。両方の食堂への食料供給を保ってください。
 [intro help attack]
@@ -6635,7 +6657,7 @@ Building Studio で作成
 [intro hint scout]
 偵察兵には、東の石に置かれ、ユニットを割り当てた偵察の旗が必要です。旗の位置と偵察兵の要請数を確認しましょう。
 [intro hint build]
-新しい食堂を撤去した場合は、もう1軒建てましょう。そうでなければ、建設現場と労働者の割当目標を確認します。補給の仕事で労働者が埋まっているかもしれません。食料供給を維持しつつ、建設員を確保してください。
+新しい食堂はまだ完成していません。建設現場がない場合は、小麦の近くに食堂を配置しましょう。ある場合は現場を選び、労働者の割当目標を確認します。他の場所の補給の仕事で労働者が手一杯になっているかもしれません。
 [intro hint supply]
 完成した新しい食堂を選びます。労働者の割当目標を確認し、小麦が届くか見ましょう。労働者は移動や食事に時間がかかることがあります。
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Building Studio で作成
 [intro help touch build]
 「建設」で食堂を選び、小麦に近い空き地に置いて確定します。建設現場を選び、建設員を2体要請します。割当目標は要請数であり、すでに現場にいる労働者の数ではありません。既存の食堂と巣にも補給を続けましょう。建設可能な場所ならどこでも構いません。
 [intro help touch supply]
-完成した新しい食堂を選び、労働者の割当目標を増やします。建設と通常の補給では目標が別々です。補給係が小麦を収穫してここに運びます。空腹のグロビュールは食堂で食べますが、補給係がいなければ在庫は尽きます。小麦への道を確保しましょう。
+完成した新しい食堂を選び、労働者の割当目標を確認します。食堂は自動で補給係を要請します。建設と通常の補給では目標が別々です。補給係が小麦を収穫してここに運びます。空腹のグロビュールは食堂で食べますが、補給係がいなければ在庫は尽きます。小麦への道を確保しましょう。
 [intro help touch grow]
 巣を選び、労働者の生産を1、偵察兵と戦士の生産を0に設定します。労働者の割当目標を2体以上に増やしましょう。補給係は新たなユニットのために小麦を運びますが、ほかの仕事との取り合いになります。両方の食堂への補給を続けてください。
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Building Studio で作成
 [intro compact build]
 建設 → 食堂。小麦の近くに置き、建設員を2体割り当てます。
 [intro compact supply]
-新しい食堂を選び、補給係を1体以上割り当てます。小麦を待ちましょう。
+新しい食堂を選び、補給係を確認します。小麦を待ちましょう。
 [intro compact grow]
 巣を選び、補給係を2体割り当てます。労働者のみを生産します。
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Building Studio で作成
 [lesson schools complete]
 学校で労働者の技能が向上しました。熟練した建設員は建物を改良でき、収穫能力の向上は拡大する経済を支えます。
 [lesson schools build hint]
-空き地に学校を建て、建設員を割り当てます。 コロニーにはすでに藻を採れる泳ぎ手がいます。木材と水辺への道を残しましょう。果樹は名声用の資源をもたらしますが、食料は小麦から得ます。
+完成した学校はまだありません。建設現場が建設員を要請しているか、建設員が木材と池にたどり着けるかを確認しましょう。
 [lesson schools build title]
 学校を建てる
 [lesson schools build instruction]
 空き地に学校を建て、建設員を割り当てます。
 [lesson schools build help]
-コロニーにはすでに藻を採れる泳ぎ手がいます。木材と水辺への道を残しましょう。果樹は名声用の資源をもたらしますが、食料は小麦から得ます。
+コロニーにはすでに藻を採れる泳ぎ手がいます。木材と水辺への道を残しましょう。果樹は食料になりません。食堂には引き続き小麦が必要です。
 [lesson schools build marker]
 学校を建てる
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Building Studio で作成
 [lesson upgrades upgrade marker]
 走路を改良する
 [lesson upgrades train hint]
-既存の労働者が改良済みの走路で速く歩く技能を学ぶのを待ちます。 改良が完成すると、受けられる訓練が向上します。建物のレベルが高いほど高い建設技能が必要です。画面に表示されるレベルは1から始まります。
+改良済みの走路で訓練した労働者はまだいません。走路への道を確保し、手の空いた労働者を残しておきましょう。
 [lesson upgrades train title]
 改良後の訓練を使う
 [lesson upgrades train instruction]
 既存の労働者が改良済みの走路で速く歩く技能を学ぶのを待ちます。
 [lesson upgrades train help]
-改良が完成すると、受けられる訓練が向上します。建物のレベルが高いほど高い建設技能が必要です。画面に表示されるレベルは1から始まります。
+改良が完成すると、その建物で受けられる訓練が向上します。建物のレベルが高いほど、高い建設技能を持つ建設員が必要です。
 [lesson warrior-training title]
 戦士の生産と訓練
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Building Studio で作成
 [lesson fortifications walls marker]
 壁で塔を守る
 [lesson fortifications supply hint]
-塔を選んで補給係を要請し、石が2個以上届くのを待ちます。 完成した塔に弾薬を運ぶには、稼働時の労働者の割当目標が必要です。これは建設時の目標とは別です。
+塔にある石は2個未満です。塔を選んで労働者の割当目標を確認しましょう。補給係には石から通れる道が必要です。
 [lesson fortifications supply title]
 弾薬を補給する
 [lesson fortifications supply instruction]
-塔を選んで補給係を要請し、石が2個以上届くのを待ちます。
+完成した塔を選んで補給係を確認し、石が2個以上届くのを待ちます。
 [lesson fortifications supply help]
-完成した塔に弾薬を運ぶには、稼働時の労働者の割当目標が必要です。これは建設時の目標とは別です。
+完成した塔は弾薬を運ぶ補給係を自動で要請します。これは建設時の目標とは別です。石の到着が遅い場合は稼働時の割当目標を増やしましょう。
 [lesson fortifications supply marker]
 弾薬を補給する
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Building Studio で作成
 [lesson fortifications walls compact]
 壁を2区画建て、塔の西側の通路を空けます。
 [lesson fortifications supply compact]
-塔を選択 → 補給係。石2個が届くのを待ちます。
+塔を選択 → 補給係を確認。石2個が届くのを待ちます。
 [lesson fortifications hold compact]
 攻撃者に備え、塔への補給を続けます。
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ AI
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

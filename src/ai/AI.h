@@ -47,6 +47,9 @@ public:
 private:
 	MersenneTwister randomEngine;
 	bool randomInitialized = false;
+	// Presentation only: the client hears of a stopped JavaScript controller once
+	// per session. Not saved; a resumed game announces it again.
+	bool stopAnnounced = false;
 	std::unique_ptr<AITelemetry::Series> decisionTelemetry;
     // These records contain only command identity/bytes, never an observation.
     struct WrapperRelease { Uint64 pollSequence; BuildingRef target; };

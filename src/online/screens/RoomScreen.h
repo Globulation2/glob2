@@ -77,6 +77,10 @@ class RoomScreen : public Glob2UI::Screen
 	int selectedSeat = -1;
 	Uint32 lastChatAt = 0, now = 0;
 	bool launched = false, closing = false;
+	/// A launch the backend queued before this screen was on the stack (a guest
+	/// rejoining a started game): it waits for the first timer, so the game screens
+	/// go above the room instead of under it.
+	bool constructing = false, launchPending = false;
 	std::unique_ptr<MapPreview> preview;
 	std::string previewFile;
 	// "Copied" feedback on the invite buttons for a moment after a copy.

@@ -3,6 +3,8 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #pragma once
+
+struct PriorityRadioLayout;
 namespace Online { class SkinDownloads; }
 #include <MapCamera.h>
 #include <CooperativeTask.h>
@@ -228,6 +230,10 @@ public:
 	/// Cover the screen with clouds for the first five seconds of a game. The
 	/// simulation and the map renderer keep running underneath. See IntroCover.
 	void beginIntroCover(Uint64 now);
+	/// The map name and colonies the opening cover shows. Lesson maps carry the
+	/// English names the lesson builder baked in; show the translated lesson
+	/// title and seat names instead.
+	IntroCover::Title introCoverTitle() const;
 	
 	///This is an enum for the current highlight object. The highlighted object is shown with a large arrow.
 	///This is primarily for tutorials
@@ -452,7 +458,11 @@ public:
 		bool online = false; ///< on a platform instance (else LAN)
 		bool rated = false;
 		bool fromRoom = true; ///< a room match (else a quick match)
+		/// This client runs the match (a LAN host): leaving ends it for everyone.
+		bool hostsMatch = false;
 	} networkMatch;
+	/// What leaving costs, as the "Leave match?" confirmation says it.
+	static std::string leaveConfirmationBody(const NetworkMatch &match);
 	/// A one-line notice in the message list (connection changes).
 	void addNotice(const std::string &text);
 	/// Pausing in network matches. Queue matches limit pauses per seat; the turn
@@ -506,6 +516,9 @@ private:
 	//! Tick of this session's latest autosave, or -1 before the first.
 	std::atomic<Sint64> lastAutosaveStep{-1};
     std::atomic<bool> autosavePending{false};
+    // Last recording ending announced in the message area (see announceRecordingEnding).
+    std::optional<std::uint64_t> recordingEndingSeen;
+    void announceRecordingEnding();
 	//! Writes autosaves off the game thread; created by the first autosave.
 	std::unique_ptr<GAGCore::BackgroundFileWriter> autosaveWriter;
 
@@ -649,6 +662,8 @@ private:
 	//! Draw the three priority radio buttons (low / medium / high) for
 	//! buildings with maxUnitWorking>0. Ally-gated. Advances ypos.
 	void drawBuildingPriorityControls(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, int& ypos);
+	// Where the priority radios go, measured against the translated labels.
+	PriorityRadioLayout buildingPriorityLayout() const;
 	//! Draw the flag's stay-range scrollbox. Ally-gated. Advances ypos.
 	void drawBuildingRangeControls(const SceneBuildingPanel* selBuild, const BuildingType* buildingType, int& ypos);
 	//! Draw the time-to-leave progress bar showing units' insideTimeout (extracted from drawBuildingInfos)

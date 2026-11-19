@@ -84,7 +84,9 @@ RoomScreen::RoomScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<RoomBackend
 		Online::setRoomMapHandler([this](const Online::RoomMapChoice &choice)
 								  { pendingCatalogMap = choice; });
 	// Pick up what the backend already queued (preview fixtures, early chat).
+	constructing = true;
 	onTimer(0);
+	constructing = false;
 }
 
 RoomScreen::~RoomScreen()
@@ -268,7 +270,10 @@ void RoomScreen::handle(const RoomBackend::Event &event)
 		break;
 	}
 	case RoomBackend::Event::Launch:
-		launch();
+		if (constructing)
+			launchPending = true;
+		else
+			launch();
 		break;
 	case RoomBackend::Event::Message:
 		screens.push(std::make_unique<MessageScreen>(event.text, std::vector<std::string>{tr("[ok]")}));
@@ -286,6 +291,11 @@ void RoomScreen::onTimer(Uint32 tick)
 	room->update();
 	while (auto event = room->takeEvent())
 		handle(*event);
+	if (launchPending && !constructing)
+	{
+		launchPending = false;
+		launch();
+	}
 	// A map kept for the next room ("Play this map" on the web app, or "Use in a room"
 	// with no room open) goes to the first online room this player hosts.
 	if (!pendingCatalogMap && room->kind() == RoomBackend::Kind::Online && room->lobbyReady() && room->canEditSetup() &&
@@ -516,8 +526,14 @@ Element RoomScreen::seatControls(const RoomBackend::Slot &slot, const Presentati
 	std::vector<Element> controls;
 	if (room->canSetOccupant(slot))
 	{
-		std::vector<std::string> options{tr("[room open for a person]"), tr("[room closed seat]")};
-		std::vector<std::string> ids{"@open", "@closed"};
+		std::vector<std::string> options{tr("[room open for a person]")};
+		std::vector<std::string> ids{"@open"};
+		if (room->canCloseSeats())
+		{
+			options.push_back(tr("[room closed seat]"));
+			ids.push_back("@closed");
+		}
+		const std::size_t firstAI = ids.size();
 		for (int ai : AINames::selectionOrder())
 		{
 			if (ai == AI::NONE || ai >= AI::JAVASCRIPT)
@@ -525,9 +541,9 @@ Element RoomScreen::seatControls(const RoomBackend::Slot &slot, const Presentati
 			options.push_back(formatted("[room ai %0]", AINames::getAIText(ai)));
 			ids.push_back(AINames::getCLIName(ai));
 		}
-		int selected = slot.locked ? 1 : 0;
+		int selected = slot.locked && room->canCloseSeats() ? 1 : 0;
 		if (slot.ai)
-			for (std::size_t i = 2; i < ids.size(); ++i)
+			for (std::size_t i = firstAI; i < ids.size(); ++i)
 				if (ids[i] == slot.aiId)
 					selected = int(i);
 		if (!slot.ai && !slot.open && !slot.locked)

@@ -3150,6 +3150,8 @@ Kuas %0
 Tim %0
 [Your colony]
 Koloni Anda
+[Practice colony]
+Koloni latihan
 [%0 / %1 HP · %2]
 %0 / %1 HP · %2
 [Units: %0]
@@ -6396,6 +6398,26 @@ Tidak dapat mengekspor rekaman.
 Hapus rekaman
 [recording refresh]
 Muat ulang
+[recording to %0]
+
+[recording browser to %0]
+
+[recording saving %0]
+
+[recording saved %0]
+
+[recording downloaded %0]
+
+[recording failed %0]
+
+[recording open folder]
+
+[recording open folder failed]
+
+[recording browser storage]
+
+[recording download]
+
 [library  Could not restore the previous library: %0]
  Tidak dapat memulihkan pustaka sebelumnya: %0
 [library  The previous library is retained.]
@@ -6615,7 +6637,7 @@ Buka Bendera dan letakkan Bendera Penjelajahan pada batu di timur koloni. Tugask
 [intro instruction build]
 Buka Bangun dan letakkan Penginapan dekat gandum. Tugaskan pekerja yang tersedia untuk membangunnya. Tetap pasok Penginapan lama.
 [intro instruction supply]
-Pilih Penginapan baru yang selesai dan tugaskan sedikitnya satu pemasok. Tunggu pekerja mengantarkan gandum.
+Pilih Penginapan baru yang selesai. Penginapan meminta pemasok sendiri; periksa target pekerjanya dan tunggu pekerja mengantarkan gandum.
 [intro instruction grow]
 Pilih Sarang. Atur target pekerjanya minimal 2 dan rasio produksi hanya pekerja. Tetap pasok kedua Penginapan selama pekerja baru dilahirkan.
 [intro instruction attack]
@@ -6627,7 +6649,7 @@ Gunakan peta mini untuk menggeser pandangan ke timur dan menemukan batu. Pilih B
 [intro help build]
 Pembangunan memakai kayu yang diantarkan pekerja. Pilih Penginapan dari palet bangunan, letakkan di lahan kosong dekat gandum, dan minta 2 pembangun. Target pekerja adalah permintaan, bukan jumlah yang sudah hadir. Pertahankan pemasok di Penginapan lama dan Sarang. Lokasi mana pun yang sah dihitung.
 [intro help supply]
-Pembangunan dan pasokan harian memiliki target pekerja terpisah. Pilih Penginapan yang selesai dan naikkan target operasinya. Pemasok mengumpulkan gandum dan membawanya kemari. Globul lapar makan di Penginapan; tanpa pemasok, persediaan akhirnya habis. Jaga akses ke gandum.
+Pembangunan dan pasokan harian memiliki target pekerja terpisah. Penginapan yang selesai meminta pemasok secara otomatis; naikkan target operasinya jika gandum datang terlalu lambat. Pemasok mengumpulkan gandum dan membawanya kemari. Globul lapar makan di Penginapan; tanpa pemasok, persediaan akhirnya habis. Jaga akses ke gandum.
 [intro help grow]
 Sarang memakai gandum untuk menghasilkan unit. Atur produksi pekerja ke 1, penjelajah dan prajurit ke 0. Naikkan target pekerja Sarang menjadi minimal 2. Lebih banyak pemasok membawa gandum lebih cepat, tetapi bersaing dengan tugas lain. Pasok makanan ke kedua Penginapan.
 [intro help attack]
@@ -6635,7 +6657,7 @@ Buka Bendera, pilih Bendera Perang, lalu letakkan pada Sarang musuh di timur bat
 [intro hint scout]
 Penjelajah memerlukan Bendera Penjelajahan dengan penugasan pada batu di timur. Periksa target dan jumlah penjelajahnya.
 [intro hint build]
-Jika Penginapan baru dihapus, bangun lagi. Jika tidak, periksa lokasi pembangunan dan target pekerjanya. Pekerja mungkin sibuk memasok; pertahankan makanan sambil menyediakan pembangun.
+Penginapan baru belum selesai. Jika tidak ada lokasi pembangunan, tempatkan Penginapan di dekat gandum. Jika ada, pilih lokasinya dan periksa target pekerjanya: tugas memasok di tempat lain mungkin membuat pekerja Anda sibuk.
 [intro hint supply]
 Pilih Penginapan baru yang selesai. Periksa target pekerjanya dan amati pengiriman gandum. Pekerja mungkin perlu waktu untuk berjalan atau makan.
 [intro hint grow]
@@ -6665,7 +6687,7 @@ Seret lahan kosong untuk menggeser pandangan sebelum meletakkan bendera. Temukan
 [intro help touch build]
 Pilih Penginapan dari Bangun. Letakkan di lahan kosong dekat gandum dan konfirmasi. Pilih lokasinya dan minta 2 pembangun. Target pekerja adalah permintaan, bukan jumlah yang sudah hadir. Tetap pasok Penginapan lama dan Sarang. Semua lokasi yang sah dihitung.
 [intro help touch supply]
-Pilih Penginapan baru yang selesai dan naikkan target pekerjanya. Target pembangunan dan pasokan harian terpisah. Pemasok mengumpulkan gandum dan membawanya kemari. Globul lapar makan di Penginapan; bangunan tanpa pemasok akhirnya kehabisan makanan. Jaga akses ke gandum.
+Pilih Penginapan baru yang selesai dan periksa target pekerjanya; Penginapan meminta pemasok sendiri. Target pembangunan dan pasokan harian terpisah. Pemasok mengumpulkan gandum dan membawanya kemari. Globul lapar makan di Penginapan; bangunan tanpa pemasok akhirnya kehabisan makanan. Jaga akses ke gandum.
 [intro help touch grow]
 Pilih Sarang. Atur produksi pekerja ke 1, penjelajah dan prajurit ke 0. Naikkan target pekerjanya menjadi minimal 2. Pemasok membawa gandum untuk unit baru, tetapi bersaing dengan tugas lain. Tetap pasok kedua Penginapan.
 [intro help touch attack]
@@ -6681,7 +6703,7 @@ Bendera → Bendera Penjelajahan. Letakkan di batu; tugaskan 1 penjelajah.
 [intro compact build]
 Bangun → Penginapan. Dekat gandum; tugaskan 2 pembangun.
 [intro compact supply]
-Pilih Penginapan baru; tugaskan minimal 1 pemasok. Tunggu gandum.
+Pilih Penginapan baru; periksa pemasoknya. Tunggu gandum.
 [intro compact grow]
 Pilih Sarang; tugaskan 2 pemasok. Hasilkan hanya pekerja.
 [intro compact attack]
@@ -6793,13 +6815,13 @@ Gunakan perenang yang disiapkan untuk membangun Sekolah, lalu amati pekerja bela
 [lesson schools complete]
 Sekolah meningkatkan keterampilan pekerja. Pembangun terampil memungkinkan peningkatan; panen lebih baik menopang ekonomi yang berkembang.
 [lesson schools build hint]
-Bangun Sekolah di lahan terbuka; tugaskan pembangun. Koloni sudah memiliki perenang untuk ganggang. Jaga akses kayu dan air. Pohon buah menyediakan sumber daya prestise; makanan tetap berasal dari gandum.
+Belum ada Sekolah yang selesai. Periksa bahwa lokasinya meminta pembangun dan mereka dapat mencapai kayu dan kolam.
 [lesson schools build title]
 Bangun Sekolah
 [lesson schools build instruction]
 Bangun Sekolah di lahan terbuka; tugaskan pembangun.
 [lesson schools build help]
-Koloni sudah memiliki perenang untuk ganggang. Jaga akses kayu dan air. Pohon buah menyediakan sumber daya prestise; makanan tetap berasal dari gandum.
+Koloni sudah memiliki perenang untuk ganggang. Jaga akses kayu dan air. Pohon buah bukan makanan; Penginapan Anda tetap membutuhkan gandum.
 [lesson schools build marker]
 Bangun Sekolah
 [lesson schools learn hint]
@@ -6827,13 +6849,13 @@ Pekerja ini sudah mempelajari keterampilan Sekolah tingkat pertama. Peningkatan 
 [lesson upgrades upgrade marker]
 Tingkatkan Lintasan Lari
 [lesson upgrades train hint]
-Biarkan pekerja yang sudah ada belajar berjalan lebih cepat di Lintasan Lari yang ditingkatkan. Peningkatan selesai memperbaiki pelatihan yang tersedia. Tingkat bangunan lebih tinggi butuh keterampilan membangun lebih tinggi; tingkat yang ditampilkan mulai dari 1.
+Belum ada pekerja yang berlatih di Lintasan Lari yang ditingkatkan. Jaga agar tetap terjangkau dan sisakan beberapa pekerja yang bebas.
 [lesson upgrades train title]
 Gunakan pelatihan yang ditingkatkan
 [lesson upgrades train instruction]
 Biarkan pekerja yang sudah ada belajar berjalan lebih cepat di Lintasan Lari yang ditingkatkan.
 [lesson upgrades train help]
-Peningkatan selesai memperbaiki pelatihan yang tersedia. Tingkat bangunan lebih tinggi butuh keterampilan membangun lebih tinggi; tingkat yang ditampilkan mulai dari 1.
+Peningkatan selesai memperbaiki pelatihan yang ditawarkan bangunan. Tingkat bangunan lebih tinggi butuh pembangun dengan keterampilan membangun lebih tinggi.
 [lesson warrior-training title]
 Menghasilkan dan melatih prajurit
 [lesson warrior-training briefing]
@@ -6895,13 +6917,13 @@ Dinding memakai batu dan tiap lokasi meminta pekerja. Jangan kurung menara: pema
 [lesson fortifications walls marker]
 Lindungi menara dengan dinding
 [lesson fortifications supply hint]
-Pilih menara dan minta pemasok. Tunggu minimal 2 batu. Menara selesai memerlukan target pekerja operasional untuk membawa amunisi. Target ini terpisah dari target pembangunan.
+Menara menyimpan kurang dari 2 batu. Pilih menara dan periksa target pekerjanya; pemasok butuh jalur terbuka dari batu.
 [lesson fortifications supply title]
 Pasok amunisi
 [lesson fortifications supply instruction]
-Pilih menara dan minta pemasok. Tunggu minimal 2 batu.
+Pilih menara yang selesai dan periksa pemasoknya. Tunggu minimal 2 batu.
 [lesson fortifications supply help]
-Menara selesai memerlukan target pekerja operasional untuk membawa amunisi. Target ini terpisah dari target pembangunan.
+Menara selesai meminta pemasok sendiri untuk membawa amunisi. Ini terpisah dari target pembangunannya; naikkan target operasional jika batu datang lambat.
 [lesson fortifications supply marker]
 Pasok amunisi
 [lesson fortifications hold hint]
@@ -6993,7 +7015,7 @@ Bangun → Menara. Tempatkan di area bertanda.
 [lesson fortifications walls compact]
 Bangun 2 dinding. Biarkan jalur barat menara terbuka.
 [lesson fortifications supply compact]
-Pilih menara → Pemasok. Tunggu 2 batu.
+Pilih menara → periksa Pemasok. Tunggu 2 batu.
 [lesson fortifications hold compact]
 Pertahankan pasokan menara melawan penyerang.
 [lesson defensive-tactics scout compact]
@@ -7135,4 +7157,8 @@ Tanah tundra
 [artwork stepped down notice]
 
 [room large map for device]
+
+[leave lan host body]
+
+[javascript ai stopped %0]
 

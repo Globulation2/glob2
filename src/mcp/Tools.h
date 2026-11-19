@@ -61,4 +61,10 @@ class ToolRegistry
 // Main-thread startup only: snapshots SDL names for immutable worker validation.
 void registerUITools(ToolRegistry &);
 Json toolResult(Result, const std::string &pngBase64 = {});
+// Smaller inspection for agents: skips unlabelled, keyless, inert containers (keeping their
+// children), omits fields at their defaults, and reports hidden controls explicitly.
+Json compactInspection(const Json &inspection);
+// Why ui_act arguments cannot target a control in this full inspection, phrased with
+// the next step to take; empty when the target is usable.
+std::string actionTargetProblem(const Json &inspection, const Json &arguments);
 } // namespace MCP

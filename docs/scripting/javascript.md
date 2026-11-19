@@ -62,7 +62,31 @@ context properties cannot grant additional capabilities.
 
 ## Load and check sources
 
-Compile-check syntax and profile restrictions:
+Check an AI before installing it:
+
+```sh
+glob2 ai check /absolute/path/to/ai.js
+```
+
+This evaluates the source once, runs `metadata()`, confirms that `step` or `main`
+exists and that the initial globals can be saved. It does **not** call `step`, so a
+callback that throws, returns an invalid order or exhausts its work budget still
+passes. A rejected script prints `FILE: message` and exits with status 2;
+`--format json` reports the failed stage instead.
+
+Then play a short headless game against a built-in AI to exercise the callback:
+
+```sh
+glob2 game run --output-dir /tmp/my-ai-run --map-file content/maps/SmallForTwo.map.gz \
+  --player javascript --ai-script 0:/absolute/path/to/ai.js --player Nicowar --ticks 3000
+```
+
+A controller that fails prints its diagnostic (AI name, tick, error and script line)
+and is disabled for the rest of the game; `result.json` repeats it under
+`javascriptControllers`. Throwing `new Error(JSON.stringify(data))` at a chosen
+tick is a quick way to inspect your script's state, since profile 1 has no logging API.
+
+Map scripts only need a compile check of syntax and profile restrictions:
 
 ```sh
 glob2 script check /absolute/path/to/source.js
@@ -202,7 +226,10 @@ query errors inside the script if recovery is useful. Global snapshots and retur
 orders/effects are validated **after** `step` returns, so script code cannot
 catch those host validation errors. A rejected AI decision disables that
 controller, logs a diagnostic and produces no order; later polls also produce
-no order. The disabled status and diagnostic survive saves. Map-script failures
+no order. The disabled status and diagnostic survive saves. In a local game the
+HUD also shows "A JavaScript AI stopped: …" with the AI name, tick and error,
+and **Menu → AI telemetry** keeps the full message under `runtime.status` for
+your own or allied colonies, or every colony while you watch a match. Map-script failures
 stop the session rather than silently skipping scenario logic.
 
 Work exhaustion cannot be bypassed by catching the exception. Native allocation,

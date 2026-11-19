@@ -124,6 +124,13 @@ bool openUrl(const std::string &url);
 // reply): the browser opens an empty tab now, while the click still allows it,
 // and the next openUrl loads the page there. Does nothing on native hosts.
 void prepareUrlWindow();
+// Desktop hosts show a local folder in the system file manager; phones and the
+// browser have no folder to show and return false from both.
+bool canOpenFolder();
+bool openFolder(const std::string &path);
+// file:// URL of an absolute local path, percent-encoded per RFC 8089; Windows
+// drive paths become file:///C:/...
+std::string fileUrl(const std::string &path);
 // Puts text on the system clipboard. In the browser this is the asynchronous
 // Clipboard API (with a fallback for browsers without it), which needs the
 // transient activation of a recent click; SDL's own clipboard does not reach

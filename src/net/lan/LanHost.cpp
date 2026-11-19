@@ -604,6 +604,11 @@ void LanHost::handleHello(Turn::PeerId id, Peer& peer, const nlohmann::json& mes
 			if (presence != Turn::PresenceState::Reconnecting && presence != Turn::PresenceState::NotConnected)
 				continue;
 			peer.greeted = true;
+			// The room first, as a joining guest gets it: the guest's session screen
+			// opens the room (and the room launches the game) only once it has a state.
+			nlohmann::json state = room.toJson();
+			state["type"] = "state";
+			sendTo(peer, encodeJson(state));
 			sendTo(peer, encodeJson({{"type", "start"},
 			                         {"setup", room.setup.toJson()},
 			                         {"seat", seat.seat},
@@ -775,6 +780,22 @@ void LanHost::addAI(AI::ImplementationID ai)
 	if (seat.name.empty())
 		seat.name = "AI";
 	room.setup.seats.push_back(seat);
+	changed = true;
+	broadcastState();
+}
+
+void LanHost::setSeatAI(int seat, AI::ImplementationID ai)
+{
+	std::lock_guard<std::recursive_mutex> guard(mutex);
+	if (room.started || ai == AI::JAVASCRIPT || seat < 0 || seat >= static_cast<int>(room.setup.seats.size()))
+		return;
+	auto& entry = room.setup.seats[seat];
+	if (entry.human)
+		return;
+	entry.ai = ai == AI::NONE ? "none" : AINames::getCLIName(ai);
+	entry.name = clampUtf8(AINames::getAIText(ai), MAX_NAME_BYTES);
+	if (entry.name.empty())
+		entry.name = "AI";
 	changed = true;
 	broadcastState();
 }
