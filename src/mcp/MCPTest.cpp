@@ -56,7 +56,7 @@ TEST_CASE("MCP/protocol adapters validate metadata and discover all tools")
 	CHECK(discover.status == 200);
 	CHECK(discover.body["result"]["resultType"] == "complete");
 	auto listed = p.receive(modern("tools/list").dump(), {"2026-07-28", "tools/list", ""});
-	CHECK(listed.body["result"]["tools"].size() == 22);
+	CHECK(listed.body["result"]["tools"].size() == 25);
 	CHECK(listed.body["result"].contains("cacheScope"));
 	CHECK(
 		p.receive(modern("tools/list").dump(), {"2026-07-28", "wrong", ""}).body["error"]["code"] ==
@@ -283,10 +283,11 @@ TEST_CASE("MCP/tools explain themselves within a discovery size budget")
 		guide = guide || tool["name"] == "game_guide";
 	}
 	CHECK(guide);
-	// Every client pays for discovery in context; keep it bounded.
+	// Every client pays for discovery in context; keep it bounded. 22 KB covers the 25
+	// tools including game_world/game_place/game_view (about 21.4 KB when added).
 	const auto bytes = Json{{"tools", tools}}.dump().size();
 	INFO("tools/list bytes: " << bytes);
-	CHECK(bytes < 20000);
+	CHECK(bytes < 22000);
 }
 TEST_CASE("MCP/game guide serves every topic with links and rejects unknown topics")
 {
@@ -1722,6 +1723,65 @@ TEST_CASE("MCP/HTTP wait admission reserves connections for satisfying actions [
 	CHECK(satisfied == 8);
 }
 
+TEST_CASE("MCP/game tools read without control and act only under the lease [network]")
+{
+	glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480});
+	UIService service(*globalContainer->gfx);
+	std::vector<std::string> reached;
+	service.domainHandler = [&](const auto &tool, const auto &)
+	{
+		reached.push_back(tool);
+		return Result{};
+	};
+	service.configure(true, unusedLoopbackPort());
+	waitForListener(service, ListenerState::Running);
+	auto submit = [&](const std::string &tool, Json args)
+	{
+		auto request = service.submit(tool, std::move(args), "game client");
+		return std::make_pair(request, request->completion.get_future());
+	};
+	auto execute = [&](const std::string &tool, Json args)
+	{
+		auto [request, future] = submit(tool, std::move(args));
+		std::vector<SDL_Event> events;
+		service.pump(events, true);
+		service.afterDispatch();
+		return completed(future);
+	};
+	// Reading the world needs no control, like hive_status.
+	CHECK(execute("game_world", Json::object()).error.empty());
+	REQUIRE(reached == std::vector<std::string>{"game_world"});
+	// Placing and moving the camera are input: they need the current token.
+	CHECK_FALSE(execute("game_place", {{"token", "stale"}, {"building", "inn"}, {"x", 1}, {"y", 1}})
+					.error.empty());
+	CHECK_FALSE(execute("game_view", {{"token", "stale"}, {"x", 1}, {"y", 1}}).error.empty());
+	CHECK(reached.size() == 1);
+	const auto token = execute("ui_acquire_control", Json::object()).data.at("token");
+	CHECK(execute("game_place", {{"token", token}, {"building", "inn"}, {"x", 1}, {"y", 1}})
+			  .error.empty());
+	CHECK(execute("game_view", {{"token", token}, {"x", 1}, {"y", 1}}).error.empty());
+	CHECK(reached == std::vector<std::string>{"game_world", "game_place", "game_view"});
+
+	// A control that has disappeared satisfies a wait for it to be not visible...
+	const auto gone = execute("ui_wait", {{"timeout_ms", 2000},
+										  {"condition", {{"key", "no/such/control"}, {"visible", false}}}});
+	CHECK(gone.error.empty());
+	CHECK(gone.data.at("satisfied") == true);
+	// ...but not one that also requires a property only a present control can have.
+	auto [pending, future] = submit("ui_wait", {{"timeout_ms", 1100},
+		{"condition", {{"key", "no/such/control"}, {"visible", false}, {"enabled", true}}}});
+	const auto deadline = Clock::now() + std::chrono::seconds(3);
+	while (future.wait_for(std::chrono::milliseconds(0)) != std::future_status::ready &&
+		   Clock::now() < deadline)
+	{
+		std::vector<SDL_Event> events;
+		service.pump(events, true);
+		service.afterDispatch();
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+	}
+	const auto partial = completed(future);
+	CHECK(partial.data.at("satisfied") == false);
+}
 TEST_CASE("MCP/standing orders survive idle control lease expiry [network]")
 {
 	glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480});

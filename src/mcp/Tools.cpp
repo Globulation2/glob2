@@ -219,6 +219,8 @@ void registerUITools(ToolRegistry &registry)
 			 std::move(output),
 			 {{"readOnlyHint", !input && std::string(name) != "hive_run" &&
 								   std::string(name) != "hive_program" &&
+								   std::string(name) != "game_place" &&
+								   std::string(name) != "game_view" &&
 								   std::string(name) != "ui_renew_control" &&
 								   std::string(name) != "ui_acquire_control" &&
 								   std::string(name) != "ui_release_control"},
@@ -387,6 +389,33 @@ void registerUITools(ToolRegistry &registry)
 		"on timeout returns the latest snapshot with satisfied=false.",
 		wait, {"condition"}, false);
 
+	add("game_world",
+		"In a match, read your colony and what it sees in map tiles: buildings (type, top-left "
+		"x/y, size, level, site, workers), unit counts, visible other teams, placeable names "
+		"with sizes, camera view. detail full adds unit lists; area filters. No token.",
+		{{"detail", enumeration({"summary", "full"})},
+		 {"limit", {{"type", "integer"}, {"minimum", 1}, {"maximum", 500}, {"default", 100}}},
+		 {"area", object({{"x", {{"type", "integer"}, {"minimum", 0}}},
+						  {"y", {{"type", "integer"}, {"minimum", 0}}},
+						  {"width", {{"type", "integer"}, {"minimum", 1}}},
+						  {"height", {{"type", "integer"}, {"minimum", 1}}}},
+						 {"x", "y", "width", "height"})}},
+		{}, false);
+	add("game_place",
+		"Place a building site or flag by tile, as a click would: building is a game_world "
+		"placeable name, x/y its top-left tile. Refusals say why. Needs token.",
+		{{"token", token},
+		 {"building", {{"type", "string"}, {"maxLength", 64}}},
+		 {"x", {{"type", "integer"}, {"minimum", 0}}},
+		 {"y", {{"type", "integer"}, {"minimum", 0}}}},
+		{"token", "building", "x", "y"}, false);
+	add("game_view",
+		"Centre the camera on a tile; returns its screen point (tile_screen) for clicking "
+		"what is there. Needs token.",
+		{{"token", token},
+		 {"x", {{"type", "integer"}, {"minimum", 0}}},
+		 {"y", {{"type", "integer"}, {"minimum", 0}}}},
+		{"token", "x", "y"}, false);
 	add("hive_status", "Whether colony scripting (Hive) is available in the current local match, and its "
 		"session id, required by hive_run/hive_result/hive_program. No token needed.", {}, {},
 		false);

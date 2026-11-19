@@ -382,6 +382,15 @@ bool GameGUIToolManager::confirmBuilding(int mouseX, int mouseY, int localteam, 
     return placeBuildingAt(x,y,localteam);
 }
 
+bool GameGUIToolManager::placeBuildingTopLeft(int x, int y, int localteam)
+{
+	if (mode != PlaceBuilding || !drawnScene)
+		return false;
+	const BuildingCatalogView catalog(*drawnScene->buildingTypes);
+	const auto *bt = catalog.get(catalog.getPlaceableTypeNum(building));
+	return bt && placeBuildingAt(x - bt->decLeft, y - bt->decTop, localteam);
+}
+
 bool GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
 {
 	// Count down whether a building site can be placed

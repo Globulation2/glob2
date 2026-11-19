@@ -312,6 +312,21 @@ public:
 	Game& game;
 	/// Live network games always use normal speed; replays remain adjustable.
 	bool canChangeGameSpeed() const;
+	/// Automation entry points (MCP game_place / game_view). Placement takes a palette name
+	/// ("inn", "warflag") and the footprint's top-left tile and returns an empty string on
+	/// success, otherwise why it was refused. Both act exactly as the matching human input.
+	std::string placeFromAutomation(const std::string &name, int x, int y);
+	void centreViewOnTile(double x, double y);
+	/// Palette entries (building, then flag type keys) with whether this game allows them.
+	std::vector<std::pair<std::string, bool>> placeableChoices() const
+	{
+		std::vector<std::pair<std::string, bool>> choices;
+		for (size_t i = 0; i < buildingsChoiceName.size(); ++i)
+			choices.emplace_back(buildingsChoiceName[i], bool(buildingsChoiceState[i]));
+		for (size_t i = 0; i < flagsChoiceName.size(); ++i)
+			choices.emplace_back(flagsChoiceName[i], bool(flagsChoiceState[i]));
+		return choices;
+	}
 	std::vector<GAGGUI::ui::Host *> inspectionHosts();
 	// Hive cards remain available above the chat/commander composer.
 	bool hiveCardsVisible() const;

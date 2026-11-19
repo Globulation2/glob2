@@ -46,6 +46,11 @@ class LocalCommander : public CommanderView
 	void boundary(const std::function<void()> &work);
 	void finish(Json result);
 	void remember(const std::string &key, Json result);
+	// MCP game_world / game_place / game_view: fog-filtered world state and tile-based
+	// placement and camera moves, without writing a script.
+	Json world(const Json &arguments);
+	Json place(const Json &arguments);
+	Json view(const Json &arguments);
 
   public:
 	explicit LocalCommander(GameGUI &gui, std::function<std::future<Json>(Json)> launch = {});

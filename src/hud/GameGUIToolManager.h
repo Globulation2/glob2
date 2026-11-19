@@ -65,6 +65,9 @@ public:
 	
 	///Cancels a tool
 	void deactivateTool();
+	/// Places the active building tool with its footprint's top-left at (x, y), through the
+	/// same room, ghost-site and default-assignment checks as a click; false when refused.
+	bool placeBuildingTopLeft(int x, int y, int localteam);
 
 	///Draws the tool on the map
 	void drawTool(int mouseX, int mouseY, int localteam, int viewportX, int viewportY, int modifiers);

@@ -26,6 +26,7 @@ bool inspectionTool(const std::string &tool, const Json &arguments)
 {
 	return tool == "ui_status" || tool == "ui_screenshot" || tool == "ui_inspect" ||
 		   tool == "hive_status" || tool == "hive_api" || tool == "hive_result" ||
+		   tool == "game_world" ||
 		   (tool == "hive_program" && (arguments.value("action", "") == "list" ||
 									   arguments.value("action", "") == "inspect"));
 }
@@ -552,6 +553,7 @@ void UIService::observe()
 			bool matches =
 				!condition.contains("screen") || snapshot["screen"] == condition["screen"];
 			bool target = !condition.contains("key") && !condition.contains("revision_after");
+			bool keyFound = false;
 			for (const auto &surface : snapshot["surfaces"])
 			{
 				if (!condition.contains("key") && condition.contains("revision_after") &&
@@ -564,6 +566,7 @@ void UIService::observe()
 					{
 						if (condition.contains("key") && item["key"] == condition["key"])
 						{
+							keyFound = true;
 							bool ok = true;
 							for (const char *name :
 								 {"enabled", "selected", "focused", "blocked", "value"})
@@ -583,6 +586,16 @@ void UIService::observe()
 					}
 				};
 				check(check, surface["controls"]);
+			}
+			// A control that has gone entirely is not visible: {key, visible:false} is
+			// satisfied by its absence when no other property of it is required.
+			if (!keyFound && condition.contains("key") && condition.value("visible", true) == false)
+			{
+				bool onlyVisibility = true;
+				for (const char *name : {"enabled", "selected", "focused", "blocked", "value",
+										 "revision_after"})
+					onlyVisibility = onlyVisibility && !condition.contains(name);
+				target = target || onlyVisibility;
 			}
 			if (matches && target)
 				result.data["satisfied"] = true;
@@ -946,6 +959,7 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 		return;
 	}
 	const bool domainRead = tool == "hive_status" || tool == "hive_api" || tool == "hive_result" ||
+							tool == "game_world" ||
 							(tool == "hive_program" && (a.value("action", "") == "list" ||
 														a.value("action", "") == "inspect"));
 	if (inputTool(tool) && !domainRead)
@@ -958,7 +972,9 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 		if (dragIndex == 0)
 			renewed = now;
 	}
-	if (tool.starts_with("hive_") && domainHandler)
+	const bool domainTool = tool.starts_with("hive_") || tool == "game_world" ||
+							tool == "game_place" || tool == "game_view";
+	if (domainTool && domainHandler)
 	{
 		const auto request = active;
 		Result result;
