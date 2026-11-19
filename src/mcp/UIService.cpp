@@ -973,7 +973,8 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 			renewed = now;
 	}
 	const bool domainTool = tool.starts_with("hive_") || tool == "game_world" ||
-							tool == "game_place" || tool == "game_view";
+							tool == "game_place" || tool == "game_view" ||
+							tool == "game_building" || tool == "game_zone";
 	if (domainTool && domainHandler)
 	{
 		const auto request = active;

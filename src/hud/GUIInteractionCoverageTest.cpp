@@ -2366,7 +2366,7 @@ TEST_CASE("MCP game tools read the colony, place by tile and centre the view" *
 	// A player's own placement tool survives an automated placement.
 	world.gui.setSelection(GameGUI::TOOL_SELECTION, (void *)"explorationflag.0.finished");
 	const auto placed = commander.call("game_place", {{"building", "inn"}, {"x", 50}, {"y", 50}});
-	CHECK(placed.at("placed") == true);
+	CHECK(placed.at("queued") == true);
 	CHECK(world.gui.toolManager.getBuildingName() == "explorationflag.0.finished");
 	auto order = std::dynamic_pointer_cast<OrderCreate>(world.gui.toolManager.getOrder());
 	REQUIRE(order);
@@ -2390,4 +2390,155 @@ TEST_CASE("MCP game tools read the colony, place by tile and centre the view" *
 	CHECK(std::abs(view.at("tile_screen").at("y").get<int>() -
 				   int(camera.offsetY + camera.height / 2)) <= 1);
 	CHECK_THROWS(commander.call("game_view", {{"x", 100000}, {"y", 0}}));
+}
+
+TEST_CASE("MCP game tools keep fog of war: last-seen buildings, no enemy health, explored ground only" *
+		  doctest::test_suite("GUIInteractionCoverage"))
+{
+	glob2test::HeadlessGlobals globals({.seed = 19});
+	PresentationFrame published; // Outlives the GUI that points at it.
+	glob2test::HeadlessGame world({.wDec = 6, .hDec = 6, .teams = 2, .clearImmobile = true,
+								   .loadDefaultRace = true, .header = true});
+	REQUIRE(world.addBuilding("swarm", 4, 4));
+	auto *enemy = world.addBuilding("inn", 40, 40, 0, 1);
+	REQUIRE(enemy);
+	world.addUnit(WARRIOR, 43, 40, 1);
+	const auto me = world.game.teams[0]->me;
+	auto see = [&](bool visible)
+	{
+		// Both fog planes: switching clears the plane it leaves.
+		world.game.map.switchFogOfWar();
+		if (visible)
+			world.game.map.setMapDiscovered(30, 30, 20, 20, me);
+		world.game.map.switchFogOfWar();
+		if (visible)
+			world.game.map.setMapDiscovered(30, 30, 20, 20, me);
+		world.game.snapshots().invalidateBoundary();
+	};
+	see(true);
+	world.gui.localPlayer = world.gui.localTeamNo = 0;
+	world.gui.localTeam = world.team;
+	world.game.players[0]->type = BasePlayer::P_LOCAL;
+	world.gui.rebuildBuildingChoices(false);
+	world.gui.prepareLocalPresentation(published);
+	world.gui.setPublishedScene(&published);
+	Hive::LocalCommander commander(world.gui, [](Json input)
+	{
+		std::promise<Json> ready;
+		ready.set_value(Hive::invoke(input));
+		return ready.get_future();
+	});
+
+	// In sight: listed, but never another team's hit points or warrior training.
+	auto state = commander.call("game_world", Json::object());
+	REQUIRE(state.at("others").at("buildings").size() == 1);
+	CHECK_FALSE(state.at("others").at("buildings")[0].contains("hp"));
+	CHECK_FALSE(state.at("forces").contains("visible_enemy_warriors_by_attack_level"));
+	const auto full = commander.call("game_world", {{"detail", "full"}});
+	REQUIRE_FALSE(full.at("others").at("unit_list").empty());
+	CHECK_FALSE(full.at("others").at("unit_list")[0].contains("hp"));
+
+	// Out of sight, the Inn is destroyed: the colony still remembers it as it was.
+	see(false);
+	enemy->kill();
+	world.game.snapshots().invalidateBoundary();
+	state = commander.call("game_world", Json::object());
+	CHECK(state.at("others").at("buildings").empty());
+	const auto &remembered = state.at("others").at("remembered_buildings");
+	REQUIRE(remembered.size() == 1);
+	CHECK(remembered[0].at("type") == "inn");
+	CHECK(remembered[0].at("x") == 40);
+	CHECK(remembered[0].at("remembered") == true);
+	// Back in sight, the empty tile corrects the memory.
+	see(true);
+	state = commander.call("game_world", Json::object());
+	CHECK(state.at("others").at("remembered_buildings").empty());
+
+	// Buildings need explored ground; flags may go anywhere, as for a player.
+	auto refusal = [&](Json args)
+	{
+		try
+		{
+			commander.call("game_place", args);
+		}
+		catch (const std::exception &error)
+		{
+			return std::string(error.what());
+		}
+		return std::string("queued");
+	};
+	CHECK(refusal({{"building", "inn"}, {"x", 10}, {"y", 50}}).find("explored") != std::string::npos);
+	CHECK(refusal({{"building", "explorationflag"}, {"x", 10}, {"y", 50}}) == "queued");
+	// A pending placement is not claimed twice, even before its order reaches the game.
+	CHECK(refusal({{"building", "inn"}, {"x", 32}, {"y", 32}}) == "queued");
+	CHECK(refusal({{"building", "inn"}, {"x", 32}, {"y", 32}}).find("No room") != std::string::npos);
+	const auto moved = commander.call("game_place", {{"building", "inn"}, {"x", 32}, {"y", 32}, {"near", true}});
+	CHECK((moved.at("x") != 32 || moved.at("y") != 32));
+	const auto followUp = commander.call("game_world", Json::object()).at("placements");
+	CHECK(followUp.size() >= 2);
+	CHECK(followUp[0].at("status") == "pending");
+}
+
+TEST_CASE("MCP game_building and game_zone queue the panel's orders and report caps" *
+		  doctest::test_suite("GUIInteractionCoverage"))
+{
+	glob2test::HeadlessGlobals globals({.seed = 19});
+	PresentationFrame published; // Outlives the GUI that points at it.
+	glob2test::HeadlessGame world({.wDec = 6, .hDec = 6, .discovered = true, .clearImmobile = true,
+								   .loadDefaultRace = true, .header = true});
+	auto *swarm = world.addBuilding("swarm", 4, 4);
+	auto *flag = world.addBuilding("warflag", 30, 30);
+	REQUIRE(swarm);
+	REQUIRE(flag);
+	world.gui.localPlayer = world.gui.localTeamNo = 0;
+	world.gui.localTeam = world.team;
+	world.game.players[0]->type = BasePlayer::P_LOCAL;
+	world.game.snapshots().invalidateBoundary();
+	world.gui.rebuildBuildingChoices(false);
+	world.gui.prepareLocalPresentation(published);
+	world.gui.setPublishedScene(&published);
+	Hive::LocalCommander commander(world.gui, [](Json input)
+	{
+		std::promise<Json> ready;
+		ready.set_value(Hive::invoke(input));
+		return ready.get_future();
+	});
+	auto queued = [&]
+	{
+		auto orders = world.gui.orderQueue.snapshot();
+		while (!world.gui.orderQueue.empty())
+			world.gui.orderQueue.pop_front();
+		return orders;
+	};
+	const Json swarmRef = {{"id", swarm->gid}, {"generation", swarm->scriptIdentity}};
+	auto result = commander.call("game_building",
+		{{"id", swarm->gid}, {"generation", swarm->scriptIdentity}, {"workers", 255},
+		 {"production", {{"workers", 1}, {"warriors", 2}}}});
+	CHECK(result.at("workers_capped_at") == swarm->type->semantics.assignmentLimit);
+	auto orders = queued();
+	REQUIRE(orders.size() == 2);
+	CHECK(std::dynamic_pointer_cast<OrderModifyBuilding>(orders[0]));
+	CHECK(std::dynamic_pointer_cast<OrderModifySwarm>(orders[1]));
+	commander.call("game_building", {{"id", flag->gid}, {"generation", flag->scriptIdentity},
+									 {"action", "move"}, {"x", 33}, {"y", 34}});
+	orders = queued();
+	REQUIRE(orders.size() == 1);
+	auto move = std::dynamic_pointer_cast<OrderMoveFlag>(orders[0]);
+	REQUIRE(move);
+	CHECK(move->x == 33);
+	CHECK(move->y == 34);
+	// A stale generation or another team's id is refused, nothing queued.
+	CHECK_THROWS(commander.call("game_building", {{"id", swarm->gid}, {"generation", swarm->scriptIdentity + 1},
+												  {"workers", 1}}));
+	CHECK_THROWS(commander.call("game_building", {{"id", swarm->gid}, {"generation", swarm->scriptIdentity}}));
+	CHECK(queued().empty());
+	commander.call("game_zone", {{"zone", "guard"}, {"x", 10}, {"y", 12}, {"width", 3}, {"height", 2}});
+	orders = queued();
+	REQUIRE(orders.size() == 1);
+	auto zone = std::dynamic_pointer_cast<OrderAlterGuardArea>(orders[0]);
+	REQUIRE(zone);
+	CHECK(zone->centerX == 10);
+	CHECK(zone->centerY == 12);
+	CHECK(zone->maxX - zone->minX == 3);
+	CHECK(zone->maxY - zone->minY == 2);
 }

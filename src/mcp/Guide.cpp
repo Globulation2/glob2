@@ -119,11 +119,17 @@ activate (buttons, options, tabs), select (integer index of a choice), set_value
 (slider/stepper integer, toggle boolean, text string) and scroll (signed pixels for a
 scroll container; scroll one into view before acting on a control it hides).
 
-In a match, think in map tiles: game_world reports your buildings, units, what you
-can see and the placeable names with sizes; game_place puts a building site or flag
-with its top-left on a tile (as a click would, with the same checks); game_view
-centres the camera on a tile and returns its screen point, for clicking a building
-there to select it.
+In a match, think in map tiles. game_world reports your status (free/total units,
+win chance), alerts such as attacks with their tiles, your buildings with ids, unit
+counts and warrior training, known resources with their nearest tile, other teams'
+buildings in sight and those remembered under fog, and how recent placements went.
+It follows fog of war: only what your colony sees or has seen, never another team's
+health or training. game_place puts a building site or flag with its top-left on a
+tile through the click path (near searches around it for room; buildings need
+explored ground). game_building changes a building or flag by id: workers, priority,
+Swarm production, flag range, upgrade, repair, destroy, move a flag. game_zone paints
+or erases forbidden, guard or clearing zones over a tile rectangle. game_view centres
+the camera on a tile and returns its screen point.
 The map, minimap and replay bar are canvases: use coordinates. Take ui_screenshot
 (max_width keeps it small) and pass its capture_id with x/y in that image's pixels.
 - Place by hand: activate a palette button, then ui_click on the map. Placement stays
@@ -154,9 +160,9 @@ hive_status reports availability and the current session id (a match identity);
 hive_api returns the full API contract, including world queries such as
 ctx.game.units(), ctx.game.buildings() and order descriptors. hive_run executes one
 script (token, session, a fresh operation_key, source) and hive_result fetches its
-output. hive_program installs standing scripts that run every N ticks. game_world
-covers the common reads without a script; use Hive for full records (stocks, skills,
-terrain) and for orders game_place does not cover, such as worker targets or zones.)"},
+output. hive_program installs standing scripts that run every N ticks. The game_*
+tools cover the common reads and orders without a script; use Hive for full records
+(stocks, skills, terrain) and for standing logic that reacts between your turns.)"},
 	{"troubleshooting", "What common errors mean and what to do next",
 	 R"(available=false: the window is minimized, hidden or showing an OS dialog; ask the
 person to restore it, then call ui_status again.

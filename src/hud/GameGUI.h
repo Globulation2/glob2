@@ -315,8 +315,18 @@ public:
 	/// Automation entry points (MCP game_place / game_view). Placement takes a palette name
 	/// ("inn", "warflag") and the footprint's top-left tile and returns an empty string on
 	/// success, otherwise why it was refused. Both act exactly as the matching human input.
-	std::string placeFromAutomation(const std::string &name, int x, int y);
+	/// reserved holds {x, y, width, height} footprints of the caller's still-pending
+	/// placements; buildings need explored ground, as for a player.
+	std::string placeFromAutomation(const std::string &name, int x, int y, int searchRadius = 0,
+									std::pair<int, int> *placedAt = nullptr,
+									const std::vector<std::array<int, 4>> &reserved = {},
+									std::pair<int, int> *placedSize = nullptr);
 	void centreViewOnTile(double x, double y);
+	/// The desktop top bar's values: workers, explorers and warriors free/total, prestige,
+	/// win chance, conversions gained and lost, then speed.
+	std::array<std::string, 8> topBarValues() const;
+	/// The HUD's current game-event rows (under attack, finished, converted...).
+	const GameEventFeed &gameEvents() const { return eventFeed; }
 	/// Palette entries (building, then flag type keys) with whether this game allows them.
 	std::vector<std::pair<std::string, bool>> placeableChoices() const
 	{

@@ -56,7 +56,7 @@ TEST_CASE("MCP/protocol adapters validate metadata and discover all tools")
 	CHECK(discover.status == 200);
 	CHECK(discover.body["result"]["resultType"] == "complete");
 	auto listed = p.receive(modern("tools/list").dump(), {"2026-07-28", "tools/list", ""});
-	CHECK(listed.body["result"]["tools"].size() == 25);
+	CHECK(listed.body["result"]["tools"].size() == 27);
 	CHECK(listed.body["result"].contains("cacheScope"));
 	CHECK(
 		p.receive(modern("tools/list").dump(), {"2026-07-28", "wrong", ""}).body["error"]["code"] ==
@@ -283,11 +283,11 @@ TEST_CASE("MCP/tools explain themselves within a discovery size budget")
 		guide = guide || tool["name"] == "game_guide";
 	}
 	CHECK(guide);
-	// Every client pays for discovery in context; keep it bounded. 22 KB covers the 25
-	// tools including game_world/game_place/game_view (about 21.4 KB when added).
+	// Every client pays for discovery in context; keep it bounded. 25 KB covers the 27
+	// tools including the game_* map tools.
 	const auto bytes = Json{{"tools", tools}}.dump().size();
 	INFO("tools/list bytes: " << bytes);
-	CHECK(bytes < 22000);
+	CHECK(bytes < 25000);
 }
 TEST_CASE("MCP/game guide serves every topic with links and rejects unknown topics")
 {
@@ -1760,7 +1760,12 @@ TEST_CASE("MCP/game tools read without control and act only under the lease [net
 	CHECK(execute("game_place", {{"token", token}, {"building", "inn"}, {"x", 1}, {"y", 1}})
 			  .error.empty());
 	CHECK(execute("game_view", {{"token", token}, {"x", 1}, {"y", 1}}).error.empty());
-	CHECK(reached == std::vector<std::string>{"game_world", "game_place", "game_view"});
+	CHECK_FALSE(execute("game_building", {{"token", "stale"}, {"id", 0}, {"generation", 1}}).error.empty());
+	CHECK(execute("game_building", {{"token", token}, {"id", 0}, {"generation", 1}}).error.empty());
+	CHECK(execute("game_zone", {{"token", token}, {"zone", "guard"}, {"x", 1}, {"y", 1},
+								{"width", 2}, {"height", 2}}).error.empty());
+	CHECK(reached == std::vector<std::string>{"game_world", "game_place", "game_view",
+											  "game_building", "game_zone"});
 
 	// A control that has disappeared satisfies a wait for it to be not visible...
 	const auto gone = execute("ui_wait", {{"timeout_ms", 2000},

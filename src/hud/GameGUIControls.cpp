@@ -922,7 +922,10 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 	return compose();
 }
 
-std::string GameGUI::placeFromAutomation(const std::string &requested, int x, int y)
+std::string GameGUI::placeFromAutomation(const std::string &requested, int x, int y, int searchRadius,
+										 std::pair<int, int> *placedAt,
+										 const std::vector<std::array<int, 4>> &reserved,
+										 std::pair<int, int> *placedSize)
 {
 	if (globalContainer->isViewingGame() || globalContainer->liveSpectating)
 		return "Placement is unavailable while watching a game";
@@ -961,12 +964,55 @@ std::string GameGUI::placeFromAutomation(const std::string &requested, int x, in
 	if (x < 0 || y < 0 || x >= int(map.getW()) || y >= int(map.getH()))
 		return "Tile (" + std::to_string(x) + ", " + std::to_string(y) + ") is outside the " +
 			   std::to_string(map.getW()) + "x" + std::to_string(map.getH()) + " map";
+	// A building needs ground this colony has explored (as the map shows it), and
+	// never overlaps the caller's pending placements, which the click path cannot
+	// see once their orders have left the queue. Flags go anywhere, as for a player.
+	const Uint32 explored = Team::teamNumberToMask(localTeamNo);
+	auto overlaps = [&](int ax, int aw, int bx, int bw, int size)
+	{
+		const int d = ((bx - ax) % size + size) % size;
+		return d < aw || size - d < bw;
+	};
+	auto usable = [&](int tx, int ty)
+	{
+		for (const auto &r : reserved)
+			if (overlaps(tx, type->width, r[0], r[2], int(map.getW())) &&
+				overlaps(ty, type->height, r[1], r[3], int(map.getH())))
+				return false;
+		if (type->isVirtual)
+			return true;
+		for (int dy = 0; dy < type->height; ++dy)
+			for (int dx = 0; dx < type->width; ++dx)
+				if (!map.isMapDiscovered(tx + dx, ty + dy, explored))
+					return false;
+		return true;
+	};
+	if (placedSize)
+		*placedSize = {type->width, type->height};
 	// Place through the click path, then restore whatever tool the player had.
 	const auto previousMode = selectionMode;
 	const auto previousBuilding = toolManager.getBuildingName();
 	const auto previousZone = toolManager.getZoneType();
 	toolManager.activateBuildingTool(found->key);
-	const bool placed = toolManager.placeBuildingTopLeft(x, y, localTeamNo);
+	// With a search radius, try rings of tiles around (x, y), nearest first.
+	bool placed = false;
+	const int w = int(map.getW()), h = int(map.getH());
+	for (int r = 0; r <= searchRadius && !placed; ++r)
+		for (int dy = -r; dy <= r && !placed; ++dy)
+			for (int dx = -r; dx <= r && !placed; ++dx)
+			{
+				if (std::max(std::abs(dx), std::abs(dy)) != r)
+					continue;
+				const int tx = ((x + dx) % w + w) % w, ty = ((y + dy) % h + h) % h;
+				if (!usable(tx, ty))
+					continue;
+				if (toolManager.placeBuildingTopLeft(tx, ty, localTeamNo))
+				{
+					placed = true;
+					if (placedAt)
+						*placedAt = {tx, ty};
+				}
+			}
 	if (previousMode == TOOL_SELECTION && !previousBuilding.empty())
 		toolManager.activateBuildingTool(previousBuilding);
 	else if (previousMode == BRUSH_SELECTION)
@@ -979,8 +1025,10 @@ std::string GameGUI::placeFromAutomation(const std::string &requested, int x, in
 		return "Too many new construction sites at once; wait a moment and try again";
 	return "No room for " + name + " (" + std::to_string(type->width) + "x" +
 		   std::to_string(type->height) + " tiles) with its top-left at (" + std::to_string(x) +
-		   ", " + std::to_string(y) + "): it needs clear ground, and a flag cannot share a tile "
-		   "with another of your flags. Read game_world for free space near your buildings";
+		   ", " + std::to_string(y) + ")" +
+		   (searchRadius ? " or within " + std::to_string(searchRadius) + " tiles of it" : "") +
+		   ": a building needs clear, explored ground away from your pending placements, and a "
+		   "flag cannot share a tile with another of your flags. Pass near to search around it";
 }
 
 void GameGUI::centreViewOnTile(double x, double y)
