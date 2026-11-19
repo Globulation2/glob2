@@ -867,6 +867,8 @@ TEST_CASE("graphics context CPU pixel borrowing fences recorded main and offscre
     for (const char *execution : {"immediate", "serial", "parallel"})
     {
         glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", execution);
+        // Mobile builds otherwise start on Portable SDL; these cases test Software.
+        GraphicContext::setInitialRendererBackend(RendererBackend::Software);
         GraphicContext context(64, 48, GraphicContext::NOAUDIO, "CPU pixel observation");
         // Native 1x contexts use immediate facade drawing until a transform
         // activates the software backend. Keep it active while borrowing pixels.
@@ -902,6 +904,7 @@ TEST_CASE("memory capture rejects failed raster output and resumes after owner d
             throw std::runtime_error("injected memory capture raster failure");
         }
     } failure;
+    GraphicContext::setInitialRendererBackend(RendererBackend::Software);
     GraphicContext context(271, 263, GraphicContext::NOAUDIO, "CPU capture recovery");
     context.drawFilledRect(0, 0, 271, 263, Color(17, 29, 43));
     context.nextFrame();

@@ -39,7 +39,8 @@ BINARIES = {'glob2-unit-tests': 'unit', 'glob2-engine-tests': 'engine'}
 # runtime tree is staged beside them as source/content.
 SOURCE_FIXTURES = ('test/fixtures', 'test/maxima/fixtures', 'test/data', 'test/map-generator-resource-epoch.json',
                    'examples', 'libs/usl/test', 'services/online/packages/protocol/fixtures',
-                   'tools/terrain_builtin_names.json')
+                   'tools/terrain_builtin_names.json', 'docs/multiplayer/lan.md',
+                   'docs/multiplayer/lan-playtest.md', 'docs/development/mcp-ui-server.md')
 # Saved games the cases load; test inputs, so the APK does not ship them.
 CONTENT_FIXTURES = ('games',)
 # CI runs the [map-generators] contract only in its dedicated Linux job.
@@ -508,11 +509,6 @@ def main():
             state['executedHashes'], state['stageDigest'] = stage(args, names, payload, summary)
             device.run('push', str(payload), remote, timeout=3600)
         device.shell(f'chmod 755 {remote}/bin/* && echo {state["stageDigest"]} > {remote}/staged')
-    # Recordings publish with hard links, which the shell's SELinux domain may not
-    # create under /data/local/tmp; cases that need them skip themselves.
-    probe = device.shell(f'cd {remote} && echo x > .link-probe && ln .link-probe .link-probe2 2>&1 && echo LINKED; '
-                         'rm -f .link-probe .link-probe2', check=False)
-    summary['hardLinks'] = 'LINKED' in probe
     write_reports(output, summary, state)
     for name in names:
         run_binary(device, args, remote, name, state, summary, output)

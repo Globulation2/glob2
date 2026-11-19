@@ -175,6 +175,9 @@ TEST_SUITE("SkinSprites")
 	TEST_CASE("padded turn shadows keep their native size and shared mesh center")
 	{
 		glob2test::ToolkitScope toolkit;
+		// Read pixels straight from the CPU surface: pin Software, since mobile
+		// builds otherwise start on Portable SDL, which records draws until a fence.
+		GAGCore::GraphicContext::setInitialRendererBackend(GAGCore::RendererBackend::Software);
 		auto *gfx = GAGCore::Toolkit::initGraphic(128, 128, 0, "skin shadow placement");
 
 		for (unsigned resolution : {40u, 128u})

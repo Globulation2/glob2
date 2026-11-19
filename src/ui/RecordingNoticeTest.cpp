@@ -146,8 +146,14 @@ TEST_SUITE("RecordingNotice")
 		CHECK(contains(text, "0:23"));
 		CHECK(contains(text, "2 KB"));
 		auto *open = screen.host().find("recordings/open-folder");
-		REQUIRE(open);
-		CHECK(contains(open->accessibleText(), "Open folder"));
+		// Platforms that cannot open a folder (Android, iOS) omit the button.
+		if (GAGCore::ApplicationHost::canOpenFolder())
+		{
+			REQUIRE(open);
+			CHECK(contains(open->accessibleText(), "Open folder"));
+		}
+		else
+			CHECK_FALSE(open);
 		CHECK(screen.host().find("export/" + video.string()));
 	}
 }

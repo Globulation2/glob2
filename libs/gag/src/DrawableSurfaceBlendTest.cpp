@@ -76,6 +76,9 @@ TEST_SUITE("DrawableSurfaceBlend")
 TEST_CASE("software alpha blend stays accurate under stacked draws")
 {
 	glob2test::ToolkitScope toolkit;
+	// Read pixels straight from the CPU surface: pin Software, since mobile
+	// builds otherwise start on Portable SDL, which records draws until a fence.
+	GraphicContext::setInitialRendererBackend(RendererBackend::Software);
 	auto *raw = Toolkit::initGraphic(64, 64, 0 /* software */, "blend precision");
 	auto *gfx = static_cast<Inspect *>(raw);
 	const Uint8 background = 200;

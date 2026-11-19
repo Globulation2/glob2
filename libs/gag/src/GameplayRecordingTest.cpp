@@ -340,7 +340,7 @@ TEST_SUITE("GameplayRecording")
 		CHECK_FALSE(recorder.start(path.string()));
 		CHECK(read(path) == "preserve");
 	}
-	TEST_CASE("recording encodes audio, odd resized frames, and semantic chapters [recording]" * glob2test::needsHardLinks())
+	TEST_CASE("recording encodes audio, odd resized frames, and semantic chapters [recording]")
 	{
 		if (!supported()) return;
 		auto path = output("recording-sections");

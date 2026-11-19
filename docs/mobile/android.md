@@ -134,10 +134,7 @@ installed app's data.
 The default selection matches CI's: `[display]` cases need a real window and
 are reported as skipped, `[slow]` cases run only with `--slow`, and
 `[map-generators]` cases, which CI runs in a separate Linux job, are left out
-unless selected with `--tag map-generators`. Cases decorated with
-`glob2test::needsHardLinks()` skip themselves where the shell user cannot create
-hard links, as under `/data/local/tmp` on current Android releases; the reason is
-recorded with each skipped case.
+unless selected with `--tag map-generators`.
 
 The engine binary reuses the production client objects. `platforms/mobile/NativeTestMain.cpp`
 supplies only the shell platform bridges: filesystem assets, SDL main readiness,
@@ -167,7 +164,7 @@ python3 platforms/mobile/emulator.py stop --arch x86_64
 ```
 
 The AVD and the emulator's state live under `build/mobile-tools/`. The emulator
-renders with SwiftShader on the CPU (`-gpu swiftshader_indirect`), so it does not
+renders with SwiftShader on the CPU (`-gpu swiftshader`), so it does not
 use the host GPU, and needs KVM: on Linux it cannot run while a VirtualBox VM
 holds the virtualization extensions. On a two-core emulator the full unit and
 engine suites take several hours.
