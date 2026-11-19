@@ -1,0 +1,1 @@
+Fixes from playing every tutorial lesson, online and LAN games, the Hive and JavaScript AIs and recordings: tutorial steps no longer stall, clearer lesson markers and hints, unclipped building icons and costs, recordings saved on Android, and complete store text in every supported language.

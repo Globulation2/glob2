@@ -478,6 +478,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.11.6.2" date="2026-11-19">
+      <description>
+        <p>Fixed problems found playing the tutorial, online and LAN games, the Hive and JavaScript AIs, recordings and translations: tutorial steps no longer stall, lesson markers and hints are clearer, building icons and costs are no longer clipped, recordings publish on Android, and storefront text is complete in every supported language.</p>
+      </description>
+    </release>
     <release version="0.11.6.1" date="2026-11-18">
       <description>
         <p>Fixed the Windows build of 0.11.6.0, which made every renderer draw the same high-detail artwork with smooth animated terrain and water; cut graphics memory and picked the fastest renderer for each device automatically, including SDL GPU on Android and iOS; sharpened sprites and made shadows, status badges and the minimap clearer; set stone walls to 500 HP for 4 stone; added prestige to the win chance readout; and fixed crashes and replay checks.</p>
