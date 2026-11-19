@@ -1218,6 +1218,13 @@ def cpp_transform(transform, expression, total=None):
         return f'std::exp(-std::max({expression}, 0.0) / 24.0)'
     if transform == 'share':
         return f'({total} > 0 ? ({expression}) / {total} : 0.0)'
+    # The signed transforms of conditional_logit: the magnitude's transform, carrying the sign.
+    if transform == 'slog':
+        return f'std::copysign(std::log1p(std::fabs({expression})), {expression})'
+    if transform == 'ssqrt':
+        return f'std::copysign(std::sqrt(std::fabs({expression})), {expression})'
+    if transform == 'spow25':
+        return f'std::copysign(std::sqrt(std::sqrt(std::fabs({expression}))), {expression})'
     raise ValueError('no C++ form for transform ' + transform)
 
 
