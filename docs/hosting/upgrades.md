@@ -239,7 +239,7 @@ summary.
 **How it runs.** The `deploy` job uses the `online-production` environment
 (restricted to `master`; add required reviewers there to approve each deploy). It
 authenticates to Google Cloud without keys through Workload Identity Federation,
-adds a three-hour SSH key for the deploy user to the VM's instance metadata,
+adds a six-and-a-half-hour SSH key (it must outlive the whole job: deploys take four to five hours) for the deploy user to the VM's instance metadata,
 connects through an IAP TCP tunnel and pipes `deploy/online-deploy.sh` to the host.
 That script refuses to start while another `update-host.sh` runs (a process check
 plus a lock), records the running revision if there is no record yet, checks out
