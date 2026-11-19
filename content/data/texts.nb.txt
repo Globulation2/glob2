@@ -5023,15 +5023,15 @@ Prestisje som trengs for å vinne
 [stat prestige needed about]
 Prestisjen kolonien fortsatt måtte opptjene for å vinne på prestisje: nok til at kampens samlede prestisje når målet, og til å gå forbi hver annen overlevende koloni. Registreres bare når kampen har et prestisjemål.
 [stat prestige lead]
-Prestige lead
+Prestisjeforsprang
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+Koloniens prestisje minus den høyeste prestisjen hos noen overlevende motstander: hvor langt lederen ligger foran nummer to, eller hvor langt bak lederen alle andre ligger. Registreres bare når kampen har et prestisjemål.
 [stat school levels]
-School levels
+Skolenivåer
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+Koloniens skoler og skolebyggeplasser, hver telt etter nivå: 1 for en byggeplass på nivå 1 opp til 6 for en ferdig skole på nivå 3. Bare ferdige skoler på nivå 3 gir prestisje, 50 hver.
 [stat unit levels]
-levels
+nivåer
 [stat band combat]
 Kamp
 [stat band starvation]

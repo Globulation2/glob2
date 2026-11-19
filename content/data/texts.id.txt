@@ -5055,15 +5055,15 @@ Prestise yang dibutuhkan untuk menang
 [stat prestige needed about]
 Prestise yang masih harus diperoleh koloni untuk menang lewat prestise: cukup agar gabungan prestise pertandingan mencapai target, dan untuk melampaui setiap koloni lain yang masih bertahan. Hanya dicatat jika pertandingan memiliki target prestise.
 [stat prestige lead]
-Prestige lead
+Keunggulan prestise
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+Prestise koloni dikurangi prestise terbanyak yang dimiliki lawan mana pun yang masih bertahan: seberapa jauh pemimpin unggul atas peringkat kedua, atau seberapa jauh semua yang lain tertinggal dari pemimpin. Hanya dicatat jika pertandingan memiliki target prestise.
 [stat school levels]
-School levels
+Tingkat sekolah
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+Sekolah dan lokasi pembangunan sekolah milik koloni, masing-masing dihitung menurut tingkatnya: 1 untuk lokasi tingkat 1 hingga 6 untuk sekolah tingkat 3 yang selesai. Hanya sekolah tingkat 3 yang selesai yang memberi prestise, masing-masing 50.
 [stat unit levels]
-levels
+tingkat
 [stat band combat]
 Pertempuran
 [stat band starvation]

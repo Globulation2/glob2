@@ -5055,15 +5055,15 @@ AI 원격 측정
 [stat prestige needed about]
 명성으로 승리하려면 식민지가 아직 더 얻어야 하는 명성입니다. 경기의 명성 합계가 목표에 도달하고, 살아남은 다른 모든 식민지를 앞지르기에 충분한 양입니다. 경기에 명성 목표가 있을 때만 기록됩니다.
 [stat prestige lead]
-Prestige lead
+명성 우위
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+식민지의 명성에서 살아남은 상대 중 가장 높은 명성을 뺀 값입니다. 선두가 2위보다 얼마나 앞서 있는지, 또는 나머지 모두가 선두보다 얼마나 뒤처져 있는지를 나타냅니다. 경기에 명성 목표가 있을 때만 기록됩니다.
 [stat school levels]
-School levels
+학교 레벨
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+식민지의 학교와 학교 건설 부지를 각각의 레벨로 센 값입니다. 레벨 1 부지는 1부터 완성된 레벨 3 학교는 6까지입니다. 완성된 레벨 3 학교만 명성을 주며, 학교당 50입니다.
 [stat unit levels]
-levels
+레벨
 [stat band combat]
 전투
 [stat band starvation]

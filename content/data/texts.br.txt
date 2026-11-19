@@ -5055,15 +5055,15 @@ Prestígio necessário para vencer
 [stat prestige needed about]
 O prestígio que a colônia ainda precisaria obter para vencer por prestígio: o suficiente para que o prestígio somado da partida alcance a meta e para superar todas as outras colônias sobreviventes. Registrado apenas quando a partida tem meta de prestígio.
 [stat prestige lead]
-Prestige lead
+Vantagem de prestígio
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+O prestígio da colônia menos o maior prestígio de qualquer oponente sobrevivente: quanto o líder está à frente do segundo colocado, ou quanto todos os demais estão atrás do líder. Registrado apenas quando a partida tem uma meta de prestígio.
 [stat school levels]
-School levels
+Níveis das escolas
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+As escolas e canteiros de escolas da colônia, cada um contado pelo seu nível: de 1 para um canteiro de nível 1 até 6 para uma escola de nível 3 concluída. Apenas escolas de nível 3 concluídas concedem prestígio, 50 cada.
 [stat unit levels]
-levels
+níveis
 [stat band combat]
 Combate
 [stat band starvation]

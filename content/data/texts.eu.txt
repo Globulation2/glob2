@@ -5055,15 +5055,15 @@ Irabazteko behar den ospea
 [stat prestige needed about]
 Koloniak ospearen bidez irabazteko oraindik lortu beharko lukeen ospea: partidako ospe osoa helburura iristeko eta bizirik dauden gainerako kolonia guztiak gainditzeko adina. Partidak ospe-helburua duenean bakarrik erregistratzen da.
 [stat prestige lead]
-Prestige lead
+Ospe-aldea
 [stat prestige lead about]
-The colony's prestige less the most held by any surviving opponent: how far the leader is ahead of the runner-up, or how far behind the leader everyone else is. Recorded only when the match has a prestige goal.
+Koloniaren ospea, bizirik dagoen edozein aurkariren ospe handiena kenduta: liderra bigarrenaren aurretik zenbat dagoen, edo beste guztiak liderraren atzetik zenbat dauden. Partidak ospe-helburua duenean bakarrik erregistratzen da.
 [stat school levels]
-School levels
+Eskolen mailak
 [stat school levels about]
-The colony's schools and school sites, each counted by its level: 1 for a level-1 site up to 6 for a finished level-3 school. Only finished level-3 schools award prestige, 50 each.
+Koloniaren eskolak eta eskola-orubeak, bakoitza bere mailaren arabera zenbatuta: 1 mailako orube batentzat 1etik 3 mailako eskola amaitu batentzat 6ra arte. 3 mailako eskola amaituek bakarrik ematen dute ospea, 50 bakoitzak.
 [stat unit levels]
-levels
+maila
 [stat band combat]
 Borroka
 [stat band starvation]
