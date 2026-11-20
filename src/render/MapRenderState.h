@@ -107,6 +107,8 @@ struct MapRenderState
 
 	//! The cloud field for this view, created on first use.
 	DynamicClouds &clouds();
+	//! Frees the cloud sampler's threads, if the clouds exist, while the view is not drawn.
+	void releaseCloudWorker();
 	ColonySkinPreview &skinPreview();
 	//! The spawn effect's procedural images, created on first use.
 	UnitEffectArt &effectArt();
