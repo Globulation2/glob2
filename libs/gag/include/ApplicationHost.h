@@ -40,6 +40,11 @@ void initializeOpenGLContext();
 // leaves texture preparation to the shared integer CPU implementation.
 bool prepareOpenGLMipmaps(unsigned texture, const void* pixels, int width, int height);
 
+// Whether a bounded application heap (the browser's Wasm memory) has grown past
+// four fifths of its maximum. Hosts whose memory the operating system manages
+// return false.
+bool heapNearlyFull();
+
 // Consume the newest host viewport request at an application frame boundary.
 bool takeViewportSize(int &width, int &height);
 // Read current host points, safe areas, keyboard occlusion and input capabilities.

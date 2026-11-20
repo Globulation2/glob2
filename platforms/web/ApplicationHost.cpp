@@ -12,6 +12,7 @@
 #include <GraphicContext.h>
 #include <Toolkit.h>
 #include <emscripten.h>
+#include <emscripten/heap.h>
 #include <stdexcept>
 
 namespace GAGCore::ApplicationHost
@@ -27,6 +28,11 @@ bool prepareOpenGLMipmaps(unsigned texture, const void* pixels, int width, int h
             return false;
         }
     }, texture, pixels, width, height);
+}
+
+bool heapNearlyFull()
+{
+    return emscripten_get_heap_size() >= emscripten_get_heap_max() / 5 * 4;
 }
 
 void initializeOpenGLContext()
