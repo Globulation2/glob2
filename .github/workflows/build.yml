@@ -1056,6 +1056,19 @@ jobs:
         with:
           name: linux-test-programs-ubuntu-24.04
           path: artifacts/ci-native
+      # download-artifact can leave a truncated archive (gzip: unexpected end of file);
+      # fetch it once more before unpacking.
+      - name: Verify the downloaded test programs
+        id: verify_linux_test_programs
+        if: ${{ needs.changes.outputs.run_linux_gcc13_producer == 'true' }}
+        run: |
+          if gzip -t artifacts/ci-native/linux-test-programs.tar.gz; then echo intact=true >> "$GITHUB_OUTPUT"
+          else rm -f artifacts/ci-native/linux-test-programs.tar.gz; echo intact=false >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/download-artifact@v4
+        if: ${{ (needs.changes.outputs.run_linux_gcc13_producer == 'true') && steps.verify_linux_test_programs.outputs.intact == 'false' }}
+        with:
+          name: linux-test-programs-ubuntu-24.04
+          path: artifacts/ci-native
       - name: Reuse exact primary client and transport programs
         if: ${{ needs.changes.outputs.run_linux_gcc13_producer == 'true' }}
         run: |
