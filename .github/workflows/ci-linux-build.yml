@@ -259,6 +259,18 @@ jobs:
         with:
           name: linux-test-programs-${{ inputs.runner }}
           path: artifacts/ci-native
+      # download-artifact can leave a truncated archive (gzip: unexpected end of file);
+      # fetch it once more before unpacking.
+      - name: Verify the downloaded test programs
+        id: verify_linux_test_programs
+        run: |
+          if gzip -t artifacts/ci-native/linux-test-programs.tar.gz; then echo intact=true >> "$GITHUB_OUTPUT"
+          else rm -f artifacts/ci-native/linux-test-programs.tar.gz; echo intact=false >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/download-artifact@v4
+        if: ${{ steps.verify_linux_test_programs.outputs.intact == 'false' }}
+        with:
+          name: linux-test-programs-${{ inputs.runner }}
+          path: artifacts/ci-native
       - run: python3 .github/scripts/ci_build_provenance.py verify --compiler '${{ inputs.compiler }}'
 
   regressions:
@@ -276,6 +288,18 @@ jobs:
         with:
           ref: ${{ inputs.revision || github.sha }}
       - uses: actions/download-artifact@v4
+        with:
+          name: linux-test-programs-${{ inputs.runner }}${{ inputs.compiler == 'clang-18' && '-clang-18' || '' }}
+          path: artifacts/ci-native
+      # download-artifact can leave a truncated archive (gzip: unexpected end of file);
+      # fetch it once more before unpacking.
+      - name: Verify the downloaded test programs
+        id: verify_linux_test_programs
+        run: |
+          if gzip -t artifacts/ci-native/linux-test-programs.tar.gz; then echo intact=true >> "$GITHUB_OUTPUT"
+          else rm -f artifacts/ci-native/linux-test-programs.tar.gz; echo intact=false >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/download-artifact@v4
+        if: ${{ steps.verify_linux_test_programs.outputs.intact == 'false' }}
         with:
           name: linux-test-programs-${{ inputs.runner }}${{ inputs.compiler == 'clang-18' && '-clang-18' || '' }}
           path: artifacts/ci-native
@@ -399,6 +423,18 @@ jobs:
 
       - uses: actions/download-artifact@v4
         id: download_linux_test_programs
+        with:
+          name: linux-test-programs-${{ inputs.runner }}
+          path: artifacts/ci-native
+      # download-artifact can leave a truncated archive (gzip: unexpected end of file);
+      # fetch it once more before unpacking.
+      - name: Verify the downloaded test programs
+        id: verify_linux_test_programs
+        run: |
+          if gzip -t artifacts/ci-native/linux-test-programs.tar.gz; then echo intact=true >> "$GITHUB_OUTPUT"
+          else rm -f artifacts/ci-native/linux-test-programs.tar.gz; echo intact=false >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/download-artifact@v4
+        if: ${{ steps.verify_linux_test_programs.outputs.intact == 'false' }}
         with:
           name: linux-test-programs-${{ inputs.runner }}
           path: artifacts/ci-native
@@ -679,6 +715,18 @@ jobs:
       # map-only diffs skip that build and keep the standalone path below.
       - uses: actions/download-artifact@v4
         id: download_linux_test_programs
+        with:
+          name: linux-test-programs-${{ inputs.runner }}
+          path: artifacts/ci-native
+      # download-artifact can leave a truncated archive (gzip: unexpected end of file);
+      # fetch it once more before unpacking.
+      - name: Verify the downloaded test programs
+        id: verify_linux_test_programs
+        run: |
+          if gzip -t artifacts/ci-native/linux-test-programs.tar.gz; then echo intact=true >> "$GITHUB_OUTPUT"
+          else rm -f artifacts/ci-native/linux-test-programs.tar.gz; echo intact=false >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/download-artifact@v4
+        if: ${{ steps.verify_linux_test_programs.outputs.intact == 'false' }}
         with:
           name: linux-test-programs-${{ inputs.runner }}
           path: artifacts/ci-native
