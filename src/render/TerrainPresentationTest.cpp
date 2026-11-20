@@ -2836,7 +2836,7 @@ TEST_SUITE("TerrainPresentation")
 			// An interactive view composes on workers: draw until nothing waits.
 			const auto settle = [&](float zoom, int right, int bottom)
 			{
-				for (int attempt = 0; attempt < 5000; ++attempt)
+				for (Patience waiting; waiting();)
 				{
 					globals->gfx->beginMapTransform(zoom, 0, 0, 0, 0, 256, 256);
 					REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, right, bottom, 0, 0, fixture.team->me, true));
@@ -2905,7 +2905,7 @@ TEST_SUITE("TerrainPresentation")
 		};
 		const auto settle = [&](float zoom, int right, int bottom)
 		{
-			for (int attempt = 0; attempt < 5000; ++attempt)
+			for (Patience waiting; waiting();)
 			{
 				frame(zoom, right, bottom);
 				if (cache.pendingPages() == 0 && cache.complete() &&
@@ -2968,7 +2968,7 @@ TEST_SUITE("TerrainPresentation")
 		};
 		// The whole 128-cell map at 16 pixels a cell: 64 pages of 256 pixels.
 		const std::size_t whole = 64u * 256 * 256 * 4;
-		for (int attempt = 0; attempt < 5000 && !(cache.pendingPages() == 0 && cache.baseTextureBytes() == whole); ++attempt)
+		for (Patience waiting; waiting() && !(cache.pendingPages() == 0 && cache.baseTextureBytes() == whole);)
 		{
 			frame(0, 0);
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
