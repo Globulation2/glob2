@@ -21,11 +21,15 @@ class SmokeBuildTests(unittest.TestCase):
             return 'test certificate'
 
         smoke.compose = Mock(side_effect=compose)
+        smoke.compose_logged = Mock(side_effect=compose)
         with patch('platform_stack_smoke.subprocess.check_output', return_value=revision + '\n') as resolve, \
                 patch('platform_stack_smoke.ssl.create_default_context'):
             smoke.up()
         resolve.assert_called_once()
-        self.assertEqual(smoke.compose.call_args_list[0].args[0], 'build')
+        smoke.compose_logged.assert_called_once()
+        self.assertEqual(smoke.compose_logged.call_args.args[0], 'build.log')
+        self.assertIn('build', smoke.compose_logged.call_args.args)
+        self.assertEqual(smoke.compose.call_args_list[0].args[0], 'up')
 
 
 if __name__ == '__main__':

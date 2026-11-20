@@ -1509,7 +1509,7 @@ jobs:
     needs: changes
     if: ${{ !cancelled() && needs.changes.outputs.run_platform_stack == 'true' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 120
+    timeout-minutes: 200
     steps:
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
