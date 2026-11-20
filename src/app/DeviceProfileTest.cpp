@@ -186,6 +186,7 @@ TEST_SUITE("DeviceAdaptation")
 			{MemorySignal::AndroidLowMemory, true, Trim::Smallest, true},
 			{MemorySignal::AndroidUiHidden, true, Trim::Background, false},
 			{MemorySignal::AndroidBackground, true, Trim::Background, false},
+			{MemorySignal::BrowserHeapHigh, false, Trim::Smallest, true},
 		};
 		for (const auto &row : rows)
 		{

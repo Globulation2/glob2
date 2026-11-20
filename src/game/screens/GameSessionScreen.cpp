@@ -45,6 +45,15 @@ void GameSessionScreen::updateExecution(Uint32 tick)
 	{
 		updateExecutionImpl(tick);
 	}
+	catch (const Script::MemoryFailure &failure)
+	{
+		// Out of memory is not a script fault: point at what uses the memory.
+		GAGCore::ApplicationHost::studioError(failure.what());
+		Glob2UI::DiagnosticText presenter;
+		stopSession(Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[game stopped %0]", "Game stopped: %0"),
+												  {presenter(failure.what())}) + "\n" +
+			Glob2UI::nativeSurfaceText("[game stopped memory help]", "Original artwork (Settings) uses much less memory."));
+	}
 	catch (const Script::SessionFailure &failure)
 	{
         GAGCore::ApplicationHost::studioError(failure.what());

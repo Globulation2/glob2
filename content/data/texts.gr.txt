@@ -7068,6 +7068,8 @@ CPU (αυτόματα)
 Το παιχνίδι διακόπηκε: %0
 [game stopped script help]
 Ελέγξτε τον ενσωματωμένο κώδικα JavaScript και τη χρήση πόρων του πριν επανεκκινήσετε αυτό το παιχνίδι.
+[game stopped memory help]
+
 [missing map generator %0]
 Λείπει η γεννήτρια χαρτών: %0. Επιλέχθηκε ένα ενσωματωμένο τοπίο.
 [hive standing order paused]

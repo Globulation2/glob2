@@ -1,5 +1,6 @@
 [replay stopped %0]
 [replay stopped help]
+[game stopped memory help]
 [stat prestige needed]
 [stat prestige needed about]
 [stat prestige lead]

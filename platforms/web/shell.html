@@ -296,8 +296,9 @@ function browserStartupRenderer(preferences, requested, automatic) {
   // Decide ownership before Launcher.cpp transfers the canvas to its pthread.
   const saved = /^rendererBackend=([^\r\n;]*)/m.exec(preferences || '');
   const flags = /^screenFlags=(\d+)/m.exec(preferences || '');
+  // USEGPU alone migrates to Automatic, PORTABLEGPU to Portable SDL.
   const backend = requested || (saved ? saved[1] : flags ?
-    ((Number(flags[1]) & (1 | 32)) ? 'legacy-gl' : 'software') : 'auto'); // USEGPU | PORTABLEGPU
+    ((Number(flags[1]) & 32) ? 'portable-sdl' : (Number(flags[1]) & 1) ? 'auto' : 'software') : 'auto');
   if (backend === 'software') return 'software';
   if (['legacy-gl','gpu','webgl2','opengl','programmable-gl','portable-sdl','sdl'].includes(backend)) return 'webgl2';
   return automatic;

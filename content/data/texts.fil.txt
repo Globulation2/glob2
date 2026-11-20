@@ -7070,6 +7070,8 @@ Linya: %0 Kolum: %1
 Itinigil ang laro: %0
 [game stopped script help]
 Suriin ang naka-embed na JavaScript at ang paggamit ng resource nito bago simulan muli ang larong ito.
+[game stopped memory help]
+
 [missing map generator %0]
 Nawawala ang generator ng mapa: %0. Isang built-in na tanawin ang napili.
 [hive standing order paused]

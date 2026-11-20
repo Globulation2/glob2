@@ -7070,6 +7070,8 @@ MCP সার্ভার চালু করুন
 খেলা বন্ধ হয়েছে: %0
 [game stopped script help]
 এই গেমটি পুনরায় চালু করার আগে এমবেডেড JavaScript এবং এর রিসোর্স ব্যবহার পর্যালোচনা করুন।
+[game stopped memory help]
+
 [missing map generator %0]
 মানচিত্র জেনারেটর অনুপস্থিত: %0। একটি অন্তর্নির্মিত ভূদৃশ্য নির্বাচন করা হয়েছে।
 [hive standing order paused]

@@ -3535,6 +3535,7 @@
 [script line %0 column %1]
 [game stopped %0]
 [game stopped script help]
+[game stopped memory help]
 [missing map generator %0]
 [hive standing order paused]
 [hive connection changed orders paused]

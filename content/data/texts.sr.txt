@@ -7068,6 +7068,8 @@ MCP сервер није доступан у овој апликацији
 Игра је заустављена: %0
 [game stopped script help]
 Прегледајте уграђени JavaScript код и његову употребу ресурса пре него што поново покренете ову игру.
+[game stopped memory help]
+
 [missing map generator %0]
 Недостаје генератор мапа: %0. Изабран је уграђени пејзаж.
 [hive standing order paused]

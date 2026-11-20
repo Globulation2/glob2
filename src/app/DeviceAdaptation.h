@@ -25,6 +25,9 @@ enum class MemorySignal : std::uint8_t
 	AndroidUiHidden,        // TRIM_MEMORY_UI_HIDDEN (20)
 	AndroidBackground,      // TRIM_MEMORY_BACKGROUND (40), MODERATE (60), COMPLETE (80)
 	AndroidLowMemory,       // Activity.onLowMemory
+	// The browser's Wasm heap has grown to most of its fixed maximum (it never
+	// shrinks); an allocation past the maximum would stop the match.
+	BrowserHeapHigh,
 	Count
 };
 const char *signalName(MemorySignal signal);

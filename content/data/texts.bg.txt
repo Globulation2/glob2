@@ -7068,6 +7068,8 @@ MCP сървър
 Играта е прекратена: %0
 [game stopped script help]
 Прегледайте вградения JavaScript код и потреблението му на ресурси, преди да стартирате тази игра отново.
+[game stopped memory help]
+
 [missing map generator %0]
 Липсва генератор на карти: %0. Избран е вграден пейзаж.
 [hive standing order paused]

@@ -23,6 +23,7 @@ const char *signalName(MemorySignal signal)
 	case MemorySignal::AndroidUiHidden: return "android-trim-ui-hidden";
 	case MemorySignal::AndroidBackground: return "android-trim-background";
 	case MemorySignal::AndroidLowMemory: return "android-low-memory";
+	case MemorySignal::BrowserHeapHigh: return "browser-heap-high";
 	case MemorySignal::Count: break;
 	}
 	return "none";
@@ -56,7 +57,8 @@ Response respond(MemorySignal signal, bool androidLevels)
 	case MemorySignal::AndroidRunningModerate: return {Trim::Caches, false};
 	case MemorySignal::AndroidRunningLow: return {Trim::Caches, true};
 	case MemorySignal::AndroidRunningCritical:
-	case MemorySignal::AndroidLowMemory: return {Trim::Smallest, true};
+	case MemorySignal::AndroidLowMemory:
+	case MemorySignal::BrowserHeapHigh: return {Trim::Smallest, true};
 	case MemorySignal::AndroidUiHidden:
 	case MemorySignal::AndroidBackground: return {Trim::Background, false};
 	case MemorySignal::Count: break;

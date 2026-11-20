@@ -7068,6 +7068,8 @@ Discord باز شد. هر زمان بخواهید می‌توانید به با�
 بازی متوقف شد: %0
 [game stopped script help]
 پیش از شروع دوبارهٔ این بازی، کد JavaScript تعبیه‌شده و میزان استفادهٔ آن از منابع را بررسی کنید.
+[game stopped memory help]
+
 [missing map generator %0]
 مولد نقشه موجود نیست: %0. یک چشم‌انداز داخلی بازی انتخاب شد.
 [hive standing order paused]

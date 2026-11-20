@@ -18,6 +18,13 @@ class HostFailure : public SessionFailure
   public:
 	using SessionFailure::SessionFailure;
 };
+// The game session ran out of native memory (std::bad_alloc), whatever was
+// allocating; not a script fault. In the browser this is the Wasm heap's cap.
+class MemoryFailure : public HostFailure
+{
+  public:
+	using HostFailure::HostFailure;
+};
 class ScenarioFailure : public SessionFailure
 {
   public:

@@ -10,7 +10,7 @@ for (const variant of ['serial', 'threaded']) {
     const errors = [];
     page.on('pageerror', error => errors.push(String(error)));
     page.on('console', message => {
-      if (/Cannot enlarge memory|Failed to grow the heap|Native allocation failed|Pthread .*error|GL_INVALID|GPU mip preparation failed/.test(message.text()))
+      if (/Cannot enlarge memory|Failed to grow the heap|Native allocation failed|ran out of memory|Pthread .*error|GL_INVALID|GPU mip preparation failed/.test(message.text()))
         errors.push(message.text());
     });
     // Apply the same CPU report to the UI and every application/decoder realm.

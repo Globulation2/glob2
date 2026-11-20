@@ -7068,6 +7068,8 @@ Vrstica: %0 Stolpec: %1
 Igra je bila ustavljena: %0
 [game stopped script help]
 Pred ponovnim zagonom igre preglejte vgrajeno kodo JavaScript in njeno porabo virov.
+[game stopped memory help]
+
 [missing map generator %0]
 Manjka generator zemljevidov: %0. Izbrana je bila vgrajena pokrajina.
 [hive standing order paused]

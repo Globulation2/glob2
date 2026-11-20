@@ -7070,6 +7070,8 @@ Baris: %0 Lajur: %1
 Permainan dihentikan: %0
 [game stopped script help]
 Semak JavaScript terbenam dan penggunaan sumbernya sebelum memulakan semula permainan ini.
+[game stopped memory help]
+
 [missing map generator %0]
 Penjana peta tidak ditemui: %0. Landskap terbina dalam telah dipilih.
 [hive standing order paused]

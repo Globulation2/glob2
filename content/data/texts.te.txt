@@ -7070,6 +7070,8 @@ GL మాత్రమే
 గేమ్ ఆగిపోయింది: %0
 [game stopped script help]
 ఈ గేమ్‌ను పునఃప్రారంభించే ముందు ఎంబెడెడ్ JavaScript మరియు దాని వనరుల వినియోగాన్ని సమీక్షించండి.
+[game stopped memory help]
+
 [missing map generator %0]
 మ్యాప్ జనరేటర్ కనబడలేదు: %0. ఒక అంతర్నిర్మిత భూదృశ్యం ఎంచుకోబడింది.
 [hive standing order paused]

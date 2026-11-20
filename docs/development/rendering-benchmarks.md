@@ -213,7 +213,10 @@ pixels later: frames an atlas is built from, terrain materials, which the
 compositor samples (`Sprite::keepHighResolutionPixels`), and, without the
 shader, team layers, which a CPU recolour then clones. A context rebuild (a
 renderer switch) loses the textures, so those sprites draw native frames at
-once and reload HD from disk on the asset workers.
+once and reload HD from disk on the asset workers. The browser's legacy GL
+releases the same layers and treats a restored WebGL context as such a rebuild;
+it has no team-colour shader, so unit and building team layers keep their
+pixels there.
 
 Those textures also follow the zoom. HD frames hold four texels for each
 logical pixel, more than a zoomed-out view samples, so a detail band leaves out

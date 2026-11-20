@@ -7068,6 +7068,8 @@ Linha: %0 Coluna: %1
 Jogo interrompido: %0
 [game stopped script help]
 Antes de reiniciar o jogo, verifique o código JavaScript incorporado e a sua utilização de recursos.
+[game stopped memory help]
+
 [missing map generator %0]
 Gerador de mapas em falta: %0. Foi selecionada uma paisagem integrada.
 [hive standing order paused]

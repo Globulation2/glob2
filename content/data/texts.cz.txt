@@ -7068,6 +7068,8 @@ Uložení skriptu do %0 se nezdařilo.
 Hra zastavena: %0
 [game stopped script help]
 Před opětovným spuštěním této hry zkontrolujte vložený kód JavaScript a jeho využití prostředků.
+[game stopped memory help]
+
 [missing map generator %0]
 Chybí generátor map: %0. Byla vybrána vestavěná krajina.
 [hive standing order paused]

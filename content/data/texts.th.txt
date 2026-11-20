@@ -7070,6 +7070,8 @@ AI สำหรับ​ทุก​อาณานิคม​ที่​ค�
 เกม​หยุด​แล้ว: %0
 [game stopped script help]
 ตรวจสอบ​JavaScript​ที่​ฝัง​อยู่​และ​การ​ใช้​ทรัพยากร​ของ​สคริปต์​ก่อน​เริ่ม​เกม​นี้​ใหม่
+[game stopped memory help]
+
 [missing map generator %0]
 ไม่พบ​ตัวสร้าง​แผนที่: %0 เลือก​ภูมิประเทศ​ในตัว​แล้ว
 [hive standing order paused]

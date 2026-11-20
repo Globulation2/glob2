@@ -7070,6 +7070,8 @@ MCP سرور چالو کریں
 گیم رک گئی: %0
 [game stopped script help]
 اس گیم کو دوبارہ شروع کرنے سے پہلے ایمبیڈڈ JavaScript کوڈ اور اس کے وسائل کے استعمال کا جائزہ لیں۔
+[game stopped memory help]
+
 [missing map generator %0]
 نقشہ بنانے والا جنریٹر موجود نہیں: %0۔ گیم میں شامل منظرنامہ منتخب کر لیا گیا ہے۔
 [hive standing order paused]

@@ -7068,6 +7068,8 @@ Ligne : %0 Colonne : %1
 Jeu arrêté : %0
 [game stopped script help]
 Vérifiez le code JavaScript intégré et son utilisation des ressources avant de redémarrer ce jeu.
+[game stopped memory help]
+
 [missing map generator %0]
 Générateur de carte manquant : %0. Un paysage intégré a été sélectionné.
 [hive standing order paused]

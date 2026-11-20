@@ -80,7 +80,7 @@ bool guardedSessionStep(Engine& engine, Step&& step)
     catch (const std::bad_alloc&)
     {
         engine.abortSession();
-        throw Script::HostFailure("Native allocation failed during the game session");
+        throw Script::MemoryFailure("The game ran out of memory");
     }
 }
 } // namespace

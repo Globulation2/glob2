@@ -7068,6 +7068,8 @@ Rad: %0 Kolumn: %1
 Spelet stoppat: %0
 [game stopped script help]
 Granska den inbäddade JavaScript-koden och dess resursanvändning innan du startar om det här spelet.
+[game stopped memory help]
+
 [missing map generator %0]
 Kartgenerator saknas: %0. Ett inbyggt landskap valdes.
 [hive standing order paused]

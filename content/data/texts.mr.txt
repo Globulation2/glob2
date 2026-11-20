@@ -7070,6 +7070,8 @@ MCP सर्व्हर सक्षम करा
 खेळ थांबला: %0
 [game stopped script help]
 हा गेम पुन्हा सुरू करण्यापूर्वी, एम्बेडेड JavaScript आणि त्याच्या संसाधनांच्या वापराचे पुनरावलोकन करा.
+[game stopped memory help]
+
 [missing map generator %0]
 नकाशा जनरेटर सापडला नाही: %0. अंगभूत भूदृश्य निवडले गेले.
 [hive standing order paused]
