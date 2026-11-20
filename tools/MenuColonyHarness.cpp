@@ -698,6 +698,13 @@ int main(int argc, char **argv)
 			require(GAGGUI::Style::style == &theme, "nested restoration");
 			theme.background(globals.gfx, false);
 			require(theme.colony->ready(), "menu paint reloads the released colony");
+			{
+				// A match keeps it, paused, so its results paint without reloading it.
+				const auto tick = theme.colony->tick();
+				FrontendScope match(false, FrontendScope::Colony::Keep);
+				require(GAGGUI::Style::style == style, "match style");
+				require(theme.colony->ready() && theme.colony->tick() == tick, "a match keeps the menu colony loaded");
+			}
 		}
 		require(theme.colony->load(argv[2]), "reload colony fixture");
 		require(GAGGUI::Style::style == style &&

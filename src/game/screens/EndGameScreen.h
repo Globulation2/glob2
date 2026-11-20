@@ -154,6 +154,19 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 	//! A metric's name in the picker, saying so when it has nothing to show.
 	std::string pickerTitle(int index) const;
 	int enabledTeams() const;
+	//! Each team's recorded history, parallel to `teams`. The match has ended,
+	//! so the statistics they point into no longer change.
+	std::vector<Stats::TeamHistory> histories;
+	//! The chart last painted, kept while its metric, view and teams stay the
+	//! same: the screen repaints every frame, and hover changes only the readout.
+	struct PreparedChart
+	{
+		const Stats::Metric *metric = nullptr;
+		Stats::View view;
+		std::vector<int> teams;
+		TeamStatChart::Prepared data;
+	};
+	std::unique_ptr<PreparedChart> preparedChart;
 	void paintChart(Glob2UI::Canvas &canvas, Glob2UI::Rect r);
 	TeamStatChart::Options chartOptions() const;
 	// Parts of build(). Wide layouts list the metrics in a sidebar; compact ones

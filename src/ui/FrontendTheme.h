@@ -44,15 +44,21 @@ class FrontendTheme : public GAGGUI::Style
 	std::unique_ptr<GAGCore::DrawableSurface> fallback, fittedFallback;
 };
 
-// Also used to suspend front-end presentation around gameplay/editor loops; a
-// disabled scope releases the menu colony for its duration.
+// Also used to suspend front-end presentation around gameplay/editor loops. A
+// disabled scope pauses the menu colony for its duration, and releases it too
+// unless it keeps the colony (Colony::Keep).
 // Screens hold scopes for their whole lifetime, and a screen stack creates the
 // next screen before destroying the finished one, so scopes need not end in
 // reverse order: the most recently created live scope decides the presentation.
 class FrontendScope
 {
   public:
-	explicit FrontendScope(bool enabled = FrontendTheme::allowed);
+	enum class Colony
+	{
+		Release, //!< A disabled scope frees the colony; the next colony paint reloads it.
+		Keep	 //!< The colony stays loaded, paused, for the next colony backdrop.
+	};
+	explicit FrontendScope(bool enabled = FrontendTheme::allowed, Colony colony = Colony::Release);
 	~FrontendScope();
 	FrontendScope(const FrontendScope &) = delete;
 	FrontendScope &operator=(const FrontendScope &) = delete;

@@ -146,7 +146,6 @@ EndGameScreen::EndGameScreen(GameGUI *gui) : UIScreen(fe::themeFor(fe::Surface::
 					 [](const TeamEntry &a, const TeamEntry &b) { return a.summary[overviewSortColumn] > b.summary[overviewSortColumn]; });
 	// Metrics with nothing to show in this match (no trade, no prestige) are
 	// marked in the picker, so the player need not open them to find out.
-	std::vector<Stats::TeamHistory> histories;
 	for (const auto &team : teams)
 		histories.push_back(Stats::historyOf(team.teamNum, game->teams[team.teamNum]->stats));
 	for (const auto &entry : gameMetrics)
@@ -845,12 +844,32 @@ void EndGameScreen::paintChart(fe::Canvas &canvas, fe::Rect r)
 		canvas.text({r.x + 8, r.y + 8}, fe::FontRole::Body, fe::tr("[Select a team to show its history.]"), TeamStatChart::ink);
 		return;
 	}
-	canvas.pushClip(r);
 	const auto options = chartOptions();
-    std::vector<Stats::TeamHistory> histories;
-    for (const auto& team : options.teams)
-        histories.push_back(Stats::historyOf(team.team, game->teams[team.team]->stats));
-    TeamStatChart::paint(histories, game->stepCounter, *surface, r.x, r.y, r.w, r.h, options);
+	if (!options.metric)
+		return;
+	canvas.pushClip(r);
+	std::vector<int> shown;
+	for (const auto &team : options.teams)
+		shown.push_back(team.team);
+	const Stats::View chartView = Stats::validView(*options.metric, options.view);
+	const auto sameView = [&](const Stats::View &a) {
+		return a.total == chartView.total && a.window == chartView.window && a.split == chartView.split &&
+			   a.relative == chartView.relative && a.share == chartView.share;
+	};
+	if (!preparedChart || preparedChart->metric != options.metric || !sameView(preparedChart->view) ||
+		preparedChart->teams != shown)
+	{
+		std::vector<Stats::TeamHistory> drawn;
+		for (std::size_t i = 0; i < teams.size(); ++i)
+			if (teams[i].enabled)
+				drawn.push_back(histories[i]);
+		preparedChart = std::make_unique<PreparedChart>();
+		preparedChart->metric = options.metric;
+		preparedChart->view = chartView;
+		preparedChart->teams = std::move(shown);
+		preparedChart->data = TeamStatChart::prepare(*options.metric, chartView, drawn);
+	}
+	TeamStatChart::paintPrepared(preparedChart->data, game->stepCounter, *surface, r.x, r.y, r.w, r.h, options);
 	canvas.popClip();
 }
 
