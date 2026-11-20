@@ -119,6 +119,10 @@ void MenuColony::pause()
 {
 	clockStarted = false;
 	pending = 0;
+	// A match keeps the paused colony (FrontendScope::Colony::Keep): its cloud
+	// sampler's threads would otherwise idle beside the match's own.
+	if (view)
+		view->render.releaseCloudWorker();
 }
 
 void MenuColony::update(Uint64 now, bool visible)

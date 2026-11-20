@@ -22,6 +22,12 @@ DynamicClouds &MapRenderState::clouds()
 	return *clouds_;
 }
 
+void MapRenderState::releaseCloudWorker()
+{
+	if (clouds_)
+		clouds_->releaseWorker();
+}
+
 SoftwareTerrainCache &MapRenderState::terrainCache(Uint64 mapIdentity)
 {
 	if (!terrainCache_ || terrainCacheMap != mapIdentity)

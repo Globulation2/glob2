@@ -63,6 +63,10 @@ private:
 	std::shared_ptr<Worker> worker;
     int renderOffsetX = 0, renderOffsetY = 0, renderCellSize = 1;
 public:
+	///Stops the background sampler and frees its threads; the next compute()
+	///samples on the calling thread and starts a new one. For views kept but
+	///not drawn, such as the paused menu colony.
+	void releaseWorker() { worker.reset(); }
 	 ///render() distinguishes between CLOUD and SHADOW
 	enum Layer {
 		/// gets rendered white and scaled by cloudHeight
