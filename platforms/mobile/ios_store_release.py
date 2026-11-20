@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Prepare, submit or deliberately publish a provenance-bound iOS App Store build.
+"""Prepare, submit or deliberately publish a provenance-bound App Store build.
+
+The same driver serves the iOS app and, with --platform MAC_OS, the Mac App Store
+build of the same app record.
 
 Endpoints and request shapes follow Apple's App Store Connect OpenAPI spec.
 An upload never triggers public distribution. Apple's review/metadata errors
@@ -19,14 +22,29 @@ from ios_release import marketing_version
 
 API='https://api.appstoreconnect.apple.com'
 BUNDLE='org.globulation2.glob2'
+PLATFORMS=('IOS','MAC_OS')
+# Screenshot display types each platform's primary listing must cover.
+SCREENSHOT_DEVICES={'IOS':{'iphone':'APP_IPHONE_','ipad':'APP_IPAD_'},'MAC_OS':{'mac':'APP_DESKTOP'}}
 
 
-def validate_provenance(record, tag, commit, run_id):
+def expected_marketing_versions(tag, platform='IOS'):
+    """Marketing versions that encode the selected game tag on this platform.
+
+    Mac App Store builds before 0.11.6.6 carried only the first three version
+    components; later ones use the iOS encoding so each patch is distinct."""
+    version=tag.removeprefix('v')
+    if platform=='IOS': return {marketing_version(version)}
+    return {marketing_version(version),'.'.join(version.split('.')[:3])}
+
+
+def validate_provenance(record, tag, commit, run_id, platform='IOS'):
+    if platform not in PLATFORMS or record.get('platform','IOS')!=platform:
+        raise ValueError('Provenance describes a different App Store platform')
     if record.get('schemaVersion')!=1 or record.get('tag')!=tag or record.get('sourceCommit')!=commit:
         raise ValueError('Uploaded build provenance differs from the selected public source')
     if record.get('bundleId')!=BUNDLE or record.get('appStoreEligible') is not True or record.get('runId')!=str(run_id):
         raise ValueError('Provenance must describe an eligible upload from the selected mirror run')
-    if record.get('marketingVersion')!=marketing_version(tag.removeprefix('v')):
+    if record.get('marketingVersion') not in expected_marketing_versions(tag,platform):
         raise ValueError('Marketing version does not encode the selected game tag')
     if not re.fullmatch('[0-9]+',str(record.get('buildNumber',''))) or not re.fullmatch('[0-9a-f]{64}',str(record.get('archiveBinarySha256',''))):
         raise ValueError('Uploaded build identity is incomplete')
@@ -128,7 +146,7 @@ def state(version):
     attrs=version['attributes']; return attrs.get('appVersionState') or attrs.get('appStoreState')
 
 
-def check_metadata(api, app, version):
+def check_metadata(api, app, version, platform='IOS'):
     attrs=version['attributes']
     if not attrs.get('copyright'): raise ValueError('App Store copyright metadata is missing')
     locales=api.collect(f"/v1/appStoreVersions/{version['id']}/appStoreVersionLocalizations")
@@ -137,7 +155,7 @@ def check_metadata(api, app, version):
         info=locale['attributes']
         if not info.get('description') or not str(info.get('supportUrl','')).startswith('https://'):
             raise ValueError('Localized description and HTTPS support URL are required')
-    # Require complete iPhone/iPad media for the primary listing. Apple validates
+    # Require complete platform media for the primary listing. Apple validates
     # exact display sizes and any inherited locale media on actual submission.
     primary=one([item for item in locales if item['attributes'].get('locale')==app['attributes']['primaryLocale']], 'primary locale listing')
     screenshots=api.collect(f"/v1/appStoreVersionLocalizations/{primary['id']}/appScreenshotSets")
@@ -148,9 +166,9 @@ def check_metadata(api, app, version):
         if any(image['attributes'].get('assetDeliveryState',{}).get('state')!='COMPLETE' for image in images):
             raise ValueError('App Store screenshot delivery is incomplete')
         display=group['attributes']['screenshotDisplayType']
-        if display.startswith('APP_IPHONE_'): devices.add('iphone')
-        if display.startswith('APP_IPAD_'): devices.add('ipad')
-    if devices!={'iphone','ipad'}: raise ValueError('Complete iPhone and iPad screenshots are required')
+        devices.update(device for device,prefix in SCREENSHOT_DEVICES[platform].items() if display.startswith(prefix))
+    if devices!=set(SCREENSHOT_DEVICES[platform]):
+        raise ValueError('Complete iPhone and iPad screenshots are required' if platform=='IOS' else 'Complete Mac screenshots are required')
     detail=api.request('GET',f"/v1/appStoreVersions/{version['id']}/appStoreReviewDetail")['data']['attributes']
     if any(not detail.get(name) for name in ('contactFirstName','contactLastName','contactPhone','contactEmail')):
         raise ValueError('App Review contact details are incomplete')
@@ -175,7 +193,8 @@ def check_draft_replacement(version, attached, expected_build_id, selected_build
         raise ValueError('Draft build no longer matches the explicitly selected replacement identity')
 
 
-def run(api, stage, provenance, draft_version_id='', replace_draft_build_id='', whats_new=''):
+def run(api, stage, provenance, draft_version_id='', replace_draft_build_id='', whats_new='', platform='IOS'):
+    if platform not in PLATFORMS: raise ValueError('Unknown App Store platform')
     if draft_version_id and (stage!='prepare' or not re.fullmatch('[A-Za-z0-9-]{1,128}',draft_version_id)):
         raise ValueError('An explicit draft ID is valid only for prepare')
     if replace_draft_build_id and (stage != 'prepare' or not draft_version_id or
@@ -183,21 +202,24 @@ def run(api, stage, provenance, draft_version_id='', replace_draft_build_id='', 
         raise ValueError('Build replacement requires prepare, an explicit draft and its current build ID')
     app=one(api.collect('/v1/apps?'+urlencode({'filter[bundleId]':BUNDLE})), 'Globulation 2 app')
     build=one(api.collect('/v1/builds?'+urlencode({'filter[app]':app['id'],'filter[version]':provenance['buildNumber'],
-        'filter[preReleaseVersion.version]':provenance['marketingVersion'],'filter[preReleaseVersion.platform]':'IOS'})), 'uploaded tagged iOS build')
+        'filter[preReleaseVersion.version]':provenance['marketingVersion'],'filter[preReleaseVersion.platform]':platform})), 'uploaded tagged build')
     if build['attributes'].get('processingState')!='VALID' or build['attributes'].get('expired') is not False or build['attributes'].get('buildAudienceType')!='APP_STORE_ELIGIBLE':
         raise ValueError('Selected Apple build is not processed and App Store eligible')
-    if build['attributes'].get('usesNonExemptEncryption') is not False:
+    # iOS declares exempt encryption in its Info.plist. The Mac app's OpenSSL use is
+    # declared in App Store Connect, which must have resolved it either way.
+    encryption=build['attributes'].get('usesNonExemptEncryption')
+    if (encryption is not False) if platform=='IOS' else (encryption is None):
         raise ValueError('Encryption declaration is unresolved or differs from the uploaded app')
-    versions=api.collect(f"/v1/apps/{app['id']}/appStoreVersions?"+urlencode({'filter[platform]':'IOS','filter[versionString]':provenance['marketingVersion']}))
-    if draft_version_id and versions and one(versions,'matching iOS App Store version')['id']!=draft_version_id:
+    versions=api.collect(f"/v1/apps/{app['id']}/appStoreVersions?"+urlencode({'filter[platform]':platform,'filter[versionString]':provenance['marketingVersion']}))
+    if draft_version_id and versions and one(versions,'matching App Store version')['id']!=draft_version_id:
         raise ValueError('Explicit draft differs from the existing tagged version')
     if draft_version_id and not versions:
         path=f'/v1/appStoreVersions/{draft_version_id}'
-        drafts=api.collect(f"/v1/apps/{app['id']}/appStoreVersions?"+urlencode({'filter[platform]':'IOS'}))
+        drafts=api.collect(f"/v1/apps/{app['id']}/appStoreVersions?"+urlencode({'filter[platform]':platform}))
         version=one([item for item in drafts if item['id']==draft_version_id],'explicit draft belonging to this app')
         if (version['id']!=draft_version_id or
-            version['attributes'].get('platform')!='IOS' or state(version)!='PREPARE_FOR_SUBMISSION'):
-            raise ValueError('Explicit draft must be an editable iOS draft belonging to this app')
+            version['attributes'].get('platform')!=platform or state(version)!='PREPARE_FOR_SUBMISSION'):
+            raise ValueError('Explicit draft must be an editable draft of this platform belonging to this app')
         attached = api.request('GET',path+'/relationships/build').get('data')
         if replace_draft_build_id:
             check_draft_replacement(version, attached, replace_draft_build_id, build['id'])
@@ -210,10 +232,10 @@ def run(api, stage, provenance, draft_version_id='', replace_draft_build_id='', 
     if not versions:
         if stage!='prepare': raise ValueError('Prepare the exact tagged App Store version first')
         version=api.request('POST','/v1/appStoreVersions',resource('appStoreVersions',attributes={
-            'platform':'IOS','versionString':provenance['marketingVersion'],'releaseType':'MANUAL'},
+            'platform':platform,'versionString':provenance['marketingVersion'],'releaseType':'MANUAL'},
             relationships={'app':relation('apps',app['id']),'build':relation('builds',build['id'])}))['data']
         return {'stage':stage,'versionId':version['id'],'buildId':build['id'],'state':state(version)}
-    version=one(versions,'matching iOS App Store version')
+    version=one(versions,'matching App Store version')
     attached=api.request('GET',f"/v1/appStoreVersions/{version['id']}/relationships/build").get('data')
     if replace_draft_build_id:
         check_draft_replacement(version, attached, replace_draft_build_id, build['id'])
@@ -233,9 +255,9 @@ def run(api, stage, provenance, draft_version_id='', replace_draft_build_id='', 
         elif stage=='submit':
             if state(version) not in ('PREPARE_FOR_SUBMISSION','READY_FOR_REVIEW','REJECTED','METADATA_REJECTED','DEVELOPER_REJECTED'):
                 raise ValueError('App Store version cannot be submitted from its current state')
-            check_metadata(api,app,version)
+            check_metadata(api,app,version,platform)
             fill_whats_new(api,version,whats_new)
-            submissions=api.collect(f"/v1/apps/{app['id']}/reviewSubmissions?"+urlencode({'filter[platform]':'IOS'}))
+            submissions=api.collect(f"/v1/apps/{app['id']}/reviewSubmissions?"+urlencode({'filter[platform]':platform}))
             pending=[];empty=[]
             for submission in submissions:
                 if submission['attributes']['state']=='COMPLETE': continue
@@ -250,11 +272,11 @@ def run(api, stage, provenance, draft_version_id='', replace_draft_build_id='', 
                 if submission['attributes']['state']!='READY_FOR_REVIEW': raise ValueError('Selected review submission is already pending or has unresolved issues')
             else:
                 if empty: submission=one(empty,'empty review submission')
-                else: submission=api.request('POST','/v1/reviewSubmissions',resource('reviewSubmissions',attributes={'platform':'IOS'},relationships={'app':relation('apps',app['id'])}))['data']
+                else: submission=api.request('POST','/v1/reviewSubmissions',resource('reviewSubmissions',attributes={'platform':platform},relationships={'app':relation('apps',app['id'])}))['data']
                 api.request('POST','/v1/reviewSubmissionItems',resource('reviewSubmissionItems',relationships={
                     'reviewSubmission':relation('reviewSubmissions',submission['id']),'appStoreVersion':relation('appStoreVersions',version['id'])}))
             api.request('PATCH',f"/v1/reviewSubmissions/{submission['id']}",resource('reviewSubmissions',submission['id'],{'submitted':True}))
-        else: raise ValueError('Unknown iOS production stage')
+        else: raise ValueError('Unknown App Store production stage')
     return {'stage':stage,'versionId':version['id'],'buildId':build['id'],'state':state(version)}
 
 
@@ -262,13 +284,14 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('stage',choices=('prepare','submit','publish'))
     parser.add_argument('--provenance',type=Path,required=True)
-    parser.add_argument('--draft-version-id',default='',help='Explicit editable iOS draft to reuse during prepare')
+    parser.add_argument('--platform',choices=PLATFORMS,default='IOS',help='App Store platform of the uploaded build')
+    parser.add_argument('--draft-version-id',default='',help='Explicit editable draft to reuse during prepare')
     parser.add_argument('--replace-draft-build-id', default='', help='Expected current build in that unsubmitted manual-release draft; replacement is otherwise refused')
     for name in ('tag','source-commit','run-id'): parser.add_argument('--'+name,required=True)
-    args=parser.parse_args();record=validate_provenance(json.loads(args.provenance.read_text()),args.tag,args.source_commit,args.run_id)
+    args=parser.parse_args();record=validate_provenance(json.loads(args.provenance.read_text()),args.tag,args.source_commit,args.run_id,args.platform)
     token=jwt_token(base64.b64decode(os.environ['IOS_ASC_KEY_P8_BASE64'],validate=True),os.environ['IOS_ASC_KEY_ID'],os.environ['IOS_ASC_ISSUER_ID'])
     notes=release_notes(args.tag.removeprefix('v')) if args.stage=='submit' else ''
-    result=run(Client(token),args.stage,record,args.draft_version_id,args.replace_draft_build_id,notes);print(json.dumps(result,sort_keys=True))
+    result=run(Client(token),args.stage,record,args.draft_version_id,args.replace_draft_build_id,notes,args.platform);print(json.dumps(result,sort_keys=True))
 
 
 if __name__=='__main__':main()

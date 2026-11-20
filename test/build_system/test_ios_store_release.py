@@ -294,4 +294,67 @@ class IOSStoreTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'outside Apple'): api.request('GET','https://example.com/data')
 
 
+class MacAppStoreTests(unittest.TestCase):
+    def mac_provenance(self, marketing='0.11.605'):
+        return dict(provenance(),platform='MAC_OS',tag='v0.11.6.5',marketingVersion=marketing)
+
+    def test_mac_provenance_accepts_both_encodings_and_rejects_cross_platform_records(self):
+        for marketing in ('0.11.605','0.11.6'):
+            record=self.mac_provenance(marketing)
+            self.assertEqual(store.validate_provenance(record,'v0.11.6.5','a'*40,'123','MAC_OS'),record)
+        with self.assertRaisesRegex(ValueError,'Marketing version'):
+            store.validate_provenance(self.mac_provenance('0.11.5'),'v0.11.6.5','a'*40,'123','MAC_OS')
+        with self.assertRaisesRegex(ValueError,'different App Store platform'):
+            store.validate_provenance(self.mac_provenance(),'v0.11.6.5','a'*40,'123','IOS')
+        with self.assertRaisesRegex(ValueError,'different App Store platform'):
+            store.validate_provenance(dict(provenance(),tag='v0.11.6.5',marketingVersion='0.11.605'),'v0.11.6.5','a'*40,'123','MAC_OS')
+        with self.assertRaisesRegex(ValueError,'Marketing version'):
+            store.validate_provenance(dict(provenance(),tag='v0.11.6.5',marketingVersion='0.11.6'),'v0.11.6.5','a'*40,'123','IOS')
+
+    def test_mac_prepare_and_submit_use_the_mac_platform_everywhere(self):
+        api=FakeAPI(missing=True);store.run(api,'prepare',self.mac_provenance(),platform='MAC_OS')
+        create=[body for method,path,body in api.calls if method=='POST' and path=='/v1/appStoreVersions'][0]
+        self.assertEqual(create['data']['attributes']['platform'],'MAC_OS')
+        self.assertTrue(any('preReleaseVersion.platform%5D=MAC_OS' in path for _,path,_ in api.calls))
+        self.assertFalse(any('IOS' in path for _,path,_ in api.calls))
+        api=FakeAPI()
+        with patch.object(store,'check_metadata') as metadata: store.run(api,'submit',self.mac_provenance(),platform='MAC_OS')
+        self.assertEqual(metadata.call_args.args[-1],'MAC_OS')
+        review=[body for method,path,body in api.calls if method=='POST' and path=='/v1/reviewSubmissions'][0]
+        self.assertEqual(review['data']['attributes']['platform'],'MAC_OS')
+        self.assertFalse(any('IOS' in path for _,path,_ in api.calls))
+
+    def test_mac_metadata_requires_desktop_screenshots_not_iphone_or_ipad(self):
+        class MacMetadataAPI(MetadataAPI):
+            def __init__(self, displays):
+                super().__init__();self.displays=displays
+            def collect(self,path):
+                if path.endswith('/appScreenshotSets'):
+                    return [{'id':name,'attributes':{'screenshotDisplayType':name}} for name in self.displays]
+                return super().collect(path)
+        api=MacMetadataAPI(['APP_DESKTOP'])
+        store.check_metadata(api,api.app,api.version,'MAC_OS')
+        api=MacMetadataAPI(['APP_IPHONE_67','APP_IPAD_PRO_3GEN_129'])
+        with self.assertRaisesRegex(ValueError,'Mac screenshots'):
+            store.check_metadata(api,api.app,api.version,'MAC_OS')
+        with self.assertRaisesRegex(ValueError,'iPhone and iPad'):
+            store.check_metadata(MacMetadataAPI(['APP_DESKTOP']),api.app,api.version,'IOS')
+
+    def test_mac_requires_a_resolved_encryption_declaration_of_either_kind(self):
+        for declared,allowed in ((False,True),(True,True),(None,False)):
+            api=FakeAPI(missing=True);api.build['attributes']['usesNonExemptEncryption']=declared
+            with self.subTest(declared=declared):
+                if allowed: store.run(api,'prepare',self.mac_provenance(),platform='MAC_OS')
+                else:
+                    with self.assertRaisesRegex(ValueError,'Encryption declaration'):
+                        store.run(api,'prepare',self.mac_provenance(),platform='MAC_OS')
+        api=FakeAPI(missing=True);api.build['attributes']['usesNonExemptEncryption']=True
+        with self.assertRaisesRegex(ValueError,'Encryption declaration'): store.run(api,'prepare',provenance())
+
+    def test_unknown_platform_is_refused_before_api_access(self):
+        api=FakeAPI()
+        with self.assertRaisesRegex(ValueError,'Unknown App Store platform'): store.run(api,'prepare',provenance(),platform='TV_OS')
+        self.assertEqual(api.calls,[])
+
+
 if __name__=='__main__':unittest.main()

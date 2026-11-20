@@ -18,7 +18,9 @@ ROOT = Path(__file__).resolve().parents[2]
 ENTITLEMENTS = ROOT / "platforms/macos/AppStore.entitlements"
 ICON_SOURCE = ROOT / "content/data/icons/glob2-icon-128x128.png"
 sys.path.insert(0, str(ROOT / "buildsys"))
+sys.path.insert(0, str(ROOT / "platforms/mobile"))
 from build_layout import PACKAGE_VERSION
+from ios_release import marketing_version
 
 
 def run(*args):
@@ -68,7 +70,9 @@ def main():
     parser.add_argument("--installer-identity", help="Mac Installer Distribution identity for a submission .pkg")
     parser.add_argument("--profile", type=Path, help="App Store provisioning profile (required for .pkg)")
     parser.add_argument("--bundle-id", default="org.globulation2.glob2")
-    parser.add_argument("--version", default=".".join(PACKAGE_VERSION.split(".")[:3]))
+    # The iOS encoding (0.11.6.5 -> 0.11.605) gives every patch release its own
+    # App Store version; the same app record carries both platforms.
+    parser.add_argument("--version", default=marketing_version(PACKAGE_VERSION))
     parser.add_argument("--build", default="1", help="App Store build number (increase for every upload)")
     args = parser.parse_args()
 
