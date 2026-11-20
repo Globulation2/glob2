@@ -30,8 +30,20 @@ async function startAndSave(page) {
   await expect.poll(async()=>(await state(page)).screenClass).toContain('GameSessionScreen');
   return (await page.evaluate(()=>glob2Diagnostics.saves())).find(name=>name.startsWith('Reload_regression_'));
 }
+// The Save dialog closes on a scheduled completion that can trail its OK click
+// and the game screen's return, and an Escape sent before it runs closes the
+// dialog instead of opening the in-game menu. Press again only while no menu came.
+async function openGameMenu(page) {
+  for(let attempt=1;;attempt++) {
+    await page.locator('#canvas').press('Escape',{delay:80});
+    try {
+      await expect.poll(async()=>Boolean((await state(page)).controls.load),{timeout:10000}).toBe(true);
+      return;
+    } catch(error) { if(attempt>=3) throw error; }
+  }
+}
 async function loadSaved(page,replay=false,observeLoading=true) {
-  await page.locator('#canvas').press('Escape',{delay:80});
+  await openGameMenu(page);
   await clickControl(page,'load');
   // Game loads retain the last saved name; the first row may be an autosave.
   // The imported replay is selected explicitly because it has a different name.
