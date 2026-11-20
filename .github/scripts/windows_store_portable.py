@@ -17,6 +17,11 @@ store = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(store)
 
 RELEASES = {
+    "v0.11.6.5": {
+        "commit": "648b68043d67d464e7e9390ab4712257f86448be",
+        "asset": "glob2-0.11.6.5-windows-x86_64.zip",
+        "sha256": "7d9c8a1afeefcd418e6c4fc080cae5ab0229d6467e5d1c8f0bc975799ce6b40d",
+    },
     "v0.11.6.2": {
         "commit": "aecd7aed221818f1a68e18f310695b7c5b4ffe51",
         "asset": "glob2-0.11.6.2-windows-x86_64.zip",
