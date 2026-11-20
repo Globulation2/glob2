@@ -72,6 +72,7 @@ void wait(std::uint32_t milliseconds)
 }
 void initializeOpenGLContext() {}
 bool prepareOpenGLMipmaps(unsigned, const void*, int, int) { return false; }
+bool heapNearlyFull() { return false; }
 bool takeVisibilityChange(bool &)
 {
 	return false;
