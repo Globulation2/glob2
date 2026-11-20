@@ -34,6 +34,20 @@ class TeamStatChart
     static void paint(const std::vector<Stats::TeamHistory>& histories, Uint32 tick,
                       GAGCore::DrawableSurface& surface, int left, int top, int width, int height,
                       const Options& options);
+	//! The data a chart draws, worked out from the histories once so that a
+	//! caller repainting an unchanged chart (hover, every frame) need not
+	//! rebuild it: paint(histories, ...) is prepare() then paintPrepared(prepared, ...).
+	struct Prepared
+	{
+		Stats::Chart chart;
+		std::vector<Stats::Marker> markers;
+		bool recorded = false; //!< Some history holds more than one sample.
+	};
+	static Prepared prepare(const Stats::Metric &metric, const Stats::View &view,
+							const std::vector<Stats::TeamHistory> &histories);
+	//! Draws `prepared`, which must have been prepared for options.metric and options.view.
+	static void paintPrepared(const Prepared &prepared, Uint32 tick, GAGCore::DrawableSurface &surface, int left, int top,
+							  int width, int height, const Options &options);
 	//! Translated name of a metric, and the longer explanation of what it measures.
 	static std::string title(const Stats::Metric &metric);
 	static std::string about(const Stats::Metric &metric);

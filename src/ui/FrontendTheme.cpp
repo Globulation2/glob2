@@ -78,12 +78,17 @@ FrontendTheme::~FrontendTheme()
 	current = nullptr;
 }
 
-FrontendScope::FrontendScope(bool enabled) : enabled(enabled)
+FrontendScope::FrontendScope(bool enabled, Colony colony) : enabled(enabled)
 {
 	liveScopes.push_back(this);
 	apply();
 	if (!enabled && FrontendTheme::current)
-		FrontendTheme::current->releaseColony();
+	{
+		if (colony == Colony::Release)
+			FrontendTheme::current->releaseColony();
+		else
+			FrontendTheme::current->colony->pause();
+	}
 }
 FrontendScope::~FrontendScope()
 {

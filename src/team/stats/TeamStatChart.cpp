@@ -625,29 +625,49 @@ void TeamStatChart::paintReadings(DrawableSurface &surface, int left, int top, i
 	}
 }
 
+TeamStatChart::Prepared TeamStatChart::prepare(const Stats::Metric &metric, const Stats::View &view,
+												 const std::vector<Stats::TeamHistory> &histories)
+{
+	Prepared prepared;
+	for (const auto &history : histories)
+	{
+		const auto found = Stats::markers(history);
+		prepared.markers.insert(prepared.markers.end(), found.begin(), found.end());
+	}
+	prepared.chart = Stats::buildChart(metric, view, histories);
+	prepared.recorded = std::any_of(histories.begin(), histories.end(), [](const auto &h) { return h.points.size() > 1; });
+	// Markers belong to teams; a map-wide series has none.
+	if (prepared.chart.global)
+		prepared.markers.clear();
+	return prepared;
+}
+
 void TeamStatChart::paint(const std::vector<Stats::TeamHistory>& histories, Uint32 tick,
                           DrawableSurface& surface, int left, int top, int width, int height,
                           const Options& options)
 {
-    if (!options.metric || width < 40 || height < 40) return;
-    const Stats::Metric& metric = *options.metric;
-    const Stats::View view = Stats::validView(metric, options.view);
-    const Text text(surface, globalContainer->littleFont);
-    std::vector<Stats::Marker> markers;
-    for (const auto& history : histories) {
-        const auto found = Stats::markers(history);
-        markers.insert(markers.end(), found.begin(), found.end());
-    }
-	const Stats::Chart chart = Stats::buildChart(metric, view, histories);
+	if (!options.metric || width < 40 || height < 40)
+		return;
+	paintPrepared(prepare(*options.metric, options.view, histories), tick, surface, left, top, width, height, options);
+}
+
+void TeamStatChart::paintPrepared(const Prepared &prepared, Uint32 tick, DrawableSurface &surface, int left, int top,
+						  int width, int height, const Options &options)
+{
+	if (!options.metric || width < 40 || height < 40)
+		return;
+	const Stats::Metric &metric = *options.metric;
+	const Stats::View view = Stats::validView(metric, options.view);
+	const Text text(surface, globalContainer->littleFont);
+	const Stats::Chart &chart = prepared.chart;
 	std::size_t samples = 0;
 	for (const auto &team : chart.teams)
 		samples = std::max(samples, team.ticks.size());
 	if (samples < 2)
 	{
 		// Either the match was too short, or this save predates the measurement.
-		const bool recorded = std::any_of(histories.begin(), histories.end(), [](const auto &h) { return h.points.size() > 1; });
 		text.status(left + pad, top + pad, width - 2 * pad, height - 2 * pad,
-			tr(recorded ? "[stat not recorded for this match]" : "[Not enough recorded history yet.]"));
+			tr(prepared.recorded ? "[stat not recorded for this match]" : "[Not enough recorded history yet.]"));
 		return;
 	}
 
@@ -657,11 +677,7 @@ void TeamStatChart::paint(const std::vector<Stats::TeamHistory>& histories, Uint
 		text.status(left + pad, top + pad, width - 2 * pad, height - 2 * pad, tr("[stat nothing to show]"));
 		return;
 	}
-	// Markers belong to teams; a map-wide series has none.
-	if (chart.global)
-		markers.clear();
-
-	ChartPainter painter{text, options, metric, chart, markers, left, top, width, height, std::max<Uint32>(1, tick)};
+	ChartPainter painter{text, options, metric, chart, prepared.markers, left, top, width, height, std::max<Uint32>(1, tick)};
 	int y = top + pad;
 	text.draw(left + pad, y, text.fit(axisTitle(metric, view), width - 2 * pad), muted);
 	y += text.height + 4;

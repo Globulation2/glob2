@@ -1029,9 +1029,11 @@ Element LANFindScreen::build(const Presentation &p)
 active for its lifetime. Startup prepares the colony's first scene before showing
 the menu; colony backdrops never show a scaled screenshot first. Later colony
 scenes are prepared asynchronously. Gameplay and the editor hold a disabled
-`FrontendScope`, which frees the colony for their duration on every platform; the
-next colony backdrop paint (the results screen or the menu) loads it again from
-its snapshot. `Glob2UI::Dialog`
+`FrontendScope`. The editor's frees the colony for its duration on every
+platform, and the next colony backdrop paint loads it again from its snapshot. A
+match's keeps the colony loaded but paused (`FrontendScope::Colony::Keep`): the
+results screen paints it first, and reloading it there held the results' first
+frame back by about 0.3 s at 1280×800, more at larger sizes. `Glob2UI::Dialog`
 is the same for frontend modals; `Glob2UI::InGameDialog` takes a `Surface`
 (`Match` by default, `Editor` for editor dialogs) and wears the theme
 `themeFor()` maps it to, on every host. On big

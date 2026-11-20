@@ -42,7 +42,9 @@ class GameSessionScreen : public GAGGUI::Screen
     void updateExecutionImpl(Uint32 tick);
     // Ends the session after a failure and shows message, then returns to the menu.
     void stopSession(const std::string &message);
-	FrontendScope theme{false};
+	// The colony stays loaded through the match: the results screen paints it
+	// first, and reloading it there would hold back the results' first frame.
+	FrontendScope theme{false, FrontendScope::Colony::Keep};
 	GAGGUI::ScreenStack &stack;
 	std::unique_ptr<Engine> engine;
 	GAGCore::EventQueue input;
