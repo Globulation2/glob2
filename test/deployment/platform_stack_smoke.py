@@ -250,6 +250,20 @@ class Smoke:
             raise Failure(f'{" ".join(args[:2])} failed ({result.returncode}):\n{result.stdout}\n{result.stderr}')
         return result.stdout
 
+    def compose_logged(self, name, *args, timeout):
+        """Run docker compose with its output written to the log directory as it arrives."""
+        command = ['docker', 'compose', '-p', self.project, '-f', str(COMPOSE_FILE),
+                   '--env-file', str(self.env_file), *args]
+        directory = self.log_dir or Path(tempfile.gettempdir())
+        directory.mkdir(parents=True, exist_ok=True)
+        path = directory / name
+        with path.open('w') as output:
+            code = subprocess.run(command, env=self.env, stdout=output, stderr=subprocess.STDOUT,
+                                  timeout=timeout).returncode
+        if code != 0:
+            tail = ''.join(path.read_text(errors='replace').splitlines(True)[-60:])
+            raise Failure(f'{" ".join(args[:3])} failed ({code}); last lines of {path}:\n{tail}')
+
     def https(self, method, path, body=None, headers=None):
         connection = http.client.HTTPConnection(self.connect_host, self.https_port, timeout=20)
         # Verified TLS for the public name (locally "localhost" while connecting to 127.0.0.1).
@@ -316,7 +330,10 @@ class Smoke:
                 text=True, cwd=ROOT).strip()
             log('building images (platform, music-worker, skin-render-worker, engine-agent, relay, caddy)')
             started = time.monotonic()
-            self.compose('build', 'init', 'music-worker', 'skin-render-worker', 'engine-agent', 'relay', 'caddy', timeout=7200)
+            # Stream the build to a file: it takes 50-95 minutes on hosted runners, and
+            # output held in memory would be lost if the job's own timeout ended it.
+            self.compose_logged('build.log', '--progress', 'plain', 'build', 'init', 'music-worker',
+                                'skin-render-worker', 'engine-agent', 'relay', 'caddy', timeout=10200)
             self.results['build_seconds'] = round(time.monotonic() - started)
         log(f'starting project {self.project} on {self.origin}')
         started = time.monotonic()
