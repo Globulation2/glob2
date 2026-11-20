@@ -7068,6 +7068,8 @@ Satır: %0 Sütun: %1
 Oyun durduruldu: %0
 [game stopped script help]
 Bu oyunu yeniden başlatmadan önce gömülü JavaScript kodunu ve kaynak kullanımını inceleyin.
+[game stopped memory help]
+
 [missing map generator %0]
 Harita oluşturucu eksik: %0. Oyuna yerleşik bir manzara seçildi.
 [hive standing order paused]

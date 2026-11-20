@@ -7068,6 +7068,8 @@ Riadok: %0 Stĺpec: %1
 Hra zastavená: %0
 [game stopped script help]
 Pred opätovným spustením tejto hry skontrolujte vložený kód JavaScript a jeho využitie zdrojov.
+[game stopped memory help]
+
 [missing map generator %0]
 Chýba generátor máp: %0. Bola vybraná vstavaná krajina.
 [hive standing order paused]

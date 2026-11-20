@@ -7070,6 +7070,8 @@ MCP सर्वर चालू करें
 गेम बंद हो गया: %0
 [game stopped script help]
 इस गेम को पुनः आरंभ करने से पहले एम्बेडेड JavaScript कोड और इसके संसाधन उपयोग की समीक्षा करें।
+[game stopped memory help]
+
 [missing map generator %0]
 मैप जनरेटर उपलब्ध नहीं है: %0। गेम में अंतर्निहित परिदृश्य चुन लिया गया है।
 [hive standing order paused]

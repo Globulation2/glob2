@@ -7068,6 +7068,8 @@ Lerroa: %0 Zutabea: %1
 Jokoa geldituta: %0
 [game stopped script help]
 Berrikusi txertatutako JavaScript kodea eta haren baliabideen erabilera joko hau berrabiarazi aurretik.
+[game stopped memory help]
+
 [missing map generator %0]
 Mapa-sortzailea falta da: %0. Jokoan integratutako paisaia bat hautatu da.
 [hive standing order paused]

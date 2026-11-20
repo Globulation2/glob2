@@ -164,9 +164,11 @@ namespace GAGCore
 
     bool DrawableSurface::releasePixels()
     {
-#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
-        // Device, software and browser renderers read the pixels on draw or
-        // after a context loss; an atlas frame has no texture of its own.
+#if defined(HAVE_OPENGL)
+        // Device and software renderers read the pixels on draw; an atlas frame
+        // has no texture of its own. After a WebGL context loss the browser's
+        // legacy GL drops released frames to native and reloads them
+        // (restoreBrowserContext), as desktop does after a context rebuild.
         if (!sdlsurface || this == _gc || textureInfo || !texture || glUploadedRevision != pixelRevision ||
             !_gc || !(_gc->optionFlags & GraphicContext::USEGPU) || _gc->renderDevice() ||
             _gc->backendSwitchStatus().active != RendererBackend::LegacyGL)
@@ -724,6 +726,9 @@ void GraphicContext::restoreBrowserContext()
         surface->gpuBytes = 0;
         surface->glUploadedRevision = 0;
     }
+    // HD frames whose pixels were released after upload had only their
+    // textures: draw native and reload them on the asset workers.
+    Sprite::discardUnbackedHighResolution();
     _gc->setClipRect();
 #endif
 }

@@ -7068,6 +7068,8 @@ Sor: %0 Oszlop: %1
 Játék leállítva: %0
 [game stopped script help]
 A játék újraindítása előtt tekintsd át a beágyazott JavaScript-kódot és annak erőforrás-használatát.
+[game stopped memory help]
+
 [missing map generator %0]
 Hiányzó térképgenerátor: %0. A játékba beépített táj lett kiválasztva.
 [hive standing order paused]

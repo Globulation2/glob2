@@ -7068,6 +7068,8 @@ GL فقط
 توقفت اللعبة: %0
 [game stopped script help]
 راجع شيفرة JavaScript المدمجة واستخدامها للموارد قبل إعادة تشغيل هذه اللعبة.
+[game stopped memory help]
+
 [missing map generator %0]
 مولد الخرائط مفقود: %0. تم اختيار مشهد طبيعي مدمج.
 [hive standing order paused]

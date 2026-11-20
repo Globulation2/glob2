@@ -7068,6 +7068,8 @@ Regel: %0 Kolom: %1
 Spel gestopt: %0
 [game stopped script help]
 Controleer de ingebouwde JavaScript-code en het bijbehorende resourcegebruik voordat u dit spel opnieuw start.
+[game stopped memory help]
+
 [missing map generator %0]
 Kaartgenerator ontbreekt: %0. Er is een ingebouwd landschap geselecteerd.
 [hive standing order paused]

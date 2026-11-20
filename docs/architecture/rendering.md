@@ -676,6 +676,14 @@ default. Memory signals respond by severity (`DeviceAdaptation::respond`):
 | Android `TRIM_MEMORY_RUNNING_LOW` | trim caches; step down at once |
 | Android `TRIM_MEMORY_RUNNING_CRITICAL`, `onLowMemory` | smallest budgets; step down at once |
 | Android `TRIM_MEMORY_UI_HIDDEN`, `BACKGROUND` and higher | background trim; no step-down |
+| Browser Wasm heap grown to four fifths of its 2 GiB maximum | smallest budgets; step down at once |
+
+The browser has no OS memory signal, and its Wasm heap only grows, so
+`DeviceAdaptation::serviceFrame` checks the heap's size every frame and sends
+`browser-heap-high` at most once a page load. An allocation past the maximum
+stops the match ("The game ran out of memory", `Script::MemoryFailure`); legacy
+GL reached it in long matches with HD artwork, programmable GL and Software stay
+well below it.
 
 SDL 3.4's `SDLActivity` turns every `onTrimMemory` level into one ungraded
 `SDL_EVENT_LOW_MEMORY`, so `Glob2Activity` also passes the level to native code,
@@ -1242,8 +1250,9 @@ session state. A new profile uses Auto. Settings without the `rendererBackend`
 preference migrate their previous renderer flags: on desktop, where the old toggle
 offered only Software (the default, no GPU flag) or OpenGL, both answers migrate to
 Auto, since either meant "what this machine draws best with" rather than a family;
-a saved `PORTABLEGPU` flag stays Portable SDL. Browsers and mobile keep mapping
-`USEGPU` to Legacy GL and no flag to Software. A saved `rendererBackend`, including
+a saved `PORTABLEGPU` flag stays Portable SDL. Mobile keeps mapping `USEGPU` to
+Legacy GL; the browser maps it to Automatic, since there it meant "draw with WebGL"
+and Legacy GL is Emscripten's fixed-function emulation. Both map no flag to Software. A saved `rendererBackend`, including
 `legacy-gl`, is an explicit choice and is kept.
 
 Graphics settings request a transition through `requestBackendSwitch()`. The status

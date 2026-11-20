@@ -7070,6 +7070,8 @@ Mstari: %0 Safu: %1
 Mchezo umesimama: %0
 [game stopped script help]
 Kagua msimbo wa JavaScript uliopachikwa na matumizi yake ya rasilimali kabla ya kuanzisha upya mchezo huu.
+[game stopped memory help]
+
 [missing map generator %0]
 Jenereta ya ramani haipo: %0. Mandhari iliyojengewa ndani ya mchezo imechaguliwa.
 [hive standing order paused]

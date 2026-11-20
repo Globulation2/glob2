@@ -7068,6 +7068,8 @@ Discord открыт. Вы можете вернуться в игру в люб
 Игра остановлена: %0
 [game stopped script help]
 Перед повторным запуском этой игры проверьте встроенный код JavaScript и использование им ресурсов.
+[game stopped memory help]
+
 [missing map generator %0]
 Отсутствует генератор карт: %0. Выбран встроенный ландшафт.
 [hive standing order paused]

@@ -31,8 +31,11 @@ test('WebGPU retains the launcher policy for its asynchronous startup', () => {
 test('legacy preferences match Settings screenFlags migration', () => {
   for (const flags of [0,2,4,8,16])
     assert.equal(transport('screenFlags='+flags+'\n', null, 'webgl2'), 'software');
-  for (const flags of [1,32,33,35])
+  for (const flags of [32,33,35])
     assert.equal(transport('screenFlags='+flags+'\n', null, 'software'), 'webgl2');
+  // The old GPU flag alone means Automatic, which follows the probe.
+  for (const automatic of ['software','webgl2'])
+    assert.equal(transport('screenFlags=1\n', null, automatic), automatic);
   const header=readFileSync(path.join(__dirname,'../../../libs/gag/include/SDLGraphicContext.h'),'utf8');
   assert.match(header,/USEGPU = 1,/);assert.match(header,/PORTABLEGPU = 32,/);
 });

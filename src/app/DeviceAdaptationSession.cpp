@@ -9,6 +9,9 @@
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_log.h>
 #include <iostream>
+#ifdef __EMSCRIPTEN__
+#include <emscripten/heap.h>
+#endif
 
 namespace DeviceAdaptation
 {
@@ -98,6 +101,17 @@ void serviceFrame(const std::vector<SDL_Event> &events)
 	for (const auto &event : events)
 		if (event.type == SDL_EVENT_LOW_MEMORY)
 			session().signal(MemorySignal::SdlLowMemory);
+#ifdef __EMSCRIPTEN__
+	// The Wasm heap only grows, so this fires at most once a page load. Past
+	// four fifths of the maximum, give back caches and Auto HD artwork before
+	// an allocation fails and stops the match.
+	static bool heapHigh = false;
+	if (!heapHigh && graphical() && emscripten_get_heap_size() >= emscripten_get_heap_max() / 5 * 4)
+	{
+		heapHigh = true;
+		session().signal(MemorySignal::BrowserHeapHigh);
+	}
+#endif
 	for (const auto signal : takeQueuedSignals())
 		session().signal(signal);
 }

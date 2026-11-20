@@ -7068,6 +7068,8 @@ Riga: %0 Colonna: %1
 Gioco interrotto: %0
 [game stopped script help]
 Prima di riavviare questo gioco, esamina il codice JavaScript incorporato e il suo utilizzo delle risorse.
+[game stopped memory help]
+
 [missing map generator %0]
 Generatore di mappe mancante: %0. È stato selezionato un paesaggio integrato.
 [hive standing order paused]

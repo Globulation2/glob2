@@ -248,7 +248,13 @@ void Settings::load(std::string filename)
             rendererBackend = GAGCore::parseRendererBackend(backend->second).value_or(GAGCore::RendererBackend::Auto);
         else if (parsed.count("screenFlags"))
             rendererBackend = (screenFlags & GraphicContext::PORTABLEGPU) ? GAGCore::RendererBackend::PortableSDL :
-#if defined(GLOB2_MOBILE) || defined(__EMSCRIPTEN__)
+#if defined(__EMSCRIPTEN__)
+                // The browser's old GPU flag meant "draw with WebGL", which Auto
+                // now provides with programmable GL. Pinning legacy GL kept such
+                // profiles on Emscripten's fixed-function emulation for good.
+                (screenFlags & GraphicContext::USEGPU) ? GAGCore::RendererBackend::Auto :
+                GAGCore::RendererBackend::Software;
+#elif defined(GLOB2_MOBILE)
                 (screenFlags & GraphicContext::USEGPU) ? GAGCore::RendererBackend::LegacyGL :
                 GAGCore::RendererBackend::Software;
 #else

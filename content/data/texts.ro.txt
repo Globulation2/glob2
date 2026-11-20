@@ -7068,6 +7068,8 @@ Linie: %0 Coloană: %1
 Joc oprit: %0
 [game stopped script help]
 Verificați codul JavaScript încorporat și utilizarea resurselor sale înainte de a reporni jocul.
+[game stopped memory help]
+
 [missing map generator %0]
 Lipsește generatorul de hărți: %0. A fost selectat un peisaj integrat.
 [hive standing order paused]

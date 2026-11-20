@@ -7068,6 +7068,8 @@ Linio: %0 Kolumno: %1
 Ludo haltigita: %0
 [game stopped script help]
 Kontrolu la enigitan JavaScript-kodon kaj ĝian rimeduzon antaŭ ol rekomenci ĉi tiun ludon.
+[game stopped memory help]
+
 [missing map generator %0]
 Mankas mapgenerilo: %0. Enkonstruita pejzaĝo estis elektita.
 [hive standing order paused]

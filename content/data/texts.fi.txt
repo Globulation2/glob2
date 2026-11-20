@@ -7068,6 +7068,8 @@ Rivi: %0 Sarake: %1
 Peli pysäytetty: %0
 [game stopped script help]
 Tarkista upotettu JavaScript-koodi ja sen resurssien käyttö ennen pelin uudelleenkäynnistystä.
+[game stopped memory help]
+
 [missing map generator %0]
 Karttageneraattori puuttuu: %0. Valittiin peliin sisältyvä maisema.
 [hive standing order paused]

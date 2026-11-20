@@ -7068,6 +7068,8 @@ Baris: %0 Kolom: %1
 Permainan dihentikan: %0
 [game stopped script help]
 Periksa kode JavaScript yang tertanam dan penggunaan sumber dayanya sebelum memulai ulang permainan ini.
+[game stopped memory help]
+
 [missing map generator %0]
 Generator peta tidak ditemukan: %0. Lanskap bawaan telah dipilih.
 [hive standing order paused]

@@ -7072,6 +7072,8 @@ Line: %0 Col: %1
 Game stopped: %0
 [game stopped script help]
 Review the embedded JavaScript and its resource use before restarting this game.
+[game stopped memory help]
+Original artwork (Settings) uses much less memory.
 [missing map generator %0]
 Missing map generator: %0. A native landscape was selected.
 [hive standing order paused]

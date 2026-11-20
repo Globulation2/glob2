@@ -7068,6 +7068,8 @@ MCP 伺服器
 遊戲停止：%0
 [game stopped script help]
 在重新啟動遊戲之前，請檢查嵌入的 JavaScript 程式碼及其資源使用情況。
+[game stopped memory help]
+
 [missing map generator %0]
 缺少地圖產生器：%0。已選取內建地形。
 [hive standing order paused]

@@ -1830,9 +1830,9 @@ namespace GAGCore
         if (entry.width != getW(index) || entry.height != getH(index) || entry.scale != (dynamicTeamColor ? 0 : 4)) return;
         const bool deferred = highResolutionDeferred(fileName);
         const bool mipmaps = highResolutionInputMipmaps(fileName);
-        // Desktop legacy OpenGL draws a standalone HD layer from its texture
-        // alone, so its pixels go once uploaded (releasePixels refuses on every
-        // other renderer). The exceptions read pixels later: frames an atlas is
+        // Legacy OpenGL (desktop and the browser's WebGL2) draws a standalone HD
+        // layer from its texture alone, so its pixels go once uploaded
+        // (releasePixels refuses on every other renderer). The exceptions read pixels later: frames an atlas is
         // built from, sprites a caller samples, and, without the team-colour
         // shader, team layers, which a CPU recolour then clones.
         const bool releaseBase = !deferred && !highResolutionAtlasWanted(fileName) &&

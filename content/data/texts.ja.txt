@@ -7068,6 +7068,8 @@ GL のみ
 ゲームが停止しました: %0
 [game stopped script help]
 このゲームを再起動する前に、埋め込まれた JavaScript コードとそのリソース使用状況を確認してください。
+[game stopped memory help]
+
 [missing map generator %0]
 マップ生成器が見つかりません: %0。内蔵の地形が選択されました。
 [hive standing order paused]

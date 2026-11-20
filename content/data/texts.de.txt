@@ -7068,6 +7068,8 @@ Zeile: %0 Spalte: %1
 Spiel beendet: %0
 [game stopped script help]
 Überprüfen Sie den eingebetteten JavaScript-Code und dessen Ressourcenverbrauch, bevor Sie dieses Spiel neu starten.
+[game stopped memory help]
+
 [missing map generator %0]
 Kartengenerator fehlt: %0. Eine integrierte Landschaft wurde ausgewählt.
 [hive standing order paused]

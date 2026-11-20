@@ -7068,6 +7068,8 @@ Línia: %0 Columna: %1
 Joc aturat: %0
 [game stopped script help]
 Revisa el JavaScript incrustat i el seu ús de recursos abans de reiniciar aquest joc.
+[game stopped memory help]
+
 [missing map generator %0]
 Falta el generador de mapes: %0. S'ha seleccionat un paisatge integrat.
 [hive standing order paused]
