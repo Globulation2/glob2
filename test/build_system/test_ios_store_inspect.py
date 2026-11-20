@@ -31,6 +31,12 @@ class StoreInspectionTests(unittest.TestCase):
                                       'releaseType': 'MANUAL', 'buildId': 'old-build'}]})
         api.request.assert_called_once_with('GET', '/v1/appStoreVersions/draft/relationships/build')
 
+    def test_mac_platform_lists_only_mac_versions(self):
+        api = Mock()
+        api.collect.side_effect = [[{'id': 'app', 'attributes': {'primaryLocale': 'en-US'}}], [], []]
+        ios_store_inspect.inspect(api, {'marketingVersion': '0.11.605', 'buildNumber': '9'}, 'MAC_OS')
+        self.assertIn('filter%5Bplatform%5D=MAC_OS', api.collect.call_args_list[1].args[0])
+
 
 if __name__ == '__main__':
     unittest.main()

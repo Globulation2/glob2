@@ -14,7 +14,7 @@ Qualify a release candidate, use the restricted mirror and publish through the t
 
 - [Windows Store](windows-store.md).
 - [GOG](gog-release.md).
-- [Mac App Store](mac-app-store.md).
+- [Mac App Store](mac-app-store.md), including [production submission](mac-app-store.md#mac-app-store-production).
 - [Mainland China distribution](china-release.md).
 
 ## Mobile and independent distribution

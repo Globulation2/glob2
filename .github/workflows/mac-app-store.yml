@@ -321,6 +321,29 @@ jobs:
           xcrun altool --validate-app "$package" "${auth[@]}"
           xcrun altool --upload-package "$package" "${auth[@]}"
 
+      - name: Record provenance only after the upload succeeds
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+          SOURCE_COMMIT: ${{ needs.build.outputs.source_commit }}
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, plistlib
+          from pathlib import Path
+          app=Path('artifacts/mac-app-store/signed/Glob2.app')
+          info=plistlib.loads((app/'Contents/Info.plist').read_bytes())
+          record=dict(schemaVersion=1,platform='MAC_OS',tag=os.environ['RELEASE_TAG'],sourceCommit=os.environ['SOURCE_COMMIT'],
+              buildNumber=info['CFBundleVersion'],marketingVersion=info['CFBundleShortVersionString'],
+              bundleId=info['CFBundleIdentifier'],appStoreEligible=True,
+              archiveBinarySha256=hashlib.sha256((app/'Contents/MacOS/glob2').read_bytes()).hexdigest(),runId=os.environ['GITHUB_RUN_ID'])
+          Path('artifacts/mac-upload-provenance.json').write_text(json.dumps(record,indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: mac-upload-provenance
+          path: artifacts/mac-upload-provenance.json
+          if-no-files-found: error
+          retention-days: 90
+
       - name: Remove temporary signing material
         if: always()
         run: |

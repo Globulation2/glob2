@@ -60,8 +60,31 @@ compile and smoke-test an ad hoc sandboxed candidate. Set `upload` to true to
 sign the app, build a `.pkg`, validate it with Apple, and upload it to App Store
 Connect. The public version comes from `PACKAGE_VERSION` in
 `buildsys/build_layout.py`, so update it in the reviewed source before syncing.
-The workflow does not submit an uploaded build for App Review; processing and
-submission are separate actions in App Store Connect.
+Like iOS, the App Store version encodes all four components as
+`major.minor.(100*patch+revision)` (0.11.6.5 is 0.11.605), so every patch
+release gets its own version; tags before 0.11.6.6 used only the first three.
+After a successful upload the job records `mac-upload-provenance` (tag, source
+commit, build and marketing version, bundle ID and the signed binary's SHA-256),
+kept for 90 days. The upload workflow never submits for App Review.
+
+## Mac App Store production
+
+Dispatch `mac-app-store-production.yml` from mirror `master` with the public
+`tag`, the successful Mac App Store run as `upload_run_id`, and one deliberate
+`stage`, exactly as for [iOS production](ios-production.md): `inspect` lists the
+macOS versions, states and attached builds; `prepare` creates or binds the
+tagged macOS version with `MANUAL` release; `submit` checks the listing (Mac
+screenshots, localized descriptions, HTTPS support and privacy URLs, review
+contact) and requests review; `publish` releases an approved version. Only one
+macOS version can be open at a time, so use `supersede` with the inspected
+`draft_version_id` and its current `replace_draft_build_id` to turn an older
+manual-release version that is waiting for review, or withdrawn, into the new
+one. The context job verifies the upload run and its provenance with the
+reviewed mirror driver before the `mac-app-store` environment's App Store
+Connect key is used; the same driver serves both platforms with
+`--platform MAC_OS`. The build's export compliance must be resolved in App Store
+Connect first (see below); the driver accepts either declaration but never makes
+one.
 
 The build job pins Python 3.14.8 and exposes the checkout on
 `PYTHONPATH` so spawned asset workers can import the packaging helpers.

@@ -67,5 +67,21 @@ class SupersedeTests(unittest.TestCase):
         self.assertEqual(len(api.writes), 1)
         self.assertEqual(api.writes[0][1], '/v1/appStoreVersions/version')
 
+    def test_mac_platform_replaces_only_a_mac_version(self):
+        api = API(); api.version['attributes'].update(platform='MAC_OS', versionString='0.11.2')
+        paths = []
+        collect = api.collect
+        api.collect = lambda path: paths.append(path) or collect(path)
+        result = store.supersede(api, {'buildNumber': '123', 'marketingVersion': '0.11.6'}, 'version', 'old-build',
+                                 platform='MAC_OS')
+        self.assertEqual(result['previousVersion'], '0.11.2')
+        self.assertTrue(paths)
+        self.assertFalse(any('IOS' in path for path in paths))
+        api = API()
+        with self.assertRaisesRegex(ValueError, 'manual version of this platform'):
+            store.supersede(api, {'buildNumber': '123', 'marketingVersion': '0.11.400'}, 'version', 'old-build',
+                            platform='MAC_OS')
+        self.assertEqual(api.writes, [])
+
 
 if __name__ == '__main__': unittest.main()
