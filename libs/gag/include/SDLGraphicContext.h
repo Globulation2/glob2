@@ -549,6 +549,10 @@ namespace GAGCore
             //! persisted. Without it Auto keeps the historical mapping of USEGPU
             //! and PORTABLEGPU for tools and tests.
             PREFERDEVICE = 256,
+            //! Open the desktop window maximized, and track whether the player
+            //! leaves it so. The windowed size remembered beside it is the
+            //! restored size, never the maximized one.
+            MAXIMIZED = 512,
 		};
 		
 	protected:
@@ -567,6 +571,16 @@ namespace GAGCore
 		int desktopDisplay = -1;
 		void refreshDesktopScale();
 		bool refreshNativeWindow();
+		//! Mirror the window's maximized state into MAXIMIZED, unless it is
+		//! fullscreen; returns whether the windowed state is maximized.
+		bool trackMaximized()
+		{
+			if (!window) return bool(optionFlags & MAXIMIZED);
+			const SDL_WindowFlags state = SDL_GetWindowFlags(window);
+			if (state & SDL_WINDOW_FULLSCREEN) return bool(optionFlags & MAXIMIZED);
+			if (state & SDL_WINDOW_MAXIMIZED) optionFlags |= MAXIMIZED; else optionFlags &= ~MAXIMIZED;
+			return bool(state & SDL_WINDOW_MAXIMIZED);
+		}
 		std::function<void(int, int, bool)> displayPreferenceCallback;
         int fixedLogicalW=0, fixedLogicalH=0;
         bool responsiveViewport=false, compactWindowAllowed=false;

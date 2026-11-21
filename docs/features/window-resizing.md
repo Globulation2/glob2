@@ -42,6 +42,14 @@ in headless or dedicated-server mode.
 
 ## Layout
 
+A new desktop profile opens a maximized, resizable window (`GraphicContext::MAXIMIZED`
+in the saved `screenFlags`); its saved `screenWidth` x `screenHeight`, 1280 x 720 by
+default, is the restored size. Leaving the window maximized or restored is saved
+with the other display preferences, and neither maximizing nor fullscreen
+overwrites the restored size. `--window-size` opens at that size unless
+`--maximized` is also given; profiles saved before this flag existed keep their
+window size.
+
 Editor controls retain their distance from the right edge of the logical screen.
 Their shared rectangle is updated before both drawing and hit testing. Generic map
 rectangles remain absolute and keep their half-open edges. The minimap refreshes
@@ -124,7 +132,7 @@ valid target; a failed allocation also leaves that target intact.
 Desktop OS scale uses SDL3's window display scale divided by pixel density for
 window-coordinate layout. Display/DPI events refresh metrics. UI percentages
 multiply that OS scale; automatic applies multiplier 1. `GLOB2_UI_SCALE` remains
-an absolute window-coordinate override. The whole view retains its minimum layout
+an absolute window-coordinate override, also set for one run by `--ui-scale`. The whole view retains its minimum layout
 floor, while map zoom stays separate. Mobile and browser avoid counting density twice.
 
 Test native fullscreen, input, clipping and live scale changes in both renderers.

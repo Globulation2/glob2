@@ -125,6 +125,8 @@ complete -c glob2 -n "__glob2_at 'play'" -l fullscreen
 complete -c glob2 -n "__glob2_at 'play'" -l no-fullscreen
 complete -c glob2 -n "__glob2_at 'play'" -l resizable
 complete -c glob2 -n "__glob2_at 'play'" -l no-resizable
+complete -c glob2 -n "__glob2_at 'play'" -l maximized
+complete -c glob2 -n "__glob2_at 'play'" -l no-maximized
 complete -c glob2 -n "__glob2_at 'play'" -l custom-cursor
 complete -c glob2 -n "__glob2_at 'play'" -l no-custom-cursor
 complete -c glob2 -n "__glob2_at 'play'" -l mute
@@ -133,6 +135,8 @@ complete -c glob2 -n "__glob2_at 'play'" -l renderer -r -f -a 'auto sdl-gpu prog
 complete -c glob2 -n "__glob2_at 'play'" -l graphics-detail -r -f -a 'full reduced'
 complete -c glob2 -n "__glob2_at 'play'" -l device-tier -r -f -a 'low mid high'
 complete -c glob2 -n "__glob2_at 'play'" -l window-size -r
+complete -c glob2 -n "__glob2_at 'play'" -l interface -r -f -a 'desktop compact tablet touch'
+complete -c glob2 -n "__glob2_at 'play'" -l ui-scale -r
 complete -c glob2 -n "__glob2_at 'play'" -l username -r
 complete -c glob2 -n "__glob2_at 'play'" -l editor-script -r -f -a 'sgsl usl'
 complete -c glob2 -n "__glob2_at 'play'" -l record -r
@@ -155,6 +159,8 @@ complete -c glob2 -n "__glob2_at 'replay'" -l fullscreen
 complete -c glob2 -n "__glob2_at 'replay'" -l no-fullscreen
 complete -c glob2 -n "__glob2_at 'replay'" -l resizable
 complete -c glob2 -n "__glob2_at 'replay'" -l no-resizable
+complete -c glob2 -n "__glob2_at 'replay'" -l maximized
+complete -c glob2 -n "__glob2_at 'replay'" -l no-maximized
 complete -c glob2 -n "__glob2_at 'replay'" -l custom-cursor
 complete -c glob2 -n "__glob2_at 'replay'" -l no-custom-cursor
 complete -c glob2 -n "__glob2_at 'replay'" -l mute
@@ -163,6 +169,8 @@ complete -c glob2 -n "__glob2_at 'replay'" -l renderer -r -f -a 'auto sdl-gpu pr
 complete -c glob2 -n "__glob2_at 'replay'" -l graphics-detail -r -f -a 'full reduced'
 complete -c glob2 -n "__glob2_at 'replay'" -l device-tier -r -f -a 'low mid high'
 complete -c glob2 -n "__glob2_at 'replay'" -l window-size -r
+complete -c glob2 -n "__glob2_at 'replay'" -l interface -r -f -a 'desktop compact tablet touch'
+complete -c glob2 -n "__glob2_at 'replay'" -l ui-scale -r
 complete -c glob2 -n "__glob2_at 'replay'" -l username -r
 complete -c glob2 -n "__glob2_at 'replay'" -l editor-script -r -f -a 'sgsl usl'
 complete -c glob2 -n "__glob2_at 'replay'" -l record -r
@@ -337,6 +345,8 @@ complete -c glob2 -n "__glob2_at 'game repeat'" -l fullscreen
 complete -c glob2 -n "__glob2_at 'game repeat'" -l no-fullscreen
 complete -c glob2 -n "__glob2_at 'game repeat'" -l resizable
 complete -c glob2 -n "__glob2_at 'game repeat'" -l no-resizable
+complete -c glob2 -n "__glob2_at 'game repeat'" -l maximized
+complete -c glob2 -n "__glob2_at 'game repeat'" -l no-maximized
 complete -c glob2 -n "__glob2_at 'game repeat'" -l custom-cursor
 complete -c glob2 -n "__glob2_at 'game repeat'" -l no-custom-cursor
 complete -c glob2 -n "__glob2_at 'game repeat'" -l mute
@@ -345,6 +355,8 @@ complete -c glob2 -n "__glob2_at 'game repeat'" -l renderer -r -f -a 'auto sdl-g
 complete -c glob2 -n "__glob2_at 'game repeat'" -l graphics-detail -r -f -a 'full reduced'
 complete -c glob2 -n "__glob2_at 'game repeat'" -l device-tier -r -f -a 'low mid high'
 complete -c glob2 -n "__glob2_at 'game repeat'" -l window-size -r
+complete -c glob2 -n "__glob2_at 'game repeat'" -l interface -r -f -a 'desktop compact tablet touch'
+complete -c glob2 -n "__glob2_at 'game repeat'" -l ui-scale -r
 complete -c glob2 -n "__glob2_at 'game repeat'" -l username -r
 complete -c glob2 -n "__glob2_at 'game repeat'" -l editor-script -r -f -a 'sgsl usl'
 complete -c glob2 -n "__glob2_at 'game repeat'" -l record -r
@@ -371,6 +383,8 @@ complete -c glob2 -n "__glob2_at 'online join'" -l fullscreen
 complete -c glob2 -n "__glob2_at 'online join'" -l no-fullscreen
 complete -c glob2 -n "__glob2_at 'online join'" -l resizable
 complete -c glob2 -n "__glob2_at 'online join'" -l no-resizable
+complete -c glob2 -n "__glob2_at 'online join'" -l maximized
+complete -c glob2 -n "__glob2_at 'online join'" -l no-maximized
 complete -c glob2 -n "__glob2_at 'online join'" -l custom-cursor
 complete -c glob2 -n "__glob2_at 'online join'" -l no-custom-cursor
 complete -c glob2 -n "__glob2_at 'online join'" -l mute
@@ -379,6 +393,8 @@ complete -c glob2 -n "__glob2_at 'online join'" -l renderer -r -f -a 'auto sdl-g
 complete -c glob2 -n "__glob2_at 'online join'" -l graphics-detail -r -f -a 'full reduced'
 complete -c glob2 -n "__glob2_at 'online join'" -l device-tier -r -f -a 'low mid high'
 complete -c glob2 -n "__glob2_at 'online join'" -l window-size -r
+complete -c glob2 -n "__glob2_at 'online join'" -l interface -r -f -a 'desktop compact tablet touch'
+complete -c glob2 -n "__glob2_at 'online join'" -l ui-scale -r
 complete -c glob2 -n "__glob2_at 'online join'" -l username -r
 complete -c glob2 -n "__glob2_at 'online join'" -l editor-script -r -f -a 'sgsl usl'
 complete -c glob2 -n "__glob2_at 'online join'" -l record -r
@@ -402,6 +418,8 @@ complete -c glob2 -n "__glob2_at 'online play-map'" -l fullscreen
 complete -c glob2 -n "__glob2_at 'online play-map'" -l no-fullscreen
 complete -c glob2 -n "__glob2_at 'online play-map'" -l resizable
 complete -c glob2 -n "__glob2_at 'online play-map'" -l no-resizable
+complete -c glob2 -n "__glob2_at 'online play-map'" -l maximized
+complete -c glob2 -n "__glob2_at 'online play-map'" -l no-maximized
 complete -c glob2 -n "__glob2_at 'online play-map'" -l custom-cursor
 complete -c glob2 -n "__glob2_at 'online play-map'" -l no-custom-cursor
 complete -c glob2 -n "__glob2_at 'online play-map'" -l mute
@@ -410,6 +428,8 @@ complete -c glob2 -n "__glob2_at 'online play-map'" -l renderer -r -f -a 'auto s
 complete -c glob2 -n "__glob2_at 'online play-map'" -l graphics-detail -r -f -a 'full reduced'
 complete -c glob2 -n "__glob2_at 'online play-map'" -l device-tier -r -f -a 'low mid high'
 complete -c glob2 -n "__glob2_at 'online play-map'" -l window-size -r
+complete -c glob2 -n "__glob2_at 'online play-map'" -l interface -r -f -a 'desktop compact tablet touch'
+complete -c glob2 -n "__glob2_at 'online play-map'" -l ui-scale -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l username -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l editor-script -r -f -a 'sgsl usl'
 complete -c glob2 -n "__glob2_at 'online play-map'" -l record -r
@@ -435,6 +455,8 @@ complete -c glob2 -n "__glob2_at 'online host-map'" -l fullscreen
 complete -c glob2 -n "__glob2_at 'online host-map'" -l no-fullscreen
 complete -c glob2 -n "__glob2_at 'online host-map'" -l resizable
 complete -c glob2 -n "__glob2_at 'online host-map'" -l no-resizable
+complete -c glob2 -n "__glob2_at 'online host-map'" -l maximized
+complete -c glob2 -n "__glob2_at 'online host-map'" -l no-maximized
 complete -c glob2 -n "__glob2_at 'online host-map'" -l custom-cursor
 complete -c glob2 -n "__glob2_at 'online host-map'" -l no-custom-cursor
 complete -c glob2 -n "__glob2_at 'online host-map'" -l mute
@@ -443,6 +465,8 @@ complete -c glob2 -n "__glob2_at 'online host-map'" -l renderer -r -f -a 'auto s
 complete -c glob2 -n "__glob2_at 'online host-map'" -l graphics-detail -r -f -a 'full reduced'
 complete -c glob2 -n "__glob2_at 'online host-map'" -l device-tier -r -f -a 'low mid high'
 complete -c glob2 -n "__glob2_at 'online host-map'" -l window-size -r
+complete -c glob2 -n "__glob2_at 'online host-map'" -l interface -r -f -a 'desktop compact tablet touch'
+complete -c glob2 -n "__glob2_at 'online host-map'" -l ui-scale -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l username -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l editor-script -r -f -a 'sgsl usl'
 complete -c glob2 -n "__glob2_at 'online host-map'" -l record -r
@@ -496,6 +520,8 @@ complete -c glob2 -n "__glob2_at 'dev random-games'" -l fullscreen
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l no-fullscreen
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l resizable
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l no-resizable
+complete -c glob2 -n "__glob2_at 'dev random-games'" -l maximized
+complete -c glob2 -n "__glob2_at 'dev random-games'" -l no-maximized
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l custom-cursor
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l no-custom-cursor
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l mute
@@ -504,6 +530,8 @@ complete -c glob2 -n "__glob2_at 'dev random-games'" -l renderer -r -f -a 'auto 
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l graphics-detail -r -f -a 'full reduced'
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l device-tier -r -f -a 'low mid high'
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l window-size -r
+complete -c glob2 -n "__glob2_at 'dev random-games'" -l interface -r -f -a 'desktop compact tablet touch'
+complete -c glob2 -n "__glob2_at 'dev random-games'" -l ui-scale -r
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l username -r
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l editor-script -r -f -a 'sgsl usl'
 complete -c glob2 -n "__glob2_at 'dev random-games'" -l record -r
@@ -532,6 +560,8 @@ complete -c glob2 -n "__glob2_at 'dev textshots'" -l fullscreen
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l no-fullscreen
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l resizable
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l no-resizable
+complete -c glob2 -n "__glob2_at 'dev textshots'" -l maximized
+complete -c glob2 -n "__glob2_at 'dev textshots'" -l no-maximized
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l custom-cursor
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l no-custom-cursor
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l mute
@@ -540,6 +570,8 @@ complete -c glob2 -n "__glob2_at 'dev textshots'" -l renderer -r -f -a 'auto sdl
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l graphics-detail -r -f -a 'full reduced'
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l device-tier -r -f -a 'low mid high'
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l window-size -r
+complete -c glob2 -n "__glob2_at 'dev textshots'" -l interface -r -f -a 'desktop compact tablet touch'
+complete -c glob2 -n "__glob2_at 'dev textshots'" -l ui-scale -r
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l username -r
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l editor-script -r -f -a 'sgsl usl'
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l record -r

@@ -251,6 +251,8 @@ Platform: all.
 | `--no-fullscreen` | flag; default false | Use a window. |
 | `--resizable` | flag; default false | Allow window resizing. |
 | `--no-resizable` | flag; default false | Disable window resizing. |
+| `--maximized` | flag; default false | Open the window maximized; new profiles start maximized. |
+| `--no-maximized` | flag; default false | Open the window at its saved size. |
 | `--custom-cursor` | flag; default false | Use the game cursor. |
 | `--no-custom-cursor` | flag; default false | Use the system cursor. |
 | `--mute` | flag; default false | Mute music and speech. |
@@ -258,7 +260,9 @@ Platform: all.
 | `--renderer` | auto, sdl-gpu, programmable-gl, webgpu, portable-sdl, software, legacy-gl, gpu, webgl2, sdl, opengl | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--device-tier` | low, mid, high | Classify this device for Auto defaults; also GLOB2_DEVICE_TIER. |
-| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
+| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480; implies --no-maximized. |
+| `--interface` | desktop, compact, tablet, touch | Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI. |
+| `--ui-scale` | number | Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
 | `--record` | file | Record menus and gameplay; refuses existing files. |
@@ -321,6 +325,8 @@ Platform: all.
 | `--no-fullscreen` | flag; default false | Use a window. |
 | `--resizable` | flag; default false | Allow window resizing. |
 | `--no-resizable` | flag; default false | Disable window resizing. |
+| `--maximized` | flag; default false | Open the window maximized; new profiles start maximized. |
+| `--no-maximized` | flag; default false | Open the window at its saved size. |
 | `--custom-cursor` | flag; default false | Use the game cursor. |
 | `--no-custom-cursor` | flag; default false | Use the system cursor. |
 | `--mute` | flag; default false | Mute music and speech. |
@@ -328,7 +334,9 @@ Platform: all.
 | `--renderer` | auto, sdl-gpu, programmable-gl, webgpu, portable-sdl, software, legacy-gl, gpu, webgl2, sdl, opengl | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--device-tier` | low, mid, high | Classify this device for Auto defaults; also GLOB2_DEVICE_TIER. |
-| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
+| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480; implies --no-maximized. |
+| `--interface` | desktop, compact, tablet, touch | Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI. |
+| `--ui-scale` | number | Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
 | `--record` | file | Record menus and gameplay; refuses existing files. |
@@ -814,6 +822,8 @@ Platform: all.
 | `--no-fullscreen` | flag; default false | Use a window. |
 | `--resizable` | flag; default false | Allow window resizing. |
 | `--no-resizable` | flag; default false | Disable window resizing. |
+| `--maximized` | flag; default false | Open the window maximized; new profiles start maximized. |
+| `--no-maximized` | flag; default false | Open the window at its saved size. |
 | `--custom-cursor` | flag; default false | Use the game cursor. |
 | `--no-custom-cursor` | flag; default false | Use the system cursor. |
 | `--mute` | flag; default false | Mute music and speech. |
@@ -821,7 +831,9 @@ Platform: all.
 | `--renderer` | auto, sdl-gpu, programmable-gl, webgpu, portable-sdl, software, legacy-gl, gpu, webgl2, sdl, opengl | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--device-tier` | low, mid, high | Classify this device for Auto defaults; also GLOB2_DEVICE_TIER. |
-| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
+| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480; implies --no-maximized. |
+| `--interface` | desktop, compact, tablet, touch | Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI. |
+| `--ui-scale` | number | Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
 | `--record` | file | Record menus and gameplay; refuses existing files. |
@@ -910,6 +922,8 @@ Platform: all.
 | `--no-fullscreen` | flag; default false | Use a window. |
 | `--resizable` | flag; default false | Allow window resizing. |
 | `--no-resizable` | flag; default false | Disable window resizing. |
+| `--maximized` | flag; default false | Open the window maximized; new profiles start maximized. |
+| `--no-maximized` | flag; default false | Open the window at its saved size. |
 | `--custom-cursor` | flag; default false | Use the game cursor. |
 | `--no-custom-cursor` | flag; default false | Use the system cursor. |
 | `--mute` | flag; default false | Mute music and speech. |
@@ -917,7 +931,9 @@ Platform: all.
 | `--renderer` | auto, sdl-gpu, programmable-gl, webgpu, portable-sdl, software, legacy-gl, gpu, webgl2, sdl, opengl | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--device-tier` | low, mid, high | Classify this device for Auto defaults; also GLOB2_DEVICE_TIER. |
-| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
+| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480; implies --no-maximized. |
+| `--interface` | desktop, compact, tablet, touch | Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI. |
+| `--ui-scale` | number | Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
 | `--record` | file | Record menus and gameplay; refuses existing files. |
@@ -980,6 +996,8 @@ Platform: all.
 | `--no-fullscreen` | flag; default false | Use a window. |
 | `--resizable` | flag; default false | Allow window resizing. |
 | `--no-resizable` | flag; default false | Disable window resizing. |
+| `--maximized` | flag; default false | Open the window maximized; new profiles start maximized. |
+| `--no-maximized` | flag; default false | Open the window at its saved size. |
 | `--custom-cursor` | flag; default false | Use the game cursor. |
 | `--no-custom-cursor` | flag; default false | Use the system cursor. |
 | `--mute` | flag; default false | Mute music and speech. |
@@ -987,7 +1005,9 @@ Platform: all.
 | `--renderer` | auto, sdl-gpu, programmable-gl, webgpu, portable-sdl, software, legacy-gl, gpu, webgl2, sdl, opengl | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--device-tier` | low, mid, high | Classify this device for Auto defaults; also GLOB2_DEVICE_TIER. |
-| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
+| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480; implies --no-maximized. |
+| `--interface` | desktop, compact, tablet, touch | Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI. |
+| `--ui-scale` | number | Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
 | `--record` | file | Record menus and gameplay; refuses existing files. |
@@ -1052,6 +1072,8 @@ Platform: all.
 | `--no-fullscreen` | flag; default false | Use a window. |
 | `--resizable` | flag; default false | Allow window resizing. |
 | `--no-resizable` | flag; default false | Disable window resizing. |
+| `--maximized` | flag; default false | Open the window maximized; new profiles start maximized. |
+| `--no-maximized` | flag; default false | Open the window at its saved size. |
 | `--custom-cursor` | flag; default false | Use the game cursor. |
 | `--no-custom-cursor` | flag; default false | Use the system cursor. |
 | `--mute` | flag; default false | Mute music and speech. |
@@ -1059,7 +1081,9 @@ Platform: all.
 | `--renderer` | auto, sdl-gpu, programmable-gl, webgpu, portable-sdl, software, legacy-gl, gpu, webgl2, sdl, opengl | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--device-tier` | low, mid, high | Classify this device for Auto defaults; also GLOB2_DEVICE_TIER. |
-| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
+| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480; implies --no-maximized. |
+| `--interface` | desktop, compact, tablet, touch | Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI. |
+| `--ui-scale` | number | Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
 | `--record` | file | Record menus and gameplay; refuses existing files. |
@@ -1285,6 +1309,8 @@ Platform: all.
 | `--no-fullscreen` | flag; default false | Use a window. |
 | `--resizable` | flag; default false | Allow window resizing. |
 | `--no-resizable` | flag; default false | Disable window resizing. |
+| `--maximized` | flag; default false | Open the window maximized; new profiles start maximized. |
+| `--no-maximized` | flag; default false | Open the window at its saved size. |
 | `--custom-cursor` | flag; default false | Use the game cursor. |
 | `--no-custom-cursor` | flag; default false | Use the system cursor. |
 | `--mute` | flag; default false | Mute music and speech. |
@@ -1292,7 +1318,9 @@ Platform: all.
 | `--renderer` | auto, sdl-gpu, programmable-gl, webgpu, portable-sdl, software, legacy-gl, gpu, webgl2, sdl, opengl | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--device-tier` | low, mid, high | Classify this device for Auto defaults; also GLOB2_DEVICE_TIER. |
-| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
+| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480; implies --no-maximized. |
+| `--interface` | desktop, compact, tablet, touch | Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI. |
+| `--ui-scale` | number | Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
 | `--record` | file | Record menus and gameplay; refuses existing files. |
@@ -1387,6 +1415,8 @@ Platform: all.
 | `--no-fullscreen` | flag; default false | Use a window. |
 | `--resizable` | flag; default false | Allow window resizing. |
 | `--no-resizable` | flag; default false | Disable window resizing. |
+| `--maximized` | flag; default false | Open the window maximized; new profiles start maximized. |
+| `--no-maximized` | flag; default false | Open the window at its saved size. |
 | `--custom-cursor` | flag; default false | Use the game cursor. |
 | `--no-custom-cursor` | flag; default false | Use the system cursor. |
 | `--mute` | flag; default false | Mute music and speech. |
@@ -1394,7 +1424,9 @@ Platform: all.
 | `--renderer` | auto, sdl-gpu, programmable-gl, webgpu, portable-sdl, software, legacy-gl, gpu, webgl2, sdl, opengl | Rendering backend. |
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--device-tier` | low, mid, high | Classify this device for Auto defaults; also GLOB2_DEVICE_TIER. |
-| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
+| `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480; implies --no-maximized. |
+| `--interface` | desktop, compact, tablet, touch | Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI. |
+| `--ui-scale` | number | Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
 | `--record` | file | Record menus and gameplay; refuses existing files. |

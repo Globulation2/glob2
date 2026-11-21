@@ -26,6 +26,12 @@ Allow window resizing Default: false.
 .B \-\-no\-resizable
 Disable window resizing Default: false.
 .TP
+.B \-\-maximized
+Open the window maximized; new profiles start maximized Default: false.
+.TP
+.B \-\-no\-maximized
+Open the window at its saved size Default: false.
+.TP
 .B \-\-custom\-cursor
 Use the game cursor Default: false.
 .TP
@@ -48,7 +54,13 @@ Detail effects Allowed: full, reduced. Type: enum.
 Classify this device for Auto defaults; also GLOB2_DEVICE_TIER Allowed: low, mid, high. Type: enum.
 .TP
 .B \-\-window\-size
-Initial window size in pixels; clamped to at least 640x480 Type: resolution. Units: pixels.
+Initial window size in pixels; clamped to at least 640x480; implies \-\-no\-maximized Type: resolution. Units: pixels.
+.TP
+.B \-\-interface
+Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI Allowed: desktop, compact, tablet, touch. Type: enum.
+.TP
+.B \-\-ui\-scale
+Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE Type: number.
 .TP
 .B \-\-username
 Player name Type: string.
@@ -152,6 +164,12 @@ Allow window resizing Default: false.
 .B \-\-no\-resizable
 Disable window resizing Default: false.
 .TP
+.B \-\-maximized
+Open the window maximized; new profiles start maximized Default: false.
+.TP
+.B \-\-no\-maximized
+Open the window at its saved size Default: false.
+.TP
 .B \-\-custom\-cursor
 Use the game cursor Default: false.
 .TP
@@ -174,7 +192,13 @@ Detail effects Allowed: full, reduced. Type: enum.
 Classify this device for Auto defaults; also GLOB2_DEVICE_TIER Allowed: low, mid, high. Type: enum.
 .TP
 .B \-\-window\-size
-Initial window size in pixels; clamped to at least 640x480 Type: resolution. Units: pixels.
+Initial window size in pixels; clamped to at least 640x480; implies \-\-no\-maximized Type: resolution. Units: pixels.
+.TP
+.B \-\-interface
+Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI Allowed: desktop, compact, tablet, touch. Type: enum.
+.TP
+.B \-\-ui\-scale
+Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE Type: number.
 .TP
 .B \-\-username
 Player name Type: string.
@@ -918,6 +942,12 @@ Allow window resizing Default: false.
 .B \-\-no\-resizable
 Disable window resizing Default: false.
 .TP
+.B \-\-maximized
+Open the window maximized; new profiles start maximized Default: false.
+.TP
+.B \-\-no\-maximized
+Open the window at its saved size Default: false.
+.TP
 .B \-\-custom\-cursor
 Use the game cursor Default: false.
 .TP
@@ -940,7 +970,13 @@ Detail effects Allowed: full, reduced. Type: enum.
 Classify this device for Auto defaults; also GLOB2_DEVICE_TIER Allowed: low, mid, high. Type: enum.
 .TP
 .B \-\-window\-size
-Initial window size in pixels; clamped to at least 640x480 Type: resolution. Units: pixels.
+Initial window size in pixels; clamped to at least 640x480; implies \-\-no\-maximized Type: resolution. Units: pixels.
+.TP
+.B \-\-interface
+Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI Allowed: desktop, compact, tablet, touch. Type: enum.
+.TP
+.B \-\-ui\-scale
+Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE Type: number.
 .TP
 .B \-\-username
 Player name Type: string.
@@ -1068,6 +1104,12 @@ Allow window resizing Default: false.
 .B \-\-no\-resizable
 Disable window resizing Default: false.
 .TP
+.B \-\-maximized
+Open the window maximized; new profiles start maximized Default: false.
+.TP
+.B \-\-no\-maximized
+Open the window at its saved size Default: false.
+.TP
 .B \-\-custom\-cursor
 Use the game cursor Default: false.
 .TP
@@ -1090,7 +1132,13 @@ Detail effects Allowed: full, reduced. Type: enum.
 Classify this device for Auto defaults; also GLOB2_DEVICE_TIER Allowed: low, mid, high. Type: enum.
 .TP
 .B \-\-window\-size
-Initial window size in pixels; clamped to at least 640x480 Type: resolution. Units: pixels.
+Initial window size in pixels; clamped to at least 640x480; implies \-\-no\-maximized Type: resolution. Units: pixels.
+.TP
+.B \-\-interface
+Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI Allowed: desktop, compact, tablet, touch. Type: enum.
+.TP
+.B \-\-ui\-scale
+Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE Type: number.
 .TP
 .B \-\-username
 Player name Type: string.
@@ -1193,6 +1241,12 @@ Allow window resizing Default: false.
 .B \-\-no\-resizable
 Disable window resizing Default: false.
 .TP
+.B \-\-maximized
+Open the window maximized; new profiles start maximized Default: false.
+.TP
+.B \-\-no\-maximized
+Open the window at its saved size Default: false.
+.TP
 .B \-\-custom\-cursor
 Use the game cursor Default: false.
 .TP
@@ -1215,7 +1269,13 @@ Detail effects Allowed: full, reduced. Type: enum.
 Classify this device for Auto defaults; also GLOB2_DEVICE_TIER Allowed: low, mid, high. Type: enum.
 .TP
 .B \-\-window\-size
-Initial window size in pixels; clamped to at least 640x480 Type: resolution. Units: pixels.
+Initial window size in pixels; clamped to at least 640x480; implies \-\-no\-maximized Type: resolution. Units: pixels.
+.TP
+.B \-\-interface
+Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI Allowed: desktop, compact, tablet, touch. Type: enum.
+.TP
+.B \-\-ui\-scale
+Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE Type: number.
 .TP
 .B \-\-username
 Player name Type: string.
@@ -1324,6 +1384,12 @@ Allow window resizing Default: false.
 .B \-\-no\-resizable
 Disable window resizing Default: false.
 .TP
+.B \-\-maximized
+Open the window maximized; new profiles start maximized Default: false.
+.TP
+.B \-\-no\-maximized
+Open the window at its saved size Default: false.
+.TP
 .B \-\-custom\-cursor
 Use the game cursor Default: false.
 .TP
@@ -1346,7 +1412,13 @@ Detail effects Allowed: full, reduced. Type: enum.
 Classify this device for Auto defaults; also GLOB2_DEVICE_TIER Allowed: low, mid, high. Type: enum.
 .TP
 .B \-\-window\-size
-Initial window size in pixels; clamped to at least 640x480 Type: resolution. Units: pixels.
+Initial window size in pixels; clamped to at least 640x480; implies \-\-no\-maximized Type: resolution. Units: pixels.
+.TP
+.B \-\-interface
+Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI Allowed: desktop, compact, tablet, touch. Type: enum.
+.TP
+.B \-\-ui\-scale
+Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE Type: number.
 .TP
 .B \-\-username
 Player name Type: string.
@@ -1623,6 +1695,12 @@ Allow window resizing Default: false.
 .B \-\-no\-resizable
 Disable window resizing Default: false.
 .TP
+.B \-\-maximized
+Open the window maximized; new profiles start maximized Default: false.
+.TP
+.B \-\-no\-maximized
+Open the window at its saved size Default: false.
+.TP
 .B \-\-custom\-cursor
 Use the game cursor Default: false.
 .TP
@@ -1645,7 +1723,13 @@ Detail effects Allowed: full, reduced. Type: enum.
 Classify this device for Auto defaults; also GLOB2_DEVICE_TIER Allowed: low, mid, high. Type: enum.
 .TP
 .B \-\-window\-size
-Initial window size in pixels; clamped to at least 640x480 Type: resolution. Units: pixels.
+Initial window size in pixels; clamped to at least 640x480; implies \-\-no\-maximized Type: resolution. Units: pixels.
+.TP
+.B \-\-interface
+Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI Allowed: desktop, compact, tablet, touch. Type: enum.
+.TP
+.B \-\-ui\-scale
+Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE Type: number.
 .TP
 .B \-\-username
 Player name Type: string.
@@ -1783,6 +1867,12 @@ Allow window resizing Default: false.
 .B \-\-no\-resizable
 Disable window resizing Default: false.
 .TP
+.B \-\-maximized
+Open the window maximized; new profiles start maximized Default: false.
+.TP
+.B \-\-no\-maximized
+Open the window at its saved size Default: false.
+.TP
 .B \-\-custom\-cursor
 Use the game cursor Default: false.
 .TP
@@ -1805,7 +1895,13 @@ Detail effects Allowed: full, reduced. Type: enum.
 Classify this device for Auto defaults; also GLOB2_DEVICE_TIER Allowed: low, mid, high. Type: enum.
 .TP
 .B \-\-window\-size
-Initial window size in pixels; clamped to at least 640x480 Type: resolution. Units: pixels.
+Initial window size in pixels; clamped to at least 640x480; implies \-\-no\-maximized Type: resolution. Units: pixels.
+.TP
+.B \-\-interface
+Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI Allowed: desktop, compact, tablet, touch. Type: enum.
+.TP
+.B \-\-ui\-scale
+Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE Type: number.
 .TP
 .B \-\-username
 Player name Type: string.

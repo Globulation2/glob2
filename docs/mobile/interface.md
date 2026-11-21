@@ -23,7 +23,9 @@ selection, tool, panel, scroll position and text while cancelling held input.
 legacy controls. `touch-auto` and `touch-spacious` exercise touch presentation
 with Automatic and Spacious layout policies on a native development host. This is
 the single development override; leave it unset for normal saved preferences and
-host capabilities. Rendering backend and mouse
+host capabilities. `glob2 play --interface desktop|compact|tablet|touch` sets the
+same override for one run (`0`, `1`, `touch-spacious` and `touch-auto`), and
+`--ui-scale` sets `GLOB2_UI_SCALE`; neither is saved. Rendering backend and mouse
 motion do not select a presentation. SDL, OpenGL/WebGL and software rendering
 share UI transforms and clipping. Mouse clicks use the same controls as touch;
 Tab and Enter navigate adapted forms, and Page Up/Down scroll gameplay panels.

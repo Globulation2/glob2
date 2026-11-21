@@ -291,6 +291,11 @@ void GlobalContainer::openLoadingScreen(void)
 		if (gfx->getOptionFlags() & GraphicContext::RESIZABLE) settings.screenFlags |= GraphicContext::RESIZABLE;
 		if (fullscreen) settings.screenFlags |= GraphicContext::FULLSCREEN;
 		else settings.screenFlags &= ~GraphicContext::FULLSCREEN;
+		if (!fullscreen)
+		{
+			if (gfx->getOptionFlags() & GraphicContext::MAXIMIZED) settings.screenFlags |= GraphicContext::MAXIMIZED;
+			else settings.screenFlags &= ~GraphicContext::MAXIMIZED;
+		}
 		// Resizes are kept in memory and saved by the normal settings/shutdown flow.
 		// F11 is a preference change and persists immediately.
 		if (changed && !settings.save()) std::cerr << "Could not save display preferences." << std::endl;
