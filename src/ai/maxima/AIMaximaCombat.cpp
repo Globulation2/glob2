@@ -1718,7 +1718,7 @@ void Maxima::clear_preemptive_defense(Context& runtime)
 	{
 		const int x=powerOfTwoRemainder(*tile, w);
 		const int y=*tile/w;
-		if(map.is_guard_area(x, y))
+		if(map.is_guard_area(x, y) && !fruit_guard_tiles.count(*tile))
 		{
 			remove->add_location(x, y);
 			removed+=1;
@@ -1731,6 +1731,71 @@ void Maxima::clear_preemptive_defense(Context& runtime)
 	preemptive_guard_tiles.clear();
 	emit_telemetry(runtime, "preemptive_defense_cleared",
 		"\ttiles="+telemetryText(removed));
+}
+
+
+void Maxima::update_fruit_guard(Context& runtime)
+{
+    auto ownerObservation=runtime.scopeOwnerObservation();
+	// A 5x5 guard square centred on every fruit tree Maxima has seen,
+	// wherever it is. The corridor zones are computed separately.
+	constexpr int Radius=2;
+	MapInfo map(runtime);
+	const int w=map.get_width();
+	const int h=map.get_height();
+	const int cherries=materialIndex(MaterialId::Cherries);
+	const int oranges=materialIndex(MaterialId::Oranges);
+	const int prunes=materialIndex(MaterialId::Prunes);
+	std::set<int> desired;
+	for(int y=0; y<h; ++y)
+		for(int x=0; x<w; ++x)
+			if(map.is_discovered(x, y)
+			   && (map.is_resource(x, y, cherries) || map.is_resource(x, y, oranges)
+			       || map.is_resource(x, y, prunes)))
+				for(int dy=-Radius; dy<=Radius; ++dy)
+					for(int dx=-Radius; dx<=Radius; ++dx)
+						desired.insert(powerOfTwoRemainder(y+dy+h, h)*w
+							+powerOfTwoRemainder(x+dx+w, w));
+
+	std::vector<int> removals,additions;
+	std::set<int> next_owned;
+	for(const int tile:fruit_guard_tiles)
+		if(!desired.count(tile) && map.is_guard_area(powerOfTwoRemainder(tile, w), tile/w)
+		   && !preemptive_guard_tiles.count(tile))
+			removals.push_back(tile);
+	for(const int tile:desired)
+	{
+		const bool guarded=map.is_guard_area(powerOfTwoRemainder(tile, w), tile/w);
+		if(!guarded)
+		{
+			additions.push_back(tile);
+			next_owned.insert(tile);
+		}
+		// Keep cells already ours, and share the corridor zones' cells; a
+		// guard area someone else drew stays theirs.
+		else if(fruit_guard_tiles.count(tile) || preemptive_guard_tiles.count(tile))
+			next_owned.insert(tile);
+	}
+	if(!removals.empty())
+	{
+		RemoveArea* remove=new RemoveArea(GuardArea);
+		for(const int tile:removals)
+			remove->add_location(powerOfTwoRemainder(tile, w), tile/w);
+		runtime.add_management_order(remove);
+	}
+	if(!additions.empty())
+	{
+		AddArea* add=new AddArea(GuardArea);
+		for(const int tile:additions)
+			add->add_location(powerOfTwoRemainder(tile, w), tile/w);
+		runtime.add_management_order(add);
+	}
+	fruit_guard_tiles.swap(next_owned);
+	if(!additions.empty() || !removals.empty())
+		emit_telemetry(runtime, "fruit_guard_updated",
+			"\tdesired_tiles="+telemetryText(desired.size())
+			+"\tadded="+telemetryText(additions.size())
+			+"\tremoved="+telemetryText(removals.size()));
 }
 
 
@@ -1899,7 +1964,8 @@ void Maxima::update_preemptive_defense(Context& runtime)
 			if(!map.is_guard_area(powerOfTwoRemainder(*tile, w), *tile/w))
 				additions.push_back(*tile);
 		}
-		else if(map.is_guard_area(powerOfTwoRemainder(*tile, w), *tile/w))
+		else if(map.is_guard_area(powerOfTwoRemainder(*tile, w), *tile/w)
+			&& !fruit_guard_tiles.count(*tile))
 			removals.push_back(*tile);
 	}
 	for(std::set<int>::const_iterator tile=desired.begin(); tile!=desired.end();
@@ -1912,6 +1978,8 @@ void Maxima::update_preemptive_defense(Context& runtime)
 			additions.push_back(*tile);
 			next_owned.insert(*tile);
 		}
+		else if(fruit_guard_tiles.count(*tile))
+			next_owned.insert(*tile); // share the fruit guard's cell
 	}
 	if(!removals.empty())
 	{

@@ -37,8 +37,8 @@ staffing.construction_swarm_workers = 2
 staffing.construction_training_workers = 5
 staffing.construction_hospital_workers = 3
 staffing.construction_large_workers = 6
-staffing.completed_tower_workers = 2
-staffing.completed_tower_emergency_workers = 4
+staffing.completed_tower_workers = 6
+staffing.completed_tower_emergency_workers = 12
 staffing.clearing_workers = 1
 staffing.attack_clearing_workers = 10
 

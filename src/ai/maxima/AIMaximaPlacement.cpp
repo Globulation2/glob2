@@ -16,6 +16,8 @@
 #include <algorithm>
 #include <climits>
 #include <deque>
+#include <set>
+#include <stdexcept>
 #include <queue>
 #include <sstream>
 #include <mutex>
@@ -533,6 +535,7 @@ void Planner::reset()
 	structureDistanceCache.clear();enemyStructureDistanceCache.clear();
 	enemyStructureSourceCache.clear();enemyStructureGapCache=INT_MAX;
 	foodUpgradeRetryTick.clear();
+	towerRoleByBuilding.clear();towerRoleByAction.clear();
 	scanOrderCache.clear();
 	foodEvaluationMemo.clear();
 	scoringReservedGeneration.clear();scoringAffectedGeneration.clear();
@@ -2576,6 +2579,124 @@ TowerRole Planner::towerRole(const WorldState& world,int ordinal) const
 	return TowerFruit;
 }
 
+bool Planner::towerRebalances(const WorldState& world,int ordinal) const
+{
+	// Alternate, starting from a salted parity so seats and maps differ.
+	uint32_t salt=0;
+	if(!world.buildings.empty())
+	{
+		salt=2166136261u;
+		hashValue(salt,uint32_t(world.index(world.buildings.front().centerX,
+			world.buildings.front().centerY)));
+		hashValue(salt,0x7e57u);
+	}
+	return ((uint32_t(ordinal)+(salt>>16))&1u)!=0;
+}
+
+TowerRole Planner::rebalancingTowerRole(const int (&counts)[3],TowerRole preferred) const
+{
+	const int border=std::clamp(placementPolicy.towerBorderPercent,0,100);
+	const int interior=std::clamp(placementPolicy.towerInteriorPercent,0,100-border);
+	const long long target[3]={border,interior,100-border-interior};
+	const long long total=counts[0]+counts[1]+counts[2]+1;
+	// Squared distance of the resulting shares from the targets, in percent
+	// times the tower count so it stays exact in integers.
+	auto error=[&](int added)
+	{
+		long long sum=0;
+		for(int role=0;role<3;++role)
+		{
+			const long long d=(counts[role]+(role==added))*100LL-target[role]*total;
+			sum+=d*d;
+		}
+		return sum;
+	};
+	TowerRole best=preferred;long long bestError=error(preferred);
+	for(int role=0;role<3;++role)
+		if(error(role)<bestError){best=TowerRole(role);bestError=error(role);}
+	return best;
+}
+
+int Planner::towerRoleCounts(const WorldState& world,int buildingType,int (&counts)[3]) const
+{
+	counts[0]=counts[1]=counts[2]=0;
+	auto count=[&](const std::map<int,int>& roles,int key)
+	{
+		const auto role=roles.find(key);
+		if(role!=roles.end()&&role->second>=0&&role->second<3)++counts[role->second];
+	};
+	int ordinal=0;
+	for(const WorldBuilding& building:world.buildings)
+		if(building.buildingType==buildingType)
+		{++ordinal;count(towerRoleByBuilding,building.id);}
+	// Mirrors committedBuildingCount: an unobserved build is one commitment,
+	// and a relocation counts once, as the building it replaces.
+	for(const auto& [id,action]:actionMap)
+	{
+		if((action.type!=BuildCampusMember&&action.type!=BuildStandalone)
+		   ||action.buildingType!=buildingType||!activeState(action.state))
+			continue;
+		const bool replacing=action.purpose==Relocation
+			&&world.building(action.replacesBuildingId)!=NULL;
+		if(!world.building(action.buildingId))
+		{
+			if(replacing)continue;
+			++ordinal;
+			if(action.buildingId>=0)count(towerRoleByBuilding,action.buildingId);
+			else count(towerRoleByAction,id);
+		}
+		else if(replacing)--ordinal;
+	}
+	return ordinal;
+}
+
+TowerRole Planner::plannedTowerRole(const WorldState& world,int buildingType) const
+{
+	int counts[3];
+	const int ordinal=towerRoleCounts(world,buildingType,counts);
+	const TowerRole sequenced=towerRole(world,ordinal);
+	return towerRebalances(world,ordinal) ? rebalancingTowerRole(counts,sequenced) : sequenced;
+}
+
+TowerRole Planner::effectiveTowerRole(const WorldState& world,TowerRole role,int index) const
+{
+	if(role==TowerFruit)
+	{
+		int fruit=INT_MAX;
+		for(int material=5;material<=7;++material)
+			fruit=std::min(fruit,materialDistanceAt(world,material,index));
+		if(fruit==INT_MAX)return TowerInterior; // no known fruit: guard the colony
+	}
+	const int enemy=enemyStructureDistanceCache.empty()?INT_MAX
+		:enemyStructureDistanceCache[index];
+	if(role==TowerBorder&&(enemy==INT_MAX||enemyStructureGapCache==INT_MAX))
+		return TowerInterior; // no known enemy: guard the colony
+	return role;
+}
+
+void Planner::restoreTowerRoles(std::map<int,int> byBuilding,std::map<int,int> byAction)
+{
+	for(const auto* roles:{&byBuilding,&byAction})
+		for(const auto& [id,role]:*roles)
+			if(role<0||role>2)throw std::runtime_error("Invalid saved Maxima tower role");
+	towerRoleByBuilding=std::move(byBuilding);towerRoleByAction=std::move(byAction);
+}
+
+void Planner::pruneTowerRoles(const WorldState& world)
+{
+	// Keep a role while its tower stands or its build is still active.
+	std::set<int> liveBuildings,liveActions;
+	for(const WorldBuilding& building:world.buildings)liveBuildings.insert(building.id);
+	for(const auto& [id,action]:actionMap)
+		if(activeState(action.state))
+		{
+			if(action.buildingId>=0)liveBuildings.insert(action.buildingId);
+			else liveActions.insert(id);
+		}
+	std::erase_if(towerRoleByBuilding,[&](const auto& e){return !liveBuildings.count(e.first);});
+	std::erase_if(towerRoleByAction,[&](const auto& e){return !liveActions.count(e.first);});
+}
+
 int Planner::towerRoleLocationQuality(const WorldState& world,
 	const DevelopmentAction& action) const
 {
@@ -2586,18 +2707,14 @@ int Planner::towerRoleLocationQuality(const WorldState& world,
 	const int own=structureDistanceCache[index];
 	auto nearness=[falloff](int distance)
 	{return distance==INT_MAX?0:clamp100(100-distance*falloff);};
-	TowerRole role=towerRole(world,committedBuildingCount(world,action.buildingType));
+	const TowerRole role=effectiveTowerRole(world,
+		plannedTowerRole(world,action.buildingType),index);
 	int fruit=INT_MAX;
 	if(role==TowerFruit)
-	{
 		for(int material=5;material<=7;++material)
 			fruit=std::min(fruit,materialDistanceAt(world,material,index));
-		if(fruit==INT_MAX)role=TowerInterior; // no known fruit: guard the colony
-	}
 	const int enemy=enemyStructureDistanceCache.empty()?INT_MAX
 		:enemyStructureDistanceCache[index];
-	if(role==TowerBorder&&(enemy==INT_MAX||enemyStructureGapCache==INT_MAX))
-		role=TowerInterior; // no known enemy: guard the colony
 	int quality=0;
 	if(role==TowerBorder)
 	{
@@ -3607,6 +3724,13 @@ bool Planner::reserve(const WorldState& world, DevelopmentAction& action)
 		blockedIntentSignatures[std::make_pair(action.buildingType,
 			int(action.purpose))]=stateSignature(world);
 	 lastDiagnostics.rejected[reason]++;return false;}
+	// Remember the role a new tower is sited for, before this action counts
+	// toward the next tower's ordinal.
+	if((action.type==BuildStandalone||action.type==BuildCampusMember)
+	   &&action.buildingId<0&&serves(action.buildingType,configuredTowerType,action.targetLevel))
+		towerRoleByAction[action.id]=effectiveTowerRole(world,
+			plannedTowerRole(world,action.buildingType),
+			world.index(action.centerX,action.centerY));
 	if(action.type==BuildStandalone&&serves(action.buildingType,configuredBarracksType,action.targetLevel)
 	   &&action.reservationId<0)
 	{
@@ -3821,6 +3945,12 @@ void Planner::markIssued(int actionId,int buildingId,int tick)
 	if(action==actionMap.end())return;
 	action->second.buildingId=buildingId;action->second.issuedTick=tick;
 	action->second.state=CreateIssued;
+	const auto towerRole=towerRoleByAction.find(actionId);
+	if(towerRole!=towerRoleByAction.end())
+	{
+		if(buildingId>=0)towerRoleByBuilding[buildingId]=towerRole->second;
+		towerRoleByAction.erase(towerRole);
+	}
 	std::map<int,Reservation>::iterator reservation=reservationMap.find(action->second.reservationId);
 	if(reservation!=reservationMap.end())reservation->second.buildingId=buildingId;
 }
@@ -4047,6 +4177,7 @@ void Planner::observe(const WorldState& world,uint32_t occupancySignature)
 		}
 	}
 	releaseDestroyedCampuses(world);
+	pruneTowerRoles(world);
 }
 
 void Planner::releaseDestroyedCampuses(const WorldState& world)

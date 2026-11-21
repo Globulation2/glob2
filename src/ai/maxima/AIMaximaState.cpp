@@ -277,6 +277,11 @@ void Maxima::saveExecutionState(GAGCore::OutputStream* stream)
     archive("farming_wood_reserve_wood",farming_wood_reserve.woodCapacity);
     archive("farming_wood_reserve_target",farming_wood_reserve.targetWoodCapacity);
     archive("budget.preemptive_min_gap_ticks",budget.preemptive_min_gap_ticks);
+    std::map<int,int> buildingTowerRoles=development_planner.buildingTowerRoles();
+    std::map<int,int> actionTowerRoles=development_planner.actionTowerRoles();
+    archive("tower_roles_by_building",buildingTowerRoles);
+    archive("tower_roles_by_action",actionTowerRoles);
+    archive("fruit_guard_tiles",fruit_guard_tiles);
     stream->writeLeaveSection();
 }
 void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMinor)
@@ -397,6 +402,16 @@ void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMino
         archive("budget.preemptive_min_gap_ticks",budget.preemptive_min_gap_ticks);
         if(budget.preemptive_min_gap_ticks<0||budget.preemptive_min_gap_ticks>100000)
             throw std::runtime_error("Invalid saved Maxima preemptive defense gap");
+    }
+    if(versionMinor>=FILE_FORMAT_VERSION_MAXIMA_TOWER_REBALANCING) {
+        std::map<int,int> buildingTowerRoles,actionTowerRoles;
+        archive("tower_roles_by_building",buildingTowerRoles);
+        archive("tower_roles_by_action",actionTowerRoles);
+        development_planner.restoreTowerRoles(std::move(buildingTowerRoles),std::move(actionTowerRoles));
+        archive("fruit_guard_tiles",fruit_guard_tiles);
+        const int mapSize=context.player->map->getW()*context.player->map->getH();
+        for(const int tile:fruit_guard_tiles)
+            if(tile<0||tile>=mapSize)throw std::runtime_error("Invalid saved Maxima fruit guard tile");
     }
     stream->readLeaveSection();
 
@@ -712,6 +727,7 @@ bool Maxima::loadState(GAGCore::InputStream *stream, Player *player,
 	attack_target_quarantine_until.clear();
 	campaign=CampaignPlan();
 	preemptive_guard_tiles.clear();
+	fruit_guard_tiles.clear();
 	last_preemptive_defense_tick=-1000000;
 	preemptive_building_signature=0;
 	last_preemptive_effective_zone_max=-1;

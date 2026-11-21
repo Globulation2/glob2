@@ -2140,6 +2140,12 @@ bool Maxima::explorer_defense_active() const
 }
 
 
+int Maxima::completed_tower_priority() const
+{
+	return explorer_defense_emergency() ? 1 : -1;
+}
+
+
 bool Maxima::explorer_defense_emergency() const
 {
 	if(!strategy.military.explorer_defense_enabled)
@@ -3816,6 +3822,7 @@ Maxima::Maxima(Player *player)
 	attack_flags.clear();
 	is_digging_out=false;
 	preemptive_guard_tiles.clear();
+	fruit_guard_tiles.clear();
 	last_preemptive_defense_tick=-1000000;
 	preemptive_building_signature=0;
 	last_preemptive_effective_zone_max=-1;
@@ -4039,6 +4046,8 @@ void Maxima::tick(Context& runtime)
 	else if(preemptive_defense_pending)
 	{
 		preemptive_defense_pending=false;
+		// Fruit first, so the corridor pass sees which cells it now shares.
+		update_fruit_guard(runtime);
 		update_preemptive_defense(runtime);
 	}
 	else if(reactive_defense_pending)
@@ -5078,7 +5087,13 @@ AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(Context&
       && next->level<budget.prestige_target_level && budget.prestige_priority>0)
       priority=std::max(priority,budget.prestige_priority);
   if(!next||!next->available||next->requiredWorkerLevel>qualification)priority=0;
-  bool serviceLost=false;for(int role=0;role<RoleCount;++role)if((v.roles&roleBit(role))&&(role!=CombatTraining||combatTrainingNeeded)&&total[role]>=2&&operational[role]-1<(total[role]+1)/2)serviceLost=true;
+  bool serviceLost=false;for(int role=0;role<RoleCount;++role)if((v.roles&roleBit(role))&&(role!=CombatTraining||combatTrainingNeeded)&&total[role]>=2) {
+   // At most half of a role's buildings may be out of service for upgrades
+   // at once; towers are held to a fifth, so most keep shooting.
+   const int offline=total[role]-(operational[role]-1);
+   const int allowed=role==ProjectileDefense ? std::max(1,total[role]/5) : total[role]/2;
+   if(offline>allowed)serviceLost=true;
+  }
   if(serviceLost){priority=0;limits.upgradePriorities[{p.buildingType,0}]=0;}
   limits.upgradePriorities[{p.buildingType,v.level}]=priority;
  }
@@ -5218,10 +5233,15 @@ bool Maxima::issue_development_action(Context& runtime,
 			// An upgrade is only useful once it finishes, and a half-upgraded
 			// building serves nobody meanwhile. Outrank equals for workers while
 			// the site is live, then hand the advantage back on completion.
-			ManagementOrder* raise=new ChangePriority(1,buildingId);
+			// Towers are the exception: their upgrade recruits at normal priority,
+			// below other upgrades, and completes into the finished-tower priority.
+			const bool tower=profile_serves(action.buildingType,
+				AIMaximaBuildings::ProjectileDefense,action.fromLevel);
+			ManagementOrder* raise=new ChangePriority(tower?0:1,buildingId);
 			raise->add_condition(new ParticularBuilding(new UnderConstruction,buildingId));
 			runtime.add_management_order(raise);
-			ManagementOrder* restore=new ChangePriority(0,buildingId);
+			ManagementOrder* restore=new ChangePriority(
+				tower?completed_tower_priority():0,buildingId);
 			restore->add_condition(new ParticularBuilding(new NotUnderConstruction,buildingId));
 			runtime.add_management_order(restore);
 		}
@@ -5632,6 +5652,14 @@ void Maxima::update_worker_priorities(Context& runtime,
         if(building.site && !building.upgrading
            && profile_serves(building.buildingType,AIMaximaBuildings::Feeding,building.level))
             setPriority(building.id,budget.food_emergency ? 1 : 0);
+    // Towers yield workers to the rest of the economy: new tower sites recruit
+    // low, tower upgrades normal (below the high of other upgrades), and
+    // finished towers low except during an explorer emergency, when they are
+    // restocked first.
+    for(const auto& building:world.buildings)
+        if(profile_serves(building.buildingType,AIMaximaBuildings::ProjectileDefense,building.level))
+            setPriority(building.id,building.upgrading ? 0
+                : building.site ? -1 : completed_tower_priority());
 }
 
 
@@ -6279,8 +6307,9 @@ void Maxima::manage_buildings(Context& runtime)
 				: strategy.staffing.completed_tower_workers))
 		{
 			// A single carrier could not keep even one shot in the tower during the
-			// FourSquares bomber wave. Two workers sustain the deterrent layer; four
-			// replenish ammunition while an actual strike is in the colony.
+			// FourSquares bomber wave. Towers recruit at low priority outside an
+			// emergency, so they ask for a generous crew (six by default) to stay
+			// stocked; an explorer emergency raises both the crew and the priority.
 			runtime.add_management_order(new AssignWorkers(explorer_defense_emergency()
 				? strategy.staffing.completed_tower_emergency_workers
 				: strategy.staffing.completed_tower_workers, *i));

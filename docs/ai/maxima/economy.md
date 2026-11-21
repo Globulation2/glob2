@@ -151,7 +151,10 @@ unreachable wheat). The worst half, rounded down, receive low worker priority;
 the rest receive normal priority. Equal scores are ordered by building ID.
 Construction sites and upgrades are excluded from this ranking. Ordinary inn
 construction receives high priority during a food emergency and normal priority
-otherwise. These priority reviews require the food ledger to be enabled.
+otherwise. Towers yield workers to the rest of the economy: new tower sites
+receive low priority, tower upgrades normal priority, and completed towers low
+priority except during an explorer emergency, when they receive high priority.
+These priority reviews require the food ledger to be enabled.
 
 ## Development
 
@@ -165,7 +168,7 @@ then revalidates the selected action against the live world. Demand, labour,
 food backing, health, reserved space and construction quotas constrain both.
 Positive-scoring upgrades receive a preference when no viable emergency
 construction candidate is present. An active upgrade receives high worker
-priority until completion.
+priority until completion; a tower upgrade receives normal priority.
 
 The scan prunes by branch and bound. Each candidate is first scored optimistically,
 before routing: no artery, no farm-loss penalty and, for inns and swarms, the best
@@ -185,8 +188,9 @@ checked again for `placement.food_upgrade_retry_ticks` (512).
 For every building category, repairs and upgrades share an allowance that leaves
 at least half the existing buildings operational, rounded up: two or three
 buildings permit one maintenance job; four or five permit two. A lone building
-may be repaired or upgraded. Unfinished new construction does not increase the
-allowance. Reserved and queued jobs count before the engine starts their sites;
+may be repaired or upgraded. Towers instead keep four fifths in service: up to
+nine towers permit one maintenance job, ten to fourteen permit two, and so on.
+Unfinished new construction does not increase the allowance. Reserved and queued jobs count before the engine starts their sites;
 both repair and upgrade permissions are checked during selection and again
 before issue. Existing jobs are not cancelled when loading a save or losing
 another building reduces the allowance.
@@ -210,10 +214,19 @@ tower. Viable ordinary builds, repairs and upgrades take precedence. Normal
 quotas, siting and farm protection still apply; a committed tower site remains
 ordinary construction when other demand appears.
 
-Each new tower takes a siting role from a deterministic golden-ratio sequence
-over the colony's tower count, so the shares hold even across a few towers:
+Each new tower takes one of three siting roles, aiming for
 `placement.tower_border_percent` border towers, `placement.tower_interior_percent`
-interior towers and fruit towers for the remainder (50/25/25 by default). A
+interior towers and fruit towers for the remainder (50/25/25 by default). Every
+other tower, by the colony's tower count from a salted starting parity, takes its
+role from a deterministic golden-ratio sequence over that count, which holds the
+shares even across a few towers. The rest rebalance: they take whichever role
+brings the standing and planned towers, counted by the role each was sited for,
+closest to the shares (least squared error; a tie keeps the sequence's role).
+Planned towers count from the moment their site is reserved. A tower's role is
+the one it was actually sited for, after the fallbacks below, and is saved with
+the game. Towers lost to the enemy stop counting, and towers from saves before
+format 219 or not placed by the planner have no recorded role and are not counted.
+A
 border tower prefers the point between Maxima's nearest non-tower building and
 the nearest seen enemy non-tower building that is `placement.tower_border_enemy_ratio`
 times as far from the enemy (a third of the way out by default). An interior

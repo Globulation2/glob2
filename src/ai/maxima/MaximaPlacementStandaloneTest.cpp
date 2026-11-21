@@ -1640,6 +1640,67 @@ TEST_CASE("role-sited towers take the configured border, interior and fruit shar
     CHECK(counts[TowerFruit]>=96);CHECK(counts[TowerFruit]<=104);
 }
 
+TEST_CASE("every other tower rebalances the surviving towers' roles toward the shares" * doctest::test_suite("Maxima.Placement"))
+{
+    WorldState world=towerRoleWorld();
+    Planner planner;planner.configure(world.profiles,1,2,6,5,7);
+    planner.mutablePolicy().towerBorderPercent=50;planner.mutablePolicy().towerInteriorPercent=25;
+    int rebalancing=0;
+    for(int ordinal=0;ordinal<400;++ordinal)
+    {
+        rebalancing+=planner.towerRebalances(world,ordinal);
+        CHECK(planner.towerRebalances(world,ordinal)!=planner.towerRebalances(world,ordinal+1));
+    }
+    CHECK(rebalancing==200);
+    // An empty colony needs a border tower most.
+    CHECK(planner.rebalancingTowerRole({0,0,0},TowerFruit)==TowerBorder);
+    // Two border towers: interior and fruit tie, so the sequence's choice stands.
+    CHECK(planner.rebalancingTowerRole({2,0,0},TowerFruit)==TowerFruit);
+    CHECK(planner.rebalancingTowerRole({2,0,0},TowerInterior)==TowerInterior);
+    CHECK(planner.rebalancingTowerRole({2,0,0},TowerBorder)==TowerInterior);
+    CHECK(planner.rebalancingTowerRole({2,1,0},TowerBorder)==TowerFruit);
+    CHECK(planner.rebalancingTowerRole({1,1,1},TowerFruit)==TowerBorder);
+    CHECK(planner.rebalancingTowerRole({4,2,2},TowerInterior)==TowerBorder);
+}
+
+TEST_CASE("towers remember the role they were sited for until they are lost" * doctest::test_suite("Maxima.Placement"))
+{
+    WorldState world=towerRoleWorld();
+    Planner planner;planner.configure(world.profiles,1,2,6,5,7);
+    planner.mutablePolicy().towerBorderPercent=50;planner.mutablePolicy().towerInteriorPercent=25;
+    DevelopmentIntent intent;intent.buildingType=7;intent.unmetCount=1;intent.priority=100;
+    DevelopmentLimits limits;limits.newConstruction=1;
+    DevelopmentAction action;
+    REQUIRE(planner.selectAction(world,{intent},limits,action));
+    int counts[3];
+    REQUIRE(planner.towerRoleCounts(world,7,counts)==0);
+    const TowerRole planned=planner.plannedTowerRole(world,7);
+    REQUIRE(planner.reserve(world,action));
+    // The reserved tower is now committed under the role it was sited for.
+    CHECK(planner.towerRoleCounts(world,7,counts)==1);
+    CHECK(counts[planned]==1);CHECK(counts[0]+counts[1]+counts[2]==1);
+    REQUIRE(planner.actionTowerRoles().count(action.id));
+    planner.markIssued(action.id,50,world.tick);
+    CHECK(planner.actionTowerRoles().empty());
+    REQUIRE(planner.buildingTowerRoles().count(50));
+    CHECK(planner.buildingTowerRoles().at(50)==planned);
+    CHECK(planner.towerRoleCounts(world,7,counts)==1);CHECK(counts[planned]==1);
+    // The tower stands: its role is kept and still counted.
+    WorldBuilding tower;tower.id=50;tower.buildingType=7;tower.level=1;
+    tower.centerX=action.centerX;tower.centerY=action.centerY;
+    world.buildings.push_back(tower);
+    planner.observe(world);
+    CHECK(planner.buildingTowerRoles().count(50));
+    CHECK(planner.towerRoleCounts(world,7,counts)==1);CHECK(counts[planned]==1);
+    // Once it is gone, its role no longer counts toward the balance.
+    world.buildings.pop_back();
+    planner.observe(world);
+    CHECK(planner.buildingTowerRoles().empty());
+    CHECK(planner.towerRoleCounts(world,7,counts)==0);
+    CHECK(counts[0]+counts[1]+counts[2]==0);
+    CHECK_THROWS(planner.restoreTowerRoles({{1,3}},{}));
+}
+
 TEST_CASE("role-sited towers go a third of the way to the enemy, beside home, or by fruit" * doctest::test_suite("Maxima.Placement"))
 {
     WorldState world=towerRoleWorld();
