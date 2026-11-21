@@ -13,15 +13,41 @@ Boom Drive, Unit 346, Oakville, Ontario L6H 7X5, Canada ("we"). For privacy
 questions and requests, contact **bradley.allen.arsenault@gmail.com**
 or write to that address.
 
-Last updated: 10 October 2026. Consolidated from the game and online service policy
-of 8 October 2026 and the Fire tablet policy of 4 October 2026.
+Last updated: 20 November 2026. Website analytics choices were added to the
+unified game, online service and Fire tablet policy.
 
 ## Public website browsing
 
-The public website does not use analytics, advertising trackers, or account
-cookies. Its pages and images are delivered by Firebase Hosting. Hosting
-providers may process request information, such as IP addresses and browser
-headers, to deliver and protect the service.
+The public website uses optional Google Analytics 4 to understand how people find
+and use the site. Analytics stays off until you choose **Allow analytics**. You
+can choose **Reject analytics** instead, or change your choice using **Analytics
+settings** in the footer. We remember your choice in your browser for six months.
+Browsers that signal Do Not Track or Global Privacy Control do not enable
+analytics.
+
+When you allow analytics, Google receives page views, the referring website's
+origin, limited campaign tags in the link you followed, and clicks on Play,
+download and store links. This helps us compare website traffic and interest in
+different ways to play. Analytics requests also disclose technical request
+information to Google, including your IP address and browser headers. See
+[Google's explanation of how it uses information from sites that use its services](https://policies.google.com/technologies/partner-sites).
+
+Analytics uses first-party cookies with a 90-day lifetime to distinguish browsers.
+A browser is not necessarily a person: different devices, cleared cookies,
+rejected analytics and browser protections affect visitor counts. We do not send
+website search terms, account identifiers, login credentials or form contents to
+Google Analytics. Page addresses contain canonical paths and the limited campaign
+tags; click destinations contain canonical paths only. Referrers exclude paths
+and query strings. Advertising features, Google signals
+and ad personalization are disabled. This website analytics does not run in the
+game or at app.glob2.online.
+
+Changing your choice to reject analytics stops collection and removes the
+website's analytics cookies. It does not erase events already sent to Google.
+The public website does not use advertising trackers or account cookies. Its
+pages and images are delivered by Firebase Hosting. Hosting providers may
+process request information, such as IP addresses and browser headers, to deliver
+and protect the service.
 
 Search runs in your browser using an index downloaded from the website. Search
 terms are not sent to an account service. The competition page downloads a
