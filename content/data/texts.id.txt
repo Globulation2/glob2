@@ -6306,6 +6306,12 @@ Tidak dapat menyimpan pilihan Anda. Silakan coba lagi.
 Tangan kiri
 [Right hand]
 Tangan kanan
+[Use desktop layout]
+Gunakan tata letak desktop
+[desktop layout confirm title]
+Gunakan tata letak desktop?
+[desktop layout confirm body]
+Game akan beralih ke antarmuka mouse dan keyboard. Anda dapat mengubahnya nanti di Pengaturan, pada Tata letak antarmuka.
 [discord copy failed]
 Tidak dapat menyalin tautan. Pilih tautan undangan di atas untuk menyalinnya secara manual.
 [Destroy this building?]

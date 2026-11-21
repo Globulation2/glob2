@@ -6286,6 +6286,12 @@ CPU อัตโนมัติ
 มือซ้าย
 [Right hand]
 มือขวา
+[Use desktop layout]
+ใช้​เค้าโครง​เดสก์ท็อป
+[desktop layout confirm title]
+ใช้​เค้าโครง​เดสก์ท็อป​หรือไม่?
+[desktop layout confirm body]
+เกม​จะ​เปลี่ยน​ไป​ใช้​อินเทอร์เฟซ​สำหรับ​เมาส์​และ​แป้นพิมพ์ คุณ​เปลี่ยน​ได้​ภายหลัง​ที่​การ​ตั้งค่า ใน​เค้าโครง​อินเทอร์เฟซ
 [stat ground movement]
 การ​เคลื่อนที่​บน​พื้น
 [stat ground movement about]

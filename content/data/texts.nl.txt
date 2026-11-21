@@ -6306,6 +6306,12 @@ Kan je keuze niet opslaan. Probeer het opnieuw.
 Linkerhand
 [Right hand]
 Rechterhand
+[Use desktop layout]
+Desktopindeling gebruiken
+[desktop layout confirm title]
+Desktopindeling gebruiken?
+[desktop layout confirm body]
+Het spel schakelt over naar de interface voor muis en toetsenbord. Je kunt dit later wijzigen in Instellingen, bij Interface-indeling.
 [discord copy failed]
 Kan de link niet kopiëren. Selecteer de uitnodiging hierboven om deze handmatig te kopiëren.
 [Destroy this building?]

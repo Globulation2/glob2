@@ -6306,6 +6306,12 @@ Không thể lưu lựa chọn của bạn. Vui lòng thử lại.
 Tay trái
 [Right hand]
 Tay phải
+[Use desktop layout]
+Dùng bố cục máy tính
+[desktop layout confirm title]
+Dùng bố cục máy tính?
+[desktop layout confirm body]
+Trò chơi sẽ chuyển sang giao diện dùng chuột và bàn phím. Bạn có thể đổi lại sau trong Thiết lập, mục Bố cục giao diện.
 [discord copy failed]
 Không thể sao chép liên kết. Hãy chọn liên kết mời ở trên để sao chép thủ công.
 [Destroy this building?]

@@ -6286,6 +6286,12 @@ MCP سرور چالو کریں
 بایاں ہاتھ
 [Right hand]
 دایاں ہاتھ
+[Use desktop layout]
+ڈیسک ٹاپ ترتیب استعمال کریں
+[desktop layout confirm title]
+ڈیسک ٹاپ ترتیب استعمال کریں؟
+[desktop layout confirm body]
+گیم ماؤس اور کی بورڈ والے انٹرفیس پر چلی جائے گی۔ آپ اسے بعد میں ترتیبات میں "انٹرفیس کی ترتیب" سے بدل سکتے ہیں۔
 [stat ground movement]
 زمینی حرکت
 [stat ground movement about]

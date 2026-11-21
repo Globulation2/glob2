@@ -6286,6 +6286,12 @@ Chaguo lako halikuweza kuhifadhiwa. Tafadhali jaribu tena.
 Mkono wa kushoto
 [Right hand]
 Mkono wa kulia
+[Use desktop layout]
+Tumia mpangilio wa kompyuta
+[desktop layout confirm title]
+Utumie mpangilio wa kompyuta?
+[desktop layout confirm body]
+Mchezo utabadilika kwenda kiolesura cha kipanya na kibodi. Unaweza kubadilisha hili baadaye katika Mipangilio, chini ya Mpangilio wa kiolesura.
 [stat ground movement]
 Mwendo wa ardhini
 [stat ground movement about]

@@ -6306,6 +6306,12 @@ MCP 服务器
 左手
 [Right hand]
 右手
+[Use desktop layout]
+使用桌面布局
+[desktop layout confirm title]
+使用桌面布局？
+[desktop layout confirm body]
+游戏将切换到鼠标和键盘界面。之后可以在设置的“界面布局”中更改。
 [discord copy failed]
 无法复制链接。请选中上方的邀请链接并手动复制。
 [Destroy this building?]

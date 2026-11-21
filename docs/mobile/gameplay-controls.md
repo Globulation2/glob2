@@ -169,6 +169,12 @@ hand holds the phone. The raised thumb targets and the two labeled buttons are
 pressable choices. Choosing either hand saves the side before opening the main menu.
 The prompt remains pending if saving fails. Existing saved thumb-side preferences
 are respected; the side can be changed in Display & graphics settings.
+Outside native mobile builds, and when no `GLOB2_MOBILE_UI` or `--interface`
+override is in force, the screen also offers Use desktop layout for desktops
+wrongly detected as touch devices. A confirmation dialog follows; confirming
+saves the Desktop interface preference, applies it and opens the desktop main
+menu without choosing a thumb side, so the prompt returns if the player later
+picks a touch interface.
 
 ### Building and flag inspectors
 

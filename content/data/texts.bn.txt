@@ -6286,6 +6286,12 @@ MCP সার্ভার চালু করুন
 বাম হাত
 [Right hand]
 ডান হাত
+[Use desktop layout]
+ডেস্কটপ লেআউট ব্যবহার করুন
+[desktop layout confirm title]
+ডেস্কটপ লেআউট ব্যবহার করবেন?
+[desktop layout confirm body]
+গেমটি মাউস ও কিবোর্ডের ইন্টারফেসে চলে যাবে। পরে সেটিংসে "ইন্টারফেস লেআউট" থেকে এটি বদলাতে পারবেন।
 [stat ground movement]
 স্থলে চলাচল
 [stat ground movement about]

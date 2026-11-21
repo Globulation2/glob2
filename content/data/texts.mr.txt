@@ -6214,6 +6214,12 @@ MCP सर्व्हर सक्षम करा
 डावा हात
 [Right hand]
 उजवा हात
+[Use desktop layout]
+डेस्कटॉप लेआउट वापरा
+[desktop layout confirm title]
+डेस्कटॉप लेआउट वापरायचा?
+[desktop layout confirm body]
+गेम माउस आणि कीबोर्डच्या इंटरफेसवर जाईल. हे नंतर सेटिंग्जमध्ये "इंटरफेस लेआउट" येथे बदलता येईल.
 [stat ground movement]
 जमिनीवरील हालचाल
 [stat ground movement about]

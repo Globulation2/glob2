@@ -6306,6 +6306,12 @@ Seçiminiz kaydedilemedi. Lütfen yeniden deneyin.
 Sol el
 [Right hand]
 Sağ el
+[Use desktop layout]
+Masaüstü düzenini kullan
+[desktop layout confirm title]
+Masaüstü düzeni kullanılsın mı?
+[desktop layout confirm body]
+Oyun fare ve klavye arayüzüne geçecek. Bunu daha sonra Ayarlar'da Arayüz düzeni bölümünden değiştirebilirsiniz.
 [discord copy failed]
 Bağlantı kopyalanamadı. Elle kopyalamak için yukarıdaki daveti seçin.
 [Destroy this building?]

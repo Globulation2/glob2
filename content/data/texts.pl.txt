@@ -6306,6 +6306,12 @@ Nie udało się zapisać wyboru. Spróbuj ponownie.
 Lewa ręka
 [Right hand]
 Prawa ręka
+[Use desktop layout]
+Użyj układu komputerowego
+[desktop layout confirm title]
+Użyć układu komputerowego?
+[desktop layout confirm body]
+Gra przełączy się na interfejs obsługiwany myszą i klawiaturą. Możesz to później zmienić w Ustawieniach, w opcji Układ interfejsu.
 [discord copy failed]
 Nie udało się skopiować odnośnika. Zaznacz zaproszenie powyżej, aby skopiować je ręcznie.
 [Destroy this building?]

@@ -6306,6 +6306,12 @@ Globulation 2 على Discord
 اليد اليسرى
 [Right hand]
 اليد اليمنى
+[Use desktop layout]
+استخدم تخطيط سطح المكتب
+[desktop layout confirm title]
+هل تريد استخدام تخطيط سطح المكتب؟
+[desktop layout confirm body]
+ستنتقل اللعبة إلى واجهة الفأرة ولوحة المفاتيح. يمكنك تغيير ذلك لاحقًا من الإعدادات ضمن «تخطيط الواجهة».
 [discord copy failed]
 تعذر نسخ الرابط. حدد رابط الدعوة أعلاه لنسخه يدويًا.
 [Destroy this building?]

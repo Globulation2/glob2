@@ -6306,6 +6306,12 @@ Nu s-a putut salva alegerea. Încearcă din nou.
 Mâna stângă
 [Right hand]
 Mâna dreaptă
+[Use desktop layout]
+Folosește aranjarea pentru desktop
+[desktop layout confirm title]
+Vrei să folosești aranjarea pentru desktop?
+[desktop layout confirm body]
+Jocul va trece la interfața pentru mouse și tastatură. Poți schimba acest lucru mai târziu din Setări, la Aranjarea interfeței.
 [discord copy failed]
 Nu s-a putut copia legătura. Selectează invitația de mai sus pentru a o copia manual.
 [Destroy this building?]

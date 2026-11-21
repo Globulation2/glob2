@@ -6306,6 +6306,12 @@ No se pudo guardar tu elección. Inténtalo de nuevo.
 Mano izquierda
 [Right hand]
 Mano derecha
+[Use desktop layout]
+Usar disposición de escritorio
+[desktop layout confirm title]
+¿Usar la disposición de escritorio?
+[desktop layout confirm body]
+El juego cambiará a la interfaz de ratón y teclado. Puedes cambiarlo más tarde en Configuración, en Disposición de la interfaz.
 [discord copy failed]
 No se pudo copiar el enlace. Selecciona la invitación de arriba para copiarla manualmente.
 [Destroy this building?]

@@ -6306,6 +6306,12 @@ Impossible d’enregistrer votre choix. Veuillez réessayer.
 Main gauche
 [Right hand]
 Main droite
+[Use desktop layout]
+Utiliser la disposition pour ordinateur
+[desktop layout confirm title]
+Utiliser la disposition pour ordinateur ?
+[desktop layout confirm body]
+Le jeu passera à l’interface souris et clavier. Vous pourrez modifier ce choix plus tard dans Paramètres, sous Disposition de l’interface.
 [discord copy failed]
 Impossible de copier le lien. Sélectionnez l’invitation ci-dessus pour la copier manuellement.
 [Destroy this building?]

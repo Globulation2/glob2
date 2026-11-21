@@ -6212,6 +6212,12 @@ Tidak dapat menyimpan pilihan anda. Sila cuba lagi.
 Tangan kiri
 [Right hand]
 Tangan kanan
+[Use desktop layout]
+Guna susun atur desktop
+[desktop layout confirm title]
+Guna susun atur desktop?
+[desktop layout confirm body]
+Permainan akan bertukar kepada antara muka tetikus dan papan kekunci. Anda boleh menukarnya kemudian dalam Tetapan, di bawah Susun atur antara muka.
 [discord copy failed]
 Tidak dapat menyalin pautan. Pilih jemputan di atas untuk menyalinnya secara manual.
 [stat ground movement]
