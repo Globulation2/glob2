@@ -72,6 +72,8 @@ _glob2() {
       '--no-fullscreen[no-fullscreen]' \
       '--resizable[resizable]' \
       '--no-resizable[no-resizable]' \
+      '--maximized[maximized]' \
+      '--no-maximized[no-maximized]' \
       '--custom-cursor[custom-cursor]' \
       '--no-custom-cursor[no-custom-cursor]' \
       '--mute[mute]' \
@@ -80,6 +82,8 @@ _glob2() {
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
+      '--interface[interface]:value:(desktop compact tablet touch)' \
+      '--ui-scale[ui-scale]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
       '--record[record]:value:_files' \
@@ -104,6 +108,8 @@ _glob2() {
       '--no-fullscreen[no-fullscreen]' \
       '--resizable[resizable]' \
       '--no-resizable[no-resizable]' \
+      '--maximized[maximized]' \
+      '--no-maximized[no-maximized]' \
       '--custom-cursor[custom-cursor]' \
       '--no-custom-cursor[no-custom-cursor]' \
       '--mute[mute]' \
@@ -112,6 +118,8 @@ _glob2() {
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
+      '--interface[interface]:value:(desktop compact tablet touch)' \
+      '--ui-scale[ui-scale]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
       '--record[record]:value:_files' \
@@ -312,6 +320,8 @@ _glob2() {
       '--no-fullscreen[no-fullscreen]' \
       '--resizable[resizable]' \
       '--no-resizable[no-resizable]' \
+      '--maximized[maximized]' \
+      '--no-maximized[no-maximized]' \
       '--custom-cursor[custom-cursor]' \
       '--no-custom-cursor[no-custom-cursor]' \
       '--mute[mute]' \
@@ -320,6 +330,8 @@ _glob2() {
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
+      '--interface[interface]:value:(desktop compact tablet touch)' \
+      '--ui-scale[ui-scale]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
       '--record[record]:value:_files' \
@@ -350,6 +362,8 @@ _glob2() {
       '--no-fullscreen[no-fullscreen]' \
       '--resizable[resizable]' \
       '--no-resizable[no-resizable]' \
+      '--maximized[maximized]' \
+      '--no-maximized[no-maximized]' \
       '--custom-cursor[custom-cursor]' \
       '--no-custom-cursor[no-custom-cursor]' \
       '--mute[mute]' \
@@ -358,6 +372,8 @@ _glob2() {
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
+      '--interface[interface]:value:(desktop compact tablet touch)' \
+      '--ui-scale[ui-scale]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
       '--record[record]:value:_files' \
@@ -383,6 +399,8 @@ _glob2() {
       '--no-fullscreen[no-fullscreen]' \
       '--resizable[resizable]' \
       '--no-resizable[no-resizable]' \
+      '--maximized[maximized]' \
+      '--no-maximized[no-maximized]' \
       '--custom-cursor[custom-cursor]' \
       '--no-custom-cursor[no-custom-cursor]' \
       '--mute[mute]' \
@@ -391,6 +409,8 @@ _glob2() {
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
+      '--interface[interface]:value:(desktop compact tablet touch)' \
+      '--ui-scale[ui-scale]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
       '--record[record]:value:_files' \
@@ -418,6 +438,8 @@ _glob2() {
       '--no-fullscreen[no-fullscreen]' \
       '--resizable[resizable]' \
       '--no-resizable[no-resizable]' \
+      '--maximized[maximized]' \
+      '--no-maximized[no-maximized]' \
       '--custom-cursor[custom-cursor]' \
       '--no-custom-cursor[no-custom-cursor]' \
       '--mute[mute]' \
@@ -426,6 +448,8 @@ _glob2() {
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
+      '--interface[interface]:value:(desktop compact tablet touch)' \
+      '--ui-scale[ui-scale]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
       '--record[record]:value:_files' \
@@ -495,6 +519,8 @@ _glob2() {
       '--no-fullscreen[no-fullscreen]' \
       '--resizable[resizable]' \
       '--no-resizable[no-resizable]' \
+      '--maximized[maximized]' \
+      '--no-maximized[no-maximized]' \
       '--custom-cursor[custom-cursor]' \
       '--no-custom-cursor[no-custom-cursor]' \
       '--mute[mute]' \
@@ -503,6 +529,8 @@ _glob2() {
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
+      '--interface[interface]:value:(desktop compact tablet touch)' \
+      '--ui-scale[ui-scale]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
       '--record[record]:value:_files' \
@@ -535,6 +563,8 @@ _glob2() {
       '--no-fullscreen[no-fullscreen]' \
       '--resizable[resizable]' \
       '--no-resizable[no-resizable]' \
+      '--maximized[maximized]' \
+      '--no-maximized[no-maximized]' \
       '--custom-cursor[custom-cursor]' \
       '--no-custom-cursor[no-custom-cursor]' \
       '--mute[mute]' \
@@ -543,6 +573,8 @@ _glob2() {
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
+      '--interface[interface]:value:(desktop compact tablet touch)' \
+      '--ui-scale[ui-scale]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
       '--record[record]:value:_files' \

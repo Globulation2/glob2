@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2007 Stephane Magnenat & Luc-Olivier de Charrière
 #include "AI.h"
+#include <Environment.h>
 #include <GraphicContext.h>
 #include "GlobalContainer.h"
 #include "CommandLine.h"
@@ -40,7 +41,29 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
 	};
 	toggle("fullscreen", GraphicContext::FULLSCREEN);
 	toggle("resizable", GraphicContext::RESIZABLE);
+	toggle("maximized", GraphicContext::MAXIMIZED);
 	toggle("custom-cursor", GraphicContext::CUSTOMCURSOR);
+	// Run-only presentation overrides share the development environment
+	// variables, so every reader of those sees the same choice.
+	if (r.has("--interface"))
+	{
+		const auto layout = r.get("--interface");
+		const char *value = layout == "desktop"  ? "0"
+							: layout == "compact" ? "1"
+							: layout == "tablet"  ? "touch-spacious"
+												  : "touch-auto";
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", value, 1);
+	}
+	if (r.has("--ui-scale"))
+	{
+		const auto text = r.get("--ui-scale");
+		std::size_t used = 0;
+		double scale = 0;
+		try { scale = std::stod(text, &used); } catch (const std::exception &) { used = 0; }
+		if (used != text.size() || !(scale >= 0.5 && scale <= 8))
+			throw std::invalid_argument("--ui-scale must be a number from 0.5 to 8");
+		GAGCore::setProcessEnvironment("GLOB2_UI_SCALE", text.c_str(), 1);
+	}
 	if (r.has("--renderer"))
 	{
         rendererLaunchOverride = GAGCore::parseRendererBackend(r.get("--renderer"));
@@ -71,6 +94,9 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
 		const auto x = text.find('x');
 		settings.screenWidth = std::max(640, std::stoi(text.substr(0, x)));
 		settings.screenHeight = std::max(480, std::stoi(text.substr(x + 1)));
+		// An explicit size is the size wanted, not a restore size.
+		if (!r.has("--maximized"))
+			settings.screenFlags &= ~GraphicContext::MAXIMIZED;
 	}
 	if (r.has("--record"))
 		recordingPath = r.get("--record");

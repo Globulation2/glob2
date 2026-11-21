@@ -69,8 +69,8 @@ _glob2_complete() {
     'match') opts='verify';;
     'online') opts='join play-map host-map turn-client';;
     'script') opts='check attach';;
-    'play') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --mcp-port --help ';;
-    'replay') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --mcp-port --help ';;
+    'play') opts='--fullscreen --no-fullscreen --resizable --no-resizable --maximized --no-maximized --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --interface --ui-scale --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --mcp-port --help ';;
+    'replay') opts='--fullscreen --no-fullscreen --resizable --no-resizable --maximized --no-maximized --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --interface --ui-scale --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --mcp-port --help ';;
     'map generate') opts='--seed --set --width --height --teams --workers --preview --preview-size --preview-scale --data-dir --generator-package --output --report-file --config --scenario --scenario-config --map-image --export-generator-package --compute-threads --help ';;
     'map study') opts='--output-dir --profile --building-catalog --data-dir --generator-package --seed --set --candidates --rotations --write-map --report --perturb --building-artwork --compute-threads --help ';;
     'map study-worker') opts='--data-dir --generator-package --compute-threads --help ';;
@@ -83,11 +83,11 @@ _glob2_complete() {
     'map validate-set') opts='--report-file --preview --gallery --phase --variation --help ';;
     'game migrate') opts='--output-dir --profile --building-catalog --data-dir --generator-package --input --legacy-adaptive-174 --help ';;
     'game run') opts='--output-dir --profile --building-catalog --data-dir --generator-package --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --map-file --load-game --generator --game-seed --map-seed --set --candidates --player --ai-param --ai-script --map-script --alliance --win-condition --win-probability --experiment --rule --fork-rule --ticks --gradient-delay --resource-growth-delay --claim-route-delay --ai-order-delay --save --telemetry --write-replay --benchmark-warmup --benchmark-tick-profile --owner-tick-profile --owner-profile-min-ms --owner-profile-from-tick --ai-decision-profile --ai-profile-min-ms --ai-profile-from-tick --ai-profile-gate --gradient-work-stats --resource-claims --resource-gradient-probe --resource-gradient-exploration --resource-gradient-exploration-seed --diagnostic-fields --diagnostic-interval --diagnostic-png --building-artwork --help ';;
-    'game repeat') opts='--data-dir --generator-package --fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --display --compute-threads --gpu --gradient-backend --gradient-algorithm --ticks --runs --building-catalog --help ';;
+    'game repeat') opts='--data-dir --generator-package --fullscreen --no-fullscreen --resizable --no-resizable --maximized --no-maximized --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --interface --ui-scale --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --display --compute-threads --gpu --gradient-backend --gradient-algorithm --ticks --runs --building-catalog --help ';;
     'match verify') opts='--output-dir --profile --compute-threads --map-file --help ';;
-    'online join') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --mcp-port --instance --help ';;
-    'online play-map') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --mcp-port --instance --hash --title --help ';;
-    'online host-map') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --mcp-port --instance --hash --title --help ';;
+    'online join') opts='--fullscreen --no-fullscreen --resizable --no-resizable --maximized --no-maximized --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --interface --ui-scale --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --mcp-port --instance --help ';;
+    'online play-map') opts='--fullscreen --no-fullscreen --resizable --no-resizable --maximized --no-maximized --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --interface --ui-scale --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --mcp-port --instance --hash --title --help ';;
+    'online host-map') opts='--fullscreen --no-fullscreen --resizable --no-resizable --maximized --no-maximized --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --interface --ui-scale --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --mcp-port --instance --hash --title --help ';;
     'online turn-client') opts='--output-dir --profile --compute-threads --map-file --orders-per-second --max-seconds --seed --help ';;
     'ai check') opts='--format --help ';;
     'script check') opts='--help ';;
@@ -95,9 +95,9 @@ _glob2_complete() {
     'assets compose-buildings') opts='--base --package --artwork-bundle --format --help ';;
     'assets render-skin') opts='--manifest --texture --material --output-dir --help ';;
     'assets skin-info') opts='--format --help ';;
-    'dev random-games') opts='--data-dir --generator-package --fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --compute-threads --gpu --gradient-backend --gradient-algorithm --display --runs --ticks --ai-types --map --matchup --save-game-as --building-catalog --help ';;
+    'dev random-games') opts='--data-dir --generator-package --fullscreen --no-fullscreen --resizable --no-resizable --maximized --no-maximized --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --interface --ui-scale --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --compute-threads --gpu --gradient-backend --gradient-algorithm --display --runs --ticks --ai-types --map --matchup --save-game-as --building-catalog --help ';;
     'dev stress-maps') opts='--data-dir --generator-package --help ';;
-    'dev textshots') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --mcp-port --output-dir --help ';;
+    'dev textshots') opts='--fullscreen --no-fullscreen --resizable --no-resizable --maximized --no-maximized --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --device-tier --window-size --interface --ui-scale --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --mcp-port --output-dir --help ';;
     'dev dump-resources') opts='--data-dir --generator-package --help ';;
     'dev dump-wheat') opts='--data-dir --generator-package --team --help ';;
     'dev dump-tiled') opts='--data-dir --generator-package --repeat-x --repeat-y --colonies --swarms --help ';;
@@ -114,6 +114,8 @@ _glob2_complete() {
     'play|--graphics-detail') kind='enum'; values='full reduced';;
     'play|--device-tier') kind='enum'; values='low mid high';;
     'play|--window-size') kind='resolution'; values='';;
+    'play|--interface') kind='enum'; values='desktop compact tablet touch';;
+    'play|--ui-scale') kind='number'; values='';;
     'play|--username') kind='string'; values='';;
     'play|--editor-script') kind='enum'; values='sgsl usl';;
     'play|--record') kind='file'; values='';;
@@ -135,6 +137,8 @@ _glob2_complete() {
     'replay|--graphics-detail') kind='enum'; values='full reduced';;
     'replay|--device-tier') kind='enum'; values='low mid high';;
     'replay|--window-size') kind='resolution'; values='';;
+    'replay|--interface') kind='enum'; values='desktop compact tablet touch';;
+    'replay|--ui-scale') kind='number'; values='';;
     'replay|--username') kind='string'; values='';;
     'replay|--editor-script') kind='enum'; values='sgsl usl';;
     'replay|--record') kind='file'; values='';;
@@ -288,6 +292,8 @@ _glob2_complete() {
     'game repeat|--graphics-detail') kind='enum'; values='full reduced';;
     'game repeat|--device-tier') kind='enum'; values='low mid high';;
     'game repeat|--window-size') kind='resolution'; values='';;
+    'game repeat|--interface') kind='enum'; values='desktop compact tablet touch';;
+    'game repeat|--ui-scale') kind='number'; values='';;
     'game repeat|--username') kind='string'; values='';;
     'game repeat|--editor-script') kind='enum'; values='sgsl usl';;
     'game repeat|--record') kind='file'; values='';;
@@ -311,6 +317,8 @@ _glob2_complete() {
     'online join|--graphics-detail') kind='enum'; values='full reduced';;
     'online join|--device-tier') kind='enum'; values='low mid high';;
     'online join|--window-size') kind='resolution'; values='';;
+    'online join|--interface') kind='enum'; values='desktop compact tablet touch';;
+    'online join|--ui-scale') kind='number'; values='';;
     'online join|--username') kind='string'; values='';;
     'online join|--editor-script') kind='enum'; values='sgsl usl';;
     'online join|--record') kind='file'; values='';;
@@ -333,6 +341,8 @@ _glob2_complete() {
     'online play-map|--graphics-detail') kind='enum'; values='full reduced';;
     'online play-map|--device-tier') kind='enum'; values='low mid high';;
     'online play-map|--window-size') kind='resolution'; values='';;
+    'online play-map|--interface') kind='enum'; values='desktop compact tablet touch';;
+    'online play-map|--ui-scale') kind='number'; values='';;
     'online play-map|--username') kind='string'; values='';;
     'online play-map|--editor-script') kind='enum'; values='sgsl usl';;
     'online play-map|--record') kind='file'; values='';;
@@ -357,6 +367,8 @@ _glob2_complete() {
     'online host-map|--graphics-detail') kind='enum'; values='full reduced';;
     'online host-map|--device-tier') kind='enum'; values='low mid high';;
     'online host-map|--window-size') kind='resolution'; values='';;
+    'online host-map|--interface') kind='enum'; values='desktop compact tablet touch';;
+    'online host-map|--ui-scale') kind='number'; values='';;
     'online host-map|--username') kind='string'; values='';;
     'online host-map|--editor-script') kind='enum'; values='sgsl usl';;
     'online host-map|--record') kind='file'; values='';;
@@ -402,6 +414,8 @@ _glob2_complete() {
     'dev random-games|--graphics-detail') kind='enum'; values='full reduced';;
     'dev random-games|--device-tier') kind='enum'; values='low mid high';;
     'dev random-games|--window-size') kind='resolution'; values='';;
+    'dev random-games|--interface') kind='enum'; values='desktop compact tablet touch';;
+    'dev random-games|--ui-scale') kind='number'; values='';;
     'dev random-games|--username') kind='string'; values='';;
     'dev random-games|--editor-script') kind='enum'; values='sgsl usl';;
     'dev random-games|--record') kind='file'; values='';;
@@ -427,6 +441,8 @@ _glob2_complete() {
     'dev textshots|--graphics-detail') kind='enum'; values='full reduced';;
     'dev textshots|--device-tier') kind='enum'; values='low mid high';;
     'dev textshots|--window-size') kind='resolution'; values='';;
+    'dev textshots|--interface') kind='enum'; values='desktop compact tablet touch';;
+    'dev textshots|--ui-scale') kind='number'; values='';;
     'dev textshots|--username') kind='string'; values='';;
     'dev textshots|--editor-script') kind='enum'; values='sgsl usl';;
     'dev textshots|--record') kind='file'; values='';;

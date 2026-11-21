@@ -80,7 +80,7 @@ namespace GAGCore
 		// Cocoa's native window button can also change fullscreen state.
 		const bool fullscreen=bool(SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN);
 		if (fullscreen) optionFlags |= FULLSCREEN; else optionFlags &= ~FULLSCREEN;
-		if (!fullscreen) { requestedW=pointsW; requestedH=pointsH; }
+		if (!fullscreen && !trackMaximized()) { requestedW=pointsW; requestedH=pointsH; }
 		if (changed)
 		{
 #ifdef HAVE_OPENGL

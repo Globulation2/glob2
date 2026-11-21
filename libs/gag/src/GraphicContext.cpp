@@ -672,7 +672,7 @@ int GraphicContext::maximumTextureSize() const
 		{
 			SDL_Surface *resized = createFrameSurface(logicalW, logicalH);
 			if (!resized) return;
-			if (!(optionFlags & FULLSCREEN)) {
+			if (!(optionFlags & FULLSCREEN) && !trackMaximized()) {
 				requestedW = windowW;
 				requestedH = windowH;
 			}
@@ -750,7 +750,9 @@ int GraphicContext::maximumTextureSize() const
         if (!window) return false;
         const bool previous = bool(optionFlags & FULLSCREEN);
         if (previous == fullscreen) return true;
-        if (!previous) SDL_GetWindowSize(window, &requestedW, &requestedH);
+        // A maximized window remembers its restored size, not the screen's.
+        if (!previous && !(SDL_GetWindowFlags(window) & SDL_WINDOW_MAXIMIZED))
+            SDL_GetWindowSize(window, &requestedW, &requestedH);
         const bool previousResizable = (SDL_GetWindowFlags(window) & SDL_WINDOW_RESIZABLE) ? true : false;
         // Cocoa fullscreen spaces require a resizable window. This temporary
         // window style does not change the saved windowed resize preference.
@@ -768,7 +770,9 @@ int GraphicContext::maximumTextureSize() const
                 if (nativeDesktop) applied = SDL_SyncWindow(window);
                 if (applied) {
                     SDL_SetWindowResizable(window, (optionFlags & RESIZABLE) ? true : false);
-                    SDL_SetWindowSize(window, requestedW, requestedH);
+                    // Leaving fullscreen returns a maximized window to maximized.
+                    if (!(SDL_GetWindowFlags(window) & SDL_WINDOW_MAXIMIZED))
+                        SDL_SetWindowSize(window, requestedW, requestedH);
                 }
             }
             // Fullscreen and its restoration resize can outlive the flag change.
@@ -1068,6 +1072,8 @@ int GraphicContext::maximumTextureSize() const
 			sdlFlags |= SDL_WINDOW_RESIZABLE;
 		if (hiddenTestWindows())
 			sdlFlags |= SDL_WINDOW_HIDDEN;
+		else if ((flags & MAXIMIZED) && !(flags & FULLSCREEN) && (flags & RESIZABLE))
+			sdlFlags |= SDL_WINDOW_MAXIMIZED;
 		#if defined(HAVE_OPENGL) || defined(GLOB2_PROGRAMMABLE_GL)
 		if ((flags & USEGPU) || configuredBackend == RendererBackend::ProgrammableGL)
 		{

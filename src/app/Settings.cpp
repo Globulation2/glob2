@@ -37,8 +37,13 @@ Settings::Settings()
 	username=newUsername;
 
 	screenFlags = GraphicContext::RESIZABLE | GraphicContext::CUSTOMCURSOR;
-	screenWidth = 800;
-	screenHeight = 600;
+#if !defined(GLOB2_MOBILE) && !defined(__EMSCRIPTEN__)
+	// A first desktop launch fills the screen as a maximized window; the size
+	// below is what restoring it gives. Saved profiles keep their own choice.
+	screenFlags |= GraphicContext::MAXIMIZED;
+#endif
+	screenWidth = 1280;
+	screenHeight = 720;
 	uiScale = 0;
 	optionFlags = 0;
 	setGraphicsDetail(true);
