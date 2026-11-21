@@ -261,7 +261,7 @@ Platform: all.
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--device-tier` | low, mid, high | Classify this device for Auto defaults; also GLOB2_DEVICE_TIER. |
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480; implies --no-maximized. |
-| `--interface` | desktop, compact, tablet, touch | Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI. |
+| `--interface` | desktop, tablet, phone, touch | Force the interface for this run, not saved; touch keeps the automatic layout; also GLOB2_MOBILE_UI. |
 | `--ui-scale` | number | Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
@@ -335,7 +335,7 @@ Platform: all.
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--device-tier` | low, mid, high | Classify this device for Auto defaults; also GLOB2_DEVICE_TIER. |
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480; implies --no-maximized. |
-| `--interface` | desktop, compact, tablet, touch | Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI. |
+| `--interface` | desktop, tablet, phone, touch | Force the interface for this run, not saved; touch keeps the automatic layout; also GLOB2_MOBILE_UI. |
 | `--ui-scale` | number | Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
@@ -832,7 +832,7 @@ Platform: all.
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--device-tier` | low, mid, high | Classify this device for Auto defaults; also GLOB2_DEVICE_TIER. |
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480; implies --no-maximized. |
-| `--interface` | desktop, compact, tablet, touch | Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI. |
+| `--interface` | desktop, tablet, phone, touch | Force the interface for this run, not saved; touch keeps the automatic layout; also GLOB2_MOBILE_UI. |
 | `--ui-scale` | number | Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
@@ -932,7 +932,7 @@ Platform: all.
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--device-tier` | low, mid, high | Classify this device for Auto defaults; also GLOB2_DEVICE_TIER. |
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480; implies --no-maximized. |
-| `--interface` | desktop, compact, tablet, touch | Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI. |
+| `--interface` | desktop, tablet, phone, touch | Force the interface for this run, not saved; touch keeps the automatic layout; also GLOB2_MOBILE_UI. |
 | `--ui-scale` | number | Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
@@ -1006,7 +1006,7 @@ Platform: all.
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--device-tier` | low, mid, high | Classify this device for Auto defaults; also GLOB2_DEVICE_TIER. |
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480; implies --no-maximized. |
-| `--interface` | desktop, compact, tablet, touch | Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI. |
+| `--interface` | desktop, tablet, phone, touch | Force the interface for this run, not saved; touch keeps the automatic layout; also GLOB2_MOBILE_UI. |
 | `--ui-scale` | number | Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
@@ -1082,7 +1082,7 @@ Platform: all.
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--device-tier` | low, mid, high | Classify this device for Auto defaults; also GLOB2_DEVICE_TIER. |
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480; implies --no-maximized. |
-| `--interface` | desktop, compact, tablet, touch | Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI. |
+| `--interface` | desktop, tablet, phone, touch | Force the interface for this run, not saved; touch keeps the automatic layout; also GLOB2_MOBILE_UI. |
 | `--ui-scale` | number | Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
@@ -1319,7 +1319,7 @@ Platform: all.
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--device-tier` | low, mid, high | Classify this device for Auto defaults; also GLOB2_DEVICE_TIER. |
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480; implies --no-maximized. |
-| `--interface` | desktop, compact, tablet, touch | Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI. |
+| `--interface` | desktop, tablet, phone, touch | Force the interface for this run, not saved; touch keeps the automatic layout; also GLOB2_MOBILE_UI. |
 | `--ui-scale` | number | Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
@@ -1425,7 +1425,7 @@ Platform: all.
 | `--graphics-detail` | full, reduced | Detail effects. |
 | `--device-tier` | low, mid, high | Classify this device for Auto defaults; also GLOB2_DEVICE_TIER. |
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480; implies --no-maximized. |
-| `--interface` | desktop, compact, tablet, touch | Force the interface layout for this run, not saved; also GLOB2_MOBILE_UI. |
+| `--interface` | desktop, tablet, phone, touch | Force the interface for this run, not saved; touch keeps the automatic layout; also GLOB2_MOBILE_UI. |
 | `--ui-scale` | number | Interface scale for this run, 0.5 to 8, not saved; also GLOB2_UI_SCALE. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |

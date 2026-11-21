@@ -3066,6 +3066,14 @@ Automatikoa
 Trinkoa
 [settings Spacious]
 Zabala
+[settings Desktop]
+
+[settings Tablet]
+
+[settings Phone]
+
+[settings Automatic follows the window size and touchscreen. Desktop uses the mouse interface, Tablet the touch interface with a side panel, and Phone the touch toolbar and drawers.]
+
 [More]
 Gehiago
 [No items]

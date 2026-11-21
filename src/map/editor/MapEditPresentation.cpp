@@ -17,6 +17,10 @@ EditorPresentationChoice chooseEditorPresentation(const GAGCore::ResolvedPresent
 	EditorPresentationChoice choice;
 	choice.touchTargets = touch || resolved.touch;
 	const double width = resolved.usable.w, height = resolved.usable.h;
+	// Desktop, Tablet and Phone choose a layout like Spacious or Compact.
+	if (forced)
+		forced = GAGCore::presentationLayoutPolicy(*forced);
+	preference = GAGCore::presentationLayoutPolicy(preference);
 	bool dock;
 	if (forced && *forced != PresentationPreference::Automatic)
 		dock = *forced == PresentationPreference::Spacious;

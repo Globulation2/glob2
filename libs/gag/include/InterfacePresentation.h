@@ -7,12 +7,46 @@
 
 namespace GAGCore
 {
+// Automatic follows the window and the input devices. Compact and Spacious
+// choose only the layout; Desktop, Tablet and Phone also choose the input mode,
+// so a touchscreen can use the desktop interface and a mouse the touch one.
 enum class PresentationPreference
 {
 	Automatic,
 	Compact,
-	Spacious
+	Spacious,
+	Desktop,
+	Tablet,
+	Phone
 };
+// The layout policy a preference asks for: Automatic, Compact or Spacious.
+inline PresentationPreference presentationLayoutPolicy(PresentationPreference value)
+{
+	switch (value)
+	{
+	case PresentationPreference::Phone:
+		return PresentationPreference::Compact;
+	case PresentationPreference::Desktop:
+	case PresentationPreference::Tablet:
+		return PresentationPreference::Spacious;
+	default:
+		return value;
+	}
+}
+// The touch mode a preference forces, if any.
+inline std::optional<bool> presentationTouchPolicy(PresentationPreference value)
+{
+	switch (value)
+	{
+	case PresentationPreference::Desktop:
+		return false;
+	case PresentationPreference::Tablet:
+	case PresentationPreference::Phone:
+		return true;
+	default:
+		return {};
+	}
+}
 enum class PresentationLayout
 {
 	Compact,
@@ -25,6 +59,12 @@ inline PresentationPreference parsePresentationPreference(std::string_view value
 		return PresentationPreference::Compact;
 	if (value == "spacious")
 		return PresentationPreference::Spacious;
+	if (value == "desktop")
+		return PresentationPreference::Desktop;
+	if (value == "tablet")
+		return PresentationPreference::Tablet;
+	if (value == "phone")
+		return PresentationPreference::Phone;
 	return PresentationPreference::Automatic;
 }
 inline const char *presentationPreferenceName(PresentationPreference value)
@@ -35,6 +75,12 @@ inline const char *presentationPreferenceName(PresentationPreference value)
 		return "compact";
 	case PresentationPreference::Spacious:
 		return "spacious";
+	case PresentationPreference::Desktop:
+		return "desktop";
+	case PresentationPreference::Tablet:
+		return "tablet";
+	case PresentationPreference::Phone:
+		return "phone";
 	default:
 		return "automatic";
 	}
@@ -60,10 +106,18 @@ struct ResolvedPresentation
 };
 inline ResolvedPresentation resolvePresentation(PresentationPreference preference,
 												const ViewportMetrics &viewport,
-												const InputCapabilities &input,
+												const InputCapabilities &detected,
 												double desktopPanelWidth = 160)
 {
 	ResolvedPresentation result;
+	InputCapabilities input = detected;
+	if (const auto touch = presentationTouchPolicy(preference))
+	{
+		input.touch = *touch;
+		// The desktop interface shows hover hints whatever the hardware reports.
+		if (!*touch)
+			input.pointer = input.hover = true;
+	}
 	const double scale =
 		std::isfinite(viewport.userScale) && viewport.userScale > 0 ? viewport.userScale : 1;
 	const double width = std::isfinite(viewport.width) ? std::max(0.0, viewport.width) : 0;
@@ -78,7 +132,7 @@ inline ResolvedPresentation resolvePresentation(PresentationPreference preferenc
 						 scale};
 	result.panelWidth = input.touch ? 288 : desktopPanelWidth;
 	const bool fits = result.usable.w >= 480 + result.panelWidth && result.usable.h >= 480;
-	result.layout = preference != PresentationPreference::Compact && fits
+	result.layout = presentationLayoutPolicy(preference) != PresentationPreference::Compact && fits
 						? PresentationLayout::Spacious
 						: PresentationLayout::Compact;
 	result.touch = input.touch;
@@ -93,10 +147,23 @@ inline ResolvedPresentation resolvePresentation(PresentationPreference preferenc
 }
 inline std::optional<PresentationPreference> presentationOverride()
 {
+	// "1" and "0" are the historical compact and spacious layouts; the named
+	// values match the Interface layout setting.
 	if (const char *value = SDL_getenv_unsafe("GLOB2_MOBILE_UI"); value && *value)
-		return std::string_view(value) == "1"            ? PresentationPreference::Compact
-			   : std::string_view(value) == "touch-auto" ? PresentationPreference::Automatic
-														 : PresentationPreference::Spacious;
+	{
+		const std::string_view name(value);
+		if (name == "1")
+			return PresentationPreference::Compact;
+		if (name == "touch-auto")
+			return PresentationPreference::Automatic;
+		if (name == "touch-spacious" || name == "tablet")
+			return PresentationPreference::Tablet;
+		if (name == "desktop")
+			return PresentationPreference::Desktop;
+		if (name == "phone")
+			return PresentationPreference::Phone;
+		return PresentationPreference::Spacious;
+	}
 	return {};
 }
 inline PresentationPreference presentationPreference = PresentationPreference::Automatic;
@@ -121,7 +188,8 @@ inline bool phonePresentationRequested()
 		value && std::string_view(value).starts_with("touch-"))
 		return true;
 	if (const auto forced = presentationOverride())
-		return *forced == PresentationPreference::Compact;
+		return presentationLayoutPolicy(*forced) == PresentationPreference::Compact ||
+			   presentationTouchPolicy(*forced).value_or(false);
 	return presentationState.adaptedControls();
 }
 } // namespace GAGCore

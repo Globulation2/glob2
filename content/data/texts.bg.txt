@@ -3050,6 +3050,14 @@ HP ≤25/50/75%
 Компактен
 [settings Spacious]
 Просторен
+[settings Desktop]
+
+[settings Tablet]
+
+[settings Phone]
+
+[settings Automatic follows the window size and touchscreen. Desktop uses the mouse interface, Tablet the touch interface with a side panel, and Phone the touch toolbar and drawers.]
+
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Просторният изглед използва страничен панел, когато има място. Компактният използва лента с инструменти и прибиращи се панели.
 [settings Menu theme]

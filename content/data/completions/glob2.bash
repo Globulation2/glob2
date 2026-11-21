@@ -114,7 +114,7 @@ _glob2_complete() {
     'play|--graphics-detail') kind='enum'; values='full reduced';;
     'play|--device-tier') kind='enum'; values='low mid high';;
     'play|--window-size') kind='resolution'; values='';;
-    'play|--interface') kind='enum'; values='desktop compact tablet touch';;
+    'play|--interface') kind='enum'; values='desktop tablet phone touch';;
     'play|--ui-scale') kind='number'; values='';;
     'play|--username') kind='string'; values='';;
     'play|--editor-script') kind='enum'; values='sgsl usl';;
@@ -137,7 +137,7 @@ _glob2_complete() {
     'replay|--graphics-detail') kind='enum'; values='full reduced';;
     'replay|--device-tier') kind='enum'; values='low mid high';;
     'replay|--window-size') kind='resolution'; values='';;
-    'replay|--interface') kind='enum'; values='desktop compact tablet touch';;
+    'replay|--interface') kind='enum'; values='desktop tablet phone touch';;
     'replay|--ui-scale') kind='number'; values='';;
     'replay|--username') kind='string'; values='';;
     'replay|--editor-script') kind='enum'; values='sgsl usl';;
@@ -292,7 +292,7 @@ _glob2_complete() {
     'game repeat|--graphics-detail') kind='enum'; values='full reduced';;
     'game repeat|--device-tier') kind='enum'; values='low mid high';;
     'game repeat|--window-size') kind='resolution'; values='';;
-    'game repeat|--interface') kind='enum'; values='desktop compact tablet touch';;
+    'game repeat|--interface') kind='enum'; values='desktop tablet phone touch';;
     'game repeat|--ui-scale') kind='number'; values='';;
     'game repeat|--username') kind='string'; values='';;
     'game repeat|--editor-script') kind='enum'; values='sgsl usl';;
@@ -317,7 +317,7 @@ _glob2_complete() {
     'online join|--graphics-detail') kind='enum'; values='full reduced';;
     'online join|--device-tier') kind='enum'; values='low mid high';;
     'online join|--window-size') kind='resolution'; values='';;
-    'online join|--interface') kind='enum'; values='desktop compact tablet touch';;
+    'online join|--interface') kind='enum'; values='desktop tablet phone touch';;
     'online join|--ui-scale') kind='number'; values='';;
     'online join|--username') kind='string'; values='';;
     'online join|--editor-script') kind='enum'; values='sgsl usl';;
@@ -341,7 +341,7 @@ _glob2_complete() {
     'online play-map|--graphics-detail') kind='enum'; values='full reduced';;
     'online play-map|--device-tier') kind='enum'; values='low mid high';;
     'online play-map|--window-size') kind='resolution'; values='';;
-    'online play-map|--interface') kind='enum'; values='desktop compact tablet touch';;
+    'online play-map|--interface') kind='enum'; values='desktop tablet phone touch';;
     'online play-map|--ui-scale') kind='number'; values='';;
     'online play-map|--username') kind='string'; values='';;
     'online play-map|--editor-script') kind='enum'; values='sgsl usl';;
@@ -367,7 +367,7 @@ _glob2_complete() {
     'online host-map|--graphics-detail') kind='enum'; values='full reduced';;
     'online host-map|--device-tier') kind='enum'; values='low mid high';;
     'online host-map|--window-size') kind='resolution'; values='';;
-    'online host-map|--interface') kind='enum'; values='desktop compact tablet touch';;
+    'online host-map|--interface') kind='enum'; values='desktop tablet phone touch';;
     'online host-map|--ui-scale') kind='number'; values='';;
     'online host-map|--username') kind='string'; values='';;
     'online host-map|--editor-script') kind='enum'; values='sgsl usl';;
@@ -414,7 +414,7 @@ _glob2_complete() {
     'dev random-games|--graphics-detail') kind='enum'; values='full reduced';;
     'dev random-games|--device-tier') kind='enum'; values='low mid high';;
     'dev random-games|--window-size') kind='resolution'; values='';;
-    'dev random-games|--interface') kind='enum'; values='desktop compact tablet touch';;
+    'dev random-games|--interface') kind='enum'; values='desktop tablet phone touch';;
     'dev random-games|--ui-scale') kind='number'; values='';;
     'dev random-games|--username') kind='string'; values='';;
     'dev random-games|--editor-script') kind='enum'; values='sgsl usl';;
@@ -441,7 +441,7 @@ _glob2_complete() {
     'dev textshots|--graphics-detail') kind='enum'; values='full reduced';;
     'dev textshots|--device-tier') kind='enum'; values='low mid high';;
     'dev textshots|--window-size') kind='resolution'; values='';;
-    'dev textshots|--interface') kind='enum'; values='desktop compact tablet touch';;
+    'dev textshots|--interface') kind='enum'; values='desktop tablet phone touch';;
     'dev textshots|--ui-scale') kind='number'; values='';;
     'dev textshots|--username') kind='string'; values='';;
     'dev textshots|--editor-script') kind='enum'; values='sgsl usl';;

@@ -3066,6 +3066,14 @@ Globulation 2 커서를 표시합니다.
 좁게
 [settings Spacious]
 여유롭게
+[settings Desktop]
+
+[settings Tablet]
+
+[settings Phone]
+
+[settings Automatic follows the window size and touchscreen. Desktop uses the mouse interface, Tablet the touch interface with a side panel, and Phone the touch toolbar and drawers.]
+
 [More]
 더 보기
 [No items]

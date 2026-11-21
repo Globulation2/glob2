@@ -3066,6 +3066,14 @@ OpenGL није доступан у овој верзији.
 Мали
 [settings Spacious]
 Простран
+[settings Desktop]
+
+[settings Tablet]
+
+[settings Phone]
+
+[settings Automatic follows the window size and touchscreen. Desktop uses the mouse interface, Tablet the touch interface with a side panel, and Phone the touch toolbar and drawers.]
+
 [More]
 Више
 [No items]

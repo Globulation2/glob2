@@ -372,7 +372,7 @@ static void run(int width,int height,bool gl,bool expanded)
         REQUIRE(screen.changeSetting("graphics.torus",!previousTorus)==capabilities.torus);
         saved.load();REQUIRE(saved.automaticTorus==(capabilities.torus ? !previousTorus : previousTorus));
         screen.changeSetting("graphics.torus",previousTorus);
-        for (const auto& [value,name] : std::vector<std::pair<int,std::string>>{{1,"compact"},{2,"spacious"},{0,"automatic"}}) {
+        for (const auto& [value,name] : std::vector<std::pair<int,std::string>>{{1,"desktop"},{2,"tablet"},{3,"phone"},{0,"automatic"}}) {
             REQUIRE(screen.changeSetting("display.presentation",value));
             saved.load();REQUIRE(saved.interfacePresentation==name);
         }
