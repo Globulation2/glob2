@@ -162,10 +162,14 @@ void MapDrawer::drawMapBuilding(int x, int y, int gid, int viewportX, int viewpo
 		}
 
 		// Attention outlasts the bars when zoomed out, as a status badge: damage, a tower
-		// without ammunition, an inn without food, a building with under half its workers.
-		// A construction site is short of hit points by design, so it gets no damage badge.
+		// without ammunition, an inn without food, a building with under half the workers it
+		// is asking for. A construction site is short of hit points by design, so it gets no
+		// damage badge. Staffing uses the job allocator's own demand (HiringPlanner's
+		// needsCandidates): desiredMaxUnitWorking of a living building, not the slider, so
+		// a tower with its stone and bullets topped up, which hires nobody, never shows it.
 		const bool damaged = type->hpMax && building->hp!=building->maxHp && !type->isBuildingSite;
-		const bool understaffed = StatusSeverity::buildingUnderstaffed(building->working.count, building->maxUnitWorking);
+		const int wantedWorkers = building->buildingState==Building::ALIVE ? building->desiredMaxUnitWorking : 0;
+		const bool understaffed = StatusSeverity::buildingUnderstaffed(building->working.count, wantedWorkers);
 		const bool unfed = buildingFeedingUnfunded(*type, entities.materials(*building));
 		const bool unarmed = type->shootingRange>0 && type->shootRhythm>0 && building->bullets==0;
 		anchorBars(x+type->width*32, y, drawnRender);
@@ -193,7 +197,7 @@ void MapDrawer::drawMapBuilding(int x, int y, int gid, int viewportX, int viewpo
 			drawStatusPip(x+type->width*32-4, y+4, MapOverlayQueue::Hungry, 0, drawnRender);
 		else if (understaffed)
 			drawStatusPip(x+type->width*32-4, y+4, MapOverlayQueue::Understaffed,
-				StatusSeverity::buildingStaffing(building->working.count, building->maxUnitWorking), drawnRender);
+				StatusSeverity::buildingStaffing(building->working.count, wantedWorkers), drawnRender);
 	}
 
 	if (drawOptions & Game::DRAW_ACCESSIBILITY)
