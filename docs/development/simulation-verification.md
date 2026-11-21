@@ -55,8 +55,13 @@ generated `cmake/sources.cmake` changes whenever any source is added or removed,
 it counts only when its simulation content changed: a flag, define or include
 block, the strict, guarded or simulation source lists, a source on the simulation
 path, or anything the comparison does not recognise. A source outside the
-simulation path joining or leaving the plain source lists does not count. Other
-build files (`CMakeLists.txt`, `buildsys/javascript.py`) always count. The job
+simulation path joining or leaving the plain source lists does not count. The
+files that decide how simulation sources compile always count:
+`cmake/compile-flags.cmake` (every object's tier flags and shared definitions),
+`cmake/numeric-contract.cmake` (the strict numeric flags) and
+`buildsys/javascript.py`. `CMakeLists.txt` does not: it holds only targets,
+dependencies and packaging, and `test/build_system/test_ci_policy.py` fails when it
+gains compile flags, global definitions or per-source options. The job
 builds the merge base and the pull request at the perf tier, prints the verdict beside the
 two sim version keys (`test/check_sim_revision.py --key-at <rev>`) in the job
 summary, and judges it:

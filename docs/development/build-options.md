@@ -25,7 +25,7 @@ because an analysis on Apple clang 21 saw `-O2` turn this loop shape into an ASa
 heap overflow with run-to-run-varying sums. If it ever fails, check whether the
 real stencils in `src/map/generator/shared/` are affected; if they are, add
 `-fno-vectorize -fno-slp-vectorize` for Clang to the strict numeric sources'
-flags (`STRICT_CXXFLAGS` in `buildsys/javascript.py`, applied by `CMakeLists.txt`)
+flags (`STRICT_CXXFLAGS` in `buildsys/javascript.py`, applied by `cmake/numeric-contract.cmake`)
 and refresh that platform's generator rows.
 
 ## Fast development builds
@@ -297,7 +297,7 @@ tools that look for the newest build directory (`tools/build_paths.py`, so
 `test/run_tests.py` without `--build-dir`) take whichever dev or release build
 was built last; `--build-dir` or `GLOB2_BUILD_DIR` picks one explicitly.
 
-Tier flags: `GLOB2_CXXFLAGS` and `GLOB2_LINKFLAGS` (`CXXFLAGS=` and
+Tier flags (`cmake/compile-flags.cmake`): `GLOB2_CXXFLAGS` and `GLOB2_LINKFLAGS` (`CXXFLAGS=` and
 `LINKFLAGS=` of `tools/dev_build.py`, default `-g`; distributions pass their
 optflags) come first. Native objects are compiled with `-fPIE`: every target is
 an executable over static archives, and `-fPIC` would make GCC treat each global
