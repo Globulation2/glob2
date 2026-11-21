@@ -32,9 +32,11 @@ Presentation resolvePresentation(GAGCore::GraphicContext &context, double touchT
 		p.touch = *forced == GAGCore::PresentationPreference::Compact ||
 				  GAGCore::phonePresentationRequested();
 	else
-		p.touch = GAGCore::presentationInput.touch;
+		p.touch = GAGCore::presentationTouchPolicy(GAGCore::presentationPreference)
+					  .value_or(GAGCore::presentationInput.touch);
 	p.hover = GAGCore::presentationState.hover && !p.touch;
-	if (forced && *forced == GAGCore::PresentationPreference::Spacious)
+	if (forced && (*forced == GAGCore::PresentationPreference::Spacious ||
+				   *forced == GAGCore::PresentationPreference::Desktop))
 		p.hover = true;
 	applyTextSize(p, touchTextScale);
 	return p;

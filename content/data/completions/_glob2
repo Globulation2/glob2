@@ -82,7 +82,7 @@ _glob2() {
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
-      '--interface[interface]:value:(desktop compact tablet touch)' \
+      '--interface[interface]:value:(desktop tablet phone touch)' \
       '--ui-scale[ui-scale]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
@@ -118,7 +118,7 @@ _glob2() {
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
-      '--interface[interface]:value:(desktop compact tablet touch)' \
+      '--interface[interface]:value:(desktop tablet phone touch)' \
       '--ui-scale[ui-scale]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
@@ -330,7 +330,7 @@ _glob2() {
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
-      '--interface[interface]:value:(desktop compact tablet touch)' \
+      '--interface[interface]:value:(desktop tablet phone touch)' \
       '--ui-scale[ui-scale]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
@@ -372,7 +372,7 @@ _glob2() {
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
-      '--interface[interface]:value:(desktop compact tablet touch)' \
+      '--interface[interface]:value:(desktop tablet phone touch)' \
       '--ui-scale[ui-scale]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
@@ -409,7 +409,7 @@ _glob2() {
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
-      '--interface[interface]:value:(desktop compact tablet touch)' \
+      '--interface[interface]:value:(desktop tablet phone touch)' \
       '--ui-scale[ui-scale]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
@@ -448,7 +448,7 @@ _glob2() {
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
-      '--interface[interface]:value:(desktop compact tablet touch)' \
+      '--interface[interface]:value:(desktop tablet phone touch)' \
       '--ui-scale[ui-scale]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
@@ -529,7 +529,7 @@ _glob2() {
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
-      '--interface[interface]:value:(desktop compact tablet touch)' \
+      '--interface[interface]:value:(desktop tablet phone touch)' \
       '--ui-scale[ui-scale]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \
@@ -573,7 +573,7 @@ _glob2() {
       '--graphics-detail[graphics-detail]:value:(full reduced)' \
       '--device-tier[device-tier]:value:(low mid high)' \
       '--window-size[window-size]:value:' \
-      '--interface[interface]:value:(desktop compact tablet touch)' \
+      '--interface[interface]:value:(desktop tablet phone touch)' \
       '--ui-scale[ui-scale]:value:' \
       '--username[username]:value:' \
       '--editor-script[editor-script]:value:(sgsl usl)' \

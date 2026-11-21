@@ -3050,6 +3050,14 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 கச்சிதமான
 [settings Spacious]
 விசாலமான
+[settings Desktop]
+
+[settings Tablet]
+
+[settings Phone]
+
+[settings Automatic follows the window size and touchscreen. Desktop uses the mouse interface, Tablet the touch interface with a side panel, and Phone the touch toolbar and drawers.]
+
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 விசாலமானது, இடம் இருக்கும்போது ஒரு பக்கவாட்டுப் பலகையைப் பயன்படுத்துகிறது. கச்சிதமானது, ஒரு கருவிப்பட்டையையும் இழுப்பறைகளையும் பயன்படுத்துகிறது.
 [settings Menu theme]

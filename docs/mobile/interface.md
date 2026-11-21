@@ -10,7 +10,12 @@ lobby setup with desktop. `InterfacePresentation.h` selects the presentation;
 element trees on the declarative UI framework (see the
 [UI framework guide](../development/ui-framework.md)), which adapts one build
 path per screen to phones, tablets and desktops. Automatic presentation uses available logical space and touch capability
-on every host. Settings offers Automatic, Compact and Spacious. Spacious requires
+on every host. Settings offers Automatic, Desktop, Tablet and Phone. Desktop is the
+mouse interface and Tablet the touch interface, both with the Spacious layout; Phone
+is the touch interface with the Compact layout. These three set the input mode as
+well as the layout, so a touchscreen can use the desktop interface and a mouse the
+touch one. Profiles saved with the older Compact or Spacious values keep choosing
+only the layout. Spacious requires
 480 points of map width beside the panel and 480 points of usable height;
 the panel is 288 points for touch and the existing 160 points for mouse controls.
 Spacious falls back to Compact when it cannot fit. Safe areas and interface scale
@@ -19,13 +24,13 @@ Touch-capable hosts use targets at least 48 points tall. Pointer availability
 controls hover hints without switching layouts. Resize preserves the camera,
 selection, tool, panel, scroll position and text while cancelling held input.
 
-`GLOB2_MOBILE_UI=1` forces the compact presentation for development; `0` forces
-legacy controls. `touch-auto` and `touch-spacious` exercise touch presentation
-with Automatic and Spacious layout policies on a native development host. This is
-the single development override; leave it unset for normal saved preferences and
-host capabilities. `glob2 play --interface desktop|compact|tablet|touch` sets the
-same override for one run (`0`, `1`, `touch-spacious` and `touch-auto`), and
-`--ui-scale` sets `GLOB2_UI_SCALE`; neither is saved. Rendering backend and mouse
+`GLOB2_MOBILE_UI` overrides the saved setting for one process: `desktop`, `tablet`
+and `phone` match the setting's choices, and `touch-auto` is touch with the
+Automatic layout. The historical `1` and `0` force the compact presentation and
+legacy controls, and `touch-spacious` is the same as `tablet`. Leave it unset for
+normal saved preferences and host capabilities. `glob2 play --interface
+desktop|tablet|phone|touch` sets it for one run, and `--ui-scale` sets
+`GLOB2_UI_SCALE`; neither is saved. Rendering backend and mouse
 motion do not select a presentation. SDL, OpenGL/WebGL and software rendering
 share UI transforms and clipping. Mouse clicks use the same controls as touch;
 Tab and Enter navigate adapted forms, and Page Up/Down scroll gameplay panels.

@@ -48,10 +48,7 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
 	if (r.has("--interface"))
 	{
 		const auto layout = r.get("--interface");
-		const char *value = layout == "desktop"  ? "0"
-							: layout == "compact" ? "1"
-							: layout == "tablet"  ? "touch-spacious"
-												  : "touch-auto";
+		const char *value = layout == "touch" ? "touch-auto" : layout.c_str();
 		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", value, 1);
 	}
 	if (r.has("--ui-scale"))

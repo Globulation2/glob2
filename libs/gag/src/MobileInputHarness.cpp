@@ -9,6 +9,7 @@
 #include <MapCamera.h>
 #include <InterfacePresentation.h>
 #include <cmath>
+#include <tuple>
 using namespace GAGCore;
 namespace
 {
@@ -85,9 +86,18 @@ TEST_CASE("zoom anchoring; seams; rotation; safe layouts; gestures and cancellat
 					phonePresentationRequested(),
 				"Touch automatic mode retains adapted controls");
 		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "touch-spacious", 1);
-		require(presentationOverride() == PresentationPreference::Spacious &&
+		require(presentationOverride() == PresentationPreference::Tablet &&
 					phonePresentationRequested(),
-				"Touch spacious mode retains adapted controls");
+				"Touch spacious mode is the Tablet interface");
+		for (const auto &[value, preference, adapted] :
+			 {std::tuple{"desktop", PresentationPreference::Desktop, false},
+			  std::tuple{"tablet", PresentationPreference::Tablet, true},
+			  std::tuple{"phone", PresentationPreference::Phone, true}})
+		{
+			GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", value, 1);
+			require(presentationOverride() == preference && phonePresentationRequested() == adapted,
+					"Named overrides match the Interface layout setting");
+		}
 		// An empty development override must behave like an absent override.
 		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "", 1);
 		require(!presentationOverride(), "No override uses saved preference and host capabilities");
@@ -251,6 +261,34 @@ TEST_CASE("zoom anchoring; seams; rotation; safe layouts; gestures and cancellat
 
 TEST_SUITE("MobileInput")
 {
+TEST_CASE("Desktop, Tablet and Phone choose the input mode as well as the layout")
+{
+	const ViewportMetrics desktop{1920, 1080, 1, {}, 0};
+	const InputCapabilities mouse{false, true, true, true}, touchscreen{true, true, true, true};
+	for (const auto &input : {mouse, touchscreen})
+	{
+		const auto chosen = resolvePresentation(PresentationPreference::Desktop, desktop, input);
+		CHECK(chosen.layout == PresentationLayout::Spacious);
+		CHECK(!chosen.touch);
+		CHECK(chosen.hover);
+		CHECK(!chosen.adaptedControls());
+		const auto tablet = resolvePresentation(PresentationPreference::Tablet, desktop, input);
+		CHECK(tablet.layout == PresentationLayout::Spacious);
+		CHECK(tablet.touch);
+		const auto phone = resolvePresentation(PresentationPreference::Phone, desktop, input);
+		CHECK(phone.layout == PresentationLayout::Compact);
+		CHECK(phone.touch);
+		// The older layout-only values still follow the detected input.
+		CHECK(resolvePresentation(PresentationPreference::Spacious, desktop, input).touch == input.touch);
+		CHECK(resolvePresentation(PresentationPreference::Compact, desktop, input).touch == input.touch);
+	}
+	// A window too small for the side panel still falls back to Compact.
+	CHECK(resolvePresentation(PresentationPreference::Desktop, {600, 500, 1, {}, 0}, mouse).layout ==
+		  PresentationLayout::Compact);
+	for (const char *name : {"automatic", "compact", "spacious", "desktop", "tablet", "phone"})
+		CHECK(std::string_view(presentationPreferenceName(parsePresentationPreference(name))) == name);
+}
+
 TEST_CASE("opaque SDL3 touch identifiers retain their high bits")
 {
     const std::uint64_t device = (std::uint64_t{1} << 63) + 17;

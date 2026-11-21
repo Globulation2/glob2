@@ -241,18 +241,35 @@ void SettingsScreen::buildGeneral()
 				   globalContainer->settings.setTextSizePercent(100 + v * 25);
 				   commit();
 			   });
-		choice("display.presentation", "Interface layout",
-			   "Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.",
-			   int(parsePresentationPreference(s.interfacePresentation)),
-			   {tr("Automatic"), tr("Compact"), tr("Spacious")},
-			   [this](int v)
-			   {
-				   presentationPreference =
-					   static_cast<PresentationPreference>(std::clamp(v, 0, 2));
-				   globalContainer->settings.interfacePresentation =
-					   presentationPreferenceName(presentationPreference);
-				   commit();
-			   });
+		{
+			// Automatic follows the window and input devices. Desktop, Tablet and
+			// Phone force a layout and input mode. Older profiles saved only a
+			// layout: Compact shows as Phone, Spacious as the detected device.
+			static constexpr PresentationPreference layouts[] = {
+				PresentationPreference::Automatic, PresentationPreference::Desktop,
+				PresentationPreference::Tablet, PresentationPreference::Phone};
+			int selected = 0;
+			switch (parsePresentationPreference(s.interfacePresentation))
+			{
+			case PresentationPreference::Desktop: selected = 1; break;
+			case PresentationPreference::Tablet: selected = 2; break;
+			case PresentationPreference::Phone:
+			case PresentationPreference::Compact: selected = 3; break;
+			case PresentationPreference::Spacious: selected = presentationInput.touch ? 2 : 1; break;
+			default: break;
+			}
+			choice("display.presentation", "Interface layout",
+				   "Automatic follows the window size and touchscreen. Desktop uses the mouse interface, "
+				   "Tablet the touch interface with a side panel, and Phone the touch toolbar and drawers.",
+				   selected, {tr("Automatic"), tr("Desktop"), tr("Tablet"), tr("Phone")},
+				   [this](int v)
+				   {
+					   presentationPreference = layouts[std::clamp(v, 0, int(std::size(layouts)) - 1)];
+					   globalContainer->settings.interfacePresentation =
+						   presentationPreferenceName(presentationPreference);
+					   commit();
+				   });
+		}
 		section("Advanced graphics");
         {
             const auto &presets = Settings::RENDER_FPS_PRESETS;

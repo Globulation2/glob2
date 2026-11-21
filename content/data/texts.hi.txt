@@ -3050,6 +3050,14 @@ AI की रणनीति
 सघन
 [settings Spacious]
 खुला
+[settings Desktop]
+
+[settings Tablet]
+
+[settings Phone]
+
+[settings Automatic follows the window size and touchscreen. Desktop uses the mouse interface, Tablet the touch interface with a side panel, and Phone the touch toolbar and drawers.]
+
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 जगह होने पर खुला विन्यास साइड पैनल उपयोग करता है। सघन विन्यास टूलबार और खुलने वाले पैनल उपयोग करता है।
 [settings Menu theme]

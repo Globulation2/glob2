@@ -3050,6 +3050,14 @@ HP ≤25/50/75%
 กะทัดรัด
 [settings Spacious]
 กว้างขวาง
+[settings Desktop]
+
+[settings Tablet]
+
+[settings Phone]
+
+[settings Automatic follows the window size and touchscreen. Desktop uses the mouse interface, Tablet the touch interface with a side panel, and Phone the touch toolbar and drawers.]
+
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 แบบ​กว้าง​ใช้​แผง​ด้าน​ข้าง​เมื่อ​มี​ที่​พอ แบบ​กะทัดรัด​ใช้​แถบ​เครื่องมือ​และ​แผง​เลื่อน
 [settings Menu theme]

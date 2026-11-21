@@ -3074,6 +3074,14 @@ Automatik
 Padat
 [settings Spacious]
 Luas
+[settings Desktop]
+
+[settings Tablet]
+
+[settings Phone]
+
+[settings Automatic follows the window size and touchscreen. Desktop uses the mouse interface, Tablet the touch interface with a side panel, and Phone the touch toolbar and drawers.]
+
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Susun atur Luas menggunakan panel sisi apabila ada ruang. Padat menggunakan bar alat dan laci.
 [settings Menu theme]

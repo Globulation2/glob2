@@ -3050,6 +3050,14 @@ AI వ్యూహం
 కాంపాక్ట్
 [settings Spacious]
 విశాలమైన
+[settings Desktop]
+
+[settings Tablet]
+
+[settings Phone]
+
+[settings Automatic follows the window size and touchscreen. Desktop uses the mouse interface, Tablet the touch interface with a side panel, and Phone the touch toolbar and drawers.]
+
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 విశాలమైనది స్థలం ఉన్నప్పుడు సైడ్ ప్యానెల్‌ను ఉపయోగిస్తుంది. కాంపాక్ట్ టూల్‌బార్ మరియు డ్రాయర్‌లను ఉపయోగిస్తుంది.
 [settings Menu theme]
