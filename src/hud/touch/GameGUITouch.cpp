@@ -102,7 +102,7 @@ MobileLayout GameGUITouch::computeLayout() const
 	// GLOB2_TABLET_HUD=panel restores the floating top-right panels.
 	const bool spacious = resolved.layout == PresentationLayout::Spacious;
 	// Only the touch HUD has a tablet form; the desktop sidebar keeps its own.
-	const bool tablet = usesHUD() && isTablet(resolved.usable);
+	const bool tablet = usesHUD() && isTablet(resolved.usable, spacious);
 	auto result = MobileLayout::calculate(
 		gfx->getW() / unit, gfx->getH() / unit, insets, 0, 1, panelOpen,
 		spacious && !tablet, spacious ? resolved.panelWidth : 288);
@@ -288,12 +288,17 @@ std::vector<ViewRect> GameGUITouch::railToolRects(const MobileLayout &ui) const
 		rects.push_back({ui.rail.x + inset, top + i * h + inset, ui.rail.w - 2 * inset, h - 2 * inset});
 	return rects;
 }
-bool GameGUITouch::isTablet(ViewRect usablePoints)
+bool GameGUITouch::isTablet(ViewRect usablePoints, bool spacious)
 {
 	if (tabletPanelRequested())
 		return false;
-	if (presentationOverride().value_or(presentationPreference) == PresentationPreference::Compact)
+	const auto preference = presentationOverride().value_or(presentationPreference);
+	// Phone (and the layout-only Compact) always gets the phone HUD; a player who
+	// chose Tablet gets this one wherever the spacious layout fits.
+	if (presentationLayoutPolicy(preference) == PresentationPreference::Compact)
 		return false;
+	if (preference == PresentationPreference::Tablet)
+		return spacious;
 	return std::min(usablePoints.w, usablePoints.h) >= InGameTouchTheme::tabletShortestSide;
 }
 double GameGUITouch::tabletBandTop(const MobileLayout &ui, double height) const

@@ -4567,6 +4567,22 @@ class GameGUITouchHarness
 			gui.touch->panelOpen = false;
 			GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
 			SDL_unsetenv_unsafe("GLOB2_TABLET_HUD");
+			// Which touch interfaces get the tablet HUD: Phone never; Tablet wherever
+			// its spacious layout fits; Automatic from a 600-point shortest side.
+			const auto choose = [](const char *value) { GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", value, 1); };
+			choose("phone");
+			require(!GameGUITouch::isTablet({0, 0, 1024, 768}, false), "Phone keeps the phone HUD on a large screen");
+			choose("tablet");
+			require(GameGUITouch::isTablet({0, 0, 900, 520}, true), "Tablet gets the tablet HUD wherever it fits");
+			require(!GameGUITouch::isTablet({0, 0, 700, 400}, false), "Tablet falls back where it cannot fit");
+			choose("touch-auto");
+			require(GameGUITouch::isTablet({0, 0, 1024, 768}, true) && GameGUITouch::isTablet({0, 0, 768, 1024}, true),
+					"Automatic touch treats a 600-point screen as a tablet in both orientations");
+			require(!GameGUITouch::isTablet({0, 0, 1024, 540}, true), "Automatic keeps short screens off the tablet HUD");
+			GAGCore::setProcessEnvironment("GLOB2_TABLET_HUD", "panel", 1);
+			require(!GameGUITouch::isTablet({0, 0, 1024, 768}, true), "GLOB2_TABLET_HUD=panel restores the old layout");
+			SDL_unsetenv_unsafe("GLOB2_TABLET_HUD");
+			choose("1");
 		}
 
 		for (const auto *key : {"[Actions]", "[Info]", "[Minimap]", "[Fast forward]",

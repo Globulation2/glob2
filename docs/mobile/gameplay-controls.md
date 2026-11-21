@@ -99,9 +99,9 @@ selection invalidation cannot override that toolbox choice on the next frame.
 
 ### Tablet layout
 
-A touch HUD whose shortest side is at least 600 points is a tablet in both
-orientations (Android's sw600dp convention), unless the player chose the Compact
-layout. Tablets are held by both side edges, or rest flat or in a stand: thumbs
+A touch HUD is a tablet when the player chose the Tablet interface (wherever its
+spacious layout fits), or, unless they chose Phone, when its shortest side is at
+least 600 points, in both orientations (Android's sw600dp convention). Tablets are held by both side edges, or rest flat or in a stand: thumbs
 reach the side edges from mid-height up, and the index finger works the map in the
 middle. So the tablet HUD splits its controls across both edges rather than one
 thumb corner:
