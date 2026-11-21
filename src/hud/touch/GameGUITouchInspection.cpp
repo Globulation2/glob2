@@ -84,24 +84,41 @@ std::vector<ui::PositionedControl> GameGUITouch::describeControls()
 			std::to_string(gui.localTeamNo) + ":" +
 			(preview ? std::to_string(int(preview->x)) + ":" + std::to_string(int(preview->y))
 					 : "none");
-		auto &confirm = add("placement/confirm", "Confirm construction", confirmRect(),
-							[this](ViewPoint)
-							{
-								if (commitPlacement())
-								{
-									preview.reset();
-									gui.clearSelection();
-								}
-							});
-		confirm.enabled = preview.has_value() && !(placement && placement->dragging);
-		confirm.identity = identity;
-		add("placement/cancel", "Cancel construction", cancelRect(),
-			[this](ViewPoint)
+		// Tablets keep the building armed after OK, so each further copy is a
+		// map tap and OK; Cancel returns to the palette for the next choice.
+		const bool tablet = l.tablet;
+		auto confirmTap = [this, tablet](ViewPoint)
+		{
+			if (commitPlacement())
 			{
 				preview.reset();
-				gui.clearSelection();
-			})
-			.identity = identity;
+				if (!tablet)
+					gui.clearSelection();
+			}
+		};
+		auto cancelTap = [this, tablet](ViewPoint)
+		{
+			preview.reset();
+			gui.clearSelection();
+			if (tablet)
+			{
+				panelOpen = true;
+				gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
+			}
+		};
+		const bool confirmEnabled = preview.has_value() && !(placement && placement->dragging);
+		auto &confirm = add("placement/confirm", "Confirm construction", confirmRect(), confirmTap);
+		confirm.enabled = confirmEnabled;
+		confirm.identity = identity;
+		add("placement/cancel", "Cancel construction", cancelRect(), cancelTap).identity = identity;
+		const auto rail = railToolRects(l);
+		if (rail.size() == 2)
+		{
+			auto &again = add("placement/rail/confirm", "Confirm construction", rail[0], confirmTap);
+			again.enabled = confirmEnabled;
+			again.identity = identity;
+			add("placement/rail/cancel", "Cancel construction", rail[1], cancelTap).identity = identity;
+		}
 	};
 	if (!usesHUD())
 	{
@@ -163,6 +180,14 @@ std::vector<ui::PositionedControl> GameGUITouch::describeControls()
 					}
 				})
 				.selected = i == int(gui.toolManager.getZoneType());
+		if (const auto exits = railToolRects(l); exits.size() == 1)
+			add("zone/rail/done", "Done", exits[0],
+				[this](ViewPoint)
+				{
+					stroke.cancel();
+					gui.clearSelection();
+					panelOpen = true;
+				});
 		const auto rail = brushHUD();
 		for (size_t i = 0; i < rail.detents.size(); ++i)
 			add("brush/shape/" + std::to_string(i),

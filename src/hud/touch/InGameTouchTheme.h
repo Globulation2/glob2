@@ -57,6 +57,26 @@ inline constexpr int railColumnsPortrait = 2;
 inline constexpr int railColumnsLandscape = 4;
 inline constexpr int railMaximumRows = 6;
 inline constexpr double railInset = 12;
+// Tablets keep the phone's thumb-corner rail but have room to name each
+// building: a larger cell with the label beneath the icon.
+inline constexpr double tabletPaletteCell = 84;
+inline constexpr double tabletPaletteLabel = 22;
+// Tablets show a minimap large enough to aim at, once the screen is this tall.
+inline constexpr double tabletMinimap = 160;
+inline constexpr double tabletMinimapMinimumHeight = 600;
+// A touch screen whose shortest side has this many points is a tablet in both
+// orientations (Android's sw600dp convention).
+inline constexpr double tabletShortestSide = 600;
+// Tablets are held by both sides, or rest flat: thumbs reach the side edges,
+// from mid-height up, and the index finger works the map in the middle. The
+// navigation rail runs down the toolbox edge, with its buttons centred.
+inline constexpr double tabletRailWidth = 88;
+inline constexpr double tabletRailButton = 76;
+// Contextual controls (inspector, placement OK/Cancel, zone choices) dock to the
+// thumb edge, centred in the band below the minimap.
+inline constexpr double tabletInspectorWidth = 360;
+inline constexpr double tabletControlWidth = 136;
+inline constexpr double tabletControlRow = 72;
 // The compact inspector's thumb dial: quarter rings centred on the thumb corner
 // (outer radius shrinks to fit), swept from along the toolbar (start) to nearly
 // straight up (end), stopping short of the screen edge.
@@ -109,9 +129,10 @@ class TextStyle
 	GAGCore::Font *font;
 
   public:
-	explicit TextStyle(GAGCore::Font *value) : font(value)
+	explicit TextStyle(GAGCore::Font *value) : TextStyle(value, ink()) {}
+	TextStyle(GAGCore::Font *value, const GAGCore::Color &color) : font(value)
 	{
-		font->pushStyle(GAGCore::Font::Style(GAGCore::Font::STYLE_NORMAL, ink()));
+		font->pushStyle(GAGCore::Font::Style(GAGCore::Font::STYLE_NORMAL, color));
 	}
 	~TextStyle() { font->popStyle(); }
 	TextStyle(const TextStyle &) = delete;

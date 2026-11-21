@@ -219,6 +219,7 @@ set(GLOB2_CLIENT_SOURCES
     src/hud/touch/TouchReadout.cpp
     src/hud/touch/ThumbSide.cpp
     src/hud/touch/TouchDial.cpp
+    src/hud/touch/TouchCard.cpp
     src/hud/BrushHUD.cpp
     src/net/ConnectionOverlay.cpp
     src/net/turn/TurnMatchPresenter.cpp
@@ -1207,6 +1208,7 @@ set(GLOB2_ANDROID_SOURCES
     src/hud/touch/TouchReadout.cpp
     src/hud/touch/ThumbSide.cpp
     src/hud/touch/TouchDial.cpp
+    src/hud/touch/TouchCard.cpp
     src/hud/BrushHUD.cpp
     src/net/ConnectionOverlay.cpp
     src/net/turn/TurnMatchPresenter.cpp
@@ -2029,6 +2031,7 @@ set(GLOB2_IOS_SOURCES
     src/hud/touch/TouchReadout.cpp
     src/hud/touch/ThumbSide.cpp
     src/hud/touch/TouchDial.cpp
+    src/hud/touch/TouchCard.cpp
     src/hud/BrushHUD.cpp
     src/net/ConnectionOverlay.cpp
     src/net/turn/TurnMatchPresenter.cpp
@@ -3018,6 +3021,7 @@ set(GLOB2_WEB_SOURCES
     src/hud/touch/TouchReadout.cpp
     src/hud/touch/ThumbSide.cpp
     src/hud/touch/TouchDial.cpp
+    src/hud/touch/TouchCard.cpp
     src/hud/BrushHUD.cpp
     src/net/ConnectionOverlay.cpp
     src/net/turn/TurnMatchPresenter.cpp

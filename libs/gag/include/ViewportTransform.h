@@ -63,6 +63,13 @@ struct SafeInsets { double left=0, top=0, right=0, bottom=0; };
 struct MobileLayout {
     ViewRect safe, status, world, actions, panel;
     bool persistentPanel=false;
+    // A touch HUD with room to spare (tablets): the thumb-reach controls of a
+    // phone, with labels and a larger minimap. Set by the HUD, not calculate().
+    bool tablet=false;
+    // Tablets only: the navigation rail on a side edge, outside `safe`.
+    ViewRect rail;
+    // Inspector identity and stocks live inside the panel, not the HUD strip.
+    bool docked() const { return persistentPanel || tablet; }
     static MobileLayout calculate(double width,double height,SafeInsets inset={},double keyboardHeight=0,
                                   double uiScale=1,bool panelOpen=false,bool allowPersistent=true,double sidebarWidth=288)
     {

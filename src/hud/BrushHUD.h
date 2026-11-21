@@ -8,6 +8,10 @@
 // as detents on the thumb-side edge (smallest nearest the thumb), a Paint/Erase
 // toggle at its foot, a Pan toggle at its head, and an Undo chip beside its
 // foot. Layout, hit testing and drawing use the same rectangles (drawable units).
+namespace TouchCard
+{
+class Painter;
+}
 namespace BrushHUD
 {
 enum class Part
@@ -46,6 +50,9 @@ struct State
 	bool erase = false, pan = false;
 	int touched = -1; // Detent under the finger: its size is shown magnified.
 	std::string modeLabel, panLabel, undoLabel;
+	// Tablets: rounded cards instead of flat cells. Null keeps the classic look.
+	TouchCard::Painter *cards = nullptr;
+	bool compactCards = false; // Phones: 2/3 radius and tight shadows.
 };
 void draw(const Layout &layout, const State &state);
 //! Bound the rail, labels and magnified preview to their owning canvas.

@@ -43,6 +43,10 @@ bool GameGUITouch::paletteRail(const MobileLayout &ui) const
 {
 	return usesHUD() && !ui.persistentPanel;
 }
+double GameGUITouch::paletteCellPoints(const MobileLayout &ui) const
+{
+	return ui.tablet && paletteRail(ui) ? InGameTouchTheme::tabletPaletteCell : InGameTouchTheme::paletteCell;
+}
 int GameGUITouch::paletteColumns(const MobileLayout &ui) const
 {
 	const int count = std::max(1, int(paletteItems().size()));
@@ -69,8 +73,9 @@ ViewRect GameGUITouch::paletteItemRect(size_t index) const
 	if (paletteRail(ui))
 	{
 		// Row-major from the toolbox corner, opposite the selected thumb.
-		const double cell = InGameTouchTheme::paletteCell * unit,
-					 stride = (InGameTouchTheme::paletteCell + InGameTouchTheme::gap) * unit,
+		const double side = paletteCellPoints(ui);
+		const double cell = side * unit,
+					 stride = (side + InGameTouchTheme::gap) * unit,
 					 gap = InGameTouchTheme::gap * unit;
 		const int row = int(index) / columns, column = int(index) % columns;
 		const double x = ThumbSide::toolboxLeft() ? content.x + gap + column * stride
@@ -104,14 +109,27 @@ void GameGUITouch::drawBuildPalette()
 	const double unit = gfx->logicalUnitsPerPoint();
 	const auto content = panelContent();
 	const auto items = paletteItems();
+	const auto ui = layout();
+	// Tablets name each building beneath its icon; phones show the icon alone.
+	const bool labelled = ui.tablet && paletteRail(ui);
+	const double labelHeight = labelled ? InGameTouchTheme::tabletPaletteLabel * unit : 0;
 	SDL_Rect clip{int(content.x), int(content.y), int(content.w), int(content.h)};
+	const auto previousLabelClip = labelClip;
+	labelClip = content;
 	for (size_t i = 0; i < items.size(); ++i)
 	{
-		const auto rect = paletteItemRect(i);
+		const auto cell = paletteItemRect(i);
+		auto rect = cell;
 		gfx->setClipRect(clip.x, clip.y, clip.w, clip.h);
-		gfx->drawFilledRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h),
-							items[i].enabled ? InGameTouchTheme::field() : InGameTouchTheme::paper());
-		gfx->drawRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h), InGameTouchTheme::border());
+		if (paletteRail(ui))
+			paintCard({cell.x + 2 * unit, cell.y + 2 * unit, cell.w - 4 * unit, cell.h - 4 * unit},
+					   {items[i].enabled ? TouchCard::Tone::Raised : TouchCard::Tone::Disabled, 14, false});
+		else
+		{
+			gfx->drawFilledRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h),
+								items[i].enabled ? InGameTouchTheme::field() : InGameTouchTheme::paper());
+			gfx->drawRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h), InGameTouchTheme::border());
+		}
 		if (items[i].name.starts_with("zone:"))
         {
             const int zone=items[i].name.back()-'0';
@@ -121,9 +139,10 @@ void GameGUITouch::drawBuildPalette()
 										 Toolkit::getStringTable()->getString("[Guard]"),
 										 Toolkit::getStringTable()->getString("[Clear]"),
 										 Toolkit::getStringTable()->getString("[Farm]")};
-			drawPointLabel(rect, zones[items[i].name.back() - '0'], .75);
+			drawPointLabel(rect, zones[items[i].name.back() - '0'], labelled ? .85 : .75);
 			continue;
 		}
+		rect.h -= labelHeight;
 		auto *type = BuildingCatalogView(*gui.drawnScene().buildingTypes).getByType(items[i].name.c_str(), 0, false);
 		if (type)
 		{
@@ -138,10 +157,17 @@ void GameGUITouch::drawBuildPalette()
 			gfx->drawSprite(0, 0, sprite, frame);
 			gfx->setUITransform();
 		}
+		if (labelled)
+		{
+			gfx->setClipRect(clip.x, clip.y, clip.w, clip.h);
+			drawPointLabel({cell.x + 1 * unit, rect.y + rect.h - 2 * unit, cell.w - 2 * unit, labelHeight},
+						   Toolkit::getStringTable()->getString("[" + items[i].name.substr(0, items[i].name.find('.')) + "]"), .72);
+		}
         if(type && gui.highlights.count(int(GameGUI::HighlightBuildingOnPanel)+type->shortTypeNum))
-            gfx->drawRect(int(rect.x+2),int(rect.y+2),int(rect.w-4),int(rect.h-4),Color(255,220,80));
+            gfx->drawRect(int(cell.x+2),int(cell.y+2),int(cell.w-4),int(cell.h-4),Color(255,220,80));
     }
     gfx->setClipRect();
+	labelClip = previousLabelClip;
     if (placement && !placement->dragging)
 	{
 		const ViewRect help{content.x, std::max(layout().safe.y, content.y - 48 * unit), content.w,

@@ -1695,11 +1695,11 @@ class GameGUITouchHarness
 							const auto lines = gui.touch->pointLines(label, cell.w, .8).size();
 							CHECK(cell.h >= lines * globalContainer->standardFont->getStringHeight("Ag") * .8 * gfx->textUnitsPerPoint());
 						}
-					if (ui.persistentPanel)
+					if (ui.docked())
 						CHECK(gui.touch->panelContent().y >= inventory.bounds.y + inventory.bounds.h);
 					else
 						CHECK(gui.touch->notificationBounds().y >= inventory.bounds.y + inventory.bounds.h);
-					if (!ui.persistentPanel && !gui.touch->usesDial())
+					if (!ui.docked() && !gui.touch->usesDial())
 						CHECK(ui.panel.y >= inventory.bounds.y + inventory.bounds.h);
 					else if (gui.touch->usesDial())
 					{
@@ -4517,8 +4517,9 @@ class GameGUITouchHarness
 			gui.touch->panelOpen = false;
 		}
 		{
-			// Spacious tablets keep the side panel's rows; only compact phones get the dial.
+			// The legacy Spacious panel (GLOB2_TABLET_HUD=panel) keeps its rows; only compact phones get the dial.
 			GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "touch-spacious", 1);
+			GAGCore::setProcessEnvironment("GLOB2_TABLET_HUD", "panel", 1);
 			const int oldW = gfx->getW(), oldH = gfx->getH();
 			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), 1024, 768);
 			GLOB2_REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())), "Window resize must settle before layout assertions");
@@ -4565,6 +4566,7 @@ class GameGUITouchHarness
 			gui.clearSelection();
 			gui.touch->panelOpen = false;
 			GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
+			SDL_unsetenv_unsafe("GLOB2_TABLET_HUD");
 		}
 
 		for (const auto *key : {"[Actions]", "[Info]", "[Minimap]", "[Fast forward]",

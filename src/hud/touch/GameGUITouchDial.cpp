@@ -27,7 +27,7 @@ bool GameGUITouch::usesDial() const
 
 bool GameGUITouch::usesDial(const MobileLayout &ui) const
 {
-	if (!usesHUD() || ui.persistentPanel)
+	if (!usesHUD() || ui.persistentPanel || ui.tablet)
 		return false;
 	// The minimum ring size preserves usable controls, but is not permission
 	// to cover the HUD or safe-area gutters. Fall back to scrolling rows when
@@ -452,7 +452,7 @@ void GameGUITouch::drawDial()
 	{
 		const ViewRect note{dial.chips.x, dial.chips.y + dial.chips.h - InGameTouchTheme::dialChipHeight * unit,
 							dial.chips.w, InGameTouchTheme::dialChipHeight * unit};
-		gfx->drawFilledRect(int(note.x), int(note.y), int(note.w), int(note.h), InGameTouchTheme::paper());
+		paintCard(note, {TouchCard::Tone::Surface, 14});
 		drawPointLabel(note, Toolkit::getStringTable()->getString("[Read-only building]"), .8);
 		return;
 	}
@@ -488,12 +488,11 @@ void GameGUITouch::drawDial()
 		if (region.part == DialRegion::Chip)
 		{
 			const auto &box = region.box;
-			gfx->drawFilledRect(int(box.x), int(box.y), int(box.w), int(box.h),
-								row.kind == 4	 ? InGameTouchTheme::destroy()
-								: row.selected ? InGameTouchTheme::selected()
-											   : InGameTouchTheme::field());
-			gfx->drawRect(int(box.x), int(box.y), int(box.w), int(box.h), InGameTouchTheme::border());
-			drawPointLabel(box, row.label, .78);
+			const double u = gfx->logicalUnitsPerPoint();
+			drawCard({box.x + 2 * u, box.y + 2 * u, box.w - 4 * u, box.h - 4 * u},
+					 {row.kind == 4 ? TouchCard::Tone::Danger : row.selected ? TouchCard::Tone::Selected : TouchCard::Tone::Raised,
+					  14, true, row.selected && row.kind != 4 ? TouchCard::Glyph::Check : TouchCard::Glyph::None, true},
+					 row.label, .78);
 			continue;
 		}
 		const auto &ring = g.rings[region.ring];

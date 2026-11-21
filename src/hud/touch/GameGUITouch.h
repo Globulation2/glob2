@@ -5,6 +5,7 @@
 #include <GestureScroll.h>
 #include "TouchInteractionSession.h"
 #include "TouchDial.h"
+#include "TouchCard.h"
 #include "BrushHUD.h"
 #include <ui/PositionedControls.h>
 #include "MetricCatalog.h"
@@ -77,9 +78,20 @@ class GameGUITouch
 	void drawPrestigeIcon(GAGCore::ViewPoint center, double logicalSize);
 	void drawWinChanceIcon(GAGCore::ViewPoint center, double logicalSize);
 	void drawControls();
+	void drawRailTools();
 	void drawKeyboardFocus();
 	bool active() const { return touchActive || usesHUD(); }
 	bool usesHUD() const;
+	//! GLOB2_TABLET_HUD=panel: tablets keep the floating top-right panels.
+	static bool tabletPanelRequested();
+	//! Whether a touch HUD with this usable area (points) is a tablet.
+	static bool isTablet(GAGCore::ViewRect usablePoints);
+	//! The last computed layout's tablet flag, for measurements made during layout.
+	mutable bool tabletLayout = false;
+	//! Tablets: the rail's OK/Cancel (placement) or Done (zones) while a tool is active.
+	std::vector<GAGCore::ViewRect> railToolRects(const GAGCore::MobileLayout &ui) const;
+	//! Top of a panel `height` tall centred in the tablet thumb band (drawable units).
+	double tabletBandTop(const GAGCore::MobileLayout &ui, double height) const;
 	//! The phone HUD's regions in window points (status strip, world, actions).
 	GAGCore::MobileLayout hudLayout() const { return layout(); }
 	GAGCore::ViewRect worldBounds() const { return world(); }
@@ -98,6 +110,14 @@ class GameGUITouch
 	friend struct TranslationPreviewAccess;
 	GameGUI &gui;
 	TouchDial::Painter dialPainter;
+	// Tablet cards and buttons; labels drawn on them take the tone's ink.
+	TouchCard::Painter cards;
+	std::optional<GAGCore::Color> labelInk;
+	void drawCard(GAGCore::ViewRect rect, TouchCard::Style style, const std::string &label = {},
+				  double textScale = .9);
+	//! Tablet styles as given; phones get the compact preset (2/3 radius, tight shadows).
+	TouchCard::Style styled(TouchCard::Style style) const;
+	void paintCard(GAGCore::ViewRect rect, TouchCard::Style style) { cards.draw(rect, styled(style)); }
 	// The dialog GameGUI is showing (menu, chat composer or history); the HUD
 	// yields to it and never synthesizes its input.
 	GAGGUI::ui::UIDialog *activeDialog() const;
@@ -136,6 +156,8 @@ class GameGUITouch
 	// Compact phones show the palette as a rail rising from the thumb corner;
 	// the persistent (Spacious) panel keeps its top-down grid.
 	bool paletteRail(const GAGCore::MobileLayout &ui) const;
+	// Rail cell side in points: tablets name each building beneath its icon.
+	double paletteCellPoints(const GAGCore::MobileLayout &ui) const;
 	int paletteColumns(const GAGCore::MobileLayout &ui) const;
 	double paletteScrollSign() const;
 	std::optional<PaletteItem> paletteItemAt(GAGCore::ViewPoint point) const;
@@ -257,6 +279,7 @@ class GameGUITouch
 	GAGCore::ViewRect buildingActionRect(size_t index) const;
 	double buildingActionsHeight(double width) const;
 	void drawBuildingActions();
+	bool drawTabletAction(const BuildingAction &row, GAGCore::ViewRect rect);
 	void tapBuildingAction(GAGCore::ViewPoint point);
 	void applyDiscreteAction(const SceneBuildingPanel &building, const BuildingAction &row);
 	bool performBuildingAction(const BuildingAction &row, const GAGGUI::ui::SemanticAction &action);
