@@ -277,6 +277,10 @@ void Maxima::saveExecutionState(GAGCore::OutputStream* stream)
     archive("farming_wood_reserve_wood",farming_wood_reserve.woodCapacity);
     archive("farming_wood_reserve_target",farming_wood_reserve.targetWoodCapacity);
     archive("budget.preemptive_min_gap_ticks",budget.preemptive_min_gap_ticks);
+    std::map<int,int> buildingTowerRoles=development_planner.buildingTowerRoles();
+    std::map<int,int> actionTowerRoles=development_planner.actionTowerRoles();
+    archive("tower_roles_by_building",buildingTowerRoles);
+    archive("tower_roles_by_action",actionTowerRoles);
     stream->writeLeaveSection();
 }
 void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMinor)
@@ -397,6 +401,12 @@ void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMino
         archive("budget.preemptive_min_gap_ticks",budget.preemptive_min_gap_ticks);
         if(budget.preemptive_min_gap_ticks<0||budget.preemptive_min_gap_ticks>100000)
             throw std::runtime_error("Invalid saved Maxima preemptive defense gap");
+    }
+    if(versionMinor>=FILE_FORMAT_VERSION_MAXIMA_TOWER_REBALANCING) {
+        std::map<int,int> buildingTowerRoles,actionTowerRoles;
+        archive("tower_roles_by_building",buildingTowerRoles);
+        archive("tower_roles_by_action",actionTowerRoles);
+        development_planner.restoreTowerRoles(std::move(buildingTowerRoles),std::move(actionTowerRoles));
     }
     stream->readLeaveSection();
 

@@ -454,3 +454,8 @@ static constexpr int FILE_FORMAT_VERSION_PRESTIGE_NEEDED = 217;
 //! Team statistics save the signed prestige lead history beside prestige needed.
 //! Earlier files load with an empty history; the model reads live state.
 static constexpr int FILE_FORMAT_VERSION_PRESTIGE_LEAD = 218;
+
+//! Maxima rebalancing towers: the role each standing or planned tower was sited for
+//! is saved. Earlier files load with no recorded roles, so their towers are not
+//! counted when later towers rebalance.
+static constexpr int FILE_FORMAT_VERSION_MAXIMA_TOWER_REBALANCING = 219;

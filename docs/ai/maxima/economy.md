@@ -214,10 +214,19 @@ tower. Viable ordinary builds, repairs and upgrades take precedence. Normal
 quotas, siting and farm protection still apply; a committed tower site remains
 ordinary construction when other demand appears.
 
-Each new tower takes a siting role from a deterministic golden-ratio sequence
-over the colony's tower count, so the shares hold even across a few towers:
+Each new tower takes one of three siting roles, aiming for
 `placement.tower_border_percent` border towers, `placement.tower_interior_percent`
-interior towers and fruit towers for the remainder (50/25/25 by default). A
+interior towers and fruit towers for the remainder (50/25/25 by default). Every
+other tower, by the colony's tower count from a salted starting parity, takes its
+role from a deterministic golden-ratio sequence over that count, which holds the
+shares even across a few towers. The rest rebalance: they take whichever role
+brings the standing and planned towers, counted by the role each was sited for,
+closest to the shares (least squared error; a tie keeps the sequence's role).
+Planned towers count from the moment their site is reserved. A tower's role is
+the one it was actually sited for, after the fallbacks below, and is saved with
+the game. Towers lost to the enemy stop counting, and towers from saves before
+format 219 or not placed by the planner have no recorded role and are not counted.
+A
 border tower prefers the point between Maxima's nearest non-tower building and
 the nearest seen enemy non-tower building that is `placement.tower_border_enemy_ratio`
 times as far from the enemy (a third of the way out by default). An interior

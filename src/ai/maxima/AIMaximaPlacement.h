@@ -638,8 +638,26 @@ public:
 	/// heavy damage and for nearby enemy fighters to leave.
 	bool repairWanted(const WorldState& world,const WorldBuilding& building) const;
 	void restoreTowerState(TowerState state);
-	/// Siting role of the tower with this ordinal among the colony's towers.
+	/// Siting role of the tower with this ordinal among the colony's towers,
+	/// from the golden-ratio sequence alone.
 	TowerRole towerRole(const WorldState& world,int ordinal) const;
+	/// Whether the tower with this ordinal rebalances the surviving towers'
+	/// roles instead of following the sequence: every other tower.
+	bool towerRebalances(const WorldState& world,int ordinal) const;
+	/// The role that brings these role counts, plus one tower, closest to the
+	/// configured shares; ties keep `preferred`.
+	TowerRole rebalancingTowerRole(const int (&counts)[3],TowerRole preferred) const;
+	/// Planned siting role of the next tower of this type, before fallbacks.
+	TowerRole plannedTowerRole(const WorldState& world,int buildingType) const;
+	/// Surviving and committed towers of this type, counted by the role each
+	/// was sited for (towers of unknown role are not counted). Returns the
+	/// committed tower count, the next tower's ordinal.
+	int towerRoleCounts(const WorldState& world,int buildingType,int (&counts)[3]) const;
+	/// The role each planned or standing tower was sited for, by building id
+	/// once issued and by action id before then. Saved with the planner state.
+	const std::map<int,int>& buildingTowerRoles() const { return towerRoleByBuilding; }
+	const std::map<int,int>& actionTowerRoles() const { return towerRoleByAction; }
+	void restoreTowerRoles(std::map<int,int> byBuilding,std::map<int,int> byAction);
 	const PlacementDiagnostics& diagnostics() const { return lastDiagnostics; }
 	/// The same record under the name the regressions use: what the last
 	/// selection considered, chose, and rejected.
@@ -795,6 +813,12 @@ private:
 	// negative): the optimistic pre-routing bound of the scan.
 	mutable bool optimisticScoring=false;
 	std::map<int,int> foodUpgradeRetryTick;
+	std::map<int,int> towerRoleByBuilding;
+	std::map<int,int> towerRoleByAction;
+	/// A role after its fallbacks at this tile: fruit without known fruit and
+	/// border without a known enemy guard the colony instead.
+	TowerRole effectiveTowerRole(const WorldState& world,TowerRole role,int index) const;
+	void pruneTowerRoles(const WorldState& world);
 	struct FoodEvaluation
 	{
 		AIMaximaFoodLedger::EvaluationMode mode=AIMaximaFoodLedger::EvaluationMode::Full;
