@@ -1828,6 +1828,9 @@ TEST_SUITE("ComputeExecutor")
 		ComputeExecutor::Group barrier{1, {+[](void *, std::size_t) {}, nullptr}};
 		auto later = executor.submit(std::span(&barrier, 1), 2);
 		executor.join(later, {JoinReason::Teardown, ComputeTelemetry::NoTick});
+		// Browsers coarsen their clocks (Firefox measured this suspension as 0),
+		// so keep it measurably long on any host.
+		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		CHECK(ticket->complete());
 		executor.join(batch, {JoinReason::TickDeadline, 1});
 		auto captured = std::make_unique<Collector>();
