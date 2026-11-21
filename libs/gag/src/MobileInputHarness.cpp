@@ -9,6 +9,7 @@
 #include <MapCamera.h>
 #include <InterfacePresentation.h>
 #include <cmath>
+#include <tuple>
 using namespace GAGCore;
 namespace
 {
@@ -85,9 +86,18 @@ TEST_CASE("zoom anchoring; seams; rotation; safe layouts; gestures and cancellat
 					phonePresentationRequested(),
 				"Touch automatic mode retains adapted controls");
 		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "touch-spacious", 1);
-		require(presentationOverride() == PresentationPreference::Spacious &&
+		require(presentationOverride() == PresentationPreference::Tablet &&
 					phonePresentationRequested(),
-				"Touch spacious mode retains adapted controls");
+				"Touch spacious mode is the Tablet interface");
+		for (const auto &[value, preference, adapted] :
+			 {std::tuple{"desktop", PresentationPreference::Desktop, false},
+			  std::tuple{"tablet", PresentationPreference::Tablet, true},
+			  std::tuple{"phone", PresentationPreference::Phone, true}})
+		{
+			GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", value, 1);
+			require(presentationOverride() == preference && phonePresentationRequested() == adapted,
+					"Named overrides match the Interface layout setting");
+		}
 		// An empty development override must behave like an absent override.
 		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "", 1);
 		require(!presentationOverride(), "No override uses saved preference and host capabilities");
