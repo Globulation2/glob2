@@ -105,6 +105,8 @@ void MaterialSheets::finish(std::span<const std::string> names)
 {
 	for (const auto &name : names)
 		find(name);
+	std::uint64_t since = 0;
+	bool reported = false;
 	for (const auto &name : names)
 		while (!loaded(name) && !GAGCore::Toolkit::spriteFailed(name))
 		{
@@ -112,6 +114,7 @@ void MaterialSheets::finish(std::span<const std::string> names)
 				find(name);
 			GAGCore::Toolkit::pollAssets(4);
 			poll();
+			GAGCore::Toolkit::reportSpriteStall("material-sheet " + name, since, reported);
 #ifndef __EMSCRIPTEN__
 			if (!loaded(name)) SDL_Delay(1);
 #endif

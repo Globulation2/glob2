@@ -2,6 +2,7 @@
 #include "hive/LocalCommander.h"
 #include <GameplayRecording.h>
 #include "Application.h"
+#include <StartupPhase.h>
 #include "mcp/UIService.h"
 #include "ui/ThemeCatalog.h"
 #include "FrontendTheme.h"
@@ -344,6 +345,11 @@ void Application::installStagedAssets()
 
 bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incoming)
 {
+	if (!framed)
+	{
+		framed = true;
+		GAGCore::StartupPhase::mark("application:first-frame");
+	}
 	lastFrame = tick;
 	if (GAGCore::Recording::takeFilesRequest()) screens.push(std::make_unique<RecordingFilesScreen>());
 	Glob2UI::deliverFinishedRecordings();
@@ -527,6 +533,7 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 void Application::draw()
 {
     if (!hidden) (quitting ? shutdownScreens : screens).draw();
+    if (!drawn) { drawn = true; GAGCore::StartupPhase::mark("application:drawn"); }
 }
 
 std::uint32_t Application::delay(std::uint32_t now)

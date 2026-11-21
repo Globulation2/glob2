@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "FrontendTheme.h"
+#include <StartupPhase.h>
 #include "ui/FrontendUI.h"
 #include "ui/ThemeCatalog.h"
 #include "MenuColony.h"
@@ -23,6 +24,7 @@ std::vector<const FrontendScope *> liveScopes;
 FrontendTheme::FrontendTheme() : original(Style::style)
 {
 	current = this;
+	GAGCore::StartupPhase::mark("frontend-theme");
 	colony = std::make_unique<MenuColony>();
 	// Startup has loaded game sprites. Prepare the live backdrop before the
 	// first menu paint on every host, while the loading screen is still visible.

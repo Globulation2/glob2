@@ -35,6 +35,7 @@ class Application : public GAGCore::ApplicationHost::Loop
 	std::uint32_t lastFrame = 0;
 	int pendingViewportWidth = 0, pendingViewportHeight = 0;
 	bool hidden = false;
+	bool framed = false, drawn = false; // startup phase marks (GAGCore::StartupPhase)
 	bool quitting = false;
 	void mainMenu();
 	void installStagedAssets();

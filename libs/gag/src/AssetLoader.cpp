@@ -785,6 +785,34 @@ AssetLoader::Metrics AssetLoader::metrics() const {
     totals.cachedKeys = impl->cache.size();
     return totals;
 }
+std::string AssetLoader::describeQueues() const {
+    std::lock_guard lock(impl->mutex);
+    size_t reads = 0, decodes = 0, parked = 0;
+    for (const auto &bucket : impl->runnable[1]) reads += bucket.size();
+    for (const auto &bucket : impl->runnable[0]) decodes += bucket.size();
+    for (const auto &[result, jobs] : impl->blocked) parked += jobs.size();
+    const auto &t = impl->totals;
+    std::string text = "reads=" + std::to_string(reads) + " decodes=" + std::to_string(decodes) +
+        " parked=" + std::to_string(parked) + " finalizers=" + std::to_string(impl->finalizers.size()) +
+        " active_cpu=" + std::to_string(t.activeCpu) + " active_reads=" + std::to_string(t.activeReads) +
+        " working_bytes=" + std::to_string(t.workingBytes) + " encoded_bytes=" + std::to_string(impl->encodedBytes->load()) +
+        " budget_bytes=" + std::to_string(impl->options.memoryBytes) + " cpu_threads=" + std::to_string(impl->cpu.size()) +
+        " submitted=" + std::to_string(t.submitted) + " completed=" + std::to_string(t.completed) +
+        " failed=" + std::to_string(t.failed) + " cancelled=" + std::to_string(t.cancelled);
+#ifdef __EMSCRIPTEN__
+    text += " video_jobs=" + std::to_string(browserVideoJobs.size());
+#endif
+    return text;
+}
+void AssetLoader::reportStall(const char *waiting, std::uint64_t &since, bool &reported) const {
+    const auto now = std::uint64_t(std::chrono::duration_cast<std::chrono::nanoseconds>(
+        Clock::now().time_since_epoch()).count());
+    if (!since) { since = now; return; }
+    if (reported || now - since < 15'000'000'000ull) return;
+    reported = true;
+    SDL_Log("ASSET_STALL waiting=%s seconds=%llu %s", waiting,
+        (unsigned long long)((now - since) / 1'000'000'000ull), describeQueues().c_str());
+}
 void AssetLoader::shutdown() {
     impl->checkOwner();
     { std::lock_guard lock(impl->mutex); impl->stopping = true; }

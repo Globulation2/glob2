@@ -11,6 +11,7 @@
 #include <AssetLoader.h>
 #include <memory>
 #include <SpriteLoad.h>
+#include <SDL3/SDL_log.h>
 #include <chrono>
 #include <algorithm>
 #include <set>
@@ -134,12 +135,31 @@ namespace GAGCore
         }
         return total > 0 ? float(std::min(1.0, done / total)) : 1.0f;
     }
+    void Toolkit::reportSpriteStall(const std::string& waiting, std::uint64_t &since, bool &reported)
+    {
+        if (reported) return;
+        bool now = false;
+        assets().reportStall("sprite", since, now);
+        if (!now) return;
+        reported = true;
+        std::string loading;
+        unsigned listed = 0;
+        for (const auto &[name, load] : loadingSprites) {
+            if (listed++ == 12) { loading += " ..."; break; }
+            loading += " " + name + "=" + std::to_string(int(load->progressDone())) + "/" +
+                std::to_string(int(load->progressTotal()));
+        }
+        SDL_Log("SPRITE_STALL waiting=%s loading=%zu%s", waiting.c_str(), loadingSprites.size(), loading.c_str());
+    }
     Sprite *Toolkit::getSprite(const std::string name)
     {
         if (auto *sprite = findSprite(name)) return sprite;
         requestSprite(name);
+        std::uint64_t since = 0;
+        bool reported = false;
         while (loadingSprites.contains(name)) {
             pollAssets();
+            reportSpriteStall(name, since, reported);
 #ifndef __EMSCRIPTEN__
             SDL_Delay(1);
 #endif

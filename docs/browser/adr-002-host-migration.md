@@ -22,7 +22,10 @@ include Emscripten APIs. Static dependency tests enforce that boundary.
 key with logical-pixel bounds and the `visible` part left after scroll-region
 clipping, so browser tests click real controls (scrolling them into view first)
 instead of mirroring layout arithmetic; `loop` counts processed host frames so
-a test can wait until queued input has been consumed; during a match, `hud`
+a test can wait until queued input has been consumed; `startupPhase` names the
+last startup step the application thread entered (`GAGCore::StartupPhase`), read
+by the page even when that thread is stuck, and `waitForMainMenu` reports it on
+timeout; during a match, `hud`
 gives the sidebar panel and selection mode of the latest drawn frame
 (`ApplicationHost::hudDrawn`), so tests wait for interface state instead of
 comparing exact pixels, which asynchronous texture preparation may refine after
