@@ -478,6 +478,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.11.7.0" date="2026-11-21">
+      <description>
+        <p>Added a choice of Desktop, Tablet or Phone interface in Settings and redesigned the tablet touch layout with a navigation rail and labelled build palettes; new desktop profiles open maximized; browser matches no longer run out of memory; the results screen opens faster; the Maxima AI builds and staffs towers more sensibly and guards fruit trees it has seen; and the understaffed badge now shows only when a building is actually hiring. Online play requires 0.11.7.0 on every player.</p>
+      </description>
+    </release>
     <release version="0.11.6.5" date="2026-11-19">
       <description>
         <p>Made the win chance readout more accurate: it now weighs the prestige lead over the best opponent and school levels, and the statistics screen charts both. Also starts the faster SDL GPU renderer on phones with Mali graphics, loads game artwork much faster at startup, and keeps single-player games smooth. Online play requires 0.11.6.5 on every player.</p>

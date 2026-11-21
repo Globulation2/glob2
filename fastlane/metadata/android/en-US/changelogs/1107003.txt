@@ -1,0 +1,1 @@
+Choose a Desktop, Tablet or Phone interface in Settings; redesigned tablet touch layout; browser matches no longer run out of memory; faster results screen; smarter Maxima AI. Online play needs 0.11.7.0 on every player.
