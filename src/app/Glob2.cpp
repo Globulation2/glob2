@@ -1,4 +1,5 @@
 #include <SDL3/SDL_main.h>
+#include <StartupPhase.h>
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -492,6 +493,7 @@ int Glob2::run(const Cli::Request &request)
 	globalContainer->deferAssetLoading = request.command != "game repeat" && !globalContainer->runNoX &&
 										 !globalContainer->runTestGames &&
 										 !globalContainer->runTestMapGeneration;
+	GAGCore::StartupPhase::mark("load");
 	globalContainer->load();
 	if (!suppliedGenerators)
 	{
@@ -588,6 +590,7 @@ int Glob2::run(const Cli::Request &request)
 			GAGCore::ApplicationHost::exited(0);
 			return;
 		}
+		GAGCore::StartupPhase::mark("application");
 		GAGCore::ApplicationHost::run(std::make_unique<Application>(),
 									  []
 									  {
@@ -596,6 +599,7 @@ int Glob2::run(const Cli::Request &request)
 										  GAGCore::ApplicationHost::exited(0);
 									  });
 	};
+	GAGCore::StartupPhase::mark("asset-startup");
 	GAGCore::ApplicationHost::run(std::make_unique<AssetStartupLoop>(cancelled), launch);
 	return HOSTED_RUN;
 

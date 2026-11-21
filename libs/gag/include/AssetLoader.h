@@ -213,12 +213,22 @@ public:
     void poll(std::int64_t budgetMilliseconds = 2);
     template<class T> std::shared_ptr<const T> wait(const Handle<T>& handle,
             const std::function<void()>& progress = {}) {
-        while (handle.pending()) { poll(); if (progress) progress(); yieldWhileWaiting(); }
+        std::uint64_t since = 0;
+        bool reported = false;
+        while (handle.pending()) {
+            poll(); if (progress) progress(); yieldWhileWaiting();
+            reportStall("asset", since, reported);
+        }
         return handle.get();
     }
     size_t sourceGeneration(); // refreshes mounted directories on the owner thread
     void invalidate(); // future requests get a new source generation
     Metrics metrics() const;
+    //! Queue lengths, budgets and threads, for stall diagnostics.
+    std::string describeQueues() const;
+    //! For synchronous waits: the first call starts the clock (since == 0);
+    //! after 15 seconds one line naming what waits and the queues is logged.
+    void reportStall(const char *waiting, std::uint64_t &since, bool &reported) const;
     void shutdown();
 private:
 #ifdef __EMSCRIPTEN__

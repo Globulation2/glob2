@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <map>
 
@@ -42,6 +43,10 @@ namespace GAGCore
         //! Share a presentation budget across cooperative jobs, sprites and HD reloads.
         //! One indivisible decode/upload may exceed it; zero only queries readiness.
         static bool pollAssets(unsigned budgetMs = 2);
+        //! For synchronous waits on sprites: after 15 seconds (see
+        //! AssetLoader::reportStall) logs once what waits, the sprites still
+        //! loading with their progress, and the loader's queues.
+        static void reportSpriteStall(const std::string& waiting, std::uint64_t &since, bool &reported);
         //! Fraction (0 to 1) of the requested sprite work done, weighted by
         //! source files rather than by sprite, so large sheets count fully.
         static float assetProgress();

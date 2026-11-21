@@ -257,24 +257,31 @@ exports.readBrowserFile = async (page,path) => Buffer.from(await page.evaluate(p
 // they ask for the main menu. Tests of onboarding itself drive its controls.
 exports.waitForMainMenu = async (page, {timeout = 60000} = {}) => {
   const sent = new Set();
-  await expect.poll(async () => {
-    // A retry can navigate before the new document installs its diagnostics.
-    const state=await page.evaluate(()=>globalThis.glob2Diagnostics?.snapshot());
-    if (!state) return false;
-    if ((state.screen+' '+state.screenClass).includes('MainMenuScreen')) return true;
-    if ((state.screen+' '+state.screenClass).includes('IntroductionOfferScreen')) {
-      const key = ['intro/menu', 'intro/continue'].find(key =>
-        !sent.has(key) && state.controls[key]?.enabled);
-      const bounds = key && state.controls[key];
-      if (bounds && shown(bounds) && (await current(page, bounds))) {
-        // This snapshot already supplies the visible hit area. Re-entering a
-        // control/layout wait can outlive an accepted screen transition on a
-        // busy renderer. Send each choice once, then observe the destination.
-        sent.add(key);
-        await page.locator('#canvas').click({position: await visibleCenter(page, bounds), delay: 80});
-        await consumed(page);
+  try {
+    await expect.poll(async () => {
+      // A retry can navigate before the new document installs its diagnostics.
+      const state=await page.evaluate(()=>globalThis.glob2Diagnostics?.snapshot());
+      if (!state) return false;
+      if ((state.screen+' '+state.screenClass).includes('MainMenuScreen')) return true;
+      if ((state.screen+' '+state.screenClass).includes('IntroductionOfferScreen')) {
+        const key = ['intro/menu', 'intro/continue'].find(key =>
+          !sent.has(key) && state.controls[key]?.enabled);
+        const bounds = key && state.controls[key];
+        if (bounds && shown(bounds) && (await current(page, bounds))) {
+          // This snapshot already supplies the visible hit area. Re-entering a
+          // control/layout wait can outlive an accepted screen transition on a
+          // busy renderer. Send each choice once, then observe the destination.
+          sent.add(key);
+          await page.locator('#canvas').click({position: await visibleCenter(page, bounds), delay: 80});
+          await consumed(page);
+        }
       }
-    }
-    return false;
-  }, {timeout,message:'main menu is not showing after declining the introduction'}).toBe(true);
+      return false;
+    }, {timeout,message:'main menu is not showing after declining the introduction'}).toBe(true);
+  } catch (error) {
+    // Name the startup step a stuck application thread stopped in (StartupPhase.h).
+    const state = await page.evaluate(() => globalThis.glob2Diagnostics?.snapshot()).catch(() => null);
+    if (state) error.message += `\nstartup phase: ${state.startupPhase}; loop ${state.loop}; frames ${state.frames}; workers ${state.workerCount}`;
+    throw error;
+  }
 };

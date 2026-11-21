@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <AssetLoader.h>
 #include "AssetVideoDecoder.h"
+#include <algorithm>
 #include <stdexcept>
 #ifdef __EMSCRIPTEN__
 #include <ApplicationHost.h>
@@ -26,39 +27,53 @@ std::shared_ptr<const AssetImage> makeVideoImage(unsigned width, unsigned height
 #ifdef __EMSCRIPTEN__
 void AssetLoader::pollBrowserVideo() {
     if (browserVideoJobs.empty()) return;
-    auto &job = browserVideoJobs.front();
-    const auto finish = [&](State state, std::shared_ptr<const Bytes> result = {}) {
-        if (state == State::Failed) job.decoded->error = "Browser asset video decode failed";
-        job.decoded->value = std::move(result);
-        job.decoded->state.store(state, std::memory_order_release);
-        wakeDependents(job.decoded.get());
-        browserVideoJobs.pop_front();
+    using Job = std::deque<BrowserVideoJob>::iterator;
+    const auto finish = [&](Job job, State state, std::shared_ptr<const Bytes> result = {}) {
+        if (state == State::Failed) job->decoded->error = "Browser asset video decode failed";
+        job->decoded->value = std::move(result);
+        job->decoded->state.store(state, std::memory_order_release);
+        wakeDependents(job->decoded.get());
+        return browserVideoJobs.erase(job);
     };
-    if (!job.started) {
-        if (!job.decoded->consumers) return finish(State::Cancelled);
-        if (job.encoded.pending()) return;
-        const auto bytes = job.encoded.get();
-        if (!bytes || bytes->empty() ||
-                !ApplicationHost::startAssetVideo(bytes->data(), bytes->size(), job.width, job.height, job.count))
-            return finish(State::Failed);
-        job.encoded = {};
-        job.started = true;
+    const auto running = std::find_if(browserVideoJobs.begin(), browserVideoJobs.end(),
+        [](const BrowserVideoJob &job) { return job.started; });
+    if (running == browserVideoJobs.end()) {
+        // The worker decodes one group at a time. Start whichever queued group
+        // has its input, not the oldest: a read input holds read-queue credit
+        // (Impl::acquireRead) until its group starts, so later inputs could
+        // fill the queue the oldest group's deferred read still needed, and
+        // every sprite waiting on its frames stalled startup for good.
+        for (auto job = browserVideoJobs.begin(); job != browserVideoJobs.end();) {
+            if (!job->decoded->consumers) { job = finish(job, State::Cancelled); continue; }
+            if (job->encoded.pending()) { ++job; continue; }
+            const auto bytes = job->encoded.get();
+            if (!bytes || bytes->empty() ||
+                    !ApplicationHost::startAssetVideo(bytes->data(), bytes->size(), job->width, job->height, job->count)) {
+                job = finish(job, State::Failed);
+                continue;
+            }
+            job->encoded = {};
+            job->started = true;
+            return;
+        }
         return;
     }
+    auto job = running;
     const int status = ApplicationHost::assetVideoStatus();
     if (!status) return;
-    const auto size = size_t(job.width) * job.height * job.count * 4;
-    if (!job.decoded->consumers || status < 0 || size_t(status) != size) {
+    const auto size = size_t(job->width) * job->height * job->count * 4;
+    if (!job->decoded->consumers || status < 0 || size_t(status) != size) {
         ApplicationHost::takeAssetVideo(nullptr, 0);
-        return finish(job.decoded->consumers ? State::Failed : State::Cancelled);
+        finish(job, job->decoded->consumers ? State::Failed : State::Cancelled);
+        return;
     }
     try {
         auto result = std::make_shared<Bytes>(size);
         ApplicationHost::takeAssetVideo(result->data(), size);
-        finish(State::Ready, std::move(result));
+        finish(job, State::Ready, std::move(result));
     } catch (const std::bad_alloc&) {
         ApplicationHost::takeAssetVideo(nullptr, 0);
-        finish(State::Failed);
+        finish(job, State::Failed);
     }
 }
 #endif

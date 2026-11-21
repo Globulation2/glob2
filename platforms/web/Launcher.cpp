@@ -2,6 +2,7 @@
 #include "Runtime.h"
 #define SDL_MAIN_HANDLED
 #include <SDL3/SDL_main.h>
+#include <StartupPhase.h>
 #include <ThreadSupport.h>
 #include <emscripten.h>
 #include <emscripten/threading.h>
@@ -75,6 +76,10 @@ void *application(void *opaque) {
 }
 extern "C" EMSCRIPTEN_KEEPALIVE unsigned glob2_worker_count() {
     return GAGCore::ThreadSupport::activeWorkers.load();
+}
+// Read by the page while the application thread may be stuck (StartupPhase.h).
+extern "C" EMSCRIPTEN_KEEPALIVE const char *glob2_startup_phase() {
+    return GAGCore::StartupPhase::current();
 }
 extern "C" EMSCRIPTEN_KEEPALIVE void glob2_context_action(int restore) {
 #ifdef __EMSCRIPTEN_PTHREADS__

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MenuColony.h"
+#include <StartupPhase.h>
 #include "gradient/MapRouting.h"
 #include "GlobalContainer.h"
 #include "EngineTiming.h"
@@ -54,6 +55,7 @@ MenuColony::~MenuColony() = default;
 bool MenuColony::load(const std::string& path)
 {
 	ColonyContext context;
+	GAGCore::StartupPhase::mark("menu-colony:load");
 	unload();
 	try
 	{
@@ -92,9 +94,11 @@ bool MenuColony::load(const std::string& path)
 			// Material sheets load on demand. Load this map's now, as a game
 			// does while it loads (GameGUI::loadTerrainArtwork), so the menu
 			// first paints with its terrain and no asset work behind it.
+			GAGCore::StartupPhase::mark("menu-colony:materials");
 			globalContainer->terrainCompositor(initialScene->map.frozenAssetBundle())
 				.finishMaterials(initialScene->map);
 		}
+		GAGCore::StartupPhase::mark("menu-colony:ready");
 		return true;
 	}
 	catch (const std::exception& error)
