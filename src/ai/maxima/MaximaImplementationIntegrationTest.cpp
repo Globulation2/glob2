@@ -143,6 +143,62 @@ static void preemptiveSchedulingRegression()
     REQUIRE(ai.last_preemptive_defense_tick==1500);
 }
 
+TEST_CASE("every seen fruit tree gets a 5x5 guard area shared with the corridor zones" * doctest::test_suite("Maxima.Implementation"))
+{
+    glob2test::HeadlessGlobals globals;
+    Game game(NULL); game.map.setSize(6,6,GRASS); game.map.setGame(&game);
+    game.addTeam(); game.teams[0]->race.loadDefault();
+    Player player; player.setTeam(game.teams[0]);
+    AIMaxima::Maxima ai(&player); Context& c=ai.context; c.initialize();
+    const int w=game.map.getW();
+    game.map.setResourceByIndex(24,10,CHERRY,1);
+    game.map.setResourceByIndex(1,1,CHERRY,1);   // wraps across the map edge
+    game.map.setResourceByIndex(40,40,CHERRY,1); // never seen
+    game.map.setMapDiscovered(24,10,player.team->me);
+    game.map.setMapDiscovered(1,1,player.team->me);
+    auto owned=[&](int x,int y){return ai.fruit_guard_tiles.count(y*w+x)!=0;};
+    auto added=[&]
+    {
+        int count=0;
+        for(const auto& order:c.managementOrders)
+            if(dynamic_cast<Management::AddArea*>(order.get()))++count;
+        return count;
+    };
+    ai.update_fruit_guard(c);
+    CHECK(ai.fruit_guard_tiles.size()==50);
+    CHECK(owned(22,8));CHECK(owned(26,12));CHECK(!owned(27,10));CHECK(!owned(24,13));
+    CHECK(owned(63,63));CHECK(owned(3,3));CHECK(owned(0,63));
+    CHECK(!owned(40,40));
+    CHECK(added()==1);
+    // The engine applies the guard area; a later review issues nothing new.
+    for(const int tile:ai.fruit_guard_tiles)game.map.addGuardArea(tile%w,tile/w,player.team->teamNumber);
+    // A player-drawn guard cell next to a tree stays the player's.
+    c.managementOrders.clear();
+    game.map.setResourceByIndex(30,30,CHERRY,1);game.map.setMapDiscovered(30,30,player.team->me);
+    game.map.addGuardArea(31,31,player.team->teamNumber);
+    ai.update_fruit_guard(c);
+    CHECK(added()==1);CHECK(owned(30,30));CHECK(!owned(31,31));
+    for(const int tile:ai.fruit_guard_tiles)game.map.addGuardArea(tile%w,tile/w,player.team->teamNumber);
+    c.managementOrders.clear();
+    ai.update_fruit_guard(c);
+    CHECK(c.managementOrders.empty());
+    // When a tree is gone, its cells go, except one the corridor zones also own.
+    ai.preemptive_guard_tiles.insert(8*w+24);
+    game.map.setNoResource(24,10,0);
+    ai.update_fruit_guard(c);
+    CHECK(!owned(24,10));CHECK(!owned(24,8));
+    int removals=0;
+    for(const auto& order:c.managementOrders)
+        if(dynamic_cast<Management::RemoveArea*>(order.get()))++removals;
+    CHECK(removals==1);
+    CHECK(ai.fruit_guard_tiles.size()==49); // 50 + 24 at (30,30) - 25 at (24,10)
+    // Likewise the corridor pass never clears a cell the fruit guard owns.
+    ai.preemptive_guard_tiles.clear();ai.preemptive_guard_tiles.insert(3*w+1);
+    c.managementOrders.clear();
+    ai.clear_preemptive_defense(c);
+    CHECK(c.managementOrders.empty());
+}
+
 static void integrationRegressions()
 {
     Game game(NULL);

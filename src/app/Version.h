@@ -8,7 +8,7 @@
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
 #define VERSION_MINOR 219
-// version 219 saves the role each Maxima tower was sited for.
+// version 219 saves the role each Maxima tower was sited for and its fruit guard cells.
 // version 218 saves each team's signed prestige lead history.
 // version 217 saves each team's prestige-needed-to-win history.
 // version 216 adds built-in steppe grass and moor grass; custom terrain IDs move up by two.

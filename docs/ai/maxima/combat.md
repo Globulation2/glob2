@@ -131,6 +131,17 @@ Useful visible, building-covered or stocked supply keeps enemy fV inn advertisin
 available. Fruit collection does not enable enemy mV. Disabling `fruit.enabled`
 removes these missions and their advertising.
 
+## Fruit guard areas
+
+Besides the guard zones on narrow enemy approach corridors, Maxima keeps a 5x5
+guard area centred on every fruit tree it has discovered, anywhere on the map,
+whether or not corridor defence is active. The squares are refreshed on the
+defence cadence (`scheduling.defense_interval_ticks`) just before the corridor
+pass, which is otherwise unchanged; a square is removed once its tree is gone.
+Each subsystem tracks the cells it added and never removes a cell the other still
+owns; guard cells drawn by someone else are left alone. Placement reads every
+guard cell as protected (`placement.guard_area_protectedness`).
+
 Related: [AI documentation](../README.md).
 
 `forward_support.coverage_distance_tiles` suppresses a new request when an

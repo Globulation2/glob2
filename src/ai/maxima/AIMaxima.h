@@ -846,6 +846,11 @@ private:
 	Uint32 compute_preemptive_building_signature(AIMaximaRuntime::Context& runtime) const;
 	///Only cells added by this subsystem are owned and therefore removable.
 	std::set<int> preemptive_guard_tiles;
+	///Keeps a guard area over every fruit tree seen, beside the corridor zones.
+	void update_fruit_guard(AIMaximaRuntime::Context& runtime);
+	///Guard cells this subsystem added. A cell both subsystems want is owned
+	///by both, and neither removes a cell the other still owns.
+	std::set<int> fruit_guard_tiles;
 	int last_preemptive_defense_tick;
 	Uint32 preemptive_building_signature;
 	int last_preemptive_effective_zone_max;

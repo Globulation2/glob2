@@ -3822,6 +3822,7 @@ Maxima::Maxima(Player *player)
 	attack_flags.clear();
 	is_digging_out=false;
 	preemptive_guard_tiles.clear();
+	fruit_guard_tiles.clear();
 	last_preemptive_defense_tick=-1000000;
 	preemptive_building_signature=0;
 	last_preemptive_effective_zone_max=-1;
@@ -4045,6 +4046,8 @@ void Maxima::tick(Context& runtime)
 	else if(preemptive_defense_pending)
 	{
 		preemptive_defense_pending=false;
+		// Fruit first, so the corridor pass sees which cells it now shares.
+		update_fruit_guard(runtime);
 		update_preemptive_defense(runtime);
 	}
 	else if(reactive_defense_pending)
