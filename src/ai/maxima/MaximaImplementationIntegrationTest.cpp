@@ -1688,7 +1688,7 @@ static void schoolPopulationScalingRegressions()
 }
 
 // Upgrade commitments count before orders reach the engine, independently
-// for every category; unfinished new buildings cannot inflate the allowance.
+// for every category (half of each may be offline, a fifth of towers); unfinished new buildings cannot inflate the allowance.
 static void categoryMaintenanceCapacityRegressions()
 {
     using namespace AIMaximaPlacement;
@@ -1713,7 +1713,8 @@ static void categoryMaintenanceCapacityRegressions()
         ai.snapshot.warriors=100;ai.snapshot.trained_warriors=0;
         const int type=AIMaximaBuildings::lineageRoot(game,engineType);
         std::vector<int> ids;for(const auto& entry:c.buildings.found())ids.push_back(entry.first);
-        const int allowed=std::max(1,count/2);
+        // Towers keep four fifths shooting; other categories keep half in service.
+        const int allowed=std::max(1,std::string(name)=="defencetower" ? count/5 : count/2);
         for(int i=0;i<allowed;++i)
         {
             REQUIRE(ai.collect_development_limits(c).upgradePriority(type,1)!=0);
@@ -2137,4 +2138,57 @@ TEST_CASE("economic worker priorities rank each role and boost emergency inn sit
         [&](const auto& b){return b.id!=lowestInn;}),lone.buildings.end());
     world=std::move(lone);expected[lowestInn]=0;
     review();
+}
+
+TEST_CASE("towers recruit below other construction and rise only in explorer emergencies" * doctest::test_suite("Maxima.Implementation"))
+{
+    glob2test::HeadlessGlobals globals;
+    Game game(nullptr);
+    game.map.setSize(6,6,GRASS);game.map.setGame(&game);
+    game.addTeam();game.teams[0]->race.loadDefault();
+    Player player;player.setTeam(game.teams[0]);
+    std::vector<Building*> buildings;
+    for(int i=0;i<3;++i)
+    {
+        auto* b=game.addBuilding(5+i*12,5,
+            globalContainer->buildingsTypes.getTypeNum("defencetower",0,false),0);
+        REQUIRE(b);buildings.push_back(b);
+    }
+    AIMaxima::Maxima ai(&player);Context& c=ai.context;
+    c.initialize();c.activeAI=&ai;
+    glob2test::withMaximaObservation(c,[&]{ai.configure_development_planner();});
+    auto world=ai.collect_development_world(c);
+    REQUIRE(world.buildings.size()==3);
+    // Finished, new site, upgrading site.
+    std::map<int,int> normal,emergency;
+    for(auto& b:world.buildings)
+    {
+        const int index=int(std::find_if(buildings.begin(),buildings.end(),
+            [&](const auto* live){return live->gid==b.gid;})-buildings.begin());
+        REQUIRE(index<3);
+        if(index>=1)b.site=true;
+        if(index==2)b.upgrading=true;
+        normal[b.id]=index==2 ? 0 : -1;
+        emergency[b.id]=index==0 ? 1 : normal[b.id];
+    }
+    AIMaximaFoodLedger::Result ledger;
+    auto review=[&](const std::map<int,int>& expected)
+    {
+        c.orders.clear();
+        ai.update_worker_priorities(c,world,ledger);
+        c.update_management_orders();
+        for(const auto& order:c.orders)
+            if(const auto change=std::dynamic_pointer_cast<OrderChangePriority>(order))
+                for(auto* b:buildings)if(b->gid==change->gid)b->priority=change->priority;
+        for(const auto& b:world.buildings)
+            for(const auto* live:buildings)if(live->gid==b.gid)
+                CHECK(live->priority==expected.at(b.id));
+    };
+    REQUIRE(!ai.explorer_defense_emergency());
+    review(normal);
+    ai.explorer_colony_threat_until=ai.timer+100;
+    REQUIRE(ai.explorer_defense_emergency());
+    review(emergency);
+    ai.explorer_colony_threat_until=ai.timer;
+    review(normal);
 }

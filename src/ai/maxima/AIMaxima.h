@@ -545,6 +545,8 @@ private:
 	bool severe_colony_emergency() const;
 	bool explorer_defense_active() const;
 	bool explorer_defense_emergency() const;
+	/// Worker priority of a finished tower: low, or high during an explorer emergency.
+	int completed_tower_priority() const;
 	bool abundance_surge_active() const;
 	bool large_economy_established() const;
 	void saveDirector(GAGCore::OutputStream*) const;

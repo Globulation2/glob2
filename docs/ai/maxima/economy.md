@@ -151,7 +151,10 @@ unreachable wheat). The worst half, rounded down, receive low worker priority;
 the rest receive normal priority. Equal scores are ordered by building ID.
 Construction sites and upgrades are excluded from this ranking. Ordinary inn
 construction receives high priority during a food emergency and normal priority
-otherwise. These priority reviews require the food ledger to be enabled.
+otherwise. Towers yield workers to the rest of the economy: new tower sites
+receive low priority, tower upgrades normal priority, and completed towers low
+priority except during an explorer emergency, when they receive high priority.
+These priority reviews require the food ledger to be enabled.
 
 ## Development
 
@@ -165,7 +168,7 @@ then revalidates the selected action against the live world. Demand, labour,
 food backing, health, reserved space and construction quotas constrain both.
 Positive-scoring upgrades receive a preference when no viable emergency
 construction candidate is present. An active upgrade receives high worker
-priority until completion.
+priority until completion; a tower upgrade receives normal priority.
 
 The scan prunes by branch and bound. Each candidate is first scored optimistically,
 before routing: no artery, no farm-loss penalty and, for inns and swarms, the best
@@ -185,8 +188,9 @@ checked again for `placement.food_upgrade_retry_ticks` (512).
 For every building category, repairs and upgrades share an allowance that leaves
 at least half the existing buildings operational, rounded up: two or three
 buildings permit one maintenance job; four or five permit two. A lone building
-may be repaired or upgraded. Unfinished new construction does not increase the
-allowance. Reserved and queued jobs count before the engine starts their sites;
+may be repaired or upgraded. Towers instead keep four fifths in service: up to
+nine towers permit one maintenance job, ten to fourteen permit two, and so on.
+Unfinished new construction does not increase the allowance. Reserved and queued jobs count before the engine starts their sites;
 both repair and upgrade permissions are checked during selection and again
 before issue. Existing jobs are not cancelled when loading a save or losing
 another building reduces the allowance.
