@@ -6306,6 +6306,12 @@ Não foi possível salvar sua escolha. Tente novamente.
 Mão esquerda
 [Right hand]
 Mão direita
+[Use desktop layout]
+Usar layout de computador
+[desktop layout confirm title]
+Usar o layout de computador?
+[desktop layout confirm body]
+O jogo vai mudar para a interface de mouse e teclado. Você pode alterar isso depois em Ajustes, em Layout da interface.
 [discord copy failed]
 Não foi possível copiar o link. Selecione o convite acima para copiá-lo manualmente.
 [Destroy this building?]

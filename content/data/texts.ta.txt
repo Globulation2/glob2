@@ -6214,6 +6214,12 @@ MCP சேவையகத்தை இயக்கு
 இடது கை
 [Right hand]
 வலது கை
+[Use desktop layout]
+டெஸ்க்டாப் தளவமைப்பைப் பயன்படுத்து
+[desktop layout confirm title]
+டெஸ்க்டாப் தளவமைப்பைப் பயன்படுத்தவா?
+[desktop layout confirm body]
+விளையாட்டு சுட்டி மற்றும் விசைப்பலகை இடைமுகத்திற்கு மாறும். இதைப் பின்னர் அமைப்புகளில் "இடைமுக தளவமைப்பு" என்பதில் மாற்றலாம்.
 [stat ground movement]
 தரை இயக்கம்
 [stat ground movement about]

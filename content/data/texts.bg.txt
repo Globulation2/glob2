@@ -6286,6 +6286,12 @@ MCP сървър
 Лява ръка
 [Right hand]
 Дясна ръка
+[Use desktop layout]
+Използвай настолно оформление
+[desktop layout confirm title]
+Да се използва ли настолното оформление?
+[desktop layout confirm body]
+Играта ще премине към интерфейс за мишка и клавиатура. Можете да промените това по-късно от Настройки, в „Оформление на интерфейса“.
 [stat ground movement]
 Наземно придвижване
 [stat ground movement about]

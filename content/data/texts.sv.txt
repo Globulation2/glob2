@@ -6306,6 +6306,12 @@ Det gick inte att spara ditt val. Försök igen.
 Vänster hand
 [Right hand]
 Höger hand
+[Use desktop layout]
+Använd datorlayout
+[desktop layout confirm title]
+Vill du använda datorlayouten?
+[desktop layout confirm body]
+Spelet byter till gränssnittet för mus och tangentbord. Du kan ändra detta senare under Inställningar i Gränssnittets layout.
 [discord copy failed]
 Det gick inte att kopiera länken. Markera inbjudan ovan och kopiera den manuellt.
 [Destroy this building?]

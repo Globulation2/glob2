@@ -231,7 +231,7 @@ void Application::mainMenu()
 	}
 	if (Glob2UI::touchPresentation() && !globalContainer->settings.thumbSideChosen)
 	{
-		screens.push(std::make_unique<HandPreferenceScreen>(),
+		screens.push(std::make_unique<HandPreferenceScreen>(&screens),
 			[this](GAGGUI::Screen &, int) { mainMenu(); });
 		return;
 	}

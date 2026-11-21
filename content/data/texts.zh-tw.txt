@@ -6306,6 +6306,12 @@ MCP 伺服器
 左手
 [Right hand]
 右手
+[Use desktop layout]
+使用桌面配置
+[desktop layout confirm title]
+要使用桌面配置嗎？
+[desktop layout confirm body]
+遊戲將切換為滑鼠與鍵盤介面。之後可以在設定的「介面配置」中變更。
 [discord copy failed]
 無法複製連結。請選取上方的邀請連結，手動複製。
 [Destroy this building?]

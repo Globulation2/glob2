@@ -6306,6 +6306,12 @@ Vaši volbu se nepodařilo uložit. Zkuste to znovu.
 Levá ruka
 [Right hand]
 Pravá ruka
+[Use desktop layout]
+Použít rozložení pro počítač
+[desktop layout confirm title]
+Použít rozložení pro počítač?
+[desktop layout confirm body]
+Hra přepne na rozhraní pro myš a klávesnici. Později to můžete změnit v Nastavení v položce Rozložení rozhraní.
 [discord copy failed]
 Odkaz se nepodařilo zkopírovat. Vyberte pozvánku nahoře a zkopírujte ji ručně.
 [Destroy this building?]

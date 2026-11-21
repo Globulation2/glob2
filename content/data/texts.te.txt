@@ -6286,6 +6286,12 @@ MCP సర్వర్‌ను ప్రారంభించండి
 ఎడమ చేయి
 [Right hand]
 కుడి చేయి
+[Use desktop layout]
+డెస్క్‌టాప్ లేఅవుట్ ఉపయోగించండి
+[desktop layout confirm title]
+డెస్క్‌టాప్ లేఅవుట్ ఉపయోగించాలా?
+[desktop layout confirm body]
+ఆట మౌస్, కీబోర్డ్ ఇంటర్‌ఫేస్‌కు మారుతుంది. దీన్ని తర్వాత సెట్టింగ్‌లలో "ఇంటర్‌ఫేస్ లేఅవుట్" వద్ద మార్చవచ్చు.
 [stat ground movement]
 భూ కదలిక
 [stat ground movement about]

@@ -6288,6 +6288,12 @@ Could not save your choice. Please try again.
 Left hand
 [Right hand]
 Right hand
+[Use desktop layout]
+Use desktop layout
+[desktop layout confirm title]
+Use the desktop layout?
+[desktop layout confirm body]
+The game will switch to the mouse and keyboard interface. You can change this later in Settings under Interface layout.
 [stat ground movement]
 Ground movement
 [stat ground movement about]

@@ -6306,6 +6306,12 @@ Kunne ikke gemme dit valg. Prøv igen.
 Venstre hånd
 [Right hand]
 Højre hånd
+[Use desktop layout]
+Brug computerlayout
+[desktop layout confirm title]
+Vil du bruge computerlayoutet?
+[desktop layout confirm body]
+Spillet skifter til grænsefladen til mus og tastatur. Du kan ændre det senere under Indstillinger i Grænsefladens layout.
 [discord copy failed]
 Kunne ikke kopiere linket. Markér invitationen ovenfor for at kopiere den manuelt.
 [Destroy this building?]

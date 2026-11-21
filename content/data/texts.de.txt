@@ -6306,6 +6306,12 @@ Deine Auswahl konnte nicht gespeichert werden. Bitte versuche es erneut.
 Linke Hand
 [Right hand]
 Rechte Hand
+[Use desktop layout]
+Desktop-Layout verwenden
+[desktop layout confirm title]
+Desktop-Layout verwenden?
+[desktop layout confirm body]
+Das Spiel wechselt zur Oberfläche für Maus und Tastatur. Du kannst das später in den Einstellungen unter Oberflächenlayout ändern.
 [discord copy failed]
 Der Link konnte nicht kopiert werden. Wähle die Einladung oben aus, um sie manuell zu kopieren.
 [Destroy this building?]

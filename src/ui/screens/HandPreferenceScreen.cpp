@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HandPreferenceScreen.h"
 #include "GlobalContainer.h"
+#include "MessageScreen.h"
+#include <InterfacePresentation.h>
+#include <ScreenStack.h>
 #include <algorithm>
 #include <cmath>
 #include <vector>
@@ -149,6 +152,46 @@ void HandPreferenceScreen::choose(int side)
 	endExecute(side);
 }
 
+void HandPreferenceScreen::confirmDesktopLayout()
+{
+	if (!screens || confirming) return;
+	confirming = true;
+	using Glob2UI::tr;
+	auto message = std::make_unique<MessageScreen>(tr("[desktop layout confirm title]"),
+		tr("[desktop layout confirm body]"),
+		std::vector<std::string>{tr("[Use desktop layout]"), tr("[Cancel]")});
+	// Cancel is the safe choice: Enter and Escape both keep the touch layout.
+	message->setPrimary(1);
+	screens->push(std::move(message), [this](GAGGUI::Screen &, int choice) {
+		confirming = false;
+		if (choice == 0)
+			useDesktopLayout();
+	});
+}
+
+void HandPreferenceScreen::useDesktopLayout()
+{
+	using GAGCore::PresentationPreference;
+	auto &settings = globalContainer->settings;
+	const std::string previousName = settings.interfacePresentation;
+	const PresentationPreference previous = GAGCore::presentationPreference;
+	settings.interfacePresentation = GAGCore::presentationPreferenceName(PresentationPreference::Desktop);
+	GAGCore::presentationPreference = PresentationPreference::Desktop;
+	if (!settings.save())
+	{
+		settings.interfacePresentation = previousName;
+		GAGCore::presentationPreference = previous;
+		saveFailed = true;
+		invalidate();
+		return;
+	}
+	// Apply it now rather than on the next resize, so the menu that follows is
+	// already the desktop one. The thumb side stays unchosen: it is asked again
+	// only if the player later switches back to a touch interface.
+	GAGCore::updatePresentation(GAGCore::presentationViewport, GAGCore::presentationInput);
+	endExecute(USE_DESKTOP_LAYOUT);
+}
+
 Glob2UI::Element HandPreferenceScreen::build(const Glob2UI::Presentation &p)
 {
 	using namespace Glob2UI;
@@ -174,6 +217,14 @@ Glob2UI::Element HandPreferenceScreen::build(const Glob2UI::Presentation &p)
 
 	body.push_back(hint(tr("[hand preference change later]")));
 	if (saveFailed) body.push_back(paragraph(tr("[hand preference save failed]")));
+#ifndef GLOB2_MOBILE
+	// Touch can be detected wrongly on a desktop (a touchscreen laptop, a small
+	// or scaled window). A forced interface (GLOB2_MOBILE_UI, --interface) would
+	// override the saved choice, so the way out is offered only without one.
+	if (screens && !GAGCore::presentationOverride())
+		body.push_back(button("hand.desktop", tr("[Use desktop layout]"), [this] { confirmDesktopLayout(); },
+			{.flat = true}));
+#endif
 	return page(tr("[Which hand holds your phone?]"), scroll("hand.body", column(std::move(body))),
 		row({expanded(button("hand.left", tr("[Left hand]"), [this] { choose(Settings::THUMB_LEFT); })),
 			expanded(button("hand.right", tr("[Right hand]"), [this] { choose(Settings::THUMB_RIGHT); }))},

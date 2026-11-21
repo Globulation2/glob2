@@ -6286,6 +6286,12 @@ Kunne ikke lagre valget ditt. Prøv på nytt.
 Venstre hånd
 [Right hand]
 Høyre hånd
+[Use desktop layout]
+Bruk skrivebordsoppsett
+[desktop layout confirm title]
+Vil du bruke skrivebordsoppsettet?
+[desktop layout confirm body]
+Spillet bytter til grensesnittet for mus og tastatur. Du kan endre dette senere under Innstillinger i Grensesnittoppsett.
 [stat ground movement]
 Bakkebevegelse
 [stat ground movement about]

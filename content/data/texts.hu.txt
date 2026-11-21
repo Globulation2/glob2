@@ -6306,6 +6306,12 @@ Nem sikerült menteni a választásodat. Próbáld újra.
 Bal kéz
 [Right hand]
 Jobb kéz
+[Use desktop layout]
+Asztali elrendezés használata
+[desktop layout confirm title]
+Az asztali elrendezést szeretnéd használni?
+[desktop layout confirm body]
+A játék egérrel és billentyűzettel kezelhető felületre vált. Ezt később a Beállítások Felület elrendezése pontjában módosíthatod.
 [discord copy failed]
 Nem sikerült kimásolni a hivatkozást. Jelöld ki a fenti meghívót a kézi másoláshoz.
 [Destroy this building?]

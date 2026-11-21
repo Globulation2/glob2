@@ -6306,6 +6306,12 @@ Izbire ni bilo mogoče shraniti. Poskusite znova.
 Leva roka
 [Right hand]
 Desna roka
+[Use desktop layout]
+Uporabi namizno postavitev
+[desktop layout confirm title]
+Želite uporabiti namizno postavitev?
+[desktop layout confirm body]
+Igra bo preklopila na vmesnik za miško in tipkovnico. To lahko pozneje spremenite v Nastavitvah pod Postavitev vmesnika.
 [discord copy failed]
 Povezave ni bilo mogoče kopirati. Izberite zgornje povabilo in ga kopirajte ročno.
 [Destroy this building?]

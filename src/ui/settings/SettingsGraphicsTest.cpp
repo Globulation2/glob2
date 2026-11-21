@@ -7,6 +7,9 @@
 #include "CommandLine.h"
 #include "ScopedEnvironment.h"
 #include "ui/FrontendUI.h"
+#include <InterfacePresentation.h>
+#include <ScreenStack.h>
+#include <filesystem>
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <fstream>
@@ -280,6 +283,94 @@ TEST_SUITE("SettingsGraphics")
 			CHECK_FALSE(screen.isExecutionRunning());
 			screen.finishExecution();
 		}
+	}
+
+	TEST_CASE("hand-choice screen switches to the desktop layout and keeps the old one after write failure [writes-preferences]")
+	{
+		glob2test::ScopedEnvironment unforced("GLOB2_MOBILE_UI", "");
+		glob2test::HeadlessGlobals globals;
+		auto &settings = globals->settings;
+		const auto restore = GAGCore::presentationPreference;
+		settings.interfacePresentation = "phone";
+		GAGCore::presentationPreference = GAGCore::PresentationPreference::Phone;
+		{
+			HandPreferenceScreen screen;
+			screen.useDesktopLayout();
+			CHECK(settings.interfacePresentation == "desktop");
+			CHECK(GAGCore::presentationPreference == GAGCore::PresentationPreference::Desktop);
+			CHECK_FALSE(settings.thumbSideChosen);
+			Settings loaded;
+			loaded.load();
+			CHECK(loaded.interfacePresentation == "desktop");
+		}
+		const auto path = std::filesystem::path(GAGCore::Toolkit::getFileManager()->getDir(0)) / "preferences.txt";
+		std::filesystem::remove(path);
+		std::filesystem::create_directory(path);
+		settings.interfacePresentation = "phone";
+		GAGCore::presentationPreference = GAGCore::PresentationPreference::Phone;
+		{
+			HandPreferenceScreen failed;
+			failed.useDesktopLayout();
+			CHECK(settings.interfacePresentation == "phone");
+			CHECK(GAGCore::presentationPreference == GAGCore::PresentationPreference::Phone);
+		}
+		std::filesystem::remove(path);
+		GAGCore::presentationPreference = restore;
+	}
+
+	TEST_CASE("desktop layout is offered on the hand-choice screen and applied only once confirmed [display][writes-preferences]")
+	{
+		glob2test::ScopedEnvironment unforced("GLOB2_MOBILE_UI", "");
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 390, .height = 844,
+			.screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		glob2test::HeadlessGlobals globals(options);
+		auto &settings = globals->settings;
+		const auto restore = GAGCore::presentationPreference;
+		auto tap = [](GAGGUI::Screen *screen, const std::string &key) {
+			auto *ui = dynamic_cast<GAGGUI::ui::UIScreen *>(screen);
+			REQUIRE(ui);
+			ui->paintFrame(SDL_GetTicks());
+			const auto bounds = ui->host().bounds(key);
+			REQUIRE_FALSE(bounds.empty());
+			ui->host().tapAt(bounds.center());
+		};
+		for (const bool confirm : {false, true}) {
+			settings.interfacePresentation = "phone";
+			settings.thumbSideChosen = false;
+			GAGCore::presentationPreference = GAGCore::PresentationPreference::Phone;
+			GAGGUI::ScreenStack screens(*globals->gfx);
+			int result = 0;
+			screens.push(std::make_unique<HandPreferenceScreen>(&screens),
+				[&result](GAGGUI::Screen &, int value) { result = value; });
+			screens.frame(SDL_GetTicks(), {}, false);
+			auto *hand = screens.top();
+			REQUIRE(dynamic_cast<HandPreferenceScreen *>(hand));
+			// Without a screen stack there is nowhere to confirm, so no option.
+			{
+				HandPreferenceScreen standalone;
+				standalone.beginExecution(globals->gfx);
+				standalone.paintFrame(SDL_GetTicks());
+				CHECK(standalone.host().find("hand.desktop") == nullptr);
+			}
+			tap(hand, "hand.desktop");
+			screens.frame(SDL_GetTicks(), {}, false);
+			// The confirmation is a separate dialog; nothing changes until it is answered.
+			REQUIRE(screens.top() != hand);
+			CHECK(settings.interfacePresentation == "phone");
+			tap(screens.top(), confirm ? "choice/0" : "choice/1");
+			screens.frame(SDL_GetTicks(), {}, false);
+			screens.frame(SDL_GetTicks(), {}, false);
+			if (confirm) {
+				CHECK(settings.interfacePresentation == "desktop");
+				CHECK(GAGCore::presentationPreference == GAGCore::PresentationPreference::Desktop);
+				CHECK(result == HandPreferenceScreen::USE_DESKTOP_LAYOUT);
+				CHECK_FALSE(screens.running());
+			} else {
+				CHECK(settings.interfacePresentation == "phone");
+				CHECK(screens.top() == hand);
+			}
+		}
+		GAGCore::presentationPreference = restore;
 	}
 
     TEST_CASE("GPU local preference is opt-in for graphical and headless games")

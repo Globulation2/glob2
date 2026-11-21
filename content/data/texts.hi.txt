@@ -6286,6 +6286,12 @@ MCP सर्वर चालू करें
 बायाँ हाथ
 [Right hand]
 दायाँ हाथ
+[Use desktop layout]
+डेस्कटॉप बनावट इस्तेमाल करें
+[desktop layout confirm title]
+डेस्कटॉप बनावट इस्तेमाल करें?
+[desktop layout confirm body]
+गेम माउस और कीबोर्ड वाले इंटरफ़ेस पर चला जाएगा। आप इसे बाद में सेटिंग में "इंटरफ़ेस की बनावट" से बदल सकते हैं।
 [stat ground movement]
 ज़मीनी चाल
 [stat ground movement about]

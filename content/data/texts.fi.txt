@@ -6306,6 +6306,12 @@ Valintaasi ei voitu tallentaa. Yritä uudelleen.
 Vasen käsi
 [Right hand]
 Oikea käsi
+[Use desktop layout]
+Käytä tietokoneasettelua
+[desktop layout confirm title]
+Käytetäänkö tietokoneasettelua?
+[desktop layout confirm body]
+Peli siirtyy hiiren ja näppäimistön käyttöliittymään. Voit muuttaa tätä myöhemmin asetuksista kohdasta Käyttöliittymän asettelu.
 [discord copy failed]
 Linkkiä ei voitu kopioida. Valitse yllä oleva kutsu ja kopioi se käsin.
 [Destroy this building?]

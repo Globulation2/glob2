@@ -6306,6 +6306,12 @@ MCP 서버 활성화
 왼손
 [Right hand]
 오른손
+[Use desktop layout]
+데스크톱 배치 사용
+[desktop layout confirm title]
+데스크톱 배치를 사용할까요?
+[desktop layout confirm body]
+게임이 마우스와 키보드용 인터페이스로 바뀝니다. 나중에 설정의 "인터페이스 배치"에서 변경할 수 있습니다.
 [discord copy failed]
 링크를 복사할 수 없습니다. 위의 초대 링크를 선택하여 직접 복사하세요.
 [Destroy this building?]

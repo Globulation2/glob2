@@ -6236,6 +6236,12 @@ Hindi ma-save ang iyong napili. Pakisubukang muli.
 Kaliwang kamay
 [Right hand]
 Kanang kamay
+[Use desktop layout]
+Gamitin ang layout para sa desktop
+[desktop layout confirm title]
+Gamitin ang layout para sa desktop?
+[desktop layout confirm body]
+Lilipat ang laro sa interface para sa mouse at keyboard. Mababago mo ito mamaya sa Mga Setting, sa Layout ng interface.
 [discord copy failed]
 Hindi makopya ang link. Piliin ang imbitasyon sa itaas para manu-manong kopyahin ito.
 [stat ground movement]

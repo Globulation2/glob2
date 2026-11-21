@@ -6306,6 +6306,12 @@ Ne eblis konservi vian elekton. Bonvolu reprovi.
 Maldekstra mano
 [Right hand]
 Dekstra mano
+[Use desktop layout]
+Uzi labortablan aranĝon
+[desktop layout confirm title]
+Ĉu uzi la labortablan aranĝon?
+[desktop layout confirm body]
+La ludo ŝanĝos al la interfaco por muso kaj klavaro. Vi povas ŝanĝi tion poste en Agordoj, ĉe Interfaca aranĝo.
 [discord copy failed]
 Ne eblis kopii la ligilon. Elektu la supran inviton por kopii ĝin permane.
 [Destroy this building?]

@@ -6306,6 +6306,12 @@ MCP サーバーを有効化
 左手
 [Right hand]
 右手
+[Use desktop layout]
+デスクトップ配置を使う
+[desktop layout confirm title]
+デスクトップ配置を使いますか？
+[desktop layout confirm body]
+マウスとキーボード用のインターフェースに切り替わります。あとから設定の「インターフェースの配置」で変更できます。
 [discord copy failed]
 リンクをコピーできませんでした。上の招待リンクを選択して手動でコピーしてください。
 [Destroy this building?]
