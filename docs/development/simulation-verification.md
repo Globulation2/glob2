@@ -50,8 +50,14 @@ python3 tools/sim_diff.py base.json.gz candidate.json.gz
 ```
 
 The `sim-diff` workflow does this for every pull request whose change reaches the
-simulation path (`touches_simulation` in `.github/scripts/ci_policy.py`): it builds
-the merge base and the pull request at the perf tier, prints the verdict beside the
+simulation path (`touches_simulation` in `.github/scripts/ci_policy.py`). The
+generated `cmake/sources.cmake` changes whenever any source is added or removed, so
+it counts only when its simulation content changed: a flag, define or include
+block, the strict, guarded or simulation source lists, a source on the simulation
+path, or anything the comparison does not recognise. A source outside the
+simulation path joining or leaving the plain source lists does not count. Other
+build files (`CMakeLists.txt`, `buildsys/javascript.py`) always count. The job
+builds the merge base and the pull request at the perf tier, prints the verdict beside the
 two sim version keys (`test/check_sim_revision.py --key-at <rev>`) in the job
 summary, and judges it:
 
