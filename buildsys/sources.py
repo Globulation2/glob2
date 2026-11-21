@@ -217,6 +217,7 @@ CLIENT_SOURCES = (
     'hud/touch/TouchReadout.cpp',
     'hud/touch/ThumbSide.cpp',
     'hud/touch/TouchDial.cpp',
+    'hud/touch/TouchCard.cpp',
     'hud/BrushHUD.cpp',
     'net/ConnectionOverlay.cpp',
     'net/turn/TurnMatchPresenter.cpp',

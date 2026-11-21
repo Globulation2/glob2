@@ -52,6 +52,11 @@ bool GameGUITouch::usesHUD() const
 {
 	return phonePresentationRequested();
 }
+bool GameGUITouch::tabletPanelRequested()
+{
+	const char *value = SDL_getenv_unsafe("GLOB2_TABLET_HUD");
+	return value && std::string_view(value) == "panel";
+}
 GameGUITouch::LayoutFrame::LayoutFrame(GameGUITouch *touch) : touch(touch)
 {
 	if (touch)
@@ -75,7 +80,8 @@ MobileLayout GameGUITouch::layout() const
 		{ return a.x == b.x && a.y == b.y && a.w == b.w && a.h == b.h; };
 		if (!same(fresh.safe, frameLayout->safe) || !same(fresh.status, frameLayout->status) ||
 			!same(fresh.world, frameLayout->world) || !same(fresh.actions, frameLayout->actions) ||
-			!same(fresh.panel, frameLayout->panel) || fresh.persistentPanel != frameLayout->persistentPanel)
+			!same(fresh.panel, frameLayout->panel) || fresh.persistentPanel != frameLayout->persistentPanel ||
+			!same(fresh.rail, frameLayout->rail) || fresh.tablet != frameLayout->tablet)
 			throw std::logic_error("A touch layout input changed while a frame was painted");
 	}
 	return *frameLayout;
@@ -90,27 +96,62 @@ MobileLayout GameGUITouch::computeLayout() const
 	const auto resolved =
 		resolvePresentation(presentationOverride().value_or(presentationPreference),
 							{gfx->getW() / unit, gfx->getH() / unit, 1, insets}, input);
+	// A touch HUD with room for the Spacious panel is a tablet. Tablets are
+	// held in both hands, so they keep the phone's thumb-reach controls (rail,
+	// dial, lens strip) and spend the extra room on labels and the minimap;
+	// GLOB2_TABLET_HUD=panel restores the floating top-right panels.
+	const bool spacious = resolved.layout == PresentationLayout::Spacious;
+	// Only the touch HUD has a tablet form; the desktop sidebar keeps its own.
+	const bool tablet = usesHUD() && isTablet(resolved.usable, spacious);
 	auto result = MobileLayout::calculate(
 		gfx->getW() / unit, gfx->getH() / unit, insets, 0, 1, panelOpen,
-		resolved.layout == PresentationLayout::Spacious,
-		resolved.layout == PresentationLayout::Spacious ? resolved.panelWidth : 288);
-	// Keep the icon band, then reserve the actual wrapped label height and
-	// bottom padding. Tall scripts and accessibility text grow upward into
-	// the world; drawing and hit regions share the resulting action strip.
-	const auto &navigation = measureNavigation(result.actions.w);
-	const double labelHeight = navigation.height;
-	result.actions.h = std::max(result.actions.h, 32 + labelHeight + (labelHeight > 16 ? 4 : 0)) *
-		(6 / navigation.columns);
-	result.actions.y = result.safe.y + result.safe.h - result.actions.h;
+		spacious && !tablet, spacious ? resolved.panelWidth : 288);
+	result.tablet = tablet;
+	tabletLayout = tablet;
+	if (tablet)
+	{
+		// The rail sits outside `safe`, so every panel placed within `safe`
+		// clears it. The bottom toolbar collapses to a zero-height edge that
+		// still anchors bottom-aligned panels.
+		const double width = InGameTouchTheme::tabletRailWidth;
+		const bool railLeft = ThumbSide::toolboxLeft();
+		result.rail = {railLeft ? result.safe.x : result.safe.x + result.safe.w - width, result.safe.y, width,
+					   result.safe.h};
+		if (railLeft)
+			result.safe.x += width;
+		result.safe.w -= width;
+		result.status.x = result.safe.x;
+		result.status.w = result.safe.w;
+		measureNavigation(width);
+		result.actions = {result.safe.x, result.safe.y + result.safe.h, result.safe.w, 0};
+	}
+	else
+	{
+		// Keep the icon band, then reserve the actual wrapped label height and
+		// bottom padding. Tall scripts and accessibility text grow upward into
+		// the world; drawing and hit regions share the resulting action strip.
+		const auto &navigation = measureNavigation(result.actions.w);
+		const double labelHeight = navigation.height;
+		result.actions.h = std::max(result.actions.h, 32 + labelHeight + (labelHeight > 16 ? 4 : 0)) *
+			(6 / navigation.columns);
+		result.actions.y = result.safe.y + result.safe.h - result.actions.h;
+	}
 	// Persistent palettes float too: the map remains visible below their last
 	// icon, and opening an inspector never changes the camera's framing.
 	result.world = result.safe;
 	result.world.h -= result.actions.h;
+	if (tablet)
+	{
+		// The map runs beneath the floating rail dock; the rail's own hit test
+		// comes first, so only its empty gaps reach the map.
+		result.world.x = std::min(result.world.x, result.rail.x);
+		result.world.w = result.safe.w + result.rail.w;
+	}
 	result.status.h = 28;
 	if ((result.persistentPanel || panelOpen) && showsBuildPalette())
 	{
 		const int columns = paletteColumns(result);
-		const double stride = InGameTouchTheme::paletteCell + InGameTouchTheme::gap;
+		const double stride = paletteCellPoints(result) + InGameTouchTheme::gap;
 		const double rows = std::ceil(paletteItems().size() / double(columns));
 		if (result.persistentPanel)
 		{
@@ -148,20 +189,23 @@ MobileLayout GameGUITouch::computeLayout() const
 	{
 		// Use horizontal room before introducing overflow. Ordinary inspectors
 		// fit completely; only genuinely constrained/large-text views scroll.
-		result.panel.w = std::min(result.safe.w, result.safe.w > result.safe.h
-			? InGameTouchTheme::inspectorLandscapeWidth : InGameTouchTheme::inspectorPortraitWidth);
-		result.panel.x = result.safe.x + result.safe.w - result.panel.w;
+		result.panel.w = std::min(result.safe.w, tablet ? InGameTouchTheme::tabletInspectorWidth
+			: result.safe.w > result.safe.h ? InGameTouchTheme::inspectorLandscapeWidth
+			: InGameTouchTheme::inspectorPortraitWidth);
+		const double edge = tablet ? InGameTouchTheme::railInset : 0;
+		result.panel.x = tablet && ThumbSide::left() ? result.safe.x + edge
+			: result.safe.x + result.safe.w - result.panel.w - edge;
 		// Compact stocks live beneath the HUD identity; spacious stocks are
 		// part of the inspector and reserve space before its scrollable actions.
 		drawable.panel = {result.panel.x * unit, minimapBottom * unit,
 			result.panel.w * unit, 0};
 		const auto inventory = buildingInventory(drawable).bounds;
-		const double top = result.persistentPanel ? minimapBottom :
+		const double top = result.docked() ? minimapBottom :
 			std::max(minimapBottom, (inventory.y + inventory.h) / unit + 4);
 		const double available = std::max(0.0, result.actions.y - top);
 		const double height = std::min(available,
-			(result.persistentPanel ? InGameTouchTheme::inspectorHeader + inventory.h / unit : 0) + buildingActionsHeight(result.panel.w));
-		result.panel.y = result.persistentPanel ? minimapBottom : result.actions.y - height;
+			(result.docked() ? InGameTouchTheme::inspectorHeader + inventory.h / unit : 0) + buildingActionsHeight(result.panel.w));
+		result.panel.y = result.docked() ? minimapBottom : result.actions.y - height;
 		result.panel.h = height;
 	}
 	if ((result.persistentPanel || panelOpen) && gui.selectionMode == GameGUI::UNIT_SELECTION)
@@ -169,12 +213,12 @@ MobileLayout GameGUITouch::computeLayout() const
 		const double width = std::min(320., result.safe.w - 24);
 		const double available = std::max(0.0, result.actions.y - minimapBottom - 12);
 		const double height = std::min(available,
-			(result.persistentPanel ? InGameTouchTheme::inspectorHeader : 0) +
+			(result.docked() ? InGameTouchTheme::inspectorHeader : 0) +
 			InGameTouchTheme::unitStatsTitle + 8 + unitInfoRows().size() *
 			InGameTouchTheme::unitStatRow * InGameTouchTheme::textGrowth());
 		result.panel = ThumbSide::corner(result.safe, width, height, 12, result.actions.y, !ThumbSide::left());
 	}
-	if (result.persistentPanel && inspectingResource())
+	if ((result.persistentPanel || (tablet && panelOpen)) && inspectingResource())
 	{
 		const double width = std::min(240.0, result.safe.w - 2 * InGameTouchTheme::railInset);
 		result.panel = ThumbSide::corner(result.safe, width, InGameTouchTheme::inspectorHeader, InGameTouchTheme::railInset,
@@ -189,14 +233,14 @@ MobileLayout GameGUITouch::computeLayout() const
 		result.panel.y = minimapBottom;
 		result.panel.h = std::max(0.0, bottom - minimapBottom);
 	}
-	for (auto *rect : {&result.safe, &result.status, &result.world, &result.actions, &result.panel})
+	for (auto *rect : {&result.safe, &result.status, &result.world, &result.actions, &result.panel, &result.rail})
 	{
 		rect->x *= unit;
 		rect->y *= unit;
 		rect->w *= unit;
 		rect->h *= unit;
 	}
-	if (panelOpen && inspectingResource() && !result.persistentPanel)
+	if (panelOpen && inspectingResource() && !result.docked())
 		result.panel = hudLayout(result).identity;
 	if (dial && gui.selectionMode != GameGUI::BRUSH_SELECTION)
 		result.panel = dialLayout(result).bounds;
@@ -215,7 +259,55 @@ MobileLayout GameGUITouch::computeLayout() const
 		}
 		result.panel = {x0, y0, x1 - x0, y1 - y0};
 	}
+	// Tablets centre floating panels in the thumb band below the minimap
+	// rather than resting them on the bottom edge. Lens rects centre themselves.
+	const bool lensShown = lensOpen && gui.selectionMode == GameGUI::NO_SELECTION &&
+		gui.displayMode == GameGUI::STAT_TEXT_VIEW && !globalContainer->isViewingGame() && !peekOpen && !statsOpen;
+	if (tablet && result.panel.h > 0 && !dial && gui.selectionMode != GameGUI::BRUSH_SELECTION && !lensShown)
+	{
+		// Never taller than the band, so the last rows stay scrollable.
+		const auto hud = hudLayout(result);
+		const double top = hud.minimap.y + hud.minimap.h + 8 * unit, bottom = result.actions.y - 24 * unit;
+		result.panel.h = std::min(result.panel.h, std::max(0.0, bottom - top));
+		result.panel.y = tabletBandTop(result, result.panel.h);
+	}
 	return result;
+}
+std::vector<ViewRect> GameGUITouch::railToolRects(const MobileLayout &ui) const
+{
+	// While a tool owns input the rail offers its exits, so either thumb can
+	// finish: placement gets OK and Cancel, zone painting gets Done.
+	if (!ui.tablet)
+		return {};
+	int count = gui.selectionMode == GameGUI::TOOL_SELECTION ? 2 : gui.selectionMode == GameGUI::BRUSH_SELECTION ? 1 : 0;
+	std::vector<ViewRect> rects;
+	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+	const double h = InGameTouchTheme::tabletRailButton * unit, inset = 6 * unit;
+	const double top = ui.rail.y + (ui.rail.h - count * h) / 2;
+	for (int i = 0; i < count; ++i)
+		rects.push_back({ui.rail.x + inset, top + i * h + inset, ui.rail.w - 2 * inset, h - 2 * inset});
+	return rects;
+}
+bool GameGUITouch::isTablet(ViewRect usablePoints, bool spacious)
+{
+	if (tabletPanelRequested())
+		return false;
+	const auto preference = presentationOverride().value_or(presentationPreference);
+	// Phone (and the layout-only Compact) always gets the phone HUD; a player who
+	// chose Tablet gets this one wherever the spacious layout fits.
+	if (presentationLayoutPolicy(preference) == PresentationPreference::Compact)
+		return false;
+	if (preference == PresentationPreference::Tablet)
+		return spacious;
+	return std::min(usablePoints.w, usablePoints.h) >= InGameTouchTheme::tabletShortestSide;
+}
+double GameGUITouch::tabletBandTop(const MobileLayout &ui, double height) const
+{
+	// `ui` and the result are in drawable units.
+	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+	const auto hud = hudLayout(ui);
+	const double top = hud.minimap.y + hud.minimap.h + 8 * unit, bottom = ui.actions.y - 24 * unit;
+	return std::max(top, top + (bottom - top - height) / 2);
 }
 double GameGUITouch::scenarioMessagePitch() const
 {
@@ -248,7 +340,7 @@ void GameGUITouch::clampScroll()
 	const double height =
 		showsBuildPalette()
 			? std::ceil(paletteItems().size() / double(columns)) *
-					  (paletteRail(ui) ? InGameTouchTheme::paletteCell + InGameTouchTheme::gap : 60) +
+					  (paletteRail(ui) ? paletteCellPoints(ui) + InGameTouchTheme::gap : 60) +
 				  (paletteRail(ui) ? InGameTouchTheme::gap : 8)
 			: gui.selectionMode == GameGUI::UNIT_SELECTION
 				? 8 + unitInfoRows().size() * InGameTouchTheme::unitStatRow * InGameTouchTheme::textGrowth()
@@ -339,6 +431,11 @@ void GameGUITouch::syncGestureExclusion()
 			 lensVisible()) &&
 			ui.panel.w > 0 && ui.panel.h > 0)
 			wanted.push_back(ui.panel);
+		if (ui.tablet)
+		{
+			const auto first = navigationButtonRect(ui, 0), last = navigationButtonRect(ui, 5);
+			wanted.push_back({ui.rail.x, first.y, ui.rail.w, last.y + last.h - first.y});
+		}
 	}
 	auto same = [](const ViewRect &a, const ViewRect &b)
 	{ return a.x == b.x && a.y == b.y && a.w == b.w && a.h == b.h; };
@@ -359,7 +456,17 @@ ViewRect GameGUITouch::world() const
 ViewRect GameGUITouch::controls() const
 {
 	if (usesHUD())
-		return layout().actions;
+	{
+		const auto ui = layout();
+		if (!ui.tablet)
+			return ui.actions;
+		// A column on the thumb edge: OK above Cancel, or the zone choices and Done.
+		const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+		const int rows = gui.selectionMode == GameGUI::BRUSH_SELECTION ? gui.toolManager.zoneTypeCount() + 1 : 2;
+		const double w = InGameTouchTheme::tabletControlWidth * unit,
+					 h = rows * InGameTouchTheme::tabletControlRow * unit, inset = InGameTouchTheme::railInset * unit;
+		return {ThumbSide::left() ? ui.safe.x + inset : ui.safe.x + ui.safe.w - inset - w, tabletBandTop(ui, h), w, h};
+	}
 	auto rect = world();
 	rect.h = std::min(rect.h, 48 * globalContainer->gfx->logicalUnitsPerPoint());
 	rect.y = globalContainer->gfx->getH() - rect.h;
@@ -370,6 +477,11 @@ ViewRect GameGUITouch::controls() const
 ViewRect GameGUITouch::confirmRect() const
 {
 	auto rect = controls();
+	if (usesHUD() && layout().tablet)
+	{
+		rect.h /= 2;
+		return rect;
+	}
 	rect.w /= 2;
 	if (usesHUD() && !ThumbSide::left())
 		rect.x += rect.w;
@@ -378,6 +490,12 @@ ViewRect GameGUITouch::confirmRect() const
 ViewRect GameGUITouch::cancelRect() const
 {
 	auto rect = controls();
+	if (usesHUD() && layout().tablet)
+	{
+		rect.h /= 2;
+		rect.y += rect.h;
+		return rect;
+	}
 	rect.w /= 2;
 	if (!(usesHUD() && !ThumbSide::left()))
 		rect.x += rect.w;
@@ -464,6 +582,33 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 		if (speedRect().contains(point))
 			return 49;
 		const auto navigation = layout();
+		if (navigation.tablet && navigation.rail.contains(point))
+		{
+			// The floating dock owns its span; the map shows (and pans) above
+			// and below it. Tools own input until they finish: their dock holds
+			// only their exits, which the semantic controls handle.
+			const bool tool = gui.selectionMode == GameGUI::TOOL_SELECTION ||
+				gui.selectionMode == GameGUI::BRUSH_SELECTION;
+			const double u = globalContainer->gfx->logicalUnitsPerPoint();
+			double top, bottom;
+			if (tool)
+			{
+				const auto exits = railToolRects(navigation);
+				top = exits.empty() ? 0 : exits.front().y - 62 * u;
+				bottom = exits.empty() ? 0 : exits.back().y + exits.back().h + 8 * u;
+			}
+			else
+			{
+				top = navigationButtonRect(navigation, 0).y - 8 * u;
+				const auto last = navigationButtonRect(navigation, 5);
+				bottom = last.y + last.h + 8 * u;
+			}
+			if (point.y >= top && point.y < bottom)
+			{
+				const int button = tool ? -1 : navigationButtonAt(navigation, point);
+				return button >= 0 ? 10 + button : 6;
+			}
+		}
 		if (navigation.actions.contains(point))
 			return 10 + navigationButtonAt(navigation, point);
 		const auto header = allocationRect();
@@ -1271,7 +1416,8 @@ BrushHUD::Layout GameGUITouch::brushHUD() const
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	const auto mini = minimapRect();
 	const double top = mini.y + mini.h + 8 * unit, inset = InGameTouchTheme::railInset * unit;
-	return BrushHUD::layout({ui.safe.x + inset, top, ui.safe.w - 2 * inset, ui.actions.y - 8 * unit - top},
+	const double bottom = ui.actions.y - (ui.tablet ? 24 : 8) * unit;
+	return BrushHUD::layout({ui.safe.x + inset, top, ui.safe.w - 2 * inset, bottom - top},
 							ThumbSide::toolboxLeft(), unit, true, true, bool(zoneUndo));
 }
 
@@ -1281,6 +1427,13 @@ std::vector<ViewRect> GameGUITouch::brushBarButtons() const
 	const auto rect = controls();
 	const int count = gui.toolManager.zoneTypeCount() + 1;
 	std::vector<ViewRect> buttons;
+	if (usesHUD() && layout().tablet)
+	{
+		// Stacked down the thumb-edge column, Done last.
+		for (int i = 0; i < count; ++i)
+			buttons.push_back({rect.x, rect.y + i * rect.h / count, rect.w, rect.h / count});
+		return buttons;
+	}
 	for (int i = 0; i < count; ++i)
 	{
 		const int slot = ThumbSide::left() ? count - 1 - i : i;

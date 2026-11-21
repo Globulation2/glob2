@@ -9,6 +9,7 @@
 #include "GameGUITouch.h"
 #include "HudUnitConversionIcon.h"
 #include "InGameTouchTheme.h"
+#include "ThumbSide.h"
 #include "TouchReadout.h"
 #include "Brush.h"
 #include "BrushCoverage.h"
@@ -132,8 +133,47 @@ void GameGUITouch::drawWinChanceIcon(ViewPoint center, double logicalSize)
 	drawNavigationIcon(9, center, false, logicalSize / globalContainer->gfx->logicalUnitsPerPoint());
 }
 
+void GameGUITouch::drawRailTools()
+{
+	const auto ui = layout();
+	const auto rects = railToolRects(ui);
+	if (rects.empty() || activeDialog())
+		return;
+	auto *gfx = globalContainer->gfx;
+	auto *strings = Toolkit::getStringTable();
+	const double unit = gfx->logicalUnitsPerPoint();
+	const bool placing = gui.selectionMode == GameGUI::TOOL_SELECTION;
+	// Name what the tool is doing above its exits.
+	std::string title;
+	if (placing)
+	{
+		const auto name = gui.toolManager.getBuildingName();
+		title = strings->getString(("[" + name.substr(0, name.find('.')) + "]").c_str());
+	}
+	else
+	{
+		const char *zones[] = {"[Forbidden]", "[Guard]", "[Clear]", "[Farm]"};
+		title = strings->getString(zones[std::clamp(int(gui.toolManager.getZoneType()), 0, 3)]);
+	}
+	const ViewRect titleBox{ui.rail.x + 6 * unit, rects.front().y - 56 * unit, ui.rail.w - 12 * unit, 48 * unit};
+	paintCard({ui.rail.x + 6 * unit, titleBox.y - 6 * unit, ui.rail.w - 12 * unit,
+				rects.back().y + rects.back().h - titleBox.y + 14 * unit}, {TouchCard::Tone::Surface, 24});
+	drawPointLabel(titleBox, title, .78);
+	for (size_t i = 0; i < rects.size(); ++i)
+	{
+		const auto &r = rects[i];
+		const bool cancel = placing && i == 1;
+		const bool enabled = !placing || cancel || (preview.has_value() && !(placement && placement->dragging));
+		// Icon-only: the confirm check and cancel cross read in any language.
+		paintCard({r.x + 4 * unit, r.y + 2 * unit, r.w - 8 * unit, r.h - 4 * unit},
+				   {cancel ? TouchCard::Tone::Danger : enabled ? TouchCard::Tone::Primary : TouchCard::Tone::Disabled, 16,
+					true, cancel ? TouchCard::Glyph::Cross : TouchCard::Glyph::Check});
+	}
+}
+
 void GameGUITouch::drawControls()
 {
+	drawRailTools();
 	if (usesHUD() && gui.selectionMode == GameGUI::BRUSH_SELECTION && !activeDialog())
 	{
 		// Zone choices then Done along the bar, Done under the thumb; brush size,
@@ -146,6 +186,40 @@ void GameGUITouch::drawControls()
 			labels.push_back(strings->getString("[Farm]"));
 		labels.push_back(strings->getString("[Done]"));
 		const auto buttons = brushBarButtons();
+		if (usesHUD())
+		{
+			const double u = gfx->logicalUnitsPerPoint();
+			const bool bar = !layout().tablet;
+			if (bar)
+			{
+				// Phones keep an edge-attached bar; the choices float on it as pills.
+				const auto strip = controls();
+				gfx->drawFilledRect(int(strip.x), int(strip.y), int(strip.w), int(strip.h), InGameTouchTheme::paper());
+				gfx->drawHorzLine(int(strip.x), int(strip.y), int(strip.w), InGameTouchTheme::border());
+			}
+			for (int i = 0; i < int(buttons.size()); ++i)
+			{
+				const auto &b = buttons[i];
+				const bool done = i == int(buttons.size()) - 1;
+				const bool chosen = i == int(gui.toolManager.getZoneType());
+				TouchCard::Style style{done ? TouchCard::Tone::Primary : chosen ? TouchCard::Tone::Selected : TouchCard::Tone::Raised,
+									   14, true, done ? TouchCard::Glyph::Check : TouchCard::Glyph::None, true};
+				const ViewRect r = bar ? ViewRect{b.x + 3 * u, b.y + 5 * u, b.w - 6 * u, b.h - 9 * u}
+									   : ViewRect{b.x, b.y + 4 * u, b.w, b.h - 8 * u};
+				drawCard(r, style, done ? labels[i] : "", .9);
+				if (!done)
+				{
+					// The zone's own colour as a swatch beside its name.
+					const double dot = bar ? 6 : 9, lead = bar ? 16 : 24;
+					const auto &edge = InGameTouchTheme::zonePreviewEdge[std::clamp(i, 0, 3)];
+					dialPainter.circle({r.x + lead * u, r.y + r.h / 2}, dot * u, Color(edge.r, edge.g, edge.b, 255));
+					labelInk = TouchCard::ink(style.tone);
+					drawPointLabel({r.x + (lead + dot + 2) * u, r.y, r.w - (lead + dot + 4) * u, r.h}, labels[i], .85);
+					labelInk.reset();
+				}
+			}
+		}
+		else
 		for (int i = 0; i < int(buttons.size()); ++i)
 		{
 			const auto &b = buttons[i];
@@ -162,6 +236,8 @@ void GameGUITouch::drawControls()
 		state.modeLabel = state.erase ? strings->getString("[Erase]") : strings->getString("[Paint]");
 		state.panLabel = strings->getString("[Pan]");
 		state.undoLabel = strings->getString("[Undo stroke]");
+		state.cards = &cards;
+		state.compactCards = !layout().tablet;
 		BrushHUD::draw(brushHUD(), state);
 		return;
 	}
@@ -181,6 +257,31 @@ void GameGUITouch::drawControls()
 		return;
 	}
 	const auto confirm = confirmRect(), cancelBox = cancelRect();
+	if (usesHUD() && !layout().tablet)
+	{
+		// Phones: an edge-attached bar holding two floating pills; hit areas stay whole.
+		const double u = gfx->logicalUnitsPerPoint();
+		auto *strings = Toolkit::getStringTable();
+		gfx->drawFilledRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h), InGameTouchTheme::paper());
+		gfx->drawHorzLine(int(rect.x), int(rect.y), int(rect.w), InGameTouchTheme::border());
+		drawCard({confirm.x + 6 * u, confirm.y + 6 * u, confirm.w - 12 * u, confirm.h - 10 * u},
+				 {preview ? TouchCard::Tone::Primary : TouchCard::Tone::Disabled, 16, true, TouchCard::Glyph::Check, true},
+				 strings->getString("[ok]"), 1.0);
+		drawCard({cancelBox.x + 6 * u, cancelBox.y + 6 * u, cancelBox.w - 12 * u, cancelBox.h - 10 * u},
+				 {TouchCard::Tone::Danger, 16, true, TouchCard::Glyph::Cross, true}, strings->getString("[Cancel]"), 1.0);
+		return;
+	}
+	if (layout().tablet)
+	{
+		const double u = gfx->logicalUnitsPerPoint();
+		auto *strings = Toolkit::getStringTable();
+		drawCard({confirm.x, confirm.y + 4 * u, confirm.w, confirm.h - 8 * u},
+				 {preview ? TouchCard::Tone::Primary : TouchCard::Tone::Disabled, 16, true, TouchCard::Glyph::Check, true},
+				 strings->getString("[ok]"), 1.05);
+		drawCard({cancelBox.x, cancelBox.y + 4 * u, cancelBox.w, cancelBox.h - 8 * u},
+				 {TouchCard::Tone::Danger, 16, true, TouchCard::Glyph::Cross, true}, strings->getString("[Cancel]"), 1.05);
+		return;
+	}
 	gfx->setClipRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h));
 	gfx->drawFilledRect(int(confirm.x), int(confirm.y), int(confirm.w), int(confirm.h),
 						Color(preview ? 35 : 55, preview ? 90 : 55, 45, 245));
@@ -238,8 +339,11 @@ void GameGUITouch::drawPanel()
 		drawLenses();
 		return;
 	}
-	gfx->drawFilledRect(int(panel.x), int(panel.y), int(panel.w), int(panel.h),
-						InGameTouchTheme::paper());
+	if (!layout().persistentPanel)
+		paintCard(panel, {TouchCard::Tone::Surface, 18});
+	else
+		gfx->drawFilledRect(int(panel.x), int(panel.y), int(panel.w), int(panel.h),
+							InGameTouchTheme::paper());
 	if (showsBuildPalette())
 	{
 		drawBuildPalette();
@@ -352,8 +456,11 @@ void GameGUITouch::drawHUD()
 	// joined to the rows above like they are joined to each other.
 	const bool thirdRow = hud.cells[6].y > hud.cells[4].y;
 	const double band = thirdRow ? hud.cells[4].y + hud.cells[4].h - hud.stats.y : hud.stats.h;
-	gfx->drawFilledRect(int(hud.stats.x), int(hud.stats.y), int(hud.stats.w), int(band), backdrop);
-	if (thirdRow)
+	if (ui.tablet)
+		paintCard(hud.stats, {TouchCard::Tone::Surface, 14});
+	else
+		gfx->drawFilledRect(int(hud.stats.x), int(hud.stats.y), int(hud.stats.w), int(band), backdrop);
+	if (thirdRow && !ui.tablet)
 		gfx->drawFilledRect(int(hud.cells[6].x), int(hud.stats.y + band), int(hud.cells[6].w),
 			int(std::ceil(hud.cells[6].y - hud.stats.y - band)), backdrop);
 	const auto drawUnitImage = [&](ViewRect box, int frame, Color color) {
@@ -434,7 +541,8 @@ void GameGUITouch::drawHUD()
 	{
 		const auto &stat = stats[i];
 		const ViewRect r = statRect(hud, int(i));
-		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), backdrop);
+		if (!ui.tablet)
+			gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), backdrop);
 		if (stat.warning)
 			gfx->drawRect(int(r.x), int(r.y), int(r.w), int(r.h), Color(230, 100, 95));
 		const bool hasIcon = i != 5 || chevrons;
@@ -512,12 +620,22 @@ void GameGUITouch::drawHUD()
 		TouchReadout::draw(touchPoint, zoomReadout(), ui.safe);
 	if (activeDialog())
 		return;
+	if (ui.tablet && gui.selectionMode != GameGUI::TOOL_SELECTION && gui.selectionMode != GameGUI::BRUSH_SELECTION)
+	{
+		// A floating dock around the buttons; the map shows above and below it.
+		const auto first = navigationButtonRect(ui, 0), last = navigationButtonRect(ui, 5);
+		paintCard({ui.rail.x + 6 * unit, first.y - 8 * unit, ui.rail.w - 12 * unit, last.y + last.h - first.y + 16 * unit},
+				   {TouchCard::Tone::Surface, 24});
+	}
 	if (gui.selectionMode == GameGUI::TOOL_SELECTION ||
 		gui.selectionMode == GameGUI::BRUSH_SELECTION)
 		return; // Active tools own this strip.
-	gfx->drawFilledRect(int(ui.actions.x), int(ui.actions.y), int(ui.actions.w), int(ui.actions.h),
-		InGameTouchTheme::paper());
-	gfx->drawHorzLine(int(ui.actions.x), int(ui.actions.y), int(ui.actions.w), InGameTouchTheme::border());
+	if (!ui.tablet)
+	{
+		gfx->drawFilledRect(int(ui.actions.x), int(ui.actions.y), int(ui.actions.w), int(ui.actions.h),
+			InGameTouchTheme::paper());
+		gfx->drawHorzLine(int(ui.actions.x), int(ui.actions.y), int(ui.actions.w), InGameTouchTheme::border());
+	}
 	const auto *strings = Toolkit::getStringTable();
 	const bool fitBulgarianCaptions = strings && strings->doesStringExist("[language-code]") &&
 		strings->getString("[language-code]") == "bg";
@@ -536,6 +654,9 @@ void GameGUITouch::drawHUD()
             if(i==1 && ((anchor>=GameGUI::HighlightForbiddenZoneOnPanel && anchor<=GameGUI::HighlightBrushSelector) ||
                 anchor==GameGUI::HighlightBuildingOnPanel+8 || anchor==GameGUI::HighlightBuildingOnPanel+9 || anchor==GameGUI::HighlightBuildingOnPanel+10)) guided=true;
         }
+		if (ui.tablet && selected)
+			paintCard({button.x + 12 * unit, button.y + 2 * unit, button.w - 24 * unit, button.h - 4 * unit},
+					   {TouchCard::Tone::Selected, 16, false});
         if(guided) gfx->drawRect(int(x+2*unit),int(button.y+2*unit),int(width-4*unit),int(button.h-4*unit),Color(255,220,80));
 		drawNavigationIcon(icon, {x + width / 2, button.y + 17 * unit}, selected);
 		auto rect = navigationLabelRect(ui, i);
@@ -646,6 +767,14 @@ const GameGUITouch::NavigationMeasurement &GameGUITouch::measureNavigation(doubl
 }
 ViewRect GameGUITouch::navigationButtonRect(const MobileLayout &ui, int index) const
 {
+	if (ui.tablet)
+	{
+		// Centred down the rail, where a thumb holding the side edge rests.
+		const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+		const double h = std::min(InGameTouchTheme::tabletRailButton * unit, ui.rail.h / 6);
+		const double top = ui.rail.y + (ui.rail.h - 6 * h) / 2;
+		return {ui.rail.x, top + index * h, ui.rail.w, h};
+	}
 	const int columns = navigationMeasurement ? navigationMeasurement->columns : 6;
 	const double width = ui.actions.w / columns, height = ui.actions.h / (6 / columns);
 	return {ui.actions.x + (index % columns) * width,
@@ -833,7 +962,7 @@ ViewRect GameGUITouch::allocationRect() const
 	if ((!inspecting() && !inspectingReadOnly()) || rect.h <= 0)
 		return {};
 	// Compact identity stays in the HUD even when its controls need row fallback.
-	if (!ui.persistentPanel)
+	if (!ui.docked())
 		return hudLayout(ui).identity;
 	rect.h = InGameTouchTheme::inspectorHeader * globalContainer->gfx->logicalUnitsPerPoint();
 	return rect;
@@ -843,9 +972,9 @@ ViewRect GameGUITouch::panelContent() const
 	const auto ui = layout();
 	auto rect = ui.panel;
 	const double header = gui.selectionMode == GameGUI::UNIT_SELECTION
-		? (InGameTouchTheme::unitStatsTitle + (ui.persistentPanel ? InGameTouchTheme::inspectorHeader : 0)) *
+		? (InGameTouchTheme::unitStatsTitle + (ui.docked() ? InGameTouchTheme::inspectorHeader : 0)) *
 			globalContainer->gfx->logicalUnitsPerPoint()
-		: inspecting() && !ui.persistentPanel ? 0 : allocationRect().h +
+		: inspecting() && !ui.docked() ? 0 : allocationRect().h +
 			(inspecting() ? buildingInventory(ui).bounds.h : 0);
 	rect.y += header;
 	rect.h = std::max(0.0, rect.h - header);
@@ -876,7 +1005,7 @@ void GameGUITouch::drawPointLabel(ViewRect rect, const std::string &text, double
 	}
 	SDL_Rect clip{int(clipped.x), int(clipped.y), int(clipped.w), int(clipped.h)};
 	auto *font = globalContainer->standardFont;
-	InGameTouchTheme::TextStyle textStyle(font);
+	InGameTouchTheme::TextStyle textStyle(font, labelInk.value_or(InGameTouchTheme::ink()));
 	const auto lines = pointLines(text, rect.w, textScale);
 	const int height = lineHeight > 0 ? lineHeight : font->getStringHeight("Ag");
 	gfx->setUITransform(unit, rect.x,
@@ -889,14 +1018,34 @@ void GameGUITouch::drawPointLabel(ViewRect rect, const std::string &text, double
 	gfx->setUITransform();
 	gfx->setClipRect();
 }
+TouchCard::Style GameGUITouch::styled(TouchCard::Style style) const
+{
+	if (!layout().tablet)
+	{
+		style.radius *= 2. / 3;
+		style.compact = true;
+	}
+	return style;
+}
+void GameGUITouch::drawCard(ViewRect rect, TouchCard::Style style, const std::string &label, double textScale)
+{
+	style = styled(style);
+	cards.draw(rect, style);
+	if (label.empty())
+		return;
+	labelInk = TouchCard::ink(style.tone);
+	drawPointLabel(TouchCard::Painter::labelArea(rect, style), label, textScale);
+	labelInk.reset();
+}
 void GameGUITouch::drawSelectionHeader(ViewRect rect, Sprite *sprite, int frame,
 	const std::string &text)
 {
 	auto *gfx = globalContainer->gfx;
 	const double unit = gfx->logicalUnitsPerPoint();
-	const bool compact = !layout().persistentPanel;
+	const bool compact = !layout().docked();
 	gfx->setClipRect();
-	gfx->drawFilledRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h), InGameTouchTheme::paper());
+	if (!layout().tablet)
+		gfx->drawFilledRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h), InGameTouchTheme::paper());
 	const ViewRect icon{rect.x + 4 * unit, rect.y + 4 * unit,
 		(compact ? 32 : 52) * unit, std::max(0.0, rect.h - 8 * unit)};
 	if (sprite && frame >= 0 && frame < sprite->getFrameCount() &&
@@ -942,8 +1091,8 @@ GameGUITouch::BuildingInventory GameGUITouch::buildingInventory(const MobileLayo
 	if (labels.empty()) return inventory;
 	auto *gfx = globalContainer->gfx;
 	const double unit = gfx->logicalUnitsPerPoint(), gap = 4 * unit;
-	auto header = ui.persistentPanel ? ui.panel : hudLayout(ui).identity;
-	if (ui.persistentPanel) header.h = InGameTouchTheme::inspectorHeader * unit;
+	auto header = ui.docked() ? ui.panel : hudLayout(ui).identity;
+	if (ui.docked()) header.h = InGameTouchTheme::inspectorHeader * unit;
 	inventory.bounds = {header.x, header.y + header.h, header.w, 0};
 	const int columns = std::min(int(labels.size()), std::max(1, int(header.w / (100 * unit))));
 	const double width = std::max(0., (header.w - (columns - 1) * gap) / columns);
@@ -991,8 +1140,15 @@ void GameGUITouch::drawAllocation()
 							   .arg(building->owner().number + 1)));
 	for (const auto &[cell, label] : buildingInventory(layout()).cells)
 	{
-		globalContainer->gfx->drawFilledRect(float(cell.x), float(cell.y), float(cell.w), float(cell.h),
-			InGameTouchTheme::readout());
+		if (!layout().persistentPanel)
+		{
+			const double u = globalContainer->gfx->logicalUnitsPerPoint();
+			paintCard({cell.x + 3 * u, cell.y + 3 * u, cell.w - 6 * u, cell.h - 6 * u},
+					   {TouchCard::Tone::Disabled, 8, false});
+		}
+		else
+			globalContainer->gfx->drawFilledRect(float(cell.x), float(cell.y), float(cell.w), float(cell.h),
+				InGameTouchTheme::readout());
 		drawPointLabel(cell, label, .8);
 	}
 }
@@ -1002,11 +1158,15 @@ GameGUITouch::HudLayout GameGUITouch::hudLayout(const MobileLayout &ui) const
 	const auto safe = ui.safe;
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	HudLayout hud;
-	const bool wide = safe.w > safe.h || safe.w / unit >= 680;
-	const bool identity = (inspecting() || inspectingReadOnly()) && !ui.persistentPanel;
+	const bool wide = safe.w > safe.h || safe.w / unit >= 680 || ui.tablet;
+	const bool identity = (inspecting() || inspectingReadOnly()) && !ui.docked();
 	const bool stackedWide = wide && ((safe.w / unit - 92) * .23 - 4) / 2 < 82;
-	const double side = (wide ? (safe.h / unit < 360 && !identity ? 72 : stackedWide ? 104 : 84) : 104) * unit, gap = 4 * unit;
-	const double x = safe.x, y = safe.y + gap, rowHeight = 40 * unit;
+	// Tablets have the height for a minimap that is easy to aim at.
+	const bool tabletMinimap = ui.tablet && safe.h / unit >= InGameTouchTheme::tabletMinimapMinimumHeight;
+	const double side = (tabletMinimap ? InGameTouchTheme::tabletMinimap
+		: wide ? (safe.h / unit < 360 && !identity ? 72 : stackedWide ? 104 : 84) : 104) * unit, gap = 4 * unit;
+	// The same gap at both screen edges, at the top and between the stats and minimap.
+	const double x = safe.x + gap, y = safe.y + gap, rowHeight = 40 * unit;
 	hud.minimap = {safe.x + safe.w - side - gap, wide ? y : y + rowHeight + gap, side, side};
 	const double available = std::max(0.0, hud.minimap.x - gap - x);
 	if (wide)
@@ -1049,11 +1209,18 @@ ViewRect GameGUITouch::notificationBounds() const
 	const auto ui = layout();
 	const auto hud = hudLayout(ui);
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint(), gap = 6 * unit;
-	const auto inventory = ui.persistentPanel ? ViewRect{} : buildingInventory(ui).bounds;
+	const auto inventory = ui.docked() ? ViewRect{} : buildingInventory(ui).bounds;
 	const double top = std::max({hud.stats.y + hud.stats.h, hud.minimap.y + hud.minimap.h,
 		inventory.y + inventory.h}) + gap;
-	return {ui.safe.x + gap, top, std::max(0., ui.safe.w - 2 * gap),
-		std::max(0., std::min(180 * unit, ui.actions.y - gap - top))};
+	double x = ui.safe.x + gap, w = std::max(0., ui.safe.w - 2 * gap);
+	if (ui.tablet)
+	{
+		// Between the toolbox and thumb docks rather than under them.
+		const double narrow = std::min(w, 420 * unit);
+		x += (w - narrow) / 2;
+		w = narrow;
+	}
+	return {x, top, w, std::max(0., std::min(180 * unit, ui.actions.y - gap - top))};
 }
 
 ViewRect GameGUITouch::statRect(const HudLayout &hud, int index) const
@@ -1068,7 +1235,7 @@ ViewRect GameGUITouch::speedRect() const
 	const auto hud = hudLayout(layout());
 	auto rect = statRect(hud, 5);
 	// A thumb-sized target reaches below the cell unless the identity bar sits there.
-	if (!((inspecting() || inspectingReadOnly()) && !layout().persistentPanel))
+	if (!((inspecting() || inspectingReadOnly()) && !layout().docked()))
 		rect.h = std::max(rect.h, InGameTouchTheme::target * globalContainer->gfx->logicalUnitsPerPoint());
 	return rect;
 }
@@ -1081,6 +1248,12 @@ void GameGUITouch::drawMinimap()
 {
 	const auto rect = minimapRect();
 	auto *gfx = globalContainer->gfx;
+	const bool tablet = layout().tablet;
+	if (tablet)
+	{
+		const double u = gfx->logicalUnitsPerPoint();
+		paintCard({rect.x - 5 * u, rect.y - 5 * u, rect.w + 10 * u, rect.h + 10 * u}, {TouchCard::Tone::Surface, 12});
+	}
 	SDL_Rect clip{int(rect.x), int(rect.y), int(rect.w), int(rect.h)};
 	gfx->setUITransform(rect.w / 128, rect.x - (gfx->getW() - 128) * rect.w / 128, rect.y, &clip);
 	hudMinimap->setMinimapMode(globalContainer->replaying && !globalContainer->replayShowFog
@@ -1092,7 +1265,8 @@ void GameGUITouch::drawMinimap()
 	gui.markManager.drawMinimap(gui.localTeamNo, gfx->getW() - 128, 0, 128, gui.drawnScene());
 	gfx->setUITransform();
 	gfx->setClipRect();
-	gfx->drawRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h), InGameTouchTheme::border());
+	if (!tablet)
+		gfx->drawRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h), InGameTouchTheme::border());
 }
 void GameGUITouch::navigateMinimap(ViewPoint point)
 {
@@ -1311,7 +1485,7 @@ void GameGUITouch::drawUnitPanel()
 	// A solid surface keeps the map from competing with the unit's numbers.
 	auto background = InGameTouchTheme::paper();
 	background.a = 255;
-	const double top = panel.y + (ui.persistentPanel ? InGameTouchTheme::inspectorHeader * unit : 0);
+	const double top = panel.y + (ui.docked() ? InGameTouchTheme::inspectorHeader * unit : 0);
 	gfx->drawFilledRect(float(panel.x), float(top), float(panel.w), float(panel.y + panel.h - top), background);
 	drawPointLabel({panel.x + 8 * unit, top, panel.w - 16 * unit, InGameTouchTheme::unitStatsTitle * unit},
 		Toolkit::getStringTable()->getString("[Statistics]"), .85, true);

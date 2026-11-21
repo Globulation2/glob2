@@ -61,7 +61,8 @@ baseline across the HUD. Values sit to the right of their icons with a consisten
 gap and left alignment; each complete icon-and-value group is centred in its cell.
 Narrow layouts scale the shared icons and type together to keep the groups inline.
 Secondary prestige progress stays below that shared primary row. The continuous
-opaque surface keeps the figures clear over busy terrain.
+opaque surface keeps the figures clear over busy terrain. The stats and the minimap
+keep the same 4-point gap from both screen edges, from the top and from each other.
 The desktop top bar shares the same Glob-and-arrow conversion renderer, with
 left-aligned totals beside each icon group. Its speed control follows the wider
 conversion readout, and its mouse hit area uses that same position.
@@ -83,9 +84,9 @@ the active overlay and shows its intensity ramp (`OverlayArea::colorOf`). The
 statistics lens opens a sheet above the toolbar with the end-of-game chart for the
 player's own team only (opponents' histories stay hidden until the match ends),
 metric arrows under the thumb and current counters; × or pulling it down closes
-it. Spacious layouts and replays keep the tactical list;
-phone palettes float over the camera, while spacious touch layouts keep a
-content-sized palette open at the right. Both preserve the camera framing and
+it. Replays and the legacy Spacious panel (`GLOB2_TABLET_HUD=panel`) keep the
+tactical list; palettes float over the camera on phones and tablets (see
+[Tablet layout](#tablet-layout)). Both preserve the camera framing and
 leave the world visible below short panels. In-game surfaces use `InGameTouchTheme.h`, and dialogs over a match use the
 matching `inGameTheme()`; frontend paper styling remains independent. A completed tap on empty map space dismisses open toolboxes,
 statistics and inspection together, without reopening a previous palette. An
@@ -95,6 +96,49 @@ panning, cancelled gestures and taps inside the inspector do not dismiss it.
 Painting and placement keep their tool-specific map gestures. Choosing Build,
 Flags or Tools explicitly replaces the current inspector; deferred restoration or
 selection invalidation cannot override that toolbox choice on the next frame.
+
+### Tablet layout
+
+A touch HUD is a tablet when the player chose the Tablet interface (wherever its
+spacious layout fits), or, unless they chose Phone, when its shortest side is at
+least 600 points, in both orientations (Android's sw600dp convention). Tablets are held by both side edges, or rest flat or in a stand: thumbs
+reach the side edges from mid-height up, and the index finger works the map in the
+middle. So the tablet HUD splits its controls across both edges rather than one
+thumb corner:
+
+- The six toolbar buttons become a navigation rail: a floating dock centred down
+  the toolbox edge (left by default, opposite the Thumb side setting), with the
+  open tab marked by a raised pill. The map runs beneath the rail; only the dock
+  takes touches.
+- Build and Flags palettes open beside the rail as 84-point tiles with each
+  building's name under its icon. The Tools lens strip and the zone brush strip
+  sit beside it too.
+- Contextual controls dock to the thumb edge, centred in the band below the
+  minimap: the building inspector card (identity, stocks, workers, priority and a
+  Destroy button separated by a 24-point gap; tablets use these rows instead of
+  the phone dial), placement OK above Cancel, and the zone choices above Done.
+- While placing a building or painting zones, the rail shows the tool's name and
+  its exits (OK and Cancel, or Done), so either thumb can finish. OK keeps the
+  building armed: each further copy is a map tap and OK; Cancel returns to the
+  palette.
+- The minimap grows to 160 points on screens at least 600 points tall, and the
+  stats keep one row in portrait.
+
+`GLOB2_TABLET_HUD=panel` restores the earlier Spacious touch layout, with panels
+floating at the top right, for comparison.
+
+### Card visuals
+
+Touch controls are drawn as anti-aliased cards (`TouchCard.h`): rounded corners,
+a soft shadow, a gentle top-lit gradient and a thin rim, in tones derived from the
+in-game theme. Panels and docks are surfaces, ordinary buttons are raised, the
+chosen option has a gold rim, confirmation is gold with a check, and cancel and
+destroy are red with a cross or trash glyph. Each shape is rasterised once per
+size, tone and display density, like the dial's sectors, so a frame costs one
+surface draw per control. Phones use a compact preset (two-thirds of the radius,
+tighter shadows). Edge-attached bars (the phone toolbar and status strip, the
+placement and zone bars) stay flat, with their choices floating on them as pills.
+Hit areas are unchanged: cards are painted inside them.
 
 ### Zoom with one finger
 

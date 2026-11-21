@@ -53,8 +53,13 @@ std::vector<ViewRect> GameGUITouch::lensRects(const MobileLayout &ui) const
 	const double w = InGameTouchTheme::lensWidth * unit, h = InGameTouchTheme::lensHeight * unit,
 				 gap = InGameTouchTheme::gap * unit, inset = InGameTouchTheme::railInset * unit;
 	const double minimapBottom = hudLayout(ui).minimap.y + hudLayout(ui).minimap.h + 8 * unit;
-	const double bottom = ui.actions.y - 8 * unit;
+	double bottom = ui.actions.y - 8 * unit;
 	const int rows = std::max(1, int((bottom - minimapBottom + gap) / (h + gap)));
+	if (ui.tablet)
+	{
+		const int used = std::min<int>(rows, int(lenses().size()));
+		bottom = tabletBandTop(ui, used * (h + gap) - gap) + used * (h + gap) - gap;
+	}
 	const bool left = ThumbSide::toolboxLeft();
 	std::vector<ViewRect> rects;
 	const size_t count = lenses().size();
@@ -76,6 +81,13 @@ void GameGUITouch::drawLenses()
 	for (size_t i = 0; i < items.size() && i < rects.size(); ++i)
 	{
 		const auto &r = rects[i];
+		if (usesHUD())
+		{
+			drawCard(r, {items[i].selected ? TouchCard::Tone::Selected : TouchCard::Tone::Raised, 14, true,
+						 items[i].selected ? TouchCard::Glyph::Check : TouchCard::Glyph::None, true},
+					 items[i].label, .72);
+			continue;
+		}
 		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h),
 							items[i].selected ? InGameTouchTheme::selected() : InGameTouchTheme::field());
 		gfx->drawRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::border());

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "BrushHUD.h"
+#include "TouchCard.h"
 #include "Brush.h"
 #include "InGameTouchTheme.h"
 #include "GlobalContainer.h"
@@ -193,14 +194,22 @@ SDL_Rect textClip(ViewRect bounds, const ViewRect *limit)
 		int(std::ceil(bounds.x + bounds.w) - std::floor(bounds.x)),
 		int(std::ceil(bounds.y + bounds.h) - std::floor(bounds.y))};
 }
-void drawButton(const ViewRect &r, const std::string &text, bool selected, double unit, const ViewRect *limit)
+void drawButton(const ViewRect &r, const std::string &text, bool selected, double unit, const ViewRect *limit,
+				TouchCard::Painter *cards = nullptr, bool compact = false)
 {
 	auto *gfx = globalContainer->gfx;
 	auto *font = globalContainer->standardFont;
-	gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h),
-						selected ? InGameTouchTheme::selected() : InGameTouchTheme::field());
-	gfx->drawRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::border());
-	InGameTouchTheme::TextStyle style(font);
+	const auto tone = selected ? TouchCard::Tone::Primary : TouchCard::Tone::Raised;
+	if (cards)
+		cards->draw({r.x + 2 * unit, r.y + 2 * unit, r.w - 4 * unit, r.h - 4 * unit},
+					{tone, compact ? 7. : 10., false, TouchCard::Glyph::None, false, compact});
+	else
+	{
+		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h),
+							selected ? InGameTouchTheme::selected() : InGameTouchTheme::field());
+		gfx->drawRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::border());
+	}
+	InGameTouchTheme::TextStyle style(font, cards ? TouchCard::ink(tone) : InGameTouchTheme::ink());
 	const double scale = std::min(0.8 * gfx->textUnitsPerPoint(), (r.w - 4 * unit) / std::max(1, font->getStringWidth(text)));
 	SDL_Rect clip = textClip(r, limit);
 	gfx->setUITransform(scale, r.x + (r.w - font->getStringWidth(text) * scale) / 2,
@@ -218,25 +227,37 @@ static void drawLayout(const Layout &layout, const State &state, const ViewRect 
 	auto *gfx = globalContainer->gfx;
 	const double unit = layout.unit;
 	applyClip(limit);
-	gfx->drawFilledRect(int(layout.rail.x - 2 * unit), int(layout.rail.y - 2 * unit), int(layout.rail.w + 4 * unit),
-						int(layout.rail.h + 2 * unit), InGameTouchTheme::paper());
+	if (state.cards)
+		state.cards->draw({layout.rail.x - 6 * unit, layout.rail.y - 6 * unit, layout.rail.w + 12 * unit,
+						   layout.rail.h + 12 * unit},
+						  {TouchCard::Tone::Surface, state.compactCards ? 12. : 18., true, TouchCard::Glyph::None, false, state.compactCards});
+	else
+		gfx->drawFilledRect(int(layout.rail.x - 2 * unit), int(layout.rail.y - 2 * unit), int(layout.rail.w + 4 * unit),
+							int(layout.rail.h + 2 * unit), InGameTouchTheme::paper());
 	for (size_t i = 0; i < layout.detents.size(); ++i)
 	{
 		const auto &r = layout.detents[i];
 		const bool selected = i == state.figure;
-		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h),
-							selected ? InGameTouchTheme::selected() : InGameTouchTheme::field());
-		if (selected)
-			gfx->drawRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::border());
+		if (state.cards)
+			state.cards->draw({r.x + 2 * unit, r.y + 2 * unit, r.w - 4 * unit, r.h - 4 * unit},
+							  {selected ? TouchCard::Tone::Selected : TouchCard::Tone::Raised, state.compactCards ? 7. : 10., false,
+							   TouchCard::Glyph::None, false, state.compactCards});
+		else
+		{
+			gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h),
+								selected ? InGameTouchTheme::selected() : InGameTouchTheme::field());
+			if (selected)
+				gfx->drawRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::border());
+		}
 		drawMask(unsigned(i), r, std::max(2.0, std::min(r.w, r.h) * 0.7 / 5),
 				 selected ? InGameTouchTheme::ink() : InGameTouchTheme::border());
 	}
 	if (layout.mode.w > 0)
-		drawButton(layout.mode, state.modeLabel, state.erase, unit, limit);
+		drawButton(layout.mode, state.modeLabel, state.erase, unit, limit, state.cards, state.compactCards);
 	if (layout.pan.w > 0)
-		drawButton(layout.pan, state.panLabel, state.pan, unit, limit);
+		drawButton(layout.pan, state.panLabel, state.pan, unit, limit, state.cards, state.compactCards);
 	if (layout.undo.w > 0)
-		drawButton(layout.undo, state.undoLabel, false, unit, limit);
+		drawButton(layout.undo, state.undoLabel, false, unit, limit, state.cards, state.compactCards);
 	if (state.touched >= 0 && state.touched < int(layout.detents.size()))
 	{
 		// The touched size, magnified beside the rail where the thumb cannot hide it.

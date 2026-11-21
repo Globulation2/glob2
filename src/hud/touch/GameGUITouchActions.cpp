@@ -163,6 +163,10 @@ std::vector<ViewRect> GameGUITouch::buildingActionBoxes(double width) const
 				   rows[i + count].kind <= 5)
 				++count;
 		}
+		// Tablets keep the destructive group clear of the frequent controls
+		// above it, which a thumb rising from the grip passes first.
+		if (tabletLayout && kind >= 3 && kind <= 5 && y > 0)
+			y += 24;
 		const double height =
 			kind == 0 ? InGameTouchTheme::ratioRow : InGameTouchTheme::inspectorRow;
 		for (size_t k = 0; k < count; ++k)
@@ -188,6 +192,80 @@ ViewRect GameGUITouch::buildingActionRect(size_t index) const
 	return {content.x + box.x * unit, content.y + (box.y - actionScroll) * unit, box.w * unit,
 			box.h * unit};
 }
+bool GameGUITouch::drawTabletAction(const BuildingAction &row, ViewRect rect)
+{
+	// Tablet inspector rows as separate rounded controls on the card; the hit
+	// rectangles are unchanged, only the painting differs.
+	auto *gfx = globalContainer->gfx;
+	const double u = gfx->logicalUnitsPerPoint();
+	const ViewRect inner{rect.x + 6 * u, rect.y + 3 * u, rect.w - 12 * u, rect.h - 6 * u};
+	using TouchCard::Glyph;
+	using TouchCard::Tone;
+	auto *strings = Toolkit::getStringTable();
+	const bool guided = (row.kind == 3 && gui.highlights.count(GameGUI::HighlightUpgradeButton)) ||
+						(row.kind == 0 && gui.highlights.count(GameGUI::HighlightRatioBar)) ||
+						(row.kind == 6 && gui.highlights.count(GameGUI::HighlightUnitsAssignedBar));
+	if (guided)
+		return false; // Tutorials keep their highlighted classic row.
+	if (row.kind == 7)
+	{
+		const std::string labels[] = {strings->getString("[↓ Low]"), strings->getString("[= Normal]"),
+									  strings->getString("[↑ High]")};
+		const int chosen = gui.displayedPriority(*inspectedBuilding()) + 1;
+		for (int k = 0; k < 3; ++k)
+		{
+			const ViewRect b{inner.x + k * (inner.w + 6 * u) / 3, inner.y, (inner.w + 6 * u) / 3 - 6 * u, inner.h};
+			drawCard(b, {k == chosen ? Tone::Primary : Tone::Raised, 12, k == chosen}, labels[k], .8);
+		}
+		return true;
+	}
+	if (row.kind == 4)
+	{
+		drawCard(inner, {Tone::Danger, 14, true, Glyph::Trash, true}, row.label, .95);
+		return true;
+	}
+	auto roundButton = [&](ViewRect r, Glyph glyph)
+	{
+		const double side = std::min(r.w, r.h) - 4 * u;
+		paintCard({r.x + (r.w - side) / 2, r.y + (r.h - side) / 2, side, side}, {Tone::Raised, side / u / 2, true, glyph});
+	};
+	if (row.kind == 6 || row.kind == 8)
+	{
+		const double pad = std::min(48 * u, rect.h);
+		roundButton({rect.x + 2 * u, rect.y, pad, rect.h}, Glyph::Minus);
+		roundButton({rect.x + rect.w - pad - 2 * u, rect.y, pad, rect.h}, Glyph::Plus);
+		drawPointLabel({rect.x + pad, rect.y, rect.w - 2 * pad, row.kind == 6 ? 26 * u : rect.h}, row.label,
+					   row.kind == 6 ? .85 : 1.0);
+		if (row.kind == 6)
+		{
+			const double fraction =
+				(allocation ? allocation->requested : gui.displayedMaxUnitWorking(*inspectedBuilding())) /
+				double(std::max(1, inspectedBuilding()->type->semantics.assignmentLimit));
+			const double left = rect.x + pad + 10 * u, width = rect.w - 2 * pad - 20 * u, y = rect.y + 34 * u;
+			paintCard({left, y - 3 * u, width, 6 * u}, {Tone::Disabled, 3, false});
+			if (fraction > 0)
+				paintCard({left, y - 3 * u, std::max(6 * u, width * fraction), 6 * u}, {Tone::Primary, 3, false});
+			const Color gold = InGameTouchTheme::border();
+			dialPainter.circle({left + width * fraction, y}, 10 * u, Color(gold.r, gold.g, gold.b, 255));
+			dialPainter.circle({left + width * fraction, y}, 4 * u, InGameTouchTheme::ink());
+		}
+		return true;
+	}
+	if (row.kind == 0)
+	{
+		paintCard(inner, {Tone::Raised, 12, false});
+		drawPointLabel({rect.x, rect.y, rect.w, InGameTouchTheme::ratioLabel * u}, row.label, .78);
+		const double top = rect.y + InGameTouchTheme::ratioLabel * u, height = rect.h - InGameTouchTheme::ratioLabel * u;
+		roundButton({rect.x + 8 * u, top, rect.w / 2 - 8 * u, height - 4 * u}, Glyph::Minus);
+		roundButton({rect.x + rect.w / 2, top, rect.w / 2 - 8 * u, height - 4 * u}, Glyph::Plus);
+		return true;
+	}
+	const bool toggle = row.kind == 1 || row.kind == 2 || row.kind == 11 || row.kind == 12;
+	drawCard(inner, {row.selected ? Tone::Selected : Tone::Raised, 12, true,
+					 toggle && row.selected ? Glyph::Check : Glyph::None, true},
+			 row.label, .9);
+	return true;
+}
 void GameGUITouch::drawBuildingActions()
 {
 	auto *gfx = globalContainer->gfx;
@@ -203,6 +281,8 @@ void GameGUITouch::drawBuildingActions()
 		if (rect.y < content.y || rect.y + rect.h > content.y + content.h)
 			continue;
 		const auto &row = rows[i];
+		if (!layout().persistentPanel && drawTabletAction(row, rect))
+			continue;
 
 		gfx->drawFilledRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h),
 							row.kind == 4  ? Color(81, 36, 60, 235)
