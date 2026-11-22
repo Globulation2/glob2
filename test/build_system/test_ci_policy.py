@@ -452,14 +452,77 @@ class SimulationPathTest(unittest.TestCase):
     def test_sim_diff_runs_for_simulation_sources_and_data_only(self):
         import ci_policy
         for path in ('src/unit/Unit.cpp', 'src/game/Game_sync.cpp', 'src/net/turn/TurnEngine.cpp',
-                     'content/data/rulesets.json', 'content/data/maxima/base.strategy', 'buildsys/javascript.py', 'CMakeLists.txt', 'cmake/sources.cmake',
+                     'content/data/rulesets.json', 'content/data/maxima/base.strategy', 'buildsys/javascript.py',
+                     'cmake/compile-flags.cmake', 'cmake/numeric-contract.cmake', 'cmake/sources.cmake',
                      'third_party/quickjs-ng/quickjs.c'):
             with self.subTest(path=path):
                 self.assertTrue(ci_policy.touches_simulation([path]))
         for path in ('src/unit/UnitTest.cpp', 'src/game/GameSpeedTest.cpp', 'src/render/GameRender.cpp',
-                     'docs/README.md', 'tools/sim_diff.py', 'content/data/texts.en.txt'):
+                     'docs/README.md', 'tools/sim_diff.py', 'content/data/texts.en.txt', 'CMakeLists.txt'):
             with self.subTest(path=path):
                 self.assertFalse(ci_policy.touches_simulation([path]))
+
+    def test_regenerated_source_list_counts_only_simulation_content(self):
+        import ci_policy
+        base = (ROOT / 'cmake/sources.cmake').read_text()
+        def edited(block, line):
+            # Insert `line` as the first entry of the named set(...) block.
+            marker = f'set({block}\n'
+            self.assertIn(marker, base)
+            return base.replace(marker, marker + f'    {line}\n', 1)
+        def touches(head):
+            return ci_policy.touches_simulation(
+                ['cmake/sources.cmake'], lambda path, side: base if side == 'base' else head)
+        # A HUD source joining the client, mobile and browser lists leaves the simulation alone.
+        hud = base
+        for block in ('GLOB2_CLIENT_SOURCES', 'GLOB2_ANDROID_SOURCES', 'GLOB2_IOS_SOURCES', 'GLOB2_WEB_SOURCES'):
+            marker = f'set({block}\n'
+            hud = hud.replace(marker, marker + '    src/hud/touch/TouchCard.cpp\n', 1)
+        self.assertFalse(touches(hud))
+        self.assertFalse(touches(base))
+        cases = {
+            'simulation source added': edited('GLOB2_CLIENT_SOURCES', 'src/unit/NewUnit.cpp'),
+            'strict flags changed': edited('GLOB2_STRICT_CXXFLAGS', '-ffast-math'),
+            'strict list membership': edited('GLOB2_STRICT_NUMERIC_SOURCES', 'src/hud/touch/TouchCard.cpp'),
+            'guarded list membership': edited('GLOB2_GUARDED_NUMERIC_SOURCES', 'src/hud/touch/TouchCard.cpp'),
+            'headless simulation list': edited('GLOB2_SIM_SOURCES', 'src/hud/touch/TouchCard.cpp'),
+            'interpreter flags': edited('GLOB2_JAVASCRIPT_CFLAGS', '-O3'),
+            'include directories': edited('GLOB2_INCLUDE_DIRECTORIES', 'src/elsewhere'),
+            'new block': base + '\nset(GLOB2_NEW_SOURCES\n    src/hud/Other.cpp\n)\n',
+            'other command': base + '\nadd_compile_options(-ffast-math)\n',
+        }
+        for name, head in cases.items():
+            with self.subTest(name):
+                self.assertTrue(touches(head))
+        # A side that cannot be read, or a caller without file contents, keeps the old rule.
+        self.assertTrue(ci_policy.touches_simulation(['cmake/sources.cmake'], lambda path, side: None))
+        self.assertTrue(ci_policy.touches_simulation(['cmake/sources.cmake']))
+        # Other build files still always count.
+        self.assertTrue(ci_policy.touches_simulation(['cmake/compile-flags.cmake'], lambda path, side: base))
+
+    def test_cmakelists_holds_no_compile_settings(self):
+        # sim-diff skips CMakeLists.txt because every setting that decides how
+        # simulation sources compile lives in cmake/compile-flags.cmake or
+        # cmake/numeric-contract.cmake. A new flag or global definition belongs
+        # there; the few left here reach no simulation object.
+        import re
+        text = (ROOT / 'CMakeLists.txt').read_text()
+        code = '\n'.join(line.split('#', 1)[0] for line in text.splitlines())
+        for pattern in (r'\badd_compile_options\s*\(', r'\bCMAKE_(C|CXX)_FLAGS', r'INTERPROCEDURAL_OPTIMIZATION',
+                        r'-ffast-math', r'-ffp-contract', r'-flto', r'(?<![\w-])-O[0-3sgz]?\b',
+                        r'GLOB2_STRICT_CXXFLAGS', r'GLOB2_JAVASCRIPT_(CFLAGS|DEFINES)'):
+            with self.subTest(pattern=pattern):
+                self.assertIsNone(re.search(pattern, code), pattern)
+        # Global definitions: only these, which no simulation source reads.
+        definitions = re.findall(r'\badd_compile_definitions\s*\(([^)]*)\)', code)
+        self.assertEqual(sorted(' '.join(d.split()) for d in definitions),
+                         ['${recording_define}', 'GL_SILENCE_DEPRECATION'])
+        # Per-source options: only etcpak's SSE4.1 encoders in libgag.
+        properties = re.findall(r'set_source_files_properties\s*\(([^)]*)\)', code)
+        self.assertEqual([' '.join(p.split()) for p in properties],
+                         ['${GLOB2_SSE41_SOURCES} TARGET_DIRECTORY gag PROPERTIES COMPILE_OPTIONS "-msse4.1"'])
+        for name in ('compile-flags', 'numeric-contract'):
+            self.assertIn(f'include("${{GLOB2_ROOT}}/cmake/{name}.cmake")', text)
 
 
 if __name__=='__main__':unittest.main()

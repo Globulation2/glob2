@@ -64,7 +64,8 @@ failures as successful games.
   `src/net/turn/`, `src/scripting/`, `libs/usl/`, `third_party/quickjs-ng/`, the
   simulation data files listed by `deploy/sim_version.py`, and the strict numeric
   flags (`-fno-fast-math -ffp-contract=off`, `STRICT_CXXFLAGS` in
-  `buildsys/javascript.py`, applied by `CMakeLists.txt`) is the simulation
+  `buildsys/javascript.py`, applied by `cmake/numeric-contract.cmake`), with
+  every object's tier flags in `cmake/compile-flags.cmake`, is the simulation
   path. The fast gate's `sim-diff` verdict judges every change to it. A change that
   does alter what the simulation computes, and so bumps `SIM_REVISION`, also needs
   cross-platform agreement: add `ci:full`, whose browser/native equivalence job

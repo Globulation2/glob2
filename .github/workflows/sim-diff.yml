@@ -55,12 +55,17 @@ jobs:
           base=$(git merge-base "$BASE_SHA" HEAD)
           echo "base=$base" >> "$GITHUB_OUTPUT"
           git diff --name-only "$base" HEAD > /tmp/changed.txt
-          python3 - <<'PY' >> "$GITHUB_OUTPUT"
-          import sys
+          BASE="$base" python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import os, subprocess, sys
           sys.path.insert(0, '.github/scripts')
           from ci_policy import touches_simulation
           paths = open('/tmp/changed.txt').read().split()
-          print('simulation=' + ('true' if touches_simulation(paths) else 'false'))
+          def read(path, side):
+              # A regenerated source list is compared with its merge-base version.
+              revision = os.environ['BASE'] if side == 'base' else 'HEAD'
+              shown = subprocess.run(['git', 'show', f'{revision}:{path}'], capture_output=True, text=True)
+              return shown.stdout if shown.returncode == 0 else None
+          print('simulation=' + ('true' if touches_simulation(paths, read) else 'false'))
           PY
 
   sim-diff:
