@@ -65,6 +65,23 @@ class SigningRetryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             retry.validate(*data, 'v0.11.0.5', COMMIT, kind='signed-macos')
 
+    def test_recovered_package_build_requires_successful_latest_attempt(self):
+        data = list(self.fixture())
+        name = 'packages / macos-package (macos-15-intel, x86_64)'
+        for job in data[1]:
+            job['run_attempt'] = 2
+        data[1].append({'name': name, 'run_attempt': 1, 'status': 'completed', 'conclusion': 'failure'})
+        self.assertEqual(set(retry.validate(*data, 'v0.11.0.5', COMMIT)), {'arm64', 'x86_64'})
+        latest = next(job for job in data[1] if job['name'] == name and job['run_attempt'] == 2)
+        latest['conclusion'] = 'failure'
+        with self.assertRaises(ValueError):
+            retry.validate(*data, 'v0.11.0.5', COMMIT)
+        # A failed source-context attempt is never superseded.
+        latest['conclusion'] = 'success'
+        data[1].append({'name': 'context', 'run_attempt': 1, 'status': 'completed', 'conclusion': 'failure'})
+        with self.assertRaises(ValueError):
+            retry.validate(*data, 'v0.11.0.5', COMMIT)
+
     def test_foreign_dispatch_and_mixed_source_fail_closed(self):
         for field, value in [('actor', {'id': 1}), ('triggering_actor', {'id': 1}),
                              ('repository', {'id': 1, 'full_name': retry.REPOSITORY}),
