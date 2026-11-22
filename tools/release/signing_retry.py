@@ -46,16 +46,18 @@ def validate(run, jobs, artifacts, context_log, tag, commit, kind="unsigned-maco
             run.get('event') != 'workflow_dispatch' or run.get('head_branch') != 'master' or
             run.get('path') != '.github/workflows/github-release.yml'):
         raise ValueError('Source run is outside the protected mirror owner-dispatch boundary')
-    # A failed signing job is allowed; its source build and context must pass.
+    # A failed signing or package build job is allowed when its latest attempt
+    # passed: exactly one digest-pinned artifact per architecture is accepted
+    # below, so a failed attempt cannot supply the bytes. Context must pass.
     required = {'context', 'packages / macos-package (macos-15, arm64)',
                 'packages / macos-package (macos-15-intel, x86_64)'}
     if kind == 'signed-macos':
         required |= {'macos-sign (macos-15, arm64)', 'macos-sign (macos-15-intel, x86_64)'}
     for name in required:
         matching = [job for job in jobs if job.get('name') == name]
-        if name.startswith('macos-sign ') and matching:
-            # A recovered signing job supersedes its failed earlier attempts.
-            # Source build/context attempts still all have to succeed below.
+        if name != 'context' and matching:
+            # A recovered signing or package job supersedes its failed earlier
+            # attempts. Every source-context attempt still has to succeed.
             latest = max(job.get('run_attempt', 1) for job in matching)
             matching = [job for job in matching if job.get('run_attempt', 1) == latest]
         if not matching or any(job.get('status') != 'completed' or job.get('conclusion') != 'success'
