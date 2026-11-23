@@ -109,6 +109,7 @@ not depend on the OS pointer position.
 | game_building | Change one of your buildings or flags by id and generation: worker request (capped at the building's limit, reported), priority, Swarm production ratios, flag range, upgrade, repair, cancel_upgrade, destroy, cancel_destroy, or move a flag. Uses the validated script order path. |
 | game_zone | Paint or erase a forbidden, guard or clearing zone over a tile rectangle. |
 | game_view | Centre the camera on a tile and return its screen point (`tile_screen`, in inspection logical pixels). |
+| game_chat | Send an in-game chat message as the local player, as the chat box's Send would (to the recipients the chat box addresses). Unlike typing into the chat box with `ui_type_text`, it does not need window focus. Like the other `game_*` tools, it works only in a local match with a human player, never online or LAN. |
 
 The `game_*` tools follow fog of war: they report only what the player's colony sees
 now or has seen. Other teams' buildings out of sight are reported as last seen (from a

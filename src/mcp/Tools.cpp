@@ -221,6 +221,7 @@ void registerUITools(ToolRegistry &registry)
 								   std::string(name) != "hive_program" &&
 								   std::string(name) != "game_place" &&
 								   std::string(name) != "game_view" &&
+								   std::string(name) != "game_chat" &&
 								   std::string(name) != "game_building" &&
 								   std::string(name) != "game_zone" &&
 								   std::string(name) != "ui_renew_control" &&
@@ -452,6 +453,11 @@ void registerUITools(ToolRegistry &registry)
 		 {"x", {{"type", "integer"}, {"minimum", 0}}},
 		 {"y", {{"type", "integer"}, {"minimum", 0}}}},
 		{"token", "x", "y"}, false);
+	add("game_chat",
+		"Send an in-game chat message as your player, as the chat box's Send would; it "
+		"appears in the message area. Works without window focus. Needs token.",
+		{{"token", token}, {"text", {{"type", "string"}, {"minLength", 1}, {"maxLength", 256}}}},
+		{"token", "text"}, false);
 	add("hive_status", "Whether colony scripting (Hive) is available in the current local match, and its "
 		"session id, required by hive_run/hive_result/hive_program. No token needed.", {}, {},
 		false);

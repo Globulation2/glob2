@@ -322,6 +322,9 @@ public:
 									const std::vector<std::array<int, 4>> &reserved = {},
 									std::pair<int, int> *placedSize = nullptr);
 	void centreViewOnTile(double x, double y);
+	/// Send a chat message as the local player, exactly as the chat box's Send would
+	/// (to everyone the chat box addresses). Returns false for empty text.
+	bool sendChatFromAutomation(const std::string &text);
 	/// The desktop top bar's values: workers, explorers and warriors free/total, prestige,
 	/// win chance, conversions gained and lost, then speed.
 	std::array<std::string, 8> topBarValues() const;

@@ -2541,4 +2541,18 @@ TEST_CASE("MCP game_building and game_zone queue the panel's orders and report c
 	CHECK(zone->centerY == 12);
 	CHECK(zone->maxX - zone->minX == 3);
 	CHECK(zone->maxY - zone->minY == 2);
+	// Chat queues the chat box's message, to the chat box's recipients; empty text
+	// queues nothing.
+	world.gui.chatMask = 0x5;
+	const auto chat = commander.call("game_chat", {{"text", "hello allies"}});
+	CHECK(chat.at("sent") == true);
+	orders = queued();
+	REQUIRE(orders.size() == 1);
+	auto message = std::dynamic_pointer_cast<MessageOrder>(orders[0]);
+	REQUIRE(message);
+	CHECK(message->recipientsMask == 0x5);
+	CHECK(message->messageOrderType == MessageOrder::NORMAL_MESSAGE_TYPE);
+	CHECK(std::string(message->getText()) == "hello allies");
+	CHECK_THROWS(commander.call("game_chat", {{"text", ""}}));
+	CHECK(queued().empty());
 }

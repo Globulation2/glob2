@@ -129,7 +129,8 @@ tile through the click path (near searches around it for room; buildings need
 explored ground). game_building changes a building or flag by id: workers, priority,
 Swarm production, flag range, upgrade, repair, destroy, move a flag. game_zone paints
 or erases forbidden, guard or clearing zones over a tile rectangle. game_view centres
-the camera on a tile and returns its screen point.
+the camera on a tile and returns its screen point. game_chat sends an in-game chat
+message as your player.
 The map, minimap and replay bar are canvases: use coordinates. Take ui_screenshot
 (max_width keeps it small) and pass its capture_id with x/y in that image's pixels.
 - Place by hand: activate a palette button, then ui_click on the map. Placement stays

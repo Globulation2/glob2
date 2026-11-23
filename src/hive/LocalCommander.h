@@ -51,6 +51,7 @@ class LocalCommander : public CommanderView
 	Json world(const Json &arguments);
 	Json place(const Json &arguments);
 	Json view(const Json &arguments);
+	Json chat(const Json &arguments);
 	Json building(const Json &arguments);
 	Json zone(const Json &arguments);
 	void submit(const std::vector<Json> &descriptors);

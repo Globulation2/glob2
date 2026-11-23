@@ -208,6 +208,8 @@ Json LocalCommander::call(const std::string &tool, const Json &args)
 		return place(args);
 	if (tool == "game_view")
 		return view(args);
+	if (tool == "game_chat")
+		return chat(args);
 	if (tool == "game_building")
 		return building(args);
 	if (tool == "game_zone")
@@ -825,6 +827,16 @@ Json LocalCommander::view(const Json &args)
 			{"tile_pixels", 32 * camera.zoom},
 			{"note", "tile_screen is the tile's centre in the logical pixels ui_inspect bounds use; "
 					 "with a screenshot, prefer its capture_id coordinates."}};
+}
+Json LocalCommander::chat(const Json &args)
+{
+	const std::string text = args.at("text");
+	if (!gui.sendChatFromAutomation(text))
+		throw std::runtime_error("Chat text is empty");
+	return {{"sent", true},
+			{"text", text},
+			{"note", "Queued like the chat box's Send: the message shows in the game's "
+					 "message area, from your player name, after the next simulation step."}};
 }
 void LocalCommander::refreshMemory()
 {

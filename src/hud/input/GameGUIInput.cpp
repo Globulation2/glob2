@@ -77,6 +77,16 @@ bool GameGUI::processScrollableWidget(SDL_Event *event)
 	return consumed;
 }
 
+// Send automation's chat text as the chat box's Send would, to the chat box's
+// recipients, without the keyboard focus that typing into the box needs.
+bool GameGUI::sendChatFromAutomation(const std::string &text)
+{
+	if (text.empty())
+		return false;
+	enqueueOrder(shared_ptr<Order>(new MessageOrder(chatMask, MessageOrder::NORMAL_MESSAGE_TYPE, text.c_str())));
+	return true;
+}
+
 // Forward events to the in-game chat input while it is open. Returns true if
 // the event completed the chat entry and was fully consumed, in which case no
 // further processing should happen for this event.
