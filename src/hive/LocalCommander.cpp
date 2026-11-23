@@ -894,8 +894,10 @@ Json LocalCommander::building(const Json &args)
 	const Json ref = {{"id", args.at("id")}, {"generation", args.at("generation")}};
 	std::vector<Json> orders;
 	Json changed = Json::array();
-	// A request above the building's unit limit is capped, and the reply says so.
+	// A request above the building's unit limit, or a flag range above its type's
+	// maximum, is capped, and the reply says so.
 	int limit = MAX_BUILDING_WORKER_REQUEST;
+	int maximumRange = -1;
 	boundary(
 		[&]
 		{
@@ -903,9 +905,12 @@ Json LocalCommander::building(const Json &args)
 			if (Building::GIDtoTeam(id) != team)
 				return;
 			if (const auto *b = gui.game.teams[team]->myBuildings[Building::GIDtoID(id)])
+			{
 				limit = std::min(limit, int(b->type->semantics.assignmentLimit));
+				maximumRange = b->type->maxUnitStayRange;
+			}
 		});
-	int requested = 0;
+	int requested = 0, rangeRequested = 0;
 	if (args.contains("workers"))
 	{
 		requested = args.at("workers");
@@ -928,7 +933,9 @@ Json LocalCommander::building(const Json &args)
 	}
 	if (args.contains("range"))
 	{
-		orders.push_back({{"type", "range"}, {"building", ref}, {"range", args.at("range")}});
+		rangeRequested = args.at("range");
+		const int range = maximumRange >= 0 ? std::min(rangeRequested, maximumRange) : rangeRequested;
+		orders.push_back({{"type", "range"}, {"building", ref}, {"range", range}});
 		changed.push_back("range");
 	}
 	if (args.contains("action"))
@@ -957,6 +964,8 @@ Json LocalCommander::building(const Json &args)
 							"step; read game_world to confirm."}};
 	if (requested > limit)
 		result["workers_capped_at"] = limit;
+	if (maximumRange >= 0 && rangeRequested > maximumRange)
+		result["range_capped_at"] = maximumRange;
 	if (orders.empty())
 		throw std::runtime_error("Nothing to change: pass workers, priority, production, range or action");
 	submit(orders);

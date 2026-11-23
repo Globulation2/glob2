@@ -419,7 +419,8 @@ void registerUITools(ToolRegistry &registry)
 		{"token", "building", "x", "y"}, false);
 	add("game_building",
 		"Change one of your buildings or flags by its game_world id and generation: workers "
-		"(units requested), priority, production ratios (Swarm), range (flags), or action "
+		"(units requested), priority, production ratios (Swarm), range (flags; both capped at the "
+		"building's maximum, reported), or action "
 		"upgrade, repair, cancel_upgrade, destroy, cancel_destroy, move (flag to x/y). Needs token.",
 		{{"token", token},
 		 {"id", {{"type", "integer"}, {"minimum", 0}}},
