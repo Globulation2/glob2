@@ -239,6 +239,23 @@ void Unit::handleDisplacement(void)
 						setValidTarget(false);
 						assert(needToRecheckMedical());
 					}
+					else if (carriedPacketCount()==0 && !attachedBuilding->fetchesFromMarkets()
+						&& owner->idleWorkerShareAtLeast(RELEASE_IDLE_WORKER_PERCENT))
+					{
+						// A cargo carrier still holding packets, and a deliverer for a
+						// building that fetches from markets, keep their trips below.
+						// One delivery is one gig while there are idle hands: give the trip
+						// back to the pool and let Team::updateAllBuildingTasks, which runs
+						// later in this same tick after every unit has stepped, auction it
+						// among every free worker and every building that wants one. An
+						// idle worker may by chance stand closer to the next job than the
+						// one that just delivered. With nobody idle the auction could only
+						// hand the job back to this unit a tile later, so it keeps its
+						// building and picks its next trip itself, below.
+						if (verbose)
+							printf("guid=(%d) delivered, released for the auction.\n", gid);
+						stopAttachedForBuilding(false);
+					}
 					else
 					{
 						///Find a resource that the building wants and a location to get it from

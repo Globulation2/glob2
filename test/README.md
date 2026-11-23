@@ -435,3 +435,11 @@ capacity flushes, fallback ordering and failure/discard recovery. Run rendering
 integration with both `GLOB2_RENDER_EXECUTION=serial` and `parallel`; the default
 `immediate` retains direct serial drawing without batching. Preserve independent base-revision captures
 because shared-kernel comparisons alone cannot prove unchanged pixel arithmetic.
+
+## Per-delivery hiring
+
+`GigRelease` checks that a worker finishes depositing before returning to the
+hiring pool when at least 20% of its team's living workers are idle. Below that
+threshold it keeps its building and selects the next delivery. Run it with
+`python3 test/run_tests.py --filter 'GigRelease/*'`; the inclusive threshold and
+busy-colony continuation are covered in the engine test registry.
