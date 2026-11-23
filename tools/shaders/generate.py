@@ -502,6 +502,12 @@ def metal_tool_lock_differences(lock, observed):
     return [(key, lock.get(key), observed.get(key)) for key in keys if lock.get(key) != observed.get(key)]
 
 
+def metal_deployment_target(sdk, root=ROOT):
+    if sdk == 'macosx':
+        return None
+    return json.loads((root / 'platforms/mobile/toolchain.json').read_text())['ios']['deployment']
+
+
 def compile_metal(output, sdk, tool_lock, root=ROOT, developer_dir=None, lock_kind='committed'):
     """Compile translated sources using an explicitly verified Apple tool lock.
 
@@ -550,6 +556,10 @@ def compile_metal(output, sdk, tool_lock, root=ROOT, developer_dir=None, lock_ki
     produced = []
     # Metal 2.x dialect names include the platform in Apple's compiler.
     standard = 'macos-metal2.1' if sdk == 'macosx' else 'ios-metal2.1'
+    compiler_flags = ['-std=' + standard]
+    if deployment := metal_deployment_target(sdk, root):
+        minimum_option = '-mios-simulator-version-min=' if sdk == 'iphonesimulator' else '-mios-version-min='
+        compiler_flags.append(minimum_option + deployment)
     # Register artifacts only after the complete set compiles and links.
     for variant, stages in sources.items():
         for stage, receipt in stages.items():
@@ -559,7 +569,7 @@ def compile_metal(output, sdk, tool_lock, root=ROOT, developer_dir=None, lock_ki
             suffix = 'vert' if stage == 'vertex' else 'frag'
             air = directory / (variant + '.' + suffix + '.air')
             library = directory / (variant + '.' + suffix + '.metallib')
-            subprocess.run(xcrun + ['metal', '-std=' + standard, '-c', str(source), '-o', str(air)], check=True)
+            subprocess.run(xcrun + ['metal', *compiler_flags, '-c', str(source), '-o', str(air)], check=True)
             subprocess.run(xcrun + ['metallib', str(air), '-o', str(library)], check=True)
             data = library.read_bytes()
             if not data.startswith(b'MTLB') or receipt['entrypoint'].encode() + b'\0' not in data:

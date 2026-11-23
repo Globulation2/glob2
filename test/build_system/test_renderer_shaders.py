@@ -294,6 +294,9 @@ class RendererShaderTest(unittest.TestCase):
                         shader.compile_metal(output, sdk, lockfile)
                     self.assertEqual(commands[0][:3], ['xcrun', '--sdk', sdk])
                     self.assertIn('-std=ios-metal2.1', commands[0])
+                    minimum_option = '-mios-simulator-version-min=' if sdk == 'iphonesimulator' else '-mios-version-min='
+                    deployment = json.loads((shader.ROOT / 'platforms/mobile/toolchain.json').read_text())['ios']['deployment']
+                    self.assertIn(minimum_option + deployment, commands[0])
             lock['sdk'] = 'macosx'
             lockfile.write_text(json.dumps(lock))
             metal.write_bytes(b'unknown compiler')

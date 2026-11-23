@@ -135,6 +135,7 @@ def prepare(root, output, apple_sdk=None):
         identity = {'prebuiltMetadata': hashlib.sha256(json.dumps(meta, sort_keys=True).encode()).hexdigest()}
         if metal_sdk:
             identity.update({'metalSdk': metal_sdk, 'strict': strict,
+                             'metalDeploymentTarget': generator.metal_deployment_target(metal_sdk, root),
                              'metalToolLock': hashlib.sha256(Path(metal_lock).read_bytes()).hexdigest() if metal_lock
                              else 'auto'})
         receipt = directory / '.inputs.json'
@@ -183,6 +184,7 @@ def prepare(root, output, apple_sdk=None):
     if apple_sdk:
         committed = root / generator.COMMITTED_METAL_TOOL_LOCK
         identity.update({'appleSdk': apple_sdk, 'strict': strict,
+                         'metalDeploymentTarget': generator.metal_deployment_target(apple_sdk, root),
                          'committedMetalLock': hashlib.sha256(committed.read_bytes()).hexdigest()
                          if committed.is_file() else None})
     receipt = directory / '.inputs.json'

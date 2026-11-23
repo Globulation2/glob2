@@ -1078,7 +1078,8 @@ have none). `buildsys/renderer_shaders.py` then:
    the same `metalSources` receipts Linux does; `generate.py` accepts either the
    pinned Ubuntu binary or a receipted build of the pinned source;
 2. compiles the translated sources with `xcrun metal` and `metallib`, checked against
-   the committed lock `buildsys/metal-tool-lock.json`;
+   the committed lock `buildsys/metal-tool-lock.json`. iOS shaders use the deployment
+   target pinned in `platforms/mobile/toolchain.json` so they can load on older supported devices;
 3. ships the runtime artifacts: `buildsys/bundle.py` copies the shader set,
    Metal libraries included, into `Glob2.app/Contents/Resources/shaders`, which the
    runtime finds through the file manager, and `platforms/mobile/ios.py` into the
