@@ -66,6 +66,7 @@ set(GLOB2_ENGINE_TESTS_0_SOURCES
     src/render/scene/SceneExtractTest.cpp
     src/game/diagnostics/GameDiagnosticsTest.cpp
     src/team/stats/MaterialLedgerTest.cpp
+    src/team/SiteProgressHarness.cpp
     src/building/HiringBucketHarness.cpp
     src/building/HiringPlannerTest.cpp
     src/unit/HungryDefeatHarness.cpp
@@ -1350,6 +1351,7 @@ set(GLOB2_ANDROID_ENGINE_TESTS_0_SOURCES
     src/render/scene/SceneExtractTest.cpp
     src/game/diagnostics/GameDiagnosticsTest.cpp
     src/team/stats/MaterialLedgerTest.cpp
+    src/team/SiteProgressHarness.cpp
     src/building/HiringBucketHarness.cpp
     src/building/HiringPlannerTest.cpp
     src/unit/HungryDefeatHarness.cpp
