@@ -84,16 +84,18 @@ class FailingHardware final : public VideoEncoder
 }
 TEST_SUITE("RecordingSession")
 {
-	TEST_CASE("selected profile includes only its recording encoders")
+	TEST_CASE("selected profile has its required recording encoders")
 	{
 		CHECK(avcodec_find_encoder_by_name(SoftwareEncoder) != nullptr);
 		CHECK(avcodec_find_encoder_by_name(WebM ? "libopus" : "aac") != nullptr);
+#ifndef GLOB2_SYSTEM_FFMPEG
 		if (WebM)
 		{
 			CHECK(avcodec_find_encoder(AV_CODEC_ID_H264) == nullptr);
 			CHECK(avcodec_find_encoder(AV_CODEC_ID_AAC) == nullptr);
 			CHECK(avcodec_find_encoder_by_name("libx264") == nullptr);
 		}
+#endif
 	}
 	TEST_CASE("AV1 writer rejects audio and finalization until its sequence header arrives")
 	{
