@@ -209,14 +209,13 @@ def _mobile(args):
 
 def mobile_toolchain(args):
     """The cross compilers and their flags, which CMake needs before project()."""
-    from dev_store import command_path
     _, identity, _, toolchain = _mobile(args)
-    ar = Path(command_path(toolchain['ar']))
+    ar = Path(toolchain['ar'])
     ranlib = ar.with_name('llvm-ranlib' if identity['target'] == 'android' else 'ranlib')
     flags = toolchain['cflags']
     sysroot = flags[flags.index('-isysroot') + 1] if '-isysroot' in flags else ''
-    print(json.dumps({'cc': Path(command_path(toolchain['cc'])).as_posix(),
-                      'cxx': Path(command_path(toolchain['cxx'])).as_posix(),
+    print(json.dumps({'cc': Path(toolchain['cc']).as_posix(),
+                      'cxx': Path(toolchain['cxx']).as_posix(),
                       'ar': ar.as_posix(), 'ranlib': ranlib.as_posix(), 'cflags': flags,
                       'ldflags': toolchain['ldflags'], 'sysroot': sysroot,
                       'system': 'Linux' if identity['target'] == 'android' else 'Darwin'}))
@@ -301,12 +300,13 @@ def mobile_configure(args):
     saved = os.dup(1)
     os.dup2(2, 1)
     try:
-        ar = Path(command_path(toolchain['ar']))
+        ar = Path(toolchain['ar'])
+        ranlib = ar.with_name('llvm-ranlib' if identity['target'] == 'android' else 'ranlib')
         recording_prefix = ensure(
             build_recording, Path(explicit or output / 'recording/prefix'), output / 'recording/sources',
             explicit=bool(explicit), execute=True, jobs=args.jobs, sdk_identity=toolchain['fingerprint'],
-            cc=command_path(toolchain['cc']), cxx=command_path(toolchain['cxx']), ar=str(ar),
-            ranlib=str(ar.with_name('llvm-ranlib' if identity['target'] == 'android' else 'ranlib')),
+            cc=command_path(toolchain['cc']), cxx=command_path(toolchain['cxx']), ar=command_path(ar),
+            ranlib=command_path(ranlib),
             target=identity['target'], arch=identity['arch'], cflags=toolchain['cflags'],
             ldflags=toolchain['ldflags'], environment=environment)
         sys.stdout.flush()
