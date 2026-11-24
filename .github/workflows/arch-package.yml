@@ -35,23 +35,38 @@ jobs:
             install -o builder -g builder /recipe/{PKGBUILD,system-ffmpeg.patch} /build/
             cd /build
             runuser -u builder -- makepkg --noconfirm --syncdeps --nobuild
+            # Match a normal install, including the package's manual page.
+            sed -i "/^NoExtract.*usr\/share\/man\//d" /etc/pacman.conf
             pacman -S --noconfirm --needed glob2
           '
           docker commit arch-sources glob2-arch-sources
-      - name: Build and test offline
+      - name: Build package offline
         run: |
           set -eu
-          docker run --name arch-result --network none \
+          docker run --name arch-result --network none glob2-arch-sources bash -ec '
+            cd /build
+            runuser -u builder -- env CMAKE_BUILD_PARALLEL_LEVEL=4 makepkg --noextract --noconfirm
+          '
+          docker cp arch-result:/build/glob2-0.11.7.0-1-x86_64.pkg.tar.zst .
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: glob2-arch-x86_64-candidate
+          path: glob2-*.pkg.tar.zst
+          if-no-files-found: error
+          retention-days: 7
+      - name: Verify upgrade offline
+        run: |
+          set -eu
+          docker run --network none \
             -v "$PWD/content/games/gd-small-2ai.game.gz:/fixture.game.gz:ro" \
+            -v "$PWD/glob2-0.11.7.0-1-x86_64.pkg.tar.zst:/glob2.pkg.tar.zst:ro" \
             glob2-arch-sources bash -ec '
-              cd /build
-              runuser -u builder -- env CMAKE_BUILD_PARALLEL_LEVEL=4 makepkg --noextract --noconfirm
               export GLOB2_USER_DATA_DIR=/tmp/glob2-profile
               export SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy
               install -d "$GLOB2_USER_DATA_DIR"
               touch "$GLOB2_USER_DATA_DIR/sentinel"
               pacman -Q glob2
-              pacman -U --noconfirm glob2-0.11.7.0-1-x86_64.pkg.tar.zst
+              pacman -U --noconfirm /glob2.pkg.tar.zst
               pacman -Qkk glob2
               glob2 info version --format json
               set -o pipefail
@@ -60,10 +75,3 @@ jobs:
               pacman -R --noconfirm glob2
               test -f "$GLOB2_USER_DATA_DIR/sentinel"
             '
-          docker cp arch-result:/build/glob2-0.11.7.0-1-x86_64.pkg.tar.zst .
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: glob2-arch-x86_64-candidate
-          path: glob2-*.pkg.tar.zst
-          if-no-files-found: error
-          retention-days: 7
