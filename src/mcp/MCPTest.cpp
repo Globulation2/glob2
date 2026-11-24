@@ -57,7 +57,7 @@ TEST_CASE("MCP/protocol adapters validate metadata and discover all tools")
 	CHECK(discover.status == 200);
 	CHECK(discover.body["result"]["resultType"] == "complete");
 	auto listed = p.receive(modern("tools/list").dump(), {"2026-07-28", "tools/list", ""});
-	CHECK(listed.body["result"]["tools"].size() == 28);
+	CHECK(listed.body["result"]["tools"].size() == 29);
 	CHECK(listed.body["result"].contains("cacheScope"));
 	CHECK(
 		p.receive(modern("tools/list").dump(), {"2026-07-28", "wrong", ""}).body["error"]["code"] ==
@@ -284,11 +284,19 @@ TEST_CASE("MCP/tools explain themselves within a discovery size budget")
 		guide = guide || tool["name"] == "game_guide";
 	}
 	CHECK(guide);
-	// Every client pays for discovery in context; keep it bounded. 25 KB covers the 27
-	// tools including the game_* map tools.
+	// Every client pays for discovery in context; keep it bounded. 25 KB covers the 29
+	// tools including the game_* map and time tools.
 	const auto bytes = Json{{"tools", tools}}.dump().size();
 	INFO("tools/list bytes: " << bytes);
 	CHECK(bytes < 25000);
+	// Time steps and zoom are bounded by the schema, before reaching the game.
+	Context context;
+	CHECK_THROWS_WITH_AS(registry.call(context, "game_time", {{"action", "step"}, {"ticks", 0}}, "test"),
+						 doctest::Contains("ticks"), std::invalid_argument);
+	CHECK_THROWS_AS(registry.call(context, "game_time", {{"action", "rewind"}}, "test"),
+					std::invalid_argument);
+	CHECK_THROWS_WITH_AS(registry.call(context, "game_view", {{"token", "t"}, {"x", 1}, {"y", 1}, {"zoom", 6}}, "test"),
+						 doctest::Contains("zoom"), std::invalid_argument);
 }
 TEST_CASE("MCP/game guide serves every topic with links and rejects unknown topics")
 {
@@ -1818,6 +1826,14 @@ TEST_CASE("MCP/game tools read without control and act only under the lease [net
 	CHECK(execute("game_chat", {{"token", token}, {"text", "hi"}}).error.empty());
 	CHECK(reached == std::vector<std::string>{"game_world", "game_place", "game_view",
 											  "game_building", "game_zone", "game_chat"});
+	// game_time status is a read; pausing, resuming and stepping are control.
+	CHECK(execute("game_time", {{"action", "status"}}).error.empty());
+	CHECK_FALSE(execute("game_time", {{"action", "pause"}}).error.empty());
+	CHECK_FALSE(execute("game_time", {{"action", "step"}, {"token", "stale"}, {"ticks", 5}}).error.empty());
+	CHECK(execute("game_time", {{"action", "step"}, {"token", token}, {"ticks", 5}}).error.empty());
+	CHECK(execute("game_view", {{"token", token}, {"x", 1}, {"y", 1}, {"zoom", 0.5}}).error.empty());
+	CHECK(reached.size() == 9);
+	CHECK(reached.back() == "game_view");
 
 	// A control that has disappeared satisfies a wait for it to be not visible...
 	const auto gone = execute("ui_wait", {{"timeout_ms", 2000},

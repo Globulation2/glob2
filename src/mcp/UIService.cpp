@@ -27,6 +27,7 @@ bool inspectionTool(const std::string &tool, const Json &arguments)
 	return tool == "ui_status" || tool == "ui_screenshot" || tool == "ui_inspect" ||
 		   tool == "hive_status" || tool == "hive_api" || tool == "hive_result" ||
 		   tool == "game_world" ||
+		   (tool == "game_time" && arguments.value("action", "") == "status") ||
 		   (tool == "hive_program" && (arguments.value("action", "") == "list" ||
 									   arguments.value("action", "") == "inspect"));
 }
@@ -961,6 +962,7 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 	}
 	const bool domainRead = tool == "hive_status" || tool == "hive_api" || tool == "hive_result" ||
 							tool == "game_world" ||
+							(tool == "game_time" && a.value("action", "") == "status") ||
 							(tool == "hive_program" && (a.value("action", "") == "list" ||
 														a.value("action", "") == "inspect"));
 	if (inputTool(tool) && !domainRead)
@@ -975,7 +977,8 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 	}
 	const bool domainTool = tool.starts_with("hive_") || tool == "game_world" ||
 							tool == "game_place" || tool == "game_view" || tool == "game_chat" ||
-							tool == "game_building" || tool == "game_zone";
+							tool == "game_building" || tool == "game_zone" ||
+							tool == "game_time";
 	if (domainTool && domainHandler)
 	{
 		const auto request = active;

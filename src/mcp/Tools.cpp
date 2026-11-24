@@ -153,7 +153,7 @@ void registerUITools(ToolRegistry &registry)
 	const Json coordinate = {{"type", "number"}, {"minimum", 0}};
 	const Json token = {{"type", "string"},
 						{"maxLength", 128},
-						{"description", "Control token returned by ui_acquire_control"}};
+						{"description", "Token from ui_acquire_control"}};
 	const Json key = {{"type", "string"}, {"maxLength", 64}};
 	const Json button = enumeration({"left", "middle", "right"});
 	const Json action = enumeration({"press", "down", "up"});
@@ -224,6 +224,7 @@ void registerUITools(ToolRegistry &registry)
 								   std::string(name) != "game_chat" &&
 								   std::string(name) != "game_building" &&
 								   std::string(name) != "game_zone" &&
+								   std::string(name) != "game_time" &&
 								   std::string(name) != "ui_renew_control" &&
 								   std::string(name) != "ui_acquire_control" &&
 								   std::string(name) != "ui_release_control"},
@@ -388,8 +389,7 @@ void registerUITools(ToolRegistry &registry)
 	add("ui_wait",
 		"Wait (default 10 s, max 30 s) until a condition holds, e.g. {\"screen\": "
 		"\"game_session\"} after starting a match, or a control key with enabled/value/"
-		"revision_after. Screen names match inspection.screen exactly. Does not block input; "
-		"on timeout returns the latest snapshot with satisfied=false.",
+		"revision_after (screen names as in inspection.screen). On timeout returns the latest snapshot with satisfied=false.",
 		wait, {"condition"}, false);
 
 	add("game_world",
@@ -451,16 +451,24 @@ void registerUITools(ToolRegistry &registry)
 		{"token", "zone", "x", "y", "width", "height"}, false);
 	add("game_view",
 		"Centre the camera on a tile; returns its screen point (tile_screen) for clicking "
-		"what is there. Needs token.",
+		"what is there; zoom 1 is 100%, 0 fits the map. Needs token.",
 		{{"token", token},
 		 {"x", {{"type", "integer"}, {"minimum", 0}}},
-		 {"y", {{"type", "integer"}, {"minimum", 0}}}},
+		 {"y", {{"type", "integer"}, {"minimum", 0}}},
+		 {"zoom", {{"type", "number"}, {"minimum", 0}, {"maximum", 5}}}},
 		{"token", "x", "y"}, false);
 	add("game_chat",
-		"Send an in-game chat message as your player, as the chat box's Send would; it "
-		"appears in the message area. Works without window focus. Needs token.",
+		"Send an in-game chat message as your player, as the chat box's Send would. "
+		"Needs token.",
 		{{"token", token}, {"text", {{"type", "string"}, {"minLength", 1}, {"maxLength", 256}}}},
 		{"token", "text"}, false);
+	add("game_time",
+		"Pause the local match while you think, resume, or step ticks (30/s) and re-pause. "
+		"status: no token.",
+		{{"action", enumeration({"status", "pause", "resume", "step"})},
+		 {"token", token},
+		 {"ticks", {{"type", "integer"}, {"minimum", 1}, {"maximum", 3000}}}},
+		{"action"}, false);
 	add("hive_status", "Whether colony scripting (Hive) is available in the current local match, and its "
 		"session id, required by hive_run/hive_result/hive_program. No token needed.", {}, {},
 		false);

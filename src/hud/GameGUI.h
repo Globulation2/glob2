@@ -434,6 +434,20 @@ public:
 	// Read by the simulation thread as well as the GUI (see SimulationRunner).
 	std::atomic<bool> gamePaused{false};
 	std::atomic<bool> hardPause{false};
+	/// Ticks the engine may still run through a hard pause before holding again
+	/// (MCP game_time step). Client scheduling only: what each tick computes is
+	/// unchanged, and nothing reaches orders or replays.
+	std::atomic<unsigned> heldSteps{0};
+	/// The hard pause came from an automation client, so the map shows Paused.
+	std::atomic<bool> agentPaused{false};
+	/// Hard-paused with no step budget left: the engine runs no ticks.
+	bool simulationHeld() const { return hardPause && heldSteps.load() == 0; }
+	/// Spends one step of the budget after a tick ran through a hard pause.
+	void spendHeldStep()
+	{
+		unsigned left = heldSteps.load();
+		while (left && !heldSteps.compare_exchange_weak(left, left - 1)) {}
+	}
 	std::atomic<bool> isRunning{false};
 	bool notmenu;
 	//! true if user close the glob2 window.
@@ -460,6 +474,10 @@ public:
 	bool zoomControlPushed=false;
 	void updateCamera();
 	bool zoomMap(double steps,int x,int y);
+	/// Sets the map zoom about the view's centre, clamped to the HUD's limits;
+	/// zero or less fits the whole map. False while the HUD's zoom is unavailable.
+	bool setMapZoom(double zoom);
+	void zoomChanged();
 	int mapMouseX(int x)const {return camera.localX(x);}
 	int mapMouseY(int y)const {return camera.localY(y);}
 	/// Number of consecutive GUI steps the local view has been blocked waiting

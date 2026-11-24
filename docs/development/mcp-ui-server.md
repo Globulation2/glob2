@@ -81,7 +81,13 @@ releases held inputs; `ui_release_control` also frees the lease. **Revoke contro
 disablement, expiry, listener replacement and shutdown cancel pending controller work
 and release remote-owned inputs. Window focus loss releases held inputs and cancels
 pending controller actions while preserving the lease, so switching to the MCP client
-does not require reacquisition. Release tools also work while the window is
+does not require reacquisition. Input sent after the loss is delivered without focus:
+remote key and mouse events carry the `GAGCore::RemoteInputDevice` marker
+(`libs/gag/include/InputState.h`), which lets them past gameplay's focus gate, while
+the human's keys and mouse stay ignored until focus returns, as before. Held-key camera
+scrolling and drag stepping still read focus, so an unfocused match moves its camera
+through `game_view` rather than a held arrow key. The map editor keeps its focus gate
+for all input. Release tools also work while the window is
 unavailable, so clients can relinquish held input when the game is minimized or a native
 dialog opens.
 
@@ -118,8 +124,9 @@ not depend on the OS pointer position.
 | game_place | Place a building site or flag by name with its top-left on a tile, through the same checks as a click; `near` searches outward for room. Buildings need explored ground and never overlap the caller's pending placements; refusals say why. |
 | game_building | Change one of your buildings or flags by id and generation: worker request (capped at the building's limit, reported), priority, Swarm production ratios, flag range (capped at the flag type's maximum, reported), upgrade, repair, cancel_upgrade, destroy, cancel_destroy, or move a flag. Uses the validated script order path. |
 | game_zone | Paint or erase a forbidden, guard or clearing zone over a tile rectangle. |
-| game_view | Centre the camera on a tile and return its screen point (`tile_screen`, in inspection logical pixels). |
-| game_chat | Send an in-game chat message as the local player, as the chat box's Send would (to the recipients the chat box addresses). Unlike typing into the chat box with `ui_type_text`, it does not need window focus. Like the other `game_*` tools, it works only in a local match with a human player, never online or LAN. |
+| game_view | Centre the camera on a tile and return its screen point (`tile_screen`, in inspection logical pixels). Optional `zoom` sets the HUD's map zoom first (1 is 100%; clamped to the HUD's range, up to 5; 0 fits the whole map, like the zoom bar's Fit) and the reply reports `zoom` and `zoom_range`. |
+| game_chat | Send an in-game chat message as the local player, as the chat box's Send would (to the recipients the chat box addresses). It needs no chat box, focus or keystrokes. Like the other `game_*` tools, it works only in a local match with a human player, never online or LAN. |
+| game_time | `status` (no lease), `pause`, `resume` or `step` with `ticks` (1–3000, default 30) for the local match. Reports `tick`, `paused`, `paused_by` (`agent`, `player`, `menu` or `none`), `steps_remaining`, `speed` and `ticks_per_second`. |
 
 The `game_*` tools follow fog of war: they report only what the player's colony sees
 now or has seen. Other teams' buildings out of sight are reported as last seen (from a
@@ -140,6 +147,22 @@ its food vision; the `gameplay` guide topic explains conversion.
 | hive_run | Queue one bounded script invocation with a deduplicated operation key. |
 | hive_result | Inspect an operation's output, errors and order-submission result. |
 | hive_program | List/inspect/install/replace/pause/resume/cancel local standing orders. |
+
+`game_time` is a client scheduling control, not an order: `pause` sets the same hard
+pause as the player's Hard pause shortcut, which holds the engine's whole order and
+tick loop on this client and records nothing in the replay, and the map shows
+Paused. `step` sets a tick budget on that hard pause (`GameGUI::heldSteps`); the
+engine runs that many ticks at the current speed exactly as if unpaused, then holds
+again, so what the simulation computes and records is unchanged. `resume` clears it
+and also lifts an ordinary pause from the menu or Pause key (a recorded pause order),
+which `step` refuses to run through. The player's own Hard pause shortcut replaces
+an agent pause or step. It is available only where the player may hard-pause and
+Hive runs: the local human player of a match without network players, never a
+network match, replay or spectator view. While held, reads, `game_place`,
+`game_building`, `game_zone`, clicks and typing still work and their dispatch receipts
+complete, since the GUI keeps consuming input; the orders they queue wait in the
+client order queue and apply as the next ticks run, so `game_world` shows a placement
+pending until a step or resume.
 
 The [local Hive guide](../multiplayer/hive-mind.md#local-human-match-scripting-through-mcp)
 describes script ownership, lifecycle and standing-order management.
