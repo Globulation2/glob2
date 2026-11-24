@@ -1,16 +1,34 @@
-Zbuduj kwitnącą kolonię na spornym terytorium.
+Strategia RTS, w której dowodzisz kolonią, a nie każdą jednostką z osobna.
+Za darmo. Bez reklam. Bez zakupów w aplikacji. Bez lootboxów. Bez waluty premium.
 
-Globulation 2 to gra strategiczna czasu rzeczywistego, w której żywność, pracownicy i przestrzeń wyznaczają twoją ekspansję. Rozwijaj rozległą kolonię, równoważ jej sprzeczne potrzeby i rywalizuj o ziemię oraz zasoby. Twoje stworzenia działają samodzielnie, dzięki czemu możesz kierować kolonią jako całością.
+Globulation 2 to strategia czasu rzeczywistego o kolonii globów: małych, zabieganych stworzeń, które pracują, jedzą, trenują i walczą. Rozwijasz kolonię, dbasz o jej wyżywienie i walczysz z rywalizującymi koloniami, które chcą zająć tę samą ziemię.
 
-Rozwiń gospodarkę, która udźwignie twoje ambicje.
-Żywność, budowa i szkolenie konkurują o twoją siłę roboczą. Decyduj, gdzie potrzebni są pracownicy, i równoważ nowe ambicje z potrzebami istniejącej kolonii.
+Ty decydujesz. Pracą zajmują się twoje globy.
+Wybierz, co zbudować i ile globów ma przy tym pracować. Same znajdą drogę, zbiorą materiały i postawią budynek, a gdy zgłodnieją, pójdą jeść. Aby zbadać nowe tereny lub zaatakować rywala, postaw flagę i ustal, ile globów ma tam wyruszyć. Nie zaznaczasz tu jednostek jedna po drugiej: planujesz działania całej kolonii.
 
-Uczyń mapę częścią swojej strategii.
-Różne mapy wymagają różnych strategii. Dostosuj ekspansję do terenu, wybierz, czego bronić, i znajdź szlaki oraz zasoby potrzebne twojej kolonii.
+Wykarm kolonię.
+Gospody karmią twoje globy. Roje produkują nowe. Szkoły, tory wyścigowe, baseny i baraki je trenują, a szpitale leczą. Wszystko to konkuruje o tych samych robotników, więc każdy nowy projekt zabiera robotników innemu: większa armia na nic się nie zda, jeśli nie będzie już komu zbierać pszenicy.
 
-Broń tego, co zbudowałeś.
-Twoja gospodarka wspiera zarówno rozwój, jak i obronę. Równoważ potrzeby kolonii, gdy rywale konkurują o ziemię i zasoby, i przygotuj się na konflikty, które mogą rozstrzygnąć rozgrywkę.
+Zaplanuj kierunek ekspansji.
+Pszenica, drewno i kamień rzadko są tam, gdzie chcesz je mieć, a szlaki między nimi są równie ważne jak same zasoby. Zdecyduj, w którą stronę się rozbudować, co osłonić murami i o co warto walczyć. Zagraj na 23 ręcznie zaprojektowanych mapach albo wygeneruj nową mapę na podstawie dowolnego z 67 losowych krajobrazów.
 
-Globulation 2 jest darmowe i ma otwarty kod źródłowy.
+Walcz o ziemię.
+Rywalizujące kolonie też się rozrastają i chcą tej samej ziemi. Trenuj wojowników, buduj wieże obronne i kamienne mury, a flagi wojenne stawiaj tam, gdzie ma uderzyć twoja armia. Atak trwa tylko tak długo, jak długo wspierają go żywność i szpitale, więc wojnę wygrywa się w gospodach tak samo jak na froncie.
 
-Ta wersja na Androida przenosi klasyczną grę komputerową na ekrany dotykowe.
+Co znajdziesz w grze.
+• 23 ręcznie zaprojektowane mapy oraz nowe mapy generowane z 67 losowych krajobrazów
+• 8 przeciwników komputerowych, od łatwych po trudnych
+• Do 16 kolonii w jednej rozgrywce
+• Samouczek złożony z 10 lekcji
+• Wbudowany edytor map
+• Zapisywanie i oglądanie powtórek
+• Gra jednoosobowa offline, bez potrzeby zakładania konta
+• Dostępna w 45 językach
+
+Graj razem z innymi.
+Zagraj online w szybki mecz 1v1, rankingowy lub towarzyski, albo utwórz pokój i zaproś znajomych za pomocą kodu. Jeśli żaden gracz nie czeka, zmierzysz się z przeciwnikiem komputerowym. Online możesz grać jako gość; aby grać w meczach rankingowych, zaloguj się. Gracze na komputerach, w przeglądarkach i na urządzeniach mobilnych biorą udział w tych samych rozgrywkach online, w tej samej wersji gry. Graj w sieci lokalnej bez konta i bez połączenia z internetem.
+
+Otwarte oprogramowanie tworzone przez wolontariuszy.
+Prace nad Globulation 2 rozpoczęły się w 2001 roku, a w 2004 roku gra została udostępniona publicznie. Wolontariusze tworzyli ją na przestrzeni dwóch dekad. Gra jest darmowa i ma otwarty kod źródłowy na licencji GPL w wersji 3: kod jest publiczny, a każdy może go czytać, zmieniać i pomagać w ulepszaniu gry.
+
+Na Androidzie zagrasz na telefonie lub tablecie, w pionie lub w poziomie, z osobnymi układami sterowania dotykowego dla telefonów i tabletów. Gra jednoosobowa działa offline i nie wymaga konta.

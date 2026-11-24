@@ -1,1 +1,1 @@
-Construeix una colònia pròspera en un territori disputat.
+Estratègia en temps real sense anuncis. Dirigeix la colònia, no cada unitat.

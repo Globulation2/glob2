@@ -1,16 +1,34 @@
-Construa uma colônia próspera em território disputado.
+Estratégia em tempo real em que você comanda a colônia, não cada unidade.
+Grátis. Sem anúncios. Sem compras no app. Sem loot boxes. Sem moeda premium.
 
-Globulation 2 é um jogo de estratégia em tempo real em que comida, trabalhadores e espaço determinam sua expansão. Desenvolva uma colônia extensa, equilibre suas necessidades conflitantes e dispute terras e recursos com os rivais. Suas criaturas agem de forma autônoma, permitindo que você guie a colônia como um todo.
+Globulation 2 é um jogo de estratégia em tempo real sobre uma colônia de globs: pequenas criaturas atarefadas que trabalham, comem, treinam e lutam. Você faz a colônia crescer, mantém todos alimentados e enfrenta colônias rivais que querem o mesmo território.
 
-Desenvolva uma economia capaz de sustentar suas ambições.
-Comida, construção e treinamento disputam sua força de trabalho. Decida onde os trabalhadores são necessários e equilibre novas ambições com as necessidades da colônia que você já tem.
+Você decide. Seus globs fazem o trabalho.
+Escolha o que construir e quantos globs devem trabalhar na obra. Eles encontram o caminho sozinhos, coletam os materiais e erguem a construção, e comem quando sentem fome. Para explorar novas terras ou atacar um rival, coloque uma bandeira e defina quantos globs devem ir. Não há unidades para selecionar uma a uma: você planeja para a colônia inteira.
 
-Faça do mapa parte da sua estratégia.
-Mapas diferentes pedem estratégias diferentes. Adapte sua expansão ao terreno, escolha o que defender e encontre as rotas e os recursos de que sua colônia precisa.
+Mantenha a colônia alimentada.
+As tavernas alimentam seus globs. As colmeias produzem mais globs. Escolas, pistas de corrida, piscinas e quartéis os treinam, e os hospitais os curam. Tudo isso disputa os mesmos trabalhadores, então cada novo projeto tira trabalhadores de outro: um exército maior não adianta nada se não sobrar ninguém para colher o trigo.
 
-Defenda o que você construiu.
-Sua economia sustenta o crescimento e a defesa. Equilibre as necessidades da colônia enquanto os rivais disputam terras e recursos e prepare-se para conflitos que podem decidir a partida.
+Planeje para onde expandir.
+Trigo, madeira e pedra raramente estão onde você gostaria, e as rotas entre eles importam tanto quanto os próprios recursos. Decida para onde expandir, o que proteger com muralhas e pelo que vale a pena lutar. Jogue em 23 mapas feitos à mão ou gere um mapa novo a partir de qualquer uma das 67 paisagens aleatórias.
 
-Globulation 2 é gratuito e de código aberto.
+Lute pelo território.
+As colônias rivais também estão crescendo e querem o mesmo território. Treine guerreiros, construa torres de defesa e muralhas de pedra e coloque bandeiras de guerra onde seu exército deve atacar. Um ataque só dura enquanto durarem a comida e os hospitais que o sustentam; por isso, uma guerra se vence nas tavernas tanto quanto na linha de frente.
 
-Esta edição para Android leva o clássico jogo de computador às telas sensíveis ao toque.
+O que tem no jogo.
+• 23 mapas feitos à mão, além de novos mapas gerados a partir de 67 paisagens aleatórias
+• 8 adversários controlados pelo computador, do fácil ao difícil
+• Até 16 colônias na mesma partida
+• Tutorial com 10 lições
+• Editor de mapas integrado
+• Salve e assista a replays
+• Modo offline para um jogador, sem precisar de conta
+• Disponível em 45 idiomas
+
+Jogue com outras pessoas.
+No modo online, dispute partidas rápidas 1v1, ranqueadas ou casuais, ou crie uma sala e convide amigos com um código. Se não houver nenhum jogador esperando, você enfrenta um adversário controlado pelo computador. Jogue online como convidado; faça login para jogar partidas ranqueadas. Quem joga no computador, no navegador ou em dispositivos móveis participa das mesmas partidas online, na mesma versão do jogo. Jogue pela sua rede local, sem conta e sem conexão com a internet.
+
+Código aberto, feito por voluntários.
+Globulation 2 começou em 2001 e foi lançado ao público em 2004. Voluntários o desenvolveram ao longo de duas décadas. É gratuito e de código aberto sob a licença GPL, versão 3: o código é público, e qualquer pessoa pode lê-lo, modificá-lo e ajudar a melhorar o jogo.
+
+No Android, jogue no celular ou no tablet, na vertical ou na horizontal, com layouts de toque distintos para celulares e tablets. O modo para um jogador funciona offline e não exige conta.

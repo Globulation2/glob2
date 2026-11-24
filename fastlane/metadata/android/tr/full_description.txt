@@ -1,16 +1,34 @@
-Çekişmeli bir bölgede gelişen bir koloni kurun.
+Tek tek birimleri değil, koloniyi yönettiğiniz gerçek zamanlı strateji.
+Ücretsiz. Reklam yok. Uygulama içi satın alma yok. Ganimet kutusu yok. Satın alınacak oyun parası yok.
 
-Globulation 2, yiyecek, işçi ve alanın genişlemenizi şekillendirdiği gerçek zamanlı bir strateji oyunudur. Genişleyen bir koloni kurun, rekabet eden ihtiyaçlarını dengeleyin ve toprak ve kaynaklar için rakiplerinizle mücadele edin. Yaratıklarınız özerk hareket eder, bu da koloniyi bir bütün olarak yönlendirmenizi sağlar.
+Globulation 2, bir globül kolonisini konu alan gerçek zamanlı bir strateji oyunudur. Globüller; çalışan, yemek yiyen, eğitim alan ve savaşan, hiç boş durmayan küçük yaratıklardır. Koloniyi büyütür, doyurur ve aynı toprakları isteyen rakip kolonilerle savaşırsınız.
 
-Hedeflerinizi karşılayabilecek bir ekonomi geliştirin.
-Yiyecek, inşaat ve eğitim, iş gücünüz için rekabet halinde. İşçilere nerede ihtiyaç duyulduğuna karar verin ve yeni hedeflerinizi mevcut koloninizin ihtiyaçlarıyla dengeleyin.
+Karar sizin. İşi globülleriniz yapar.
+Neyin inşa edileceğini ve bu işte kaç globülün çalışacağını seçin. Globüller yollarını kendileri bulur, malzemeleri toplar ve inşaatı yapar; acıktıklarında da yemek yer. Yeni toprakları keşfetmek ya da bir rakibe saldırmak için bir bayrak dikin ve kaç globülün gideceğini belirleyin. Tek tek seçilecek birim yoktur: planı bütün koloni için yaparsınız.
 
-Haritayı stratejinizin bir parçası haline getirin.
-Farklı haritalar farklı stratejiler gerektirir. Genişlemenizi araziye uyarlayın, neyi savunacağınızı seçin ve koloninizin ihtiyaç duyduğu rotaları ve kaynakları bulun.
+Koloniniz aç kalmasın.
+Oteller globüllerinizi besler. Yuvalar yeni globüller üretir. Akademiler, koşu yolları, yüzme havuzları ve kışlalar onları eğitir, hastaneler de iyileştirir. Bunların hepsi aynı işçiler için yarışır; bu yüzden her yeni proje, işçilerini bir başkasından alır. Buğdayı hasat edecek kimse kalmadıysa daha büyük bir ordu işe yaramaz.
 
-İnşa ettiğiniz şeyi koruyun.
-Ekonominiz hem büyümeyi hem de savunmayı desteklemelidir. Rakipleriniz toprak ve kaynaklar için rekabet ederken koloninizin ihtiyaçlarını dengeleyin ve maçın kaderini belirleyebilecek çatışmalara hazırlanın.
+Nereye genişleyeceğinizi planlayın.
+Buğday, odun ve taş nadiren istediğiniz yerde bulunur; aralarındaki yollar da kaynakların kendisi kadar önemlidir. Nereye genişleyeceğinize, neyi duvarlarla koruyacağınıza ve ne için savaşmaya değeceğine karar verin. 23 el yapımı haritada oynayın ya da 67 rastgele manzaradan biriyle yeni bir harita oluşturun.
 
-Globulation 2 ücretsiz ve açık kaynaklıdır.
+Toprak için savaşın.
+Rakip koloniler de büyüyor ve aynı toprakları istiyor. Savaşçı eğitin, savunma kuleleri ve taş duvarlar inşa edin, ordunuzun saldırmasını istediğiniz yerlere savaş bayrakları dikin. Bir saldırı, ancak onu destekleyen yiyecek ve hastaneler dayandığı sürece sürer; bu yüzden savaş, cephede olduğu kadar orduyu besleyen otellerde de kazanılır.
 
-Bu Android sürümü, klasik masaüstü oyununu dokunmatik ekranlara getiriyor.
+Oyunda neler var?
+• 23 el yapımı harita ve 67 rastgele manzaradan oluşturulan yeni haritalar
+• Kolaydan zora 8 bilgisayar rakibi
+• Bir maçta en fazla 16 koloni
+• 10 derslik eğitim
+• Yerleşik harita düzenleyici
+• Maç tekrarlarını kaydedin ve izleyin
+• Çevrimdışı tek oyunculu oyun; hesap gerekmez
+• 45 dilde kullanılabilir
+
+Birlikte oynayın.
+Çevrimiçi oyunda dereceli veya gündelik 1v1 hızlı maçlara katılın ya da bir oda oluşturup arkadaşlarınızı bir kodla davet edin. Bekleyen oyuncu yoksa onun yerine bir bilgisayar rakibine karşı oynarsınız. Misafir olarak çevrimiçi oynayabilirsiniz; dereceli oynamak için oturum açın. Masaüstünde, tarayıcıda ve mobil cihazlarda oynayanlar aynı çevrimiçi oyunlarda, aynı oyun sürümünde buluşur. Hesap ve internet bağlantısı olmadan, yerel ağınız üzerinden oynayın.
+
+Açık kaynaklı, gönüllülerin geliştirdiği bir oyun.
+Globulation 2 projesi 2001'de başladı ve oyun 2004'te herkese açık olarak yayımlandı. Oyunu, yirmi yıla yayılan bir süreçte gönüllüler geliştirdi. Oyun, GPL sürüm 3 lisansıyla ücretsiz ve açık kaynaklıdır: kodu herkese açıktır; isteyen herkes kodu okuyabilir, değiştirebilir ve oyunun gelişmesine katkıda bulunabilir.
+
+Android'de telefonda veya tablette, dikey ya da yatay konumda oynayın; telefonlar ve tabletler için ayrı dokunmatik arayüz düzenleri vardır. Tek oyunculu oyun çevrimdışı çalışır ve hesap gerektirmez.

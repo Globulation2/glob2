@@ -12,32 +12,50 @@ release until the maintainer chooses to publish it.
 | Field | Copy |
 | --- | --- |
 | Name | Globulation 2 |
-| Subtitle | Colony strategy under pressure |
+| Subtitle | Real-time colony strategy |
 | Primary category | Games; Strategy and Simulation |
-| Promotional text | Build a thriving colony in contested territory. Balance food, workers and expansion, shape a sprawling base, and compete with rival colonies for land and resources. |
-| Keywords | strategy,RTS,colony,simulation,skirmish,offline,empire,map editor |
+| Promotional text | Real-time strategy with no ads and no in-app purchases. Grow a colony and fight rivals for land. You set the priorities; your colony does the work. |
+| Keywords | RTS,base,building,offline,no,ads,war,army,battle,skirmish,multiplayer,LAN,map,editor,economy,tactics |
 | Support URL | https://github.com/Globulation2/glob2 |
 | Marketing URL | https://glob2.online/ |
 
 **Description**
 
-Build a thriving colony in contested territory.
+```text
+Real-time strategy where you command the colony, not every unit.
+Free. No ads. No in-app purchases. No loot boxes. No premium currency.
 
-Globulation 2 is a real-time strategy game where food, workers and space shape your expansion. Grow a sprawling colony, balance its competing needs, and contend with rivals for land and resources. Your creatures act autonomously, letting you guide the colony as a whole.
+Globulation 2 is a real-time strategy game about a colony of globs: small, busy creatures that work, eat, train and fight. You grow the colony, keep it fed and fight rival colonies that want the same land.
 
-Grow an economy that can sustain your ambitions.
-Food, construction and training compete for your workforce. Decide where workers are needed and balance new ambitions with the needs of the colony you already have.
+You decide. Your globs do the work.
+Choose what to build and how many globs should work on it. They find their own way, gather the materials and build it, and they eat when they are hungry. To explore new land or attack a rival, place a flag and set how many globs should go. There are no units to select one by one: you plan for the whole colony.
 
-Make the map part of your strategy.
-Different maps call for different strategies. Adapt your expansion to the terrain, choose what to defend, and find the routes and resources your colony needs.
+Keep the colony fed.
+Inns feed your globs. Swarms produce more of them. Schools, racetracks, swimming pools and barracks train them, and hospitals heal them. All of it competes for the same workers, so every new project takes workers from another: a bigger army is no use if nobody is left to harvest the wheat.
 
-Defend what you've built.
-Your economy supports both growth and defense. Balance the needs of your colony while rivals compete for land and resources, and prepare for conflicts that can decide the match.
+Plan where to expand.
+Wheat, wood and stone are rarely where you want them, and the routes between them matter as much as the resources. Decide where to expand, what to protect with walls and what is worth fighting for. Play 23 handmade maps, or generate a new map from any of 67 random landscapes.
 
-Globulation 2 is free and open source.
+Fight for the land.
+Rival colonies are growing too, and they want the same land. Train warriors, build defense towers and stone walls, and place war flags where your army should attack. An attack lasts only as long as the food and hospitals that support it, so a war is won at the inns as much as at the front.
 
-On iPhone and iPad, touch controls let you navigate the world and manage your
-colony. Single-player play does not require an account.
+What's in the game.
+• 23 handmade maps, plus new maps generated from 67 random landscapes
+• 8 computer opponents, from easy to hard
+• Up to 16 colonies in one match
+• A 10-lesson tutorial
+• Built-in map editor
+• Save and watch replays
+• Offline single-player, with no account needed
+
+Play together.
+Go online for ranked or casual 1v1 quick matches, or host a room and invite friends with a code. If no player is waiting, you play a computer opponent instead. Play online as a guest; sign in to play ranked. Players on other devices share the same online games, on the same game version. Play over your local network with no account and no internet connection.
+
+Open source, built by volunteers.
+Globulation 2 started in 2001 and was released to the public in 2004. Volunteers have built it over two decades. It is free and open source under the GPL, version 3: the code is public, and anyone can read it, change it and help improve the game.
+
+On iPhone and iPad, play in portrait or landscape, with separate touch layouts for iPhone and iPad. Single-player works offline and needs no account.
+```
 
 **Version notes for the first public iOS version**
 
@@ -66,19 +84,21 @@ the app bundle.
 
 Capture screenshots from the release candidate running on the newest supported
 iPhone and iPad simulators or physical devices. Use actual gameplay and UI,
-without invented features or desktop screenshots. Select scenes that show:
+without invented features or desktop screenshots. The storefront-v2 gallery
+shows these scenes in this order, each with its English overlay caption:
 
-1. A readable colony overview with workers, buildings, and the game UI —
-   “Build a thriving colony.”
-2. A close view of assigning work and building a settlement —
-   “Balance food, workers and growth.”
-3. Exploration or a later-game encounter with another colony —
-   “Outthink rival colonies.”
-4. The map or scenario selection screen — “Different maps. Different strategies.”
-5. The map editor, if its iOS touch behavior passes a play test —
-   “Create your own maps.”
+1. “Real-time colony strategy” — Command a whole colony: workers, buildings and warriors in the middle of a match.
+2. “You decide. They build.” — Choose a building and how many workers it gets; they gather the materials and build it.
+3. “No ads. No in-app buys” — The game as installed: no ads, no in-app purchases, no loot boxes and no premium currency.
+4. “Fight for the land” — Warriors from rival colonies fight for the same land.
+5. “Keep the colony fed” — Workers carry wheat to the inns and swarms that feed and grow the colony.
+6. “Choose where to expand” — A wider view of the map shows where rival colonies meet.
+7. “23 maps, or random ones” — One of the game's maps, each with its own terrain, resources and routes.
+8. “8 computer opponents” — Several colonies share one map and compete for the same land.
 
-These short captions are optional overlays; if used, keep them outside essential
+The captions are overlays drawn in a band above the unaltered capture by the
+[caption renderer](https://github.com/Globulation2/glob2-marketing/tree/main/assets/storefront-v2/tools), which sets
+every language from the reviewed catalogs; keep them outside essential
 UI and compare the result to an unaltered capture. The first three screenshots
 need to communicate the core game quickly. Apple
 requires at least one and accepts up to ten per supported device size. Screenshots

@@ -1,16 +1,34 @@
-Konstruu prosperan kolonion sur pridisputata teritorio.
+Realtempa strategio, en kiu vi komandas la kolonion, ne ĉiun unuon aparte.
+Senpaga. Sen reklamoj. Sen enaplikaĵaj aĉetoj. Sen hazardskatoloj. Sen aĉetebla ludmono.
 
-Globulation 2 estas realtempa strategia ludo, en kiu nutraĵo, laboristoj kaj spaco formas vian vastiĝon. Kreskigu vastan kolonion, ekvilibrigu ĝiajn konkurantajn bezonojn kaj konkurencu kun rivaloj pri tero kaj rimedoj. Viaj estaĵoj agas memstare, tiel ke vi povas gvidi la kolonion kiel tuton.
+Globulation 2 estas realtempa strategia ludo pri kolonio de globuloj: etaj, agemaj estaĵoj, kiuj laboras, manĝas, trejniĝas kaj batalas. Vi kreskigas la kolonion, tenas ĝin sata kaj batalas kontraŭ rivalaj kolonioj, kiuj volas la saman teron.
 
-Kreskigu ekonomion, kiu povas subteni viajn ambiciojn.
-Nutraĵproduktado, konstruado kaj trejnado konkuras pri via laborforto. Decidu, kie laboristoj estas bezonataj, kaj ekvilibrigu novajn ambiciojn kun la bezonoj de via jam ekzistanta kolonio.
+Vi decidas. Viaj globuloj faras la laboron.
+Elektu, kion konstrui kaj kiom da globuloj laboru pri ĝi. Ili mem trovas la vojon, kolektas la materialojn kaj konstruas ĝin, kaj ili manĝas, kiam ili malsatas. Por esplori novan teron aŭ ataki rivalon, metu markilon kaj difinu, kiom da globuloj iru. Unuojn oni ne elektas unu post la alia: vi planas por la tuta kolonio.
 
-Faru la mapon parto de via strategio.
-Malsamaj mapoj postulas malsamajn strategiojn. Adaptu vian vastiĝon al la tereno, elektu, kion defendi, kaj trovu la vojojn kaj rimedojn, kiujn via kolonio bezonas.
+Tenu la kolonion sata.
+Manĝejoj nutras viajn globulojn. Globulejoj produktas pliajn. Lernejoj, kuregejoj, naĝejoj kaj militistejoj trejnas ilin, kaj malsanejoj kuracas ilin. Ĉio ĉi konkuras pri la samaj laboristoj, do ĉiu nova projekto forprenas laboristojn de alia: pli granda armeo ne utilas, se neniu restas por rikolti la tritikon.
 
-Defendu tion, kion vi konstruis.
-Via ekonomio subtenas kaj kreskon kaj defendon. Ekvilibrigu la bezonojn de via kolonio dum rivaloj konkuras pri tero kaj rimedoj, kaj preparu vin por konfliktoj, kiuj povas decidi la matĉon.
+Planu, kien vastiĝi.
+Tritiko, ligno kaj ŝtono malofte troviĝas tie, kie vi volas, kaj la vojoj inter ili gravas same kiel la rimedoj mem. Decidu, kien vastiĝi, kion protekti per muroj kaj por kio indas batali. Ludu sur 23 manfaritaj mapoj aŭ generu novan mapon laŭ iu ajn el la 67 hazardaj pejzaĝoj.
 
-Globulation 2 estas senpaga kaj malfermkoda.
+Batalu pri la tero.
+Ankaŭ la rivalaj kolonioj kreskas, kaj ili volas la saman teron. Trejnu militistojn, konstruu defendturojn kaj ŝtonmurojn, kaj metu militmarkilojn tien, kie via armeo ataku. Atako daŭras nur tiel longe, kiel la nutraĵo kaj la malsanejoj, kiuj subtenas ĝin, do militon oni gajnas en la manĝejoj same kiel ĉe la fronto.
 
-Ĉi tiu Android-eldono alportas la klasikan komputilan ludon al tuŝekranoj.
+Kion la ludo enhavas.
+• 23 manfaritaj mapoj, krome novaj mapoj generataj laŭ 67 hazardaj pejzaĝoj
+• 8 komputilaj kontraŭuloj, de facilaj ĝis malfacilaj
+• Ĝis 16 kolonioj en unu matĉo
+• Lernludo kun 10 lecionoj
+• Enkonstruita mapredaktilo
+• Konservu kaj spektu reludojn
+• Senreta unuludanta ludado, sen bezono de konto
+• Disponebla en 45 lingvoj
+
+Ludu kune.
+Ludu interrete rangigitajn aŭ senstreĉajn rapidajn matĉojn 1v1, aŭ kreu ĉambron kaj invitu amikojn per kodo. Se neniu ludanto atendas, vi ludas anstataŭe kontraŭ komputila kontraŭulo. Ludu interrete kiel gasto; ensalutu por ludi rangigitajn matĉojn. Ludantoj, kiuj uzas komputilon, retumilon aŭ porteblan aparaton, partoprenas la samajn interretajn ludojn, per la sama ludversio. Ludu per via loka reto, sen konto kaj sen interreta konekto.
+
+Malfermkoda, konstruita de volontuloj.
+Globulation 2 komenciĝis en 2001 kaj estis publike eldonita en 2004. Volontuloj konstruis ĝin dum du jardekoj. Ĝi estas senpaga kaj malfermkoda laŭ la permesilo GPL, versio 3: la kodo estas publika, kaj ĉiu povas legi ĝin, ŝanĝi ĝin kaj helpi plibonigi la ludon.
+
+En Android, ludu per telefono aŭ tabulkomputilo, vertikale aŭ horizontale, kun apartaj tuŝekranaj aranĝoj por telefonoj kaj tabulkomputiloj. Unuludanta ludado funkcias senrete kaj ne postulas konton.

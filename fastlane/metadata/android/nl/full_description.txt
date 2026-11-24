@@ -1,16 +1,34 @@
-Bouw een bloeiende kolonie in betwist gebied.
+Realtime strategie waarin je de kolonie leidt, niet elke eenheid apart.
+Gratis. Geen reclame. Geen in-app aankopen. Geen lootboxes. Geen premiumvaluta.
 
-Globulation 2 is een realtime strategiespel waarin voedsel, werkers en ruimte je uitbreiding bepalen. Laat een uitgestrekte kolonie groeien, weeg haar verschillende behoeften af en strijd met rivalen om land en grondstoffen. Je wezens handelen zelfstandig, zodat jij de kolonie als geheel kunt leiden.
+Globulation 2 is een realtime strategiespel over een kolonie globs: kleine, bedrijvige wezentjes die werken, eten, trainen en vechten. Jij laat de kolonie groeien, zorgt dat er genoeg te eten is en vecht tegen rivaliserende kolonies die hetzelfde land willen.
 
-Bouw een economie op die je ambities kan dragen.
-Voedsel, bouw en training doen allemaal een beroep op je arbeidskrachten. Bepaal waar werkers nodig zijn en houd nieuwe ambities in balans met de behoeften van je bestaande kolonie.
+Jij beslist. Je globs doen het werk.
+Kies wat je wilt bouwen en hoeveel globs eraan moeten werken. Ze vinden zelf hun weg, verzamelen de materialen en bouwen het, en ze eten wanneer ze honger hebben. Om nieuw land te verkennen of een rivaal aan te vallen, plaats je een vlag en stel je in hoeveel globs erheen moeten. Je selecteert geen losse eenheden: je plant voor de hele kolonie.
 
-Maak de kaart onderdeel van je strategie.
-Verschillende kaarten vragen om verschillende strategieën. Pas je uitbreiding aan het terrein aan, kies wat je verdedigt en vind de routes en grondstoffen die je kolonie nodig heeft.
+Houd je kolonie gevoed.
+Herbergen voeden je globs. Zwermen brengen nieuwe globs voort. Scholen, racebanen, zwembaden en kazernes trainen ze, en ziekenhuizen genezen ze. Alles doet een beroep op dezelfde werkers, dus elk nieuw project haalt werkers weg bij een ander: aan een groter leger heb je niets als er niemand overblijft om de tarwe te oogsten.
 
-Verdedig wat je hebt opgebouwd.
-Je economie ondersteunt zowel groei als verdediging. Houd de behoeften van je kolonie in balans terwijl rivalen om land en grondstoffen strijden, en bereid je voor op conflicten die de wedstrijd kunnen beslissen.
+Plan waar je uitbreidt.
+Tarwe, hout en steen liggen zelden waar je ze wilt hebben, en de routes ertussen zijn net zo belangrijk als de grondstoffen zelf. Bepaal waar je uitbreidt, wat je met muren beschermt en wat het waard is om voor te vechten. Speel op 23 handgemaakte kaarten of genereer een nieuwe kaart uit een van de 67 willekeurige landschappen.
 
-Globulation 2 is gratis en opensource.
+Vecht om het land.
+Rivaliserende kolonies groeien ook, en ze willen hetzelfde land. Train soldaten, bouw verdedigingstorens en stenen muren, en plaats oorlogsvlaggen waar je leger moet aanvallen. Een aanval houdt alleen stand zolang voedsel en ziekenhuizen hem ondersteunen, dus een oorlog win je net zo goed bij de herbergen als aan het front.
 
-Deze Android-editie brengt het klassieke desktopspel naar aanraakschermen.
+Dit zit in het spel.
+• 23 handgemaakte kaarten, plus nieuwe kaarten gegenereerd uit 67 willekeurige landschappen
+• 8 computertegenstanders, van makkelijk tot moeilijk
+• Tot 16 kolonies in één wedstrijd
+• Een tutorial van 10 lessen
+• Ingebouwde kaarteditor
+• Herhalingen opslaan en terugkijken
+• Offline singleplayer, geen account nodig
+• Beschikbaar in 45 talen
+
+Speel samen.
+Ga online voor snelle 1v1-wedstrijden, competitief of vrij, of maak zelf een kamer en nodig vrienden uit met een code. Wacht er geen andere speler, dan speel je tegen een computertegenstander. Je kunt online spelen als gast; log in om competitief te spelen. Spelers op desktop, in de browser en op mobiel spelen in dezelfde onlinewedstrijden, met dezelfde versie van het spel. Speel via je lokale netwerk, zonder account en zonder internetverbinding.
+
+Open source, gemaakt door vrijwilligers.
+Globulation 2 begon in 2001 en is in 2004 voor het publiek uitgebracht. Vrijwilligers hebben er in de loop van twee decennia aan gebouwd. Het is gratis en open source onder de GPL, versie 3: de code is openbaar, en iedereen kan die lezen en aanpassen, en meehelpen het spel te verbeteren.
+
+Op Android speel je op een telefoon of een tablet, staand of liggend, met aparte indelingen voor aanraakbediening op telefoons en tablets. Singleplayer werkt offline en zonder account.

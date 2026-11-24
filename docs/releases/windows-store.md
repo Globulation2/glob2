@@ -169,29 +169,79 @@ GPL source and license accessible for every distributed version.
 
 **Short description**
 
-Build a thriving colony in contested territory. Balance food, workers and expansion, shape a sprawling base, and compete with rival colonies for land and resources.
+```text
+A free real-time strategy game with no ads and no in-app purchases. Grow a colony and fight rivals for land. You set the priorities; your colony does the work. Optional: play alongside your own AI agent through the built-in MCP server.
+```
 
 **Description**
 
-Build a thriving colony in contested territory.
+```text
+Real-time strategy where you command the colony, not every unit.
+Free. No ads. No in-app purchases. No loot boxes. No premium currency.
 
-Globulation 2 is a real-time strategy game where food, workers and space shape your expansion. Grow a sprawling colony, balance its competing needs, and contend with rivals for land and resources. Your creatures act autonomously, letting you guide the colony as a whole.
+Globulation 2 is a real-time strategy game about a colony of globs: small, busy creatures that work, eat, train and fight. You grow the colony, keep it fed and fight rival colonies that want the same land.
 
-Grow an economy that can sustain your ambitions.
-Food, construction and training compete for your workforce. Decide where workers are needed and balance new ambitions with the needs of the colony you already have.
+You decide. Your globs do the work.
+Choose what to build and how many globs should work on it. They find their own way, gather the materials and build it, and they eat when they are hungry. To explore new land or attack a rival, place a flag and set how many globs should go. There are no units to select one by one: you plan for the whole colony.
 
-Make the map part of your strategy.
-Different maps call for different strategies. Adapt your expansion to the terrain, choose what to defend, and find the routes and resources your colony needs.
+Keep the colony fed.
+Inns feed your globs. Swarms produce more of them. Schools, racetracks, swimming pools and barracks train them, and hospitals heal them. All of it competes for the same workers, so every new project takes workers from another: a bigger army is no use if nobody is left to harvest the wheat.
 
-Defend what you've built.
-Your economy supports both growth and defense. Balance the needs of your colony while rivals compete for land and resources, and prepare for conflicts that can decide the match.
+Plan where to expand.
+Wheat, wood and stone are rarely where you want them, and the routes between them matter as much as the resources. Decide where to expand, what to protect with walls and what is worth fighting for. Play 23 handmade maps, or generate a new map from any of 67 random landscapes.
 
-Globulation 2 is free and open source.
+Fight for the land.
+Rival colonies are growing too, and they want the same land. Train warriors, build defense towers and stone walls, and place war flags where your army should attack. An attack lasts only as long as the food and hospitals that support it, so a war is won at the inns as much as at the front.
 
-Single-player games can be played offline without an account. Online multiplayer
-requires an internet connection.
+What's in the game.
+• 23 handmade maps, plus new maps generated from 67 random landscapes
+• 8 computer opponents, from easy to hard
+• Up to 16 colonies in one match
+• A 10-lesson tutorial
+• Built-in map editor
+• Save and watch replays
+• Offline single-player, with no account needed
+• Write your own computer opponent in JavaScript
+• Available in 45 languages
 
-**Product feature:** Balance food, workers and expansion while guiding autonomous creatures.
+Play together.
+Play over your local network with no account and no internet connection.
+
+Play alongside your own AI agent.
+Globulation 2 has a built-in MCP server. Turn it on in Settings, and an AI agent on your computer can see the game and play the same colony with you. Your mouse and keyboard keep working the whole time, so you can divide the work as you like: let the agent manage the food supply while you plan the attack, or just watch what it does. This works in local games against computer opponents. It is optional: the server is off unless you turn it on, and it runs only on your own computer. You bring your own AI agent; the game does not include one and is complete without one.
+
+Open source, built by volunteers.
+Globulation 2 started in 2001 and was released to the public in 2004. Volunteers have built it over two decades. It is free and open source under the GPL, version 3: the code is public, and anyone can read it, change it and help improve the game.
+```
+
+This copy leaves out online play until the Store package is current with the
+online platform.
+
+**Product features**
+
+1. Command the colony, not every unit: you choose what to build and where to attack, and your workers and warriors do the work on their own
+2. Free. No ads. No in-app purchases. No loot boxes. No premium currency.
+3. Optional: play the same colony alongside your own AI agent through the built-in MCP server
+4. 23 handmade maps, plus new maps generated from 67 random landscapes
+5. 8 computer opponents, from easy to hard
+6. Up to 16 colonies in one match
+7. Offline single-player, with no account needed
+8. Built-in map editor
+
+**Search terms:** real time strategy, RTS, base building, colony, offline strategy, open source, MCP AI agent game.
+
+**Screenshot captions**, in the desktop gallery order:
+
+1. Command a whole colony: workers, buildings and warriors in the middle of a match.
+2. Choose a building and how many workers it gets; they gather the materials and build it.
+3. Workers carry wheat to the inns and swarms that feed and grow the colony.
+4. Warriors from rival colonies fight for the same land.
+5. A wider view of the map shows where rival colonies meet.
+6. One of the game's maps, each with its own terrain, resources and routes.
+7. Several colonies share one map and compete for the same land.
+8. A local game shared with the player's own AI agent, connected through the built-in MCP server.
+
+**Trailer title:** Globulation 2: gameplay trailer
 
 **Developed by:** Globulation 2 contributors.
 

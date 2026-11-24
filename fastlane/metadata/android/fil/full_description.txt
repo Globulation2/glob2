@@ -1,16 +1,34 @@
-Magtayo ng maunlad na kolonya sa teritoryong pinag-aagawan.
+Real-time strategy kung saan kolonya ang pinamumunuan mo, hindi ang bawat yunit.
+Libre. Walang ads. Walang in-app purchase. Walang loot box. Walang premium currency.
 
-Ang Globulation 2 ay isang larong estratehiya sa real time kung saan pagkain, mga manggagawa at espasyo ang humuhubog sa iyong pagpapalawak. Palaguin ang isang malawak na kolonya, balansehin ang magkakatunggali nitong pangangailangan, at makipag-agawan sa mga karibal para sa lupain at mga yaman. Kusang kumikilos ang iyong mga nilalang, kaya magagabayan mo ang kolonya sa kabuuan.
+Ang Globulation 2 ay isang real-time strategy game tungkol sa kolonya ng mga glob: maliliit at abalang nilalang na nagtatrabaho, kumakain, nagsasanay at lumalaban. Pinalalago mo ang kolonya, pinananatili itong busog at nilalabanan ang mga karibal na kolonyang gusto ring makuha ang parehong lupa.
 
-Palaguin ang ekonomiyang kayang sumuporta sa iyong mga ambisyon.
-Nag-uunahan sa iyong lakas-paggawa ang produksyon ng pagkain, pagtatayo at pagsasanay. Magpasya kung saan kailangan ang mga manggagawa at balansehin ang mga bagong ambisyon sa pangangailangan ng kolonya na mayroon ka na.
+Ikaw ang nagpapasya. Mga glob mo ang nagtatrabaho.
+Piliin kung ano ang itatayo at kung ilang glob ang magtatrabaho rito. Sila na ang hahanap ng daan, kukuha ng mga materyales at magtatayo nito, at kumakain sila kapag nagugutom. Para galugarin ang bagong lupa o atakihin ang isang karibal, maglagay ng bandila at itakda kung ilang glob ang pupunta. Walang yunit na pipiliin nang isa-isa: nagpaplano ka para sa buong kolonya.
 
-Gawing bahagi ng iyong estratehiya ang mapa.
-Iba-ibang estratehiya ang kailangan sa iba-ibang mapa. Iangkop ang pagpapalawak sa lupain, piliin kung ano ang ipagtatanggol, at hanapin ang mga ruta at yamang kailangan ng iyong kolonya.
+Panatilihing busog ang kolonya.
+Pinapakain ng mga panuluyan ang mga glob mo. Gumagawa ng mas marami pang glob ang mga pugad. Sinasanay sila ng mga paaralan, karerahan, swimming pool at kuwartel, at ginagamot sila ng mga ospital. Nag-aagawan ang lahat ng ito sa parehong mga manggagawa, kaya bawat bagong proyekto ay kumukuha ng manggagawa mula sa iba: walang silbi ang mas malaking hukbo kung wala nang natitirang mag-aani ng trigo.
 
-Ipagtanggol ang iyong naitayo.
-Sinusuportahan ng iyong ekonomiya ang paglago at depensa. Balansehin ang mga pangangailangan ng iyong kolonya habang nakikipag-agawan ang mga karibal para sa lupain at mga yaman, at maghanda para sa mga labanang maaaring magtakda ng resulta ng laro.
+Planuhin kung saan lalawak ang kolonya.
+Bihirang nasa gusto mong lugar ang trigo, kahoy at bato, at kasinghalaga ng mga likas na yaman ang mga rutang nag-uugnay sa mga ito. Magpasya kung saan magpapalawak, ano ang poprotektahan ng mga pader at ano ang sulit ipaglaban. Maglaro sa 23 mapang gawa ng kamay, o bumuo ng bagong mapa mula sa alinman sa 67 random na tanawin.
 
-Libre ang Globulation 2 at bukas ang source code nito.
+Ipaglaban ang lupa.
+Lumalago rin ang mga karibal na kolonya, at gusto nila ang parehong lupa. Magsanay ng mga mandirigma, magtayo ng mga tore ng depensa at pader na bato, at maglagay ng mga bandila ng digmaan kung saan dapat umatake ang hukbo mo. Tumatagal lang ang isang pag-atake hangga't may pagkain at mga ospital na sumusuporta rito, kaya sa mga panuluyan naipapanalo ang digmaan, gaya rin sa mismong labanan.
 
-Dinadala ng edisyong ito para sa Android ang klasikong larong pang-desktop sa mga touchscreen.
+Ang laman ng laro.
+• 23 mapang gawa ng kamay, at mga bagong mapang nabubuo mula sa 67 random na tanawin
+• 8 kalabang computer, mula madali hanggang mahirap
+• Hanggang 16 na kolonya sa iisang match
+• Tutorial na may 10 aralin
+• Built-in na map editor
+• Mag-save at manood ng mga replay
+• Offline na single-player, hindi kailangan ng account
+• Available sa 45 wika
+
+Maglaro nang sama-sama.
+Mag-online para sa ranked o casual na 1v1 quick match, o mag-host ng room at imbitahan ang mga kaibigan gamit ang code. Kung walang manlalarong naghihintay, kalabang computer ang makakaharap mo. Puwedeng maglaro online bilang guest; mag-sign in para makapaglaro ng ranked. Sama-samang naglalaro sa parehong mga online na laro ang mga manlalaro sa desktop, browser at mobile, gamit ang parehong bersyon ng laro. Maglaro sa iyong lokal na network nang walang account at walang koneksyon sa internet.
+
+Open source, binuo ng mga boluntaryo.
+Sinimulan ang Globulation 2 noong 2001 at inilabas sa publiko noong 2004. Mga boluntaryo ang bumuo nito sa loob ng dalawang dekada. Libre ito at open source sa ilalim ng GPL, bersyon 3: pampubliko ang code, at kahit sino ay puwedeng basahin ito, baguhin ito at tumulong na pagandahin ang laro.
+
+Sa Android, maglaro sa phone o tablet, naka-portrait man o naka-landscape, na may magkahiwalay na touch layout para sa phone at tablet. Gumagana offline ang single-player at hindi kailangan ng account.

@@ -1,16 +1,34 @@
-Xây dựng một thuộc địa thịnh vượng trên vùng lãnh thổ tranh chấp.
+Chiến lược thời gian thực nơi bạn chỉ huy cả thuộc địa, chứ không phải từng đơn vị.
+Miễn phí. Không quảng cáo. Không mua hàng trong ứng dụng. Không loot box. Không tiền tệ trả phí.
 
-Globulation 2 là một trò chơi chiến lược thời gian thực, nơi lương thực, nhân công và không gian định hình sự bành trướng của bạn. Phát triển một thuộc địa rộng lớn, cân bằng các nhu cầu cạnh tranh và cạnh tranh với các đối thủ để giành đất đai và tài nguyên. Các sinh vật của bạn hoạt động tự chủ, cho phép bạn dẫn dắt toàn bộ thuộc địa.
+Globulation 2 là trò chơi chiến lược thời gian thực về một thuộc địa của các glob: những sinh vật nhỏ bé, bận rộn, biết làm việc, ăn uống, rèn luyện và chiến đấu. Bạn phát triển thuộc địa, lo cho cả thuộc địa đủ ăn và chiến đấu với các thuộc địa đối thủ cũng đang nhắm đến cùng một vùng đất.
 
-Xây dựng một nền kinh tế có thể duy trì những tham vọng của bạn.
-Lương thực, xây dựng và huấn luyện cùng cần đến nhân công của bạn. Hãy quyết định nơi cần nhân công và cân bằng tham vọng mới với nhu cầu của thuộc địa hiện tại.
+Bạn quyết định. Các glob của bạn lo phần việc.
+Hãy chọn xây gì và bao nhiêu glob sẽ làm việc đó. Chúng tự tìm đường, thu gom vật liệu rồi xây, và tự đi ăn khi đói. Để khám phá vùng đất mới hoặc tấn công đối thủ, hãy đặt một lá cờ và chọn số glob sẽ lên đường. Trò chơi không có thao tác chọn từng đơn vị một: bạn lên kế hoạch cho cả thuộc địa.
 
-Hãy biến bản đồ thành một phần trong chiến lược của bạn.
-Các bản đồ khác nhau đòi hỏi các chiến lược khác nhau. Hãy điều chỉnh kế hoạch mở rộng của bạn cho phù hợp với địa hình, lựa chọn những khu vực cần phòng thủ và tìm kiếm các tuyến đường cũng như nguồn tài nguyên mà thuộc địa của bạn cần.
+Nuôi sống thuộc địa.
+Quán trọ cho các glob của bạn ăn. Tổ sinh ra thêm glob mới. Trường học, đường chạy, hồ bơi và doanh trại huấn luyện chúng, còn bệnh viện chữa trị cho chúng. Tất cả đều tranh nhau cùng một lực lượng công nhân, nên mỗi dự án mới lại lấy bớt công nhân của một dự án khác: quân đội đông hơn cũng vô ích nếu chẳng còn ai thu hoạch lúa mì.
 
-Hãy bảo vệ những gì bạn đã gây dựng.
-Nền kinh tế của bạn hỗ trợ cả tăng trưởng và quốc phòng. Cân bằng nhu cầu của thuộc địa trong khi các đối thủ tranh giành đất đai và tài nguyên, và chuẩn bị cho những cuộc xung đột có thể quyết định kết quả trận đấu.
+Tính toán hướng mở rộng.
+Lúa mì, gỗ và đá hiếm khi nằm đúng chỗ bạn muốn, và đường đi giữa chúng cũng quan trọng không kém chính tài nguyên. Hãy quyết định mở rộng về đâu, dùng tường bảo vệ thứ gì và điều gì đáng để chiến đấu. Chơi 23 bản đồ thiết kế thủ công, hoặc tạo bản đồ mới từ bất kỳ kiểu nào trong 67 kiểu địa hình ngẫu nhiên.
 
-Globulation 2 là phần mềm mã nguồn mở và miễn phí.
+Chiến đấu giành đất.
+Các thuộc địa đối thủ cũng đang lớn mạnh và cũng nhắm đến cùng một vùng đất. Hãy huấn luyện chiến binh, xây tháp phòng thủ và tường đá, rồi đặt cờ chiến đấu ở nơi quân đội của bạn cần tấn công. Một đợt tấn công chỉ trụ được chừng nào thức ăn và bệnh viện còn tiếp sức cho nó, nên thắng thua được định đoạt ở quán trọ chẳng kém gì ở tiền tuyến.
 
-Phiên bản Android này mang trò chơi kinh điển trên máy tính để bàn lên màn hình cảm ứng.
+Trò chơi có gì.
+• 23 bản đồ thiết kế thủ công, cùng các bản đồ mới được tạo từ 67 kiểu địa hình ngẫu nhiên
+• 8 đối thủ máy tính, từ dễ đến khó
+• Tối đa 16 thuộc địa trong một trận đấu
+• Phần hướng dẫn gồm 10 bài học
+• Trình biên tập bản đồ tích hợp sẵn
+• Lưu và xem lại bản ghi trận đấu
+• Chơi đơn ngoại tuyến, không cần tài khoản
+• Hỗ trợ 45 ngôn ngữ
+
+Chơi cùng nhau.
+Chơi trực tuyến với các trận đấu nhanh 1v1 xếp hạng hoặc giao hữu, hoặc tạo phòng rồi mời bạn bè bằng mã. Nếu không có người chơi nào đang chờ, bạn sẽ đấu với một đối thủ máy tính thay thế. Bạn có thể chơi trực tuyến với tư cách khách; hãy đăng nhập để chơi xếp hạng. Người chơi trên máy tính, trình duyệt và thiết bị di động chơi chung các trận trực tuyến, trên cùng một phiên bản trò chơi. Chơi qua mạng LAN mà không cần tài khoản hay kết nối internet.
+
+Mã nguồn mở, do tình nguyện viên xây dựng.
+Globulation 2 khởi đầu từ năm 2001 và được phát hành công khai vào năm 2004. Các tình nguyện viên đã xây dựng trò chơi qua hai thập kỷ. Đây là trò chơi miễn phí, mã nguồn mở theo giấy phép GPL, phiên bản 3: mã nguồn được công khai, và ai cũng có thể đọc, chỉnh sửa và góp phần cải thiện trò chơi.
+
+Trên Android, bạn có thể chơi trên điện thoại hoặc máy tính bảng, ở màn hình dọc hoặc màn hình ngang, với bố cục cảm ứng riêng cho điện thoại và máy tính bảng. Chế độ chơi đơn hoạt động ngoại tuyến và không cần tài khoản.

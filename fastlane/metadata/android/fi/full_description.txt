@@ -1,16 +1,34 @@
-Rakenna kukoistava siirtokunta kiistellylle alueelle.
+Reaaliaikainen strategiapeli, jossa johdat siirtokuntaa etkä jokaista yksikköä erikseen.
+Ilmainen. Ei mainoksia. Ei sovelluksen sisäisiä ostoksia. Ei lootboxeja. Ei ostettavaa pelivaluuttaa.
 
-Globulation 2 on reaaliaikainen strategiapeli, jossa ruoka, työntekijät ja tila muokkaavat laajentumistasi. Kasvata rönsyilevää siirtokuntaa, tasapainota sen kilpailevia tarpeita ja taistele kilpailijoiden kanssa maasta ja resursseista. Olentosi toimivat itsenäisesti, jolloin voit ohjata koko siirtokuntaa.
+Globulation 2 on reaaliaikainen strategiapeli globien siirtokunnasta. Globit ovat pieniä, touhukkaita olentoja, jotka tekevät töitä, syövät, harjoittelevat ja taistelevat. Sinä kasvatat siirtokuntaa, pidät sen ruokittuna ja taistelet kilpailevia siirtokuntia vastaan, sillä ne haluavat saman maan kuin sinä.
 
-Kasvata talous, joka pystyy tukemaan tavoitteitasi.
-Ruoka, rakentaminen ja koulutus kilpailevat työvoimastasi. Päätä, missä työntekijöitä tarvitaan, ja tasapainota uudet tavoitteet jo olemassa olevan siirtokuntasi tarpeiden kanssa.
+Sinä päätät. Globisi tekevät työt.
+Valitse, mitä rakennetaan ja kuinka monta globia työhön osallistuu. Globit löytävät itse perille, keräävät materiaalit ja hoitavat rakentamisen, ja ne syövät, kun niille tulee nälkä. Kun haluat tutkia uusia alueita tai hyökätä kilpailijan kimppuun, aseta lippu ja päätä, kuinka monta globia lähtee matkaan. Yksiköitä ei valita yksi kerrallaan, vaan suunnittelet koko siirtokunnan toimintaa.
 
-Tee kartasta osa strategiaasi.
-Eri kartat vaativat erilaisia strategioita. Sovita laajennuksesi maastoon, valitse mitä puolustetaan ja löydä siirtokuntasi tarvitsemat reitit ja resurssit.
+Pidä siirtokunta ruokittuna.
+Majatalot ruokkivat globisi. Pesät tuottavat niitä lisää. Koulut, kilparadat, uima-altaat ja parakit kouluttavat niitä, ja sairaalat parantavat ne. Kaikki tämä kilpailee samoista työläisistä, joten jokainen uusi hanke vie työläisiä jostakin toisesta: isommasta armeijasta ei ole hyötyä, jos kukaan ei jää korjaamaan viljaa.
 
-Puolusta sitä, mitä olet rakentanut.
-Taloutesi tukee sekä kasvua että puolustusta. Tasapainota siirtokuntasi tarpeet kilpailijoiden kilpaillessa maasta ja resursseista, ja valmistaudu konflikteihin, jotka voivat ratkaista ottelun.
+Suunnittele, minne laajennat.
+Vilja, puu ja kivi ovat harvoin siellä, missä niitä tarvitsisit, ja niiden väliset reitit ovat yhtä tärkeitä kuin itse resurssit. Päätä, minne laajennat, mitä suojaat muureilla ja mistä kannattaa taistella. Pelaa 23 käsintehdyllä kartalla tai luo uusi satunnainen kartta: valittavana on 67 maisemaa.
 
-Globulation 2 on ilmainen ja avoimen lähdekoodin ohjelmisto.
+Taistele maasta.
+Myös kilpailevat siirtokunnat kasvavat, ja ne haluavat saman maan. Kouluta sotureita, rakenna puolustustorneja ja kivimuureja ja aseta sotalippuja sinne, minne armeijasi pitää hyökätä. Hyökkäys kestää vain niin kauan kuin ruoka ja sairaalat jaksavat sitä tukea, joten sota voitetaan yhtä lailla majataloissa kuin rintamalla.
 
-Tämä Android-versio tuo klassisen pöytäkonepelin kosketusnäyttöihin.
+Mitä peli sisältää.
+• 23 käsintehtyä karttaa sekä 67 maisemaa, joista peli luo uusia satunnaisia karttoja
+• 8 tietokonevastustajaa helposta vaikeaan
+• Enintään 16 siirtokuntaa samassa ottelussa
+• 10 opetusjakson tutoriaali
+• Sisäänrakennettu karttaeditori
+• Tallenna ja katso otteluiden uusintoja
+• Yksinpeli offline-tilassa, tiliä ei tarvita
+• Saatavilla 45 kielellä
+
+Pelaa yhdessä.
+Pelaa verkossa rankattuja tai rentoja 1v1-pikaotteluita, tai luo huone ja kutsu kaverit mukaan koodilla. Jos yhtään pelaajaa ei ole odottamassa, pelaat sen sijaan tietokonevastustajaa vastaan. Verkossa voit pelata vieraana; rankattuja otteluita varten kirjaudu sisään. Tietokoneella, selaimessa ja mobiililaitteilla pelaavat ovat mukana samoissa verkkopeleissä, kun peliversio on sama. Pelaa lähiverkossa ilman tiliä ja ilman internetyhteyttä.
+
+Avointa lähdekoodia, vapaaehtoisten tekemä.
+Globulation 2:n kehitys alkoi vuonna 2001, ja peli julkaistiin yleisölle vuonna 2004. Vapaaehtoiset ovat rakentaneet sitä kahden vuosikymmenen aikana. Peli on ilmainen ja avointa lähdekoodia, lisenssinä GPL:n versio 3: koodi on julkista, ja kuka tahansa voi lukea ja muokata sitä ja auttaa parantamaan peliä.
+
+Androidilla pelaat puhelimella tai tabletilla, pysty- tai vaaka-asennossa, ja puhelimille ja tableteille on omat kosketuskäyttöliittymänsä. Yksinpeli toimii offline-tilassa eikä vaadi tiliä.

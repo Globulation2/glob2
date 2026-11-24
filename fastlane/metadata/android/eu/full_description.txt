@@ -1,16 +1,34 @@
-Eraiki kolonia oparo bat lehian dagoen lurralde batean.
+Denbora errealeko estrategia: kolonia gidatzen duzu, ez unitate bakoitza.
+Doakoa. Iragarkirik gabe. Aplikazioko erosketarik gabe. Loot boxik gabe. Ordainpeko monetarik gabe.
 
-Globulation 2 denbora errealeko estrategia-joko bat da, non elikagaiek, langileek eta espazioak zure hedapena baldintzatzen duten. Hazi kolonia zabal bat, orekatu haren beharrizan kontrajarriak eta lehiatu aurkariekin lurra eta baliabideak lortzeko. Zure izakiek beren kabuz jarduten dute, kolonia osotasunean gidatzeko aukera izan dezazun.
+Globulation 2 denbora errealeko estrategia-joko bat da, eta globen kolonia bat du ardatz: globak izaki txiki eta lanpetuak dira, lan egin, jan, entrenatu eta borrokatu egiten dutenak. Zuk kolonia hazi, ondo elikatuta eduki eta lur bera nahi duten kolonia arerioen aurka borrokatzen duzu.
 
-Garatu zure asmoei eutsiko dien ekonomia.
-Elikadurak, eraikuntzak eta trebakuntzak zure langileak behar dituzte. Erabaki non behar diren langileak eta orekatu asmo berriak lehendik duzun koloniaren beharrekin.
+Zuk erabakitzen duzu. Lana zure globek egiten dute.
+Aukeratu zer eraiki eta zenbat globek egingo duten lan horretan. Globek beren kabuz aurkitzen dute bidea, materialak bildu eta eraiki egiten dute, eta gose direnean jaten dute. Lur berriak miatzeko edo arerio bati eraso egiteko, jarri bandera bat eta zehaztu zenbat glob joango diren. Ez duzu unitaterik banan-banan hautatzen: kolonia osoarentzat egiten duzu plana.
 
-Egin mapa zure estrategiaren parte.
-Mapa desberdinek estrategia desberdinak eskatzen dituzte. Egokitu zure hedapena lur-eremura, aukeratu zer babestu eta aurkitu zure koloniak behar dituen bideak eta baliabideak.
+Eduki kolonia ondo elikatuta.
+Ostatuek zure globak elikatzen dituzte. Kofoinek glob gehiago sortzen dituzte. Eskolek, zirkuituek, igerilekuek eta barrakoiek entrenatu egiten dituzte, eta ospitaleek sendatu. Horrek guztiak langile berak behar ditu; beraz, proiektu berri bakoitzak beste bati kentzen dizkio langileak: armada handiagoak ez du ezertarako balio, garia biltzeko inor geratzen ez bada.
 
-Babestu eraiki duzuna.
-Zure ekonomiak hazkundea eta defentsa sostengatzen ditu. Orekatu koloniaren beharrak aurkariak lurra eta baliabideak lortzeko lehian ari diren bitartean, eta prestatu partida erabaki dezaketen gatazketarako.
+Planifikatu nora hedatu.
+Garia, egurra eta harria gutxitan daude zuk nahi zenukeen lekuan, eta haien arteko bideek baliabideek berek adinako garrantzia dute. Erabaki nora hedatu, zer babestu hormekin eta zerk merezi duen borroka. Jokatu eskuz egindako 23 mapetan, edo sortu mapa berri bat ausazko 67 paisaietako edozeinekin.
 
-Globulation 2 doakoa eta kode irekikoa da.
+Borrokatu lurragatik.
+Kolonia arerioak ere hazten ari dira, eta lur bera nahi dute. Entrenatu gerlariak, eraiki babes-dorreak eta harrizko hormak, eta jarri gerra-banderak zure armadak eraso egin behar duen lekuetan. Eraso batek janariak eta ospitaleek eusten dioten bitartean baino ez du irauten; horregatik, gerra ostatuetan irabazten da, frontean bezainbeste.
 
-Android edizio honek ordenagailuko joko klasikoa ukipen-pantailetara ekartzen du.
+Jokoak dakarrena.
+• Eskuz egindako 23 mapa, eta ausazko 67 paisaietatik sortutako mapa berriak
+• Ordenagailuko 8 aurkari, errazetik zailera
+• Gehienez 16 kolonia partida berean
+• 10 ikasgaiko tutoriala
+• Mapa-editore integratua
+• Gorde eta ikusi errepikapenak
+• Jokalari bakarreko modua lineaz kanpo, konturik behar izan gabe
+• 45 hizkuntzatan erabilgarri
+
+Jokatu elkarrekin.
+Jokatu linean 1v1 partida azkarrak, sailkapenekoak edo lagunartekoak, edo sortu gela bat eta gonbidatu lagunak kode baten bidez. Jokalaririk zain ez badago, ordenagailuko aurkari baten kontra jokatuko duzu. Linean gonbidatu gisa joka dezakezu; sailkapeneko partidetan jokatzeko, hasi saioa. Mahaigaineko, nabigatzaileko eta mugikorreko jokalariek lineako partida berak partekatzen dituzte, jokoaren bertsio berean. Jokatu zure sare lokalean, konturik eta Interneteko konexiorik gabe.
+
+Kode irekikoa, boluntarioek egina.
+Globulation 2 proiektua 2001ean hasi zen, eta 2004an jarri zen jendearen eskura. Boluntarioek eraiki dute, bi hamarkadatan zehar. Doakoa eta kode irekikoa da, GPL lizentziaren 3. bertsioaren pean: kodea publikoa da, eta edonork irakurri, aldatu eta jokoa hobetzen lagun dezake.
+
+Android gailuetan, jokatu telefonoan edo tabletan, bertikalean edo horizontalean, telefonoetarako eta tabletetarako ukipen-interfaze bereiziekin. Jokalari bakarreko moduak lineaz kanpo funtzionatzen du, eta ez du konturik behar.

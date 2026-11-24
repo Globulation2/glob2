@@ -1,16 +1,34 @@
-Zgradite uspešno kolonijo na spornem ozemlju.
+Strategija v realnem času, v kateri vodite kolonijo, ne vsake enote posebej.
+Brezplačno. Brez oglasov. Brez nakupov v aplikaciji. Brez škatel s plenom. Brez plačljive valute.
 
-Globulation 2 je strateška igra v realnem času, kjer hrana, delavci in prostor oblikujejo vašo širitev. Razširite kolonijo, uravnotežite njene konkurenčne potrebe in se borite s tekmeci za zemljo in vire. Vaša bitja delujejo avtonomno, kar vam omogoča, da vodite kolonijo kot celoto.
+Globulation 2 je strategija v realnem času o koloniji globov: majhnih, marljivih bitij, ki delajo, jedo, se urijo in se borijo. Kolonijo razvijate, skrbite, da je sita, in se borite z rivalskimi kolonijami, ki hočejo isto ozemlje.
 
-Razvijte gospodarstvo, ki lahko podpira vaše ambicije.
-Hrana, gradnja in usposabljanje se potegujejo za vašo delovno silo. Odločite se, kje so delavci potrebni, in uravnotežite nove ambicije s potrebami kolonije, ki jo že imate.
+Vi odločate. Delo opravijo vaši globi.
+Izberite, kaj boste gradili in koliko globov naj pri tem dela. Sami najdejo pot, zberejo material in postavijo zgradbo, jedo pa, ko so lačni. Če želite raziskati novo ozemlje ali napasti tekmeca, postavite zastavo in določite, koliko globov naj gre tja. Tu ni enot, ki bi jih izbirali posamič: načrtujete za celotno kolonijo.
 
-Naj bo zemljevid del vaše strategije.
-Različni zemljevidi zahtevajo različne strategije. Prilagodite svojo širitev terenu, izberite, kaj boste branili, in poiščite poti in vire, ki jih vaša kolonija potrebuje.
+Poskrbite, da bo kolonija sita.
+Vaši globi jedo v restavracijah. V porodnišnicah nastajajo novi. Šole, tekaške steze, bazeni in vojašnice jih urijo, bolnišnice pa zdravijo. Vse to tekmuje za iste delavce, zato vsak nov projekt vzame delavce drugemu: večja vojska nič ne pomaga, če ne ostane nihče, ki bi žel pšenico.
 
-Branite, kar ste zgradili.
-Vaše gospodarstvo podpira tako rast kot obrambo. Uravnotežite potrebe svoje kolonije, medtem ko tekmeci tekmujejo za zemljo in vire, in se pripravite na spopade, ki lahko odločijo tekmo.
+Načrtujte, kam se boste širili.
+Pšenica, les in kamen so redko tam, kjer bi jih želeli, poti med njimi pa so enako pomembne kot surovine same. Odločite se, kam se boste širili, kaj boste zaščitili z zidovi in za kaj se je vredno boriti. Igrajte na 23 ročno izdelanih zemljevidih ali ustvarite nov zemljevid iz katere koli od 67 naključnih pokrajin.
 
-Globulation 2 je brezplačen in odprtokoden.
+Borite se za ozemlje.
+Tudi rivalske kolonije rastejo in hočejo isto ozemlje. Urite vojake, gradite obrambne stolpe in kamnite zidove ter postavljajte vojaške zastave tja, kjer naj vaša vojska napade. Napad zdrži le toliko časa, kolikor zdržijo hrana in bolnišnice, ki ga podpirajo, zato se vojna dobi v restavracijah prav toliko kot na fronti.
 
-Ta izdaja za Android prinaša klasično računalniško igro na zaslone na dotik.
+Kaj ponuja igra.
+• 23 ročno izdelanih zemljevidov in novi zemljevidi, ustvarjeni iz 67 naključnih pokrajin
+• 8 računalniških nasprotnikov, od lahkih do težkih
+• Do 16 kolonij v eni tekmi
+• Vadnica z 10 lekcijami
+• Vgrajen urejevalnik zemljevidov
+• Shranjevanje in ogled posnetkov iger
+• Igra za enega igralca brez povezave, račun ni potreben
+• Na voljo v 45 jezikih
+
+Igrajte skupaj.
+Na spletu igrajte rangirane ali sproščene hitre tekme 1v1 ali pa ustvarite sobo in prijatelje povabite s kodo. Če ne čaka noben igralec, igrate proti računalniškemu nasprotniku. Na spletu lahko igrate kot gost; za rangirane tekme se prijavite. Igralci na računalniku, v brskalniku in na mobilnih napravah igrajo v istih spletnih igrah, na isti različici igre. Igrajte v lokalnem omrežju brez računa in brez internetne povezave.
+
+Odprta koda, delo prostovoljcev.
+Igra Globulation 2 je začela nastajati leta 2001, javno pa je izšla leta 2004. Prostovoljci so jo gradili skozi dve desetletji. Je brezplačna in odprtokodna pod licenco GPL različice 3: koda je javna in vsakdo jo lahko bere, spreminja ter pomaga izboljševati igro.
+
+V sistemu Android igrajte na telefonu ali tablici, pokončno ali ležeče, z ločenima postavitvama upravljanja na dotik za telefone in tablice. Igra za enega igralca deluje brez povezave in ne zahteva računa.

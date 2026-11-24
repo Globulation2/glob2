@@ -1,16 +1,34 @@
-Jenga koloni linalostawi katika eneo linalogombaniwa.
+Mikakati ya wakati halisi ambapo unaongoza koloni, si kila kiumbe.
+Bila malipo. Hakuna matangazo. Hakuna ununuzi wa ndani ya programu. Hakuna loot boxes. Hakuna sarafu za kulipia.
 
-Globulation 2 ni mchezo wa mikakati wa wakati halisi ambapo chakula, wafanyakazi na nafasi huamua upanuzi wako. Kuza koloni linaloenea, sawazisha mahitaji yake yanayoshindana, na shindana na wapinzani kwa ardhi na rasilimali. Viumbe wako hutenda wenyewe, huku wewe ukiongoza koloni kwa ujumla.
+Globulation 2 ni mchezo wa mikakati ya wakati halisi kuhusu koloni la glob: viumbe wadogo wenye shughuli nyingi ambao hufanya kazi, hula, hupata mafunzo na kupigana. Unakuza koloni, unahakikisha lina chakula na unapambana na makoloni pinzani yanayotaka ardhi ileile.
 
-Kuza uchumi unaoweza kutimiza malengo yako.
-Uzalishaji wa chakula, ujenzi na mafunzo vinashindania wafanyakazi wako. Amua wafanyakazi wanahitajika wapi na sawazisha malengo mapya na mahitaji ya koloni ulilo nalo tayari.
+Wewe unaamua. Glob wako wanafanya kazi.
+Chagua cha kujenga na idadi ya glob watakaokifanyia kazi. Wao wenyewe hutafuta njia, hukusanya malighafi na kujenga, na hula wanapohisi njaa. Ili kuchunguza ardhi mpya au kumshambulia mpinzani, weka bendera na upange idadi ya glob watakaokwenda. Hakuna viumbe wa kuchagua mmoja mmoja: unapanga kwa ajili ya koloni zima.
 
-Ifanye ramani kuwa sehemu ya mkakati wako.
-Ramani tofauti zinahitaji mikakati tofauti. Rekebisha upanuzi wako kulingana na mandhari, chagua utakacholinda, na tafuta njia na rasilimali zinazohitajika na koloni lako.
+Lisha koloni lako.
+Nyumba za wageni huwalisha glob wako. Viota huzalisha glob zaidi. Shule, viwanja vya mbio, mabwawa ya kuogelea na kambi za jeshi huwapa mafunzo, na hospitali huwatibu. Vyote hivi hushindania wafanyakazi walewale, kwa hiyo kila mradi mpya huchukua wafanyakazi kutoka kwenye mradi mwingine: jeshi kubwa halina maana ikiwa hakuna aliyebaki kuvuna ngano.
 
-Linda ulichojenga.
-Uchumi wako unawezesha ukuaji na ulinzi. Sawazisha mahitaji ya koloni lako huku wapinzani wakishindania ardhi na rasilimali, na jiandae kwa migogoro inayoweza kuamua matokeo ya mechi.
+Panga mahali pa kupanukia.
+Ngano, kuni na mawe ni nadra kupatikana pale unapovitaka, na njia zinazoviunganisha ni muhimu sawa na rasilimali zenyewe. Amua mahali pa kupanukia, kipi cha kulinda kwa kuta na kipi kinastahili kupiganiwa. Cheza kwenye ramani 23 zilizobuniwa kwa mkono, au zalisha ramani mpya kutoka kwenye mojawapo ya mandhari 67 za nasibu.
 
-Globulation 2 ni bure na una msimbo huria.
+Pigania ardhi.
+Makoloni pinzani nayo yanakua, na yanataka ardhi ileile. Funza mashujaa, jenga minara ya ulinzi na kuta za mawe, na uweke bendera za vita mahali ambapo jeshi lako linapaswa kushambulia. Shambulio hudumu tu kadiri chakula na hospitali zinazolitegemeza zinavyodumu, kwa hiyo ushindi wa vita hupatikana kwenye nyumba za wageni sawa na kwenye mstari wa mbele.
 
-Toleo hili la Android linaleta mchezo asilia wa kompyuta kwenye skrini za kugusa.
+Yaliyomo kwenye mchezo.
+• Ramani 23 zilizobuniwa kwa mkono, pamoja na ramani mpya zinazozalishwa kutoka kwenye mandhari 67 za nasibu
+• Wapinzani 8 wa kompyuta, kuanzia wepesi hadi wagumu
+• Hadi makoloni 16 katika mechi moja
+• Mafunzo yenye masomo 10
+• Kihariri cha ramani kilichojengewa ndani
+• Hifadhi na utazame marudio ya mechi
+• Mchezo wa mchezaji mmoja bila intaneti, bila kuhitaji akaunti
+• Mchezo unapatikana katika lugha 45
+
+Chezeni pamoja.
+Cheza mtandaoni mechi za haraka za 1v1, za viwango au za kujifurahisha, au unda chumba na ualike marafiki kwa msimbo. Ikiwa hakuna mchezaji anayesubiri, utacheza dhidi ya mpinzani wa kompyuta badala yake. Unaweza kucheza mtandaoni kama mgeni; ingia katika akaunti ili kucheza mechi za viwango. Wachezaji walio kwenye kompyuta, kivinjari na vifaa vya mkononi hushiriki michezo ileile ya mtandaoni, kwenye toleo lilelile la mchezo. Cheza kupitia mtandao wako wa ndani (LAN) bila akaunti wala muunganisho wa intaneti.
+
+Mchezo wa msimbo huria, uliojengwa na watu wanaojitolea.
+Mchezo wa Globulation 2 ulianza mwaka 2001 na ukatolewa kwa umma mwaka 2004. Watu wanaojitolea wameujenga katika kipindi cha miongo miwili. Unapatikana bila malipo na una msimbo huria chini ya leseni ya GPL, toleo la 3: msimbo uko wazi kwa umma, na mtu yeyote anaweza kuusoma, kuubadilisha na kusaidia kuboresha mchezo.
+
+Kwenye Android, cheza kwa simu au kompyuta kibao, skrini ikiwa wima au mlalo; simu na kompyuta kibao kila moja ina mpangilio wake wa skrini ya kugusa. Mchezo wa mchezaji mmoja hufanya kazi bila intaneti na hauhitaji akaunti.

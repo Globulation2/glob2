@@ -1,16 +1,34 @@
-Baue eine blühende Kolonie in umkämpftem Gebiet auf.
+Echtzeitstrategie, bei der du die Kolonie lenkst, nicht jede einzelne Einheit.
+Kostenlos. Keine Werbung. Keine In-App-Käufe. Keine Lootboxen. Keine Premiumwährung.
 
-Globulation 2 ist ein Echtzeitstrategiespiel, in dem Nahrung, Arbeitskräfte und Platz deine Expansion bestimmen. Vergrößere deine Kolonie, stimme ihre konkurrierenden Bedürfnisse aufeinander ab und ringe mit Rivalen um Land und Ressourcen. Deine Kreaturen handeln selbstständig, sodass du die Kolonie als Ganzes lenken kannst.
+Globulation 2 ist ein Echtzeitstrategiespiel rund um eine Kolonie aus Globs. Das sind kleine, emsige Wesen, die arbeiten, essen, trainieren und kämpfen. Du lässt die Kolonie wachsen, versorgst sie mit Nahrung und kämpfst gegen rivalisierende Kolonien, die dasselbe Land wollen.
 
-Entwickle eine Wirtschaft, die deine Ziele trägt.
-Nahrung, Bau und Ausbildung konkurrieren um deine Arbeitskräfte. Entscheide, wo Arbeiter gebraucht werden, und bringe neue Ziele mit den Bedürfnissen deiner bestehenden Kolonie in Einklang.
+Du entscheidest. Deine Globs erledigen die Arbeit.
+Bestimme, was gebaut wird und wie viele Globs daran arbeiten sollen. Sie finden ihren Weg selbst, sammeln das Material, errichten das Gebäude und essen, wenn sie hungrig sind. Um neues Land zu erkunden oder einen Rivalen anzugreifen, setzt du eine Flagge und legst fest, wie viele Globs losziehen sollen. Du wählst keine Einheiten einzeln aus: Du planst für die ganze Kolonie.
 
-Mache die Karte zum Teil deiner Strategie.
-Verschiedene Karten verlangen unterschiedliche Strategien. Passe deine Expansion an das Gelände an, entscheide, was du verteidigen willst, und finde die Wege und Ressourcen, die deine Kolonie braucht.
+Ernähre deine Kolonie.
+Gasthöfe ernähren deine Globs. Stöcke bringen neue Globs hervor. Schulen, Rennbahnen, Schwimmbecken und Trainingslager bilden sie aus, und Krankenhäuser heilen sie. All das konkurriert um dieselben Arbeiter, jedes neue Vorhaben zieht also Arbeiter von einem anderen ab: Eine größere Armee nützt nichts, wenn niemand mehr da ist, der den Weizen erntet.
 
-Verteidige, was du aufgebaut hast.
-Deine Wirtschaft ermöglicht Wachstum und Verteidigung. Bringe die Bedürfnisse deiner Kolonie ins Gleichgewicht, während Rivalen um Land und Ressourcen kämpfen, und bereite dich auf Konflikte vor, die das Spiel entscheiden können.
+Plane, wohin du expandierst.
+Weizen, Holz und Stein liegen selten dort, wo du sie haben willst, und die Wege dazwischen sind genauso wichtig wie die Ressourcen selbst. Entscheide, wohin du expandierst, was du mit Mauern schützt und wofür sich der Kampf lohnt. Spiele 23 handgebaute Karten oder erzeuge aus einer von 67 Zufallslandschaften eine neue Karte.
 
-Globulation 2 ist kostenlos und quelloffen.
+Kämpfe um das Land.
+Auch die rivalisierenden Kolonien wachsen, und sie wollen dasselbe Land. Bilde Krieger aus, baue Wachtürme und Mauern und setze Kriegsflaggen dorthin, wo deine Armee angreifen soll. Ein Angriff hält nur so lange durch wie die Nahrung und die Krankenhäuser, die ihn versorgen: Ein Krieg wird in den Gasthöfen genauso gewonnen wie an der Front.
 
-Diese Android-Ausgabe bringt den klassischen Desktop-Titel auf Touchscreens.
+Das steckt im Spiel.
+• 23 handgebaute Karten, dazu neu erzeugte Karten aus 67 Zufallslandschaften
+• 8 Computergegner, von leicht bis schwer
+• Bis zu 16 Kolonien in einer Partie
+• Ein Tutorial mit 10 Lektionen
+• Integrierter Karteneditor
+• Replays speichern und ansehen
+• Einzelspieler offline spielbar, kein Konto nötig
+• In 45 Sprachen verfügbar
+
+Spiele mit anderen.
+Online startest du ein schnelles 1v1-Match, gewertet oder ungewertet, oder du erstellst einen Raum und lädst Freunde per Code ein. Wartet gerade kein anderer Spieler, trittst du stattdessen gegen einen Computergegner an. Online kannst du als Gast spielen; für gewertete Matches meldest du dich an. Spieler am Desktop, im Browser und auf Mobilgeräten spielen in denselben Online-Partien, mit derselben Spielversion. Im lokalen Netzwerk spielst du ohne Konto und ohne Internetverbindung.
+
+Open Source, von Freiwilligen entwickelt.
+Die Arbeit an Globulation 2 begann 2001; veröffentlicht wurde das Spiel 2004. Freiwillige haben es über zwei Jahrzehnte hinweg entwickelt. Es ist kostenlos und steht als Open Source unter der GPL, Version 3: Der Code ist öffentlich, und alle können ihn lesen, ändern und dabei helfen, das Spiel zu verbessern.
+
+Auf Android spielst du auf dem Smartphone oder Tablet, im Hoch- oder Querformat, mit jeweils eigenen Touch-Layouts für Smartphones und Tablets. Der Einzelspielermodus funktioniert offline und braucht kein Konto.

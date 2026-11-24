@@ -74,22 +74,59 @@ price Free, and disable optional Amazon DRM. Select only Fire tablets that pass
 qualification. Complete the privacy questionnaire based on the actual network
 and account behavior, link the [Fire tablet privacy policy](../mobile/amazon-privacy-policy.md),
 and supply a support contact, icon, and Fire-device
-screenshots. Listing headline: **Build a thriving colony in contested territory.** Full description:
+screenshots. Use the storefront-v2 English listing below.
 
-Build a thriving colony in contested territory.
+**Short description**
 
-Globulation 2 is a real-time strategy game where food, workers and space shape your expansion. Grow a sprawling colony, balance its competing needs, and contend with rivals for land and resources. Your creatures act autonomously, letting you guide the colony as a whole.
+```text
+Real-time strategy with no ads and no in-app purchases. Grow a colony and fight rivals for land. You set the priorities; your colony does the work.
+```
 
-Grow an economy that can sustain your ambitions.
-Food, construction and training compete for your workforce. Decide where workers are needed and balance new ambitions with the needs of the colony you already have.
+**Full description**
 
-Make the map part of your strategy.
-Different maps call for different strategies. Adapt your expansion to the terrain, choose what to defend, and find the routes and resources your colony needs.
+```text
+Real-time strategy where you command the colony, not every unit.
+Free. No ads. No in-app purchases. No loot boxes. No premium currency.
 
-Defend what you've built.
-Your economy supports both growth and defense. Balance the needs of your colony while rivals compete for land and resources, and prepare for conflicts that can decide the match.
+Globulation 2 is a real-time strategy game about a colony of globs: small, busy creatures that work, eat, train and fight. You grow the colony, keep it fed and fight rival colonies that want the same land.
 
-Globulation 2 is free and open source.
+You decide. Your globs do the work.
+Choose what to build and how many globs should work on it. They find their own way, gather the materials and build it, and they eat when they are hungry. To explore new land or attack a rival, place a flag and set how many globs should go. There are no units to select one by one: you plan for the whole colony.
+
+Keep the colony fed.
+Inns feed your globs. Swarms produce more of them. Schools, racetracks, swimming pools and barracks train them, and hospitals heal them. All of it competes for the same workers, so every new project takes workers from another: a bigger army is no use if nobody is left to harvest the wheat.
+
+Plan where to expand.
+Wheat, wood and stone are rarely where you want them, and the routes between them matter as much as the resources. Decide where to expand, what to protect with walls and what is worth fighting for. Play 23 handmade maps, or generate a new map from any of 67 random landscapes.
+
+Fight for the land.
+Rival colonies are growing too, and they want the same land. Train warriors, build defense towers and stone walls, and place war flags where your army should attack. An attack lasts only as long as the food and hospitals that support it, so a war is won at the inns as much as at the front.
+
+What's in the game.
+• 23 handmade maps, plus new maps generated from 67 random landscapes
+• 8 computer opponents, from easy to hard
+• Up to 16 colonies in one match
+• A 10-lesson tutorial
+• Built-in map editor
+• Save and watch replays
+• Offline single-player, with no account needed
+
+Play together.
+Play over your local network with no account and no internet connection.
+
+Open source, built by volunteers.
+Globulation 2 started in 2001 and was released to the public in 2004. Volunteers have built it over two decades. It is free and open source under the GPL, version 3: the code is public, and anyone can read it, change it and help improve the game.
+
+This Fire tablet edition is for offline and local network play. It has no online multiplayer and no accounts.
+```
+
+**Feature bullets**
+
+- Command the colony, not every unit: you choose what to build and where to attack, and your workers and warriors do the work on their own
+- 23 handmade maps, plus new maps generated from 67 random landscapes
+- 8 computer opponents, from easy to hard
+- Offline single-player, with no account needed
+- Free. No ads. No in-app purchases. No loot boxes. No premium currency.
 
 Review this copy against the final Fire build and Amazon's listing fields before
 submission. Amazon requires the first version through the console; the API can

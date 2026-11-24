@@ -1,16 +1,34 @@
-Bygg en blomstrende koloni i omstridt territorium.
+Sanntidsstrategi der du styrer kolonien, ikke hver enkelt enhet.
+Gratis. Ingen reklame. Ingen kjøp i appen. Ingen lootbokser. Ingen premiumvaluta.
 
-Globulation 2 er et sanntidsstrategispill der mat, arbeidere og plass former utvidelsen din. Utvikle en vidstrakt koloni, balanser de ulike behovene og konkurrer med rivaler om land og ressurser. Skapningene dine handler selvstendig, slik at du kan styre kolonien som helhet.
+Globulation 2 er et sanntidsstrategispill om en koloni av glober: små, travle skapninger som arbeider, spiser, trener og kjemper. Du bygger opp kolonien, sørger for at den har mat, og kjemper mot rivaliserende kolonier som vil ha det samme territoriet.
 
-Bygg en økonomi som kan støtte ambisjonene dine.
-Mat, bygging og trening konkurrerer om arbeidskraften din. Bestem hvor arbeiderne trengs, og balanser nye ambisjoner med behovene til kolonien du allerede har.
+Du bestemmer. Globene dine gjør jobben.
+Velg hva som skal bygges, og hvor mange glober som skal jobbe med det. De finner veien selv, henter materialene og bygger, og de spiser når de er sultne. Vil du utforske nytt land eller angripe en rival, setter du ut et flagg og bestemmer hvor mange glober som skal dra. Her velger du ikke enheter én og én: Du planlegger for hele kolonien.
 
-Gjør kartet til en del av strategien din.
-Ulike kart krever ulike strategier. Tilpass utvidelsen til terrenget, velg hva du vil forsvare, og finn rutene og ressursene kolonien din trenger.
+Hold kolonien mett.
+Vertshus gir globene dine mat. Svermer lager flere av dem. Skoler, løpebaner, svømmebasseng og kaserner trener dem, og sykehus helbreder dem. Alt dette konkurrerer om de samme arbeiderne, så hvert nytt prosjekt tar arbeidere fra et annet: En større hær hjelper lite hvis ingen er igjen til å høste hveten.
 
-Forsvar det du har bygget.
-Økonomien din støtter både vekst og forsvar. Balanser koloniens behov mens rivaler konkurrerer om land og ressurser, og forbered deg på konflikter som kan avgjøre kampen.
+Planlegg hvor du vil utvide.
+Hvete, trevirke og stein ligger sjelden der du vil ha dem, og rutene mellom dem betyr like mye som selve ressursene. Bestem hvor du vil utvide, hva du vil beskytte med murer, og hva som er verdt å kjempe for. Spill på 23 håndlagde kart, eller generer et nytt kart fra et av 67 tilfeldige landskap.
 
-Globulation 2 er gratis og har åpen kildekode.
+Kjemp om territoriet.
+Rivaliserende kolonier vokser også, og de vil ha det samme territoriet. Tren krigere, bygg forsvarstårn og steinmurer, og sett ut krigsflagg der hæren din skal angripe. Et angrep varer bare så lenge maten og sykehusene bak det holder, så en krig vinnes like mye i vertshusene som ved fronten.
 
-Denne Android-utgaven bringer det klassiske PC-spillet til berøringsskjermer.
+Dette finner du i spillet.
+• 23 håndlagde kart, pluss nye kart generert fra 67 tilfeldige landskap
+• 8 datastyrte motstandere, fra lette til vanskelige
+• Opptil 16 kolonier i én kamp
+• Opplæring med 10 leksjoner
+• Innebygd kartredigering
+• Lagre og se repriser
+• Enspiller uten nett og uten konto
+• Tilgjengelig på 45 språk
+
+Spill sammen.
+Spill rangerte eller uformelle 1v1-hurtigkamper på nett, eller opprett et rom og inviter venner med en kode. Hvis ingen andre spillere venter, møter du en datastyrt motstander i stedet. Du kan spille på nett som gjest; logg inn for å spille rangert. Spillere på datamaskin, i nettleser og på mobil spiller i de samme nettkampene, med samme versjon av spillet. Spill over det lokale nettverket ditt, uten konto og uten internettforbindelse.
+
+Åpen kildekode, laget av frivillige.
+Globulation 2 ble påbegynt i 2001 og gjort offentlig tilgjengelig i 2004. Frivillige har bygget det gjennom to tiår. Det er gratis og har åpen kildekode under GPL, versjon 3: Koden er offentlig, og hvem som helst kan lese den, endre den og bidra til å forbedre spillet.
+
+På Android kan du spille på mobil eller nettbrett, i stående eller liggende retning, med egne berøringsgrensesnitt for mobil og nettbrett. Enspiller fungerer uten nett og krever ingen konto.

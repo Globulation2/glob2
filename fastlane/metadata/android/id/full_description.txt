@@ -1,16 +1,34 @@
-Bangun koloni yang berkembang pesat di wilayah yang diperebutkan.
+Strategi real-time: kamu memimpin koloni, bukan mengatur unit satu per satu.
+Gratis. Tanpa iklan. Tanpa pembelian dalam aplikasi. Tanpa loot box. Tanpa mata uang premium.
 
-Globulation 2 adalah game strategi waktu nyata di mana makanan, pekerja, dan ruang membentuk ekspansi Anda. Kembangkan koloni yang luas, seimbangkan kebutuhan yang saling bersaing, dan bersainglah dengan para pesaing untuk mendapatkan lahan dan sumber daya. Makhluk Anda bertindak secara otonom, memungkinkan Anda untuk memandu koloni secara keseluruhan.
+Globulation 2 adalah game strategi real-time tentang koloni globul: makhluk kecil yang sibuk bekerja, makan, berlatih, dan bertempur. Kamu mengembangkan koloni, menjaganya tetap kenyang, dan bertempur melawan koloni saingan yang mengincar lahan yang sama.
 
-Bangun ekonomi yang dapat mendukung ambisi Anda.
-Makanan, konstruksi, dan pelatihan bersaing untuk mendapatkan tenaga kerja Anda. Tentukan di mana pekerja dibutuhkan dan seimbangkan ambisi baru dengan kebutuhan koloni yang sudah Anda miliki.
+Kamu yang memutuskan. Globulmu yang bekerja.
+Pilih apa yang akan dibangun dan berapa banyak globul yang mengerjakannya. Mereka mencari jalan sendiri, mengumpulkan bahan, lalu membangunnya, dan mereka makan saat lapar. Untuk menjelajahi lahan baru atau menyerang saingan, pasang bendera dan tentukan berapa banyak globul yang berangkat. Tidak ada unit yang perlu dipilih satu per satu: kamu membuat rencana untuk seluruh koloni.
 
-Jadikan peta sebagai bagian dari strategi Anda.
-Peta yang berbeda membutuhkan strategi yang berbeda pula. Sesuaikan ekspansi Anda dengan medan, pilih apa yang perlu dipertahankan, dan temukan rute serta sumber daya yang dibutuhkan koloni Anda.
+Jaga koloni tetap kenyang.
+Penginapan memberi makan globulmu. Sarang menghasilkan globul baru. Sekolah, lintasan lari, kolam renang, dan barak melatih mereka, sedangkan rumah sakit menyembuhkan mereka. Semuanya memperebutkan pekerja yang sama, jadi setiap proyek baru mengambil pekerja dari proyek lain: pasukan yang lebih besar percuma saja jika tidak ada lagi yang memanen gandum.
 
-Pertahankan yang telah Anda bangun.
-Perekonomian Anda mendukung pertumbuhan dan pertahanan. Seimbangkan kebutuhan koloni Anda sementara para pesaing berebut lahan dan sumber daya, dan bersiaplah untuk konflik yang dapat menentukan hasil pertandingan.
+Rencanakan arah perluasan.
+Gandum, kayu, dan batu jarang berada di tempat yang kamu inginkan, dan rute di antaranya sama pentingnya dengan sumber daya itu sendiri. Tentukan ke mana koloni meluas, apa yang dilindungi dengan tembok, dan apa yang layak diperebutkan. Mainkan 23 peta buatan tangan, atau hasilkan peta baru dari 67 pilihan lanskap acak.
 
-Globulation 2 gratis dan bersifat open source.
+Bertempur demi lahan.
+Koloni saingan juga terus berkembang, dan mereka mengincar lahan yang sama. Latih prajurit, bangun menara pertahanan dan tembok batu, lalu pasang bendera perang di tempat pasukanmu harus menyerang. Serangan hanya bertahan selama masih ada makanan dan rumah sakit yang menopangnya, jadi perang dimenangkan bukan hanya di garis depan, tetapi juga di penginapan.
 
-Edisi Android ini menghadirkan game desktop klasik ke layar sentuh.
+Yang ada di dalam game.
+• 23 peta buatan tangan, ditambah peta baru yang dihasilkan dari 67 lanskap acak
+• 8 lawan komputer, dari yang mudah sampai yang sulit
+• Hingga 16 koloni dalam satu pertandingan
+• Tutorial berisi 10 pelajaran
+• Editor peta bawaan
+• Simpan dan tonton rekaman pertandingan
+• Mode pemain tunggal offline, tanpa perlu akun
+• Tersedia dalam 45 bahasa
+
+Bermain bersama.
+Mainkan pertandingan cepat 1v1 online, berperingkat atau santai, atau buat ruang dan undang teman dengan kode. Jika tidak ada pemain yang sedang menunggu, kamu akan menghadapi lawan komputer. Kamu bisa bermain online sebagai tamu; masuk ke akun untuk pertandingan berperingkat. Pemain di desktop, browser, dan perangkat seluler bertemu dalam permainan online yang sama, pada versi game yang sama. Bermain lewat jaringan lokal tanpa akun dan tanpa koneksi internet.
+
+Sumber terbuka, dikembangkan oleh sukarelawan.
+Globulation 2 mulai digarap pada tahun 2001 dan dirilis untuk umum pada tahun 2004. Para sukarelawan telah mengembangkannya selama dua dekade. Game ini gratis dan bersumber terbuka di bawah lisensi GPL versi 3: kodenya terbuka untuk umum, dan siapa pun boleh membacanya, mengubahnya, dan ikut menyempurnakan game ini.
+
+Di Android, kamu bisa bermain di ponsel atau tablet, dalam posisi tegak atau mendatar, dengan tata letak sentuh terpisah untuk ponsel dan tablet. Mode pemain tunggal bisa dimainkan offline dan tidak memerlukan akun.
