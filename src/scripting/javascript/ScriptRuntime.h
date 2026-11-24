@@ -34,6 +34,11 @@ struct Host
 {
 	// Separate local-assistant host; never set by deterministic AI or map scripts.
 	bool commander = false;
+	// Work units and JavaScript heap for one invocation. Simulation scripts (AI and
+	// map) must keep the defaults: their budget is part of what the match computes.
+	// The local Hive worker runs outside the simulation and raises both.
+	std::uint64_t workBudget = FuelLimit;
+	std::size_t memoryLimit = MemoryLimit;
 
 	unsigned profile = 1;
 	unsigned nextAction = 1;

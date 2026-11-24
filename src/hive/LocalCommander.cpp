@@ -67,7 +67,10 @@ Json playerAPI()
 		 "team. tools/list supplies the authoritative argument schemas."},
 		{"declarations", "examples/hive-mind/hive.d.ts"},
 		{"limits",
-		 {{"source_bytes", 131072},
+		 {{"work_units_per_run", 250000000},
+		  {"heap_bytes", 128 * 1024 * 1024},
+		  {"wall_seconds_per_run", 5},
+		  {"source_bytes", 131072},
 		  {"programs", 8},
 		  {"minimum_interval_ticks", 25},
 		  {"orders_per_invocation", 32},
@@ -381,9 +384,10 @@ void LocalCommander::finish(Json result)
 		error = result.value("error", result.value("diagnostic", std::string()));
 		// The budget is the sum of every host read in one run; say what fits.
 		if (error.rfind("JavaScript work budget exhausted", 0) == 0)
-			error += " (every host read counts: about one 20x20 map.region, or a few hundred "
-					 "map.tile calls, plus small units/buildings pages fit in one run; spread larger "
-					 "scans over runs of a standing program, whose globals persist)";
+			error += " (250 million units per run: an explored tile read costs about 1,500, an "
+					 "unexplored one far less, and a for...of loop about three times an index loop; "
+					 "read only the area you need, or spread scans over runs of a standing program, "
+					 "whose globals persist)";
 		if (!eligible())
 			throw std::runtime_error("Player context changed");
 		if (!success)

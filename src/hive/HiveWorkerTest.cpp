@@ -58,6 +58,16 @@ TEST_CASE("Hive Mind reads the match's terrain and resource rule tables" * docte
 	CHECK(r.at("output").at("terrain").at("buildable") == true);
 	CHECK(r.at("output").at("resource") == "wood");
 }
+TEST_CASE("Hive Mind runs get a larger work budget than simulation scripts" * doctest::test_suite("HiveMind"))
+{
+	// About 90,000 loop iterations fit the simulation scripts' budget; colony scripts run
+	// outside the simulation and get room for whole-map scans.
+	auto r = run("function step(ctx){let s=0;for(let i=0;i<2000000;i++)s+=i;return {output:s>0};}");
+	REQUIRE(r.at("ok") == true);
+	CHECK(r.at("output") == true);
+	auto over = run("function step(ctx){let s=0;for(let i=0;i<100000000;i++)s+=i;return {output:s};}");
+	CHECK(over.at("ok") == false);
+}
 TEST_CASE("Hive Mind commits globals only through successful results" *
 		  doctest::test_suite("HiveMind"))
 {

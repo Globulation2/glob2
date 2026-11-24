@@ -145,7 +145,7 @@ demolition ordered in the HUD that completes between two refreshes is reported a
 destroyed too. An Inn's happiness is the level `Team::findNearestFood` compares when a
 hungry unit chooses between your Inns and the Inns of a non-allied colony that shares
 its food vision; the `gameplay` guide topic explains conversion.
-| hive_status | Local scripting availability, match-session identity and limits. |
+| hive_status | Local scripting availability, match-session identity and limits. Colony scripts run in a disposable worker outside the simulation, so each run gets 250 million work units (250 times an AI or map script's) and a 128 MiB JavaScript heap, bounded by the worker's 5 s deadline; a whole-map scan of a 256 x 256 map fits. |
 | hive_api | Shared player JavaScript API and authoritative local control contract. |
 | hive_run | Queue one bounded script invocation with a deduplicated operation key; `wait: true` holds the call (up to 25 seconds) and returns the finished result instead of `queued`. |
 | hive_result | Inspect an operation's output, errors and order-submission result; `wait: true` waits until it has finished. |

@@ -71,7 +71,7 @@ struct Environment
 		runtime = JS_NewRuntime();
 		if (!runtime)
 			throw HostFailure("Cannot create JavaScript runtime");
-		JS_SetMemoryLimit(runtime, 32 * 1024 * 1024);
+		JS_SetMemoryLimit(runtime, MemoryLimit);
 		JS_SetMaxStackSize(runtime, 256 * 1024);
 		JS_SetInterruptHandler(
 			runtime,
@@ -170,7 +170,8 @@ struct Environment
 		JS_UpdateStackTop(runtime);
 		clearManaged();
 		host = next;
-		fuel = FuelLimit;
+		fuel = next ? next->workBudget : FuelLimit;
+		JS_SetMemoryLimit(runtime, next ? next->memoryLimit : MemoryLimit);
 		dataBytes = nativeBytes = 0;
 		ancestors.clear();
 	}

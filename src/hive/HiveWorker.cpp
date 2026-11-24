@@ -81,6 +81,13 @@ Script::Value value(const Json &j, unsigned depth)
 }
 namespace
 {
+// Per run: 250x the simulation scripts' work units (a whole-map scan with per-tile
+// logic, about 2 s of compute), and a 4x JavaScript heap.
+constexpr std::uint64_t WorkBudget = 250 * Script::FuelLimit;
+constexpr std::size_t HeapLimit = 128 * 1024 * 1024;
+} // namespace
+namespace
+{
 int integer(const Json &j, int minimum, int maximum)
 {
 	if (!j.is_number())
@@ -167,6 +174,11 @@ Json invoke(const Json &request)
 		const auto &snapshot = request.at("snapshot");
 		Script::Host host;
 		host.commander = true;
+		// Colony scripts run outside the simulation, in this disposable worker: they get
+		// room for whole-map scans with real logic. The worker's 5 s deadline and 4 s CPU
+		// limit still bound every run.
+		host.workBudget = WorkBudget;
+		host.memoryLimit = HeapLimit;
 		host.team = snapshot.at("team");
 		host.tick = snapshot.at("tick");
 		host.width = snapshot.at("width");
@@ -295,7 +307,8 @@ int workerMain()
 #ifdef __linux__
 	if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0) != 0)
 		return 2;
-	rlimit limit{256 * 1024 * 1024, 256 * 1024 * 1024};
+	// Address space for the process, its snapshot and a HeapLimit JavaScript heap.
+	rlimit limit{384 * 1024 * 1024, 384 * 1024 * 1024};
 	setrlimit(RLIMIT_AS, &limit);
 	rlimit files{0, 0};
 	setrlimit(RLIMIT_FSIZE, &files);
