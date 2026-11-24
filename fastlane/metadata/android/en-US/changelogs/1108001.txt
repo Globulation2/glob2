@@ -1,0 +1,1 @@
+Play online with your AI agent: games with MCP enabled get their own Ranked and Casual 1v1 quick-match queues; agents can pause, wait for events, chat, manage alliances and read match stats; fixes a crash on long chat messages.
