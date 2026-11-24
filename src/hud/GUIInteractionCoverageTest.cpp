@@ -2479,6 +2479,114 @@ TEST_CASE("MCP game tools keep fog of war: last-seen buildings, no enemy health,
 	CHECK(followUp[0].at("status") == "pending");
 }
 
+TEST_CASE("MCP game_world shows own stock and Inn happiness, reports losses and polls briefly" *
+		  doctest::test_suite("GUIInteractionCoverage"))
+{
+	glob2test::HeadlessGlobals globals({.seed = 19});
+	PresentationFrame published; // Outlives the GUI that points at it.
+	glob2test::HeadlessGame world({.wDec = 6, .hDec = 6, .teams = 2, .discovered = true, .clearImmobile = true,
+								   .loadDefaultRace = true, .header = true});
+	REQUIRE(world.addBuilding("swarm", 4, 4));
+	auto *inn = world.addBuilding("inn", 12, 4);
+	auto *hospital = world.addBuilding("hospital", 20, 4);
+	auto *school = world.addBuilding("school", 28, 4);
+	auto *enemyInn = world.addBuilding("inn", 40, 40, 0, 1);
+	REQUIRE(inn);
+	REQUIRE(hospital);
+	REQUIRE(school);
+	REQUIRE(enemyInn);
+	inn->setMaterial(WHEAT, 5);
+	inn->setMaterial(CHERRY, 3);
+	enemyInn->setMaterial(WHEAT, 8);
+	enemyInn->setMaterial(PRUNE, 9);
+	const auto me = world.game.teams[0]->me;
+	world.game.map.setMapDiscovered(30, 30, 20, 20, me);
+	world.game.map.switchFogOfWar();
+	world.game.map.setMapDiscovered(30, 30, 20, 20, me);
+	world.gui.localPlayer = world.gui.localTeamNo = 0;
+	world.gui.localTeam = world.team;
+	world.game.players[0]->type = BasePlayer::P_LOCAL;
+	world.game.snapshots().invalidateBoundary();
+	world.gui.rebuildBuildingChoices(false);
+	world.gui.prepareLocalPresentation(published);
+	world.gui.setPublishedScene(&published);
+	Hive::LocalCommander commander(world.gui, [](Json input)
+	{
+		std::promise<Json> ready;
+		ready.set_value(Hive::invoke(input));
+		return ready.get_future();
+	});
+	auto ownBuilding = [](const Json &state, const char *type)
+	{
+		for (const auto &b : state.at("colony").at("buildings"))
+			if (b.at("type") == type)
+				return b;
+		return Json();
+	};
+
+	// The panel's stock with capacities, units inside and the happiness the Inn offers:
+	// wheat, plus one level for the cherries it holds.
+	auto state = commander.call("game_world", Json::object());
+	const auto ownInn = ownBuilding(state, "inn");
+	REQUIRE(ownInn.is_object());
+	const auto capacity = [&](int material) { return "/" + std::to_string(inn->type->maxMaterial[material]); };
+	CHECK(ownInn.at("stock").at("food") == "5" + capacity(WHEAT));
+	CHECK(ownInn.at("stock").at("cherries") == "3" + capacity(CHERRY));
+	CHECK(ownInn.at("stock").at("prunes") == "0" + capacity(PRUNE));
+	CHECK(ownInn.at("inside") == "0/" + std::to_string(inn->maxUnitInside));
+	CHECK(ownInn.at("happiness") == 2);
+	CHECK(ownInn.at("happiness") == inn->availableHappynessLevel());
+	CHECK_FALSE(ownBuilding(state, "swarm").contains("happiness"));
+	// Another team's Inn shows nothing of its stock or happiness.
+	REQUIRE(state.at("others").at("buildings").size() == 1);
+	const auto &theirs = state.at("others").at("buildings")[0];
+	CHECK_FALSE(theirs.contains("stock"));
+	CHECK_FALSE(theirs.contains("happiness"));
+	CHECK_FALSE(theirs.contains("inside"));
+	CHECK(state.at("losses").at("buildings_destroyed").empty());
+	CHECK(state.at("losses").at("units_converted_away_since_last_read") == 0);
+
+	// A destroyed building and a demolished one are reported apart, with tiles, ahead
+	// of other alerts; conversion counts come from the colony's exact counter.
+	const auto ownSchool = ownBuilding(state, "school");
+	REQUIRE(ownSchool.is_object());
+	commander.call("game_building", {{"id", ownSchool.at("id")}, {"generation", ownSchool.at("generation")},
+									 {"action", "destroy"}});
+	hospital->kill();
+	school->kill();
+	world.game.teams[0]->unitConversionLost = 3;
+	world.game.snapshots().invalidateBoundary();
+	state = commander.call("game_world", Json::object());
+	const auto &alerts = state.at("alerts");
+	REQUIRE(alerts.size() >= 2);
+	std::set<std::string> kinds = {alerts[0].at("kind"), alerts[1].at("kind")};
+	CHECK(kinds == std::set<std::string>{"building_destroyed", "building_demolished"});
+	const auto &destroyed = state.at("losses").at("buildings_destroyed");
+	REQUIRE(destroyed.size() == 1);
+	CHECK(destroyed[0].at("type") == "hospital");
+	CHECK(destroyed[0].at("x") == 20);
+	CHECK(destroyed[0].at("y") == 4);
+	CHECK(state.at("losses").at("units_converted_away_total") == 3);
+	CHECK(state.at("losses").at("units_converted_away_since_last_read") == 3);
+	CHECK_FALSE(ownBuilding(state, "hospital").is_object());
+
+	// Brief: status, losses and one line per building, without the costlier sections.
+	const auto brief = commander.call("game_world", {{"detail", "brief"}});
+	for (const char *section : {"status", "units", "forces", "alerts", "losses", "buildings"})
+		CHECK(brief.contains(section));
+	for (const char *section : {"colony", "others", "resources", "placeable", "view"})
+		CHECK_FALSE(brief.contains(section));
+	CHECK(brief.at("losses").at("units_converted_away_since_last_read") == 0);
+	CHECK(brief.at("buildings").size() == 2);
+	std::string innLine;
+	for (const auto &line : brief.at("buildings"))
+		if (line.get<std::string>().starts_with("inn #"))
+			innLine = line;
+	CHECK(innLine.find(" at 12,4 ") != std::string::npos);
+	CHECK(innLine.find(" food 5" + capacity(WHEAT)) != std::string::npos);
+	CHECK(innLine.find(" happiness 2") != std::string::npos);
+}
+
 TEST_CASE("MCP game_building and game_zone queue the panel's orders and report caps" *
 		  doctest::test_suite("GUIInteractionCoverage"))
 {

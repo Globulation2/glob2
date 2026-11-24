@@ -3,6 +3,7 @@
 #include "CommanderView.h"
 #include "scripting/javascript/ScriptObservations.h"
 #include <deque>
+#include <set>
 #include <future>
 #include <functional>
 class GameGUI;
@@ -71,6 +72,27 @@ class LocalCommander : public CommanderView
 	bool memoryTracked = false;
 	unsigned nextMemoryTick = 0;
 	void refreshMemory();
+	// The colony's own buildings as last refreshed, to report the ones it has lost:
+	// the game raises no event when a building is destroyed, so a building that
+	// disappears without being demolished is reported as destroyed.
+	struct Owned
+	{
+		std::string type;
+		int x, y;
+		unsigned generation;
+		bool demolishing;
+	};
+	std::map<int, Owned> ownBuildings;
+	struct Loss
+	{
+		std::string type;
+		int x, y;
+		unsigned tick;
+		bool demolished;
+	};
+	std::deque<Loss> losses;
+	std::set<int> demolitionOrders; // game_building destroy requests, by building id
+	int convertedAwaySeen = -1;
 
   public:
 	explicit LocalCommander(GameGUI &gui, std::function<std::future<Json>(Json)> launch = {});
