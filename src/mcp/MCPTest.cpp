@@ -843,6 +843,33 @@ TEST_CASE("MCP/leases input dispatch cancellation viewport and capture [network]
 	CHECK(service.status() == "Running");
 }
 
+TEST_CASE("MCP/server stays off during a quick match among players without MCP [network]")
+{
+	glob2test::HeadlessGlobals globals(
+		{.display = true, .width = 640, .height = 480, .beforeLoad = [](GlobalContainer &g) {
+			 g.settings.rendererBackend = GAGCore::RendererBackend::Software;
+		 }});
+	UIService service(*globalContainer->gfx);
+	const int port = unusedLoopbackPort();
+	struct Restore
+	{
+		~Restore() { suspendedForUnassistedMatch() = false; }
+	} restore;
+	// Switching MCP on mid-match must not open the listener.
+	suspendedForUnassistedMatch() = true;
+	service.configure(true, port);
+	CHECK(service.listenerState() == ListenerState::Disabled);
+	// The match ends: the next configure (every frame) starts it.
+	suspendedForUnassistedMatch() = false;
+	service.configure(true, port);
+	waitForListener(service, ListenerState::Running);
+	CHECK(service.listenerState() == ListenerState::Running);
+	// A match starting with MCP already on stops it again.
+	suspendedForUnassistedMatch() = true;
+	service.configure(true, port);
+	CHECK(service.listenerState() == ListenerState::Disabled);
+}
+
 TEST_CASE("MCP/input boundaries preserve observation and cancel truncated batches [network]")
 {
 	glob2test::HeadlessGlobals globals(

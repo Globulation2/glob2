@@ -55,6 +55,7 @@ QuickMatch::Environment QuickMatch::Environment::native()
 	};
 	env.attention = requestAttention;
 	env.handoff = [](const MatchAssignment &assignment) { beginMatch(assignment); };
+	env.assisted = [] { return Online::assisted(); };
 	return env;
 }
 

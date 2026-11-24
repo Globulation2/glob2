@@ -1541,6 +1541,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "費率 {slot0}：每百萬輸入 token 消耗 {slot1} 點數，快取輸入 {slot2}，快取寫入 {slot3}，輸出（含推理）{slot4}。修復和後續請求使用相同費率。",
   "Rated queues are for registered accounts; sign in first.": "排名佇列僅供已註冊賬戶使用；請先登入。",
+  "Players with the MCP server enabled and players without it use separate queues.": "啟用了 MCP 伺服器的玩家與未啟用的玩家使用各自獨立的佇列。",
   "Rating": "評分",
   "Rating after each rated match": "每場評級對局後的評分",
   "Re-verify ": "重新核查",

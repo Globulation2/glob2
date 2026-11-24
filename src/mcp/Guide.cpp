@@ -72,6 +72,9 @@ introduction_offer: shown on a new profile's first launch; intro/start begins th
 main_menu: buttons Custom game (menu/3), Play online (menu/4), Campaign (menu/0),
   Load game (menu/2), Tutorial (menu/1), LAN Game (menu/5), Settings (menu/6),
   Editor (menu/7), Credits (menu/8).
+Online: with the MCP server enabled, quick match searches only the server's MCP
+  queues, so you meet other players who have MCP enabled, never players without it.
+  Online matches refuse game_* and hive_* tools; drive them with ui_* tools.
 tutorial_catalog: one button per lesson, tutorial/lesson/0 (Introduction) to
   tutorial/lesson/9; tutorial/back returns to the main menu.
 custom_game: tabs Map (tab/0), Players & Teams (tab/1), Game Rules (tab/2); start

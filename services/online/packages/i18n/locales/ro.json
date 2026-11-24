@@ -1553,6 +1553,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "Tarif {slot0}: {slot1} credite pe milion de tokenuri de intrare, {slot2} pentru intrare din cache, {slot3} pentru scrieri în cache și {slot4} pentru ieșire inclusiv raționament. Reparațiile și acțiunile ulterioare folosesc aceleași tarife.",
   "Rated queues are for registered accounts; sign in first.": "Cozile clasate sunt pentru conturi înregistrate; autentifică-te mai întâi.",
+  "Players with the MCP server enabled and players without it use separate queues.": "Jucătorii cu serverul MCP activat și cei fără el folosesc cozi separate.",
   "Rating": "Evaluare",
   "Rating after each rated match": "Evaluare după fiecare meci evaluat",
   "Re-verify ": "Reverifică",

@@ -1547,6 +1547,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "Díj {slot0}: {slot1} kredit millió bemeneti tokenenként, {slot2} a gyorsítótárazott bemenetért, {slot3} a gyorsítótárírásért és {slot4} a kimenetért, a gondolkodással együtt. A javítások és további lépések azonos díjakat használnak.",
   "Rated queues are for registered accounts; sign in first.": "A rangsorolt várólisták regisztrált fiókoknak valók; először jelentkezzen be.",
+  "Players with the MCP server enabled and players without it use separate queues.": "Az MCP-kiszolgálót bekapcsolt játékosok és az anélkül játszók külön várólistákat használnak.",
   "Rating": "Minősítés",
   "Rating after each rated match": "Értékelés minden egyes minősített mérkőzés után",
   "Re-verify ": "Újraellenőrzés",

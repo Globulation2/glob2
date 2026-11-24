@@ -1547,6 +1547,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "விகிதம் {slot0}: ஒரு மில்லியன் உள்ளீட்டு டோக்கன்களுக்கு {slot1} வரவுகள், தற்காலிகச் சேமிப்பு உள்ளீட்டிற்கு {slot2}, தற்காலிகச் சேமிப்பு எழுதுதலுக்கு {slot3}, சிந்தனை உட்பட வெளியீட்டிற்கு {slot4}. திருத்தங்களுக்கும் தொடர்ச் செயல்களுக்கும் இதே விகிதங்கள் பொருந்தும்.",
   "Rated queues are for registered accounts; sign in first.": "தரமதிப்பீட்டு வரிசைகள் பதிவுசெய்த கணக்குகளுக்கானவை; முதலில் உள்நுழையவும்.",
+  "Players with the MCP server enabled and players without it use separate queues.": "MCP சேவையகத்தை இயக்கிய வீரர்களும் அது இல்லாத வீரர்களும் தனித்தனி வரிசைகளைப் பயன்படுத்துகின்றனர்.",
   "Rating": "மதிப்பீடு",
   "Rating after each rated match": "ஒவ்வொரு தரமதிப்பீட்டு ஆட்டத்திற்குப் பிந்தைய மதிப்பீடு",
   "Re-verify ": "மீண்டும் சரிபார்க்கவும் ",

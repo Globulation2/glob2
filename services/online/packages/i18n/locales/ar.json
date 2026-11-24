@@ -1571,6 +1571,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "السعر {slot0}: {slot1} أرصدة لكل مليون رمز إدخال، و{slot2} للإدخال المخزن مؤقتاً، و{slot3} للكتابة في الذاكرة المؤقتة، و{slot4} للإخراج بما يشمل الاستدلال. تستخدم الإصلاحات والطلبات اللاحقة الأسعار نفسها.",
   "Rated queues are for registered accounts; sign in first.": "قوائم الانتظار المصنفة للحسابات المسجلة؛ سجل الدخول أولاً.",
+  "Players with the MCP server enabled and players without it use separate queues.": "يستخدم اللاعبون الذين فعّلوا خادم MCP واللاعبون الذين لم يفعّلوه قوائم انتظار منفصلة.",
   "Rating": "التقييم",
   "Rating after each rated match": "التقييم بعد كل مباراة مصنفة",
   "Re-verify ": "إعادة التحقق ",

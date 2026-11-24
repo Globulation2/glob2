@@ -999,6 +999,12 @@
       "note": "Join a queue but opt out of AI backfill."
     },
     {
+      "file": "valid/RealtimeQueueJoinParams/assisted.json",
+      "schema": "RealtimeQueueJoinParams",
+      "valid": true,
+      "note": "A client with its MCP server enabled joins an assisted queue."
+    },
+    {
       "file": "valid/RealtimeQueueRespondParams/accept.json",
       "schema": "RealtimeQueueRespondParams",
       "valid": true,

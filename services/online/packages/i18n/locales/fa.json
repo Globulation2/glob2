@@ -1547,6 +1547,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "نرخ {slot0}: {slot1} اعتبار برای هر میلیون توکن ورودی، {slot2} برای ورودی حافظهٔ نهان، {slot3} برای نوشتن حافظهٔ نهان، و {slot4} برای خروجی شامل استدلال. تعمیرها و پیگیری‌ها نرخ‌های یکسان دارند.",
   "Rated queues are for registered accounts; sign in first.": "صف‌های رتبه‌دار برای حساب‌های ثبت‌شده‌اند؛ ابتدا وارد شوید.",
+  "Players with the MCP server enabled and players without it use separate queues.": "بازیکنانی که سرور MCP را فعال کرده‌اند و بازیکنانی که آن را ندارند از صف‌های جداگانه استفاده می‌کنند.",
   "Rating": "رتبه",
   "Rating after each rated match": "رتبه پس از هر مسابقهٔ رتبه‌دار",
   "Re-verify ": "تأیید دوباره ",

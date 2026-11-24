@@ -113,6 +113,7 @@ describe('platform api', () => {
         name: 'Ranked 1v1',
         mode: '1v1',
         rated: true,
+        assisted: false,
         aiBackfillSeconds: 90,
         acceptSeconds: 10,
         maps: ['even-ground'],

@@ -8,3 +8,15 @@
 #else
 #define GLOB2_DESKTOP_MCP 0
 #endif
+
+namespace MCP
+{
+/// While true the MCP server stays off whatever the setting says: a quick match
+/// from a queue for players without MCP is running (the engine sets it), so
+/// switching MCP on mid-match cannot bring an AI agent into it. Main thread only.
+inline bool &suspendedForUnassistedMatch()
+{
+	static bool suspended = false;
+	return suspended;
+}
+} // namespace MCP

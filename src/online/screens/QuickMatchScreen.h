@@ -83,7 +83,11 @@ class QuickMatchScreen : public Glob2UI::Screen
 	GAGGUI::ScreenStack &screens;
 	Online::QuickMatch &model;
 	bool live;
-	std::vector<Online::QueueInfo> queues;
+	// The queues this client may search: those of allQueues for its kind
+	// (assisted or not, Online::assisted), picked again when that changes.
+	std::vector<Online::QueueInfo> queues, allQueues;
+	bool queuesAssisted = false;
+	void pickQueues();
 	bool queuesLoaded = false;
 	std::string loadError;
 	std::string instance, account;

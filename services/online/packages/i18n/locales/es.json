@@ -1553,6 +1553,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "Tarifa {slot0}: {slot1} créditos por millón de tokens de entrada, {slot2} para entrada en caché, {slot3} para escritura en caché y {slot4} para salida, incluido el razonamiento. Las correcciones y el seguimiento usan las mismas tarifas.",
   "Rated queues are for registered accounts; sign in first.": "Las colas calificadas son para cuentas registradas; inicie sesión primero.",
+  "Players with the MCP server enabled and players without it use separate queues.": "Los jugadores con el servidor MCP activado y los que no lo tienen usan colas separadas.",
   "Rating": "Calificación",
   "Rating after each rated match": "Calificación después de cada partido calificado",
   "Re-verify ": "Volver a verificar",

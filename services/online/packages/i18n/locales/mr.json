@@ -1547,6 +1547,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "{slot0} दर: प्रति दशलक्ष इनपुट टोकन्ससाठी {slot1} क्रेडिट्स, कॅश्ड इनपुटसाठी {slot2}, कॅशे राइट्ससाठी {slot3}, आणि विचारप्रक्रियेसह आउटपुटसाठी {slot4}. दुरुस्ती आणि पाठपुराव्यासाठी हेच दर वापरले जातात.",
   "Rated queues are for registered accounts; sign in first.": "रेटेड रांगा नोंदणीकृत खात्यांसाठी आहेत; प्रथम साइन इन करा.",
+  "Players with the MCP server enabled and players without it use separate queues.": "MCP सर्व्हर सुरू असलेले खेळाडू आणि त्याशिवाय खेळणारे खेळाडू वेगवेगळ्या रांगा वापरतात.",
   "Rating": "रेटिंग",
   "Rating after each rated match": "प्रत्येक रेट केलेल्या सामन्यानंतर रेटिंग",
   "Re-verify ": "पुन्हा पडताळणी करा ",

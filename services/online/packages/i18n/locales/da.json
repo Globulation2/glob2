@@ -1547,6 +1547,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "Sats {slot0}: {slot1} kreditter pr. million input tokens, {slot2} for cache input, {slot3} for cache skriver, og {slot4} for output, herunder ræsonnement. Reparationer og opfølgninger bruger de samme satser.",
   "Rated queues are for registered accounts; sign in first.": "Nominele køer er for registrerede konti; log ind først.",
+  "Players with the MCP server enabled and players without it use separate queues.": "Spillere med MCP-serveren slået til og spillere uden den bruger separate køer.",
   "Rating": "Vurdering",
   "Rating after each rated match": "Rating efter hver vurderet match",
   "Re-verify ": "Reververificér",

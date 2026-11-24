@@ -1547,6 +1547,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "Betygsätt {slot0}: {slot1} krediter per miljon inmatningspolletter, {slot2} för cachad input, {slot3} för cache skriver, och {slot4} för output inklusive resonemang. Reparationer och uppföljningar använder samma hastigheter.",
   "Rated queues are for registered accounts; sign in first.": "Nominerade köer är för registrerade konton; logga in först.",
+  "Players with the MCP server enabled and players without it use separate queues.": "Spelare med MCP-servern aktiverad och spelare utan den använder separata köer.",
   "Rating": "Betyg",
   "Rating after each rated match": "Betyg efter varje betygsatt matchning",
   "Re-verify ": "Kontrollera om",

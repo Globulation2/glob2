@@ -7188,3 +7188,5 @@ Discord відкрито. Ви можете повернутися до гри �
 
 [javascript ai stopped %0]
 
+[hub no assisted queues]
+

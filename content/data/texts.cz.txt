@@ -7188,3 +7188,5 @@ Tundrová půda
 
 [javascript ai stopped %0]
 
+[hub no assisted queues]
+

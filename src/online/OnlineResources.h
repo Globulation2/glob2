@@ -23,10 +23,15 @@ struct QueueInfo
 	std::optional<int> aiBackfillSeconds;
 	int acceptSeconds = 0;
 	std::vector<std::string> maps; // generator ids of the pool
+	// For assisted clients only (Online::assisted()), who may join no other queue.
+	bool assisted = false;
 	static std::optional<QueueInfo> fromJson(const Json &json);
 };
 // InstanceInfo.queues.
 std::vector<QueueInfo> queuesFromInstance(const Json &instanceInfo);
+// Whether a client may search a queue (InstanceInfo.queues item): assisted
+// clients only assisted queues, other clients only the rest.
+bool queueFits(const Json &queue, bool assistedClient);
 
 struct RegionRtt
 {

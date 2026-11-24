@@ -126,6 +126,23 @@ queues:
         params: { width: 7, height: 7, teams: 2 }
         candidates: 5
         startingUnitLevel: 0
+  # Players whose game has its MCP automation server enabled (an AI agent can drive
+  # it) search only queues marked assisted, and every other player only the rest, so
+  # people playing on their own never meet a player working with an AI. Each queue
+  # id is its own ladder, so assisted ratings stay apart too. Without an assisted
+  # queue, players with MCP enabled cannot quick-match (rooms are unaffected).
+  - id: mcp-ranked-1v1
+    name: MCP Ranked 1v1
+    mode: 1v1
+    rated: true
+    assisted: true
+    aiBackfillSeconds: 90
+  - id: mcp-casual-1v1
+    name: MCP Casual 1v1
+    mode: 1v1
+    rated: false
+    assisted: true
+    aiBackfillSeconds: 45
 
 # Hive Mind stays disabled until the release gates in docs/multiplayer/hive-mind.md pass.
 # One server-selected model; no player model picker. Prices below are development

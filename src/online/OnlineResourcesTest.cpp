@@ -138,6 +138,26 @@ TEST_SUITE("OnlineResources")
 		CHECK(count >= 12);
 	}
 
+	TEST_CASE("assisted queues are for clients with MCP enabled and the rest for everyone else")
+	{
+		const Json instance = {{"queues",
+								{{{"id", "ranked-1v1"}, {"name", "Ranked 1v1"}, {"mode", "1v1"}, {"rated", true}},
+								 {{"id", "casual-1v1"}, {"name", "Casual 1v1"}, {"mode", "1v1"}, {"rated", false}, {"assisted", false}},
+								 {{"id", "mcp-ranked-1v1"}, {"name", "MCP Ranked 1v1"}, {"mode", "1v1"}, {"rated", true}, {"assisted", true}}}}};
+		const auto queues = queuesFromInstance(instance);
+		REQUIRE(queues.size() == 3);
+		CHECK(!queues[0].assisted); // servers before assisted queues send no flag
+		CHECK(!queues[1].assisted);
+		CHECK(queues[2].assisted);
+		const auto &items = instance["queues"];
+		CHECK(queueFits(items[0], false));
+		CHECK(!queueFits(items[0], true));
+		CHECK(queueFits(items[1], false));
+		CHECK(!queueFits(items[2], false));
+		CHECK(queueFits(items[2], true));
+		CHECK(!queueFits(Json("ranked-1v1"), false));
+	}
+
 	TEST_CASE("queue status and proposals carry what the search panel and prompt show")
 	{
 		auto status = QueueStatus::fromJson(fixture("RealtimeEventQueueStatus", "searching"));

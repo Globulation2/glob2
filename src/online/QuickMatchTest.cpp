@@ -54,6 +54,8 @@ struct Fixture
 	std::vector<MatchAssignment> handedOff;
 	int attention = 0;
 	bool probing = false;
+	// Whether the client has its MCP server enabled (Online::assisted).
+	bool assisted = false;
 	std::unique_ptr<QuickMatch> quick;
 
 	Fixture(bool withProbe = false) : probing(withProbe)
@@ -72,6 +74,7 @@ struct Fixture
 		env.wallClock = [this] { return world.wall; };
 		env.attention = [this] { ++attention; };
 		env.handoff = [this](const MatchAssignment &assignment) { handedOff.push_back(assignment); };
+		env.assisted = [this] { return assisted; };
 		quick = std::make_unique<QuickMatch>(client, env);
 		client.start(ORIGIN);
 		auto exchange = world.http.pending("/api/v1/auth/guest");
@@ -391,5 +394,62 @@ TEST_SUITE("QuickMatch")
 		REQUIRE(!leave.is_null());
 		CHECK(leave["params"]["ticketId"] == TICKET);
 		CHECK(f.quick->phase() == QuickMatch::Phase::Idle);
+	}
+
+	TEST_CASE("only an assisted client tells queue.join it is assisted")
+	{
+		Fixture plain;
+		plain.quick->search(ranked());
+		plain.pump();
+		auto join = plain.world.socket().find("queue.join");
+		REQUIRE(!join.is_null());
+		// Older servers refuse unknown parameters, so a plain client sends none.
+		CHECK(!join["params"].contains("assisted"));
+		CHECK(!plain.quick->assistedSearch());
+
+		Fixture mcp;
+		mcp.assisted = true;
+		QueueInfo queue = ranked();
+		queue.id = "mcp-ranked-1v1";
+		queue.assisted = true;
+		mcp.quick->search(queue);
+		mcp.pump();
+		join = mcp.world.socket().find("queue.join");
+		REQUIRE(!join.is_null());
+		CHECK(join["params"]["assisted"] == true);
+		CHECK(mcp.quick->assistedSearch());
+	}
+
+	TEST_CASE("switching MCP on or off mid-search leaves the queue")
+	{
+		for (const bool assistedAtStart : {false, true})
+		{
+			INFO("assisted at start: " << assistedAtStart);
+			Fixture f;
+			f.assisted = assistedAtStart;
+			f.joined();
+			f.advance(1000);
+			CHECK(f.quick->phase() == QuickMatch::Phase::Searching);
+			f.assisted = !assistedAtStart;
+			f.pump();
+			CHECK(f.quick->phase() == QuickMatch::Phase::Idle);
+			CHECK(f.quick->notice() == QuickMatch::Notice::Cancelled);
+			auto leave = f.world.socket().find("queue.leave");
+			REQUIRE(!leave.is_null());
+			CHECK(leave["params"]["ticketId"] == TICKET);
+		}
+	}
+
+	TEST_CASE("switching MCP on in a prompt declines it rather than playing")
+	{
+		Fixture f;
+		f.joined();
+		f.event("queue.proposal", f.proposal(true));
+		REQUIRE(f.quick->phase() == QuickMatch::Phase::Proposed);
+		f.assisted = true;
+		f.pump();
+		CHECK(f.quick->phase() == QuickMatch::Phase::Idle);
+		CHECK(!f.world.socket().find("queue.leave").is_null());
+		CHECK(f.handedOff.empty());
 	}
 }

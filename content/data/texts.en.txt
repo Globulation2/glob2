@@ -7188,3 +7188,5 @@ This map is larger than this device's default and may run slowly here.
 You host this game: leaving ends it for everyone.
 [javascript ai stopped %0]
 A JavaScript AI stopped: %0. Its colony receives no more orders; Menu → AI telemetry shows the full error.
+[hub no assisted queues]
+This server has no quick-match queues for players with the MCP server enabled. Turn it off in Settings to search the others.

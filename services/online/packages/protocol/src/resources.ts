@@ -348,6 +348,12 @@ export const QueueInfo = Open({
   name: Type.String({ maxLength: 64 }),
   mode: Type.Union([Type.Literal('1v1'), Type.Literal('2v2')]),
   rated: Type.Boolean(),
+  assisted: Type.Optional(
+    Type.Boolean({
+      description:
+        'For clients with their MCP automation server enabled, which may join no other queue; other clients may not join it. Absent means false.',
+    }),
+  ),
   aiBackfillSeconds: Type.Optional(Type.Integer({ minimum: 0 })),
   acceptSeconds: Type.Optional(
     Type.Integer({

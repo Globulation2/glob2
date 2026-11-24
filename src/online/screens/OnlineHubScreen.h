@@ -72,7 +72,11 @@ class OnlineHubScreen : public Glob2UI::Screen
 		int retryInSeconds = 0;
 		std::string displayName, accountKind, accountId;
 		std::vector<std::string> linkedProviders;
+		// The queues this client may search (Online::queueFits), from every queue of
+		// the instance; assistedQueues says which kind they were picked for.
 		Online::Json queues = Online::Json::array();
+		Online::Json allQueues = Online::Json::array();
+		bool assistedQueues = false;
 		Online::Json providers = Online::Json::array();
 		Online::Json rooms = Online::Json::array();
 		Online::Json recent = Online::Json::array();
@@ -135,6 +139,8 @@ class OnlineHubScreen : public Glob2UI::Screen
 	void onEscape() override;
 
   private:
+	// data.queues from data.allQueues for the client's kind (Online::assisted).
+	void pickQueues();
 	Glob2UI::DiscordCommunity community;
 	GAGGUI::ScreenStack &screens;
 	Model data;

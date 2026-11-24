@@ -1541,6 +1541,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "Kadar {slot0}: {slot1} kredit bagi setiap juta token input, {slot2} untuk input cache, {slot3} untuk penulisan cache dan {slot4} untuk output termasuk penaakulan. Pembaikan dan susulan menggunakan kadar yang sama.",
   "Rated queues are for registered accounts; sign in first.": "Baris gilir berpenarafan adalah untuk akaun berdaftar; daftar masuk dahulu.",
+  "Players with the MCP server enabled and players without it use separate queues.": "Pemain yang mendayakan pelayan MCP dan pemain tanpanya menggunakan baris gilir yang berasingan.",
   "Rating": "Penarafan",
   "Rating after each rated match": "Penarafan selepas setiap perlawanan berpenarafan",
   "Re-verify ": "Sahkan semula ",

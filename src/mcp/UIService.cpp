@@ -138,6 +138,7 @@ std::shared_ptr<Request> UIService::enqueue(std::function<Result()> execute, std
 }
 void UIService::configure(bool enable, int newPort, bool retry)
 {
+	enable = enable && !suspendedForUnassistedMatch();
 	if (enable == enabled && newPort == port && !retry)
 		return;
 	{

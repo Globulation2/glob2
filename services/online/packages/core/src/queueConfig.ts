@@ -118,6 +118,11 @@ export interface ResolvedQueue {
   name: string;
   mode: QueueMode;
   rated: boolean;
+  /**
+   * Only for clients with their MCP automation server enabled, who may join no
+   * other queue (docs/multiplayer/ratings-and-matchmaking.md#assisted-queues).
+   */
+  assisted: boolean;
   /** Seconds before empty seats are filled with AIs; undefined = never. */
   aiBackfillSeconds: number | undefined;
   /** Accept prompt length for all-human groups; 0 = start immediately. */
@@ -183,6 +188,7 @@ export function resolveQueue(queue: QueueConfig): ResolvedQueue {
     name: queue.name,
     mode: queue.mode,
     rated: queue.rated,
+    assisted: queue.assisted ?? false,
     aiBackfillSeconds: queue.aiBackfillSeconds,
     acceptSeconds: queue.acceptSeconds ?? (queue.rated ? RANKED_ACCEPT_SECONDS : 0),
     declineCooldownSeconds: queue.declineCooldownSeconds ?? DEFAULT_DECLINE_COOLDOWN_SECONDS,

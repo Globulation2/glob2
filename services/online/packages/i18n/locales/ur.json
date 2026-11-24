@@ -1547,6 +1547,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "شرح {slot0}: فی دس لاکھ ان پٹ ٹوکن {slot1} کریڈٹ، کیش شدہ ان پٹ کے لیے {slot2}، کیش میں لکھنے کے لیے {slot3}، اور استدلال سمیت آؤٹ پٹ کے لیے {slot4}۔ مرمت اور بعد کی کارروائیوں پر یہی شرحیں لاگو ہیں۔",
   "Rated queues are for registered accounts; sign in first.": "ریٹنگ والی قطاریں رجسٹرڈ اکاؤنٹس کے لیے ہیں؛ پہلے سائن ان کریں۔",
+  "Players with the MCP server enabled and players without it use separate queues.": "MCP سرور فعال رکھنے والے کھلاڑی اور اس کے بغیر کھلاڑی الگ الگ قطاریں استعمال کرتے ہیں۔",
   "Rating": "ریٹنگ",
   "Rating after each rated match": "ہر ریٹنگ والے میچ کے بعد ریٹنگ",
   "Re-verify ": "دوبارہ توثیق کریں ",

@@ -1559,6 +1559,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "Тариф {slot0}: {slot1} кредитів за мільйон вхідних токенів, {slot2} за кешовані вхідні дані, {slot3} за запис до кешу та {slot4} за вихідні дані, включно з міркуваннями. Для виправлень і наступних запитів діють ті самі тарифи.",
   "Rated queues are for registered accounts; sign in first.": "Рейтингові черги доступні зареєстрованим обліковим записам; спочатку увійдіть.",
+  "Players with the MCP server enabled and players without it use separate queues.": "Гравці з увімкненим сервером MCP і гравці без нього користуються окремими чергами.",
   "Rating": "Оцінка",
   "Rating after each rated match": "Рейтинг після кожного рейтингового матчу",
   "Re-verify ": "Повторно перевірити ",

@@ -476,6 +476,8 @@ private:
 	};
 	std::optional<TurnMatchState> turnMatch;
 	std::shared_ptr<Online::OnlineMatchResult> onlineResult;
+	/// This engine holds MCP::suspendedForUnassistedMatch for its match.
+	bool suspendsMcp = false;
 
 	Uint64 automaticGameStartTick, automaticGameEndTick;
 	//! Tick at which each team was eliminated, -1 while alive (see trackTeamEliminations).

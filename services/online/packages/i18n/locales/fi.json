@@ -1547,6 +1547,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "Hinta {slot0}: {slot1} krediittiä miljoonaa syöttötoimea kohti, {slot2} välimuistiin tallennettua syöttöä varten, {slot3} välimuistikirjoituksia varten ja {slot4} tuotosta, mukaan lukien päättely. Korjaukset ja jatkotoimet käyttävät samaa korkoa.",
   "Rated queues are for registered accounts; sign in first.": "Rankatut jonot ovat rekisteröidyille tileille; kirjaudu sisään ensin.",
+  "Players with the MCP server enabled and players without it use separate queues.": "Pelaajat, joilla MCP-palvelin on käytössä, ja pelaajat ilman sitä käyttävät eri jonoja.",
   "Rating": "Luokitus",
   "Rating after each rated match": "Luokitus kunkin ottelun jälkeen",
   "Re-verify ": "Tarkista uudelleen",

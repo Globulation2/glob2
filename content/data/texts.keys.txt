@@ -3593,3 +3593,4 @@
 [room large map for device]
 [leave lan host body]
 [javascript ai stopped %0]
+[hub no assisted queues]

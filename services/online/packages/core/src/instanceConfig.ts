@@ -57,6 +57,12 @@ export const QueueConfig = Strict({
   mode: Type.Union([Type.Literal('1v1'), Type.Literal('2v2')]),
   /** Rated queues update the ladder named by the queue id; guests cannot join them. */
   rated: Type.Boolean(),
+  /**
+   * For players whose game has its MCP automation server enabled (default false).
+   * Such clients may join only assisted queues and every other client only the
+   * rest, so people playing alone never meet a player working with an AI.
+   */
+  assisted: Type.Optional(Type.Boolean()),
   /** Seconds before an empty seat is filled by the closest-rated AI; omit to never backfill. */
   aiBackfillSeconds: Type.Optional(Type.Integer({ minimum: 0 })),
   /**

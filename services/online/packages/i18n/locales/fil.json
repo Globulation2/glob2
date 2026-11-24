@@ -1729,6 +1729,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "Rate {slot0}: {slot1} credits kada milyong input tokens, {slot2} para sa naka-cache na input, {slot3} para sa mga cache writes, at {slot4} para sa output kasama ang pangangatwiran. Ang mga pagkukumpuni at follow-up ay gumagamit ng parehong mga rate.",
   "Rated queues are for registered accounts; sign in first.": "Ang mga naka-rate na pila ay para sa mga rehistradong account; mag-sign in muna.",
+  "Players with the MCP server enabled and players without it use separate queues.": "Magkahiwalay na pila ang ginagamit ng mga manlalarong naka-enable ang MCP server at ng mga wala nito.",
   "Rating": "Rating",
   "Rating after each rated match": "Rating pagkatapos ng bawat na-rate na laban",
   "Re-verify ": "Muling i-verify ",

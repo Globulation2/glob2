@@ -50,6 +50,7 @@ const players: Player[] = [];
 const queues = [
   { id: 'casual-1v1', name: 'Casual 1v1', mode: '1v1' as const, rated: false },
   { id: 'ranked-1v1', name: 'Ranked 1v1', mode: '1v1' as const, rated: true },
+  { id: 'mcp-1v1', name: 'MCP 1v1', mode: '1v1' as const, rated: false, assisted: true },
 ];
 
 beforeAll(async () => {
@@ -1233,6 +1234,52 @@ describe('queue methods and NOTIFY forwarding', () => {
       .executeTakeFirstOrThrow();
     expect(ticket).toEqual({ sim_version: SIM_KEY, status: 'waiting', queue_id: 'ranked-1v1' });
     expect(resolveQueue(queues[1]!).rated).toBe(true);
+  });
+
+  it('keeps MCP-assisted players and other players in separate queues', async () => {
+    const info = await json(await fetch(`${a.url}/api/v1/instance`));
+    const listed = info['queues'] as { id: string; assisted?: boolean }[];
+    expect(listed.find((q) => q.id === 'mcp-1v1')?.assisted).toBe(true);
+    expect(listed.find((q) => q.id === 'casual-1v1')?.assisted).toBe(false);
+    expect(check('InstanceInfo', info).stage).toBe('ok');
+
+    const assisted = await player(a);
+    // An assisted client may not search the queues of players without MCP, even
+    // as one queue of a multi-queue search; an old client (no flag) is not assisted.
+    const human = await assisted.client.call('queue.join', {
+      queueId: 'casual-1v1',
+      regions: [],
+      assisted: true,
+    });
+    expect(human.error?.code).toBe('forbidden');
+    const mixed = await assisted.client.call('queue.join', {
+      queueId: 'mcp-1v1',
+      queueIds: ['casual-1v1'],
+      regions: [],
+      assisted: true,
+    });
+    expect(mixed.error?.code).toBe('forbidden');
+    // Refused joins open no ticket, so the same connection can try them all.
+    const unflagged = await assisted.client.call('queue.join', { queueId: 'mcp-1v1', regions: [] });
+    expect(unflagged.error?.code).toBe('forbidden');
+    const notAssisted = await assisted.client.call('queue.join', {
+      queueId: 'mcp-1v1',
+      regions: [],
+      assisted: false,
+    });
+    expect(notAssisted.error?.code).toBe('forbidden');
+
+    const joined = await assisted.client.ok('queue.join', {
+      queueId: 'mcp-1v1',
+      regions: [],
+      assisted: true,
+    });
+    expect(check('RealtimeQueueJoinResult', joined).stage).toBe('ok');
+    await assisted.client.ok('queue.leave', { ticketId: joined['ticketId'] });
+    // Free the connection: later tests open as many as the per-IP limit allows.
+    const closed = new Promise((resolve) => assisted.client.socket.once('close', resolve));
+    assisted.client.close();
+    await closed;
   });
 
   it('joins several queues as one search (queue.multi) and leaves them together', async () => {

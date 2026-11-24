@@ -98,6 +98,8 @@ class OnlineMatchResult
 	std::string mapTitle;
 	bool fromRoom = true;
 	bool rated = false;
+	/// A quick match from an assisted queue (Online::assisted players only).
+	bool assisted = false;
 	std::string ladder;
 	Verification verification = Verification::Pending;
 	/// Rating before the match and the server's result once verified.
@@ -136,6 +138,7 @@ struct OnlineMatchContext
 	std::string label;    ///< "1 vs 1 · Ranked" or the room's name
 	bool fromRoom = true; ///< rooms return to the room; queues to the hub
 	bool rated = false;
+	bool assisted = false; ///< the queue is for players with MCP enabled
 	std::string ladder;
 };
 

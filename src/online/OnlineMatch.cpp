@@ -265,6 +265,7 @@ OnlineMatch::OnlineMatch(PlatformClient &client, MapCache &maps, OnlineStorage &
 	outcome->label = ctx.label;
 	outcome->fromRoom = ctx.fromRoom;
 	outcome->rated = ctx.rated;
+	outcome->assisted = ctx.assisted;
 	outcome->ladder = ctx.ladder;
 	outcome->mapTitle = mapTitle();
 	// Optional preview of the rating change before verification (not in the

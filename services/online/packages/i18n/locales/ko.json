@@ -1541,6 +1541,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "요율 {slot0}: 입력 토큰 100만 개당 크레딧 {slot1}개, 캐시된 입력 {slot2}개, 캐시 쓰기 {slot3}개, 추론을 포함한 출력 {slot4}개입니다. 수정 및 후속 조치에도 같은 요율이 적용됩니다.",
   "Rated queues are for registered accounts; sign in first.": "평점 대기열은 등록 계정용입니다. 먼저 로그인하세요.",
+  "Players with the MCP server enabled and players without it use separate queues.": "MCP 서버를 켠 플레이어와 켜지 않은 플레이어는 서로 다른 대기열을 사용합니다.",
   "Rating": "평점",
   "Rating after each rated match": "각 평점 경기 후의 평점",
   "Re-verify ": "다시 확인",

@@ -1541,6 +1541,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "อัตราค่าบริการ {slot0} : {slot1} เครดิตต่อโทเค็นอินพุตหนึ่งล้านรายการ, {slot2} สำหรับอินพุตที่แคชไว้, {slot3} สำหรับการเขียนแคช และ {slot4} สำหรับเอาต์พุต รวมถึงการให้เหตุผล การซ่อมแซมและการติดตามผลใช้อัตราค่าบริการเดียวกัน",
   "Rated queues are for registered accounts; sign in first.": "คิวที่มีการจัดอันดับมีไว้สำหรับบัญชีที่ลงทะเบียนแล้ว โปรดเข้าสู่ระบบก่อน",
+  "Players with the MCP server enabled and players without it use separate queues.": "ผู้เล่นที่เปิดเซิร์ฟเวอร์ MCP และผู้เล่นที่ไม่ได้เปิดจะใช้คิวแยกกัน",
   "Rating": "คะแนนประเมิน",
   "Rating after each rated match": "คะแนนประเมินหลังแต่ละแมตช์จัดอันดับ",
   "Re-verify ": "ตรวจสอบซ้ำอีกครั้ง ",

@@ -1559,6 +1559,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "Sazba {slot0}: {slot1} kreditů za milion vstupních tokenů, {slot2} za vstup z mezipaměti, {slot3} za zápisy do mezipaměti a {slot4} za výstup včetně uvažování. Opravy a další požadavky používají stejné sazby.",
   "Rated queues are for registered accounts; sign in first.": "Hodnocené fronty jsou pro registrované účty; nejprve se přihlaste.",
+  "Players with the MCP server enabled and players without it use separate queues.": "Hráči se zapnutým serverem MCP a hráči bez něj používají oddělené fronty.",
   "Rating": "Hodnocení",
   "Rating after each rated match": "Hodnocení po každém hodnoceném zápasu",
   "Re-verify ": "Znovu ověřit ",

@@ -130,6 +130,10 @@
           "rated": {
             "type": "boolean"
           },
+          "assisted": {
+            "type": "boolean",
+            "description": "For clients with their MCP automation server enabled, which may join no other queue; other clients may not join it. Absent means false."
+          },
           "aiBackfillSeconds": {
             "type": "integer",
             "minimum": 0

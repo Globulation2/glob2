@@ -1851,6 +1851,13 @@ export const fixtureCases: FixtureCase[] = [
     },
   },
   {
+    schema: 'RealtimeQueueJoinParams',
+    name: 'assisted',
+    valid: true,
+    note: 'A client with its MCP server enabled joins an assisted queue.',
+    value: { queueId: 'mcp-ranked-1v1', regions: [], assisted: true },
+  },
+  {
     schema: 'RealtimeQueueRespondParams',
     name: 'accept',
     valid: true,
