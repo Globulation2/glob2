@@ -76,7 +76,11 @@ class LocalCommander : public CommanderView
 	// A script's create order by palette name, filled in as a click would.
 	Json placeByName(Json order);
 	// Adds the colony's own events and assigned counts to a Hive snapshot.
-	void annotate(Json &snapshot);
+	// What annotate adds from the live game, copied at the simulation boundary so the
+	// worker thread can merge it into the snapshot.
+	struct Annotation;
+	Annotation annotation();
+	static void annotate(Json &snapshot, const Annotation &annotation);
 	void submit(const std::vector<Json> &descriptors);
 	// Why a hive_program install or replace cannot apply now (empty when it can).
 	std::string programConflict(const std::string &kind, const Json &request) const;
@@ -118,7 +122,10 @@ class LocalCommander : public CommanderView
 		unsigned tick;
 	};
 	std::deque<PendingCreate> scriptCreates;
-	TileCache tileCache; // map tiles kept between Hive runs (see capture)
+	// Map tiles kept between Hive runs (see buildSnapshot). Shared with the worker
+	// thread, the only one that touches it; one capture runs at a time.
+	std::shared_ptr<TileCache> tileCache = std::make_shared<TileCache>();
+	std::shared_ptr<const Json> buildingTypeShapes; // per type: name, width, height
 	// Everything the colony was told, as it happened: the HUD's event reports, its own
 	// losses, buildings it saw appear or disappear, its scripts' failures and wakes.
 	// game_world alerts, game_wait and ctx.game.events() all read this one journal.
@@ -131,6 +138,14 @@ class LocalCommander : public CommanderView
 		bool paused = false;
 	};
 	std::deque<Logged> eventLog;
+	struct Annotation
+	{
+		int team;
+		std::shared_ptr<const Json> shapes;
+		Json own; // by building id: units assigned, an Inn's units inside and happiness
+		Json pending;
+		std::vector<Logged> events;
+	};
 	std::map<std::uint64_t, std::uint64_t> rowSeen; // HUD row id -> update sequence logged
 	unsigned destroyedTotal = 0, demolishedTotal = 0;
 	void record(Logged entry);

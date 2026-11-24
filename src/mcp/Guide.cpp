@@ -194,7 +194,9 @@ military) as the Statistics panel does; after the match, on end_game, it covers
 every team and the win probability history, to see why a match went the way it
 did. list: true names the metrics.
 The map, minimap and replay bar are canvases: use coordinates. Take ui_screenshot
-(max_width keeps it small) and pass its capture_id with x/y in that image's pixels.
+(max_width keeps it small) and pass its capture_id with x/y in that image's pixels,
+or pass space "logical" with x/y from ui_inspect bounds or game_view's tile_screen.
+To click a control without coordinates, ui_click {key} finds its centre.
 - Place by hand: activate a palette button, then ui_click on the map. Placement stays
   active for further clicks (game/placement shows it); ui_key Escape or a right click
   leaves it.

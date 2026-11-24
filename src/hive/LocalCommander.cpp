@@ -706,40 +706,63 @@ Json LocalCommander::placeByName(Json order)
 		order["range"] = made.range;
 	return order;
 }
-void LocalCommander::annotate(Json &snapshot)
+LocalCommander::Annotation LocalCommander::annotation()
 {
 	// Callers hold the simulation boundary. Only the colony's own information is added,
 	// plus what any building's type says (its name and footprint).
-	for (auto &b : snapshot.at("buildings"))
+	if (!buildingTypeShapes)
 	{
-		if (const auto *type = gui.game.buildingsTypes.get(b.value("type", 0)))
-			b["name"] = type->type, b["width"] = type->width, b["height"] = type->height;
-		if (b.value("team", -1) != team)
-			continue;
-		auto *building = gui.game.teams[team]->myBuildings[Building::GIDtoID(b.value("id", 0))];
+		Json shapes = Json::array();
+		for (std::size_t i = 0; i < gui.game.buildingsTypes.size(); ++i)
+			if (const auto *type = gui.game.buildingsTypes.get(i))
+				shapes.push_back({{"name", type->type}, {"width", type->width}, {"height", type->height}});
+		buildingTypeShapes = std::make_shared<const Json>(std::move(shapes));
+	}
+	Annotation out{team, buildingTypeShapes, Json::object(), Json::array(), {}};
+	// Units that took the job, beside the units it requests; an Inn's units inside
+	// and the happiness it offers, as the building panel shows.
+	for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
+	{
+		auto *building = gui.game.teams[team]->myBuildings[slot];
 		if (!building)
 			continue;
-		// Units that took the job, beside the units it requests; an Inn's units inside
-		// and the happiness it offers, as the building panel shows.
-		b["assigned"] = int(building->unitsWorking.size());
+		Json own = {{"assigned", int(building->unitsWorking.size())}};
 		if (building->type->canFeedUnit && !building->type->isBuildingSite)
-		{
-			b["inside"] = int(building->unitsInside.size());
-			b["happiness"] = building->availableHappynessLevel();
-		}
+			own["inside"] = int(building->unitsInside.size()), own["happiness"] = building->availableHappynessLevel();
+		out.own[std::to_string(building->gid)] = std::move(own);
 	}
 	// Footprints already claimed but not yet sites: game_place requests and script creates.
-	Json pending = Json::array();
 	for (const auto &p : placements)
-		pending.push_back({{"x", p.x}, {"y", p.y}, {"width", p.width}, {"height", p.height}});
+		out.pending.push_back({{"x", p.x}, {"y", p.y}, {"width", p.width}, {"height", p.height}});
 	for (const auto &c : scriptCreates)
 		if (const auto *type = gui.game.buildingsTypes.get(c.type); type && !type->isVirtual)
-			pending.push_back({{"x", c.x}, {"y", c.y}, {"width", type->width}, {"height", type->height}});
-	snapshot["pending"] = std::move(pending);
+			out.pending.push_back({{"x", c.x}, {"y", c.y}, {"width", type->width}, {"height", type->height}});
 	// ctx.game.events(): the colony's journal (what game_wait reports), with ticks.
 	recordFeed();
+	out.events.assign(eventLog.begin(), eventLog.end());
+	// Losses and sightings need the game_world memory; scripts read events, so start it.
+	memoryTracked = true;
+	return out;
+}
+void LocalCommander::annotate(Json &snapshot, const Annotation &annotation)
+{
+	const auto &shapes = *annotation.shapes;
+	for (auto &b : snapshot.at("buildings"))
+	{
+		const auto type = b.value("type", -1);
+		if (type >= 0 && std::size_t(type) < shapes.size())
+			for (const auto &[key, value] : shapes[std::size_t(type)].items())
+				b[key] = value;
+		if (b.value("team", -1) != annotation.team)
+			continue;
+		const auto own = annotation.own.find(std::to_string(b.value("id", 0)));
+		if (own != annotation.own.end())
+			for (const auto &[key, value] : own->items())
+				b[key] = value;
+	}
+	snapshot["pending"] = annotation.pending;
 	Json events = Json::array();
-	for (const auto &e : eventLog)
+	for (const auto &e : annotation.events)
 	{
 		Json event = {{"kind", e.kind}, {"event", e.event}, {"count", 1}, {"tick", e.tick}};
 		if (e.x >= 0)
@@ -753,8 +776,6 @@ void LocalCommander::annotate(Json &snapshot)
 	std::stable_sort(events.begin(), events.end(),
 					 [](const Json &a, const Json &b) { return a.value("tick", 0u) < b.value("tick", 0u); });
 	snapshot["events"] = std::move(events);
-	// Losses and sightings need the game_world memory; scripts read events, so start it.
-	memoryTracked = true;
 }
 Json LocalCommander::awaitResult(const Json &args)
 {
@@ -1074,13 +1095,12 @@ void LocalCommander::update()
 			try
 			{
 				const auto t0 = SDL_GetTicksNS();
-				// The real worker gets the cached map on its own thread; an injected one
-				// (tests) gets a complete snapshot.
-				Json snapshot = capture(observations, gui.game, team, launch ? nullptr : &tileCache);
-				annotate(snapshot);
-				if (std::getenv("GLOB2_HIVE_TIMING"))
-					fprintf(stderr, "HIVE_TIMING capture_ms=%.1f\n", (SDL_GetTicksNS() - t0) / 1e6);
-				Json request = {{"source", current.request.at("source")}, {"snapshot", std::move(snapshot)}};
+				// The simulation boundary: bring the colony's memory up to date and copy what
+				// the snapshot needs. The real worker builds the snapshot on its own thread;
+				// an injected one (tests) gets a complete snapshot built here.
+				auto input = std::make_shared<CaptureInput>(prepareCapture(observations, gui.game, team));
+				auto extra = std::make_shared<Annotation>(annotation());
+				Json request = {{"source", current.request.at("source")}};
 				observationTick = tick;
 				if (!currentProgram.empty())
 				{
@@ -1089,11 +1109,24 @@ void LocalCommander::update()
 					request["initialized"] = p.initialized;
 					request["random"] = p.random;
 				}
+				if (std::getenv("GLOB2_HIVE_TIMING"))
+					fprintf(stderr, "HIVE_TIMING main_thread_capture_ms=%.2f\n", (SDL_GetTicksNS() - t0) / 1e6);
 				if (!current.key.empty())
 					remember(
 						current.key,
 						{{"status", "running"}, {"submitted", false}, {"observation_tick", tick}});
-				worker = launch ? launch(std::move(request)) : startWorker(std::move(request), tileCache.tiles, tileCache.statics);
+				auto build = [input, extra, cache = launch ? nullptr : tileCache](Json request) mutable
+				{
+					const auto t1 = SDL_GetTicksNS();
+					Json snapshot = buildSnapshot(*input, cache.get());
+					annotate(snapshot, *extra);
+					request["snapshot"] = std::move(snapshot);
+					if (std::getenv("GLOB2_HIVE_TIMING"))
+						fprintf(stderr, "HIVE_TIMING worker_snapshot_ms=%.2f\n", (SDL_GetTicksNS() - t1) / 1e6);
+					return request;
+				};
+				worker = launch ? launch(build(std::move(request)))
+								: startWorker([build, request = std::move(request)]() mutable { return build(std::move(request)); });
 			}
 			catch (const std::exception &e)
 			{
