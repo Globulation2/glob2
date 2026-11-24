@@ -65,6 +65,7 @@ namespace GAGGUI
 namespace Glob2UI { class InGameDialog; }
 // Held by pointer so that files using GameGUI do not compile the scene and renderer.
 class GameGUIToolManager;
+struct BuildingCreateSettings;
 class SceneExtractor;
 class TorusView;
 struct PresentationFrame;
@@ -113,6 +114,7 @@ class GameGUI : public ClientCommandSink
 	friend struct CustomGameSetupHarness;
 	friend struct TurnClient;
 	friend struct ScriptPresentationFixture;
+	friend struct HiveToolsTestAccess;
     friend class TorusRenderIntegrationTest;
     std::unique_ptr<TorusView> torusViewOwner;
     TorusView &torusView;
@@ -316,18 +318,47 @@ public:
 	/// ("inn", "warflag") and the footprint's top-left tile and returns an empty string on
 	/// success, otherwise why it was refused. Both act exactly as the matching human input.
 	/// reserved holds {x, y, width, height} footprints of the caller's still-pending
-	/// placements; buildings need explored ground, as for a player.
+	/// placements; buildings need explored ground, as for a player. settings (see
+	/// GameGUIToolManager.h) replaces the click's default requested units and range in the
+	/// create order itself; on success it holds the values sent. requestedRefusal, when
+	/// given, says why the requested top-left itself was refused (empty when it was used).
 	std::string placeFromAutomation(const std::string &name, int x, int y, int searchRadius = 0,
 									std::pair<int, int> *placedAt = nullptr,
 									const std::vector<std::array<int, 4>> &reserved = {},
-									std::pair<int, int> *placedSize = nullptr);
+									std::pair<int, int> *placedSize = nullptr,
+									BuildingCreateSettings *settings = nullptr,
+									std::string *requestedRefusal = nullptr);
 	void centreViewOnTile(double x, double y);
 	/// Send a chat message as the local player, exactly as the chat box's Send would
 	/// (to everyone the chat box addresses). Returns false for empty text.
 	bool sendChatFromAutomation(const std::string &text);
+	/// MCP game_time speed: the top bar's speed stepper (Settings::GAME_SPEED_MINIMUM..
+	/// MAXIMUM, 0 normal). Returns an empty string on success, otherwise why not.
+	std::string setGameSpeedFromAutomation(int speed);
+	/// MCP game_alliance: what the Alliance dialog's OK sends for one other team, changing
+	/// only the settings given (alliance, then shared map, food and market vision). Empty
+	/// on success, otherwise why the dialog would not allow it.
+	std::string setAllianceFromAutomation(int otherTeam, std::optional<bool> allied,
+										  std::optional<bool> mapVision, std::optional<bool> foodVision,
+										  std::optional<bool> marketVision);
+	/// The local player's result once the game has announced it: "won", "lost", "draw",
+	/// or empty while the match goes on.
+	std::string announcedOutcome() const;
+	/// What a click with the palette's building or flag would create: its placeable type,
+	/// the default requested units (now and once finished) and a flag's default range
+	/// (-1 when it has none). error says why not, as for placeFromAutomation.
+	struct AutomationCreate
+	{
+		int typeNum = -1, workers = 0, futureWorkers = 0, range = -1;
+		std::string error;
+	};
+	AutomationCreate createDefaultsFromAutomation(const std::string &name);
 	/// The desktop top bar's values: workers, explorers and warriors free/total, prestige,
 	/// win chance, conversions gained and lost, then speed.
 	std::array<std::string, 8> topBarValues() const;
+	/// The top bar's win chance as a number (0..99, as shown), or nothing while the HUD
+	/// has none to show.
+	std::optional<int> localWinChancePercent() const;
 	/// The HUD's current game-event rows (under attack, finished, converted...).
 	const GameEventFeed &gameEvents() const { return eventFeed; }
 	/// Palette entries (building, then flag type keys) with whether this game allows them.
@@ -867,7 +898,7 @@ private:
 		HIDABLE_GFX_STAT = 0x8,
 		HIDABLE_ALLIANCE = 0x10,
 	};
-	Uint32 hiddenGUIElements;
+	Uint32 hiddenGUIElements = 0;
 
 	//! When set, tells the gui not to treat clicking the space key as usual, but instead, it will "swallow" (ignore) it
 	bool swallowSpaceKey;
@@ -968,7 +999,7 @@ private:
 	///The save this session last wrote; saving to it again needs no overwrite confirmation
 	std::string ownGameSaveName;
 
-	bool hasEndOfGameDialogBeenShown;
+	bool hasEndOfGameDialogBeenShown = false;
 
 	GameGUIMessageManager messageManager;
 	std::unique_ptr<InGameScrollableHistory> scrollableText;

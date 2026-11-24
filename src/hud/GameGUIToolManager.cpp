@@ -10,6 +10,7 @@
 #include "FormatableString.h"
 #include "GameGUI.h"
 #include <cmath>
+#include <algorithm>
 #include "GameGUIDefaultAssignManager.h"
 #include "GameGUIGhostBuildingManager.h"
 #include "Order.h"
@@ -382,16 +383,16 @@ bool GameGUIToolManager::confirmBuilding(int mouseX, int mouseY, int localteam, 
     return placeBuildingAt(x,y,localteam);
 }
 
-bool GameGUIToolManager::placeBuildingTopLeft(int x, int y, int localteam)
+bool GameGUIToolManager::placeBuildingTopLeft(int x, int y, int localteam, BuildingCreateSettings *settings)
 {
 	if (mode != PlaceBuilding || !drawnScene)
 		return false;
 	const BuildingCatalogView catalog(*drawnScene->buildingTypes);
 	const auto *bt = catalog.get(catalog.getPlaceableTypeNum(building));
-	return bt && placeBuildingAt(x - bt->decLeft, y - bt->decTop, localteam);
+	return bt && placeBuildingAt(x - bt->decLeft, y - bt->decTop, localteam, settings);
 }
 
-bool GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
+bool GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam, BuildingCreateSettings *settings)
 {
 	// Count down whether a building site can be placed
 	if ((drawnScene ? drawnScene->panels.local.state().noMoreBuildingSitesCountdown : 1)==0)
@@ -426,6 +427,29 @@ bool GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
             std::optional<Sint32> r;
             if(bt->zonable[WORKER] || bt->zonable[WARRIOR] || bt->zonable[EXPLORER])
                 r=globalContainer->settings.buildingRadius(drawnScene->world.catalogs->buildingFingerprint,*bt);
+			if (settings)
+			{
+				// Automation's initial settings replace the click's defaults, capped as the
+				// building panel caps them (the create order refuses anything above).
+				const BuildingCatalogView catalog(*drawnScene->buildingTypes);
+				const BuildingType *finished = catalog.get(catalog.getFinishedTypeNum(building));
+				if (!finished)
+					finished = bt;
+				if (bt->isBuildingSite)
+				{
+					if (settings->builders)
+						unitWorking = *settings->builders = std::clamp(*settings->builders, 0, int(bt->semantics.assignmentLimit));
+					if (settings->workers)
+						unitWorkingFuture = *settings->workers = std::clamp(*settings->workers, 0, int(finished->semantics.assignmentLimit));
+				}
+				else if (settings->workers)
+				{
+					unitWorking = *settings->workers = std::clamp(*settings->workers, 0, int(bt->semantics.assignmentLimit));
+					unitWorkingFuture = std::clamp(*settings->workers, 0, int(finished->semantics.assignmentLimit));
+				}
+				if (settings->range && bt->maxUnitStayRange > 0)
+					r = *settings->range = std::clamp(*settings->range, 0, int(bt->maxUnitStayRange));
+			}
 			ghostManager.addBuilding(typeNum, mapX, mapY);
 			orders.push(std::shared_ptr<Order>(new OrderCreate(localteam, mapX, mapY, typeNum, unitWorking, unitWorkingFuture, r)));
             return true;

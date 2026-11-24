@@ -57,6 +57,9 @@ constexpr std::size_t SourceLimit = 128 * 1024;
 constexpr std::size_t StateLimit = 1024 * 1024;
 constexpr unsigned DepthLimit = 256;
 constexpr std::uint64_t FuelLimit = 1000000;
+// JavaScript heap per runtime. AI and map scripts keep these defaults; a Host may
+// ask for more only outside the simulation (the local Hive worker).
+constexpr std::size_t MemoryLimit = 32 * 1024 * 1024;
 std::string config(const std::string &source, unsigned profile = ProfileVersion);
 unsigned profileFromConfig(const std::string &config);
 std::string sourceFromConfig(const std::string &config);

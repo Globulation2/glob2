@@ -165,6 +165,7 @@ foreach(variant IN LISTS GLOB2_WEB_VARIANTS)
     COMMAND ${bridge} hive-api --builddir "${out}"
     DEPENDS "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/buildsys/hive_api.py"
             "${GLOB2_ROOT}/services/online/packages/hive/src/commander-api.txt"
+          "${GLOB2_ROOT}/examples/hive-mind/hive.d.ts"
     WORKING_DIRECTORY "${GLOB2_ROOT}" COMMENT "Generating Hive player API contract (${variant})" VERBATIM)
   set(locales "${GLOB2_ROOT}/services/online/packages/i18n/locales")
   add_custom_command(OUTPUT "${out}/include/generated/OnlineErrorCatalog.h"

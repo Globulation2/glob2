@@ -54,18 +54,33 @@ sequence, where to start and links to the repository and this guide) and a
 `serverInfo` with `title`, `description` and `websiteUrl`: in the 2025-11-25
 `initialize` result and in the 2026-07-28 `server/discover` result. The read-only
 `game_guide` tool serves longer topics (`overview`, `gameplay`, `screens`, `hud`,
-`actions`, `control`, `hive`, `troubleshooting`, `links`); every topic carries the
+`actions`, `control`, `hive`, `troubleshooting`, `links`, and eight `strategy-*` topics:
+economy, food and conversion, scouting, defence, attack, training, terrain, timing,
+written as plain advice with tradeoffs) and `search` (whole words, optionally within
+one `topic`); every topic carries the
 links to the repository, these guides, Hive scripting and the tutorial lesson
 scripts. Its text lives in `src/mcp/Guide.cpp` and must stay true to the game's
 behavior: update it with the HUD, menus or rules it describes.
 
-Tool descriptions say what each tool is for in game terms. Only `ui_status`,
+Tool descriptions say what each tool is for in game terms. Annotations are set per tool
+(`annotationsFor` in `src/mcp/Tools.cpp`): reads are `readOnlyHint`; tools that can
+destroy, erase, cancel or send arbitrary input are `destructiveHint`; views, alliances,
+zones and operation-keyed Hive calls are `idempotentHint` (only those may be retried
+after a dropped connection); raw UI input is `openWorldHint`, since it can reach online
+matches. Only `ui_status`,
 `ui_acquire_control` and `ui_screenshot` publish an output schema, which keeps
-`tools/list` under the 25,000-byte budget that `MCP/tools explain themselves within a
+`tools/list` under the 31,500-byte budget that `MCP/tools explain themselves within a
 discovery size budget` enforces. Error results name what failed and the next step,
-for example which ui_act check failed (unknown surface, missing key, stale revision
-with the current one, disabled, hidden, blocked or unsupported action) or how to
-regain control.
+for example which ui_act check failed (unknown surface, missing key, a control with no
+actions such as a canvas, stale revision with the current one, disabled with its
+`disabled_reason`, hidden, blocked or unsupported action) or how to regain control.
+Schema validation names the allowed values: an integer outside its range reads
+`game_building.workers: out of range: 0..255, got 300`, a wrong type `expected integer
+0..255, got 2.5`, an enum `expected one of [...], got "urgent"`. A wait on a screen
+name that inspection never reports (`ui_act wait_for {"screen": ...}`, `ui_wait
+condition.screen`) is refused before dispatch, listing the known names
+(`knownScreens` in `src/mcp/Guide.cpp`, kept in step with the screens'
+`recordingId`).
 
 The 2025-11-25 adapter supports `initialize`, `notifications/initialized`, `ping`,
 `tools/list` and `tools/call`. Initialize supplies protocolVersion, capabilities, and
@@ -77,7 +92,10 @@ Call `ui_acquire_control` and retain its opaque token. Acquisition fails when an
 controller owns the lease. Input tools and `ui_release_control` require that token. A
 valid controller call renews its five-minute idle lease. Token-bearing inspection and explicit renewal also extend it; anonymous reads do not. Individual keys and buttons
 expire after five seconds; refresh a hold with another down call. `ui_release_inputs`
-releases held inputs; `ui_release_control` also frees the lease. **Revoke control**,
+releases held inputs; `ui_release_control` also frees the lease. A call whose token is
+wrong while another lease is held says `Token does not match the current control
+lease (held by ...)`; `Controller lease lost` means no client holds control any more.
+**Revoke control**,
 disablement, expiry, listener replacement and shutdown cancel pending controller work
 and release remote-owned inputs. Window focus loss releases held inputs and cancels
 pending controller actions while preserving the lease, so switching to the MCP client
@@ -104,30 +122,33 @@ not depend on the OS pointer position.
 
 | Tool | Semantics |
 | --- | --- |
-| game_guide | Game rules, menus, HUD, placement, control and errors by topic, with links. No lease required. |
+| game_guide | Game rules, menus, HUD, placement, control and errors by topic, with links; `search` returns the blocks of every topic containing all its words: a short paragraph whole, so a heading comes with its list of steps, or a few lines of a long one extended over the list items and indented lines that continue them. No lease required. |
 | ui_status | Dimensions, availability, frame_id, viewport_id and controller. No lease required. |
 | ui_screenshot | Next capturable complete game frame, as inline base64 PNG plus metadata. No lease required. |
 | ui_acquire_control / ui_release_control | Acquire a token / release its lease and inputs. |
-| ui_move | Move to x, y. |
-| ui_click | Left (default), middle or right; count 1 (default) or 2. |
+| ui_move | Move to x, y, or to the centre of an inspected control by `key` (and `surface` when the key is on several). |
+| ui_click | Left (default), middle or right; count 1 (default) or 2; at x, y or on a control by `key`/`surface`, refused when that control is hidden or blocked. |
 | ui_drag | Array of points; duration_ms defaults to 250, range 1–5000; advances across frames. |
 | ui_mouse_button | down or up at x, y, across calls. |
 | ui_scroll | dx/dy at x, y; positive dy is up, dx right. |
+| (pointer space) | The pointer tools (`ui_move`, `ui_click`, `ui_mouse_button`, `ui_scroll`, `ui_drag`) take `space`: `native` (the default) is window pixels, `logical` is the pixels of `ui_inspect` bounds and `game_view`'s `tile_screen`; a `capture_id` instead names screenshot pixels. |
 | ui_key | SDL scancode name; press (default), down or up; optional modifier scancode names. |
 | ui_type_text | UTF-8 via the focused game's text-input path, up to 65536 bytes. |
 | ui_release_inputs | Release remote-held mouse buttons and keys. |
-| ui_inspect | Typed hierarchy; optional surface/subtree filters and bounded screenshot. |
-| ui_act | Activate, select, set a value or scroll an inspected control; target revision required. |
-| ui_wait | Observe a screen, control state or revision; default 10 seconds, maximum 30. |
+| ui_inspect | Typed hierarchy; optional surface/subtree filters and bounded screenshot. Choices and lists give their `options` (compact output gives `option_count` for lists and choices over 24 options), `disabled_options` and the chosen `value_label`; sliders and steppers give `min`, `max`, `step` and, when the number is not the reading, `value_label` (`1.6x` for speed 2). A disabled control whose screen knows why carries `disabled_reason`. `find` returns instead a flat list of the controls whose label or key contains the text (surface, key, label, role, actions, revision, state, `hidden`; at most 40). Compact output (the default) gives rectangles only to canvases and controls without actions, since `ui_click {key}` needs none (`bounds: true` gives every control's, `bounds: false` none), and folds each run of off-screen controls into one `hidden_controls` entry per container, merged across layout containers: the count, the `keys` of those that take actions (plain keys) and their `labels` by key; scroll their container, or select on a choice that lists them, to reach one. A filter that matches nothing carries a `note` naming the missing key or surface. A wrong or expired token is ignored by reads. |
+| ui_act | Activate, select, set a value or scroll an inspected control; target revision required. `select` takes an option's index, its label, or a unique case-insensitive start of a label (`Maxima` for `Maxima - Hard (1873)`); an ambiguous start is refused with its matches. Values are checked against the control's options or `min`/`max` before dispatch; a refusal lists them and reports `dispatched: false`. Once consumed it returns, on the same screen, only the acted control's subtree (`inspection_scope` says so; the whole screen if that control went away), and on a new screen its whole inspection; `inspect: false` returns only the screen name (also with `capture_after`) and `result_subtree` trims it to one control's subtree, dropping surfaces without it. `wait_for` (`"next_screen"` or `{"screen": NAME}`, with `timeout_ms`, default 10000) holds the reply until that screen shows; it shares the eight-wait limit with `ui_wait`, and a timeout answers `satisfied: false` with a `wait_note` rather than an error, since the action happened. |
+| ui_wait | Observe a screen, control state or revision; default 10 seconds, maximum 30. `inspect: false` returns only the screen name. |
 | ui_renew_control | Renew the current token's five-minute control lease. |
-| game_world | Your colony in map tiles: status (free/total units, prestige, win chance), recent alerts with tiles and a `kind` (buildings destroyed or demolished and units converted away first, then attacks, conversions to you and completions), `losses` (buildings destroyed, units converted away in total and since the previous read), buildings with id, top-left tile, size, level, site, workers, the stock the building panel shows as `amount/capacity` (material keys such as `food` for wheat and `cherries`, plus `bullets`; a site's delivered of needed), units `inside` and an Inn's `happiness`, unit counts and your warriors by training level, hungry and injured units, known resources with the nearest tile, other teams' buildings in sight and remembered under fog, recent placements and the placeable names with sizes. `detail: brief` returns only status, unit counts, forces, alerts, losses, placements and one line per building, for polling; `detail: full` adds unit lists; `area` filters by tiles. No lease required. |
-| game_place | Place a building site or flag by name with its top-left on a tile, through the same checks as a click; `near` searches outward for room. Buildings need explored ground and never overlap the caller's pending placements; refusals say why. |
-| game_building | Change one of your buildings or flags by id and generation: worker request (capped at the building's limit, reported), priority, Swarm production ratios, flag range (capped at the flag type's maximum, reported), upgrade, repair, cancel_upgrade, destroy, cancel_destroy, or move a flag. Uses the validated script order path. |
-| game_zone | Paint or erase a forbidden, guard or clearing zone over a tile rectangle. |
-| game_view | Centre the camera on a tile and return its screen point (`tile_screen`, in inspection logical pixels). Optional `zoom` sets the HUD's map zoom first (1 is 100%; clamped to the HUD's range, up to 5; 0 fits the whole map, like the zoom bar's Fit) and the reply reports `zoom` and `zoom_range`. |
-| game_chat | Send an in-game chat message as the local player, as the chat box's Send would (to the recipients the chat box addresses). The text holds at most 254 bytes of UTF-8, the chat order's limit; longer text is refused with an error rather than cut. It needs no chat box, focus or keystrokes. Like the other `game_*` tools, it works only in a local match with a human player, never online or LAN. |
-| game_time | `status` (no lease), `pause`, `resume` or `step` with `ticks` (1–3000, default 30) for the local match. Reports `tick`, `paused`, `paused_by` (`agent`, `player`, `menu` or `none`), `steps_remaining`, `speed` and `ticks_per_second`. |
-| game_stats | Statistics over time from the same metric catalog as the game's panels (`stats/MetricCatalog.h`), each with per-team series (`seconds`, `values` or `band_values`, thinned to `points`, default 60, at most 300) and a summary over every sample (`latest`, `peak`, `low`, and a counter's `total`). `list: true` names the metrics; `metrics` picks up to 16; `split` shows their parts. In a match: your colony only, exactly the in-game Statistics panel, plus the top bar; no other team and no win-probability history, which reads hidden opponent state. On the `end_game` screen, while it is shown: every team of the finished match with name, colour, outcome, the overview figures and the win probability history, as the results screen charts them. No lease required. |
+| game_world | Your colony in map tiles, with this match's `session`: status (`units_free` per unit type counted now: free, total, and the non-zero counts of idle, working, at flags, in guard zones, fighting, hungry, injured and inside; `win_chance` as a number; the top bar's sampled text under `hud_sampled`), alerts from the colony's event journal, grouped by kind, team and program over the window (`n` reports, the latest x/y, an `area` box, unit and building breakdowns, `first_tick`, `last_tick`, `ticks_ago`; positions are a unit's tile, a building's top-left, and a completed building's centre), newest first, the last five minutes unless `since_tick` is given, at most 25 groups (kinds: unit/building attacked, building completed, destroyed or demolished, units converted away or to you, enemy building sighted or gone, Hive program failed, Hive wake), `losses` (buildings destroyed recently and in total, buildings demolished in total, units converted away in total and since the previous read), buildings with id, top-left tile, size, level, site, workers (requested) and `assigned` (units that have taken the job), the stock the building panel shows as `amount/capacity` (material keys such as `food` for wheat and `cherries`, plus `bullets`; a site's delivered of needed), units `inside` and an Inn's `happiness`, unit counts and your warriors by training level, hungry and injured units, known resources by type (tiles, amount, the nearest tile and the largest `fields` of touching tiles, `resource_fields` of them, default 3; `resources_scope` echoes the searched rectangle, `resources_note` says when nothing was seen or how to look further; `area` restricts the search), other teams' buildings in sight and remembered under fog, recent placements and the placeable names with sizes. `detail: brief` returns only status, unit counts, forces, alerts, losses, placements and one line per building, for polling; `detail: alerts` drops the building list too; `detail: full` adds unit lists and the placeable names and note, which the default summary leaves out; `include` returns only the named top-level sections (with `tick`, `session` and `team`; unknown names are refused with the list), for example `["status", "alerts"]` to poll cheaply; `area` filters by tiles; `since_tick` keeps only alerts after that tick. Alerts also report standing Hive programs that failed (`hive_program_failed`, with `paused`) and other teams' buildings first seen (`enemy_building_sighted`). Placement follow-ups see every own building whatever `area` or `limit` say, and give the placed `id` and `generation`. No lease required. |
+| game_place | Place a building site or flag by name with its top-left on a tile, through the same checks as a click; `near` searches outward for room and reports how far it `moved` and why the requested spot was refused. The new building's id appears under `game_world` placements once the next step has applied the order; a `session` from another match is refused. `workers`, `builders` and a flag's `range` go in the create order itself, capped at the type's limits and reported under `settings`; `priority` follows as a priority order once the site or flag appears, since the create order carries none. Buildings need explored ground and never overlap the caller's pending placements; refusals say why (with `near`, how many spots were unexplored, pending or blocked). |
+| game_building | Change one of your buildings or flags by id and generation, as this match's `game_world` reported them (a `session` from another match, or an id `game_world` never reported without this match's session, is refused): worker request (capped at the building's limit, reported), priority, Swarm production ratios, flag range (capped at the flag type's maximum, reported), upgrade, repair, cancel_upgrade, destroy, cancel_destroy, or move a flag. Uses the validated script order path. A reference is checked first: another team's building, an unknown id or a stale generation (with the current one) are refused with the reason; so are impossible requests (upgrading a site, a flag or a top-level building, moving a building, a range on a building). `builders` alone sets a site's builders; a cap of 0 says why. |
+| game_zone | Paint or erase a forbidden, guard or clearing zone over a tile rectangle; the reply echoes the zone, mode and area. |
+| game_view | Centre the camera on tile `x`/`y` (on your Swarm, or your colony's centre, when they are omitted) and return its screen point (`tile_screen`, in inspection logical pixels, with `on_screen`; across the map edge it is the copy in view). Optional `zoom` sets the HUD zoom first (1 is 100%, up to 5; 0 fits the whole map); `width`/`height` instead frame that many tiles around the centre. |
+| game_chat | Send an in-game chat message as the local player, as the chat box's Send would (to the recipients the chat box addresses). The text is plain text on one line of at most 254 bytes of UTF-8, the chat order's limit; longer text, control characters and whitespace-only text are refused with an error rather than altered. It needs no chat box, focus or keystrokes. Like the other `game_*` tools, it works only in a local match with a human player, never online or LAN. |
+| game_time | `action` (default `status`, no lease): `pause`, `resume` or `step` with `ticks` (1–3000, default 30; the match stays paused after; `wait: true` replies once the steps ran, as game_wait does). `speed` -3..10 sets the top bar speed with any action: -3..9 are 0.25, 0.5, 0.75, 1, 1.25, 1.6, 2, 2.5, 4, 5, 8, 13 and 40 times normal, 10 unlimited. Reports `tick`, `paused`, `paused_by`, `steps_remaining`, `speed`, `speed_value` and `ticks_per_second` (rounded; null with a warning at unlimited speed, when many ticks pass between calls). |
+| game_wait | Let game time pass: up to `ticks` (1–9000, default 300) or until an `until` event reaches the colony, the game announces the result (`match_end`), or `timeout_ms` (default 25000, at most 30000) passes. `until` takes categories (`attack`, which ignores attacks on explorers only, `attack_buildings`, `attack_warriors`, `building_lost`, `conversion` in either direction, `conversion_lost`, `conversion_gained`, `enemy_sighted`, `enemy_building_gone`, `hive_failure`, `hive_wake`, `building_completed`) or any alert kind; the default is `attack`, `building_lost`, `conversion_lost`, `enemy_sighted`, `enemy_building_gone`, `hive_failure` and `hive_wake`. An attack already under way when the wait starts does not end it; a new one does. Steps still running from `game_time step` are waited for rather than reported as a pause. `since_tick` also counts events since an earlier tick; `resume: true` lets a paused match run first. Held as an observer and checked each frame from the event journal, without parking the simulation. `include` narrows the embedded `game_world` reply to the named sections, as in game_world. Answers `reason` (the until name that matched, `ticks`, `timeout` with how many ticks passed, `paused` or `match_end` with `outcome`), the `trigger`, `from_tick`, `waited_ticks` and the `game_world` alerts reply since it began. No lease required. |
+| game_alliance | The in-game Alliance dialog. With only the token: each other team with its players, whether it is an AI, and your settings toward it (`allied`, `share_map`, `share_food_vision`, `share_market`) plus `teams_fixed`. With `team` and settings: the dialog's OK for that team, other settings and teams unchanged, echoing what was requested. When Teams Fixed is on (the Game Rules default) only a change of `allied` is refused; a game that hides the dialog refuses all changes. |
+| game_stats | Statistics over time from the same metric catalog as the game's panels (`stats/MetricCatalog.h`), each with per-team series (`seconds`, `values` or `band_values`, thinned to `points`, default 20, at most 300) and a summary over every sample (`latest`, `peak`, `low`, and a counter's `total`). `list: true` names the metrics; `metrics` picks up to 16; `split` shows their parts; `series: false` returns each team's summary without the series. Each metric's `unit` is `percent` when it is shown as a percentage (win probability, shares). In a match: your colony only, exactly the in-game Statistics panel, plus the top bar; no other team and no win-probability history, which reads hidden opponent state. On the `end_game` screen, while it is shown: every team of the finished match with name, colour, outcome, the overview figures and the win probability history, as the results screen charts them. No lease required. |
 
 The `game_*` tools follow fog of war: they report only what the player's colony sees
 now or has seen. Other teams' buildings out of sight are reported as last seen (from a
@@ -143,11 +164,11 @@ demolition ordered in the HUD that completes between two refreshes is reported a
 destroyed too. An Inn's happiness is the level `Team::findNearestFood` compares when a
 hungry unit chooses between your Inns and the Inns of a non-allied colony that shares
 its food vision; the `gameplay` guide topic explains conversion.
-| hive_status | Local scripting availability, match-session identity and limits. |
-| hive_api | Shared player JavaScript API and authoritative local control contract. |
-| hive_run | Queue one bounded script invocation with a deduplicated operation key. |
-| hive_result | Inspect an operation's output, errors and order-submission result. |
-| hive_program | List/inspect/install/replace/pause/resume/cancel local standing orders. |
+| hive_status | Local scripting availability, match-session identity and limits. Colony scripts run in a disposable worker outside the simulation, so each run gets 250 million work units (250 times an AI or map script's) and a 128 MiB JavaScript heap, bounded by the worker's 5 s deadline; a whole-map scan of a 256 x 256 map fits. |
+| hive_api | The Hive JavaScript reference, browsable rather than one blob: no arguments lists its sections (the shared player contract split at its headings, then `helpers`, `local-control`, `limits` and `types`, the TypeScript declarations from `examples/hive-mind/hive.d.ts`); all of it is compiled into the game, so release builds serve it without the source tree; `section` reads one with its `previous`/`next`; `search` returns the paragraphs containing every word. `helpers` documents the local colony helpers: `units`/`buildings` filters by name and `"mine"`/`"enemies"`, `buildingType`, `events`, `map.scan`, `map.canPlace`, `map.findPlacement`, `map.delta`/`distance`, create orders by building name, resource keys on tiles and `assigned` on own buildings. All read only the colony's own snapshot. |
+| hive_run | Queue one bounded script invocation with a deduplicated operation key; `wait: true` holds the call (up to 25 seconds) and returns the finished result instead of `queued`. Each order stands alone: one the game no longer accepts (a stale or foreign building reference, a bad descriptor) is listed in `rejected` with its index and reason, and the rest are sent. |
+| hive_result | Inspect an operation's output, errors and order-submission result; `wait: true` waits until it has finished. |
+| hive_program | List/inspect/install/replace/pause/resume/cancel local standing orders. A program whose worker could not start is retried up to three times; any other failure pauses it. Both appear as `game_world` alerts. `list` stays short (no description, last output or events: `inspect` has them) and reports each program's `paused_reason`, `last_error`, `intervalTicks`, `last_run_tick` and `runs`; a replaced program keeps its pause and says so. An install over an existing name, a replace of a missing program, or a stale `expected_revision` fails at once, naming the current revision. |
 
 `game_time` is a client scheduling control, not an order: `pause` sets the same hard
 pause as the player's Hard pause shortcut, which holds the engine's whole order and
@@ -184,7 +205,9 @@ events from buffered queues, preserves unrelated human events, stops remaining g
 steps, and releases temporary holds. A screen transition that truncates an event batch
 fails the call; undelivered releases remain queued for a later dispatch boundary.
 Failures such as stale viewport, lost control, unavailable frames and cancelled capture
-are tool results with isError; malformed JSON, invalid arguments and protocol errors
+are tool results with isError. So are invalid arguments, as the MCP tools spec asks, so
+that the model sees them and can correct the call: `structuredContent` carries `error`
+and `error_code: "invalid_argument"`. Malformed JSON, unknown tools and protocol errors
 are JSON-RPC errors. An invalid-argument message names the field and the broken rule,
 for example `Invalid argument: ui_drag.points[]: missing required property "x"`. An
 error may report input_started when earlier gesture steps were
@@ -271,7 +294,7 @@ the full tree). `compact`
 also applies to `ui_act`, `ui_wait` and `ui_acquire_control` inspections: it replaces
 keyless, unlabelled, inert layout containers with their children, omits fields at
 their defaults, keeps `revision` only on actionable controls and marks controls with
-no visible area as `hidden`. Typical menu inspections shrink to a third of their size. Controls report their own `revision`.
+no visible area as `hidden`. Typical menu inspections shrink to a third of their size. Controls report their own `revision`, which changes only with their meaning: label, value, enabled, selected, options, range, actions, the domain identity they act on, and whether they are visible at all. Bounds are not part of it, so a layout settling, a preview arriving or a list scrolling leaves revisions (and the surface revision) unchanged.
 Snapshot bounds use the owning surface's logical pixels; `viewport` records that
 space. They can differ from native screenshot pixels under interface scaling or
 HiDPI. Prefer semantic actions for controls and captured-image coordinates for
@@ -282,12 +305,12 @@ Use `ui_act` with `surface`, `key`, `revision`, `action` and optional `value`:
 {"token":"CONTROL_TOKEN","surface":1,"key":"start","revision":7,"action":"activate"}
 ```
 
-Actions are `activate`, `select` (integer index), `set_value` (a control's typed
+Actions are `activate`, `select` (option index, label or unique label start), `set_value` (a control's typed
 value) and `scroll` (signed logical-pixel delta). A stale, hidden, disabled or blocked
 target fails. Commands traverse the deferred-input receipts and revalidate at actual
 consumption. Unrelated counters do not invalidate a button. Successful `ui_act`
 receipts include the current `inspection`, avoiding another read to discover the next
-control. A queued screen transition may still need `ui_wait`. If inspection itself
+control. A queued screen transition is awaited with `wait_for` on the same call. If inspection itself
 fails after input was consumed, `inspection_error` reports that separately;
 `dispatched: true` still records delivery, so do not replay the action.
 
@@ -332,8 +355,23 @@ free/total, prestige, win chance, converted in and out). `game/placement` is a r
 label naming the active placement tool: `none`, `building:<type>`, `flag:<type>` or
 `zone:<kind>:paint|erase`. A flag's assignment slider is labelled for the unit it
 requests (Assigned warriors or explorers). Building and flag palette entries are labelled
-with the player-facing names; their keys keep the stable type names. Native OS dialogs
-remain outside this interface.
+with the player-facing names; their keys keep the stable type names. `game/speed` is a
+stepper: `set_value` -3..10; `activate` steps through the top bar's chevron presets
+(levels 0, 3, 5, 7 and 10, wrapping to 0), so from normal speed it jumps to 3 (2x). A
+left `ui_click` on the map while a building or flag tool is armed adds `placement`
+(`tool`, whether it is still `armed`, and a note): the order applies over the next
+ticks, so the reply cannot confirm it; `game_world` shows the new site and `game_place`
+reports refusals with reasons. The tool stays armed after a placement, and its preview
+outline turns red over the new site because that tile is now taken. Statistics rows are
+keyed `stats/metric/<id>` with spaces as hyphens (`stats/metric/net-growth`) and read
+`Name: value`. The Alliance dialog's abbreviated toggles read `Share food vision with
+<player>: on|off`. On `end_game` each overview row is `overview/team/<team>` and reads
+the team and every shown column with its figure. In `landscape_picker`,
+`landscape/choice` lists every landscape as an option (filtered or incompatible ones
+disabled): `select` one by name to choose it and scroll its card into view; hidden
+`landscape/N` cards are refused until scrolled into view, like any hidden control.
+`landscape/use` and the custom game's `start` give a `disabled_reason` while they
+wait. Native OS dialogs remain outside this interface.
 
 ## Linux stdio launcher
 

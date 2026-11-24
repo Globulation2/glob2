@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <iterator>
 #include <string_view>
+#include <cstdio>
 #include "Team.h"
 namespace Script
 {
@@ -34,8 +35,25 @@ std::shared_ptr<Order> order(const AIEngine::AIWorldView &world, int team, const
 		"clearingMaterials"};
 	if (std::find(std::begin(supported), std::end(supported), type) == std::end(supported))
 		throw std::runtime_error("Unsupported order type '" + type.substr(0, 64) + "'");
+	// Error text only: the same check, with the field's range and the value received.
 	auto number = [&](const char *name, int lo = 0, int hi = 65535)
-	{ return d.integer(name, lo, hi); };
+	{
+		try
+		{
+			return d.integer(name, lo, hi);
+		}
+		catch (const std::runtime_error &)
+		{
+			const auto &v = d.get(name);
+			char got[32] = "a non-number";
+			if (v.kind == Value::Null)
+				std::snprintf(got, sizeof got, "nothing");
+			else if (v.kind == Value::Number)
+				std::snprintf(got, sizeof got, "%.10g", v.number);
+			throw std::runtime_error("Invalid integer argument: " + std::string(name) + " must be a whole number " +
+									 std::to_string(lo) + ".." + std::to_string(hi) + " (got " + std::string(got) + ")");
+		}
+	};
     if(type=="alliance") {
         if(team<0 || team>=int(world.teams.size())) throw std::runtime_error("Invalid alliance owner");
         const Uint32 self=Uint32(1)<<team;
@@ -152,10 +170,27 @@ std::shared_ptr<Order> order(const AIEngine::AIWorldView &world, int team, const
 			throw std::runtime_error("Building does not produce units");
 		const auto &a = d.get("ratios");
 		if (a.kind != Value::Array || a.items.size() != NB_UNIT_TYPE)
-			throw std::runtime_error("Production requires three ratios");
+			throw std::runtime_error("Production requires three ratios: ratios is an array of three whole numbers "
+									 "0..16, in worker, explorer, warrior order");
 		Sint32 ratios[NB_UNIT_TYPE];
+		static const char *const ratioNames[NB_UNIT_TYPE] = {"worker", "explorer", "warrior"};
 		for (int i = 0; i < NB_UNIT_TYPE; ++i)
-			ratios[i] = Value::object().set("value", a.items[i]).integer("value", 0, 16);
+			try
+			{
+				ratios[i] = Value::object().set("value", a.items[i]).integer("value", 0, 16);
+			}
+			catch (const std::runtime_error &)
+			{
+				// Error text only: the same check, naming the field, its range and the value.
+				const auto &v = a.items[i];
+				char got[32] = "a non-number";
+				if (v.kind == Value::Null)
+					std::snprintf(got, sizeof got, "nothing");
+				else if (v.kind == Value::Number)
+					std::snprintf(got, sizeof got, "%.10g", v.number);
+				throw std::runtime_error("Invalid integer argument: ratios[" + std::to_string(i) + "] (" +
+										 ratioNames[i] + ") must be a whole number 0..16 (got " + got + ")");
+			}
 		for (int i = 0; i < NB_UNIT_TYPE; ++i)
 			if (ratios[i] && !world.catalog->at(b->typeNum).semantics.production.recipes[i].enabled)
 				throw std::runtime_error("Requested unit recipe is unavailable");

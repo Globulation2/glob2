@@ -94,7 +94,7 @@ Json runWorker(const Json &)
 	return {{"ok", false}, {"error", "Native worker unavailable"}};
 }
 #endif
-std::future<Json> startWorker(Json request)
+std::future<Json> startWorker(std::function<Json()> makeRequest)
 {
 	static std::atomic<bool> busy{false};
 	if (busy.exchange(true))
@@ -104,12 +104,21 @@ std::future<Json> startWorker(Json request)
 		return rejected.get_future();
 	}
 	std::packaged_task<Json()> task(
-		[request = std::move(request)]
+		[makeRequest = std::move(makeRequest)]() mutable
 		{
 			struct Release
 			{
 				~Release() { busy = false; }
 			} release;
+			Json request;
+			try
+			{
+				request = makeRequest();
+			}
+			catch (const std::exception &e)
+			{
+				return Json{{"ok", false}, {"error", e.what()}};
+			}
 			return runWorker(request);
 		});
 	auto result = task.get_future();

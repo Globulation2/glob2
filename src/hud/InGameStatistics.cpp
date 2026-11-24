@@ -145,6 +145,12 @@ const TeamStats *InGameStatisticsPanel::history() const
     if (!recorded || teamId < 0 || std::size_t(teamId) >= recorded->teams.size()) return nullptr;
     return recorded->teams[teamId].get();
 }
+std::string InGameStatisticsPanel::metricKey(const std::string &id)
+{
+    std::string key = "stats/metric/" + id;
+    std::replace(key.begin(), key.end(), ' ', '-');
+    return key;
+}
 const Stats::Metric *InGameStatisticsPanel::metric(const std::string &id) const
 {
     const auto it = std::find_if(catalog.begin(), catalog.end(), [&](const auto &m) { return id == m.id; });
@@ -154,7 +160,7 @@ void InGameStatisticsPanel::openMetric(const std::string &id)
 {
     if (!metric(id)) return;
     selectMetric(id);
-    returnKey = "stats/metric/" + id;
+    returnKey = metricKey(id);
     host().closePopup();
     gui.openDialog(GameGUI::IGM_STATISTICS, std::make_unique<InGameStatisticsHistory>(*this, id));
 }
@@ -220,10 +226,11 @@ fe::Element InGameStatisticsPanel::metricRow(const Stats::Metric &m, const fe::P
     if (value.available && m.kind == Stats::Metric::Counter && !view.total && !m.ratioOf && m.scale == 1)
         number += fe::tr("[stat per minute short]");
     const auto name = TeamStatChart::title(m);
-    auto action = fe::button("stats/metric/" + id, "", [this, id] { selectMetric(id); },
+    // The row reads "Idle workers: 3" in inspection; its key has no spaces.
+    auto action = fe::button(metricKey(id), "", [this, id] { selectMetric(id); },
         {.selected = selectedMetric() == id, .flat = true, .alignLeft = true,
          .tooltip = value.available ? TeamStatChart::about(m) : reading(m, view, history(), teamId),
-         .accessibleLabel = name + "\n" + number});
+         .accessibleLabel = name + ": " + number});
     auto label = fe::paragraph(name);
     auto numberText = fe::paragraph(number, {fe::FontRole::Body, false, fe::TextAlign::Right});
     const fe::ToolkitTextMeasurer textMeasure(theme(), p.touch, p.textUnit);

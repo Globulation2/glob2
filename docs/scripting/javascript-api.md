@@ -27,6 +27,14 @@ entity objects, pathfinding queries or direct mutation methods.
 - A hidden, dead, missing or stale entity lookup returns `null`. Malformed query
   arguments throw a JavaScript `TypeError`. Unsupported scenario queries also
   throw in AI scripts. Budget and failure behavior is described in the guide.
+- A script declares `step(ctx)`; `main(ctx)` is accepted as another name for it.
+  Stack traces omit the runtime's internal entry wrapper.
+- Each callback converts at most 1 MiB of strings and record keys from JavaScript
+  to the engine, cumulatively: the arguments of every query and helper call (a
+  record passed as an argument counts whole), the returned effects and the saved
+  state. Crossing it throws a `TypeError` that names the amount and the call; the
+  bytes are not given back when it is caught, so the callback still fails when it
+  returns. Treat it as fatal. The same applies to the 32 MiB native data budget.
 - Extra descriptor fields are ignored by order/effect validators, but still must
   be serializable script data and consume the conversion budget. Use the signatures
   below; unused arguments are not a versioning or extension mechanism.
@@ -284,7 +292,19 @@ ctx.game.map.tile(x, y)
 ctx.game.map.region(x, y, width, height)
 ctx.game.map.zones(x, y, width, height, team)
 ctx.game.map.area(name) // map scripts only
+ctx.game.map.delta(a, b)
+ctx.game.map.distance(a, b)
 ```
+
+`delta` returns `{dx, dy}`, the shortest offset from `a` to `b` on the wrapping map, and
+`distance` the straight-line length of that offset. Pass two `{x, y}` records or four
+integers `ax, ay, bx, by`. They are pure arithmetic on the map size, read nothing else
+and cost one work unit plus converting their arguments; plain subtraction is wrong for
+positions near opposite edges. A missing or invalid coordinate is named in the error
+(`map.distance a.y must be a whole number -32768..32767 (got nothing)`). Local colony
+(Hive) scripts read only `x` and `y` of record arguments; AI and map scripts convert
+each argument whole, so pass `{x, y}` or four numbers in large loops.
+Local colony (Hive) scripts have further helpers; `hive_api` section `helpers` lists them.
 
 Query X/Y must be integers in `-32768..32767` and wrap around the toroidal map;
 returned coordinates are canonical `0..map.width-1` / `0..map.height-1`.
@@ -390,7 +410,7 @@ let wheatTiles = [];
 function step(ctx) {
   const tiles = ctx.game.map.region(10, 20, 8, 6);
   const wheat = tiles.filter(t => t.visible && t.resource.type === 1);
-  // A resource may be eternal with amount zero: test type !== 255 for presence.
+  // A resource may be eternal with amount zero: test type !== 65535 for presence.
   wheatTiles = wheat.map(t => ({x: t.x, y: t.y, amount: t.resource.amount}));
 }
 ```
@@ -401,15 +421,15 @@ These values describe profile 1's engine encodings. They are not injected
 JavaScript globals. Define local constants in your single module when useful:
 
 ```javascript
-const RESOURCE = Object.freeze({WOOD: 0, WHEAT: 1, STONE: 3, NONE: 255});
+const RESOURCE = Object.freeze({WOOD: 0, WHEAT: 1, STONE: 3, NONE: 65535});
 const UNIT = Object.freeze({WORKER: 0, EXPLORER: 1, WARRIOR: 2});
 const NO_ENTITY = 65535;
 ```
 
 | Domain | Values |
 | --- | --- |
-| Resource IDs / array indices | Wood `0`, wheat `1`, papyrus `2`, stone `3`, alga `4`, cherry `5`, orange `6`, prune `7`; array positions `8..14` are reserved |
-| Resource sentinels | Tile no-resource `255`; unit not-carrying `-1` |
+| Resource IDs / array indices | Wood `0`, wheat `1`, papyrus `2`, stone `3`, alga `4`, cherry `5`, orange `6`, prune `7`; array positions `8..14` are reserved. A tile's `resource.type` is a map-local ID: look it up in `resourceTypes()` (maps may add rice, fish, maize and more) |
+| Resource sentinels | Tile no-resource `65535`; unit not-carrying `-1` |
 | Building families (`shortType`) | Swarm `0`, inn `1`, hospital `2`, racetrack `3`, swimmingpool `4`, barracks `5`, school `6`, defencetower `7`, explorationflag `8`, warflag `9`, clearingflag `10`, stonewall `11`, market `12` |
 | Ability array indices / actions | Stop walk `0`, stop swim `1`, stop fly `2`, walk `3`, swim `4`, fly `5`, build `6`, harvest `7`, attack speed `8`, attack strength `9`, magic attack air `10`, magic attack ground `11`, magic create wood `12`, magic create wheat `13`, magic create alga `14`, armor `15`, health `16` |
 | Additional destination purposes | Heal `17`, feed `18`; these are not indices in the 17-entry ability arrays |

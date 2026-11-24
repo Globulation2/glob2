@@ -8,6 +8,7 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <algorithm>
+#include <cctype>
 #include <cmath>
 #include <cstdio>
 #include <limits>
@@ -94,9 +95,22 @@ std::string colorText(int r, int g, int b)
 Json statsReport(const std::vector<Stats::Metric> &catalog, const std::vector<StatsTeam> &teams,
 				 const Json &args, const std::vector<std::string> &defaults)
 {
+	// Ids match exactly, else ignoring case, spaces, '-' and '_', against the id or the
+	// displayed name ("Population", "win_chance", "Idle workers" all resolve).
+	const auto fold = [](const std::string &value)
+	{
+		std::string folded;
+		for (const unsigned char c : value)
+			if (c != ' ' && c != '_' && c != '-')
+				folded += char(std::tolower(c));
+		return folded;
+	};
 	auto find = [&](const std::string &id) -> const Stats::Metric *
 	{
-		const auto it = std::find_if(catalog.begin(), catalog.end(), [&](const auto &m) { return id == m.id; });
+		auto it = std::find_if(catalog.begin(), catalog.end(), [&](const auto &m) { return id == m.id; });
+		if (it == catalog.end())
+			it = std::find_if(catalog.begin(), catalog.end(), [&](const auto &m)
+							  { return fold(id) == fold(m.id) || fold(id) == fold(text(m.titleKey())); });
 		return it == catalog.end() ? nullptr : &*it;
 	};
 	if (args.value("list", false))
@@ -151,7 +165,7 @@ Json statsReport(const std::vector<Stats::Metric> &catalog, const std::vector<St
 			values += series.ticks.size() * (series.values.size() + 1);
 		prepared.push_back(std::move(p));
 	}
-	std::size_t points = std::size_t(std::clamp(args.value("points", 60), 2, 300));
+	std::size_t points = std::size_t(std::clamp(args.value("points", 20), 2, 300));
 	bool thinned = false;
 	if (values > 0)
 	{
@@ -175,7 +189,9 @@ Json statsReport(const std::vector<Stats::Metric> &catalog, const std::vector<St
 					  {"name", text(m.titleKey())},
 					  {"group", groupName(m.group)},
 					  {"shown_as", shownAs(m, p.view, p.chart)},
-					  {"unit", text(m.unitKey)}};
+					  // Percentages (win probability, shares, ratios) are not counted in the
+					  // metric's own unit.
+					  {"unit", p.chart.percent ? std::string("percent") : text(m.unitKey)}};
 		if (p.chart.stacked)
 		{
 			Json bands = Json::array();
@@ -215,6 +231,12 @@ Json statsReport(const std::vector<Stats::Metric> &catalog, const std::vector<St
 			if (p.hasTotals && t < p.totals.teams.size() && !p.totals.teams[t].ticks.empty())
 				summary["total"] = number(p.totals.teams[t].values[0].back(), false);
 			row["summary"] = summary;
+			// series: false keeps only the summaries, for a quick read of the latest figures.
+			if (!args.value("series", true))
+			{
+				series.push_back(std::move(row));
+				continue;
+			}
 			const auto picked = spread(s.ticks.size(), points);
 			Json seconds = Json::array();
 			for (const auto i : picked)
@@ -260,11 +282,14 @@ Json finishedMatchStats(const EndGameScreen &screen, const Json &args)
 							   : nullptr;
 		if (!team)
 			continue;
+		// The player who left the match lost it, whatever the team's state says.
+		const bool leaver = entry.teamNum == screen.localTeamNumber() &&
+							screen.shownOutcome() == EndGameScreen::Outcome::Left;
 		Json details = {{"team", entry.teamNum},
 						{"name", entry.name},
 						{"color", colorText(entry.color.r, entry.color.g, entry.color.b)},
-						{"won", team->hasWon},
-						{"lost", team->hasLost || !team->isAlive}};
+						{"won", team->hasWon && !leaver},
+						{"lost", team->hasLost || !team->isAlive || leaver}};
 		if (entry.teamNum == screen.localTeamNumber())
 			details["you"] = true;
 		Json figures = Json::object();

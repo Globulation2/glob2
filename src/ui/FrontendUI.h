@@ -124,6 +124,8 @@ struct MenuAction
 	bool enabled = true;
 	// Drawn before the label when set.
 	IconRef icon;
+	// Why it is disabled, for inspection (disabled_reason) while enabled is false.
+	std::string disabledReason;
 };
 // A frontend menu: paints the colony background and keeps the frontend theme
 // active for its whole lifetime, so a menu created while gameplay winds down

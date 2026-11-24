@@ -198,6 +198,8 @@ Application::Application()
 		return screens.top() ? std::string(screens.top()->recordingId())
 							 : std::string("unavailable");
 	};
+	// game_* outside a match names the screen the player is on.
+	Hive::setScreenSource([this] { return screens.top() ? std::string(screens.top()->recordingId()) : std::string(); });
 	mcp->configure(globalContainer->settings.mcpActive(), globalContainer->settings.mcpActivePort());
 	// Enabling MCP makes this client assisted, whichever tools an agent then uses:
 	// it quick-matches only against other players with MCP enabled.

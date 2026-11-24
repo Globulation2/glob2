@@ -23,6 +23,11 @@ struct PositionedControl
 	ControlValue value;
 	bool enabled = true, selected = false;
 	std::vector<ActionKind> actions = {ActionKind::Activate};
+	// Optional value description for inspection: Select option labels, SetValue range.
+	std::vector<std::string> options;
+	std::optional<ValueRange> range;
+	// How the ranged value reads ("1.6x"), and why the control is disabled, for inspection.
+	std::string valueLabel, disabledReason;
 	std::function<bool(const SemanticAction &)> perform;
 	std::function<void(Point)> tap;
 	bool contains(Point point) const

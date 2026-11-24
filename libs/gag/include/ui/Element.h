@@ -124,6 +124,15 @@ class Node
 	// Domain context that changes an action's meaning without changing its key.
 	virtual std::string semanticIdentity() const { return {}; }
 	virtual bool selected() const { return false; }
+	// Labels a Select index names, with their availability (empty: all enabled).
+	virtual std::vector<std::string> optionLabels() const { return {}; }
+	virtual std::vector<bool> optionsEnabled() const { return {}; }
+	// The range SetValue accepts, for integer value controls.
+	virtual std::optional<ValueRange> valueRange() const { return {}; }
+	// How a ranged value reads ("1.6x"); empty when the number is the reading.
+	virtual std::string valueLabel() const { return {}; }
+	// Why the control is disabled, for inspection; only read while enabled() is false.
+	virtual std::string disabledReason() const { return {}; }
 	virtual std::vector<ActionKind> supportedActions() const
 	{
 		std::vector<ActionKind> actions;

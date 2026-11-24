@@ -29,6 +29,10 @@ class PositionedNode final : public Node
 	ControlValue controlValue() const override { return control.value; }
 	std::string semanticIdentity() const override { return control.identity; }
 	bool selected() const override { return control.selected; }
+	std::vector<std::string> optionLabels() const override { return control.options; }
+	std::optional<ValueRange> valueRange() const override { return control.range; }
+	std::string valueLabel() const override { return control.valueLabel; }
+	std::string disabledReason() const override { return control.disabledReason; }
 	bool enabled() const override { return control.enabled; }
 	bool interactive() const override { return !control.actions.empty(); }
 	std::vector<ActionKind> supportedActions() const override { return control.actions; }

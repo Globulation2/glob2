@@ -26,6 +26,15 @@ class HiveAPITests(unittest.TestCase):
         self.assertNotIn('paid follow-up', player)
         self.assertIn('new UUID', contract)  # Online clients retain their control contract.
 
+    def test_header_carries_the_type_declarations_for_release_builds(self):
+        contract = (ROOT / 'services/online/packages/hive/src/commander-api.txt').read_text()
+        declarations = (ROOT / 'examples/hive-mind/hive.d.ts').read_text()
+        header = api.render(contract, declarations)
+        self.assertIn('R"GLOB2_TYPES(' + declarations + ')GLOB2_TYPES"', header)
+        self.assertIn('PlayerAPIDeclarations', header)
+        with self.assertRaises(ValueError):
+            api.render(contract, 'x )GLOB2_TYPES" y')
+
     def test_missing_section_markers_are_rejected(self):
         with self.assertRaisesRegex(ValueError, 'separate online management'):
             api.render('unstructured contract')

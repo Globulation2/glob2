@@ -328,6 +328,8 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 		speed.role = "stepper";
 		speed.bounds = {topBarSpeedX() - 4, 0, TOP_BAR_SPEED_WIDTH, 16};
 		speed.value = globalContainer->settings.gameSpeed;
+		speed.range = ValueRange{Settings::GAME_SPEED_MINIMUM, Settings::GAME_SPEED_MAXIMUM, 1};
+		speed.valueLabel = globalContainer->settings.getGameSpeedText();
 		speed.actions = {ActionKind::Activate, ActionKind::SetValue};
 		speed.tap = [this](Point) { cycleGameSpeed(true); };
 		speed.perform = [this](const SemanticAction &a)
@@ -468,6 +470,7 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 			c.identity = std::to_string(b->state().typeNum) + ":" + std::to_string(minimum) + ":" +
 						 std::to_string(maximum);
 			c.role = "slider";
+			c.range = ValueRange{minimum, maximum, 1};
 			c.label = std::move(label);
 			c.bounds = rect;
 			c.clip = clip;
@@ -755,8 +758,11 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 		{
 			auto r = choiceControlBounds(top, i, columns);
 			// Label palette entries with the player-facing name, not the sprite key.
-			// The scene has no building types until it is first extracted.
-			std::string label = names[i];
+			// The scene has no building types until it is first extracted: until then,
+			// the name before its first dot, capitalized ("inn.0.site" reads "Inn").
+			std::string label = names[i].substr(0, names[i].find('.'));
+			if (!label.empty())
+				label[0] = char(std::toupper(static_cast<unsigned char>(label[0])));
 			if (const auto *types = drawnScene().buildingTypes.get())
 			{
 				const BuildingCatalogView catalog(*types);
@@ -925,7 +931,8 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 std::string GameGUI::placeFromAutomation(const std::string &requested, int x, int y, int searchRadius,
 										 std::pair<int, int> *placedAt,
 										 const std::vector<std::array<int, 4>> &reserved,
-										 std::pair<int, int> *placedSize)
+										 std::pair<int, int> *placedSize, BuildingCreateSettings *settings,
+										 std::string *requestedRefusal)
 {
 	if (globalContainer->isViewingGame() || globalContainer->liveSpectating)
 		return "Placement is unavailable while watching a game";
@@ -960,6 +967,11 @@ std::string GameGUI::placeFromAutomation(const std::string &requested, int x, in
 	if (!found->enabled)
 		return name + " is not available in this game (a lesson or scenario restriction); "
 					  "placeable here: " + available;
+	// Initial settings a click cannot give, checked before anything is placed.
+	if (settings && settings->range && type->maxUnitStayRange <= 0)
+		return "range is a flag's setting; " + name + " has none";
+	if (settings && settings->builders && !type->isBuildingSite)
+		return "builders is a construction site's setting; " + name + " is placed directly (pass workers)";
 	const auto &map = drawnScene().map;
 	if (x < 0 || y < 0 || x >= int(map.getW()) || y >= int(map.getH()))
 		return "Tile (" + std::to_string(x) + ", " + std::to_string(y) + ") is outside the " +
@@ -973,20 +985,38 @@ std::string GameGUI::placeFromAutomation(const std::string &requested, int x, in
 		const int d = ((bx - ax) % size + size) % size;
 		return d < aw || size - d < bw;
 	};
+	// Why spots were refused, to say so when none is found.
+	int triedSpots = 0, unexploredSpots = 0, reservedSpots = 0;
+	std::string lastRefusal; // why the latest spot tried was not usable
 	auto usable = [&](int tx, int ty)
 	{
+		++triedSpots;
 		for (const auto &r : reserved)
 			if (overlaps(tx, type->width, r[0], r[2], int(map.getW())) &&
 				overlaps(ty, type->height, r[1], r[3], int(map.getH())))
+			{
+				++reservedSpots;
+				lastRefusal = "it overlaps one of your pending placements";
 				return false;
+			}
 		if (type->isVirtual)
 			return true;
 		for (int dy = 0; dy < type->height; ++dy)
 			for (int dx = 0; dx < type->width; ++dx)
 				if (!map.isMapDiscovered(tx + dx, ty + dy, explored))
+				{
+					++unexploredSpots;
+					lastRefusal = "its ground is not all explored";
 					return false;
+				}
 		return true;
 	};
+	// Whether the requested footprint itself is unexplored (counted before searching).
+	bool requestedUnexplored = false;
+	if (!type->isVirtual)
+		for (int dy = 0; dy < type->height && !requestedUnexplored; ++dy)
+			for (int dx = 0; dx < type->width && !requestedUnexplored; ++dx)
+				requestedUnexplored = !map.isMapDiscovered(x + dx, y + dy, explored);
 	if (placedSize)
 		*placedSize = {type->width, type->height};
 	// Place through the click path, then restore whatever tool the player had.
@@ -997,6 +1027,8 @@ std::string GameGUI::placeFromAutomation(const std::string &requested, int x, in
 	// With a search radius, try rings of tiles around (x, y), nearest first.
 	bool placed = false;
 	const int w = int(map.getW()), h = int(map.getH());
+	// Each attempt starts from the requested settings; the successful one says what it sent.
+	const auto requestedSettings = settings ? std::optional<BuildingCreateSettings>(*settings) : std::nullopt;
 	for (int r = 0; r <= searchRadius && !placed; ++r)
 		for (int dy = -r; dy <= r && !placed; ++dy)
 			for (int dx = -r; dx <= r && !placed; ++dx)
@@ -1005,13 +1037,23 @@ std::string GameGUI::placeFromAutomation(const std::string &requested, int x, in
 					continue;
 				const int tx = ((x + dx) % w + w) % w, ty = ((y + dy) % h + h) % h;
 				if (!usable(tx, ty))
+				{
+					if (r == 0 && requestedRefusal)
+						*requestedRefusal = lastRefusal;
 					continue;
-				if (toolManager.placeBuildingTopLeft(tx, ty, localTeamNo))
+				}
+				if (settings)
+					*settings = *requestedSettings;
+				if (toolManager.placeBuildingTopLeft(tx, ty, localTeamNo, settings))
 				{
 					placed = true;
 					if (placedAt)
 						*placedAt = {tx, ty};
 				}
+				else if (r == 0 && requestedRefusal)
+					*requestedRefusal = type->isVirtual ? "another of your flags is on that tile"
+														: "the ground is not clear (water, a resource, rocks or a "
+														  "building, or a site still being created)";
 			}
 	if (previousMode == TOOL_SELECTION && !previousBuilding.empty())
 		toolManager.activateBuildingTool(previousBuilding);
@@ -1023,12 +1065,147 @@ std::string GameGUI::placeFromAutomation(const std::string &requested, int x, in
 		return {};
 	if (drawnScene().panels.local.state().noMoreBuildingSitesCountdown != 0)
 		return "Too many new construction sites at once; wait a moment and try again";
-	return "No room for " + name + " (" + std::to_string(type->width) + "x" +
-		   std::to_string(type->height) + " tiles) with its top-left at (" + std::to_string(x) +
-		   ", " + std::to_string(y) + ")" +
-		   (searchRadius ? " or within " + std::to_string(searchRadius) + " tiles of it" : "") +
-		   ": a building needs clear, explored ground away from your pending placements, and a "
-		   "flag cannot share a tile with another of your flags. Pass near to search around it";
+	std::string reason = "No room for " + name + " (" + std::to_string(type->width) + "x" +
+						 std::to_string(type->height) + " tiles) with its top-left at (" + std::to_string(x) +
+						 ", " + std::to_string(y) + ")" +
+						 (searchRadius ? " or within " + std::to_string(searchRadius) + " tiles of it" : "") + ": ";
+	if (requestedUnexplored)
+		reason += "ground there is unexplored (a building needs ground your colony has seen). ";
+	if (searchRadius)
+	{
+		const int blocked = triedSpots - unexploredSpots - reservedSpots;
+		reason += "of " + std::to_string(triedSpots) + " spots tried, " + std::to_string(unexploredSpots) +
+				  " had unexplored ground, " + std::to_string(reservedSpots) +
+				  " overlapped your pending placements and " + std::to_string(blocked) +
+				  (type->isVirtual ? " already had one of your flags. " : " were not clear ground. ");
+	}
+	else if (!requestedUnexplored)
+		reason += type->isVirtual ? "a flag cannot share a tile with another of your flags, "
+									"or overlap your pending placements. "
+								  : "a building needs clear ground (no water, resources, rocks "
+									"or other buildings) away from your pending placements. ";
+	if (unexploredSpots && unexploredSpots == triedSpots)
+		reason += "Explore there first (an explorer flag or explorers from a Swarm), or place nearer your colony";
+	else if (!searchRadius)
+		reason += "Pass near to search around it";
+	else
+		reason += "Try a larger search_radius or another spot";
+	return reason;
+}
+
+std::optional<int> GameGUI::localWinChancePercent() const
+{
+	// The same number as the top bar (localWinChanceText): the local side's own chance only.
+	const auto &scene = drawnScene();
+	const int team = scene.panels.local.state().number;
+	const auto &chances = scene.panels.hud.winChances;
+	if (!scene.panels.local.record || team < 0 || size_t(team) >= chances.size())
+		return std::nullopt;
+	return std::clamp((chances[team].permille + 5) / 10, 0, 99);
+}
+
+std::string GameGUI::setGameSpeedFromAutomation(int speed)
+{
+	if (!canChangeGameSpeed())
+		return "Game speed is fixed in this match (network games run at normal speed)";
+	if (speed < Settings::GAME_SPEED_MINIMUM || speed > Settings::GAME_SPEED_MAXIMUM)
+		return "Game speed must be " + std::to_string(Settings::GAME_SPEED_MINIMUM) + ".." +
+			   std::to_string(Settings::GAME_SPEED_MAXIMUM) + " (0 is normal speed)";
+	setGameSpeed(speed);
+	return {};
+}
+
+std::string GameGUI::setAllianceFromAutomation(int otherTeam, std::optional<bool> allied,
+											   std::optional<bool> mapVision, std::optional<bool> foodVision,
+											   std::optional<bool> marketVision)
+{
+	// Exactly the Alliance dialog's choices: the same availability rules, and the same
+	// SetAllianceOrder its OK sends, with every other team's settings left as they are.
+	const auto &scene = drawnScene();
+	if (!scene.world.session || globalContainer->replaying || globalContainer->isViewingGame())
+		return "Alliances can only be changed while playing a match";
+	if (hiddenGUIElements & HIDABLE_ALLIANCE)
+		return "This game hides the Alliance dialog (a lesson or scenario restriction)";
+	// Teams Fixed (a Game Rules option, on by default) locks the dialog's alliance column;
+	// its shared-vision toggles stay available.
+	if (scene.world.session->fixedAlliances && allied &&
+		*allied != ((scene.entities.teams[localTeamNo].allies & Team::teamNumberToMask(otherTeam)) != 0))
+		return "Alliances are fixed for this match (Game Rules: Teams Fixed); shared map, food "
+			   "and market vision can still change";
+	const int teams = scene.entities.teamCount;
+	if (otherTeam < 0 || otherTeam >= teams)
+		return "There is no team " + std::to_string(otherTeam) + ": teams are 0.." + std::to_string(teams - 1) +
+			   " (game_alliance with only team lists them)";
+	if (otherTeam == localTeamNo)
+		return "Team " + std::to_string(otherTeam) + " is your own; pass another team's number";
+	const auto &local = scene.entities.teams[localTeamNo];
+	const Uint32 self = Team::teamNumberToMask(localTeamNo), other = Team::teamNumberToMask(otherTeam);
+	const auto set = [&](Uint32 mask, std::optional<bool> value)
+	{ return !value ? mask : *value ? mask | other : mask & ~other; };
+	const Uint32 allies = set(local.allies | self, allied);
+	Uint32 enemies = 0;
+	// The dialog fires on every team it is not allied with, and always on teams that
+	// no player controls.
+	for (int t = 0; t < teams; ++t)
+		if (t != localTeamNo && (!(allies & Team::teamNumberToMask(t)) || scene.entities.teams[t].playersMask == 0))
+			enemies |= Team::teamNumberToMask(t);
+	enqueueOrder(std::make_shared<SetAllianceOrder>(localTeamNo, allies & ~enemies, enemies,
+													set(local.exchangeVision, marketVision),
+													set(local.foodVision, foodVision),
+													set(local.otherVision, mapVision)));
+	return {};
+}
+
+GameGUI::AutomationCreate GameGUI::createDefaultsFromAutomation(const std::string &requested)
+{
+	AutomationCreate result;
+	std::string key, available;
+	bool enabled = false;
+	auto scan = [&](const std::vector<std::string> &names, const std::vector<bool> &states)
+	{
+		for (size_t i = 0; i < names.size(); ++i)
+		{
+			const auto shortName = names[i].substr(0, names[i].find('.'));
+			if (states[i])
+				available += (available.empty() ? "" : ", ") + shortName;
+			if (key.empty() && (names[i] == requested || shortName == requested))
+				key = names[i], enabled = states[i];
+		}
+	};
+	scan(buildingsChoiceName, buildingsChoiceState);
+	scan(flagsChoiceName, flagsChoiceState);
+	if (key.empty() || !enabled)
+	{
+		result.error = (key.empty() ? "Unknown building or flag \"" + requested + "\"" : requested + " is not available in this game") +
+					   "; placeable here: " + available;
+		return result;
+	}
+	const BuildingCatalogView catalog(*drawnScene().buildingTypes);
+	result.typeNum = catalog.getPlaceableTypeNum(key);
+	const auto *type = result.typeNum >= 0 ? catalog.get(result.typeNum) : nullptr;
+	if (!type)
+	{
+		result.error = "Unknown building or flag \"" + requested + "\"";
+		return result;
+	}
+	// The same defaults GameGUIToolManager uses for a click.
+	result.workers = defaultAssign.getDefaultAssignedUnits(drawnScene(), result.typeNum);
+	result.futureWorkers = defaultAssign.getDefaultAssignedUnits(drawnScene(), catalog.getFinishedTypeNum(key));
+	if (type->zonable[WORKER] || type->zonable[WARRIOR] || type->zonable[EXPLORER])
+		result.range = globalContainer->settings.buildingRadius(drawnScene().world.catalogs->buildingFingerprint, *type);
+	if (type->isVirtual && result.range < 0)
+		result.range = type->defaultUnitStayRange;
+	return result;
+}
+
+std::string GameGUI::announcedOutcome() const
+{
+	if (!hasEndOfGameDialogBeenShown)
+		return {};
+	const auto &hud = drawnScene().panels.hud;
+	if (hud.localDraw)
+		return "draw";
+	return hud.localState().won ? "won" : hud.localState().lost ? "lost" : "";
 }
 
 void GameGUI::centreViewOnTile(double x, double y)

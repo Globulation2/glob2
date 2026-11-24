@@ -23,6 +23,9 @@ public:
     void selectTopic(Topic value);
     Topic topic() const { return selectedTopic; }
     static Topic topicFor(Stats::Group group);
+    //! The control key of a metric's row: "stats/metric/" and the id with spaces as
+    //! hyphens ("stats/metric/net-growth"), so keys never contain spaces.
+    static std::string metricKey(const std::string &id);
     void selectMetric(const std::string &id);
     std::string selectedMetric() const;
     void openMetric(const std::string &id);

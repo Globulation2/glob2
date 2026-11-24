@@ -101,8 +101,10 @@ def shader_inputs(args):
 def hive_api(args):
     import hive_api
     source = ROOT / 'services/online/packages/hive/src/commander-api.txt'
+    declarations = ROOT / 'examples/hive-mind/hive.d.ts'
     write_if_changed(Path(args.builddir) / 'include/hive/PlayerAPIContract.h',
-                     hive_api.render(source.read_text(encoding='utf-8')))
+                     hive_api.render(source.read_text(encoding='utf-8'),
+                                     declarations.read_text(encoding='utf-8')))
     _touch(args.stamp)
 
 

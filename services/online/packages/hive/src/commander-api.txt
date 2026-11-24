@@ -1,8 +1,10 @@
-Hive Mind API version 1. Every source is standalone synchronous JavaScript source declaring step(ctx). No imports, async callbacks, filesystem, network, console, or external libraries. Top-level plain data persists between invocations. Use structured return data; do not retain ctx or entity snapshots globally. Source limit 128 KiB; globals limit 1 MiB; output limit 64 KiB; 8 standing orders; 32 gameplay orders per invocation; schedule intervals >=25 simulation ticks. A step returns {output: JSON-compatible value, orders: array of order descriptors}. Omit either field when unused.
+Hive Mind API version 1. Every source is standalone synchronous JavaScript source declaring step(ctx) (main(ctx) is accepted as another name for it). No imports, async callbacks, filesystem, network, console, or external libraries. Top-level plain data persists between invocations. Use structured return data; do not retain ctx or entity snapshots globally. Source limit 128 KiB; globals limit 1 MiB; output limit 64 KiB; 8 programs; 32 gameplay orders per invocation; schedule intervals >=25 simulation ticks. A step returns {output: JSON-compatible value, orders: array of order descriptors}. Omit either field when unused.
 
 ## Online program management
 
 The tool accepts execute, install, replace, list, pause, resume and remove operations. Install requires a new UUID and revision 1. Replacement requires expectedRevision and new revision=expectedRevision+1; replacement resets globals unless migration source is supplied. ctx.wakeAgent({key,reason,data}) requests an optional paid follow-up for an ongoing task; it is not a direct model call. Triggers should be edge-triggered, meaningful, and deduplicated using persistent state. Do not wake on every invocation.
+
+Replacement migration (online programs only; a local hive_program replace has no migration and resets globals): a migration source declares step(ctx, state). state.previous contains the opaque saved globals checkpoint. Return {output: checkpoint, orders: []}. Null output resets state. An unchanged checkpoint requires compatible source bindings. Prefer reset over manipulating opaque checkpoints.
 
 ## Player API
 
@@ -26,6 +28,10 @@ All reads are fixed to the authenticated team and one observation tick. Other-te
   field as `undefined` in returned data: omit it or use `null` explicitly. Global variables can contain undefined.
 - A hidden, dead, missing or stale entity lookup returns `null`. Malformed query
   queries throw. Invocation failures discard all state and orders.
+- One run converts at most 1 MiB of strings and record keys from JavaScript to the
+  host, cumulatively: every helper call's arguments (records passed whole included),
+  the returned output and the globals. Crossing it throws a `TypeError` naming the
+  call; catching it does not give the bytes back, so the invocation still fails.
 - Extra descriptor fields are ignored by order/effect validators, but still must
   be serializable script data and consume the conversion budget. Use the signatures
   below; unused arguments are not a versioning or extension mechanism.
@@ -53,6 +59,8 @@ ctx.game.buildings({team, offset, limit})
 ctx.game.unit({id, generation})
 ctx.game.building({id, generation})
 ctx.game.buildingTypes()
+ctx.game.terrainTypes()
+ctx.game.resourceTypes()
 ```
 
 The filter record and all its fields are optional. `team` is a current team ID;
@@ -206,13 +214,13 @@ Region dimensions are integers in `0..256`; either zero returns an empty array.
 Region requires exactly four arguments and returns a flat row-major array:
 `tiles[dy * width + dx]` corresponds to wrapped `(x + dx, y + dy)`.
 Maximum dimensions are validation limits, not promises that a region fits the
-callback budget. For example, a 256×256 request exceeds the work budget.
+callback budget: large regions cost work in proportion to their tiles.
 
 | Tile field | Presence and meaning |
 | --- | --- |
 | `x`, `y`, `visible`, `explored` | Always present; `visible` means current permission to see the tile |
-| `observedTick`, `terrain`, `resource` | Present only when explored; current data if visible, last observation otherwise |
-| `resource.type`, `.variety`, `.amount` | Numeric resource ID, visual variety and engine amount (byte counters); no resource is `{type: 255, variety: 0, amount: 0}` |
+| `observedTick`, `corners`, `resource` | Present only when explored; current data if visible, last observation otherwise |
+| `resource.type`, `.variety`, `.amount` | Map-local resource ID (see `resourceTypes()`), visual variety and total stock; no resource is `{type: 65535, variety: 0, amount: 0}` |
 | `groundUnit`, `airUnit`, `building` | Present only when currently visible; permitted occupant ID or `65535` for empty/hidden occupant |
 | `forbidden` | AI scripts only, on explored tiles; current own-team forbidden-area boolean, even if terrain is remembered |
 
@@ -222,11 +230,22 @@ not a request to reveal the engine's hidden current map. The history survives
 save/load and is updated during simulation independently of which tiles the
 script asks for.
 
-**`terrain` is the raw terrain graphic index, not `TerrainType`.** Pure grass
-indices are `0..15`, pure sand `128..143`, pure water `256..271`; other indices
-represent transition tiles. There is currently no normalized terrain-class or
-passability query. Do not compare `tile.terrain` to the C++ `GRASS=2` / `WATER=0`
-enum or treat a transition tile as proven traversable.
+**`corners` holds the tile's four corner terrain IDs**: top-left, top-right,
+bottom-left, bottom-right. Index the immutable definitions returned by
+`ctx.game.terrainTypes()` with these IDs (each has `id`, `name`, `buildable`,
+`groundSpeedQ8` and other gameplay properties); IDs differ between maps, so never
+hard-code them. When all four agree, the tile has that terrain's rules exactly.
+Mixed tiles are never buildable; for movement, two or more blocked corners prevent
+walking. There is no single per-tile terrain field. Buildability is a terrain
+capability: occupancy, resources and space still matter, and the game decides.
+
+```javascript
+const terrain = ctx.game.terrainTypes();
+function buildable(tile) {
+  return tile.explored && tile.corners.every(c => c === tile.corners[0]) &&
+    terrain[tile.corners[0]].buildable && tile.resource.type === 65535;
+}
+```
 
 Tile occupants are bare IDs, not complete references. To read an occupant,
 match its ID against the appropriate visible entity list and use that record's
@@ -237,8 +256,9 @@ generation. Empty occupants use `65535`, **not** `null` or zero.
 let wheatTiles = [];
 function step(ctx) {
   const tiles = ctx.game.map.region(10, 20, 8, 6);
-  const wheat = tiles.filter(t => t.visible && t.resource.type === 1);
-  // A resource may be eternal with amount zero: test type !== 255 for presence.
+  const wheatId = ctx.game.resourceTypes().find(r => r.key === 'wheat').id;
+  const wheat = tiles.filter(t => t.visible && t.resource.type === wheatId);
+  // A resource may be eternal with amount zero: test type !== 65535 for presence.
   wheatTiles = wheat.map(t => ({x: t.x, y: t.y, amount: t.resource.amount}));
   return {output:wheatTiles};
 }
@@ -246,19 +266,19 @@ function step(ctx) {
 
 ## Numeric values
 
-These values describe profile 1's engine encodings. They are not injected
+These values are the engine's numeric encodings. They are not injected
 JavaScript globals. Define local constants in your single module when useful:
 
 ```javascript
-const RESOURCE = Object.freeze({WOOD: 0, WHEAT: 1, STONE: 3, NONE: 255});
+const RESOURCE = Object.freeze({WOOD: 0, WHEAT: 1, STONE: 3, NONE: 65535});
 const UNIT = Object.freeze({WORKER: 0, EXPLORER: 1, WARRIOR: 2});
 const NO_ENTITY = 65535;
 ```
 
 | Domain | Values |
 | --- | --- |
-| Resource IDs / array indices | Wood `0`, wheat `1`, papyrus `2`, stone `3`, alga `4`, cherry `5`, orange `6`, prune `7`; array positions `8..14` are reserved |
-| Resource sentinels | Tile no-resource `255`; unit not-carrying `-1` |
+| Resource IDs / array indices | Wood `0`, wheat `1`, papyrus `2`, stone `3`, alga `4`, cherry `5`, orange `6`, prune `7`; array positions `8..14` are reserved. A tile's `resource.type` is a map-local ID: look it up in `resourceTypes()` (maps may add rice, fish, maize and more) |
+| Resource sentinels | Tile no-resource `65535`; unit not-carrying `-1` |
 | Building families (`shortType`) | Swarm `0`, inn `1`, hospital `2`, racetrack `3`, swimmingpool `4`, barracks `5`, school `6`, defencetower `7`, explorationflag `8`, warflag `9`, clearingflag `10`, stonewall `11`, market `12` |
 | Ability array indices / actions | Stop walk `0`, stop swim `1`, stop fly `2`, walk `3`, swim `4`, fly `5`, build `6`, harvest `7`, attack speed `8`, attack strength `9`, magic attack air `10`, magic attack ground `11`, magic create wood `12`, magic create wheat `13`, magic create alga `14`, armor `15`, health `16` |
 | Additional destination purposes | Heal `17`, feed `18`; these are not indices in the 17-entry ability arrays |
@@ -302,5 +322,3 @@ Order coordinates **do not** use the read API's signed/wrapped input convention.
 Area-mask `(0,0)` is anchored at `(x,y)` and the engine wraps affected tiles.
 `false` mask entries leave tiles unchanged; mode adds/removes the selected area
 on true entries. Guard/clear zones are not exposed by the tile read API yet.
-
-Replacement migration: declare step(ctx, state). state.previous contains the opaque saved globals checkpoint. Return {output: checkpoint, orders: []}. Null output resets state. An unchanged checkpoint requires compatible source bindings. Prefer reset over manipulating opaque checkpoints.

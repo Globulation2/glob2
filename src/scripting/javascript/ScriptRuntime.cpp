@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cfenv>
 #include <cmath>
+#include <cstdio>
 #include <map>
 #include <bit>
 #include <charconv>
@@ -32,6 +33,37 @@ struct Environment
 	Host *host = nullptr;
 	std::uint64_t fuel = FuelLimit;
 	std::size_t dataBytes = 0, nativeBytes = 0;
+	// Diagnostics only: the native call whose arguments (or the result) are being
+	// converted, and where a conversion limit was first crossed in this run. They name
+	// the call in error text and never change what is charged or computed.
+	const char *converting = nullptr, *limitCrossed = nullptr;
+	struct Converting
+	{
+		Environment &e;
+		const char *previous;
+		Converting(Environment &environment, const char *name) : e(environment), previous(environment.converting)
+		{
+			e.converting = name;
+		}
+		~Converting() { e.converting = previous; }
+		Converting(const Converting &) = delete;
+		Converting &operator=(const Converting &) = delete;
+	};
+	std::string where() const { return converting ? std::string(" (in ") + converting + ")" : std::string(); }
+	// The limit's error: how much of it this run used, and in which call it was crossed.
+	[[noreturn]] void overLimit(const char *what, std::size_t used, std::size_t limit)
+	{
+		const char *call = converting ? converting : "a native call";
+		std::string message = std::string(what) + " exceeds limit: " + std::to_string(used) + " of " +
+							  std::to_string(limit) + " bytes converted from JavaScript in this run, crossed in " +
+							  call + ". Records and strings passed to native helpers count";
+		if (limitCrossed && std::string_view(limitCrossed) != call)
+			message += "; the limit was first crossed in " + std::string(limitCrossed) +
+					   " and catching that error does not give the bytes back";
+		if (!limitCrossed)
+			limitCrossed = call;
+		throw std::runtime_error(message);
+	}
 	bool hostFailed = false;
 	std::set<void *> ancestors, frozen;
 	explicit Environment(Host *h) : host(h)
@@ -71,7 +103,7 @@ struct Environment
 		runtime = JS_NewRuntime();
 		if (!runtime)
 			throw HostFailure("Cannot create JavaScript runtime");
-		JS_SetMemoryLimit(runtime, 32 * 1024 * 1024);
+		JS_SetMemoryLimit(runtime, MemoryLimit);
 		JS_SetMaxStackSize(runtime, 256 * 1024);
 		JS_SetInterruptHandler(
 			runtime,
@@ -170,8 +202,10 @@ struct Environment
 		JS_UpdateStackTop(runtime);
 		clearManaged();
 		host = next;
-		fuel = FuelLimit;
+		fuel = next ? next->workBudget : FuelLimit;
+		JS_SetMemoryLimit(runtime, next ? next->memoryLimit : MemoryLimit);
 		dataBytes = nativeBytes = 0;
+		converting = limitCrossed = nullptr;
 		ancestors.clear();
 	}
 	JSValue get(JSValueConst object, const char *name)
@@ -205,7 +239,7 @@ struct Environment
 	void chargeNative(std::size_t n)
 	{
 		if (n > NativeDataLimit - nativeBytes)
-			throw std::runtime_error("Native script data exceeds limit");
+			overLimit("Native script data", nativeBytes + n, NativeDataLimit);
 		nativeBytes += n;
 	}
 	[[noreturn]] void fail()
@@ -226,8 +260,23 @@ struct Environment
 			{
 				JSStringOwner detail(ctx, stack.get());
 				if (detail.get())
-					message += "\n" + std::string(detail.get(),
-												  std::min(detail.length, std::size_t(8192)));
+				{
+					// Drop the internal entry wrapper's frames: they are not the script's code.
+					const std::string stack(detail.get(), std::min(detail.length, std::size_t(8192)));
+					std::string kept;
+					for (std::size_t at = 0; at < stack.size();)
+					{
+						auto end = stack.find('\n', at);
+						if (end == std::string::npos)
+							end = stack.size();
+						const auto line = stack.substr(at, end - at);
+						if (line.find("__glob2_step") == std::string::npos)
+							kept += (kept.empty() ? "" : "\n") + line;
+						at = end + 1;
+					}
+					if (!kept.empty())
+						message += "\n" + kept;
+				}
 			}
 		}
 		if (!fuel)
@@ -311,7 +360,7 @@ struct Environment
 		if (!text.get())
 			fail();
 		if (text.length > (NativeDataLimit - nativeBytes) / 2)
-			throw std::runtime_error("Native script data exceeds limit");
+			overLimit("Native script data", nativeBytes + 2 * text.length, NativeDataLimit);
 		chargeNative(2 * text.length);
 		charge(text.length);
 		return std::string(text.get(), text.length);
@@ -367,7 +416,7 @@ struct Environment
 			if (JS_ToFloat64(ctx, &number, value) < 0)
 				fail();
 			if (!std::isfinite(number))
-				throw std::runtime_error("Script data requires finite numbers");
+				throw std::runtime_error("Script data requires finite numbers" + where());
 			return Value(number);
 		}
 		if (JS_IsString(value))
@@ -375,12 +424,12 @@ struct Environment
 			auto text = string(value);
 			dataBytes += text.size();
 			if (dataBytes > StateLimit)
-				throw std::runtime_error("Script data exceeds limit");
+				overLimit("Script data", dataBytes, StateLimit);
 			return Value(text);
 		}
 		const bool array = JS_IsArray(value);
 		if (!JS_IsObject(value) || JS_IsProxy(value) || (JS_GetClassID(value) != 1 && !array))
-			throw std::runtime_error("Script data requires plain records and arrays");
+			throw std::runtime_error("Script data requires plain records and arrays" + where());
 		if (!array)
 		{
 			JSValueOwner prototype(ctx, JS_GetPrototype(ctx, value));
@@ -391,11 +440,11 @@ struct Environment
 				(JS_IsObject(prototype.get()) &&
 				 JS_VALUE_GET_PTR(prototype.get()) == JS_VALUE_GET_PTR(recordPrototype));
 			if (!plain)
-				throw std::runtime_error("Class instances are not script data");
+				throw std::runtime_error("Class instances are not script data" + where());
 		}
 		void *identity = JS_VALUE_GET_PTR(value);
 		if (!ancestors.insert(identity).second)
-			throw std::runtime_error("Cyclic script data");
+			throw std::runtime_error("Cyclic script data" + where());
 		struct AncestorGuard
 		{
 			std::set<void *> &ancestors;
@@ -433,7 +482,7 @@ struct Environment
 			chargeNative(NativeFieldCost);
 			dataBytes += name.size() + 16;
 			if (dataBytes > StateLimit)
-				throw std::runtime_error("Script data exceeds limit");
+				overLimit("Script data", dataBytes, StateLimit);
 			if (array)
 			{
 				const auto index = arrayIndex(name, length);
@@ -448,10 +497,143 @@ struct Environment
 			throw std::runtime_error("Sparse arrays are not script data");
 		return output;
 	}
+	// A record argument's own field, converted alone (absent: null). Hive only: see wrapped.
+	Value ownField(JSValueConst object, const char *name)
+	{
+		JSAtomOwner atom(ctx, JS_NewAtom(ctx, name));
+		if (atom.get() == JS_ATOM_NULL)
+			fail();
+		JSPropertyOwner descriptor(ctx);
+		const int present = JS_GetOwnProperty(ctx, &descriptor.descriptor, object, atom.get());
+		if (present < 0)
+			fail();
+		if (!present)
+			return {};
+		if (descriptor.descriptor.flags & JS_PROP_GETSET)
+			throw std::runtime_error("Accessors are not script data" + where());
+		return fromJS(descriptor.descriptor.value);
+	}
+	// map.delta(a, b) and map.distance(a, b): the shortest offset from a to b on the
+	// wrapping map, for {x, y} records or (ax, ay, bx, by). Pure arithmetic shared by every
+	// script; it reads nothing from the game.
+	static JSValue wrapped(JSContext *ctx, JSValueConst, int argc, JSValueConst *argv, int magic)
+	{
+		auto &e = *static_cast<Environment *>(JS_GetContextOpaque(ctx));
+		const char *call = magic == 1 ? "map.distance" : "map.delta";
+		Converting label(e, call);
+		try
+		{
+			e.charge(1);
+			std::vector<Value> args;
+			// The local Hive host reads only x and y of two plain records, so passing whole
+			// unit or building records stays cheap. Simulation hosts (AI and map scripts)
+			// keep converting every argument whole: their work and data accounting is part
+			// of what the match computes. The result is the same either way.
+			const auto plain = [&](JSValueConst v)
+			{ return JS_IsObject(v) && !JS_IsArray(v) && !JS_IsProxy(v) && JS_GetClassID(v) == 1; };
+			if (e.host && e.host->commander && argc == 2 && plain(argv[0]) && plain(argv[1]))
+				for (int i = 0; i < 2; ++i)
+				{
+					Value point = Value::object();
+					point.set("x", e.ownField(argv[i], "x"));
+					point.set("y", e.ownField(argv[i], "y"));
+					args.push_back(std::move(point));
+				}
+			else
+				for (int i = 0; i < argc; ++i)
+					args.push_back(e.fromJS(argv[i]));
+			// Value::integer's test, with an error naming the argument and what it got.
+			const auto coordinate = [call](const Value &v, const char *name)
+			{
+				if (v.kind != Value::Number || !std::isfinite(v.number) || v.number < -32768 || v.number > 32767 ||
+					double(int(v.number)) != v.number)
+				{
+					char got[40] = "nothing";
+					if (v.kind == Value::Number)
+						std::snprintf(got, sizeof got, "%.10g", v.number);
+					else if (v.kind == Value::String)
+						std::snprintf(got, sizeof got, "a string");
+					else if (v.kind == Value::Boolean)
+						std::snprintf(got, sizeof got, "a boolean");
+					else if (v.kind == Value::Object || v.kind == Value::Array)
+						std::snprintf(got, sizeof got, "a record or array");
+					throw std::runtime_error(std::string(call) + " " + name +
+											 " must be a whole number -32768..32767 (got " + got + ")");
+				}
+				return int(v.number);
+			};
+			int ax, ay, bx, by;
+			if (args.size() == 2 && args[0].kind == Value::Object && args[1].kind == Value::Object)
+				ax = coordinate(args[0].get("x"), "a.x"), ay = coordinate(args[0].get("y"), "a.y"),
+				bx = coordinate(args[1].get("x"), "b.x"), by = coordinate(args[1].get("y"), "b.y");
+			else if (args.size() == 4)
+				ax = coordinate(args[0], "ax"), ay = coordinate(args[1], "ay"), bx = coordinate(args[2], "bx"),
+				by = coordinate(args[3], "by");
+			else
+				throw std::runtime_error(std::string(call) + " needs two {x, y} records or four numbers ax, ay, bx, by "
+										 "(got " + std::to_string(args.size()) + " arguments)");
+			const auto shortest = [](int d, int size)
+			{
+				if (size <= 0)
+					return d;
+				d %= size;
+				if (d > size / 2)
+					d -= size;
+				if (d < -(size - 1) / 2)
+					d += size;
+				return d;
+			};
+			const int dx = shortest(bx - ax, int(e.host->width)), dy = shortest(by - ay, int(e.host->height));
+			if (magic == 1)
+				return JS_NewFloat64(ctx, std::sqrt(double(dx) * dx + double(dy) * dy));
+			return e.toJS(Value::object().set("dx", dx).set("dy", dy));
+		}
+		catch (const std::exception &ex)
+		{
+			return JS_ThrowTypeError(ctx, "%s", ex.what());
+		}
+	}
+	// Methods a host adds beside the shared ones (Host::gameExtensions / mapExtensions):
+	// forwarded by name to its query function, results detached and read-only.
+	static JSValue extension(JSContext *ctx, JSValueConst, int argc, JSValueConst *argv, int magic)
+	{
+		auto &e = *static_cast<Environment *>(JS_GetContextOpaque(ctx));
+		try
+		{
+			e.charge(1);
+			const auto &names = magic >= 2000 ? e.host->mapExtensions : e.host->gameExtensions;
+			const auto index = std::size_t(magic % 1000);
+			if (index >= names.size())
+				throw std::runtime_error("Unavailable query");
+			Converting label(e, names[index].c_str());
+			std::vector<Value> args;
+			for (int i = 0; i < argc; ++i)
+				args.push_back(e.fromJS(argv[i]));
+			auto value = e.toJS(e.hostQuery(names[index], args));
+			if (JS_IsObject(value))
+				e.readonly(value);
+			return value;
+		}
+		catch (const std::bad_alloc &)
+		{
+			e.hostFailed = true;
+			return JS_ThrowOutOfMemory(ctx);
+		}
+		catch (const HostFailure &ex)
+		{
+			e.hostFailed = true;
+			return JS_ThrowInternalError(ctx, "%s", ex.what());
+		}
+		catch (const std::exception &ex)
+		{
+			return JS_ThrowTypeError(ctx, "%s", ex.what());
+		}
+	}
 	static JSValue query(JSContext *ctx, JSValueConst, int argc, JSValueConst *argv, int magic)
 	{
 		static constexpr auto& names = QueryNames;
 		auto &e = *static_cast<Environment *>(JS_GetContextOpaque(ctx));
+		Converting label(e, names[magic]);
 		try
 		{
 			e.charge(1);
@@ -519,6 +701,14 @@ struct Environment
 				JS_NewCFunctionMagic(ctx, query, names[i], 0, JS_CFUNC_generic_magic, i));
 		if (host->commander)
 			set(context.get(), "wakeAgent", JS_NewCFunctionMagic(ctx, query, "wakeAgent", 1, JS_CFUNC_generic_magic, WakeAgentQuery));
+		set(map.get(), "delta", JS_NewCFunctionMagic(ctx, wrapped, "delta", 2, JS_CFUNC_generic_magic, 0));
+		set(map.get(), "distance", JS_NewCFunctionMagic(ctx, wrapped, "distance", 2, JS_CFUNC_generic_magic, 1));
+		for (std::size_t i = 0; i < host->gameExtensions.size() && i < 1000; ++i)
+			set(game.get(), host->gameExtensions[i].c_str(),
+				JS_NewCFunctionMagic(ctx, extension, host->gameExtensions[i].c_str(), 1, JS_CFUNC_generic_magic, int(1000 + i)));
+		for (std::size_t i = 0; i < host->mapExtensions.size() && i < 1000; ++i)
+			set(map.get(), host->mapExtensions[i].c_str(),
+				JS_NewCFunctionMagic(ctx, extension, host->mapExtensions[i].c_str(), 2, JS_CFUNC_generic_magic, int(2000 + i)));
 		set(map.get(), "width", JS_NewUint32(ctx, host->width));
 		set(map.get(), "height", JS_NewUint32(ctx, host->height));
 		set(game.get(), "map", map.release());
@@ -1059,8 +1249,17 @@ class QuickRuntime : public Runtime
 				throw HostFailure("JavaScript native resource limit exhausted");
 			if (!e.fuel || (host.profile == 2 && !e.nativeFuel))
 				throw std::runtime_error("JavaScript work budget exhausted");
-			Result result{e.fromJS(scriptState.get()),
-						  JS_IsUndefined(effects.get()) ? Value() : e.fromJS(effects.get())};
+			Value convertedState, convertedEffects;
+			{
+				Environment::Converting label(e, "the script's state");
+				convertedState = e.fromJS(scriptState.get());
+			}
+			if (!JS_IsUndefined(effects.get()))
+			{
+				Environment::Converting label(e, "step's return value");
+				convertedEffects = e.fromJS(effects.get());
+			}
+			Result result{std::move(convertedState), std::move(convertedEffects)};
 			JSValueOwner bindings(ctx, JS_Glob2ModuleBindings(ctx, live->module));
 			if (JS_IsException(bindings.get()))
 				e.fail();

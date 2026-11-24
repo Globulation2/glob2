@@ -170,6 +170,7 @@ Element actionButton(const MenuAction &action, bool large)
 	options.shortcut = action.shortcut;
 	options.enabled = action.enabled;
 	options.icon = action.icon;
+	options.disabledReason = action.disabledReason;
 	if (large)
 	{
 		options.minHeight = std::max(48.0, options.minHeight);
@@ -252,6 +253,7 @@ Element actions(std::vector<MenuAction> items, const Presentation &p)
 			options.shortcut = item.shortcut;
 			options.enabled = item.enabled;
 			options.icon = item.icon;
+			options.disabledReason = item.disabledReason;
 			buttons.push_back(constrained({p.pt(90), 0, Constraints::Unbounded, Constraints::Unbounded},
 										  padding(Insets::symmetric(p.pt(10), 0), button(item.key, item.label, item.action, options))));
 		}

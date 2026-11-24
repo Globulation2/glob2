@@ -1358,6 +1358,13 @@ SurfaceSnapshot Host::inspect() const
 		item.focused = !node.key.empty() && node.key == focusKey;
 		item.blocked = blocked || obscures(item.visible);
 		item.actions = node.supportedActions();
+		item.options = node.optionLabels();
+		item.optionEnabled = node.optionsEnabled();
+		item.range = node.valueRange();
+		if (item.range)
+			item.valueLabel = node.valueLabel();
+		if (!item.enabled)
+			item.disabledReason = node.disabledReason();
 		for (const auto &part : node.subTargets())
 		{
 			ControlSnapshot target;
@@ -1396,8 +1403,21 @@ SurfaceSnapshot Host::inspect() const
 		identify(identify, controls);
 		result.controls.push_back(std::move(controls));
 	}
-	// Revisions are per target. A counter elsewhere in the HUD never changes a
-	// button's revision; removal/recreation does, even with identical content.
+	// Revisions are per target and semantic: label, value, enabled, options, actions,
+	// identity and whether the control is visible at all. Geometry is not: a layout
+	// that settles, a card whose preview arrives or a scrolled list moves controls
+	// without changing what acting on them does. A counter elsewhere in the HUD
+	// never changes a button's revision; removal/recreation does, even with
+	// identical content.
+	auto semanticOnly = [](auto &&self, ControlSnapshot &item) -> void
+	{
+		item.bounds = {};
+		// Only a keyed control can be acted on, so only its visibility has meaning: an
+		// unkeyed spacer that grows from nothing is still geometry.
+		item.visible = item.visible.empty() || item.key.empty() ? Rect{} : Rect{0, 0, 1, 1};
+		for (auto &child : item.children)
+			self(self, child);
+	};
 	std::map<std::string, ControlSnapshot> next;
 	auto revise = [&](auto &&self, std::vector<ControlSnapshot> &items) -> void
 	{
@@ -1409,6 +1429,7 @@ SurfaceSnapshot Host::inspect() const
 				own.children.clear();
 				own.focused = false;
 				own.revision = 0;
+				semanticOnly(semanticOnly, own);
 				auto old = inspected.find(item.key);
 				std::uint64_t revision = 0;
 				if (old != inspected.end())
@@ -1427,9 +1448,12 @@ SurfaceSnapshot Host::inspect() const
 		}
 	};
 	revise(revise, result.controls);
-	if (result.controls != previousInspection)
+	auto meaning = result.controls;
+	for (auto &item : meaning)
+		semanticOnly(semanticOnly, item);
+	if (meaning != previousInspection)
 		++inspectionRevision;
-	previousInspection = result.controls;
+	previousInspection = std::move(meaning);
 	inspected = std::move(next);
 	result.revision = inspectionRevision;
 	return result;
@@ -1462,7 +1486,8 @@ std::optional<ControlSnapshot> Host::actionTarget(const std::string &key, Action
 	else if (target->blocked)
 		error = "Control blocked by a popup or higher input surface";
 	else if (!target->enabled)
-		error = "Control disabled";
+		error = target->disabledReason.empty() ? "Control disabled"
+											   : "Control disabled: " + target->disabledReason;
 	else if (target->visible.empty())
 		error = "Control hidden; scroll its container first";
 	else if (std::find(target->actions.begin(), target->actions.end(), kind) ==
@@ -1497,7 +1522,9 @@ bool Host::act(const std::string &key, const SemanticAction &action, std::string
 				focus(key);
 			if (node->perform(action, *this))
 				return true;
-			error = "Invalid action value";
+			error = actionValueProblem(*target, action);
+			if (error.empty())
+				error = "Invalid action value";
 		}
 		else if (action.kind == ActionKind::Activate)
 		{
@@ -1509,6 +1536,37 @@ bool Host::act(const std::string &key, const SemanticAction &action, std::string
 			error = "Unknown control";
 	}
 	return false;
+}
+std::string actionValueProblem(const ControlSnapshot &control, const SemanticAction &action)
+{
+	const auto *number = std::get_if<int>(&action.value);
+	if (action.kind == ActionKind::Select && !control.options.empty())
+	{
+		const int count = int(control.options.size());
+		auto listed = [&]
+		{
+			std::string text;
+			for (int i = 0; i < count && i < 40; ++i)
+				text += (i ? ", " : "") + std::to_string(i) + " \"" + control.options[std::size_t(i)] + "\"";
+			if (count > 40)
+				text += ", ... (" + std::to_string(count) + " in all)";
+			return text;
+		};
+		if (!number || *number < 0 || *number >= count)
+			return "Option out of range for \"" + control.key + "\": select takes an index 0.." +
+				   std::to_string(count - 1) + " (" + listed() + ")";
+		if (std::size_t(*number) < control.optionEnabled.size() && !control.optionEnabled[std::size_t(*number)])
+			return "Option " + std::to_string(*number) + " \"" + control.options[std::size_t(*number)] +
+				   "\" of \"" + control.key + "\" is unavailable now";
+	}
+	if (action.kind == ActionKind::SetValue && control.range)
+	{
+		if (!number || *number < control.range->minimum || *number > control.range->maximum)
+			return "Value out of range for \"" + control.key + "\": set_value takes an integer " +
+				   std::to_string(control.range->minimum) + ".." + std::to_string(control.range->maximum) +
+				   (control.range->step > 1 ? " in steps of " + std::to_string(control.range->step) : std::string());
+	}
+	return {};
 }
 std::string inspectionJSON(const SurfaceSnapshot &snapshot)
 {
@@ -1529,19 +1587,44 @@ std::string inspectionJSON(const SurfaceSnapshot &snapshot)
 					value = v;
 			},
 			item.value);
-		return {{"key", item.key},
-				{"revision", item.revision},
-				{"role", item.role},
-				{"label", item.label},
-				{"value", value},
-				{"bounds", rect(item.bounds)},
-				{"visible", rect(item.visible)},
-				{"enabled", item.enabled},
-				{"selected", item.selected},
-				{"focused", item.focused},
-				{"blocked", item.blocked},
-				{"actions", actions},
-				{"children", children}};
+		Json result = {{"key", item.key},
+					   {"revision", item.revision},
+					   {"role", item.role},
+					   {"label", item.label},
+					   {"value", value},
+					   {"bounds", rect(item.bounds)},
+					   {"visible", rect(item.visible)},
+					   {"enabled", item.enabled},
+					   {"selected", item.selected},
+					   {"focused", item.focused},
+					   {"blocked", item.blocked},
+					   {"actions", actions},
+					   {"children", children}};
+		// Value descriptions appear only on controls that have them.
+		if (!item.options.empty())
+		{
+			result["options"] = item.options;
+			Json disabled = Json::array();
+			for (std::size_t i = 0; i < item.optionEnabled.size() && i < item.options.size(); ++i)
+				if (!item.optionEnabled[i])
+					disabled.push_back(i);
+			if (!disabled.empty())
+				result["disabled_options"] = std::move(disabled);
+			if (const auto *index = std::get_if<int>(&item.value);
+				index && *index >= 0 && *index < int(item.options.size()))
+				result["value_label"] = item.options[std::size_t(*index)];
+		}
+		if (item.range)
+		{
+			result["min"] = item.range->minimum;
+			result["max"] = item.range->maximum;
+			result["step"] = item.range->step;
+			if (!item.valueLabel.empty())
+				result["value_label"] = item.valueLabel;
+		}
+		if (!item.enabled && !item.disabledReason.empty())
+			result["disabled_reason"] = item.disabledReason;
+		return result;
 	};
 	Json controls = Json::array();
 	for (const auto &item : snapshot.controls)

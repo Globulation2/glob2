@@ -33,8 +33,7 @@ Observations::ObservationScope::ObservationScope(const Observations& o)
 {
     if (!previous)
     {
-        owned = std::make_shared<AIEngine::AIWorldView>(SimulationSnapshot::capture(o.game, AIEngine::AIWorldView::captureCatalog(o.game),
-            SimulationSnapshot::Simulation | (o.team<0 ? SimulationSnapshot::bit(SimulationSnapshot::Component::Annotations) : 0)));
+        owned = o.captureView();
         observations.view = owned.get();
     }
 }
@@ -91,19 +90,19 @@ int arg(const std::vector<Value> &a, size_t i, int lo, int hi)
 	return Value::object().set("value", a[i]).integer("value", lo, hi);
 }
 } // namespace
-Value Observations::ref(const AIEngine::UnitView *u) const
+Value ObservationReader::ref(const AIEngine::UnitView *u) const
 {
 	if (!u)
 		return {};
 	return Value::object().set("id", unsigned(u->identity.gid)).set("generation", u->identity.generation);
 }
-Value Observations::ref(const AIEngine::BuildingView *b) const
+Value ObservationReader::ref(const AIEngine::BuildingView *b) const
 {
 	if (!b)
 		return {};
 	return Value::object().set("id", unsigned(b->identity.gid)).set("generation", b->identity.generation);
 }
-Value Observations::unit(const AIEngine::UnitView &u, bool extended) const
+Value ObservationReader::unit(const AIEngine::UnitView &u, bool extended) const
 {
 	if (!visible(world(), team, u) || u.isDead)
 		return {};
@@ -157,7 +156,7 @@ Value Observations::unit(const AIEngine::UnitView &u, bool extended) const
 	}
 	return v;
 }
-Value Observations::building(const AIEngine::BuildingView &b) const
+Value ObservationReader::building(const AIEngine::BuildingView &b) const
 {
 	if (!visible(world(), team, b) || b.buildingState == Building::DEAD)
 		return {};
@@ -203,7 +202,14 @@ Value Observations::building(const AIEngine::BuildingView &b) const
 	}
 	return v;
 }
-const Observations::RememberedTile *Observations::lookup(unsigned index) const
+ObservationMemory::ObservationMemory(const ObservationMemory &other)
+	: rememberedStocks(other.rememberedStocks), knownTiles(other.knownTiles)
+{
+	remembered.reserve(other.remembered.size());
+	for (const auto &chunk : other.remembered)
+		remembered.push_back(chunk ? std::make_unique<Chunk>(*chunk) : nullptr);
+}
+const ObservationMemory::Tile *ObservationMemory::lookup(unsigned index) const
 {
 	unsigned chunk = index / 256;
 	if (chunk >= remembered.size() || !remembered[chunk])
@@ -211,16 +217,16 @@ const Observations::RememberedTile *Observations::lookup(unsigned index) const
 	const auto &tile = (*remembered[chunk])[index % 256];
 	return tile.known ? &tile : nullptr;
 }
-Observations::RememberedTile &Observations::remember(unsigned index)
+ObservationMemory::Tile &Observations::remember(unsigned index)
 {
-	if (remembered.empty())
-		remembered.resize((unsigned(world().width) * world().height + 255) / 256);
-	auto &chunk = remembered.at(index / 256);
+	if (memory.remembered.empty())
+		memory.remembered.resize((unsigned(world().width) * world().height + 255) / 256);
+	auto &chunk = memory.remembered.at(index / 256);
 	if (!chunk)
-		chunk = std::make_unique<Chunk>();
+		chunk = std::make_unique<ObservationMemory::Chunk>();
 	auto &tile = (*chunk)[index % 256];
 	if (!tile.known)
-		++knownTiles;
+		++memory.knownTiles;
 	return tile;
 }
 void Observations::observe()
@@ -237,19 +243,31 @@ void Observations::observe()
             remember(unsigned(index)) = {world().tick, cell.fertility,
                 world().cellCorners(int(powerOfTwoRemainder(index, world().width)), int(index / world().width)), r.type, r.variety, r.amount, true};
             if (r.type != NO_RES_TYPE && std::popcount(world().resourceRegistry->properties(static_cast<ResourceId>(r.type)).materialMask) > 1)
-                rememberedStocks[unsigned(index)] = MapState::materialStocksAt(world().state(), index);
-            else rememberedStocks.erase(unsigned(index));
+                memory.rememberedStocks[unsigned(index)] = MapState::materialStocksAt(world().state(), index);
+            else memory.rememberedStocks.erase(unsigned(index));
         }
 	lastTick = world().tick;
 }
-Value Observations::tile(int x, int y) const
+std::shared_ptr<const AIEngine::AIWorldView> Observations::captureView() const
+{
+	return std::make_shared<AIEngine::AIWorldView>(SimulationSnapshot::capture(game, AIEngine::AIWorldView::captureCatalog(game),
+		SimulationSnapshot::Simulation | (team<0 ? SimulationSnapshot::bit(SimulationSnapshot::Component::Annotations) : 0)));
+}
+DetachedObservation Observations::observeAndDetach()
+{
+	auto captured = captureView();
+	auto scope = bindObservation(*captured);
+	observe();
+	return DetachedObservation(std::move(captured), memory, team, profile);
+}
+Value ObservationReader::tile(int x, int y) const
 {
 	x &= world().width - 1;
 	y &= world().height - 1;
     const auto index = world().tileIndex(x, y);
 	const bool current = team < 0 || (world().visibilityAt(index).visible & world().teams[team].mask);
 	Value v = Value::object().set("x", x).set("y", y).set("visible", current);
-	RememberedTile t;
+	ObservationMemory::Tile t;
 	if (current)
 	{
 		const auto c = world().resourceAt(index);
@@ -258,7 +276,7 @@ Value Observations::tile(int x, int y) const
 	}
 	else
 	{
-		auto *previous = lookup(unsigned(index));
+		auto *previous = memory->lookup(unsigned(index));
 		if (!previous)
 			return v.set("explored", false);
 		t = *previous;
@@ -276,12 +294,12 @@ Value Observations::tile(int x, int y) const
 							 .set("amount", int(t.amount)));
 	Value stock = Value::array();
 	const auto at = world().tileIndex(x,y);
-	const auto rememberedStock = rememberedStocks.find(unsigned(at));
+	const auto rememberedStock = memory->rememberedStocks.find(unsigned(at));
 	for (unsigned m=0; m<MaterialCount; ++m)
 	{
 		unsigned amount = 0;
 		if (current) amount = MapState::materialAmountAt(world().state(),at,int(m));
-		else if (rememberedStock != rememberedStocks.end()) amount = rememberedStock->second[m];
+		else if (rememberedStock != memory->rememberedStocks.end()) amount = rememberedStock->second[m];
 		else if (t.type != NO_RES_TYPE && materialIndex(world().state().resourceProperties(t.type).primaryMaterial)==m) amount=t.amount;
 		stock.items.emplace_back(amount);
 	}
@@ -324,10 +342,9 @@ Value Observations::tile(int x, int y) const
 	}
 	return v;
 }
-Value Observations::query(const std::string &name, const std::vector<Value> &args,
-						  const QueryBudget &budget) const
+Value ObservationReader::query(const std::string &name, const std::vector<Value> &args,
+							   const QueryBudget &budget) const
 {
-	auto observation = captureObservation();
 	auto charge = [&](std::size_t nodes, std::size_t bytes = 0)
 	{
 		if (budget)
@@ -363,7 +380,7 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 		const auto& registry=*world().resourceRegistry;
 		charge(registry.size()*48);
 		const auto snapshot = world().resourceRegistry;
-		if (resourceDefinitionRegistry == snapshot) return resourceDefinitions;
+		if (definitions->resourceRegistry == snapshot) return definitions->resources;
 		Value result=Value::array();
 		for (unsigned id=0; id<registry.size(); ++id)
 		{
@@ -388,19 +405,19 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 				.set("requiresGrowthTerrain", p.requiresGrowthTerrain).set("requiresPermanentDepositsTerrain", p.requiresPermanentDepositsTerrain)
 				.set("requiredExperiment", registry.requiredExperiment(resource)));
 		}
-		resourceDefinitionRegistry = snapshot;
-		resourceDefinitions = std::move(result);
-		return resourceDefinitions;
+		definitions->resourceRegistry = snapshot;
+		definitions->resources = std::move(result);
+		return definitions->resources;
 	}
     if (name == "terrainTypes")
     {
 		// Registry definitions reveal no tile state. Cache per immutable registry;
 		// callers receive detached, read-only JS snapshots in both profiles.
 		charge(world().terrain->size() * (48 + world().resourceRegistry->size()));
-		if (terrainDefinitionRegistry != world().terrain ||
-            terrainResourceDefinitionRegistry != world().resourceRegistry)
+		if (definitions->terrainRegistry != world().terrain ||
+            definitions->terrainResourceRegistry != world().resourceRegistry)
 		{
-			terrainDefinitions = [&]
+			definitions->terrain = [&]
 			{
 				Value result = Value::array();
 				for (unsigned id = 0; id < world().terrain->size(); ++id)
@@ -441,10 +458,10 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 				}
 				return result;
 			}();
-			terrainDefinitionRegistry = world().terrain;
-            terrainResourceDefinitionRegistry = world().resourceRegistry;
+			definitions->terrainRegistry = world().terrain;
+            definitions->terrainResourceRegistry = world().resourceRegistry;
 		}
-		return terrainDefinitions;
+		return definitions->terrain;
 	}
     if (name == "unitTypes")
     {
@@ -682,48 +699,63 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 	}
 	if (team >= 0)
 		throw std::runtime_error("Scenario query requires map-script capability");
-	if (name == "objectives")
-	{
-		Value a = Value::array();
-		for (int i = 0; i < game.objectives.getNumberOfObjectives(); ++i)
-		{
-			charge(32, game.objectives.getGameObjectiveText(i).size());
-			a.items.push_back(Value::object()
-								  .set("id", i)
-								  .set("scriptNumber", game.objectives.getScriptNumber(i))
-								  .set("text", game.objectives.getGameObjectiveText(i))
-								  .set("type", int(game.objectives.getObjectiveType(i)))
-								  .set("visible", game.objectives.isObjectiveVisible(i))
-								  .set("complete", game.objectives.isObjectiveComplete(i))
-								  .set("failed", game.objectives.isObjectiveFailed(i)));
-		}
-		return a;
-	}
-	if (name == "hints")
-	{
-		Value a = Value::array();
-		for (int i = 0; i < game.gameHints.getNumberOfHints(); ++i)
-		{
-			charge(32, game.gameHints.getGameHintText(i).size());
-			a.items.push_back(Value::object()
-								  .set("id", i)
-								  .set("scriptNumber", game.gameHints.getScriptNumber(i))
-								  .set("text", game.gameHints.getGameHintText(i))
-								  .set("visible", game.gameHints.isHintVisible(i)));
-		}
-		return a;
-	}
 	throw std::runtime_error("Unknown observation query");
+}
+Value Observations::query(const std::string &name, const std::vector<Value> &args,
+						  const QueryBudget &budget) const
+{
+	auto observation = captureObservation();
+	auto charge = [&](std::size_t nodes, std::size_t bytes = 0)
+	{
+		if (budget)
+			budget(nodes, nodes * NativeValueCost + bytes);
+	};
+	// The scenario owner's objectives and hints read the game; the rest reads the view.
+	if (team < 0)
+	{
+		if (name == "objectives")
+		{
+			Value a = Value::array();
+			for (int i = 0; i < game.objectives.getNumberOfObjectives(); ++i)
+			{
+				charge(32, game.objectives.getGameObjectiveText(i).size());
+				a.items.push_back(Value::object()
+									  .set("id", i)
+									  .set("scriptNumber", game.objectives.getScriptNumber(i))
+									  .set("text", game.objectives.getGameObjectiveText(i))
+									  .set("type", int(game.objectives.getObjectiveType(i)))
+									  .set("visible", game.objectives.isObjectiveVisible(i))
+									  .set("complete", game.objectives.isObjectiveComplete(i))
+									  .set("failed", game.objectives.isObjectiveFailed(i)));
+			}
+			return a;
+		}
+		if (name == "hints")
+		{
+			Value a = Value::array();
+			for (int i = 0; i < game.gameHints.getNumberOfHints(); ++i)
+			{
+				charge(32, game.gameHints.getGameHintText(i).size());
+				a.items.push_back(Value::object()
+									  .set("id", i)
+									  .set("scriptNumber", game.gameHints.getScriptNumber(i))
+									  .set("text", game.gameHints.getGameHintText(i))
+									  .set("visible", game.gameHints.isHintVisible(i)));
+			}
+			return a;
+		}
+	}
+	return reader().query(name, args, budget);
 }
 void Observations::save(GAGCore::OutputStream *s) const
 {
 	s->writeEnterSection("scriptObservations");
 	s->writeUint32(lastTick, "tick");
-	s->writeUint32(knownTiles, "count");
+	s->writeUint32(memory.knownTiles, "count");
 	unsigned n = 0;
-	for (unsigned index = 0; index < remembered.size() * 256; ++index)
+	for (unsigned index = 0; index < memory.remembered.size() * 256; ++index)
 	{
-		auto *entry = lookup(index);
+		auto *entry = memory.lookup(index);
 		if (!entry)
 			continue;
 		const auto &t = *entry;
@@ -740,9 +772,9 @@ void Observations::save(GAGCore::OutputStream *s) const
 			s->writeUint16(t.corners[corner], "corner");
 			s->writeLeaveSection();
 		}
-		const auto stocks=rememberedStocks.find(index);
-		s->writeUint8(stocks!=rememberedStocks.end(),"multiStock");
-		if (stocks != rememberedStocks.end())
+		const auto stocks=memory.rememberedStocks.find(index);
+		s->writeUint8(stocks!=memory.rememberedStocks.end(),"multiStock");
+		if (stocks != memory.rememberedStocks.end())
 		{
 			s->writeEnterSection("materialStocks");
 			for (unsigned m = 0; m < MaterialCount; ++m)
@@ -762,9 +794,9 @@ void Observations::load(GAGCore::InputStream *s) { load(s, VERSION_MINOR); }
 void Observations::load(GAGCore::InputStream *s, int version)
 {
 	auto observation = captureObservation();
-	remembered.clear();
-	rememberedStocks.clear();
-	knownTiles = 0;
+	memory.remembered.clear();
+	memory.rememberedStocks.clear();
+	memory.knownTiles = 0;
 	s->readEnterSection("scriptObservations");
 	lastTick = s->readUint32("tick");
 	unsigned n = s->readUint32("count");
@@ -775,7 +807,7 @@ void Observations::load(GAGCore::InputStream *s, int version)
 	{
 		s->readEnterSection(i);
 		unsigned index = s->readUint32("index");
-		RememberedTile t;
+		ObservationMemory::Tile t;
 		t.tick = s->readUint32("tick");
 		const Uint16 frame = version < FILE_FORMAT_VERSION_VERTEX_TERRAIN ? s->readUint16("terrain") : 0;
 		t.fertility = s->readUint16("fertility");
@@ -795,7 +827,7 @@ void Observations::load(GAGCore::InputStream *s, int version)
 																   s->readUint16("corner"));
 				s->readLeaveSection();
 				if (!type || !world().terrain->valid(*type))
-					throw std::runtime_error("Invalid remembered terrain type");
+					throw std::runtime_error("Invalid memory.remembered terrain type");
 				t.corners[corner] = static_cast<TerrainType>(*type);
 			}
 		else
@@ -807,28 +839,28 @@ void Observations::load(GAGCore::InputStream *s, int version)
 			if (version >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES)
 				type = TerrainRegistry::currentTerrainId(TerrainRegistry::savedBuiltinCount(version), s->readUint16("terrainType"));
 			else if (!corners)
-				throw std::runtime_error("Invalid remembered terrain type");
+				throw std::runtime_error("Invalid memory.remembered terrain type");
 			if (type && !world().terrain->valid(*type))
-				throw std::runtime_error("Invalid remembered terrain type");
+				throw std::runtime_error("Invalid memory.remembered terrain type");
 			if (type && *type != WATER && *type != SAND && *type != GRASS)
 				t.corners.fill(static_cast<TerrainType>(*type));
 			else if (corners)
 				t.corners = *corners;
 			else
-				throw std::runtime_error("Invalid remembered terrain type");
+				throw std::runtime_error("Invalid memory.remembered terrain type");
 		}
-		if (index >= size || lookup(index))
+		if (index >= size || memory.lookup(index))
 			throw std::runtime_error("Invalid terrain memory");
-		if(t.type!=NO_RES_TYPE && !game.map.resourceRegistry().valid(t.type)) throw std::runtime_error("Invalid remembered resource");
+		if(t.type!=NO_RES_TYPE && !game.map.resourceRegistry().valid(t.type)) throw std::runtime_error("Invalid memory.remembered resource");
 		const auto multiStock = version >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES ? s->readUint8("multiStock") : 0;
-		if (multiStock > 1) throw std::runtime_error("Invalid remembered stock representation");
+		if (multiStock > 1) throw std::runtime_error("Invalid memory.remembered stock representation");
 		const auto* properties = t.type == NO_RES_TYPE ? nullptr : &game.map.resourcePropertiesByIndex(t.type);
 		if (version >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES &&
 			bool(multiStock) != bool(properties && std::popcount(properties->materialMask) > 1))
 			throw std::runtime_error("Remembered stock representation does not match resource yields");
 		if (multiStock)
 		{
-			auto& stock=rememberedStocks[index];
+			auto& stock=memory.rememberedStocks[index];
 			const auto& yields = game.map.resourceRegistry().yields(static_cast<ResourceId>(t.type));
 			unsigned total = 0;
 			s->readEnterSection("materialStocks");
@@ -848,7 +880,7 @@ void Observations::load(GAGCore::InputStream *s, int version)
 			const auto capacity = game.map.resourceRegistry().yields(static_cast<ResourceId>(t.type))[materialIndex(properties->primaryMaterial)].capacity;
 			if (t.amount > capacity) throw std::runtime_error("Remembered material exceeds capacity");
 		}
-		else if (t.amount || t.variety) throw std::runtime_error("Empty remembered tile contains resource stock");
+		else if (t.amount || t.variety) throw std::runtime_error("Empty memory.remembered tile contains resource stock");
 		t.known = true;
 		remember(index) = t;
 		s->readLeaveSection();
@@ -859,25 +891,33 @@ void Observations::load(GAGCore::InputStream *s, int version)
 
 unsigned Script::Observations::materialStock(int x, int y, MaterialId material) const
 {
-	if (!validMaterial(materialIndex(material))) return 0;
 	auto observation = captureObservation();
+	return reader().materialStock(x, y, material);
+}
+unsigned Script::ObservationReader::materialStock(int x, int y, MaterialId material) const
+{
+	if (!validMaterial(materialIndex(material))) return 0;
 	const auto& view = world().state();
 	const auto index = unsigned(view.index(x, y));
 	if (team < 0 || (world().visibilityAt(index).visible & world().teams[team].mask))
 		return MapState::materialAmountAt(view, index, material);
-	const auto* old = lookup(index);
+	const auto* old = memory->lookup(index);
 	if (!old || old->type == NO_RES_TYPE) return 0;
-	const auto stocks = rememberedStocks.find(index);
-	if (stocks != rememberedStocks.end()) return stocks->second[materialIndex(material)];
+	const auto stocks = memory->rememberedStocks.find(index);
+	if (stocks != memory->rememberedStocks.end()) return stocks->second[materialIndex(material)];
 	return view.resourceProperties(old->type).primaryMaterial == material ? old->amount : 0;
 }
 
 Script::Observations::Cell Script::Observations::cell(int x, int y) const
 {
 	auto observation = captureObservation();
+	return reader().cell(x, y);
+}
+Script::ObservationCell Script::ObservationReader::cell(int x, int y) const
+{
 	x &= world().width - 1;
 	y &= world().height - 1;
-	Cell out;
+	ObservationCell out;
     const auto index = world().tileIndex(x, y);
 	out.visible = team < 0 || (world().visibilityAt(index).visible & world().teams[team].mask);
 	if (out.visible)
@@ -896,7 +936,7 @@ Script::Observations::Cell Script::Observations::cell(int x, int y) const
 			out.building = b && visible(world(), team, *b);
 		}
 	}
-	else if (const auto *old = lookup(unsigned(index)))
+	else if (const auto *old = memory->lookup(unsigned(index)))
 	{
 		out.known = true;
 		out.tick = old->tick;
@@ -915,6 +955,12 @@ void Script::Observations::visitSpatialEntities(
 	const QueryBudget &budget) const
 {
 	auto observation = captureObservation();
+	reader().visitSpatialEntities(units, filter, visit, budget);
+}
+void Script::ObservationReader::visitSpatialEntities(
+	bool units, int filter, const std::function<void(const ObservationSpatialEntity &)> &visit,
+	const QueryBudget &budget) const
+{
 	if (filter < -1 || filter >= int(world().teams.size()))
 		throw std::runtime_error("Invalid spatial source team");
 	const int capacity = units ? Unit::MAX_COUNT : Building::MAX_COUNT;

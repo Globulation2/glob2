@@ -21,6 +21,12 @@
 #include <fstream>
 #include <cstdlib>
 #include "Building.h"
+#include "render/scene/Scene.h"
+#include "sim/snapshot/SnapshotStore.h"
+#include "GameGUIToolManager.h"
+#include "Ressource.h"
+#include "Player.h"
+#include <future>
 using Hive::Json;
 TEST_CASE("Hive Mind copies the engine fog boundary and validates ownership" *
 		  doctest::test_suite("HiveMindIntegration"))
@@ -60,6 +66,58 @@ TEST_CASE("Hive Mind copies the engine fog boundary and validates ownership" *
 	auto automated = Script::order(world.game, 0, descriptor);
 	REQUIRE(world.gui.enqueueCommanderOrders({automated}, [] { return true; }));
 	CHECK_FALSE(world.gui.enqueueCommanderOrders({automated}, [] { return false; }));
+}
+TEST_CASE("Hive Mind snapshots built off the simulation thread match a direct capture" *
+		  doctest::test_suite("HiveMindIntegration"))
+{
+	glob2test::HeadlessGlobals globals({.seed = 19});
+	glob2test::HeadlessGame world({.teams = 2, .loadDefaultRace = true, .header = true});
+	world.addBuilding("swarm", 4, 4);
+	world.addBuilding("swarm", 24, 24, 0, 1);
+	world.addUnit(WORKER, 8, 8);
+	world.addUnit(WORKER, 22, 22, 1);
+	for (int x = 10; x <= 12; ++x)
+		world.game.map.setResourceByIndex(x, 10, WOOD, 0);
+	const auto vision = world.game.teams[0]->me;
+	world.game.map.setMapDiscovered(0, 0, 16, 16, vision);
+	world.game.map.switchFogOfWar();
+	world.game.map.setMapDiscovered(0, 0, 16, 16, vision);
+	world.game.snapshots().invalidateBoundary();
+
+	// The reference: everything captured and built on this thread.
+	Script::Observations direct(world.game, 0);
+	const auto reference = Hive::capture(direct, world.game, 0);
+	auto same = [](const Json &a, const Json &b)
+	{
+		for (const char *key : {"team", "tick", "width", "height", "teams", "units", "buildings", "tiles",
+								"buildingTypes", "terrainTypes", "resourceTypes"})
+		{
+			INFO(key);
+			CHECK(a.at(key) == b.at(key));
+		}
+	};
+
+	// Prepared here, built on another thread with a tile cache: the same snapshot.
+	Script::Observations observations(world.game, 0);
+	Hive::TileCache cache;
+	auto input = Hive::prepareCapture(observations, world.game, 0);
+	auto built = std::async(std::launch::async, [&] { return Hive::buildSnapshot(input, &cache); }).get();
+	same(reference, built);
+	CHECK(cache.tiles.size() == std::size_t(world.game.map.getW()) * world.game.map.getH());
+
+	// A prepared capture is isolated from the game: a change after it does not leak in.
+	input = Hive::prepareCapture(observations, world.game, 0);
+	world.game.map.setResourceByIndex(14, 14, WOOD, 0);
+	world.game.snapshots().invalidateBoundary();
+	built = std::async(std::launch::async, [&] { return Hive::buildSnapshot(input, &cache); }).get();
+	same(reference, built);
+
+	// The next capture sees the change, and the cache refreshes that tile.
+	const auto changed = Hive::capture(direct, world.game, 0);
+	CHECK(changed.at("tiles") != reference.at("tiles"));
+	input = Hive::prepareCapture(observations, world.game, 0);
+	built = std::async(std::launch::async, [&] { return Hive::buildSnapshot(input, &cache); }).get();
+	same(changed, built);
 }
 TEST_CASE("Hive Mind evaluation gameplay fixture" * doctest::test_suite("HiveMindEvaluation"))
 {
@@ -842,9 +900,14 @@ TEST_CASE("local Hive operation journal preflight cadence and teardown" *
 	commander.call("hive_run", invalidBatch);
 	commander.update();
 	commander.update();
-	CHECK(commander.call("hive_result", {{"session", session}, {"operation_key", "invalid-batch"}})
-			  .at("submitted") == false);
-	CHECK(world.gui.getOrder()->getOrderType() == ORDER_NULL);
+	// Each order stands alone: the valid one is sent, the stale reference is rejected.
+	const auto batch = commander.call("hive_result", {{"session", session}, {"operation_key", "invalid-batch"}});
+	CHECK(batch.at("status") == "completed");
+	CHECK(batch.at("submitted") == true);
+	CHECK(batch.at("order_count") == 1);
+	REQUIRE(batch.at("rejected").size() == 1);
+	CHECK(batch.at("rejected")[0].at("order") == 1);
+	CHECK(batch.at("rejected")[0].at("type") == "workers");
 	for (int mode = 0; mode < 5; ++mode)
 	{
 		Hive::LocalCommander probe(world.gui, worker);
@@ -1255,7 +1318,10 @@ TEST_CASE("local Hive failures name their source and cards summarize results" *
 	commander.call("hive_run", {{"session", session}, {"operation_key", "teleport"},
 		{"source", "function step(){return {orders:[{type:'teleport'}]};}"}});
 	settle();
-	CHECK(result("teleport").at("error") == "Unsupported order type 'teleport'");
+	// An unusable order is rejected on its own, and named; the run still completes.
+	CHECK_FALSE(result("teleport").contains("error")); // absent on success
+	REQUIRE(result("teleport").at("rejected").size() == 1);
+	CHECK(result("teleport").at("rejected")[0].at("error") == "Unsupported order type 'teleport'");
 
 	commander.call("hive_program", {{"session", session}, {"operation_key", "bad-install"},
 		{"action", "install"}, {"name", "broken"}, {"source", "function step(){throw 1;}"}});
@@ -1271,13 +1337,17 @@ TEST_CASE("local Hive failures name their source and cards summarize results" *
 	settle();
 	const auto recent = commander.standingOrders().at(0).at("recent");
 	REQUIRE(recent.at("status") == "completed");
-	// Cards show the program's own output, not the raw journal record.
-	CHECK(Hive::recentSummary(recent) ==
-		  Json{{"n", 1}, {"tick", world.game.stepCounter}}.dump());
+	// Cards show the program's own output as a readable line, not JSON.
+	CHECK(Hive::recentSummary(recent) == "n 1 · tick " + std::to_string(world.game.stepCounter));
+	CHECK(Hive::recentSummary({{"output", {{"summary", "Inns 4, army gathering"}, {"pop", 30}}}}) ==
+		  "Inns 4, army gathering");
+	CHECK(Hive::recentSummary({{"output", {{"events", {1, 2, 3}}, {"ok", true}, {"nested", {{"a", 1}}}}}}) ==
+		  "events 3 · ok yes");
+	CHECK(Hive::recentSummary({{"output", "plain text"}}) == "plain text");
 	CHECK(Hive::recentSummary({{"status", "failed"}, {"error", "TypeError: x\n    at step"},
 							   {"output", nullptr}}) == "TypeError: x");
 	// Online cards store {tick, output}.
-	CHECK(Hive::recentSummary({{"tick", 75}, {"output", {{"swarms", 1}}}}) == R"({"swarms":1})");
+	CHECK(Hive::recentSummary({{"tick", 75}, {"output", {{"swarms", 1}}}}) == "swarms 1");
 	CHECK(Hive::recentSummary(nullptr).empty());
 	CHECK(Hive::recentSummary({{"status", "completed"}, {"output", nullptr}}).empty());
 }
@@ -1317,4 +1387,398 @@ TEST_CASE("local Hive standing-order reads reject a previous match session" *
 	CHECK(current.call("hive_program", {{"action", "list"}, {"session", session}})
 			  .at("programs").size() == 1);
 	CHECK(current.call("hive_program", {{"action", "list"}}).at("programs").size() == 1);
+	// The list is short: outputs and events come with inspect.
+	const auto listed = current.call("hive_program", {{"action", "list"}});
+	for (const auto &program : listed.at("programs"))
+	{
+		CHECK_FALSE(program.contains("description"));
+		if (program.contains("recent"))
+			CHECK_FALSE(program.at("recent").contains("output"));
+	}
+}
+
+TEST_CASE("local Hive program and order errors name the current revision, field and range" *
+		  doctest::test_suite("HiveMindIntegration"))
+{
+	glob2test::HeadlessGlobals globals({.seed = 19});
+	glob2test::HeadlessGame world({.loadDefaultRace = true, .header = true});
+	world.addBuilding("swarm", 4, 4);
+	world.gui.localPlayer = world.gui.localTeamNo = 0;
+	world.game.players[0]->type = BasePlayer::P_LOCAL;
+	Hive::LocalCommander commander(world.gui, [](Json input)
+	{
+		std::promise<Json> ready;
+		ready.set_value(Hive::invoke(input));
+		return ready.get_future();
+	});
+	const auto session = commander.status().at("session");
+	const auto settle = [&] { commander.update(); commander.update(); };
+	const auto result = [&](const char *key)
+	{ return commander.call("hive_result", {{"session", session}, {"operation_key", key}}); };
+	const auto contains = [](const Json &record, const std::string &text)
+	{
+		INFO(record.dump());
+		return record.value("error", std::string()).find(text) != std::string::npos;
+	};
+	const std::string source = "function step(){return {};}";
+	commander.call("hive_program", {{"session", session}, {"operation_key", "install"}, {"action", "install"},
+									{"name", "keep"}, {"source", source}});
+	settle();
+	REQUIRE(commander.standingOrders().size() == 1);
+	// Installing over an existing name says so, and how to replace it; it fails at once.
+	commander.call("hive_program", {{"session", session}, {"operation_key", "again"}, {"action", "install"},
+									{"name", "keep"}, {"source", source}});
+	CHECK(result("again").at("status") == "failed");
+	CHECK(contains(result("again"), "already installed (revision 1)"));
+	CHECK(contains(result("again"), "use action replace with expected_revision 1"));
+	// A stale replace names the current revision.
+	commander.call("hive_program", {{"session", session}, {"operation_key", "stale"}, {"action", "replace"},
+									{"name", "keep"}, {"expected_revision", 5}, {"source", source}});
+	CHECK(result("stale").at("status") == "failed");
+	CHECK(contains(result("stale"), "expected_revision 5 is stale"));
+	CHECK(contains(result("stale"), "now at revision 1"));
+	commander.call("hive_program", {{"session", session}, {"operation_key", "missing"}, {"action", "replace"},
+									{"name", "other"}, {"expected_revision", 1}, {"source", source}});
+	CHECK(contains(result("missing"), "No program named \"other\""));
+	// A correct replace still applies.
+	commander.call("hive_program", {{"session", session}, {"operation_key", "replace"}, {"action", "replace"},
+									{"name", "keep"}, {"expected_revision", 1}, {"source", source}});
+	settle();
+	CHECK(result("replace").at("status") == "completed");
+	CHECK(commander.standingOrders().at(0).at("revision") == 2);
+	commander.change("keep", "cancel");
+
+	// Helper and order arguments outside their range say which, the range and the value.
+	commander.call("hive_run", {{"session", session}, {"operation_key", "radius"},
+		{"source", "function step(ctx){ctx.game.map.findPlacement('inn',{x:5,y:5,radius:100});return {};}"}});
+	settle();
+	CHECK(result("radius").at("status") == "failed");
+	CHECK(contains(result("radius"), "findPlacement radius must be a whole number 0..64 (got 100"));
+	commander.call("hive_run", {{"session", session}, {"operation_key", "workers"},
+		{"source", "function step(ctx){const b=ctx.game.buildings({team:ctx.myTeam})[0];"
+				   "return {orders:[{type:'workers',building:{id:b.id,generation:b.generation},workers:999}]};}"}});
+	settle();
+	const auto workers = result("workers");
+	INFO(workers.dump());
+	REQUIRE(workers.contains("rejected"));
+	CHECK(workers.at("rejected")[0].at("error").get<std::string>().find(
+			  "workers must be a whole number 0..20 (got 999)") != std::string::npos);
+}
+
+// Reaches the HUD's pending order the way a click's caller would.
+struct HiveToolsTestAccess
+{
+	static GameGUIToolManager &tools(GameGUI &gui) { return gui.toolManager; }
+};
+
+TEST_CASE("local game tools report resource fields, numeric status and initial placement settings" *
+		  doctest::test_suite("HiveMindIntegration"))
+{
+	glob2test::HeadlessGlobals globals({.seed = 19});
+	PresentationFrame published; // Outlives the GUI that points at it.
+	glob2test::HeadlessGame world({.wDec = 6, .hDec = 6, .teams = 2, .clearImmobile = true,
+								   .loadDefaultRace = true, .header = true});
+	REQUIRE(world.addBuilding("swarm", 4, 4));
+	world.addUnit(WORKER);
+	world.addUnit(WORKER);
+	world.addUnit(WARRIOR);
+	// Wood the colony can see: a 3x3 field, a 2-tile field and a lone tree. The map's
+	// right half (x >= 32) stays unexplored.
+	for (int y = 10; y <= 12; ++y)
+		for (int x = 10; x <= 12; ++x)
+			world.game.map.setResourceByIndex(x, y, WOOD, 0);
+	world.game.map.setResourceByIndex(20, 4, WOOD, 0);
+	world.game.map.setResourceByIndex(21, 4, WOOD, 0);
+	world.game.map.setResourceByIndex(4, 20, WOOD, 0);
+	const auto vision = world.game.teams[0]->me;
+	world.game.map.setMapDiscovered(0, 0, 32, 64, vision);
+	world.game.map.switchFogOfWar();
+	world.game.map.setMapDiscovered(0, 0, 32, 64, vision);
+	world.gui.localPlayer = world.gui.localTeamNo = 0;
+	world.gui.adjustLocalTeam();
+	world.game.players[0]->type = BasePlayer::P_LOCAL;
+	world.game.snapshots().invalidateBoundary();
+	world.gui.rebuildBuildingChoices(false);
+	world.gui.prepareLocalPresentation(published);
+	world.gui.setPublishedScene(&published);
+	Hive::LocalCommander commander(world.gui, [](Json input)
+	{
+		std::promise<Json> ready;
+		ready.set_value(Hive::invoke(input));
+		return ready.get_future();
+	});
+
+	// Resources: the largest fields of each type, from what the colony has seen.
+	auto state = commander.call("game_world", Json::object());
+	INFO(state.at("resources").dump());
+	REQUIRE(state.at("resources").contains("trees"));
+	const auto &wood = state.at("resources").at("trees");
+	CHECK(wood.at("tiles") == 12);
+	CHECK(wood.at("field_count") == 3);
+	REQUIRE(wood.at("fields").size() == 3);
+	CHECK(wood.at("fields")[0].at("tiles") == 9);
+	CHECK(wood.at("fields")[1].at("tiles") == 2);
+	CHECK(wood.at("fields")[2].at("tiles") == 1);
+	CHECK(state.at("resources_scope").at("resource_radius") == 24);
+	// With an area, only what lies inside it, and the area is echoed.
+	const Json area = {{"x", 18}, {"y", 0}, {"width", 8}, {"height", 8}};
+	state = commander.call("game_world", {{"area", area}});
+	CHECK(state.at("resources_scope").at("area") == area);
+	REQUIRE(state.at("resources").contains("trees"));
+	CHECK(state.at("resources").at("trees").at("tiles") == 2);
+	// Nothing seen there yet says so.
+	state = commander.call("game_world", {{"area", {{"x", 40}, {"y", 40}, {"width", 8}, {"height", 8}}}});
+	CHECK(state.at("resources").empty());
+	CHECK(state.at("resources_note").get<std::string>().find("None seen yet") != std::string::npos);
+
+	// Status as numbers, consistent with the units by type.
+	state = commander.call("game_world", Json::object());
+	const auto &status = state.at("status");
+	INFO(status.dump());
+	const auto &free = status.at("units_free");
+	CHECK(free.at("workers").at("total") == state.at("colony").at("units").at("worker"));
+	CHECK(free.at("warriors").at("total") == 1);
+	CHECK(free.at("explorers").at("total") == 0);
+	CHECK(free.at("workers").at("free").get<int>() >= 0);
+	CHECK(free.at("workers").at("free").get<int>() <= free.at("workers").at("total").get<int>());
+	CHECK((status.at("win_chance").is_null() || status.at("win_chance").is_number_integer()));
+	CHECK(status.at("hud_sampled").at("workers").is_string()); // the top bar's text, labelled
+	CHECK(state.at("session") == commander.status().at("session"));
+
+	// Initial settings go in the create order itself, capped as the panel caps them.
+	HiveToolsTestAccess::tools(world.gui).deactivateTool();
+	while (HiveToolsTestAccess::tools(world.gui).getOrder())
+		;
+	auto placed = commander.call("game_place", {{"building", "inn"}, {"x", 14}, {"y", 20}, {"workers", 4}, {"builders", 2}});
+	INFO(placed.dump());
+	auto order = std::dynamic_pointer_cast<OrderCreate>(HiveToolsTestAccess::tools(world.gui).getOrder());
+	REQUIRE(order);
+	CHECK(order->unitWorking == placed.at("settings").at("builders"));
+	CHECK(order->unitWorkingFuture == placed.at("settings").at("workers"));
+	CHECK(placed.at("settings").at("builders").get<int>() <= 2);
+	placed = commander.call("game_place", {{"building", "warflag"}, {"x", 20}, {"y", 20}, {"workers", 7}, {"range", 1000},
+										  {"priority", "high"}});
+	order = std::dynamic_pointer_cast<OrderCreate>(HiveToolsTestAccess::tools(world.gui).getOrder());
+	REQUIRE(order);
+	REQUIRE(order->flagRadius);
+	CHECK(*order->flagRadius == placed.at("settings").at("range"));
+	CHECK(placed.at("settings").at("range_capped") == true);
+	CHECK(order->unitWorking == placed.at("settings").at("workers"));
+	CHECK(placed.at("settings").at("priority") == "high");
+	auto refusal = [&](Json args)
+	{
+		try
+		{
+			commander.call("game_place", std::move(args));
+		}
+		catch (const std::exception &error)
+		{
+			return std::string(error.what());
+		}
+		return std::string("placed");
+	};
+	CHECK(refusal({{"building", "inn"}, {"x", 24}, {"y", 24}, {"range", 3}}).find("range is a flag's setting") !=
+		  std::string::npos);
+	CHECK(refusal({{"building", "warflag"}, {"x", 24}, {"y", 24}, {"builders", 3}}).find("builders") !=
+		  std::string::npos);
+	CHECK(refusal({{"building", "inn"}, {"x", 24}, {"y", 24}, {"workers", 99}}).find("0..20 (got 99)") !=
+		  std::string::npos);
+	CHECK(refusal({{"building", "inn"}, {"x", 24}, {"y", 24}, {"priority", "urgent"}}).find("priority must be") !=
+		  std::string::npos);
+	// "No room" names what was in the way, and suggests near only when it was not passed.
+	const auto blocked = refusal({{"building", "inn"}, {"x", 10}, {"y", 10}, {"near", true}, {"search_radius", 1}});
+	CHECK(blocked.find("No room for") != std::string::npos);
+	CHECK(blocked.find("of 9 spots tried") != std::string::npos);
+	CHECK(blocked.find("Pass near") == std::string::npos);
+	CHECK(refusal({{"building", "inn"}, {"x", 10}, {"y", 10}}).find("Pass near") != std::string::npos);
+	const auto unexplored = refusal({{"building", "inn"}, {"x", 40}, {"y", 10}});
+	CHECK(unexplored.find("unexplored") != std::string::npos);
+	CHECK(unexplored.find("Explore there first") != std::string::npos);
+	while (HiveToolsTestAccess::tools(world.gui).getOrder())
+		;
+
+	// Chat refuses control characters and blank text; zones say whether they paint or erase.
+	auto chatError = [&](const std::string &text)
+	{
+		try
+		{
+			commander.call("game_chat", {{"text", text}});
+		}
+		catch (const std::exception &error)
+		{
+			return std::string(error.what());
+		}
+		return std::string("sent");
+	};
+	CHECK(chatError("one\ntwo").find("control character (U+000A) at byte 3") != std::string::npos);
+	CHECK(chatError(std::string("a\0b", 3)).find("control character (U+0000)") != std::string::npos);
+	CHECK(chatError("   ").find("only spaces") != std::string::npos);
+	CHECK(chatError("").find("empty") != std::string::npos);
+	CHECK(chatError("hello") == "sent");
+	const auto erased = commander.call("game_zone", {{"zone", "guard"}, {"x", 2}, {"y", 2}, {"width", 3},
+													 {"height", 3}, {"mode", "erase"}});
+	CHECK(erased.at("mode") == "erase");
+	CHECK(erased.at("note").get<std::string>().find("erased") != std::string::npos);
+	CHECK(erased.at("note").get<std::string>().find("painted") == std::string::npos);
+	CHECK(commander.call("game_zone", {{"zone", "guard"}, {"x", 2}, {"y", 2}, {"width", 3}, {"height", 3}})
+			  .at("note").get<std::string>().find("painted") != std::string::npos);
+
+	// include returns only the named sections; game_stats series: false only summaries.
+	const auto filtered = commander.call("game_world", {{"include", {"status", "alerts"}}});
+	CHECK(filtered.contains("status"));
+	CHECK(filtered.contains("alerts"));
+	CHECK(filtered.contains("tick"));
+	CHECK_FALSE(filtered.contains("placeable"));
+	CHECK_FALSE(filtered.contains("note"));
+	CHECK(filtered.size() <= 5);
+	CHECK_THROWS_WITH(commander.call("game_world", {{"include", {"nope"}}}), doctest::Contains("sections: "));
+	const auto summaries = commander.call("game_stats", {{"metrics", {"births"}}, {"series", false}});
+	INFO(summaries.dump());
+	for (const auto &metric : summaries.at("metrics"))
+		for (const auto &row : metric.at("teams"))
+		{
+			CHECK(row.contains("summary"));
+			CHECK_FALSE(row.contains("seconds"));
+		}
+}
+
+TEST_CASE("local Hive names sessions, missing arguments, limits and program cadence" *
+		  doctest::test_suite("HiveMindIntegration"))
+{
+	glob2test::HeadlessGlobals globals({.seed = 19});
+	PresentationFrame published; // Outlives the GUI that points at it.
+	glob2test::HeadlessGame world({.wDec = 6, .hDec = 6, .teams = 2, .discovered = true, .clearImmobile = true,
+								   .loadDefaultRace = true, .header = true});
+	REQUIRE(world.addBuilding("swarm", 4, 4));
+	world.addUnit(WORKER);
+	world.gui.localPlayer = world.gui.localTeamNo = 0;
+	world.gui.adjustLocalTeam();
+	world.game.players[0]->type = BasePlayer::P_LOCAL;
+	world.game.snapshots().invalidateBoundary();
+	world.gui.rebuildBuildingChoices(false);
+	world.gui.prepareLocalPresentation(published);
+	world.gui.setPublishedScene(&published);
+	Hive::LocalCommander commander(world.gui, [](Json input)
+	{
+		std::promise<Json> ready;
+		ready.set_value(Hive::invoke(input));
+		return ready.get_future();
+	});
+	const auto session = commander.status().at("session");
+	const auto settle = [&] { commander.update(); commander.update(); };
+	const auto result = [&](const char *key)
+	{ return commander.call("hive_result", {{"session", session}, {"operation_key", key}}); };
+	const auto error = [&](const std::string &tool, const Json &args)
+	{
+		try
+		{
+			commander.call(tool, args);
+		}
+		catch (const std::exception &e)
+		{
+			return std::string(e.what());
+		}
+		return std::string("no error");
+	};
+	const auto run = [&](const char *key, const std::string &source)
+	{
+		commander.call("hive_run", {{"session", session}, {"operation_key", key}, {"source", source}});
+		settle();
+		const auto record = result(key);
+		INFO(record.dump());
+		return record;
+	};
+
+	// The limits section reads as prose in the table of contents, not "}".
+	const auto contents = Hive::apiDocs(Json::object());
+	for (const auto &section : contents.at("sections"))
+		if (section.at("section") == "limits")
+			CHECK(section.at("summary").get<std::string>().find("limits of local Hive scripts") != std::string::npos);
+	// A session no match had is unknown, not expired; every missing argument is named.
+	CHECK(error("hive_result", {{"session", "nope"}, {"operation_key", "k"}}).find("Unknown session") !=
+		  std::string::npos);
+	const auto missing = error("hive_program", {{"action", "install"}, {"name", "x"}});
+	CHECK(missing.find("session, operation_key, source") != std::string::npos);
+	commander.call("hive_program", {{"session", session}, {"operation_key", "cancel-ghost"}, {"action", "cancel"},
+									{"name", "ghost"}});
+	CHECK(result("cancel-ghost").at("error").get<std::string>().find("\"ghost\"") != std::string::npos);
+
+	// Orders off the map are rejected with its size; production ratios name the field.
+	auto record = run("off-map", "function step(ctx){const s=ctx.game.buildings({team:'mine'})[0];"
+								 "return {orders:[{type:'create',building:'inn',x:500,y:5},"
+								 "{type:'production',building:s,ratios:[20,0,0]}]};}");
+	REQUIRE(record.at("rejected").size() == 2);
+	CHECK(record.at("rejected")[0].at("error").get<std::string>().find("outside the 64x64 map") != std::string::npos);
+	CHECK(record.at("rejected")[1].at("error").get<std::string>().find("ratios[0] (worker) must be a whole number 0..16 (got 20)") !=
+		  std::string::npos);
+
+	// map.distance reads x/y of whole records here, and names a missing coordinate.
+	record = run("distance", "function step(ctx){const u=ctx.game.units({team:'mine'})[0];"
+							 "return {output:ctx.game.map.distance(u,{x:u.x+3,y:u.y+4})};}");
+	CHECK(record.at("output") == 5);
+	record = run("distance-missing", "function step(ctx){return {output:ctx.game.map.distance({x:1},{x:2,y:3})};}");
+	CHECK(record.at("error").get<std::string>().find("map.distance a.y must be a whole number -32768..32767 (got nothing)") !=
+		  std::string::npos);
+	// Unknown filter keys are refused; records carry type names; remembered is a filter.
+	record = run("filter", "function step(ctx){return {output:ctx.game.units({tem:1})};}");
+	CHECK(record.at("error").get<std::string>().find("unknown key \"tem\"") != std::string::npos);
+	record = run("names", "function step(ctx){return {output:[ctx.game.units({team:'mine'})[0].typeName,"
+						  "ctx.game.buildings({team:'mine'})[0].familyName,"
+						  "ctx.game.buildings({team:'enemies',remembered:true}).length]};}");
+	CHECK(record.at("output") == Json{"worker", "swarm", 0});
+	record = run("unknown-type", "function step(ctx){return {output:ctx.game.buildingType('tower')};}");
+	CHECK(record.at("error").get<std::string>().find("names: ") != std::string::npos);
+
+	// The data limit names itself, the amount, the call and the native-helper rule, and a
+	// caught crossing still fails the run, saying so.
+	record = run("data", "function step(ctx){const s='x'.repeat(600000);"
+						 "ctx.game.buildingType('inn',{pad:s});ctx.game.buildingType('inn',{pad:s});return {};}");
+	auto text = record.at("error").get<std::string>();
+	CHECK(text.find("Script data exceeds limit") != std::string::npos);
+	CHECK(text.find("of 1048576 bytes") != std::string::npos);
+	CHECK(text.find("crossed in buildingType") != std::string::npos);
+	CHECK(text.find("script_data_bytes_per_run") != std::string::npos);
+	record = run("data-caught", "function step(ctx){const s='x'.repeat(600000);"
+								"try{ctx.game.buildingType('inn',{pad:s});ctx.game.buildingType('inn',{pad:s});}catch(e){}"
+								"return {output:'after'};}");
+	text = record.at("error").get<std::string>();
+	CHECK(text.find("first crossed in buildingType") != std::string::npos);
+	// The internal entry wrapper never shows in a stack trace.
+	record = run("stack", "function step(){throw new Error('boom');}");
+	CHECK(record.at("error").get<std::string>().find("__glob2_step") == std::string::npos);
+
+	// Programs: no last run before the first; afterwards the next tick is not before it.
+	commander.call("hive_program", {{"session", session}, {"operation_key", "install"}, {"action", "install"},
+									{"name", "later"},
+									{"source", "let n=0;function step(ctx){if(n++>0)throw new Error('later');return {};}"}});
+	settle();
+	REQUIRE(commander.standingOrders().size() == 1);
+	CHECK(commander.standingOrders()[0].at("last_run_tick").is_null());
+	world.game.stepCounter += 25;
+	settle();
+	auto program = commander.standingOrders()[0];
+	INFO(program.dump());
+	REQUIRE(program.at("last_run_tick").is_number());
+	CHECK(program.at("nextTick").get<unsigned>() >= program.at("last_run_tick").get<unsigned>());
+	CHECK(program.contains("order_lag_ticks"));
+	CHECK_FALSE(program.at("recent").contains("error"));
+	// The second run fails and pauses it; the alert says paused until it is resumed.
+	world.game.stepCounter += 25;
+	settle();
+	REQUIRE(commander.standingOrders()[0].at("paused") == true);
+	const auto failedAlert = [&]
+	{
+		const auto reply = commander.call("game_world", {{"detail", "alerts"}});
+		for (const auto &alert : reply.at("alerts"))
+			if (alert.at("kind") == "hive_program_failed")
+				return alert;
+		return Json();
+	};
+	REQUIRE(failedAlert().is_object());
+	CHECK(failedAlert().at("paused") == true);
+	CHECK(failedAlert().at("program") == "later");
+	commander.change("later", "resume");
+	CHECK(failedAlert().at("paused") == false);
+	commander.change("later", "cancel");
+	CHECK(failedAlert().at("program_state") == "removed");
 }

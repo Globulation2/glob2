@@ -1205,6 +1205,57 @@ TEST_CASE("typed snapshots preserve per-target revisions and reject stale consum
 	const auto restored = f.host.inspect();
 	CHECK(control(restored, "action")->revision != revision);
 }
+TEST_CASE("revisions follow meaning not geometry and inspection reads reasons and readings" *
+		  doctest::test_suite("UILayout"))
+{
+	int gap = 0;
+	bool ready = false, shared = false;
+	Fixture f(
+		[&](const Presentation &)
+		{
+			ButtonOptions use;
+			use.enabled = ready;
+			use.disabledReason = "The preview is still generating";
+			StepperOptions speed;
+			speed.valueText = "1.6x";
+			ToggleOptions vision;
+			vision.accessibleLabel = "Share food vision with Red";
+			return column({sized({10, gap}, empty()), button("use", "Use", [] {}, use),
+						   stepper("speed", 2, -3, 10, [](int) {}, speed),
+						   toggle("ally/1/fV", "fV", shared, [&](bool on) { shared = on; }, true, vision)});
+		},
+		400, 300);
+	const auto first = f.host.inspect();
+	REQUIRE(control(first, "use"));
+	REQUIRE(control(first, "speed"));
+	CHECK(control(first, "use")->disabledReason == "The preview is still generating");
+	CHECK(control(first, "speed")->valueLabel == "1.6x");
+	CHECK(control(first, "ally/1/fV")->label == "Share food vision with Red: off");
+	const auto json = inspectionJSON(first);
+	CHECK(json.find("\"disabled_reason\":\"The preview is still generating\"") != std::string::npos);
+	CHECK(json.find("\"value_label\":\"1.6x\"") != std::string::npos);
+	std::string error;
+	CHECK_FALSE(f.host.act("use", {}, error));
+	CHECK(error.find("still generating") != std::string::npos);
+	// Moving every control (a layout settling, a preview arriving above them) keeps both the
+	// controls' and the surface's revisions.
+	gap = 40;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	const auto moved = f.host.inspect();
+	CHECK(control(moved, "use")->bounds.y != control(first, "use")->bounds.y);
+	CHECK(control(moved, "use")->revision == control(first, "use")->revision);
+	CHECK(control(moved, "speed")->revision == control(first, "speed")->revision);
+	CHECK(moved.revision == first.revision);
+	// Meaning does change them.
+	ready = true;
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	const auto enabled = f.host.inspect();
+	CHECK(control(enabled, "use")->revision != control(first, "use")->revision);
+	CHECK(control(enabled, "use")->disabledReason.empty());
+	CHECK(enabled.revision != first.revision);
+}
 TEST_CASE("semantic values selection clipping and popup ownership" *
 		  doctest::test_suite("UILayout"))
 {

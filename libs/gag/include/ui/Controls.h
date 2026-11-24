@@ -52,6 +52,8 @@ struct ButtonOptions
 	std::string accessibleLabel;
 	IconRef icon;
 	double iconSize = 20;
+	// Why the button is disabled, reported by inspection while enabled is false.
+	std::string disabledReason;
 };
 Element button(const std::string &key, const std::string &text, std::function<void()> action,
 			   ButtonOptions options = {});
@@ -69,6 +71,9 @@ struct ToggleOptions
 	bool trailing = false;
 	std::string help;
 	double controlWidth = 140;
+	// The name inspection reports for a toggle whose visible text is terse (an
+	// abbreviation): it then reads "<accessibleLabel>: on" or ": off".
+	std::string accessibleLabel;
 };
 Element toggle(const std::string &key, const std::string &text, bool value,
 			   std::function<void(bool)> change, bool enabled = true, ToggleOptions options = {});

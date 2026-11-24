@@ -1,6 +1,7 @@
 #include "ui/HiveReportText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HiveDialog.h"
+#include <cstdio>
 #include <utility>
 #include <algorithm>
 namespace Hive
@@ -96,7 +97,39 @@ std::string recentSummary(const Json &recent)
 		return error.substr(0, error.find('\n'));
 	if (!recent.contains("output") || recent.at("output").is_null())
 		return {};
-	return recent.at("output").dump(-1, ' ', false, Json::error_handler_t::replace);
+	// A readable line, not raw JSON: a string as is; an object's summary or status text;
+	// otherwise its simple fields as "name value", and how many items its lists hold.
+	const auto &output = recent.at("output");
+	const auto scalar = [](const Json &v) -> std::string
+	{
+		if (v.is_string())
+			return v.get<std::string>();
+		if (v.is_boolean())
+			return v.get<bool>() ? "yes" : "no";
+		if (v.is_number_integer())
+			return std::to_string(v.get<std::int64_t>());
+		if (v.is_number())
+		{
+			char text[32];
+			std::snprintf(text, sizeof text, "%.4g", v.get<double>());
+			return text;
+		}
+		return {};
+	};
+	if (!output.is_object())
+		return output.is_array() ? std::to_string(output.size()) + " items" : scalar(output);
+	for (const char *field : {"summary", "status"})
+		if (output.contains(field) && output.at(field).is_string())
+			return output.at(field).get<std::string>();
+	std::string line;
+	for (const auto &[key, v] : output.items())
+	{
+		std::string text = v.is_array() ? std::to_string(v.size()) : scalar(v);
+		if (text.empty() || v.is_null())
+			continue;
+		line += (line.empty() ? "" : " · ") + key + " " + text;
+	}
+	return line;
 }
 namespace
 {
@@ -140,15 +173,10 @@ Element Dialog::build(const Presentation &p)
 				 },
 				 small)},
 			{p.pt(6)}));
-	if (client->local())
-		cards.push_back(button(
-			"hive/details", expanded ? tr("[hive less]") : tr("[hive reports and details]"),
-			[this]
-			{
-				expanded = !expanded;
-				invalidate();
-			},
-			small));
+	// Local scripts are automation the player started: the panel only says which are
+	// running and lets the player pause, cancel or stop them. Their output, errors and
+	// reports are for whoever wrote them, through MCP (hive_program, game_world alerts).
+	const bool local = client->local();
 	auto stop = small;
 	const auto stopping = client->controlStatus.find("commander");
 	stop.enabled = stopping == client->controlStatus.end() || stopping->second != "Stopping…";
@@ -171,10 +199,12 @@ Element Dialog::build(const Presentation &p)
 			--limit;
 		return text.substr(0, limit) + "…";
 	};
-	if (!client->progress.empty())
+	if (!local && !client->progress.empty())
 		cards.push_back(
 			card(paragraph(preview(client->progress, 240), {FontRole::Caption}), compact));
-	if (expanded)
+	if (local)
+		;
+	else if (expanded)
 	{
 		const auto count = std::min<std::size_t>(10, client->reports.size());
 		for (std::size_t i = 0; i < count; ++i)
@@ -196,11 +226,12 @@ Element Dialog::build(const Presentation &p)
 		std::vector<Element> body{label(name), caption(missing  ? tr("[hive needs fresh order]")
 													   : paused ? tr("[Paused]")
 																: tr("[hive active]"))};
-		if (const auto recent = recentSummary(order.value("recent", Json())); !recent.empty())
-			body.push_back(paragraph(preview(recent, expanded ? 1000 : 180), {FontRole::Caption}));
+		if (!local)
+			if (const auto recent = recentSummary(order.value("recent", Json())); !recent.empty())
+				body.push_back(paragraph(preview(recent, expanded ? 1000 : 180), {FontRole::Caption}));
 		if (!status.empty())
 			body.push_back(caption(controlStatusText(status)));
-		if (expanded)
+		if (expanded && !local)
 			body.push_back(
 				paragraph(order.at("description").get<std::string>(), {FontRole::Caption}));
 		auto toggle = small;

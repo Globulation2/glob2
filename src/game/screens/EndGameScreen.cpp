@@ -67,6 +67,22 @@ const OverviewColumn overviewColumns[] = {
 //! The column the teams are listed by, largest first: the peak population.
 const std::size_t overviewSortColumn = 0;
 
+//! An overview row as inspection reads it: its cells are bare figures, so the row
+//! names the team and each figure's column ("Red: Peak units 12, Born 30, ...").
+class DescribedRow final : public fe::Wrapper
+{
+	std::string text;
+
+  public:
+	DescribedRow(Element child, std::string rowKey, std::string description)
+		: Wrapper(std::move(child)), text(std::move(description))
+	{
+		key = std::move(rowKey);
+	}
+	const char *name() const override { return "row"; }
+	std::string accessibleText() const override { return text; }
+};
+
 double overviewFigure(const OverviewColumn &column, const TeamStats &stats)
 {
 	const Stats::Metric &metric = Stats::metricById(column.metric);
@@ -541,8 +557,11 @@ Element EndGameScreen::overview(const Presentation &p, bool compact)
 	for (const auto &team : teams)
 	{
 		std::vector<Element> cells{fe::swatch(team.color, 12), fe::expanded(fe::label(team.name))};
+		std::string description = team.name + ":";
 		for (std::size_t c : shown)
 		{
+			description += std::string(c == shown.front() ? " " : ", ") + fe::tr(overviewColumns[c].key) + " " +
+						   Stats::valueText(team.summary[c], false);
 			double best = 0;
 			for (const auto &other : teams)
 				best = std::max(best, other.summary[c]);
@@ -552,7 +571,9 @@ Element EndGameScreen::overview(const Presentation &p, bool compact)
 			// Indented like the heading's button text, so figures sit under their heading.
 			cells.push_back(fe::width(column, fe::padding({p.pt(8), 0, 0, 0}, fe::label(Stats::valueText(team.summary[c], false), options))));
 		}
-		rows.push_back(fe::row(std::move(cells), {gap, fe::CrossAlign::Center}));
+		rows.push_back(std::make_shared<DescribedRow>(fe::row(std::move(cells), {gap, fe::CrossAlign::Center}),
+													  "overview/team/" + std::to_string(team.teamNum),
+													  std::move(description)));
 	}
 	fe::ScrollOptions scroll;
 	scroll.shrinkToContent = false;

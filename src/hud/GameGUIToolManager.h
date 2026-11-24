@@ -25,6 +25,16 @@ namespace Utilities
 ///This class is meant to manage the game gui tool, such as placing a building, flag or zone
 struct PresentationFrame;
 
+///Initial settings for a placed building or flag, used instead of a click's defaults (MCP
+///game_place). builders: a site's requested units; workers: the finished building's (a
+///flag's own) requested units; range: a flag's or zonable building's range. Requests are
+///capped at what the type allows, as the building panel caps them, and on success each
+///given field holds the value actually sent.
+struct BuildingCreateSettings
+{
+	std::optional<int> workers, builders, range;
+};
+
 class GameGUIToolManager
 {
 public:
@@ -67,7 +77,7 @@ public:
 	void deactivateTool();
 	/// Places the active building tool with its footprint's top-left at (x, y), through the
 	/// same room, ghost-site and default-assignment checks as a click; false when refused.
-	bool placeBuildingTopLeft(int x, int y, int localteam);
+	bool placeBuildingTopLeft(int x, int y, int localteam, BuildingCreateSettings *settings = nullptr);
 
 	///Draws the tool on the map
 	void drawTool(int mouseX, int mouseY, int localteam, int viewportX, int viewportY, int modifiers);
@@ -115,7 +125,7 @@ private:
 	///Flushes an order for the current brush accumulator
 	void flushBrushOrders(int localteam);
 	///Places a building at pos x,y
-	bool placeBuildingAt(int mapx, int mapy, int localteam);
+	bool placeBuildingAt(int mapx, int mapy, int localteam, BuildingCreateSettings *settings = nullptr);
 	///Draws a building at pos x,y
 	void drawBuildingAt(int mapx, int mapy, int localteam, int viewportX, int viewportY);
 	///Computes a line going from sx,sy to ex,ey of the current building

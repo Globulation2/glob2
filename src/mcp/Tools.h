@@ -63,8 +63,20 @@ void registerUITools(ToolRegistry &);
 Json toolResult(Result, const std::string &pngBase64 = {});
 // Smaller inspection for agents: skips unlabelled, keyless, inert containers (keeping their
 // children), omits fields at their defaults, and reports hidden controls explicitly.
-Json compactInspection(const Json &inspection);
+// Compact inspection; rectangles only for canvases and controls without actions unless
+// bounds (then every control's).
+Json compactInspection(const Json &inspection, bool bounds = false);
+// Removes bounds, visible and viewport rectangles throughout an inspection.
+void stripBounds(Json &inspection);
+// The controls whose label or key contains text (ignoring case), flat: surface, key,
+// label, role, actions, revision and state; at most 40.
+Json findControls(const Json &inspection, const std::string &text);
 // Why ui_act arguments cannot target a control in this full inspection, phrased with
-// the next step to take; empty when the target is usable.
-std::string actionTargetProblem(const Json &inspection, const Json &arguments);
+// the next step to take; empty when the target is usable. A value is checked against the
+// control's options or range; `value`, when given, receives it with an option label
+// resolved to its index.
+std::string actionTargetProblem(const Json &inspection, const Json &arguments, Json *value = nullptr);
+// The centre of the visible part of the control that ui_click/ui_move {key, surface?}
+// names, in logical pixels, from a full inspection; returns why not when it cannot be.
+std::string controlCentre(const Json &inspection, const Json &arguments, Json &point);
 } // namespace MCP

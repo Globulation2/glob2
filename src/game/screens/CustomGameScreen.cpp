@@ -1117,12 +1117,13 @@ Element CustomGameScreen::build(const Presentation &p)
 		if (tab < 2)
 			footerActions.push_back({"start", tr("Next"), [this, tab] { selectTab(tab + 1); }, true, SDLK_RETURN, true, fe::uiIcon(fe::UIIcon::ChevronRight)});
 		else
-			footerActions.push_back({"start", startLabel, [this] { launch(); }, true, SDLK_RETURN, ready, fe::uiIcon(startIcon)});
+			footerActions.push_back({"start", startLabel, [this] { launch(); }, true, SDLK_RETURN, ready, fe::uiIcon(startIcon), note});
 	}
 	else
 	{
 		footerActions.push_back({"back", tr("Back"), [this] { endExecute(CANCEL); }, false, SDLK_ESCAPE, true, backIcon});
-		footerActions.push_back({"start", startLabel, [this] { launch(); }, true, SDLK_RETURN, ready, fe::uiIcon(startIcon)});
+		// The note under the map says why the match cannot start; inspection reports it too.
+		footerActions.push_back({"start", startLabel, [this] { launch(); }, true, SDLK_RETURN, ready, fe::uiIcon(startIcon), note});
 	}
 	auto actionRow = fe::actions(std::move(footerActions), p);
 	// Short landscape phones keep their few lines for the tab: the tabs already say it all.
@@ -1456,7 +1457,11 @@ CustomGameScreen::ColonyFields CustomGameScreen::colonyFields(int i, const Prese
 	}
 	else
 		aiControls = fe::caption(tr(c.controller == CustomGameSetup::Human ? "You control this colony." : "Closed"));
-	auto identity = fe::row({fe::swatch(color, 30), fe::expanded(fe::label(std::to_string(i + 1) + "  " + colorName(color)))},
+	// A colony's colour comes from the map preview; until it exists the swatch is the neutral
+	// placeholder, which must not be named as if it were the colony's colour ("Gray").
+	const bool colorKnown = i < int(preview->starts.size());
+	auto identity = fe::row({fe::swatch(color, 30), fe::expanded(fe::label(std::to_string(i + 1) + "  " +
+																			(colorKnown ? colorName(color) : tr("Colony"))))},
 							{p.pt(8), fe::CrossAlign::Center});
 	return {identity, controller, aiControls, team};
 }
