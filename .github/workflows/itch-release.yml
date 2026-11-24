@@ -23,7 +23,7 @@ on:
           - windows-x86-64
           - osx-arm64
           - osx-x86-64
-          - linux-x86-64-flatpak
+          - linux-x86-64
         default: all
 
 permissions:
@@ -43,13 +43,14 @@ jobs:
       github.ref == 'refs/heads/master'
     environment: itch-release
     timeout-minutes: 45
-    runs-on: ubuntu-24.04
+    runs-on: macos-15
     steps:
-      - name: Verify and stage the four public release packages
+      - name: Verify and stage the public release packages
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.tag }}
           RELEASE_DIR: ${{ runner.temp }}/itch-release
+          MACOS_TEAM: ${{ vars.MACOS_DOWNLOAD_TEAM_ID }}
         run: |
           set -euo pipefail
           [[ "$TAG" =~ ^v[0-9]+(\.[0-9]+)+$ ]]
@@ -63,7 +64,7 @@ jobs:
             "windows-x86-64|glob2-$version-windows-x86_64.zip"
             "osx-arm64|Glob2-$version-macos-arm64.dmg"
             "osx-x86-64|Glob2-$version-macos-x86_64.dmg"
-            "linux-x86-64-flatpak|glob2.flatpak"
+            "linux-x86-64|glob2-$version-linux-x86_64-ubuntu22.04.tar.gz"
           )
           download_and_verify() {
             local file=$1 digest
@@ -72,7 +73,7 @@ jobs:
               | select(length == 1) | .[0] | strings | select(test("^sha256:[0-9a-f]{64}$"))
             ' <<< "$latest")
             gh release download "$TAG" --repo "$repository" --pattern "$file"
-            echo "${digest#sha256:}  $file" | sha256sum -c
+            echo "${digest#sha256:}  $file" | shasum -a 256 -c
           }
           download_and_verify package-inventory.json
           for package in "${packages[@]}"; do
@@ -81,7 +82,55 @@ jobs:
               .schemaVersion == 1 and ([.packages[] | select(.filename == $file)] | length == 1)
             ' package-inventory.json >/dev/null
             download_and_verify "$file"
-            printf '%s\t%s\n' "$channel" "$file" >> channels.tsv
+            case "$channel" in
+              windows-x86-64)
+                unzip -q "$file" -d "$channel"
+                test -f "$channel/Globulation2/glob2.exe"
+                cat > "$channel/.itch.toml" <<'TOML'
+          [[actions]]
+          name = "play"
+          path = "Globulation2/glob2.exe"
+          platform = "windows"
+
+          [[actions]]
+          name = "Play (software renderer)"
+          path = "Globulation2/glob2.exe"
+          platform = "windows"
+          args = ["play", "--renderer", "software"]
+          TOML
+                ;;
+              osx-*)
+                architecture=${channel#osx-}
+                architecture=${architecture/x86-64/x86_64}
+                mount=$(mktemp -d)
+                hdiutil attach "$file" -mountpoint "$mount" -readonly -nobrowse
+                trap 'hdiutil detach "$mount"' EXIT
+                mkdir "$channel"
+                app="$channel/Glob2.app"
+                ditto "$mount/Glob2.app" "$app"
+                hdiutil detach "$mount"
+                trap - EXIT
+                test "$(lipo -archs "$app/Contents/MacOS/glob2")" = "$architecture"
+                codesign --verify --deep --strict "$app"
+                test -n "$MACOS_TEAM"
+                codesign -dv --verbose=4 "$app" 2>&1 | grep -Fx "TeamIdentifier=$MACOS_TEAM"
+                xcrun stapler validate "$app"
+                ;;
+              linux-x86-64)
+                mkdir "$channel"
+                tar -xzf "$file" -C "$channel" usr
+                test -x "$channel/usr/bin/glob2"
+                test -d "$channel/usr/share/glob2/data"
+                cat > "$channel/.itch.toml" <<'TOML'
+          [[actions]]
+          name = "play"
+          path = "usr/bin/glob2"
+          platform = "linux"
+          TOML
+                tar -xOzf "$file" INSTALL.txt | sed -n '/^Required linked library filenames/,$p' > "$channel/SYSTEM-LIBRARIES.txt"
+                ;;
+            esac
+            printf '%s\t%s\n' "$channel" "$channel" >> channels.tsv
             printf -- '- `%s` → `%s`\n' "$file" "$channel" >> "$GITHUB_STEP_SUMMARY"
           done
 
@@ -94,8 +143,8 @@ jobs:
           mkdir -p "$BUTLER_DIR"
           cd "$BUTLER_DIR"
           curl --fail --silent --show-error --location --proto '=https' --proto-redir '=https' \
-            https://broth.itch.zone/butler/linux-amd64/15.32.0/archive/default --output butler.zip
-          echo '2335971394ef6596f95ded0833e85ee28755e13761716ef4c91d6b11f69162f5  butler.zip' | sha256sum -c
+            https://broth.itch.zone/butler/darwin-arm64/15.32.0/archive/default --output butler.zip
+          echo 'f1c460f08c02686b49f8da74344e5578ece9ea1a8bae1779445b5d98e0a794b3  butler.zip' | shasum -a 256 -c
           unzip -q butler.zip
           ./butler -V
           echo "$BUTLER_DIR" >> "$GITHUB_PATH"
