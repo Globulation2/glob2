@@ -13,6 +13,7 @@ explains how to run, configure, upgrade and back it up.
 | `platform-init.sh`, `relay-entrypoint.sh`, `engine-agent-entrypoint.sh` | Container start-up: keys, relay identity, engine checks |
 | `sim_version.py` | Prints a source tree's sim version key (engine-agent image label) |
 | `update-host.sh` | Upgrades a single-host deployment from this checkout |
+| `prebuilt_images.py` | Checks a CI image manifest against the host and pulls the images by digest instead of building them ([details](../docs/hosting/upgrades.md#prebuilt-images)) |
 | `online-deploy.sh`, `online_remote.py` | Automatic deployment of the official instance from the release mirror (`.github/workflows/deploy-online.yml`): host-side driver and IAP SSH helper ([details](../docs/hosting/upgrades.md#automatic-deployment)) |
 | `build-web-client.sh`, `install-web-client.py` | Build the WebAssembly client in a container and install it where Caddy serves `/play/` |
 | `source-identity.sh` | Docker build helper: gives the copied source tree a Git identity |
