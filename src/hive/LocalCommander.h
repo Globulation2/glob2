@@ -69,6 +69,10 @@ class LocalCommander : public CommanderView
 	Json alliance(const Json &arguments);
 	// hive_run / hive_result with wait: poll the journal until the operation finishes.
 	Json awaitResult(const Json &arguments);
+	// A script's create order by palette name, filled in as a click would.
+	Json placeByName(Json order);
+	// Adds the colony's own events and assigned counts to a Hive snapshot.
+	void annotate(Json &snapshot);
 	void submit(const std::vector<Json> &descriptors);
 	// Standing-order failures, reported as game_world alerts: a program that fails is
 	// paused (or, when its worker could not start, retried a few times first).
@@ -142,4 +146,6 @@ Json localCall(const std::string &tool, const Json &arguments);
 // game_wait's answer once the match it waited in has ended.
 Json matchOver(const std::string &tool);
 Json playerAPI();
+// hive_api: the Hive reference by section, or searched, rather than in one piece.
+Json apiDocs(const Json &arguments);
 } // namespace Hive

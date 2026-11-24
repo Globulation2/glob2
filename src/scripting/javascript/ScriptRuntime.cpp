@@ -449,6 +449,85 @@ struct Environment
 			throw std::runtime_error("Sparse arrays are not script data");
 		return output;
 	}
+	// map.delta(a, b) and map.distance(a, b): the shortest offset from a to b on the
+	// wrapping map, for {x, y} records or (ax, ay, bx, by). Pure arithmetic shared by every
+	// script; it reads nothing from the game.
+	static JSValue wrapped(JSContext *ctx, JSValueConst, int argc, JSValueConst *argv, int magic)
+	{
+		auto &e = *static_cast<Environment *>(JS_GetContextOpaque(ctx));
+		try
+		{
+			e.charge(1);
+			std::vector<Value> args;
+			for (int i = 0; i < argc; ++i)
+				args.push_back(e.fromJS(argv[i]));
+			const auto coordinate = [](const Value &v, const char *name)
+			{ return Value::object().set("c", v).integer("c", -32768, 32767); };
+			int ax, ay, bx, by;
+			if (args.size() == 2 && args[0].kind == Value::Object && args[1].kind == Value::Object)
+				ax = coordinate(args[0].get("x"), "x"), ay = coordinate(args[0].get("y"), "y"),
+				bx = coordinate(args[1].get("x"), "x"), by = coordinate(args[1].get("y"), "y");
+			else if (args.size() == 4)
+				ax = coordinate(args[0], "ax"), ay = coordinate(args[1], "ay"), bx = coordinate(args[2], "bx"),
+				by = coordinate(args[3], "by");
+			else
+				throw std::runtime_error("Expected two {x, y} records or ax, ay, bx, by");
+			const auto shortest = [](int d, int size)
+			{
+				if (size <= 0)
+					return d;
+				d %= size;
+				if (d > size / 2)
+					d -= size;
+				if (d < -(size - 1) / 2)
+					d += size;
+				return d;
+			};
+			const int dx = shortest(bx - ax, int(e.host->width)), dy = shortest(by - ay, int(e.host->height));
+			if (magic == 1)
+				return JS_NewFloat64(ctx, std::sqrt(double(dx) * dx + double(dy) * dy));
+			return e.toJS(Value::object().set("dx", dx).set("dy", dy));
+		}
+		catch (const std::exception &ex)
+		{
+			return JS_ThrowTypeError(ctx, "%s", ex.what());
+		}
+	}
+	// Methods a host adds beside the shared ones (Host::gameExtensions / mapExtensions):
+	// forwarded by name to its query function, results detached and read-only.
+	static JSValue extension(JSContext *ctx, JSValueConst, int argc, JSValueConst *argv, int magic)
+	{
+		auto &e = *static_cast<Environment *>(JS_GetContextOpaque(ctx));
+		try
+		{
+			e.charge(1);
+			const auto &names = magic >= 2000 ? e.host->mapExtensions : e.host->gameExtensions;
+			const auto index = std::size_t(magic % 1000);
+			if (index >= names.size())
+				throw std::runtime_error("Unavailable query");
+			std::vector<Value> args;
+			for (int i = 0; i < argc; ++i)
+				args.push_back(e.fromJS(argv[i]));
+			auto value = e.toJS(e.hostQuery(names[index], args));
+			if (JS_IsObject(value))
+				e.readonly(value);
+			return value;
+		}
+		catch (const std::bad_alloc &)
+		{
+			e.hostFailed = true;
+			return JS_ThrowOutOfMemory(ctx);
+		}
+		catch (const HostFailure &ex)
+		{
+			e.hostFailed = true;
+			return JS_ThrowInternalError(ctx, "%s", ex.what());
+		}
+		catch (const std::exception &ex)
+		{
+			return JS_ThrowTypeError(ctx, "%s", ex.what());
+		}
+	}
 	static JSValue query(JSContext *ctx, JSValueConst, int argc, JSValueConst *argv, int magic)
 	{
 		static constexpr auto& names = QueryNames;
@@ -520,6 +599,14 @@ struct Environment
 				JS_NewCFunctionMagic(ctx, query, names[i], 0, JS_CFUNC_generic_magic, i));
 		if (host->commander)
 			set(context.get(), "wakeAgent", JS_NewCFunctionMagic(ctx, query, "wakeAgent", 1, JS_CFUNC_generic_magic, WakeAgentQuery));
+		set(map.get(), "delta", JS_NewCFunctionMagic(ctx, wrapped, "delta", 2, JS_CFUNC_generic_magic, 0));
+		set(map.get(), "distance", JS_NewCFunctionMagic(ctx, wrapped, "distance", 2, JS_CFUNC_generic_magic, 1));
+		for (std::size_t i = 0; i < host->gameExtensions.size() && i < 1000; ++i)
+			set(game.get(), host->gameExtensions[i].c_str(),
+				JS_NewCFunctionMagic(ctx, extension, host->gameExtensions[i].c_str(), 1, JS_CFUNC_generic_magic, int(1000 + i)));
+		for (std::size_t i = 0; i < host->mapExtensions.size() && i < 1000; ++i)
+			set(map.get(), host->mapExtensions[i].c_str(),
+				JS_NewCFunctionMagic(ctx, extension, host->mapExtensions[i].c_str(), 2, JS_CFUNC_generic_magic, int(2000 + i)));
 		set(map.get(), "width", JS_NewUint32(ctx, host->width));
 		set(map.get(), "height", JS_NewUint32(ctx, host->height));
 		set(game.get(), "map", map.release());

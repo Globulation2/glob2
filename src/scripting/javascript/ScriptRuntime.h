@@ -2,6 +2,7 @@
 #pragma once
 #include "ScriptValue.h"
 #include <functional>
+#include <vector>
 #include <memory>
 #include <stdexcept>
 namespace Script
@@ -39,6 +40,9 @@ struct Host
 	// The local Hive worker runs outside the simulation and raises both.
 	std::uint64_t workBudget = FuelLimit;
 	std::size_t memoryLimit = MemoryLimit;
+	// Extra ctx.game / ctx.game.map methods this host serves through query (by name),
+	// beside the shared ones. Simulation hosts leave both empty.
+	std::vector<std::string> gameExtensions, mapExtensions;
 
 	unsigned profile = 1;
 	unsigned nextAction = 1;

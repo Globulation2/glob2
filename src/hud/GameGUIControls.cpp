@@ -1080,6 +1080,48 @@ std::string GameGUI::setAllianceFromAutomation(int otherTeam, std::optional<bool
 	return {};
 }
 
+GameGUI::AutomationCreate GameGUI::createDefaultsFromAutomation(const std::string &requested)
+{
+	AutomationCreate result;
+	std::string key, available;
+	bool enabled = false;
+	auto scan = [&](const std::vector<std::string> &names, const std::vector<bool> &states)
+	{
+		for (size_t i = 0; i < names.size(); ++i)
+		{
+			const auto shortName = names[i].substr(0, names[i].find('.'));
+			if (states[i])
+				available += (available.empty() ? "" : ", ") + shortName;
+			if (key.empty() && (names[i] == requested || shortName == requested))
+				key = names[i], enabled = states[i];
+		}
+	};
+	scan(buildingsChoiceName, buildingsChoiceState);
+	scan(flagsChoiceName, flagsChoiceState);
+	if (key.empty() || !enabled)
+	{
+		result.error = (key.empty() ? "Unknown building or flag \"" + requested + "\"" : requested + " is not available in this game") +
+					   "; placeable here: " + available;
+		return result;
+	}
+	const BuildingCatalogView catalog(*drawnScene().buildingTypes);
+	result.typeNum = catalog.getPlaceableTypeNum(key);
+	const auto *type = result.typeNum >= 0 ? catalog.get(result.typeNum) : nullptr;
+	if (!type)
+	{
+		result.error = "Unknown building or flag \"" + requested + "\"";
+		return result;
+	}
+	// The same defaults GameGUIToolManager uses for a click.
+	result.workers = defaultAssign.getDefaultAssignedUnits(drawnScene(), result.typeNum);
+	result.futureWorkers = defaultAssign.getDefaultAssignedUnits(drawnScene(), catalog.getFinishedTypeNum(key));
+	if (type->zonable[WORKER] || type->zonable[WARRIOR] || type->zonable[EXPLORER])
+		result.range = globalContainer->settings.buildingRadius(drawnScene().world.catalogs->buildingFingerprint, *type);
+	if (type->isVirtual && result.range < 0)
+		result.range = type->defaultUnitStayRange;
+	return result;
+}
+
 std::string GameGUI::announcedOutcome() const
 {
 	if (!hasEndOfGameDialogBeenShown)

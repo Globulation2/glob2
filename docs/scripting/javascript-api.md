@@ -284,7 +284,15 @@ ctx.game.map.tile(x, y)
 ctx.game.map.region(x, y, width, height)
 ctx.game.map.zones(x, y, width, height, team)
 ctx.game.map.area(name) // map scripts only
+ctx.game.map.delta(a, b)
+ctx.game.map.distance(a, b)
 ```
+
+`delta` returns `{dx, dy}`, the shortest offset from `a` to `b` on the wrapping map, and
+`distance` the straight-line length of that offset. Pass two `{x, y}` records or four
+integers `ax, ay, bx, by`. They are pure arithmetic on the map size, read nothing else
+and cost one work unit; plain subtraction is wrong for positions near opposite edges.
+Local colony (Hive) scripts have further helpers; `hive_api` section `helpers` lists them.
 
 Query X/Y must be integers in `-32768..32767` and wrap around the toroidal map;
 returned coordinates are canonical `0..map.width-1` / `0..map.height-1`.

@@ -16,8 +16,12 @@ export type BuildingName = 'swarm' | 'inn' | 'hospital' | 'racetrack' |
 export type FlagName = 'explorationflag' | 'warflag' | 'clearingflag';
 
 export interface EntityFilter {
-  /** Current team ID; omitted means all permitted teams. */
-  team?: number | null;
+  /** Current team ID, or (local Hive) relative to you: 'mine', 'enemies', 'allies';
+   * omitted means all permitted teams. */
+  team?: number | 'mine' | 'enemies' | 'allies' | null;
+  /** Local Hive: a type number, or a name: 'worker' | 'explorer' | 'warrior' for units,
+   * a building family name ('inn', 'swarm', 'warflag') for buildings. */
+  type?: number | string | null;
   /** Visible results to skip, 0..32768; default 0. */
   offset?: number | null;
   /** Maximum results, 0..32768; default 32768. Large pages may exceed budgets. */
@@ -66,6 +70,8 @@ export interface Unit extends EntityRef {
 }
 export interface Building extends EntityRef {
   team: number;
+  /** Local Hive, own buildings and flags: units that have taken the job (workers is the request). */
+  assigned?: number;
   /** Variant ID matched to BuildingType.id; shortType is the family code. */
   type: number; shortType: number;
   /** Anchor tile, not footprint center. */
@@ -140,12 +146,36 @@ export interface MapRead {
   /** Flat row-major result. Dimensions 0..256, subject to invocation budgets.
    * Exactly four arguments; zero dimension returns []. x/y wrap as in tile(). */
   region(x: number, y: number, width: number, height: number): Tile[];
+  /** Shortest offset from a to b on the wrapping map ({x, y} records or ax, ay, bx, by). */
+  delta(a: {x: number; y: number}, b: {x: number; y: number}): {dx: number; dy: number};
+  /** Straight-line distance along that shortest offset. */
+  distance(a: {x: number; y: number}, b: {x: number; y: number}): number;
+  /** Local Hive: compact row-major arrays (index dy * width + dx) of only the named fields;
+   * far cheaper than region(). Element i is tile ((x + i % width) % map.width,
+   * (y + floor(i / width)) % map.height). Default fields: ['resource', 'buildable']. */
+  scan?(x: number, y: number, width: number, height: number,
+    fields?: Array<'explored' | 'visible' | 'resource' | 'amount' | 'terrain' | 'buildable' | 'building'>):
+    {x: number; y: number; width: number; height: number; [field: string]: number[] | number};
+  /** Local Hive: whether the colony can see room for that building or flag at top-left x, y. */
+  canPlace?(name: string, x: number, y: number): {ok: boolean; reason?: string};
+  /** Local Hive: the nearest such top-left within radius (default 12, at most 64), or null. */
+  findPlacement?(name: string, near: {x: number; y: number; radius?: number}): {x: number; y: number} | null;
+}
+export interface ColonyEvent {
+  kind: 'unit_attacked' | 'building_attacked' | 'building_completed' | 'unit_converted_away' |
+    'unit_converted_to_you' | 'building_destroyed' | 'building_demolished' |
+    'enemy_building_sighted' | 'hive_program_failed';
+  event: string; x?: number; y?: number; count: number; tick: number;
 }
 export interface GameRead {
   teams(): Team[];
   /** Stable ascending team/slot order; offsets count visible results only. */
   units(filter?: EntityFilter): Unit[];
   buildings(filter?: EntityFilter): Building[];
+  /** Local Hive: the type a player places for a name (level 0's site, or the flag), or null. */
+  buildingType?(name: string, options?: {level?: number; site?: boolean}): BuildingType | null;
+  /** Local Hive: your colony's events after sinceTick (default 0), oldest first. */
+  events?(sinceTick?: number): ColonyEvent[];
   /** Hidden, dead, missing or stale => null; malformed IDs throw. */
   unit(reference: EntityRef): Unit | null;
   building(reference: EntityRef): Building | null;
@@ -158,6 +188,9 @@ export type Order =
   // Basic level-zero site or virtual flag. range is required for virtual flags.
   {type: 'create'; buildingType: number; x: number; y: number;
     workers: number; futureWorkers: number; range?: number} |
+  // Local Hive: by palette name, with the click's default units and flag range unless given.
+  {type: 'create'; building: string; x: number; y: number;
+    workers?: number; futureWorkers?: number; range?: number} |
   // Worker fields: 0..20. Initial construction cancellation uses delete.
   {type: 'workers' | 'cancelConstruction'; building: EntityRef; workers: number} |
   {type: 'construction'; building: EntityRef; workers: number; futureWorkers: number} |

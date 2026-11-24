@@ -3,6 +3,7 @@
 // true to the game's current behavior, and update docs/development/mcp-ui-server.md
 // alongside it.
 #include "Guide.h"
+#include <cctype>
 #include <stdexcept>
 #include <utility>
 
@@ -205,7 +206,12 @@ hive_status reports availability and the current session id (a match identity);
 hive_api returns the full API contract, including world queries such as
 ctx.game.units(), ctx.game.buildings() and order descriptors. hive_run executes one
 script (token, session, a fresh operation_key, source) and hive_result fetches its
-output; pass wait: true to either to get the finished result in one call.
+output; pass wait: true to either to get the finished result in one call. hive_api is
+a reference to browse: no arguments lists its sections, section reads one (contract,
+helpers, local-control, limits...), search finds paragraphs. The helpers section covers
+names instead of numbers (units({team: "mine", type: "warrior"}), create orders by
+building name), map.scan for cheap whole-map reads, map.findPlacement, map.distance on
+the wrapping map and ctx.game.events() for what happened to your colony.
 hive_program installs standing scripts that run every N ticks; a program that fails
 is paused and reported in game_world alerts. Tiles give corners (terrain ids per
 map: look them up in ctx.game.terrainTypes(), which says buildable) and a resource
@@ -280,6 +286,60 @@ std::vector<std::string> guideTopics()
 	for (const auto &t : Topics)
 		names.emplace_back(t.name);
 	return names;
+}
+
+Json guideSearch(const std::string &query)
+{
+	const auto lower = [](std::string text)
+	{
+		for (auto &c : text)
+			c = char(std::tolower(static_cast<unsigned char>(c)));
+		return text;
+	};
+	std::vector<std::string> words;
+	for (std::size_t i = 0, j; i < query.size(); i = j + 1)
+	{
+		j = query.find(' ', i);
+		if (j == std::string::npos)
+			j = query.size();
+		if (j > i)
+			words.push_back(lower(query.substr(i, j - i)));
+	}
+	if (words.empty())
+		throw std::invalid_argument("search needs at least one word");
+	Json results = Json::array();
+	for (const auto &t : Topics)
+	{
+		if (!t.text)
+			continue;
+		// Each hit is three lines: the matching window, so wrapped sentences stay whole.
+		std::vector<std::string> lines;
+		const std::string text = t.text;
+		for (std::size_t i = 0, j; i <= text.size(); i = j + 1)
+		{
+			j = text.find('\n', i);
+			if (j == std::string::npos)
+				j = text.size();
+			lines.push_back(text.substr(i, j - i));
+		}
+		for (std::size_t i = 0; i < lines.size() && results.size() < 12; ++i)
+		{
+			std::string window = lines[i];
+			for (std::size_t k = 1; k < 3 && i + k < lines.size(); ++k)
+				window += "\n" + lines[i + k];
+			const auto folded = lower(window);
+			bool all = true;
+			for (const auto &w : words)
+				all = all && folded.find(w) != std::string::npos;
+			if (all)
+			{
+				results.push_back({{"topic", t.name}, {"text", window}});
+				i += 2;
+			}
+		}
+	}
+	return {{"search", query}, {"results", results},
+			{"note", "game_guide topic reads a whole topic; hive_api documents colony scripting."}};
 }
 
 Json guide(const std::string &topic)

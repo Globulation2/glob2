@@ -3,6 +3,10 @@
 #include "PowerOfTwo.h"
 #include "HiveWorker.h"
 #include "scripting/javascript/ScriptRuntime.h"
+#include <algorithm>
+#include <functional>
+#include <vector>
+#include <string>
 #include <cmath>
 #include <cstdint>
 #include <iostream>
@@ -97,8 +101,122 @@ int integer(const Json &j, int minimum, int maximum)
 		throw std::runtime_error("Integer outside range");
 	return int(v);
 }
+constexpr int NoResource = 65535;
+int wrap(int v, int size)
+{
+	return dimensionRemainder(dimensionRemainder(v, size) + size, size);
+}
+// A team filter: a number, or "mine", "enemies" or "allies" relative to this colony.
+std::function<bool(int)> teamFilter(const Json &s, const Json &f)
+{
+	if (!f.contains("team") || f["team"].is_null())
+		return [](int) { return true; };
+	const int self = s.at("team");
+	if (f["team"].is_string())
+	{
+		const auto which = f["team"].get<std::string>();
+		std::uint32_t allies = 0;
+		for (const auto &t : s.at("teams"))
+			if (t.value("id", -1) == self)
+				allies = t.value("allies", 0u);
+		if (which == "mine")
+			return [self](int t) { return t == self; };
+		if (which == "allies")
+			return [self, allies](int t) { return t != self && t >= 0 && (allies & (1u << t)); };
+		if (which == "enemies")
+			return [self, allies](int t) { return t != self && t >= 0 && !(allies & (1u << t)); };
+		throw std::runtime_error("team must be a team number, \"mine\", \"enemies\" or \"allies\"");
+	}
+	const int team = integer(f["team"], 0, int(s.at("teams").size()) - 1);
+	return [team](int t) { return t == team; };
+}
+const Json *typeOf(const Json &s, int id)
+{
+	for (const auto &t : s.at("buildingTypes"))
+		if (t.value("id", -1) == id)
+			return &t;
+	return nullptr;
+}
+// The variant a player places for a building or flag name: level 0's construction
+// site, or the flag itself (unless level/site say otherwise).
+const Json *placeable(const Json &s, const std::string &name, int level = 0, int site = -1)
+{
+	const Json *found = nullptr;
+	for (const auto &t : s.at("buildingTypes"))
+		if (t.value("name", std::string()) == name && t.value("level", -1) == level)
+		{
+			const bool isSite = t.value("site", false), isFlag = t.value("virtual", false);
+			if (site >= 0 ? isSite == bool(site) : (isSite || isFlag))
+				return &t;
+			if (!found)
+				found = &t;
+		}
+	return site >= 0 ? nullptr : found;
+}
+// Tiles covered by buildings this colony knows of: its own, and others in sight.
+std::vector<char> occupied(const Json &s)
+{
+	const int width = s.at("width"), height = s.at("height");
+	std::vector<char> mask(std::size_t(width) * height, 0);
+	for (const auto &b : s.at("buildings"))
+		if (const auto *t = typeOf(s, b.value("type", -1)); t && !t->value("virtual", false))
+			for (int dy = 0; dy < t->value("height", 1); ++dy)
+				for (int dx = 0; dx < t->value("width", 1); ++dx)
+					mask[std::size_t(wrap(b.value("y", 0) + dy, height)) * width + wrap(b.value("x", 0) + dx, width)] = 1;
+	return mask;
+}
+// As far as this colony can tell: explored, one buildable terrain on all four corners,
+// no resource and no known building. The game still decides when the order arrives.
+bool buildable(const Json &s, const Json &tile, const std::vector<char> &taken, int x, int y)
+{
+	if (!tile.value("explored", false) || taken[std::size_t(y) * int(s.at("width")) + x])
+		return false;
+	const auto &corners = tile.at("corners");
+	const int terrain = corners.at(0);
+	for (const auto &c : corners)
+		if (c != terrain)
+			return false;
+	const auto &terrains = s.at("terrainTypes");
+	if (terrain < 0 || terrain >= int(terrains.size()) || !terrains[terrain].value("buildable", false))
+		return false;
+	if (tile.at("resource").value("type", NoResource) != NoResource)
+		return false;
+	return !tile.contains("building") || tile.value("building", NoResource) == NoResource;
+}
+std::string canPlace(const Json &s, const Json &type, int x, int y, const std::vector<char> &taken)
+{
+	const int width = s.at("width"), height = s.at("height");
+	if (type.value("virtual", false))
+	{
+		for (const auto &b : s.at("buildings"))
+			if (b.value("team", -1) == s.at("team").get<int>() && b.value("x", -1) == wrap(x, width) &&
+				b.value("y", -1) == wrap(y, height))
+				if (const auto *t = typeOf(s, b.value("type", -1)); t && t->value("virtual", false))
+					return "another of your flags is on that tile";
+		return {};
+	}
+	for (int dy = 0; dy < type.value("height", 1); ++dy)
+		for (int dx = 0; dx < type.value("width", 1); ++dx)
+		{
+			const int tx = wrap(x + dx, width), ty = wrap(y + dy, height);
+			if (!buildable(s, s.at("tiles").at(std::size_t(ty) * width + tx), taken, tx, ty))
+				return "tile (" + std::to_string(tx) + ", " + std::to_string(ty) +
+					   ") is unexplored, unbuildable terrain, a resource or a known building";
+		}
+	return {};
+}
+const Json &placeableNamed(const Json &s, const Json &name)
+{
+	if (!name.is_string())
+		throw std::runtime_error("Expected a building or flag name such as \"inn\" or \"warflag\"");
+	const auto *type = placeable(s, name.get<std::string>());
+	if (!type)
+		throw std::runtime_error("Unknown building or flag \"" + name.get<std::string>() + "\"");
+	return *type;
+}
 Json query(const Json &s, const std::string &name, const Json &args)
 {
+	const int width = s.at("width"), height = s.at("height");
 	if (name == "teams" || name == "buildingTypes" || name == "terrainTypes" || name == "resourceTypes")
 		return s.at(name);
 	if (name == "units" || name == "buildings")
@@ -106,16 +224,43 @@ Json query(const Json &s, const std::string &name, const Json &args)
 		Json f = args.empty() ? Json::object() : args.at(0);
 		if (!f.is_object())
 			throw std::runtime_error("Expected query options");
-		int team = f.contains("team") && !f["team"].is_null()
-					   ? integer(f["team"], 0, int(s.at("teams").size()) - 1)
-					   : -1;
+		const auto team = teamFilter(s, f);
+		// type: a number, or a name ("warrior"; "inn", "warflag").
+		std::function<bool(const Json &)> typeMatch = [](const Json &) { return true; };
+		if (f.contains("type") && !f["type"].is_null())
+		{
+			if (f["type"].is_number())
+			{
+				const int wanted = integer(f["type"], 0, 65535);
+				const std::string field = name == "units" ? "type" : "shortType";
+				typeMatch = [wanted, field](const Json &v) { return v.value(field, -1) == wanted; };
+			}
+			else if (name == "units")
+			{
+				static const std::vector<std::string> kinds = {"worker", "explorer", "warrior"};
+				const auto it = std::find(kinds.begin(), kinds.end(), f["type"].get<std::string>());
+				if (it == kinds.end())
+					throw std::runtime_error("Unit type must be worker, explorer or warrior");
+				const int wanted = int(it - kinds.begin());
+				typeMatch = [wanted](const Json &v) { return v.value("type", -1) == wanted; };
+			}
+			else
+			{
+				const auto wanted = f["type"].get<std::string>();
+				typeMatch = [wanted, &s](const Json &v)
+				{
+					const auto *t = typeOf(s, v.value("type", -1));
+					return t && t->value("name", std::string()) == wanted;
+				};
+			}
+		}
 		int offset =
 			f.contains("offset") && !f["offset"].is_null() ? integer(f["offset"], 0, 32768) : 0;
 		int limit =
 			f.contains("limit") && !f["limit"].is_null() ? integer(f["limit"], 0, 32768) : 32768;
 		Json out = Json::array();
 		for (auto &v : s.at(name))
-			if (team < 0 || v.at("team") == team)
+			if (team(v.value("team", -1)) && typeMatch(v))
 			{
 				if (offset)
 				{
@@ -143,12 +288,18 @@ Json query(const Json &s, const std::string &name, const Json &args)
 	if (name == "tile" || name == "region")
 	{
 		int x = integer(args.at(0), -32768, 32767), y = integer(args.at(1), -32768, 32767);
-		int width = s.at("width"), height = s.at("height");
+		const auto &resources = s.at("resourceTypes");
 		auto tile = [&](int tx, int ty) -> Json
 		{
-			tx = dimensionRemainder(dimensionRemainder(tx, width) + width, width);
-			ty = dimensionRemainder(dimensionRemainder(ty, height) + height, height);
-			return s.at("tiles").at(ty * width + tx);
+			Json t = s.at("tiles").at(std::size_t(wrap(ty, height)) * width + wrap(tx, width));
+			// The resource's key ("wheat", "rice"), so scripts need not decode map-local IDs.
+			if (t.contains("resource"))
+			{
+				const int r = t["resource"].value("type", NoResource);
+				if (r != NoResource && r >= 0 && r < int(resources.size()))
+					t["resource"]["key"] = resources[r].value("key", std::string());
+			}
+			return t;
 		};
 		if (name == "tile")
 			return tile(x, y);
@@ -158,6 +309,110 @@ Json query(const Json &s, const std::string &name, const Json &args)
 			for (int xx = 0; xx < w; xx++)
 				out.push_back(tile(x + xx, y + yy));
 		return out;
+	}
+	// Hive helpers (Host::gameExtensions / mapExtensions), all from this snapshot.
+	if (name == "buildingType")
+	{
+		if (args.empty() || !args[0].is_string())
+			throw std::runtime_error("buildingType(name, {level, site}) needs a name such as \"inn\"");
+		const Json o = args.size() > 1 && args[1].is_object() ? args[1] : Json::object();
+		const auto *t = placeable(s, args[0].get<std::string>(), o.contains("level") ? integer(o["level"], 0, 3) : 0,
+								  o.contains("site") ? int(o["site"].get<bool>()) : -1);
+		return t ? *t : Json(nullptr);
+	}
+	if (name == "events")
+	{
+		const unsigned since = args.empty() || args[0].is_null() ? 0u : unsigned(integer(args[0], 0, 0x7fffffff));
+		Json out = Json::array();
+		for (const auto &e : s.value("events", Json::array()))
+			if (e.value("tick", 0u) > since)
+				out.push_back(e);
+		return out;
+	}
+	if (name == "scan")
+	{
+		if (args.size() < 4)
+			throw std::runtime_error("scan(x, y, width, height, fields) needs a rectangle");
+		const int x = integer(args[0], -32768, 32767), y = integer(args[1], -32768, 32767);
+		const int w = integer(args[2], 1, 256), h = integer(args[3], 1, 256);
+		static const std::vector<std::string> known = {"explored", "visible", "resource", "amount",
+													   "terrain", "buildable", "building"};
+		std::vector<std::string> fields = {"resource", "buildable"};
+		if (args.size() > 4 && !args[4].is_null())
+		{
+			fields.clear();
+			for (const auto &field : args[4])
+			{
+				if (!field.is_string() || std::find(known.begin(), known.end(), field.get<std::string>()) == known.end())
+					throw std::runtime_error("scan fields are explored, visible, resource, amount, terrain, "
+											 "buildable and building");
+				fields.push_back(field);
+			}
+		}
+		const auto taken = occupied(s);
+		Json out = {{"x", wrap(x, width)}, {"y", wrap(y, height)}, {"width", w}, {"height", h}};
+		for (const auto &field : fields)
+			out[field] = Json::array();
+		for (int yy = 0; yy < h; ++yy)
+			for (int xx = 0; xx < w; ++xx)
+			{
+				const int tx = wrap(x + xx, width), ty = wrap(y + yy, height);
+				const auto &t = s.at("tiles").at(std::size_t(ty) * width + tx);
+				const bool explored = t.value("explored", false);
+				for (const auto &field : fields)
+				{
+					int v = 0;
+					if (field == "explored")
+						v = explored;
+					else if (field == "visible")
+						v = t.value("visible", false);
+					else if (field == "resource")
+						v = explored ? t.at("resource").value("type", NoResource) : NoResource;
+					else if (field == "amount")
+						v = explored ? t.at("resource").value("amount", 0) : 0;
+					else if (field == "terrain")
+					{
+						v = -1;
+						if (explored)
+						{
+							const auto &c = t.at("corners");
+							if (c[0] == c[1] && c[1] == c[2] && c[2] == c[3])
+								v = c[0];
+						}
+					}
+					else if (field == "buildable")
+						v = buildable(s, t, taken, tx, ty);
+					else
+						v = t.value("building", NoResource);
+					out[field].push_back(v);
+				}
+			}
+		return out;
+	}
+	if (name == "canPlace")
+	{
+		if (args.size() < 3)
+			throw std::runtime_error("canPlace(name, x, y) needs a building or flag name and a tile");
+		const auto &type = placeableNamed(s, args[0]);
+		const auto why = canPlace(s, type, integer(args[1], -32768, 32767), integer(args[2], -32768, 32767), occupied(s));
+		return why.empty() ? Json{{"ok", true}} : Json{{"ok", false}, {"reason", why}};
+	}
+	if (name == "findPlacement")
+	{
+		if (args.size() < 2 || !args[1].is_object())
+			throw std::runtime_error("findPlacement(name, {x, y, radius}) needs a name and where to look");
+		const auto &type = placeableNamed(s, args[0]);
+		const auto &o = args[1];
+		const int x = integer(o.at("x"), -32768, 32767), y = integer(o.at("y"), -32768, 32767);
+		const int radius = o.contains("radius") ? integer(o["radius"], 0, 64) : 12;
+		const auto taken = occupied(s);
+		// Nearest ring first, as game_place near does.
+		for (int r = 0; r <= radius; ++r)
+			for (int dy = -r; dy <= r; ++dy)
+				for (int dx = -r; dx <= r; ++dx)
+					if (std::max(std::abs(dx), std::abs(dy)) == r && canPlace(s, type, x + dx, y + dy, taken).empty())
+						return {{"x", wrap(x + dx, width)}, {"y", wrap(y + dy, height)}};
+		return nullptr;
 	}
 	throw std::runtime_error("Unavailable colony query");
 }
@@ -179,6 +434,8 @@ Json invoke(const Json &request)
 		// limit still bound every run.
 		host.workBudget = WorkBudget;
 		host.memoryLimit = HeapLimit;
+		host.gameExtensions = {"buildingType", "events"};
+		host.mapExtensions = {"scan", "canPlace", "findPlacement"};
 		host.team = snapshot.at("team");
 		host.tick = snapshot.at("tick");
 		host.width = snapshot.at("width");

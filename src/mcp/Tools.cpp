@@ -310,8 +310,9 @@ void registerUITools(ToolRegistry &registry)
 		{"game_guide",
 		 "Start here if you do not know Globulation 2. Explains the game (indirect control, food, "
 		 "victory), menus, the in-game HUD, placing and selecting on the map, control tokens and "
-		 "errors, plus links to the source and docs. topic defaults to overview.",
-		 object({{"topic", [] {
+		 "errors, plus links to the source and docs. topic defaults to overview; search finds "
+		 "paragraphs across topics.",
+		 object({{"search", {{"type", "string"}, {"maxLength", 256}}}, {"topic", [] {
 					  Json names = Json::array();
 					  for (const auto &t : guideTopics())
 						  names.push_back(t);
@@ -328,7 +329,8 @@ void registerUITools(ToolRegistry &registry)
 			 request->tool = "game_guide";
 			 request->client = std::move(client);
 			 Result result;
-			 result.data = guide(args.value("topic", "overview"));
+			 result.data = args.contains("search") ? guideSearch(args.at("search").get<std::string>())
+												   : guide(args.value("topic", "overview"));
 			 request->completion.set_value(std::move(result));
 			 return request;
 		 },
@@ -511,9 +513,10 @@ void registerUITools(ToolRegistry &registry)
 	add("hive_status", "Whether colony scripting (Hive) is available in the current local match, and its "
 		"session id, required by hive_run/hive_result/hive_program. No token needed.", {}, {},
 		false);
-	add("hive_api", "The JavaScript API for Hive colony scripts: world queries (units, buildings, teams), "
-		"order descriptors and limits. Read it before hive_run.",
-		{}, {}, false);
+	add("hive_api", "The JavaScript reference for Hive colony scripts, by section: no arguments lists "
+		"sections; section reads one; search finds paragraphs. Read it before hive_run.",
+		{{"section", {{"type", "string"}, {"maxLength", 128}}}, {"search", {{"type", "string"}, {"maxLength", 256}}}},
+		{}, false);
 	const Json operationKey = {{"type", "string"}, {"maxLength", 128}};
 	const Json source = {{"type", "string"}, {"maxLength", 131072}};
 	const Json session = {{"type", "string"}, {"maxLength", 128}};

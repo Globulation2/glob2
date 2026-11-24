@@ -23,6 +23,7 @@
 #include "UnitConsts.h"
 #include "stats/MetricCatalog.h"
 #include <algorithm>
+#include <set>
 #include <thread>
 #include <fstream>
 #include <FileManager.h>
@@ -364,11 +365,11 @@ TEST_CASE("MCP/tools explain themselves within a discovery size budget")
 		guide = guide || tool["name"] == "game_guide";
 	}
 	CHECK(guide);
-	// Every client pays for discovery in context; keep it bounded. 27 KB covers the 32
+	// Every client pays for discovery in context; keep it bounded. 28 KB covers the 32
 	// tools including the game_* map, time, wait and alliance tools.
 	const auto bytes = Json{{"tools", tools}}.dump().size();
 	INFO("tools/list bytes: " << bytes);
-	CHECK(bytes < 27000);
+	CHECK(bytes < 28000);
 	// Time steps and zoom are bounded by the schema, before reaching the game.
 	Context context;
 	CHECK_THROWS_WITH_AS(registry.call(context, "game_time", {{"action", "step"}, {"ticks", 0}}, "test"),
@@ -386,6 +387,37 @@ TEST_CASE("MCP/tools explain themselves within a discovery size budget")
 						 doctest::Contains("ticks"), std::invalid_argument);
 	CHECK_THROWS_WITH_AS(registry.call(context, "game_alliance", {{"token", "t"}}, "test"),
 						 doctest::Contains("team"), std::invalid_argument);
+}
+TEST_CASE("MCP/documentation is browsed by section and searched, not served as one blob")
+{
+	// hive_api: contents, one section with neighbours, and search across sections.
+	const auto contents = Hive::apiDocs(Json::object());
+	REQUIRE(contents.at("sections").size() > 5);
+	std::set<std::string> ids;
+	for (const auto &section : contents.at("sections"))
+	{
+		ids.insert(section.at("section").get<std::string>());
+		CHECK_FALSE(section.at("title").get<std::string>().empty());
+	}
+	for (const char *id : {"helpers", "local-control", "limits"})
+		CHECK(ids.count(id));
+	const auto helpers = Hive::apiDocs({{"section", "helpers"}});
+	for (const char *api : {"findPlacement", "map.scan", "events(sinceTick)", "\"mine\"", "building: \"inn\""})
+		CHECK(helpers.at("text").get<std::string>().find(api) != std::string::npos);
+	CHECK(helpers.contains("previous"));
+	const auto found = Hive::apiDocs({{"search", "wrapping map distance"}});
+	REQUIRE_FALSE(found.at("results").empty());
+	CHECK(found.at("results")[0].at("section") == "helpers");
+	CHECK_THROWS_WITH(Hive::apiDocs({{"section", "nope"}}), doctest::Contains("helpers"));
+	// game_guide search finds the new tools across topics.
+	ToolRegistry registry;
+	registerUITools(registry);
+	Context context;
+	auto request = registry.call(context, "game_guide", {{"search", "game_wait"}}, "test");
+	const auto guide = request->completion.get_future().get().data;
+	REQUIRE_FALSE(guide.at("results").empty());
+	for (const auto &hit : guide.at("results"))
+		CHECK(hit.at("text").get<std::string>().find("game_wait") != std::string::npos);
 }
 TEST_CASE("MCP/game guide serves every topic with links and rejects unknown topics")
 {
@@ -2097,6 +2129,28 @@ TEST_CASE("MCP/game_wait and hive waits hold as observers until game time answer
 		// Teams Fixed locks only the alliance column, as in the dialog.
 		auto fixed = start("game_alliance", {{"token", token}, {"team", 1}, {"allied", true}});
 		CHECK(completed(fixed).error.find("fixed") != std::string::npos);
+	}
+	{ // a script's create order by building name is filled in as a click would
+		world.gui.init(); // builds the palette a click places from
+		world.gui.localPlayer = world.gui.localTeamNo = 0;
+		world.gui.prepareLocalPresentation();
+		auto named = start("hive_run", {{"token", token}, {"session", session}, {"operation_key", "named-create"}, {"wait", true},
+			{"source", "function step(ctx){return {orders:[{type:'create',building:'warflag',x:3,y:3}]}}"}});
+		commander.update();
+		commander.update();
+		pump();
+		const auto result = completed(named);
+		INFO(result.data.dump());
+		CHECK(result.data.at("status") == "completed");
+		CHECK(result.data.at("order_count") == 1);
+		auto unknown = start("hive_run", {{"token", token}, {"session", session}, {"operation_key", "named-unknown"}, {"wait", true},
+			{"source", "function step(ctx){return {orders:[{type:'create',building:'castle',x:3,y:3}]}}"}});
+		commander.update();
+		commander.update();
+		pump();
+		const auto refused = completed(unknown);
+		CHECK(refused.data.at("status") == "failed");
+		CHECK(refused.data.at("error").get<std::string>().find("castle") != std::string::npos);
 		auto vision = start("game_alliance", {{"token", token}, {"team", 1}, {"share_food_vision", false}});
 		CHECK(completed(vision).error.empty());
 	}

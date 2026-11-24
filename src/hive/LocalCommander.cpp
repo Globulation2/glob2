@@ -4,6 +4,7 @@
 #include <deque>
 #include <set>
 #include <optional>
+#include <cctype>
 #include <algorithm>
 #include "Building.h"
 #include "Material.h"
@@ -76,6 +77,194 @@ Json playerAPI()
 		  {"orders_per_invocation", 32},
 		  {"submission_capacity", 64},
 		  {"journal_entries", JournalCapacity}}}};
+}
+namespace
+{
+// The local Hive helpers, beside the shared player contract (hive_api section "helpers").
+constexpr const char *HelpersDoc = R"(Local colony scripts (Hive) have these helpers beside the shared API.
+They read only the colony's own snapshot: what it sees or has seen, and its own events.
+
+Queries
+- ctx.game.units(filter) / ctx.game.buildings(filter): filter.team is a team number or
+  "mine", "enemies" or "allies"; filter.type is a number or a name: "worker", "explorer",
+  "warrior" for units, a building family name ("inn", "swarm", "warflag") for buildings.
+  Your own buildings and flags also report assigned: units that have taken the job (workers
+  is what it requests).
+- ctx.game.buildingType(name, {level, site}): the type record a player places for a name
+  (level 0's construction site, or the flag), or null.
+- ctx.game.events(sinceTick): your colony's events after sinceTick, oldest first:
+  {kind, event, x, y, count, tick}. Kinds: unit_attacked, building_attacked,
+  building_completed, unit_converted_away, unit_converted_to_you, building_destroyed,
+  building_demolished, enemy_building_sighted, hive_program_failed. Keep the last tick in a
+  global and react to what is new instead of scanning for enemies every run.
+
+Map
+- ctx.game.map.delta(a, b) -> {dx, dy} and ctx.game.map.distance(a, b) -> number: the
+  shortest offset and straight-line distance on the wrapping map, for {x, y} records or
+  (ax, ay, bx, by). The map wraps at every edge: plain subtraction is wrong near them.
+  Available to every script, AI and map scripts included.
+- ctx.game.map.scan(x, y, width, height, fields): flat row-major arrays (index
+  dy * width + dx) for only the fields you name, much cheaper than region() records.
+  Element i is tile ((x + i % width) % map.width, (y + floor(i / width)) % map.height).
+  Fields: explored (0/1), visible (0/1), resource (map-local type, 65535 none), amount,
+  terrain (the terrain id when all four corners agree, else -1), buildable (0/1, as far as
+  the colony knows) and building (occupant id, 65535 none). Default ["resource","buildable"].
+- ctx.game.map.canPlace(name, x, y) -> {ok, reason}: whether the colony can see room for
+  that building's footprint with its top-left at x, y (explored, buildable terrain on every
+  corner, no resource or known building), or a flag on that tile.
+- ctx.game.map.findPlacement(name, {x, y, radius}) -> {x, y} or null: the nearest such
+  top-left, searching rings out to radius (default 12, at most 64), as game_place near does.
+  The game still decides when the order arrives.
+- Tile records' resource also has key ("wheat", "rice", "fish") from resourceTypes().
+
+Orders
+- {type: "create", building: "inn", x, y}: what a click with that palette entry creates,
+  with its default requested units (workers, futureWorkers) and a flag's default range;
+  pass any of them to override. buildingType ids still work.
+
+Cost
+Each run has 250 million work units, a 128 MiB heap and a 5 s deadline. Reading an
+explored tile record costs about 1,500 units; scan() returns compact numbers instead. A
+for...of loop costs about three times an index loop (for (let i = 0; i < a.length; i++)).)";
+struct DocSection
+{
+	std::string id, title, text;
+};
+std::string slug(const std::string &title)
+{
+	std::string id;
+	for (const unsigned char c : title)
+		if (std::isalnum(c))
+			id += char(std::tolower(c));
+		else if (!id.empty() && id.back() != '-')
+			id += '-';
+	while (!id.empty() && id.back() == '-')
+		id.pop_back();
+	return id;
+}
+// The Hive reference as sections: the shared player contract split at its ## and ###
+// headings, then the local helpers, control rules and limits.
+const std::vector<DocSection> &docSections()
+{
+	static const std::vector<DocSection> sections = []
+	{
+		std::vector<DocSection> out;
+		std::string contract = PlayerAPIContract, line;
+		DocSection current{"contract", "Contract", {}};
+		std::size_t start = 0;
+		while (start <= contract.size())
+		{
+			const auto end = contract.find('\n', start);
+			line = contract.substr(start, end == std::string::npos ? std::string::npos : end - start);
+			start = end == std::string::npos ? contract.size() + 1 : end + 1;
+			if (line.rfind("## ", 0) == 0 || line.rfind("### ", 0) == 0)
+			{
+				if (!current.text.empty())
+					out.push_back(current);
+				const auto title = line.substr(line.find(' ') + 1);
+				current = {slug(title), title, {}};
+				continue;
+			}
+			current.text += line + "\n";
+		}
+		if (!current.text.empty())
+			out.push_back(current);
+		out.push_back({"helpers", "Colony helpers (local Hive)", HelpersDoc});
+		out.push_back({"local-control", "Local control: hive_run, hive_result, hive_program",
+					   playerAPI().at("local_control_contract").get<std::string>()});
+		out.push_back({"limits", "Limits", playerAPI().at("limits").dump(1)});
+		return out;
+	}();
+	return sections;
+}
+std::string lower(std::string text)
+{
+	for (auto &c : text)
+		c = char(std::tolower(static_cast<unsigned char>(c)));
+	return text;
+}
+} // namespace
+// hive_api: a reference to browse (no arguments: the table of contents; section: one
+// section) or search (search: words that must all appear), never one large blob.
+Json apiDocs(const Json &args)
+{
+	const auto &sections = docSections();
+	if (args.contains("section"))
+	{
+		const auto wanted = args.at("section").get<std::string>();
+		for (std::size_t i = 0; i < sections.size(); ++i)
+			if (sections[i].id == wanted || lower(sections[i].title) == lower(wanted))
+			{
+				Json result = {{"section", sections[i].id}, {"title", sections[i].title}, {"text", sections[i].text}};
+				if (i > 0)
+					result["previous"] = sections[i - 1].id;
+				if (i + 1 < sections.size())
+					result["next"] = sections[i + 1].id;
+				return result;
+			}
+		std::string ids;
+		for (const auto &section : sections)
+			ids += (ids.empty() ? "" : ", ") + section.id;
+		throw std::runtime_error("Unknown section \"" + wanted + "\"; sections: " + ids);
+	}
+	if (args.contains("search"))
+	{
+		std::vector<std::string> words;
+		{
+			const auto query = lower(args.at("search").get<std::string>());
+			std::size_t i = 0;
+			while (i < query.size())
+			{
+				const auto j = query.find(' ', i);
+				if (j != i)
+					words.push_back(query.substr(i, j == std::string::npos ? std::string::npos : j - i));
+				if (j == std::string::npos)
+					break;
+				i = j + 1;
+			}
+		}
+		if (words.empty())
+			throw std::runtime_error("search needs at least one word");
+		Json results = Json::array();
+		for (const auto &section : sections)
+		{
+			// Paragraphs (blank-line separated) are the unit of a hit.
+			std::size_t start = 0;
+			const auto &text = section.text;
+			while (start < text.size() && results.size() < 12)
+			{
+				auto end = text.find("\n\n", start);
+				if (end == std::string::npos)
+					end = text.size();
+				const auto paragraph = text.substr(start, end - start);
+				const auto folded = lower(section.title + " " + paragraph);
+				bool all = true;
+				for (const auto &w : words)
+					all = all && folded.find(w) != std::string::npos;
+				if (all && !paragraph.empty())
+					results.push_back({{"section", section.id}, {"title", section.title},
+									   {"text", paragraph.size() > 700 ? paragraph.substr(0, 700) + "..." : paragraph}});
+				start = end + 2;
+			}
+		}
+		return {{"search", args.at("search")}, {"results", results},
+				{"note", "Read a whole section with hive_api section."}};
+	}
+	Json contents = Json::array();
+	for (const auto &section : sections)
+	{
+		auto first = section.text.substr(0, section.text.find_first_of(".\n", 1) + 1);
+		while (!first.empty() && (first.front() == '\n' || first.front() == ' '))
+			first.erase(0, 1);
+		contents.push_back({{"section", section.id}, {"title", section.title},
+							{"summary", first.size() > 140 ? first.substr(0, 140) + "..." : first},
+							{"bytes", section.text.size()}});
+	}
+	return {{"sections", contents},
+			{"note", "Browse with hive_api section (one section, with previous/next) or search (words "
+					 "that must all appear). Start with contract, helpers and local-control. Every "
+					 "script declares step(ctx) and returns {output, orders}. Types: "
+					 "examples/hive-mind/hive.d.ts in the repository."}};
 }
 LocalCommander::LocalCommander(GameGUI &g, std::function<std::future<Json>(Json)> start)
 	: gui(g), observations(g.game, g.localTeamNo), player(g.localPlayer), team(g.localTeamNo),
@@ -330,6 +519,56 @@ Json LocalCommander::call(const std::string &tool, const Json &args)
 		return awaitResult({{"session", session}, {"operation_key", key}});
 	return journal.at(key);
 }
+Json LocalCommander::placeByName(Json order)
+{
+	// {type: "create", building: "inn", x, y}: what a click with that palette entry
+	// creates, with its default requested units and a flag's default range, unless given.
+	if (!order.is_object() || order.value("type", std::string()) != "create" || !order.contains("building") ||
+		!order.at("building").is_string())
+		return order;
+	const auto made = gui.createDefaultsFromAutomation(order.at("building").get<std::string>());
+	if (!made.error.empty())
+		throw std::runtime_error(made.error);
+	order.erase("building");
+	order["buildingType"] = made.typeNum;
+	if (!order.contains("workers"))
+		order["workers"] = made.workers;
+	if (!order.contains("futureWorkers"))
+		order["futureWorkers"] = made.futureWorkers;
+	if (!order.contains("range") && made.range >= 0)
+		order["range"] = made.range;
+	return order;
+}
+void LocalCommander::annotate(Json &snapshot)
+{
+	// Callers hold the simulation boundary. Only the colony's own information is added.
+	// Units that took each own building's or flag's job, beside the units it requests.
+	for (auto &b : snapshot.at("buildings"))
+		if (b.value("team", -1) == team)
+			if (const auto *building = gui.game.teams[team]->myBuildings[Building::GIDtoID(b.value("id", 0))])
+				b["assigned"] = int(building->unitsWorking.size());
+	// ctx.game.events(): what game_wait reports, with absolute ticks.
+	Json events = Json::array();
+	for (const auto &row : gui.gameEvents().rows())
+		events.push_back({{"kind", row.type < GESize ? eventKinds[row.type] : "event"},
+						  {"event", row.label}, {"x", row.x}, {"y", row.y}, {"count", row.count},
+						  {"tick", row.lastTick}});
+	for (const auto &loss : losses)
+		events.push_back({{"kind", loss.demolished ? "building_demolished" : "building_destroyed"},
+						  {"event", (loss.demolished ? "Building demolished: " : "Building destroyed: ") + loss.type},
+						  {"x", loss.x}, {"y", loss.y}, {"count", 1}, {"tick", loss.tick}});
+	for (const auto &seen : sightings)
+		events.push_back({{"kind", "enemy_building_sighted"}, {"event", "Building sighted: " + seen.type},
+						  {"x", seen.x}, {"y", seen.y}, {"team", seen.team}, {"count", 1}, {"tick", seen.tick}});
+	for (const auto &failure : failures)
+		events.push_back({{"kind", "hive_program_failed"}, {"event", failure.program + ": " + failure.error},
+						  {"program", failure.program}, {"paused", failure.paused}, {"count", 1}, {"tick", failure.tick}});
+	std::sort(events.begin(), events.end(),
+			  [](const Json &a, const Json &b) { return a.value("tick", 0u) < b.value("tick", 0u); });
+	snapshot["events"] = std::move(events);
+	// Losses and sightings need the game_world memory; scripts read events, so start it.
+	memoryTracked = true;
+}
 Json LocalCommander::awaitResult(const Json &args)
 {
 	const auto &ref = args.contains("_poll") ? args.at("_poll") : args;
@@ -394,7 +633,7 @@ void LocalCommander::finish(Json result)
 			throw std::runtime_error(error.empty() ? "Worker failed or timed out" : error);
 		std::vector<std::shared_ptr<Order>> orders;
 		for (const auto &o : result.value("orders", Json::array()))
-			orders.push_back(Script::order(gui.game, team, value(o)));
+			orders.push_back(Script::order(gui.game, team, value(placeByName(o))));
 		if (orders.size() > 32)
 			throw std::runtime_error("Too many orders");
 		if (kind == "install" || kind == "replace")
@@ -586,8 +825,9 @@ void LocalCommander::update()
 				return;
 			try
 			{
-				Json request = {{"source", current.request.at("source")},
-								{"snapshot", capture(observations, gui.game, team)}};
+				Json snapshot = capture(observations, gui.game, team);
+				annotate(snapshot);
+				Json request = {{"source", current.request.at("source")}, {"snapshot", std::move(snapshot)}};
 				observationTick = tick;
 				if (!currentProgram.empty())
 				{
@@ -1537,7 +1777,7 @@ Json localCall(const std::string &tool, const Json &args)
 	if (args.contains("_poll") && (!active || !active->available()))
 		return matchOver(tool);
 	if (tool == "hive_api")
-		return playerAPI();
+		return apiDocs(args);
 	if (!active || !active->available())
 	{
 		if (tool == "hive_status")

@@ -104,7 +104,7 @@ not depend on the OS pointer position.
 
 | Tool | Semantics |
 | --- | --- |
-| game_guide | Game rules, menus, HUD, placement, control and errors by topic, with links. No lease required. |
+| game_guide | Game rules, menus, HUD, placement, control and errors by topic, with links; `search` returns the lines of every topic containing all its words. No lease required. |
 | ui_status | Dimensions, availability, frame_id, viewport_id and controller. No lease required. |
 | ui_screenshot | Next capturable complete game frame, as inline base64 PNG plus metadata. No lease required. |
 | ui_acquire_control / ui_release_control | Acquire a token / release its lease and inputs. |
@@ -146,7 +146,7 @@ destroyed too. An Inn's happiness is the level `Team::findNearestFood` compares 
 hungry unit chooses between your Inns and the Inns of a non-allied colony that shares
 its food vision; the `gameplay` guide topic explains conversion.
 | hive_status | Local scripting availability, match-session identity and limits. Colony scripts run in a disposable worker outside the simulation, so each run gets 250 million work units (250 times an AI or map script's) and a 128 MiB JavaScript heap, bounded by the worker's 5 s deadline; a whole-map scan of a 256 x 256 map fits. |
-| hive_api | Shared player JavaScript API and authoritative local control contract. |
+| hive_api | The Hive JavaScript reference, browsable rather than one blob: no arguments lists its sections (the shared player contract split at its headings, then `helpers`, `local-control` and `limits`); `section` reads one with its `previous`/`next`; `search` returns the paragraphs containing every word. `helpers` documents the local colony helpers: `units`/`buildings` filters by name and `"mine"`/`"enemies"`, `buildingType`, `events`, `map.scan`, `map.canPlace`, `map.findPlacement`, `map.delta`/`distance`, create orders by building name, resource keys on tiles and `assigned` on own buildings. All read only the colony's own snapshot. |
 | hive_run | Queue one bounded script invocation with a deduplicated operation key; `wait: true` holds the call (up to 25 seconds) and returns the finished result instead of `queued`. |
 | hive_result | Inspect an operation's output, errors and order-submission result; `wait: true` waits until it has finished. |
 | hive_program | List/inspect/install/replace/pause/resume/cancel local standing orders. A program whose worker could not start is retried up to three times; any other failure pauses it. Both appear as `game_world` alerts. |

@@ -337,6 +337,15 @@ public:
 	/// The local player's result once the game has announced it: "won", "lost", "draw",
 	/// or empty while the match goes on.
 	std::string announcedOutcome() const;
+	/// What a click with the palette's building or flag would create: its placeable type,
+	/// the default requested units (now and once finished) and a flag's default range
+	/// (-1 when it has none). error says why not, as for placeFromAutomation.
+	struct AutomationCreate
+	{
+		int typeNum = -1, workers = 0, futureWorkers = 0, range = -1;
+		std::string error;
+	};
+	AutomationCreate createDefaultsFromAutomation(const std::string &name);
 	/// The desktop top bar's values: workers, explorers and warriors free/total, prestige,
 	/// win chance, conversions gained and lost, then speed.
 	std::array<std::string, 8> topBarValues() const;
