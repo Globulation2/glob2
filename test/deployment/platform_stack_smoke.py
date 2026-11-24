@@ -372,7 +372,8 @@ class Smoke:
             ('/generator-studio/11111111-1111-4111-8111-111111111111', 'DENY', "'none'"),
             ('/play/generator-studio.html', 'SAMEORIGIN', "'self'"),
             ('/play/index.html', 'DENY', "'none'"),
-            ('/play/itch.html', None, "'none'"),
+            # Framed only by the itch.io pages the host opts in (GLOB2_ITCH_FRAME_ANCESTORS).
+            ('/play/itch.html', None, self.itch_frame_ancestors()),
         ):
             status, headers, body = self.https('GET', path)
             if status != 200 or not body:
@@ -490,6 +491,14 @@ class Smoke:
             if code not in ((301, 308) if permanent else (301, 302, 307, 308)) or location != expected:
                 raise Failure(f'website {path}: {code} -> {location!r}, expected a redirect to {expected}')
         return {'website': website, 'home': status, 'redirects': redirects}
+
+    def itch_frame_ancestors(self):
+        """The itch entry's frame-ancestors as Caddy serves it: the env file's value
+        (Compose strips its double quotes) or the default 'none'."""
+        value = self.env_value('GLOB2_ITCH_FRAME_ANCESTORS', '').strip()
+        if len(value) >= 2 and value[0] == value[-1] == '"':
+            value = value[1:-1].strip()
+        return value or "'none'"
 
     def env_value(self, name, default=None):
         for line in self.env_file.read_text().splitlines():
