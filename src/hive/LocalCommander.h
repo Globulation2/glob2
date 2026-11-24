@@ -57,6 +57,9 @@ class LocalCommander : public CommanderView
 	Json time(const Json &arguments);
 	Json building(const Json &arguments);
 	Json zone(const Json &arguments);
+	// MCP game_stats in a match: the colony's own statistics, as the in-game
+	// Statistics panel shows them (never another team's).
+	Json stats(const Json &arguments);
 	void submit(const std::vector<Json> &descriptors);
 	// Recent game_place requests, followed up in game_world until resolved.
 	struct Placement

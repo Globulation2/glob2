@@ -90,7 +90,8 @@ custom_game: tabs Map (tab/0), Players & Teams (tab/1), Game Rules (tab/2); star
   ("Play this map") launches the match, back returns.
 game_session: a match in progress (see hud). The in-game menu, objectives and
   alliance dialogs appear as extra surfaces on this same screen.
-end_game: results after a match; quit leaves it.
+end_game: results after a match; quit leaves it. While it is shown, game_stats returns
+  every team's statistics, the outcome and the overview figures.
 Others include settings, campaign_main_menu and map_editor.
 
 Surface instance numbers and control revisions change whenever a screen is rebuilt, so
@@ -152,6 +153,10 @@ number of ticks (30 a second at normal speed) and pauses again; status reports t
 tick, whether it is paused and the speed. While paused you can still read, place,
 click and type: orders queue and apply as the next ticks run, so step to see them
 take effect. It works only in local matches without network players.
+game_stats charts your colony over time (population, food, work, buildings,
+military) as the Statistics panel does; after the match, on end_game, it covers
+every team and the win probability history, to see why a match went the way it
+did. list: true names the metrics.
 The map, minimap and replay bar are canvases: use coordinates. Take ui_screenshot
 (max_width keeps it small) and pass its capture_id with x/y in that image's pixels.
 - Place by hand: activate a palette button, then ui_click on the map. Placement stays
@@ -167,7 +172,7 @@ Prefer the palette and panel controls to keyboard shortcuts: inspection describe
 them and ui_act confirms each one.)"},
 	{"control", "The control lease and token workflow",
 	 R"(Reads (ui_status, ui_screenshot, ui_inspect, ui_wait, game_guide, game_world,
-game_time status, hive_status, hive_api, hive_result) need no control. Everything that sends input needs the token
+game_time status, game_stats, hive_status, hive_api, hive_result) need no control. Everything that sends input needs the token
 from ui_acquire_control. Only one client holds control; a second acquisition fails
 until the first releases it, its lease expires, or the person at the computer uses
 Settings > MCP server > Revoke control. The lease lasts 300 seconds after the last
@@ -231,7 +236,8 @@ const std::string &serverInstructions()
 		"ui_acquire_control (keep the token); ui_inspect {\"compact\":true} for the "
 		"screen name and controls; ui_act on a control's surface, key and revision; "
 		"ui_wait for screen changes; in a match, game_world reads your colony and what it "
-		"sees in map tiles and game_place / game_view act on tiles; game_time pauses the "
+		"sees in map tiles, game_stats its statistics over time (every team's on end_game) "
+		"and game_place / game_view act on tiles; game_time pauses the "
 		"match while you think; ui_screenshot plus "
 		"ui_click with its capture_id for other map positions; ui_release_control when "
 		"done. Never retry input calls.\n"

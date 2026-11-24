@@ -521,6 +521,7 @@ CLIENT_SOURCES = (
     'hive/HiveClient.cpp',
     'hive/WorkerProcess.cpp',
     'hive/LocalCommander.cpp',
+    'hive/GameStats.cpp',
     'hive/HiveObservation.cpp',
     'hive/HiveDialog.cpp',
     'scripting/javascript/ScriptObservations.cpp',

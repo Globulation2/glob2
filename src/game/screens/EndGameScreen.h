@@ -110,6 +110,17 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 	static Description describe(const Game &game, const Team &local);
 	Outcome shownOutcome() const { return outcome; }
 	const std::string &outcomeReason() const { return reason; }
+	//! What the results show, for the MCP game_stats tool (Hive::finishedMatchStats):
+	//! the finished game, its teams in display order, the player's team, the
+	//! metric catalog and how long the match ran.
+	const Game &finishedGame() const { return *game; }
+	const std::vector<TeamEntry> &results() const { return teams; }
+	int localTeamNumber() const { return localTeam; }
+	const std::vector<Stats::Metric> &metrics() const { return gameMetrics; }
+	Uint32 matchSeconds() const { return durationSeconds; }
+	//! Stable names of the overview columns, parallel to TeamEntry::summary
+	//! ("population peak", "births total").
+	static std::vector<std::string> overviewNames();
 
   protected:
 	void paintBackground(Glob2UI::Canvas &canvas) override;
@@ -142,6 +153,8 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 	//! Why the match ended this way ("Guest-5285 left the match."), under the outcome.
 	std::string reason;
 	Uint32 durationSeconds = 0;
+	//! The player's team, or -1 when the results have none (a replay).
+	int localTeam = -1;
 	Glob2UI::Element onlineBanner(const Glob2UI::Presentation &p);
 	Glob2UI::Element ratingCard(const Glob2UI::Presentation &p);
 	// Chart-local pointer position, or -1 when outside.

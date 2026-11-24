@@ -132,6 +132,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui) : UIScreen(fe::themeFor(fe::Surface::
 	durationSeconds = game->stepCounter / GAME_TICKS_PER_SECOND;
 	if (Team *local = gui->getLocalTeam())
 	{
+		localTeam = local->teamNumber;
 		// Mark the player's own row, as the connection panel does ("Ana (you)").
 		for (auto &team : teams)
 			if (team.teamNum == local->teamNumber)
@@ -161,6 +162,16 @@ EndGameScreen::EndGameScreen(GameGUI *gui) : UIScreen(fe::themeFor(fe::Surface::
 }
 
 EndGameScreen::~EndGameScreen() = default;
+
+std::vector<std::string> EndGameScreen::overviewNames()
+{
+	std::vector<std::string> names;
+	for (const auto &column : overviewColumns)
+		names.push_back(std::string(column.metric) + (column.figure == OverviewColumn::Peak	   ? " peak"
+													  : column.figure == OverviewColumn::Final ? " final"
+																							   : " total"));
+	return names;
+}
 
 EndGameScreen::Description EndGameScreen::describe(const Game &game, const Team &local)
 {

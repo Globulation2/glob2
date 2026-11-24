@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "hive/LocalCommander.h"
+#include "hive/GameStats.h"
+#include "EndGameScreen.h"
 #include <GameplayRecording.h>
 #include "Application.h"
 #include <StartupPhase.h>
@@ -175,9 +177,17 @@ Application::Application()
 {
 #if GLOB2_DESKTOP_MCP
     mcp = std::make_unique<MCP::UIService>(*globalContainer->gfx);
-	mcp->domainHandler = [](const std::string &tool, const MCP::Json &args)
+	mcp->domainHandler = [this](const std::string &tool, const MCP::Json &args)
 	{
 		MCP::Result result;
+		// After a match its results screen still holds the finished game: game_stats
+		// reads every team there, as the screen charts them.
+		if (tool == "game_stats")
+			if (const auto *results = dynamic_cast<const EndGameScreen *>(screens.top()))
+			{
+				result.data = Hive::finishedMatchStats(*results, args);
+				return result;
+			}
 		result.data = Hive::localCall(tool, args);
 		return result;
 	};
