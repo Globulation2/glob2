@@ -68,8 +68,10 @@ void validate(const Json &schema, const Json &value, const std::string &path)
 		if ((schema.contains("minItems") && value.size() < schema["minItems"].get<std::size_t>()) ||
 			(schema.contains("maxItems") && value.size() > schema["maxItems"].get<std::size_t>()))
 			fail("wrong number of items");
-		for (const auto &item : value)
-			validate(schema.at("items"), item, path + "[]");
+		// An array schema without items accepts any elements, as in JSON Schema.
+		if (schema.contains("items"))
+			for (const auto &item : value)
+				validate(schema["items"], item, path + "[]");
 	}
 	if (value.is_object())
 	{
@@ -411,7 +413,7 @@ void registerUITools(ToolRegistry &registry)
 		"Charts over time: your colony in a match; every team on end_game. list: true names "
 		"metrics, split shows parts, points (2-300). No token.",
 		{{"list", {{"type", "boolean"}}},
-		 {"metrics", {{"type", "array"}}},
+		 {"metrics", {{"type", "array"}, {"items", {{"type", "string"}}}}},
 		 {"points", {{"type", "integer"}}},
 		 {"split", {{"type", "boolean"}}}},
 		{}, false);

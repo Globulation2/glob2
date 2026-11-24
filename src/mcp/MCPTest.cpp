@@ -20,6 +20,8 @@
 #include "hive/LocalCommander.h"
 #include "hive/HiveWorker.h"
 #include "Player.h"
+#include "UnitConsts.h"
+#include "stats/MetricCatalog.h"
 #include <algorithm>
 #include <thread>
 #include <fstream>
@@ -227,6 +229,84 @@ TEST_CASE("MCP/argument errors name the field and the broken rule")
 	const auto choice = message("ui_click", {{"token", "t"}, {"x", 1}, {"y", 2}, {"button", "thumb"}});
 	CHECK(choice.find("ui_click.button") != std::string::npos);
 	CHECK(choice.find("expected one of") != std::string::npos);
+}
+TEST_CASE("MCP/game_stats accepts metric names and reports unknown ones as tool errors")
+{
+	glob2test::HeadlessGlobals globals({.seed = 23});
+	glob2test::HeadlessGame world({.wDec = 6, .hDec = 6, .teams = 2, .discovered = true,
+								   .loadDefaultRace = true, .header = true});
+	world.addUnit(WORKER);
+	world.gui.localPlayer = world.gui.localTeamNo = 0;
+	world.gui.localTeam = world.team;
+	world.game.players[0]->type = BasePlayer::P_LOCAL;
+	world.step(4 * Stats::SAMPLE_INTERVAL_TICKS + 1);
+	Hive::LocalCommander commander(world.gui, [](Json input)
+	{
+		std::promise<Json> ready;
+		ready.set_value(Hive::invoke(input));
+		return ready.get_future();
+	});
+	// Runs the domain tool at once, reporting its failure as UIService does.
+	struct Immediate : ExecutionContext
+	{
+		Hive::LocalCommander &commander;
+		explicit Immediate(Hive::LocalCommander &c) : commander(c) {}
+		std::shared_ptr<Request> submit(const std::string &name, Json args, std::string) override
+		{
+			auto request = std::make_shared<Request>();
+			Result result;
+			try
+			{
+				result.data = commander.call(name, args);
+			}
+			catch (const std::exception &error)
+			{
+				result.error = error.what();
+			}
+			request->completion.set_value(std::move(result));
+			return request;
+		}
+	} context(commander);
+	ToolRegistry registry;
+	registerUITools(registry);
+	Protocol protocol(registry, context);
+	auto call = [&](Json arguments)
+	{
+		const Json body = {{"jsonrpc", "2.0"},
+						   {"id", 1},
+						   {"method", "tools/call"},
+						   {"params", {{"name", "game_stats"}, {"arguments", std::move(arguments)}}}};
+		return protocol.receive(body.dump(), {"2025-11-25", "", ""});
+	};
+	// Metric names pass the argument schema and reach the game.
+	auto named = call({{"metrics", {"buildings"}}, {"points", 6}});
+	CHECK_FALSE(named.body.contains("error"));
+	REQUIRE(named.pending);
+	const auto stats = named.pending->completion.get_future().get();
+	CHECK(stats.error.empty());
+	REQUIRE(stats.data.at("metrics").size() == 1);
+	CHECK(stats.data.at("metrics")[0].at("id") == "buildings");
+	// An unknown name is the tool's error, naming the way to list metrics.
+	auto unknown = call({{"metrics", {"no such metric"}}});
+	CHECK_FALSE(unknown.body.contains("error"));
+	REQUIRE(unknown.pending);
+	CHECK(unknown.pending->completion.get_future().get().error.find("list: true") !=
+		  std::string::npos);
+	// A metric that is not a name is an argument error naming the field.
+	auto number = call({{"metrics", {7}}});
+	REQUIRE(number.body.contains("error"));
+	CHECK(number.body["error"]["code"] == -32602);
+	CHECK(number.body["error"]["message"].get<std::string>().find("game_stats.metrics[]") !=
+		  std::string::npos);
+	// An extension's array schema without items accepts any elements.
+	registry.add({"loose_list",
+				  "Extension tool whose array argument leaves its elements unconstrained",
+				  {{"type", "object"}, {"properties", {{"values", {{"type", "array"}}}}}},
+				  {{"type", "object"}},
+				  Json::object(),
+				  [](ExecutionContext &, Json, std::string) { return std::make_shared<Request>(); },
+				  {}});
+	CHECK(registry.call(context, "loose_list", {{"values", {1, "two", Json::object()}}}, "test"));
 }
 TEST_CASE("MCP/initialize and discover describe the game and link its source for both versions")
 {
