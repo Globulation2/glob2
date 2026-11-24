@@ -942,6 +942,14 @@ Json LocalCommander::view(const Json &args)
 Json LocalCommander::chat(const Json &args)
 {
 	const std::string text = args.at("text");
+	// The chat order carries at most this many bytes of UTF-8; refuse rather
+	// than send a message the players would see cut short.
+	if (text.size() > static_cast<std::size_t>(ORDER_TEXT_MESSAGE_MAX_TEXT_BYTES))
+		throw std::runtime_error("Chat text is " + std::to_string(text.size()) +
+								 " bytes of UTF-8; a chat message holds at most " +
+								 std::to_string(ORDER_TEXT_MESSAGE_MAX_TEXT_BYTES) +
+								 " (accented letters and emoji take 2 to 4 bytes each). "
+								 "Shorten it or send it in parts.");
 	if (!gui.sendChatFromAutomation(text))
 		throw std::runtime_error("Chat text is empty");
 	return {{"sent", true},

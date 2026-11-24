@@ -160,6 +160,7 @@ ENGINE_TESTS = [
     ('#src/map/VertexTerrainTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/net/LockstepSessionTest.cpp',
     ('#src/game/orders/OrderValidationTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    '#src/game/orders/OrderRoundTripTest.cpp',
     '#src/online/MatchSetupTest.cpp',
     ('#src/net/turn/TurnEngineHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/net/LanIdentityTest.cpp', dict(require={'wss'})),

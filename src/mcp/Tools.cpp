@@ -468,8 +468,9 @@ void registerUITools(ToolRegistry &registry)
 		{"token", "x", "y"}, false);
 	add("game_chat",
 		"Send an in-game chat message as your player, as the chat box's Send would. "
+		"At most 254 bytes of UTF-8 (254 ASCII characters; fewer with accents or emoji). "
 		"Needs token.",
-		{{"token", token}, {"text", {{"type", "string"}, {"minLength", 1}, {"maxLength", 256}}}},
+		{{"token", token}, {"text", {{"type", "string"}, {"minLength", 1}, {"maxLength", 254}}}},
 		{"token", "text"}, false);
 	add("game_time",
 		"Pause the local match while you think, resume, or step ticks (30/s) and re-pause. "

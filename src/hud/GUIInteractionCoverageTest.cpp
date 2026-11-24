@@ -20,6 +20,7 @@
 #include "touch/GameGUITouch.h"
 #include <nlohmann/json.hpp>
 #include "Order.h"
+#include "Version.h"
 #include "GameGUIKeyActions.h"
 #include "GameGUIDialog.h"
 #include "UIRecordingCanvas.h"
@@ -2816,5 +2817,30 @@ TEST_CASE("MCP game_building and game_zone queue the panel's orders and report c
 	CHECK(message->messageOrderType == MessageOrder::NORMAL_MESSAGE_TYPE);
 	CHECK(std::string(message->getText()) == "hello allies");
 	CHECK_THROWS(commander.call("game_chat", {{"text", ""}}));
+	CHECK(queued().empty());
+	// The order holds 254 bytes of UTF-8: the longest text is sent whole and
+	// decodes from its own bytes; one byte more (here, a two-byte letter past
+	// 253 ASCII bytes) is refused before anything is queued. A 255-byte message
+	// used to encode a length that wrapped to 0 and stop the match's replay.
+	const std::string longest(ORDER_TEXT_MESSAGE_MAX_TEXT_BYTES, 'x');
+	CHECK(commander.call("game_chat", {{"text", longest}}).at("sent") == true);
+	orders = queued();
+	REQUIRE(orders.size() == 1);
+	message = std::dynamic_pointer_cast<MessageOrder>(orders[0]);
+	REQUIRE(message);
+	CHECK(std::string(message->getText()) == longest);
+	std::vector<Uint8> wire(1 + message->getDataLength());
+	wire[0] = message->getOrderType();
+	std::copy_n(message->getData(), message->getDataLength(), wire.data() + 1);
+	CHECK(Order::getOrder(wire.data(), static_cast<int>(wire.size()), VERSION_MINOR));
+	try
+	{
+		commander.call("game_chat", {{"text", std::string(253, 'x') + "\xc3\xa9"}});
+		FAIL("an over-long chat message was accepted");
+	}
+	catch (const std::exception &e)
+	{
+		CHECK(std::string(e.what()).find("at most 254") != std::string::npos);
+	}
 	CHECK(queued().empty());
 }

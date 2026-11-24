@@ -100,7 +100,19 @@ void ReplayWriter::init(const std::string &backend, Game *telemetryGame, const s
 
 bool ReplayWriter::isValid() const
 {
-	return (buffer != NULL && bufferBackend != NULL && buffer->isValid());
+	return (!abandoned && buffer != NULL && bufferBackend != NULL && buffer->isValid());
+}
+
+void ReplayWriter::abandon(const std::string &reason)
+{
+	if (abandoned)
+		return;
+	abandoned = true;
+	pendingOrders.clear();
+	std::cerr << "Replay recording stopped: " << reason;
+	if (!recordingPath.empty())
+		std::cerr << " (" << recordingPath << " is incomplete and will not load)";
+	std::cerr << std::endl;
 }
 
 void ReplayWriter::advanceStep()
@@ -134,7 +146,10 @@ void ReplayWriter::pushOrder(std::shared_ptr<Order> order)
         bytes[0]=order->getOrderType();
         std::copy_n(order->getData(),order->getDataLength(),bytes.data()+1);
         auto copy=Order::getOrder(bytes.data(),bytes.size(),VERSION_MINOR);
-        if (!copy) throw std::ios_base::failure("Cannot freeze replay order");
+        // An order that does not decode from its own bytes would not play back
+        // either. Skipping it would desynchronise the replay, and throwing used
+        // to end the live match it came from, so stop recording instead.
+        if (!copy) { abandon("an order of type "+std::to_string(int(bytes[0]))+" does not decode from its own bytes"); return; }
         copy->sender=order->sender;
         pendingOrders.push_back({stepsSinceLastOrder,game ? game->stepCounter : telemetryStep,std::move(copy)});
         writePending();

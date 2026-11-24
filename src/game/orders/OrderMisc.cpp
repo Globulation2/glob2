@@ -31,15 +31,35 @@ std::shared_ptr<MessageOrder> MessageOrder::deserialize(const Uint8 *data, int d
 	return order;
 }
 
+int MessageOrder::fittingTextBytes(const char *text)
+{
+	if (!text)
+		return 0;
+	int bytes=0;
+	while (bytes<ORDER_TEXT_MESSAGE_MAX_TEXT_BYTES && text[bytes])
+		bytes++;
+	// text[bytes] is the first byte left out. When it continues a UTF-8
+	// sequence, drop that sequence's leading bytes too.
+	if (text[bytes])
+		while (bytes>0 && (static_cast<unsigned char>(text[bytes]) & 0xC0)==0x80)
+			bytes--;
+	return bytes;
+}
+
 MessageOrder::MessageOrder(Uint32 recipientsMask, Uint32 messageOrderType, const char * text)
 {
-	length=Utilities::strmlen(text, ORDER_TEXT_MESSAGE_MAX_LEN)+9;
+	// Header, text, NUL. The length byte counts the text and its NUL, which
+	// fittingTextBytes keeps within what setData accepts (see
+	// ORDER_TEXT_MESSAGE_MAX_TEXT_BYTES); a longer text used to wrap it to 0.
+	const int textBytes=fittingTextBytes(text);
+	length=textBytes+1+9;
 	data=(Uint8 *)malloc(length);
-	memcpy(data+9, text, length-9);
+	if (textBytes>0)
+		memcpy(data+9, text, textBytes);
 	data[length-1]=0;
 	addUint32(data, recipientsMask, 0);
 	addUint32(data, messageOrderType, 4);
-	addUint8(data, (Uint8)(length-9), 8);
+	addUint8(data, (Uint8)(textBytes+1), 8);
 	this->recipientsMask=recipientsMask;
 	this->messageOrderType=messageOrderType;
 }
