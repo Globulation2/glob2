@@ -47,6 +47,15 @@ static constexpr int NET_FRAME_LENGTH_PREFIX_BYTES = 2;
 //! MessageOrder when validating wire-side text payloads. See OrderMisc.cpp.
 static constexpr int ORDER_TEXT_MESSAGE_MAX_LEN = 256;
 
+//! Most text bytes (excluding the NUL) a MessageOrder can carry. The wire
+//! format stores the text length including its NUL in one byte, and setData
+//! measures it with strmlen(..., ORDER_TEXT_MESSAGE_MAX_LEN), so 254 bytes is
+//! the longest text that round-trips: 255 would encode a length of 256, which
+//! wraps to 0 and is rejected on decode. The MessageOrder constructor trims
+//! longer text at a UTF-8 boundary; senders that would rather refuse (the MCP
+//! game_chat tool, the chat box) check against this first.
+static constexpr int ORDER_TEXT_MESSAGE_MAX_TEXT_BYTES = ORDER_TEXT_MESSAGE_MAX_LEN - 2;
+
 //! Maximum width or height (in tiles) for the bounding box of an
 //! area-alteration brush stroke encoded by OrderAlterArea.
 //! See OrderModify.cpp:302-303, 350-351.
@@ -570,8 +579,14 @@ class MessageOrder:public MiscOrder
 {
 public:
 	MessageOrder() = default;
+	//! Text longer than ORDER_TEXT_MESSAGE_MAX_TEXT_BYTES is cut at the last
+	//! UTF-8 character boundary that fits, so every constructed order decodes.
 	MessageOrder(Uint32 recipientsMask, Uint32 messageOrderType, const char * text);
 	virtual ~MessageOrder(void);
+
+	//! Bytes of text the constructor keeps: all of it when it fits, otherwise
+	//! the longest prefix that fits and does not end inside a UTF-8 sequence.
+	static int fittingTextBytes(const char *text);
 
 	//! See OrderModifyBuilding::deserialize.
 	static std::shared_ptr<MessageOrder> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);

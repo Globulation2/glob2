@@ -268,6 +268,33 @@ TEST_SUITE("ReplayStepCounter")
         ReplayReader reader;
         CHECK_FALSE(reader.loadReplay(writeReplayBody(VERSION_MINOR, 0xffffffffu, 1), false));
     }
+    TEST_CASE("an order that cannot be frozen stops recording instead of throwing") {
+        // The stubbed Order::getOrder decodes only ORDER_DELETE and ORDER_NULL,
+        // so this order fails to freeze, as an over-long chat message once did.
+        // That used to throw out of the live match that issued it.
+        struct UndecodableOrder : public MiscOrder {
+            Uint8 data[1]={0};
+            Uint8 *getData(void) { return data; }
+            bool setData(const Uint8*, int, Uint32) { return true; }
+            int getDataLength(void) { return 1; }
+            Uint8 getOrderType(void) { return ORDER_TEXT_MESSAGE; }
+        };
+        const auto path=(glob2test::profileDir()/"abandoned-deferred.replay").string();
+        ReplayWriter writer; writer.init(path, nullptr, [](GAGCore::OutputStream *) {}); writer.enableDeferredChecksums([]{});
+        writer.pushOrder(std::make_shared<StepTestOrder>());
+        REQUIRE(writer.isValid());
+        CHECK_NOTHROW(writer.pushOrder(std::make_shared<UndecodableOrder>()));
+        CHECK_FALSE(writer.isValid());
+        CHECK(writer.getOrderCount()==1);
+        // Later orders, finishing and saving are quiet no-ops on the stopped recording.
+        CHECK_NOTHROW(writer.pushOrder(std::make_shared<StepTestOrder>()));
+        CHECK(writer.getOrderCount()==1);
+        bool saved=false;
+        writer.setSaveObserver([&](const std::string &) { saved=true; });
+        CHECK_NOTHROW(writer.finish());
+        CHECK_FALSE(saved);
+        CHECK_FALSE(writer.write((glob2test::profileDir()/"abandoned-copy.replay").string()));
+    }
     TEST_CASE("paused turns retain the first snapshot for their shared simulation tick") {
         const auto path=(glob2test::profileDir()/"paused-deferred.replay").string();
         ReplayWriter writer; writer.init(path, nullptr, [](GAGCore::OutputStream *) {}); writer.enableDeferredChecksums([]{});

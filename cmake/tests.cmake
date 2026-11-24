@@ -82,6 +82,7 @@ set(GLOB2_ENGINE_TESTS_0_SOURCES
     src/map/pathfind/TerrainHazardBenchmark.cpp
     src/map/TerrainEcologyHarness.cpp
     src/net/LockstepSessionTest.cpp
+    src/game/orders/OrderRoundTripTest.cpp
     src/online/MatchSetupTest.cpp
     src/building/BuildingFootprintHarness.cpp
     src/map/MapTilingHarness.cpp
@@ -1366,6 +1367,7 @@ set(GLOB2_ANDROID_ENGINE_TESTS_0_SOURCES
     src/map/pathfind/TerrainHazardBenchmark.cpp
     src/map/TerrainEcologyHarness.cpp
     src/net/LockstepSessionTest.cpp
+    src/game/orders/OrderRoundTripTest.cpp
     src/online/MatchSetupTest.cpp
     src/building/BuildingFootprintHarness.cpp
     src/map/MapTilingHarness.cpp

@@ -147,7 +147,7 @@ Swarm production, flag range, upgrade, repair, destroy, move a flag. game_zone p
 or erases forbidden, guard or clearing zones over a tile rectangle. game_view centres
 the camera on a tile and returns its screen point; zoom (1 is 100%, up to 5, 0 fits
 the whole map) frames it for anyone watching. game_chat
-sends an in-game chat message as your player.
+sends an in-game chat message as your player, at most 254 bytes of UTF-8.
 game_time pauses the match while you think (action pause), resumes it, or steps a
 number of ticks (30 a second at normal speed) and pauses again; status reports the
 tick, whether it is paused and the speed. While paused you can still read, place,

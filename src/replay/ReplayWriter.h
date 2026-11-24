@@ -4,6 +4,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 #include <functional>
 #include "ReplayTelemetry.h"
 #include "ChecksumSample.h"
@@ -40,7 +41,8 @@ public:
 	/// "replayHeader"); telemetryGame, when set, is sampled for replay telemetry.
 	void init(const std::string &backend, Game *telemetryGame, const std::function<void(GAGCore::OutputStream *)> &writeHeader);
 
-	/// Returns false if the writer isn't initialised or if the data does not make sense
+	/// Returns false if the writer isn't initialised, if the data does not make sense,
+	/// or after recording was abandoned (see pushOrder).
 	bool isValid() const;
 
 	/// Increments the current step number and updates the checksum.
@@ -53,7 +55,9 @@ public:
     void enableDeferredChecksums(std::function<void()> flush) { flushChecksums=std::move(flush); }
     void publishChecksum(ChecksumSample sample);
 
-	/// Adds the order to the replay
+	/// Adds the order to the replay. An order that cannot be recorded faithfully
+	/// stops the recording (isValid() turns false) rather than throwing into
+	/// the match that issued it.
 	void pushOrder(std::shared_ptr<Order> order);
 
 	/// Marks the end of the replay
@@ -84,6 +88,8 @@ private:
     std::map<Uint32,Uint32> readyChecksums;
     std::deque<Uint32> readyChecksumOrder;
     void writePending();
+    void abandon(const std::string &reason);
+    bool abandoned = false;
     void writeEnd(GAGCore::OutputStream* output) const;
     std::string recordingPath;
 	/// You shouldn't copy-construct this class
