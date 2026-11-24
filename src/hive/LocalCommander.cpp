@@ -208,6 +208,8 @@ Json LocalCommander::call(const std::string &tool, const Json &args)
 		return place(args);
 	if (tool == "game_view")
 		return view(args);
+	if (tool == "game_chat")
+		return chat(args);
 	if (tool == "game_building")
 		return building(args);
 	if (tool == "game_zone")
@@ -826,6 +828,16 @@ Json LocalCommander::view(const Json &args)
 			{"note", "tile_screen is the tile's centre in the logical pixels ui_inspect bounds use; "
 					 "with a screenshot, prefer its capture_id coordinates."}};
 }
+Json LocalCommander::chat(const Json &args)
+{
+	const std::string text = args.at("text");
+	if (!gui.sendChatFromAutomation(text))
+		throw std::runtime_error("Chat text is empty");
+	return {{"sent", true},
+			{"text", text},
+			{"note", "Queued like the chat box's Send: the message shows in the game's "
+					 "message area, from your player name, after the next simulation step."}};
+}
 void LocalCommander::refreshMemory()
 {
 	// Callers hold the simulation boundary. Only what the colony currently sees
@@ -882,8 +894,10 @@ Json LocalCommander::building(const Json &args)
 	const Json ref = {{"id", args.at("id")}, {"generation", args.at("generation")}};
 	std::vector<Json> orders;
 	Json changed = Json::array();
-	// A request above the building's unit limit is capped, and the reply says so.
+	// A request above the building's unit limit, or a flag range above its type's
+	// maximum, is capped, and the reply says so.
 	int limit = MAX_BUILDING_WORKER_REQUEST;
+	int maximumRange = -1;
 	boundary(
 		[&]
 		{
@@ -891,9 +905,12 @@ Json LocalCommander::building(const Json &args)
 			if (Building::GIDtoTeam(id) != team)
 				return;
 			if (const auto *b = gui.game.teams[team]->myBuildings[Building::GIDtoID(id)])
+			{
 				limit = std::min(limit, int(b->type->semantics.assignmentLimit));
+				maximumRange = b->type->maxUnitStayRange;
+			}
 		});
-	int requested = 0;
+	int requested = 0, rangeRequested = 0;
 	if (args.contains("workers"))
 	{
 		requested = args.at("workers");
@@ -916,7 +933,9 @@ Json LocalCommander::building(const Json &args)
 	}
 	if (args.contains("range"))
 	{
-		orders.push_back({{"type", "range"}, {"building", ref}, {"range", args.at("range")}});
+		rangeRequested = args.at("range");
+		const int range = maximumRange >= 0 ? std::min(rangeRequested, maximumRange) : rangeRequested;
+		orders.push_back({{"type", "range"}, {"building", ref}, {"range", range}});
 		changed.push_back("range");
 	}
 	if (args.contains("action"))
@@ -945,6 +964,8 @@ Json LocalCommander::building(const Json &args)
 							"step; read game_world to confirm."}};
 	if (requested > limit)
 		result["workers_capped_at"] = limit;
+	if (maximumRange >= 0 && rangeRequested > maximumRange)
+		result["range_capped_at"] = maximumRange;
 	if (orders.empty())
 		throw std::runtime_error("Nothing to change: pass workers, priority, production, range or action");
 	submit(orders);

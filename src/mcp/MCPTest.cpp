@@ -56,7 +56,7 @@ TEST_CASE("MCP/protocol adapters validate metadata and discover all tools")
 	CHECK(discover.status == 200);
 	CHECK(discover.body["result"]["resultType"] == "complete");
 	auto listed = p.receive(modern("tools/list").dump(), {"2026-07-28", "tools/list", ""});
-	CHECK(listed.body["result"]["tools"].size() == 27);
+	CHECK(listed.body["result"]["tools"].size() == 28);
 	CHECK(listed.body["result"].contains("cacheScope"));
 	CHECK(
 		p.receive(modern("tools/list").dump(), {"2026-07-28", "wrong", ""}).body["error"]["code"] ==
@@ -1764,8 +1764,10 @@ TEST_CASE("MCP/game tools read without control and act only under the lease [net
 	CHECK(execute("game_building", {{"token", token}, {"id", 0}, {"generation", 1}}).error.empty());
 	CHECK(execute("game_zone", {{"token", token}, {"zone", "guard"}, {"x", 1}, {"y", 1},
 								{"width", 2}, {"height", 2}}).error.empty());
+	CHECK_FALSE(execute("game_chat", {{"token", "stale"}, {"text", "hi"}}).error.empty());
+	CHECK(execute("game_chat", {{"token", token}, {"text", "hi"}}).error.empty());
 	CHECK(reached == std::vector<std::string>{"game_world", "game_place", "game_view",
-											  "game_building", "game_zone"});
+											  "game_building", "game_zone", "game_chat"});
 
 	// A control that has disappeared satisfies a wait for it to be not visible...
 	const auto gone = execute("ui_wait", {{"timeout_ms", 2000},

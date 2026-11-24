@@ -2527,6 +2527,18 @@ TEST_CASE("MCP game_building and game_zone queue the panel's orders and report c
 	REQUIRE(move);
 	CHECK(move->x == 33);
 	CHECK(move->y == 34);
+	// A range above the flag type's maximum is capped and reported, not refused, so
+	// the rest of the change still applies.
+	result = commander.call("game_building", {{"id", flag->gid}, {"generation", flag->scriptIdentity},
+											  {"action", "move"}, {"x", 30}, {"y", 31},
+											  {"range", 10}, {"workers", 13}});
+	CHECK(result.at("range_capped_at") == flag->type->maxUnitStayRange);
+	orders = queued();
+	REQUIRE(orders.size() == 3);
+	auto range = std::dynamic_pointer_cast<OrderModifyFlag>(orders[1]);
+	REQUIRE(range);
+	CHECK(range->range == flag->type->maxUnitStayRange);
+	CHECK(std::dynamic_pointer_cast<OrderMoveFlag>(orders[2]));
 	// A stale generation or another team's id is refused, nothing queued.
 	CHECK_THROWS(commander.call("game_building", {{"id", swarm->gid}, {"generation", swarm->scriptIdentity + 1},
 												  {"workers", 1}}));
@@ -2541,4 +2553,18 @@ TEST_CASE("MCP game_building and game_zone queue the panel's orders and report c
 	CHECK(zone->centerY == 12);
 	CHECK(zone->maxX - zone->minX == 3);
 	CHECK(zone->maxY - zone->minY == 2);
+	// Chat queues the chat box's message, to the chat box's recipients; empty text
+	// queues nothing.
+	world.gui.chatMask = 0x5;
+	const auto chat = commander.call("game_chat", {{"text", "hello allies"}});
+	CHECK(chat.at("sent") == true);
+	orders = queued();
+	REQUIRE(orders.size() == 1);
+	auto message = std::dynamic_pointer_cast<MessageOrder>(orders[0]);
+	REQUIRE(message);
+	CHECK(message->recipientsMask == 0x5);
+	CHECK(message->messageOrderType == MessageOrder::NORMAL_MESSAGE_TYPE);
+	CHECK(std::string(message->getText()) == "hello allies");
+	CHECK_THROWS(commander.call("game_chat", {{"text", ""}}));
+	CHECK(queued().empty());
 }

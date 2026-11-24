@@ -221,6 +221,7 @@ void registerUITools(ToolRegistry &registry)
 								   std::string(name) != "hive_program" &&
 								   std::string(name) != "game_place" &&
 								   std::string(name) != "game_view" &&
+								   std::string(name) != "game_chat" &&
 								   std::string(name) != "game_building" &&
 								   std::string(name) != "game_zone" &&
 								   std::string(name) != "ui_renew_control" &&
@@ -418,7 +419,8 @@ void registerUITools(ToolRegistry &registry)
 		{"token", "building", "x", "y"}, false);
 	add("game_building",
 		"Change one of your buildings or flags by its game_world id and generation: workers "
-		"(units requested), priority, production ratios (Swarm), range (flags), or action "
+		"(units requested), priority, production ratios (Swarm), range (flags; both capped at the "
+		"building's maximum, reported), or action "
 		"upgrade, repair, cancel_upgrade, destroy, cancel_destroy, move (flag to x/y). Needs token.",
 		{{"token", token},
 		 {"id", {{"type", "integer"}, {"minimum", 0}}},
@@ -452,6 +454,11 @@ void registerUITools(ToolRegistry &registry)
 		 {"x", {{"type", "integer"}, {"minimum", 0}}},
 		 {"y", {{"type", "integer"}, {"minimum", 0}}}},
 		{"token", "x", "y"}, false);
+	add("game_chat",
+		"Send an in-game chat message as your player, as the chat box's Send would; it "
+		"appears in the message area. Works without window focus. Needs token.",
+		{{"token", token}, {"text", {{"type", "string"}, {"minLength", 1}, {"maxLength", 256}}}},
+		{"token", "text"}, false);
 	add("hive_status", "Whether colony scripting (Hive) is available in the current local match, and its "
 		"session id, required by hive_run/hive_result/hive_program. No token needed.", {}, {},
 		false);
