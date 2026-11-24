@@ -257,6 +257,36 @@ jobs:
             echo "$target $digest"
             printf '%s\n' "$digest" > "$RUNNER_TEMP/digests/$target"
           }
+          # Compiler caches between runs, kept as images in the cache repository
+          # (never in the Actions cache, which every workflow of the mirror can
+          # write). Like the layer cache, only public-master builds update them.
+          ccache_image="$CACHE/ccache-$GROUP:latest"
+          toolchain_image="$CACHE/web-toolchain:latest"
+          case "$GROUP" in
+            engine|relay)
+              # Into this builder's glob2-ccache cache mount (deploy/ccache.Dockerfile).
+              if docker buildx imagetools inspect "$ccache_image" > /dev/null 2>&1; then
+                docker buildx build -f deploy/ccache.Dockerfile --target import \
+                  --build-arg SEED="$ccache_image" --progress plain deploy
+              else
+                echo "no compiler cache for $GROUP yet"
+              fi
+              ;;
+            web)
+              # The glob2-web-toolchain volume: the SDK, Emscripten's caches and ccache.
+              if docker pull -q "$toolchain_image" > /dev/null 2>&1; then
+                id=$(docker create "$toolchain_image" none)
+                docker cp "$id:/toolchain.tar" "$RUNNER_TEMP/toolchain.tar"
+                docker rm "$id" > /dev/null
+                docker image rm "$toolchain_image" > /dev/null
+                docker run --rm -v glob2-web-toolchain:/toolchain -v "$RUNNER_TEMP:/seed:ro" ubuntu:24.04 \
+                  tar -xf /seed/toolchain.tar -C /toolchain
+                rm "$RUNNER_TEMP/toolchain.tar"
+              else
+                echo "no web toolchain cache yet"
+              fi
+              ;;
+          esac
           for target in $TARGETS; do
             if [ "$target" = web-client ]; then
               # The tree update-host.sh would build, as an image holding only files.
@@ -279,6 +309,22 @@ jobs:
               .
           done
           printf '%s\n' "$sim" > "$RUNNER_TEMP/digests/sim-version"
+          if [ "$WRITE_CACHE" = true ]; then
+            case "$GROUP" in
+              engine|relay)
+                docker buildx build -f deploy/ccache.Dockerfile --target export --build-arg STAMP="$TAG" \
+                  --provenance=false --push --tag "$ccache_image" --progress plain deploy
+                ;;
+              web)
+                mkdir -p "$RUNNER_TEMP/toolchain"
+                docker run --rm -v glob2-web-toolchain:/toolchain -v "$RUNNER_TEMP/toolchain:/out" ubuntu:24.04 \
+                  tar -cf /out/toolchain.tar -C /toolchain .
+                printf 'FROM scratch\nCOPY toolchain.tar /toolchain.tar\n' > "$RUNNER_TEMP/toolchain.Dockerfile"
+                docker buildx build -f "$RUNNER_TEMP/toolchain.Dockerfile" --provenance=false --push \
+                  --tag "$toolchain_image" "$RUNNER_TEMP/toolchain"
+                ;;
+            esac
+          fi
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: digests-${{ matrix.group }}

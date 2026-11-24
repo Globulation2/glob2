@@ -3,8 +3,8 @@
 # the pinned Emscripten SDK, writes Brotli and gzip copies (platforms/web/precompress.py),
 # and installs the result into the directory Caddy serves at /play/
 # (GLOB2_WEB_CLIENT_DIR) with deploy/install-web-client.py. Needs Docker and Python 3
-# on the host; the SDK and the build cache persist in the glob2-web-toolchain volume
-# between runs.
+# on the host; the SDK, Emscripten's caches and the compiler cache persist in the
+# glob2-web-toolchain volume between runs.
 #
 #   deploy/build-web-client.sh <output-dir> [build arguments...]
 #
@@ -30,7 +30,9 @@ docker run --rm \
 		apt-get update -qq
 		# The embedded recording build configures x264 (needs strings, from binutils) and
 		# cross-compiles FFmpeg, whose configure needs a host C compiler and pkg-config.
-		apt-get install -y -qq --no-install-recommends ca-certificates git python3 ninja-build xz-utils bzip2 libatomic1 brotli python3-venv cmake make binutils gcc libc6-dev pkg-config nasm >/dev/null
+		# ccache: compiles go through the managed cache in the toolchain volume
+		# (GLOB2_DEV_HOME), so a rebuild recompiles only what changed.
+		apt-get install -y -qq --no-install-recommends ca-certificates ccache git python3 ninja-build xz-utils bzip2 libatomic1 brotli python3-venv cmake make binutils gcc libc6-dev pkg-config nasm >/dev/null
 		git config --global --add safe.directory "*"
 		python3 platforms/web/setup.py
 		# Both runtimes (serial and threaded), the loader and the page. The
