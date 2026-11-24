@@ -211,14 +211,20 @@ version for updates; do not reuse a previous Epic artifact version.
 After the stable GitHub release is public, dispatch
 `itch-release.yml` from the release mirror's `master` with that tag. The default
 `verify` mode checks the current release's package inventory and GitHub asset
-digests for the Windows portable ZIP, both macOS DMGs and the Linux Flatpak.
-It requires no itch.io credentials.
+digests for the Windows portable ZIP, both macOS DMGs and the Ubuntu-compatible
+Linux tarball. It stages the signed, stapled app bundles from the DMGs and the
+Linux archive's executable and runtime tree with an itch launch manifest.
+The Windows payload adds a **Play (software renderer)** action for machines
+without working hardware graphics, alongside the standard Play action.
+The release mirror provides the expected signing team via `MACOS_DOWNLOAD_TEAM_ID`.
+Verification requires no itch.io credentials.
 
 Keep `BUTLER_API_KEY` in the mirror's protected `itch-release` environment,
 restricted to `master`. See [Butler CI authentication](https://itch.io/docs/butler/login.html#running-butler-from-ci-builds-github-actions-gitlab-ci-etc).
 Use `create-hidden` for the first push. In the itch dashboard, confirm all
-four channels have the expected platform flags and version. Verify the Windows
-app install and launch and the macOS and Linux download and installation paths.
+four channels have the expected platform flags and version. Verify install and launch in the itch app for the Windows ZIP, each macOS
+architecture and the Linux archive on a supported system. DMGs and Flatpak
+remain available on GitHub for manual installations.
 Then make the new channels visible and hide the corresponding manual uploads.
 The browser launcher follows the production web deployment separately.
 
