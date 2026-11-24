@@ -138,7 +138,10 @@ losses (buildings destroyed, units converted away), your buildings with ids, sto
 and Inn happiness, unit counts and warrior training, known resources with their
 nearest tile, other teams' buildings in sight and those remembered under fog, and how
 recent placements went; detail brief returns only status, alerts, losses and one line
-per building, cheap enough to poll every few seconds.
+per building, cheap enough to poll every few seconds; detail alerts drops the building
+list too, and since_tick (the previous reply's tick) keeps only newer alerts. Alerts
+include your standing Hive programs that failed (hive_program_failed: paused ones need
+hive_program resume) and other teams' buildings first seen (enemy_building_sighted).
 It follows fog of war: only what your colony sees or has seen, never another team's
 health or training. game_place puts a building site or flag with its top-left on a
 tile through the click path (near searches around it for room; buildings need
@@ -146,13 +149,24 @@ explored ground). game_building changes a building or flag by id: workers, prior
 Swarm production, flag range, upgrade, repair, destroy, move a flag. game_zone paints
 or erases forbidden, guard or clearing zones over a tile rectangle. game_view centres
 the camera on a tile and returns its screen point; zoom (1 is 100%, up to 5, 0 fits
-the whole map) frames it for anyone watching. game_chat
+the whole map) frames it for anyone watching, and width/height frame a whole tile
+rectangle (a battle, a base). game_chat
 sends an in-game chat message as your player, at most 254 bytes of UTF-8.
 game_time pauses the match while you think (action pause), resumes it, or steps a
 number of ticks (30 a second at normal speed) and pauses again; status reports the
 tick, whether it is paused and the speed. While paused you can still read, place,
 click and type: orders queue and apply as the next ticks run, so step to see them
-take effect. It works only in local matches without network players.
+take effect. speed sets the top bar's game speed (-3..10, 0 normal) with any action:
+slow down for a fight, speed up while waiting. It works only in local matches without
+network players.
+game_wait lets time pass instead of polling: up to ticks, or until something in until
+happens to your colony (attack, building_lost, conversion, enemy_sighted, hive_failure,
+building_completed), the result is announced, or timeout_ms. It answers why it stopped
+with game_world's detail alerts since it began.
+game_alliance sets allied and shared map, food and market vision with one other team,
+as the Alliance dialog does. Shared food vision lets that team's hungry units see your
+Inns: they join you when your Inn offers more happiness than theirs. To concede, open
+the game menu (ui_key Escape) and activate quit; it counts as a loss.
 game_stats charts your colony over time (population, food, work, buildings,
 military) as the Statistics panel does; after the match, on end_game, it covers
 every team and the win probability history, to see why a match went the way it
@@ -172,7 +186,7 @@ Prefer the palette and panel controls to keyboard shortcuts: inspection describe
 them and ui_act confirms each one.)"},
 	{"control", "The control lease and token workflow",
 	 R"(Reads (ui_status, ui_screenshot, ui_inspect, ui_wait, game_guide, game_world,
-game_time status, game_stats, hive_status, hive_api, hive_result) need no control. Everything that sends input needs the token
+game_wait, game_time status, game_stats, hive_status, hive_api, hive_result) need no control. Everything that sends input needs the token
 from ui_acquire_control. Only one client holds control; a second acquisition fails
 until the first releases it, its lease expires, or the person at the computer uses
 Settings > MCP server > Revoke control. The lease lasts 300 seconds after the last
@@ -191,7 +205,11 @@ hive_status reports availability and the current session id (a match identity);
 hive_api returns the full API contract, including world queries such as
 ctx.game.units(), ctx.game.buildings() and order descriptors. hive_run executes one
 script (token, session, a fresh operation_key, source) and hive_result fetches its
-output. hive_program installs standing scripts that run every N ticks. The game_*
+output; pass wait: true to either to get the finished result in one call.
+hive_program installs standing scripts that run every N ticks; a program that fails
+is paused and reported in game_world alerts. Tiles give corners (terrain ids per
+map: look them up in ctx.game.terrainTypes(), which says buildable) and a resource
+type to look up in ctx.game.resourceTypes(); 65535 means none. The game_*
 tools cover the common reads and orders without a script; use Hive for full records
 (stocks, skills, terrain) and for standing logic that reacts between your turns.)"},
 	{"troubleshooting", "What common errors mean and what to do next",
@@ -237,8 +255,9 @@ const std::string &serverInstructions()
 		"screen name and controls; ui_act on a control's surface, key and revision; "
 		"ui_wait for screen changes; in a match, game_world reads your colony and what it "
 		"sees in map tiles, game_stats its statistics over time (every team's on end_game) "
-		"and game_place / game_view act on tiles; game_time pauses the "
-		"match while you think; ui_screenshot plus "
+		"and game_place / game_view act on tiles; game_wait lets game time pass until "
+		"something happens; game_time pauses the "
+		"match while you think or sets its speed; ui_screenshot plus "
 		"ui_click with its capture_id for other map positions; ui_release_control when "
 		"done. Never retry input calls.\n"
 		"New here? From main_menu activate Tutorial (menu/1), then Introduction "

@@ -1031,6 +1031,65 @@ std::string GameGUI::placeFromAutomation(const std::string &requested, int x, in
 		   "flag cannot share a tile with another of your flags. Pass near to search around it";
 }
 
+std::string GameGUI::setGameSpeedFromAutomation(int speed)
+{
+	if (!canChangeGameSpeed())
+		return "Game speed is fixed in this match (network games run at normal speed)";
+	if (speed < Settings::GAME_SPEED_MINIMUM || speed > Settings::GAME_SPEED_MAXIMUM)
+		return "Game speed must be " + std::to_string(Settings::GAME_SPEED_MINIMUM) + ".." +
+			   std::to_string(Settings::GAME_SPEED_MAXIMUM) + " (0 is normal speed)";
+	setGameSpeed(speed);
+	return {};
+}
+
+std::string GameGUI::setAllianceFromAutomation(int otherTeam, std::optional<bool> allied,
+											   std::optional<bool> mapVision, std::optional<bool> foodVision,
+											   std::optional<bool> marketVision)
+{
+	// Exactly the Alliance dialog's choices: the same availability rules, and the same
+	// SetAllianceOrder its OK sends, with every other team's settings left as they are.
+	const auto &scene = drawnScene();
+	if (!scene.world.session || globalContainer->replaying || globalContainer->isViewingGame())
+		return "Alliances can only be changed while playing a match";
+	if (hiddenGUIElements & HIDABLE_ALLIANCE)
+		return "This game hides the Alliance dialog (a lesson or scenario restriction)";
+	// Teams Fixed (a Game Rules option, on by default) locks the dialog's alliance column;
+	// its shared-vision toggles stay available.
+	if (scene.world.session->fixedAlliances && allied)
+		return "Alliances are fixed for this match (Game Rules: Teams Fixed); shared map, food "
+			   "and market vision can still change";
+	const int teams = scene.entities.teamCount;
+	if (otherTeam < 0 || otherTeam >= teams || otherTeam == localTeamNo)
+		return "team must be another team's number (0.." + std::to_string(teams - 1) +
+			   "), not your own (" + std::to_string(localTeamNo) + ")";
+	const auto &local = scene.entities.teams[localTeamNo];
+	const Uint32 self = Team::teamNumberToMask(localTeamNo), other = Team::teamNumberToMask(otherTeam);
+	const auto set = [&](Uint32 mask, std::optional<bool> value)
+	{ return !value ? mask : *value ? mask | other : mask & ~other; };
+	const Uint32 allies = set(local.allies | self, allied);
+	Uint32 enemies = 0;
+	// The dialog fires on every team it is not allied with, and always on teams that
+	// no player controls.
+	for (int t = 0; t < teams; ++t)
+		if (t != localTeamNo && (!(allies & Team::teamNumberToMask(t)) || scene.entities.teams[t].playersMask == 0))
+			enemies |= Team::teamNumberToMask(t);
+	enqueueOrder(std::make_shared<SetAllianceOrder>(localTeamNo, allies & ~enemies, enemies,
+													set(local.exchangeVision, marketVision),
+													set(local.foodVision, foodVision),
+													set(local.otherVision, mapVision)));
+	return {};
+}
+
+std::string GameGUI::announcedOutcome() const
+{
+	if (!hasEndOfGameDialogBeenShown)
+		return {};
+	const auto &hud = drawnScene().panels.hud;
+	if (hud.localDraw)
+		return "draw";
+	return hud.localState().won ? "won" : hud.localState().lost ? "lost" : "";
+}
+
 void GameGUI::centreViewOnTile(double x, double y)
 {
 	const int oldX = viewportX, oldY = viewportY;

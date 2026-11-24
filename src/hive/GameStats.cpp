@@ -8,6 +8,7 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <algorithm>
+#include <cctype>
 #include <cmath>
 #include <cstdio>
 #include <limits>
@@ -94,9 +95,22 @@ std::string colorText(int r, int g, int b)
 Json statsReport(const std::vector<Stats::Metric> &catalog, const std::vector<StatsTeam> &teams,
 				 const Json &args, const std::vector<std::string> &defaults)
 {
+	// Ids match exactly, else ignoring case, spaces, '-' and '_', against the id or the
+	// displayed name ("Population", "win_chance", "Idle workers" all resolve).
+	const auto fold = [](const std::string &value)
+	{
+		std::string folded;
+		for (const unsigned char c : value)
+			if (c != ' ' && c != '_' && c != '-')
+				folded += char(std::tolower(c));
+		return folded;
+	};
 	auto find = [&](const std::string &id) -> const Stats::Metric *
 	{
-		const auto it = std::find_if(catalog.begin(), catalog.end(), [&](const auto &m) { return id == m.id; });
+		auto it = std::find_if(catalog.begin(), catalog.end(), [&](const auto &m) { return id == m.id; });
+		if (it == catalog.end())
+			it = std::find_if(catalog.begin(), catalog.end(), [&](const auto &m)
+							  { return fold(id) == fold(m.id) || fold(id) == fold(text(m.titleKey())); });
 		return it == catalog.end() ? nullptr : &*it;
 	};
 	if (args.value("list", false))

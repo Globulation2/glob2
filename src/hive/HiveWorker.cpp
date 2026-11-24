@@ -92,7 +92,7 @@ int integer(const Json &j, int minimum, int maximum)
 }
 Json query(const Json &s, const std::string &name, const Json &args)
 {
-	if (name == "teams" || name == "buildingTypes")
+	if (name == "teams" || name == "buildingTypes" || name == "terrainTypes" || name == "resourceTypes")
 		return s.at(name);
 	if (name == "units" || name == "buildings")
 	{

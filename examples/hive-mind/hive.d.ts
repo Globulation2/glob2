@@ -94,25 +94,36 @@ export interface Building extends EntityRef {
   clearingResources?: [boolean, boolean, boolean, boolean, boolean];
 }
 export interface TileResource {
-  /** Wood 0, wheat 1, papyrus 2, stone 3, alga 4, cherry 5, orange 6, prune 7;
-   * no resource 255 (with variety/amount zero). Presence is type !== 255,
-   * since an eternal resource can have amount zero. */
-  type: ResourceId | 255;
+  /** Map-local resource ID: look it up in resourceTypes() (maps may add rice, fish,
+   * maize...). No resource is 65535 (with variety/amount zero). Presence is
+   * type !== 65535, since an eternal resource can have amount zero. */
+  type: number;
   variety: number; amount: number;
 }
 export interface Tile {
   x: number; y: number; visible: boolean; explored: boolean;
   // Unexplored tiles have only the four fields above.
   observedTick?: number;
-  /** Raw graphic index: grass 0..15, sand 128..143, water 256..271;
-   * other values are transitions. Not the C++ TerrainType enum. */
-  terrain?: number;
+  /** Terrain IDs of the four corners (top-left, top-right, bottom-left,
+   * bottom-right); index terrainTypes(). IDs differ between maps. A tile whose
+   * corners differ is never buildable. */
+  corners?: [number, number, number, number];
   resource?: TileResource;
   /** Visible tiles only: bare occupant IDs, or 65535 for empty/hidden.
    * Find the matching entity list record to obtain its generation. */
   groundUnit?: number; airUnit?: number; building?: number;
   /** AI-only, explored tiles: current own-team forbidden flag. */
   forbidden?: boolean;
+}
+export interface TerrainType {
+  id: number; name: string; editorSelectable: boolean;
+  /** Terrain capabilities; occupancy, resources and space still decide placement. */
+  buildable: boolean; walkable: boolean; swimmable: boolean; flyable: boolean;
+  [property: string]: unknown;
+}
+export interface ResourceType {
+  id: number; key: string; name: string;
+  [property: string]: unknown;
 }
 export interface BuildingType {
   /** Resolve by name/level/site; do not hardcode variant registry indices. */
@@ -139,6 +150,8 @@ export interface GameRead {
   unit(reference: EntityRef): Unit | null;
   building(reference: EntityRef): Building | null;
   buildingTypes(): BuildingType[];
+  terrainTypes(): TerrainType[];
+  resourceTypes(): ResourceType[];
   map: MapRead;
 }
 export type Order =

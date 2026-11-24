@@ -226,6 +226,7 @@ void registerUITools(ToolRegistry &registry)
 								   std::string(name) != "game_building" &&
 								   std::string(name) != "game_zone" &&
 								   std::string(name) != "game_time" &&
+								   std::string(name) != "game_alliance" &&
 								   std::string(name) != "ui_renew_control" &&
 								   std::string(name) != "ui_acquire_control" &&
 								   std::string(name) != "ui_release_control"},
@@ -366,12 +367,15 @@ void registerUITools(ToolRegistry &registry)
 					{"key", {{"type", "string"}, {"maxLength", 512}}},
 					{"revision", identity},
 					{"action", enumeration({"activate", "select", "set_value", "scroll"})},
-					{"value", Json::object()}};
+					{"value", Json::object()},
+					{"inspect", {{"type", "boolean"}, {"default", true}}},
+					{"result_subtree", {{"type", "string"}, {"maxLength", 512}}}};
 	add("ui_act",
 		"Operate a control from ui_inspect by surface (instance), key and revision. action "
 		"must be one the control lists: activate, select (value: zero-based index), "
 		"set_value (value matching the control) or scroll (value: "
-		"signed logical pixels). Returns the inspection once consumed; a "
+		"signed logical pixels). Returns the inspection once consumed (inspect=false: screen "
+		"only; result_subtree trims it); a "
 		"screen change may follow: ui_wait. Never retry automatically.",
 		act, {"surface", "key", "revision", "action"}, true);
 	auto wait = filter;
@@ -399,8 +403,9 @@ void registerUITools(ToolRegistry &registry)
 		"x/y, size, site, workers, stock/capacity, Inn happiness), unit counts, known resources "
 		"(nearest tile), other teams' visible and remembered buildings, recent placements, "
 		"placeable names. detail brief: status, alerts, losses, one line per building; "
-		"full adds unit lists. No token.",
-		{{"detail", enumeration({"brief", "summary", "full"})},
+		"alerts: no buildings; full adds unit lists. since_tick: only newer alerts. No token.",
+		{{"detail", enumeration({"brief", "alerts", "summary", "full"})},
+		 {"since_tick", {{"type", "integer"}, {"minimum", 0}}},
 		 {"limit", {{"type", "integer"}, {"minimum", 1}, {"maximum", 500}, {"default", 100}}},
 		 {"resource_radius", {{"type", "integer"}, {"minimum", 1}, {"maximum", 64}, {"default", 24}}},
 		 {"area", object({{"x", {{"type", "integer"}, {"minimum", 0}}},
@@ -431,8 +436,7 @@ void registerUITools(ToolRegistry &registry)
 	add("game_building",
 		"Change one of your buildings or flags by its game_world id and generation: workers "
 		"(units requested), priority, production ratios (Swarm), range (flags; both capped at the "
-		"building's maximum, reported), or action "
-		"upgrade, repair, cancel_upgrade, destroy, cancel_destroy, move (flag to x/y). Needs token.",
+		"building's maximum, reported), or an action (move takes the flag's x/y). Needs token.",
 		{{"token", token},
 		 {"id", {{"type", "integer"}, {"minimum", 0}}},
 		 {"generation", {{"type", "integer"}, {"minimum", 0}}},
@@ -460,10 +464,13 @@ void registerUITools(ToolRegistry &registry)
 		{"token", "zone", "x", "y", "width", "height"}, false);
 	add("game_view",
 		"Centre the camera on a tile; returns its screen point (tile_screen) for clicking "
-		"what is there; zoom 1 is 100%, 0 fits the map. Needs token.",
+		"what is there; zoom 1 is 100%, 0 fits the map; width/height frame that rectangle. "
+		"Needs token.",
 		{{"token", token},
 		 {"x", {{"type", "integer"}, {"minimum", 0}}},
 		 {"y", {{"type", "integer"}, {"minimum", 0}}},
+		 {"width", {{"type", "integer"}, {"minimum", 1}, {"maximum", 256}}},
+		 {"height", {{"type", "integer"}, {"minimum", 1}, {"maximum", 256}}},
 		 {"zoom", {{"type", "number"}, {"minimum", 0}, {"maximum", 5}}}},
 		{"token", "x", "y"}, false);
 	add("game_chat",
@@ -474,11 +481,33 @@ void registerUITools(ToolRegistry &registry)
 		{"token", "text"}, false);
 	add("game_time",
 		"Pause the local match while you think, resume, or step ticks (30/s) and re-pause. "
-		"status: no token.",
+		"speed (-3..10, 0 normal) sets game speed. status without speed: no token.",
 		{{"action", enumeration({"status", "pause", "resume", "step"})},
 		 {"token", token},
-		 {"ticks", {{"type", "integer"}, {"minimum", 1}, {"maximum", 3000}}}},
+		 {"ticks", {{"type", "integer"}, {"minimum", 1}, {"maximum", 3000}}},
+		 {"speed", {{"type", "integer"}, {"minimum", -3}, {"maximum", 10}}}},
 		{"action"}, false);
+	add("game_wait",
+		"Let game time pass until ticks elapse (30/s), an until event hits your colony "
+		"(default: all but building_completed) or timeout_ms; returns why, plus game_world "
+		"alerts since. Use instead of polling. No token.",
+		{{"ticks", {{"type", "integer"}, {"minimum", 1}, {"maximum", 9000}, {"default", 300}}},
+		 {"until", {{"type", "array"},
+					{"maxItems", 6},
+					{"items", enumeration({"attack", "building_completed", "building_lost", "conversion",
+										   "enemy_sighted", "hive_failure"})}}},
+		 {"timeout_ms", {{"type", "integer"}, {"minimum", 100}, {"maximum", 30000}}}},
+		{}, false);
+	add("game_alliance",
+		"The Alliance dialog for one other team: allied, shared map, food (Inn) or market "
+		"vision; unset fields stay. Teams Fixed locks only allied. Needs token.",
+		{{"token", token},
+		 {"team", {{"type", "integer"}, {"minimum", 0}, {"maximum", 31}}},
+		 {"allied", {{"type", "boolean"}}},
+		 {"share_map", {{"type", "boolean"}}},
+		 {"share_food_vision", {{"type", "boolean"}}},
+		 {"share_market", {{"type", "boolean"}}}},
+		{"token", "team"}, false);
 	add("hive_status", "Whether colony scripting (Hive) is available in the current local match, and its "
 		"session id, required by hive_run/hive_result/hive_program. No token needed.", {}, {},
 		false);
@@ -490,16 +519,20 @@ void registerUITools(ToolRegistry &registry)
 	const Json session = {{"type", "string"}, {"maxLength", 128}};
 	add("hive_run",
 		"Run one JavaScript step(ctx) script for your colony, to read exact world state or "
-		"issue orders. Needs token, the hive_status session and a new operation_key; then read "
-		"hive_result. Queued is not success.",
+		"issue orders. Needs token, the hive_status session and a new operation_key; "
+		"wait=true returns the finished result, else read hive_result.",
 		{{"token", token},
 		 {"session", session},
 		 {"operation_key", operationKey},
-		 {"source", source}},
+		 {"source", source},
+		 {"wait", {{"type", "boolean"}}}},
 		{"token", "session", "operation_key", "source"}, false);
 	add("hive_result", "Read a hive_run or hive_program operation's output, errors and order results by "
-		"session and operation_key. Never re-runs it.",
-		{{"session", session}, {"operation_key", operationKey}}, {"session", "operation_key"},
+		"session and operation_key. Never re-runs it; wait=true waits for the end.",
+		{{"session", session},
+		 {"operation_key", operationKey},
+		 {"wait", {{"type", "boolean"}}}},
+		{"session", "operation_key"},
 		false);
 	add("hive_program",
 		"Manage standing scripts that rerun every interval_ticks for this match: list, inspect, "

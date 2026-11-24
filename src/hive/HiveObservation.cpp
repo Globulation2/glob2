@@ -18,7 +18,9 @@ Json capture(Script::Observations &observations, Game &game, int team)
 					 {"tick", game.stepCounter},
 					 {"width", game.map.getW()},
 					 {"height", game.map.getH()}};
-	for (const char *name : {"teams", "units", "buildings", "buildingTypes"})
+	// terrainTypes and resourceTypes are the match's static, public rule tables: they
+	// say what a tile's corners and resource type mean, never what is on the map.
+	for (const char *name : {"teams", "units", "buildings", "buildingTypes", "terrainTypes", "resourceTypes"})
 		snapshot[name] = json(observations.query(name, {}));
 	auto tiles = Json::array();
 	std::size_t bytes = 0;

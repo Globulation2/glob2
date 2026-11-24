@@ -325,6 +325,18 @@ public:
 	/// Send a chat message as the local player, exactly as the chat box's Send would
 	/// (to everyone the chat box addresses). Returns false for empty text.
 	bool sendChatFromAutomation(const std::string &text);
+	/// MCP game_time speed: the top bar's speed stepper (Settings::GAME_SPEED_MINIMUM..
+	/// MAXIMUM, 0 normal). Returns an empty string on success, otherwise why not.
+	std::string setGameSpeedFromAutomation(int speed);
+	/// MCP game_alliance: what the Alliance dialog's OK sends for one other team, changing
+	/// only the settings given (alliance, then shared map, food and market vision). Empty
+	/// on success, otherwise why the dialog would not allow it.
+	std::string setAllianceFromAutomation(int otherTeam, std::optional<bool> allied,
+										  std::optional<bool> mapVision, std::optional<bool> foodVision,
+										  std::optional<bool> marketVision);
+	/// The local player's result once the game has announced it: "won", "lost", "draw",
+	/// or empty while the match goes on.
+	std::string announcedOutcome() const;
 	/// The desktop top bar's values: workers, explorers and warriors free/total, prestige,
 	/// win chance, conversions gained and lost, then speed.
 	std::array<std::string, 8> topBarValues() const;
@@ -867,7 +879,7 @@ private:
 		HIDABLE_GFX_STAT = 0x8,
 		HIDABLE_ALLIANCE = 0x10,
 	};
-	Uint32 hiddenGUIElements;
+	Uint32 hiddenGUIElements = 0;
 
 	//! When set, tells the gui not to treat clicking the space key as usual, but instead, it will "swallow" (ignore) it
 	bool swallowSpaceKey;
@@ -968,7 +980,7 @@ private:
 	///The save this session last wrote; saving to it again needs no overwrite confirmation
 	std::string ownGameSaveName;
 
-	bool hasEndOfGameDialogBeenShown;
+	bool hasEndOfGameDialogBeenShown = false;
 
 	GameGUIMessageManager messageManager;
 	std::unique_ptr<InGameScrollableHistory> scrollableText;

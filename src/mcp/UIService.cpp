@@ -28,8 +28,8 @@ bool inspectionTool(const std::string &tool, const Json &arguments)
 {
 	return tool == "ui_status" || tool == "ui_screenshot" || tool == "ui_inspect" ||
 		   tool == "hive_status" || tool == "hive_api" || tool == "hive_result" ||
-		   tool == "game_world" || tool == "game_stats" ||
-		   (tool == "game_time" && arguments.value("action", "") == "status") ||
+		   tool == "game_world" || tool == "game_stats" || tool == "game_wait" ||
+		   (tool == "game_time" && arguments.value("action", "") == "status" && !arguments.contains("speed")) ||
 		   (tool == "hive_program" && (arguments.value("action", "") == "list" ||
 									   arguments.value("action", "") == "inspect"));
 }
@@ -422,9 +422,21 @@ void UIService::finish(std::string error)
 	result.data["input_started"] = r->inputStarted.load();
 	result.error = std::move(error);
 	if (result.error.empty() && dispatchComplete && r->tool == "ui_act")
+	{
 		// Input was consumed. A read failure must not disguise confirmed
-		// delivery and encourage replaying the mutation.
-		addInspection(result, {{"compact", r->arguments.value("compact", true)}});
+		// delivery and encourage replaying the mutation. inspect=false returns only the
+		// screen name; result_subtree trims the inspection to one control's subtree
+		// (a large screen such as the landscape picker is tens of kilobytes).
+		if (r->arguments.value("inspect", true))
+		{
+			Json filter = {{"compact", r->arguments.value("compact", true)}};
+			if (r->arguments.contains("result_subtree"))
+				filter["subtree"] = r->arguments["result_subtree"];
+			addInspection(result, filter);
+		}
+		else
+			result.data["screen"] = inspectionScreen ? inspectionScreen() : "unavailable";
+	}
 	if (!result.error.empty())
 		r->cancelled = true;
 	r->completion.set_value(std::move(result));
@@ -549,6 +561,27 @@ void UIService::observe()
 			result.error = "Wait cancelled";
 		else if (args.contains("token") && (token.empty() || args.value("token", "") != token))
 			result.error = LeaseLost;
+		else if (request->tool != "ui_wait")
+		{
+			// A pending game_wait or hive wait: ask its handler again; past the deadline
+			// it answers with what it has (_final).
+			auto poll = args;
+			if (Clock::now() >= request->deadline - std::chrono::seconds(1))
+				poll["_final"] = true;
+			try
+			{
+				result = domainHandler ? domainHandler(request->tool, poll) : Result{};
+			}
+			catch (const std::exception &error)
+			{
+				result.error = error.what();
+			}
+			if (result.error.empty() && result.data.is_object() && result.data.value("pending", false))
+			{
+				args["_poll"] = result.data["poll"];
+				continue;
+			}
+		}
 		else
 		{
 			if (args.contains("token"))
@@ -968,8 +1001,8 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 		return;
 	}
 	const bool domainRead = tool == "hive_status" || tool == "hive_api" || tool == "hive_result" ||
-							tool == "game_world" || tool == "game_stats" ||
-							(tool == "game_time" && a.value("action", "") == "status") ||
+							tool == "game_world" || tool == "game_stats" || tool == "game_wait" ||
+							(tool == "game_time" && a.value("action", "") == "status" && !a.contains("speed")) ||
 							(tool == "hive_program" && (a.value("action", "") == "list" ||
 														a.value("action", "") == "inspect"));
 	if (inputTool(tool) && !domainRead)
@@ -985,7 +1018,7 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 	const bool domainTool = tool.starts_with("hive_") || tool == "game_world" || tool == "game_stats" ||
 							tool == "game_place" || tool == "game_view" || tool == "game_chat" ||
 							tool == "game_building" || tool == "game_zone" ||
-							tool == "game_time";
+							tool == "game_time" || tool == "game_wait" || tool == "game_alliance";
 	if (domainTool && domainHandler)
 	{
 		const auto request = active;
@@ -1000,6 +1033,25 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 		}
 		if (active == request)
 		{
+			// A wait that needs game time (game_wait, hive_run/hive_result wait) becomes an
+			// observer: polled each frame without blocking other requests, until done or
+			// its timeout_ms passes.
+			if (result.error.empty() && result.data.is_object() && result.data.value("pending", false))
+			{
+				request->arguments["_poll"] = result.data["poll"];
+				std::lock_guard lock(mutex);
+				// As for ui_wait: a second of slack lets the final answer reach HTTP first.
+				request->deadline = now + std::chrono::milliseconds(a.value("timeout_ms", 25000)) +
+									std::chrono::seconds(1);
+				if (observers.size() < MaxWaitObservers)
+				{
+					observers.push_back(request);
+					active.reset();
+					return;
+				}
+				result.data = Json::object();
+				result.error = "Too many pending waits (maximum 8); let an earlier wait finish first";
+			}
 			request->completion.set_value(std::move(result));
 			active.reset();
 		}

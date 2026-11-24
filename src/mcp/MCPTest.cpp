@@ -59,7 +59,7 @@ TEST_CASE("MCP/protocol adapters validate metadata and discover all tools")
 	CHECK(discover.status == 200);
 	CHECK(discover.body["result"]["resultType"] == "complete");
 	auto listed = p.receive(modern("tools/list").dump(), {"2026-07-28", "tools/list", ""});
-	CHECK(listed.body["result"]["tools"].size() == 30);
+	CHECK(listed.body["result"]["tools"].size() == 32);
 	CHECK(listed.body["result"].contains("cacheScope"));
 	CHECK(
 		p.receive(modern("tools/list").dump(), {"2026-07-28", "wrong", ""}).body["error"]["code"] ==
@@ -364,11 +364,11 @@ TEST_CASE("MCP/tools explain themselves within a discovery size budget")
 		guide = guide || tool["name"] == "game_guide";
 	}
 	CHECK(guide);
-	// Every client pays for discovery in context; keep it bounded. 25 KB covers the 29
-	// tools including the game_* map and time tools.
+	// Every client pays for discovery in context; keep it bounded. 27 KB covers the 32
+	// tools including the game_* map, time, wait and alliance tools.
 	const auto bytes = Json{{"tools", tools}}.dump().size();
 	INFO("tools/list bytes: " << bytes);
-	CHECK(bytes < 25000);
+	CHECK(bytes < 27000);
 	// Time steps and zoom are bounded by the schema, before reaching the game.
 	Context context;
 	CHECK_THROWS_WITH_AS(registry.call(context, "game_time", {{"action", "step"}, {"ticks", 0}}, "test"),
@@ -377,6 +377,15 @@ TEST_CASE("MCP/tools explain themselves within a discovery size budget")
 					std::invalid_argument);
 	CHECK_THROWS_WITH_AS(registry.call(context, "game_view", {{"token", "t"}, {"x", 1}, {"y", 1}, {"zoom", 6}}, "test"),
 						 doctest::Contains("zoom"), std::invalid_argument);
+	// Speed is the top bar's range; a wait names only known events and bounded ticks.
+	CHECK_THROWS_WITH_AS(registry.call(context, "game_time", {{"action", "status"}, {"speed", 11}}, "test"),
+						 doctest::Contains("speed"), std::invalid_argument);
+	CHECK_THROWS_WITH_AS(registry.call(context, "game_wait", {{"until", {"victory"}}}, "test"),
+						 doctest::Contains("until"), std::invalid_argument);
+	CHECK_THROWS_WITH_AS(registry.call(context, "game_wait", {{"ticks", 9001}}, "test"),
+						 doctest::Contains("ticks"), std::invalid_argument);
+	CHECK_THROWS_WITH_AS(registry.call(context, "game_alliance", {{"token", "t"}}, "test"),
+						 doctest::Contains("team"), std::invalid_argument);
 }
 TEST_CASE("MCP/game guide serves every topic with links and rejects unknown topics")
 {
@@ -1986,5 +1995,110 @@ TEST_CASE("MCP/standing orders survive idle control lease expiry [network]")
 	CHECK_FALSE(program.at("paused").get<bool>());
 	CHECK(program.at("recent").at("status") == "completed");
 	CHECK(program.at("recent").at("observation_tick") == world.game.stepCounter);
+}
+TEST_CASE("MCP/game_wait and hive waits hold as observers until game time answers them [network]")
+{
+	glob2test::HeadlessGlobals globals({.display = true, .width = 640, .height = 480});
+	glob2test::HeadlessGame world({.teams = 2, .loadDefaultRace = true, .header = true});
+	world.gui.localPlayer = world.gui.localTeamNo = 0;
+	world.game.players[0]->type = BasePlayer::P_LOCAL;
+	Hive::LocalCommander commander(world.gui, [](Json input)
+	{
+		std::promise<Json> result;
+		result.set_value(Hive::invoke(input));
+		return result.get_future();
+	});
+	UIService service(*globalContainer->gfx);
+	service.domainHandler = [&](const auto &tool, const auto &arguments)
+	{
+		Result result;
+		result.data = commander.call(tool, arguments);
+		return result;
+	};
+	service.configure(true, unusedLoopbackPort());
+	waitForListener(service, ListenerState::Running);
+	auto pump = [&]
+	{
+		std::vector<SDL_Event> events;
+		service.pump(events, true);
+		service.afterDispatch();
+	};
+	auto start = [&](const std::string &tool, Json args)
+	{
+		auto request = service.submit(tool, std::move(args), "wait client");
+		auto future = request->completion.get_future();
+		pump();
+		return future;
+	};
+	auto ready = [](std::future<Result> &future)
+	{ return future.wait_for(std::chrono::seconds(0)) == std::future_status::ready; };
+	auto acquired = start("ui_acquire_control", Json::object());
+	const auto token = completed(acquired).data.at("token");
+	const auto session = commander.status().at("session");
+
+	{ // hive_run wait returns the finished result in one call
+		auto run = start("hive_run", {{"token", token}, {"session", session}, {"operation_key", "wait-run"},
+									  {"wait", true}, {"source", "function step(ctx){return {output:{seen:ctx.tick}}}"}});
+		CHECK_FALSE(ready(run)); // queued: held as an observer, not answered "queued"
+		commander.update();		 // starts the worker
+		commander.update();		 // finishes it
+		pump();
+		const auto result = completed(run);
+		REQUIRE(result.error.empty());
+		CHECK(result.data.at("status") == "completed");
+		CHECK(result.data.at("output").at("seen") == world.game.stepCounter);
+		// hive_result wait on a finished operation answers at once.
+		auto again = start("hive_result", {{"session", session}, {"operation_key", "wait-run"}, {"wait", true}});
+		CHECK(completed(again).data.at("status") == "completed");
+	}
+	{ // game_wait answers after the requested ticks, without control
+		const auto from = world.game.stepCounter;
+		auto wait = start("game_wait", {{"ticks", 50}});
+		CHECK_FALSE(ready(wait));
+		world.game.stepCounter += 20;
+		pump();
+		CHECK_FALSE(ready(wait));
+		world.game.stepCounter += 40;
+		pump();
+		const auto result = completed(wait);
+		REQUIRE(result.error.empty());
+		CHECK(result.data.at("reason") == "ticks");
+		CHECK(result.data.at("from_tick") == from);
+		CHECK(result.data.at("waited_ticks") == 60);
+		// The digest is game_world's alerts reply: no building list, the colony's status.
+		CHECK_FALSE(result.data.contains("buildings"));
+		CHECK(result.data.contains("status"));
+		CHECK(result.data.contains("alerts"));
+	}
+	{ // a paused match ends a wait at once, and timeout_ms ends a long one
+		world.gui.hardPause = true;
+		auto paused = start("game_wait", {{"ticks", 300}});
+		pump();
+		CHECK(completed(paused).data.at("reason") == "paused");
+		world.gui.hardPause = false;
+		auto timed = start("game_wait", {{"ticks", 9000}, {"timeout_ms", 100}});
+		CHECK_FALSE(ready(timed));
+		std::this_thread::sleep_for(std::chrono::milliseconds(150));
+		pump();
+		CHECK(completed(timed).data.at("reason") == "timeout");
+	}
+	{ // game_alliance sends the Alliance dialog's order for one team only
+		world.game.gameHeader.setAllyTeamsFixed(false); // custom games let players choose
+		world.gui.prepareLocalPresentation();		  // the dialog reads the presented match
+		auto change = start("game_alliance", {{"token", token}, {"team", 1}, {"share_food_vision", true}});
+		const auto sent = completed(change);
+		INFO(sent.error);
+		REQUIRE(sent.error.empty());
+		CHECK(sent.data.at("queued") == true);
+		auto own = start("game_alliance", {{"token", token}, {"team", 0}, {"allied", true}});
+		CHECK(completed(own).error.find("not your own") != std::string::npos);
+		world.game.gameHeader.setAllyTeamsFixed(true);
+		world.gui.prepareLocalPresentation();
+		// Teams Fixed locks only the alliance column, as in the dialog.
+		auto fixed = start("game_alliance", {{"token", token}, {"team", 1}, {"allied", true}});
+		CHECK(completed(fixed).error.find("fixed") != std::string::npos);
+		auto vision = start("game_alliance", {{"token", token}, {"team", 1}, {"share_food_vision", false}});
+		CHECK(completed(vision).error.empty());
+	}
 }
 #endif

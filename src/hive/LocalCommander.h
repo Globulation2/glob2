@@ -24,6 +24,7 @@ class LocalCommander : public CommanderView
 		Json definition, state = nullptr, recent = nullptr;
 		bool initialized = false, paused = false;
 		unsigned nextTick = 0, random = 1;
+		unsigned retries = 0; // consecutive retries after the worker could not start
 		std::uint64_t generation = 0;
 	};
 	struct Operation
@@ -60,7 +61,32 @@ class LocalCommander : public CommanderView
 	// MCP game_stats in a match: the colony's own statistics, as the in-game
 	// Statistics panel shows them (never another team's).
 	Json stats(const Json &arguments);
+	// MCP game_wait: let game time pass until a number of ticks or something the colony
+	// would notice (attack, loss, conversion, sighting, script failure, match end). The
+	// first call answers {pending, poll}; the MCP service polls each frame with _poll.
+	Json wait(const Json &arguments);
+	// MCP game_alliance: the Alliance dialog's OK for one other team.
+	Json alliance(const Json &arguments);
+	// hive_run / hive_result with wait: poll the journal until the operation finishes.
+	Json awaitResult(const Json &arguments);
 	void submit(const std::vector<Json> &descriptors);
+	// Standing-order failures, reported as game_world alerts: a program that fails is
+	// paused (or, when its worker could not start, retried a few times first).
+	struct Failure
+	{
+		std::string program, error;
+		unsigned tick;
+		bool paused;
+	};
+	std::deque<Failure> failures;
+	// Other teams' buildings first seen since game_world memory started, newest last.
+	struct Sighting
+	{
+		std::string type;
+		int x, y, team;
+		unsigned tick;
+	};
+	std::deque<Sighting> sightings;
 	// Recent game_place requests, followed up in game_world until resolved.
 	struct Placement
 	{
@@ -74,7 +100,7 @@ class LocalCommander : public CommanderView
 	// once an agent has asked for game_world. Until then nothing reads it, and a
 	// periodic refresh would park the simulation in every local game.
 	std::map<int, Json> seenBuildings;
-	bool memoryTracked = false;
+	bool memoryTracked = false, memoryStarted = false;
 	unsigned nextMemoryTick = 0;
 	void refreshMemory();
 	// The colony's own buildings as last refreshed, to report the ones it has lost:
@@ -113,5 +139,7 @@ class LocalCommander : public CommanderView
 	void change(const std::string &id, const std::string &action) override;
 };
 Json localCall(const std::string &tool, const Json &arguments);
+// game_wait's answer once the match it waited in has ended.
+Json matchOver(const std::string &tool);
 Json playerAPI();
 } // namespace Hive

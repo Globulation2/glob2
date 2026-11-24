@@ -390,7 +390,7 @@ let wheatTiles = [];
 function step(ctx) {
   const tiles = ctx.game.map.region(10, 20, 8, 6);
   const wheat = tiles.filter(t => t.visible && t.resource.type === 1);
-  // A resource may be eternal with amount zero: test type !== 255 for presence.
+  // A resource may be eternal with amount zero: test type !== 65535 for presence.
   wheatTiles = wheat.map(t => ({x: t.x, y: t.y, amount: t.resource.amount}));
 }
 ```
@@ -401,15 +401,15 @@ These values describe profile 1's engine encodings. They are not injected
 JavaScript globals. Define local constants in your single module when useful:
 
 ```javascript
-const RESOURCE = Object.freeze({WOOD: 0, WHEAT: 1, STONE: 3, NONE: 255});
+const RESOURCE = Object.freeze({WOOD: 0, WHEAT: 1, STONE: 3, NONE: 65535});
 const UNIT = Object.freeze({WORKER: 0, EXPLORER: 1, WARRIOR: 2});
 const NO_ENTITY = 65535;
 ```
 
 | Domain | Values |
 | --- | --- |
-| Resource IDs / array indices | Wood `0`, wheat `1`, papyrus `2`, stone `3`, alga `4`, cherry `5`, orange `6`, prune `7`; array positions `8..14` are reserved |
-| Resource sentinels | Tile no-resource `255`; unit not-carrying `-1` |
+| Resource IDs / array indices | Wood `0`, wheat `1`, papyrus `2`, stone `3`, alga `4`, cherry `5`, orange `6`, prune `7`; array positions `8..14` are reserved. A tile's `resource.type` is a map-local ID: look it up in `resourceTypes()` (maps may add rice, fish, maize and more) |
+| Resource sentinels | Tile no-resource `65535`; unit not-carrying `-1` |
 | Building families (`shortType`) | Swarm `0`, inn `1`, hospital `2`, racetrack `3`, swimmingpool `4`, barracks `5`, school `6`, defencetower `7`, explorationflag `8`, warflag `9`, clearingflag `10`, stonewall `11`, market `12` |
 | Ability array indices / actions | Stop walk `0`, stop swim `1`, stop fly `2`, walk `3`, swim `4`, fly `5`, build `6`, harvest `7`, attack speed `8`, attack strength `9`, magic attack air `10`, magic attack ground `11`, magic create wood `12`, magic create wheat `13`, magic create alga `14`, armor `15`, health `16` |
 | Additional destination purposes | Heal `17`, feed `18`; these are not indices in the 17-entry ability arrays |

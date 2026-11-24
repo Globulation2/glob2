@@ -22,6 +22,8 @@ Json snapshot()
 		 Json::array({{{"id", 1}, {"generation", 2}, {"team", 0}, {"type", 0}, {"medical", 1}}})},
 		{"buildings", Json::array()},
 		{"buildingTypes", Json::array()},
+		{"terrainTypes", Json::array({{{"id", 0}, {"name", "grass"}, {"buildable", true}}})},
+		{"resourceTypes", Json::array({{{"id", 0}, {"key", "wood"}, {"name", "Wood"}}})},
 		{"tiles", Json::array({{{"x", 0}, {"y", 0}, {"visible", true}, {"explored", true}},
 							   {{"x", 1}, {"y", 0}, {"visible", false}, {"explored", false}}})}};
 }
@@ -47,6 +49,14 @@ TEST_CASE("Hive Mind exposes only copied player observations" * doctest::test_su
 	CHECK(out.at("scenario") == "undefined");
 	CHECK(out.at("network") == "undefined");
 	CHECK(out.at("files") == "undefined");
+}
+TEST_CASE("Hive Mind reads the match's terrain and resource rule tables" * doctest::test_suite("HiveMind"))
+{
+	// What a tile's corners and resource type mean: public rules, not map contents.
+	auto r = run(R"(function step(ctx){return {output:{terrain:ctx.game.terrainTypes()[0],resource:ctx.game.resourceTypes()[0].key}};})");
+	REQUIRE(r.at("ok") == true);
+	CHECK(r.at("output").at("terrain").at("buildable") == true);
+	CHECK(r.at("output").at("resource") == "wood");
 }
 TEST_CASE("Hive Mind commits globals only through successful results" *
 		  doctest::test_suite("HiveMind"))
