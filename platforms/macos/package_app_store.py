@@ -16,7 +16,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 ENTITLEMENTS = ROOT / "platforms/macos/AppStore.entitlements"
-ICON_SOURCE = ROOT / "content/data/icons/glob2-icon-128x128.png"
+ICONS = ROOT / "content/data/icons"
+ICON_MASTER = ROOT / "content-src/icons/app/glob2-icon-1024.png"
 sys.path.insert(0, str(ROOT / "buildsys"))
 sys.path.insert(0, str(ROOT / "platforms/mobile"))
 from build_layout import PACKAGE_VERSION
@@ -28,8 +29,14 @@ def run(*args):
     subprocess.run([str(arg) for arg in args], check=True)
 
 
+def icon_source(size):
+    """The desktop icon drawn for this size, or the high-resolution master to reduce."""
+    exact = ICONS / f"glob2-icon-{size}x{size}.png"
+    return exact if exact.is_file() else ICON_MASTER
+
+
 def write_icon(destination):
-    """Include the Retina and App Store sizes missing from the legacy .icns."""
+    """Write every Retina and App Store size from the checked-in icon sources."""
     sizes = {
         "icon_16x16.png": 16, "icon_16x16@2x.png": 32,
         "icon_32x32.png": 32, "icon_32x32@2x.png": 64,
@@ -41,7 +48,7 @@ def write_icon(destination):
         iconset = Path(directory) / "Glob2.iconset"
         iconset.mkdir()
         for name, size in sizes.items():
-            run("sips", "-z", size, size, ICON_SOURCE,
+            run("sips", "-z", size, size, icon_source(size),
                 "--out", iconset / name)
         run("iconutil", "-c", "icns", iconset, "-o", destination)
 

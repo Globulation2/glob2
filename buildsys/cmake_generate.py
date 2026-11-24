@@ -623,7 +623,7 @@ DESKTOP_FILES = (('content/data/glob2.desktop', 'applications/org.globulation2.G
                  ('content/data/completions/glob2.fish', 'fish/vendor_completions.d/glob2.fish'),
                  ('platforms/linux/glob2.6', 'man/man6/glob2.6'),
                  *(('content/data/icons/glob2-icon-%dx%d.png' % (size, size),
-                    'icons/hicolor/%dx%d/apps/glob2.png' % (size, size)) for size in (16, 24, 32, 48, 64, 128, 256)))
+                    'icons/hicolor/%dx%d/apps/glob2.png' % (size, size)) for size in (16, 24, 32, 48, 64, 128, 256, 512)))
 
 
 def _copy(source, destination):

@@ -32,11 +32,11 @@ that run's app artifact. Check launch, settings, saves, map import, LAN hosting,
 and online sign-in and play. The app's profile data is placed inside its
 sandbox container. Existing direct-distribution profiles in `~/.glob2` do not
 migrate automatically, so migration needs a separate user-facing decision before
-release to existing desktop users. The generated Mac icon includes required large
-sizes, but those are enlarged from the existing 128-pixel artwork and need visual
-review. Apple Distribution-signed App Store builds cannot be launched directly
-before Apple delivers them; test the ad hoc candidate locally and the processed
-distribution build through TestFlight.
+release to existing desktop users. The generated Mac icon takes its large sizes
+from the 1024-pixel icon master (`content-src/icons/app/`) and its sizes up to
+128 pixels from `content/data/icons/`. Apple Distribution-signed App Store
+builds cannot be launched directly before Apple delivers them; test the ad hoc
+candidate locally and the processed distribution build through TestFlight.
 
 ## Manual GitHub Actions release
 

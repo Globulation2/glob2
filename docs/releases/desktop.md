@@ -92,8 +92,8 @@ screenshot. A native Linux capture of the active menu colony is in
 introduced it so Flathub can mirror a stable image. Confirm the URL resolves
 before publication, and pin any replacement screenshot to its own commit. Add
 the release notes once the release candidate is settled. The
-256x256 application icon is derived from the existing desktop artwork and is
-installed with other icon sizes.
+256x256 and 512x512 application icons are rendered from the vector icon in
+`content-src/icons/app/` and are installed with the smaller icon sizes.
 Flathub reads the AppStream screenshot from the installed metainfo file. The
 Snap Store manages screenshots in its listing separately from `snapcraft.yaml`;
 upload `content/data/screenshots/globulation2-gameplay.png` to that listing when the snap
