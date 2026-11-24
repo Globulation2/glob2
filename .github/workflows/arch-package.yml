@@ -25,6 +25,9 @@ jobs:
           set -eu
           docker pull archlinux:base-devel
           docker run --name arch-build-env archlinux:base-devel bash -ec '
+            # The container excludes manuals and its own pacman config.
+            # Keep both installed through the distribution upgrade.
+            sed -i "/^NoExtract.*usr\/share\/man\//d; /^NoExtract.*etc\/pacman\.conf/d" /etc/pacman.conf
             pacman -Syu --noconfirm --needed git
             useradd -m builder
             printf "builder ALL=(root) NOPASSWD: /usr/bin/pacman\n" >/etc/sudoers.d/glob2-build
@@ -35,8 +38,6 @@ jobs:
             install -o builder -g builder /recipe/{PKGBUILD,system-ffmpeg.patch} /build/
             cd /build
             runuser -u builder -- makepkg --noconfirm --syncdeps --nobuild
-            # Match a normal install, including the package's manual page.
-            sed -i "/^NoExtract.*usr\/share\/man\//d" /etc/pacman.conf
             pacman -S --noconfirm --needed glob2
           '
           docker commit arch-sources glob2-arch-sources
