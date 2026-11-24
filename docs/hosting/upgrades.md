@@ -395,8 +395,10 @@ instead and the host only pulls and swaps:
    are immutable). Builds read their layer cache from `glob2-online-cache`, and
    their compiler caches from it too, so a deploy recompiles only the C++ that
    changed. `ccache-engine:latest` and `ccache-relay:latest` hold the
-   `glob2-ccache` cache mount of `deploy/Dockerfile`'s C++ stages, moved in and out of
-   the builder by `deploy/ccache.Dockerfile`. `web-toolchain:latest` holds the
+   `glob2-ccache` and `glob2-dev` cache mounts of `deploy/Dockerfile`'s C++ stages
+   (the compiler cache, and the development store with the content-keyed
+   runtime-asset export and dependency prefixes), moved in and out of the builder
+   by `deploy/ccache.Dockerfile`. `web-toolchain:latest` holds the
    `glob2-web-toolchain` volume: the Emscripten SDK, its caches and the web build's
    ccache. They are kept there, not in the Actions cache, which any workflow of the
    mirror could write. Only builds of commits on public `master` write any of these
