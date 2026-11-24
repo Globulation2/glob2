@@ -173,15 +173,10 @@ Element Dialog::build(const Presentation &p)
 				 },
 				 small)},
 			{p.pt(6)}));
-	if (client->local())
-		cards.push_back(button(
-			"hive/details", expanded ? tr("[hive less]") : tr("[hive reports and details]"),
-			[this]
-			{
-				expanded = !expanded;
-				invalidate();
-			},
-			small));
+	// Local scripts are automation the player started: the panel only says which are
+	// running and lets the player pause, cancel or stop them. Their output, errors and
+	// reports are for whoever wrote them, through MCP (hive_program, game_world alerts).
+	const bool local = client->local();
 	auto stop = small;
 	const auto stopping = client->controlStatus.find("commander");
 	stop.enabled = stopping == client->controlStatus.end() || stopping->second != "Stopping…";
@@ -204,10 +199,12 @@ Element Dialog::build(const Presentation &p)
 			--limit;
 		return text.substr(0, limit) + "…";
 	};
-	if (!client->progress.empty())
+	if (!local && !client->progress.empty())
 		cards.push_back(
 			card(paragraph(preview(client->progress, 240), {FontRole::Caption}), compact));
-	if (expanded)
+	if (local)
+		;
+	else if (expanded)
 	{
 		const auto count = std::min<std::size_t>(10, client->reports.size());
 		for (std::size_t i = 0; i < count; ++i)
@@ -229,11 +226,12 @@ Element Dialog::build(const Presentation &p)
 		std::vector<Element> body{label(name), caption(missing  ? tr("[hive needs fresh order]")
 													   : paused ? tr("[Paused]")
 																: tr("[hive active]"))};
-		if (const auto recent = recentSummary(order.value("recent", Json())); !recent.empty())
-			body.push_back(paragraph(preview(recent, expanded ? 1000 : 180), {FontRole::Caption}));
+		if (!local)
+			if (const auto recent = recentSummary(order.value("recent", Json())); !recent.empty())
+				body.push_back(paragraph(preview(recent, expanded ? 1000 : 180), {FontRole::Caption}));
 		if (!status.empty())
 			body.push_back(caption(controlStatusText(status)));
-		if (expanded)
+		if (expanded && !local)
 			body.push_back(
 				paragraph(order.at("description").get<std::string>(), {FontRole::Caption}));
 		auto toggle = small;

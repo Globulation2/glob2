@@ -640,6 +640,10 @@ void LocalCommander::finish(Json result)
 		success = result.value("ok", false);
 		error = result.value("error", result.value("diagnostic", std::string()));
 		// The budget is the sum of every host read in one run; say what fits.
+		if (error.rfind("JavaScript native resource limit exhausted", 0) == 0)
+			error += " (the script ran out of its 128 MiB JavaScript heap or its call stack: read "
+					 "smaller areas or scan() fields instead of region() records, keep globals small, "
+					 "and avoid deep recursion)";
 		if (error.rfind("JavaScript work budget exhausted", 0) == 0)
 			error += " (250 million units per run: an explored tile read costs about 1,500, an "
 					 "unexplored one far less, and a for...of loop about three times an index loop; "
