@@ -1,16 +1,34 @@
-Construeix una colònia pròspera en un territori disputat.
+Estratègia en temps real en què dirigeixes la colònia, no cada unitat.
+Gratuït. Sense anuncis. Sense compres integrades. Sense caixes de botí. Sense moneda prèmium.
 
-Globulation 2 és un joc d'estratègia en temps real en què els aliments, els treballadors i l'espai determinen la teva expansió. Fes créixer una colònia extensa, equilibra les seves necessitats contraposades i competeix amb els rivals per la terra i els recursos. Les teves criatures actuen de manera autònoma perquè puguis dirigir la colònia en conjunt.
+Globulation 2 és un joc d'estratègia en temps real sobre una colònia de globs: criatures petites i atrafegades que treballen, mengen, s'entrenen i lluiten. Fas créixer la colònia, la mantens alimentada i lluites contra les colònies rivals que volen el mateix territori.
 
-Desenvolupa una economia que pugui sostenir les teves ambicions.
-L'alimentació, la construcció i l'entrenament competeixen per la teva mà d'obra. Decideix on calen treballadors i equilibra les noves ambicions amb les necessitats de la colònia que ja tens.
+Tu decideixes. Els teus globs fan la feina.
+Tria què vols construir i quants globs hi han de treballar. Ells troben el camí tots sols, recullen els materials i ho construeixen, i mengen quan tenen gana. Per explorar terres noves o atacar un rival, col·loca una bandera i indica quants globs hi han d'anar. No hi ha unitats per seleccionar d'una en una: tu planifiques per a tota la colònia.
 
-Fes del mapa una part de la teva estratègia.
-Cada mapa demana una estratègia diferent. Adapta l'expansió al terreny, tria què vols defensar i troba els camins i els recursos que necessita la teva colònia.
+Mantén la colònia alimentada.
+Les despenses alimenten els teus globs. Les granges en produeixen més. Les escoles, els poliesportius, les piscines i les casernes els entrenen, i els hospitals els curen. Tot plegat competeix pels mateixos treballadors, de manera que cada projecte nou en treu d'un altre: un exèrcit més gran no serveix de res si no queda ningú per collir el blat.
 
-Defensa el que has construït.
-La teva economia sosté tant el creixement com la defensa. Equilibra les necessitats de la colònia mentre els rivals competeixen per la terra i els recursos, i prepara't per a conflictes que poden decidir la partida.
+Planifica on expandir-te.
+El blat, la fusta i la pedra poques vegades són on els voldries, i les rutes que els uneixen importen tant com els recursos mateixos. Decideix on expandir-te, què protegir amb murs i per quines coses val la pena lluitar. Juga en 23 mapes fets a mà o genera un mapa nou a partir de qualsevol dels 67 paisatges aleatoris.
 
-Globulation 2 és gratuït i de codi obert.
+Lluita pel territori.
+Les colònies rivals també creixen, i volen el mateix territori. Entrena guerrers, construeix torres de defensa i murs de pedra, i col·loca banderes de guerra allà on el teu exèrcit hagi d'atacar. Un atac només dura mentre durin el menjar i els hospitals que el sostenen, de manera que una guerra es guanya tant a les despenses com al front.
 
-Aquesta edició per a Android porta el clàssic joc d'ordinador a les pantalles tàctils.
+Què inclou el joc.
+• 23 mapes fets a mà, a més de mapes nous generats a partir de 67 paisatges aleatoris
+• 8 oponents controlats per l'ordinador, de fàcil a difícil
+• Fins a 16 colònies en una mateixa partida
+• Un tutorial de 10 lliçons
+• Editor de mapes integrat
+• Desa i mira repeticions de les partides
+• Partides per a un jugador sense connexió, sense necessitat de compte
+• Disponible en 45 idiomes
+
+Juga en companyia.
+Connecta't per jugar partides ràpides 1v1, classificatòries o informals, o crea una sala i convida-hi els amics amb un codi. Si no hi ha cap jugador esperant, jugues contra un oponent controlat per l'ordinador. Pots jugar en línia com a convidat; inicia la sessió per jugar partides classificatòries. Qui juga des de l'ordinador, el navegador o el mòbil comparteix les mateixes partides en línia, amb la mateixa versió del joc. Juga en xarxa local, sense compte ni connexió a internet.
+
+Codi obert, fet per voluntaris.
+Globulation 2 va començar el 2001 i es va posar a l'abast del públic el 2004. L'han anat construint voluntaris al llarg de dues dècades. És gratuït i de codi obert, amb llicència GPL, versió 3: el codi és públic, i qualsevol pot llegir-lo, modificar-lo i ajudar a millorar el joc.
+
+A Android, juga amb el mòbil o la tauleta, en vertical o en horitzontal, amb interfícies tàctils específiques per a mòbil i per a tauleta. Les partides per a un jugador funcionen sense connexió i no necessiten cap compte.

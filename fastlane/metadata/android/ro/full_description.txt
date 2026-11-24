@@ -1,16 +1,34 @@
-Construiește o colonie prosperă într-un teritoriu disputat.
+Strategie în timp real: conduci colonia, nu fiecare unitate în parte.
+Gratuit. Fără reclame. Fără achiziții în aplicație. Fără loot boxuri. Fără monedă premium.
 
-Globulation 2 este un joc de strategie în timp real în care hrana, muncitorii și spațiul îți modelează expansiunea. Dezvoltă o colonie extinsă, echilibrează-i nevoile concurente și concurează cu rivalii pentru terenuri și resurse. Creaturile tale acționează autonom, permițându-ți să ghidezi colonia în ansamblu.
+Globulation 2 este un joc de strategie în timp real despre o colonie de globi: creaturi mici și harnice care muncesc, mănâncă, se antrenează și luptă. Tu dezvolți colonia, o hrănești și lupți cu coloniile rivale care vor același teritoriu.
 
-Dezvoltă o economie care să îți poată susține ambițiile.
-Hrana, construcțiile și instruirea concurează pentru forța ta de muncă. Decide unde este nevoie de muncitori și echilibrează noile ambiții cu nevoile coloniei pe care o ai deja.
+Tu decizi. Globii tăi fac treaba.
+Alege ce construiești și câți globi să lucreze acolo. Ei își găsesc singuri drumul, adună materialele și construiesc, iar când le e foame, mănâncă. Ca să explorezi teritorii noi sau să ataci un rival, plasează un steag și stabilește câți globi să meargă. Nu ai unități de selectat una câte una: planifici pentru întreaga colonie.
 
-Include harta în strategia ta.
-Hărți diferite necesită strategii diferite. Adaptează-ți expansiunea la teren, alege ce să aperi și găsește rutele și resursele de care are nevoie colonia ta.
+Hrănește-ți colonia.
+Popasurile îți hrănesc globii. Stupii produc globi noi. Școlile, pistele de alergare, piscinele și câmpurile de antrenament îi instruiesc, iar spitalele îi vindecă. Toate își dispută aceiași lucrători, așa că fiecare proiect nou ia lucrători de la altul: o armată mai mare nu te ajută dacă nu mai rămâne nimeni să recolteze grâul.
 
-Apără ceea ce ai construit.
-Economia ta susține atât creșterea, cât și apărarea. Echilibrează nevoile coloniei tale în timp ce rivalii concurează pentru terenuri și resurse și pregătește-te pentru conflicte care pot decide meciul.
+Plănuiește unde te extinzi.
+Grâul, lemnul și piatra sunt rareori acolo unde ai vrea, iar rutele dintre ele contează la fel de mult ca resursele. Hotărăște unde te extinzi, ce aperi cu ziduri și pentru ce merită să lupți. Joacă pe 23 de hărți create manual sau generează o hartă nouă din oricare dintre cele 67 de peisaje aleatorii.
 
-Globulation 2 este gratuit și open source.
+Luptă pentru teritoriu.
+Și coloniile rivale cresc și vor același teritoriu. Antrenează războinici, construiește turnuri de apărare și ziduri de piatră și plasează steaguri de luptă acolo unde vrei să atace armata ta. Un atac ține doar cât îl susțin hrana și spitalele, așa că un război se câștigă la popasuri la fel de mult ca pe front.
 
-Această ediție Android aduce jocul clasic pentru desktop pe ecranele tactile.
+Ce găsești în joc.
+• 23 de hărți create manual, plus hărți noi generate din 67 de peisaje aleatorii
+• 8 adversari controlați de calculator, de la ușori la dificili
+• Până la 16 colonii într-un singur meci
+• Tutorial în 10 lecții
+• Editor de hărți integrat
+• Salvează și urmărește reluări
+• Joc offline pentru un singur jucător, fără să ai nevoie de cont
+• Disponibil în 45 de limbi
+
+Joacă împreună cu alții.
+Intră online pentru meciuri rapide 1v1, competitive sau amicale, ori creează o cameră și invită-ți prietenii cu un cod. Dacă nu așteaptă niciun jucător, joci în schimb împotriva unui adversar controlat de calculator. Poți juca online ca invitat; pentru meciuri competitive, autentifică-te. Jucătorii de pe desktop, din browser și de pe mobil joacă în aceleași meciuri online, pe aceeași versiune a jocului. Joacă în rețeaua locală, fără cont și fără conexiune la internet.
+
+Open source, creat de voluntari.
+Lucrul la Globulation 2 a început în 2001, iar jocul a fost lansat public în 2004. Voluntarii l-au dezvoltat de-a lungul a două decenii. Este gratuit și open source, sub licența GPL, versiunea 3: codul este public și oricine îl poate citi, îl poate modifica și poate ajuta la îmbunătățirea jocului.
+
+Pe Android, joci pe telefon sau pe tabletă, pe verticală sau pe orizontală, cu interfețe tactile separate pentru telefoane și tablete. Modul pentru un singur jucător funcționează offline și nu necesită cont.

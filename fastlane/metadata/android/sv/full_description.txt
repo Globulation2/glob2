@@ -1,16 +1,34 @@
-Bygg en blomstrande koloni i omtvistat territorium.
+Realtidsstrategi där du styr kolonin, inte varje enskild enhet.
+Gratis. Ingen reklam. Inga köp i appen. Inga lootlådor. Ingen premiumvaluta.
 
-Globulation 2 är ett realtidsstrategispel där mat, arbetare och utrymme formar din expansion. Utveckla en vidsträckt koloni, balansera dess konkurrerande behov och tävla mot rivaler om mark och resurser. Dina varelser agerar autonomt och låter dig styra kolonin som helhet.
+Globulation 2 är ett realtidsstrategispel om en koloni av globs: små, flitiga varelser som arbetar, äter, tränar och slåss. Du får kolonin att växa, håller den mätt och slåss mot rivaliserande kolonier som vill åt samma mark.
 
-Skapa en ekonomi som kan upprätthålla dina ambitioner.
-Mat, byggnation och utbildning konkurrerar om din arbetskraft. Bestäm var arbetskraft behövs och balansera nya ambitioner med behoven hos den koloni du redan har.
+Du bestämmer. Dina globs gör jobbet.
+Välj vad som ska byggas och hur många globs som ska arbeta med det. De hittar vägen själva, samlar in materialet och bygger, och de äter när de är hungriga. Vill du utforska ny mark eller anfalla en rival placerar du ut en flagga och anger hur många globs som ska ge sig av. Här finns inga enheter att markera en i taget: du planerar för hela kolonin.
 
-Gör kartan till en del av din strategi.
-Olika kartor kräver olika strategier. Anpassa din expansion till terrängen, välj vad du ska försvara och hitta de rutter och resurser din koloni behöver.
+Håll kolonin mätt.
+Värdshus ger dina globs mat. Svärmar producerar fler av dem. Skolor, löparbanor, simbassänger och kaserner tränar dem, och sjukhus läker dem. Allt konkurrerar om samma arbetare, så varje nytt projekt tar arbetare från ett annat: en större armé är till ingen nytta om ingen finns kvar som kan skörda vetet.
 
-Försvara det du har byggt upp.
-Din ekonomi stöder både tillväxt och försvar. Balansera din kolonis behov medan rivaler tävlar om mark och resurser, och förbered dig på konflikter som kan avgöra matchen.
+Planera var du ska expandera.
+Vete, trä och sten finns sällan där du vill ha dem, och vägarna mellan dem är lika viktiga som själva resurserna. Bestäm var du ska expandera, vad du ska skydda med murar och vad som är värt att slåss för. Spela på 23 handgjorda kartor, eller generera en ny karta utifrån något av 67 slumplandskap.
 
-Globulation 2 är gratis och har öppen källkod.
+Slåss om marken.
+Rivaliserande kolonier växer också, och de vill åt samma mark. Träna krigare, bygg försvarstorn och stenmurar och placera krigsflaggor där din armé ska anfalla. Ett anfall håller bara så länge som maten och sjukhusen bakom det räcker till, så ett krig vinns lika mycket på värdshusen som vid fronten.
 
-Den här Android-utgåvan ger dig det klassiska skrivbordsspelet till pekskärmar.
+Det här finns i spelet.
+• 23 handgjorda kartor, plus nya kartor som genereras utifrån 67 slumplandskap
+• 8 datormotståndare, från lätta till svåra
+• Upp till 16 kolonier i samma match
+• En handledning med 10 lektioner
+• Inbyggd kartredigerare
+• Spara och titta på repriser
+• Enspelarläge offline, inget konto behövs
+• Finns på 45 språk
+
+Spela tillsammans.
+Spela online i rankade eller orankade 1v1-snabbmatcher, eller skapa ett rum och bjud in vänner med en kod. Om ingen spelare väntar möter du en datormotståndare i stället. Du kan spela online som gäst; logga in för att spela rankat. Spelare på dator, i webbläsare och på mobil möts i samma onlinematcher, med samma version av spelet. Spela över ditt lokala nätverk, utan konto och utan internetanslutning.
+
+Öppen källkod, byggt av frivilliga.
+Arbetet med Globulation 2 började 2001, och spelet släpptes till allmänheten 2004. Frivilliga har byggt det under två decennier. Det är gratis och har öppen källkod under GPL, version 3: koden är offentlig, och vem som helst kan läsa den, ändra den och hjälpa till att förbättra spelet.
+
+På Android spelar du på telefon eller surfplatta, i stående eller liggande läge, med separata pekgränssnitt för telefoner och surfplattor. Enspelarläget fungerar offline och kräver inget konto.

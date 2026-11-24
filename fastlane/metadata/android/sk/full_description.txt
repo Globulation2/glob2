@@ -1,16 +1,34 @@
-Vybudujte prosperujúcu kolóniu na spornom území.
+Stratégia v reálnom čase, v ktorej velíte kolónii, nie každej jednotke zvlášť.
+Zadarmo. Bez reklám. Bez nákupov v aplikácii. Bez lootboxov. Bez prémiovej meny.
 
-Globulation 2 je strategická hra v reálnom čase, kde jedlo, pracovníci a priestor formujú vašu expanziu. Rozvíjajte rozľahlú kolóniu, vyvažujte jej konkurenčné potreby a súťažte so súpermi o pôdu a zdroje. Vaše stvorenia konajú autonómne, čo vám umožňuje viesť kolóniu ako celok.
+Globulation 2 je stratégia v reálnom čase o kolónii globov: malých usilovných stvorení, ktoré pracujú, jedia, cvičia a bojujú. Rozvíjate kolóniu, staráte sa, aby nehladovala, a bojujete so súperiacimi kolóniami, ktoré chcú to isté územie.
 
-Vybudujte si ekonomiku, ktorá dokáže udržať vaše ambície.
-Potrava, výstavba a výcvik súperia o vašu pracovnú silu. Rozhodnite, kde sú potrební pracovníci, a vyvážte nové ambície s potrebami kolónie, ktorú už máte.
+Vy rozhodujete. Prácu odvedú vaši globovia.
+Vyberte, čo sa má postaviť a koľko globov na tom má pracovať. Cestu si nájdu sami, nazbierajú materiál a stavbu dokončia, a keď vyhladnú, najedia sa. Ak chcete preskúmať nové územie alebo zaútočiť na súpera, umiestnite vlajku a nastavte, koľko globov má vyraziť. Jednotky tu neoznačujete po jednej: plánujete za celú kolóniu.
 
-Urobte z mapy súčasť svojej stratégie.
-Rôzne mapy si vyžadujú rôzne stratégie. Prispôsobte svoju expanziu terénu, vyberte si, čo budete brániť, a nájdite trasy a zdroje, ktoré vaša kolónia potrebuje.
+Nenechajte kolóniu hladovať.
+Jedálne kŕmia vašich globov. V hniezdach sa rodia ďalší. V školách, na bežeckých dráhach, v bazénoch a v kasárňach cvičia a v nemocniciach sa liečia. To všetko súperí o tých istých robotníkov, takže každý nový projekt berie robotníkov inému: väčšia armáda je zbytočná, keď nemá kto žať pšenicu.
 
-Bráňte to, čo ste vybudovali.
-Vaša ekonomika podporuje rast aj obranu. Vyvážte potreby svojej kolónie, zatiaľ čo súperi súťažia o územie a zdroje, a pripravte sa na konflikty, ktoré môžu rozhodnúť zápas.
+Naplánujte, kam sa rozšírite.
+Pšenica, drevo a kameň sú málokedy tam, kde by ste ich chceli mať, a na trasách medzi nimi záleží rovnako ako na samotných surovinách. Rozhodnite, kam sa rozšírite, čo ochránite hradbami a o čo sa oplatí bojovať. Hrajte na 23 ručne vytvorených mapách alebo si nechajte vygenerovať novú mapu z ktoréhokoľvek zo 67 typov náhodnej krajiny.
 
-Globulation 2 je bezplatný a s otvoreným zdrojovým kódom.
+Bojujte o územie.
+Aj súperiace kolónie rastú a chcú to isté územie. Cvičte bojovníkov, stavajte obranné veže a kamenné hradby a umiestňujte vlajky vojny tam, kde má vaša armáda zaútočiť. Útok vydrží len tak dlho ako jedlo a nemocnice, ktoré ho podporujú, takže vojna sa vyhráva v jedálňach rovnako ako na fronte.
 
-Táto edícia pre Android prináša klasickú desktopovú hru na dotykové obrazovky.
+Čo v hre nájdete.
+• 23 ručne vytvorených máp a k tomu nové mapy generované zo 67 typov náhodnej krajiny
+• 8 počítačových súperov, od ľahkých po ťažkých
+• Až 16 kolónií v jednom zápase
+• Výučba v 10 lekciách
+• Vstavaný editor máp
+• Ukladanie a prehrávanie záznamov hier
+• Offline hra pre jedného hráča, bez potreby účtu
+• Dostupné v 45 jazykoch
+
+Hrajte spolu.
+Online si zahrajte hodnotené či nezáväzné rýchle zápasy 1v1, alebo si založte miestnosť a pozvite priateľov pomocou kódu. Ak práve nečaká žiadny hráč, zahráte si namiesto toho proti počítačovému súperovi. Online môžete hrať ako hosť; na hodnotené zápasy sa treba prihlásiť. Hráči na počítači, v prehliadači aj na mobile sa stretávajú v tých istých online hrách, na rovnakej verzii hry. Hrajte po lokálnej sieti bez účtu a bez pripojenia na internet.
+
+Otvorený zdrojový kód, dielo dobrovoľníkov.
+Práce na Globulation 2 sa začali v roku 2001 a pre verejnosť hra vyšla v roku 2004. Dobrovoľníci ju vyvíjali v priebehu dvoch desaťročí. Hra je zadarmo a má otvorený zdrojový kód pod licenciou GPL verzie 3: kód je verejný a ktokoľvek si ho môže prečítať, upraviť a pomôcť hru vylepšiť.
+
+Na Androide hrajte na telefóne alebo tablete, na výšku alebo na šírku, so samostatným rozložením dotykového ovládania pre telefóny a pre tablety. Hra pre jedného hráča funguje offline a nevyžaduje účet.

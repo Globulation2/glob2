@@ -1,16 +1,34 @@
-Építs virágzó kolóniát vitatott területen.
+Valós idejű stratégia, amelyben a kolóniát irányítod, nem az egységeket egyenként.
+Ingyenes. Nincs reklám. Nincs alkalmazáson belüli vásárlás. Nincs loot box. Nincs prémium valuta.
 
-A Globulation 2 valós idejű stratégiai játék, amelyben az élelem, a dolgozók és a hely határozza meg terjeszkedésedet. Fejlessz kiterjedt kolóniát, egyensúlyozd össze eltérő igényeit, és versengj riválisaiddal földért és erőforrásokért. Lényeid önállóan cselekszenek, így a kolóniát egészként irányíthatod.
+A Globulation 2 valós idejű stratégiai játék, amely a globok kolóniájáról szól. A globok apró, szorgos lények: dolgoznak, esznek, edzenek és harcolnak. Te növeled a kolóniát, ellátod élelemmel, és megküzdesz a rivális kolóniákkal, amelyek ugyanazt a földet akarják.
 
-Fejlessz gazdaságot, amely képes fenntartani terveidet.
-Az élelmezés, az építkezés és a kiképzés ugyanazért a munkaerőért verseng. Döntsd el, hol van szükség dolgozókra, és hangold össze új terveidet a meglévő kolónia igényeivel.
+Te döntesz. A munkát a globjaid végzik.
+Válaszd ki, mit építesz, és hány glob dolgozzon rajta. A globok maguk találják meg az utat, összegyűjtik az építőanyagot, felépítik az épületet, és esznek, ha megéheznek. Ha új földeket szeretnél felderíteni vagy egy riválist megtámadni, tűzz ki egy zászlót, és állítsd be, hány glob menjen oda. Nincsenek egyenként kijelölhető egységek: az egész kolónia szintjén tervezel.
 
-Tedd a térképet stratégiád részévé.
-A különböző térképek különböző stratégiákat kívánnak. Igazítsd terjeszkedésedet a terephez, válaszd ki, mit védesz meg, és találd meg a kolóniád számára szükséges útvonalakat és erőforrásokat.
+Lásd el élelemmel a kolóniát.
+Az étkezdék etetik a globjaidat. A rajokban újabb globok születnek. Az iskolák, a versenypályák, az úszómedencék és a laktanyák képzik, a kórházak pedig gyógyítják őket. Mindez ugyanazokért a dolgozókért verseng, ezért minden új projekt egy másiktól von el dolgozókat: a nagyobb sereg semmit sem ér, ha nem marad senki, aki learatná a búzát.
 
-Védd meg, amit felépítettél.
-Gazdaságod a növekedést és a védelmet egyaránt támogatja. Tartsd egyensúlyban kolóniád igényeit, miközben a riválisok földért és erőforrásokért versengenek, és készülj a mérkőzést eldöntő összecsapásokra.
+Tervezd meg, merre terjeszkedj.
+A búza, a fa és a kő ritkán van ott, ahol szeretnéd, és a köztük vezető útvonalak ugyanannyit számítanak, mint maguk a nyersanyagok. Döntsd el, merre terjeszkedj, mit védj fallal, és miért érdemes harcolni. Játssz 23 kézzel készített térképen, vagy generálj új térképet a 67 véletlenszerű táj bármelyikéből.
 
-A Globulation 2 ingyenes és nyílt forráskódú.
+Harcolj a földért.
+A rivális kolóniák is növekednek, és ugyanazt a földet akarják. Képezz harcosokat, építs védőtornyokat és kőfalakat, és tűzz ki hadizászlókat oda, ahol a seregednek támadnia kell. Egy támadás csak addig tart, amíg a mögötte álló élelemellátás és a kórházak bírják, ezért a háború éppúgy az étkezdékben dől el, mint a fronton.
 
-Ez az Android-kiadás érintőképernyőkre hozza el a klasszikus számítógépes játékot.
+Ez vár a játékban.
+• 23 kézzel készített térkép, valamint 67 véletlenszerű tájból generálható új térképek
+• 8 számítógépes ellenfél, a könnyűtől a nehézig
+• Akár 16 kolónia egy mérkőzésben
+• 10 leckéből álló oktatómód
+• Beépített térképszerkesztő
+• Visszajátszások mentése és megtekintése
+• Offline egyjátékos mód, amelyhez nem kell fiók
+• 45 nyelven érhető el
+
+Játssz együtt másokkal.
+Online rangsorolt vagy barátságos 1v1 gyorsmeccseket játszhatsz, vagy létrehozhatsz egy szobát, és kóddal meghívhatod a barátaidat. Ha éppen nem vár játékos, számítógépes ellenfél ellen játszol. Online vendégként is játszhatsz; a rangsorolt játékhoz jelentkezz be. Az asztali gépen, böngészőben és mobilon játszók ugyanazokban az online játékokban vesznek részt, azonos játékverzióval. Játssz a helyi hálózatodon fiók és internetkapcsolat nélkül.
+
+Nyílt forráskódú, önkéntesek munkája.
+A Globulation 2 fejlesztése 2001-ben indult, maga a játék pedig 2004-ben vált elérhetővé a nagyközönség számára. Önkéntesek építették két évtized során. Ingyenes és nyílt forráskódú, a GPL 3-as verziója alatt: a kód nyilvános, bárki elolvashatja, módosíthatja, és segíthet jobbá tenni a játékot.
+
+Androidon telefonon és táblagépen is játszhatsz, álló vagy fekvő nézetben, külön érintőképernyős elrendezéssel telefonra és táblagépre. Az egyjátékos mód offline működik, és nem kell hozzá fiók.

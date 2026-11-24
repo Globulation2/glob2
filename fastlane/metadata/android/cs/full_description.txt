@@ -1,16 +1,34 @@
-Vybudujte prosperující kolonii na sporném území.
+Strategie v reálném čase, ve které velíte kolonii, ne každé jednotce zvlášť.
+Zdarma. Bez reklam. Bez nákupů v aplikaci. Bez lootboxů. Bez prémiové měny.
 
-Globulation 2 je strategická hra v reálném čase, v níž jídlo, pracovníci a prostor určují vaši expanzi. Rozvíjejte rozlehlou kolonii, vyvažujte její protichůdné potřeby a soupeřte o půdu a zdroje. Vaši tvorové jednají samostatně, takže můžete řídit kolonii jako celek.
+Globulation 2 je strategie v reálném čase o kolonii globů: malých pilných tvorů, kteří pracují, jedí, trénují a bojují. Rozvíjíte kolonii, staráte se, aby nehladověla, a bojujete se soupeřícími koloniemi, které chtějí stejné území.
 
-Rozvíjejte ekonomiku, která unese vaše ambice.
-Jídlo, výstavba a výcvik soupeří o vaši pracovní sílu. Rozhodujte, kde jsou pracovníci potřeba, a vyvažujte nové ambice s potřebami kolonie, kterou už máte.
+Vy rozhodujete. Práci odvedou globové.
+Vyberte, co se má postavit a kolik globů na tom má pracovat. Cestu si najdou sami, nasbírají materiál a stavbu postaví, a když mají hlad, najedí se. Chcete-li prozkoumat nové území nebo zaútočit na soupeře, umístěte prapor a nastavte, kolik globů má vyrazit. Jednotky tu nevybíráte jednu po druhé: plánujete za celou kolonii.
 
-Zapojte mapu do své strategie.
-Různé mapy vyžadují různé strategie. Přizpůsobte expanzi terénu, zvolte, co budete bránit, a najděte cesty a zdroje, které vaše kolonie potřebuje.
+Uživte svou kolonii.
+Hospody krmí vaše globy. V úlech se rodí noví. Školy, závodní dráhy, koupaliště a cvičiště je trénují a nemocnice je léčí. To všechno soupeří o stejné dělníky, takže každý nový projekt bere dělníky jinému: větší armáda je k ničemu, když nemá kdo sklízet pšenici.
 
-Braňte, co jste vybudovali.
-Vaše ekonomika podporuje růst i obranu. Vyvažujte potřeby kolonie, zatímco soupeři bojují o půdu a zdroje, a připravte se na konflikty, které mohou rozhodnout zápas.
+Naplánujte, kam se rozšíříte.
+Pšenice, dřevo a kámen jsou málokdy tam, kde byste je chtěli mít, a na cestách mezi nimi záleží stejně jako na surovinách samotných. Rozhodněte, kam se rozšíříte, co ochráníte hradbami a o co stojí za to bojovat. Zahrajte si 23 ručně vytvořených map nebo si nechte vygenerovat novou mapu z kterékoli ze 67 náhodných krajin.
 
-Globulation 2 je zdarma a má otevřený zdrojový kód.
+Bojujte o území.
+Soupeřící kolonie také rostou a chtějí stejné území. Trénujte válečníky, stavte obranné věže a kamenné hradby a umisťujte válečné prapory tam, kde má vaše armáda zaútočit. Útok vydrží jen tak dlouho jako jídlo a nemocnice, o které se opírá, takže válka se vyhrává v hospodách stejně jako na frontě.
 
-Tato verze pro Android přináší klasickou počítačovou hru na dotykové obrazovky.
+Co ve hře najdete.
+• 23 ručně vytvořených map a k tomu nové mapy generované ze 67 náhodných krajin
+• 8 počítačových soupeřů, od lehkých po těžké
+• Až 16 kolonií v jednom zápase
+• Tutoriál o 10 lekcích
+• Vestavěný editor map
+• Ukládání a přehrávání záznamů her
+• Offline hra pro jednoho hráče, bez nutnosti účtu
+• K dispozici ve 45 jazycích
+
+Hrajte společně.
+Online si zahrajte hodnocené nebo nehodnocené rychlé zápasy 1v1, nebo založte místnost a pozvěte kamarády pomocí kódu. Pokud zrovna nečeká žádný hráč, zahrajete si místo toho proti počítačovému soupeři. Online můžete hrát jako host; pro hodnocené zápasy se přihlaste. Hráči na počítači, v prohlížeči i na mobilu se potkávají ve stejných online hrách, na stejné verzi hry. Hrajte po místní síti bez účtu a bez připojení k internetu.
+
+Otevřený zdrojový kód, dílo dobrovolníků.
+Vývoj Globulation 2 začal v roce 2001 a veřejně hra vyšla v roce 2004. Vytvářeli ji dobrovolníci v průběhu dvou desetiletí. Je zdarma a má otevřený zdrojový kód pod licencí GPL verze 3: kód je veřejný a kdokoli si ho může přečíst, upravit a pomoci hru vylepšit.
+
+Na Androidu hrajte na telefonu nebo tabletu, na výšku i na šířku, se samostatným rozložením dotykového ovládání pro telefony a pro tablety. Hra pro jednoho hráče funguje offline a nevyžaduje účet.

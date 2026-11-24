@@ -1,1 +1,1 @@
-Zgradite uspešno kolonijo na spornem ozemlju.
+Offline strategija v realnem času brez oglasov. Vodite kolonijo, ne vsake enote.

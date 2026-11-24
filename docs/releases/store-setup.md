@@ -4,10 +4,12 @@ Configure store credentials and mirror-only publication workflows.
 
 ## Store presentation
 
-Use the [approved colony/economy copy and media](https://github.com/Globulation2/glob2-marketing/blob/b759591/planning/approved-storefront-rollout.md)
-when maintaining Epic, Steam, GOG, itch.io or other project-controlled listings.
-The [desktop export pack](https://github.com/Globulation2/glob2-marketing/tree/a968359dc95d51e998f63ba4d984d33b04560b39/assets/storefront-approved-v1)
-records gameplay order, key-art/logo sources and image provenance. Adapt to each
+Use the [storefront-v2 listing copy](https://github.com/Globulation2/glob2-marketing/tree/19d01492a8861debe7c0baefadcd49679c3f85a0/translations)
+when maintaining Epic, Steam, GOG, itch.io or other project-controlled listings;
+the [storefront-v2 rollout](https://github.com/Globulation2/glob2-marketing/blob/main/planning/storefront-v2-rollout.md)
+records which stores have it. Until the storefront-v2 screenshots and key art are
+hosted, the [storefront-v1 desktop export pack](https://github.com/Globulation2/glob2-marketing/tree/a968359dc95d51e998f63ba4d984d33b04560b39/assets/storefront-approved-v1)
+records the current gameplay order, key-art/logo sources and image provenance. Adapt to each
 store's fields and crop preview, keeping illustrated key art separate from
 actual gameplay. Use device-specific release-candidate captures for mobile
 screenshot slots. Listing updates and binary release/availability are separate
@@ -39,8 +41,11 @@ Do not upload the F-Droid directory tree as ready Play metadata. Merge AppStream
 description paragraphs and screenshot captions into the corresponding existing
 nodes in `content/data/org.globulation2.Globulation2.metainfo.xml`; the exported fragment
 is not a replacement component and its `source_role` hints are not AppStream
-attributes. Preserve release history, approved screenshot URLs and factual
-edition-specific qualifications. The desktop fragment supplies translated
+attributes. Each caption belongs under the screenshot its role describes, in the
+order of `asset_text.desktop_gallery_order` in the marketing `platforms.json`;
+until the storefront-v2 desktop gallery is hosted, the four storefront-v1 images
+carry the `economy`, `battle`, `territory` and `maps` captions. Preserve release
+history, approved screenshot URLs and factual edition-specific qualifications. The desktop fragment supplies translated
 `Comment` values for `content/data/glob2.desktop`; preserve launcher settings and do not
 infer a new `GenericName` translation from a different marketing field.
 

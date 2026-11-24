@@ -1,1 +1,1 @@
-Rakenna kukoistava siirtokunta kiistellylle alueelle.
+Reaaliaikainen strategiapeli ilman mainoksia. Johda siirtokuntaa, älä yksiköitä.

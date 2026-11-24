@@ -1,16 +1,34 @@
-Byg en blomstrende koloni i omstridt territorium.
+Realtidsstrategi, hvor du styrer kolonien – ikke hver enkelt enhed.
+Gratis. Ingen reklamer. Ingen køb i appen. Ingen lootbokse. Ingen premiumvaluta.
 
-Globulation 2 er et realtidsstrategispil, hvor mad, arbejdere og plads former din udvidelse. Udbyg en vidtstrakt koloni, afvej dens modstridende behov, og kæmp med rivaler om land og ressourcer. Dine væsner handler selvstændigt, så du kan lede kolonien som helhed.
+Globulation 2 er et realtidsstrategispil om en koloni af globuler: små, travle væsner, der arbejder, spiser, træner og kæmper. Du får kolonien til at vokse, holder den mæt og kæmper mod rivaliserende kolonier, der vil have det samme land.
 
-Opbyg en økonomi, der kan bære dine ambitioner.
-Mad, byggeri og træning konkurrerer om din arbejdsstyrke. Beslut, hvor der er brug for arbejdere, og afvej nye ambitioner mod behovene i den koloni, du allerede har.
+Du bestemmer. Dine globuler gør arbejdet.
+Vælg, hvad der skal bygges, og hvor mange globuler der skal arbejde på det. De finder selv vej, henter materialerne og bygger det, og de spiser, når de er sultne. Vil du udforske nyt land eller angribe en rival, placerer du et flag og bestemmer, hvor mange globuler der skal af sted. Der er ingen enheder, der skal markeres én for én: Du planlægger for hele kolonien.
 
-Gør kortet til en del af din strategi.
-Forskellige kort kræver forskellige strategier. Tilpas din udvidelse til terrænet, vælg, hvad du vil forsvare, og find de ruter og ressourcer, din koloni har brug for.
+Hold kolonien mæt.
+Kroer giver dine globuler mad. Sværme producerer flere af dem. Skoler, træningsbaner, svømmebassiner og kaserner træner dem, og hospitaler helbreder dem. Det hele konkurrerer om de samme arbejdere, så hvert nyt projekt tager arbejdere fra et andet: En større hær nytter ikke noget, hvis der ikke er nogen tilbage til at høste hveden.
 
-Forsvar det, du har bygget.
-Din økonomi understøtter både vækst og forsvar. Afvej koloniens behov, mens rivaler konkurrerer om land og ressourcer, og forbered dig på konflikter, der kan afgøre kampen.
+Planlæg, hvor du vil udvide.
+Hvede, træ og sten ligger sjældent der, hvor du gerne vil have dem, og ruterne mellem dem betyder lige så meget som ressourcerne selv. Bestem, hvor du vil udvide, hvad du vil beskytte med mure, og hvad der er værd at kæmpe for. Spil på 23 håndlavede kort, eller generer et nyt kort ud fra et af de 67 tilfældige landskaber.
 
-Globulation 2 er gratis og har åben kildekode.
+Kæmp om landet.
+Rivaliserende kolonier vokser også, og de vil have det samme land. Træn krigere, byg forsvarstårne og stenmure, og placer krigsflag der, hvor din hær skal angribe. Et angreb holder kun så længe som den mad og de hospitaler, der støtter det, så en krig vindes lige så meget i kroerne som ved fronten.
 
-Denne Android-udgave bringer det klassiske computerspil til berøringsskærme.
+Det får du i spillet.
+• 23 håndlavede kort plus nye kort genereret ud fra 67 tilfældige landskaber
+• 8 computermodstandere, fra lette til svære
+• Op til 16 kolonier i samme kamp
+• En tutorial med 10 lektioner
+• Indbygget korteditor
+• Gem og se genafspilninger
+• Singleplayer offline – kræver ingen konto
+• Findes på 45 sprog
+
+Spil sammen.
+Gå online til hurtige 1v1-kampe – rangerede eller afslappede – eller opret et rum, og inviter venner med en kode. Hvis der ikke venter en anden spiller, spiller du i stedet mod en computermodstander. Du kan spille online som gæst, men skal logge ind for at spille rangeret. Spillere på computer, i browser og på mobil spiller med i de samme onlinekampe, på samme spilversion. Spil over dit lokale netværk uden konto og uden internetforbindelse.
+
+Åben kildekode, udviklet af frivillige.
+Arbejdet med Globulation 2 begyndte i 2001, og spillet blev udgivet offentligt i 2004. Frivillige har udviklet det gennem to årtier. Det er gratis og har åben kildekode under GPL, version 3: Koden er offentlig, og alle kan læse den, ændre den og hjælpe med at forbedre spillet.
+
+På Android kan du spille på telefon eller tablet, i stående eller liggende format, med separate touchlayouts til telefoner og tablets. Singleplayer fungerer offline og kræver ingen konto.
