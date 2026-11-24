@@ -158,8 +158,7 @@ void registerUITools(ToolRegistry &registry)
 	const Json button = enumeration({"left", "middle", "right"});
 	const Json action = enumeration({"press", "down", "up"});
 	static constexpr const char *CompactDescription =
-		"Return a smaller inspection: decorative containers are skipped and fields at "
-		"their defaults are omitted (recommended)";
+		"Default true: skip layout containers and default fields; false for the full tree";
 	auto add = [&](const char *name, const char *description, Json properties, Json required,
 				   bool input, bool coordinates = false)
 	{
@@ -210,7 +209,7 @@ void registerUITools(ToolRegistry &registry)
 		if (toolName == "ui_inspect" || toolName == "ui_act" || toolName == "ui_wait" ||
 			toolName == "ui_acquire_control")
 			properties["compact"] = {{"type", "boolean"},
-									 {"default", false},
+									 {"default", true},
 									 {"description", CompactDescription}};
 		registry.add(
 			{name,
@@ -335,7 +334,7 @@ void registerUITools(ToolRegistry &registry)
 		"dialog), window size, viewport_id and who holds control. No token needed.", {},
 		{}, false);
 	add("ui_screenshot",
-		"PNG of the next rendered game frame. max_width/max_height shrink it. Pass "
+		"PNG of the next rendered game frame, 1280 px wide unless max_width/max_height are set. Pass "
 		"the returned capture_id to ui_click/ui_drag/ui_scroll/ui_move so x/y are pixels of "
 		"this image. Needed for the map canvas.",
 		{{"token", token}}, {}, false);

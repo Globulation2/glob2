@@ -266,7 +266,8 @@ and renderer checks are separate from simulation/save/replay continuity.
 ## Typed interaction and scaled captures
 
 `ui_inspect` accepts `surface` (an instance ID), `subtree` (a stable key), `token`
-(optional), `screenshot` (default false) and `compact` (default false). `compact`
+(optional), `screenshot` (default false) and `compact` (default true; pass false for
+the full tree). `compact`
 also applies to `ui_act`, `ui_wait` and `ui_acquire_control` inspections: it replaces
 keyless, unlabelled, inert layout containers with their children, omits fields at
 their defaults, keeps `revision` only on actionable controls and marks controls with
@@ -307,6 +308,8 @@ returns `inspection_error` alongside the valid token; renew or use that token ra
 than acquiring control again.
 
 Screenshot requests and input `capture_after` accept `max_width` and `max_height`.
+Without either, images are scaled to at most 1280 pixels wide, so a HiDPI window does
+not produce a multi-megabyte reply; pass a larger `max_width` for native detail.
 Images preserve aspect ratio within integer rounding and never upscale. Native readback
 is owned by the request; resizing and PNG encoding run on the HTTP worker. Each image
 has `capture_id`, returned-image `width`/`height`, native dimensions and `viewport_id`.
