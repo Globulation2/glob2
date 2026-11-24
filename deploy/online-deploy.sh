@@ -129,6 +129,7 @@ start)
 				--sim-version "$(python3 deploy/sim_version.py "$src")" \
 				--registry "$(setting GLOB2_IMAGE_REGISTRY)" > /dev/null; then
 			rm -rf "$dir"
+			git checkout --quiet --detach "$running"
 			echo "online-deploy: the image manifest does not fit $commit on this host" >&2
 			exit 2
 		fi

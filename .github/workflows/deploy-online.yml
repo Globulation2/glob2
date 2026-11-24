@@ -70,6 +70,7 @@ jobs:
       commit: ${{ steps.target.outputs.commit }}
       design_system: ${{ steps.target.outputs.design_system }}
       prebuilt: ${{ steps.target.outputs.prebuilt }}
+      on_master: ${{ steps.target.outputs.on_master }}
     steps:
       - name: Resolve and check the commit
         id: target
@@ -119,6 +120,11 @@ jobs:
           fi
           subject=$(git log -1 --format=%s "$commit")
           echo "commit=$commit" >> "$GITHUB_OUTPUT"
+          if git merge-base --is-ancestor "$commit" public/master; then
+            echo "on_master=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "on_master=false" >> "$GITHUB_OUTPUT"
+          fi
           # One theme revision for every image of this deploy (as update-host.sh resolves it).
           if [ -z "$DESIGN_SYSTEM" ]; then
             DESIGN_SYSTEM=$(git ls-remote https://github.com/Globulation2/glob2-design-system.git refs/heads/main | cut -f1)
@@ -191,11 +197,14 @@ jobs:
       GROUP: ${{ matrix.group }}
       TAG: ${{ needs.preflight.outputs.commit }}-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
-      # The public commit the host will check out, never the mirror's tree.
+      # The public commit the host will check out, never the mirror's tree. In
+      # src/: the auth step writes its credential file into the workspace root,
+      # which must never be part of a build context (or the exported cache).
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: Globulation2/glob2
           ref: ${{ needs.preflight.outputs.commit }}
+          path: src
           persist-credentials: false
       - name: Check configuration and free disk space
         env:
@@ -208,7 +217,7 @@ jobs:
               exit 1
             fi
           done
-          [ "$(git rev-parse HEAD)" = "$COMMIT" ]
+          [ "$(git -C src rev-parse HEAD)" = "$COMMIT" ]
           # The engine build tree and images need more than the runner's free space.
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
           docker system prune -af > /dev/null
@@ -220,8 +229,18 @@ jobs:
           project_id: ${{ vars.GLOB2_ONLINE_PROJECT }}
       - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3
       - name: Build and push
+        working-directory: src
+        env:
+          # Only reviewed public master commits may write the shared layer cache
+          # that later builds trust; an allow_unmerged build only reads it.
+          WRITE_CACHE: ${{ needs.preflight.outputs.on_master }}
         run: |
           set -euo pipefail
+          # The auth step's credential file must stay outside the build context.
+          if [ -n "$(find . -name 'gha-creds-*.json' -print -quit)" ]; then
+            echo "::error::a credential file is inside the build context"
+            exit 1
+          fi
           # The credential helper mints a fresh token for each push, so builds
           # longer than one token's hour still push.
           gcloud auth configure-docker "${REGISTRY%%/*}" --quiet
@@ -246,14 +265,17 @@ jobs:
               push web-client -f "$RUNNER_TEMP/web.Dockerfile" build/emscripten/client/release
               continue
             fi
+            cache=(--cache-from "type=registry,ref=$CACHE/$target")
+            if [ "$WRITE_CACHE" = true ]; then
+              cache+=(--cache-to "type=registry,ref=$CACHE/$target,mode=max,image-manifest=true,oci-mediatypes=true,ignore-error=true")
+            fi
             push "$target" -f deploy/Dockerfile --target "$target" \
               --build-arg JOBS=4 \
               --build-arg GLOB2_DESIGN_SYSTEM_SHA="$DESIGN_SYSTEM" \
               --build-arg GLOB2_SIM_VERSION="$sim" \
               --build-arg GLOB2_WEBSITE_URL="$WEBSITE_URL" \
               --build-arg GLOB2_DOWNLOAD_URL="$DOWNLOAD_URL" \
-              --cache-from "type=registry,ref=$CACHE/$target" \
-              --cache-to "type=registry,ref=$CACHE/$target,mode=max,image-manifest=true,oci-mediatypes=true,ignore-error=true" \
+              "${cache[@]}" \
               .
           done
           printf '%s\n' "$sim" > "$RUNNER_TEMP/digests/sim-version"
@@ -334,7 +356,7 @@ jobs:
     needs: [preflight, manifest]
     # After the images, or straight away when the host builds them.
     if: >-
-      always() &&
+      !cancelled() &&
       needs.preflight.result == 'success' &&
       (needs.manifest.result == 'success' ||
        (needs.manifest.result == 'skipped' && needs.preflight.outputs.prebuilt != 'true')) &&

@@ -385,7 +385,12 @@ instead and the host only pulls and swaps:
    `caddy`), `ai-music` and `web` (`deploy/build-web-client.sh`, packed as a
    `web-client` image that holds only the built tree under `/web-client`). Each
    image is pushed to `glob2-online` as `<target>:<commit>-<run>-<attempt>` (tags
-   are immutable) with its layer cache in `glob2-online-cache`. The sim version is
+   are immutable). Builds read their layer cache from `glob2-online-cache`; only
+   builds of commits on public `master` write it, so an `allow_unmerged` build
+   cannot seed what later builds reuse. The commit is checked out into `src/`,
+   outside the workspace root where the auth step writes its credential file, so
+   that file never enters a build context or the exported cache (`.dockerignore`
+   excludes it as well). The sim version is
    computed from the commit, the theme revision once in `preflight`, and the
    website links come from `GLOB2_ONLINE_BUILD_WEBSITE_URL` and
    `GLOB2_ONLINE_BUILD_DOWNLOAD_URL`.
@@ -415,9 +420,16 @@ GLOB2_IMAGE_REGISTRY_AUTH=gce-metadata
 
 **Trust.** Only the deploy job can reach the host, and the image builds cannot act
 as it: they run in their own environment, whose identity (`glob2-image-publisher`)
-can push to the two repositories and nothing else. The host accepts only digests
-from its own registry for its checked-out commit, so neither a tag nor a manifest
-for another commit or registry can change what runs.
+can push to the two repositories and nothing else. The image builds do decide what
+the host runs, by design, which is why they build only the owner's reviewed public
+commits. The host accepts only digests from its own registry for its checked-out
+commit, so neither a tag nor a manifest for another commit or registry can change
+what runs. Project-wide roles also reach these repositories: in
+`bradley-personal-20261027`, `roles/editor` on the default Compute Engine service
+account and `roles/cloudbuild.builds.builder` (the legacy Cloud Build account and
+`personal-site-deployer`) include Artifact Registry write. No VM or build uses the
+first two today; keep it that way, or move the repositories to a project of their
+own, before running other workloads under those accounts.
 
 **Fall back** to building on the host by dispatching with `build_on_host` (needed to
 roll back to a revision from before prebuilt images), or for every deploy by

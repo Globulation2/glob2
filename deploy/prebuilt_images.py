@@ -171,15 +171,11 @@ def install(manifest, compose_config, web_dir, auth='gce-metadata'):
     finally:
         if config:
             shutil.rmtree(config, ignore_errors=True)
-    for target, images in sorted(names.items()):
-        for image in sorted(images):
-            docker('image', 'tag', reference(manifest, target), image)
-            print(f'image: {image} <- {target}@{manifest["images"][target][:19]}')
     # The web client: the image's tree, copied out without running anything.
     web = Path(web_dir)
+    staging = web.with_name(web.name + '.incoming')
     container = docker('create', reference(manifest, WEB_TARGET), 'none', capture=True)
     try:
-        staging = web.with_name(web.name + '.incoming')
         shutil.rmtree(staging, ignore_errors=True)
         staging.mkdir(parents=True)
         docker('cp', f'{container}:{WEB_PATH}/.', str(staging))
@@ -189,7 +185,14 @@ def install(manifest, compose_config, web_dir, auth='gce-metadata'):
         staging.rename(web)
     finally:
         docker('rm', container, capture=True)
+        shutil.rmtree(staging, ignore_errors=True)
     print(f'web client: {web} <- {WEB_TARGET}@{manifest["images"][WEB_TARGET][:19]}')
+    # Local names move last: until every image and the web client are in hand,
+    # the names still mean what runs, so a later :previous stays a real rollback.
+    for target, images in sorted(names.items()):
+        for image in sorted(images):
+            docker('image', 'tag', reference(manifest, target), image)
+            print(f'image: {image} <- {target}@{manifest["images"][target][:19]}')
 
 
 def main(argv=None):

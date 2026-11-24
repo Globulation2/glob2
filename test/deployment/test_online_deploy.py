@@ -257,6 +257,8 @@ class HostDriverTests(unittest.TestCase):
                 result = self.driver('start', str(self.env_file), self.new, 'gh-11', images, check=False)
                 self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
                 self.assertFalse((self.host / 'deploys/gh-11').exists())
+                # The checkout is back on what runs.
+                self.assertEqual(git(self.host / 'src', 'rev-parse', 'HEAD'), self.old)
         self.assertFalse(self.log.exists() and 'args:' in self.log.read_text())
 
     def test_refuses_a_manifest_on_a_host_without_a_registry(self):

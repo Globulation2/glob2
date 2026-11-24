@@ -14,6 +14,9 @@ config.h
 .env
 **/.env
 deploy/secrets
+# google-github-actions/auth credential files (deploy-online.yml checks out into a
+# subdirectory so they never reach a context; this is the second guard).
+**/gha-creds-*.json
 **/*.key
 **/*.pem
 

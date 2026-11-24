@@ -221,9 +221,10 @@ class InstallTests(unittest.TestCase):
         self.assertIn(f'image tag {platform} glob2-platform:admin-x', calls)
         self.assertEqual(sum(c.endswith(' glob2-platform:admin-x') for c in calls), 1)  # once per name
         self.assertIn(f'image tag {REGISTRY}/relay@{value["images"]["relay"]} glob2-relay:development', calls)
-        # Every pull happens before any tag, so a failed pull changes no local name.
-        self.assertLess(max(i for i, c in enumerate(calls) if c.startswith('pull')),
-                        min(i for i, c in enumerate(calls) if c.startswith('image tag')))
+        # Every pull and the web copy happen before any tag, so a failure changes no local name.
+        first_tag = min(i for i, c in enumerate(calls) if c.startswith('image tag'))
+        self.assertLess(max(i for i, c in enumerate(calls) if c.startswith('pull')), first_tag)
+        self.assertLess(max(i for i, c in enumerate(calls) if c.startswith(('create', 'cp', 'rm'))), first_tag)
 
     def test_copies_the_web_client_out_without_running_it(self):
         value = manifest()
@@ -243,6 +244,9 @@ class InstallTests(unittest.TestCase):
             self.install()
         self.assertIn('rm c0ffee', self.calls())
         self.assertEqual((self.web / 'stale.js').read_text(), 'old build')  # untouched
+        self.assertFalse(self.web.with_name('release.incoming').exists())
+        # No local name moved, so the running images stay the :previous of the next deploy.
+        self.assertFalse(any(c.startswith('image tag') for c in self.calls()))
 
     def test_a_failed_pull_tags_nothing(self):
         os.environ['FAKE_PULL_FAIL'] = '/relay@'
