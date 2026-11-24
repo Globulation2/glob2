@@ -34,6 +34,13 @@ on:
         required: false
         default: false
         type: boolean
+      wait_for_matches:
+        description: >-
+          Minutes to wait for live matches to end before restarting the stack
+          (0: deploy at once, even during matches)
+        required: false
+        default: '90'
+        type: string
       build_on_host:
         description: >-
           Build the images on the host instead of pulling CI-built ones (needed to
@@ -455,6 +462,39 @@ jobs:
             fi
           done
           [[ "$COMMIT" =~ ^[0-9a-f]{40}$ ]]
+      # The swap recreates every container, the relay included, which ends live
+      # matches. Wait for them first (InstanceStats.liveMatches, public). Matches
+      # starting in the few minutes the swap takes are not covered.
+      - name: Wait for live matches to end
+        env:
+          ORIGIN: https://app.glob2.online
+          WAIT: ${{ inputs.wait_for_matches || '90' }}
+        run: |
+          set -uo pipefail
+          if ! [[ "$WAIT" =~ ^[0-9]+$ ]]; then
+            echo "::error::wait_for_matches must be a whole number of minutes"
+            exit 1
+          fi
+          waited=0
+          while true; do
+            if ! live=$(curl -fsS --max-time 20 "$ORIGIN/api/v1/stats" |
+                          python3 -c 'import json,sys; print(int(json.load(sys.stdin)["liveMatches"]))'); then
+              # The deploy may be what repairs the API: go ahead rather than block it.
+              echo "::warning::could not read $ORIGIN/api/v1/stats; deploying without waiting"
+              break
+            fi
+            if [ "$live" -eq 0 ]; then
+              echo "no live matches"
+              break
+            fi
+            if [ "$waited" -ge "$WAIT" ]; then
+              echo "::warning::$live live match(es) after $waited minute(s); deploying anyway"
+              break
+            fi
+            echo "$live live match(es); waiting ($waited/$WAIT min)"
+            sleep 60
+            waited=$((waited + 1))
+          done
       - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
         with:
           workload_identity_provider: ${{ vars.GLOB2_ONLINE_WIF_PROVIDER }}
