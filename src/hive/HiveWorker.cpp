@@ -92,14 +92,31 @@ constexpr std::size_t HeapLimit = 128 * 1024 * 1024;
 } // namespace
 namespace
 {
-int integer(const Json &j, int minimum, int maximum)
+// A whole number in minimum..maximum; what names the argument in the error, which also
+// gives the range and the value received.
+int integer(const Json &j, int minimum, int maximum, const std::string &what)
 {
+	const auto fail = [&]
+	{
+		auto got = j.is_null() ? std::string("nothing") : j.dump();
+		if (got.size() > 40)
+			got = got.substr(0, 37) + "...";
+		return std::runtime_error(what + " must be a whole number " + std::to_string(minimum) + ".." +
+								  std::to_string(maximum) + " (got " + got + ")");
+	};
 	if (!j.is_number())
-		throw std::runtime_error("Expected integer");
+		throw fail();
 	double v = j.get<double>();
 	if (!std::isfinite(v) || std::floor(v) != v || v < minimum || v > maximum)
-		throw std::runtime_error("Integer outside range");
+		throw fail();
 	return int(v);
+}
+// An object's field that must be present (what names it in the error).
+const Json &field(const Json &o, const char *key, const std::string &what)
+{
+	if (!o.is_object() || !o.contains(key))
+		throw std::runtime_error(what + " needs " + key);
+	return o.at(key);
 }
 constexpr int NoResource = 65535;
 int wrap(int v, int size)
@@ -127,7 +144,7 @@ std::function<bool(int)> teamFilter(const Json &s, const Json &f)
 			return [self, allies](int t) { return t != self && t >= 0 && !(allies & (1u << t)); };
 		throw std::runtime_error("team must be a team number, \"mine\", \"enemies\" or \"allies\"");
 	}
-	const int team = integer(f["team"], 0, int(s.at("teams").size()) - 1);
+	const int team = integer(f["team"], 0, int(s.at("teams").size()) - 1, "team");
 	return [team](int t) { return t == team; };
 }
 const Json *typeOf(const Json &s, int id)
@@ -242,7 +259,7 @@ Json query(const Json &s, const std::string &name, const Json &args, Json &reser
 		{
 			if (f["type"].is_number())
 			{
-				const int wanted = integer(f["type"], 0, 65535);
+				const int wanted = integer(f["type"], 0, 65535, name + " type");
 				const std::string field = name == "units" ? "type" : "shortType";
 				typeMatch = [wanted, field](const Json &v) { return v.value(field, -1) == wanted; };
 			}
@@ -266,9 +283,9 @@ Json query(const Json &s, const std::string &name, const Json &args, Json &reser
 			}
 		}
 		int offset =
-			f.contains("offset") && !f["offset"].is_null() ? integer(f["offset"], 0, 32768) : 0;
+			f.contains("offset") && !f["offset"].is_null() ? integer(f["offset"], 0, 32768, name + " offset") : 0;
 		int limit =
-			f.contains("limit") && !f["limit"].is_null() ? integer(f["limit"], 0, 32768) : 32768;
+			f.contains("limit") && !f["limit"].is_null() ? integer(f["limit"], 0, 32768, name + " limit") : 32768;
 		Json out = Json::array();
 		for (auto &v : s.at(name))
 			if (team(v.value("team", -1)) && typeMatch(v))
@@ -288,7 +305,7 @@ Json query(const Json &s, const std::string &name, const Json &args, Json &reser
 	{
 		if (args.empty() || !args[0].is_object())
 			throw std::runtime_error("Expected entity reference");
-		int id = integer(args[0].at("id"), 0, 65535);
+		int id = integer(field(args[0], "id", name + " reference"), 0, 65535, name + " id");
 		if (!args[0].contains("generation") || !args[0]["generation"].is_number())
 			return nullptr;
 		for (auto &v : s.at(name == "unit" ? "units" : "buildings"))
@@ -298,7 +315,9 @@ Json query(const Json &s, const std::string &name, const Json &args, Json &reser
 	}
 	if (name == "tile" || name == "region")
 	{
-		int x = integer(args.at(0), -32768, 32767), y = integer(args.at(1), -32768, 32767);
+		if (args.size() < 2)
+			throw std::runtime_error(name + "(x, y" + (name == "region" ? ", width, height" : "") + ") needs a tile");
+		int x = integer(args[0], -32768, 32767, name + " x"), y = integer(args[1], -32768, 32767, name + " y");
 		const auto &resources = s.at("resourceTypes");
 		auto tile = [&](int tx, int ty) -> Json
 		{
@@ -314,7 +333,7 @@ Json query(const Json &s, const std::string &name, const Json &args, Json &reser
 		};
 		if (name == "tile")
 			return tile(x, y);
-		int w = integer(args.at(2), 0, 256), h = integer(args.at(3), 0, 256);
+		int w = integer(args.size() > 2 ? args[2] : Json(), 0, 256, "region width"), h = integer(args.size() > 3 ? args[3] : Json(), 0, 256, "region height");
 		Json out = Json::array();
 		for (int yy = 0; yy < h; yy++)
 			for (int xx = 0; xx < w; xx++)
@@ -327,13 +346,13 @@ Json query(const Json &s, const std::string &name, const Json &args, Json &reser
 		if (args.empty() || !args[0].is_string())
 			throw std::runtime_error("buildingType(name, {level, site}) needs a name such as \"inn\"");
 		const Json o = args.size() > 1 && args[1].is_object() ? args[1] : Json::object();
-		const auto *t = placeable(s, args[0].get<std::string>(), o.contains("level") ? integer(o["level"], 0, 3) : 0,
+		const auto *t = placeable(s, args[0].get<std::string>(), o.contains("level") ? integer(o["level"], 0, 3, "buildingType level") : 0,
 								  o.contains("site") ? int(o["site"].get<bool>()) : -1);
 		return t ? *t : Json(nullptr);
 	}
 	if (name == "events")
 	{
-		const unsigned since = args.empty() || args[0].is_null() ? 0u : unsigned(integer(args[0], 0, 0x7fffffff));
+		const unsigned since = args.empty() || args[0].is_null() ? 0u : unsigned(integer(args[0], 0, 0x7fffffff, "events since"));
 		Json out = Json::array();
 		for (const auto &e : s.value("events", Json::array()))
 			if (e.value("tick", 0u) > since)
@@ -344,8 +363,8 @@ Json query(const Json &s, const std::string &name, const Json &args, Json &reser
 	{
 		if (args.size() < 4)
 			throw std::runtime_error("scan(x, y, width, height, fields) needs a rectangle");
-		const int x = integer(args[0], -32768, 32767), y = integer(args[1], -32768, 32767);
-		const int w = integer(args[2], 1, 256), h = integer(args[3], 1, 256);
+		const int x = integer(args[0], -32768, 32767, "scan x"), y = integer(args[1], -32768, 32767, "scan y");
+		const int w = integer(args[2], 1, 256, "scan width"), h = integer(args[3], 1, 256, "scan height");
 		static const std::vector<std::string> known = {"explored", "visible", "resource", "amount",
 													   "terrain", "buildable", "building"};
 		std::vector<std::string> fields = {"resource", "buildable"};
@@ -405,7 +424,7 @@ Json query(const Json &s, const std::string &name, const Json &args, Json &reser
 		if (args.size() < 3)
 			throw std::runtime_error("canPlace(name, x, y) needs a building or flag name and a tile");
 		const auto &type = placeableNamed(s, args[0]);
-		const auto why = canPlace(s, type, integer(args[1], -32768, 32767), integer(args[2], -32768, 32767), occupied(s, reserved));
+		const auto why = canPlace(s, type, integer(args[1], -32768, 32767, "canPlace x"), integer(args[2], -32768, 32767, "canPlace y"), occupied(s, reserved));
 		return why.empty() ? Json{{"ok", true}} : Json{{"ok", false}, {"reason", why}};
 	}
 	if (name == "findPlacement")
@@ -414,8 +433,9 @@ Json query(const Json &s, const std::string &name, const Json &args, Json &reser
 			throw std::runtime_error("findPlacement(name, {x, y, radius}) needs a name and where to look");
 		const auto &type = placeableNamed(s, args[0]);
 		const auto &o = args[1];
-		const int x = integer(o.at("x"), -32768, 32767), y = integer(o.at("y"), -32768, 32767);
-		const int radius = o.contains("radius") ? integer(o["radius"], 0, 64) : 12;
+		const int x = integer(field(o, "x", "findPlacement"), -32768, 32767, "findPlacement x"),
+				  y = integer(field(o, "y", "findPlacement"), -32768, 32767, "findPlacement y");
+		const int radius = o.contains("radius") ? integer(o["radius"], 0, 64, "findPlacement radius") : 12;
 		const auto taken = occupied(s, reserved);
 		// Nearest ring first, as game_place near does. The spot is reserved for the rest of
 		// this run, so a second call finds another one.

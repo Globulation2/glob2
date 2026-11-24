@@ -389,6 +389,30 @@ Json UIService::metadata() const
 			{"controller", currentController()},
 			{"controlled", !token.empty()}};
 }
+void UIService::addActResult(Result &result, const Json &arguments)
+{
+	// A large screen such as the landscape picker is tens of kilobytes; these trim it.
+	if (arguments.contains("_point"))
+		result.data["point"] = arguments["_point"];
+	if (arguments.value("inspect", true))
+	{
+		Json filter = {{"compact", arguments.value("compact", true)}};
+		if (arguments.contains("result_subtree"))
+			filter["subtree"] = arguments["result_subtree"];
+		addInspection(result, filter);
+	}
+	else
+	{
+		try
+		{
+			result.data["screen"] = inspectionScreen ? inspectionScreen() : "unavailable";
+		}
+		catch (const std::exception &failure)
+		{
+			result.data["inspection_error"] = failure.what();
+		}
+	}
+}
 bool UIService::addInspection(Result &result, const Json &arguments)
 {
 	try
@@ -424,19 +448,36 @@ void UIService::finish(std::string error)
 	if (result.error.empty() && dispatchComplete && r->tool == "ui_act")
 	{
 		// Input was consumed. A read failure must not disguise confirmed
-		// delivery and encourage replaying the mutation. inspect=false returns only the
-		// screen name; result_subtree trims the inspection to one control's subtree
-		// (a large screen such as the landscape picker is tens of kilobytes).
-		if (r->arguments.value("inspect", true))
+		// delivery and encourage replaying the mutation.
+		if (r->arguments.contains("wait_for"))
 		{
-			Json filter = {{"compact", r->arguments.value("compact", true)}};
-			if (r->arguments.contains("result_subtree"))
-				filter["subtree"] = r->arguments["result_subtree"];
-			addInspection(result, filter);
+			// Hold the reply as an observer until the screen shows (see observe), so an
+			// agent need not act, wait and inspect in three calls.
+			bool held = false;
+			{
+				std::lock_guard lock(mutex);
+				if (observers.size() < MaxWaitObservers)
+				{
+					r->deadline = Clock::now() +
+								  std::chrono::milliseconds(r->arguments.value("timeout_ms", 10000)) +
+								  std::chrono::seconds(1);
+					observers.push_back(r);
+					held = true;
+				}
+			}
+			if (held)
+			{
+				if (id)
+					gfx.cancelMemoryCapture(id);
+				return;
+			}
+			result.data["wait_note"] = "Not waited: too many pending waits (maximum 8); the action "
+									   "was consumed, use ui_wait for the screen";
 		}
-		else
-			result.data["screen"] = inspectionScreen ? inspectionScreen() : "unavailable";
+		addActResult(result, r->arguments);
 	}
+	else if (result.error.empty() && r->arguments.contains("_point"))
+		result.data["point"] = r->arguments["_point"];
 	if (!result.error.empty())
 		r->cancelled = true;
 	r->completion.set_value(std::move(result));
@@ -485,11 +526,13 @@ void UIService::startCapture()
 				if (captures.size() > 8)
 					captures.pop_front();
 			}
-			if (request->tool == "ui_inspect" || request->tool == "ui_act")
-				if (!addInspection(result, request->tool == "ui_inspect"
-										   ? request->arguments
-										   : Json{{"compact", request->arguments.value("compact", true)}}) && request->tool == "ui_inspect")
+			if (request->tool == "ui_inspect")
+			{
+				if (!addInspection(result, request->arguments))
 					error = result.data["inspection_error"].get<std::string>();
+			}
+			else if (request->tool == "ui_act")
+				addActResult(result, request->arguments); // honours inspect=false and result_subtree
 			result.pixels = std::move(pixels);
 			result.error = std::move(error);
 			if (!result.pixels && result.error.empty())
@@ -535,12 +578,23 @@ Json UIService::inspection(const Json &arguments)
 							self(self, item["children"]);
 				};
 				find(find, surface["controls"]);
+				// Surfaces without that control are left out, not returned as empty stubs.
+				if (selected.empty())
+					continue;
 				surface["controls"] = std::move(selected);
 			}
 			surfaces.push_back(std::move(surface));
 		}
 	Json snapshot = {{"screen", inspectionScreen ? inspectionScreen() : "unavailable"},
 					 {"surfaces", surfaces}};
+	// A filter that matches nothing says so, rather than looking like an empty screen.
+	if (surfaces.empty() && arguments.contains("subtree"))
+		snapshot["note"] = "No control with key " + arguments["subtree"].dump() +
+						   (arguments.contains("surface") ? " on surface " + arguments["surface"].dump() : std::string()) +
+						   " on this screen; ui_inspect without subtree to see the current controls";
+	else if (surfaces.empty() && arguments.contains("surface"))
+		snapshot["note"] = "No surface " + arguments["surface"].dump() +
+						   " on this screen; ui_inspect without surface to see the current surfaces";
 	return arguments.is_object() && arguments.value("compact", true) ? compactInspection(snapshot)
 																	   : snapshot;
 }
@@ -558,7 +612,49 @@ void UIService::observe()
 		result.data = metadata();
 		auto &args = request->arguments;
 		if (request->cancelled)
+		{
 			result.error = "Wait cancelled";
+			if (request->tool == "ui_act")
+			{
+				result.data["dispatched"] = true;
+				result.error = "Wait cancelled after the action was consumed; do not repeat it, ui_inspect instead";
+			}
+		}
+		else if (request->tool == "ui_act")
+		{
+			// A consumed ui_act with wait_for: the action is done, whatever the lease does
+			// now; only the reply waits until the screen shows with its surfaces.
+			const bool last = Clock::now() >= request->deadline - std::chrono::seconds(1);
+			bool reached = false, shown = false;
+			try
+			{
+				const auto screen = inspectionScreen ? inspectionScreen() : std::string("unavailable");
+				const auto &until = args["wait_for"];
+				reached = until.is_object() ? screen == until["screen"].get<std::string>()
+											: screen != args.value("_screen_before", std::string());
+				if (inspectionHosts)
+					for (auto *host : inspectionHosts())
+						shown = shown || host;
+			}
+			catch (const std::exception &failure)
+			{
+				result.data["inspection_error"] = failure.what();
+				reached = false;
+			}
+			// A screen is settled once its surfaces exist; one that never has any still
+			// counts when the time is up.
+			if (!last && !(reached && shown) && !result.data.contains("inspection_error"))
+				continue;
+			result.data["dispatched"] = true;
+			result.data["input_started"] = true;
+			result.data["satisfied"] = reached;
+			if (!reached)
+				result.data["wait_note"] = "The action was consumed, but the awaited screen did not "
+										   "show within timeout_ms. Do not repeat the action; "
+										   "ui_wait or ui_inspect";
+			if (!result.data.contains("inspection_error"))
+				addActResult(result, args);
+		}
 		else if (request->tool != "ui_wait" && args.contains("token") &&
 				 (token.empty() || args.value("token", "") != token))
 			result.error = LeaseLost;
@@ -1111,12 +1207,19 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 	}
 	if (tool == "ui_act")
 	{
-		const auto problem = actionTargetProblem(inspection({{"compact", false}}), a);
+		Json resolved;
+		const auto problem = actionTargetProblem(inspection({{"compact", false}}), a, &resolved);
 		if (!problem.empty())
 		{
 			finish(problem);
 			return;
 		}
+		// An option label becomes its index; the value was checked against the control's
+		// options or range before anything is dispatched.
+		if (!resolved.is_null())
+			a["value"] = std::move(resolved);
+		if (a.contains("wait_for"))
+			a["_screen_before"] = inspectionScreen ? inspectionScreen() : "unavailable";
 		semantic = GAGGUI::ui::semanticDispatch();
 		semantic->surface = a["surface"];
 		semantic->key = a["key"];
@@ -1140,7 +1243,7 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 			else
 			{
 				finish("Invalid semantic action value; use boolean, integer or string. "
-					   "scroll requires signed logical pixels; select requires an integer index");
+					   "scroll requires signed logical pixels; select an option label or index");
 				return;
 			}
 		}
@@ -1148,6 +1251,51 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 		events.push_back(semantic->event());
 		dispatched = true;
 		return;
+	}
+	// ui_click/ui_move {key, surface?} point at an inspected control's centre; space=logical
+	// takes x/y in the same logical pixels as inspection bounds and game_view. Both become
+	// native pixels here, once per request.
+	const bool pointsAtControl = (tool == "ui_click" || tool == "ui_move") && a.contains("key");
+	if (!coordinatesConverted && (pointsAtControl || a.value("space", "native") == "logical"))
+	{
+		if (pointsAtControl)
+		{
+			Json point;
+			const auto problem = controlCentre(inspection({{"compact", false}}), a, point);
+			if (!problem.empty())
+			{
+				finish(problem);
+				return;
+			}
+			a["x"] = point["x"];
+			a["y"] = point["y"];
+			a["_point"] = point;
+		}
+		if (logicalWidth <= 0 || logicalHeight <= 0)
+		{
+			finish("Logical screen size unknown; pass capture_id with screenshot pixels instead");
+			return;
+		}
+		auto convert = [&](Json &point) -> bool
+		{
+			const double x = point["x"].get<double>(), y = point["y"].get<double>();
+			if (x >= logicalWidth || y >= logicalHeight)
+				return false;
+			point["x"] = x * width / logicalWidth;
+			point["y"] = y * height / logicalHeight;
+			return true;
+		};
+		bool valid = !a.contains("x") || convert(a);
+		if (a.contains("points"))
+			for (auto &point : a["points"])
+				valid = convert(point) && valid;
+		if (!valid)
+		{
+			finish("Coordinates outside the logical screen (" + std::to_string(logicalWidth) + "x" +
+				   std::to_string(logicalHeight) + " logical pixels, as ui_inspect bounds)");
+			return;
+		}
+		coordinatesConverted = true;
 	}
 	if (a.contains("capture_id") && !coordinatesConverted)
 	{

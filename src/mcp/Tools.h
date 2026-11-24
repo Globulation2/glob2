@@ -65,6 +65,11 @@ Json toolResult(Result, const std::string &pngBase64 = {});
 // children), omits fields at their defaults, and reports hidden controls explicitly.
 Json compactInspection(const Json &inspection);
 // Why ui_act arguments cannot target a control in this full inspection, phrased with
-// the next step to take; empty when the target is usable.
-std::string actionTargetProblem(const Json &inspection, const Json &arguments);
+// the next step to take; empty when the target is usable. A value is checked against the
+// control's options or range; `value`, when given, receives it with an option label
+// resolved to its index.
+std::string actionTargetProblem(const Json &inspection, const Json &arguments, Json *value = nullptr);
+// The centre of the visible part of the control that ui_click/ui_move {key, surface?}
+// names, in logical pixels, from a full inspection; returns why not when it cannot be.
+std::string controlCentre(const Json &inspection, const Json &arguments, Json &point);
 } // namespace MCP

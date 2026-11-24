@@ -8,6 +8,8 @@
 #include <cctype>
 #include <algorithm>
 #include "Building.h"
+#include "Unit.h"
+#include "GameGUIToolManager.h"
 #include "Material.h"
 #include "Map.h"
 #include <map>
@@ -551,11 +553,43 @@ Json LocalCommander::call(const std::string &tool, const Json &args)
 			remember(key, {{"status", "completed"}, {"submitted", false}});
 		}
 	}
+	// An install over an existing name, or a stale replace, fails now: its preflight
+	// would run the whole script only to be refused. (finish checks again, since an
+	// earlier queued operation can still change the program.)
+	else if (const auto conflict = kind == "install" || kind == "replace" ? programConflict(kind, args) : std::string();
+			 !conflict.empty())
+		remember(key, {{"status", "failed"}, {"submitted", false}, {"error", conflict}});
 	else
 		queued.push_back({key, args});
 	if (args.value("wait", false))
 		return awaitResult({{"session", session}, {"operation_key", key}});
 	return journal.at(key);
+}
+std::string LocalCommander::programConflict(const std::string &kind, const Json &request) const
+{
+	const auto name = request.value("name", std::string());
+	const auto old = programs.find(name);
+	const auto revision = [&] { return old->second.definition.at("revision").dump(); };
+	if (kind == "install")
+	{
+		if (old != programs.end())
+			return "A program named \"" + name + "\" is already installed (revision " + revision() +
+				   "): use action replace with expected_revision " + revision() + ", or cancel it first";
+		if (programs.size() >= 8)
+			return "Eight programs are already installed, the most a colony can run: cancel one first "
+				   "(hive_program list names them)";
+		return {};
+	}
+	if (old == programs.end())
+		return "No program named \"" + name + "\" is installed, so there is nothing to replace: use action install "
+			   "(hive_program list names the installed ones)";
+	if (!request.contains("expected_revision"))
+		return "replace needs expected_revision: \"" + name + "\" is at revision " + revision();
+	if (old->second.definition.at("revision") != request.at("expected_revision"))
+		return "expected_revision " + request.at("expected_revision").dump() + " is stale: \"" + name +
+			   "\" is now at revision " + revision() + "; replace with expected_revision " + revision() +
+			   " if you still mean to replace that version";
+	return {};
 }
 void LocalCommander::record(Logged entry)
 {
@@ -825,12 +859,8 @@ void LocalCommander::finish(Json result)
 		{
 			const auto id = current.request.at("name").get<std::string>();
 			auto old = programs.find(id);
-			if (kind == "install" && (old != programs.end() || programs.size() >= 8))
-				throw std::runtime_error("Standing order exists or eight-program limit reached");
-			if (kind == "replace" &&
-				(old == programs.end() ||
-				 old->second.definition.at("revision") != current.request.at("expected_revision")))
-				throw std::runtime_error("Standing order revision changed");
+			if (const auto conflict = programConflict(kind, current.request); !conflict.empty())
+				throw std::runtime_error(conflict);
 			// Retain name revisions after cancellation to reject stale replacements
 			// if a caller reinstalls a different program under the same name.
 			auto revision = revisions.try_emplace(id, 0).first;
@@ -969,6 +999,7 @@ void LocalCommander::update()
 	}
 	// The HUD's rows coalesce and fade: note each new report as it arrives.
 	recordFeed();
+	applyPendingPriorities();
 	if (memoryTracked)
 	{
 		const auto observedTick = gui.simulationThreaded ? gui.drawnScene().tick : gui.game.stepCounter;
@@ -1161,12 +1192,25 @@ Json LocalCommander::world(const Json &args)
 			// Every own building, whatever area and limit filter the reply, to follow up
 			// game_place requests (a filter must not make a placed site look refused).
 			Json ownIndex = Json::array();
+			// The colony's extent and centre (its Swarm's when it has one), from every own
+			// building whatever the filters: the resources section searches around it.
+			int cx = -1, cy = -1, minX = 1 << 30, minY = 1 << 30, maxX = -1, maxY = -1;
+			bool centredOnSwarm = false;
 			for (const auto &b : buildings)
 			{
 				if (b.value("team", -1) == team)
 				{
 					const auto *type = types.get(b.value("type", 0));
 					const std::string key = b.value("key", std::string());
+					if (type && !type->isVirtual)
+					{
+						const int bx = b.value("x", 0), by = b.value("y", 0);
+						const bool swarm = key.substr(0, key.find('.')) == "swarm";
+						if (cx < 0 || (swarm && !centredOnSwarm))
+							cx = bx + type->width / 2, cy = by + type->height / 2, centredOnSwarm = swarm;
+						minX = std::min(minX, bx), minY = std::min(minY, by);
+						maxX = std::max(maxX, bx + type->width - 1), maxY = std::max(maxY, by + type->height - 1);
+					}
 					ownIndex.push_back({{"type", key.substr(0, key.find('.'))},
 										{"x", b.value("x", 0)},
 										{"y", b.value("y", 0)},
@@ -1290,45 +1334,139 @@ Json LocalCommander::world(const Json &args)
 				entry["enemy"] = (enemies & Team::teamNumberToMask(record.value("team", 0))) != 0;
 				remembered.push_back(std::move(entry));
 			}
-			// Resources the colony knows of near its buildings, by type: tile count and
-			// the nearest tile to the colony's centre (its Swarm when it has one).
-			int cx = -1, cy = -1, minX = 1 << 30, minY = 1 << 30, maxX = -1, maxY = -1;
-			for (const auto &b : own)
+			// Resources the colony knows of, by type: within resource_radius of its buildings
+			// (flags excluded), or inside area when one is given. Each type has its tile count
+			// and amount, the nearest tile to the colony's centre, and its largest fields:
+			// tiles of that resource touching each other (diagonals count), as the colony
+			// last saw them (fog of war), never their live state.
+			Json resources = Json::object(), resourceScope = Json::object();
+			std::string resourceNote;
+			if (!brief)
 			{
-				const int bx = b.at("x"), by = b.at("y");
-				if (cx < 0 || b.at("type") == "swarm")
-					cx = bx + b.value("width", 1) / 2, cy = by + b.value("height", 1) / 2;
-				minX = std::min(minX, bx), minY = std::min(minY, by);
-				maxX = std::max(maxX, bx), maxY = std::max(maxY, by);
-			}
-			Json resources = Json::object();
-			if (cx >= 0 && !brief)
-			{
-				const int radius = args.value("resource_radius", 24);
 				const int w = gui.game.map.getW(), h = gui.game.map.getH();
-				const auto types = json(observations.query("resourceTypes", {}));
-				struct Seen { int tiles = 0, amount = 0, x = 0, y = 0, distance = 1 << 30; };
-				std::map<std::string, Seen> seen;
-				const int spanX = std::min(w, maxX - minX + 2 * radius), spanY = std::min(h, maxY - minY + 2 * radius);
+				int sx = 0, sy = 0, spanX = 0, spanY = 0;
+				if (args.contains("area"))
+				{
+					sx = ((ax % w) + w) % w, sy = ((ay % h) + h) % h;
+					spanX = std::clamp(aw, 0, w), spanY = std::clamp(ah, 0, h);
+					if (cx < 0)
+						cx = (sx + spanX / 2) % w, cy = (sy + spanY / 2) % h;
+					resourceScope = {{"area", {{"x", ax}, {"y", ay}, {"width", aw}, {"height", ah}}}};
+				}
+				else if (cx >= 0)
+				{
+					const int radius = std::clamp(args.value("resource_radius", 24), 0, std::max(w, h));
+					sx = (((minX - radius) % w) + w) % w, sy = (((minY - radius) % h) + h) % h;
+					spanX = std::min(w, maxX - minX + 1 + 2 * radius), spanY = std::min(h, maxY - minY + 1 + 2 * radius);
+					resourceScope = {{"resource_radius", radius},
+									 {"around", "your buildings (flags excluded)"},
+									 {"from", {{"x", sx}, {"y", sy}, {"width", spanX}, {"height", spanY}}}};
+				}
+				if (cx >= 0)
+					resourceScope["distances_from"] = {{"x", cx}, {"y", cy}, {"what", centredOnSwarm ? "your swarm" : args.contains("area") && minX > maxX ? "the area's centre" : "your first building"}};
+				const auto resourceTypes = json(observations.query("resourceTypes", {}));
+				// Each scanned tile's resource type, or -1, and its amount.
+				std::vector<int> kind(std::size_t(spanX) * spanY, -1), amounts(kind.size(), 0);
 				for (int oy = 0; oy < spanY; ++oy)
 					for (int ox = 0; ox < spanX; ++ox)
 					{
-						const int x = ((minX - radius + ox) % w + w) % w, y = ((minY - radius + oy) % h + h) % h;
-						// Tiles as this colony last saw them (fog of war), never their live state.
-						const auto cell = observations.cell(x, y);
-						if (!cell.known || cell.resource == 65535 || !cell.amount || cell.resource >= types.size())
+						const auto cell = observations.cell((sx + ox) % w, (sy + oy) % h);
+						if (!cell.known || cell.resource == 65535 || !cell.amount || cell.resource >= resourceTypes.size())
 							continue;
-						auto &r = seen[types[cell.resource].value("key", std::string("resource"))];
-						++r.tiles;
-						r.amount += cell.amount;
-						const int dx = std::min(std::abs(x - cx), w - std::abs(x - cx));
-						const int dy = std::min(std::abs(y - cy), h - std::abs(y - cy));
-						if (dx + dy < r.distance)
-							r.distance = dx + dy, r.x = x, r.y = y;
+						kind[std::size_t(oy) * spanX + ox] = cell.resource;
+						amounts[std::size_t(oy) * spanX + ox] = int(std::min<unsigned>(cell.amount, 65535u));
 					}
-				for (const auto &[key, r] : seen)
-					resources[key] = {{"tiles", r.tiles}, {"amount", r.amount},
-									  {"nearest", {{"x", r.x}, {"y", r.y}, {"distance", r.distance}}}};
+				const auto distance = [&](int x, int y)
+				{
+					const int dx = std::min(std::abs(x - cx), w - std::abs(x - cx));
+					const int dy = std::min(std::abs(y - cy), h - std::abs(y - cy));
+					return dx + dy;
+				};
+				struct Field
+				{
+					int tiles = 0, amount = 0, x = 0, y = 0, distance = 1 << 30;
+				};
+				std::map<int, std::vector<Field>> fields; // by resource type
+				std::vector<char> visited(kind.size(), 0);
+				std::vector<std::pair<int, int>> stack;
+				for (int oy = 0; oy < spanY; ++oy)
+					for (int ox = 0; ox < spanX; ++ox)
+					{
+						const std::size_t start = std::size_t(oy) * spanX + ox;
+						if (kind[start] < 0 || visited[start])
+							continue;
+						const int resource = kind[start];
+						Field field;
+						visited[start] = 1;
+						stack.assign(1, {ox, oy});
+						while (!stack.empty())
+						{
+							const auto [px, py] = stack.back();
+							stack.pop_back();
+							const std::size_t i = std::size_t(py) * spanX + px;
+							const int x = (sx + px) % w, y = (sy + py) % h;
+							++field.tiles;
+							field.amount += amounts[i];
+							if (const int d = distance(x, y); d < field.distance)
+								field.distance = d, field.x = x, field.y = y;
+							for (int dy = -1; dy <= 1; ++dy)
+								for (int dx = -1; dx <= 1; ++dx)
+								{
+									int nx = px + dx, ny = py + dy;
+									// Across the map's edge only when the scan covers the whole torus.
+									if (spanX == w)
+										nx = (nx + w) % w;
+									if (spanY == h)
+										ny = (ny + h) % h;
+									if (nx < 0 || ny < 0 || nx >= spanX || ny >= spanY)
+										continue;
+									const std::size_t n = std::size_t(ny) * spanX + nx;
+									if (kind[n] == resource && !visited[n])
+									{
+										visited[n] = 1;
+										stack.emplace_back(nx, ny);
+									}
+								}
+						}
+						fields[resource].push_back(field);
+					}
+				const std::size_t fieldCount = std::clamp(args.value("resource_fields", 3), 1, 10);
+				for (auto &[resource, list] : fields)
+				{
+					int tiles = 0, amount = 0;
+					const Field *nearest = &list.front();
+					for (const auto &f : list)
+					{
+						tiles += f.tiles, amount += f.amount;
+						if (f.distance < nearest->distance)
+							nearest = &f;
+					}
+					Json entry = {{"tiles", tiles},
+								  {"amount", amount},
+								  {"nearest", {{"x", nearest->x}, {"y", nearest->y}, {"distance", nearest->distance}}},
+								  {"field_count", list.size()}};
+					// Largest fields first; of equal size, the nearest.
+					std::sort(list.begin(), list.end(), [](const Field &a, const Field &b)
+							  { return a.tiles != b.tiles ? a.tiles > b.tiles : a.distance < b.distance; });
+					Json best = Json::array();
+					for (std::size_t i = 0; i < list.size() && i < fieldCount; ++i)
+						best.push_back({{"x", list[i].x},
+										{"y", list[i].y},
+										{"tiles", list[i].tiles},
+										{"amount", list[i].amount},
+										{"distance", list[i].distance}});
+					entry["fields"] = std::move(best);
+					resources[resourceTypes[std::size_t(resource)].value("key", std::string("resource"))] = std::move(entry);
+				}
+				if (!args.contains("area") && cx < 0)
+					resourceNote = "You have no buildings to search around: pass area to look somewhere";
+				else if (resources.empty())
+					resourceNote = "None seen yet " + std::string(args.contains("area") ? "in this area" : "within resource_radius of your buildings") +
+								   ": explore (explorers, or an exploration flag) or pass a larger " +
+								   (args.contains("area") ? "area" : "resource_radius");
+				else
+					resourceNote = "fields: each a group of touching tiles of one resource, largest first; its x/y is "
+								   "the field's tile nearest your colony. Only tiles your colony has seen count.";
 			}
 			// Alerts from the colony's journal, grouped (a skirmish is one alert with n
 			// reports), newest first: the last AlertTicks by default, or after since_tick.
@@ -1337,7 +1475,7 @@ Json LocalCommander::world(const Json &args)
 			const unsigned window = since ? since : (now > AlertTicks ? now - AlertTicks : 0);
 			Json alerts = groupedAlerts(window, now, 25), lostBuildings = Json::array();
 			for (const auto &e : eventLog)
-				if (e.tick > window && e.kind == "building_destroyed")
+				if ((e.tick > window || !window) && e.kind == "building_destroyed")
 					lostBuildings.push_back({{"type", e.event.substr(e.event.find(": ") + 2)}, {"x", e.x}, {"y", e.y},
 											 {"ticks_ago", now > e.tick ? now - e.tick : 0}});
 			// Conversions are rate-limited as events; the colony's counter is exact.
@@ -1373,9 +1511,13 @@ Json LocalCommander::world(const Json &args)
 				it = status == "pending" ? std::next(it) : placements.erase(it);
 			}
 			const auto bar = gui.topBarValues();
+			const auto chance = gui.localWinChancePercent();
+			// The top bar's text (sampled with the colony's statistics) and the same as numbers,
+			// counted now: units_free matches units by type.
 			Json status = {{"workers_free_total", bar[0]},	 {"explorers_free_total", bar[1]},
 						   {"warriors_free_total", bar[2]}, {"prestige", bar[3]},
-						   {"win_chance_percent", bar[4]}};
+						   {"win_chance_percent", bar[4]},	 {"units_free", unitStatus()},
+						   {"win_chance", chance ? Json(*chance) : Json(nullptr)}};
 			Json visibleUnits = Json::object();
 			for (const auto &[k, n] : otherUnits)
 				visibleUnits[k] = n;
@@ -1406,6 +1548,8 @@ Json LocalCommander::world(const Json &args)
 					  {"status", status},
 					  {"forces", forces},
 					  {"resources", resources},
+					  {"resources_scope", resourceScope},
+					  {"resources_note", resourceNote},
 					  {"placeable", placeable}};
 			result["others"]["remembered_buildings"] = remembered;
 			result["alerts"] = alerts;
@@ -1441,19 +1585,116 @@ Json LocalCommander::place(const Json &args)
 		placements.pop_front();
 	for (const auto &p : placements)
 		reserved.push_back({p.x, p.y, p.width, p.height});
-	if (const auto error = gui.placeFromAutomation(name, x, y, radius, &at, reserved, &size); !error.empty())
+	// Initial settings, sent in the create order itself in place of a click's defaults.
+	BuildingCreateSettings settings;
+	const auto whole = [&](const char *field, int minimum, int maximum) -> std::optional<int>
+	{
+		if (!args.contains(field))
+			return std::nullopt;
+		const auto &v = args.at(field);
+		if (!v.is_number_integer() || v.get<std::int64_t>() < minimum || v.get<std::int64_t>() > maximum)
+			throw std::runtime_error(std::string(field) + " must be a whole number " + std::to_string(minimum) + ".." +
+									 std::to_string(maximum) + " (got " + v.dump() + ")");
+		return v.get<int>();
+	};
+	settings.workers = whole("workers", 0, MAX_BUILDING_WORKER_REQUEST);
+	settings.builders = whole("builders", 0, MAX_BUILDING_WORKER_REQUEST);
+	settings.range = whole("range", 0, 32767);
+	std::optional<int> priority;
+	if (args.contains("priority"))
+	{
+		const auto &p = args.at("priority");
+		const auto text = p.is_string() ? p.get<std::string>() : std::string();
+		// As game_building: medium is the default a click gives ("normal" is accepted too).
+		if (text != "low" && text != "medium" && text != "normal" && text != "high")
+			throw std::runtime_error("priority must be \"low\", \"medium\" or \"high\" (got " + p.dump() + ")");
+		priority = text == "low" ? -1 : text == "high" ? 1 : 0;
+	}
+	const bool customised = settings.workers || settings.builders || settings.range;
+	if (const auto error = gui.placeFromAutomation(name, x, y, radius, &at, reserved, &size,
+												   customised ? &settings : nullptr);
+		!error.empty())
 		throw std::runtime_error(error);
-	placements.push_back({name.substr(0, name.find('.')), at.first, at.second, size.first, size.second,
-						  gui.game.stepCounter});
+	const auto shortName = name.substr(0, name.find('.'));
+	placements.push_back({shortName, at.first, at.second, size.first, size.second, gui.game.stepCounter});
 	while (placements.size() > 16)
 		placements.pop_front();
-	return {{"queued", true},
-			{"building", name},
-			{"x", at.first},
-			{"y", at.second},
-			{"note", "Queued like a click. The site or flag appears after the next simulation "
-					 "step; game_world lists it under placements until it does (or says it never "
-					 "did). Change its workers with game_building."}};
+	Json result = {{"queued", true},
+				   {"building", name},
+				   {"x", at.first},
+				   {"y", at.second},
+				   {"note", "Queued like a click. The site or flag appears after the next simulation "
+							"step; game_world lists it under placements until it does (or says it never "
+							"did). Change its settings later with game_building."}};
+	// What the create order carries, after capping at what the type allows.
+	Json applied = Json::object();
+	for (const auto &[field, value] : {std::pair{"workers", settings.workers}, std::pair{"builders", settings.builders},
+									   std::pair{"range", settings.range}})
+		if (value)
+		{
+			applied[field] = *value;
+			if (args.at(field).get<int>() != *value)
+				applied[std::string(field) + "_capped"] = true;
+		}
+	if (priority)
+	{
+		// The create order has no priority: the building panel's priority order follows
+		// once the site or flag exists.
+		pendingPriorities.push_back({shortName, at.first, at.second, *priority, gui.game.stepCounter});
+		while (pendingPriorities.size() > 16)
+			pendingPriorities.pop_front();
+		applied["priority"] = args.at("priority");
+		applied["priority_note"] = "set by a follow-up order once the site or flag appears (the create order "
+								   "has no priority)";
+	}
+	if (!applied.empty())
+		result["settings"] = std::move(applied);
+	return result;
+}
+void LocalCommander::applyPendingPriorities()
+{
+	if (pendingPriorities.empty())
+		return;
+	const auto observedTick = gui.simulationThreaded ? gui.drawnScene().tick : gui.game.stepCounter;
+	if (observedTick < nextPriorityCheck)
+		return;
+	nextPriorityCheck = observedTick + 5;
+	std::vector<Json> orders;
+	boundary(
+		[&]
+		{
+			auto scope = observations.captureObservation();
+			observations.observe();
+			const auto buildings = json(observations.query("buildings", {}));
+			for (auto it = pendingPriorities.begin(); it != pendingPriorities.end();)
+			{
+				bool found = false;
+				for (const auto &b : buildings)
+				{
+					const auto key = b.value("key", std::string());
+					if (b.value("team", -1) == team && b.value("x", -1) == it->x && b.value("y", -1) == it->y &&
+						key.substr(0, key.find('.')) == it->building)
+					{
+						orders.push_back({{"type", "priority"},
+										  {"building", {{"id", b.value("id", 0)}, {"generation", b.value("generation", 0)}}},
+										  {"priority", it->priority}});
+						found = true;
+						break;
+					}
+				}
+				// Never appeared (refused by the game): game_world's placements say so.
+				it = found || gui.game.stepCounter > it->tick + 200 ? pendingPriorities.erase(it) : std::next(it);
+			}
+		});
+	for (const auto &order : orders)
+		try
+		{
+			submit({order});
+		}
+		catch (const std::exception &)
+		{
+			// The building went in the meantime, or the queue is full: nothing to retry.
+		}
 }
 Json LocalCommander::view(const Json &args)
 {
@@ -1519,8 +1760,27 @@ Json LocalCommander::chat(const Json &args)
 								 std::to_string(ORDER_TEXT_MESSAGE_MAX_TEXT_BYTES) +
 								 " (accented letters and emoji take 2 to 4 bytes each). "
 								 "Shorten it or send it in parts.");
+	// Plain text on one line, as the chat box allows: no control characters (NUL, tabs,
+	// newlines, escapes, or the C1 range U+0080..U+009F), and something besides spaces.
+	for (std::size_t i = 0; i < text.size(); ++i)
+	{
+		const auto c = static_cast<unsigned char>(text[i]);
+		const bool c1 = c == 0xC2 && i + 1 < text.size() && static_cast<unsigned char>(text[i + 1]) >= 0x80 &&
+						static_cast<unsigned char>(text[i + 1]) <= 0x9F;
+		if (c < 0x20 || c == 0x7F || c1)
+		{
+			static const char hex[] = "0123456789ABCDEF";
+			const unsigned code = c1 ? static_cast<unsigned char>(text[i + 1]) : c;
+			throw std::runtime_error("Chat text has a control character (U+00" + std::string{hex[code >> 4], hex[code & 15]} +
+									 ") at byte " + std::to_string(i) +
+									 ": send plain text on one line, without newlines, tabs or NUL");
+		}
+	}
+	if (text.find_first_not_of(' ') == std::string::npos)
+		throw std::runtime_error(text.empty() ? "Chat text is empty: pass the message to send"
+											  : "Chat text is only spaces: pass the message to send");
 	if (!gui.sendChatFromAutomation(text))
-		throw std::runtime_error("Chat text is empty");
+		throw std::runtime_error("Chat text is empty: pass the message to send");
 	return {{"sent", true},
 			{"text", text},
 			{"note", "Queued like the chat box's Send: the message shows in the game's "
@@ -1663,6 +1923,41 @@ void LocalCommander::refreshMemory()
 		losses.pop_front();
 	ownBuildings = std::move(owned);
 	memoryStarted = true;
+}
+Json LocalCommander::unitStatus() const
+{
+	// The colony's own units now, as units by type counts them. Free is the top bar's
+	// meaning: fed, healthy and not working; for workers, less the units that buildings
+	// and flags request and do not have yet (never below 0: requested_over says by how
+	// many the requests exceed the free workers).
+	static const char *const kinds[] = {"workers", "explorers", "warriors"};
+	int total[3] = {}, idle[3] = {};
+	const Team *colony = gui.game.teams[team];
+	for (const Unit *u : colony->liveUnits.entries())
+		if (u && u->typeNum < 3)
+		{
+			++total[u->typeNum];
+			idle[u->typeNum] += u->medical == Unit::MED_FREE && u->activity == Unit::ACT_RANDOM;
+		}
+	int requested = 0;
+	for (const Building *b : colony->liveBuildings.entries())
+		if (b && (b->type->foodable || b->type->fillable || b->runtime->attractsRole(0)))
+			requested += std::max(0, b->desiredMaxUnitWorking - int(b->unitsWorking.size()));
+	Json result = Json::object();
+	for (int i = 0; i < 3; ++i)
+	{
+		const int wanted = i == 0 ? requested : 0;
+		Json entry = {{"free", std::max(0, idle[i] - wanted)}, {"total", total[i]}};
+		if (i == 0)
+		{
+			entry["idle"] = idle[i];
+			entry["requested_unfilled"] = requested;
+			if (requested > idle[i])
+				entry["requested_over"] = requested - idle[i];
+		}
+		result[kinds[i]] = std::move(entry);
+	}
+	return result;
 }
 void LocalCommander::submit(const std::vector<Json> &descriptors)
 {
@@ -1828,19 +2123,25 @@ Json LocalCommander::zone(const Json &args)
 {
 	const auto kind = args.at("zone").get<std::string>();
 	const int width = args.at("width"), height = args.at("height");
+	const bool erase = args.value("mode", std::string("paint")) == "erase";
 	Json mask = Json::array();
 	for (int i = 0; i < width * height; ++i)
 		mask.push_back(true);
 	submit({{{"type", kind == "forbidden" ? "forbidden" : kind == "guard" ? "guardArea" : "clearArea"},
-			 {"mode", args.value("mode", std::string("paint")) == "erase" ? 2 : 1},
+			 {"mode", erase ? 2 : 1},
 			 {"x", args.at("x")},
 			 {"y", args.at("y")},
 			 {"width", width},
 			 {"height", height},
 			 {"mask", mask}}});
 	return {{"queued", true},
-			{"note", "The zone is painted after the next simulation step; it appears on the map "
-					 "and in the Flags and areas panel."}};
+			{"zone", kind},
+			{"mode", erase ? "erase" : "paint"},
+			{"area", {{"x", args.at("x")}, {"y", args.at("y")}, {"width", width}, {"height", height}}},
+			{"note", erase ? "The zone is erased from this area after the next simulation step; the map "
+							 "and the Flags and areas panel show it gone."
+						   : "The zone is painted after the next simulation step; it appears on the map "
+							 "and in the Flags and areas panel."}};
 }
 Json LocalCommander::stats(const Json &args)
 {
@@ -1879,6 +2180,9 @@ Json LocalCommander::stats(const Json &args)
 	if (args.value("list", false))
 		return result;
 	const auto bar = gui.topBarValues();
+	const auto chance = gui.localWinChancePercent();
+	Json unitsFree;
+	boundary([&] { unitsFree = unitStatus(); });
 	result["mode"] = "match";
 	result["tick"] = now;
 	result["seconds"] = now / GAME_TICKS_PER_SECOND;
@@ -1886,7 +2190,8 @@ Json LocalCommander::stats(const Json &args)
 	result["status"] = {{"workers_free_total", bar[0]}, {"explorers_free_total", bar[1]},
 						{"warriors_free_total", bar[2]}, {"prestige", bar[3]},
 						{"win_chance_percent", bar[4]}, {"converted_in", bar[5]},
-						{"converted_out", bar[6]}};
+						{"converted_out", bar[6]}, {"units_free", unitsFree},
+						{"win_chance", chance ? Json(*chance) : Json(nullptr)}};
 	result["note"] = "Your colony only, as the in-game Statistics panel shows it. Every team's "
 					 "statistics and the win probability history follow on the end_game results "
 					 "screen, while it is shown.";

@@ -78,6 +78,22 @@ class LocalCommander : public CommanderView
 	// Adds the colony's own events and assigned counts to a Hive snapshot.
 	void annotate(Json &snapshot);
 	void submit(const std::vector<Json> &descriptors);
+	// Why a hive_program install or replace cannot apply now (empty when it can).
+	std::string programConflict(const std::string &kind, const Json &request) const;
+	// The colony's own units by type, counted live (callers hold the boundary): free,
+	// total, and for workers the unfilled requests of buildings and flags.
+	Json unitStatus() const;
+	// game_place priorities: the create order has none, so each is sent as the building
+	// panel's priority order once the site or flag appears (or dropped after 200 ticks).
+	struct PendingPriority
+	{
+		std::string building;
+		int x, y, priority;
+		unsigned tick;
+	};
+	std::deque<PendingPriority> pendingPriorities;
+	unsigned nextPriorityCheck = 0;
+	void applyPendingPriorities();
 	// Standing-order failures, reported as game_world alerts: a program that fails is
 	// paused (or, when its worker could not start, retried a few times first).
 	struct Failure

@@ -1358,6 +1358,9 @@ SurfaceSnapshot Host::inspect() const
 		item.focused = !node.key.empty() && node.key == focusKey;
 		item.blocked = blocked || obscures(item.visible);
 		item.actions = node.supportedActions();
+		item.options = node.optionLabels();
+		item.optionEnabled = node.optionsEnabled();
+		item.range = node.valueRange();
 		for (const auto &part : node.subTargets())
 		{
 			ControlSnapshot target;
@@ -1497,7 +1500,9 @@ bool Host::act(const std::string &key, const SemanticAction &action, std::string
 				focus(key);
 			if (node->perform(action, *this))
 				return true;
-			error = "Invalid action value";
+			error = actionValueProblem(*target, action);
+			if (error.empty())
+				error = "Invalid action value";
 		}
 		else if (action.kind == ActionKind::Activate)
 		{
@@ -1509,6 +1514,37 @@ bool Host::act(const std::string &key, const SemanticAction &action, std::string
 			error = "Unknown control";
 	}
 	return false;
+}
+std::string actionValueProblem(const ControlSnapshot &control, const SemanticAction &action)
+{
+	const auto *number = std::get_if<int>(&action.value);
+	if (action.kind == ActionKind::Select && !control.options.empty())
+	{
+		const int count = int(control.options.size());
+		auto listed = [&]
+		{
+			std::string text;
+			for (int i = 0; i < count && i < 40; ++i)
+				text += (i ? ", " : "") + std::to_string(i) + " \"" + control.options[std::size_t(i)] + "\"";
+			if (count > 40)
+				text += ", ... (" + std::to_string(count) + " in all)";
+			return text;
+		};
+		if (!number || *number < 0 || *number >= count)
+			return "Option out of range for \"" + control.key + "\": select takes an index 0.." +
+				   std::to_string(count - 1) + " (" + listed() + ")";
+		if (std::size_t(*number) < control.optionEnabled.size() && !control.optionEnabled[std::size_t(*number)])
+			return "Option " + std::to_string(*number) + " \"" + control.options[std::size_t(*number)] +
+				   "\" of \"" + control.key + "\" is unavailable now";
+	}
+	if (action.kind == ActionKind::SetValue && control.range)
+	{
+		if (!number || *number < control.range->minimum || *number > control.range->maximum)
+			return "Value out of range for \"" + control.key + "\": set_value takes an integer " +
+				   std::to_string(control.range->minimum) + ".." + std::to_string(control.range->maximum) +
+				   (control.range->step > 1 ? " in steps of " + std::to_string(control.range->step) : std::string());
+	}
+	return {};
 }
 std::string inspectionJSON(const SurfaceSnapshot &snapshot)
 {
@@ -1529,19 +1565,40 @@ std::string inspectionJSON(const SurfaceSnapshot &snapshot)
 					value = v;
 			},
 			item.value);
-		return {{"key", item.key},
-				{"revision", item.revision},
-				{"role", item.role},
-				{"label", item.label},
-				{"value", value},
-				{"bounds", rect(item.bounds)},
-				{"visible", rect(item.visible)},
-				{"enabled", item.enabled},
-				{"selected", item.selected},
-				{"focused", item.focused},
-				{"blocked", item.blocked},
-				{"actions", actions},
-				{"children", children}};
+		Json result = {{"key", item.key},
+					   {"revision", item.revision},
+					   {"role", item.role},
+					   {"label", item.label},
+					   {"value", value},
+					   {"bounds", rect(item.bounds)},
+					   {"visible", rect(item.visible)},
+					   {"enabled", item.enabled},
+					   {"selected", item.selected},
+					   {"focused", item.focused},
+					   {"blocked", item.blocked},
+					   {"actions", actions},
+					   {"children", children}};
+		// Value descriptions appear only on controls that have them.
+		if (!item.options.empty())
+		{
+			result["options"] = item.options;
+			Json disabled = Json::array();
+			for (std::size_t i = 0; i < item.optionEnabled.size() && i < item.options.size(); ++i)
+				if (!item.optionEnabled[i])
+					disabled.push_back(i);
+			if (!disabled.empty())
+				result["disabled_options"] = std::move(disabled);
+			if (const auto *index = std::get_if<int>(&item.value);
+				index && *index >= 0 && *index < int(item.options.size()))
+				result["value_label"] = item.options[std::size_t(*index)];
+		}
+		if (item.range)
+		{
+			result["min"] = item.range->minimum;
+			result["max"] = item.range->maximum;
+			result["step"] = item.range->step;
+		}
+		return result;
 	};
 	Json controls = Json::array();
 	for (const auto &item : snapshot.controls)

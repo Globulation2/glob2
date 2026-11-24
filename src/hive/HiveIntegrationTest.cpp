@@ -21,6 +21,12 @@
 #include <fstream>
 #include <cstdlib>
 #include "Building.h"
+#include "render/scene/Scene.h"
+#include "sim/snapshot/SnapshotStore.h"
+#include "GameGUIToolManager.h"
+#include "Ressource.h"
+#include "Player.h"
+#include <future>
 using Hive::Json;
 TEST_CASE("Hive Mind copies the engine fog boundary and validates ownership" *
 		  doctest::test_suite("HiveMindIntegration"))
@@ -1329,4 +1335,230 @@ TEST_CASE("local Hive standing-order reads reject a previous match session" *
 	CHECK(current.call("hive_program", {{"action", "list"}, {"session", session}})
 			  .at("programs").size() == 1);
 	CHECK(current.call("hive_program", {{"action", "list"}}).at("programs").size() == 1);
+}
+
+TEST_CASE("local Hive program and order errors name the current revision, field and range" *
+		  doctest::test_suite("HiveMindIntegration"))
+{
+	glob2test::HeadlessGlobals globals({.seed = 19});
+	glob2test::HeadlessGame world({.loadDefaultRace = true, .header = true});
+	world.addBuilding("swarm", 4, 4);
+	world.gui.localPlayer = world.gui.localTeamNo = 0;
+	world.game.players[0]->type = BasePlayer::P_LOCAL;
+	Hive::LocalCommander commander(world.gui, [](Json input)
+	{
+		std::promise<Json> ready;
+		ready.set_value(Hive::invoke(input));
+		return ready.get_future();
+	});
+	const auto session = commander.status().at("session");
+	const auto settle = [&] { commander.update(); commander.update(); };
+	const auto result = [&](const char *key)
+	{ return commander.call("hive_result", {{"session", session}, {"operation_key", key}}); };
+	const auto contains = [](const Json &record, const std::string &text)
+	{
+		INFO(record.dump());
+		return record.value("error", std::string()).find(text) != std::string::npos;
+	};
+	const std::string source = "function step(){return {};}";
+	commander.call("hive_program", {{"session", session}, {"operation_key", "install"}, {"action", "install"},
+									{"name", "keep"}, {"source", source}});
+	settle();
+	REQUIRE(commander.standingOrders().size() == 1);
+	// Installing over an existing name says so, and how to replace it; it fails at once.
+	commander.call("hive_program", {{"session", session}, {"operation_key", "again"}, {"action", "install"},
+									{"name", "keep"}, {"source", source}});
+	CHECK(result("again").at("status") == "failed");
+	CHECK(contains(result("again"), "already installed (revision 1)"));
+	CHECK(contains(result("again"), "use action replace with expected_revision 1"));
+	// A stale replace names the current revision.
+	commander.call("hive_program", {{"session", session}, {"operation_key", "stale"}, {"action", "replace"},
+									{"name", "keep"}, {"expected_revision", 5}, {"source", source}});
+	CHECK(result("stale").at("status") == "failed");
+	CHECK(contains(result("stale"), "expected_revision 5 is stale"));
+	CHECK(contains(result("stale"), "now at revision 1"));
+	commander.call("hive_program", {{"session", session}, {"operation_key", "missing"}, {"action", "replace"},
+									{"name", "other"}, {"expected_revision", 1}, {"source", source}});
+	CHECK(contains(result("missing"), "No program named \"other\""));
+	// A correct replace still applies.
+	commander.call("hive_program", {{"session", session}, {"operation_key", "replace"}, {"action", "replace"},
+									{"name", "keep"}, {"expected_revision", 1}, {"source", source}});
+	settle();
+	CHECK(result("replace").at("status") == "completed");
+	CHECK(commander.standingOrders().at(0).at("revision") == 2);
+	commander.change("keep", "cancel");
+
+	// Helper and order arguments outside their range say which, the range and the value.
+	commander.call("hive_run", {{"session", session}, {"operation_key", "radius"},
+		{"source", "function step(ctx){ctx.game.map.findPlacement('inn',{x:5,y:5,radius:100});return {};}"}});
+	settle();
+	CHECK(result("radius").at("status") == "failed");
+	CHECK(contains(result("radius"), "findPlacement radius must be a whole number 0..64 (got 100"));
+	commander.call("hive_run", {{"session", session}, {"operation_key", "workers"},
+		{"source", "function step(ctx){const b=ctx.game.buildings({team:ctx.myTeam})[0];"
+				   "return {orders:[{type:'workers',building:{id:b.id,generation:b.generation},workers:999}]};}"}});
+	settle();
+	const auto workers = result("workers");
+	INFO(workers.dump());
+	REQUIRE(workers.contains("rejected"));
+	CHECK(workers.at("rejected")[0].at("error").get<std::string>().find(
+			  "workers must be a whole number 0..20 (got 999)") != std::string::npos);
+}
+
+// Reaches the HUD's pending order the way a click's caller would.
+struct HiveToolsTestAccess
+{
+	static GameGUIToolManager &tools(GameGUI &gui) { return gui.toolManager; }
+};
+
+TEST_CASE("local game tools report resource fields, numeric status and initial placement settings" *
+		  doctest::test_suite("HiveMindIntegration"))
+{
+	glob2test::HeadlessGlobals globals({.seed = 19});
+	PresentationFrame published; // Outlives the GUI that points at it.
+	glob2test::HeadlessGame world({.wDec = 6, .hDec = 6, .teams = 2, .clearImmobile = true,
+								   .loadDefaultRace = true, .header = true});
+	REQUIRE(world.addBuilding("swarm", 4, 4));
+	world.addUnit(WORKER);
+	world.addUnit(WORKER);
+	world.addUnit(WARRIOR);
+	// Wood the colony can see: a 3x3 field, a 2-tile field and a lone tree. The map's
+	// right half (x >= 32) stays unexplored.
+	for (int y = 10; y <= 12; ++y)
+		for (int x = 10; x <= 12; ++x)
+			world.game.map.setResourceByIndex(x, y, WOOD, 0);
+	world.game.map.setResourceByIndex(20, 4, WOOD, 0);
+	world.game.map.setResourceByIndex(21, 4, WOOD, 0);
+	world.game.map.setResourceByIndex(4, 20, WOOD, 0);
+	const auto vision = world.game.teams[0]->me;
+	world.game.map.setMapDiscovered(0, 0, 32, 64, vision);
+	world.game.map.switchFogOfWar();
+	world.game.map.setMapDiscovered(0, 0, 32, 64, vision);
+	world.gui.localPlayer = world.gui.localTeamNo = 0;
+	world.gui.adjustLocalTeam();
+	world.game.players[0]->type = BasePlayer::P_LOCAL;
+	world.game.snapshots().invalidateBoundary();
+	world.gui.rebuildBuildingChoices(false);
+	world.gui.prepareLocalPresentation(published);
+	world.gui.setPublishedScene(&published);
+	Hive::LocalCommander commander(world.gui, [](Json input)
+	{
+		std::promise<Json> ready;
+		ready.set_value(Hive::invoke(input));
+		return ready.get_future();
+	});
+
+	// Resources: the largest fields of each type, from what the colony has seen.
+	auto state = commander.call("game_world", Json::object());
+	INFO(state.at("resources").dump());
+	REQUIRE(state.at("resources").contains("trees"));
+	const auto &wood = state.at("resources").at("trees");
+	CHECK(wood.at("tiles") == 12);
+	CHECK(wood.at("field_count") == 3);
+	REQUIRE(wood.at("fields").size() == 3);
+	CHECK(wood.at("fields")[0].at("tiles") == 9);
+	CHECK(wood.at("fields")[1].at("tiles") == 2);
+	CHECK(wood.at("fields")[2].at("tiles") == 1);
+	CHECK(state.at("resources_scope").at("resource_radius") == 24);
+	// With an area, only what lies inside it, and the area is echoed.
+	const Json area = {{"x", 18}, {"y", 0}, {"width", 8}, {"height", 8}};
+	state = commander.call("game_world", {{"area", area}});
+	CHECK(state.at("resources_scope").at("area") == area);
+	REQUIRE(state.at("resources").contains("trees"));
+	CHECK(state.at("resources").at("trees").at("tiles") == 2);
+	// Nothing seen there yet says so.
+	state = commander.call("game_world", {{"area", {{"x", 40}, {"y", 40}, {"width", 8}, {"height", 8}}}});
+	CHECK(state.at("resources").empty());
+	CHECK(state.at("resources_note").get<std::string>().find("None seen yet") != std::string::npos);
+
+	// Status as numbers, consistent with the units by type.
+	state = commander.call("game_world", Json::object());
+	const auto &status = state.at("status");
+	INFO(status.dump());
+	const auto &free = status.at("units_free");
+	CHECK(free.at("workers").at("total") == state.at("colony").at("units").at("worker"));
+	CHECK(free.at("warriors").at("total") == 1);
+	CHECK(free.at("explorers").at("total") == 0);
+	CHECK(free.at("workers").at("free").get<int>() >= 0);
+	CHECK(free.at("workers").at("free").get<int>() <= free.at("workers").at("total").get<int>());
+	CHECK((status.at("win_chance").is_null() || status.at("win_chance").is_number_integer()));
+	CHECK(status.at("workers_free_total").is_string()); // the top bar's text stays
+
+	// Initial settings go in the create order itself, capped as the panel caps them.
+	HiveToolsTestAccess::tools(world.gui).deactivateTool();
+	while (HiveToolsTestAccess::tools(world.gui).getOrder())
+		;
+	auto placed = commander.call("game_place", {{"building", "inn"}, {"x", 14}, {"y", 20}, {"workers", 4}, {"builders", 2}});
+	INFO(placed.dump());
+	auto order = std::dynamic_pointer_cast<OrderCreate>(HiveToolsTestAccess::tools(world.gui).getOrder());
+	REQUIRE(order);
+	CHECK(order->unitWorking == placed.at("settings").at("builders"));
+	CHECK(order->unitWorkingFuture == placed.at("settings").at("workers"));
+	CHECK(placed.at("settings").at("builders").get<int>() <= 2);
+	placed = commander.call("game_place", {{"building", "warflag"}, {"x", 20}, {"y", 20}, {"workers", 7}, {"range", 1000},
+										  {"priority", "high"}});
+	order = std::dynamic_pointer_cast<OrderCreate>(HiveToolsTestAccess::tools(world.gui).getOrder());
+	REQUIRE(order);
+	REQUIRE(order->flagRadius);
+	CHECK(*order->flagRadius == placed.at("settings").at("range"));
+	CHECK(placed.at("settings").at("range_capped") == true);
+	CHECK(order->unitWorking == placed.at("settings").at("workers"));
+	CHECK(placed.at("settings").at("priority") == "high");
+	auto refusal = [&](Json args)
+	{
+		try
+		{
+			commander.call("game_place", std::move(args));
+		}
+		catch (const std::exception &error)
+		{
+			return std::string(error.what());
+		}
+		return std::string("placed");
+	};
+	CHECK(refusal({{"building", "inn"}, {"x", 24}, {"y", 24}, {"range", 3}}).find("range is a flag's setting") !=
+		  std::string::npos);
+	CHECK(refusal({{"building", "warflag"}, {"x", 24}, {"y", 24}, {"builders", 3}}).find("builders") !=
+		  std::string::npos);
+	CHECK(refusal({{"building", "inn"}, {"x", 24}, {"y", 24}, {"workers", 99}}).find("0..20 (got 99)") !=
+		  std::string::npos);
+	CHECK(refusal({{"building", "inn"}, {"x", 24}, {"y", 24}, {"priority", "urgent"}}).find("priority must be") !=
+		  std::string::npos);
+	// "No room" names what was in the way, and suggests near only when it was not passed.
+	const auto blocked = refusal({{"building", "inn"}, {"x", 10}, {"y", 10}, {"near", true}, {"search_radius", 1}});
+	CHECK(blocked.find("No room for") != std::string::npos);
+	CHECK(blocked.find("of 9 spots tried") != std::string::npos);
+	CHECK(blocked.find("Pass near") == std::string::npos);
+	CHECK(refusal({{"building", "inn"}, {"x", 10}, {"y", 10}}).find("Pass near") != std::string::npos);
+	const auto unexplored = refusal({{"building", "inn"}, {"x", 40}, {"y", 10}});
+	CHECK(unexplored.find("unexplored") != std::string::npos);
+	CHECK(unexplored.find("Explore there first") != std::string::npos);
+	while (HiveToolsTestAccess::tools(world.gui).getOrder())
+		;
+
+	// Chat refuses control characters and blank text; zones say whether they paint or erase.
+	auto chatError = [&](const std::string &text)
+	{
+		try
+		{
+			commander.call("game_chat", {{"text", text}});
+		}
+		catch (const std::exception &error)
+		{
+			return std::string(error.what());
+		}
+		return std::string("sent");
+	};
+	CHECK(chatError("one\ntwo").find("control character (U+000A) at byte 3") != std::string::npos);
+	CHECK(chatError(std::string("a\0b", 3)).find("control character (U+0000)") != std::string::npos);
+	CHECK(chatError("   ").find("only spaces") != std::string::npos);
+	CHECK(chatError("").find("empty") != std::string::npos);
+	CHECK(chatError("hello") == "sent");
+	const auto erased = commander.call("game_zone", {{"zone", "guard"}, {"x", 2}, {"y", 2}, {"width", 3},
+													 {"height", 3}, {"mode", "erase"}});
+	CHECK(erased.at("mode") == "erase");
+	CHECK(erased.at("note").get<std::string>().find("erased") != std::string::npos);
+	CHECK(erased.at("note").get<std::string>().find("painted") == std::string::npos);
+	CHECK(commander.call("game_zone", {{"zone", "guard"}, {"x", 2}, {"y", 2}, {"width", 3}, {"height", 3}})
+			  .at("note").get<std::string>().find("painted") != std::string::npos);
 }

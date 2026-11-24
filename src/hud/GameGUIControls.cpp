@@ -925,7 +925,7 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 std::string GameGUI::placeFromAutomation(const std::string &requested, int x, int y, int searchRadius,
 										 std::pair<int, int> *placedAt,
 										 const std::vector<std::array<int, 4>> &reserved,
-										 std::pair<int, int> *placedSize)
+										 std::pair<int, int> *placedSize, BuildingCreateSettings *settings)
 {
 	if (globalContainer->isViewingGame() || globalContainer->liveSpectating)
 		return "Placement is unavailable while watching a game";
@@ -960,6 +960,11 @@ std::string GameGUI::placeFromAutomation(const std::string &requested, int x, in
 	if (!found->enabled)
 		return name + " is not available in this game (a lesson or scenario restriction); "
 					  "placeable here: " + available;
+	// Initial settings a click cannot give, checked before anything is placed.
+	if (settings && settings->range && type->maxUnitStayRange <= 0)
+		return "range is a flag's setting; " + name + " has none";
+	if (settings && settings->builders && !type->isBuildingSite)
+		return "builders is a construction site's setting; " + name + " is placed directly (pass workers)";
 	const auto &map = drawnScene().map;
 	if (x < 0 || y < 0 || x >= int(map.getW()) || y >= int(map.getH()))
 		return "Tile (" + std::to_string(x) + ", " + std::to_string(y) + ") is outside the " +
@@ -973,20 +978,35 @@ std::string GameGUI::placeFromAutomation(const std::string &requested, int x, in
 		const int d = ((bx - ax) % size + size) % size;
 		return d < aw || size - d < bw;
 	};
+	// Why spots were refused, to say so when none is found.
+	int triedSpots = 0, unexploredSpots = 0, reservedSpots = 0;
 	auto usable = [&](int tx, int ty)
 	{
+		++triedSpots;
 		for (const auto &r : reserved)
 			if (overlaps(tx, type->width, r[0], r[2], int(map.getW())) &&
 				overlaps(ty, type->height, r[1], r[3], int(map.getH())))
+			{
+				++reservedSpots;
 				return false;
+			}
 		if (type->isVirtual)
 			return true;
 		for (int dy = 0; dy < type->height; ++dy)
 			for (int dx = 0; dx < type->width; ++dx)
 				if (!map.isMapDiscovered(tx + dx, ty + dy, explored))
+				{
+					++unexploredSpots;
 					return false;
+				}
 		return true;
 	};
+	// Whether the requested footprint itself is unexplored (counted before searching).
+	bool requestedUnexplored = false;
+	if (!type->isVirtual)
+		for (int dy = 0; dy < type->height && !requestedUnexplored; ++dy)
+			for (int dx = 0; dx < type->width && !requestedUnexplored; ++dx)
+				requestedUnexplored = !map.isMapDiscovered(x + dx, y + dy, explored);
 	if (placedSize)
 		*placedSize = {type->width, type->height};
 	// Place through the click path, then restore whatever tool the player had.
@@ -997,6 +1017,8 @@ std::string GameGUI::placeFromAutomation(const std::string &requested, int x, in
 	// With a search radius, try rings of tiles around (x, y), nearest first.
 	bool placed = false;
 	const int w = int(map.getW()), h = int(map.getH());
+	// Each attempt starts from the requested settings; the successful one says what it sent.
+	const auto requestedSettings = settings ? std::optional<BuildingCreateSettings>(*settings) : std::nullopt;
 	for (int r = 0; r <= searchRadius && !placed; ++r)
 		for (int dy = -r; dy <= r && !placed; ++dy)
 			for (int dx = -r; dx <= r && !placed; ++dx)
@@ -1006,7 +1028,9 @@ std::string GameGUI::placeFromAutomation(const std::string &requested, int x, in
 				const int tx = ((x + dx) % w + w) % w, ty = ((y + dy) % h + h) % h;
 				if (!usable(tx, ty))
 					continue;
-				if (toolManager.placeBuildingTopLeft(tx, ty, localTeamNo))
+				if (settings)
+					*settings = *requestedSettings;
+				if (toolManager.placeBuildingTopLeft(tx, ty, localTeamNo, settings))
 				{
 					placed = true;
 					if (placedAt)
@@ -1023,12 +1047,43 @@ std::string GameGUI::placeFromAutomation(const std::string &requested, int x, in
 		return {};
 	if (drawnScene().panels.local.state().noMoreBuildingSitesCountdown != 0)
 		return "Too many new construction sites at once; wait a moment and try again";
-	return "No room for " + name + " (" + std::to_string(type->width) + "x" +
-		   std::to_string(type->height) + " tiles) with its top-left at (" + std::to_string(x) +
-		   ", " + std::to_string(y) + ")" +
-		   (searchRadius ? " or within " + std::to_string(searchRadius) + " tiles of it" : "") +
-		   ": a building needs clear, explored ground away from your pending placements, and a "
-		   "flag cannot share a tile with another of your flags. Pass near to search around it";
+	std::string reason = "No room for " + name + " (" + std::to_string(type->width) + "x" +
+						 std::to_string(type->height) + " tiles) with its top-left at (" + std::to_string(x) +
+						 ", " + std::to_string(y) + ")" +
+						 (searchRadius ? " or within " + std::to_string(searchRadius) + " tiles of it" : "") + ": ";
+	if (requestedUnexplored)
+		reason += "ground there is unexplored (a building needs ground your colony has seen). ";
+	if (searchRadius)
+	{
+		const int blocked = triedSpots - unexploredSpots - reservedSpots;
+		reason += "of " + std::to_string(triedSpots) + " spots tried, " + std::to_string(unexploredSpots) +
+				  " had unexplored ground, " + std::to_string(reservedSpots) +
+				  " overlapped your pending placements and " + std::to_string(blocked) +
+				  (type->isVirtual ? " already had one of your flags. " : " were not clear ground. ");
+	}
+	else if (!requestedUnexplored)
+		reason += type->isVirtual ? "a flag cannot share a tile with another of your flags, "
+									"or overlap your pending placements. "
+								  : "a building needs clear ground (no water, resources, rocks "
+									"or other buildings) away from your pending placements. ";
+	if (unexploredSpots && unexploredSpots == triedSpots)
+		reason += "Explore there first (an explorer flag or explorers from a Swarm), or place nearer your colony";
+	else if (!searchRadius)
+		reason += "Pass near to search around it";
+	else
+		reason += "Try a larger search_radius or another spot";
+	return reason;
+}
+
+std::optional<int> GameGUI::localWinChancePercent() const
+{
+	// The same number as the top bar (localWinChanceText): the local side's own chance only.
+	const auto &scene = drawnScene();
+	const int team = scene.panels.local.state().number;
+	const auto &chances = scene.panels.hud.winChances;
+	if (!scene.panels.local.record || team < 0 || size_t(team) >= chances.size())
+		return std::nullopt;
+	return std::clamp((chances[team].permille + 5) / 10, 0, 99);
 }
 
 std::string GameGUI::setGameSpeedFromAutomation(int speed)

@@ -65,6 +65,7 @@ namespace GAGGUI
 namespace Glob2UI { class InGameDialog; }
 // Held by pointer so that files using GameGUI do not compile the scene and renderer.
 class GameGUIToolManager;
+struct BuildingCreateSettings;
 class SceneExtractor;
 class TorusView;
 struct PresentationFrame;
@@ -113,6 +114,7 @@ class GameGUI : public ClientCommandSink
 	friend struct CustomGameSetupHarness;
 	friend struct TurnClient;
 	friend struct ScriptPresentationFixture;
+	friend struct HiveToolsTestAccess;
     friend class TorusRenderIntegrationTest;
     std::unique_ptr<TorusView> torusViewOwner;
     TorusView &torusView;
@@ -316,11 +318,14 @@ public:
 	/// ("inn", "warflag") and the footprint's top-left tile and returns an empty string on
 	/// success, otherwise why it was refused. Both act exactly as the matching human input.
 	/// reserved holds {x, y, width, height} footprints of the caller's still-pending
-	/// placements; buildings need explored ground, as for a player.
+	/// placements; buildings need explored ground, as for a player. settings (see
+	/// GameGUIToolManager.h) replaces the click's default requested units and range in the
+	/// create order itself; on success it holds the values sent.
 	std::string placeFromAutomation(const std::string &name, int x, int y, int searchRadius = 0,
 									std::pair<int, int> *placedAt = nullptr,
 									const std::vector<std::array<int, 4>> &reserved = {},
-									std::pair<int, int> *placedSize = nullptr);
+									std::pair<int, int> *placedSize = nullptr,
+									BuildingCreateSettings *settings = nullptr);
 	void centreViewOnTile(double x, double y);
 	/// Send a chat message as the local player, exactly as the chat box's Send would
 	/// (to everyone the chat box addresses). Returns false for empty text.
@@ -349,6 +354,9 @@ public:
 	/// The desktop top bar's values: workers, explorers and warriors free/total, prestige,
 	/// win chance, conversions gained and lost, then speed.
 	std::array<std::string, 8> topBarValues() const;
+	/// The top bar's win chance as a number (0..99, as shown), or nothing while the HUD
+	/// has none to show.
+	std::optional<int> localWinChancePercent() const;
 	/// The HUD's current game-event rows (under attack, finished, converted...).
 	const GameEventFeed &gameEvents() const { return eventFeed; }
 	/// Palette entries (building, then flag type keys) with whether this game allows them.

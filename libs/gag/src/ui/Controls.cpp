@@ -443,6 +443,8 @@ class Choice : public Disclosure
 	}
 	ControlValue controlValue() const override { return selected; }
 	std::string semanticIdentity() const override { return catalogIdentity(options, extra.enabled); }
+	std::vector<std::string> optionLabels() const override { return options; }
+	std::vector<bool> optionsEnabled() const override { return extra.enabled; }
 	std::vector<ActionKind> supportedActions() const override
 	{
 		return {ActionKind::Activate, ActionKind::Select};
@@ -543,6 +545,7 @@ class Stepper : public Node
 		this->key = std::move(key);
 	}
 	ControlValue controlValue() const override { return value; }
+	std::optional<ValueRange> valueRange() const override { return ValueRange{minimum, maximum, options.step}; }
 	std::vector<ActionKind> supportedActions() const override { return {ActionKind::SetValue}; }
 	bool perform(const SemanticAction &action, Host &host) override
 	{
@@ -641,6 +644,7 @@ class Slider : public Node
 		this->key = std::move(key);
 	}
 	ControlValue controlValue() const override { return value; }
+	std::optional<ValueRange> valueRange() const override { return ValueRange{minimum, maximum, 1}; }
 	std::vector<ActionKind> supportedActions() const override { return {ActionKind::SetValue}; }
 	bool perform(const SemanticAction &action, Host &host) override
 	{
@@ -1521,6 +1525,9 @@ class ListView : public Node
 	{
 		return {ActionKind::Activate, ActionKind::Select, ActionKind::Scroll};
 	}
+	// Every row, including those scrolled out of view, so a Select can name any of them.
+	std::vector<std::string> optionLabels() const override { return items; }
+	std::vector<bool> optionsEnabled() const override { return options.enabled; }
 	bool perform(const SemanticAction &action, Host &host) override
 	{
 		if (action.kind != ActionKind::Select)

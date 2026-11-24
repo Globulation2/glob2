@@ -45,6 +45,9 @@ class UIService : public ExecutionContext
 	bool coordinatesConverted = false;
 	Json inspection(const Json &arguments);
 	bool addInspection(Result &result, const Json &arguments = Json::object());
+	// What a consumed ui_act returns: the inspection, trimmed by result_subtree, or only
+	// the screen name with inspect=false.
+	void addActResult(Result &result, const Json &arguments);
 	void observe();
 	bool accepting = false, enabled = false, dispatched = false, capturing = false,
 		 uiAvailable = false, awaitingDispatch = false;

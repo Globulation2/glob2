@@ -3,6 +3,8 @@
 #include "Guide.h"
 #include <cmath>
 #include <algorithm>
+#include <cctype>
+#include <optional>
 #include <set>
 #include <stdexcept>
 
@@ -212,8 +214,12 @@ void registerUITools(ToolRegistry &registry)
 			properties["capture_id"] = {
 				{"type", "integer"},
 				{"minimum", 1},
-				{"description", "capture_id of the ui_screenshot whose pixels x/y refer to; omit "
-								"for native window pixels"}};
+				{"description", "x/y are pixels of this ui_screenshot"}};
+			properties["space"] = {
+				{"type", "string"},
+				{"enum", {"native", "logical"}},
+				{"description", "Without capture_id: native pixels (default) or logical, as "
+								"ui_inspect bounds"}};
 		}
 		const std::string toolName = name;
 		Json output = {{"type", "object"}};
@@ -288,6 +294,40 @@ void registerUITools(ToolRegistry &registry)
 						 require("source");
 					 if (action == "replace")
 						 require("expected_revision");
+				 }
+				 if (name == "ui_click" || name == "ui_move")
+				 {
+					 const bool point = args.contains("x") || args.contains("y");
+					 if (args.contains("key") == point)
+						 throw std::invalid_argument(
+							 name + ": give x and y, or the key (and surface) of an inspected "
+									"control to use its centre");
+					 if (point && !(args.contains("x") && args.contains("y")))
+						 throw std::invalid_argument(name + ": x and y go together");
+					 if (args.contains("key") && (args.contains("capture_id") || args.contains("space")))
+						 throw std::invalid_argument(
+							 name + ": key targets the control's centre; capture_id and space "
+									"apply only to x/y");
+					 if (args.contains("surface") && !args.contains("key"))
+						 throw std::invalid_argument(name + ".surface needs key");
+				 }
+				 if (args.contains("capture_id") && args.value("space", "native") == "logical")
+					 throw std::invalid_argument(
+						 name + ": capture_id makes x/y screenshot pixels; omit space or capture_id");
+				 if (name == "ui_act" && args.contains("wait_for"))
+				 {
+					 const auto &until = args["wait_for"];
+					 const bool named = until.is_object() && until.size() == 1 &&
+										until.contains("screen") && until["screen"].is_string() &&
+										!until["screen"].get_ref<const std::string &>().empty() &&
+										until["screen"].get_ref<const std::string &>().size() <= 128;
+					 if (!(until.is_string() && until.get_ref<const std::string &>() == "next_screen") && !named)
+						 throw std::invalid_argument(
+							 "ui_act.wait_for: use \"next_screen\" or {\"screen\": NAME}");
+					 if (args.value("capture_after", false))
+						 throw std::invalid_argument(
+							 "ui_act.wait_for cannot be combined with capture_after; call "
+							 "ui_screenshot once it returns");
 				 }
 				 if (name == "ui_type_text")
 				 {
@@ -375,9 +415,9 @@ void registerUITools(ToolRegistry &registry)
 	inspect["screenshot"] = {{"type", "boolean"}, {"default", false}};
 	add("ui_inspect",
 		"Read the current screen: its name (inspection.screen) and surfaces, each with an "
-		"instance number and controls (key, label, role, actions, value, revision). Use "
-		"compact=true. Feed surface/key/revision to ui_act. Filter with surface or subtree "
-		"key. Bounds are logical pixels, not screenshot pixels. No token needed; "
+		"instance number and controls (key, label, role, actions, value, options or min/max, "
+		"revision). Feed surface/key/revision to ui_act. Filter with surface or subtree "
+		"key. Bounds are logical pixels (ui_click space=logical), not screenshot pixels. No token needed; "
 		"a token renews the lease.",
 		inspect, {}, false);
 	auto act = Json{{"surface", identity},
@@ -386,14 +426,17 @@ void registerUITools(ToolRegistry &registry)
 					{"action", enumeration({"activate", "select", "set_value", "scroll"})},
 					{"value", Json::object()},
 					{"inspect", {{"type", "boolean"}, {"default", true}}},
-					{"result_subtree", {{"type", "string"}, {"maxLength", 512}}}};
+					{"result_subtree", {{"type", "string"}, {"maxLength", 512}}},
+					{"wait_for",
+					 {{"description", "\"next_screen\" or {\"screen\": NAME}: return once that screen shows"}}},
+					{"timeout_ms", {{"type", "integer"}, {"minimum", 1}, {"maximum", 30000}, {"default", 10000}}}};
 	add("ui_act",
 		"Operate a control from ui_inspect by surface (instance), key and revision. action "
-		"must be one the control lists: activate, select (value: zero-based index), "
-		"set_value (value matching the control) or scroll (value: "
+		"must be one the control lists: activate, select (value: option label or zero-based "
+		"index), set_value (value matching the control, within min..max) or scroll (value: "
 		"signed logical pixels). Returns the inspection once consumed (inspect=false: screen "
-		"only; result_subtree trims it); a "
-		"screen change may follow: ui_wait. Never retry automatically.",
+		"only; result_subtree trims it). wait_for holds the reply until a screen change "
+		"(timeout_ms). Never retry automatically.",
 		act, {"surface", "key", "revision", "action"}, true);
 	auto wait = filter;
 	wait["inspect"] = {{"type", "boolean"}, {"default", true}};
@@ -416,16 +459,17 @@ void registerUITools(ToolRegistry &registry)
 		wait, {"condition"}, false);
 
 	add("game_world",
-		"Your colony in map tiles: status (free/total units, win chance), "
+		"Your colony in map tiles: status (top-bar text; units_free and win_chance as numbers), "
 		"alerts (losses, conversions, attacks with tiles), losses, buildings (id, type, top-left "
 		"x/y, size, site, workers, stock/capacity, Inn happiness), unit counts, known resources "
-		"(nearest tile), other teams' visible and remembered buildings, recent placements, "
+		"(nearest tile, largest fields; area restricts), other teams' visible and remembered buildings, recent placements, "
 		"placeable names. detail brief: status, alerts, losses, one line per building; "
 		"alerts: no buildings; full adds unit lists. since_tick: only newer alerts. No token.",
 		{{"detail", enumeration({"brief", "alerts", "summary", "full"})},
 		 {"since_tick", {{"type", "integer"}, {"minimum", 0}}},
 		 {"limit", {{"type", "integer"}, {"minimum", 1}, {"maximum", 500}, {"default", 100}}},
 		 {"resource_radius", {{"type", "integer"}, {"minimum", 1}, {"maximum", 64}, {"default", 24}}},
+		 {"resource_fields", {{"type", "integer"}, {"minimum", 1}, {"maximum", 10}, {"default", 3}}},
 		 {"area", object({{"x", {{"type", "integer"}, {"minimum", 0}}},
 						  {"y", {{"type", "integer"}, {"minimum", 0}}},
 						  {"width", {{"type", "integer"}, {"minimum", 1}}},
@@ -443,13 +487,18 @@ void registerUITools(ToolRegistry &registry)
 	add("game_place",
 		"Place a building site or flag by tile, as a click would: building is a game_world "
 		"placeable name, x/y its top-left tile; near searches nearby for room and returns "
-		"where it went. Needs token.",
+		"where it went. workers/builders/range (flags) set the create order's requests (capped, "
+		"reported under settings); priority follows once it appears. Needs token.",
 		{{"token", token},
 		 {"building", {{"type", "string"}, {"maxLength", 64}}},
 		 {"x", {{"type", "integer"}, {"minimum", 0}}},
 		 {"y", {{"type", "integer"}, {"minimum", 0}}},
 		 {"near", {{"type", "boolean"}, {"default", false}}},
-		 {"search_radius", {{"type", "integer"}, {"minimum", 1}, {"maximum", 32}, {"default", 12}}}},
+		 {"search_radius", {{"type", "integer"}, {"minimum", 1}, {"maximum", 32}, {"default", 12}}},
+		 {"workers", {{"type", "integer"}, {"minimum", 0}, {"maximum", 20}}},
+		 {"builders", {{"type", "integer"}, {"minimum", 0}, {"maximum", 20}}},
+		 {"range", {{"type", "integer"}, {"minimum", 0}, {"maximum", 32767}}},
+		 {"priority", enumeration({"low", "medium", "high"})}},
 		{"token", "building", "x", "y"}, false);
 	add("game_building",
 		"Change one of your buildings or flags by its game_world id and generation: workers "
@@ -493,7 +542,8 @@ void registerUITools(ToolRegistry &registry)
 		{"token", "x", "y"}, false);
 	add("game_chat",
 		"Send an in-game chat message as your player, as the chat box's Send would. "
-		"At most 254 bytes of UTF-8 (254 ASCII characters; fewer with accents or emoji). "
+		"Plain text on one line, at most 254 bytes of UTF-8; control characters and "
+		"whitespace-only text are refused. "
 		"Needs token.",
 		{{"token", token}, {"text", {{"type", "string"}, {"minLength", 1}, {"maxLength", 254}}}},
 		{"token", "text"}, false);
@@ -572,13 +622,19 @@ void registerUITools(ToolRegistry &registry)
 		{"action"}, false);
 
 	Json xy = {{"x", coordinate}, {"y", coordinate}};
-	add("ui_move", "Move the pointer to x/y (hover). Pixels of the capture_id screenshot, else native.", xy, {"x", "y"}, true, true);
-	auto click = xy;
+	// Pointing at an inspected control needs no pixel arithmetic.
+	auto pointAt = xy;
+	pointAt["surface"] = identity;
+	pointAt["key"] = {{"type", "string"}, {"maxLength", 512}};
+	add("ui_move", "Move the pointer (hover) to x/y, or to the centre of the control key "
+		"(surface optional) from ui_inspect.", pointAt, {}, true, true);
+	auto click = pointAt;
 	click["button"] = button;
 	click["button"]["default"] = "left";
 	click["count"] = {{"type", "integer"}, {"minimum", 1}, {"maximum", 2}, {"default", 1}};
-	add("ui_click", "Click at x/y to place or select on the map. "
-		"Pixels of the capture_id screenshot. Right button cancels placement.", click, {"x", "y"}, true,
+	add("ui_click", "Click x/y, or the centre of the control key (surface optional) from "
+		"ui_inspect, e.g. to place or select on the map. x/y are native pixels unless "
+		"capture_id or space=logical. Right button cancels placement.", click, {}, true,
 		true);
 	auto mouse = xy;
 	mouse["button"] = button;
@@ -620,7 +676,7 @@ void registerUITools(ToolRegistry &registry)
 		true);
 }
 // Why a ui_act target cannot be used, phrased with the next step; empty when valid.
-std::string actionTargetProblem(const Json &snapshot, const Json &a)
+std::string actionTargetProblem(const Json &snapshot, const Json &a, Json *resolved)
 {
 	const auto key = a["key"].get<std::string>();
 	const auto surfaceId = a["surface"].dump();
@@ -693,6 +749,122 @@ std::string actionTargetProblem(const Json &snapshot, const Json &a)
 	if (actions.is_array() && std::find(actions.begin(), actions.end(), action) == actions.end())
 		return "Unsupported action: \"" + key + "\" accepts " + actions.dump() + ", not \"" +
 			   action + "\"";
+	// Check the value against what the control lists, before any input is dispatched.
+	Json value = a.contains("value") ? a["value"] : Json();
+	const auto options = item.value("options", Json::array());
+	if (action == "select" && !options.empty())
+	{
+		const auto count = options.size();
+		auto listed = [&]
+		{
+			std::string text;
+			for (std::size_t i = 0; i < count && i < 40; ++i)
+				text += (i ? ", " : "") + std::to_string(i) + " " + options[i].dump();
+			if (count > 40)
+				text += ", ... (" + std::to_string(count) + " in all)";
+			return text;
+		};
+		if (value.is_string())
+		{
+			// A label: exact match first, else a unique case-insensitive one.
+			auto lower = [](std::string text)
+			{
+				for (auto &c : text)
+					c = char(std::tolower(static_cast<unsigned char>(c)));
+				return text;
+			};
+			const auto wanted = value.get<std::string>();
+			std::optional<std::size_t> exact, loose;
+			int looseMatches = 0;
+			for (std::size_t i = 0; i < count; ++i)
+			{
+				if (!options[i].is_string())
+					continue;
+				const auto &label = options[i].get_ref<const std::string &>();
+				if (!exact && label == wanted)
+					exact = i;
+				else if (lower(label) == lower(wanted))
+				{
+					loose = i;
+					++looseMatches;
+				}
+			}
+			if (exact)
+				value = *exact;
+			else if (looseMatches == 1)
+				value = *loose;
+			else
+				return "Unknown option " + value.dump() + " for \"" + key + "\"; its options are " +
+					   listed() + ". select takes one of these labels or its index";
+		}
+		if (!value.is_number_integer() || value.get<double>() < 0 || value.get<double>() >= double(count))
+			return "Option out of range for \"" + key + "\": select takes an option label or an index 0.." +
+				   std::to_string(count - 1) + " (" + listed() + ")";
+		const auto index = value.get<std::size_t>();
+		for (const auto &disabled : item.value("disabled_options", Json::array()))
+			if (disabled == index)
+				return "Unavailable option: " + options[index].dump() + " (index " + std::to_string(index) +
+					   ") of \"" + key + "\" cannot be chosen now; its options are " + listed();
+	}
+	else if (action == "select" && value.is_string())
+		return "\"" + key + "\" lists no options to match " + value.dump() +
+			   "; select takes a zero-based index";
+	if (action == "set_value" && item.contains("min") && item.contains("max"))
+	{
+		const auto &low = item["min"], &high = item["max"];
+		if (!value.is_number_integer() || value.get<double>() < low.get<double>() ||
+			value.get<double>() > high.get<double>())
+			return "Value out of range for \"" + key + "\": set_value takes an integer " + low.dump() + ".." +
+				   high.dump() +
+				   (item.value("step", 1) > 1 ? " in steps of " + item["step"].dump() : std::string()) +
+				   (value.is_null() ? std::string() : ", not " + value.dump());
+	}
+	if (resolved)
+		*resolved = std::move(value);
+	return {};
+}
+std::string controlCentre(const Json &snapshot, const Json &a, Json &point)
+{
+	const auto key = a["key"].get<std::string>();
+	Json found;
+	std::string where;
+	int matches = 0;
+	for (const auto &surface : snapshot["surfaces"])
+	{
+		if (a.contains("surface") && surface["instance"] != a["surface"])
+			continue;
+		auto search = [&](auto &&self, const Json &items) -> void
+		{
+			for (const auto &item : items)
+			{
+				if (item.value("key", "") == key)
+				{
+					if (!matches++)
+						found = item;
+					where += (where.empty() ? "" : ", ") + surface["instance"].dump();
+				}
+				if (item.contains("children"))
+					self(self, item["children"]);
+			}
+		};
+		if (surface.contains("controls"))
+			search(search, surface["controls"]);
+	}
+	if (!matches)
+		return "Unknown control: no control with key \"" + key + "\"" +
+			   (a.contains("surface") ? " on surface " + a["surface"].dump() : std::string(" on screen")) +
+			   "; ui_inspect to find the current controls";
+	if (matches > 1)
+		return "Ambiguous control: \"" + key + "\" appears more than once (surfaces " + where +
+			   "); pass surface, or click by x/y";
+	const auto visible = found.value("visible", Json::object());
+	const int w = visible.value("w", 0), h = visible.value("h", 0);
+	if (w <= 0 || h <= 0)
+		return "Hidden control: \"" + key +
+			   "\" is scrolled out of view or covered; scroll its container (ui_act scroll) until it is visible";
+	if (found.value("blocked", false))
+		return "Blocked control: a dialog or overlay covers \"" + key + "\"; close or answer it first";
+	point = {{"x", visible.value("x", 0) + w / 2.0}, {"y", visible.value("y", 0) + h / 2.0}};
 	return {};
 }
 Json compactInspection(const Json &inspection)
@@ -724,6 +896,25 @@ Json compactInspection(const Json &inspection)
 			}
 			if (item.contains("value") && !item["value"].is_null())
 				c["value"] = item["value"];
+			// Choices list their options (select takes a label or index); lists, whose rows
+			// are children, and long catalogues give only the count.
+			if (item.contains("options") && item["options"].is_array())
+			{
+				const auto &options = item["options"];
+				if (item.value("role", "") == "list" || options.size() > 24)
+					c["option_count"] = options.size();
+				else
+					c["options"] = options;
+				if (item.contains("disabled_options"))
+					c["disabled_options"] = item["disabled_options"];
+				if (item.contains("value_label") && item["value_label"] != item.value("label", Json()))
+					c["value_label"] = item["value_label"];
+			}
+			for (const char *field : {"min", "max"})
+				if (item.contains(field))
+					c[field] = item[field];
+			if (item.contains("step") && item["step"] != 1)
+				c["step"] = item["step"];
 			if (!item.value("enabled", true))
 				c["enabled"] = false;
 			for (const char *flag : {"selected", "focused", "blocked"})

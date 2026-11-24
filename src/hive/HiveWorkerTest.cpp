@@ -254,3 +254,18 @@ TEST_CASE("Hive Mind explains which invocation limit a result exceeded" *
 	CHECK(diagnostic("function step(){return {orders:{type:'delete'}}}") ==
 		  "orders must be an array of order descriptors");
 }
+TEST_CASE("Hive Mind helper argument errors name the argument and its range" *
+		  doctest::test_suite("HiveMind"))
+{
+	const auto failure = [](const char *source)
+	{
+		const auto r = run(source);
+		CHECK(r.at("ok") == false);
+		return r.dump();
+	};
+	// Not "Integer outside range": which argument, its allowed range and what was passed.
+	CHECK(failure("function step(ctx){ctx.game.map.scan(0,0,300,1);return {};}")
+			  .find("scan width must be a whole number 1..256 (got 300") != std::string::npos);
+	CHECK(failure("function step(ctx){ctx.game.map.scan(0,'a',2,1);return {};}")
+			  .find("scan y must be a whole number -32768..32767 (got \\\"a\\\")") != std::string::npos);
+}

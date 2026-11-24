@@ -367,11 +367,13 @@ TEST_CASE("MCP/tools explain themselves within a discovery size budget")
 		guide = guide || tool["name"] == "game_guide";
 	}
 	CHECK(guide);
-	// Every client pays for discovery in context; keep it bounded. 28 KB covers the 32
-	// tools including the game_* map, time, wait and alliance tools.
+	// Every client pays for discovery in context; keep it bounded. 29 KB covers the 32
+	// tools including the game_* map, time, wait and alliance tools, plus the coordinate
+	// space on every pointer tool, clicking a control by key and ui_act wait_for, which
+	// each save agents several calls (about 0.9 KB more than the previous 28 KB).
 	const auto bytes = Json{{"tools", tools}}.dump().size();
 	INFO("tools/list bytes: " << bytes);
-	CHECK(bytes < 28000);
+	CHECK(bytes < 29000);
 	// Time steps and zoom are bounded by the schema, before reaching the game.
 	Context context;
 	CHECK_THROWS_WITH_AS(registry.call(context, "game_time", {{"action", "step"}, {"ticks", 0}}, "test"),
@@ -583,6 +585,185 @@ TEST_CASE("MCP/rejected semantic targets say which check failed and what to do")
 	start["visible"] = box;
 	start["blocked"] = true;
 	CHECK(contains(problem(act(5, "start", 7)), {"Blocked", "dialog"}));
+}
+TEST_CASE("MCP/choice options and value ranges are checked before dispatch")
+{
+	const Json box = {{"x", 0}, {"y", 0}, {"w", 10}, {"h", 10}};
+	auto item = [&](std::string key, Json actions)
+	{
+		return Json{{"key", key},		  {"label", key},	 {"actions", actions},
+					{"revision", 1},	  {"enabled", true}, {"blocked", false},
+					{"visible", box},	  {"children", Json::array()}};
+	};
+	auto colonies = item("generator/colonies", {"activate", "select"});
+	colonies["options"] = {"2", "3", "4"};
+	colonies["value"] = 1;
+	auto ai = item("colony/1/ai", {"activate", "select"});
+	ai["options"] = {"Numbi Easy", "Maxima Hard", "Locked"};
+	ai["disabled_options"] = {2};
+	auto speed = item("game/speed", {"set_value"});
+	speed["min"] = -3;
+	speed["max"] = 10;
+	speed["step"] = 1;
+	auto plain = item("plain", {"select"});
+	Json surface = {{"instance", 2}};
+	surface["controls"] = Json::array({colonies, ai, speed, plain});
+	const Json snapshot = {{"screen", "custom_game"}, {"surfaces", Json::array({surface})}};
+	auto check = [&](const std::string &key, const std::string &action, Json value, Json *resolved = nullptr)
+	{
+		Json args = {{"surface", 2}, {"key", key}, {"revision", 1}, {"action", action}};
+		if (!value.is_null())
+			args["value"] = std::move(value);
+		return actionTargetProblem(snapshot, args, resolved);
+	};
+	auto has = [](const std::string &text, const std::string &part)
+	{
+		INFO(text);
+		return text.find(part) != std::string::npos;
+	};
+	Json resolved;
+	// A label selects its option; a number is always an index, never read as a label.
+	CHECK(check("generator/colonies", "select", "4", &resolved).empty());
+	CHECK(resolved == 2);
+	CHECK(check("generator/colonies", "select", 1, &resolved).empty());
+	CHECK(resolved == 1);
+	CHECK(check("colony/1/ai", "select", "maxima hard", &resolved).empty());
+	CHECK(resolved == 1);
+	// Errors name the options and the valid range instead of a bare "Invalid action value".
+	const auto unknown = check("generator/colonies", "select", "5");
+	CHECK(has(unknown, "Unknown option \"5\""));
+	CHECK(has(unknown, "0 \"2\", 1 \"3\", 2 \"4\""));
+	CHECK(has(check("generator/colonies", "select", 3), "0..2"));
+	CHECK(has(check("generator/colonies", "select", Json()), "0..2"));
+	CHECK(has(check("colony/1/ai", "select", "Locked"), "Unavailable option"));
+	CHECK(has(check("colony/1/ai", "select", 2), "cannot be chosen now"));
+	CHECK(has(check("plain", "select", "One"), "select takes a zero-based index"));
+	CHECK(check("plain", "select", 4, &resolved).empty());
+	CHECK(resolved == 4);
+	CHECK(check("game/speed", "set_value", 4).empty());
+	const auto fast = check("game/speed", "set_value", 11);
+	CHECK(has(fast, "-3..10"));
+	CHECK(has(fast, "not 11"));
+	CHECK(has(check("game/speed", "set_value", "fast"), "-3..10"));
+}
+TEST_CASE("MCP/compact inspection lists choice options and value ranges")
+{
+	const Json box = {{"x", 0}, {"y", 0}, {"w", 10}, {"h", 10}};
+	auto control = [&](std::string key, std::string role, std::string label, Json value)
+	{
+		return Json{{"key", key},	   {"label", label}, {"role", role},		{"actions", {"select"}},
+					{"revision", 3},   {"enabled", true}, {"value", value},	{"bounds", box},
+					{"visible", box},  {"children", Json::array()}};
+	};
+	auto colonies = control("generator/colonies", "choice", "3", 1);
+	colonies["options"] = {"2", "3", "4"};
+	colonies["value_label"] = "3";
+	auto icon = control("toolbar/ai", "choice", "AI", 0);
+	icon["options"] = {"Numbi", "Castor"};
+	icon["value_label"] = "Numbi";
+	auto speed = control("game/speed", "stepper", "1.6x", 2);
+	speed["actions"] = {"set_value"};
+	speed["min"] = -3;
+	speed["max"] = 10;
+	speed["step"] = 1;
+	auto list = control("maps", "list", "Map 0", 0);
+	list["options"] = Json::array();
+	for (int i = 0; i < 30; ++i)
+		list["options"].push_back("Map " + std::to_string(i));
+	list["value_label"] = "Map 0";
+	Json surface = {{"instance", 1}};
+	surface["controls"] = Json::array({colonies, icon, speed, list});
+	auto compact = compactInspection({{"screen", "custom_game"}, {"surfaces", Json::array({surface})}});
+	auto &controls = compact["surfaces"][0]["controls"];
+	REQUIRE(controls.size() == 4);
+	CHECK(controls[0]["options"] == Json({"2", "3", "4"}));
+	// The label already names the selected option; a compact label does not.
+	CHECK_FALSE(controls[0].contains("value_label"));
+	CHECK(controls[1]["value_label"] == "Numbi");
+	CHECK(controls[2]["min"] == -3);
+	CHECK(controls[2]["max"] == 10);
+	CHECK_FALSE(controls[2].contains("step"));
+	// A list's rows are its children; only their count is repeated.
+	CHECK(controls[3]["option_count"] == 30);
+	CHECK_FALSE(controls[3].contains("options"));
+}
+TEST_CASE("MCP/clicks by control key target the centre of what is visible")
+{
+	auto rect = [](int x, int y, int w, int h) { return Json{{"x", x}, {"y", y}, {"w", w}, {"h", h}}; };
+	auto item = [&](std::string key, Json visible, bool blocked = false)
+	{
+		return Json{{"key", key},	   {"bounds", rect(0, 0, 400, 400)}, {"visible", visible},
+					{"blocked", blocked}, {"children", Json::array()}};
+	};
+	Json first = {{"instance", 1}}, second = {{"instance", 2}};
+	first["controls"] = Json::array({item("start", rect(10, 20, 100, 40)), item("gone", rect(0, 0, 0, 0)),
+									 item("covered", rect(0, 0, 20, 20), true), item("ok", rect(0, 0, 10, 10))});
+	second["controls"] = Json::array({item("ok", rect(200, 100, 50, 30))});
+	const Json snapshot = {{"screen", "main_menu"}, {"surfaces", Json::array({first, second})}};
+	auto has = [](const std::string &text, const std::string &part)
+	{
+		INFO(text);
+		return text.find(part) != std::string::npos;
+	};
+	Json point;
+	CHECK(controlCentre(snapshot, {{"key", "start"}}, point).empty());
+	CHECK(point == Json{{"x", 60.0}, {"y", 40.0}});
+	CHECK(has(controlCentre(snapshot, {{"key", "ok"}}, point), "surfaces 1, 2"));
+	CHECK(controlCentre(snapshot, {{"key", "ok"}, {"surface", 2}}, point).empty());
+	CHECK(point == Json{{"x", 225.0}, {"y", 115.0}});
+	CHECK(has(controlCentre(snapshot, {{"key", "start"}, {"surface", 2}}, point), "Unknown control"));
+	CHECK(has(controlCentre(snapshot, {{"key", "missing"}}, point), "ui_inspect"));
+	CHECK(has(controlCentre(snapshot, {{"key", "gone"}}, point), "Hidden control"));
+	CHECK(has(controlCentre(snapshot, {{"key", "covered"}}, point), "Blocked control"));
+}
+TEST_CASE("MCP/pointer tools take a control key or coordinates in a named space")
+{
+	ToolRegistry registry;
+	registerUITools(registry);
+	Context context;
+	auto message = [&](const std::string &tool, Json args)
+	{
+		try
+		{
+			registry.call(context, tool, std::move(args), "test");
+		}
+		catch (const std::invalid_argument &e)
+		{
+			return std::string(e.what());
+		}
+		return std::string("accepted");
+	};
+	auto has = [](const std::string &text, const std::string &part)
+	{
+		INFO(text);
+		return text.find(part) != std::string::npos;
+	};
+	CHECK(message("ui_click", {{"token", "t"}, {"key", "start"}}) == "accepted");
+	CHECK(message("ui_move", {{"token", "t"}, {"key", "start"}, {"surface", 3}}) == "accepted");
+	CHECK(message("ui_click", {{"token", "t"}, {"x", 1}, {"y", 2}, {"space", "logical"}}) == "accepted");
+	CHECK(has(message("ui_click", {{"token", "t"}}), "give x and y, or the key"));
+	CHECK(has(message("ui_click", {{"token", "t"}, {"x", 1}}), "x and y go together"));
+	CHECK(has(message("ui_click", {{"token", "t"}, {"x", 1}, {"y", 2}, {"key", "start"}}), "give x and y, or the key"));
+	CHECK(has(message("ui_move", {{"token", "t"}, {"key", "start"}, {"capture_id", 1}}), "apply only to x/y"));
+	CHECK(has(message("ui_move", {{"token", "t"}, {"surface", 1}, {"x", 1}, {"y", 1}}), "surface needs key"));
+	CHECK(has(message("ui_scroll", {{"token", "t"}, {"x", 1}, {"y", 2}, {"dy", 1}, {"space", "logical"}, {"capture_id", 1}}),
+			  "capture_id"));
+	CHECK(has(message("ui_drag", {{"token", "t"},
+								  {"points", Json::array({{{"x", 1}, {"y", 2}}, {{"x", 3}, {"y", 4}}})},
+								  {"space", "screen"}}),
+			  "ui_drag.space"));
+	Json act = {{"token", "t"}, {"surface", 1}, {"key", "start"}, {"revision", 1}, {"action", "activate"}};
+	act["wait_for"] = "next_screen";
+	CHECK(message("ui_act", act) == "accepted");
+	act["wait_for"] = {{"screen", "game_session"}};
+	CHECK(message("ui_act", act) == "accepted");
+	act["capture_after"] = true;
+	CHECK(has(message("ui_act", act), "capture_after"));
+	act.erase("capture_after");
+	act["wait_for"] = "game_session";
+	CHECK(has(message("ui_act", act), "next_screen"));
+	act["wait_for"] = {{"screen", "game_session"}, {"key", "start"}};
+	CHECK(has(message("ui_act", act), "ui_act.wait_for"));
 }
 TEST_CASE("MCP/argument errors name the field and suggest valid input")
 {
@@ -1827,6 +2008,218 @@ TEST_CASE("MCP/semantic consumption independent waits and target revisions [netw
 	CHECK(granted.data["inspection_error"] == "Fixture inspection failed after consumption");
 	CHECK(granted.data.contains("token"));
 	CHECK(execute("ui_renew_control", {{"token", granted.data["token"]}}).error.empty());
+}
+TEST_CASE("MCP/value controls list options, clicks name keys and acts wait for screens [network]")
+{
+	glob2test::HeadlessGlobals globals(
+		{.display = true, .width = 640, .height = 480, .beforeLoad = [](GlobalContainer &g) {
+			 g.settings.rendererBackend = GAGCore::RendererBackend::Software;
+		 }});
+	auto &gfx = *globalContainer->gfx;
+	GAGGUI::ui::Theme theme;
+	GAGGUI::ui::FixedTextMeasurer measurer(8, 16);
+	int colonies = 1, speed = 0, started = 0;
+	std::string screen = "custom_game";
+	GAGGUI::ui::Host host(theme,
+						  [&](const auto &)
+						  {
+							  return GAGGUI::ui::column(
+								  {GAGGUI::ui::choice("colonies", {"2", "3", "4"}, colonies, [&](int i) { colonies = i; }),
+								   GAGGUI::ui::stepper("speed", speed, -3, 10, [&](int v) { speed = v; }),
+								   GAGGUI::ui::button("start", "Start",
+													  [&]
+													  {
+														  ++started;
+														  screen = "game_session";
+														  host.invalidate();
+													  })});
+						  });
+	GAGGUI::ui::Host other(theme, [&](const auto &) { return GAGGUI::ui::button("other", "Other", [] {}); });
+	for (auto *each : {&host, &other})
+	{
+		each->setMeasurer(&measurer);
+		each->setPresentation(GAGGUI::ui::Presentation::forSurface(640, 480));
+		each->layoutIfNeeded();
+	}
+	UIService service(gfx);
+	service.inspectionHosts = [&] { return std::vector<GAGGUI::ui::Host *>{&host, &other}; };
+	service.inspectionScreen = [&] { return screen; };
+	service.configure(true, unusedLoopbackPort());
+	waitForListener(service, ListenerState::Running);
+	std::vector<SDL_Event> sent;
+	// Only semantic events reach the fixture host: pointer input is checked by its coordinates.
+	auto dispatch = [&](std::vector<SDL_Event> &events)
+	{
+		for (const auto &event : events)
+			if (GAGGUI::ui::isSemanticEvent(event))
+				host.event(event);
+		sent = events;
+		service.afterDispatch();
+	};
+	auto execute = [&](const std::string &tool, Json args)
+	{
+		auto request = service.submit(tool, std::move(args), "test");
+		auto future = request->completion.get_future();
+		std::vector<SDL_Event> events;
+		service.pump(events, true);
+		dispatch(events);
+		return completed(future);
+	};
+	auto locate = [](const Json &inspection, const std::string &key)
+	{
+		Json found;
+		for (const auto &surface : inspection["surfaces"])
+		{
+			auto search = [&](auto &&self, const Json &items) -> void
+			{
+				for (const auto &item : items)
+				{
+					if (item.value("key", "") == key)
+					{
+						found = item;
+						found["_surface"] = surface["instance"];
+					}
+					self(self, item.value("children", Json::array()));
+				}
+			};
+			search(search, surface["controls"]);
+		}
+		return found;
+	};
+	auto has = [](const std::string &text, const std::string &part)
+	{
+		INFO(text);
+		return text.find(part) != std::string::npos;
+	};
+	const auto token = execute("ui_acquire_control", Json::object()).data.at("token");
+	auto full = [&] { return execute("ui_inspect", {{"compact", false}}).data["inspection"]; };
+	auto act = [&](const Json &control, const std::string &action, Json value = Json())
+	{
+		Json args = {{"token", token},
+					 {"surface", control["_surface"]},
+					 {"key", control["key"]},
+					 {"revision", control["revision"]},
+					 {"action", action}};
+		if (!value.is_null())
+			args["value"] = std::move(value);
+		return args;
+	};
+
+	// Choices list their options, steppers their range.
+	auto inspection = full();
+	auto choice = locate(inspection, "colonies");
+	CHECK(choice["options"] == Json({"2", "3", "4"}));
+	CHECK(choice["value_label"] == "3");
+	auto stepper = locate(inspection, "speed");
+	CHECK(stepper["min"] == -3);
+	CHECK(stepper["max"] == 10);
+	CHECK(stepper["step"] == 1);
+	auto compact = locate(execute("ui_inspect", Json::object()).data["inspection"], "colonies");
+	CHECK(compact["options"].size() == 3);
+	CHECK_FALSE(compact.contains("value_label"));
+
+	// select takes a label; values outside the options or range fail before dispatch.
+	CHECK(execute("ui_act", act(choice, "select", "4")).error.empty());
+	CHECK(colonies == 2);
+	inspection = full();
+	auto refused = execute("ui_act", act(locate(inspection, "colonies"), "select", 7));
+	CHECK(has(refused.error, "0..2"));
+	CHECK(refused.data["dispatched"] == false);
+	CHECK(sent.empty());
+	CHECK(colonies == 2);
+	auto slow = execute("ui_act", act(locate(inspection, "speed"), "set_value", 11));
+	CHECK(has(slow.error, "-3..10"));
+	CHECK(slow.data["dispatched"] == false);
+	CHECK(speed == 0);
+
+	// Clicks and moves name a control or logical pixels instead of native pixels.
+	int windowWidth = 0, windowHeight = 0;
+	SDL_GetWindowSize(gfx.getWindow(), &windowWidth, &windowHeight);
+	const double scaleX = double(windowWidth) / gfx.getW(), scaleY = double(windowHeight) / gfx.getH();
+	auto start = locate(inspection, "start");
+	const double centreX = start["visible"]["x"].get<int>() + start["visible"]["w"].get<int>() / 2.0,
+				 centreY = start["visible"]["y"].get<int>() + start["visible"]["h"].get<int>() / 2.0;
+	auto clicked = execute("ui_click", {{"token", token}, {"key", "start"}});
+	REQUIRE(clicked.error.empty());
+	CHECK(clicked.data["point"]["x"].get<double>() == doctest::Approx(centreX));
+	REQUIRE(sent.size() == 3);
+	CHECK(sent[0].type == SDL_EVENT_MOUSE_MOTION);
+	CHECK(sent[0].motion.x == doctest::Approx(centreX * scaleX).epsilon(0.01));
+	CHECK(sent[0].motion.y == doctest::Approx(centreY * scaleY).epsilon(0.01));
+	CHECK(sent[2].type == SDL_EVENT_MOUSE_BUTTON_UP);
+	CHECK(has(execute("ui_click", {{"token", token}, {"key", "missing"}}).error, "Unknown control"));
+	auto moved = execute("ui_move", {{"token", token}, {"x", 100}, {"y", 50}, {"space", "logical"}});
+	CHECK(moved.error.empty());
+	REQUIRE(sent.size() == 1);
+	CHECK(sent[0].motion.x == doctest::Approx(100 * scaleX).epsilon(0.01));
+	CHECK(has(execute("ui_move", {{"token", token}, {"x", 5000}, {"y", 50}, {"space", "logical"}}).error,
+			  "logical pixels"));
+
+	// inspect=false holds with capture_after; result_subtree leaves out other surfaces.
+	inspection = full();
+	auto quiet = act(locate(inspection, "speed"), "set_value", 2);
+	quiet["inspect"] = false;
+	quiet["capture_after"] = true;
+	auto capture = service.submit("ui_act", quiet, "test");
+	auto captured = capture->completion.get_future();
+	std::vector<SDL_Event> events;
+	service.pump(events, true);
+	dispatch(events);
+	CHECK(captured.wait_for(std::chrono::seconds(0)) != std::future_status::ready);
+	gfx.drawFilledRect(0, 0, 640, 480, GAGCore::Color(10, 20, 30));
+	gfx.nextFrame();
+	auto shot = completed(captured);
+	CHECK(shot.error.empty());
+	CHECK(shot.pixels);
+	CHECK(shot.data["screen"] == "custom_game");
+	CHECK_FALSE(shot.data.contains("inspection"));
+	CHECK(speed == 2);
+	inspection = full();
+	auto trimmed = act(locate(inspection, "colonies"), "select", "2");
+	trimmed["result_subtree"] = "colonies";
+	auto subtree = execute("ui_act", trimmed);
+	CHECK(colonies == 0);
+	CHECK(subtree.data["inspection"]["surfaces"].size() == 1);
+	CHECK(has(execute("ui_inspect", {{"subtree", "missing"}}).data["inspection"].value("note", ""), "missing"));
+
+	// wait_for holds the reply until the next screen shows, then returns it settled.
+	inspection = full();
+	auto go = act(locate(inspection, "start"), "activate");
+	go["wait_for"] = "next_screen";
+	go["inspect"] = false;
+	auto waiting = service.submit("ui_act", go, "test");
+	auto answer = waiting->completion.get_future();
+	events.clear();
+	service.pump(events, true);
+	dispatch(events);
+	CHECK(started == 1);
+	CHECK(answer.wait_for(std::chrono::seconds(0)) != std::future_status::ready);
+	events.clear();
+	service.pump(events, true);
+	auto arrived = completed(answer);
+	CHECK(arrived.error.empty());
+	CHECK(arrived.data["satisfied"] == true);
+	CHECK(arrived.data["dispatched"] == true);
+	CHECK(arrived.data["screen"] == "game_session");
+	// A screen that never shows ends the wait without an error: the action happened.
+	inspection = full();
+	auto never = act(locate(inspection, "start"), "activate");
+	never["wait_for"] = {{"screen", "victory"}};
+	never["timeout_ms"] = 1;
+	auto lingering = service.submit("ui_act", never, "test");
+	auto late = lingering->completion.get_future();
+	events.clear();
+	service.pump(events, true);
+	dispatch(events);
+	CHECK(started == 2);
+	std::this_thread::sleep_for(std::chrono::milliseconds(5));
+	events.clear();
+	service.pump(events, true);
+	auto expired = completed(late);
+	CHECK(expired.error.empty());
+	CHECK(expired.data["satisfied"] == false);
+	CHECK(has(expired.data.value("wait_note", ""), "Do not repeat"));
+	CHECK(expired.data["inspection"]["screen"] == "game_session");
 }
 TEST_CASE("MCP/HTTP wait admission reserves connections for satisfying actions [network]")
 {
