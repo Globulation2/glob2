@@ -104,6 +104,8 @@ export interface TileResource {
    * maize...). No resource is 65535 (with variety/amount zero). Presence is
    * type !== 65535, since an eternal resource can have amount zero. */
   type: number;
+  /** Local Hive: the resource's key from resourceTypes() ("wheat", "trees", "rocks"). */
+  key?: string;
   variety: number; amount: number;
 }
 export interface Tile {

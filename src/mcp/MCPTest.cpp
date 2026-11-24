@@ -112,8 +112,11 @@ TEST_CASE("MCP/protocol adapters validate metadata and discover all tools")
 	CHECK(p.receive(call.dump(), {"2026-07-28", "tools/call", "ui_move"}).pending);
 	CHECK(p.receive(call.dump(), {"2026-07-28", "tools/call", "=?base64?dWlfbW92ZQ==?="}).pending);
 	call["params"]["arguments"]["x"] = -1;
-	CHECK(p.receive(call.dump(), {"2026-07-28", "tools/call", "ui_move"}).body["error"]["code"] ==
-		  -32602);
+	// A bad argument is a tool result with isError (the model sees it), not a protocol error.
+	const auto invalid = p.receive(call.dump(), {"2026-07-28", "tools/call", "ui_move"});
+	CHECK_FALSE(invalid.body.contains("error"));
+	CHECK(invalid.body["result"]["isError"] == true);
+	CHECK(invalid.body["result"]["structuredContent"]["error_code"] == "invalid_argument");
 	CHECK(allowedHost("127.0.0.1:27202", 27202));
 	CHECK_FALSE(allowedHost("evil.com:27202", 27202));
 	CHECK(allowedOrigin("", 27202));
@@ -295,9 +298,8 @@ TEST_CASE("MCP/game_stats accepts metric names and reports unknown ones as tool 
 		  std::string::npos);
 	// A metric that is not a name is an argument error naming the field.
 	auto number = call({{"metrics", {7}}});
-	REQUIRE(number.body.contains("error"));
-	CHECK(number.body["error"]["code"] == -32602);
-	CHECK(number.body["error"]["message"].get<std::string>().find("game_stats.metrics[]") !=
+	REQUIRE(number.body["result"]["isError"] == true);
+	CHECK(number.body["result"]["structuredContent"]["error"].get<std::string>().find("game_stats.metrics[]") !=
 		  std::string::npos);
 	// An extension's array schema without items accepts any elements.
 	registry.add({"loose_list",
@@ -385,7 +387,7 @@ TEST_CASE("MCP/tools explain themselves within a discovery size budget")
 						 doctest::Contains("until"), std::invalid_argument);
 	CHECK_THROWS_WITH_AS(registry.call(context, "game_wait", {{"ticks", 9001}}, "test"),
 						 doctest::Contains("ticks"), std::invalid_argument);
-	CHECK_THROWS_WITH_AS(registry.call(context, "game_alliance", {{"token", "t"}}, "test"),
+	CHECK_THROWS_WITH_AS(registry.call(context, "game_alliance", {{"token", "t"}, {"team", 40}}, "test"),
 						 doctest::Contains("team"), std::invalid_argument);
 }
 TEST_CASE("MCP/documentation is browsed by section and searched, not served as one blob")
@@ -462,6 +464,30 @@ TEST_CASE("MCP/game guide serves every topic with links and rejects unknown topi
 	Protocol p(registry, context);
 	auto call = modern("tools/call", {{"name", "game_guide"}, {"arguments", {{"topic", "hud"}}}});
 	CHECK(p.receive(call.dump(), {"2026-07-28", "tools/call", "game_guide"}).pending);
+}
+TEST_CASE("MCP/compact inspection collapses runs of off-screen controls")
+{
+	const Json box = {{"x", 0}, {"y", 0}, {"w", 10}, {"h", 10}}, none = {{"x", 0}, {"y", 0}, {"w", 0}, {"h", 0}};
+	auto tile = [&](int i, bool shown)
+	{
+		return Json{{"key", "landscape/" + std::to_string(i)}, {"label", "Map " + std::to_string(i)},
+					{"role", "button"}, {"actions", {"activate"}}, {"revision", 1}, {"enabled", true},
+					{"bounds", box}, {"visible", shown ? box : none}, {"children", Json::array()}};
+	};
+	Json grid = Json::array({tile(0, true)});
+	for (int i = 1; i <= 40; ++i)
+		grid.push_back(tile(i, false));
+	grid.push_back(tile(41, true));
+	const auto compact = compactInspection(
+		{{"screen", "landscape_picker"}, {"surfaces", {{{"instance", 1}, {"controls", grid}}}}});
+	const auto &controls = compact["surfaces"][0]["controls"];
+	// Two visible tiles and one entry naming the 40 scrolled out of view.
+	REQUIRE(controls.size() == 3);
+	CHECK(controls[1]["hidden_controls"] == 40);
+	CHECK(controls[1]["keys"][0] == "landscape/1 Map 1");
+	CHECK(controls[1]["keys"].size() == 40);
+	CHECK(controls[2]["key"] == "landscape/41");
+	CHECK(compact.dump().size() < 3000);
 }
 TEST_CASE("MCP/compact inspection keeps meaning and drops layout noise")
 {
@@ -1730,7 +1756,8 @@ TEST_CASE("MCP/semantic consumption independent waits and target revisions [netw
 	CHECK(acquired.data["inspection"]["surfaces"][0]["controls"][0]["label"] == "Act 0");
 	const auto token = acquired.data.at("token");
 	CHECK(execute("ui_renew_control", {{"token", token}}).error.empty());
-	CHECK_FALSE(execute("ui_inspect", {{"token", "wrong"}}).error.empty());
+	// Reads need no control: a wrong or old token is ignored rather than failing the read.
+	CHECK(execute("ui_inspect", {{"token", "wrong"}}).error.empty());
 	auto inspected = execute("ui_inspect", {{"token", token}});
 	REQUIRE(inspected.error.empty());
 	const auto surface = inspected.data["inspection"]["surfaces"][0];
@@ -2132,7 +2159,7 @@ TEST_CASE("MCP/game_wait and hive waits hold as observers until game time answer
 		REQUIRE(sent.error.empty());
 		CHECK(sent.data.at("queued") == true);
 		auto own = start("game_alliance", {{"token", token}, {"team", 0}, {"allied", true}});
-		CHECK(completed(own).error.find("not your own") != std::string::npos);
+		CHECK(completed(own).error.find("your own") != std::string::npos);
 		world.game.gameHeader.setAllyTeamsFixed(true);
 		world.gui.prepareLocalPresentation();
 		// Teams Fixed locks only the alliance column, as in the dialog.

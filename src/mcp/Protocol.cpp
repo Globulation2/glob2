@@ -241,7 +241,19 @@ Reply Protocol::receive(const std::string &body, const Headers &headers)
 		}
 		catch (const std::invalid_argument &e)
 		{
-			return error(400, -32602, e.what());
+			// The model must see a bad argument to correct it: per the MCP tools spec, input
+			// validation failures are tool results with isError, not protocol errors. Unknown
+			// tools and malformed requests stay JSON-RPC errors.
+			const std::string message = e.what();
+			if (message.rfind("Invalid argument:", 0) != 0)
+				return error(400, -32602, message);
+			const Json data = {{"error", message}, {"error_code", "invalid_argument"}};
+			reply.body = response(reply.id,
+								  {{"content", Json::array({{{"type", "text"}, {"text", data.dump()}}})},
+								   {"structuredContent", data},
+								   {"isError", true}},
+								  reply.modern);
+			return reply;
 		}
 		catch (const std::exception &e)
 		{

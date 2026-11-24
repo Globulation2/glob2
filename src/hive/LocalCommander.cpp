@@ -72,6 +72,7 @@ Json playerAPI()
 		{"declarations", "hive_api section \"types\": TypeScript declarations of every record and order"},
 		{"limits",
 		 {{"work_units_per_run", 250000000},
+		  {"data_bytes_per_run", 32 * 1024 * 1024},
 		  {"heap_bytes", 128 * 1024 * 1024},
 		  {"wall_seconds_per_run", 5},
 		  {"source_bytes", 131072},
@@ -262,9 +263,23 @@ Json apiDocs(const Json &args)
 	Json contents = Json::array();
 	for (const auto &section : sections)
 	{
-		auto first = section.text.substr(0, section.text.find_first_of(".\n", 1) + 1);
-		while (!first.empty() && (first.front() == '\n' || first.front() == ' '))
-			first.erase(0, 1);
+		// The first sentence of prose: skip code, tables, lists and blank lines.
+		std::string first;
+		std::size_t at = 0;
+		bool code = false;
+		while (at < section.text.size() && first.empty())
+		{
+			const auto end = section.text.find('\n', at);
+			auto line = section.text.substr(at, end == std::string::npos ? std::string::npos : end - at);
+			at = end == std::string::npos ? section.text.size() : end + 1;
+			if (line.rfind("```", 0) == 0)
+				code = !code;
+			else if (!code && !line.empty() && line[0] != '|' && line[0] != '{' && line[0] != '-' &&
+					 line[0] != ' ' && line.rfind("ctx.", 0) != 0 && line.rfind("export", 0) != 0)
+				first = line.substr(0, line.find(". ") == std::string::npos ? line.size() : line.find(". ") + 1);
+		}
+		if (first.empty())
+			first = section.title;
 		contents.push_back({{"section", section.id}, {"title", section.title},
 							{"summary", first.size() > 140 ? first.substr(0, 140) + "..." : first},
 							{"bytes", section.text.size()}});
@@ -763,6 +778,9 @@ void LocalCommander::finish(Json result)
 		success = result.value("ok", false);
 		error = result.value("error", result.value("diagnostic", std::string()));
 		// The budget is the sum of every host read in one run; say what fits.
+		if (error.rfind("Native script data exceeds limit", 0) == 0)
+			error += " (a run may convert at most 32 MiB of data between the game and JavaScript: "
+					 "call large queries such as buildingTypes() once per run, not inside a loop)";
 		if (error.rfind("JavaScript native resource limit exhausted", 0) == 0)
 			error += " (the script ran out of its 128 MiB JavaScript heap or its call stack: read "
 					 "smaller areas or scan() fields instead of region() records, keep globals small, "
@@ -1554,11 +1572,17 @@ Json LocalCommander::time(const Json &args)
 												   : "player"},
 				   {"steps_remaining", left},
 				   {"speed", globalContainer->settings.getGameSpeedText()},
-				   {"ticks_per_second", gui.targetTickRate()}};
+				   {"speed_value", globalContainer->settings.gameSpeed}};
+	// Unlimited speed has no fixed rate: thousands of ticks can pass between two calls.
+	if (const double rate = gui.targetTickRate(); rate > 0)
+		result["ticks_per_second"] = std::round(rate * 100) / 100;
+	else
+		result["ticks_per_second"] = nullptr, result["warning"] = "Unlimited speed: the match runs as fast as the "
+																	"computer can, so much can happen between two calls";
 	if (action == "step")
 	{
 		result["target_tick"] = tick + steps;
-		result["note"] = "Stepping runs the ticks at the current speed, then holds again; "
+		result["note"] = "Stepping runs the ticks at the current speed, then holds the match paused again; "
 						 "check game_time status until steps_remaining is 0. Orders sent while "
 						 "paused (game_place, clicks) apply as the next ticks run.";
 	}
@@ -2000,12 +2024,44 @@ Json LocalCommander::alliance(const Json &args)
 	};
 	const auto allied = flag("allied"), map = flag("share_map"), food = flag("share_food_vision"),
 			   market = flag("share_market");
+	// Nothing to change: report the current diplomacy, as the Alliance dialog shows it
+	// (your own settings toward each team; not what the others share with you).
+	const auto &scene = gui.drawnScene();
 	if (!allied && !map && !food && !market)
-		throw std::runtime_error("Nothing to change: pass allied, share_map, share_food_vision or share_market");
+	{
+		if (!scene.world.session)
+			throw std::runtime_error("No match is running");
+		const auto &local = scene.entities.teams[team];
+		Json teams = Json::array();
+		for (int t = 0; t < scene.entities.teamCount; ++t)
+		{
+			if (t == team)
+				continue;
+			const Uint32 bit = Team::teamNumberToMask(t);
+			Json players = Json::array();
+			bool ai = false;
+			for (const auto &pl : scene.world.session->players)
+				if (pl.teamNumber == t)
+					players.push_back(pl.name), ai = ai || pl.type >= BasePlayer::P_AI;
+			teams.push_back({{"team", t}, {"players", players}, {"ai", ai}, {"allied", (local.allies & bit) != 0},
+							 {"share_map", (local.otherVision & bit) != 0},
+							 {"share_food_vision", (local.foodVision & bit) != 0},
+							 {"share_market", (local.exchangeVision & bit) != 0}});
+		}
+		return {{"your_team", team}, {"teams_fixed", scene.world.session->fixedAlliances}, {"teams", teams},
+				{"note", "Your settings toward each team. Pass team with allied/share_* to change them."}};
+	}
+	if (!args.contains("team"))
+		throw std::runtime_error("Pass team with the settings to change (game_alliance with only token lists teams)");
 	if (const auto error = gui.setAllianceFromAutomation(args.at("team").get<int>(), allied, map, food, market);
 		!error.empty())
 		throw std::runtime_error(error);
+	Json requested = {{"team", args.at("team")}};
+	for (const char *name : {"allied", "share_map", "share_food_vision", "share_market"})
+		if (args.contains(name))
+			requested[name] = args.at(name);
 	return {{"queued", true},
+			{"requested", requested},
 			{"note", "Sent as the Alliance dialog's OK; it applies after the next simulation step. "
 					 "share_food_vision lets that team's hungry units see your Inns (and so join "
 					 "you when yours are happier)."}};

@@ -1055,13 +1055,16 @@ std::string GameGUI::setAllianceFromAutomation(int otherTeam, std::optional<bool
 		return "This game hides the Alliance dialog (a lesson or scenario restriction)";
 	// Teams Fixed (a Game Rules option, on by default) locks the dialog's alliance column;
 	// its shared-vision toggles stay available.
-	if (scene.world.session->fixedAlliances && allied)
+	if (scene.world.session->fixedAlliances && allied &&
+		*allied != ((scene.entities.teams[localTeamNo].allies & Team::teamNumberToMask(otherTeam)) != 0))
 		return "Alliances are fixed for this match (Game Rules: Teams Fixed); shared map, food "
 			   "and market vision can still change";
 	const int teams = scene.entities.teamCount;
-	if (otherTeam < 0 || otherTeam >= teams || otherTeam == localTeamNo)
-		return "team must be another team's number (0.." + std::to_string(teams - 1) +
-			   "), not your own (" + std::to_string(localTeamNo) + ")";
+	if (otherTeam < 0 || otherTeam >= teams)
+		return "There is no team " + std::to_string(otherTeam) + ": teams are 0.." + std::to_string(teams - 1) +
+			   " (game_alliance with only team lists them)";
+	if (otherTeam == localTeamNo)
+		return "Team " + std::to_string(otherTeam) + " is your own; pass another team's number";
 	const auto &local = scene.entities.teams[localTeamNo];
 	const Uint32 self = Team::teamNumberToMask(localTeamNo), other = Team::teamNumberToMask(otherTeam);
 	const auto set = [&](Uint32 mask, std::optional<bool> value)

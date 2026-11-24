@@ -186,7 +186,9 @@ events from buffered queues, preserves unrelated human events, stops remaining g
 steps, and releases temporary holds. A screen transition that truncates an event batch
 fails the call; undelivered releases remain queued for a later dispatch boundary.
 Failures such as stale viewport, lost control, unavailable frames and cancelled capture
-are tool results with isError; malformed JSON, invalid arguments and protocol errors
+are tool results with isError. So are invalid arguments, as the MCP tools spec asks, so
+that the model sees them and can correct the call: `structuredContent` carries `error`
+and `error_code: "invalid_argument"`. Malformed JSON, unknown tools and protocol errors
 are JSON-RPC errors. An invalid-argument message names the field and the broken rule,
 for example `Invalid argument: ui_drag.points[]: missing required property "x"`. An
 error may report input_started when earlier gesture steps were

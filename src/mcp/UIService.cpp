@@ -559,7 +559,8 @@ void UIService::observe()
 		auto &args = request->arguments;
 		if (request->cancelled)
 			result.error = "Wait cancelled";
-		else if (args.contains("token") && (token.empty() || args.value("token", "") != token))
+		else if (request->tool != "ui_wait" && args.contains("token") &&
+				 (token.empty() || args.value("token", "") != token))
 			result.error = LeaseLost;
 		else if (request->tool != "ui_wait")
 		{
@@ -584,7 +585,7 @@ void UIService::observe()
 		}
 		else
 		{
-			if (args.contains("token"))
+			if (args.contains("token") && !token.empty() && args.value("token", "") == token)
 				renewed = Clock::now();
 			auto full = args;
 			full["compact"] = false; // conditions read every field; compaction is for the reply
@@ -639,6 +640,8 @@ void UIService::observe()
 					onlyVisibility = onlyVisibility && !condition.contains(name);
 				target = target || onlyVisibility;
 			}
+			if (!args.value("inspect", true))
+				result.data["inspection"] = {{"screen", snapshot["screen"]}};
 			if (matches && target)
 				result.data["satisfied"] = true;
 			else if (Clock::now() >= request->deadline - std::chrono::seconds(1))
@@ -957,12 +960,9 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 	}
 	if ((tool == "ui_inspect" || tool == "ui_screenshot") && a.contains("token"))
 	{
-		if (token.empty() || a.value("token", "") != token)
-		{
-			finish(LeaseLost);
-			return;
-		}
-		renewed = now;
+		// Reads need no control: an old token renews nothing but never fails a read.
+		if (!token.empty() && a.value("token", "") == token)
+			renewed = now;
 	}
 	if (tool == "ui_status")
 	{
@@ -973,10 +973,9 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 	{
 		if (!token.empty())
 		{
-			finish("Another client controls the game (" + controller +
-				   "); wait for it to call ui_release_control or for its 300 s lease to "
-				   "expire, or ask the person at the computer to use Settings > MCP server > "
-				   "Revoke control. Reads need no control.");
+			finish("Control is already held (by " + controller + "). If that is you, keep using your token "
+				   "(ui_renew_control extends it). Otherwise wait for it to call ui_release_control or for its 300 s lease to "
+				   "expire, or ask the person at the computer to use Settings > MCP server > Revoke control. Reads need no control.");
 			return;
 		}
 		try
@@ -1156,7 +1155,9 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 								  [&](const auto &c) { return c.id == a["capture_id"]; });
 		if (found == captures.end())
 		{
-			finish("Capture expired; request a new screenshot");
+			finish(a["capture_id"].is_number_unsigned() && a["capture_id"].get<std::uint64_t>() > nextCapture
+					   ? "Unknown capture_id: no screenshot had that id; take one with ui_screenshot"
+					   : "Capture expired (only recent screenshots are kept); take a new ui_screenshot");
 			return;
 		}
 		if (found->viewport != viewport)
@@ -1229,7 +1230,7 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 		e.type = SDL_EVENT_MOUSE_WHEEL;
 		e.wheel.windowID = SDL_GetWindowID(gfx.getWindow());
 		e.wheel.which = RemoteInputDevice;
-		e.wheel.x = a["dx"];
+		e.wheel.x = a.value("dx", 0.0);
 		e.wheel.y = a["dy"];
 		e.wheel.mouse_x = pointerX;
 		e.wheel.mouse_y = pointerY;

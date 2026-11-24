@@ -3,6 +3,7 @@
 #include "Guide.h"
 #include <cmath>
 #include <algorithm>
+#include <set>
 #include <stdexcept>
 
 namespace MCP
@@ -148,6 +149,33 @@ std::shared_ptr<Request> ToolRegistry::call(ExecutionContext &context, const std
 		throw std::logic_error("MCP tool handler returned no request: " + name);
 	return request;
 }
+namespace
+{
+// Each tool's MCP annotations, stated per tool (hints for clients: read-only tools may run
+// in parallel; only idempotent ones may be retried after a dropped connection).
+Json annotationsFor(const std::string &name)
+{
+	static const std::set<std::string> readOnly = {"ui_status",	   "ui_screenshot", "ui_inspect", "ui_wait",
+												   "game_world",   "game_stats",	"game_wait",  "hive_status",
+												   "hive_api",	   "hive_result",	"game_guide"};
+	// Can destroy, erase, cancel or send arbitrary input to the game.
+	static const std::set<std::string> destructive = {"game_building", "game_zone", "hive_run",	   "hive_program",
+													  "ui_act",		   "ui_click",	"ui_mouse_button", "ui_drag",
+													  "ui_key",		   "ui_type_text"};
+	// Repeating the call changes nothing more (Hive calls are deduplicated by operation_key).
+	static const std::set<std::string> idempotent = {"game_view",		  "game_alliance",	   "game_zone",
+													 "ui_renew_control",  "ui_release_inputs", "ui_release_control",
+													 "hive_run",		  "hive_program"};
+	// Raw input can reach other people (online matches and their menus).
+	static const std::set<std::string> openWorld = {"ui_act", "ui_click", "ui_mouse_button", "ui_drag", "ui_key",
+													"ui_type_text"};
+	const bool reads = readOnly.count(name) > 0;
+	return {{"readOnlyHint", reads},
+			{"destructiveHint", !reads && destructive.count(name) > 0},
+			{"idempotentHint", reads || idempotent.count(name) > 0},
+			{"openWorldHint", openWorld.count(name) > 0}};
+}
+} // namespace
 void registerUITools(ToolRegistry &registry)
 {
 	const auto scancodeNames = snapshotScancodeNames();
@@ -218,21 +246,7 @@ void registerUITools(ToolRegistry &registry)
 			 description,
 			 object(properties, required),
 			 std::move(output),
-			 {{"readOnlyHint", !input && std::string(name) != "hive_run" &&
-								   std::string(name) != "hive_program" &&
-								   std::string(name) != "game_place" &&
-								   std::string(name) != "game_view" &&
-								   std::string(name) != "game_chat" &&
-								   std::string(name) != "game_building" &&
-								   std::string(name) != "game_zone" &&
-								   std::string(name) != "game_time" &&
-								   std::string(name) != "game_alliance" &&
-								   std::string(name) != "ui_renew_control" &&
-								   std::string(name) != "ui_acquire_control" &&
-								   std::string(name) != "ui_release_control"},
-			  {"destructiveHint", input},
-			  {"idempotentHint", false},
-			  {"openWorldHint", false}},
+			 annotationsFor(name),
 			 [name = std::string(name)](ExecutionContext &context, Json args, std::string client)
 			 { return context.submit(name, std::move(args), std::move(client)); },
 			 [name = std::string(name), scancodeNames](const Json &args)
@@ -329,8 +343,9 @@ void registerUITools(ToolRegistry &registry)
 			 request->tool = "game_guide";
 			 request->client = std::move(client);
 			 Result result;
-			 result.data = args.contains("search") ? guideSearch(args.at("search").get<std::string>())
-												   : guide(args.value("topic", "overview"));
+			 result.data = args.contains("search")
+							   ? guideSearch(args.at("search").get<std::string>(), args.value("topic", std::string()))
+							   : guide(args.value("topic", "overview"));
 			 request->completion.set_value(std::move(result));
 			 return request;
 		 },
@@ -381,6 +396,7 @@ void registerUITools(ToolRegistry &registry)
 		"screen change may follow: ui_wait. Never retry automatically.",
 		act, {"surface", "key", "revision", "action"}, true);
 	auto wait = filter;
+	wait["inspect"] = {{"type", "boolean"}, {"default", true}};
 	wait["timeout_ms"] = {
 		{"type", "integer"}, {"minimum", 1}, {"maximum", 30000}, {"default", 10000}};
 	wait["condition"] = object({{"screen", {{"type", "string"}, {"maxLength", 128}}},
@@ -483,12 +499,13 @@ void registerUITools(ToolRegistry &registry)
 		{"token", "text"}, false);
 	add("game_time",
 		"Pause the local match while you think, resume, or step ticks (30/s) and re-pause. "
-		"speed (-3..10, 0 normal) sets game speed. status without speed: no token.",
+		"speed sets game speed: -3..9 are 0.25, 0.5, 0.75, 1, 1.25, 1.6, 2, 2.5, 4, 5, 8, 13, 40x; "
+		"10 is unlimited. action defaults to status (no token unless speed).",
 		{{"action", enumeration({"status", "pause", "resume", "step"})},
 		 {"token", token},
 		 {"ticks", {{"type", "integer"}, {"minimum", 1}, {"maximum", 3000}}},
 		 {"speed", {{"type", "integer"}, {"minimum", -3}, {"maximum", 10}}}},
-		{"action"}, false);
+		{}, false);
 	add("game_wait",
 		"Let game time pass until ticks elapse (30/s), an until event hits your colony "
 		"(default: all but building_completed) or timeout_ms; returns why, plus game_world "
@@ -501,15 +518,16 @@ void registerUITools(ToolRegistry &registry)
 		 {"timeout_ms", {{"type", "integer"}, {"minimum", 100}, {"maximum", 30000}}}},
 		{}, false);
 	add("game_alliance",
-		"The Alliance dialog for one other team: allied, shared map, food (Inn) or market "
-		"vision; unset fields stay. Teams Fixed locks only allied. Needs token.",
+		"The Alliance dialog: with only token, lists teams and your settings; with team, sets "
+		"allied or shared map, food (Inn) or market vision (unset fields stay). Teams Fixed "
+		"locks only allied. Needs token.",
 		{{"token", token},
 		 {"team", {{"type", "integer"}, {"minimum", 0}, {"maximum", 31}}},
 		 {"allied", {{"type", "boolean"}}},
 		 {"share_map", {{"type", "boolean"}}},
 		 {"share_food_vision", {{"type", "boolean"}}},
 		 {"share_market", {{"type", "boolean"}}}},
-		{"token", "team"}, false);
+		{"token"}, false);
 	add("hive_status", "Whether colony scripting (Hive) is available in the current local match, and its "
 		"session id, required by hive_run/hive_result/hive_program. No token needed.", {}, {},
 		false);
@@ -574,8 +592,8 @@ void registerUITools(ToolRegistry &registry)
 	scroll["dy"] = number;
 	add("ui_scroll",
 		"Mouse wheel at x/y: zooms the map, scrolls lists. Positive dy is up (zoom in), "
-		"positive dx right.",
-		scroll, {"x", "y", "dx", "dy"}, true, true);
+		"positive dx right; dx defaults to 0.",
+		scroll, {"x", "y", "dy"}, true, true);
 	add("ui_drag", "Drag the mouse through points over duration_ms (default 250, maximum 5000): paints "
 		"zones or pans the map.",
 		{{"points",
@@ -615,10 +633,10 @@ std::string actionTargetProblem(const Json &snapshot, const Json &a)
 			surface = &s;
 	}
 	if (!surface)
-		return "Stale control: surface " + surfaceId + " is not on screen \"" +
+		return "Unknown surface " + surfaceId + ": not shown on screen \"" +
 			   snapshot.value("screen", "") + "\" (surfaces now: " +
 			   (surfaces.empty() ? "none" : surfaces) +
-			   "). Surface numbers change when a screen opens; ui_inspect again";
+			   "). A dialog may cover it (close it first), or the screen changed; ui_inspect again";
 	const Json *found = nullptr;
 	auto find = [&](auto &&self, const Json &items) -> void
 	{
@@ -649,7 +667,7 @@ std::string actionTargetProblem(const Json &snapshot, const Json &a)
 			if (other)
 				elsewhere = s["instance"].dump();
 		}
-		return "Stale control: no control with key \"" + key + "\" on surface " + surfaceId +
+		return "Unknown control: no control with key \"" + key + "\" on surface " + surfaceId +
 			   (elsewhere.empty() ? "; ui_inspect again to find the current controls"
 								  : "; it is on surface " + elsewhere + " now");
 	}
@@ -721,7 +739,52 @@ Json compactInspection(const Json &inspection)
 				c["children"] = std::move(children);
 			out.push_back(std::move(c));
 		}
-		return out;
+		// Off-screen controls (a long scrolled list) collapse into one entry naming them,
+		// so a picker of 160 tiles is not 25 KB: scroll their container to reach one.
+		Json kept = Json::array(), run = Json::array();
+		const auto flush = [&]
+		{
+			if (run.size() == 1)
+				kept.push_back(run[0]);
+			else if (!run.empty())
+			{
+				Json names = Json::array();
+				for (const auto &h : run)
+					if (h.contains("key"))
+						names.push_back(h.value("label", std::string()).empty()
+											? h["key"].get<std::string>()
+											: h["key"].get<std::string>() + " " + h["label"].get<std::string>());
+				kept.push_back({{"hidden_controls", run.size()}, {"keys", names},
+								{"note", "Scrolled out of view: ui_act scroll on their container, then act"}});
+			}
+			run = Json::array();
+		};
+		for (auto &c : out)
+			if (c.value("hidden", false) && !c.contains("children") || (c.value("hidden", false) && c["children"].empty()))
+				run.push_back(std::move(c));
+			else if (c.value("hidden", false))
+			{
+				// A hidden composite (a tile with its label and preview): keep only its key/label.
+				Json brief = {{"hidden", true}};
+				for (const char *f : {"key", "label"})
+					if (c.contains(f))
+						brief[f] = c[f];
+				if (!brief.contains("label"))
+					for (const auto &child : c["children"])
+						if (child.contains("label"))
+						{
+							brief["label"] = child["label"];
+							break;
+						}
+				run.push_back(std::move(brief));
+			}
+			else
+			{
+				flush();
+				kept.push_back(std::move(c));
+			}
+		flush();
+		return kept;
 	};
 	Json result = inspection;
 	for (auto &surface : result["surfaces"])

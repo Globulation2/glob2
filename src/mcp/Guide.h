@@ -16,7 +16,7 @@ inline constexpr const char *ServerGuideUrl =
 const std::string &serverInstructions();
 std::vector<std::string> guideTopics();
 // game_guide search: paragraphs of every topic that contain all the words.
-nlohmann::json guideSearch(const std::string &words);
+nlohmann::json guideSearch(const std::string &words, const std::string &topic = {});
 // Throws std::invalid_argument for an unknown topic.
 nlohmann::json guide(const std::string &topic);
 } // namespace MCP
