@@ -164,6 +164,8 @@ void GameGUI::init()
 	isRunning=true;
 	gamePaused=false;
 	hardPause=false;
+	heldSteps=0;
+	agentPaused=false;
 	anyPlayerWaitedTimeFor=0;
 	lastAutosaveStep=-1;
 	exitGlobCompletely=false;
@@ -426,12 +428,29 @@ bool GameGUI::zoomMap(double steps,int x,int y)
     }
     else if (y<16 || !camera.contains(x,y)) return false;
     else camera.wheel(steps,x,y);
+    zoomChanged();
+    return true;
+}
+bool GameGUI::setMapZoom(double zoom)
+{
+    // The camera already has this frame's layout (updateCamera runs every step).
+    // The HUD's zoom buttons are disabled during an automatic torus reveal.
+    if (torusView.active() && !torusView.enabled()) return false;
+    const double target = zoom > 0 ? zoom : camera.minimumZoom();
+    if (torusView.active())
+        camera.setZoom(target,(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/2.0,(globalContainer->gfx->getH()+16)/2.0);
+    else
+        camera.setZoom(target,camera.offsetX+camera.width/2,camera.offsetY+camera.height/2);
+    zoomChanged();
+    return true;
+}
+void GameGUI::zoomChanged()
+{
     viewportX=camera.tileX();viewportY=camera.tileY();
     torusView.rebaseViewport(viewportX,viewportY);
     clientRequests.publishDisplaySize(std::ceil(camera.visibleW()+camera.fractionX()),
                                       std::ceil(camera.visibleH()+camera.fractionY()));
     view.mouseX=mapMouseX(mouseX);view.mouseY=mapMouseY(mouseY);
-    return true;
 }
 
 void GameGUI::configureLiveSpectatorView()

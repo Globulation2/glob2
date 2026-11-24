@@ -196,7 +196,7 @@ void GameGUI::processEvent(SDL_Event *event)
 		}
 		return;
 	}
-	if (GAGCore::scrollGesture(*event) && !inputState.hasFocus())
+	if (GAGCore::scrollGesture(*event) && !inputState.accepts(*event))
 		return;
 	if (event->type == SDL_EVENT_MOUSE_WHEEL)
 	{
@@ -233,7 +233,8 @@ void GameGUI::processEvent(SDL_Event *event)
     }
     if (event->type == SDL_EVENT_MOUSE_BUTTON_UP && event->button.button == SDL_BUTTON_LEFT)
         torusView.setPointerHeld(false);
-    if (!inputState.hasFocus() && (event->type == SDL_EVENT_KEY_DOWN || event->type == SDL_EVENT_KEY_UP ||
+    // Without OS focus only remote (MCP) input counts; the human's stays ignored.
+    if (!inputState.accepts(*event) && (event->type == SDL_EVENT_KEY_DOWN || event->type == SDL_EVENT_KEY_UP ||
         event->type == SDL_EVENT_MOUSE_BUTTON_DOWN || event->type == SDL_EVENT_MOUSE_BUTTON_UP ||
         event->type == SDL_EVENT_MOUSE_MOTION || event->type == SDL_EVENT_MOUSE_WHEEL)) return;
 

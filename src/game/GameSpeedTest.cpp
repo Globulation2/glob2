@@ -17,6 +17,7 @@
 #include "KeyboardManager.h"
 #include "ReplayReader.h"
 #include "GameGUIKeyActions.h"
+#include <InputState.h>
 #include <StringTable.h>
 #include <SDL3_net/SDL_net.h>
 #include <fstream>
@@ -321,6 +322,30 @@ TEST_CASE("settings screen; in-game slider; shortcuts and camera cadence [displa
         focus.type = SDL_EVENT_WINDOW_FOCUS_GAINED;
         gui.step({focus}, inputStart + 160);
         REQUIRE(gui.viewportX == releasedX);
+        {
+            // Without OS focus the human's keys are ignored, but remote (MCP)
+            // input still reaches gameplay, here Ctrl+= for a faster speed.
+            focus.type = SDL_EVENT_WINDOW_FOCUS_LOST;
+            gui.processEvent(&focus);
+            settings.gameSpeed = 0;
+            SDL_Event faster{};
+            faster.type = SDL_EVENT_KEY_DOWN;
+            faster.key.key = SDLK_EQUALS;
+            faster.key.scancode = SDL_SCANCODE_EQUALS;
+            faster.key.mod = SDL_KMOD_LCTRL;
+            gui.processEvent(&faster);
+            REQUIRE(settings.gameSpeed == 0);
+            faster.key.which = GAGCore::RemoteInputDevice;
+            REQUIRE(GAGCore::remoteInput(faster));
+            gui.processEvent(&faster);
+            REQUIRE(settings.gameSpeed == 1);
+            focus.type = SDL_EVENT_WINDOW_FOCUS_GAINED;
+            gui.processEvent(&focus);
+            faster.key.which = 0;
+            gui.processEvent(&faster);
+            REQUIRE(settings.gameSpeed == 2);
+            settings.gameSpeed = 0;
+        }
         std::cout << "PASS: supplied input, held-key scrolling and focus cleanup\n";
         std::cout<<"PASS: multiplayer controls, replay eligibility, camera cadence "
                  <<distance[0]<<"/"<<distance[1]<<" cells\n";
@@ -517,6 +542,52 @@ TEST_CASE("live engine speed; pause; hard pause and replay playback [display][wr
     REQUIRE_MESSAGE(checksums.size()==7, "missing engine checksums");
     REQUIRE_MESSAGE(std::set<std::string>(checksums.begin(),checksums.begin()+4).size()==1, "speed or pause changed the game state");
     REQUIRE_MESSAGE(std::set<std::string>(checksums.begin()+4,checksums.end()).size()==1, "playback speed changed the replay state");
+    NET_Quit();
+}
+
+TEST_CASE("an agent's hard pause holds the match and steps exact ticks [display]")
+{
+    glob2test::HeadlessGlobals globals(displayOptions());
+    REQUIRE(NET_Init());
+    // The same match played straight through and with holds and steps
+    // (MCP game_time) must compute the same world: stepping is scheduling only.
+    std::vector<Uint32> checksums;
+    for(bool interrupted:{false,true}) {
+        INFO("interrupted " << interrupted);
+        Engine engine;
+        REQUIRE(engine.initCampaign("maps/balanced.map")==Engine::EE_NO_ERROR);
+        engine.prepareRun();
+        Uint64 now=1000;
+        engine.beginSession(now);
+        auto& gui=engine.gui;
+        auto run=[&](unsigned frames) {
+            for(unsigned i=0;i<frames;++i) { REQUIRE(engine.simulationStep(now)); now+=100; }
+        };
+        const auto first=gui.game.stepCounter;
+        if(interrupted) {
+            run(3);
+            gui.hardPause=true; gui.agentPaused=true;
+            const auto held=gui.game.stepCounter;
+            run(20);
+            CHECK(gui.game.stepCounter==held);
+            CHECK(gui.simulationHeld());
+            CHECK(engine.presentationPaused());
+            gui.heldSteps=7;
+            CHECK_FALSE(gui.simulationHeld());
+            run(20);
+            CHECK(gui.game.stepCounter==held+7);
+            CHECK(gui.heldSteps==0);
+            CHECK(gui.simulationHeld());
+            gui.hardPause=false; gui.agentPaused=false;
+        }
+        run(first+40-gui.game.stepCounter);
+        REQUIRE(gui.game.stepCounter==first+40);
+        checksums.push_back(gui.game.checkSum());
+        gui.isRunning=false;
+        REQUIRE_FALSE(engine.finishSession());
+        engine.restoreCursor();
+    }
+    CHECK(checksums[0]==checksums[1]);
     NET_Quit();
 }
 }

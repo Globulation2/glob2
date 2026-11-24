@@ -2390,6 +2390,56 @@ TEST_CASE("MCP game tools read the colony, place by tile and centre the view" *
 	CHECK(std::abs(view.at("tile_screen").at("y").get<int>() -
 				   int(camera.offsetY + camera.height / 2)) <= 1);
 	CHECK_THROWS(commander.call("game_view", {{"x", 100000}, {"y", 0}}));
+
+	// zoom reuses the HUD camera's limits and keeps the tile centred at the new scale.
+	const auto zoomed = commander.call("game_view", {{"x", 30}, {"y", 25}, {"zoom", 2}});
+	CHECK(camera.zoom == doctest::Approx(2));
+	CHECK(zoomed.at("zoom") == doctest::Approx(2));
+	CHECK(zoomed.at("tile_pixels") == doctest::Approx(64));
+	CHECK(zoomed.at("zoom_range")[1] == doctest::Approx(MapCamera::MAX_ZOOM));
+	CHECK(std::abs(zoomed.at("tile_screen").at("x").get<int>() -
+				   int(camera.offsetX + camera.width / 2)) <= 1);
+	CHECK(zoomed.at("view").at("width").get<int>() < rect.at("width").get<int>());
+	commander.call("game_view", {{"x", 30}, {"y", 25}, {"zoom", 0}});
+	CHECK(camera.zoom == doctest::Approx(camera.minimumZoom()));
+	commander.call("game_view", {{"x", 30}, {"y", 25}, {"zoom", 1}});
+	CHECK(camera.zoom == doctest::Approx(1));
+	commander.call("game_view", {{"x", 30}, {"y", 25}});
+	CHECK(camera.zoom == doctest::Approx(1)); // Omitted zoom leaves it alone.
+
+	// game_time holds the match with the client-side hard pause, steps a budget and
+	// resumes, without queueing an order; a menu pause blocks stepping until resumed.
+	auto time = [&](Json args) { return commander.call("game_time", std::move(args)); };
+	auto status = time({{"action", "status"}});
+	CHECK(status.at("paused") == false);
+	CHECK(status.at("paused_by") == "none");
+	CHECK(status.at("tick") == world.game.stepCounter);
+	CHECK(status.at("speed") == "1x");
+	CHECK(status.at("ticks_per_second") == doctest::Approx(30));
+	status = time({{"action", "pause"}});
+	CHECK(world.gui.hardPause);
+	CHECK(world.gui.simulationHeld());
+	CHECK(status.at("paused") == true);
+	CHECK(status.at("paused_by") == "agent");
+	status = time({{"action", "step"}, {"ticks", 12}});
+	CHECK(world.gui.hardPause);
+	CHECK(world.gui.heldSteps == 12);
+	CHECK_FALSE(world.gui.simulationHeld());
+	CHECK(status.at("steps_remaining") == 12);
+	CHECK(status.at("target_tick") == world.game.stepCounter + 12);
+	world.gui.spendHeldStep();
+	CHECK(time({{"action", "status"}}).at("steps_remaining") == 11);
+	status = time({{"action", "resume"}});
+	CHECK_FALSE(world.gui.hardPause);
+	CHECK(world.gui.heldSteps == 0);
+	CHECK(status.at("paused") == false);
+	CHECK(world.gui.orderQueue.empty());
+	world.gui.gamePaused = true; // As after the menu's Pause.
+	CHECK(time({{"action", "status"}}).at("paused_by") == "menu");
+	CHECK_THROWS_WITH(time({{"action", "step"}}), doctest::Contains("resume first"));
+	time({{"action", "resume"}});
+	CHECK_FALSE(world.gui.orderQueue.empty()); // The ordinary, recorded resume order.
+	world.gui.gamePaused = false;
 }
 
 TEST_CASE("MCP game tools keep fog of war: last-seen buildings, no enemy health, explored ground only" *

@@ -905,8 +905,9 @@ void GameGUI::drawAll(int team)
             std::ceil(camera.visibleW()+camera.fractionX()), std::ceil(camera.visibleH()+camera.fractionY()));
 
 	}
-	// if paused, tint the game area
-	if (gamePaused)
+	// if paused, tint the game area; an agent's hard pause (MCP game_time) shows
+	// as paused too, so people watching know the match is waiting.
+	if (gamePaused || (agentPaused && simulationHeld()))
 	{
 		std::string s;
 

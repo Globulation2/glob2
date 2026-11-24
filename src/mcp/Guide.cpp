@@ -144,8 +144,14 @@ tile through the click path (near searches around it for room; buildings need
 explored ground). game_building changes a building or flag by id: workers, priority,
 Swarm production, flag range, upgrade, repair, destroy, move a flag. game_zone paints
 or erases forbidden, guard or clearing zones over a tile rectangle. game_view centres
-the camera on a tile and returns its screen point. game_chat sends an in-game chat
-message as your player.
+the camera on a tile and returns its screen point; zoom (1 is 100%, up to 5, 0 fits
+the whole map) frames it for anyone watching. game_chat
+sends an in-game chat message as your player.
+game_time pauses the match while you think (action pause), resumes it, or steps a
+number of ticks (30 a second at normal speed) and pauses again; status reports the
+tick, whether it is paused and the speed. While paused you can still read, place,
+click and type: orders queue and apply as the next ticks run, so step to see them
+take effect. It works only in local matches without network players.
 The map, minimap and replay bar are canvases: use coordinates. Take ui_screenshot
 (max_width keeps it small) and pass its capture_id with x/y in that image's pixels.
 - Place by hand: activate a palette button, then ui_click on the map. Placement stays
@@ -161,12 +167,16 @@ Prefer the palette and panel controls to keyboard shortcuts: inspection describe
 them and ui_act confirms each one.)"},
 	{"control", "The control lease and token workflow",
 	 R"(Reads (ui_status, ui_screenshot, ui_inspect, ui_wait, game_guide, game_world,
-hive_status, hive_api, hive_result) need no control. Everything that sends input needs the token
+game_time status, hive_status, hive_api, hive_result) need no control. Everything that sends input needs the token
 from ui_acquire_control. Only one client holds control; a second acquisition fails
 until the first releases it, its lease expires, or the person at the computer uses
 Settings > MCP server > Revoke control. The lease lasts 300 seconds after the last
 token-bearing call; ui_renew_control extends it. A rejected token means control was
 lost: acquire again. Human mouse and keyboard input keeps working alongside yours.
+Input reaches the game even while another app has the OS focus; switching windows
+only cancels input still in flight. Holding an arrow key to scroll needs the focus:
+use game_view to move the camera instead.
+The match keeps running while you think; game_time pause holds it (local matches).
 Never retry an input call automatically: it may have been delivered before an error
 or timeout. Inspect first, then decide. ui_release_control releases held keys and
 buttons and frees the lease when you finish.)"},
@@ -190,8 +200,8 @@ blocked when any panel overlaps part of it; clicks on its uncovered part still w
 Stale viewport or expired capture: take a new ui_screenshot and use its capture_id.
 Wait timed out: the condition did not happen; inspect the returned snapshot.
 Invalid argument errors name the field and the rule it broke.
-If nothing seems to happen in a match, check the game speed is not paused and that
-the building's requested unit count is above zero.)"},
+If nothing seems to happen in a match, check game_time status (paused, or steps
+left) and that the building's requested unit count is above zero.)"},
 	{"links", "Source code, documentation and tutorial content", nullptr},
 };
 
@@ -221,7 +231,8 @@ const std::string &serverInstructions()
 		"ui_acquire_control (keep the token); ui_inspect {\"compact\":true} for the "
 		"screen name and controls; ui_act on a control's surface, key and revision; "
 		"ui_wait for screen changes; in a match, game_world reads your colony and what it "
-		"sees in map tiles and game_place / game_view act on tiles; ui_screenshot plus "
+		"sees in map tiles and game_place / game_view act on tiles; game_time pauses the "
+		"match while you think; ui_screenshot plus "
 		"ui_click with its capture_id for other map positions; ui_release_control when "
 		"done. Never retry input calls.\n"
 		"New here? From main_menu activate Tutorial (menu/1), then Introduction "

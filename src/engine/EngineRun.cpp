@@ -102,8 +102,9 @@ void Engine::updateTickSpeedAndDrawCadence(MainLoopState& st, Uint64 now)
 	}
 
 	// Pausing must not turn an uncapped preset into a busy loop, and GUI
-	// input should be rendered on every paused frame.
-	if (gui.gamePaused || gui.hardPause)
+	// input should be rendered on every paused frame. Ticks stepped through a
+	// hard pause (MCP game_time) run at the chosen speed.
+	if (gui.gamePaused || gui.simulationHeld())
 	{
 		st.speedNs = GAME_TICK_NS;
 		st.speed = GAME_TICK_MS;
@@ -227,8 +228,8 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 // Once tickReady() is true for this tick, commit the tick: validate
 // checksums (assert on desync), execute the matched orders, pump the replay
 // reader if we're in playback, and advance live simulation. Called only from inside
-// the !hardPause branch, so the original !gui.hardPause guard on advancement is
-// implicit here.
+// the !hardPause branch (or a tick stepped through it), so the original
+// !gui.hardPause guard on advancement is implicit here.
 void Engine::executeOrdersAndStep(bool readyNow)
 {
     const bool wasPaused = gui.gamePaused;
@@ -1527,7 +1528,10 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
 	{ OwnerTickProfile::Scope phase(OwnerTickProfile::Phase::Turn);pumpTurnSession(now); }
     { OwnerTickProfile::Scope phase(OwnerTickProfile::Phase::Commander);gui.updateCommander(turn && turn->turn().tickIntervalMicros()!=0); }
     bool readyNow = st.wasReadyLastTick;
-    if (!gui.hardPause) {
+    // A hard pause holds the whole order and tick loop; a step budget lets that
+    // many ticks through exactly as if unpaused, then holds again.
+    const bool stepping = gui.hardPause && !gui.simulationHeld();
+    if (!gui.hardPause || stepping) {
         { OwnerTickProfile::Scope phase(OwnerTickProfile::Phase::Orders);gatherAndAdvanceOrders(st.wasReadyLastTick); }
         readyNow = net->tickReady();
         const Uint32 tickBefore = gui.game.stepCounter;
@@ -1541,6 +1545,7 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
             perf.record(PerformanceTelemetry::Id::SimulationLateness, lateness);
             OwnerTickProfile::Scope phase(OwnerTickProfile::Phase::Statistics);
             gui.recordTick(SDL_GetTicks(), Uint32(st.speed));
+            if (stepping) gui.spendHeldStep();
         }
     }
     if (globalContainer->automaticEndingGame && (int)gui.game.stepCounter == sessionEndingTarget) {

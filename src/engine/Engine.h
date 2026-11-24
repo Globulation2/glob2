@@ -350,12 +350,12 @@ private:
 
 	/// Push this tick's local + AI orders into the net layer and (if the
 	/// previous tick committed) call advanceStep + write the checksum sidecar.
-	/// Called only from inside the !hardPause branch.
+	/// Called only from inside the !hardPause branch (or a stepped tick).
 	void gatherAndAdvanceOrders(bool wasReadyLastTick);
 
 	/// Once tickReady() is true for this tick, validate checksums,
 	/// execute the matched orders, pump the replay reader, and run
-	/// game.syncStep. Called only from inside the !hardPause branch.
+	/// game.syncStep. Called only from inside the !hardPause branch (or a stepped tick).
 	void executeOrdersAndStep(bool readyNow);
 
 	void drawFrame(MainLoopState& st, bool everyFrame = false, const PresentationFrame* scene = nullptr);

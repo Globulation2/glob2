@@ -4,6 +4,7 @@
 #if GLOB2_DESKTOP_MCP
 #include "Protocol.h"
 #include <GraphicContext.h>
+#include <InputState.h>
 #include <deque>
 #include <mutex>
 #include <optional>
@@ -113,25 +114,8 @@ class UIService : public ExecutionContext
 	std::string endpoint() const;
 	std::string currentController() const { return controller.empty() ? "None" : controller; }
 };
-inline constexpr Uint32 RemoteInputDevice = 0x474c4f42;
-inline bool remoteInput(const SDL_Event &e)
-{
-	switch (e.type)
-	{
-	case SDL_EVENT_KEY_DOWN:
-	case SDL_EVENT_KEY_UP:
-		return e.key.which == RemoteInputDevice;
-	case SDL_EVENT_MOUSE_MOTION:
-		return e.motion.which == RemoteInputDevice;
-	case SDL_EVENT_MOUSE_BUTTON_DOWN:
-	case SDL_EVENT_MOUSE_BUTTON_UP:
-		return e.button.which == RemoteInputDevice;
-	case SDL_EVENT_MOUSE_WHEEL:
-		return e.wheel.which == RemoteInputDevice;
-	default:
-		return false;
-	}
-}
+using GAGCore::RemoteInputDevice;
+using GAGCore::remoteInput;
 UIService *service();
 } // namespace MCP
 #endif

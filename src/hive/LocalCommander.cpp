@@ -212,6 +212,8 @@ Json LocalCommander::call(const std::string &tool, const Json &args)
 		return view(args);
 	if (tool == "game_chat")
 		return chat(args);
+	if (tool == "game_time")
+		return time(args);
 	if (tool == "game_building")
 		return building(args);
 	if (tool == "game_zone")
@@ -913,6 +915,10 @@ Json LocalCommander::view(const Json &args)
 	if (x < 0 || y < 0 || x >= int(gui.game.map.getW()) || y >= int(gui.game.map.getH()))
 		throw std::runtime_error("Tile (" + std::to_string(x) + ", " + std::to_string(y) +
 								 ") is outside the map; read its size from game_world");
+	// Zoom first, about the view's centre, so the tile ends up centred at the new scale.
+	if (args.contains("zoom") && !gui.setMapZoom(args.at("zoom").get<double>()))
+		throw std::runtime_error("Zoom is unavailable while the torus view reveals itself; "
+								 "try again in a moment");
 	gui.centreViewOnTile(x + 0.5, y + 0.5);
 	const auto &camera = gui.camera;
 	const auto point = camera.worldToScreen((x + 0.5) * 32, (y + 0.5) * 32);
@@ -923,6 +929,8 @@ Json LocalCommander::view(const Json &args)
 			  {"height", int(std::ceil(camera.visibleH() / 32))}}},
 			{"tile_screen", {{"x", int(point.first)}, {"y", int(point.second)}}},
 			{"tile_pixels", 32 * camera.zoom},
+			{"zoom", camera.zoom},
+			{"zoom_range", {camera.minimumZoom(), MapCamera::MAX_ZOOM}},
 			{"note", "tile_screen is the tile's centre in the logical pixels ui_inspect bounds use; "
 					 "with a screenshot, prefer its capture_id coordinates."}};
 }
@@ -935,6 +943,61 @@ Json LocalCommander::chat(const Json &args)
 			{"text", text},
 			{"note", "Queued like the chat box's Send: the message shows in the game's "
 					 "message area, from your player name, after the next simulation step."}};
+}
+Json LocalCommander::time(const Json &args)
+{
+	// call() has checked this is the local human player's own match: no network
+	// peers, replay or spectating, where the player could hard-pause too.
+	if (!gui.canChangeGameSpeed())
+		throw std::runtime_error("Time control is only for local matches without network players");
+	const auto action = args.value("action", std::string("status"));
+	unsigned steps = 0;
+	if (action == "pause")
+	{
+		gui.heldSteps = 0;
+		gui.agentPaused = true;
+		gui.hardPause = true;
+	}
+	else if (action == "resume")
+	{
+		gui.heldSteps = 0;
+		gui.agentPaused = false;
+		gui.hardPause = false;
+		// A pause from the menu or the Pause key is the ordinary, recorded pause.
+		if (gui.gamePaused)
+			gui.requestPause(false);
+	}
+	else if (action == "step")
+	{
+		if (gui.gamePaused)
+			throw std::runtime_error("The match is paused from its menu or the Pause key; call "
+									 "game_time resume first, then pause and step");
+		steps = args.value("ticks", 30u);
+		gui.agentPaused = true;
+		gui.heldSteps = steps;
+		gui.hardPause = true;
+	}
+	const unsigned left = gui.heldSteps.load();
+	Json result = {{"tick", tick},
+				   {"paused", bool(gui.gamePaused) || gui.simulationHeld()},
+				   {"paused_by", gui.gamePaused	   ? "menu"
+								 : !gui.hardPause ? "none"
+								 : gui.agentPaused ? "agent"
+												   : "player"},
+				   {"steps_remaining", left},
+				   {"speed", globalContainer->settings.getGameSpeedText()},
+				   {"ticks_per_second", gui.targetTickRate()}};
+	if (action == "step")
+	{
+		result["target_tick"] = tick + steps;
+		result["note"] = "Stepping runs the ticks at the current speed, then holds again; "
+						 "check game_time status until steps_remaining is 0. Orders sent while "
+						 "paused (game_place, clicks) apply as the next ticks run.";
+	}
+	else if (result["paused"] == true)
+		result["note"] = "Paused: no ticks run. You can still read, place, click and type; "
+						 "orders apply once the match runs again (resume or step).";
+	return result;
 }
 void LocalCommander::refreshMemory()
 {

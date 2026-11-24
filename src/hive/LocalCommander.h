@@ -53,6 +53,8 @@ class LocalCommander : public CommanderView
 	Json place(const Json &arguments);
 	Json view(const Json &arguments);
 	Json chat(const Json &arguments);
+	// MCP game_time: hold, release or step the local match (a client-side hard pause).
+	Json time(const Json &arguments);
 	Json building(const Json &arguments);
 	Json zone(const Json &arguments);
 	void submit(const std::vector<Json> &descriptors);

@@ -322,7 +322,12 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 					// live networked game or peers desync. Single-player,
 					// AI-only and replay playback have no live peer and are safe.
 					if (globalContainer->replaying || !game.gameHeader.hasNetworkPlayer())
+					{
+						// The player's own hard pause replaces any agent pause or step.
+						heldSteps=0;
+						agentPaused=false;
 						hardPause=!hardPause;
+					}
 					break;
 				case GameGUIKeyActions::IncreaseGameSpeed:
 					changeGameSpeed(1);
