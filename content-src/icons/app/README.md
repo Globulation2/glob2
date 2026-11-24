@@ -21,17 +21,26 @@ measurements of that raster, in its pixel grid:
   curves through sampled edge points, the other three lobes as fitted ellipses;
 - the flat fill `#0048ff`, the darker `#0041ff` shading gradients and the
   white gloss gradients from least-squares fits to the pixel values;
-- the neutral outline (`#4e4e4e`, 1.1 units outside the fills), the dark
-  crescents and edge lines inside it, and the specular streaks from profiles
-  taken across each edge.
+- the dark crescents and edge lines inside the silhouette, and the specular
+  streaks, from profiles taken across each edge.
+
+The silhouette is crisp. The crescents, edge lines, gloss caps and shadows
+inside it are blurred by 0.35 to 0.65 units, about the softness the raster's
+own pixels give them, so the shading reads as it always has rather than as hard
+ink lines.
+
+The rim is the one deliberate departure. The raster ends in a neutral grey
+fringe about 1.1 units wide, which enlarges into a border like a sticker's. The
+vector has a dark navy rim (`#141d4a`) half that wide, so it reads as a thin
+dark edge on light and dark backgrounds alike.
 
 Rendered at 128 pixels over the iOS icon's purple, the vector differs from the
-raster by a mean of 4 of 255 levels across the icon's pixels and 2 of 255 away
-from its edges, and the two silhouettes overlap by 98.6%. Known differences:
-the raster's antialiased rim darkens as it fades where the vector's stays one
-grey; each dark crescent is one smooth shape where the raster's varies a little
-along its length; and edge lines that the raster blurs to about a pixel are
-drawn at their fitted sub-pixel widths.
+raster by a mean of 5 of 255 levels across the icon's pixels and 2 of 255 away
+from its edges. Because of the thinner rim the silhouette is about half a unit
+smaller all round, and the two silhouettes overlap by 96%. Other known
+differences: each shadow crescent is one smooth shape where the raster's varies
+a little along its length, and the edge of the shadow the top-right lobe casts
+on the centre body is softer.
 
 ## Generated files
 
