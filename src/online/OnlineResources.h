@@ -32,6 +32,8 @@ std::vector<QueueInfo> queuesFromInstance(const Json &instanceInfo);
 // Whether a client may search a queue (InstanceInfo.queues item): assisted
 // clients only assisted queues, other clients only the rest.
 bool queueFits(const Json &queue, bool assistedClient);
+// The InstanceInfo.queues items a client may search, in order (non-arrays: none).
+Json queuesFor(const Json &queues, bool assistedClient);
 
 struct RegionRtt
 {

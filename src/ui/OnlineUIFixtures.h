@@ -240,7 +240,7 @@ inline std::unique_ptr<GAGGUI::Screen> hubFixture(GAGGUI::ScreenStack &s, std::f
 	return hub;
 }
 
-inline std::shared_ptr<Online::OnlineMatch> startingMatch()
+inline std::shared_ptr<Online::OnlineMatch> startingMatch(bool assisted = false)
 {
 	Json setup{{"simVersion", {{"versionMinor", 125}, {"netProtocol", 49}, {"dataHash", std::string(64, '0')}}},
 			   {"seed", 7},
@@ -261,6 +261,7 @@ inline std::shared_ptr<Online::OnlineMatch> startingMatch()
 	context.label = "1 vs 1 - Ranked";
 	context.fromRoom = false;
 	context.rated = true;
+	context.assisted = assisted;
 	context.ladder = "1v1";
 	auto match = std::make_shared<Online::OnlineMatch>(Online::services().client, Online::services().maps, Online::services().storage, assignment, context);
 	Online::OnlineMatch::Player you, other;

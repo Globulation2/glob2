@@ -42,8 +42,8 @@ Enabling the server makes the game an assisted client for the online platform,
 whichever tools an agent then uses: quick match searches only assisted queues, so
 players with MCP enabled meet only each other
 ([assisted queues](../multiplayer/ratings-and-matchmaking.md#assisted-queues)).
-While a quick match from an ordinary queue runs, the server stays off even if the
-setting is switched on. Online matches refuse the `game_*` and `hive_*` tools; the
+From the assignment of a quick match from an ordinary queue until its results close,
+the server stays off even if the setting is switched on. Online matches refuse the `game_*` and `hive_*` tools; the
 `ui_*` tools drive them like a player would.
 
 ## Self-description

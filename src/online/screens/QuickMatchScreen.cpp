@@ -253,6 +253,12 @@ void QuickMatchScreen::onEscape()
 
 void QuickMatchScreen::onTimer(Uint32 tick)
 {
+	// Switching MCP on or off shows the other kind's queues.
+	if (queuesLoaded && Online::assisted() != queuesAssisted)
+	{
+		pickQueues();
+		invalidate();
+	}
 	if (live)
 	{
 		model.update();
@@ -268,11 +274,6 @@ void QuickMatchScreen::onTimer(Uint32 tick)
 		}
 		if (!queuesLoaded && !loadError.empty() && tick - lastLoad > 5000)
 			loadQueues();
-		if (queuesLoaded && Online::assisted() != queuesAssisted)
-		{
-			pickQueues();
-			invalidate();
-		}
 		auto &client = Online::services().client;
 		std::string name = client.account() ? client.account()->displayName : std::string();
 		if (name != account || instance != client.origin())

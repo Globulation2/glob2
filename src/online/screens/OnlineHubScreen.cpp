@@ -301,11 +301,7 @@ void OnlineHubScreen::showToast(const std::string &text)
 void OnlineHubScreen::pickQueues()
 {
 	data.assistedQueues = Online::assisted();
-	data.queues = Json::array();
-	if (data.allQueues.is_array())
-		for (const auto &queue : data.allQueues)
-			if (Online::queueFits(queue, data.assistedQueues))
-				data.queues.push_back(queue);
+	data.queues = Online::queuesFor(data.allQueues, data.assistedQueues);
 	selectedQueue = -1;
 	alsoQueues.clear();
 	data.leaderboard = Json::array();
@@ -648,6 +644,13 @@ void OnlineHubScreen::answerTrust(bool join)
 
 void OnlineHubScreen::findMatch(int queueIndex)
 {
+	// MCP switched since the list was picked (Find another match after a match):
+	// show the other kind's queues rather than search one this client may not join.
+	if (Online::assisted() != data.assistedQueues)
+	{
+		pickQueues();
+		return;
+	}
 	if (!canPlay() || !data.queues.is_array() || queueIndex < 0 || queueIndex >= int(data.queues.size()))
 		return;
 	const Json &queue = data.queues[std::size_t(queueIndex)];

@@ -207,15 +207,23 @@ meet one:
   `--mcp-port`). The hub and the quick-match screen list only the queues of the
   client's kind, and switch lists when the setting changes. Changing it mid-search
   ends the search (`QuickMatch::Notice::Cancelled`); in an accept prompt that counts
-  as declining. During a quick match from a queue that is not assisted the MCP server
-  stays off (`MCP::suspendedForUnassistedMatch`), even if the setting is switched on.
+  as declining. From the assignment of a quick match from a queue that is not
+  assisted until its results close, the MCP server stays off, even if the setting is
+  switched on (`OnlineMatchResult::mcpHold`, an `MCP::UnassistedMatchHold`).
 - **Operators** add assisted queues to `instance.yaml` (the example has
   `mcp-ranked-1v1` and `mcp-casual-1v1`). Without one, players with MCP enabled
   cannot quick-match; the hub says so.
 
-Rooms, LAN games and invites are not split: their players choose each other. The
-flag is the client's own report, so it separates honest clients; a modified client
-or a build from before assisted queues joins the ordinary queues.
+Rooms, LAN games and invites are not split: their players choose each other. That
+includes a rematch room opened after an ordinary quick match. Hive Mind, the
+platform's own commander, is a separate feature with its own policy and is not
+affected.
+
+The flag is the client's own report, so it separates honest clients only. A
+modified client, or a release from before assisted queues (0.11.7.0 and earlier
+already have the MCP server), joins the ordinary queues with MCP on until its sim
+version stops being served. Such clients also list the assisted queues and are
+refused when they try to join one.
 
 ### Default map pool
 

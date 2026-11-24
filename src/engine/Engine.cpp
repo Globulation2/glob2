@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "app/ClientFeatures.h"
-#include "mcp/Availability.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <PerformanceTelemetry.h>
@@ -38,8 +37,6 @@ Engine::Engine()
 
 Engine::~Engine()
 {
-    if (suspendsMcp)
-        MCP::suspendedForUnassistedMatch() = false;
     cancelInputDispatches();
     stopSimulationThread();
     // Observers may capture locals destroyed before the Engine during unwinding.
@@ -100,13 +97,6 @@ void Engine::setOnlineResult(std::shared_ptr<Online::OnlineMatchResult> result)
             gui.hive=std::make_shared<Hive::Client>(gui,Online::services().client,onlineResult->matchId,gui.localPlayer);
         gui.networkMatch.rated = onlineResult->rated;
         gui.networkMatch.fromRoom = onlineResult->fromRoom;
-        // Players without MCP quick-match among themselves: keep the MCP server
-        // off for the whole match even if the setting is switched on meanwhile.
-        if (!onlineResult->fromRoom && !onlineResult->assisted)
-        {
-            MCP::suspendedForUnassistedMatch() = true;
-            suspendsMcp = true;
-        }
     }
 }
 

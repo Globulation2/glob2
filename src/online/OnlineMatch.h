@@ -41,6 +41,11 @@ namespace Turn
 class TurnTransport;
 }
 
+namespace MCP
+{
+struct UnassistedMatchHold;
+}
+
 namespace Online
 {
 class PlatformClient;
@@ -100,6 +105,9 @@ class OnlineMatchResult
 	bool rated = false;
 	/// A quick match from an assisted queue (Online::assisted players only).
 	bool assisted = false;
+	/// For a quick match among players without MCP: keeps the MCP server off from
+	/// assignment until the result is let go (after the results screen).
+	std::unique_ptr<MCP::UnassistedMatchHold> mcpHold;
 	std::string ladder;
 	Verification verification = Verification::Pending;
 	/// Rating before the match and the server's result once verified.

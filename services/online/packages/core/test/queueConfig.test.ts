@@ -91,4 +91,47 @@ describe('queue config', () => {
     );
     expect(() => loadInstanceConfig(path)).toThrow(/non-empty aiPool/);
   });
+
+  it('marks a queue assisted only when the operator says so', () => {
+    expect(resolveQueue({ id: 'r', name: 'R', mode: '1v1', rated: true }).assisted).toBe(false);
+    expect(
+      resolveQueue({ id: 'r', name: 'R', mode: '1v1', rated: true, assisted: false }).assisted,
+    ).toBe(false);
+    const mcp = resolveQueue({ id: 'm', name: 'M', mode: '2v2', rated: true, assisted: true });
+    expect(mcp.assisted).toBe(true);
+    // Everything else resolves as for any queue.
+    expect(mcp.acceptSeconds).toBe(RANKED_ACCEPT_SECONDS);
+    expect(mcp.mapPool).toEqual(defaultMapPool('2v2'));
+  });
+
+  it('rejects an assisted setting that is not a boolean', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'glob2-queue-'));
+    const path = join(dir, 'instance.yaml');
+    writeFileSync(
+      path,
+      [
+        'name: X',
+        'guests: { enabled: true }',
+        'auth: { providers: [], local: { enabled: false } }',
+        'access: { policy: allow-all }',
+        'queues:',
+        '  - { id: q, name: Q, mode: 1v1, rated: false, assisted: "yes" }',
+      ].join('\n'),
+    );
+    expect(() => loadInstanceConfig(path)).toThrow();
+  });
+
+  it('ships assisted twins of the ranked and casual 1v1 queues in the example', () => {
+    const example = join(import.meta.dirname, '..', '..', '..', 'instance.example.yaml');
+    const queues = loadInstanceConfig(example).queues.map((q) => resolveQueue(q));
+    const assisted = queues.filter((q) => q.assisted);
+    const ordinary = queues.filter((q) => !q.assisted);
+    expect(assisted.map((q) => q.id)).toEqual(['mcp-ranked-1v1', 'mcp-casual-1v1']);
+    expect(ordinary.map((q) => q.id)).toEqual(['ranked-1v1', 'ranked-2v2', 'casual-1v1']);
+    // Separate ids are separate ladders; a rated and an unrated one, as for everyone else.
+    expect(new Set(queues.map((q) => q.id)).size).toBe(queues.length);
+    expect(assisted.map((q) => q.rated)).toEqual([true, false]);
+    // The ordinary queues come first, so clients that ignore the flag default to them.
+    expect(queues[0]?.assisted).toBe(false);
+  });
 });

@@ -218,7 +218,13 @@ Application::Application()
 		mainMenu();
 }
 
-Application::~Application() = default;
+Application::~Application()
+{
+#if GLOB2_DESKTOP_MCP
+	// The source reads this application's settings; harnesses build several.
+	Online::setAssistedSource({});
+#endif
+}
 
 void Application::mainMenu()
 {

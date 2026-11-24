@@ -55,6 +55,15 @@ const CASUAL = resolveQueue({
   aiBackfillSeconds: 30,
 });
 
+const MCP_CASUAL = resolveQueue({
+  id: 'mcp-casual-1v1',
+  name: 'MCP Casual',
+  mode: '1v1',
+  rated: false,
+  assisted: true,
+  aiBackfillSeconds: 30,
+});
+
 /** μ whose matchmaking skill is `skill` display points. */
 const muFor = (skill: number) => MU0 + (skill - 1500) / DISPLAY_PER_MU;
 
@@ -274,6 +283,38 @@ describe('matchmaker', () => {
     });
     expect(h.starter.calls[0]!.simVersion).toBe(SIM_A);
     expect((await ticketStatus(third.ticketId)).status).toBe('matched');
+  });
+
+  it('never pairs a player in an assisted queue with one in an ordinary queue', async () => {
+    const h = harness([CASUAL, MCP_CASUAL]);
+    // Same sim, rating and relay, and they wait long enough for every window to open.
+    const human = await enqueue(h, CASUAL, { skill: 1500, allowAi: false });
+    const agent = await enqueue(h, MCP_CASUAL, { skill: 1500, allowAi: false });
+    expect(await h.matchmaker.tick()).toMatchObject({ proposed: 0 });
+    h.clock.advance(3600);
+    expect(await h.matchmaker.tick()).toMatchObject({ proposed: 0 });
+    expect((await ticketStatus(human.ticketId)).status).toBe('waiting');
+    expect((await ticketStatus(agent.ticketId)).status).toBe('waiting');
+
+    // Each finds a partner of its own kind.
+    await enqueue(h, MCP_CASUAL, { skill: 1500, allowAi: false });
+    await enqueue(h, CASUAL, { skill: 1500, allowAi: false });
+    expect(await h.matchmaker.tick()).toMatchObject({ proposed: 2, started: 2 });
+    const byQueue = (await proposals()).map((p) => p.queue_id).sort();
+    expect(byQueue).toEqual([CASUAL.id, MCP_CASUAL.id]);
+    expect((await ticketStatus(human.ticketId)).status).toBe('matched');
+    expect((await ticketStatus(agent.ticketId)).status).toBe('matched');
+  });
+
+  it('backfills an assisted queue with AIs like any other', async () => {
+    const h = harness([MCP_CASUAL]);
+    const agent = await enqueue(h, MCP_CASUAL);
+    expect(await h.matchmaker.tick()).toMatchObject({ proposed: 0 });
+    h.clock.advance(31);
+    expect(await h.matchmaker.tick()).toMatchObject({ proposed: 1 });
+    const [proposal] = await proposals();
+    expect(proposal).toMatchObject({ queue_id: MCP_CASUAL.id, backfilled: true });
+    expect((await ticketStatus(agent.ticketId)).status).not.toBe('waiting');
   });
 
   it('plays on the region with the lowest worst-case round trip', async () => {

@@ -167,6 +167,76 @@ TEST_SUITE("OnlineWording")
 		CHECK(anyContains(rankedTexts, "1 vs 1 ranked"));
 	}
 
+	TEST_CASE("the quick match screen lists only the queues of the client's kind [display]")
+	{
+		Display display;
+		struct Restore
+		{
+			~Restore() { Online::setAssistedSource({}); }
+		} restore;
+		bool mcp = false;
+		Online::setAssistedSource([&mcp] { return mcp; });
+		auto queues = OnlineUIFixtures::queues();
+		Online::QueueInfo assisted{"mcp-casual-1v1", "Agents 1 vs 1", "1v1", false, 30, 0, {"symmetric-arena"}};
+		assisted.assisted = true;
+		queues.push_back(assisted);
+		GAGGUI::ScreenStack stack(*globalContainer->gfx);
+
+		const auto plain = paintedTexts(std::make_unique<QuickMatchScreen>(stack, OnlineUIFixtures::model(9), queues,
+																			"https://app.glob2.online", "Bradley"));
+		INFO(joined(plain));
+		CHECK(anyContains(plain, "1 vs 1 ranked"));
+		CHECK_FALSE(anyContains(plain, "Agents 1 vs 1"));
+
+		mcp = true;
+		const auto withMcp = paintedTexts(std::make_unique<QuickMatchScreen>(stack, OnlineUIFixtures::model(10), queues,
+																			  "https://app.glob2.online", "Bradley"));
+		INFO(joined(withMcp));
+		CHECK(anyContains(withMcp, "Agents 1 vs 1"));
+		CHECK_FALSE(anyContains(withMcp, "1 vs 1 ranked"));
+		CHECK_FALSE(anyContains(withMcp, "Casual 1 vs 1"));
+
+		// Switching while the screen is open picks the other list on its next frame.
+		mcp = false;
+		const auto switched = paintedTexts(std::make_unique<QuickMatchScreen>(stack, OnlineUIFixtures::model(11), queues,
+																			   "https://app.glob2.online", "Bradley"),
+										   [&mcp](GAGGUI::Screen &) { mcp = true; });
+		INFO(joined(switched));
+		CHECK(anyContains(switched, "Agents 1 vs 1"));
+		CHECK_FALSE(anyContains(switched, "1 vs 1 ranked"));
+	}
+
+	TEST_CASE("a client with MCP on a server without MCP queues is told why it cannot search [display]")
+	{
+		Display display;
+		struct Restore
+		{
+			~Restore() { Online::setAssistedSource({}); }
+		} restore;
+		Online::setAssistedSource([] { return true; });
+		GAGGUI::ScreenStack stack(*globalContainer->gfx);
+		const auto search = paintedTexts(std::make_unique<QuickMatchScreen>(stack, OnlineUIFixtures::model(12),
+																			 OnlineUIFixtures::queues(),
+																			 "https://app.glob2.online", "Bradley"));
+		INFO(joined(search));
+		CHECK(anyContains(search, "no quick-match queues for players with the MCP server enabled"));
+		CHECK_FALSE(anyContains(search, "1 vs 1 ranked"));
+
+		const auto hub = paintedTexts(OnlineUIFixtures::hubFixture(stack, [](OnlineHubScreen::Model &model) {
+			model.queues = Online::queuesFor(model.queues, true);
+			model.assistedQueues = true;
+		}));
+		INFO(joined(hub));
+		CHECK(anyContains(hub, "no quick-match queues for players with the MCP server enabled"));
+
+		const auto plainHub = paintedTexts(OnlineUIFixtures::hubFixture(stack, [](OnlineHubScreen::Model &model) {
+			model.queues = Online::Json::array();
+		}));
+		INFO(joined(plainHub));
+		CHECK(anyContains(plainHub, "This server has no quick-match queues."));
+		CHECK_FALSE(anyContains(plainHub, "MCP"));
+	}
+
 	TEST_CASE("the room reads positively and hides seeds and pairing strings [display]")
 	{
 		Display display;

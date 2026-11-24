@@ -452,4 +452,142 @@ TEST_SUITE("QuickMatch")
 		CHECK(!f.world.socket().find("queue.leave").is_null());
 		CHECK(f.handedOff.empty());
 	}
+
+	TEST_CASE("switching MCP while relay regions are timed stops before any ticket")
+	{
+		Fixture f(true);
+		f.quick->search(ranked());
+		REQUIRE(f.quick->phase() == QuickMatch::Phase::Probing);
+		f.assisted = true;
+		f.pump();
+		CHECK(f.quick->phase() == QuickMatch::Phase::Idle);
+		CHECK(f.quick->notice() == QuickMatch::Notice::Cancelled);
+		// The probe finishing later must not join on the old kind's behalf.
+		if (auto listing = f.world.http.pending("/api/v1/relays/regions"))
+			listing->reply(503, Json());
+		f.pump();
+		f.advance(5000);
+		CHECK(f.world.socket().find("queue.join").is_null());
+		CHECK(f.quick->phase() == QuickMatch::Phase::Idle);
+	}
+
+	TEST_CASE("switching MCP before queue.join answers leaves the ticket it gets")
+	{
+		Fixture f;
+		f.quick->search(ranked());
+		f.pump();
+		auto join = f.world.socket().find("queue.join");
+		REQUIRE(!join.is_null());
+		REQUIRE(f.quick->phase() == QuickMatch::Phase::Joining);
+		f.assisted = true;
+		f.pump();
+		CHECK(f.quick->phase() == QuickMatch::Phase::Idle);
+		f.world.socket().respond(join, Json{{"ticketId", TICKET}, {"joinedAt", "2026-09-21T14:13:20Z"}});
+		f.pump();
+		auto leave = f.world.socket().find("queue.leave");
+		REQUIRE(!leave.is_null());
+		CHECK(leave["params"]["ticketId"] == TICKET);
+		CHECK(f.quick->phase() == QuickMatch::Phase::Idle);
+	}
+
+	TEST_CASE("an assigned match still starts after MCP is switched; the match itself guards it")
+	{
+		Fixture f;
+		f.joined();
+		f.event("queue.proposal", f.proposal(false));
+		f.event("queue.matchFound", {{"ticketId", TICKET}, {"matchId", MATCH}});
+		f.event("match.start", assignmentJson());
+		REQUIRE(f.quick->phase() == QuickMatch::Phase::Matched);
+		f.assisted = true;
+		f.pump();
+		// Leaving now would only abandon an opponent; the MCP server stays off for
+		// the match instead (OnlineMatchResult::mcpHold).
+		CHECK(f.quick->phase() == QuickMatch::Phase::Matched);
+		CHECK(f.world.socket().find("queue.leave").is_null());
+		f.advance(5000);
+		CHECK(f.handedOff.size() == 1);
+	}
+
+	TEST_CASE("switching MCP off and on again between frames keeps the search")
+	{
+		Fixture f;
+		f.joined();
+		f.assisted = true;
+		f.assisted = false;
+		f.pump();
+		CHECK(f.quick->phase() == QuickMatch::Phase::Searching);
+		CHECK(f.world.socket().find("queue.leave").is_null());
+	}
+
+	TEST_CASE("an assisted search in several queues sends the flag once for all of them")
+	{
+		Fixture f;
+		f.assisted = true;
+		QueueInfo first = ranked(), second = ranked();
+		first.id = "mcp-ranked-1v1";
+		second.id = "mcp-casual-1v1";
+		second.rated = false;
+		first.assisted = second.assisted = true;
+		f.quick->search(std::vector<QueueInfo>{first, second});
+		f.pump();
+		auto join = f.world.socket().find("queue.join");
+		REQUIRE(!join.is_null());
+		CHECK(join["params"]["queueId"] == "mcp-ranked-1v1");
+		CHECK(join["params"]["queueIds"] == Json::array({"mcp-casual-1v1"}));
+		CHECK(join["params"]["assisted"] == true);
+	}
+
+	TEST_CASE("a new search after switching takes the client's new kind")
+	{
+		Fixture f;
+		f.joined();
+		f.assisted = true;
+		f.pump();
+		REQUIRE(f.quick->phase() == QuickMatch::Phase::Idle);
+		QueueInfo queue = ranked();
+		queue.id = "mcp-ranked-1v1";
+		queue.assisted = true;
+		f.quick->search(queue);
+		f.pump();
+		CHECK(f.quick->assistedSearch());
+		CHECK(f.quick->phase() == QuickMatch::Phase::Joining);
+		CHECK(f.quick->notice() == QuickMatch::Notice::None);
+	}
+
+	TEST_CASE("a failed or idle search ignores MCP being switched")
+	{
+		Fixture f;
+		f.assisted = true;
+		f.pump();
+		CHECK(f.quick->phase() == QuickMatch::Phase::Idle);
+		CHECK(f.quick->notice() == QuickMatch::Notice::None);
+
+		f.quick->search(ranked());
+		f.pump();
+		auto join = f.world.socket().find("queue.join");
+		REQUIRE(!join.is_null());
+		f.world.socket().fail(join, "forbidden");
+		f.pump();
+		REQUIRE(f.quick->phase() == QuickMatch::Phase::Failed);
+		f.assisted = false;
+		f.pump();
+		CHECK(f.quick->phase() == QuickMatch::Phase::Failed);
+		CHECK(f.quick->error().code == "forbidden");
+	}
+
+	TEST_CASE("without an assisted source a search is never assisted")
+	{
+		OnlineFakes::World world;
+		MemoryStorage storage;
+		InstanceConfig config{storage};
+		PlatformClient client{config, ClientOptions{"test", "desktop"}, world.environment()};
+		QuickMatch::Environment env;
+		env.wallClock = [&world] { return world.wall; };
+		QuickMatch quick(client, env);
+		quick.search(ranked());
+		CHECK(!quick.assistedSearch());
+		quick.update();
+		CHECK(quick.phase() != QuickMatch::Phase::Idle);
+		quick.cancel();
+	}
 }

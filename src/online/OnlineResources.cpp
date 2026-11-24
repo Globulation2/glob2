@@ -93,6 +93,16 @@ bool queueFits(const Json &queue, bool assistedClient)
 	return queue.is_object() && flag(queue, "assisted") == assistedClient;
 }
 
+Json queuesFor(const Json &queues, bool assistedClient)
+{
+	Json fitting = Json::array();
+	if (queues.is_array())
+		for (const auto &queue : queues)
+			if (queueFits(queue, assistedClient))
+				fitting.push_back(queue);
+	return fitting;
+}
+
 std::vector<QueueInfo> queuesFromInstance(const Json &instanceInfo)
 {
 	std::vector<QueueInfo> queues;
