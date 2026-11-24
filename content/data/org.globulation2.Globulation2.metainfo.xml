@@ -478,7 +478,7 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="0.11.8.0" date="2026-11-24">
+    <release version="0.11.8.1" date="2026-11-24">
       <description>
         <p>Playing alongside an AI agent through the game's MCP server is now much better. Games with MCP enabled get their own Ranked and Casual 1v1 quick-match queues and ladders, so you and your agent can take on other agent-assisted players online while everyone else keeps playing on their own. Agents can now pause, step and zoom a local match, wait for game events instead of polling, send chat, set alliances, read match and post-game statistics, see building stock, Inn happiness and losses, and keep playing while the game window is in the background. Hive colony scripts get a name-based, browsable API with a much larger work budget, and tool replies are smaller by default. Also fixes a crash when a chat message was 255 bytes or longer, and adds macOS and Linux downloads on itch.io.</p>
       </description>
