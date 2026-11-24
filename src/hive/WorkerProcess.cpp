@@ -94,7 +94,7 @@ Json runWorker(const Json &)
 	return {{"ok", false}, {"error", "Native worker unavailable"}};
 }
 #endif
-std::future<Json> startWorker(Json request)
+std::future<Json> startWorker(Json request, std::shared_ptr<const Json> tiles)
 {
 	static std::atomic<bool> busy{false};
 	if (busy.exchange(true))
@@ -104,12 +104,14 @@ std::future<Json> startWorker(Json request)
 		return rejected.get_future();
 	}
 	std::packaged_task<Json()> task(
-		[request = std::move(request)]
+		[request = std::move(request), tiles = std::move(tiles)]() mutable
 		{
 			struct Release
 			{
 				~Release() { busy = false; }
 			} release;
+			if (tiles)
+				request["snapshot"]["tiles"] = *tiles;
 			return runWorker(request);
 		});
 	auto result = task.get_future();

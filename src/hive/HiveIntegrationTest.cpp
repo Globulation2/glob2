@@ -1255,7 +1255,9 @@ TEST_CASE("local Hive failures name their source and cards summarize results" *
 	commander.call("hive_run", {{"session", session}, {"operation_key", "teleport"},
 		{"source", "function step(){return {orders:[{type:'teleport'}]};}"}});
 	settle();
-	CHECK(result("teleport").at("error") == "Unsupported order type 'teleport'");
+	// The failing order is named, and the run's other orders were not sent.
+	CHECK(result("teleport").at("error") ==
+		  "order 0 (teleport): Unsupported order type 'teleport'; no orders from this run were sent");
 
 	commander.call("hive_program", {{"session", session}, {"operation_key", "bad-install"},
 		{"action", "install"}, {"name", "broken"}, {"source", "function step(){throw 1;}"}});
@@ -1271,13 +1273,17 @@ TEST_CASE("local Hive failures name their source and cards summarize results" *
 	settle();
 	const auto recent = commander.standingOrders().at(0).at("recent");
 	REQUIRE(recent.at("status") == "completed");
-	// Cards show the program's own output, not the raw journal record.
-	CHECK(Hive::recentSummary(recent) ==
-		  Json{{"n", 1}, {"tick", world.game.stepCounter}}.dump());
+	// Cards show the program's own output as a readable line, not JSON.
+	CHECK(Hive::recentSummary(recent) == "n 1 · tick " + std::to_string(world.game.stepCounter));
+	CHECK(Hive::recentSummary({{"output", {{"summary", "Inns 4, army gathering"}, {"pop", 30}}}}) ==
+		  "Inns 4, army gathering");
+	CHECK(Hive::recentSummary({{"output", {{"events", {1, 2, 3}}, {"ok", true}, {"nested", {{"a", 1}}}}}}) ==
+		  "events 3 · ok yes");
+	CHECK(Hive::recentSummary({{"output", "plain text"}}) == "plain text");
 	CHECK(Hive::recentSummary({{"status", "failed"}, {"error", "TypeError: x\n    at step"},
 							   {"output", nullptr}}) == "TypeError: x");
 	// Online cards store {tick, output}.
-	CHECK(Hive::recentSummary({{"tick", 75}, {"output", {{"swarms", 1}}}}) == R"({"swarms":1})");
+	CHECK(Hive::recentSummary({{"tick", 75}, {"output", {{"swarms", 1}}}}) == "swarms 1");
 	CHECK(Hive::recentSummary(nullptr).empty());
 	CHECK(Hive::recentSummary({{"status", "completed"}, {"output", nullptr}}).empty());
 }

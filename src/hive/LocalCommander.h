@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "CommanderView.h"
+#include "HiveObservation.h"
 #include "scripting/javascript/ScriptObservations.h"
 #include <deque>
 #include <set>
@@ -91,6 +92,7 @@ class LocalCommander : public CommanderView
 		unsigned tick;
 	};
 	std::deque<Sighting> sightings;
+	TileCache tileCache; // map tiles kept between Hive runs (see capture)
 	// Recent game_place requests, followed up in game_world until resolved.
 	struct Placement
 	{

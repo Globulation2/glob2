@@ -792,7 +792,18 @@ void GameGUI::drawOverlayInfos(void)
 	}
 
 	if(!scrollableText)
-		messageManager.drawAllChatMessages(32, globalContainer->gfx->getH() - 165);
+	{
+		// Chat starts beside the Hive panel when that panel covers its corner.
+		int chatX = 32;
+		const int chatY = globalContainer->gfx->getH() - 165;
+		if (hiveCards && hiveCardsVisible())
+		{
+			const auto r = hiveCards->panelBounds();
+			if (r.y + r.h > chatY && r.x < chatX + 300)
+				chatX = std::max(chatX, int(r.x + r.w) + 16);
+		}
+		messageManager.drawAllChatMessages(chatX, chatY);
+	}
 
 	// Draw the bar continuing number of units, game speed, etc...
 	drawTopScreenBar();

@@ -1,6 +1,7 @@
 #include "ui/HiveReportText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HiveDialog.h"
+#include <cstdio>
 #include <utility>
 #include <algorithm>
 namespace Hive
@@ -96,7 +97,39 @@ std::string recentSummary(const Json &recent)
 		return error.substr(0, error.find('\n'));
 	if (!recent.contains("output") || recent.at("output").is_null())
 		return {};
-	return recent.at("output").dump(-1, ' ', false, Json::error_handler_t::replace);
+	// A readable line, not raw JSON: a string as is; an object's summary or status text;
+	// otherwise its simple fields as "name value", and how many items its lists hold.
+	const auto &output = recent.at("output");
+	const auto scalar = [](const Json &v) -> std::string
+	{
+		if (v.is_string())
+			return v.get<std::string>();
+		if (v.is_boolean())
+			return v.get<bool>() ? "yes" : "no";
+		if (v.is_number_integer())
+			return std::to_string(v.get<std::int64_t>());
+		if (v.is_number())
+		{
+			char text[32];
+			std::snprintf(text, sizeof text, "%.4g", v.get<double>());
+			return text;
+		}
+		return {};
+	};
+	if (!output.is_object())
+		return output.is_array() ? std::to_string(output.size()) + " items" : scalar(output);
+	for (const char *field : {"summary", "status"})
+		if (output.contains(field) && output.at(field).is_string())
+			return output.at(field).get<std::string>();
+	std::string line;
+	for (const auto &[key, v] : output.items())
+	{
+		std::string text = v.is_array() ? std::to_string(v.size()) : scalar(v);
+		if (text.empty() || v.is_null())
+			continue;
+		line += (line.empty() ? "" : " · ") + key + " " + text;
+	}
+	return line;
 }
 namespace
 {

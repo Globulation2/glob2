@@ -6,7 +6,7 @@
 #include "Game.h"
 namespace Hive
 {
-Json capture(Script::Observations &observations, Game &game, int team)
+Json capture(Script::Observations &observations, Game &game, int team, TileCache *cache)
 {
 	if (team < 0 || team >= game.mapHeader.getNumberOfTeams())
 		throw std::runtime_error("Invalid player team");
@@ -22,6 +22,35 @@ Json capture(Script::Observations &observations, Game &game, int team)
 	// say what a tile's corners and resource type mean, never what is on the map.
 	for (const char *name : {"teams", "units", "buildings", "buildingTypes", "terrainTypes", "resourceTypes"})
 		snapshot[name] = json(observations.query(name, {}));
+	if (cache)
+	{
+		const unsigned width = game.map.getW(), height = game.map.getH();
+		if (cache->width != width || cache->height != height || !cache->tiles)
+		{
+			cache->width = width, cache->height = height;
+			cache->cells.assign(std::size_t(width) * height, {});
+			cache->valid.assign(std::size_t(width) * height, 0);
+			cache->tiles = std::make_shared<Json>(Json::array());
+			for (std::size_t i = 0; i < std::size_t(width) * height; ++i)
+				cache->tiles->push_back(nullptr);
+		}
+		// The previous worker has finished before a new capture; copy only if it has not.
+		if (cache->tiles.use_count() > 1)
+			cache->tiles = std::make_shared<Json>(*cache->tiles);
+		auto &tiles = *cache->tiles;
+		for (unsigned y = 0; y < height; y++)
+			for (unsigned x = 0; x < width; x++)
+			{
+				const std::size_t i = std::size_t(y) * width + x;
+				const auto cell = observations.cell(int(x), int(y));
+				if (cache->valid[i] && !cell.visible && cell == cache->cells[i])
+					continue;
+				tiles[i] = json(observations.query("tile", {Script::Value(x), Script::Value(y)}));
+				cache->cells[i] = cell;
+				cache->valid[i] = 1;
+			}
+		return snapshot;
+	}
 	auto tiles = Json::array();
 	std::size_t bytes = 0;
 	for (unsigned y = 0; y < game.map.getH(); y++)

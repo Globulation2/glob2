@@ -4,6 +4,7 @@
 #include <deque>
 #include <set>
 #include <optional>
+#include <cstdlib>
 #include <cctype>
 #include <algorithm>
 #include "Building.h"
@@ -521,6 +522,17 @@ Json LocalCommander::call(const std::string &tool, const Json &args)
 }
 Json LocalCommander::placeByName(Json order)
 {
+	// The map wraps, as every read does: x/y outside it name the wrapped tile.
+	if (order.is_object())
+	{
+		const int width = gui.game.map.getW(), height = gui.game.map.getH();
+		for (const auto &[field, size] : {std::pair{"x", width}, std::pair{"y", height}})
+			if (order.contains(field) && order.at(field).is_number_integer() && size > 0)
+			{
+				const auto v = order.at(field).get<std::int64_t>();
+				order[field] = int(((v % size) + size) % size);
+			}
+	}
 	// {type: "create", building: "inn", x, y}: what a click with that palette entry
 	// creates, with its default requested units and a flag's default range, unless given.
 	if (!order.is_object() || order.value("type", std::string()) != "create" || !order.contains("building") ||
@@ -632,8 +644,22 @@ void LocalCommander::finish(Json result)
 		if (!success)
 			throw std::runtime_error(error.empty() ? "Worker failed or timed out" : error);
 		std::vector<std::shared_ptr<Order>> orders;
-		for (const auto &o : result.value("orders", Json::array()))
-			orders.push_back(Script::order(gui.game, team, value(placeByName(o))));
+		{
+			const auto descriptors = result.value("orders", Json::array());
+			for (std::size_t i = 0; i < descriptors.size(); ++i)
+				try
+				{
+					orders.push_back(Script::order(gui.game, team, value(placeByName(descriptors[i]))));
+				}
+				catch (const std::exception &e)
+				{
+					// Say which order failed: one bad descriptor rejects the whole run.
+					const auto &d = descriptors[i];
+					const auto type = d.is_object() ? d.value("type", std::string("?")) : std::string("?");
+					throw std::runtime_error("order " + std::to_string(i) + " (" + type + "): " + e.what() +
+											 "; no orders from this run were sent");
+				}
+		}
 		if (orders.size() > 32)
 			throw std::runtime_error("Too many orders");
 		if (kind == "install" || kind == "replace")
@@ -825,8 +851,13 @@ void LocalCommander::update()
 				return;
 			try
 			{
-				Json snapshot = capture(observations, gui.game, team);
+				const auto t0 = SDL_GetTicksNS();
+				// The real worker gets the cached map on its own thread; an injected one
+				// (tests) gets a complete snapshot.
+				Json snapshot = capture(observations, gui.game, team, launch ? nullptr : &tileCache);
 				annotate(snapshot);
+				if (std::getenv("GLOB2_HIVE_TIMING"))
+					fprintf(stderr, "HIVE_TIMING capture_ms=%.1f\n", (SDL_GetTicksNS() - t0) / 1e6);
 				Json request = {{"source", current.request.at("source")}, {"snapshot", std::move(snapshot)}};
 				observationTick = tick;
 				if (!currentProgram.empty())
@@ -840,7 +871,7 @@ void LocalCommander::update()
 					remember(
 						current.key,
 						{{"status", "running"}, {"submitted", false}, {"observation_tick", tick}});
-				worker = launch ? launch(std::move(request)) : startWorker(std::move(request));
+				worker = launch ? launch(std::move(request)) : startWorker(std::move(request), tileCache.tiles);
 			}
 			catch (const std::exception &e)
 			{
