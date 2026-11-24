@@ -30,7 +30,7 @@ This MCP server operates the real game window: it reads the on-screen UI as type
 controls and sends mouse and keyboard input. Typical first calls:
 1. ui_status: is the window available, and does anyone hold control?
 2. ui_acquire_control: returns a token; pass it to every input tool.
-3. ui_inspect {"compact": true}: the current screen name and its controls.
+3. ui_inspect: the current screen name and its controls (compact by default).
 4. ui_act {token, surface, key, revision, action:"activate"}: press a control.
 5. ui_wait {"condition": {"screen": "game_session"}}: wait for a screen change.
 From the main menu, "Tutorial" (key menu/1) then "Introduction" (tutorial/lesson/0)
@@ -233,7 +233,7 @@ const std::string &serverInstructions()
 		"zones, requested unit counts and Swarm production ratios. Keep Inns supplied "
 		"with wheat or units starve; win by eliminating every non-allied colony.\n"
 		"These tools operate the real game window. Workflow: ui_status; "
-		"ui_acquire_control (keep the token); ui_inspect {\"compact\":true} for the "
+		"ui_acquire_control (keep the token); ui_inspect for the "
 		"screen name and controls; ui_act on a control's surface, key and revision; "
 		"ui_wait for screen changes; in a match, game_world reads your colony and what it "
 		"sees in map tiles, game_stats its statistics over time (every team's on end_game) "

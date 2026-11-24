@@ -14,6 +14,8 @@ UIService *current = nullptr;
 // HTTP retains at most 16 sessions; bounded observers leave room for actions
 // and inspections that can satisfy them, including direct HTTP clients.
 constexpr std::size_t MaxWaitObservers = 8;
+// Width a capture is scaled to when the client gives neither max_width nor max_height.
+constexpr int DefaultCaptureWidth = 1280;
 constexpr auto LeaseLost = "Controller lease lost or token invalid: control expired, was "
 						   "revoked or was released. Call ui_acquire_control for a new token "
 						   "and ui_inspect before acting again";
@@ -422,7 +424,7 @@ void UIService::finish(std::string error)
 	if (result.error.empty() && dispatchComplete && r->tool == "ui_act")
 		// Input was consumed. A read failure must not disguise confirmed
 		// delivery and encourage replaying the mutation.
-		addInspection(result, {{"compact", r->arguments.value("compact", false)}});
+		addInspection(result, {{"compact", r->arguments.value("compact", true)}});
 	if (!result.error.empty())
 		r->cancelled = true;
 	r->completion.set_value(std::move(result));
@@ -452,9 +454,14 @@ void UIService::startCapture()
 			{
 				result.data["width"] = pixels->w;
 				result.data["height"] = pixels->h;
+				// Without explicit bounds, frames are capped to DefaultCaptureWidth so a
+				// casual call on a HiDPI window does not return a multi-megabyte PNG.
+				const auto &args = request->arguments;
+				const bool bounded = args.contains("max_width") || args.contains("max_height");
 				const double scale = std::min(
-					{1.0, double(request->arguments.value("max_width", pixels->w)) / pixels->w,
-					 double(request->arguments.value("max_height", pixels->h)) / pixels->h});
+					{1.0,
+					 double(args.value("max_width", bounded ? pixels->w : DefaultCaptureWidth)) / pixels->w,
+					 double(args.value("max_height", pixels->h)) / pixels->h});
 				const int w = std::max(1, int(std::floor(pixels->w * scale))),
 						  h = std::max(1, int(std::floor(pixels->h * scale)));
 				result.data["native_width"] = pixels->w;
@@ -469,7 +476,7 @@ void UIService::startCapture()
 			if (request->tool == "ui_inspect" || request->tool == "ui_act")
 				if (!addInspection(result, request->tool == "ui_inspect"
 										   ? request->arguments
-										   : Json{{"compact", request->arguments.value("compact", false)}}) && request->tool == "ui_inspect")
+										   : Json{{"compact", request->arguments.value("compact", true)}}) && request->tool == "ui_inspect")
 					error = result.data["inspection_error"].get<std::string>();
 			result.pixels = std::move(pixels);
 			result.error = std::move(error);
@@ -522,7 +529,7 @@ Json UIService::inspection(const Json &arguments)
 		}
 	Json snapshot = {{"screen", inspectionScreen ? inspectionScreen() : "unavailable"},
 					 {"surfaces", surfaces}};
-	return arguments.is_object() && arguments.value("compact", false) ? compactInspection(snapshot)
+	return arguments.is_object() && arguments.value("compact", true) ? compactInspection(snapshot)
 																	   : snapshot;
 }
 void UIService::observe()
@@ -547,10 +554,10 @@ void UIService::observe()
 			if (args.contains("token"))
 				renewed = Clock::now();
 			auto full = args;
-			full.erase("compact");
+			full["compact"] = false; // conditions read every field; compaction is for the reply
 			auto snapshot = inspection(full);
 			result.data["inspection"] =
-				args.value("compact", false) ? compactInspection(snapshot) : snapshot;
+				args.value("compact", true) ? compactInspection(snapshot) : snapshot;
 			const auto &condition = args["condition"];
 			bool matches =
 				!condition.contains("screen") || snapshot["screen"] == condition["screen"];
@@ -956,7 +963,7 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 		result.data["lease_seconds"] = 300;
 		auto request = std::move(active);
 		if (a.is_object() && a.value("inspect", false))
-			addInspection(result, {{"compact", a.value("compact", false)}});
+			addInspection(result, {{"compact", a.value("compact", true)}});
 		request->completion.set_value(std::move(result));
 		return;
 	}
@@ -1053,7 +1060,7 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 	}
 	if (tool == "ui_act")
 	{
-		const auto problem = actionTargetProblem(inspection({}), a);
+		const auto problem = actionTargetProblem(inspection({{"compact", false}}), a);
 		if (!problem.empty())
 		{
 			finish(problem);

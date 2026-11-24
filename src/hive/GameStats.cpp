@@ -20,7 +20,7 @@ namespace
 {
 using Json = nlohmann::json;
 //! Numbers one reply may carry across all its series; more points are thinned.
-constexpr std::size_t ValueBudget = 40000;
+constexpr std::size_t ValueBudget = 4000;
 
 std::string text(const std::string &key)
 {
