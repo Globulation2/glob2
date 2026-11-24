@@ -11,12 +11,20 @@ def player_contract(text):
     return shared.rstrip() + '\n\n## Player API\n' + player
 
 
-def render(text):
-    text = player_contract(text)
-    delimiter = 'GLOB2_API'
+def _raw(name, text, delimiter):
     if ')' + delimiter + '"' in text:
-        raise ValueError('Hive contract contains its C++ raw-string delimiter')
-    return ('// Generated from commander-api.txt; do not edit.\n#pragma once\n'
-            'namespace Hive { inline constexpr const char *PlayerAPIContract = R"' + delimiter
-            + '(' + text + ')' + delimiter + '"; }\n')
+        raise ValueError(name + ' contains its C++ raw-string delimiter')
+    return ('inline constexpr const char *' + name + ' = R"' + delimiter + '(' + text + ')'
+            + delimiter + '";\n')
+
+
+def render(text, declarations=''):
+    """The player contract, and the TypeScript declarations (hive.d.ts), as compiled
+    strings: release builds serve both through hive_api without the source tree."""
+    text = player_contract(text)
+    return ('// Generated from commander-api.txt and examples/hive-mind/hive.d.ts; do not edit.\n'
+            '#pragma once\nnamespace Hive {\n'
+            + _raw('PlayerAPIContract', text, 'GLOB2_API')
+            + _raw('PlayerAPIDeclarations', declarations, 'GLOB2_TYPES')
+            + '}\n')
 

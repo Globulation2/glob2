@@ -208,7 +208,8 @@ ctx.game.units(), ctx.game.buildings() and order descriptors. hive_run executes 
 script (token, session, a fresh operation_key, source) and hive_result fetches its
 output; pass wait: true to either to get the finished result in one call. hive_api is
 a reference to browse: no arguments lists its sections, section reads one (contract,
-helpers, local-control, limits...), search finds paragraphs. The helpers section covers
+helpers, local-control, limits, types: the TypeScript declarations of every record and
+order), search finds paragraphs. It is built into the game: no source tree needed. The helpers section covers
 names instead of numbers (units({team: "mine", type: "warrior"}), create orders by
 building name), map.scan for cheap whole-map reads, map.findPlacement, map.distance on
 the wrapping map and ctx.game.events() for what happened to your colony.

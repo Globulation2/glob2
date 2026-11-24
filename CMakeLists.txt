@@ -491,6 +491,7 @@ add_custom_command(OUTPUT "${stamps}/hive-api"
   COMMAND ${bridge} hive-api --builddir "${GLOB2_OUT}" --stamp "${stamps}/hive-api"
   DEPENDS "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/buildsys/hive_api.py"
           "${GLOB2_ROOT}/services/online/packages/hive/src/commander-api.txt"
+          "${GLOB2_ROOT}/examples/hive-mind/hive.d.ts"
   WORKING_DIRECTORY "${GLOB2_ROOT}" COMMENT "Generating Hive player API contract" VERBATIM)
 
 set(locales "${GLOB2_ROOT}/services/online/packages/i18n/locales")

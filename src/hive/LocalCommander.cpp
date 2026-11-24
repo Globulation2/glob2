@@ -67,7 +67,7 @@ Json playerAPI()
 		 "and are never saved. wakeAgent records local_events only: no authentication, billing, "
 		 "supervision, model access or paid work. Reads are fixed to the current human player's "
 		 "team. tools/list supplies the authoritative argument schemas."},
-		{"declarations", "examples/hive-mind/hive.d.ts"},
+		{"declarations", "hive_api section \"types\": TypeScript declarations of every record and order"},
 		{"limits",
 		 {{"work_units_per_run", 250000000},
 		  {"heap_bytes", 128 * 1024 * 1024},
@@ -174,6 +174,12 @@ const std::vector<DocSection> &docSections()
 		out.push_back({"local-control", "Local control: hive_run, hive_result, hive_program",
 					   playerAPI().at("local_control_contract").get<std::string>()});
 		out.push_back({"limits", "Limits", playerAPI().at("limits").dump(1)});
+		// The TypeScript declarations, compiled in from hive.d.ts. Each export becomes its
+		// own paragraph, so a search returns the one declaration that matches.
+		std::string types = PlayerAPIDeclarations;
+		for (std::size_t at = 0; (at = types.find("\nexport ", at)) != std::string::npos; at += 2)
+			types.insert(at, "\n");
+		out.push_back({"types", "TypeScript declarations (records, queries, orders)", types});
 		return out;
 	}();
 	return sections;
@@ -263,9 +269,9 @@ Json apiDocs(const Json &args)
 	}
 	return {{"sections", contents},
 			{"note", "Browse with hive_api section (one section, with previous/next) or search (words "
-					 "that must all appear). Start with contract, helpers and local-control. Every "
-					 "script declares step(ctx) and returns {output, orders}. Types: "
-					 "examples/hive-mind/hive.d.ts in the repository."}};
+					 "that must all appear). Start with contract, helpers and local-control; types has "
+					 "the TypeScript declarations of every record and order. Every script declares "
+					 "step(ctx) and returns {output, orders}."}};
 }
 LocalCommander::LocalCommander(GameGUI &g, std::function<std::future<Json>(Json)> start)
 	: gui(g), observations(g.game, g.localTeamNo), player(g.localPlayer), team(g.localTeamNo),

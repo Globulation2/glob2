@@ -399,8 +399,17 @@ TEST_CASE("MCP/documentation is browsed by section and searched, not served as o
 		ids.insert(section.at("section").get<std::string>());
 		CHECK_FALSE(section.at("title").get<std::string>().empty());
 	}
-	for (const char *id : {"helpers", "local-control", "limits"})
+	for (const char *id : {"helpers", "local-control", "limits", "types"})
 		CHECK(ids.count(id));
+	// The declarations are compiled in (release builds have no source tree), and a
+	// search returns the one declaration that matches.
+	CHECK(Hive::apiDocs({{"section", "types"}}).at("text").get<std::string>().find("export interface Unit") !=
+		  std::string::npos);
+	const auto declaration = Hive::apiDocs({{"search", "export interface TerrainType"}});
+	REQUIRE_FALSE(declaration.at("results").empty());
+	CHECK(declaration.at("results")[0].at("section") == "types");
+	CHECK(declaration.at("results")[0].at("text").get<std::string>().find("export interface Unit ") == std::string::npos);
+	CHECK(Hive::apiDocs(Json::object()).dump().find("examples/hive-mind") == std::string::npos);
 	const auto helpers = Hive::apiDocs({{"section", "helpers"}});
 	for (const char *api : {"findPlacement", "map.scan", "events(sinceTick)", "\"mine\"", "building: \"inn\""})
 		CHECK(helpers.at("text").get<std::string>().find(api) != std::string::npos);
