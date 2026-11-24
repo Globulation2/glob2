@@ -239,7 +239,14 @@ trigger to the run summary.
 **How it runs.** With `GLOB2_ONLINE_IMAGE_REGISTRY` set, the `images` jobs first
 build every image and the WebAssembly client in CI and the `manifest` job collects
 their digests ([Prebuilt images](#prebuilt-images)); the host then only pulls and
-swaps. The `deploy` job uses the `online-production` environment
+swaps. Because the swap recreates every container, the relay included, the
+`deploy` job first waits for live matches to end (`liveMatches` from the public
+`/api/v1/stats`, checked once a minute, for up to `wait_for_matches` minutes,
+default 90; `0` deploys at once). After the wait it deploys anyway with a warning,
+as it does when the stats cannot be read; a match starting during the few minutes
+of the swap is not covered. With `build_on_host`, a long wait and a host build
+together can reach the job's six-hour limit; dispatch with a shorter wait then.
+The `deploy` job uses the `online-production` environment
 (restricted to `master`; add required reviewers there to approve each deploy). It
 authenticates to Google Cloud without keys through Workload Identity Federation,
 adds a six-and-a-half-hour SSH key (it must outlive the whole job: a deploy that
