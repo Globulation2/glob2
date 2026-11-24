@@ -1,4 +1,6 @@
 """Build every smoke-test image with one resolved design-system revision."""
+from pathlib import Path
+import tempfile
 from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
@@ -30,6 +32,27 @@ class SmokeBuildTests(unittest.TestCase):
         self.assertEqual(smoke.compose_logged.call_args.args[0], 'build.log')
         self.assertIn('build', smoke.compose_logged.call_args.args)
         self.assertEqual(smoke.compose.call_args_list[0].args[0], 'up')
+
+
+
+class ItchFramingTests(unittest.TestCase):
+    """The itch entry may be framed only by what the host opts in to (default 'none')."""
+
+    def ancestors(self, env_text):
+        with tempfile.TemporaryDirectory() as tmp:
+            smoke = Smoke.__new__(Smoke)
+            smoke.env_file = Path(tmp, 'host.env')
+            smoke.env_file.write_text(env_text)
+            return smoke.itch_frame_ancestors()
+
+    def test_defaults_to_no_framing(self):
+        self.assertEqual(self.ancestors('POSTGRES_PASSWORD=x\n'), "'none'")
+        self.assertEqual(self.ancestors('GLOB2_ITCH_FRAME_ANCESTORS=\n'), "'none'")
+
+    def test_follows_the_hosts_opt_in_as_compose_reads_it(self):
+        itch = 'https://genixpro.itch.io https://html.itch.zone'
+        self.assertEqual(self.ancestors(f'GLOB2_ITCH_FRAME_ANCESTORS="{itch}"\n'), itch)
+        self.assertEqual(self.ancestors(f'GLOB2_ITCH_FRAME_ANCESTORS={itch}\n'), itch)
 
 
 if __name__ == '__main__':
