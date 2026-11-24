@@ -38,8 +38,12 @@ COPY deploy/source-identity.sh /usr/local/bin/source-identity
 # deploy-online.yml carries it between CI runs (deploy/ccache.Dockerfile).
 # The launcher variables also send the pinned SDL3 family's CMake builds
 # (sdl3_dependencies.py) through it; glob2's own build then keeps that launcher.
+# GLOB2_DEV_HOME, the development store (buildsys/dev_store.py), keeps the
+# content-keyed runtime-asset export (buildsys/shared_assets.py) and the pinned
+# dependency prefixes; on its own cache mount, an unchanged export or prefix is
+# reused instead of rebuilt (the asset export alone takes about 20 minutes).
 ENV CCACHE_DIR=/ccache CCACHE_MAXSIZE=6G CCACHE_COMPILERCHECK=content CCACHE_COMPRESS=true \
-    CMAKE_C_COMPILER_LAUNCHER=ccache CMAKE_CXX_COMPILER_LAUNCHER=ccache
+    CMAKE_C_COMPILER_LAUNCHER=ccache CMAKE_CXX_COMPILER_LAUNCHER=ccache GLOB2_DEV_HOME=/glob2-dev
 WORKDIR /source
 
 FROM cpp-deps AS cpp-base
@@ -54,6 +58,7 @@ ARG TARGETARCH
 ENV GLOB2_SDL3_PREFIX=/source/build/sdl3/prefix
 RUN --mount=type=cache,id=glob2-relay-build-${TARGETARCH},target=/source/build,sharing=locked \
     --mount=type=cache,id=glob2-ccache-${TARGETARCH},target=/ccache,sharing=locked \
+    --mount=type=cache,id=glob2-dev-${TARGETARCH},target=/glob2-dev,sharing=locked \
     python3 buildsys/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work /source/build/sdl3/sources --jobs ${JOBS} && \
     python3 tools/dev_build.py role=relay release=1 -j${JOBS} build/linux/relay/release/src/glob2-relay && \
     mkdir -p /output && cp build/linux/relay/release/src/glob2-relay /output/ && \
@@ -80,6 +85,7 @@ RUN source-identity
 ENV GLOB2_SDL3_PREFIX=/source/build/sdl3/prefix
 RUN --mount=type=cache,id=glob2-engine-build-${TARGETARCH},target=/source/build,sharing=locked \
     --mount=type=cache,id=glob2-ccache-${TARGETARCH},target=/ccache,sharing=locked \
+    --mount=type=cache,id=glob2-dev-${TARGETARCH},target=/glob2-dev,sharing=locked \
     tools=buildsys; [ -d buildsys ] || tools=scons; \
     python3 "$tools/sdl3_dependencies.py" --prefix "$GLOB2_SDL3_PREFIX" --work /source/build/sdl3/sources --jobs ${JOBS} && \
     if [ -f buildsys/cmake_generate.py ]; then \
