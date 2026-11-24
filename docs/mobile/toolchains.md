@@ -42,14 +42,17 @@ and cache reuse under alternating transforms.
 ## App icons
 
 Both mobile packages use the canonical blue Glob artwork from
-`content/data/icons/glob2-icon-128x128.png`, on the in-game purple background. Android
+`content-src/icons/app/glob2-icon-1024.png`, on the in-game purple background. Android
 ships density-specific legacy icons and a padded adaptive foreground; iOS ships
 an opaque iPhone/iPad AppIcon asset catalog, compiled by Xcode into the bundle.
-The canonical source is 128 pixels; larger sizes are resampled from that source.
+The canonical source is a 1024-pixel render of the vector icon beside it
+([provenance](../../content-src/icons/app/README.md)); every size is reduced from it.
 
 The generated assets are checked in, so normal builds need no image tooling.
 After changing the canonical source, run `python3 platforms/mobile/icons.py` with Pillow
 installed and review both the adaptive foreground and opaque icon before committing.
+The same script writes the large desktop sizes, `platforms/macos/Glob2.icns`,
+`platforms/windows/glob2.ico` and the F-Droid listing icon.
 
 
 ## Packaged image assets
