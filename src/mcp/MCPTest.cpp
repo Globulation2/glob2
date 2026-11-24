@@ -451,9 +451,15 @@ TEST_CASE("MCP/game guide serves every topic with links and rejects unknown topi
 		INFO(topic);
 		const auto result = read({{"topic", topic}});
 		CHECK(result.data["topic"] == topic);
-		CHECK(result.data["links"]["repository"] == RepositoryUrl);
-		CHECK(result.data["links"]["mcp_server_guide"] == ServerGuideUrl);
-		CHECK_FALSE(result.data["links"].value("tutorial_lessons", "").empty());
+		// Links come with the overview and the links topic, not repeated on every topic.
+		if (topic == "overview" || topic == "links")
+		{
+			CHECK(result.data["links"]["repository"] == RepositoryUrl);
+			CHECK(result.data["links"]["mcp_server_guide"] == ServerGuideUrl);
+			CHECK_FALSE(result.data["links"].value("tutorial_lessons", "").empty());
+		}
+		else
+			CHECK_FALSE(result.data.contains("links"));
 		CHECK(result.data["other_topics"].size() == guideTopics().size() - 1);
 		if (topic != "links")
 			CHECK(result.data["text"].get<std::string>().size() > 200);
