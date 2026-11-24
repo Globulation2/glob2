@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ScriptRuntime.h"
 #include "QuickJSOwnership.h"
+#include "third_party/quickjs-ng/Glob2Math.h"
 #include <algorithm>
 #include <cfenv>
 #include <cmath>
@@ -585,7 +586,7 @@ struct Environment
 			};
 			const int dx = shortest(bx - ax, int(e.host->width)), dy = shortest(by - ay, int(e.host->height));
 			if (magic == 1)
-				return JS_NewFloat64(ctx, std::sqrt(double(dx) * dx + double(dy) * dy));
+				return JS_NewFloat64(ctx, glob2_math_sqrt(double(dx) * dx + double(dy) * dy));
 			return e.toJS(Value::object().set("dx", dx).set("dy", dy));
 		}
 		catch (const std::exception &ex)
