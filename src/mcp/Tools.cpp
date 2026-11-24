@@ -332,13 +332,12 @@ void registerUITools(ToolRegistry &registry)
 		 },
 		 {}});
 	add("ui_status", "Check the Globulation 2 game window: available (false while minimized or behind an OS "
-		"dialog), window size, viewport_id and who holds control. No token needed. Call "
-		"game_guide first if you do not know the game.", {},
+		"dialog), window size, viewport_id and who holds control. No token needed.", {},
 		{}, false);
 	add("ui_screenshot",
-		"PNG of the next rendered game frame. max_width/max_height shrink it (e.g. 800). Pass "
+		"PNG of the next rendered game frame. max_width/max_height shrink it. Pass "
 		"the returned capture_id to ui_click/ui_drag/ui_scroll/ui_move so x/y are pixels of "
-		"this image. Needed for the map, which is a canvas without per-object controls.",
+		"this image. Needed for the map canvas.",
 		{{"token", token}}, {}, false);
 	add("ui_acquire_control",
 		"Take exclusive input control and get the token that every input tool requires. The "
@@ -370,7 +369,7 @@ void registerUITools(ToolRegistry &registry)
 	add("ui_act",
 		"Operate a control from ui_inspect by surface (instance), key and revision. action "
 		"must be one the control lists: activate, select (value: zero-based index), "
-		"set_value (value: integer, boolean or string matching the control) or scroll (value: "
+		"set_value (value matching the control) or scroll (value: "
 		"signed logical pixels). Returns the inspection once consumed; a "
 		"screen change may follow: ui_wait. Never retry automatically.",
 		act, {"surface", "key", "revision", "action"}, true);
@@ -420,7 +419,7 @@ void registerUITools(ToolRegistry &registry)
 	add("game_place",
 		"Place a building site or flag by tile, as a click would: building is a game_world "
 		"placeable name, x/y its top-left tile; near searches nearby for room and returns "
-		"where it went. Refusals say why. Needs token.",
+		"where it went. Needs token.",
 		{{"token", token},
 		 {"building", {{"type", "string"}, {"maxLength", 64}}},
 		 {"x", {{"type", "integer"}, {"minimum", 0}}},
@@ -522,15 +521,15 @@ void registerUITools(ToolRegistry &registry)
 	click["button"] = button;
 	click["button"]["default"] = "left";
 	click["count"] = {{"type", "integer"}, {"minimum", 1}, {"maximum", 2}, {"default", 1}};
-	add("ui_click", "Click at x/y, e.g. to place a chosen building or select something on the map. "
+	add("ui_click", "Click at x/y to place or select on the map. "
 		"Pixels of the capture_id screenshot. Right button cancels placement.", click, {"x", "y"}, true,
 		true);
 	auto mouse = xy;
 	mouse["button"] = button;
 	mouse["action"] = enumeration({"down", "up"});
 	add("ui_mouse_button",
-		"Press (down) or release (up) a mouse button at x/y across calls. Holds expire after 5 "
-		"seconds unless refreshed. Prefer ui_click or ui_drag.", mouse,
+		"Press (down) or release (up) a mouse button at x/y across calls. Holds expire after 5 s. "
+		"Prefer ui_click or ui_drag.", mouse,
 		{"x", "y", "button", "action"}, true, true);
 	auto scroll = xy;
 	scroll["dx"] = number;
@@ -559,8 +558,7 @@ void registerUITools(ToolRegistry &registry)
 		 {"modifiers", {{"type", "array"}, {"maxItems", 8}, {"items", key}}}},
 		{"key"}, true);
 	add("ui_type_text",
-		"Type UTF-8 text into the focused text field (focus it first, e.g. with ui_act). Does "
-		"not use the clipboard or OS keyboard.",
+		"Type UTF-8 text into the focused text field (focus it first, e.g. with ui_act).",
 		{{"text", {{"type", "string"}, {"maxLength", 65536}}}}, {"text"}, true);
 	add("ui_release_inputs", "Release every key and mouse button you hold down; you keep control.", {}, {},
 		true);
