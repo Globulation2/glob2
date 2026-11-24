@@ -26,12 +26,20 @@ COPY . /
 
 FROM ${UBUNTU_IMAGE} AS cpp-deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates git g++ make nasm python3 python3-venv ninja-build scons pkg-config cmake libfreetype-dev libopusfile-dev libopus-dev libogg-dev libspeex-dev \
+    ca-certificates ccache git g++ make nasm python3 python3-venv ninja-build scons pkg-config cmake libfreetype-dev libopusfile-dev libopus-dev libogg-dev libspeex-dev \
     libboost-dev libssl-dev zlib1g-dev \
     libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxfixes-dev libxss-dev libxtst-dev \
     libfribidi-dev libpcre3-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev \
     && rm -rf /var/lib/apt/lists/*
 COPY deploy/source-identity.sh /usr/local/bin/source-identity
+# The C++ builds compile through ccache (CMakeLists.txt uses it when installed)
+# into a cache mount shared by every C++ stage of a builder. Content-checked, so a
+# hit is the object the same compiler makes from the same preprocessed source.
+# deploy-online.yml carries it between CI runs (deploy/ccache.Dockerfile).
+# The launcher variables also send the pinned SDL3 family's CMake builds
+# (sdl3_dependencies.py) through it; glob2's own build then keeps that launcher.
+ENV CCACHE_DIR=/ccache CCACHE_MAXSIZE=6G CCACHE_COMPILERCHECK=content CCACHE_COMPRESS=true \
+    CMAKE_C_COMPILER_LAUNCHER=ccache CMAKE_CXX_COMPILER_LAUNCHER=ccache
 WORKDIR /source
 
 FROM cpp-deps AS cpp-base
@@ -45,6 +53,7 @@ ARG TARGETARCH
 # types), so it builds the same pinned SDL3 prefix as the other C++ targets.
 ENV GLOB2_SDL3_PREFIX=/source/build/sdl3/prefix
 RUN --mount=type=cache,id=glob2-relay-build-${TARGETARCH},target=/source/build,sharing=locked \
+    --mount=type=cache,id=glob2-ccache-${TARGETARCH},target=/ccache,sharing=locked \
     python3 buildsys/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work /source/build/sdl3/sources --jobs ${JOBS} && \
     python3 tools/dev_build.py role=relay release=1 -j${JOBS} build/linux/relay/release/src/glob2-relay && \
     mkdir -p /output && cp build/linux/relay/release/src/glob2-relay /output/ && \
@@ -70,6 +79,7 @@ RUN source-identity
 # and shipped next to the binary, which finds it through $ORIGIN/../lib/glob2.
 ENV GLOB2_SDL3_PREFIX=/source/build/sdl3/prefix
 RUN --mount=type=cache,id=glob2-engine-build-${TARGETARCH},target=/source/build,sharing=locked \
+    --mount=type=cache,id=glob2-ccache-${TARGETARCH},target=/ccache,sharing=locked \
     tools=buildsys; [ -d buildsys ] || tools=scons; \
     python3 "$tools/sdl3_dependencies.py" --prefix "$GLOB2_SDL3_PREFIX" --work /source/build/sdl3/sources --jobs ${JOBS} && \
     if [ -f buildsys/cmake_generate.py ]; then \
