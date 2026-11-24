@@ -217,8 +217,8 @@ once on the application thread before the listener starts. The registry is immut
 while networking runs. Validation and handlers run on the network worker and must not
 read application state directly. The built-in schema validator supports object
 properties/required/additionalProperties, primitive types, enums, numeric bounds, string
-character limits and array items/count bounds. Use this vocabulary or provide validation
-in the handler for domain constraints.
+character limits and array items/count bounds; an array without `items` accepts any
+elements. Use this vocabulary or provide validation in the handler for domain constraints.
 
 `Protocol` adapts version-specific MCP messages; `HttpServer` owns bounded HTTP sessions
 and worker encoding; `UIService` owns the bounded queue, lease and input state.
