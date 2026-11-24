@@ -328,6 +328,8 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 		speed.role = "stepper";
 		speed.bounds = {topBarSpeedX() - 4, 0, TOP_BAR_SPEED_WIDTH, 16};
 		speed.value = globalContainer->settings.gameSpeed;
+		speed.range = ValueRange{Settings::GAME_SPEED_MINIMUM, Settings::GAME_SPEED_MAXIMUM, 1};
+		speed.valueLabel = globalContainer->settings.getGameSpeedText();
 		speed.actions = {ActionKind::Activate, ActionKind::SetValue};
 		speed.tap = [this](Point) { cycleGameSpeed(true); };
 		speed.perform = [this](const SemanticAction &a)
@@ -468,6 +470,7 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 			c.identity = std::to_string(b->state().typeNum) + ":" + std::to_string(minimum) + ":" +
 						 std::to_string(maximum);
 			c.role = "slider";
+			c.range = ValueRange{minimum, maximum, 1};
 			c.label = std::move(label);
 			c.bounds = rect;
 			c.clip = clip;
@@ -755,8 +758,11 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 		{
 			auto r = choiceControlBounds(top, i, columns);
 			// Label palette entries with the player-facing name, not the sprite key.
-			// The scene has no building types until it is first extracted.
-			std::string label = names[i];
+			// The scene has no building types until it is first extracted: until then,
+			// the name before its first dot, capitalized ("inn.0.site" reads "Inn").
+			std::string label = names[i].substr(0, names[i].find('.'));
+			if (!label.empty())
+				label[0] = char(std::toupper(static_cast<unsigned char>(label[0])));
 			if (const auto *types = drawnScene().buildingTypes.get())
 			{
 				const BuildingCatalogView catalog(*types);
@@ -925,7 +931,8 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 std::string GameGUI::placeFromAutomation(const std::string &requested, int x, int y, int searchRadius,
 										 std::pair<int, int> *placedAt,
 										 const std::vector<std::array<int, 4>> &reserved,
-										 std::pair<int, int> *placedSize, BuildingCreateSettings *settings)
+										 std::pair<int, int> *placedSize, BuildingCreateSettings *settings,
+										 std::string *requestedRefusal)
 {
 	if (globalContainer->isViewingGame() || globalContainer->liveSpectating)
 		return "Placement is unavailable while watching a game";
@@ -980,6 +987,7 @@ std::string GameGUI::placeFromAutomation(const std::string &requested, int x, in
 	};
 	// Why spots were refused, to say so when none is found.
 	int triedSpots = 0, unexploredSpots = 0, reservedSpots = 0;
+	std::string lastRefusal; // why the latest spot tried was not usable
 	auto usable = [&](int tx, int ty)
 	{
 		++triedSpots;
@@ -988,6 +996,7 @@ std::string GameGUI::placeFromAutomation(const std::string &requested, int x, in
 				overlaps(ty, type->height, r[1], r[3], int(map.getH())))
 			{
 				++reservedSpots;
+				lastRefusal = "it overlaps one of your pending placements";
 				return false;
 			}
 		if (type->isVirtual)
@@ -997,6 +1006,7 @@ std::string GameGUI::placeFromAutomation(const std::string &requested, int x, in
 				if (!map.isMapDiscovered(tx + dx, ty + dy, explored))
 				{
 					++unexploredSpots;
+					lastRefusal = "its ground is not all explored";
 					return false;
 				}
 		return true;
@@ -1027,7 +1037,11 @@ std::string GameGUI::placeFromAutomation(const std::string &requested, int x, in
 					continue;
 				const int tx = ((x + dx) % w + w) % w, ty = ((y + dy) % h + h) % h;
 				if (!usable(tx, ty))
+				{
+					if (r == 0 && requestedRefusal)
+						*requestedRefusal = lastRefusal;
 					continue;
+				}
 				if (settings)
 					*settings = *requestedSettings;
 				if (toolManager.placeBuildingTopLeft(tx, ty, localTeamNo, settings))
@@ -1036,6 +1050,10 @@ std::string GameGUI::placeFromAutomation(const std::string &requested, int x, in
 					if (placedAt)
 						*placedAt = {tx, ty};
 				}
+				else if (r == 0 && requestedRefusal)
+					*requestedRefusal = type->isVirtual ? "another of your flags is on that tile"
+														: "the ground is not clear (water, a resource, rocks or a "
+														  "building, or a site still being created)";
 			}
 	if (previousMode == TOOL_SELECTION && !previousBuilding.empty())
 		toolManager.activateBuildingTool(previousBuilding);

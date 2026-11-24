@@ -3381,7 +3381,7 @@ class GameGUITouchHarness
                 require(panel.topic() == InGameStatisticsPanel::Topic::Overview, "Statistics starts on Overview");
                 panel.selectTopic(InGameStatisticsPanel::Topic::Economy);
                 glob2test::drawGUI(gui, 0);
-                require(panel.host().find("stats/metric/idle workers") != nullptr, "Economy exposes worker time");
+                require(panel.host().find("stats/metric/idle-workers") != nullptr, "Economy exposes worker time");
                 panel.selectTopic(InGameStatisticsPanel::Topic::Overview);
 				glob2test::drawGUI(gui,0);
 				gfx->printScreen(width < height ? "touch-stats-portrait.bmp" : "touch-stats-landscape.bmp");
@@ -6349,7 +6349,7 @@ class GameGUITouchHarness
                 [](const auto &m){return m.winProbability;}));
             panel.selectTopic(InGameStatisticsPanel::Topic::World);
             panel.update(0);
-            CHECK_FALSE(panel.host().find("stats/metric/win probability"));
+            CHECK_FALSE(panel.host().find("stats/metric/win-probability"));
             glob2test::drawGUI(gui,0);
             CHECK(gui.game.checkSum()==checksum);
             const auto screenshot="live-stats-"+std::to_string(width)+"x"+std::to_string(height)+".bmp";

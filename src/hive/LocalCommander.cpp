@@ -31,6 +31,7 @@
 #include <limits>
 #include "Game.h"
 #include "render/scene/Scene.h"
+#include "render/scene/BuildingCatalogView.h"
 #include "GameStats.h"
 #include "EngineTiming.h"
 #include "stats/MetricCatalog.h"
@@ -40,6 +41,19 @@ namespace
 {
 LocalCommander *active = nullptr; // main thread only
 std::atomic<std::uint64_t> sessions{0};
+// Every match session this process has had (main thread only): a stale session is
+// told apart from one that never existed.
+std::set<std::string> &knownSessions()
+{
+	static std::set<std::string> known;
+	return known;
+}
+std::function<std::string()> &screenSource()
+{
+	static std::function<std::string()> source;
+	return source;
+}
+const char *const unitNames[] = {"worker", "explorer", "warrior"};
 constexpr std::size_t JournalCapacity = 256;
 constexpr unsigned AlertTicks = 9000;	// game_world's default alert window: 5 minutes at 1x
 constexpr unsigned LogTicks = 54000;	// the journal keeps half an hour of game time
@@ -60,7 +74,8 @@ Json playerAPI()
 		 "hive_program action is list, inspect, install, replace, pause, resume or cancel. "
 		 "inspect requires name; mutations require token, session, operation_key and name. "
 		 "install/replace additionally require source and accept description and interval_ticks "
-		 "(default/minimum 25). replace requires expected_revision from inspect. Programs use "
+		 "(default/minimum 25). replace requires expected_revision from inspect. A missing argument is "
+		 "reported with every other missing one. Programs use "
 		 "names, with server-assigned monotonic revisions; there are no UUIDs, caller-assigned "
 		 "revisions or migration source. Install/replacement preflight validates without effects. "
 		 "Replacement resets globals and retains pause state; failure preserves the old program. "
@@ -68,13 +83,17 @@ Json playerAPI()
 		 "operation result without re-execution. Queued means admission, not gameplay success. "
 		 "Standing-order globals persist across successful invocations only. Programs continue "
 		 "after MCP disconnect or lease expiry, but programs/globals are discarded on load/exit "
-		 "and are never saved. wakeAgent records local_events only: no authentication, billing, "
+		 "and are never saved. The same session ties game_* building ids to this match: "
+		 "game_world and game_place replies carry it. hive_program list gives last_run_tick (the "
+		 "latest run's observation tick, null before the first), period_ticks and order_lag_ticks. "
+		 "wakeAgent records local_events only: no authentication, billing, "
 		 "supervision, model access or paid work. Reads are fixed to the current human player's "
 		 "team. tools/list supplies the authoritative argument schemas."},
 		{"declarations", "hive_api section \"types\": TypeScript declarations of every record and order"},
 		{"limits",
 		 {{"work_units_per_run", 250000000},
 		  {"data_bytes_per_run", 32 * 1024 * 1024},
+		  {"script_data_bytes_per_run", 1024 * 1024},
 		  {"heap_bytes", 128 * 1024 * 1024},
 		  {"wall_seconds_per_run", 5},
 		  {"source_bytes", 131072},
@@ -90,18 +109,30 @@ namespace
 constexpr const char *HelpersDoc = R"(Local colony scripts (Hive) have these helpers beside the shared API.
 They read only the colony's own snapshot: what it sees or has seen, and its own events.
 
+A script declares step(ctx) (main(ctx) is accepted as another name for it).
+
 Queries
-- ctx.game.units(filter) / ctx.game.buildings(filter): filter.team is a team number or
-  "mine", "enemies" or "allies"; filter.type is a number or a name: "worker", "explorer",
+- ctx.game.units(filter) / ctx.game.buildings(filter): filter keys are team, type, offset,
+  limit (buildings also remembered); any other key is refused. team is a team number or
+  "mine", "enemies" or "allies"; type is a number or a name: "worker", "explorer",
   "warrior" for units, a building family name ("inn", "swarm", "warflag") for buildings.
-  Your own buildings and flags also report assigned: units that have taken the job (workers
-  is what it requests).
+  Records carry typeName (units: "worker"...; buildings: the variant key, "inn.0.site")
+  and buildings familyName ("inn"). Your own buildings and flags also report assigned:
+  units that have taken the job (workers is what it requests).
+- ctx.game.buildings({team: "enemies", remembered: true}): other teams' buildings your
+  colony has seen and believes still stand, as last seen (fog of war), each with
+  last_seen_tick, familyName, x, y, width, height, team and remembered: true. The same
+  memory as game_world's remembered buildings; type filters by family name.
 - ctx.game.buildingType(name, {level, site}): the type record a player places for a name
-  (level 0's construction site, or the flag), or null.
+  (level 0's construction site, or the flag), or null when that name has no such level or
+  site. An unknown name throws, listing the names, as findPlacement and canPlace do.
 - ctx.game.events(sinceTick): your colony's events after sinceTick, oldest first:
-  {kind, event, x, y, count, tick}. Kinds: unit_attacked, building_attacked,
-  building_completed, unit_converted_away, unit_converted_to_you, building_destroyed,
-  building_demolished, enemy_building_sighted, hive_program_failed. Keep the last tick in a
+  {kind, event, x, y, count, tick}. Kinds: unit_attacked (with unit: the type attacked),
+  building_attacked, building_completed, unit_converted_away, unit_converted_to_you,
+  building_destroyed, building_demolished, enemy_building_sighted, enemy_building_gone,
+  hive_program_failed (with program and paused, its current state) and hive_wake. x/y is
+  a tile: the attacked unit's (the attacker's position is not reported), a building's
+  top-left, except building_completed, which gives its centre. Keep the last tick in a
   global and react to what is new instead of scanning for enemies every run.
 
 Map
@@ -117,21 +148,40 @@ Map
   the colony knows) and building (occupant id, 65535 none). Default ["resource","buildable"].
 - ctx.game.map.canPlace(name, x, y) -> {ok, reason}: whether the colony can see room for
   that building's footprint with its top-left at x, y (explored, buildable terrain on every
-  corner, no resource or known building), or a flag on that tile.
+  corner, no resource or known building), or a flag on that tile. reason names the first
+  tile in the way and why: unexplored, one of your buildings, another team's building, a
+  pending placement, a resource, mixed terrain or unbuildable terrain.
 - ctx.game.map.findPlacement(name, {x, y, radius}) -> {x, y} or null: the nearest such
   top-left, searching rings out to radius (default 12, at most 64), as game_place near does.
   The game still decides when the order arrives.
 - Tile records' resource also has key ("wheat", "rice", "fish") from resourceTypes().
+- map.delta and map.distance read only x and y of record arguments here, so passing whole
+  unit or building records is cheap.
 
 Orders
 - {type: "create", building: "inn", x, y}: what a click with that palette entry creates,
   with its default requested units (workers, futureWorkers) and a flag's default range;
   pass any of them to override. buildingType ids still work.
+- Order x/y must lie on the map (0..width-1, 0..height-1): an order outside it is listed in
+  the result's rejected, with the map size, and not sent. Wrap coordinates yourself
+  (((x % w) + w) % w) when you mean the tile across the edge.
 
 Cost
 Each run has 250 million work units, a 128 MiB heap and a 5 s deadline. Reading an
 explored tile record costs about 1,500 units; scan() returns compact numbers instead. A
-for...of loop costs about three times an index loop (for (let i = 0; i < a.length; i++)).)";
+for...of loop costs about three times an index loop (for (let i = 0; i < a.length; i++)).
+A run converts at most 1 MiB of strings and record keys from JavaScript to the game
+(script_data_bytes_per_run: helper arguments, including records you pass, and the returned
+output and globals) and 32 MiB of native data (data_bytes_per_run). Crossing either throws
+a TypeError that names the call; you can catch it, but the bytes are not given back, so
+the run still fails when it returns: treat it as fatal.
+
+Cadence
+A program runs at most once per interval_ticks, one run at a time across all programs.
+Each run snapshots the colony on a worker thread (20 to 130 ms) and runs the script in a
+separate process, so at high game speed many ticks pass between its observation and its
+orders, and two busy programs take turns. hive_program list reports each program's
+period_ticks (between its last two runs) and order_lag_ticks (observation to orders).)";
 struct DocSection
 {
 	std::string id, title, text;
@@ -178,7 +228,14 @@ const std::vector<DocSection> &docSections()
 		out.push_back({"helpers", "Colony helpers (local Hive)", HelpersDoc});
 		out.push_back({"local-control", "Local control: hive_run, hive_result, hive_program",
 					   playerAPI().at("local_control_contract").get<std::string>()});
-		out.push_back({"limits", "Limits", playerAPI().at("limits").dump(1)});
+		{
+			// Prose first, so the table of contents summarises it; then one limit per line.
+			std::string limits = "Per-run and per-match limits of local Hive scripts (hive_status lists them too).\n";
+			const Json api = playerAPI();
+			for (const auto &[name, value] : api.at("limits").items())
+				limits += "- " + name + ": " + value.dump() + "\n";
+			out.push_back({"limits", "Limits", limits});
+		}
 		// The TypeScript declarations, compiled in from hive.d.ts. Each export becomes its
 		// own paragraph, so a search returns the one declaration that matches.
 		std::string types = PlayerAPIDeclarations;
@@ -298,6 +355,17 @@ LocalCommander::LocalCommander(GameGUI &g, std::function<std::future<Json>(Json)
 	  launch(std::move(start))
 {
 	active = this;
+	knownSessions().insert(session);
+}
+void LocalCommander::checkSession(const Json &args) const
+{
+	if (!args.contains("session") || args.at("session") == session)
+		return;
+	const auto given = args.at("session").is_string() ? args.at("session").get<std::string>() : args.at("session").dump();
+	if (knownSessions().count(given))
+		throw std::runtime_error("Match session expired; inspect hive_status");
+	throw std::runtime_error("Unknown session \"" + given.substr(0, 128) +
+							 "\": no match had it; hive_status or game_world gives this match's session");
 }
 LocalCommander::~LocalCommander()
 {
@@ -376,9 +444,17 @@ Json LocalCommander::standingOrders() const
 			record["paused_reason"] = p.pausedReason + " (fix the script, then hive_program replace or resume)";
 		if (!p.lastError.empty())
 			record["last_error"] = p.lastError;
-		record["nextTick"] = p.nextTick;
+		// Due now (or as soon as the worker is free) when the deadline has passed.
+		record["nextTick"] = std::max(p.nextTick, tick);
 		record["intervalTicks"] = p.definition.at("intervalTicks");
-		record["last_run_tick"] = p.lastRunTick;
+		// The latest run's observation tick (null before its first run), how long its
+		// orders took to follow, and the ticks between its last two runs: a run needs real
+		// time, so at high speed the period exceeds intervalTicks.
+		record["last_run_tick"] = p.runs ? Json(p.lastRunTick) : Json(nullptr);
+		if (p.runs)
+			record["order_lag_ticks"] = p.lastSubmissionTick - p.lastRunTick;
+		if (p.periodTicks)
+			record["period_ticks"] = p.periodTicks;
 		record["runs"] = p.runs;
 		record["recent"] = p.recent;
 		result.push_back(std::move(record));
@@ -391,15 +467,15 @@ void LocalCommander::change(const std::string &id, const std::string &action)
 	if (it == programs.end())
 		return;
 	if (action == "remove" || action == "cancel")
-		programs.erase(it);
-	else
 	{
-		it->second.paused = action == "pause";
-		if (action == "resume")
-			it->second.pausedReason.clear();
-		it->second.nextTick = tick + 25;
-		it->second.generation = ++generation;
+		programs.erase(it);
+		return;
 	}
+	it->second.paused = action == "pause";
+	if (action == "resume")
+		it->second.pausedReason.clear();
+	it->second.nextTick = tick + 25;
+	it->second.generation = ++generation;
 }
 void LocalCommander::stop()
 {
@@ -430,7 +506,8 @@ Json LocalCommander::call(const std::string &tool, const Json &args)
 				over["from_tick"] = args.at("_poll").at("start");
 			return over;
 		}
-		return tool == "game_wait" ? wait(args) : awaitResult(args);
+		// game_time step with wait is a game_wait for the stepped ticks.
+		return tool == "game_wait" || tool == "game_time" ? wait(args) : awaitResult(args);
 	}
 	bool allowed = false;
 	boundary(
@@ -472,10 +549,46 @@ Json LocalCommander::call(const std::string &tool, const Json &args)
 		return wait(args);
 	if (tool == "game_alliance")
 		return alliance(args);
+	// Every missing argument at once, rather than the first one a lookup trips on.
+	if (tool == "hive_result" || tool == "hive_run" || tool == "hive_program")
+	{
+		const auto action = tool == "hive_program" && args.contains("action") && args.at("action").is_string()
+								? args.at("action").get<std::string>()
+								: std::string();
+		std::vector<const char *> needed;
+		if (tool == "hive_result")
+			needed = {"session", "operation_key"};
+		else if (tool == "hive_run")
+			needed = {"session", "operation_key", "source"};
+		else if (action == "inspect")
+			needed = {"name"};
+		else if (action == "install" || action == "replace")
+			needed = {"session", "operation_key", "name", "source"};
+		else if (action == "pause" || action == "resume" || action == "cancel")
+			needed = {"session", "operation_key", "name"};
+		else if (action != "list")
+			throw std::runtime_error("hive_program action must be list, inspect, install, replace, pause, resume "
+									 "or cancel");
+		std::string missing;
+		for (const char *field : needed)
+			if (!args.contains(field) || args.at(field).is_null())
+				missing += (missing.empty() ? "" : ", ") + std::string(field);
+		if (!missing.empty())
+			throw std::runtime_error(tool + (action.empty() ? std::string() : " " + action) + " is missing " + missing +
+									 (missing.find("session") != std::string::npos ? " (hive_status gives the session)"
+																				   : std::string()));
+	}
+	// The installed programs' names, for errors about one that is not installed.
+	const auto installed = [&]
+	{
+		std::string names;
+		for (const auto &[name, p] : programs)
+			names += (names.empty() ? "" : ", ") + name;
+		return names.empty() ? std::string("none is installed") : "installed: " + names;
+	};
 	if (tool == "hive_result")
 	{
-		if (args.at("session") != session)
-			throw std::runtime_error("Match session expired");
+		checkSession(args);
 		auto it = journal.find(args.at("operation_key").get<std::string>());
 		if (it == journal.end())
 			throw std::runtime_error("Unknown operation key in this session");
@@ -487,22 +600,32 @@ Json LocalCommander::call(const std::string &tool, const Json &args)
 		tool == "hive_run" ? std::string("run") : args.at("action").get<std::string>();
 	// Reads may omit the session, but a stale one must not silently describe
 	// the programs of a later match.
-	if (args.contains("session") && args.at("session") != session)
-		throw std::runtime_error("Match session expired; inspect hive_status");
+	checkSession(args);
 	if (kind == "list")
-		return {{"session", session}, {"programs", standingOrders()}};
+	{
+		// The list says how each program is doing; its last output, events and description
+		// come with inspect, so a colony with many programs stays a short read.
+		auto list = standingOrders();
+		for (auto &program : list)
+		{
+			program.erase("description");
+			auto &recent = program["recent"];
+			if (recent.is_object())
+				for (const char *heavy : {"output", "local_events", "orders", "rejected"})
+					recent.erase(heavy);
+		}
+		return {{"session", session}, {"programs", list}, {"note", "hive_program inspect gives a program's source, last output and events"}};
+	}
 	if (kind == "inspect")
 	{
 		auto it = programs.find(args.at("name").get<std::string>());
 		if (it == programs.end())
-			throw std::runtime_error("Unknown standing order");
+			throw std::runtime_error("No program named \"" + args.at("name").get<std::string>() + "\" (" + installed() + ")");
 		return {{"session", session},
 				{"program", it->second.definition},
 				{"paused", it->second.paused},
 				{"recent", it->second.recent}};
 	}
-	if (args.at("session") != session)
-		throw std::runtime_error("Match session expired; inspect hive_status");
 	const auto key = args.at("operation_key").get<std::string>();
 	if (key.empty() || key.size() > 128 || key.find('\0') != std::string::npos)
 		throw std::runtime_error("Provide a nonempty operation key of at most 128 bytes");
@@ -526,9 +649,9 @@ Json LocalCommander::call(const std::string &tool, const Json &args)
 			throw std::runtime_error("Program name must contain 1..128 UTF-8 bytes without NUL");
 		if (kind == "install" || kind == "replace")
 		{
-			const auto interval = args.value("interval_ticks", 25);
-			if (interval < 25 || interval > 1000000)
-				throw std::runtime_error("Program cadence must be 25..1000000 ticks");
+			const auto &interval = args.contains("interval_ticks") ? args.at("interval_ticks") : Json(25);
+			if (!interval.is_number_integer() || interval.get<std::int64_t>() < 25 || interval.get<std::int64_t>() > 1000000)
+				throw std::runtime_error("interval_ticks must be a whole number 25..1000000 (got " + interval.dump() + ")");
 		}
 	}
 	if (kind == "run" || kind == "install" || kind == "replace")
@@ -546,7 +669,7 @@ Json LocalCommander::call(const std::string &tool, const Json &args)
 	{
 		const auto name = args.at("name").get<std::string>();
 		if (!programs.contains(name))
-			remember(key, {{"status", "failed"}, {"error", "Unknown standing order"}});
+			remember(key, {{"status", "failed"}, {"error", "No program named \"" + name + "\" (" + installed() + ")"}});
 		else
 		{
 			change(name, kind);
@@ -611,40 +734,78 @@ void LocalCommander::recordFeed()
 		if (seen == row.updateSequence)
 			continue;
 		seen = row.updateSequence;
-		record({row.type < GESize ? eventKinds[row.type] : "event", row.label, row.x, row.y, -1, row.lastTick});
+		Logged entry{row.type < GESize ? eventKinds[row.type] : "event", row.label, row.x, row.y, -1, row.lastTick};
+		// What the report is about: the unit type attacked, the other team of a
+		// conversion, the building's family.
+		if (row.type == GEUnitUnderAttack)
+			entry.subject = int(row.subject);
+		else if (row.type == GEUnitLostConversion || row.type == GEUnitGainedConversion)
+			entry.team = int(row.subject);
+		else if (row.type == GEBuildingUnderAttack || row.type == GEBuildingCompleted)
+			if (const auto &types = gui.drawnScene().buildingTypes)
+				if (const auto *type = BuildingCatalogView(*types).get(int(row.subject)))
+					entry.what = type->type;
+		record(std::move(entry));
 	}
 	if (rowSeen.size() > 2048)
 		rowSeen.clear();
 }
 Json LocalCommander::groupedAlerts(unsigned since, unsigned now, std::size_t cap) const
 {
+	// One group per kind, team and program over the whole window: a long fight is one
+	// line with n reports and the box they came from, not one group per area.
 	struct Group
 	{
 		Json alert;
-		unsigned first, last, n;
+		unsigned first = 0, last = 0, n = 0;
+		int minX = 0, minY = 0, maxX = -1, maxY = -1;
+		std::map<std::string, int> what, units;
+		std::set<std::string> messages;
 	};
 	std::map<std::string, Group> groups;
 	for (const auto &e : eventLog)
 	{
 		if (e.tick <= since && since)
 			continue;
-		// One group per kind and message within an 8-tile area: a skirmish is one alert.
-		const auto key = e.kind + "|" + e.event + "|" + std::to_string(e.x >= 0 ? e.x / 8 : -1) + "," +
-						 std::to_string(e.y >= 0 ? e.y / 8 : -1) + "|" + e.program;
+		const auto key = e.kind + "|" + std::to_string(e.team) + "|" + e.program;
 		auto &g = groups[key];
 		if (!g.n)
 		{
 			g.first = e.tick;
-			g.alert = {{"kind", e.kind}, {"event", e.event}};
+			g.alert = {{"kind", e.kind}};
 			if (e.team >= 0)
 				g.alert["team"] = e.team;
 			if (!e.program.empty())
-				g.alert["program"] = e.program, g.alert["paused"] = e.paused;
+			{
+				g.alert["program"] = e.program;
+				// The program's state now, not when it failed: replace or resume clears it.
+				const auto program = programs.find(e.program);
+				if (program == programs.end())
+					g.alert["program_state"] = "removed";
+				else
+					g.alert["paused"] = program->second.paused;
+			}
 		}
 		++g.n;
-		g.last = std::max(g.last, e.tick);
+		if (e.tick >= g.last)
+		{
+			g.last = e.tick;
+			g.alert["event"] = e.event; // the latest report's message
+			if (e.x >= 0)
+				g.alert["x"] = e.x, g.alert["y"] = e.y;
+		}
+		g.messages.insert(e.event);
 		if (e.x >= 0)
-			g.alert["x"] = e.x, g.alert["y"] = e.y;
+		{
+			if (g.maxX < 0)
+				g.minX = g.maxX = e.x, g.minY = g.maxY = e.y;
+			g.minX = std::min(g.minX, e.x), g.maxX = std::max(g.maxX, e.x);
+			g.minY = std::min(g.minY, e.y), g.maxY = std::max(g.maxY, e.y);
+		}
+		if (!e.what.empty())
+			++g.what[e.what];
+		if (e.subject >= 0 && e.subject < 3)
+			++g.units[unitNames[e.subject]];
 	}
 	std::vector<Group *> ordered;
 	for (auto &[key, g] : groups)
@@ -655,6 +816,12 @@ Json LocalCommander::groupedAlerts(unsigned since, unsigned now, std::size_t cap
 	{
 		auto &g = *ordered[i];
 		g.alert["n"] = g.n;
+		if (g.maxX >= 0 && (g.minX != g.maxX || g.minY != g.maxY))
+			g.alert["area"] = {{"x", g.minX}, {"y", g.minY}, {"width", g.maxX - g.minX + 1}, {"height", g.maxY - g.minY + 1}};
+		if (!g.what.empty() && g.messages.size() > 1)
+			g.alert["buildings"] = g.what;
+		if (!g.units.empty() && g.messages.size() > 1)
+			g.alert["units"] = g.units;
 		g.alert["first_tick"] = g.first;
 		g.alert["last_tick"] = g.last;
 		g.alert["ticks_ago"] = now > g.last ? now - g.last : 0;
@@ -677,15 +844,21 @@ Json LocalCommander::placeByName(Json order)
 		if (order.value("type", std::string()) == "delete" && ref.contains("id") && ref.at("id").is_number_integer())
 			demolitionOrders.insert(ref.at("id").get<int>()); // reported as demolished, not destroyed
 	}
-	// The map wraps, as every read does: x/y outside it name the wrapped tile.
+	// Order coordinates are canonical map tiles, as the contract says and game_place
+	// requires: one outside the map is refused (and listed in rejected), never moved.
 	if (order.is_object())
 	{
 		const int width = gui.game.map.getW(), height = gui.game.map.getH();
 		for (const auto &[field, size] : {std::pair{"x", width}, std::pair{"y", height}})
-			if (order.contains(field) && order.at(field).is_number_integer() && size > 0)
+			if (order.contains(field) && order.at(field).is_number() && size > 0)
 			{
-				const auto v = order.at(field).get<std::int64_t>();
-				order[field] = int(((v % size) + size) % size);
+				const auto v = order.at(field).get<double>();
+				if (v < 0 || v >= size)
+					throw std::runtime_error(
+						std::string(field) + " " + order.at(field).dump() + " is outside the " + std::to_string(width) + "x" +
+						std::to_string(height) + " map (x 0.." + std::to_string(width - 1) + ", y 0.." +
+						std::to_string(height - 1) + "); wrap it yourself (((v % size) + size) % size) to mean "
+						"the tile across the edge");
 			}
 	}
 	// {type: "create", building: "inn", x, y}: what a click with that palette entry
@@ -718,7 +891,7 @@ LocalCommander::Annotation LocalCommander::annotation()
 				shapes.push_back({{"name", type->type}, {"width", type->width}, {"height", type->height}});
 		buildingTypeShapes = std::make_shared<const Json>(std::move(shapes));
 	}
-	Annotation out{team, buildingTypeShapes, Json::object(), Json::array(), {}};
+	Annotation out{team, buildingTypeShapes, Json::object(), Json::array(), {}, Json::array()};
 	// Units that took the job, beside the units it requests; an Inn's units inside
 	// and the happiness it offers, as the building panel shows.
 	for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
@@ -740,6 +913,24 @@ LocalCommander::Annotation LocalCommander::annotation()
 	// ctx.game.events(): the colony's journal (what game_wait reports), with ticks.
 	recordFeed();
 	out.events.assign(eventLog.begin(), eventLog.end());
+	// A failed program's paused flag says what it is now: replace or resume clears it.
+	for (auto &e : out.events)
+		if (!e.program.empty() && e.kind == "hive_program_failed")
+		{
+			const auto program = programs.find(e.program);
+			e.paused = program != programs.end() && program->second.paused;
+		}
+	// Other teams' buildings the colony has seen, as last seen (the game_world memory).
+	const Uint32 enemies = gui.game.teams[team]->enemies;
+	for (const auto &[gid, record] : seenBuildings)
+	{
+		Json entry = record;
+		entry["familyName"] = record.value("type", std::string());
+		entry.erase("type");
+		entry["remembered"] = true;
+		entry["enemy"] = (enemies & Team::teamNumberToMask(record.value("team", 0))) != 0;
+		out.remembered.push_back(std::move(entry));
+	}
 	// Losses and sightings need the game_world memory; scripts read events, so start it.
 	memoryTracked = true;
 	return out;
@@ -747,12 +938,22 @@ LocalCommander::Annotation LocalCommander::annotation()
 void LocalCommander::annotate(Json &snapshot, const Annotation &annotation)
 {
 	const auto &shapes = *annotation.shapes;
+	for (auto &u : snapshot.at("units"))
+		if (const int type = u.value("type", -1); type >= 0 && type < 3)
+			u["typeName"] = unitNames[type];
 	for (auto &b : snapshot.at("buildings"))
 	{
 		const auto type = b.value("type", -1);
 		if (type >= 0 && std::size_t(type) < shapes.size())
 			for (const auto &[key, value] : shapes[std::size_t(type)].items())
 				b[key] = value;
+		// Names beside the numbers: the family ("inn") and the variant key ("inn.0.site").
+		if (b.contains("name"))
+			b["familyName"] = b.at("name");
+		if (b.contains("key"))
+			b["typeName"] = b.at("key");
+		else if (b.contains("name"))
+			b["typeName"] = b.at("name");
 		if (b.value("team", -1) != annotation.team)
 			continue;
 		const auto own = annotation.own.find(std::to_string(b.value("id", 0)));
@@ -761,6 +962,7 @@ void LocalCommander::annotate(Json &snapshot, const Annotation &annotation)
 				b[key] = value;
 	}
 	snapshot["pending"] = annotation.pending;
+	snapshot["remembered"] = annotation.remembered;
 	Json events = Json::array();
 	for (const auto &e : annotation.events)
 	{
@@ -769,6 +971,10 @@ void LocalCommander::annotate(Json &snapshot, const Annotation &annotation)
 			event["x"] = e.x, event["y"] = e.y;
 		if (e.team >= 0)
 			event["team"] = e.team;
+		if (e.subject >= 0 && e.subject < 3)
+			event["unit"] = unitNames[e.subject];
+		if (!e.what.empty())
+			event["building"] = e.what;
 		if (!e.program.empty())
 			event["program"] = e.program, event["paused"] = e.paused;
 		events.push_back(std::move(event));
@@ -832,10 +1038,26 @@ void LocalCommander::finish(Json result)
 		const bool installedInitialized = result.value("installedInitialized", false);
 		success = result.value("ok", false);
 		error = result.value("error", result.value("diagnostic", std::string()));
-		// The budget is the sum of every host read in one run; say what fits.
-		if (error.rfind("Native script data exceeds limit", 0) == 0)
-			error += " (a run may convert at most 32 MiB of data between the game and JavaScript: "
-					 "call large queries such as buildingTypes() once per run, not inside a loop)";
+		// The budget is the sum of every host read in one run; say what fits. Inside a call
+		// the error reaches the script as a TypeError, so look past that prefix, and put the
+		// explanation at the end of the first line, before any stack trace.
+		const auto explain = [&](const char *limit, const char *hint)
+		{
+			const auto at = error.find(limit);
+			if (at == std::string::npos || error.find('\n') < at)
+				return;
+			const auto lineEnd = error.find('\n');
+			error.insert(lineEnd == std::string::npos ? error.size() : lineEnd, hint);
+		};
+		explain("Native script data exceeds limit",
+				" (data_bytes_per_run: a run may convert at most 32 MiB of data between the game and "
+				"JavaScript: call large queries such as buildingTypes() once per run, not inside a loop)");
+		if (error.find("Native script data exceeds limit") == std::string::npos)
+			explain("Script data exceeds limit",
+					" (script_data_bytes_per_run: 1 MiB of strings and record keys per run, counted "
+					"cumulatively over every helper call's arguments, records passed to helpers included, "
+					"and the returned output and globals; pass numbers or small {x, y} records to helpers in "
+					"loops. Catching the error does not give the bytes back)");
 		if (error.rfind("JavaScript native resource limit exhausted", 0) == 0)
 			error += " (the script ran out of its 128 MiB JavaScript heap or its call stack: read "
 					 "smaller areas or scan() fields instead of region() records, keep globals small, "
@@ -898,6 +1120,14 @@ void LocalCommander::finish(Json result)
 			// Pause/resume from the in-game card remains authoritative even if
 			// it arrives while replacement preflight is running.
 			p.paused = old != programs.end() && old->second.paused;
+			if (old != programs.end())
+			{
+				// The same program by name: its run history carries over.
+				p.runs = old->second.runs;
+				p.lastRunTick = old->second.lastRunTick;
+				p.lastSubmissionTick = old->second.lastSubmissionTick;
+				p.periodTicks = old->second.periodTicks;
+			}
 			if (p.paused)
 			{
 				p.pausedReason = old->second.pausedReason;
@@ -941,8 +1171,9 @@ void LocalCommander::finish(Json result)
 				   {"observation_tick", observationTick},
 				   {"submission_tick", tick},
 				   {"order_count", sent},
-				   {"output", result.value("output", Json(nullptr))},
-				   {"error", error}};
+				   {"output", result.value("output", Json(nullptr))}};
+	if (!error.empty())
+		record["error"] = error; // absent on success
 	if (!rejected.empty())
 		record["rejected"] = rejected;
 	if (!stillPaused.empty())
@@ -962,7 +1193,10 @@ void LocalCommander::finish(Json result)
 	{
 		program->second.recent = record;
 		auto &p = program->second;
-		p.lastRunTick = tick;
+		if (p.runs && observationTick > p.lastRunTick)
+			p.periodTicks = observationTick - p.lastRunTick;
+		p.lastRunTick = observationTick;
+		p.lastSubmissionTick = tick;
 		++p.runs;
 		if (success)
 			p.retries = 0;
@@ -1138,6 +1372,46 @@ void LocalCommander::update()
 }
 Json LocalCommander::world(const Json &args)
 {
+	auto result = worldReply(args);
+	if (!args.contains("include"))
+	{
+		// The summary leaves out what rarely changes: the placeable names (game_place lists
+		// them when a name is wrong; detail full or include placeable has them) and the note
+		// on coordinates (the tool description says it).
+		if (args.value("detail", std::string("summary")) == "summary")
+		{
+			result.erase("placeable");
+			result.erase("note");
+		}
+		return result;
+	}
+	// Only the sections asked for, plus what identifies the reply. The note is left out:
+	// a caller that filters knows what it asked for.
+	Json kept = Json::object();
+	for (const char *always : {"tick", "session", "team"})
+		if (result.contains(always))
+			kept[always] = std::move(result[always]);
+	static const std::set<std::string> sections = {
+		"status", "alerts", "losses", "units", "forces", "buildings", "placements", "colony", "others",
+		"counts", "resources", "resources_scope", "resources_note", "placeable", "map", "view", "note"};
+	for (const auto &section : args.at("include"))
+	{
+		const auto name = section.is_string() ? section.get<std::string>() : section.dump();
+		if (!sections.contains(name))
+		{
+			std::string valid;
+			for (const auto &known : sections)
+				valid += (valid.empty() ? "" : ", ") + known;
+			throw std::runtime_error("Invalid argument: include has no section \"" + name + "\" (sections: " + valid +
+									 "; brief has status, alerts, losses, units, forces, buildings, placements)");
+		}
+		if (result.contains(name))
+			kept[name] = std::move(result[name]);
+	}
+	return kept;
+}
+Json LocalCommander::worldReply(const Json &args)
+{
 	const auto detail = args.value("detail", std::string("summary"));
 	const bool full = detail == "full", alertsOnly = detail == "alerts",
 			   brief = detail == "brief" || alertsOnly;
@@ -1244,6 +1518,8 @@ Json LocalCommander::world(const Json &args)
 						minX = std::min(minX, bx), minY = std::min(minY, by);
 						maxX = std::max(maxX, bx + type->width - 1), maxY = std::max(maxY, by + type->height - 1);
 					}
+					// Every own building is this match's: game_building accepts its reference.
+					reportedRefs.insert({b.value("id", 0), b.value("generation", 0u)});
 					ownIndex.push_back({{"type", key.substr(0, key.find('.'))},
 										{"x", b.value("x", 0)},
 										{"y", b.value("y", 0)},
@@ -1545,12 +1821,13 @@ Json LocalCommander::world(const Json &args)
 			}
 			const auto bar = gui.topBarValues();
 			const auto chance = gui.localWinChancePercent();
-			// The top bar's text (sampled with the colony's statistics) and the same as numbers,
-			// counted now: units_free matches units by type.
-			Json status = {{"workers_free_total", bar[0]},	 {"explorers_free_total", bar[1]},
-						   {"warriors_free_total", bar[2]}, {"prestige", bar[3]},
-						   {"win_chance_percent", bar[4]},	 {"units_free", unitStatus()},
-						   {"win_chance", chance ? Json(*chance) : Json(nullptr)}};
+			// units_free is counted now; hud_sampled is the top bar's text, from statistics
+			// sampled every few seconds, so it can lag.
+			Json status = {{"units_free", unitStatus()},
+						   {"win_chance", chance ? Json(*chance) : Json(nullptr)},
+						   {"prestige", bar[3]},
+						   {"hud_sampled", {{"workers", bar[0]}, {"explorers", bar[1]}, {"warriors", bar[2]},
+											{"win_chance", bar[4]}}}};
 			Json visibleUnits = Json::object();
 			for (const auto &[k, n] : otherUnits)
 				visibleUnits[k] = n;
@@ -1559,7 +1836,7 @@ Json LocalCommander::world(const Json &args)
 								 {"your_injured_units", injured}};
 			if (brief)
 			{
-				result = {{"tick", gui.game.stepCounter}, {"team", team},	   {"status", status},
+				result = {{"tick", gui.game.stepCounter}, {"session", session}, {"team", team}, {"status", status},
 						  {"units", ownUnits},			   {"forces", forces}, {"alerts", alerts},
 						  {"losses", lossSummary},		   {"buildings", Json::array()}};
 				// detail alerts: what changed, without the building list.
@@ -1573,6 +1850,7 @@ Json LocalCommander::world(const Json &args)
 				return;
 			}
 			result = {{"tick", gui.game.stepCounter},
+					  {"session", session},
 					  {"team", team},
 					  {"map", {{"width", gui.game.map.getW()}, {"height", gui.game.map.getH()}}},
 					  {"colony", {{"buildings", own}, {"units", ownUnits}}},
@@ -1602,12 +1880,14 @@ Json LocalCommander::world(const Json &args)
 					  {"y", int(std::floor(camera.originY / 32))},
 					  {"width", int(std::ceil(camera.visibleW() / 32))},
 					  {"height", int(std::ceil(camera.visibleH() / 32))}};
-	result["note"] = "Tiles are map coordinates; x/y of a building is its top-left tile. Only what "
-					 "your colony can see is listed. Place with game_place, look with game_view.";
+	result["note"] = "Tiles are map coordinates; x/y of a building is its top-left tile (an alert's x/y is "
+					 "its latest report's tile; area boxes them all). Only what your colony can see is listed. "
+					 "Place with game_place, look with game_view; ids are this match's (session).";
 	return result;
 }
 Json LocalCommander::place(const Json &args)
 {
+	checkSession(args);
 	const auto name = args.at("building").get<std::string>();
 	const int x = args.at("x"), y = args.at("y");
 	const int radius = args.value("near", false) ? args.value("search_radius", 12) : 0;
@@ -1644,8 +1924,9 @@ Json LocalCommander::place(const Json &args)
 		priority = text == "low" ? -1 : text == "high" ? 1 : 0;
 	}
 	const bool customised = settings.workers || settings.builders || settings.range;
+	std::string requestedRefusal;
 	if (const auto error = gui.placeFromAutomation(name, x, y, radius, &at, reserved, &size,
-												   customised ? &settings : nullptr);
+												   customised ? &settings : nullptr, &requestedRefusal);
 		!error.empty())
 		throw std::runtime_error(error);
 	const auto shortName = name.substr(0, name.find('.'));
@@ -1653,12 +1934,33 @@ Json LocalCommander::place(const Json &args)
 	while (placements.size() > 16)
 		placements.pop_front();
 	Json result = {{"queued", true},
+				   {"session", session},
 				   {"building", name},
 				   {"x", at.first},
 				   {"y", at.second},
-				   {"note", "Queued like a click. The site or flag appears after the next simulation "
-							"step; game_world lists it under placements until it does (or says it never "
-							"did). Change its settings later with game_building."}};
+				   {"note", "Queued like a click: the site or flag appears after the next simulation step, "
+							"so it has no id yet. game_world (detail brief) lists it under placements with "
+							"its id and generation once it does (or says it never did); change its settings "
+							"with game_building."}};
+	// near: how far from the requested top-left it went, and why that spot was refused.
+	if (at.first != x || at.second != y)
+	{
+		const int w = gui.game.map.getW(), h = gui.game.map.getH();
+		const auto shortest = [](int d, int size)
+		{
+			d = ((d % size) + size) % size;
+			return d > size / 2 ? d - size : d;
+		};
+		const int dx = shortest(at.first - x, w), dy = shortest(at.second - y, h);
+		result["moved"] = {{"dx", dx}, {"dy", dy}, {"tiles", std::max(std::abs(dx), std::abs(dy))}};
+		if (!requestedRefusal.empty())
+			result["moved"]["requested_refused"] = requestedRefusal;
+	}
+	// A flag's workers are the units that serve it: explorers for an exploration flag,
+	// warriors for a war flag.
+	if (args.contains("workers") && (shortName == "explorationflag" || shortName == "warflag"))
+		result["workers_note"] = std::string("workers is how many ") +
+								 (shortName == "warflag" ? "warriors" : "explorers") + " this flag requests";
 	// What the create order carries, after capping at what the type allows.
 	Json applied = Json::object();
 	for (const auto &[field, value] : {std::pair{"workers", settings.workers}, std::pair{"builders", settings.builders},
@@ -1731,7 +2033,36 @@ void LocalCommander::applyPendingPriorities()
 }
 Json LocalCommander::view(const Json &args)
 {
-	const int x = args.at("x"), y = args.at("y");
+	// Without x/y: the colony's Swarm, or its first building, centred.
+	int x = -1, y = -1;
+	std::string centredOn;
+	if (args.contains("x") != args.contains("y"))
+		throw std::runtime_error("Pass both x and y, or neither to centre on your colony");
+	if (args.contains("x"))
+		x = args.at("x"), y = args.at("y");
+	else
+		boundary(
+			[&]
+			{
+				for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
+				{
+					const auto *b = gui.game.teams[team]->myBuildings[slot];
+					if (!b || b->type->isVirtual)
+						continue;
+					const bool swarm = b->type->type == "swarm";
+					if (x < 0 || swarm)
+					{
+						x = b->posX + b->type->width / 2, y = b->posY + b->type->height / 2;
+						centredOn = swarm ? "your swarm" : "your first building";
+					}
+					if (swarm)
+						break;
+				}
+			});
+	if (x < 0)
+		throw std::runtime_error("You have no buildings to centre on: pass x and y");
+	if (!args.contains("x"))
+		x %= int(gui.game.map.getW()), y %= int(gui.game.map.getH()); // a footprint across the edge
 	if (x < 0 || y < 0 || x >= int(gui.game.map.getW()) || y >= int(gui.game.map.getH()))
 		throw std::runtime_error("Tile (" + std::to_string(x) + ", " + std::to_string(y) +
 								 ") is outside the map; read its size from game_world");
@@ -1779,8 +2110,9 @@ Json LocalCommander::view(const Json &args)
 			{"tile_pixels", 32 * camera.zoom},
 			{"zoom", camera.zoom},
 			{"zoom_range", {camera.minimumZoom(), MapCamera::MAX_ZOOM}},
-			{"note", "tile_screen is the tile's centre in logical pixels, as ui_inspect bounds; "
-					 "ui_click takes screenshot (capture_id) or native pixels, so click via a screenshot."}};
+			{"centre", centredOn.empty() ? Json{{"x", x}, {"y", y}} : Json{{"x", x}, {"y", y}, {"on", centredOn}}},
+			{"note", "tile_screen is the tile's centre in logical pixels: click it with ui_click space "
+					 "\"logical\" (or a control with ui_click key). Without x/y the view centres on your colony."}};
 }
 Json LocalCommander::chat(const Json &args)
 {
@@ -1855,7 +2187,13 @@ Json LocalCommander::time(const Json &args)
 		gui.agentPaused = true;
 		gui.heldSteps = steps;
 		gui.hardPause = true;
+		stepTarget = tick + steps;
+		// wait: answer once the steps have run, as game_wait would (no until events).
+		if (args.value("wait", false))
+			return wait({{"ticks", steps}, {"until", Json::array()}, {"_step", true}});
 	}
+	if (action == "pause" || action == "resume")
+		stepTarget = 0;
 	const unsigned left = gui.heldSteps.load();
 	Json result = {{"tick", tick},
 				   {"paused", bool(gui.gamePaused) || gui.simulationHeld()},
@@ -1876,7 +2214,7 @@ Json LocalCommander::time(const Json &args)
 	{
 		result["target_tick"] = tick + steps;
 		result["note"] = "Stepping runs the ticks at the current speed, then holds the match paused again; "
-						 "check game_time status until steps_remaining is 0. Orders sent while "
+						 "game_wait (or step with wait: true) returns once they have run. Orders sent while "
 						 "paused (game_place, clicks) apply as the next ticks run.";
 	}
 	else if (result["paused"] == true)
@@ -1914,8 +2252,10 @@ void LocalCommander::refreshMemory()
 		{
 			sightings.push_back({key.substr(0, key.find('.')), b.value("x", 0), b.value("y", 0), owner,
 								 gui.game.stepCounter});
-			record({"enemy_building_sighted", "Building sighted: " + key.substr(0, key.find('.')) + " of team " +
-						std::to_string(owner), b.value("x", 0), b.value("y", 0), owner, gui.game.stepCounter});
+			Logged sighted{"enemy_building_sighted", "Building sighted: " + key.substr(0, key.find('.')) + " of team " +
+							   std::to_string(owner), b.value("x", 0), b.value("y", 0), owner, gui.game.stepCounter};
+			sighted.what = key.substr(0, key.find('.'));
+			record(std::move(sighted));
 			while (sightings.size() > 32)
 				sightings.pop_front();
 		}
@@ -1930,9 +2270,11 @@ void LocalCommander::refreshMemory()
 		if (cell.visible && !visible.count(it->first))
 		{
 			// In view and no longer there: destroyed, or dismantled by its owner.
-			record({"enemy_building_gone", "Building gone: " + it->second.value("type", std::string()) + " of team " +
-						std::to_string(it->second.value("team", -1)),
-					it->second.value("x", 0), it->second.value("y", 0), it->second.value("team", -1), gui.game.stepCounter});
+			Logged gone{"enemy_building_gone", "Building gone: " + it->second.value("type", std::string()) + " of team " +
+							std::to_string(it->second.value("team", -1)),
+						it->second.value("x", 0), it->second.value("y", 0), it->second.value("team", -1), gui.game.stepCounter};
+			gone.what = it->second.value("type", std::string());
+			record(std::move(gone));
 			it = seenBuildings.erase(it);
 		}
 		else
@@ -1947,9 +2289,11 @@ void LocalCommander::refreshMemory()
 			continue;
 		const bool demolished = before.demolishing || demolitionOrders.count(gid) > 0;
 		losses.push_back({before.type, before.x, before.y, gui.game.stepCounter, demolished});
-		record({demolished ? "building_demolished" : "building_destroyed",
-				(demolished ? "Building demolished: " : "Building destroyed: ") + before.type, before.x, before.y, team,
-				gui.game.stepCounter});
+		Logged lost{demolished ? "building_demolished" : "building_destroyed",
+					(demolished ? "Building demolished: " : "Building destroyed: ") + before.type, before.x, before.y, team,
+					gui.game.stepCounter};
+		lost.what = before.type;
+		record(std::move(lost));
 		demolitionOrders.erase(gid);
 	}
 	while (losses.size() > 32)
@@ -1962,15 +2306,40 @@ Json LocalCommander::unitStatus() const
 	// The colony's own units now, as units by type counts them. Free is the top bar's
 	// meaning: fed, healthy and not working; for workers, less the units that buildings
 	// and flags request and do not have yet (never below 0: requested_over says by how
-	// many the requests exceed the free workers).
+	// many the requests exceed the free workers). Beside it, where the others are:
+	// idle (free, before requests), working (a building's job), at_flags, in_guard_zones
+	// (idle in a guard zone), fighting, hungry or injured (going to or inside an Inn or
+	// Hospital) and inside (in a building: eating, healing or training). Zero counts
+	// are left out.
 	static const char *const kinds[] = {"workers", "explorers", "warriors"};
-	int total[3] = {}, idle[3] = {};
+	struct Count
+	{
+		int total = 0, idle = 0, working = 0, flags = 0, guard = 0, fighting = 0, hungry = 0, injured = 0, inside = 0;
+	} counts[3];
 	const Team *colony = gui.game.teams[team];
 	for (const Unit *u : colony->liveUnits.entries())
 		if (u && u->typeNum < 3)
 		{
-			++total[u->typeNum];
-			idle[u->typeNum] += u->medical == Unit::MED_FREE && u->activity == Unit::ACT_RANDOM;
+			auto &c = counts[u->typeNum];
+			++c.total;
+			const bool isInside = u->displacement == Unit::DIS_INSIDE || u->displacement == Unit::DIS_ENTERING_BUILDING;
+			c.inside += isInside;
+			if (u->medical == Unit::MED_HUNGRY)
+				++c.hungry;
+			else if (u->medical == Unit::MED_DAMAGED)
+				++c.injured;
+			else if (u->activity == Unit::ACT_FLAG)
+				++c.flags;
+			else if (u->activity != Unit::ACT_RANDOM)
+				++c.working;
+			else
+			{
+				++c.idle;
+				if (u->displacement == Unit::DIS_ATTACKING_AROUND)
+					++c.fighting;
+				else if (u->typeNum == WARRIOR && gui.game.map.isGuardArea(u->posX, u->posY, colony->me))
+					++c.guard;
+			}
 		}
 	int requested = 0;
 	for (const Building *b : colony->liveBuildings.entries())
@@ -1979,14 +2348,20 @@ Json LocalCommander::unitStatus() const
 	Json result = Json::object();
 	for (int i = 0; i < 3; ++i)
 	{
+		const auto &c = counts[i];
 		const int wanted = i == 0 ? requested : 0;
-		Json entry = {{"free", std::max(0, idle[i] - wanted)}, {"total", total[i]}};
+		Json entry = {{"free", std::max(0, c.idle - wanted)}, {"total", c.total}};
+		for (const auto &[name, n] : {std::pair{"idle", c.idle}, std::pair{"working", c.working},
+									  std::pair{"at_flags", c.flags}, std::pair{"in_guard_zones", c.guard},
+									  std::pair{"fighting", c.fighting}, std::pair{"hungry", c.hungry},
+									  std::pair{"injured", c.injured}, std::pair{"inside", c.inside}})
+			if (n)
+				entry[name] = n;
 		if (i == 0)
 		{
-			entry["idle"] = idle[i];
 			entry["requested_unfilled"] = requested;
-			if (requested > idle[i])
-				entry["requested_over"] = requested - idle[i];
+			if (requested > c.idle)
+				entry["requested_over"] = requested - c.idle;
 		}
 		result[kinds[i]] = std::move(entry);
 	}
@@ -2016,6 +2391,14 @@ void LocalCommander::submit(const std::vector<Json> &descriptors)
 }
 Json LocalCommander::building(const Json &args)
 {
+	// Ids belong to a match: refuse another match's session, and a reference this
+	// commander never reported unless the caller names this match's session.
+	checkSession(args);
+	if (!args.contains("session") &&
+		!reportedRefs.count({args.at("id").get<int>(), args.at("generation").get<unsigned>()}))
+		throw std::runtime_error("Building " + args.at("id").dump() + " generation " + args.at("generation").dump() +
+								 " was not reported in this match: call game_world for this match's ids (or pass "
+								 "this match's session, from game_world, with an id read another way)");
 	const Json ref = {{"id", args.at("id")}, {"generation", args.at("generation")}};
 	std::vector<Json> orders;
 	Json changed = Json::array();
@@ -2025,7 +2408,7 @@ Json LocalCommander::building(const Json &args)
 	int maximumRange = -1;
 	std::string problem;
 	bool site = false, isFlag = false, upgradable = false;
-	std::string typeName;
+	std::string typeName, servedBy = "workers";
 	boundary(
 		[&]
 		{
@@ -2061,6 +2444,10 @@ Json LocalCommander::building(const Json &args)
 			isFlag = b->type->isVirtual;
 			upgradable = !site && !isFlag && b->type->nextLevel >= 0;
 			typeName = b->type->type;
+			if (isFlag && b->type->zonable[EXPLORER])
+				servedBy = "explorers";
+			else if (isFlag && b->type->zonable[WARRIOR])
+				servedBy = "warriors";
 		});
 	if (!problem.empty())
 		throw std::runtime_error(problem + "; game_world detail brief lists your buildings' ids and generations");
@@ -2098,6 +2485,11 @@ Json LocalCommander::building(const Json &args)
 	if (a.contains("production"))
 	{
 		const auto &r = a.at("production");
+		for (const char *field : {"workers", "explorers", "warriors"})
+			if (r.contains(field) && (!r.at(field).is_number_integer() || r.at(field).get<std::int64_t>() < 0 ||
+									  r.at(field).get<std::int64_t>() > 16))
+				throw std::runtime_error(std::string("production.") + field + " must be a whole number 0..16 (got " +
+										 r.at(field).dump() + ")");
 		orders.push_back({{"type", "production"}, {"building", ref},
 						  {"ratios", {r.value("workers", 0), r.value("explorers", 0), r.value("warriors", 0)}}});
 		changed.push_back("production");
@@ -2147,6 +2539,8 @@ Json LocalCommander::building(const Json &args)
 	}
 	if (maximumRange >= 0 && rangeRequested > maximumRange)
 		result["range_capped_at"] = maximumRange;
+	if (a.contains("workers") && servedBy != "workers")
+		result["workers_note"] = "workers is how many " + servedBy + " this " + typeName + " requests";
 	if (orders.empty())
 		throw std::runtime_error("Nothing to change: pass workers, priority, production, range or action");
 	submit(orders);
@@ -2204,7 +2598,7 @@ Json LocalCommander::stats(const Json &args)
 		if (const auto metric = std::find_if(metrics.begin(), metrics.end(), [&](const auto &m) { return id == m.id; });
 			metric != metrics.end() && metric->winProbability)
 			throw std::runtime_error("The win probability history is shown only after the match, on the "
-									 "end_game results screen; status.win_chance_percent here is the current "
+									 "end_game results screen; status.win_chance here is the current "
 									 "chance the HUD shows");
 	std::erase_if(metrics, [](const auto &m) { return m.winProbability; });
 	static const std::vector<std::string> defaults = {"population", "net growth", "hunger",	"health",
@@ -2220,11 +2614,13 @@ Json LocalCommander::stats(const Json &args)
 	result["tick"] = now;
 	result["seconds"] = now / GAME_TICKS_PER_SECOND;
 	result["team"] = details;
-	result["status"] = {{"workers_free_total", bar[0]}, {"explorers_free_total", bar[1]},
-						{"warriors_free_total", bar[2]}, {"prestige", bar[3]},
-						{"win_chance_percent", bar[4]}, {"converted_in", bar[5]},
-						{"converted_out", bar[6]}, {"units_free", unitsFree},
-						{"win_chance", chance ? Json(*chance) : Json(nullptr)}};
+	result["status"] = {{"units_free", unitsFree},
+						{"win_chance", chance ? Json(*chance) : Json(nullptr)},
+						{"prestige", bar[3]},
+						{"converted_in", bar[5]},
+						{"converted_out", bar[6]},
+						{"hud_sampled", {{"workers", bar[0]}, {"explorers", bar[1]}, {"warriors", bar[2]},
+										 {"win_chance", bar[4]}}}};
 	result["note"] = "Your colony only, as the in-game Statistics panel shows it. Every team's "
 					 "statistics and the win probability history follow on the end_game results "
 					 "screen, while it is shown.";
@@ -2232,18 +2628,25 @@ Json LocalCommander::stats(const Json &args)
 }
 namespace
 {
-// game_wait's until categories, and the alert kinds each one stands for.
+// game_wait's until categories, and the event tags each one stands for. An event's tags
+// are its kind and, for unit_attacked, its kind and the unit type ("unit_attacked:explorer").
 const std::map<std::string, std::set<std::string>> &waitCategories()
 {
 	// until names: these categories, or any alert kind itself (unit_attacked...).
 	static const std::map<std::string, std::set<std::string>> categories = {
-		{"attack", {"unit_attacked", "building_attacked"}},
+		// Attacks on workers, warriors and buildings: a lone scout under fire does not count.
+		{"attack", {"unit_attacked:worker", "unit_attacked:warrior", "unit_attacked:unknown", "building_attacked"}},
+		{"attack_buildings", {"building_attacked"}},
+		{"attack_warriors", {"unit_attacked:warrior"}},
 		{"unit_attacked", {"unit_attacked"}},
 		{"building_attacked", {"building_attacked"}},
 		{"building_completed", {"building_completed"}},
 		{"building_lost", {"building_destroyed"}},
 		{"building_destroyed", {"building_destroyed"}},
+		// conversion is both directions (as before); conversion_lost only your units.
 		{"conversion", {"unit_converted_away", "unit_converted_to_you"}},
+		{"conversion_lost", {"unit_converted_away"}},
+		{"conversion_gained", {"unit_converted_to_you"}},
 		{"unit_converted_away", {"unit_converted_away"}},
 		{"unit_converted_to_you", {"unit_converted_to_you"}},
 		{"enemy_sighted", {"enemy_building_sighted"}},
@@ -2260,9 +2663,15 @@ Json LocalCommander::wait(const Json &args)
 	// Everything read here is what the colony itself is told (its journal): the HUD's
 	// event reports, its own losses, buildings it saw appear or go, its scripts.
 	const unsigned now = gui.simulationThreaded ? gui.drawnScene().tick : gui.game.stepCounter;
-	std::map<std::string, std::string> wanted; // alert kind -> the until name that asked for it
-	for (const auto &category : args.value("until", Json{"attack", "building_lost", "conversion", "enemy_sighted",
-														  "enemy_building_gone", "hive_failure", "hive_wake"}))
+	Json poll;
+	const bool polling = args.contains("_poll");
+	if (polling)
+		poll = args.at("_poll");
+	std::map<std::string, std::string> wanted; // event tag -> the until name that asked for it
+	const Json defaults = {"attack", "building_lost", "conversion_lost", "enemy_sighted", "enemy_building_gone",
+						   "hive_failure", "hive_wake"};
+	const Json until = polling ? poll.value("until", defaults) : args.value("until", defaults);
+	for (const auto &category : until)
 	{
 		const auto name = category.is_string() ? category.get<std::string>() : category.dump();
 		const auto found = waitCategories().find(name);
@@ -2273,13 +2682,10 @@ Json LocalCommander::wait(const Json &args)
 				names += (names.empty() ? "" : ", ") + n;
 			throw std::runtime_error("Unknown until name \"" + name + "\"; use one of: " + names);
 		}
-		for (const auto &kind : found->second)
-			wanted.emplace(kind, name);
+		for (const auto &tag : found->second)
+			wanted.emplace(tag, name);
 	}
-	Json poll;
-	if (args.contains("_poll"))
-		poll = args.at("_poll");
-	else
+	if (!polling)
 	{
 		// resume: let a paused match run, so pausing to think and waiting are one call each.
 		if (args.value("resume", false) && (gui.gamePaused || gui.simulationHeld()))
@@ -2294,7 +2700,15 @@ Json LocalCommander::wait(const Json &args)
 			});
 		recordFeed();
 		const unsigned from = args.contains("since_tick") ? args.at("since_tick").get<unsigned>() : now;
-		poll = {{"start", from}, {"began", now}, {"target", now + args.value("ticks", 300u)}, {"ongoing", Json::object()}};
+		poll = {{"start", from},
+				{"include", args.value("include", Json())},
+				{"began", now},
+				// A step's wait ends at the step's own end, whatever the published scene shows.
+				{"target", args.value("_step", false) ? stepTarget : now + args.value("ticks", 300u)},
+				{"ongoing", Json::object()},
+				{"until", until}};
+		if (args.value("_step", false))
+			poll["step"] = true;
 		// Attacks already under way when the wait starts are reported, but only a new
 		// skirmish (another place, or one that had gone quiet) ends the wait.
 		for (const auto &e : eventLog)
@@ -2309,7 +2723,9 @@ Json LocalCommander::wait(const Json &args)
 		reason = "match_end";
 	for (auto it = eventLog.rbegin(); reason.empty() && it != eventLog.rend() && it->tick > start; ++it)
 	{
-		const auto match = wanted.find(it->kind);
+		auto match = wanted.find(it->kind);
+		if (match == wanted.end() && it->kind == "unit_attacked")
+			match = wanted.find(it->kind + ":" + (it->subject >= 0 && it->subject < 3 ? unitNames[it->subject] : "unknown"));
 		if (match == wanted.end())
 			continue;
 		if ((it->kind == "unit_attacked" || it->kind == "building_attacked") &&
@@ -2319,18 +2735,26 @@ Json LocalCommander::wait(const Json &args)
 		trigger = {{"kind", it->kind}, {"event", it->event}};
 		if (it->x >= 0)
 			trigger["x"] = it->x, trigger["y"] = it->y;
+		if (it->subject >= 0 && it->subject < 3)
+			trigger["unit"] = unitNames[it->subject];
 	}
 	const unsigned simTick = gui.game.stepCounter;
 	if (reason.empty() && std::max(now, simTick) >= target)
 		reason = "ticks";
-	if (reason.empty() && (gui.gamePaused || gui.simulationHeld()))
+	// game_time step holds the match paused again once its ticks have run; until then
+	// (the last steps can still be running) the wait is not over.
+	const bool stepping = stepTarget > std::max(now, simTick) && gui.hardPause && !gui.gamePaused;
+	if (reason.empty() && (gui.gamePaused || gui.simulationHeld()) && !stepping)
 		reason = "paused";
 	if (reason.empty() && args.value("_final", false))
 		reason = "timeout";
 	if (reason.empty())
 		return {{"pending", true}, {"poll", poll}};
 	// Done: game_world detail alerts since the wait's start (grouped, newest first).
-	Json result = world({{"detail", "alerts"}, {"since_tick", start}});
+	Json report = {{"detail", "alerts"}, {"since_tick", start}};
+	if (poll.contains("include") && !poll.at("include").is_null())
+		report["include"] = poll.at("include");
+	Json result = world(report);
 	const unsigned began = poll.value("began", start), endTick = result.value("tick", now);
 	if (reason == "timeout" && endTick >= target)
 		reason = "ticks"; // the published scene lagged the simulation at the last poll
@@ -2341,9 +2765,11 @@ Json LocalCommander::wait(const Json &args)
 	result["waited_ticks"] = endTick - began;
 	if (const auto outcome = gui.announcedOutcome(); !outcome.empty())
 		result["outcome"] = outcome;
+	const bool step = poll.value("step", false);
 	result["note"] =
 		reason == "paused" ? "The match is paused, so no time passes: game_time resume first (or game_wait resume: true)."
-		: reason == "ticks" ? "The requested ticks passed without an until event."
+		: reason == "ticks" ? (step ? "The steps have run; the match is paused again."
+									: "The requested ticks passed without an until event.")
 		: reason == "timeout"
 			? std::to_string(endTick - began) + " of " + std::to_string(target - began) +
 				  " ticks passed before timeout_ms (default 25000, at most 30000) ended the wait; call game_wait "
@@ -2428,9 +2854,21 @@ Json localCall(const std::string &tool, const Json &args)
 			throw std::runtime_error("game_stats needs a local match you are playing (your colony) or "
 									 "the end_game results screen after a match (every team); this "
 									 "screen has neither");
-		throw std::runtime_error("Local Hive unavailable: requires a local human match; online, "
-								 "replay, spectator and AI takeover modes are unsupported");
+		// No commander: either no match at all, or one these tools cannot command.
+		const auto screen = screenSource() ? screenSource()() : std::string();
+		const bool unsupportedMatch = globalContainer->replaying || globalContainer->liveSpectating ||
+									  screen == "game_session" ||
+									  (screen.empty() && active && !active->available());
+		if (unsupportedMatch)
+			throw std::runtime_error("Local Hive unavailable: requires a local human match; online, "
+									 "replay, spectator and AI takeover modes are unsupported");
+		throw std::runtime_error("No match is running" + (screen.empty() ? std::string() : " (screen " + screen + ")") +
+								 ": start one from custom_game (game_guide explains how)");
 	}
 	return active->call(tool, args);
+}
+void setScreenSource(std::function<std::string()> source)
+{
+	screenSource() = std::move(source);
 }
 } // namespace Hive

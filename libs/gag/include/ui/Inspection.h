@@ -46,6 +46,10 @@ struct ControlSnapshot
 	std::vector<std::string> options;
 	std::vector<bool> optionEnabled;
 	std::optional<ValueRange> range;
+	// Text a ranged value reads as ("1.6x" for speed level 2); empty when the number says it.
+	std::string valueLabel;
+	// Why a disabled control cannot be used now, when the screen knows; empty otherwise.
+	std::string disabledReason;
 	std::vector<ControlSnapshot> children;
 	bool operator==(const ControlSnapshot &) const = default;
 };

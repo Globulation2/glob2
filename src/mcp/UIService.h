@@ -76,6 +76,12 @@ class UIService : public ExecutionContext
 	void release(std::vector<SDL_Event> &);
 	void releaseTemporary(std::vector<SDL_Event> &);
 	void finish(std::string error = {});
+	// Why a token-bearing input call is refused: no lease, or another token holds it.
+	std::string leaseProblem() const;
+	// The armed placement tool ("building:inn", "flag:warflag") when native x/y is on the map
+	// canvas of a match; empty otherwise. Main thread.
+	std::string armedPlacementAt(double nativeX, double nativeY);
+	std::string placementTool();
 	void updateViewport();
 	Json metadata() const;
 	void startCapture();

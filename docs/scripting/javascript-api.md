@@ -27,6 +27,14 @@ entity objects, pathfinding queries or direct mutation methods.
 - A hidden, dead, missing or stale entity lookup returns `null`. Malformed query
   arguments throw a JavaScript `TypeError`. Unsupported scenario queries also
   throw in AI scripts. Budget and failure behavior is described in the guide.
+- A script declares `step(ctx)`; `main(ctx)` is accepted as another name for it.
+  Stack traces omit the runtime's internal entry wrapper.
+- Each callback converts at most 1 MiB of strings and record keys from JavaScript
+  to the engine, cumulatively: the arguments of every query and helper call (a
+  record passed as an argument counts whole), the returned effects and the saved
+  state. Crossing it throws a `TypeError` that names the amount and the call; the
+  bytes are not given back when it is caught, so the callback still fails when it
+  returns. Treat it as fatal. The same applies to the 32 MiB native data budget.
 - Extra descriptor fields are ignored by order/effect validators, but still must
   be serializable script data and consume the conversion budget. Use the signatures
   below; unused arguments are not a versioning or extension mechanism.
@@ -291,7 +299,11 @@ ctx.game.map.distance(a, b)
 `delta` returns `{dx, dy}`, the shortest offset from `a` to `b` on the wrapping map, and
 `distance` the straight-line length of that offset. Pass two `{x, y}` records or four
 integers `ax, ay, bx, by`. They are pure arithmetic on the map size, read nothing else
-and cost one work unit; plain subtraction is wrong for positions near opposite edges.
+and cost one work unit plus converting their arguments; plain subtraction is wrong for
+positions near opposite edges. A missing or invalid coordinate is named in the error
+(`map.distance a.y must be a whole number -32768..32767 (got nothing)`). Local colony
+(Hive) scripts read only `x` and `y` of record arguments; AI and map scripts convert
+each argument whole, so pass `{x, y}` or four numbers in large loops.
 Local colony (Hive) scripts have further helpers; `hive_api` section `helpers` lists them.
 
 Query X/Y must be integers in `-32768..32767` and wrap around the toroidal map;

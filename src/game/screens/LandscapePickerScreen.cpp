@@ -25,6 +25,42 @@ std::string tr(const std::string &s)
 {
 	return Toolkit::getStringTable()->getString("[" + s + "]");
 }
+// The grid of landscape cards, also described as one choice: inspection lists every
+// landscape as an option, so an agent can `select` one by name, even scrolled out of
+// view, instead of scrolling the grid to reach its card. Selecting does what tapping a
+// card the first time does: it selects that landscape and reveals its card.
+class LandscapeChoice final : public fe::Wrapper
+{
+	std::string label;
+	std::vector<std::string> names;
+	std::vector<bool> allowed;
+	int current;
+	std::function<void(int)> choose;
+
+  public:
+	LandscapeChoice(Element grid, std::string key, std::string label, std::vector<std::string> names,
+					std::vector<bool> allowed, int current, std::function<void(int)> choose)
+		: Wrapper(std::move(grid)), label(std::move(label)), names(std::move(names)),
+		  allowed(std::move(allowed)), current(current), choose(std::move(choose))
+	{
+		this->key = std::move(key);
+	}
+	const char *name() const override { return "choice"; }
+	std::string accessibleText() const override { return label; }
+	fe::ControlValue controlValue() const override { return current; }
+	std::vector<std::string> optionLabels() const override { return names; }
+	std::vector<bool> optionsEnabled() const override { return allowed; }
+	std::vector<fe::ActionKind> supportedActions() const override { return {fe::ActionKind::Select}; }
+	bool perform(const fe::SemanticAction &action, fe::Host &) override
+	{
+		const auto *index = std::get_if<int>(&action.value);
+		if (action.kind != fe::ActionKind::Select || !index || *index < 0 || *index >= int(names.size()) ||
+			!allowed[std::size_t(*index)])
+			return false;
+		choose(*index);
+		return true;
+	}
+};
 // A tag's value half, capitalized, for a filter menu: "wide-open" -> "Wide open". Tags are plain
 // catalog strings, not translation keys, so this dresses them up rather than looking them up in
 // the string table.
@@ -622,10 +658,35 @@ Element LandscapePickerScreen::build(const Presentation &p)
 		}
 	}
 	Element gridElement = fe::scroll("landscape/grid", fe::column(std::move(sections), {p.pt(10)}));
+	{
+		// Every landscape by name, in the constructor's order; those filtered out or needing
+		// other settings are listed but cannot be chosen.
+		std::vector<std::string> names;
+		std::vector<bool> allowed;
+		for (std::size_t i = 0; i < entries.size(); ++i)
+		{
+			names.push_back(entries[i].name);
+			allowed.push_back(incompatible[i].empty() &&
+							  std::find(visible.begin(), visible.end(), int(i)) != visible.end());
+		}
+		gridElement = std::make_shared<LandscapeChoice>(gridElement, "landscape/choice", "Landscape",
+														std::move(names), std::move(allowed), selected,
+														[this](int index) { select(index); });
+	}
 	if (compact)
 		header.clear();
 	const bool valid = selected >= 0 && selected < int(entries.size());
 	const std::string useLabel = tr("Use") + (valid && !compact ? " " + entries[std::size_t(selected)].name : "");
+	// Why Use is unavailable, for inspection: it waits for the shown map of the selection.
+	std::string useBlocked;
+	if (!valid)
+		useBlocked = "Choose a landscape first";
+	else if (!chosenSeed().has_value())
+		useBlocked = tiles[std::size_t(selected)].preview.state == LandscapePreviewer::State::Failed
+						 ? "The selected landscape has no map to use (its preview failed); choose "
+						   "another or Regenerate all"
+						 : "The selected landscape's map is still generating; wait until landscape/use "
+						   "is enabled (ui_wait {key: \"landscape/use\", enabled: true})";
 	Element actionRow;
 	if (compact)
 	{
@@ -649,7 +710,8 @@ Element LandscapePickerScreen::build(const Presentation &p)
 									   {false, false, true, false, false, false, SDLK_ESCAPE}),
 					 fe::expanded(menu),
 					 fe::expanded(fe::button("landscape/use", useLabel, [this] { confirm(); },
-											 {true, false, valid && chosenSeed().has_value()}))},
+											 {.primary = true, .enabled = valid && chosenSeed().has_value(),
+											  .disabledReason = useBlocked}))},
 					{p.pt(6), fe::CrossAlign::Stretch});
 	}
 	else
@@ -657,7 +719,7 @@ Element LandscapePickerScreen::build(const Presentation &p)
 								 {"landscape/regenerate", tr("Regenerate all"), [this] { previewer.regenerate(); }},
 								 {"landscape/randomize", tr("Randomize parameters"), [this] { randomizeParameters(); }},
 								 {"landscape/reset", tr("Reset to defaults"), [this] { resetParameters(); }},
-								 {"landscape/use", useLabel, [this] { confirm(); }, true, SDLK_UNKNOWN, valid && chosenSeed().has_value()}},
+								 {"landscape/use", useLabel, [this] { confirm(); }, true, SDLK_UNKNOWN, valid && chosenSeed().has_value(), {}, useBlocked}},
 								p);
 	auto body = compact ? fe::column({fe::expanded(gridElement)}) : fe::column({fe::column(std::move(header), {p.pt(8)}), fe::expanded(gridElement)}, {p.pt(10)});
 	fe::CardOptions cardOptions;

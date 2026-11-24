@@ -1,8 +1,10 @@
-Hive Mind API version 1. Every source is standalone synchronous JavaScript source declaring step(ctx). No imports, async callbacks, filesystem, network, console, or external libraries. Top-level plain data persists between invocations. Use structured return data; do not retain ctx or entity snapshots globally. Source limit 128 KiB; globals limit 1 MiB; output limit 64 KiB; 8 standing orders; 32 gameplay orders per invocation; schedule intervals >=25 simulation ticks. A step returns {output: JSON-compatible value, orders: array of order descriptors}. Omit either field when unused.
+Hive Mind API version 1. Every source is standalone synchronous JavaScript source declaring step(ctx) (main(ctx) is accepted as another name for it). No imports, async callbacks, filesystem, network, console, or external libraries. Top-level plain data persists between invocations. Use structured return data; do not retain ctx or entity snapshots globally. Source limit 128 KiB; globals limit 1 MiB; output limit 64 KiB; 8 programs; 32 gameplay orders per invocation; schedule intervals >=25 simulation ticks. A step returns {output: JSON-compatible value, orders: array of order descriptors}. Omit either field when unused.
 
 ## Online program management
 
 The tool accepts execute, install, replace, list, pause, resume and remove operations. Install requires a new UUID and revision 1. Replacement requires expectedRevision and new revision=expectedRevision+1; replacement resets globals unless migration source is supplied. ctx.wakeAgent({key,reason,data}) requests an optional paid follow-up for an ongoing task; it is not a direct model call. Triggers should be edge-triggered, meaningful, and deduplicated using persistent state. Do not wake on every invocation.
+
+Replacement migration (online programs only; a local hive_program replace has no migration and resets globals): a migration source declares step(ctx, state). state.previous contains the opaque saved globals checkpoint. Return {output: checkpoint, orders: []}. Null output resets state. An unchanged checkpoint requires compatible source bindings. Prefer reset over manipulating opaque checkpoints.
 
 ## Player API
 
@@ -26,6 +28,10 @@ All reads are fixed to the authenticated team and one observation tick. Other-te
   field as `undefined` in returned data: omit it or use `null` explicitly. Global variables can contain undefined.
 - A hidden, dead, missing or stale entity lookup returns `null`. Malformed query
   queries throw. Invocation failures discard all state and orders.
+- One run converts at most 1 MiB of strings and record keys from JavaScript to the
+  host, cumulatively: every helper call's arguments (records passed whole included),
+  the returned output and the globals. Crossing it throws a `TypeError` naming the
+  call; catching it does not give the bytes back, so the invocation still fails.
 - Extra descriptor fields are ignored by order/effect validators, but still must
   be serializable script data and consume the conversion budget. Use the signatures
   below; unused arguments are not a versioning or extension mechanism.
@@ -316,5 +322,3 @@ Order coordinates **do not** use the read API's signed/wrapped input convention.
 Area-mask `(0,0)` is anchored at `(x,y)` and the engine wraps affected tiles.
 `false` mask entries leave tiles unchanged; mode adds/removes the selected area
 on true entries. Guard/clear zones are not exposed by the tile read API yet.
-
-Replacement migration (online programs only; a local hive_program replace has none and resets globals): declare step(ctx, state). state.previous contains the opaque saved globals checkpoint. Return {output: checkpoint, orders: []}. Null output resets state. An unchanged checkpoint requires compatible source bindings. Prefer reset over manipulating opaque checkpoints.

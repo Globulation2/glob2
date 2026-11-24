@@ -27,7 +27,8 @@ class LocalCommander : public CommanderView
 		bool initialized = false, paused = false;
 		unsigned nextTick = 0, random = 1;
 		unsigned retries = 0; // consecutive retries after the worker could not start
-		unsigned lastRunTick = 0, runs = 0;
+		unsigned lastRunTick = 0, runs = 0; // lastRunTick: the latest run's observation tick
+		unsigned lastSubmissionTick = 0, periodTicks = 0; // when its orders went; ticks between runs
 		std::string pausedReason, lastError; // why a failure paused it; the latest failure
 		std::uint64_t generation = 0;
 	};
@@ -55,6 +56,7 @@ class LocalCommander : public CommanderView
 	// MCP game_world / game_place / game_view: fog-filtered world state and tile-based
 	// placement and camera moves, without writing a script.
 	Json world(const Json &arguments);
+	Json worldReply(const Json &arguments);
 	Json place(const Json &arguments);
 	Json view(const Json &arguments);
 	Json chat(const Json &arguments);
@@ -136,6 +138,8 @@ class LocalCommander : public CommanderView
 		unsigned tick = 0;
 		std::string program;
 		bool paused = false;
+		int subject = -1;	// unit_attacked: the unit type attacked (0 worker, 1 explorer, 2 warrior)
+		std::string what; // building events: the building's family name
 	};
 	std::deque<Logged> eventLog;
 	struct Annotation
@@ -145,6 +149,7 @@ class LocalCommander : public CommanderView
 		Json own; // by building id: units assigned, an Inn's units inside and happiness
 		Json pending;
 		std::vector<Logged> events;
+		Json remembered; // other teams' buildings the colony has seen, as last seen
 	};
 	std::map<std::uint64_t, std::uint64_t> rowSeen; // HUD row id -> update sequence logged
 	unsigned destroyedTotal = 0, demolishedTotal = 0;
@@ -189,6 +194,14 @@ class LocalCommander : public CommanderView
 	std::deque<Loss> losses;
 	std::set<int> demolitionOrders; // game_building destroy requests, by building id
 	int convertedAwaySeen = -1;
+	// Building references this commander reported in this match (game_world, game_place):
+	// game_building refuses others unless the caller names this match's session.
+	std::set<std::pair<int, unsigned>> reportedRefs;
+	// game_time step: the tick the requested steps end at, so game_wait does not report
+	// the match as paused while they are still running.
+	unsigned stepTarget = 0;
+	// A session argument from another match: refused, saying whether it ever existed.
+	void checkSession(const Json &args) const;
 
   public:
 	explicit LocalCommander(GameGUI &gui, std::function<std::future<Json>(Json)> launch = {});
@@ -209,4 +222,7 @@ Json matchOver(const std::string &tool);
 Json playerAPI();
 // hive_api: the Hive reference by section, or searched, rather than in one piece.
 Json apiDocs(const Json &arguments);
+// The current screen's name (as ui_inspect reports it) for the replies of game tools
+// called outside a match. Set once by the application; without it they name no screen.
+void setScreenSource(std::function<std::string()> source);
 } // namespace Hive

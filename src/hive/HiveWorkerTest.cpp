@@ -97,6 +97,8 @@ TEST_CASE("Hive Mind helpers: names, filters, placement, scans, events and wrap"
 			wheat:m.tile(1,0).resource.key,
 			scan:m.scan(0,0,6,1,['resource','buildable','terrain']),
 			free:m.canPlace('inn',0,1).ok, blocked:m.canPlace('inn',4,0).ok, onSite:m.canPlace('inn',1,1).ok,
+			why:[m.canPlace('inn',4,0).reason, m.canPlace('inn',1,1).reason, m.canPlace('inn',0,0).reason],
+			names:[g.units({team:'mine'})[0].typeName===undefined, g.buildingType('inn',{level:3})],
 			spot:m.findPlacement('inn',{x:3,y:1,radius:3}),
 			delta:m.delta({x:5,y:0},{x:0,y:3}), distance:m.distance(0,0,5,0)}};})"},
 		{"snapshot", snapshot}, {"state", nullptr}, {"initialized", false}});
@@ -118,6 +120,11 @@ TEST_CASE("Hive Mind helpers: names, filters, placement, scans, events and wrap"
 	CHECK(out.at("free") == true);
 	CHECK(out.at("blocked") == false); // its right column is water
 	CHECK(out.at("onSite") == false);	 // overlaps the colony's Inn site
+	// The reason names the tile and what is in the way.
+	CHECK(out.at("why") == Json{"tile (5, 0): unbuildable terrain (water)", "tile (2, 2): one of your buildings",
+								 "tile (1, 0): a resource (wheat)"});
+	// A known name without that level is null (an unknown name throws, below).
+	CHECK(out.at("names")[1].is_null());
 	CHECK(out.at("spot").at("x") == 2); // nearest ring, scanned top-left first
 	CHECK(out.at("spot").at("y") == 0);
 	// The map wraps: from x=5 to x=0 is one step right; from y=0 to y=3 one step up.
@@ -268,4 +275,26 @@ TEST_CASE("Hive Mind helper argument errors name the argument and its range" *
 			  .find("scan width must be a whole number 1..256 (got 300") != std::string::npos);
 	CHECK(failure("function step(ctx){ctx.game.map.scan(0,'a',2,1);return {};}")
 			  .find("scan y must be a whole number -32768..32767 (got \\\"a\\\")") != std::string::npos);
+}
+TEST_CASE("Hive Mind refuses unknown names and filter keys, listing the valid ones" *
+		  doctest::test_suite("HiveMind"))
+{
+	Json types = Json::array({{{"id", 0}, {"name", "inn"}, {"level", 0}, {"site", true}, {"virtual", false}, {"width", 2}, {"height", 2}},
+							  {{"id", 1}, {"name", "warflag"}, {"level", 0}, {"site", false}, {"virtual", true}, {"width", 1}, {"height", 1}}});
+	auto base = snapshot();
+	base["buildingTypes"] = types;
+	const auto failure = [&](const char *source)
+	{
+		const auto r = Hive::invoke({{"source", source}, {"snapshot", base}, {"state", nullptr}, {"initialized", false}});
+		CHECK(r.at("ok") == false);
+		return r.value("diagnostic", std::string());
+	};
+	CHECK(failure("function step(ctx){return {output:ctx.game.buildingType('tower')};}")
+			  .find("Unknown building or flag \"tower\"; names: inn, warflag") != std::string::npos);
+	CHECK(failure("function step(ctx){return {output:ctx.game.map.findPlacement('castle',{x:0,y:0})};}")
+			  .find("names: inn, warflag") != std::string::npos);
+	CHECK(failure("function step(ctx){return {output:ctx.game.units({team:1, kind:'warrior'})};}")
+			  .find("units filter has an unknown key \"kind\"; valid keys: team, type, offset, limit") != std::string::npos);
+	CHECK(failure("function step(ctx){return {output:ctx.game.buildings({remembered:1})};}")
+			  .find("remembered must be true or false") != std::string::npos);
 }

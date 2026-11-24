@@ -164,6 +164,7 @@ class Button : public Node
 	std::string tooltipText() const override { return options.tooltip; }
 	bool interactive() const override { return true; }
 	bool enabled() const override { return options.enabled; }
+	std::string disabledReason() const override { return options.disabledReason; }
 	SDL_Keycode shortcut() const override { return options.shortcut; }
 	void tap(Point, Host &host) override
 	{
@@ -300,7 +301,12 @@ class Toggle : public Node
 	}
 
 	const char *name() const override { return "toggle"; }
-	std::string accessibleText() const override { return (value ? "[x] " : "[ ] ") + text; }
+	std::string accessibleText() const override
+	{
+		if (!options.accessibleLabel.empty())
+			return options.accessibleLabel + (value ? ": on" : ": off");
+		return (value ? "[x] " : "[ ] ") + text;
+	}
 	bool interactive() const override { return true; }
 	bool enabled() const override { return enabledValue; }
 	void tap(Point, Host &host) override
@@ -559,6 +565,7 @@ class Stepper : public Node
 	const char *name() const override { return "stepper"; }
 	std::string accessibleText() const override { return valueText(); }
 	std::string valueText() const { return options.valueText.empty() ? std::to_string(value) : options.valueText; }
+	std::string valueLabel() const override { return options.valueText; }
 	bool interactive() const override { return true; }
 	bool enabled() const override { return options.enabled; }
 	void step(Host &host, int direction) { set(host, value + direction * options.step); }
@@ -656,6 +663,7 @@ class Slider : public Node
 	}
 
 	const char *name() const override { return "slider"; }
+	std::string valueLabel() const override { return options.valueText; }
 	std::string accessibleText() const override { return options.valueText.empty() ? std::to_string(value) : options.valueText; }
 	bool interactive() const override { return true; }
 	bool enabled() const override { return options.enabled; }

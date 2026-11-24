@@ -43,22 +43,43 @@ void validate(const Json &schema, const Json &value, const std::string &path)
 	// Name the offending field and the broken rule, so clients can correct the call.
 	auto fail = [&](const std::string &reason)
 	{ throw std::invalid_argument("Invalid argument: " + path + ": " + reason); };
+	// The allowed values, so a refused call says what would have been accepted:
+	// "0..255", ">= 1" or "<= 30000".
+	auto range = [&]() -> std::string
+	{
+		const bool low = schema.contains("minimum"), high = schema.contains("maximum");
+		if (low && high)
+			return schema["minimum"].dump() + ".." + schema["maximum"].dump();
+		if (low)
+			return ">= " + schema["minimum"].dump();
+		if (high)
+			return "<= " + schema["maximum"].dump();
+		return {};
+	};
+	// The offending value, shortened so a long string cannot flood the error.
+	auto got = [&]
+	{
+		auto text = value.dump(-1, ' ', false, Json::error_handler_t::replace);
+		if (text.size() > 64)
+			text = text.substr(0, 61) + "...";
+		return ", got " + text;
+	};
 	const auto type = schema.value("type", "");
 	if ((type == "object" && !value.is_object()) || (type == "array" && !value.is_array()) ||
 		(type == "string" && !value.is_string()) || (type == "boolean" && !value.is_boolean()) ||
 		(type == "integer" && !value.is_number_integer()) ||
 		(type == "number" && !value.is_number()))
-		fail("expected " + type);
+		fail("expected " + type + (range().empty() ? std::string() : " " + range()) + got());
 	if (schema.contains("enum") &&
 		std::find(schema["enum"].begin(), schema["enum"].end(), value) == schema["enum"].end())
-		fail("expected one of " + schema["enum"].dump());
+		fail("expected one of " + schema["enum"].dump() + got());
 	if (value.is_number())
 	{
 		const double n = value.get<double>();
 		if (!std::isfinite(n) ||
 			(schema.contains("minimum") && n < schema["minimum"].get<double>()) ||
 			(schema.contains("maximum") && n > schema["maximum"].get<double>()))
-			fail("out of range");
+			fail("out of range: " + (range().empty() ? std::string("a finite number") : range()) + got());
 	}
 	if (value.is_string() && schema.contains("maxLength") &&
 		std::size_t(std::count_if(value.get_ref<const std::string &>().begin(),
@@ -70,7 +91,10 @@ void validate(const Json &schema, const Json &value, const std::string &path)
 	{
 		if ((schema.contains("minItems") && value.size() < schema["minItems"].get<std::size_t>()) ||
 			(schema.contains("maxItems") && value.size() > schema["maxItems"].get<std::size_t>()))
-			fail("wrong number of items");
+			fail("wrong number of items: " +
+				 (schema.contains("minItems") ? schema["minItems"].dump() : std::string("0")) + ".." +
+				 (schema.contains("maxItems") ? schema["maxItems"].dump() : std::string("any")) +
+				 ", got " + std::to_string(value.size()));
 		// An array schema without items accepts any elements, as in JSON Schema.
 		if (schema.contains("items"))
 			for (const auto &item : value)
@@ -109,6 +133,22 @@ Json object(Json properties, Json required = Json::array())
 Json enumeration(std::initializer_list<const char *> values)
 {
 	return {{"type", "string"}, {"enum", values}};
+}
+// A wait for a screen that can never show would only time out after dispatching; refuse
+// it first, naming the screens there are.
+void checkScreenName(const Json &screen, const std::string &path)
+{
+	if (!screen.is_string())
+		return;
+	const auto &names = knownScreens();
+	if (std::find(names.begin(), names.end(), screen.get<std::string>()) != names.end())
+		return;
+	std::string listed;
+	for (const auto &name : names)
+		listed += (listed.empty() ? "" : ", ") + name;
+	throw std::invalid_argument("Invalid argument: " + path + ": unknown screen " + screen.dump() +
+								"; inspection.screen is one of " + listed +
+								" (game_guide topic screens describes the common ones)");
 }
 } // namespace
 void ToolRegistry::add(Tool tool)
@@ -260,6 +300,8 @@ void registerUITools(ToolRegistry &registry)
 				 if (name == "ui_wait")
 				 {
 					 const auto &condition = args.at("condition");
+					 if (condition.contains("screen"))
+						 checkScreenName(condition["screen"], "ui_wait.condition.screen");
 					 if (condition.empty())
 						 throw std::invalid_argument(
 							 "ui_wait.condition is empty; provide one, for example "
@@ -324,6 +366,8 @@ void registerUITools(ToolRegistry &registry)
 					 if (!(until.is_string() && until.get_ref<const std::string &>() == "next_screen") && !named)
 						 throw std::invalid_argument(
 							 "ui_act.wait_for: use \"next_screen\" or {\"screen\": NAME}");
+					 if (named)
+						 checkScreenName(until["screen"], "ui_act.wait_for.screen");
 					 if (args.value("capture_after", false))
 						 throw std::invalid_argument(
 							 "ui_act.wait_for cannot be combined with capture_after; call "
@@ -413,12 +457,20 @@ void registerUITools(ToolRegistry &registry)
 				   {"token", token}};
 	auto inspect = filter;
 	inspect["screenshot"] = {{"type", "boolean"}, {"default", false}};
+	inspect["find"] = {{"type", "string"},
+					   {"minLength", 1},
+					   {"maxLength", 128},
+					   {"description", "Text in a control's label or key (any case): returns a flat matches list "
+									   "(surface, key, label, role, actions, revision, state, hidden) instead of the tree"}};
+	inspect["bounds"] = {{"type", "boolean"},
+						 {"description", "Rectangles (logical pixels). Omitted: only canvases and controls without "
+										 "actions have them (ui_click {key} needs none); true: every control; false: none"}};
 	add("ui_inspect",
 		"Read the current screen: its name (inspection.screen) and surfaces, each with an "
 		"instance number and controls (key, label, role, actions, value, options or min/max, "
 		"revision). Feed surface/key/revision to ui_act. Filter with surface or subtree "
-		"key. Bounds are logical pixels (ui_click space=logical), not screenshot pixels. No token needed; "
-		"a token renews the lease.",
+		"key, or find (label or key text: a flat list of matches). Bounds are logical pixels "
+		"(ui_click space=logical); bounds: false drops them. No token needed; a token renews the lease.",
 		inspect, {}, false);
 	auto act = Json{{"surface", identity},
 					{"key", {{"type", "string"}, {"maxLength", 512}}},
@@ -434,9 +486,10 @@ void registerUITools(ToolRegistry &registry)
 		"Operate a control from ui_inspect by surface (instance), key and revision. action "
 		"must be one the control lists: activate, select (value: option label or zero-based "
 		"index), set_value (value matching the control, within min..max) or scroll (value: "
-		"signed logical pixels). Returns the inspection once consumed (inspect=false: screen "
-		"only; result_subtree trims it). wait_for holds the reply until a screen change "
-		"(timeout_ms). Never retry automatically.",
+		"signed logical pixels). Once consumed it returns the acted control (same screen) or "
+		"the new screen's inspection; inspect=false: screen name only; result_subtree picks "
+		"another control. wait_for holds the reply until a screen change (timeout_ms). Never "
+		"retry automatically.",
 		act, {"surface", "key", "revision", "action"}, true);
 	auto wait = filter;
 	wait["inspect"] = {{"type", "boolean"}, {"default", true}};
@@ -459,13 +512,18 @@ void registerUITools(ToolRegistry &registry)
 		wait, {"condition"}, false);
 
 	add("game_world",
-		"Your colony in map tiles: status (top-bar text; units_free and win_chance as numbers), "
-		"alerts (losses, conversions, attacks with tiles), losses, buildings (id, type, top-left "
-		"x/y, size, site, workers, stock/capacity, Inn happiness), unit counts, known resources "
-		"(nearest tile, largest fields; area restricts), other teams' visible and remembered buildings, recent placements, "
-		"placeable names. detail brief: status, alerts, losses, one line per building; "
-		"alerts: no buildings; full adds unit lists. since_tick: only newer alerts. No token.",
+		"Your colony in tiles, with the match session: status (units_free, win_chance), "
+		"grouped alerts, losses, buildings (id, top-left x/y, workers, stock), units, resource "
+		"fields, others' seen buildings, placements, placeable names. detail brief: one line "
+		"per building; alerts: no buildings; full: unit lists. include names the sections to "
+		"return. No token.",
 		{{"detail", enumeration({"brief", "alerts", "summary", "full"})},
+		 {"include", {{"type", "array"},
+					  {"description", "Return only these sections (plus tick, session, team). brief has status, "
+									  "alerts, losses, units, forces, buildings, placements; summary adds colony, "
+									  "others, counts, resources*, map, view; placeable and note only when named "
+									  "or with full"},
+					  {"items", enumeration({"status", "alerts", "losses", "units", "forces", "buildings", "placements", "colony", "others", "counts", "resources", "resources_scope", "resources_note", "placeable", "map", "view", "note"})}}},
 		 {"since_tick", {{"type", "integer"}, {"minimum", 0}}},
 		 {"limit", {{"type", "integer"}, {"minimum", 1}, {"maximum", 500}, {"default", 100}}},
 		 {"resource_radius", {{"type", "integer"}, {"minimum", 1}, {"maximum", 64}, {"default", 24}}},
@@ -478,17 +536,24 @@ void registerUITools(ToolRegistry &registry)
 		{}, false);
 	add("game_stats",
 		"Charts over time: your colony in a match; every team on end_game. list: true names "
-		"metrics, split shows parts, points (2-300). No token.",
+		"metrics, split shows parts, points (2-300); series: false gives summaries only. No token.",
 		{{"list", {{"type", "boolean"}}},
+		 {"series", {{"type", "boolean"},
+					 {"default", true},
+					 {"description", "false: each team's summary (latest, peak, low, total) without the sampled "
+									 "seconds/values"}}},
 		 {"metrics", {{"type", "array"}, {"items", {{"type", "string"}}}}},
-		 {"points", {{"type", "integer"}}},
+		 {"points", {{"type", "integer"},
+					 {"minimum", 2},
+					 {"maximum", 300},
+					 {"default", 20},
+					 {"description", "Samples per series, spread over the match"}}},
 		 {"split", {{"type", "boolean"}}}},
 		{}, false);
 	add("game_place",
-		"Place a building site or flag by tile, as a click would: building is a game_world "
-		"placeable name, x/y its top-left tile; near searches nearby for room and returns "
-		"where it went. workers/builders/range (flags) set the create order's requests (capped, "
-		"reported under settings); priority follows once it appears. Needs token.",
+		"Place a building site or flag by tile, as a click would: a game_world placeable name "
+		"at top-left x/y; near finds room nearby. workers/builders/range/priority are its "
+		"initial settings (capped, reported). Needs token.",
 		{{"token", token},
 		 {"building", {{"type", "string"}, {"maxLength", 64}}},
 		 {"x", {{"type", "integer"}, {"minimum", 0}}},
@@ -498,12 +563,13 @@ void registerUITools(ToolRegistry &registry)
 		 {"workers", {{"type", "integer"}, {"minimum", 0}, {"maximum", 20}}},
 		 {"builders", {{"type", "integer"}, {"minimum", 0}, {"maximum", 20}}},
 		 {"range", {{"type", "integer"}, {"minimum", 0}, {"maximum", 32767}}},
-		 {"priority", enumeration({"low", "medium", "high"})}},
+		 {"priority", enumeration({"low", "medium", "high"})},
+		 {"session", {{"type", "string"}, {"maxLength", 128}}}},
 		{"token", "building", "x", "y"}, false);
 	add("game_building",
-		"Change one of your buildings or flags by its game_world id and generation: workers "
-		"(units requested), priority, production ratios (Swarm), range (flags; both capped at the "
-		"building's maximum, reported), or an action (move takes the flag's x/y). Needs token.",
+		"Change your building or flag by this match's game_world id and generation: workers, "
+		"builders (sites), priority, Swarm production, flag range (capped, reported) or an "
+		"action (move takes x/y). Needs token.",
 		{{"token", token},
 		 {"id", {{"type", "integer"}, {"minimum", 0}}},
 		 {"generation", {{"type", "integer"}, {"minimum", 0}}},
@@ -516,7 +582,8 @@ void registerUITools(ToolRegistry &registry)
 		 {"action", enumeration({"upgrade", "repair", "cancel_upgrade", "destroy", "cancel_destroy", "move"})},
 		 {"x", {{"type", "integer"}, {"minimum", 0}}},
 		 {"y", {{"type", "integer"}, {"minimum", 0}}},
-		 {"builders", {{"type", "integer"}, {"minimum", 0}, {"maximum", 255}}}},
+		 {"builders", {{"type", "integer"}, {"minimum", 0}, {"maximum", 255}}},
+		 {"session", {{"type", "string"}, {"maxLength", 128}}}},
 		{"token", "id", "generation"}, false);
 	add("game_zone",
 		"Paint or erase a zone over a tile rectangle: forbidden (units keep out), guard "
@@ -530,16 +597,16 @@ void registerUITools(ToolRegistry &registry)
 		 {"height", {{"type", "integer"}, {"minimum", 1}, {"maximum", 64}}}},
 		{"token", "zone", "x", "y", "width", "height"}, false);
 	add("game_view",
-		"Centre the camera on a tile; returns its screen point (tile_screen) for clicking "
-		"what is there; zoom 1 is 100%, 0 fits the map; width/height frame that rectangle. "
-		"Needs token.",
+		"Centre the camera on a tile, or on your colony with no x/y; tile_screen is logical "
+		"pixels (ui_click space logical); zoom 1 is 100%, 0 fits the map; width/height frame "
+		"that rectangle. Needs token.",
 		{{"token", token},
 		 {"x", {{"type", "integer"}, {"minimum", 0}}},
 		 {"y", {{"type", "integer"}, {"minimum", 0}}},
 		 {"width", {{"type", "integer"}, {"minimum", 1}, {"maximum", 256}}},
 		 {"height", {{"type", "integer"}, {"minimum", 1}, {"maximum", 256}}},
 		 {"zoom", {{"type", "number"}, {"minimum", 0}, {"maximum", 5}}}},
-		{"token", "x", "y"}, false);
+		{"token"}, false);
 	add("game_chat",
 		"Send an in-game chat message as your player, as the chat box's Send would. "
 		"Plain text on one line, at most 254 bytes of UTF-8; control characters and "
@@ -550,22 +617,31 @@ void registerUITools(ToolRegistry &registry)
 	add("game_time",
 		"Pause the local match while you think, resume, or step ticks (30/s) and re-pause. "
 		"speed sets game speed: -3..9 are 0.25, 0.5, 0.75, 1, 1.25, 1.6, 2, 2.5, 4, 5, 8, 13, 40x; "
-		"10 is unlimited. action defaults to status (no token unless speed).",
+		"10 is unlimited. action defaults to status (no token unless speed). step with wait: "
+		"true returns once the steps ran.",
 		{{"action", enumeration({"status", "pause", "resume", "step"})},
 		 {"token", token},
 		 {"ticks", {{"type", "integer"}, {"minimum", 1}, {"maximum", 3000}}},
-		 {"speed", {{"type", "integer"}, {"minimum", -3}, {"maximum", 10}}}},
+		 {"speed", {{"type", "integer"}, {"minimum", -3}, {"maximum", 10}}},
+		 {"wait", {{"type", "boolean"}}}},
 		{}, false);
 	add("game_wait",
 		"Let game time pass until ticks elapse (30/s), an until event hits your colony "
-		"(default: all but building_completed) or timeout_ms; returns why, plus game_world "
-		"alerts since. Use instead of polling. No token.",
+		"(default: attack, building_lost, conversion_lost, enemy_sighted, enemy_building_gone, "
+		"hive_failure, hive_wake) or timeout_ms; returns why, plus game_world alerts since. "
+		"resume lets a paused match run. Use instead of polling. No token.",
 		{{"ticks", {{"type", "integer"}, {"minimum", 1}, {"maximum", 9000}, {"default", 300}}},
 		 {"until", {{"type", "array"},
-					{"maxItems", 6},
-					{"items", enumeration({"attack", "building_completed", "building_lost", "conversion",
-										   "enemy_sighted", "hive_failure"})}}},
-		 {"timeout_ms", {{"type", "integer"}, {"minimum", 100}, {"maximum", 30000}}}},
+					{"maxItems", 14},
+					{"items", enumeration({"attack", "attack_buildings", "attack_warriors", "building_attacked",
+										   "unit_attacked", "building_completed", "building_lost", "conversion",
+										   "conversion_lost", "conversion_gained", "enemy_sighted",
+										   "enemy_building_gone", "hive_failure", "hive_wake"})}}},
+		 {"timeout_ms", {{"type", "integer"}, {"minimum", 100}, {"maximum", 30000}}},
+		 {"resume", {{"type", "boolean"}, {"default", false}}},
+		 {"include", {{"type", "array"},
+					  {"description", "Sections of the embedded game_world alerts reply to keep (as game_world include)"},
+					  {"items", enumeration({"status", "alerts", "losses", "units", "forces", "buildings", "placements", "colony", "others", "counts", "resources", "resources_scope", "resources_note", "placeable", "map", "view", "note"})}}}},
 		{}, false);
 	add("game_alliance",
 		"The Alliance dialog: with only token, lists teams and your settings; with team, sets "
@@ -728,15 +804,22 @@ std::string actionTargetProblem(const Json &snapshot, const Json &a, Json *resol
 								  : "; it is on surface " + elsewhere + " now");
 	}
 	const auto &item = *found;
+	// A canvas (the map, the minimap) or a read-only label has no semantic actions at all:
+	// say so before any revision check, which would only send the caller round in circles.
+	if (item.value("actions", Json::array()).empty())
+		return "\"" + key + "\" has no actions (role " + item.value("role", std::string("node")) +
+			   "): ui_act cannot operate it. Use ui_click with its key (its centre) or with x/y " +
+			   "coordinates (space \"logical\" for inspection bounds), or read its value";
 	if (item["revision"] != a["revision"])
 		return "Stale control: \"" + key + "\" is at revision " + item["revision"].dump() +
 			   ", not " + a["revision"].dump() +
 			   ". Its state changed since you inspected it; check it, then act with the new "
 			   "revision";
 	if (item["enabled"] != true)
-		return "Disabled control: \"" + key +
-			   "\" cannot be used now (for example a building the rules or lesson do not allow "
-			   "yet)";
+		return "Disabled control: \"" + key + "\" cannot be used now" +
+			   (item.value("disabled_reason", std::string()).empty()
+					? std::string(" (for example a building the rules or lesson do not allow yet)")
+					: ": " + item["disabled_reason"].get<std::string>());
 	if (item["visible"]["w"].get<int>() <= 0 || item["visible"]["h"].get<int>() <= 0)
 		return "Hidden control: \"" + key +
 			   "\" is scrolled out of view or covered; scroll its container (ui_act scroll) "
@@ -766,36 +849,54 @@ std::string actionTargetProblem(const Json &snapshot, const Json &a, Json *resol
 		};
 		if (value.is_string())
 		{
-			// A label: exact match first, else a unique case-insensitive one.
 			auto lower = [](std::string text)
 			{
 				for (auto &c : text)
 					c = char(std::tolower(static_cast<unsigned char>(c)));
 				return text;
 			};
+			// A label: exact match first, else a unique case-insensitive one, else a unique
+			// case-insensitive prefix ("Maxima" for "Maxima - Hard (1873)", whose rating
+			// changes between matches).
 			const auto wanted = value.get<std::string>();
+			const auto folded = lower(wanted);
 			std::optional<std::size_t> exact, loose;
 			int looseMatches = 0;
+			std::vector<std::size_t> prefixed;
 			for (std::size_t i = 0; i < count; ++i)
 			{
 				if (!options[i].is_string())
 					continue;
 				const auto &label = options[i].get_ref<const std::string &>();
+				const auto candidate = lower(label);
 				if (!exact && label == wanted)
 					exact = i;
-				else if (lower(label) == lower(wanted))
+				else if (candidate == folded)
 				{
 					loose = i;
 					++looseMatches;
 				}
+				else if (!folded.empty() && candidate.compare(0, folded.size(), folded) == 0)
+					prefixed.push_back(i);
 			}
 			if (exact)
 				value = *exact;
 			else if (looseMatches == 1)
 				value = *loose;
+			else if (looseMatches == 0 && prefixed.size() == 1)
+				value = prefixed.front();
+			else if (looseMatches == 0 && prefixed.size() > 1)
+			{
+				std::string matches;
+				for (std::size_t n = 0; n < prefixed.size() && n < 20; ++n)
+					matches += (n ? ", " : "") + std::to_string(prefixed[n]) + " " + options[prefixed[n]].dump();
+				return "Ambiguous option " + value.dump() + " for \"" + key + "\": it begins " +
+					   std::to_string(prefixed.size()) + " options (" + matches +
+					   "); give more of the label or the index";
+			}
 			else
 				return "Unknown option " + value.dump() + " for \"" + key + "\"; its options are " +
-					   listed() + ". select takes one of these labels or its index";
+					   listed() + ". select takes one of these labels, a unique start of one, or its index";
 		}
 		if (!value.is_number_integer() || value.get<double>() < 0 || value.get<double>() >= double(count))
 			return "Option out of range for \"" + key + "\": select takes an option label or an index 0.." +
@@ -867,9 +968,76 @@ std::string controlCentre(const Json &snapshot, const Json &a, Json &point)
 	point = {{"x", visible.value("x", 0) + w / 2.0}, {"y", visible.value("y", 0) + h / 2.0}};
 	return {};
 }
-Json compactInspection(const Json &inspection)
+void stripBounds(Json &inspection)
 {
-	auto controls = [](auto &&self, const Json &items) -> Json
+	auto strip = [](auto &&self, Json &node) -> void
+	{
+		if (node.is_object())
+		{
+			node.erase("bounds");
+			node.erase("visible");
+			node.erase("viewport");
+			for (auto &[key, value] : node.items())
+				self(self, value);
+		}
+		else if (node.is_array())
+			for (auto &item : node)
+				self(self, item);
+	};
+	strip(strip, inspection);
+}
+Json findControls(const Json &inspection, const std::string &text)
+{
+	auto lower = [](std::string value)
+	{
+		for (auto &c : value)
+			c = char(std::tolower(static_cast<unsigned char>(c)));
+		return value;
+	};
+	const auto needle = lower(text);
+	Json matches = Json::array();
+	for (const auto &surface : inspection.value("surfaces", Json::array()))
+	{
+		auto visit = [&](auto &&self, const Json &items) -> void
+		{
+			for (const auto &item : items)
+			{
+				const auto key = item.value("key", std::string()), label = item.value("label", std::string());
+				if (!key.empty() && (lower(label).find(needle) != std::string::npos ||
+									 lower(key).find(needle) != std::string::npos))
+				{
+					Json match = {{"surface", surface.value("instance", 0)}, {"key", key}};
+					for (const char *field : {"label", "role", "actions", "revision", "value", "value_label", "enabled",
+											  "disabled_reason", "hidden", "blocked", "min", "max"})
+						if (item.contains(field))
+							match[field] = item.at(field);
+					if (item.contains("options"))
+						match["option_count"] = item.at("options").size();
+					// Scrolled out of view or covered: ui_act may still select it via its
+					// container, but clicks need it visible.
+					const auto visible = item.value("visible", Json::object());
+					if (visible.is_object() && (visible.value("w", 0) <= 0 || visible.value("h", 0) <= 0))
+						match["hidden"] = true;
+					if (matches.size() < 40)
+						matches.push_back(std::move(match));
+				}
+				if (item.contains("children"))
+					self(self, item.at("children"));
+			}
+		};
+		visit(visit, surface.value("controls", Json::array()));
+	}
+	Json result = {{"screen", inspection.value("screen", std::string())}, {"matches", matches}};
+	if (matches.empty())
+		result["note"] = "No control's label or key contains " + Json(text).dump() +
+						 "; ui_inspect without find shows every control";
+	else if (matches.size() >= 40)
+		result["note"] = "First 40 matches; narrow find";
+	return result;
+}
+Json compactInspection(const Json &inspection, bool bounds)
+{
+	auto controls = [bounds](auto &&self, const Json &items) -> Json
 	{
 		Json out = Json::array();
 		for (const auto &item : items)
@@ -915,49 +1083,95 @@ Json compactInspection(const Json &inspection)
 					c[field] = item[field];
 			if (item.contains("step") && item["step"] != 1)
 				c["step"] = item["step"];
+			// A ranged value's reading ("1.6x" for speed 2).
+			if (item.contains("min") && item.contains("value_label"))
+				c["value_label"] = item["value_label"];
 			if (!item.value("enabled", true))
+			{
 				c["enabled"] = false;
+				if (item.contains("disabled_reason"))
+					c["disabled_reason"] = item["disabled_reason"];
+			}
 			for (const char *flag : {"selected", "focused", "blocked"})
 				if (item.value(flag, false))
 					c[flag] = true;
-			c["bounds"] = item.value("bounds", Json::object());
+			// A control ui_act or ui_click {key} reaches needs no rectangle; a canvas (the map,
+			// the minimap) and anything without actions keep theirs for coordinate clicks.
+			const auto actions = item.value("actions", Json::array());
+			const bool byKey = !actions.empty() && item.value("role", std::string()) != "canvas";
 			const auto visible = item.value("visible", Json::object());
-			if (visible.value("w", 0) <= 0 || visible.value("h", 0) <= 0)
+			const bool hidden = visible.value("w", 0) <= 0 || visible.value("h", 0) <= 0;
+			if (bounds || !byKey)
+			{
+				c["bounds"] = item.value("bounds", Json::object());
+				if (!hidden && visible != c["bounds"])
+					c["visible"] = visible;
+			}
+			if (hidden)
 				c["hidden"] = true;
-			else if (visible != c["bounds"])
-				c["visible"] = visible;
 			if (!children.empty())
 				c["children"] = std::move(children);
 			out.push_back(std::move(c));
 		}
-		// Off-screen controls (a long scrolled list) collapse into one entry naming them,
-		// so a picker of 160 tiles is not 25 KB: scroll their container to reach one.
-		Json kept = Json::array(), run = Json::array();
+		// Off-screen controls (a long scrolled list) collapse into one summary per run, merged
+		// across the layout containers they sit in, so a picker of 160 tiles is one entry:
+		// how many, the keys of those that take actions and their labels. Scroll their
+		// container (or select on a choice listing them) to reach one.
+		Json kept = Json::array();
+		std::size_t hiddenCount = 0;
+		Json hiddenKeys = Json::array(), hiddenLabels = Json::object();
+		Json single;
 		const auto flush = [&]
 		{
-			if (run.size() == 1)
-				kept.push_back(run[0]);
-			else if (!run.empty())
+			if (hiddenCount == 1 && !single.is_null())
+				kept.push_back(std::move(single));
+			else if (hiddenCount > 0)
 			{
-				Json names = Json::array();
-				for (const auto &h : run)
-					if (h.contains("key"))
-						names.push_back(h.value("label", std::string()).empty()
-											? h["key"].get<std::string>()
-											: h["key"].get<std::string>() + " " + h["label"].get<std::string>());
-				kept.push_back({{"hidden_controls", run.size()}, {"keys", names},
-								{"note", "Scrolled out of view: ui_act scroll on their container, then act"}});
+				Json summary = {{"hidden_controls", hiddenCount}, {"keys", std::move(hiddenKeys)}};
+				if (!hiddenLabels.empty())
+					summary["labels"] = std::move(hiddenLabels);
+				summary["note"] = "Scrolled out of view: ui_act scroll on their container, then act";
+				kept.push_back(std::move(summary));
 			}
-			run = Json::array();
+			hiddenCount = 0;
+			hiddenKeys = Json::array();
+			hiddenLabels = Json::object();
+			single = Json();
+		};
+		const auto absorb = [&](Json entry)
+		{
+			if (entry.contains("hidden_controls"))
+			{
+				// A run already summarised inside a nested container joins this one.
+				hiddenCount += entry["hidden_controls"].get<std::size_t>();
+				for (auto &k : entry["keys"])
+					hiddenKeys.push_back(std::move(k));
+				const auto labels = entry.value("labels", Json::object());
+				for (const auto &[k, label] : labels.items())
+					hiddenLabels[k] = label;
+				single = Json();
+				return;
+			}
+			++hiddenCount;
+			if (entry.contains("key") && entry.contains("actions"))
+			{
+				const auto k = entry["key"].get<std::string>();
+				hiddenKeys.push_back(k);
+				if (entry.contains("label"))
+					hiddenLabels[k] = entry["label"];
+			}
+			single = hiddenCount == 1 ? std::move(entry) : Json();
 		};
 		for (auto &c : out)
-			if (c.value("hidden", false) && !c.contains("children") || (c.value("hidden", false) && c["children"].empty()))
-				run.push_back(std::move(c));
+			if (c.contains("hidden_controls"))
+				absorb(std::move(c));
+			else if (c.value("hidden", false) && c.value("children", Json::array()).empty())
+				absorb(std::move(c));
 			else if (c.value("hidden", false))
 			{
 				// A hidden composite (a tile with its label and preview): keep only its key/label.
 				Json brief = {{"hidden", true}};
-				for (const char *f : {"key", "label"})
+				for (const char *f : {"key", "label", "actions", "revision"})
 					if (c.contains(f))
 						brief[f] = c[f];
 				if (!brief.contains("label"))
@@ -967,7 +1181,7 @@ Json compactInspection(const Json &inspection)
 							brief["label"] = child["label"];
 							break;
 						}
-				run.push_back(std::move(brief));
+				absorb(std::move(brief));
 			}
 			else
 			{

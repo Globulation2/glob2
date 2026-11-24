@@ -320,12 +320,14 @@ public:
 	/// reserved holds {x, y, width, height} footprints of the caller's still-pending
 	/// placements; buildings need explored ground, as for a player. settings (see
 	/// GameGUIToolManager.h) replaces the click's default requested units and range in the
-	/// create order itself; on success it holds the values sent.
+	/// create order itself; on success it holds the values sent. requestedRefusal, when
+	/// given, says why the requested top-left itself was refused (empty when it was used).
 	std::string placeFromAutomation(const std::string &name, int x, int y, int searchRadius = 0,
 									std::pair<int, int> *placedAt = nullptr,
 									const std::vector<std::array<int, 4>> &reserved = {},
 									std::pair<int, int> *placedSize = nullptr,
-									BuildingCreateSettings *settings = nullptr);
+									BuildingCreateSettings *settings = nullptr,
+									std::string *requestedRefusal = nullptr);
 	void centreViewOnTile(double x, double y);
 	/// Send a chat message as the local player, exactly as the chat box's Send would
 	/// (to everyone the chat box addresses). Returns false for empty text.

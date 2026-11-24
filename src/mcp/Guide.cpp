@@ -3,6 +3,7 @@
 // true to the game's current behavior, and update docs/development/mcp-ui-server.md
 // alongside it.
 #include "Guide.h"
+#include <algorithm>
 #include <cctype>
 #include <stdexcept>
 #include <utility>
@@ -32,10 +33,23 @@ controls and sends mouse and keyboard input. Typical first calls:
 1. ui_status: is the window available, and does anyone hold control?
 2. ui_acquire_control: returns a token; pass it to every input tool.
 3. ui_inspect: the current screen name and its controls (compact by default).
-4. ui_act {token, surface, key, revision, action:"activate"}: press a control.
+4. ui_act {token, surface, key, revision, action:"activate"}: press a control; add
+   wait_for {"screen": NAME} (or "next_screen") when it changes screens.
 5. ui_wait {"condition": {"screen": "game_session"}}: wait for a screen change.
-From the main menu, "Tutorial" (key menu/1) then "Introduction" (tutorial/lesson/0)
-starts a guided first match whose lesson card tells you each step.
+
+How to start (first moves): from main_menu, either
+- a guided first match: Tutorial (menu/1), then Introduction (tutorial/lesson/0); its
+  lesson card tells you each step; or
+- a custom game against the computer: Custom game (menu/3) opens custom_game; on its
+  Players & Teams tab (tab/1) set colony/N/controller to AI and colony/N/ai to an AI
+  (select by label, e.g. "Numbi"), then activate start with wait_for
+  {"screen": "game_session"}. game_guide topic screens has the details.
+
+Screens you will meet: main_menu, tutorial_catalog, custom_game, landscape_picker,
+game_session (a match) and end_game (results).
+
+Leaving a match (quit, surrender, abandon): game menu (ui_key Escape or game/menu),
+then quit. It counts as a loss and asks nothing.
 
 Other topics: gameplay, screens, hud, actions, control, hive, troubleshooting, links.
 Strategy, in plain advice with tradeoffs: strategy-economy, strategy-food-conversion,
@@ -79,7 +93,8 @@ Rules tab can add prestige, a time limit or an early win when one side's win cha
 passes a threshold (95% by default). Tutorial lessons end when their objectives are
 done; the Objectives button shows them.)"},
 	{"screens", "Menus and how to start a tutorial or a custom game",
-	 R"(inspection.screen names the active screen. Common names:
+	 R"(inspection.screen names the active screen; ui_act wait_for and ui_wait refuse names
+that no screen has, listing those there are. Common names:
 introduction_offer: shown on a new profile's first launch; intro/start begins the
   introduction lesson, intro/menu goes to the main menu.
 main_menu: buttons Custom game (menu/3), Play online (menu/4), Campaign (menu/0),
@@ -94,33 +109,41 @@ custom_game: tabs Map (tab/0), Players & Teams (tab/1), Game Rules (tab/2); star
   ("Play this map") launches the match, back returns. Its settings are kept between
   matches. Setting up a game against computer opponents:
   - Map tab: map/mode/1 (Random map), then generator/width and generator/height
-    (select an index, for example 1=128, 2=256) and generator/colonies (select the
-    colony count minus one: 1 for 2 colonies, 2 for 3). generator/landscape opens landscape_picker: its
-    tiles are landscape/N buttons in landscape/grid (ui_act scroll the grid until the
-    one you want is shown), then activate it and landscape/use.
+    (for example select "128") and generator/colonies (select "2" for 2 colonies).
+    generator/landscape opens landscape_picker (below).
   - Players & Teams tab: colony/N/controller (You or AI) and colony/N/ai, the
-    AI and its strength; players/ai sets every computer colony at once. A choice's
-    options are not listed in the inspection: activate the choice to open a popup of
-    popup/0, popup/1... buttons with their labels, then activate one.
+    AI and its strength; players/ai sets every computer colony at once. Colony
+    colours are named once the map preview exists.
   - Game Rules tab: Teams Fixed and the win conditions.
-  Revisions of start and other controls can change while previews generate: if ui_act
-  says a revision is stale, use the one it reports.
-landscape_picker: the landscape grid (above); landscape/use applies, landscape/back
-  cancels.
+  Choices list their options (long ones only option_count). select takes an option
+  label, any unique start of one ignoring case (Maxima for an AI labelled
+  Maxima - Hard (1873), whose rating changes), or its index; an ambiguous start is refused with the matches.
+  A disabled control may carry disabled_reason, such as why start cannot launch yet.
+landscape_picker: landscape/choice lists every landscape by name: ui_act select
+  {"value": "Fjord continent"} picks one and scrolls its card into view, even when it
+  is scrolled out of sight (a hidden landscape/N card itself cannot be activated:
+  hidden controls are refused until scrolled into view). Then activate landscape/use,
+  enabled once that landscape's preview map is ready (until then its disabled_reason
+  says so); landscape/back cancels.
 game_load: the saved games list (Load game).
 game_session: a match in progress (see hud). The in-game menu, objectives and
   alliance dialogs appear as extra surfaces on this same screen.
 end_game: results after a match; quit returns to custom_game with its settings kept.
   While it is shown, game_stats returns every team's statistics, the outcome and the
-  overview figures. The in-game menu's quit (game menu, then quit) concedes at once,
-  without asking, and counts as a loss.
+  overview figures; inspection reads each team's overview row (overview/team/N) with
+  its column names.
+Quitting a match (leave game, quit match, surrender, abandon, concede):
+  open the game menu (ui_key Escape, or ui_act game/menu), then activate quit. In a
+  local match it ends at once, without asking, and counts as a loss; end_game follows.
 Others include settings, campaign_main_menu and map_editor.
 
-Surface instance numbers and control revisions change whenever a screen is rebuilt, so
-re-read them after every transition. ui_act returns the inspection from the moment its
-input was consumed, which can still be the old screen: follow it with ui_wait on the
-expected screen; a screen that has just opened can report no surfaces for a frame, so
-inspect again. A lesson or scenario may open with a briefing dialog: press its ok.)"},
+Surface instance numbers change whenever a screen is rebuilt, so re-read them after
+every transition. A control's revision changes only when its meaning does (label,
+value, enabled, options, actions, shown or hidden), not when it moves. ui_act returns
+the inspection from the moment its input was consumed, which can still be the old
+screen: pass wait_for {"screen": NAME} (or "next_screen") so it answers once the new
+screen shows, rather than a separate ui_wait. A lesson or scenario may open with a
+briefing dialog: press its ok.)"},
 	{"hud", "Reading the in-game screen (game_session)",
 	 R"(Left: the map canvas (key game/map). Right panel, top to bottom: minimap
 (game/minimap), panel tabs Construction (game/panel/0), Flags and areas
@@ -131,10 +154,13 @@ flag:<type> or zone:<kind>:paint|erase.
 Top bar labels (read-only, key game/stats/...): workers, explorers and warriors as
 free/total (negative free means unmet requests), prestige, win chance in percent,
 and units converted to and from your colony.
-game/speed is a stepper: set_value -3..10 (0 is normal speed).
+game/speed is a stepper: set_value -3..10 (0 is normal speed, 2 is 1.6x, 10 unlimited;
+values outside are refused before anything is sent). activate steps through the
+chevron presets 1x, 2x, 4x, 8x, unlimited and back to 1x (levels 0, 3, 5, 7, 10), so
+from 0 it jumps to 3; use set_value for any other level.
 
-Construction palette buttons are game/buildings/<type>.0.site (disabled when the
-lesson or rules do not allow that building yet). Flags are game/flags/<type>.0.finished;
+Construction palette buttons are game/buildings/<type>.0.site, labelled with the
+building's name (disabled when the lesson or rules do not allow that building yet). Flags are game/flags/<type>.0.finished;
 zones game/zone/0..2 (Forbidden, Guard, Clearing) with brush mode game/brush/mode/0..1
 (paint, erase) and brush sizes game/brush/figure/0..7.
 Selecting a building or flag on the map replaces the panel with its details, keyed
@@ -150,7 +176,8 @@ with each step, so wait on the new key to detect progress.)"},
 	{"actions", "Semantic actions versus coordinate gestures, placing and selecting",
 	 R"(Prefer ui_act for anything that is a control: it targets {surface, key, revision},
 is checked again when the game consumes it, and needs no coordinates. Actions:
-activate (buttons, options, tabs), select (integer index of a choice), set_value
+activate (buttons, options, tabs), select (a choice's option label, a unique start of
+one, or its index), set_value
 (slider/stepper integer, toggle boolean, text string) and scroll (signed pixels for a
 scroll container; scroll one into view before acting on a control it hides).
 
@@ -197,9 +224,12 @@ The map, minimap and replay bar are canvases: use coordinates. Take ui_screensho
 (max_width keeps it small) and pass its capture_id with x/y in that image's pixels,
 or pass space "logical" with x/y from ui_inspect bounds or game_view's tile_screen.
 To click a control without coordinates, ui_click {key} finds its centre.
-- Place by hand: activate a palette button, then ui_click on the map. Placement stays
-  active for further clicks (game/placement shows it); ui_key Escape or a right click
-  leaves it.
+- Place by hand: activate a palette button, then ui_click on the map. The tool stays
+  armed after each placement, for further clicks (game/placement shows it); ui_key
+  Escape or a right click disarms it. The click's reply has a placement note: the site
+  is ordered there if the ground is explored, free and buildable, and appears in
+  game_world buildings; game_place instead reports refusals with reasons. The red
+  outline left over a new site is the armed tool's preview: that tile is now taken.
 - Paint a zone: pick zone, mode and brush, then ui_click or ui_drag over the map.
 - Select: with no placement active, ui_click a building, flag or unit on the map;
   its details appear in the right panel. Escape clears the selection; a further
@@ -214,8 +244,10 @@ game_wait, game_time status, game_stats, hive_status, hive_api, hive_result) nee
 from ui_acquire_control. Only one client holds control; a second acquisition fails
 until the first releases it, its lease expires, or the person at the computer uses
 Settings > MCP server > Revoke control. The lease lasts 300 seconds after the last
-token-bearing call; ui_renew_control extends it. A rejected token means control was
-lost: acquire again. Human mouse and keyboard input keeps working alongside yours.
+token-bearing call; ui_renew_control extends it. "Controller lease lost" means no one
+holds control any more: acquire again. "Token does not match the current control
+lease" means another token (another client, or an earlier acquisition of yours) holds
+it: use the right token, or wait. Human mouse and keyboard input keeps working alongside yours.
 Input reaches the game even while another app has the OS focus; switching windows
 only cancels input still in flight. Holding an arrow key to scroll needs the focus:
 use game_view to move the camera instead.
@@ -247,7 +279,8 @@ tools cover the common reads and orders without a script; use Hive for full reco
 person to restore it, then call ui_status again.
 "Another client controls the game": wait, or ask the person to press Revoke control.
 Stale control: the revision or surface changed; ui_inspect again and use the new
-values. Hidden control: scroll its container (ui_act scroll) first. Blocked control:
+values. "has no actions": a canvas (game/map, the minimap) or a label; use ui_click
+with its key or coordinates instead of ui_act. Hidden control: scroll its container (ui_act scroll) first. Blocked control:
 a dialog or overlay covers it; close or answer the dialog. A map canvas reports
 blocked when any panel overlaps part of it; clicks on its uncovered part still work.
 Stale viewport or expired capture: take a new ui_screenshot and use its capture_id.
@@ -568,8 +601,9 @@ stone, fruit, and the likely route to the enemy. game_world lists known resource
 game_view zoom 0 shows the whole map.)"},
 	{"strategy-timing", "Reading the game: signs you are ahead or behind and what to do",
 	 R"(Check a few numbers often instead of everything rarely. game_world detail brief is
-cheap enough to poll; game_wait lets time pass until something happens; game_stats
-shows trends.
+cheap enough to poll, and include picks only the sections you need (for example
+["status", "alerts"]); game_wait lets time pass until something happens; game_stats
+shows trends, and series: false gives just the latest, peak and low figures.
 
 Signs you are ahead:
 - Win chance in the top bar rising (it accounts for what you cannot see).
@@ -647,9 +681,15 @@ const std::string &serverInstructions()
 		"match while you think or sets its speed; ui_screenshot plus "
 		"ui_click with its capture_id for other map positions; ui_release_control when "
 		"done. Never retry input calls.\n"
-		"New here? From main_menu activate Tutorial (menu/1), then Introduction "
-		"(tutorial/lesson/0); a first launch may instead offer intro/start. Call game_guide for rules, screens, the HUD, placement "
-		"and errors (topics: ") +
+		"Screens (inspection.screen): main_menu, tutorial_catalog, custom_game, "
+		"landscape_picker, game_session (a match), end_game; game_guide topic screens "
+		"describes each and their keys.\n"
+		"New here? From main_menu either activate Tutorial (menu/1), then Introduction "
+		"(tutorial/lesson/0), for a guided match (a first launch may instead offer intro/start); "
+		"or play a custom game against the computer: Custom game (menu/3), set colonies to AI "
+		"on Players & Teams (tab/1), then start with wait_for {\"screen\": \"game_session\"}. "
+		"To leave a match: game menu (Escape or game/menu), then quit (a loss, no confirmation). "
+		"Call game_guide for rules, screens, the HUD, placement and errors (topics: ") +
 		[]
 		{
 			std::string names;
@@ -659,6 +699,26 @@ const std::string &serverInstructions()
 		}() +
 		").\nSource: " + RepositoryUrl + " ; MCP guide: " + ServerGuideUrl;
 	return text;
+}
+
+const std::vector<std::string> &knownScreens()
+{
+	// Kept in step with the screens' recordingId() overrides; the in_game_* dialogs are
+	// surfaces of game_session, never a screen of their own.
+	static const std::vector<std::string> names = {
+		"main_menu", "introduction_offer", "tutorial_catalog", "custom_game", "landscape_picker",
+		"game_session", "end_game", "game_load", "settings", "match_start", "start_quality",
+		"choose_map", "custom_game_choice", "custom_game_other_options", "generator_studio",
+		"campaign_main_menu", "campaign_menu", "campaign_selector", "campaign_editor",
+		"campaign_map_entry_editor", "online_hub", "online_profile", "online_maps",
+		"online_generators", "quick_match", "match_found", "multiplayer_room", "room_map_picker",
+		"map_share", "lanmenu", "lanfind", "lansession", "load_save_dialog", "message",
+		"ask_for_text_input", "credit", "audio_preference", "hand_preference", "music_library",
+		"music_set", "music_import", "recording_files", "building_library", "set_library",
+		"map_editor", "map_edit_menu", "editor_main_menu", "editor_dock", "editor_load",
+		"editor_generate", "editor_progress", "editor_confirm", "new_map", "script_editor",
+		"teams_editor", "screen", "dialog", "unavailable"};
+	return names;
 }
 
 std::vector<std::string> guideTopics()
@@ -707,13 +767,16 @@ Json guideSearch(const std::string &query, const std::string &onlyTopic)
 	{
 		std::string topic, text;
 		std::size_t score;
+		bool lead; // a word starts the block: a heading such as "A simple opening:"
 	};
 	std::vector<Hit> hits;
 	for (const auto &t : Topics)
 	{
 		if (!t.text || (!onlyTopic.empty() && onlyTopic != t.name))
 			continue;
-		// Each hit is a three-line window, so wrapped sentences stay whole.
+		// Each hit is the block its words sit in, so a heading comes with its steps: a
+		// paragraph between blank lines when it is short; in a long one, three lines
+		// extended over the list or indented lines that continue them.
 		std::vector<std::string> lines;
 		const std::string text = t.text;
 		for (std::size_t i = 0, j; i <= text.size(); i = j + 1)
@@ -723,24 +786,65 @@ Json guideSearch(const std::string &query, const std::string &onlyTopic)
 				j = text.size();
 			lines.push_back(text.substr(i, j - i));
 		}
-		for (std::size_t i = 0; i < lines.size(); ++i)
+		const auto listItem = [](const std::string &line)
 		{
-			std::string window = lines[i];
-			for (std::size_t k = 1; k < 3 && i + k < lines.size(); ++k)
-				window += "\n" + lines[i + k];
-			const auto folded = lower(window + " " + t.name);
+			if (line.rfind("- ", 0) == 0)
+				return true;
+			std::size_t digits = 0;
+			while (digits < line.size() && std::isdigit(static_cast<unsigned char>(line[digits])))
+				++digits;
+			return digits > 0 && digits + 1 < line.size() && line[digits] == '.' && line[digits + 1] == ' ';
+		};
+		std::vector<std::pair<std::size_t, std::size_t>> blocks; // [first, last)
+		for (std::size_t start = 0; start < lines.size();)
+		{
+			if (lines[start].empty())
+			{
+				++start;
+				continue;
+			}
+			std::size_t end = start;
+			while (end < lines.size() && !lines[end].empty())
+				++end;
+			if (end - start <= 16)
+				blocks.push_back({start, end});
+			else
+				for (std::size_t i = start; i < end;)
+				{
+					std::size_t last = std::min(end, i + 3);
+					bool list = false;
+					for (std::size_t k = i; k < last; ++k)
+						list = list || listItem(lines[k]) || lines[k].ends_with(":");
+					while (last < end && (lines[last].starts_with(" ") || (list && listItem(lines[last]))))
+						++last;
+					blocks.push_back({i, last});
+					i = last;
+				}
+			start = end;
+		}
+		for (const auto &[first, last] : blocks)
+		{
+			std::string block;
+			for (std::size_t k = first; k < last; ++k)
+				block += (k == first ? "" : "\n") + lines[k];
+			const auto folded = lower(block + " " + t.name);
 			std::size_t score = 0;
 			for (const auto &w : words)
 				score += hasWord(folded, w);
 			if (score)
 			{
-				hits.push_back({t.name, window, score});
-				i += 2;
+				const auto head = lower(lines[first]);
+				bool lead = false;
+				for (const auto &w : words)
+					lead = lead || hasWord(head, w);
+				hits.push_back({t.name, block, score, lead});
 			}
 		}
 	}
 	// Paragraphs with every word first; with none, the ones with the most words.
-	std::stable_sort(hits.begin(), hits.end(), [](const Hit &a, const Hit &b) { return a.score > b.score; });
+	// Paragraphs with every word first; among equals, those a word heads.
+	std::stable_sort(hits.begin(), hits.end(), [](const Hit &a, const Hit &b)
+					 { return a.score != b.score ? a.score > b.score : a.lead > b.lead; });
 	const bool all = !hits.empty() && hits.front().score == words.size();
 	Json results = Json::array();
 	for (const auto &h : hits)

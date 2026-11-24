@@ -286,8 +286,13 @@ Element InGameAllianceScreen::build(const Presentation &p)
 				continue;
 			const std::string key = "ally/" + std::to_string(entry.player) + "/" + shortLabels[s];
 			const int player = entry.player;
+			// The desktop grid shows abbreviations; inspection reads the full setting and player
+			// ("Share food vision with Numbi: off").
+			fe::ToggleOptions described;
+			described.accessibleLabel = fe::tr(longLabels[s]) + " with " + entry.name;
 			toggles.push_back(fe::toggle(key, compact ? fe::tr(longLabels[s]) : std::string(shortLabels[s]), field(entry, setting),
-										 [this, player, setting](bool value) { set(player, setting, value); }, editable));
+										 [this, player, setting](bool value) { set(player, setting, value); }, editable,
+										 described));
 		}
 		fe::TextOptions nameStyle;
 		nameStyle.color = entry.color;

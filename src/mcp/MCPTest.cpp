@@ -230,6 +230,15 @@ TEST_CASE("MCP/argument errors name the field and the broken rule")
 	const auto range = message("ui_move", {{"token", "t"}, {"x", -1}, {"y", 2}});
 	CHECK(range.find("ui_move.x") != std::string::npos);
 	CHECK(range.find("out of range") != std::string::npos);
+	CHECK(range.find(">= 0, got -1") != std::string::npos);
+	// Range errors state the range and the value sent.
+	const auto workers = message("game_building", {{"token", "t"}, {"id", 1}, {"generation", 1}, {"workers", 300}});
+	CHECK(workers.find("game_building.workers: out of range: 0..255, got 300") != std::string::npos);
+	const auto fraction = message("game_building", {{"token", "t"}, {"id", 1}, {"generation", 1}, {"workers", 2.5}});
+	CHECK(fraction.find("expected integer 0..255, got 2.5") != std::string::npos);
+	const auto priority = message("game_building", {{"token", "t"}, {"id", 1}, {"generation", 1}, {"priority", "urgent"}});
+	CHECK(priority.find("\"low\"") != std::string::npos);
+	CHECK(priority.find("got \"urgent\"") != std::string::npos);
 	const auto choice = message("ui_click", {{"token", "t"}, {"x", 1}, {"y", 2}, {"button", "thumb"}});
 	CHECK(choice.find("ui_click.button") != std::string::npos);
 	CHECK(choice.find("expected one of") != std::string::npos);
@@ -367,13 +376,14 @@ TEST_CASE("MCP/tools explain themselves within a discovery size budget")
 		guide = guide || tool["name"] == "game_guide";
 	}
 	CHECK(guide);
-	// Every client pays for discovery in context; keep it bounded. 29 KB covers the 32
-	// tools including the game_* map, time, wait and alliance tools, plus the coordinate
-	// space on every pointer tool, clicking a control by key and ui_act wait_for, which
-	// each save agents several calls (about 0.9 KB more than the previous 28 KB).
+	// Every client pays for discovery in context; keep it bounded. 31.5 KB covers the 32
+	// tools including the game_* map, time, wait and alliance tools, the coordinate space on
+	// every pointer tool, clicking a control by key, ui_act wait_for, and the described
+	// output filters (include sections, find, bounds, series), each of which saves agents
+	// calls or several kilobytes per reply; about 1.7 KB more than the previous 29 KB.
 	const auto bytes = Json{{"tools", tools}}.dump().size();
 	INFO("tools/list bytes: " << bytes);
-	CHECK(bytes < 29000);
+	CHECK(bytes < 31500);
 	// Time steps and zoom are bounded by the schema, before reaching the game.
 	Context context;
 	CHECK_THROWS_WITH_AS(registry.call(context, "game_time", {{"action", "step"}, {"ticks", 0}}, "test"),
@@ -430,7 +440,21 @@ TEST_CASE("MCP/documentation is browsed by section and searched, not served as o
 	const auto guide = request->completion.get_future().get().data;
 	REQUIRE_FALSE(guide.at("results").empty());
 	for (const auto &hit : guide.at("results"))
-		CHECK(hit.at("text").get<std::string>().find("game_wait") != std::string::npos);
+		CHECK(hit.at("text").get<std::string>().find("game_wait") != std::string::npos);	// A hit is the whole block its words sit in: the opening's steps, not only its heading.
+	bool steps = false;
+	const auto opening = guideSearch("opening");
+	for (const auto &hit : opening.at("results"))
+		steps = steps || hit.at("text").get<std::string>().find("2. Put an Inn") != std::string::npos;
+	CHECK(steps);
+	// However an agent words leaving a match, the search finds the game menu's quit.
+	for (const char *words : {"surrender", "abandon", "leave game", "quit match"})
+	{
+		INFO(words);
+		const auto found = guideSearch(words).at("results");
+		REQUIRE_FALSE(found.empty());
+		CHECK(found[0].at("text").get<std::string>().find("quit") != std::string::npos);
+		CHECK(found[0].at("text").get<std::string>().find("game menu") != std::string::npos);
+	}
 }
 TEST_CASE("MCP/game guide serves every topic with links and rejects unknown topics")
 {
@@ -489,13 +513,88 @@ TEST_CASE("MCP/compact inspection collapses runs of off-screen controls")
 	const auto compact = compactInspection(
 		{{"screen", "landscape_picker"}, {"surfaces", {{{"instance", 1}, {"controls", grid}}}}});
 	const auto &controls = compact["surfaces"][0]["controls"];
-	// Two visible tiles and one entry naming the 40 scrolled out of view.
+	// Two visible tiles and one entry naming the 40 scrolled out of view: real keys, and
+	// their labels apart.
 	REQUIRE(controls.size() == 3);
 	CHECK(controls[1]["hidden_controls"] == 40);
-	CHECK(controls[1]["keys"][0] == "landscape/1 Map 1");
+	CHECK(controls[1]["keys"][0] == "landscape/1");
+	CHECK(controls[1]["labels"]["landscape/1"] == "Map 1");
 	CHECK(controls[1]["keys"].size() == 40);
 	CHECK(controls[2]["key"] == "landscape/41");
 	CHECK(compact.dump().size() < 3000);
+
+	// Tiles built as layout stacks (a button beside its caption and preview, inside a
+	// wrap inside a scroll) collapse into one summary for the whole container, not one
+	// stub per tile.
+	auto stacked = [&](int i, bool shown)
+	{
+		Json caption = {{"key", ""}, {"label", "Map " + std::to_string(i)}, {"role", "label"},
+						{"actions", Json::array()}, {"revision", 1}, {"enabled", true},
+						{"bounds", box}, {"visible", shown ? box : none}, {"children", Json::array()}};
+		Json preview = {{"key", "landscape/image/" + std::to_string(i)}, {"label", ""}, {"role", "canvas"},
+						{"actions", Json::array()}, {"revision", 1}, {"enabled", true},
+						{"bounds", box}, {"visible", shown ? box : none}, {"children", Json::array()}};
+		Json column = {{"key", ""}, {"label", ""}, {"role", "column"}, {"actions", Json::array()},
+					   {"bounds", box}, {"visible", shown ? box : none}, {"children", {preview, caption}}};
+		return Json{{"key", ""}, {"label", ""}, {"role", "stack"}, {"actions", Json::array()},
+					{"bounds", box}, {"visible", shown ? box : none}, {"children", {tile(i, shown), column}}};
+	};
+	Json cards = Json::array({stacked(0, true)});
+	for (int i = 1; i <= 50; ++i)
+		cards.push_back(stacked(i, false));
+	Json scroll = tile(99, true);
+	scroll["key"] = "landscape/grid";
+	scroll["actions"] = {"scroll"};
+	scroll["children"] = {{{"key", ""}, {"label", ""}, {"role", "wrap"}, {"actions", Json::array()},
+						   {"bounds", box}, {"visible", box}, {"children", cards}}};
+	const auto picker = compactInspection(
+		{{"screen", "landscape_picker"}, {"surfaces", {{{"instance", 1}, {"controls", {scroll}}}}}});
+	const auto &inside = picker["surfaces"][0]["controls"][0]["children"];
+	int summaries = 0;
+	for (const auto &entry : inside)
+		if (entry.contains("hidden_controls"))
+		{
+			++summaries;
+			// 50 cards of button, preview and caption; only the buttons act.
+			CHECK(entry["hidden_controls"] == 150);
+			CHECK(entry["keys"].size() == 50);
+			CHECK(entry["keys"][0] == "landscape/1");
+			CHECK(entry["labels"]["landscape/50"] == "Map 50");
+		}
+	CHECK(summaries == 1);
+}
+TEST_CASE("MCP/inspection finds controls by text and drops geometry on request")
+{
+	const Json box = {{"x", 10}, {"y", 20}, {"w", 100}, {"h", 30}}, none = {{"x", 0}, {"y", 0}, {"w", 0}, {"h", 0}};
+	auto button = [&](std::string key, std::string label, bool shown)
+	{
+		return Json{{"key", key},		{"label", label}, {"role", "button"},		  {"actions", {"activate"}},
+					{"revision", 3},	{"enabled", true}, {"bounds", box},		  {"visible", shown ? box : none},
+					{"children", Json::array()}};
+	};
+	Json menu = button("menu/scroll", "", true);
+	menu["children"] = Json::array({button("menu/3", "Custom game", true), button("menu/4", "Play online", false)});
+	const Json inspection = {{"screen", "main_menu"},
+							 {"surfaces", {{{"instance", 2}, {"bounds", box}, {"controls", {menu}}}}}};
+	// find: flat matches by label or key, ignoring case, with what ui_act needs.
+	const auto found = findControls(inspection, "custom");
+	REQUIRE(found.at("matches").size() == 1);
+	const auto &match = found.at("matches")[0];
+	CHECK(match.at("surface") == 2);
+	CHECK(match.at("key") == "menu/3");
+	CHECK(match.at("revision") == 3);
+	CHECK_FALSE(match.contains("bounds"));
+	CHECK_FALSE(match.contains("hidden"));
+	CHECK(findControls(inspection, "MENU/4").at("matches")[0].at("hidden") == true);
+	CHECK(findControls(inspection, "nothing").at("note").get<std::string>().find("without find") != std::string::npos);
+	// bounds: false removes every rectangle and keeps the rest.
+	auto stripped = inspection;
+	stripBounds(stripped);
+	const auto text = stripped.dump();
+	CHECK(text.find("\"bounds\"") == std::string::npos);
+	CHECK(text.find("\"visible\"") == std::string::npos);
+	CHECK(text.find("Custom game") != std::string::npos);
+	CHECK(text.size() < inspection.dump().size());
 }
 TEST_CASE("MCP/compact inspection keeps meaning and drops layout noise")
 {
@@ -530,8 +629,9 @@ TEST_CASE("MCP/compact inspection keeps meaning and drops layout noise")
 							  {"label", "Tutorial"},
 							  {"role", "button"},
 							  {"actions", {"activate"}},
-							  {"revision", 4},
-							  {"bounds", box}});
+							  {"revision", 4}});
+	// A control reached by key has no rectangle unless asked for.
+	CHECK(compactInspection(full, true)["surfaces"][0]["controls"][0]["bounds"] == box);
 	CHECK(controls[1]["hidden"] == true);
 	CHECK(controls[2]["enabled"] == false);
 	CHECK(controls[3]["label"] == "Caption");
@@ -576,9 +676,18 @@ TEST_CASE("MCP/rejected semantic targets say which check failed and what to do")
 	CHECK(contains(problem(act(5, "missing", 1)), {"\"missing\"", "ui_inspect"}));
 	CHECK(contains(problem(act(5, "start", 6)), {"revision 7", "not 6"}));
 	CHECK(contains(problem(act(5, "start", 7, "set_value")), {"[\"activate\"]", "set_value"}));
+	// A canvas has no actions: say so, whatever revision was sent, and point to ui_click.
+	auto map = item("game/map", 3);
+	map["actions"] = Json::array();
+	map["role"] = "canvas";
+	snapshot["surfaces"][0]["controls"].push_back(map);
+	CHECK(contains(problem(act(5, "game/map", 1)), {"no actions", "canvas", "ui_click"}));
 	auto &start = snapshot["surfaces"][0]["controls"][0];
 	start["enabled"] = false;
 	CHECK(contains(problem(act(5, "start", 7)), {"Disabled"}));
+	start["disabled_reason"] = "The map is still generating";
+	CHECK(contains(problem(act(5, "start", 7)), {"Disabled", "still generating"}));
+	start.erase("disabled_reason");
 	start["enabled"] = true;
 	start["visible"]["h"] = 0;
 	CHECK(contains(problem(act(5, "start", 7)), {"Hidden", "scroll"}));
@@ -606,8 +715,10 @@ TEST_CASE("MCP/choice options and value ranges are checked before dispatch")
 	speed["max"] = 10;
 	speed["step"] = 1;
 	auto plain = item("plain", {"select"});
+	auto rated = item("colony/2/ai", {"select"});
+	rated["options"] = {"Numbi - Easy (1210)", "Maxima - Hard (1873)", "Maxima - Easy (1402)"};
 	Json surface = {{"instance", 2}};
-	surface["controls"] = Json::array({colonies, ai, speed, plain});
+	surface["controls"] = Json::array({colonies, ai, speed, plain, rated});
 	const Json snapshot = {{"screen", "custom_game"}, {"surfaces", Json::array({surface})}};
 	auto check = [&](const std::string &key, const std::string &action, Json value, Json *resolved = nullptr)
 	{
@@ -645,6 +756,17 @@ TEST_CASE("MCP/choice options and value ranges are checked before dispatch")
 	CHECK(has(fast, "-3..10"));
 	CHECK(has(fast, "not 11"));
 	CHECK(has(check("game/speed", "set_value", "fast"), "-3..10"));
+	// A unique start of a label selects it, ignoring case, so a rating that changes between
+	// matches need not be typed; an ambiguous start lists what it matches.
+	CHECK(check("colony/2/ai", "select", "maxima - hard", &resolved).empty());
+	CHECK(resolved == 1);
+	CHECK(check("colony/2/ai", "select", "Numbi", &resolved).empty());
+	CHECK(resolved == 0);
+	const auto ambiguous = check("colony/2/ai", "select", "Maxima");
+	CHECK(has(ambiguous, "Ambiguous option"));
+	CHECK(has(ambiguous, "1 \"Maxima - Hard (1873)\""));
+	CHECK(has(ambiguous, "2 \"Maxima - Easy (1402)\""));
+	CHECK(has(check("colony/2/ai", "select", "Castor"), "Unknown option"));
 }
 TEST_CASE("MCP/compact inspection lists choice options and value ranges")
 {
@@ -666,6 +788,7 @@ TEST_CASE("MCP/compact inspection lists choice options and value ranges")
 	speed["min"] = -3;
 	speed["max"] = 10;
 	speed["step"] = 1;
+	speed["value_label"] = "1.6x";
 	auto list = control("maps", "list", "Map 0", 0);
 	list["options"] = Json::array();
 	for (int i = 0; i < 30; ++i)
@@ -682,6 +805,7 @@ TEST_CASE("MCP/compact inspection lists choice options and value ranges")
 	CHECK(controls[1]["value_label"] == "Numbi");
 	CHECK(controls[2]["min"] == -3);
 	CHECK(controls[2]["max"] == 10);
+	CHECK(controls[2]["value_label"] == "1.6x");
 	CHECK_FALSE(controls[2].contains("step"));
 	// A list's rows are its children; only their count is repeated.
 	CHECK(controls[3]["option_count"] == 30);
@@ -764,6 +888,21 @@ TEST_CASE("MCP/pointer tools take a control key or coordinates in a named space"
 	CHECK(has(message("ui_act", act), "next_screen"));
 	act["wait_for"] = {{"screen", "game_session"}, {"key", "start"}};
 	CHECK(has(message("ui_act", act), "ui_act.wait_for"));
+	// A screen no inspection can report is refused before dispatch, naming the real ones.
+	act["wait_for"] = {{"screen", "nosuch"}};
+	const auto unknownScreen = message("ui_act", act);
+	CHECK(has(unknownScreen, "unknown screen \"nosuch\""));
+	CHECK(has(unknownScreen, "landscape_picker"));
+	CHECK(has(message("ui_wait", {{"condition", {{"screen", "victory"}}}}), "end_game"));
+	CHECK(message("ui_wait", {{"condition", {{"screen", "end_game"}}}}) == "accepted");
+	// Every screen the guide names is one a wait accepts.
+	for (const char *screen : {"main_menu", "introduction_offer", "tutorial_catalog", "custom_game",
+							   "landscape_picker", "game_session", "end_game", "game_load", "settings",
+							   "campaign_main_menu", "map_editor"})
+	{
+		INFO(screen);
+		CHECK(std::find(knownScreens().begin(), knownScreens().end(), screen) != knownScreens().end());
+	}
 }
 TEST_CASE("MCP/argument errors name the field and suggest valid input")
 {
@@ -1024,7 +1163,10 @@ TEST_CASE("MCP/leases input dispatch cancellation viewport and capture [network]
 	const auto contested = execute("ui_acquire_control").error;
 	CHECK(contested.find("test client") != std::string::npos);
 	CHECK(contested.find("Revoke control") != std::string::npos);
+	// A wrong token while the lease is held is not an expired lease: it names the holder.
 	const auto lost = execute("ui_move", {{"token", "wrong"}, {"x", 10}, {"y", 20}}).error;
+	CHECK(lost.find("does not match the current control lease") != std::string::npos);
+	CHECK(lost.find("test client") != std::string::npos);
 	CHECK(lost.find("ui_acquire_control") != std::string::npos);
 	const auto outside = execute("ui_click", {{"token", token}, {"x", 5000}, {"y", 20}}).error;
 	CHECK(outside.find("640x480") != std::string::npos);
@@ -2204,7 +2346,7 @@ TEST_CASE("MCP/value controls list options, clicks name keys and acts wait for s
 	// A screen that never shows ends the wait without an error: the action happened.
 	inspection = full();
 	auto never = act(locate(inspection, "start"), "activate");
-	never["wait_for"] = {{"screen", "victory"}};
+	never["wait_for"] = {{"screen", "end_game"}};
 	never["timeout_ms"] = 1;
 	auto lingering = service.submit("ui_act", never, "test");
 	auto late = lingering->completion.get_future();

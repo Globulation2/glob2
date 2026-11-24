@@ -16,8 +16,8 @@ UIService *current = nullptr;
 constexpr std::size_t MaxWaitObservers = 8;
 // Width a capture is scaled to when the client gives neither max_width nor max_height.
 constexpr int DefaultCaptureWidth = 1280;
-constexpr auto LeaseLost = "Controller lease lost or token invalid: control expired, was "
-						   "revoked or was released. Call ui_acquire_control for a new token "
+constexpr auto LeaseLost = "Controller lease lost: no client holds control (it expired, was "
+						   "revoked or was released). Call ui_acquire_control for a new token "
 						   "and ui_inspect before acting again";
 bool inputTool(const std::string &tool)
 {
@@ -399,7 +399,26 @@ void UIService::addActResult(Result &result, const Json &arguments)
 		Json filter = {{"compact", arguments.value("compact", true)}};
 		if (arguments.contains("result_subtree"))
 			filter["subtree"] = arguments["result_subtree"];
+		else if (arguments.contains("_screen_before") && arguments.contains("key") && inspectionScreen &&
+				 inspectionScreen() == arguments["_screen_before"].get<std::string>())
+		{
+			// Same screen: by default only the control acted on, which is what changed.
+			// A new screen comes back whole. result_subtree or ui_inspect read more.
+			filter["subtree"] = arguments["key"];
+			result.data["inspection_scope"] =
+				"the acted control only (same screen); ui_inspect reads the whole screen";
+		}
+		if (arguments.contains("bounds"))
+			filter["bounds"] = arguments["bounds"];
 		addInspection(result, filter);
+		// The control went away (a popup closed, a list was rebuilt): show the screen.
+		if (result.data.contains("inspection_scope") && result.data.contains("inspection") &&
+			result.data["inspection"].value("surfaces", Json::array()).empty())
+		{
+			result.data.erase("inspection_scope");
+			filter.erase("subtree");
+			addInspection(result, filter);
+		}
 	}
 	else
 	{
@@ -425,6 +444,68 @@ bool UIService::addInspection(Result &result, const Json &arguments)
 		result.data["inspection_error"] = failure.what();
 		return false;
 	}
+}
+namespace
+{
+// The first control with `key` in a full inspection, or null.
+const Json *findControl(const Json &snapshot, const std::string &key)
+{
+	const Json *found = nullptr;
+	auto search = [&](auto &&self, const Json &items) -> void
+	{
+		for (const auto &item : items)
+		{
+			if (found)
+				return;
+			if (item.value("key", "") == key)
+				found = &item;
+			else if (item.contains("children"))
+				self(self, item["children"]);
+		}
+	};
+	for (const auto &surface : snapshot["surfaces"])
+		if (!found && surface.contains("controls"))
+			search(search, surface["controls"]);
+	return found;
+}
+std::string placementValue(const Json &snapshot)
+{
+	const auto *placement = findControl(snapshot, "game/placement");
+	return placement && placement->value("value", Json()).is_string() ? (*placement)["value"].get<std::string>()
+																	   : std::string();
+}
+} // namespace
+std::string UIService::placementTool()
+{
+	return placementValue(inspection({{"compact", false}, {"subtree", "game/placement"}}));
+}
+std::string UIService::armedPlacementAt(double nativeX, double nativeY)
+{
+	if (!inspectionScreen || inspectionScreen() != "game_session" || width <= 0 || height <= 0)
+		return {};
+	const auto snapshot = inspection({{"compact", false}});
+	const auto tool = placementValue(snapshot);
+	if (!tool.starts_with("building:") && !tool.starts_with("flag:"))
+		return {};
+	// Only a click on the visible part of the map canvas places; the panel does not.
+	const auto *map = findControl(snapshot, "game/map");
+	if (!map)
+		return {};
+	const double x = nativeX * logicalWidth / width, y = nativeY * logicalHeight / height;
+	const auto visible = map->value("visible", Json::object());
+	const double left = visible.value("x", 0), top = visible.value("y", 0);
+	return x >= left && y >= top && x < left + visible.value("w", 0) && y < top + visible.value("h", 0)
+			   ? tool
+			   : std::string();
+}
+std::string UIService::leaseProblem() const
+{
+	// A held lease is not lost: a wrong token is a different mistake from an expired one.
+	if (token.empty())
+		return LeaseLost;
+	return "Token does not match the current control lease (held by " + controller +
+		   "). Nothing was sent. If that is you, use the token ui_acquire_control returned; "
+		   "otherwise wait for its ui_release_control or 300 s lease to end. Reads need no token";
 }
 void UIService::finish(std::string error)
 {
@@ -478,6 +559,23 @@ void UIService::finish(std::string error)
 	}
 	else if (result.error.empty() && r->arguments.contains("_point"))
 		result.data["point"] = r->arguments["_point"];
+	if (result.error.empty() && dispatchComplete && r->tool == "ui_click" && r->arguments.contains("_placement"))
+	{
+		// The order the click queued is applied by the simulation a few ticks later, so the
+		// reply cannot confirm it; say where to look instead of leaving the click unexplained.
+		const auto tool = r->arguments["_placement"].get<std::string>();
+		const auto still = placementTool();
+		result.data["placement"] = {
+			{"tool", tool},
+			{"armed", still == tool},
+			{"note", "The click was on the map with " + tool +
+						 " armed: it orders a site there if the ground allows (explored, free, "
+						 "buildable), applied over the next ticks. Confirm with game_world (the new "
+						 "site in buildings; game_place reports refusals with reasons) or "
+						 "ui_screenshot. The tool stays armed for more clicks; ui_key Escape or a "
+						 "right click disarms it. Its red outline over the new site only means that "
+						 "tile is now taken"}};
+	}
 	if (!result.error.empty())
 		r->cancelled = true;
 	r->completion.set_value(std::move(result));
@@ -595,8 +693,17 @@ Json UIService::inspection(const Json &arguments)
 	else if (surfaces.empty() && arguments.contains("surface"))
 		snapshot["note"] = "No surface " + arguments["surface"].dump() +
 						   " on this screen; ui_inspect without surface to see the current surfaces";
-	return arguments.is_object() && arguments.value("compact", true) ? compactInspection(snapshot)
-																	   : snapshot;
+	// find: only the controls whose label or key contains the text (ignoring case), flat,
+	// with what ui_act and ui_click need; hidden ones are marked, not collapsed.
+	if (arguments.is_object() && arguments.contains("find"))
+		return findControls(snapshot, arguments.at("find").get<std::string>());
+	auto result = arguments.is_object() && arguments.value("compact", true)
+					  ? compactInspection(snapshot, arguments.value("bounds", false))
+					  : snapshot;
+	// bounds: false drops geometry; click by key does not need it.
+	if (arguments.is_object() && !arguments.value("bounds", true))
+		stripBounds(result);
+	return result;
 }
 void UIService::observe()
 {
@@ -657,7 +764,7 @@ void UIService::observe()
 		}
 		else if (request->tool != "ui_wait" && args.contains("token") &&
 				 (token.empty() || args.value("token", "") != token))
-			result.error = LeaseLost;
+			result.error = leaseProblem();
 		else if (request->tool != "ui_wait")
 		{
 			// A pending game_wait or hive wait: ask its handler again; past the deadline
@@ -687,7 +794,7 @@ void UIService::observe()
 			full["compact"] = false; // conditions read every field; compaction is for the reply
 			auto snapshot = inspection(full);
 			result.data["inspection"] =
-				args.value("compact", true) ? compactInspection(snapshot) : snapshot;
+				args.value("compact", true) ? compactInspection(snapshot, args.value("bounds", false)) : snapshot;
 			const auto &condition = args["condition"];
 			bool matches =
 				!condition.contains("screen") || snapshot["screen"] == condition["screen"];
@@ -1104,7 +1211,7 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 	{
 		if (token.empty() || a.value("token", "") != token)
 		{
-			finish(LeaseLost);
+			finish(leaseProblem());
 			return;
 		}
 		if (dragIndex == 0)
@@ -1218,8 +1325,7 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 		// options or range before anything is dispatched.
 		if (!resolved.is_null())
 			a["value"] = std::move(resolved);
-		if (a.contains("wait_for"))
-			a["_screen_before"] = inspectionScreen ? inspectionScreen() : "unavailable";
+		a["_screen_before"] = inspectionScreen ? inspectionScreen() : "unavailable";
 		semantic = GAGGUI::ui::semanticDispatch();
 		semantic->surface = a["surface"];
 		semantic->key = a["key"];
@@ -1363,6 +1469,11 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 			finish("Click button already held");
 			return;
 		}
+		// A left click on the map while a placement tool is armed places a site or flag;
+		// remember the tool so the reply can say what the click did.
+		if (b == SDL_BUTTON_LEFT && a.contains("x") && !a.contains("_placement"))
+			if (const auto armed = armedPlacementAt(a["x"].get<double>(), a["y"].get<double>()); !armed.empty())
+				a["_placement"] = armed;
 		for (int c = 1; c <= a.value("count", 1); ++c)
 		{
 			button(b, true, events, c);

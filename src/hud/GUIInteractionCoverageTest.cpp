@@ -1234,14 +1234,14 @@ TEST_CASE("HUD inspection before the first scene does not read missing statistic
     const auto layout = gui.topBarLayout();
     for (int i = 0; i < 3; ++i) CHECK(layout.values[i] == "-/-");
     CHECK(gui.topBarSpeedX() > 0);
-    // The building palette falls back to its stable type names.
+    // Before the scene has building types, the palette reads the type name.
     gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
     const auto snapshot = gui.hudInspectionHost().inspect();
     CHECK_FALSE(snapshot.controls.empty());
     bool palette = false;
     auto visit = [&](auto &&self, const auto &nodes) -> void {
         for (const auto &node : nodes) {
-            if (node.key == "game/buildings/inn.0.site") { palette = true; CHECK(node.label == "inn.0.site"); }
+            if (node.key == "game/buildings/inn.0.site") { palette = true; CHECK(node.label == "Inn"); }
             self(self, node.children);
         }
     };
@@ -1491,8 +1491,8 @@ TEST_CASE("statistics topics history and overlays preserve gameplay state [displ
     CHECK(panel.host().rootBounds().bottom() < mapZoomControlsLayout(gui.camera, true, true).y);
     REQUIRE(panel.host().find("stats/metric/population"));
     CHECK(panel.host().find("stats/metric/population")->accessibleText().find("124") != std::string::npos);
-    REQUIRE(panel.host().find("stats/metric/blocked buildings"));
-    CHECK(panel.host().find("stats/metric/blocked buildings")->accessibleText().ends_with("\n0"));
+    REQUIRE(panel.host().find("stats/metric/blocked-buildings"));
+    CHECK(panel.host().find("stats/metric/blocked-buildings")->accessibleText().ends_with(": 0"));
     const auto hosts = gui.inspectionHosts();
     REQUIRE(std::find(hosts.begin(), hosts.end(), &panel.host()) != hosts.end());
     auto revisionFor = [&](auto &&self, const auto &controls, const std::string &key) -> std::uint64_t {
@@ -1531,7 +1531,7 @@ TEST_CASE("statistics topics history and overlays preserve gameplay state [displ
     waiting.world.history.reset();
     panel.sync(waiting, 0, false, false); panel.update(0);
     REQUIRE(panel.host().find("stats/metric/population"));
-    CHECK(panel.host().find("stats/metric/population")->accessibleText().ends_with("\n—"));
+    CHECK(panel.host().find("stats/metric/population")->accessibleText().ends_with(": —"));
     gui.statistics(); panel.update(0);
     const auto checksum=world.game.checkSum();
     std::set<std::string> seen;
@@ -1541,7 +1541,7 @@ TEST_CASE("statistics topics history and overlays preserve gameplay state [displ
             constexpr int expectedTopics[] = {1, 1, 2, 2, 2, 3, 4, 4};
             static_assert(std::size(expectedTopics) == std::size_t(Stats::Group::Count));
             const bool belongs=expectedTopics[int(m.group)]==topic;
-            CHECK(bool(panel.host().find("stats/metric/"+std::string(m.id)))==belongs);
+            CHECK(bool(panel.host().find(InGameStatisticsPanel::metricKey(m.id)))==belongs);
             if(belongs)seen.insert(m.id);
         }
     }
@@ -2323,7 +2323,10 @@ TEST_CASE("MCP game tools read the colony, place by tile and centre the view" *
 	CHECK(others[0].at("team") == 1);
 	CHECK(others[0].at("type") == "inn");
 	CHECK(state.at("others").at("units_by_team_and_type") == Json{{"1:worker", 1}});
-	const auto &placeable = state.at("placeable");
+	// The summary leaves the placeable names out; include (or detail full) has them.
+	CHECK_FALSE(state.contains("placeable"));
+	const auto names = commander.call("game_world", {{"include", {"placeable"}}});
+	const auto &placeable = names.at("placeable");
 	const auto inn = std::find_if(placeable.begin(), placeable.end(),
 								  [](const Json &p) { return p.at("name") == "inn"; });
 	REQUIRE(inn != placeable.end());
@@ -2392,6 +2395,11 @@ TEST_CASE("MCP game tools read the colony, place by tile and centre the view" *
 	CHECK(std::abs(view.at("tile_screen").at("y").get<int>() -
 				   int(camera.offsetY + camera.height / 2)) <= 1);
 	CHECK_THROWS(commander.call("game_view", {{"x", 100000}, {"y", 0}}));
+	// Without x/y the view centres on the colony's Swarm.
+	const auto home = commander.call("game_view", Json::object());
+	CHECK(home.at("centre").at("on") == "your swarm");
+	CHECK(home.at("centre").at("x") == 4 + swarm->type->width / 2);
+	CHECK(home.at("note").get<std::string>().find("logical") != std::string::npos);
 
 	// zoom reuses the HUD camera's limits and keeps the tile centred at the new scale.
 	const auto zoomed = commander.call("game_view", {{"x", 30}, {"y", 25}, {"zoom", 2}});
@@ -2526,6 +2534,11 @@ TEST_CASE("MCP game tools keep fog of war: last-seen buildings, no enemy health,
 	CHECK(refusal({{"building", "inn"}, {"x", 32}, {"y", 32}}).find("No room") != std::string::npos);
 	const auto moved = commander.call("game_place", {{"building", "inn"}, {"x", 32}, {"y", 32}, {"near", true}});
 	CHECK((moved.at("x") != 32 || moved.at("y") != 32));
+	// near says how far it went and why the requested spot was refused.
+	REQUIRE(moved.contains("moved"));
+	CHECK(moved.at("moved").at("tiles").get<int>() >= 1);
+	CHECK(moved.at("moved").at("requested_refused").get<std::string>().find("pending placements") != std::string::npos);
+	CHECK(moved.at("session") == commander.status().at("session"));
 	const auto followUp = commander.call("game_world", Json::object()).at("placements");
 	CHECK(followUp.size() >= 2);
 	CHECK(followUp[0].at("status") == "pending");
@@ -2673,7 +2686,8 @@ TEST_CASE("MCP game_stats reads only the colony in a match and every team on the
 	const auto match = commander.call("game_stats", Json::object());
 	CHECK(match.at("mode") == "match");
 	CHECK(match.at("team").at("team") == 0);
-	CHECK(match.at("status").contains("win_chance_percent"));
+	CHECK(match.at("status").contains("win_chance"));
+	CHECK(match.at("status").at("hud_sampled").contains("workers"));
 	REQUIRE(match.at("metrics").size() == 8);
 	for (const auto &metric : match.at("metrics"))
 	{
@@ -2762,6 +2776,17 @@ TEST_CASE("MCP game_building and game_zone queue the panel's orders and report c
 		return orders;
 	};
 	const Json swarmRef = {{"id", swarm->gid}, {"generation", swarm->scriptIdentity}};
+	// Ids belong to a match: one game_world has not reported is refused (it may be an
+	// earlier match's), as is another match's session.
+	CHECK_THROWS_WITH(commander.call("game_building", {{"id", swarm->gid}, {"generation", swarm->scriptIdentity},
+													   {"workers", 1}}),
+					  doctest::Contains("call game_world for this match's ids"));
+	const auto session = commander.call("game_world", {{"detail", "brief"}}).at("session");
+	CHECK(session == commander.status().at("session"));
+	CHECK_THROWS_WITH(commander.call("game_building", {{"id", swarm->gid}, {"generation", swarm->scriptIdentity},
+													   {"workers", 1}, {"session", "earlier-match"}}),
+					  doctest::Contains("Unknown session"));
+	CHECK(queued().empty());
 	auto result = commander.call("game_building",
 		{{"id", swarm->gid}, {"generation", swarm->scriptIdentity}, {"workers", 255},
 		 {"production", {{"workers", 1}, {"warriors", 2}}}});

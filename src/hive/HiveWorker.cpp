@@ -170,46 +170,102 @@ const Json *placeable(const Json &s, const std::string &name, int level = 0, int
 		}
 	return site >= 0 ? nullptr : found;
 }
+// The names a player can place (level 0's site, or a flag), for errors about others.
+std::string placeableNames(const Json &s)
+{
+	std::vector<std::string> names;
+	for (const auto &t : s.at("buildingTypes"))
+		if (t.value("level", -1) == 0 && (t.value("site", false) || t.value("virtual", false)))
+			if (const auto name = t.value("name", std::string());
+				std::find(names.begin(), names.end(), name) == names.end())
+				names.push_back(name);
+	std::string out;
+	for (const auto &name : names)
+		out += (out.empty() ? "" : ", ") + name;
+	return out;
+}
+bool knownName(const Json &s, const std::string &name)
+{
+	for (const auto &t : s.at("buildingTypes"))
+		if (t.value("name", std::string()) == name)
+			return true;
+	return false;
+}
 // Tiles covered by buildings this colony knows of (its own, others in sight), by its
-// pending placements, and by spots findPlacement already gave out in this run.
+// pending placements, and by spots findPlacement already gave out in this run. Each
+// covered tile says by what: Claimed values.
+enum Claimed : char
+{
+	ClaimNone = 0,
+	ClaimOther = 1,
+	ClaimOwn = 2,
+	ClaimPending = 3
+};
 std::vector<char> occupied(const Json &s, const Json &reserved = Json::array())
 {
 	const int width = s.at("width"), height = s.at("height");
-	std::vector<char> mask(std::size_t(width) * height, 0);
+	std::vector<char> mask(std::size_t(width) * height, ClaimNone);
 	const auto claim = [&](const Json &f)
 	{
 		for (int dy = 0; dy < f.value("height", 1); ++dy)
 			for (int dx = 0; dx < f.value("width", 1); ++dx)
-				mask[std::size_t(wrap(f.value("y", 0) + dy, height)) * width + wrap(f.value("x", 0) + dx, width)] = 1;
+				mask[std::size_t(wrap(f.value("y", 0) + dy, height)) * width + wrap(f.value("x", 0) + dx, width)] = ClaimPending;
 	};
 	for (const auto &f : s.value("pending", Json::array()))
 		claim(f);
 	for (const auto &f : reserved)
 		claim(f);
+	const int self = s.at("team");
 	for (const auto &b : s.at("buildings"))
 		if (const auto *t = typeOf(s, b.value("type", -1)); t && !t->value("virtual", false))
 			for (int dy = 0; dy < t->value("height", 1); ++dy)
 				for (int dx = 0; dx < t->value("width", 1); ++dx)
-					mask[std::size_t(wrap(b.value("y", 0) + dy, height)) * width + wrap(b.value("x", 0) + dx, width)] = 1;
+					mask[std::size_t(wrap(b.value("y", 0) + dy, height)) * width + wrap(b.value("x", 0) + dx, width)] =
+						b.value("team", -1) == self ? ClaimOwn : ClaimOther;
 	return mask;
 }
 // As far as this colony can tell: explored, one buildable terrain on all four corners,
-// no resource and no known building. The game still decides when the order arrives.
-bool buildable(const Json &s, const Json &tile, const std::vector<char> &taken, int x, int y)
+// no resource and no known building. Empty when it is; otherwise what is in the way.
+// The game still decides when the order arrives.
+std::string blocked(const Json &s, const Json &tile, const std::vector<char> &taken, int x, int y)
 {
-	if (!tile.value("explored", false) || taken[std::size_t(y) * int(s.at("width")) + x])
-		return false;
+	if (!tile.value("explored", false))
+		return "unexplored";
+	switch (taken[std::size_t(y) * int(s.at("width")) + x])
+	{
+	case ClaimOther:
+		return "another team's building";
+	case ClaimOwn:
+		return "one of your buildings";
+	case ClaimPending:
+		return "a pending placement (yours, or one findPlacement gave out in this run)";
+	default:
+		break;
+	}
 	const auto &corners = tile.at("corners");
 	const int terrain = corners.at(0);
 	for (const auto &c : corners)
 		if (c != terrain)
-			return false;
+			return "mixed terrain (its corners differ)";
 	const auto &terrains = s.at("terrainTypes");
 	if (terrain < 0 || terrain >= int(terrains.size()) || !terrains[terrain].value("buildable", false))
-		return false;
-	if (tile.at("resource").value("type", NoResource) != NoResource)
-		return false;
-	return !tile.contains("building") || tile.value("building", NoResource) == NoResource;
+		return "unbuildable terrain" + (terrain >= 0 && terrain < int(terrains.size())
+											? " (" + terrains[terrain].value("name", std::string("?")) + ")"
+											: std::string());
+	if (const int resource = tile.at("resource").value("type", NoResource); resource != NoResource)
+	{
+		const auto &resources = s.at("resourceTypes");
+		return "a resource" + (resource >= 0 && resource < int(resources.size())
+								   ? " (" + resources[resource].value("key", std::string("?")) + ")"
+								   : std::string());
+	}
+	if (tile.contains("building") && tile.value("building", NoResource) != NoResource)
+		return "a building";
+	return {};
+}
+bool buildable(const Json &s, const Json &tile, const std::vector<char> &taken, int x, int y)
+{
+	return blocked(s, tile, taken, x, y).empty();
 }
 std::string canPlace(const Json &s, const Json &type, int x, int y, const std::vector<char> &taken)
 {
@@ -227,9 +283,8 @@ std::string canPlace(const Json &s, const Json &type, int x, int y, const std::v
 		for (int dx = 0; dx < type.value("width", 1); ++dx)
 		{
 			const int tx = wrap(x + dx, width), ty = wrap(y + dy, height);
-			if (!buildable(s, s.at("tiles").at(std::size_t(ty) * width + tx), taken, tx, ty))
-				return "tile (" + std::to_string(tx) + ", " + std::to_string(ty) +
-					   ") is unexplored, unbuildable terrain, a resource or a known building";
+			if (const auto why = blocked(s, s.at("tiles").at(std::size_t(ty) * width + tx), taken, tx, ty); !why.empty())
+				return "tile (" + std::to_string(tx) + ", " + std::to_string(ty) + "): " + why;
 		}
 	return {};
 }
@@ -239,7 +294,8 @@ const Json &placeableNamed(const Json &s, const Json &name)
 		throw std::runtime_error("Expected a building or flag name such as \"inn\" or \"warflag\"");
 	const auto *type = placeable(s, name.get<std::string>());
 	if (!type)
-		throw std::runtime_error("Unknown building or flag \"" + name.get<std::string>() + "\"");
+		throw std::runtime_error("Unknown building or flag \"" + name.get<std::string>() + "\"; names: " +
+								 placeableNames(s));
 	return *type;
 }
 Json query(const Json &s, const std::string &name, const Json &args, Json &reserved)
@@ -252,11 +308,32 @@ Json query(const Json &s, const std::string &name, const Json &args, Json &reser
 		Json f = args.empty() ? Json::object() : args.at(0);
 		if (!f.is_object())
 			throw std::runtime_error("Expected query options");
+		// A misspelled key would otherwise widen the query silently.
+		const std::vector<std::string> keys = name == "units"
+												  ? std::vector<std::string>{"team", "type", "offset", "limit"}
+												  : std::vector<std::string>{"team", "type", "offset", "limit", "remembered"};
+		for (const auto &[key, value] : f.items())
+			if (std::find(keys.begin(), keys.end(), key) == keys.end())
+			{
+				std::string valid;
+				for (const auto &k : keys)
+					valid += (valid.empty() ? "" : ", ") + k;
+				throw std::runtime_error(name + " filter has an unknown key \"" + key + "\"; valid keys: " + valid);
+			}
+		bool remembered = false;
+		if (f.contains("remembered") && !f["remembered"].is_null())
+		{
+			if (!f["remembered"].is_boolean())
+				throw std::runtime_error("buildings remembered must be true or false");
+			remembered = f["remembered"].get<bool>();
+		}
 		const auto team = teamFilter(s, f);
 		// type: a number, or a name ("warrior"; "inn", "warflag").
 		std::function<bool(const Json &)> typeMatch = [](const Json &) { return true; };
 		if (f.contains("type") && !f["type"].is_null())
 		{
+			if (f["type"].is_number() && remembered)
+				throw std::runtime_error("remembered buildings filter type by family name (\"inn\"), not number");
 			if (f["type"].is_number())
 			{
 				const int wanted = integer(f["type"], 0, 65535, name + " type");
@@ -277,6 +354,8 @@ Json query(const Json &s, const std::string &name, const Json &args, Json &reser
 				const auto wanted = f["type"].get<std::string>();
 				typeMatch = [wanted, &s](const Json &v)
 				{
+					if (v.contains("familyName"))
+						return v.value("familyName", std::string()) == wanted;
 					const auto *t = typeOf(s, v.value("type", -1));
 					return t && t->value("name", std::string()) == wanted;
 				};
@@ -287,7 +366,9 @@ Json query(const Json &s, const std::string &name, const Json &args, Json &reser
 		int limit =
 			f.contains("limit") && !f["limit"].is_null() ? integer(f["limit"], 0, 32768, name + " limit") : 32768;
 		Json out = Json::array();
-		for (auto &v : s.at(name))
+		static const Json none = Json::array();
+		const Json &source = remembered ? (s.contains("remembered") ? s.at("remembered") : none) : s.at(name);
+		for (auto &v : source)
 			if (team(v.value("team", -1)) && typeMatch(v))
 			{
 				if (offset)
@@ -346,6 +427,11 @@ Json query(const Json &s, const std::string &name, const Json &args, Json &reser
 		if (args.empty() || !args[0].is_string())
 			throw std::runtime_error("buildingType(name, {level, site}) needs a name such as \"inn\"");
 		const Json o = args.size() > 1 && args[1].is_object() ? args[1] : Json::object();
+		// An unknown name is an error, as for findPlacement; a known name without that
+		// level or site is null.
+		if (!knownName(s, args[0].get<std::string>()))
+			throw std::runtime_error("Unknown building or flag \"" + args[0].get<std::string>() + "\"; names: " +
+									 placeableNames(s));
 		const auto *t = placeable(s, args[0].get<std::string>(), o.contains("level") ? integer(o["level"], 0, 3, "buildingType level") : 0,
 								  o.contains("site") ? int(o["site"].get<bool>()) : -1);
 		return t ? *t : Json(nullptr);
