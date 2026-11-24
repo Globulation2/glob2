@@ -394,10 +394,12 @@ void registerUITools(ToolRegistry &registry)
 
 	add("game_world",
 		"In a match, read your colony in map tiles: status (free/total units, win chance), "
-		"alerts (attacks with tiles), buildings (id, type, top-left x/y, size, site, workers), "
-		"unit counts, known resources (nearest tile), other teams' visible and remembered "
-		"buildings, recent placements, placeable names. detail full adds unit lists. No token.",
-		{{"detail", enumeration({"summary", "full"})},
+		"alerts (losses, conversions, attacks with tiles), losses, buildings (id, type, top-left "
+		"x/y, size, site, workers, stock/capacity, Inn happiness), unit counts, known resources "
+		"(nearest tile), other teams' visible and remembered buildings, recent placements, "
+		"placeable names. detail brief: status, alerts, losses, one line per building, for "
+		"cheap polling; full adds unit lists. No token.",
+		{{"detail", enumeration({"brief", "summary", "full"})},
 		 {"limit", {{"type", "integer"}, {"minimum", 1}, {"maximum", 500}, {"default", 100}}},
 		 {"resource_radius", {{"type", "integer"}, {"minimum", 1}, {"maximum", 64}, {"default", 24}}},
 		 {"area", object({{"x", {{"type", "integer"}, {"minimum", 0}}},

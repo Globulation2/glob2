@@ -60,6 +60,15 @@ resources nearby. Each flag has a unit count and a range.
 Zones, painted with a brush: Forbidden (units keep out), Guard (warriors defend it),
 Clearing (workers clear resources there).
 
+Conversion. An Inn offers happiness: 1 when it can feed (has wheat and room), plus 1
+for each fruit (cherries, oranges, prunes) it holds more of than units inside; 0 when
+it cannot feed. If a non-allied colony shares its food vision with you (an Alliance
+dialog option), each hungry unit of yours weighs that colony's Inns it can reach before
+starving. It eats at your nearest Inn offering at least the best such happiness;
+when none does, it joins that colony on the spot. Inns that have just started
+feeding cannot convert for 150 ticks. Keep every Inn stocked with wheat and fruit:
+game_world lists each Inn's stock and happiness and counts units converted away.
+
 Victory. A colony is eliminated when it has no units or production left that could
 recover. In a custom game you win by eliminating every non-allied colony; the Game
 Rules tab can add prestige, a time limit or an early win when one side's win chance
@@ -106,9 +115,9 @@ Selecting a building or flag on the map replaces the panel with its details, key
 building/<id>/<generation>/...: workers ("Assigned workers": units requested, of
 the flag's kind on flags), priority/-1..1,
 range (flags), production/0..2 (Swarm ratios for Workers, Explorers, Warriors),
-construction (upgrade or repair) and destroy. game_world lists your buildings and units
-and what your colony sees, in map tiles; resource stock and other details come from
-hive_run.
+construction (upgrade or repair) and destroy. game_world lists your buildings with the
+stock the panel shows, your units and what your colony sees, in map tiles; skills and
+other details come from hive_run.
 Lesson card (tutorial only): a separate surface with the step text, intro/destination
 (marks the target on the map) and intro/help. Its body key (intro/body/N) changes
 with each step, so wait on the new key to detect progress.)"},
@@ -120,9 +129,12 @@ activate (buttons, options, tabs), select (integer index of a choice), set_value
 scroll container; scroll one into view before acting on a control it hides).
 
 In a match, think in map tiles. game_world reports your status (free/total units,
-win chance), alerts such as attacks with their tiles, your buildings with ids, unit
-counts and warrior training, known resources with their nearest tile, other teams'
-buildings in sight and those remembered under fog, and how recent placements went.
+win chance), alerts with their tiles (losses and conversions first, then attacks),
+losses (buildings destroyed, units converted away), your buildings with ids, stock
+and Inn happiness, unit counts and warrior training, known resources with their
+nearest tile, other teams' buildings in sight and those remembered under fog, and how
+recent placements went; detail brief returns only status, alerts, losses and one line
+per building, cheap enough to poll every few seconds.
 It follows fog of war: only what your colony sees or has seen, never another team's
 health or training. game_place puts a building site or flag with its top-left on a
 tile through the click path (near searches around it for room; buildings need
