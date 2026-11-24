@@ -262,3 +262,25 @@ above) after changing the file. Then open an invite link from another app on eac
 phone; it should open the game at the room.
 
 [Hosting index](README.md) · [Documentation index](../README.md).
+
+## itch.io browser launcher
+
+The [itch launcher](../../platforms/web/itch/index.html) frames the game from
+`https://app.glob2.online/play/itch.html`. Zip the launcher's `index.html` at
+the archive root and upload it as the browser playable file. Select **Click to
+launch in fullscreen** in itch's embed options.
+
+On the edge serving the game, set `GLOB2_ITCH_FRAME_ANCESTORS` to
+`https://genixpro.itch.io https://html.itch.zone` for the official itch project.
+CSP checks every ancestor, so include both the project page and the HTML CDN
+hosting its launcher. The default is `'none'`. Caddy applies this setting only
+to `/play/itch.html`. That entry serves the same build as `/play/`, so its
+relative assets, API calls and WebSockets use the existing game origin. Sign-in
+and account pages keep their existing framing policy. The existing sign-in
+handoff opens in a separate browser tab.
+
+Threaded execution depends on cross-origin isolation being available through
+both frames. The existing loader can fall back to serial. Test the actual
+embed for desktop and touch layout, save and reload, and an online room and
+match with a player using the regular browser client before promoting the
+launcher to the public listing.
