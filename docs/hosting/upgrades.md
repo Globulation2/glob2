@@ -233,18 +233,23 @@ workflow take effect.
   It must be on public `master` unless `allow_unmerged` is ticked (for example to
   return to a commit of an integration branch).
 
-The `preflight` job writes the commit, its source and the trigger to the run
-summary.
+The `preflight` job writes the commit, its source, how the images are built and the
+trigger to the run summary.
 
-**How it runs.** The `deploy` job uses the `online-production` environment
+**How it runs.** With `GLOB2_ONLINE_IMAGE_REGISTRY` set, the `images` jobs first
+build every image and the WebAssembly client in CI and the `manifest` job collects
+their digests ([Prebuilt images](#prebuilt-images)); the host then only pulls and
+swaps. The `deploy` job uses the `online-production` environment
 (restricted to `master`; add required reviewers there to approve each deploy). It
 authenticates to Google Cloud without keys through Workload Identity Federation,
-adds a six-and-a-half-hour SSH key (it must outlive the whole job: deploys take four to five hours) for the deploy user to the VM's instance metadata,
+adds a six-and-a-half-hour SSH key (it must outlive the whole job: a deploy that
+builds on the host takes four to five hours) for the deploy user to the VM's instance metadata,
 connects through an IAP TCP tunnel and pipes `deploy/online-deploy.sh` to the host.
 That script refuses to start while another `update-host.sh` runs (a process check
 plus a lock), records the running revision if there is no record yet, checks out
 the commit, and starts `deploy/update-host.sh` detached under `nohup`, with its log
-and exit status in `/opt/glob2/deploys/gh-<run id>-<attempt>/`. The job then polls
+and exit status in `/opt/glob2/deploys/gh-<run id>-<attempt>/` (with the image
+manifest as `images.json` when it pulls). The job then polls
 once a minute, runs the attached smoke test (`platform_stack_smoke.py --attach`,
 with `GLOB2_ONLINE_WEBSITE` as `--website`), writes the result, the deployed and
 previous revisions, the rollback status, the sim version and the backup directory
@@ -272,23 +277,32 @@ a mirror that is behind what was deployed by hand); a dispatch always deploys.
 new stack does not become healthy (the summary's rollback row says
 `rolled-back`, `failed` or `unchanged`). To go back after a successful deploy,
 dispatch again with `ref` = the previous revision from the summary (tick
-`allow_unmerged` if it is not on public `master`). Database restores stay manual;
-see [Upgrades](upgrades.md#upgrades).
+`allow_unmerged` if it is not on public `master`, and `build_on_host` if that
+revision predates prebuilt images: its `update-host.sh` cannot pull them).
+Database restores stay manual; see [Upgrades](upgrades.md#upgrades).
 
 **Repository variables** in the mirror: `GLOB2_ONLINE_WIF_PROVIDER`,
 `GLOB2_ONLINE_SERVICE_ACCOUNT`, `GLOB2_ONLINE_PROJECT`, `GLOB2_ONLINE_ZONE`,
 `GLOB2_ONLINE_INSTANCE`, `GLOB2_ONLINE_SSH_USER` (the host user that owns
 `/opt/glob2` and is in the `docker` group), `GLOB2_ONLINE_ENV_FILE`
 (`/opt/glob2/config/staging.env`), optionally `GLOB2_ONLINE_WEBSITE`
-(`https://glob2.online`) and `AUTO_DEPLOY_ONLINE`. None of them is a secret.
+(`https://glob2.online`) and `AUTO_DEPLOY_ONLINE`; for prebuilt images
+`GLOB2_ONLINE_IMAGE_REGISTRY`, `GLOB2_ONLINE_IMAGE_CACHE`,
+`GLOB2_ONLINE_IMAGE_SERVICE_ACCOUNT`, `GLOB2_ONLINE_BUILD_WEBSITE_URL` and
+`GLOB2_ONLINE_BUILD_DOWNLOAD_URL` (the host's `GLOB2_WEBSITE_URL` and
+`GLOB2_DOWNLOAD_URL`, which it checks), and optionally `GLOB2_DESIGN_SYSTEM_SHA`.
+None of them is a secret.
 
 **Google Cloud identity.** Each piece, and why it exists:
 
 | Resource | Scope | Why |
 | --- | --- | --- |
-| Provider `glob2-online-deploy` in pool `github-actions` | the pool | Accepts only GitHub OIDC tokens whose repository is `genixpro/glob2-release` (and its id), actor id the owner's, ref `refs/heads/master`, event `workflow_dispatch` or `push`, environment `online-production`, a GitHub-hosted runner and workflow `deploy-online.yml@refs/heads/master`. It maps `attribute.online_deploy_repository_id`, which no other provider in the pool sets. |
-| Service account `glob2-online-deployer` |  | The identity of the workflow; no keys. |
-| `roles/iam.workloadIdentityUser` on the service account for `principalSet://…/github-actions/attribute.online_deploy_repository_id/1397722696` | the service account | Lets tokens from that provider act as it. |
+| Provider `glob2-online-deploy` in pool `github-actions` | the pool | Accepts only GitHub OIDC tokens whose repository is `genixpro/glob2-release` (and its id), actor id the owner's, ref `refs/heads/master`, event `workflow_dispatch` or `push`, environment `online-production` or `online-images`, a GitHub-hosted runner and workflow `deploy-online.yml@refs/heads/master`. It maps `attribute.online_job` = `<repository id>:<environment>`, which no other provider in the pool sets. |
+| Service account `glob2-online-deployer` |  | The identity of the deploy job; no keys. |
+| `roles/iam.workloadIdentityUser` on the service account for `principalSet://…/github-actions/attribute.online_job/1397722696:online-production` | the service account | Lets only the `online-production` job act as it. The image builds run this commit's code and npm dependencies in `online-images`, which cannot reach it. |
+| Service account `glob2-image-publisher`, `roles/iam.workloadIdentityUser` for `…/attribute.online_job/1397722696:online-images` | the service account | The identity of the `images` jobs; no keys, no project roles. |
+| `roles/artifactregistry.writer` for `glob2-image-publisher` | repositories `glob2-online` and `glob2-online-cache` only | Push images and build cache. It cannot delete versions, and `glob2-online` has immutable tags. |
+| `roles/artifactregistry.reader` for the VM's `glob2-staging-host` | repository `glob2-online` only | The host pulls with its own identity through the metadata server; no stored credential. |
 | Custom role `glob2OnlineDeployInstance` (`compute.instances.get`, `compute.instances.setMetadata`) | the VM only | Read the VM and add or remove the short-lived SSH key in its own metadata. Nothing project-wide: `gcloud compute ssh` is not used because it also reads and tries to write project metadata. |
 | `roles/iap.tunnelResourceAccessor` | the VM's IAP tunnel resource only | Open the IAP TCP tunnel to port 22. |
 | Firewall rule `glob2-staging-iap-ssh`: tcp:22 from `35.235.240.0/20` to tag `glob2-staging` | the network | IAP's forwarding range, so SSH keeps working through IAP if the open `default-allow-ssh` rule is ever removed. |
@@ -307,10 +321,10 @@ gcloud iam service-accounts create glob2-online-deployer --project $P
 gcloud iam workload-identity-pools providers create-oidc glob2-online-deploy --project $P \
     --location global --workload-identity-pool github-actions \
     --issuer-uri https://token.actions.githubusercontent.com \
-    --attribute-mapping google.subject=assertion.sub,attribute.online_deploy_repository_id=assertion.repository_id \
-    --attribute-condition "assertion.repository_id == '1397722696' && assertion.repository == 'genixpro/glob2-release' && assertion.actor_id == '6193625' && (assertion.event_name == 'workflow_dispatch' || assertion.event_name == 'push') && assertion.environment == 'online-production' && assertion.runner_environment == 'github-hosted' && assertion.ref == 'refs/heads/master' && assertion.workflow_ref == 'genixpro/glob2-release/.github/workflows/deploy-online.yml@refs/heads/master'"
+    --attribute-mapping "google.subject=assertion.sub,attribute.online_job=assertion.repository_id + ':' + assertion.environment" \
+    --attribute-condition "assertion.repository_id == '1397722696' && assertion.repository == 'genixpro/glob2-release' && assertion.actor_id == '6193625' && (assertion.event_name == 'workflow_dispatch' || assertion.event_name == 'push') && (assertion.environment == 'online-production' || assertion.environment == 'online-images') && assertion.runner_environment == 'github-hosted' && assertion.ref == 'refs/heads/master' && assertion.workflow_ref == 'genixpro/glob2-release/.github/workflows/deploy-online.yml@refs/heads/master'"
 gcloud iam service-accounts add-iam-policy-binding $SA --project $P --role roles/iam.workloadIdentityUser \
-    --member principalSet://iam.googleapis.com/$POOL/attribute.online_deploy_repository_id/1397722696
+    --member "principalSet://iam.googleapis.com/$POOL/attribute.online_job/1397722696:online-production"
 gcloud iam roles create glob2OnlineDeployInstance --project $P \
     --permissions compute.instances.get,compute.instances.setMetadata
 gcloud compute instances add-iam-policy-binding glob2-staging --zone $Z --project $P \
@@ -326,10 +340,100 @@ gcloud compute firewall-rules create glob2-staging-iap-ssh --project $P --networ
     --source-ranges 35.235.240.0/20 --allow tcp:22 --target-tags glob2-staging
 ```
 
+The prebuilt-image pieces (see [Prebuilt images](#prebuilt-images)):
+
+```sh
+R=northamerica-northeast2 PUB=glob2-image-publisher@$P.iam.gserviceaccount.com
+gcloud artifacts repositories create glob2-online --project $P --location $R \
+    --repository-format docker --immutable-tags
+gcloud artifacts repositories create glob2-online-cache --project $P --location $R --repository-format docker
+# Keep the 30 newest versions of each image, drop others after 90 days; cache after 30.
+gcloud artifacts repositories set-cleanup-policies glob2-online --project $P --location $R --no-dry-run \
+    --policy <(echo '[{"name":"keep-recent","action":{"type":"Keep"},"mostRecentVersions":{"keepCount":30}},{"name":"delete-old","action":{"type":"Delete"},"condition":{"tagState":"any","olderThan":"90d"}}]')
+gcloud artifacts repositories set-cleanup-policies glob2-online-cache --project $P --location $R --no-dry-run \
+    --policy <(echo '[{"name":"delete-old-cache","action":{"type":"Delete"},"condition":{"tagState":"any","olderThan":"30d"}}]')
+gcloud iam service-accounts create glob2-image-publisher --project $P
+gcloud iam service-accounts add-iam-policy-binding $PUB --project $P --role roles/iam.workloadIdentityUser \
+    --member "principalSet://iam.googleapis.com/$POOL/attribute.online_job/1397722696:online-images"
+for repo in glob2-online glob2-online-cache; do
+  gcloud artifacts repositories add-iam-policy-binding $repo --project $P --location $R \
+      --member serviceAccount:$PUB --role roles/artifactregistry.writer
+done
+gcloud artifacts repositories add-iam-policy-binding glob2-online --project $P --location $R \
+    --member serviceAccount:glob2-staging-host@$P.iam.gserviceaccount.com --role roles/artifactregistry.reader
+# The online-images environment, restricted to master like online-production:
+gh api -X PUT repos/genixpro/glob2-release/environments/online-images \
+    -F deployment_branch_policy[protected_branches]=false -F deployment_branch_policy[custom_branch_policies]=true
+gh api -X POST repos/genixpro/glob2-release/environments/online-images/deployment-branch-policies -f name=master -f type=branch
+```
+
 To revoke the pipeline, delete the provider (or disable it with
 `gcloud iam workload-identity-pools providers update-oidc … --disabled`).
 
 [Hosting index](README.md) · [Documentation index](../README.md).
+
+### Prebuilt images
+
+Building on the host compiles the engine, the relay and both WebAssembly runtimes
+on its four cores for four to five hours while it serves players. With the mirror
+variable `GLOB2_ONLINE_IMAGE_REGISTRY` set, `deploy-online.yml` builds them in CI
+instead and the host only pulls and swaps:
+
+1. **`images`** (environment `online-images`) checks out the public commit and
+   builds in five parallel jobs on GitHub-hosted runners: `engine` (`engine-agent`
+   and the images built from it), `relay`, `platform` (`platform`, `music-worker`,
+   `caddy`), `ai-music` and `web` (`deploy/build-web-client.sh`, packed as a
+   `web-client` image that holds only the built tree under `/web-client`). Each
+   image is pushed to `glob2-online` as `<target>:<commit>-<run>-<attempt>` (tags
+   are immutable). Builds read their layer cache from `glob2-online-cache`; only
+   builds of commits on public `master` write it, so an `allow_unmerged` build
+   cannot seed what later builds reuse. The commit is checked out into `src/`,
+   outside the workspace root where the auth step writes its credential file, so
+   that file never enters a build context or the exported cache (`.dockerignore`
+   excludes it as well). The sim version is
+   computed from the commit, the theme revision once in `preflight`, and the
+   website links come from `GLOB2_ONLINE_BUILD_WEBSITE_URL` and
+   `GLOB2_ONLINE_BUILD_DOWNLOAD_URL`.
+2. **`manifest`** merges the digests into `images.json` (commit, sim version, theme
+   revision, registry, build arguments and one digest per target), refuses groups
+   that disagree on the sim version, and shows it in the run summary.
+3. **`deploy`** passes the manifest to `online-deploy.sh start`, which refuses it
+   unless it names this commit, the checkout's sim version and the host's
+   `GLOB2_IMAGE_REGISTRY`. `update-host.sh` then runs with
+   `GLOB2_PREBUILT_IMAGES`: after the backup it checks the manifest again (also
+   against a pinned `GLOB2_DESIGN_SYSTEM_SHA` and the host's `GLOB2_WEBSITE_URL`
+   and `GLOB2_DOWNLOAD_URL`), tags the running images `:previous`, pulls every
+   image by digest, tags it with the name compose gives each service built from
+   that target, copies the web client out of its image without running it, and
+   swaps with `up --no-build`. A manifest that does not fit changes nothing that
+   runs, and a failed swap rolls back to the `:previous` images as before.
+
+The host pulls as its own service account: `deploy/prebuilt_images.py` asks the
+metadata server for a short-lived token and logs in with it in a temporary Docker
+configuration that is deleted after the pulls (`GLOB2_IMAGE_REGISTRY_AUTH=docker`
+uses the deploy user's own Docker credentials instead). Host settings:
+
+```dotenv
+GLOB2_IMAGE_REGISTRY=northamerica-northeast2-docker.pkg.dev/bradley-personal-20261027/glob2-online
+GLOB2_IMAGE_REGISTRY_AUTH=gce-metadata
+```
+
+**Trust.** Only the deploy job can reach the host, and the image builds cannot act
+as it: they run in their own environment, whose identity (`glob2-image-publisher`)
+can push to the two repositories and nothing else. The image builds do decide what
+the host runs, by design, which is why they build only the owner's reviewed public
+commits. The host accepts only digests from its own registry for its checked-out
+commit, so neither a tag nor a manifest for another commit or registry can change
+what runs. Project-wide roles also reach these repositories: in
+`bradley-personal-20261027`, `roles/editor` on the default Compute Engine service
+account and `roles/cloudbuild.builds.builder` (the legacy Cloud Build account and
+`personal-site-deployer`) include Artifact Registry write. No VM or build uses the
+first two today; keep it that way, or move the repositories to a project of their
+own, before running other workloads under those accounts.
+
+**Fall back** to building on the host by dispatching with `build_on_host` (needed to
+roll back to a revision from before prebuilt images), or for every deploy by
+deleting the `GLOB2_ONLINE_IMAGE_REGISTRY` variable.
 
 ## CLI 2 coordinated rollout
 

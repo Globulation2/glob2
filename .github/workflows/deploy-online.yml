@@ -10,6 +10,14 @@ name: Deploy app.glob2.online
 # detached on the host (deploy/online-deploy.sh starts deploy/update-host.sh),
 # so a cancelled run never interrupts it. See docs/hosting/README.md,
 # "Automatic deployment".
+#
+# With the repository variable GLOB2_ONLINE_IMAGE_REGISTRY set, the images and the
+# WebAssembly client are built here, in parallel on GitHub-hosted runners, pushed
+# by digest to Artifact Registry, and the host only pulls them
+# (deploy/prebuilt_images.py), so a deploy takes minutes on the host instead of
+# hours of compiling. The build jobs run in their own environment (online-images)
+# whose identity can only push images; only the deploy job (online-production)
+# can reach the host. See docs/hosting/upgrades.md, "Prebuilt images".
 on:
   workflow_dispatch:
     inputs:
@@ -23,6 +31,13 @@ on:
         type: string
       allow_unmerged:
         description: Allow a ref that is not on public master
+        required: false
+        default: false
+        type: boolean
+      build_on_host:
+        description: >-
+          Build the images on the host instead of pulling CI-built ones (needed to
+          roll back to a commit from before prebuilt images)
         required: false
         default: false
         type: boolean
@@ -53,6 +68,9 @@ jobs:
     timeout-minutes: 10
     outputs:
       commit: ${{ steps.target.outputs.commit }}
+      design_system: ${{ steps.target.outputs.design_system }}
+      prebuilt: ${{ steps.target.outputs.prebuilt }}
+      on_master: ${{ steps.target.outputs.on_master }}
     steps:
       - name: Resolve and check the commit
         id: target
@@ -60,6 +78,9 @@ jobs:
           EVENT: ${{ github.event_name }}
           REF: ${{ inputs.ref || 'master' }}
           ALLOW_UNMERGED: ${{ inputs.allow_unmerged && 'true' || 'false' }}
+          BUILD_ON_HOST: ${{ inputs.build_on_host && 'true' || 'false' }}
+          REGISTRY: ${{ vars.GLOB2_ONLINE_IMAGE_REGISTRY }}
+          DESIGN_SYSTEM: ${{ vars.GLOB2_DESIGN_SYSTEM_SHA }}
           MIRROR: ${{ github.repository }}
           MIRROR_SHA: ${{ github.sha }}
         run: |
@@ -99,6 +120,24 @@ jobs:
           fi
           subject=$(git log -1 --format=%s "$commit")
           echo "commit=$commit" >> "$GITHUB_OUTPUT"
+          if git merge-base --is-ancestor "$commit" public/master; then
+            echo "on_master=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "on_master=false" >> "$GITHUB_OUTPUT"
+          fi
+          # One theme revision for every image of this deploy (as update-host.sh resolves it).
+          if [ -z "$DESIGN_SYSTEM" ]; then
+            DESIGN_SYSTEM=$(git ls-remote https://github.com/Globulation2/glob2-design-system.git refs/heads/main | cut -f1)
+          fi
+          [[ "$DESIGN_SYSTEM" =~ ^[0-9a-f]{40}$ ]]
+          echo "design_system=$DESIGN_SYSTEM" >> "$GITHUB_OUTPUT"
+          if [ -n "$REGISTRY" ] && [ "$BUILD_ON_HOST" != true ]; then
+            echo "prebuilt=true" >> "$GITHUB_OUTPUT"
+            build="prebuilt in CI, pushed to $REGISTRY"
+          else
+            echo "prebuilt=false" >> "$GITHUB_OUTPUT"
+            build="on the host"
+          fi
           echo "Deploying $commit $subject"
           echo "Source: $source"
           {
@@ -108,21 +147,227 @@ jobs:
             echo "| --- | --- |"
             echo "| Commit | [\`${commit:0:12}\`](https://github.com/Globulation2/glob2/commit/$commit) $subject |"
             echo "| Source | $source |"
+            echo "| Images | $build |"
             echo "| Trigger | $EVENT by $GITHUB_TRIGGERING_ACTOR |"
           } >> "$GITHUB_STEP_SUMMARY"
 
-  deploy:
-    name: Deploy to app.glob2.online
+  images:
+    name: Build ${{ matrix.group }} images
     needs: preflight
     if: >-
       github.repository == 'genixpro/glob2-release' &&
       github.repository_id == 1397722696 &&
       github.actor_id == 6193625 &&
       github.triggering_actor == 'genixpro' &&
+      github.ref == 'refs/heads/master' &&
+      needs.preflight.outputs.prebuilt == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    # Its own environment: the identity it gets can push images, nothing else.
+    # The build runs this commit's code and its npm dependencies, so it must not
+    # be able to reach the host (only online-production can).
+    environment:
+      name: online-images
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          # Images built FROM engine-agent share its compile in one builder.
+          - group: engine
+            targets: engine-agent skin-render-worker ai-map-worker ai-terrain-worker ai-building-worker
+          - group: relay
+            targets: relay
+          - group: platform
+            targets: platform music-worker caddy
+          - group: ai-music
+            targets: ai-music-worker
+          - group: web
+            targets: web-client
+    env:
+      COMMIT: ${{ needs.preflight.outputs.commit }}
+      DESIGN_SYSTEM: ${{ needs.preflight.outputs.design_system }}
+      REGISTRY: ${{ vars.GLOB2_ONLINE_IMAGE_REGISTRY }}
+      CACHE: ${{ vars.GLOB2_ONLINE_IMAGE_CACHE }}
+      WEBSITE_URL: ${{ vars.GLOB2_ONLINE_BUILD_WEBSITE_URL }}
+      DOWNLOAD_URL: ${{ vars.GLOB2_ONLINE_BUILD_DOWNLOAD_URL }}
+      TARGETS: ${{ matrix.targets }}
+      GROUP: ${{ matrix.group }}
+      TAG: ${{ needs.preflight.outputs.commit }}-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      # The public commit the host will check out, never the mirror's tree. In
+      # src/: the auth step writes its credential file into the workspace root,
+      # which must never be part of a build context (or the exported cache).
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ needs.preflight.outputs.commit }}
+          path: src
+          persist-credentials: false
+      - name: Check configuration and free disk space
+        env:
+          SERVICE_ACCOUNT: ${{ vars.GLOB2_ONLINE_IMAGE_SERVICE_ACCOUNT }}
+        run: |
+          set -euo pipefail
+          for name in REGISTRY CACHE SERVICE_ACCOUNT; do
+            if [ -z "${!name}" ]; then
+              echo "::error::repository variable for $name is not set (see docs/hosting/upgrades.md)"
+              exit 1
+            fi
+          done
+          [ "$(git -C src rev-parse HEAD)" = "$COMMIT" ]
+          # The engine build tree and images need more than the runner's free space.
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          docker system prune -af > /dev/null
+          df -h /
+      - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        with:
+          workload_identity_provider: ${{ vars.GLOB2_ONLINE_WIF_PROVIDER }}
+          service_account: ${{ vars.GLOB2_ONLINE_IMAGE_SERVICE_ACCOUNT }}
+          project_id: ${{ vars.GLOB2_ONLINE_PROJECT }}
+      - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3
+      - name: Build and push
+        working-directory: src
+        env:
+          # Only reviewed public master commits may write the shared layer cache
+          # that later builds trust; an allow_unmerged build only reads it.
+          WRITE_CACHE: ${{ needs.preflight.outputs.on_master }}
+        run: |
+          set -euo pipefail
+          # The auth step's credential file must stay outside the build context.
+          if [ -n "$(find . -name 'gha-creds-*.json' -print -quit)" ]; then
+            echo "::error::a credential file is inside the build context"
+            exit 1
+          fi
+          # The credential helper mints a fresh token for each push, so builds
+          # longer than one token's hour still push.
+          gcloud auth configure-docker "${REGISTRY%%/*}" --quiet
+          docker buildx create --name glob2 --driver docker-container --use > /dev/null
+          sim=$(python3 deploy/sim_version.py "$PWD")
+          echo "sim version $sim"
+          mkdir -p "$RUNNER_TEMP/digests"
+          push() {  # target, then buildx arguments
+            local target=$1; shift
+            docker buildx build "$@" --provenance=false --push \
+              --tag "$REGISTRY/$target:$TAG" --metadata-file "$RUNNER_TEMP/$target.json"
+            digest=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["containerimage.digest"])' "$RUNNER_TEMP/$target.json")
+            [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]]
+            echo "$target $digest"
+            printf '%s\n' "$digest" > "$RUNNER_TEMP/digests/$target"
+          }
+          for target in $TARGETS; do
+            if [ "$target" = web-client ]; then
+              # The tree update-host.sh would build, as an image holding only files.
+              GLOB2_WEB_INSTALL=0 GLOB2_BUILD_JOBS=4 deploy/build-web-client.sh "$RUNNER_TEMP/unused"
+              printf 'FROM scratch\nCOPY . /web-client/\n' > "$RUNNER_TEMP/web.Dockerfile"
+              push web-client -f "$RUNNER_TEMP/web.Dockerfile" build/emscripten/client/release
+              continue
+            fi
+            cache=(--cache-from "type=registry,ref=$CACHE/$target")
+            if [ "$WRITE_CACHE" = true ]; then
+              cache+=(--cache-to "type=registry,ref=$CACHE/$target,mode=max,image-manifest=true,oci-mediatypes=true,ignore-error=true")
+            fi
+            push "$target" -f deploy/Dockerfile --target "$target" \
+              --build-arg JOBS=4 \
+              --build-arg GLOB2_DESIGN_SYSTEM_SHA="$DESIGN_SYSTEM" \
+              --build-arg GLOB2_SIM_VERSION="$sim" \
+              --build-arg GLOB2_WEBSITE_URL="$WEBSITE_URL" \
+              --build-arg GLOB2_DOWNLOAD_URL="$DOWNLOAD_URL" \
+              "${cache[@]}" \
+              .
+          done
+          printf '%s\n' "$sim" > "$RUNNER_TEMP/digests/sim-version"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: digests-${{ matrix.group }}
+          path: ${{ runner.temp }}/digests
+          retention-days: 30
+
+  manifest:
+    name: Collect the image manifest
+    needs: [preflight, images]
+    if: >-
+      github.repository == 'genixpro/glob2-release' &&
+      github.repository_id == 1397722696 &&
+      github.actor_id == 6193625 &&
+      github.triggering_actor == 'genixpro' &&
+      github.ref == 'refs/heads/master' &&
+      needs.preflight.outputs.prebuilt == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: digests-*
+          path: digests
+      - name: Merge
+        env:
+          COMMIT: ${{ needs.preflight.outputs.commit }}
+          DESIGN_SYSTEM: ${{ needs.preflight.outputs.design_system }}
+          REGISTRY: ${{ vars.GLOB2_ONLINE_IMAGE_REGISTRY }}
+          WEBSITE_URL: ${{ vars.GLOB2_ONLINE_BUILD_WEBSITE_URL }}
+          DOWNLOAD_URL: ${{ vars.GLOB2_ONLINE_BUILD_DOWNLOAD_URL }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          images, sims = {}, set()
+          for group in sorted(Path('digests').iterdir()):
+              for item in sorted(group.iterdir()):
+                  value = item.read_text().strip()
+                  if item.name == 'sim-version':
+                      sims.add(value)
+                  elif item.name in images:
+                      raise SystemExit(f'{item.name} was built twice')
+                  else:
+                      images[item.name] = value
+          if len(sims) != 1:
+              raise SystemExit(f'the groups disagree on the sim version: {sorted(sims)}')
+          manifest = {
+              'version': 1, 'commit': os.environ['COMMIT'], 'simVersion': sims.pop(),
+              'designSystem': os.environ['DESIGN_SYSTEM'], 'registry': os.environ['REGISTRY'],
+              'buildArgs': {'GLOB2_WEBSITE_URL': os.environ['WEBSITE_URL'],
+                            'GLOB2_DOWNLOAD_URL': os.environ['DOWNLOAD_URL']},
+              'images': dict(sorted(images.items())),
+          }
+          Path('images.json').write_text(json.dumps(manifest, indent=1) + '\n')
+          PY
+          cat images.json
+          {
+            echo "### Images"
+            echo
+            echo '```json'
+            cat images.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: image-manifest
+          path: images.json
+          retention-days: 90
+
+  deploy:
+    name: Deploy to app.glob2.online
+    needs: [preflight, manifest]
+    # After the images, or straight away when the host builds them.
+    if: >-
+      !cancelled() &&
+      needs.preflight.result == 'success' &&
+      (needs.manifest.result == 'success' ||
+       (needs.manifest.result == 'skipped' && needs.preflight.outputs.prebuilt != 'true')) &&
+      github.repository == 'genixpro/glob2-release' &&
+      github.repository_id == 1397722696 &&
+      github.actor_id == 6193625 &&
+      github.triggering_actor == 'genixpro' &&
       github.ref == 'refs/heads/master'
     runs-on: ubuntu-24.04
-    # Mostly waiting: the host rebuilds the images and both web client variants
-    # with CMake (about five hours on the current host). GitHub-hosted jobs
+    # Mostly waiting. With prebuilt images the host only pulls and swaps
+    # (minutes); building on the host takes about five hours. GitHub-hosted jobs
     # stop at 360 minutes whatever this says, so the wait below ends first.
     timeout-minutes: 360
     environment:
@@ -145,6 +390,11 @@ jobs:
         with:
           sparse-checkout: deploy
           persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        if: needs.preflight.outputs.prebuilt == 'true'
+        with:
+          name: image-manifest
+          path: ${{ runner.temp }}/images
       - name: Check configuration
         env:
           PROVIDER: ${{ vars.GLOB2_ONLINE_WIF_PROVIDER }}
@@ -194,7 +444,13 @@ jobs:
       - name: Start the deploy on the host
         id: start
         if: steps.host.outputs.skip != 'true'
-        run: python3 deploy/online_remote.py run --key "$KEY" -- start "$ENV_FILE" "$COMMIT" "$RUN"
+        run: |
+          set -euo pipefail
+          images=
+          if [ -f "$RUNNER_TEMP/images/images.json" ]; then
+            images=$(base64 -w0 "$RUNNER_TEMP/images/images.json")
+          fi
+          python3 deploy/online_remote.py run --key "$KEY" -- start "$ENV_FILE" "$COMMIT" "$RUN" $images
       - name: Wait for the deploy
         id: wait
         if: steps.host.outputs.skip != 'true'
@@ -266,6 +522,7 @@ jobs:
             echo "| Rollback | $(status rollback) |"
             echo "| Smoke test (--attach) | ${SMOKE} |"
             echo "| Sim version | $(status sim_version) |"
+            echo "| Images | $(status images) |"
             echo "| Started / finished (UTC) | $(status started) / $(status finished) |"
             echo "| Host backup | $(status backup) |"
             echo "| Host run directory | \`deploys/$RUN\` |"

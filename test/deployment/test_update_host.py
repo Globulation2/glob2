@@ -6,6 +6,7 @@ every call (no containers are started).
 
     python3 -m unittest test/deployment/test_update_host.py -v
 """
+import json
 import os
 from pathlib import Path
 import shutil
@@ -24,7 +25,9 @@ echo "$*" >> "$FAKE_LOG"
 echo "${COMPOSE_PROFILES:-}" >> "$FAKE_LOG.profiles"
 case "$*" in
   *"ps --services --status running"*) echo "${FAKE_RUNNING_SERVICES:-postgres}" ;;
-  *"config --format json"*) echo '{"services":{"postgres":{},"ai-map-worker":{"profiles":["ai-maps"]}}}' ;;
+  *"config --format json"*) echo '{"services":{"postgres":{},"ai-map-worker":{"profiles":["ai-maps"],"image":"glob2-ai-map-worker:development","build":{"target":"ai-map-worker"}},"platform-api":{"image":"glob2-platform:development","build":{"target":"platform"}}}}' ;;
+  "create "*) echo c0ffee ;;
+  "cp "*) mkdir -p "$3" && cp -R "$FAKE_WEB_TREE/." "$3" ;;
   *"ps --status running -q postgres"*) echo 0123abcd ;;
   *"exec -T postgres pg_dump"*) echo DUMP ;;
   *"config --images"*) printf 'glob2-platform:development\nglob2-relay:development\n' ;;
@@ -43,7 +46,7 @@ class UpdateHostTests(unittest.TestCase):
         self.repo = self.dir / 'src'
         deploy = self.repo / 'deploy'
         deploy.mkdir(parents=True)
-        for name in ('update-host.sh', 'build-web-client.sh', 'install-web-client.py'):
+        for name in ('update-host.sh', 'build-web-client.sh', 'install-web-client.py', 'prebuilt_images.py'):
             shutil.copy(ROOT / 'deploy' / name, deploy / name)
         (deploy / 'sim_version.py').write_text('print("127-50-' + 'ab' * 32 + '")\n')
         (deploy / 'compose.yaml').write_text('name: fake\n')
@@ -109,6 +112,93 @@ class UpdateHostTests(unittest.TestCase):
         self.assertEqual((self.web / 'studio.html').read_text(), 'new studio.html')
         self.assertEqual((self.web / 'generator-studio.html').read_text(), 'new generator-studio.html')
         self.assertIn('glob2-platform:development glob2-platform:previous', '\n'.join(self.calls()))
+
+    def prebuilt(self, **changes):
+        """A manifest of CI-built images for the checkout, and the host settings to take it."""
+        registry = 'europe-docker.pkg.dev/example/glob2-online'
+        targets = ('platform', 'music-worker', 'ai-music-worker', 'skin-render-worker', 'ai-map-worker',
+                   'ai-terrain-worker', 'ai-building-worker', 'engine-agent', 'relay', 'caddy', 'web-client')
+        value = {'version': 1, 'commit': subprocess.run(['git', '-C', str(self.repo), 'rev-parse', 'HEAD'],
+                                                        capture_output=True, text=True).stdout.strip(),
+                 'simVersion': '127-50-' + 'ab' * 32, 'designSystem': 'cd' * 20, 'registry': registry,
+                 'buildArgs': {'GLOB2_WEBSITE_URL': '', 'GLOB2_DOWNLOAD_URL': ''},
+                 'images': {t: 'sha256:' + format(i, 'x') * 64 for i, t in enumerate(targets, 1)}}
+        value.update(changes)
+        path = self.dir / 'images.json'
+        path.write_text(json.dumps(value))
+        with self.env_file.open('a') as env:
+            env.write(f'GLOB2_IMAGE_REGISTRY={registry}\nGLOB2_IMAGE_REGISTRY_AUTH=docker\n')
+        tree = self.dir / 'ci-web'
+        (tree / 'threaded').mkdir(parents=True, exist_ok=True)
+        (tree / 'assets').mkdir(exist_ok=True)
+        (tree / 'assets' / 'pack-ci.data').write_text('ci')
+        for name in ENTRY_FILES:
+            (tree / name).write_text(f'ci {name}')
+        self.env.pop('GLOB2_DESIGN_SYSTEM_SHA')
+        return {'GLOB2_PREBUILT_IMAGES': str(path), 'FAKE_WEB_TREE': str(tree)}, value
+
+    def test_prebuilt_images_are_pulled_instead_of_built(self):
+        fake, value = self.prebuilt()
+        result = self.run_script(**fake)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        calls = self.calls()
+        # Nothing compiled: no web client container and no compose build.
+        self.assertFalse(any('run --rm' in c for c in calls), calls)
+        self.assertFalse(any(c.endswith(' build') or ' build ' in c for c in calls if 'compose' in c), calls)
+        platform = f'{value["registry"]}/platform@{value["images"]["platform"]}'
+        self.assertIn(f'pull --quiet {platform}', calls)
+        # :previous first, then the pulled image under the name compose uses.
+        self.assertLess(self.index('image tag glob2-platform:development glob2-platform:previous'),
+                        self.index(f'image tag {platform} glob2-platform:development'))
+        self.assertLess(self.index(f'image tag {platform}'), self.index('up -d --wait'))
+        self.assertIn('--no-build', self.calls()[self.index('up -d --wait')])
+        # The CI-built web client is installed last, as a built one would be.
+        self.assertEqual((self.web / 'index.html').read_text(), 'ci index.html')
+        self.assertIn('images: prebuilt from europe-docker.pkg.dev/example/glob2-online', result.stdout)
+        [backup] = self.backups()
+        self.assertEqual((backup / 'target-design-system-revision').read_text().strip(), 'cd' * 20)
+
+    def test_prebuilt_images_for_another_commit_change_nothing(self):
+        fake, _ = self.prebuilt(commit='9' * 40)
+        result = self.run_script(**fake)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('not the checkout', result.stderr)
+        self.assertIn('the build failed; the running stack is unchanged', result.stderr)
+        calls = self.calls()
+        self.assertFalse(any('pull' in c or 'up -d' in c for c in calls), calls)
+        self.assertEqual((self.web / 'index.html').read_text(), 'old index.html')
+
+    def test_prebuilt_images_need_this_hosts_registry_and_settings(self):
+        fake, _ = self.prebuilt(registry='evil.example.org/glob2/glob2-online')
+        result = self.run_script(**fake)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("not this host's", result.stderr)
+        self.assertFalse(any('pull' in c for c in self.calls()))
+
+    def test_prebuilt_images_must_be_built_with_the_hosts_website_links(self):
+        fake, _ = self.prebuilt()
+        with self.env_file.open('a') as env:
+            env.write('GLOB2_WEBSITE_URL=https://glob2.example/\n')
+        result = self.run_script(**fake)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('GLOB2_WEBSITE_URL', result.stderr)
+        self.assertFalse(any('pull' in c for c in self.calls()))
+
+    def test_a_pinned_design_revision_must_match_prebuilt_images(self):
+        fake, _ = self.prebuilt()
+        with self.env_file.open('a') as env:
+            env.write('GLOB2_DESIGN_SYSTEM_SHA=' + 'ef' * 20 + '\n')
+        result = self.run_script(**fake)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('the host pins', result.stderr)
+
+    def test_an_unhealthy_prebuilt_stack_is_rolled_back(self):
+        fake, _ = self.prebuilt()
+        result = self.run_script(FAKE_UP_FAIL='1', **fake)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('rolled back', result.stderr)
+        self.assertIn('image tag glob2-platform:previous glob2-platform:development', self.calls())
+        self.assertEqual((self.web / 'index.html').read_text(), 'old index.html')
 
     def test_rejects_invalid_design_revision_before_building(self):
         result = self.run_script(GLOB2_DESIGN_SYSTEM_SHA='main')

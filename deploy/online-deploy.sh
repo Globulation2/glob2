@@ -5,8 +5,12 @@
 # version that runs is the one from the workflow's commit, not the host's
 # checkout. It can also be run by hand on the host.
 #
-#   online-deploy.sh start  <env-file> <commit> <id>   refuse if a deploy runs; fetch and
-#                                                      check out <commit>; start update-host.sh
+#   online-deploy.sh start  <env-file> <commit> <id> [images]
+#                                                      refuse if a deploy runs; fetch and
+#                                                      check out <commit>; start update-host.sh,
+#                                                      with [images] (a base64 prebuilt-image
+#                                                      manifest, deploy/prebuilt_images.py)
+#                                                      pulling instead of building
 #   online-deploy.sh status <env-file> <id>            key=value lines (state, exit, rollback, ...)
 #   online-deploy.sh log    <env-file> <id> [lines]    the end of the deploy's log
 #   online-deploy.sh smoke  <env-file> <id> [website]  platform_stack_smoke.py --attach
@@ -83,6 +87,11 @@ start)
 		*[!0-9a-f]*) echo "online-deploy: $commit is not a full commit id" >&2; exit 2 ;;
 	esac
 	[ "${#commit}" -eq 40 ] || { echo "online-deploy: $commit is not a full commit id" >&2; exit 2; }
+	images=${5:-}
+	case "$images" in
+		*[!A-Za-z0-9+/=]*) echo "online-deploy: the image manifest is not base64" >&2; exit 2 ;;
+	esac
+	[ "${#images}" -le 16384 ] || { echo "online-deploy: the image manifest is too large" >&2; exit 2; }
 	# A retried SSH connection may repeat the start of the same run.
 	if [ -e "$dir" ]; then
 		if [ "$(cat "$dir/commit" 2>/dev/null)" = "$commit" ]; then
@@ -112,6 +121,19 @@ start)
 	# Check out first, so the newest update-host.sh runs (it checks out again).
 	git checkout --quiet --detach "$commit"
 	mkdir -p "$dir"
+	manifest=
+	if [ -n "$images" ]; then
+		manifest=$dir/images.json
+		if ! printf '%s' "$images" | base64 -d > "$manifest" 2>/dev/null \
+			|| ! python3 deploy/prebuilt_images.py check "$manifest" --commit "$commit" \
+				--sim-version "$(python3 deploy/sim_version.py "$src")" \
+				--registry "$(setting GLOB2_IMAGE_REGISTRY)" > /dev/null; then
+			rm -rf "$dir"
+			git checkout --quiet --detach "$running"
+			echo "online-deploy: the image manifest does not fit $commit on this host" >&2
+			exit 2
+		fi
+	fi
 	echo "$commit" > "$dir/commit"
 	echo "$running" > "$dir/previous"
 	date -u +%Y-%m-%dT%H:%M:%SZ > "$dir/started"
@@ -124,12 +146,12 @@ start)
 			echo 75 > "$5.tmp" && mv "$5.tmp" "$5"
 			exit 75
 		fi
-		cd "$2" && deploy/update-host.sh "$3" "$4"
+		cd "$2" && GLOB2_PREBUILT_IMAGES=$7 deploy/update-host.sh "$3" "$4"
 		status=$?
 		date -u +%Y-%m-%dT%H:%M:%SZ > "$6"
 		echo "$status" > "$5.tmp" && mv "$5.tmp" "$5"
 		echo "DEPLOY EXIT $status"
-	' online-deploy "$lock" "$src" "$env_file" "$commit" "$dir/exit" "$dir/finished" \
+	' online-deploy "$lock" "$src" "$env_file" "$commit" "$dir/exit" "$dir/finished" "$manifest" \
 		> "$dir/log" 2>&1 < /dev/null &
 	echo "$!" > "$dir/pid"
 	echo "online-deploy: started $(git log -1 --format='%h %s' "$commit") (running: $(git rev-parse --short "$running")); log $dir/log"
@@ -176,6 +198,7 @@ status)
 	echo "finished=$(cat "$dir/finished" 2>/dev/null || true)"
 	echo "backup=$(sed -n 's/^update-host: .* is running; backup in //p' "$dir/log" | tail -n 1)"
 	echo "sim_version=$(sed -n 's/^sim version: //p' "$dir/log" | tail -n 1)"
+	if [ -f "$dir/images.json" ]; then echo images=prebuilt; else echo images=built; fi
 	;;
 
 log)

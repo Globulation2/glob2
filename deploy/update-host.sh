@@ -16,7 +16,11 @@
 #   3. swap: `compose up --wait` (init runs new migrations first);
 #   4. install the new web client into GLOB2_WEB_CLIENT_DIR, last, so it never
 #      talks to an older platform than the one it was built with.
-# If the build fails, nothing running changed. If the new stack does not become
+# With GLOB2_PREBUILT_IMAGES=<manifest> (deploy/online-deploy.sh sets it for the
+# official instance), step 2 pulls the images and web client CI built for this
+# commit by digest from GLOB2_IMAGE_REGISTRY instead of building them; the manifest
+# must match the checkout, its sim version and this host's build settings
+# (deploy/prebuilt_images.py). If the build fails, nothing running changed. If the new stack does not become
 # healthy, the :previous images and the previous revision are started again and
 # the web client is left as it was; the database is not rolled back automatically
 # (migrations are forward-only and must keep the previous release working), but
@@ -144,9 +148,18 @@ PY
 
 # ------------------------------------------------------------------- 2. build
 phase=build
+prebuilt=${GLOB2_PREBUILT_IMAGES:-}
 # Resolve the shared theme once for every Node image in this deployment.
 GLOB2_DESIGN_SYSTEM_SHA=${GLOB2_DESIGN_SYSTEM_SHA:-$(setting GLOB2_DESIGN_SYSTEM_SHA)}
-if [ -z "$GLOB2_DESIGN_SYSTEM_SHA" ]; then
+if [ -n "$prebuilt" ]; then
+ # Prebuilt images carry their own theme revision; a pinned one must agree.
+ GLOB2_DESIGN_SYSTEM_SHA=$(python3 deploy/prebuilt_images.py check "$prebuilt" \
+  --commit "$(git rev-parse HEAD)" --sim-version "$GLOB2_SIM_VERSION" \
+  --registry "$(setting GLOB2_IMAGE_REGISTRY)" --design-system "$GLOB2_DESIGN_SYSTEM_SHA" \
+  --build-arg "GLOB2_WEBSITE_URL=$(setting GLOB2_WEBSITE_URL)" \
+  --build-arg "GLOB2_DOWNLOAD_URL=$(setting GLOB2_DOWNLOAD_URL)")
+ echo "images: prebuilt from $(setting GLOB2_IMAGE_REGISTRY)"
+elif [ -z "$GLOB2_DESIGN_SYSTEM_SHA" ]; then
  GLOB2_DESIGN_SYSTEM_SHA=$(git ls-remote https://github.com/Globulation2/glob2-design-system.git refs/heads/main | cut -f1)
 fi
 case "$GLOB2_DESIGN_SYSTEM_SHA" in
@@ -164,14 +177,24 @@ for image in $images; do
 		docker image tag "$image" "${image%:*}:previous"
 	fi
 done
-if [ -n "$web" ]; then
-	GLOB2_WEB_INSTALL=0 GLOB2_BUILD_JOBS=$(setting GLOB2_BUILD_JOBS) deploy/build-web-client.sh "$web"
+no_build=
+if [ -n "$prebuilt" ]; then
+	# The resolved configuration holds the env file's secrets: piped, never written.
+	auth=$(setting GLOB2_IMAGE_REGISTRY_AUTH)
+	compose config --format json | python3 deploy/prebuilt_images.py install "$prebuilt" \
+		--compose-config - --web-dir "$root/build/emscripten/client/release" --auth "${auth:-gce-metadata}"
+	no_build=--no-build
+else
+	if [ -n "$web" ]; then
+		GLOB2_WEB_INSTALL=0 GLOB2_BUILD_JOBS=$(setting GLOB2_BUILD_JOBS) deploy/build-web-client.sh "$web"
+	fi
+	compose build
 fi
-compose build
 
 # -------------------------------------------------------------------- 3. swap
 phase=swap
-if ! compose up -d --wait --wait-timeout 300 --remove-orphans --force-recreate; then
+# shellcheck disable=SC2086 # empty or one flag
+if ! compose up -d --wait --wait-timeout 300 --remove-orphans --force-recreate $no_build; then
 	echo "update-host: the new stack did not become healthy; rolling back to $(git rev-parse --short "$previous")" >&2
 	compose ps --format 'table {{.Service}}\t{{.State}}\t{{.Health}}' >&2 || true
 	for image in $images; do

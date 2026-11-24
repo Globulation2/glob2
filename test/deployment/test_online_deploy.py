@@ -5,8 +5,10 @@ of it as the host checkout and a fake update-host.sh, so nothing is deployed.
 
     python3 -m unittest test/deployment/test_online_deploy.py -v
 """
+import base64
 import datetime
 import importlib.util
+import json
 import os
 from pathlib import Path
 import shutil
@@ -31,6 +33,7 @@ ref=${2:-}
 echo "revision: $(git rev-parse --short HEAD) $(git log -1 --format=%s)"
 echo "sim version: 128-51-abc"
 echo "args: $*" >> "$FAKE_LOG"
+echo "prebuilt: ${GLOB2_PREBUILT_IMAGES:-}" >> "$FAKE_LOG"
 if [ -n "${FAKE_FINISH_GATE:-}" ]; then
   while [ ! -f "$FAKE_FINISH_GATE" ]; do sleep 0.01; done
 fi
@@ -45,6 +48,20 @@ case "${FAKE_RESULT:-ok}" in
   rollback-failed) echo "update-host: the previous release did not become healthy either" >&2; exit 1 ;;
 esac
 '''
+
+SIM = '128-51-' + 'ab' * 32
+REGISTRY = 'europe-docker.pkg.dev/example/glob2-online'
+TARGETS = ('platform', 'music-worker', 'ai-music-worker', 'skin-render-worker', 'ai-map-worker',
+           'ai-terrain-worker', 'ai-building-worker', 'engine-agent', 'relay', 'caddy', 'web-client')
+
+
+def manifest(commit, **changes):
+    value = {'version': 1, 'commit': commit, 'simVersion': SIM, 'designSystem': 'cd' * 20,
+             'registry': REGISTRY, 'buildArgs': {'GLOB2_WEBSITE_URL': '', 'GLOB2_DOWNLOAD_URL': ''},
+             'images': {t: 'sha256:' + format(i, 'x') * 64 for i, t in enumerate(TARGETS, 1)}}
+    value.update(changes)
+    return base64.b64encode(json.dumps(value).encode()).decode()
+
 
 FAKE_SMOKE = r'''import sys, os
 open(os.environ['FAKE_LOG'], 'a').write('smoke: ' + ' '.join(sys.argv[1:]) + '\n')
@@ -68,6 +85,8 @@ class HostDriverTests(unittest.TestCase):
         script.write_text(FAKE_UPDATE_HOST)
         script.chmod(0o755)
         (origin / 'test/deployment/platform_stack_smoke.py').write_text(FAKE_SMOKE)
+        shutil.copy(ROOT / 'deploy/prebuilt_images.py', origin / 'deploy/prebuilt_images.py')
+        (origin / 'deploy/sim_version.py').write_text(f'print({SIM!r})\n')
         git(origin, 'add', '.')
         git(origin, 'commit', '-qm', 'old')
         self.old = git(origin, 'rev-parse', 'HEAD')
@@ -204,6 +223,48 @@ class HostDriverTests(unittest.TestCase):
         self.assertIn('already started', self.driver('start', str(self.env_file), self.new, 'gh-5').stdout)
         self.assertNotEqual(self.driver('start', str(self.env_file), self.old, 'gh-5', check=False).returncode, 0)
         self.assertEqual(self.status('never')['state'], 'missing')
+
+    def test_passes_a_prebuilt_image_manifest_that_fits_the_commit(self):
+        with self.env_file.open('a') as env:
+            env.write(f'GLOB2_IMAGE_REGISTRY={REGISTRY}\n')
+        self.driver('start', str(self.env_file), self.new, 'gh-9', manifest(self.new))
+        status = self.wait('gh-9')
+        self.assertEqual((status['exit'], status['images']), ('0', 'prebuilt'))
+        stored = self.host / 'deploys/gh-9/images.json'
+        self.assertEqual(json.loads(stored.read_text())['commit'], self.new)
+        self.assertIn(f'prebuilt: {stored}', self.log.read_text())
+
+    def test_without_a_manifest_the_host_builds(self):
+        self.driver('start', str(self.env_file), self.new, 'gh-10')
+        status = self.wait('gh-10')
+        self.assertEqual(status['images'], 'built')
+        self.assertIn('prebuilt: \n', self.log.read_text())
+
+    def test_refuses_a_manifest_that_does_not_fit(self):
+        with self.env_file.open('a') as env:
+            env.write(f'GLOB2_IMAGE_REGISTRY={REGISTRY}\n')
+        cases = {
+            'another commit': manifest(self.old),
+            'another sim version': manifest(self.new, simVersion='128-52-' + 'ab' * 32),
+            'another registry': manifest(self.new, registry='evil.example.org/x/glob2-online'),
+            'not base64': 'not base64!',
+            'base64 of garbage': base64.b64encode(b'{"version": 1}').decode(),
+            'shell metacharacters': '$(touch /tmp/x)',
+            'too large': 'A' * 20000,
+        }
+        for name, images in cases.items():
+            with self.subTest(name):
+                result = self.driver('start', str(self.env_file), self.new, 'gh-11', images, check=False)
+                self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+                self.assertFalse((self.host / 'deploys/gh-11').exists())
+                # The checkout is back on what runs.
+                self.assertEqual(git(self.host / 'src', 'rev-parse', 'HEAD'), self.old)
+        self.assertFalse(self.log.exists() and 'args:' in self.log.read_text())
+
+    def test_refuses_a_manifest_on_a_host_without_a_registry(self):
+        result = self.driver('start', str(self.env_file), self.new, 'gh-12', manifest(self.new), check=False)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn('names no GLOB2_IMAGE_REGISTRY', result.stderr)
 
     def test_smoke_runs_against_the_deployed_checkout(self):
         self.driver('start', str(self.env_file), self.new, 'gh-6')
