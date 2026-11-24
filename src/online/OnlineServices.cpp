@@ -202,6 +202,26 @@ Services &ServicesOwner::get()
 	return *owned;
 }
 
+namespace
+{
+std::function<bool()> &assistedSource()
+{
+	static std::function<bool()> source;
+	return source;
+}
+} // namespace
+
+void setAssistedSource(std::function<bool()> source)
+{
+	assistedSource() = std::move(source);
+}
+
+bool assisted()
+{
+	const auto &source = assistedSource();
+	return source && source();
+}
+
 Services &services()
 {
 	if (currentOwner)

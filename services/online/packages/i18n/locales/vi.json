@@ -1541,6 +1541,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "Tỷ lệ {slot0}: mỗi triệu nhập token tiêu thụ {slot1} điểm, cache nhập {slot2}, cache viết {slot3}, xuất khẩu (bao gồm lý luận) {slot4}.",
   "Rated queues are for registered accounts; sign in first.": "Danh mục xếp hạng chỉ dành cho tài khoản đã đăng ký; Đăng nhập trước.",
+  "Players with the MCP server enabled and players without it use separate queues.": "Người chơi bật máy chủ MCP và người chơi không bật dùng các hàng chờ riêng.",
   "Rating": "Đánh giá",
   "Rating after each rated match": "Xếp hạng sau mỗi trận xếp hạng",
   "Re-verify ": "Kiểm tra lại",

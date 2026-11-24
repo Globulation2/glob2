@@ -84,6 +84,14 @@ class ServicesOwner
 	ServicesOwner *previous = nullptr;
 };
 
+// Whether this game is "assisted": its MCP automation server is enabled, so an AI
+// agent may be playing with the player, whichever tools it uses. Assisted clients
+// quick-match only in assisted queues (QueueInfo::assisted) and other clients only
+// in the rest; the platform refuses either kind elsewhere. The application installs
+// the source; without one nothing is assisted.
+void setAssistedSource(std::function<bool()> source);
+bool assisted();
+
 // The application's services, created on first call.
 Services &services();
 bool servicesCreated();

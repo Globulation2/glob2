@@ -7188,3 +7188,5 @@ AI สำหรับ​ทุก​อาณานิคม​ที่​ค�
 
 [javascript ai stopped %0]
 
+[hub no assisted queues]
+

@@ -125,6 +125,8 @@ Implementation: `src/online/screens/QuickMatchScreen.cpp`.
 
 The search in detail, opened with the strip's Details: the timer, the opponent rating range, the relay region and round trip, the AI backfill countdown with the AI that would play and **Allow an AI opponent** (on by default), with Profile and Maps over the running search. It closes, back to the hub, when the search ends (the hub shows why) or becomes a match, so the match's results return to the hub. Back to online (and Escape) keeps the search running; only Cancel ends it. The account chip ends the search and opens sign-in or the account menu on the hub.
 
+With the MCP server enabled, the hub and this screen list only the instance's assisted queues, and otherwise only the rest; switching MCP on or off ends a running search ([assisted queues](ratings-and-matchmaking.md#assisted-queues)).
+
 ### Match found
 
 Implementation: `src/online/screens/QuickMatchScreen.cpp`.

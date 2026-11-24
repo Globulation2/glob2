@@ -1547,6 +1547,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "Χρέωση {slot0}: {slot1} πιστώσεις ανά εκατομμύριο token εισόδου, {slot2} για προσωρινά αποθηκευμένη είσοδο, {slot3} για εγγραφές προσωρινής μνήμης και {slot4} για έξοδο μαζί με συλλογισμό. Διορθώσεις και επόμενες ενέργειες χρησιμοποιούν τις ίδιες χρεώσεις.",
   "Rated queues are for registered accounts; sign in first.": "Οι βαθμολογημένες ουρές είναι για εγγεγραμμένους λογαριασμούς· συνδεθείτε πρώτα.",
+  "Players with the MCP server enabled and players without it use separate queues.": "Οι παίκτες με ενεργό διακομιστή MCP και οι παίκτες χωρίς αυτόν χρησιμοποιούν ξεχωριστές ουρές.",
   "Rating": "Βαθμολογία",
   "Rating after each rated match": "Βαθμολογία μετά από κάθε διαβαθμισμένο αγώνα",
   "Re-verify ": "Επαληθεύστε ξανά",

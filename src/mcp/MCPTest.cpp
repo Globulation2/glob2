@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Availability.h"
+#include "OnlineUIFixtures.h"
 #include <chrono>
 #if GLOB2_DESKTOP_MCP
 // Establish WinSock2 before SDL fixtures can include Windows headers.
@@ -841,6 +842,55 @@ TEST_CASE("MCP/leases input dispatch cancellation viewport and capture [network]
 	service.configure(true, port, true);
 	waitForListener(service, ListenerState::Running);
 	CHECK(service.status() == "Running");
+}
+
+TEST_CASE("MCP/server stays off during a quick match among players without MCP [network]")
+{
+	glob2test::HeadlessGlobals globals(
+		{.display = true, .width = 640, .height = 480, .beforeLoad = [](GlobalContainer &g) {
+			 g.settings.rendererBackend = GAGCore::RendererBackend::Software;
+		 }});
+	UIService service(*globalContainer->gfx);
+	const int port = unusedLoopbackPort();
+	// Switching MCP on while the match starts or runs must not open the listener.
+	auto hold = std::make_unique<UnassistedMatchHold>();
+	service.configure(true, port);
+	CHECK(service.listenerState() == ListenerState::Disabled);
+	// The match ends: the next configure (every frame) starts it.
+	hold.reset();
+	CHECK(!suspendedForUnassistedMatch());
+	service.configure(true, port);
+	waitForListener(service, ListenerState::Running);
+	CHECK(service.listenerState() == ListenerState::Running);
+	// A match starting with MCP already on stops it again, until its last hold goes.
+	hold = std::make_unique<UnassistedMatchHold>();
+	{
+		UnassistedMatchHold results;
+		hold.reset();
+		service.configure(true, port);
+		CHECK(service.listenerState() == ListenerState::Disabled);
+	}
+	CHECK(!suspendedForUnassistedMatch());
+}
+
+TEST_CASE("MCP/a quick match among players without MCP holds the server off until its result goes")
+{
+	glob2test::HeadlessGlobals globals({.loadStrings = true});
+	REQUIRE(!suspendedForUnassistedMatch());
+	{
+		auto match = OnlineUIFixtures::startingMatch();
+		// From assignment, before the engine exists: the start screen is covered too.
+		CHECK(suspendedForUnassistedMatch());
+		auto result = match->result();
+		match.reset();
+		// The results screen keeps the result, and with it the hold.
+		CHECK(suspendedForUnassistedMatch());
+	}
+	CHECK(!suspendedForUnassistedMatch());
+	{
+		auto assisted = OnlineUIFixtures::startingMatch(true);
+		CHECK(!suspendedForUnassistedMatch());
+	}
 }
 
 TEST_CASE("MCP/input boundaries preserve observation and cancel truncated batches [network]")

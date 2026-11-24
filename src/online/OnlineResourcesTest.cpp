@@ -4,6 +4,8 @@
 // and the profile figures are computed from match history.
 
 #include "Glob2Test.h"
+
+#include <algorithm>
 #include "OnlineResources.h"
 #include "TurnProtocol.h"
 
@@ -136,6 +138,87 @@ TEST_SUITE("OnlineResources")
 			++count;
 		}
 		CHECK(count >= 12);
+	}
+
+	TEST_CASE("assisted queues are for clients with MCP enabled and the rest for everyone else")
+	{
+		const Json instance = {{"queues",
+								{{{"id", "ranked-1v1"}, {"name", "Ranked 1v1"}, {"mode", "1v1"}, {"rated", true}},
+								 {{"id", "casual-1v1"}, {"name", "Casual 1v1"}, {"mode", "1v1"}, {"rated", false}, {"assisted", false}},
+								 {{"id", "mcp-ranked-1v1"}, {"name", "MCP Ranked 1v1"}, {"mode", "1v1"}, {"rated", true}, {"assisted", true}}}}};
+		const auto queues = queuesFromInstance(instance);
+		REQUIRE(queues.size() == 3);
+		CHECK(!queues[0].assisted); // servers before assisted queues send no flag
+		CHECK(!queues[1].assisted);
+		CHECK(queues[2].assisted);
+		const auto &items = instance["queues"];
+		CHECK(queueFits(items[0], false));
+		CHECK(!queueFits(items[0], true));
+		CHECK(queueFits(items[1], false));
+		CHECK(!queueFits(items[2], false));
+		CHECK(queueFits(items[2], true));
+		CHECK(!queueFits(Json("ranked-1v1"), false));
+	}
+
+	TEST_CASE("a client's queue list keeps only its kind, in the instance's order")
+	{
+		const Json all = Json::array({{{"id", "ranked-1v1"}, {"assisted", false}},
+									  {{"id", "mcp-ranked-1v1"}, {"assisted", true}},
+									  {{"id", "casual-1v1"}},
+									  {{"id", "mcp-casual-1v1"}, {"assisted", true}}});
+		const Json plain = queuesFor(all, false);
+		REQUIRE(plain.size() == 2);
+		CHECK(plain[0]["id"] == "ranked-1v1");
+		CHECK(plain[1]["id"] == "casual-1v1");
+		const Json mcp = queuesFor(all, true);
+		REQUIRE(mcp.size() == 2);
+		CHECK(mcp[0]["id"] == "mcp-ranked-1v1");
+		CHECK(mcp[1]["id"] == "mcp-casual-1v1");
+		// Every queue lands in exactly one of the two lists.
+		CHECK(plain.size() + mcp.size() == all.size());
+	}
+
+	TEST_CASE("a server without assisted queues leaves an assisted client none")
+	{
+		const Json old = Json::array({{{"id", "ranked-1v1"}, {"rated", true}}, {{"id", "casual-1v1"}}});
+		CHECK(queuesFor(old, true).empty());
+		CHECK(queuesFor(old, false).size() == 2);
+		// Every protocol fixture splits into the two lists without losing a queue, and
+		// the parsed flag agrees with the JSON one.
+		int withAssisted = 0;
+		for (auto &[file, value] : fixtures("InstanceInfo"))
+		{
+			INFO(file);
+			const auto parsed = queuesFromInstance(value);
+			const Json mcp = queuesFor(value["queues"], true);
+			CHECK(queuesFor(value["queues"], false).size() + mcp.size() == value["queues"].size());
+			CHECK(std::count_if(parsed.begin(), parsed.end(), [](const QueueInfo &q) { return q.assisted; }) ==
+				  std::ptrdiff_t(mcp.size()));
+			if (!mcp.empty())
+			{
+				++withAssisted;
+				CHECK(mcp[0]["id"] == "mcp-ranked-1v1");
+			}
+		}
+		CHECK(withAssisted == 1);
+	}
+
+	TEST_CASE("malformed queue lists give no queues rather than throwing")
+	{
+		CHECK(queuesFor(Json(), false).empty());
+		CHECK(queuesFor(Json::object(), true).empty());
+		CHECK(queuesFor(Json("queues"), false).empty());
+		CHECK(queuesFor(Json::array(), true).empty());
+		const Json mixed = Json::array({Json(7), Json("casual-1v1"), Json::array(), {{"id", "casual-1v1"}}});
+		const Json kept = queuesFor(mixed, false);
+		REQUIRE(kept.size() == 1);
+		CHECK(kept[0]["id"] == "casual-1v1");
+		// A flag that is not a boolean does not make a queue assisted.
+		CHECK(!queueFits(Json{{"id", "x"}, {"assisted", "yes"}}, true));
+		CHECK(queueFits(Json{{"id", "x"}, {"assisted", "yes"}}, false));
+		const auto parsed = QueueInfo::fromJson(Json{{"id", "x"}, {"name", "X"}, {"mode", "1v1"}, {"assisted", 1}});
+		REQUIRE(parsed);
+		CHECK(!parsed->assisted);
 	}
 
 	TEST_CASE("queue status and proposals carry what the search panel and prompt show")

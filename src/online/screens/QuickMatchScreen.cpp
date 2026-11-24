@@ -126,9 +126,19 @@ QuickMatchScreen::QuickMatchScreen(GAGGUI::ScreenStack &screens)
 QuickMatchScreen::QuickMatchScreen(GAGGUI::ScreenStack &screens, QuickMatch &model,
 								   std::vector<Online::QueueInfo> queues, std::string instance,
 								   std::string account)
-	: screens(screens), model(model), live(false), queues(std::move(queues)), queuesLoaded(true),
+	: screens(screens), model(model), live(false), allQueues(std::move(queues)), queuesLoaded(true),
 	  instance(std::move(instance)), account(std::move(account))
 {
+	pickQueues();
+}
+
+void QuickMatchScreen::pickQueues()
+{
+	queuesAssisted = Online::assisted();
+	queues.clear();
+	for (const auto &queue : allQueues)
+		if (queue.assisted == queuesAssisted)
+			queues.push_back(queue);
 }
 
 QuickMatchScreen::~QuickMatchScreen() = default;
@@ -142,7 +152,8 @@ void QuickMatchScreen::loadQueues()
 						{
 							if (response.ok)
 							{
-								queues = Online::queuesFromInstance(response.result);
+								allQueues = Online::queuesFromInstance(response.result);
+								pickQueues();
 								queuesLoaded = true;
 								loadError.clear();
 							}
@@ -242,6 +253,12 @@ void QuickMatchScreen::onEscape()
 
 void QuickMatchScreen::onTimer(Uint32 tick)
 {
+	// Switching MCP on or off shows the other kind's queues.
+	if (queuesLoaded && Online::assisted() != queuesAssisted)
+	{
+		pickQueues();
+		invalidate();
+	}
 	if (live)
 	{
 		model.update();
@@ -435,7 +452,7 @@ Element QuickMatchScreen::build(const Presentation &p)
 	if (!queuesLoaded)
 		body.push_back(paragraph(loadError.empty() ? tr("[online connecting]") : loadError, {FontRole::Body, true}));
 	else if (queues.empty())
-		body.push_back(paragraph(tr("[qm no queues]"), {FontRole::Body, true}));
+		body.push_back(paragraph(tr(queuesAssisted ? "[hub no assisted queues]" : "[qm no queues]"), {FontRole::Body, true}));
 
 	Element thumb;
 	if (!phone)

@@ -239,6 +239,7 @@ export async function buildApp(
           name: queue.name,
           mode: queue.mode,
           rated: queue.rated,
+          assisted: queue.assisted,
           ...(queue.aiBackfillSeconds === undefined
             ? {}
             : { aiBackfillSeconds: queue.aiBackfillSeconds }),

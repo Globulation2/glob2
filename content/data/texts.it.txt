@@ -7188,3 +7188,5 @@ Terreno di tundra
 
 [javascript ai stopped %0]
 
+[hub no assisted queues]
+

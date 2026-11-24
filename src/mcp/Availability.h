@@ -8,3 +8,27 @@
 #else
 #define GLOB2_DESKTOP_MCP 0
 #endif
+
+namespace MCP
+{
+/// While any hold lives the MCP server stays off whatever the setting says: a
+/// quick match from a queue for players without MCP is starting, running or showing
+/// its results, so switching MCP on then cannot bring an AI agent into it.
+/// Main thread only.
+inline int &unassistedMatchHolds()
+{
+	static int holds = 0;
+	return holds;
+}
+inline bool suspendedForUnassistedMatch()
+{
+	return unassistedMatchHolds() > 0;
+}
+struct UnassistedMatchHold
+{
+	UnassistedMatchHold() { ++unassistedMatchHolds(); }
+	~UnassistedMatchHold() { --unassistedMatchHolds(); }
+	UnassistedMatchHold(const UnassistedMatchHold &) = delete;
+	UnassistedMatchHold &operator=(const UnassistedMatchHold &) = delete;
+};
+} // namespace MCP

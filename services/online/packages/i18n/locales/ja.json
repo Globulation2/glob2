@@ -1541,6 +1541,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "料金{slot0}：入力トークン100万個あたり{slot1}クレジット、キャッシュ済み入力は{slot2}、キャッシュ書き込みは{slot3}、推論を含む出力は{slot4}です。修正や追加のリクエストにも同じ料金が適用されます。",
   "Rated queues are for registered accounts; sign in first.": "レーティング対象のキューは登録済みアカウント専用です。先にサインインしてください。",
+  "Players with the MCP server enabled and players without it use separate queues.": "MCP サーバーを有効にしたプレイヤーと、有効にしていないプレイヤーは別々のキューを使います。",
   "Rating": "評価",
   "Rating after each rated match": "レーティング対象の各試合後のレーティング",
   "Re-verify ": "再検証 ",

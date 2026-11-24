@@ -57,6 +57,29 @@ TEST_SUITE("OnlineServices")
 		CHECK(created == 2);
 	}
 
+	TEST_CASE("a client is assisted only while its installed source says so")
+	{
+		struct Restore
+		{
+			~Restore() { Online::setAssistedSource({}); }
+		} restore;
+		Online::setAssistedSource({});
+		CHECK(!Online::assisted());
+		bool mcp = false;
+		Online::setAssistedSource([&mcp] { return mcp; });
+		CHECK(!Online::assisted());
+		mcp = true;
+		CHECK(Online::assisted()); // read afresh every time: the setting can change
+		mcp = false;
+		CHECK(!Online::assisted());
+		mcp = true;
+		Online::setAssistedSource({});
+		CHECK(!Online::assisted()); // a cleared source (application gone) is not assisted
+		Online::setAssistedSource([] { return true; });
+		Online::setAssistedSource([] { return false; });
+		CHECK(!Online::assisted()); // the latest source wins
+	}
+
 	TEST_CASE("pump hooks run on update and stop once removed")
 	{
 		Files files;

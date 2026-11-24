@@ -2,6 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "OnlineMatch.h"
+#include "mcp/Availability.h"
 #include "PlatformApi.h"
 #include "SkinDownloads.h"
 
@@ -265,6 +266,9 @@ OnlineMatch::OnlineMatch(PlatformClient &client, MapCache &maps, OnlineStorage &
 	outcome->label = ctx.label;
 	outcome->fromRoom = ctx.fromRoom;
 	outcome->rated = ctx.rated;
+	outcome->assisted = ctx.assisted;
+	if (!ctx.fromRoom && !ctx.assisted)
+		outcome->mcpHold = std::make_unique<MCP::UnassistedMatchHold>();
 	outcome->ladder = ctx.ladder;
 	outcome->mapTitle = mapTitle();
 	// Optional preview of the rating change before verification (not in the

@@ -999,6 +999,19 @@
       "note": "Join a queue but opt out of AI backfill."
     },
     {
+      "file": "valid/RealtimeQueueJoinParams/assisted.json",
+      "schema": "RealtimeQueueJoinParams",
+      "valid": true,
+      "note": "A client with its MCP server enabled joins an assisted queue."
+    },
+    {
+      "file": "invalid/RealtimeQueueJoinParams/assisted-not-boolean.json",
+      "schema": "RealtimeQueueJoinParams",
+      "valid": false,
+      "stage": "schema",
+      "note": "The assisted flag is a boolean, not a string."
+    },
+    {
       "file": "valid/RealtimeQueueRespondParams/accept.json",
       "schema": "RealtimeQueueRespondParams",
       "valid": true,
@@ -1115,6 +1128,12 @@
       "schema": "InstanceInfo",
       "valid": true,
       "note": "Instance description."
+    },
+    {
+      "file": "valid/InstanceInfo/with-assisted-queues.json",
+      "schema": "InstanceInfo",
+      "valid": true,
+      "note": "An instance with queues for players with the MCP server enabled (assisted) beside the ordinary ones."
     },
     {
       "file": "valid/RoomState/open-room.json",

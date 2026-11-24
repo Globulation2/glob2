@@ -1547,6 +1547,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "दर {slot0}: हर दस लाख इनपुट टोकन पर {slot1} क्रेडिट, कैश इनपुट पर {slot2}, कैश लेखन पर {slot3} और तर्क सहित आउटपुट पर {slot4}। मरम्मत और आगे के काम की दरें भी यही हैं।",
   "Rated queues are for registered accounts; sign in first.": "रेटिंग वाली कतारों के लिए पंजीकृत खाता चाहिए; पहले साइन इन करें।",
+  "Players with the MCP server enabled and players without it use separate queues.": "MCP सर्वर चालू रखने वाले खिलाड़ी और उसके बिना खेलने वाले खिलाड़ी अलग-अलग कतारों का उपयोग करते हैं।",
   "Rating": "रेटिंग",
   "Rating after each rated match": "हर रेटिंग वाले मैच के बाद रेटिंग",
   "Re-verify ": "फिर पुष्टि करें ",

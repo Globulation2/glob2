@@ -1547,6 +1547,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "{slot0} tarifa: {slot1} kreditu milioi sarrera-tokeneko, {slot2} cacheko sarrerentzat, {slot3} cache-idazketentzat eta {slot4} irteerarentzat, arrazoiketa barne. Konponketek eta jarraipen-eskaerek tarifa berak erabiltzen dituzte.",
   "Rated queues are for registered accounts; sign in first.": "Sailkapeneko ilarak erregistratutako kontuentzat dira; hasi saioa lehenik.",
+  "Players with the MCP server enabled and players without it use separate queues.": "MCP zerbitzaria gaituta duten jokalariek eta ez dutenek ilara bereiziak erabiltzen dituzte.",
   "Rating": "Balioa",
   "Rating after each rated match": "Balorazio bakoitzaren ondoren emandako balorazioa",
   "Re-verify ": "Berriro egiaztatu ",

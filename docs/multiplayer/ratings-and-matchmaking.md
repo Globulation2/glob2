@@ -181,6 +181,7 @@ rejects map pools whose team count does not fit the mode.
 | --- | --- | --- |
 | `mode` | — | `1v1`, or `2v2` solo queue (four players on two sides, each on its own colony) |
 | `rated` | — | Rated queues use the ladder named by the queue id. Guests cannot join them. |
+| `assisted` | false | For players with the MCP server enabled only; see [Assisted queues](#assisted-queues) |
 | `aiBackfillSeconds` | never | Wait before empty seats are filled with AIs |
 | `acceptSeconds` | 10 if rated, else 0 | Accept prompt length for all-human groups. 0 starts at once. AI-backfilled groups never prompt. |
 | `declineCooldownSeconds` | 60 | Queue ban after declining or ignoring a prompt |
@@ -189,6 +190,40 @@ rejects map pools whose team count does not fit the mode.
 | `ratingWindow` | `{initial: 100, perSecond: 5, max: 800}` | Accepted skill difference in display points |
 | `aiPool` | all eight rated AIs | AIs that may backfill |
 | `mapPool` | fair 128×128 set below | Generator descriptors without a seed |
+
+### Assisted queues
+
+A player whose game has its [MCP server](../development/mcp-ui-server.md) enabled
+may be playing together with an AI agent, whatever tools the agent uses. Such
+players quick-match only against each other, so people playing on their own never
+meet one:
+
+- **Server.** `queue.join` carries `assisted: true` from those clients. The handler
+  refuses (`forbidden`) any queue whose `assisted` flag differs, including one queue
+  of a multi-queue search; a join without the flag counts as not assisted.
+  `InstanceInfo.queues` lists the flag. Each queue is its own ladder, leaderboard
+  and match list, so assisted ratings and history stay apart without further rules.
+- **Client.** `Online::assisted()` is `Settings::mcpActive()` (the setting or
+  `--mcp-port`). The hub and the quick-match screen list only the queues of the
+  client's kind, and switch lists when the setting changes. Changing it mid-search
+  ends the search (`QuickMatch::Notice::Cancelled`); in an accept prompt that counts
+  as declining. From the assignment of a quick match from a queue that is not
+  assisted until its results close, the MCP server stays off, even if the setting is
+  switched on (`OnlineMatchResult::mcpHold`, an `MCP::UnassistedMatchHold`).
+- **Operators** add assisted queues to `instance.yaml` (the example has
+  `mcp-ranked-1v1` and `mcp-casual-1v1`). Without one, players with MCP enabled
+  cannot quick-match; the hub says so.
+
+Rooms, LAN games and invites are not split: their players choose each other. That
+includes a rematch room opened after an ordinary quick match. Hive Mind, the
+platform's own commander, is a separate feature with its own policy and is not
+affected.
+
+The flag is the client's own report, so it separates honest clients only. A
+modified client, or a release from before assisted queues (0.11.7.0 and earlier
+already have the MCP server), joins the ordinary queues with MCP on until its sim
+version stops being served. Such clients also list the assisted queues and are
+refused when they try to join one.
 
 ### Default map pool
 

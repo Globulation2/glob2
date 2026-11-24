@@ -1547,6 +1547,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "Цена {slot0}: {slot1} кредита на милион входни токени, {slot2} за кеширан вход, {slot3} за записи в кеша и {slot4} за изход, включително разсъжденията. Поправките и последващите действия използват едни и същи цени.",
   "Rated queues are for registered accounts; sign in first.": "Опашките с рейтинг са за регистрирани акаунти; първо влезте.",
+  "Players with the MCP server enabled and players without it use separate queues.": "Играчите с включен MCP сървър и играчите без него използват отделни опашки.",
   "Rating": "Рейтинг",
   "Rating after each rated match": "Рейтинг след всеки мач с рейтинг",
   "Re-verify ": "Повторна проверка ",

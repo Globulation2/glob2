@@ -189,6 +189,9 @@ Application::Application()
 							 : std::string("unavailable");
 	};
 	mcp->configure(globalContainer->settings.mcpActive(), globalContainer->settings.mcpActivePort());
+	// Enabling MCP makes this client assisted, whichever tools an agent then uses:
+	// it quick-matches only against other players with MCP enabled.
+	Online::setAssistedSource([] { return globalContainer->settings.mcpActive(); });
 #endif
 	// The first screen's first frames after loading (the main menu and the
 	// colony behind it, or a first-run question in front of it) are drawn but
@@ -215,7 +218,13 @@ Application::Application()
 		mainMenu();
 }
 
-Application::~Application() = default;
+Application::~Application()
+{
+#if GLOB2_DESKTOP_MCP
+	// The source reads this application's settings; harnesses build several.
+	Online::setAssistedSource({});
+#endif
+}
 
 void Application::mainMenu()
 {

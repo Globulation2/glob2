@@ -7188,3 +7188,5 @@ MCP সার্ভার চালু করুন
 
 [javascript ai stopped %0]
 
+[hub no assisted queues]
+

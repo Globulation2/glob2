@@ -36,6 +36,16 @@ version. Results contain resultType and serverInfo metadata. Header mismatch ret
 -32020, unsupported protocol version -32022, and unknown methods -32601. Tools discovery
 supplies cache metadata.
 
+## Online play
+
+Enabling the server makes the game an assisted client for the online platform,
+whichever tools an agent then uses: quick match searches only assisted queues, so
+players with MCP enabled meet only each other
+([assisted queues](../multiplayer/ratings-and-matchmaking.md#assisted-queues)).
+From the assignment of a quick match from an ordinary queue until its results close,
+the server stays off even if the setting is switched on. Online matches refuse the `game_*` and `hive_*` tools; the
+`ui_*` tools drive them like a player would.
+
 ## Self-description
 
 The server is written for agents that know nothing about the game and cannot read this

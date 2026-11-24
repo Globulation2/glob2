@@ -77,6 +77,7 @@ std::optional<QueueInfo> QueueInfo::fromJson(const Json &json)
 	queue.name = text(json, "name");
 	queue.mode = text(json, "mode");
 	queue.rated = flag(json, "rated");
+	queue.assisted = flag(json, "assisted");
 	queue.aiBackfillSeconds = integer(json, "aiBackfillSeconds");
 	queue.acceptSeconds = integer(json, "acceptSeconds").value_or(0);
 	for (const auto &map : array(json, "maps"))
@@ -85,6 +86,21 @@ std::optional<QueueInfo> QueueInfo::fromJson(const Json &json)
 	if (queue.id.empty())
 		return {};
 	return queue;
+}
+
+bool queueFits(const Json &queue, bool assistedClient)
+{
+	return queue.is_object() && flag(queue, "assisted") == assistedClient;
+}
+
+Json queuesFor(const Json &queues, bool assistedClient)
+{
+	Json fitting = Json::array();
+	if (queues.is_array())
+		for (const auto &queue : queues)
+			if (queueFits(queue, assistedClient))
+				fitting.push_back(queue);
+	return fitting;
 }
 
 std::vector<QueueInfo> queuesFromInstance(const Json &instanceInfo)

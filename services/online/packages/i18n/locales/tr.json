@@ -1547,6 +1547,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "{slot0} Oranı: milyon giriş jetonu başına {slot1} kredi, önbellekli giriş için {slot2}, önbellek için {slot3} ve çıkış için muhakeme dahil {slot4}. Onarımlar ve takipler aynı oranları kullanır.",
   "Rated queues are for registered accounts; sign in first.": "Oylanan kuyruklar kayıtlı hesaplar içindir; önce giriş yapın.",
+  "Players with the MCP server enabled and players without it use separate queues.": "MCP sunucusu açık olan oyuncular ile olmayan oyuncular ayrı kuyruklar kullanır.",
   "Rating": "Değerlendirme",
   "Rating after each rated match": "Her puanlanan maçtan sonra puanlama",
   "Re-verify ": "Yeniden doğrula",

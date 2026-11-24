@@ -455,6 +455,13 @@ export class PlayRealtime {
           if (!configured)
             throw apiError('not_found', 'No queue {p0}.', undefined, { p0: String(id) });
           const queue = resolveQueue(configured);
+          // Players working with an AI through the MCP server search their own
+          // queues, so they never meet players without one (and vice versa).
+          if (queue.assisted !== (params.assisted ?? false))
+            throw apiError(
+              'forbidden',
+              'Players with the MCP server enabled and players without it use separate queues.',
+            );
           const decision = await access.canQueue(subject, {
             queueId: queue.id,
             rated: queue.rated,

@@ -58,6 +58,9 @@ class QuickMatch
 		std::function<void()> attention;
 		// Where an assigned match goes; Online::beginMatch by default.
 		std::function<void(const MatchAssignment &)> handoff;
+		// Whether the client is assisted now (Online::assisted by default). A search
+		// is for one kind: changing it ends the search with Notice::Cancelled.
+		std::function<bool()> assisted;
 		static Environment native();
 	};
 
@@ -91,6 +94,8 @@ class QuickMatch
 	// Every queue of the search, in the order given.
 	const std::vector<QueueInfo> &queues() const { return searched; }
 	bool allowAiOpponent() const { return allowAi; }
+	// Whether the search was started by an assisted client (queue.join assisted).
+	bool assistedSearch() const { return assistedClient; }
 	const std::optional<QueueStatus> &status() const { return lastStatus; }
 	const std::optional<QueueProposal> &proposal() const { return current; }
 	const std::optional<MatchAssignment> &assignment() const { return assigned; }
@@ -141,6 +146,8 @@ class QuickMatch
 	bool ownsTicket(const std::string &id) const { return tickets.count(id) > 0; }
 	void showQueue(const std::string &queueId);
 	bool allowAi = true;
+	bool assistedClient = false;
+	bool assistedNow() const { return env.assisted && env.assisted(); }
 	std::unique_ptr<RelayProbe> probe;
 	std::vector<RegionRtt> probed;
 	std::optional<PlatformClient::RequestId> joinRequest;

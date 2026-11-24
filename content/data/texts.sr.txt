@@ -7188,3 +7188,5 @@ MCP сервер није доступан у овој апликацији
 
 [javascript ai stopped %0]
 
+[hub no assisted queues]
+

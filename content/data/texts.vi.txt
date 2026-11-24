@@ -7188,3 +7188,5 @@ AI cho mọi thuộc địa do máy tính điều khiển
 
 [javascript ai stopped %0]
 
+[hub no assisted queues]
+

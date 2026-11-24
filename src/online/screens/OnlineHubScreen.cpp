@@ -184,6 +184,7 @@ void OnlineHubScreen::startMatch(const Json &assignment)
 		context.label = queue->name.empty() ? queue->id : queue->name;
 		context.label += " · " + tr(queue->rated ? "[hub ranked]" : "[hub unrated]");
 		context.rated = queue->rated;
+		context.assisted = queue->assisted;
 		context.ladder = queue->id;
 		matchQueueId = searchModel().queues().empty() ? queue->id : searchModel().queues().front().id;
 	}
@@ -297,6 +298,17 @@ void OnlineHubScreen::showToast(const std::string &text)
 	invalidate();
 }
 
+void OnlineHubScreen::pickQueues()
+{
+	data.assistedQueues = Online::assisted();
+	data.queues = Online::queuesFor(data.allQueues, data.assistedQueues);
+	selectedQueue = -1;
+	alsoQueues.clear();
+	data.leaderboard = Json::array();
+	data.leaderboardName.clear();
+	invalidate();
+}
+
 void OnlineHubScreen::refresh(bool force)
 {
 	if (previewing || data.link == Model::Link::Offline)
@@ -312,7 +324,8 @@ void OnlineHubScreen::refresh(bool force)
 			if (!r.ok)
 				return;
 			data.instanceName = r.result.value("name", "");
-			data.queues = r.result.value("queues", Json::array());
+			data.allQueues = r.result.value("queues", Json::array());
+			pickQueues();
 			data.multiQueue = false;
 			for (const auto &feature : r.result.value("features", Json::array()))
 				if (feature == "queue.multi")
@@ -431,6 +444,9 @@ void OnlineHubScreen::onTimer(Uint32 tick)
 		return;
 	watchSearch();
 	syncFromClient();
+	// Turning the MCP server on or off switches to the other kind of queues.
+	if (Online::assisted() != data.assistedQueues)
+		pickQueues();
 	refresh(false);
 	if (!mapLaunchOrigin.empty() && (!Online::pendingMapPlay() || Online::pendingMapPlay()->mode == Online::MapPlayRequest::Mode::Local))
 	{
@@ -628,6 +644,13 @@ void OnlineHubScreen::answerTrust(bool join)
 
 void OnlineHubScreen::findMatch(int queueIndex)
 {
+	// MCP switched since the list was picked (Find another match after a match):
+	// show the other kind's queues rather than search one this client may not join.
+	if (Online::assisted() != data.assistedQueues)
+	{
+		pickQueues();
+		return;
+	}
 	if (!canPlay() || !data.queues.is_array() || queueIndex < 0 || queueIndex >= int(data.queues.size()))
 		return;
 	const Json &queue = data.queues[std::size_t(queueIndex)];
@@ -1044,7 +1067,10 @@ Element OnlineHubScreen::quickMatchCard(const Presentation &p, bool phone)
 	std::vector<Element> parts{row({icon(uiIcon(UIIcon::Bolt), {22, palette.accent}), expanded(heading(tr("[hub quick match]")))}, {p.pt(8), CrossAlign::Center})};
 	if (!data.queues.is_array() || data.queues.empty())
 	{
-		parts.push_back(paragraph(data.link == Model::Link::Online ? tr("[hub no queues]") : tr("[hub queues unavailable]"), {FontRole::Support, true}));
+		parts.push_back(paragraph(data.link != Model::Link::Online ? tr("[hub queues unavailable]")
+								  : data.assistedQueues          ? tr("[hub no assisted queues]")
+																 : tr("[hub no queues]"),
+								  {FontRole::Support, true}));
 		return card(column(std::move(parts), {p.pt(8)}), {.color = palette.field, .padding = p.pt(14), .shadow = false, .border = palette.accent});
 	}
 	std::vector<std::string> names;

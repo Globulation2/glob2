@@ -7188,3 +7188,5 @@ MCP सर्व्हर सक्षम करा
 
 [javascript ai stopped %0]
 
+[hub no assisted queues]
+

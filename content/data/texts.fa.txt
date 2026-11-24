@@ -7188,3 +7188,5 @@ Discord باز شد. هر زمان بخواهید می‌توانید به با�
 
 [javascript ai stopped %0]
 
+[hub no assisted queues]
+

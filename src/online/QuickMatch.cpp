@@ -108,6 +108,7 @@ void QuickMatch::search(const std::vector<QueueInfo> &queues, bool allowAiOppone
 	searched = queues;
 	chosen = queues.front();
 	allowAi = allowAiOpponent;
+	assistedClient = assistedNow();
 	startedAt = env.wallClock();
 	probed.clear();
 	if (env.probe && !client.origin().empty())
@@ -122,6 +123,10 @@ void QuickMatch::join()
 	probe.reset();
 	state = Phase::Joining;
 	Json params = {{"queueId", searched.front().id}, {"regions", regionsJson(probed)}, {"allowAiOpponent", allowAi}};
+	// The server checks it against each queue's assisted flag. Sent only when set,
+	// as older servers refuse unknown parameters (and have no assisted queues).
+	if (assistedClient)
+		params["assisted"] = true;
 	// Further queues of the same search ('queue.multi' servers only; the hub checks).
 	if (searched.size() > 1)
 	{
@@ -344,6 +349,15 @@ void QuickMatch::handleEvent(const std::string &event, const Json &data)
 
 void QuickMatch::update()
 {
+	// Turning the MCP server on or off mid-search changes which queues the player
+	// belongs in: end the search (a prompt counts as declined) before it matches.
+	if (active() && !assigned && assistedNow() != assistedClient)
+	{
+		cancel();
+		lastNotice = Notice::Cancelled;
+		changed();
+		return;
+	}
 	if (state == Phase::Probing && probe)
 	{
 		probe->update();

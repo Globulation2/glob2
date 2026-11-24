@@ -1851,6 +1851,21 @@ export const fixtureCases: FixtureCase[] = [
     },
   },
   {
+    schema: 'RealtimeQueueJoinParams',
+    name: 'assisted',
+    valid: true,
+    note: 'A client with its MCP server enabled joins an assisted queue.',
+    value: { queueId: 'mcp-ranked-1v1', regions: [], assisted: true },
+  },
+  {
+    schema: 'RealtimeQueueJoinParams',
+    name: 'assisted-not-boolean',
+    valid: false,
+    stage: 'schema',
+    note: 'The assisted flag is a boolean, not a string.',
+    value: { queueId: 'mcp-ranked-1v1', regions: [], assisted: 'yes' },
+  },
+  {
     schema: 'RealtimeQueueRespondParams',
     name: 'accept',
     valid: true,
@@ -2117,6 +2132,25 @@ export const fixtureCases: FixtureCase[] = [
       ],
       queues: [
         { id: 'ranked-1v1', name: 'Ranked 1v1', mode: '1v1', rated: true, aiBackfillSeconds: 90 },
+      ],
+      guestsAllowed: true,
+    },
+  },
+  {
+    schema: 'InstanceInfo',
+    name: 'with-assisted-queues',
+    valid: true,
+    note: 'An instance with queues for players with the MCP server enabled (assisted) beside the ordinary ones.',
+    value: {
+      name: 'Globulation 2',
+      origin: 'https://play.example.org',
+      realtimeUrl: 'wss://play.example.org/realtime',
+      supportedSimVersions: [SIM_VERSION],
+      authProviders: [],
+      queues: [
+        { id: 'ranked-1v1', name: 'Ranked 1v1', mode: '1v1', rated: true, assisted: false },
+        { id: 'casual-1v1', name: 'Casual 1v1', mode: '1v1', rated: false },
+        { id: 'mcp-ranked-1v1', name: 'MCP Ranked 1v1', mode: '1v1', rated: true, assisted: true },
       ],
       guestsAllowed: true,
     },

@@ -1553,6 +1553,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "Tarifa {slot0}: {slot1} crèdits per milió de tokens d’entrada, {slot2} per entrada en memòria cau, {slot3} per escriptures en memòria cau i {slot4} per sortida, inclòs el raonament. Les correccions i respostes posteriors fan servir les mateixes tarifes.",
   "Rated queues are for registered accounts; sign in first.": "Les cues classificades són per a comptes registrats; inicia sessió primer.",
+  "Players with the MCP server enabled and players without it use separate queues.": "Els jugadors amb el servidor MCP activat i els que no el tenen fan servir cues separades.",
   "Rating": "Puntuació",
   "Rating after each rated match": "Puntuació després de cada partida puntuada",
   "Re-verify ": "Reverificació",

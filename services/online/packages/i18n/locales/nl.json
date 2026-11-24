@@ -1547,6 +1547,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "Tarief {slot0}: {slot1} credits per miljoen invoertokens, {slot2} voor invoer uit de cache, {slot3} voor schrijven naar de cache en {slot4} voor uitvoer inclusief redeneren. Herstel en vervolgvragen gebruiken dezelfde tarieven.",
   "Rated queues are for registered accounts; sign in first.": "Ranglijstwachtrijen zijn voor geregistreerde accounts; meld je eerst aan.",
+  "Players with the MCP server enabled and players without it use separate queues.": "Spelers met de MCP-server ingeschakeld en spelers zonder gebruiken aparte wachtrijen.",
   "Rating": "Waardering",
   "Rating after each rated match": "Waardering na elke ranglijstwedstrijd",
   "Re-verify ": "Hercontroleren",

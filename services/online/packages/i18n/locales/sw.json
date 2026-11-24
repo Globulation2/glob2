@@ -1547,6 +1547,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "Kiwango {slot0}: krediti {slot1} kwa tokeni milioni moja za ingizo, {slot2} kwa ingizo la akiba, {slot3} kwa kuandika akiba, na {slot4} kwa matokeo pamoja na kufikiri. Marekebisho na ufuatiliaji hutumia viwango vilevile.",
   "Rated queues are for registered accounts; sign in first.": "Foleni za viwango ni za akaunti zilizosajiliwa; ingia kwanza.",
+  "Players with the MCP server enabled and players without it use separate queues.": "Wachezaji walio na seva ya MCP imewashwa na wachezaji wasio nayo hutumia foleni tofauti.",
   "Rating": "Kiwango",
   "Rating after each rated match": "Kiwango baada ya kila mechi ya viwango",
   "Re-verify ": "Thibitisha tena ",

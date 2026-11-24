@@ -302,6 +302,12 @@ export const realtimeMethods = {
             '"Allow an AI opponent": the queue may fill empty seats with AIs after its backfill delay. Default true.',
         }),
       ),
+      assisted: Type.Optional(
+        Type.Boolean({
+          description:
+            "The client's MCP automation server is enabled. Assisted clients may join only assisted queues (QueueInfo.assisted) and other clients only the rest. Default false.",
+        }),
+      ),
     }),
     result: Open({
       ticketId: Uuid,

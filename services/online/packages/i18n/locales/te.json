@@ -1547,6 +1547,7 @@
   },
   "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": "రేటు {slot0} : ప్రతి మిలియన్ ఇన్‌పుట్ టోకెన్‌లకు {slot1} క్రెడిట్‌లు, కాష్ చేసిన ఇన్‌పుట్ కోసం {slot2} , కాష్ రైట్‌ల కోసం {slot3} , మరియు రీజనింగ్‌తో సహా అవుట్‌పుట్ కోసం {slot4} . రిపేర్లు మరియు ఫాలో-అప్‌లు కూడా ఇదే రేట్లను ఉపయోగిస్తాయి.",
   "Rated queues are for registered accounts; sign in first.": "రేటెడ్ క్యూలు నమోదిత ఖాతాల కోసం; ముందుగా సైన్ ఇన్ చేయండి.",
+  "Players with the MCP server enabled and players without it use separate queues.": "MCP సర్వర్ ఆన్ చేసిన ఆటగాళ్లు, అది లేని ఆటగాళ్లు వేర్వేరు క్యూలను ఉపయోగిస్తారు.",
   "Rating": "రేటింగ్",
   "Rating after each rated match": "ప్రతి రేటెడ్ మ్యాచ్ తర్వాత రేటింగ్",
   "Re-verify ": "తిరిగి ధృవీకరించండి ",
