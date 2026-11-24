@@ -372,6 +372,7 @@ class Smoke:
             ('/generator-studio/11111111-1111-4111-8111-111111111111', 'DENY', "'none'"),
             ('/play/generator-studio.html', 'SAMEORIGIN', "'self'"),
             ('/play/index.html', 'DENY', "'none'"),
+            ('/play/itch.html', None, "'none'"),
         ):
             status, headers, body = self.https('GET', path)
             if status != 200 or not body:

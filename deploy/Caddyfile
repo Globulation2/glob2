@@ -9,7 +9,7 @@
 #
 # Security headers: HSTS, nosniff and a Referrer-Policy everywhere; a
 # Content-Security-Policy with frame-ancestors 'none' for the web app, the
-# WebAssembly client and the API, except the same-origin Studio frame. Pages the
+# WebAssembly client and the API, except the Studio and optional itch frames. Pages the
 # API renders itself, such as /signin and /j/<code>, keep their stricter policy:
 # `?` only fills a header the response does not already have.
 (tls-auto) {
@@ -36,10 +36,12 @@
 		Strict-Transport-Security "max-age={$GLOB2_HSTS_MAX_AGE:31536000}"
 		X-Content-Type-Options nosniff
 		?Referrer-Policy strict-origin-when-cross-origin
-		# Studio explicitly allows same-origin framing; admin/account pages remain protected.
-		?X-Frame-Options DENY
 		-Server
 	}
+
+	# Studio sets SAMEORIGIN. Only the itch entry uses its own ancestor policy.
+	@denyFraming not path /play/itch.html
+	header @denyFraming ?X-Frame-Options DENY
 
 	# Begin canonical sign-in redirect.
 	# Keep OAuth state cookies and callbacks on the canonical host while the
@@ -104,6 +106,23 @@
 			lb_try_duration 5s
 			fail_duration 10s
 			stream_close_delay 5m
+		}
+	}
+
+	# The itch launcher frames only this entry point. Assets still resolve
+	# under /play, and auth pages retain the global frame denial.
+	handle /play/itch.html {
+		route {
+			root * /srv/play
+			header {
+				Cache-Control "no-cache"
+				Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https: wss:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors {$GLOB2_ITCH_FRAME_ANCESTORS:'none'}"
+				Cross-Origin-Embedder-Policy "require-corp"
+				Cross-Origin-Resource-Policy "cross-origin"
+				Cross-Origin-Opener-Policy "same-origin"
+			}
+			rewrite * /index.html
+			file_server
 		}
 	}
 
