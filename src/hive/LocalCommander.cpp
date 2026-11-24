@@ -39,7 +39,9 @@ namespace
 LocalCommander *active = nullptr; // main thread only
 std::atomic<std::uint64_t> sessions{0};
 constexpr std::size_t JournalCapacity = 256;
-constexpr unsigned AlertTicks = 1500; // how long game_world keeps reporting an alert
+constexpr unsigned AlertTicks = 9000;	// game_world's default alert window: 5 minutes at 1x
+constexpr unsigned LogTicks = 54000;	// the journal keeps half an hour of game time
+constexpr std::size_t LogEntries = 4096;
 // The HUD event feed's rows, by GameEventType.
 const char *const eventKinds[GESize] = {"unit_attacked", "unit_converted_away", "unit_converted_to_you",
 										"building_attacked", "building_completed"};
@@ -353,7 +355,14 @@ Json LocalCommander::standingOrders() const
 					   {"intervalTicks", p.definition.at("intervalTicks")}};
 		record["id"] = name;
 		record["paused"] = p.paused;
+		if (p.paused && !p.pausedReason.empty())
+			record["paused_reason"] = p.pausedReason + " (fix the script, then hive_program replace or resume)";
+		if (!p.lastError.empty())
+			record["last_error"] = p.lastError;
 		record["nextTick"] = p.nextTick;
+		record["intervalTicks"] = p.definition.at("intervalTicks");
+		record["last_run_tick"] = p.lastRunTick;
+		record["runs"] = p.runs;
 		record["recent"] = p.recent;
 		result.push_back(std::move(record));
 	}
@@ -369,6 +378,8 @@ void LocalCommander::change(const std::string &id, const std::string &action)
 	else
 	{
 		it->second.paused = action == "pause";
+		if (action == "resume")
+			it->second.pausedReason.clear();
 		it->second.nextTick = tick + 25;
 		it->second.generation = ++generation;
 	}
@@ -396,7 +407,12 @@ Json LocalCommander::call(const std::string &tool, const Json &args)
 	if (args.contains("_poll"))
 	{
 		if (!contextCurrent())
-			return matchOver(tool);
+		{
+			auto over = matchOver(tool);
+			if (args.at("_poll").contains("began"))
+				over["from_tick"] = args.at("_poll").at("start");
+			return over;
+		}
 		return tool == "game_wait" ? wait(args) : awaitResult(args);
 	}
 	bool allowed = false;
@@ -526,8 +542,92 @@ Json LocalCommander::call(const std::string &tool, const Json &args)
 		return awaitResult({{"session", session}, {"operation_key", key}});
 	return journal.at(key);
 }
+void LocalCommander::record(Logged entry)
+{
+	if (entry.kind == "building_destroyed")
+		++destroyedTotal;
+	if (entry.kind == "building_demolished")
+		++demolishedTotal;
+	eventLog.push_back(std::move(entry));
+	const unsigned newest = eventLog.back().tick;
+	while (eventLog.size() > LogEntries || (!eventLog.empty() && eventLog.front().tick + LogTicks < newest))
+		eventLog.pop_front();
+}
+void LocalCommander::recordFeed()
+{
+	// Each new report the HUD coalesced into a row (attacks, completions, conversions).
+	for (const auto &row : gui.gameEvents().rows())
+	{
+		auto &seen = rowSeen[row.id];
+		if (seen == row.updateSequence)
+			continue;
+		seen = row.updateSequence;
+		record({row.type < GESize ? eventKinds[row.type] : "event", row.label, row.x, row.y, -1, row.lastTick});
+	}
+	if (rowSeen.size() > 2048)
+		rowSeen.clear();
+}
+Json LocalCommander::groupedAlerts(unsigned since, unsigned now, std::size_t cap) const
+{
+	struct Group
+	{
+		Json alert;
+		unsigned first, last, n;
+	};
+	std::map<std::string, Group> groups;
+	for (const auto &e : eventLog)
+	{
+		if (e.tick <= since && since)
+			continue;
+		// One group per kind and message within an 8-tile area: a skirmish is one alert.
+		const auto key = e.kind + "|" + e.event + "|" + std::to_string(e.x >= 0 ? e.x / 8 : -1) + "," +
+						 std::to_string(e.y >= 0 ? e.y / 8 : -1) + "|" + e.program;
+		auto &g = groups[key];
+		if (!g.n)
+		{
+			g.first = e.tick;
+			g.alert = {{"kind", e.kind}, {"event", e.event}};
+			if (e.team >= 0)
+				g.alert["team"] = e.team;
+			if (!e.program.empty())
+				g.alert["program"] = e.program, g.alert["paused"] = e.paused;
+		}
+		++g.n;
+		g.last = std::max(g.last, e.tick);
+		if (e.x >= 0)
+			g.alert["x"] = e.x, g.alert["y"] = e.y;
+	}
+	std::vector<Group *> ordered;
+	for (auto &[key, g] : groups)
+		ordered.push_back(&g);
+	std::sort(ordered.begin(), ordered.end(), [](const Group *a, const Group *b) { return a->last > b->last; });
+	Json alerts = Json::array();
+	for (std::size_t i = 0; i < ordered.size() && i < cap; ++i)
+	{
+		auto &g = *ordered[i];
+		g.alert["n"] = g.n;
+		g.alert["first_tick"] = g.first;
+		g.alert["last_tick"] = g.last;
+		g.alert["ticks_ago"] = now > g.last ? now - g.last : 0;
+		alerts.push_back(std::move(g.alert));
+	}
+	if (ordered.size() > cap)
+		alerts.push_back({{"kind", "more"}, {"event", std::to_string(ordered.size() - cap) + " older alert groups; pass since_tick to narrow"}});
+	return alerts;
+}
 Json LocalCommander::placeByName(Json order)
 {
+	// A building reference copied from another team's record must never reach one of
+	// yours with the same id: references carry their team, and only yours are accepted.
+	if (order.is_object() && order.contains("building") && order.at("building").is_object())
+	{
+		const auto &ref = order.at("building");
+		if (ref.contains("team") && ref.at("team").is_number_integer() && ref.at("team").get<int>() != team)
+			throw std::runtime_error("building is team " + std::to_string(ref.at("team").get<int>()) +
+									 "'s, not yours: orders can only change your own buildings");
+		if (order.value("type", std::string()) == "delete" && ref.contains("id") && ref.at("id").is_number_integer())
+			demolitionOrders.insert(ref.at("id").get<int>()); // reported as demolished, not destroyed
+	}
 	// The map wraps, as every read does: x/y outside it name the wrapped tile.
 	if (order.is_object())
 	{
@@ -559,30 +659,50 @@ Json LocalCommander::placeByName(Json order)
 }
 void LocalCommander::annotate(Json &snapshot)
 {
-	// Callers hold the simulation boundary. Only the colony's own information is added.
-	// Units that took each own building's or flag's job, beside the units it requests.
+	// Callers hold the simulation boundary. Only the colony's own information is added,
+	// plus what any building's type says (its name and footprint).
 	for (auto &b : snapshot.at("buildings"))
-		if (b.value("team", -1) == team)
-			if (const auto *building = gui.game.teams[team]->myBuildings[Building::GIDtoID(b.value("id", 0))])
-				b["assigned"] = int(building->unitsWorking.size());
-	// ctx.game.events(): what game_wait reports, with absolute ticks.
+	{
+		if (const auto *type = gui.game.buildingsTypes.get(b.value("type", 0)))
+			b["name"] = type->type, b["width"] = type->width, b["height"] = type->height;
+		if (b.value("team", -1) != team)
+			continue;
+		auto *building = gui.game.teams[team]->myBuildings[Building::GIDtoID(b.value("id", 0))];
+		if (!building)
+			continue;
+		// Units that took the job, beside the units it requests; an Inn's units inside
+		// and the happiness it offers, as the building panel shows.
+		b["assigned"] = int(building->unitsWorking.size());
+		if (building->type->canFeedUnit && !building->type->isBuildingSite)
+		{
+			b["inside"] = int(building->unitsInside.size());
+			b["happiness"] = building->availableHappynessLevel();
+		}
+	}
+	// Footprints already claimed but not yet sites: game_place requests and script creates.
+	Json pending = Json::array();
+	for (const auto &p : placements)
+		pending.push_back({{"x", p.x}, {"y", p.y}, {"width", p.width}, {"height", p.height}});
+	for (const auto &c : scriptCreates)
+		if (const auto *type = gui.game.buildingsTypes.get(c.type); type && !type->isVirtual)
+			pending.push_back({{"x", c.x}, {"y", c.y}, {"width", type->width}, {"height", type->height}});
+	snapshot["pending"] = std::move(pending);
+	// ctx.game.events(): the colony's journal (what game_wait reports), with ticks.
+	recordFeed();
 	Json events = Json::array();
-	for (const auto &row : gui.gameEvents().rows())
-		events.push_back({{"kind", row.type < GESize ? eventKinds[row.type] : "event"},
-						  {"event", row.label}, {"x", row.x}, {"y", row.y}, {"count", row.count},
-						  {"tick", row.lastTick}});
-	for (const auto &loss : losses)
-		events.push_back({{"kind", loss.demolished ? "building_demolished" : "building_destroyed"},
-						  {"event", (loss.demolished ? "Building demolished: " : "Building destroyed: ") + loss.type},
-						  {"x", loss.x}, {"y", loss.y}, {"count", 1}, {"tick", loss.tick}});
-	for (const auto &seen : sightings)
-		events.push_back({{"kind", "enemy_building_sighted"}, {"event", "Building sighted: " + seen.type},
-						  {"x", seen.x}, {"y", seen.y}, {"team", seen.team}, {"count", 1}, {"tick", seen.tick}});
-	for (const auto &failure : failures)
-		events.push_back({{"kind", "hive_program_failed"}, {"event", failure.program + ": " + failure.error},
-						  {"program", failure.program}, {"paused", failure.paused}, {"count", 1}, {"tick", failure.tick}});
-	std::sort(events.begin(), events.end(),
-			  [](const Json &a, const Json &b) { return a.value("tick", 0u) < b.value("tick", 0u); });
+	for (const auto &e : eventLog)
+	{
+		Json event = {{"kind", e.kind}, {"event", e.event}, {"count", 1}, {"tick", e.tick}};
+		if (e.x >= 0)
+			event["x"] = e.x, event["y"] = e.y;
+		if (e.team >= 0)
+			event["team"] = e.team;
+		if (!e.program.empty())
+			event["program"] = e.program, event["paused"] = e.paused;
+		events.push_back(std::move(event));
+	}
+	std::stable_sort(events.begin(), events.end(),
+					 [](const Json &a, const Json &b) { return a.value("tick", 0u) < b.value("tick", 0u); });
 	snapshot["events"] = std::move(events);
 	// Losses and sightings need the game_world memory; scripts read events, so start it.
 	memoryTracked = true;
@@ -608,6 +728,9 @@ void LocalCommander::finish(Json result)
 	const auto kind = current.request.value("action", std::string("run"));
 	bool success = false, submitted = false;
 	std::string error;
+	Json rejected = Json::array();
+	std::size_t sent = 0;
+	std::string stillPaused; // a replaced program keeps its pause
 	auto program = programs.find(name);
 	if (!valid || (current.key.empty() && name.empty()))
 		return;
@@ -655,20 +778,28 @@ void LocalCommander::finish(Json result)
 			throw std::runtime_error(error.empty() ? "Worker failed or timed out" : error);
 		std::vector<std::shared_ptr<Order>> orders;
 		{
+			// Each order stands alone: one the game no longer accepts (its building was
+			// destroyed since the script looked, a bad descriptor) is listed in rejected and
+			// the others are still sent. A script error is what fails a run, not stale state.
 			const auto descriptors = result.value("orders", Json::array());
 			for (std::size_t i = 0; i < descriptors.size(); ++i)
 				try
 				{
-					orders.push_back(Script::order(gui.game, team, value(placeByName(descriptors[i]))));
+					const auto prepared = placeByName(descriptors[i]);
+					orders.push_back(Script::order(gui.game, team, value(prepared)));
+					if (prepared.value("type", std::string()) == "create")
+						scriptCreates.push_back({prepared.value("x", 0), prepared.value("y", 0),
+												 prepared.value("buildingType", -1), tick});
 				}
 				catch (const std::exception &e)
 				{
-					// Say which order failed: one bad descriptor rejects the whole run.
 					const auto &d = descriptors[i];
-					const auto type = d.is_object() ? d.value("type", std::string("?")) : std::string("?");
-					throw std::runtime_error("order " + std::to_string(i) + " (" + type + "): " + e.what() +
-											 "; no orders from this run were sent");
+					rejected.push_back({{"order", i},
+										{"type", d.is_object() ? d.value("type", std::string("?")) : std::string("?")},
+										{"error", e.what()}});
 				}
+			while (!scriptCreates.empty() && scriptCreates.front().tick + 300 < tick)
+				scriptCreates.pop_front();
 		}
 		if (orders.size() > 32)
 			throw std::runtime_error("Too many orders");
@@ -698,6 +829,11 @@ void LocalCommander::finish(Json result)
 			// Pause/resume from the in-game card remains authoritative even if
 			// it arrives while replacement preflight is running.
 			p.paused = old != programs.end() && old->second.paused;
+			if (p.paused)
+			{
+				p.pausedReason = old->second.pausedReason;
+				stillPaused = p.pausedReason.empty() ? "paused" : "paused (" + p.pausedReason + ")";
+			}
 			p.nextTick = tick + 25;
 			p.generation = ++generation;
 			programs[id] = std::move(p); // Preflight produced no orders or wake effects.
@@ -720,6 +856,7 @@ void LocalCommander::finish(Json result)
 											}))
 				throw std::runtime_error("Human order queue full; no orders submitted");
 			submitted = !orders.empty();
+			sent = orders.size();
 		}
 	}
 	catch (const std::exception &e)
@@ -734,16 +871,30 @@ void LocalCommander::finish(Json result)
 				   {"submitted", submitted},
 				   {"observation_tick", observationTick},
 				   {"submission_tick", tick},
-				   {"order_count", submitted ? result.value("orders", Json::array()).size() : 0},
+				   {"order_count", sent},
 				   {"output", result.value("output", Json(nullptr))},
 				   {"error", error}};
+	if (!rejected.empty())
+		record["rejected"] = rejected;
+	if (!stillPaused.empty())
+		record["note"] = "Replaced, but the program is still " + stillPaused + ": hive_program resume runs it";
 	if (kind != "install" && kind != "replace")
 		record["local_events"] = result.value("wakes", Json::array());
+	// ctx.wakeAgent({key, reason}): reaches the agent as a hive_wake alert (game_wait until).
+	for (const auto &w : result.value("wakes", Json::array()))
+		if (w.is_object())
+		{
+			Logged wake{"hive_wake", w.value("key", std::string()) + ": " + w.value("reason", std::string()), -1, -1, -1, tick};
+			wake.program = name.empty() ? current.key : name;
+			this->record(std::move(wake));
+		}
 	if (!name.empty() && program != programs.end() &&
 		program->second.generation == currentGeneration)
 	{
 		program->second.recent = record;
 		auto &p = program->second;
+		p.lastRunTick = tick;
+		++p.runs;
 		if (success)
 			p.retries = 0;
 		else
@@ -758,8 +909,18 @@ void LocalCommander::finish(Json result)
 				p.nextTick = tick + 100;
 			}
 			else
+			{
 				p.paused = true;
+				p.pausedReason = error.substr(0, error.find('\n'));
+			}
+			p.lastError = error.substr(0, error.find('\n'));
 			failures.push_back({name, error.substr(0, error.find('\n')), tick, p.paused});
+			{
+				Logged failed{"hive_program_failed", "Hive program " + name + (p.paused ? " paused: " : " retrying: ") +
+															 error.substr(0, error.find('\n')),
+							  -1, -1, -1, tick, name, p.paused};
+				this->record(std::move(failed));
+			}
 			while (failures.size() > 16)
 				failures.pop_front();
 		}
@@ -788,6 +949,8 @@ void LocalCommander::update()
 		clear();
 		return;
 	}
+	// The HUD's rows coalesce and fade: note each new report as it arrives.
+	recordFeed();
 	if (memoryTracked)
 	{
 		const auto observedTick = gui.simulationThreaded ? gui.drawnScene().tick : gui.game.stepCounter;
@@ -881,7 +1044,7 @@ void LocalCommander::update()
 					remember(
 						current.key,
 						{{"status", "running"}, {"submitted", false}, {"observation_tick", tick}});
-				worker = launch ? launch(std::move(request)) : startWorker(std::move(request), tileCache.tiles);
+				worker = launch ? launch(std::move(request)) : startWorker(std::move(request), tileCache.tiles, tileCache.statics);
 			}
 			catch (const std::exception &e)
 			{
@@ -1149,59 +1312,21 @@ Json LocalCommander::world(const Json &args)
 					resources[key] = {{"tiles", r.tiles}, {"amount", r.amount},
 									  {"nearest", {{"x", r.x}, {"y", r.y}, {"distance", r.distance}}}};
 			}
-			// Losses first: buildings gone since recent refreshes, then the HUD's event
-			// rows (attacks, conversions, finished buildings) with their tiles.
+			// Alerts from the colony's journal, grouped (a skirmish is one alert with n
+			// reports), newest first: the last AlertTicks by default, or after since_tick.
 			const auto now = gui.game.stepCounter;
-			// An alert older than AlertTicks, or not after since_tick, is not reported.
-			const auto stale = [&](unsigned age) { return age > AlertTicks || (since && now - age <= since); };
-			Json alerts = Json::array(), lostBuildings = Json::array();
-			// Standing orders that failed: paused ones need hive_program resume after a fix.
-			for (auto it = failures.rbegin(); it != failures.rend(); ++it)
-			{
-				const unsigned age = now > it->tick ? now - it->tick : 0;
-				if (stale(age))
-					continue;
-				alerts.push_back({{"event", "Hive program " + it->program + (it->paused ? " paused: " : " retrying: ") + it->error},
-								  {"kind", "hive_program_failed"}, {"program", it->program}, {"paused", it->paused},
-								  {"count", 1}, {"ticks_ago", age}});
-			}
-			for (auto it = losses.rbegin(); it != losses.rend(); ++it)
-			{
-				const unsigned age = now > it->tick ? now - it->tick : 0;
-				if (stale(age))
-					continue;
-				Json loss = {{"event", (it->demolished ? "Building demolished: " : "Building destroyed: ") + it->type},
-							 {"kind", it->demolished ? "building_demolished" : "building_destroyed"},
-							 {"x", it->x}, {"y", it->y}, {"count", 1}, {"ticks_ago", age}};
-				if (!it->demolished)
-					lostBuildings.push_back({{"type", it->type}, {"x", it->x}, {"y", it->y}, {"ticks_ago", age}});
-				alerts.push_back(std::move(loss));
-			}
-			Json events = Json::array();
-			// Other teams' buildings first seen recently (only ever what the colony saw).
-			for (auto it = sightings.rbegin(); it != sightings.rend(); ++it)
-			{
-				const unsigned age = now > it->tick ? now - it->tick : 0;
-				if (stale(age))
-					continue;
-				events.push_back({{"event", "Building sighted: " + it->type + " of team " + std::to_string(it->team)},
-								  {"kind", "enemy_building_sighted"}, {"x", it->x}, {"y", it->y},
-								  {"team", it->team}, {"count", 1}, {"ticks_ago", age}});
-			}
-			for (const auto &row : gui.gameEvents().rows())
-			{
-				const unsigned age = now > row.lastTick ? now - row.lastTick : 0;
-				if (stale(age))
-					continue;
-				Json alert = {{"event", row.label}, {"kind", row.type < GESize ? eventKinds[row.type] : "event"},
-							  {"x", row.x}, {"y", row.y}, {"count", row.count}, {"ticks_ago", age}};
-				(row.type == GEUnitLostConversion ? alerts : events).push_back(std::move(alert));
-			}
-			for (auto &e : events)
-				alerts.push_back(std::move(e));
+			recordFeed();
+			const unsigned window = since ? since : (now > AlertTicks ? now - AlertTicks : 0);
+			Json alerts = groupedAlerts(window, now, 25), lostBuildings = Json::array();
+			for (const auto &e : eventLog)
+				if (e.tick > window && e.kind == "building_destroyed")
+					lostBuildings.push_back({{"type", e.event.substr(e.event.find(": ") + 2)}, {"x", e.x}, {"y", e.y},
+											 {"ticks_ago", now > e.tick ? now - e.tick : 0}});
 			// Conversions are rate-limited as events; the colony's counter is exact.
 			const int convertedAway = gui.game.teams[team]->unitConversionLost;
 			Json lossSummary = {{"buildings_destroyed", lostBuildings},
+								{"buildings_destroyed_total", destroyedTotal},
+								{"buildings_demolished_total", demolishedTotal},
 								{"units_converted_away_total", convertedAway},
 								{"units_converted_to_you_total", gui.game.teams[team]->unitConversionGained},
 								{"units_converted_away_since_last_read",
@@ -1318,16 +1443,15 @@ Json LocalCommander::view(const Json &args)
 	if (x < 0 || y < 0 || x >= int(gui.game.map.getW()) || y >= int(gui.game.map.getH()))
 		throw std::runtime_error("Tile (" + std::to_string(x) + ", " + std::to_string(y) +
 								 ") is outside the map; read its size from game_world");
-	// width/height: frame that tile rectangle (top-left x/y), as a player zooms out to
-	// see a battle or a whole base; zoom is then chosen to fit it.
-	double cx = x + 0.5, cy = y + 0.5;
+	// x/y is always the centre. width/height: the span to frame around it, as a player
+	// zooms out to see a battle or a whole base; zoom is then chosen to fit it.
+	const double cx = x + 0.5, cy = y + 0.5;
 	std::optional<double> zoom;
 	if (args.contains("zoom"))
 		zoom = args.at("zoom").get<double>();
 	if (args.contains("width") || args.contains("height"))
 	{
 		const int w = args.value("width", 1), h = args.value("height", 1);
-		cx = x + w / 2.0, cy = y + h / 2.0;
 		const auto &c = gui.camera;
 		// Screen size in logical pixels is the visible world span times the zoom.
 		const double fit = std::min(c.visibleW() * c.zoom / (w * 32.0), c.visibleH() * c.zoom / (h * 32.0));
@@ -1339,18 +1463,32 @@ Json LocalCommander::view(const Json &args)
 								 "try again in a moment");
 	gui.centreViewOnTile(cx, cy);
 	const auto &camera = gui.camera;
-	const auto point = camera.worldToScreen((x + 0.5) * 32, (y + 0.5) * 32);
+	// The map wraps: of the tile's copies (one map width or height apart), report the
+	// one nearest the screen's centre, which is the one on screen when any is.
+	const double mapW = gui.game.map.getW() * 32.0, mapH = gui.game.map.getH() * 32.0;
+	const double screenW = camera.visibleW() * camera.zoom, screenH = camera.visibleH() * camera.zoom;
+	auto point = camera.worldToScreen((x + 0.5) * 32, (y + 0.5) * 32);
+	for (int ky = -1; ky <= 1; ++ky)
+		for (int kx = -1; kx <= 1; ++kx)
+		{
+			const auto p = camera.worldToScreen((x + 0.5) * 32 + kx * mapW, (y + 0.5) * 32 + ky * mapH);
+			const auto distance = [&](const auto &q)
+			{ return std::abs(q.first - screenW / 2) + std::abs(q.second - screenH / 2); };
+			if (distance(p) < distance(point))
+				point = p;
+		}
+	const bool onScreen = point.first >= 0 && point.second >= 0 && point.first < screenW && point.second < screenH;
 	return {{"view",
 			 {{"x", int(std::floor(camera.originX / 32))},
 			  {"y", int(std::floor(camera.originY / 32))},
 			  {"width", int(std::ceil(camera.visibleW() / 32))},
 			  {"height", int(std::ceil(camera.visibleH() / 32))}}},
-			{"tile_screen", {{"x", int(point.first)}, {"y", int(point.second)}}},
+			{"tile_screen", {{"x", int(point.first)}, {"y", int(point.second)}, {"on_screen", onScreen}}},
 			{"tile_pixels", 32 * camera.zoom},
 			{"zoom", camera.zoom},
 			{"zoom_range", {camera.minimumZoom(), MapCamera::MAX_ZOOM}},
-			{"note", "tile_screen is the tile's centre in the logical pixels ui_inspect bounds use; "
-					 "with a screenshot, prefer its capture_id coordinates."}};
+			{"note", "tile_screen is the tile's centre in logical pixels, as ui_inspect bounds; "
+					 "ui_click takes screenshot (capture_id) or native pixels, so click via a screenshot."}};
 }
 Json LocalCommander::chat(const Json &args)
 {
@@ -1459,6 +1597,8 @@ void LocalCommander::refreshMemory()
 		{
 			sightings.push_back({key.substr(0, key.find('.')), b.value("x", 0), b.value("y", 0), owner,
 								 gui.game.stepCounter});
+			record({"enemy_building_sighted", "Building sighted: " + key.substr(0, key.find('.')) + " of team " +
+						std::to_string(owner), b.value("x", 0), b.value("y", 0), owner, gui.game.stepCounter});
 			while (sightings.size() > 32)
 				sightings.pop_front();
 		}
@@ -1470,7 +1610,16 @@ void LocalCommander::refreshMemory()
 	for (auto it = seenBuildings.begin(); it != seenBuildings.end();)
 	{
 		const auto cell = observations.cell(it->second.value("x", 0), it->second.value("y", 0));
-		it = cell.visible && !visible.count(it->first) ? seenBuildings.erase(it) : std::next(it);
+		if (cell.visible && !visible.count(it->first))
+		{
+			// In view and no longer there: destroyed, or dismantled by its owner.
+			record({"enemy_building_gone", "Building gone: " + it->second.value("type", std::string()) + " of team " +
+						std::to_string(it->second.value("team", -1)),
+					it->second.value("x", 0), it->second.value("y", 0), it->second.value("team", -1), gui.game.stepCounter});
+			it = seenBuildings.erase(it);
+		}
+		else
+			it = std::next(it);
 	}
 	// Own buildings that are gone since the last refresh. An identity reused by a new
 	// building has another generation, so the earlier one is gone too.
@@ -1479,8 +1628,11 @@ void LocalCommander::refreshMemory()
 		const auto now = owned.find(gid);
 		if (now != owned.end() && now->second.generation == before.generation)
 			continue;
-		losses.push_back({before.type, before.x, before.y, gui.game.stepCounter,
-						  before.demolishing || demolitionOrders.count(gid) > 0});
+		const bool demolished = before.demolishing || demolitionOrders.count(gid) > 0;
+		losses.push_back({before.type, before.x, before.y, gui.game.stepCounter, demolished});
+		record({demolished ? "building_demolished" : "building_destroyed",
+				(demolished ? "Building demolished: " : "Building destroyed: ") + before.type, before.x, before.y, team,
+				gui.game.stepCounter});
 		demolitionOrders.erase(gid);
 	}
 	while (losses.size() > 32)
@@ -1498,7 +1650,7 @@ void LocalCommander::submit(const std::vector<Json> &descriptors)
 			try
 			{
 				for (const auto &d : descriptors)
-					orders.push_back(Script::order(gui.game, team, value(d)));
+					orders.push_back(Script::order(gui.game, team, value(placeByName(d))));
 			}
 			catch (const std::exception &e)
 			{
@@ -1519,78 +1671,128 @@ Json LocalCommander::building(const Json &args)
 	// maximum, is capped, and the reply says so.
 	int limit = MAX_BUILDING_WORKER_REQUEST;
 	int maximumRange = -1;
+	std::string problem;
+	bool site = false, isFlag = false, upgradable = false;
+	std::string typeName;
 	boundary(
 		[&]
 		{
+			// Say exactly what is wrong with the reference, and how to find the right one.
 			const int id = args.at("id");
 			if (Building::GIDtoTeam(id) != team)
-				return;
-			if (const auto *b = gui.game.teams[team]->myBuildings[Building::GIDtoID(id)])
 			{
-				limit = std::min(limit, int(b->type->semantics.assignmentLimit));
-				maximumRange = b->type->maxUnitStayRange;
+				problem = "Building " + std::to_string(id) + " is team " + std::to_string(Building::GIDtoTeam(id)) +
+						  "'s, not yours";
+				return;
 			}
+			const auto *b = gui.game.teams[team]->myBuildings[Building::GIDtoID(id)];
+			if (!b)
+			{
+				problem = "You have no building with id " + std::to_string(id) + " (destroyed or never built)";
+				return;
+			}
+			{
+				auto scope = observations.captureObservation();
+				observations.observe();
+				for (const auto &record : json(observations.query("buildings", {})))
+					if (record.value("id", -1) == id && record.value("generation", 0u) != args.at("generation").get<unsigned>())
+					{
+						problem = "Building " + std::to_string(id) + " is now generation " +
+								  std::to_string(record.value("generation", 0u)) + " (a " + b->type->type +
+								  "): the one you meant is gone";
+						return;
+					}
+			}
+			limit = std::min(limit, int(b->type->semantics.assignmentLimit));
+			maximumRange = b->type->maxUnitStayRange;
+			site = b->type->isBuildingSite;
+			isFlag = b->type->isVirtual;
+			upgradable = !site && !isFlag && b->type->nextLevel >= 0;
+			typeName = b->type->type;
 		});
+	if (!problem.empty())
+		throw std::runtime_error(problem + "; game_world detail brief lists your buildings' ids and generations");
+	// builders: the units building a site (its worker request), or upgrade/repair builders.
+	auto effective = args;
+	if (effective.contains("builders") && !effective.contains("workers") && !effective.contains("action"))
+		effective["workers"] = effective.at("builders");
+	const auto &a = effective;
 	int requested = 0, rangeRequested = 0;
-	if (args.contains("workers"))
+	if (a.contains("action"))
 	{
-		requested = args.at("workers");
+		const auto action = a.at("action").get<std::string>();
+		if ((action == "upgrade") && !upgradable)
+			throw std::runtime_error(site ? "A construction site cannot be upgraded: wait until it is finished"
+							   : isFlag ? "Flags have no levels to upgrade"
+										: "This " + typeName + " is at its highest level");
+		if (action == "move" && !isFlag)
+			throw std::runtime_error("Only flags move; this is a " + typeName);
+	}
+	if ((a.contains("range")) && !isFlag)
+		throw std::runtime_error("range is a flag's setting; this is a " + typeName);
+	if (a.contains("workers"))
+	{
+		requested = a.at("workers");
 		orders.push_back({{"type", "workers"}, {"building", ref}, {"workers", std::min(requested, limit)}});
 		changed.push_back("workers");
 	}
-	if (args.contains("priority"))
+	if (a.contains("priority"))
 	{
-		const auto p = args.at("priority").get<std::string>();
+		const auto p = a.at("priority").get<std::string>();
 		orders.push_back({{"type", "priority"}, {"building", ref},
 						  {"priority", p == "low" ? -1 : p == "high" ? 1 : 0}});
 		changed.push_back("priority");
 	}
-	if (args.contains("production"))
+	if (a.contains("production"))
 	{
-		const auto &r = args.at("production");
+		const auto &r = a.at("production");
 		orders.push_back({{"type", "production"}, {"building", ref},
 						  {"ratios", {r.value("workers", 0), r.value("explorers", 0), r.value("warriors", 0)}}});
 		changed.push_back("production");
 	}
-	if (args.contains("range"))
+	if (a.contains("range"))
 	{
-		rangeRequested = args.at("range");
+		rangeRequested = a.at("range");
 		const int range = maximumRange >= 0 ? std::min(rangeRequested, maximumRange) : rangeRequested;
 		orders.push_back({{"type", "range"}, {"building", ref}, {"range", range}});
 		changed.push_back("range");
 	}
-	if (args.contains("action"))
+	if (a.contains("action"))
 	{
-		const auto a = args.at("action").get<std::string>();
-		const int builders = args.value("builders", 3);
-		if (a == "upgrade" || a == "repair")
+		const auto act = a.at("action").get<std::string>();
+		const int builders = a.value("builders", 3);
+		if (act == "upgrade" || act == "repair")
 			orders.push_back({{"type", "construction"}, {"building", ref}, {"workers", builders},
-							  {"futureWorkers", args.value("workers", builders)}});
-		else if (a == "cancel_upgrade")
-			orders.push_back({{"type", "cancelConstruction"}, {"building", ref}, {"workers", args.value("workers", 1)}});
-		else if (a == "destroy")
+							  {"futureWorkers", a.value("workers", builders)}});
+		else if (act == "cancel_upgrade")
+			orders.push_back({{"type", "cancelConstruction"}, {"building", ref}, {"workers", a.value("workers", 1)}});
+		else if (act == "destroy")
 		{
 			orders.push_back({{"type", "delete"}, {"building", ref}});
-			demolitionOrders.insert(args.at("id").get<int>());
+			demolitionOrders.insert(a.at("id").get<int>());
 		}
-		else if (a == "cancel_destroy")
+		else if (act == "cancel_destroy")
 		{
 			orders.push_back({{"type", "cancelDelete"}, {"building", ref}});
-			demolitionOrders.erase(args.at("id").get<int>());
+			demolitionOrders.erase(a.at("id").get<int>());
 		}
-		else if (a == "move")
+		else if (act == "move")
 		{
-			if (!args.contains("x") || !args.contains("y"))
+			if (!a.contains("x") || !a.contains("y"))
 				throw std::runtime_error("move needs the flag's new x and y tile");
-			orders.push_back({{"type", "moveFlag"}, {"building", ref}, {"x", args.at("x")}, {"y", args.at("y")}});
+			orders.push_back({{"type", "moveFlag"}, {"building", ref}, {"x", a.at("x")}, {"y", a.at("y")}});
 		}
-		changed.push_back(a);
+		changed.push_back(act);
 	}
 	Json result = {{"queued", changed},
 				   {"note", "Applied like the building panel's controls after the next simulation "
 							"step; read game_world to confirm."}};
 	if (requested > limit)
+	{
 		result["workers_capped_at"] = limit;
+		if (limit == 0)
+			result["workers_capped_reason"] = "a finished " + typeName + " takes no units (it is not worked)";
+	}
 	if (maximumRange >= 0 && rangeRequested > maximumRange)
 		result["range_capped_at"] = maximumRange;
 	if (orders.empty())
@@ -1671,39 +1873,56 @@ namespace
 // game_wait's until categories, and the alert kinds each one stands for.
 const std::map<std::string, std::set<std::string>> &waitCategories()
 {
+	// until names: these categories, or any alert kind itself (unit_attacked...).
 	static const std::map<std::string, std::set<std::string>> categories = {
 		{"attack", {"unit_attacked", "building_attacked"}},
+		{"unit_attacked", {"unit_attacked"}},
+		{"building_attacked", {"building_attacked"}},
 		{"building_completed", {"building_completed"}},
 		{"building_lost", {"building_destroyed"}},
+		{"building_destroyed", {"building_destroyed"}},
 		{"conversion", {"unit_converted_away", "unit_converted_to_you"}},
+		{"unit_converted_away", {"unit_converted_away"}},
+		{"unit_converted_to_you", {"unit_converted_to_you"}},
 		{"enemy_sighted", {"enemy_building_sighted"}},
-		{"hive_failure", {"hive_program_failed"}}};
+		{"enemy_building_sighted", {"enemy_building_sighted"}},
+		{"enemy_building_gone", {"enemy_building_gone"}},
+		{"hive_failure", {"hive_program_failed"}},
+		{"hive_program_failed", {"hive_program_failed"}},
+		{"hive_wake", {"hive_wake"}}};
 	return categories;
 }
 } // namespace
 Json LocalCommander::wait(const Json &args)
 {
-	// Everything read here is what the colony itself is told: the HUD's event rows, its
-	// own losses, buildings it has seen and its scripts. Nothing about hidden teams.
+	// Everything read here is what the colony itself is told (its journal): the HUD's
+	// event reports, its own losses, buildings it saw appear or go, its scripts.
 	const unsigned now = gui.simulationThreaded ? gui.drawnScene().tick : gui.game.stepCounter;
-	std::set<std::string> wanted;
-	for (const auto &category : args.value("until", Json{"attack", "building_lost", "conversion",
-														  "enemy_sighted", "hive_failure"}))
+	std::map<std::string, std::string> wanted; // alert kind -> the until name that asked for it
+	for (const auto &category : args.value("until", Json{"attack", "building_lost", "conversion", "enemy_sighted",
+														  "enemy_building_gone", "hive_failure", "hive_wake"}))
 	{
-		const auto found = waitCategories().find(category.get<std::string>());
+		const auto name = category.is_string() ? category.get<std::string>() : category.dump();
+		const auto found = waitCategories().find(name);
 		if (found == waitCategories().end())
-			throw std::runtime_error("Unknown until category " + category.dump() +
-									 "; use attack, building_completed, building_lost, conversion, "
-									 "enemy_sighted or hive_failure");
-		wanted.insert(found->second.begin(), found->second.end());
+		{
+			std::string names;
+			for (const auto &[n, kinds] : waitCategories())
+				names += (names.empty() ? "" : ", ") + n;
+			throw std::runtime_error("Unknown until name \"" + name + "\"; use one of: " + names);
+		}
+		for (const auto &kind : found->second)
+			wanted.emplace(kind, name);
 	}
 	Json poll;
 	if (args.contains("_poll"))
 		poll = args.at("_poll");
 	else
 	{
-		// Losses and sightings come from the game_world memory: start it if needed,
-		// so the wait sees buildings lost or first seen from now on.
+		// resume: let a paused match run, so pausing to think and waiting are one call each.
+		if (args.value("resume", false) && (gui.gamePaused || gui.simulationHeld()))
+			time({{"action", "resume"}});
+		// Losses and sightings need the game_world memory: start it if needed.
 		boundary(
 			[&]
 			{
@@ -1711,44 +1930,36 @@ Json LocalCommander::wait(const Json &args)
 				if (!memoryStarted)
 					refreshMemory();
 			});
-		poll = {{"start", now}, {"target", now + args.value("ticks", 300u)}, {"rows", Json::object()},
-				{"events", Json::array()}, {"ongoing", Json::object()}};
-		// Rows active as the wait starts (a skirmish in progress) are reported but do not
-		// end it on every update: only a new row, or a quiet one flaring up, does.
-		for (const auto &row : gui.gameEvents().rows())
-			if (row.lastTick + 150 >= now)
-				poll["ongoing"][std::to_string(row.id)] = true;
+		recordFeed();
+		const unsigned from = args.contains("since_tick") ? args.at("since_tick").get<unsigned>() : now;
+		poll = {{"start", from}, {"began", now}, {"target", now + args.value("ticks", 300u)}, {"ongoing", Json::object()}};
+		// Attacks already under way when the wait starts are reported, but only a new
+		// skirmish (another place, or one that had gone quiet) ends the wait.
+		for (const auto &e : eventLog)
+			if ((e.kind == "unit_attacked" || e.kind == "building_attacked") && e.tick + 150 >= now)
+				poll["ongoing"][e.kind + std::to_string(e.x / 8) + "," + std::to_string(e.y / 8)] = true;
 	}
+	recordFeed();
 	const unsigned start = poll.at("start"), target = poll.at("target");
-	std::string reason;
-	if (const auto outcome = gui.announcedOutcome(); !outcome.empty())
+	std::string reason, kind;
+	Json trigger;
+	if (!gui.announcedOutcome().empty())
 		reason = "match_end";
-	// HUD rows are coalesced and fade, so note each update while the wait lasts.
-	for (const auto &row : gui.gameEvents().rows())
+	for (auto it = eventLog.rbegin(); reason.empty() && it != eventLog.rend() && it->tick > start; ++it)
 	{
-		const auto id = std::to_string(row.id);
-		if (row.lastTick <= start || poll["rows"].value(id, std::uint64_t(0)) == row.updateSequence)
+		const auto match = wanted.find(it->kind);
+		if (match == wanted.end())
 			continue;
-		poll["rows"][id] = row.updateSequence;
-		const std::string kind = row.type < GESize ? eventKinds[row.type] : "event";
-		if (poll["events"].size() < 40)
-			poll["events"].push_back({{"event", row.label}, {"kind", kind}, {"x", row.x}, {"y", row.y},
-									  {"count", row.count}, {"tick", row.lastTick}});
-		if (reason.empty() && wanted.count(kind) && !poll["ongoing"].contains(id))
-			reason = kind;
+		if ((it->kind == "unit_attacked" || it->kind == "building_attacked") &&
+			poll["ongoing"].contains(it->kind + std::to_string(it->x / 8) + "," + std::to_string(it->y / 8)))
+			continue;
+		reason = match->second, kind = it->kind;
+		trigger = {{"kind", it->kind}, {"event", it->event}};
+		if (it->x >= 0)
+			trigger["x"] = it->x, trigger["y"] = it->y;
 	}
-	const auto after = [&](const auto &list, const char *kind)
-	{
-		for (const auto &entry : list)
-			if (entry.tick > start && reason.empty() && wanted.count(kind))
-				reason = kind;
-	};
-	after(failures, "hive_program_failed");
-	after(sightings, "enemy_building_sighted");
-	for (const auto &loss : losses)
-		if (loss.tick > start && !loss.demolished && reason.empty() && wanted.count("building_destroyed"))
-			reason = "building_destroyed";
-	if (reason.empty() && now >= target)
+	const unsigned simTick = gui.game.stepCounter;
+	if (reason.empty() && std::max(now, simTick) >= target)
 		reason = "ticks";
 	if (reason.empty() && (gui.gamePaused || gui.simulationHeld()))
 		reason = "paused";
@@ -1756,33 +1967,27 @@ Json LocalCommander::wait(const Json &args)
 		reason = "timeout";
 	if (reason.empty())
 		return {{"pending", true}, {"poll", poll}};
-	// Done: what game_world detail alerts would show for the wait, plus rows that have
-	// already faded from the HUD.
+	// Done: game_world detail alerts since the wait's start (grouped, newest first).
 	Json result = world({{"detail", "alerts"}, {"since_tick", start}});
-	std::set<std::string> listed;
-	for (const auto &a : result["alerts"])
-		listed.insert(a.value("kind", std::string()) + "@" + std::to_string(a.value("x", -1)) + "," +
-					  std::to_string(a.value("y", -1)));
-	for (auto event : poll["events"])
-		if (!listed.count(event.value("kind", std::string()) + "@" + std::to_string(event.value("x", -1)) +
-						  "," + std::to_string(event.value("y", -1))))
-		{
-			const unsigned at = event.at("tick");
-			event.erase("tick");
-			event["ticks_ago"] = result.value("tick", at) - at;
-			result["alerts"].push_back(std::move(event));
-		}
+	const unsigned began = poll.value("began", start), endTick = result.value("tick", now);
+	if (reason == "timeout" && endTick >= target)
+		reason = "ticks"; // the published scene lagged the simulation at the last poll
 	result["reason"] = reason;
+	if (!trigger.is_null())
+		result["trigger"] = trigger;
 	result["from_tick"] = start;
-	result["waited_ticks"] = result.value("tick", start) - start;
+	result["waited_ticks"] = endTick - began;
 	if (const auto outcome = gui.announcedOutcome(); !outcome.empty())
 		result["outcome"] = outcome;
-	result["note"] = reason == "paused"	 ? "The match is paused, so no time passes: game_time resume first."
-					 : reason == "ticks"	 ? "The requested ticks passed without an until event."
-					 : reason == "timeout" ? "The wall-clock timeout ended the wait before the ticks passed."
-					 : reason == "match_end"
-						 ? "The game has announced the result; ok/quit the dialog to reach end_game."
-						 : "Stopped early for the first until event; alerts lists everything since from_tick.";
+	result["note"] =
+		reason == "paused" ? "The match is paused, so no time passes: game_time resume first (or game_wait resume: true)."
+		: reason == "ticks" ? "The requested ticks passed without an until event."
+		: reason == "timeout"
+			? std::to_string(endTick - began) + " of " + std::to_string(target - began) +
+				  " ticks passed before timeout_ms (default 25000, at most 30000) ended the wait; call game_wait "
+				  "again, or raise the game speed."
+		: reason == "match_end" ? "The game has announced the result; ok/quit the dialog to reach end_game."
+								: "Stopped for the first until event (trigger); alerts lists everything since from_tick.";
 	return result;
 }
 Json LocalCommander::alliance(const Json &args)
@@ -1809,7 +2014,7 @@ Json matchOver(const std::string &tool)
 {
 	if (tool != "game_wait")
 		throw std::runtime_error("The match ended before the operation finished");
-	return {{"reason", "match_over"},
+	return {{"reason", "match_end"},
 			{"note", "The match is no longer running (it ended or was left); ui_inspect shows the "
 					 "current screen, usually end_game."}};
 }

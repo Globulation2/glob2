@@ -842,9 +842,14 @@ TEST_CASE("local Hive operation journal preflight cadence and teardown" *
 	commander.call("hive_run", invalidBatch);
 	commander.update();
 	commander.update();
-	CHECK(commander.call("hive_result", {{"session", session}, {"operation_key", "invalid-batch"}})
-			  .at("submitted") == false);
-	CHECK(world.gui.getOrder()->getOrderType() == ORDER_NULL);
+	// Each order stands alone: the valid one is sent, the stale reference is rejected.
+	const auto batch = commander.call("hive_result", {{"session", session}, {"operation_key", "invalid-batch"}});
+	CHECK(batch.at("status") == "completed");
+	CHECK(batch.at("submitted") == true);
+	CHECK(batch.at("order_count") == 1);
+	REQUIRE(batch.at("rejected").size() == 1);
+	CHECK(batch.at("rejected")[0].at("order") == 1);
+	CHECK(batch.at("rejected")[0].at("type") == "workers");
 	for (int mode = 0; mode < 5; ++mode)
 	{
 		Hive::LocalCommander probe(world.gui, worker);
@@ -1255,9 +1260,10 @@ TEST_CASE("local Hive failures name their source and cards summarize results" *
 	commander.call("hive_run", {{"session", session}, {"operation_key", "teleport"},
 		{"source", "function step(){return {orders:[{type:'teleport'}]};}"}});
 	settle();
-	// The failing order is named, and the run's other orders were not sent.
-	CHECK(result("teleport").at("error") ==
-		  "order 0 (teleport): Unsupported order type 'teleport'; no orders from this run were sent");
+	// An unusable order is rejected on its own, and named; the run still completes.
+	CHECK(result("teleport").at("error") == "");
+	REQUIRE(result("teleport").at("rejected").size() == 1);
+	CHECK(result("teleport").at("rejected")[0].at("error") == "Unsupported order type 'teleport'");
 
 	commander.call("hive_program", {{"session", session}, {"operation_key", "bad-install"},
 		{"action", "install"}, {"name", "broken"}, {"source", "function step(){throw 1;}"}});

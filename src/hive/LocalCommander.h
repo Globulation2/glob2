@@ -4,6 +4,7 @@
 #include "HiveObservation.h"
 #include "scripting/javascript/ScriptObservations.h"
 #include <deque>
+#include <map>
 #include <set>
 #include <future>
 #include <functional>
@@ -26,6 +27,8 @@ class LocalCommander : public CommanderView
 		bool initialized = false, paused = false;
 		unsigned nextTick = 0, random = 1;
 		unsigned retries = 0; // consecutive retries after the worker could not start
+		unsigned lastRunTick = 0, runs = 0;
+		std::string pausedReason, lastError; // why a failure paused it; the latest failure
 		std::uint64_t generation = 0;
 	};
 	struct Operation
@@ -92,7 +95,32 @@ class LocalCommander : public CommanderView
 		unsigned tick;
 	};
 	std::deque<Sighting> sightings;
+	// Creates from scripts not yet visible as sites: findPlacement must not reuse them.
+	struct PendingCreate
+	{
+		int x, y, type;
+		unsigned tick;
+	};
+	std::deque<PendingCreate> scriptCreates;
 	TileCache tileCache; // map tiles kept between Hive runs (see capture)
+	// Everything the colony was told, as it happened: the HUD's event reports, its own
+	// losses, buildings it saw appear or disappear, its scripts' failures and wakes.
+	// game_world alerts, game_wait and ctx.game.events() all read this one journal.
+	struct Logged
+	{
+		std::string kind, event;
+		int x = -1, y = -1, team = -1;
+		unsigned tick = 0;
+		std::string program;
+		bool paused = false;
+	};
+	std::deque<Logged> eventLog;
+	std::map<std::uint64_t, std::uint64_t> rowSeen; // HUD row id -> update sequence logged
+	unsigned destroyedTotal = 0, demolishedTotal = 0;
+	void record(Logged entry);
+	void recordFeed();
+	// Alerts after a tick: grouped by kind, message and area, newest first.
+	Json groupedAlerts(unsigned since, unsigned now, std::size_t cap) const;
 	// Recent game_place requests, followed up in game_world until resolved.
 	struct Placement
 	{

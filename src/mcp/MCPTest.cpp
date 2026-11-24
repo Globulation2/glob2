@@ -2158,8 +2158,9 @@ TEST_CASE("MCP/game_wait and hive waits hold as observers until game time answer
 		commander.update();
 		pump();
 		const auto refused = completed(unknown);
-		CHECK(refused.data.at("status") == "failed");
-		CHECK(refused.data.at("error").get<std::string>().find("castle") != std::string::npos);
+		CHECK(refused.data.at("status") == "completed"); // the order is rejected, not the run
+		REQUIRE(refused.data.at("rejected").size() == 1);
+		CHECK(refused.data.at("rejected")[0].at("error").get<std::string>().find("castle") != std::string::npos);
 		auto vision = start("game_alliance", {{"token", token}, {"team", 1}, {"share_food_vision", false}});
 		CHECK(completed(vision).error.empty());
 	}

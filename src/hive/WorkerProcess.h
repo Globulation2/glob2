@@ -11,5 +11,6 @@ Json runWorker(const Json &request);
 // or leaves a pointer into the engine on the worker thread.
 // tiles, when given, becomes request.snapshot.tiles on the worker thread (a cached map
 // the main thread need not copy).
-std::future<Json> startWorker(Json request, std::shared_ptr<const Json> tiles = nullptr);
+std::future<Json> startWorker(Json request, std::shared_ptr<const Json> tiles = nullptr,
+							  std::shared_ptr<const Json> statics = nullptr);
 } // namespace Hive

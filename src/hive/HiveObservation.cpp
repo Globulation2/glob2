@@ -20,8 +20,23 @@ Json capture(Script::Observations &observations, Game &game, int team, TileCache
 					 {"height", game.map.getH()}};
 	// terrainTypes and resourceTypes are the match's static, public rule tables: they
 	// say what a tile's corners and resource type mean, never what is on the map.
-	for (const char *name : {"teams", "units", "buildings", "buildingTypes", "terrainTypes", "resourceTypes"})
+	for (const char *name : {"teams", "units", "buildings"})
 		snapshot[name] = json(observations.query(name, {}));
+	// The match's rule tables never change: with a cache they are built once and handed to
+	// the worker thread with the tiles (buildingTypes alone is about 170 KB of JSON).
+	if (cache && cache->statics)
+		;
+	else
+	{
+		Json statics = Json::object();
+		for (const char *name : {"buildingTypes", "terrainTypes", "resourceTypes"})
+			statics[name] = json(observations.query(name, {}));
+		if (cache)
+			cache->statics = std::make_shared<const Json>(std::move(statics));
+		else
+			for (auto &[name, table] : statics.items())
+				snapshot[name] = std::move(table);
+	}
 	if (cache)
 	{
 		const unsigned width = game.map.getW(), height = game.map.getH();

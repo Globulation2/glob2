@@ -153,11 +153,22 @@ const Json *placeable(const Json &s, const std::string &name, int level = 0, int
 		}
 	return site >= 0 ? nullptr : found;
 }
-// Tiles covered by buildings this colony knows of: its own, and others in sight.
-std::vector<char> occupied(const Json &s)
+// Tiles covered by buildings this colony knows of (its own, others in sight), by its
+// pending placements, and by spots findPlacement already gave out in this run.
+std::vector<char> occupied(const Json &s, const Json &reserved = Json::array())
 {
 	const int width = s.at("width"), height = s.at("height");
 	std::vector<char> mask(std::size_t(width) * height, 0);
+	const auto claim = [&](const Json &f)
+	{
+		for (int dy = 0; dy < f.value("height", 1); ++dy)
+			for (int dx = 0; dx < f.value("width", 1); ++dx)
+				mask[std::size_t(wrap(f.value("y", 0) + dy, height)) * width + wrap(f.value("x", 0) + dx, width)] = 1;
+	};
+	for (const auto &f : s.value("pending", Json::array()))
+		claim(f);
+	for (const auto &f : reserved)
+		claim(f);
 	for (const auto &b : s.at("buildings"))
 		if (const auto *t = typeOf(s, b.value("type", -1)); t && !t->value("virtual", false))
 			for (int dy = 0; dy < t->value("height", 1); ++dy)
@@ -214,7 +225,7 @@ const Json &placeableNamed(const Json &s, const Json &name)
 		throw std::runtime_error("Unknown building or flag \"" + name.get<std::string>() + "\"");
 	return *type;
 }
-Json query(const Json &s, const std::string &name, const Json &args)
+Json query(const Json &s, const std::string &name, const Json &args, Json &reserved)
 {
 	const int width = s.at("width"), height = s.at("height");
 	if (name == "teams" || name == "buildingTypes" || name == "terrainTypes" || name == "resourceTypes")
@@ -394,7 +405,7 @@ Json query(const Json &s, const std::string &name, const Json &args)
 		if (args.size() < 3)
 			throw std::runtime_error("canPlace(name, x, y) needs a building or flag name and a tile");
 		const auto &type = placeableNamed(s, args[0]);
-		const auto why = canPlace(s, type, integer(args[1], -32768, 32767), integer(args[2], -32768, 32767), occupied(s));
+		const auto why = canPlace(s, type, integer(args[1], -32768, 32767), integer(args[2], -32768, 32767), occupied(s, reserved));
 		return why.empty() ? Json{{"ok", true}} : Json{{"ok", false}, {"reason", why}};
 	}
 	if (name == "findPlacement")
@@ -405,13 +416,19 @@ Json query(const Json &s, const std::string &name, const Json &args)
 		const auto &o = args[1];
 		const int x = integer(o.at("x"), -32768, 32767), y = integer(o.at("y"), -32768, 32767);
 		const int radius = o.contains("radius") ? integer(o["radius"], 0, 64) : 12;
-		const auto taken = occupied(s);
-		// Nearest ring first, as game_place near does.
+		const auto taken = occupied(s, reserved);
+		// Nearest ring first, as game_place near does. The spot is reserved for the rest of
+		// this run, so a second call finds another one.
 		for (int r = 0; r <= radius; ++r)
 			for (int dy = -r; dy <= r; ++dy)
 				for (int dx = -r; dx <= r; ++dx)
 					if (std::max(std::abs(dx), std::abs(dy)) == r && canPlace(s, type, x + dx, y + dy, taken).empty())
-						return {{"x", wrap(x + dx, width)}, {"y", wrap(y + dy, height)}};
+					{
+						Json spot = {{"x", wrap(x + dx, width)}, {"y", wrap(y + dy, height)}};
+						reserved.push_back({{"x", spot["x"]}, {"y", spot["y"]}, {"width", type.value("width", 1)},
+											{"height", type.value("height", 1)}});
+						return spot;
+					}
 		return nullptr;
 	}
 	throw std::runtime_error("Unavailable colony query");
@@ -442,7 +459,7 @@ Json invoke(const Json &request)
 		host.height = snapshot.at("height");
 		if (host.team < 0 || host.team >= 32 || !host.width || !host.height)
 			throw std::runtime_error("Invalid colony context");
-		Json wakes = Json::array();
+		Json wakes = Json::array(), reserved = Json::array();
 		std::uint32_t rng = request.value("random", 1u);
 		host.random = [&]
 		{
@@ -468,7 +485,7 @@ Json invoke(const Json &request)
 				wakes.push_back(w);
 				return Script::Value();
 			}
-			Json output = query(snapshot, name, a);
+			Json output = query(snapshot, name, a, reserved);
 			const auto size = output.dump().size();
 			budget(size / 8 + 1, size * 4);
 			return value(output);

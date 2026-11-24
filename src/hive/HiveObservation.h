@@ -15,6 +15,7 @@ struct TileCache
 	std::vector<Script::Observations::Cell> cells;
 	std::vector<char> valid;
 	std::shared_ptr<Json> tiles; // shared with the worker thread that sends it
+	std::shared_ptr<const Json> statics; // buildingTypes, terrainTypes, resourceTypes
 };
 // Called at a simulation boundary. The only input to the isolated interpreter. With a
 // cache, tiles are refreshed there and left out of the snapshot: the worker thread adds
