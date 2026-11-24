@@ -14,6 +14,7 @@
 #include "UnitConsts.h"
 #include "hive/HiveWorker.h"
 #include "hive/LocalCommander.h"
+#include "hive/GameStats.h"
 #include "GameGUIToolManager.h"
 #include <functional>
 #include "touch/GameGUITouch.h"
@@ -2637,6 +2638,97 @@ TEST_CASE("MCP game_world shows own stock and Inn happiness, reports losses and 
 	CHECK(innLine.find(" happiness 2") != std::string::npos);
 }
 
+TEST_CASE("MCP game_stats reads only the colony in a match and every team on the results" *
+		  doctest::test_suite("GUIInteractionCoverage"))
+{
+	glob2test::HeadlessGlobals globals({.seed = 23});
+	PresentationFrame published; // Outlives the GUI that points at it.
+	glob2test::HeadlessGame world(
+		{.wDec = 6, .hDec = 6, .teams = 2, .discovered = true, .clearImmobile = true,
+		 .loadDefaultRace = true, .header = true});
+	REQUIRE(world.addBuilding("swarm", 4, 4));
+	REQUIRE(world.addBuilding("inn", 40, 40, 0, 1));
+	world.addUnit(WORKER);
+	world.addUnit(WORKER);
+	world.addUnit(WORKER, 43, 40, 1);
+	world.addUnit(WORKER, 44, 40, 1);
+	world.addUnit(WORKER, 45, 40, 1);
+	world.gui.localPlayer = world.gui.localTeamNo = 0;
+	world.gui.localTeam = world.team;
+	world.game.players[0]->type = BasePlayer::P_LOCAL;
+	world.gui.rebuildBuildingChoices(false);
+	world.gui.prepareLocalPresentation(published);
+	world.gui.setPublishedScene(&published);
+	// A short match: four samples of every team's history.
+	world.step(4 * Stats::SAMPLE_INTERVAL_TICKS + 1);
+	Hive::LocalCommander commander(world.gui, [](Json input)
+	{
+		std::promise<Json> ready;
+		ready.set_value(Hive::invoke(input));
+		return ready.get_future();
+	});
+
+	// In a match: the colony's own panel metrics, never another team's.
+	const auto match = commander.call("game_stats", Json::object());
+	CHECK(match.at("mode") == "match");
+	CHECK(match.at("team").at("team") == 0);
+	CHECK(match.at("status").contains("win_chance_percent"));
+	REQUIRE(match.at("metrics").size() == 8);
+	for (const auto &metric : match.at("metrics"))
+	{
+		INFO(metric.at("id").get<std::string>());
+		REQUIRE(metric.at("teams").size() == 1);
+		CHECK(metric.at("teams")[0].at("team") == 0);
+	}
+	const auto &population = match.at("metrics")[0];
+	CHECK(population.at("id") == "population");
+	CHECK(population.at("teams")[0].at("summary").at("latest") == 2);
+	CHECK(population.at("teams")[0].at("seconds").size() ==
+		  population.at("teams")[0].at("values").size());
+	// The list is the panel's: without the win probability history, which reads
+	// hidden opponent state.
+	const auto list = commander.call("game_stats", {{"list", true}});
+	CHECK(list.at("metrics").size() > 40);
+	for (const auto &metric : list.at("metrics"))
+		CHECK(metric.at("id") != "win probability");
+	CHECK_THROWS_WITH_AS(commander.call("game_stats", {{"metrics", {"win probability"}}}),
+						 doctest::Contains("end_game"), std::runtime_error);
+	CHECK_THROWS_WITH_AS(commander.call("game_stats", {{"metrics", {"no such metric"}}}),
+						 doctest::Contains("list: true"), std::runtime_error);
+	// Thinned to the requested points, first and last sample kept; a counter carries its total.
+	const auto births = commander.call("game_stats", {{"metrics", {"births"}}, {"points", 2}, {"split", true}});
+	const auto &born = births.at("metrics")[0];
+	CHECK(born.at("bands").size() >= 3);
+	CHECK(born.at("teams")[0].at("seconds").size() == 2);
+	CHECK(born.at("teams")[0].at("band_values").size() == born.at("bands").size());
+	CHECK(born.at("teams")[0].at("summary").contains("total"));
+
+	// After the match the results screen holds every team, opponents included.
+	commander.clear();
+	EndGameScreen results(&world.gui);
+	const auto finished = Hive::finishedMatchStats(results, Json::object());
+	CHECK(finished.at("mode") == "finished");
+	CHECK(finished.at("duration_seconds") == results.matchSeconds());
+	REQUIRE(finished.at("teams").size() == 2);
+	for (const auto &team : finished.at("teams"))
+	{
+		CHECK(team.at("overview").contains("population peak"));
+		CHECK(team.at("color").get<std::string>().size() == 7);
+		CHECK(team.value("you", false) == (team.at("team") == 0));
+	}
+	REQUIRE(finished.at("metrics")[0].at("id") == "win probability");
+	for (const auto &metric : finished.at("metrics"))
+		if (!metric.value("map_wide", false))
+			CHECK(metric.at("teams").size() == 2);
+	const auto &opponent = std::find_if(finished.at("metrics")[1].at("teams").begin(),
+										finished.at("metrics")[1].at("teams").end(),
+										[](const Json &t) { return t.at("team") == 1; });
+	CHECK(opponent->at("summary").at("latest") == 3);
+	const auto deaths = Hive::finishedMatchStats(results, {{"metrics", {"deaths"}}, {"points", 1000}});
+	REQUIRE(deaths.at("metrics").size() == 1);
+	CHECK(deaths.at("points") == 300);
+	CHECK(Hive::finishedMatchStats(results, {{"list", true}}).at("metrics").size() > list.at("metrics").size());
+}
 TEST_CASE("MCP game_building and game_zone queue the panel's orders and report caps" *
 		  doctest::test_suite("GUIInteractionCoverage"))
 {

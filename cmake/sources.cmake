@@ -523,6 +523,7 @@ set(GLOB2_CLIENT_SOURCES
     src/hive/HiveClient.cpp
     src/hive/WorkerProcess.cpp
     src/hive/LocalCommander.cpp
+    src/hive/GameStats.cpp
     src/hive/HiveObservation.cpp
     src/hive/HiveDialog.cpp
     src/scripting/javascript/ScriptObservations.cpp
@@ -1512,6 +1513,7 @@ set(GLOB2_ANDROID_SOURCES
     src/hive/HiveClient.cpp
     src/hive/WorkerProcess.cpp
     src/hive/LocalCommander.cpp
+    src/hive/GameStats.cpp
     src/hive/HiveObservation.cpp
     src/hive/HiveDialog.cpp
     src/scripting/javascript/ScriptObservations.cpp
@@ -2334,6 +2336,7 @@ set(GLOB2_IOS_SOURCES
     src/hive/HiveClient.cpp
     src/hive/WorkerProcess.cpp
     src/hive/LocalCommander.cpp
+    src/hive/GameStats.cpp
     src/hive/HiveObservation.cpp
     src/hive/HiveDialog.cpp
     src/scripting/javascript/ScriptObservations.cpp
@@ -3325,6 +3328,7 @@ set(GLOB2_WEB_SOURCES
     src/hive/HiveClient.cpp
     src/hive/WorkerProcess.cpp
     src/hive/LocalCommander.cpp
+    src/hive/GameStats.cpp
     src/hive/HiveObservation.cpp
     src/hive/HiveDialog.cpp
     src/scripting/javascript/ScriptObservations.cpp

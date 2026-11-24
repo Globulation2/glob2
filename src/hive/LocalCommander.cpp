@@ -25,6 +25,9 @@
 #include <limits>
 #include "Game.h"
 #include "render/scene/Scene.h"
+#include "GameStats.h"
+#include "EngineTiming.h"
+#include "stats/MetricCatalog.h"
 namespace Hive
 {
 namespace
@@ -218,6 +221,8 @@ Json LocalCommander::call(const std::string &tool, const Json &args)
 		return building(args);
 	if (tool == "game_zone")
 		return zone(args);
+	if (tool == "game_stats")
+		return stats(args);
 	if (tool == "hive_result")
 	{
 		if (args.at("session") != session)
@@ -1177,6 +1182,56 @@ Json LocalCommander::zone(const Json &args)
 			{"note", "The zone is painted after the next simulation step; it appears on the map "
 					 "and in the Flags and areas panel."}};
 }
+Json LocalCommander::stats(const Json &args)
+{
+	std::shared_ptr<const TeamStats> history;
+	std::vector<Stats::Metric> metrics;
+	Json details;
+	Uint32 now = 0;
+	boundary(
+		[&]
+		{
+			// A frozen copy: the report is built after the simulation resumes.
+			history = gui.game.teams[team]->stats.frozenHistory();
+			metrics = Stats::catalogForBuildings(gui.game.buildingsTypes);
+			const auto &color = gui.game.teams[team]->color;
+			details = {{"team", team}, {"color", colorText(color.r, color.g, color.b)}};
+			for (int i = 0; i < gui.game.gameHeader.getNumberOfPlayers(); ++i)
+				if (gui.game.gameHeader.getBasePlayer(i).teamNumber == team)
+				{
+					details["name"] = gui.game.gameHeader.getBasePlayer(i).name;
+					break;
+				}
+			now = gui.game.stepCounter;
+		});
+	// Like the in-game Statistics panel: the win-probability history reads hidden
+	// opponent state, so it is offered only on the results screen.
+	for (const auto &id : args.value("metrics", Json::array()))
+		if (const auto metric = std::find_if(metrics.begin(), metrics.end(), [&](const auto &m) { return id == m.id; });
+			metric != metrics.end() && metric->winProbability)
+			throw std::runtime_error("The win probability history is shown only after the match, on the "
+									 "end_game results screen; status.win_chance_percent here is the current "
+									 "chance the HUD shows");
+	std::erase_if(metrics, [](const auto &m) { return m.winProbability; });
+	static const std::vector<std::string> defaults = {"population", "net growth", "hunger",	"health",
+													  "idle workers", "blocked buildings", "warriors", "intruders"};
+	Json result = statsReport(metrics, {{team, history.get(), details}}, args, defaults);
+	if (args.value("list", false))
+		return result;
+	const auto bar = gui.topBarValues();
+	result["mode"] = "match";
+	result["tick"] = now;
+	result["seconds"] = now / GAME_TICKS_PER_SECOND;
+	result["team"] = details;
+	result["status"] = {{"workers_free_total", bar[0]}, {"explorers_free_total", bar[1]},
+						{"warriors_free_total", bar[2]}, {"prestige", bar[3]},
+						{"win_chance_percent", bar[4]}, {"converted_in", bar[5]},
+						{"converted_out", bar[6]}};
+	result["note"] = "Your colony only, as the in-game Statistics panel shows it. Every team's "
+					 "statistics and the win probability history follow on the end_game results "
+					 "screen, while it is shown.";
+	return result;
+}
 Json localCall(const std::string &tool, const Json &args)
 {
 	if (tool == "hive_api")
@@ -1187,6 +1242,10 @@ Json localCall(const std::string &tool, const Json &args)
 			return {{"available", false},
 					{"reason", "No active local human match"},
 					{"limits", playerAPI().at("limits")}};
+		if (tool == "game_stats")
+			throw std::runtime_error("game_stats needs a local match you are playing (your colony) or "
+									 "the end_game results screen after a match (every team); this "
+									 "screen has neither");
 		throw std::runtime_error("Local Hive unavailable: requires a local human match; online, "
 								 "replay, spectator and AI takeover modes are unsupported");
 	}

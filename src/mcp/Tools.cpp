@@ -359,7 +359,7 @@ void registerUITools(ToolRegistry &registry)
 		"Read the current screen: its name (inspection.screen) and surfaces, each with an "
 		"instance number and controls (key, label, role, actions, value, revision). Use "
 		"compact=true. Feed surface/key/revision to ui_act. Filter with surface or subtree "
-		"(a control key). Bounds are logical pixels, not screenshot pixels. No token needed; "
+		"key. Bounds are logical pixels, not screenshot pixels. No token needed; "
 		"a token renews the lease.",
 		inspect, {}, false);
 	auto act = Json{{"surface", identity},
@@ -369,10 +369,10 @@ void registerUITools(ToolRegistry &registry)
 					{"value", Json::object()}};
 	add("ui_act",
 		"Operate a control from ui_inspect by surface (instance), key and revision. action "
-		"must be one the control lists: activate (press), select (value: zero-based index), "
+		"must be one the control lists: activate, select (value: zero-based index), "
 		"set_value (value: integer, boolean or string matching the control) or scroll (value: "
-		"signed logical pixels). Returns the inspection when the input was consumed, which may "
-		"precede a screen change: then ui_wait. Never retry automatically.",
+		"signed logical pixels). Returns the inspection once consumed; a "
+		"screen change may follow: ui_wait. Never retry automatically.",
 		act, {"surface", "key", "revision", "action"}, true);
 	auto wait = filter;
 	wait["timeout_ms"] = {
@@ -389,16 +389,17 @@ void registerUITools(ToolRegistry &registry)
 	add("ui_wait",
 		"Wait (default 10 s, max 30 s) until a condition holds, e.g. {\"screen\": "
 		"\"game_session\"} after starting a match, or a control key with enabled/value/"
-		"revision_after (screen names as in inspection.screen). On timeout returns the latest snapshot with satisfied=false.",
+		"revision_after. Does not block input; "
+		"on timeout returns the latest snapshot with satisfied=false.",
 		wait, {"condition"}, false);
 
 	add("game_world",
-		"In a match, read your colony in map tiles: status (free/total units, win chance), "
+		"Your colony in map tiles: status (free/total units, win chance), "
 		"alerts (losses, conversions, attacks with tiles), losses, buildings (id, type, top-left "
 		"x/y, size, site, workers, stock/capacity, Inn happiness), unit counts, known resources "
 		"(nearest tile), other teams' visible and remembered buildings, recent placements, "
-		"placeable names. detail brief: status, alerts, losses, one line per building, for "
-		"cheap polling; full adds unit lists. No token.",
+		"placeable names. detail brief: status, alerts, losses, one line per building; "
+		"full adds unit lists. No token.",
 		{{"detail", enumeration({"brief", "summary", "full"})},
 		 {"limit", {{"type", "integer"}, {"minimum", 1}, {"maximum", 500}, {"default", 100}}},
 		 {"resource_radius", {{"type", "integer"}, {"minimum", 1}, {"maximum", 64}, {"default", 24}}},
@@ -407,6 +408,14 @@ void registerUITools(ToolRegistry &registry)
 						  {"width", {{"type", "integer"}, {"minimum", 1}}},
 						  {"height", {{"type", "integer"}, {"minimum", 1}}}},
 						 {"x", "y", "width", "height"})}},
+		{}, false);
+	add("game_stats",
+		"Charts over time: your colony in a match; every team on end_game. list: true names "
+		"metrics, split shows parts, points (2-300). No token.",
+		{{"list", {{"type", "boolean"}}},
+		 {"metrics", {{"type", "array"}}},
+		 {"points", {{"type", "integer"}}},
+		 {"split", {{"type", "boolean"}}}},
 		{}, false);
 	add("game_place",
 		"Place a building site or flag by tile, as a click would: building is a game_world "

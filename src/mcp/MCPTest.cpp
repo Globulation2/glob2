@@ -57,7 +57,7 @@ TEST_CASE("MCP/protocol adapters validate metadata and discover all tools")
 	CHECK(discover.status == 200);
 	CHECK(discover.body["result"]["resultType"] == "complete");
 	auto listed = p.receive(modern("tools/list").dump(), {"2026-07-28", "tools/list", ""});
-	CHECK(listed.body["result"]["tools"].size() == 29);
+	CHECK(listed.body["result"]["tools"].size() == 30);
 	CHECK(listed.body["result"].contains("cacheScope"));
 	CHECK(
 		p.receive(modern("tools/list").dump(), {"2026-07-28", "wrong", ""}).body["error"]["code"] ==
@@ -1808,7 +1808,9 @@ TEST_CASE("MCP/game tools read without control and act only under the lease [net
 	};
 	// Reading the world needs no control, like hive_status.
 	CHECK(execute("game_world", Json::object()).error.empty());
-	REQUIRE(reached == std::vector<std::string>{"game_world"});
+	CHECK(execute("game_stats", {{"metrics", {"population"}}}).error.empty());
+	REQUIRE(reached == std::vector<std::string>{"game_world", "game_stats"});
+	reached.erase(reached.begin() + 1);
 	// Placing and moving the camera are input: they need the current token.
 	CHECK_FALSE(execute("game_place", {{"token", "stale"}, {"building", "inn"}, {"x", 1}, {"y", 1}})
 					.error.empty());
