@@ -1,0 +1,135 @@
+name: Publish desktop downloads to itch.io
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Exact tag of the latest public stable GitHub release
+        required: true
+        type: string
+      mode:
+        description: Verify packages, create hidden channels, or update existing channels
+        type: choice
+        options:
+          - verify
+          - create-hidden
+          - publish
+        default: verify
+      channel:
+        description: Update all channels or retry one channel after a partial upload
+        type: choice
+        options:
+          - all
+          - windows-x86-64
+          - osx-arm64
+          - osx-x86-64
+          - linux-x86-64-flatpak
+        default: all
+
+permissions:
+  contents: read
+
+concurrency:
+  group: itch-desktop-release
+  cancel-in-progress: false
+
+jobs:
+  desktop:
+    if: >-
+      github.repository == 'genixpro/glob2-release' &&
+      github.repository_id == 1397722696 &&
+      github.actor_id == 6193625 &&
+      github.triggering_actor == 'genixpro' &&
+      github.ref == 'refs/heads/master'
+    environment: itch-release
+    timeout-minutes: 45
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Verify and stage the four public release packages
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          RELEASE_DIR: ${{ runner.temp }}/itch-release
+        run: |
+          set -euo pipefail
+          [[ "$TAG" =~ ^v[0-9]+(\.[0-9]+)+$ ]]
+          repository=Globulation2/glob2
+          latest=$(gh api "repos/$repository/releases/latest")
+          jq -e --arg tag "$TAG" '.tag_name == $tag and (.draft or .prerelease | not)' <<< "$latest" >/dev/null
+          mkdir -p "$RELEASE_DIR"
+          cd "$RELEASE_DIR"
+          version=${TAG#v}
+          packages=(
+            "windows-x86-64|glob2-$version-windows-x86_64.zip"
+            "osx-arm64|Glob2-$version-macos-arm64.dmg"
+            "osx-x86-64|Glob2-$version-macos-x86_64.dmg"
+            "linux-x86-64-flatpak|glob2.flatpak"
+          )
+          download_and_verify() {
+            local file=$1 digest
+            digest=$(jq -er --arg file "$file" '
+              [.assets[] | select(.name == $file and .state == "uploaded") | .digest]
+              | select(length == 1) | .[0] | strings | select(test("^sha256:[0-9a-f]{64}$"))
+            ' <<< "$latest")
+            gh release download "$TAG" --repo "$repository" --pattern "$file"
+            echo "${digest#sha256:}  $file" | sha256sum -c
+          }
+          download_and_verify package-inventory.json
+          for package in "${packages[@]}"; do
+            IFS='|' read -r channel file <<< "$package"
+            jq -e --arg file "$file" '
+              .schemaVersion == 1 and ([.packages[] | select(.filename == $file)] | length == 1)
+            ' package-inventory.json >/dev/null
+            download_and_verify "$file"
+            printf '%s\t%s\n' "$channel" "$file" >> channels.tsv
+            printf -- '- `%s` → `%s`\n' "$file" "$channel" >> "$GITHUB_STEP_SUMMARY"
+          done
+
+      - name: Install pinned Butler
+        if: inputs.mode != 'verify'
+        env:
+          BUTLER_DIR: ${{ runner.temp }}/itch-butler
+        run: |
+          set -euo pipefail
+          mkdir -p "$BUTLER_DIR"
+          cd "$BUTLER_DIR"
+          curl --fail --silent --show-error --location --proto '=https' --proto-redir '=https' \
+            https://broth.itch.zone/butler/linux-amd64/15.32.0/archive/default --output butler.zip
+          echo '2335971394ef6596f95ded0833e85ee28755e13761716ef4c91d6b11f69162f5  butler.zip' | sha256sum -c
+          unzip -q butler.zip
+          ./butler -V
+          echo "$BUTLER_DIR" >> "$GITHUB_PATH"
+
+      - name: Confirm the selected release is still latest
+        if: inputs.mode != 'verify'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          test "$(gh api repos/Globulation2/glob2/releases/latest --jq .tag_name)" = "$TAG"
+
+      - name: Push verified packages to itch.io
+        if: inputs.mode != 'verify'
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+          TAG: ${{ inputs.tag }}
+          MODE: ${{ inputs.mode }}
+          CHANNEL: ${{ inputs.channel }}
+          RELEASE_DIR: ${{ runner.temp }}/itch-release
+        run: |
+          set -euo pipefail
+          if [[ -z "$BUTLER_API_KEY" ]]; then
+            echo '::error::Set BUTLER_API_KEY in the itch-release environment.'
+            exit 1
+          fi
+          cd "$RELEASE_DIR"
+          options=(--userversion "${TAG#v}")
+          if [[ "$MODE" == create-hidden ]]; then
+            options+=(--hidden)
+          fi
+          while IFS=$'\t' read -r channel file; do
+            [[ "$CHANNEL" == all || "$CHANNEL" == "$channel" ]] || continue
+            butler push "$file" "genixpro/globulation-2:$channel" "${options[@]}"
+            printf 'Pushed `%s` to `%s`.\n\n' "$file" "$channel" >> "$GITHUB_STEP_SUMMARY"
+          done < channels.tsv

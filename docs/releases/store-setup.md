@@ -206,6 +206,29 @@ non-Epic PC build. If simulation behavior changed, compare replay acceptance
 and per-tick checksums across platforms. Repeat this process with a new build
 version for updates; do not reuse a previous Epic artifact version.
 
+### itch.io desktop downloads
+
+After the stable GitHub release is public, dispatch
+`itch-release.yml` from the release mirror's `master` with that tag. The default
+`verify` mode checks the current release's package inventory and GitHub asset
+digests for the Windows portable ZIP, both macOS DMGs and the Linux Flatpak.
+It requires no itch.io credentials.
+
+Keep `BUTLER_API_KEY` in the mirror's protected `itch-release` environment,
+restricted to `master`. See [Butler CI authentication](https://itch.io/docs/butler/login.html#running-butler-from-ci-builds-github-actions-gitlab-ci-etc).
+Use `create-hidden` for the first push. In the itch dashboard, confirm all
+four channels have the expected platform flags and version. Verify the Windows
+app install and launch and the macOS and Linux download and installation paths.
+Then make the new channels visible and hide the corresponding manual uploads.
+The browser launcher follows the production web deployment separately.
+
+For later releases, select `publish` to update the same channels. Each upload
+can go live independently. If publication stops partway through, check which
+channels received the version, then redispatch `publish` with the same tag while
+it is still the latest stable release. During the initial hidden setup, check
+which channels already exist. Retry `create-hidden` for each missing channel
+using the channel selector. Butler's `--hidden` option only works on new channels. See [Butler channel behavior](https://itch.io/docs/butler/pushing.html).
+
 ### Snap, GitHub, and Flathub
 
 Before publishing a Snap, register the `globulation2` name in the Snap Store,
