@@ -14,6 +14,14 @@ on:
           - arch
           - deb-amd64
         default: arch
+      deb_target:
+        description: Debian-family distro to build
+        type: choice
+        options:
+          - both
+          - ubuntu-26.10
+          - debian-sid
+        default: both
 
 concurrency:
   group: arch-package-${{ github.ref }}
@@ -93,13 +101,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - distro: debian-sid
-            image: debian:sid
-          - distro: ubuntu-26.10
-            image: ubuntu:stonking
+        distro: ${{ fromJSON(inputs.deb_target == 'ubuntu-26.10' && '["ubuntu-26.10"]' || inputs.deb_target == 'debian-sid' && '["debian-sid"]' || '["debian-sid","ubuntu-26.10"]') }}
     env:
-      DISTRO_IMAGE: ${{ matrix.image }}
+      DISTRO_IMAGE: ${{ matrix.distro == 'debian-sid' && 'debian:sid' || 'ubuntu:stonking' }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Verify and unpack the published source kit
@@ -150,7 +154,8 @@ jobs:
               export GLOB2_USER_DATA_DIR=/tmp/glob2-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy
               mkdir "$GLOB2_USER_DATA_DIR"
               touch "$GLOB2_USER_DATA_DIR/sentinel"
-              dpkg --path-include="/usr/share/doc/glob2/*" --path-include="/usr/share/doc/glob2-data/*" -i /build/glob2_*_amd64.deb /build/glob2-data_*_all.deb
+              # Ubuntu's Docker image strips man pages and docs by default.
+              dpkg --path-include="/usr/share/doc/glob2/*" --path-include="/usr/share/doc/glob2-data/*"                 --path-include="/usr/share/man/man6" --path-include="/usr/share/man/man6/glob2.6.gz"                 -i /build/glob2_*_amd64.deb /build/glob2-data_*_all.deb
               dpkg-query -W glob2 glob2-data
               dpkg -V glob2 glob2-data >/tmp/dpkg-verify
               cat /tmp/dpkg-verify
