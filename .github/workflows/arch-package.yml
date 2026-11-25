@@ -6,6 +6,14 @@ on:
       - .github/workflows/arch-package.yml
       - platforms/linux/arch/**
   workflow_dispatch:
+    inputs:
+      package_family:
+        description: Package family to build
+        type: choice
+        options:
+          - arch
+          - deb-amd64
+        default: arch
 
 concurrency:
   group: arch-package-${{ github.ref }}
@@ -16,6 +24,7 @@ permissions:
 
 jobs:
   package:
+    if: inputs.package_family != 'deb-amd64'
     runs-on: ubuntu-24.04
     timeout-minutes: 180
     steps:
@@ -76,3 +85,90 @@ jobs:
               pacman -R --noconfirm glob2
               test -f "$GLOB2_USER_DATA_DIR/sentinel"
             '
+
+  deb-amd64:
+    if: inputs.package_family == 'deb-amd64'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - distro: debian-sid
+            image: debian:sid
+          - distro: ubuntu-26.10
+            image: ubuntu:stonking
+    env:
+      DISTRO_IMAGE: ${{ matrix.image }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Verify and unpack the published source kit
+        run: |
+          set -euo pipefail
+          mkdir inputs outputs
+          cd inputs
+          release=https://github.com/Globulation2/glob2/releases/download
+          curl -fSL --retry 3 "$release/v0.11.7.0/glob2-0.11.7.0.tar.gz" -o glob2_0.11.7.0.orig.tar.gz
+          curl -fSL --retry 3 "$release/linux-debs-v0.11.7.0/glob2_0.11.7.0.orig-encoder-sources.tar.gz" -o glob2_0.11.7.0.orig-encoder-sources.tar.gz
+          for extension in dsc debian.tar.xz; do
+            curl -fSL --retry 3 "$release/linux-debs-v0.11.7.0/glob2_0.11.7.0-1.glob2.1.$extension" -o "glob2_0.11.7.0-1~glob2.1.$extension"
+          done
+          sha256sum -c <<'HASHES'
+          3dffe97a657a8025e48990e7f9581a2108ab81c5c67f8e54fa2b09052a20b5d6  glob2_0.11.7.0.orig.tar.gz
+          1d219eda16abee4f566f15952aee44c6102a5335b457644d006e3ef981f2489d  glob2_0.11.7.0.orig-encoder-sources.tar.gz
+          3538a76b281d673ad543e508a5c35bf1a15b5a5c7632d8134b3255845289ceaf  glob2_0.11.7.0-1~glob2.1.debian.tar.xz
+          HASHES
+      - name: Prepare distro build and upgrade image
+        run: |
+          set -euo pipefail
+          docker run --name glob2-deb-env "$DISTRO_IMAGE" bash -ec '
+            apt-get update
+            apt-get install -y --no-install-recommends glob2 build-essential ca-certificates cmake ninja-build python3 git pkgconf debhelper dpkg-dev \
+              libsdl3-dev libsdl3-image-dev libsdl3-ttf-dev libsdl3-net-dev libavcodec-dev libavformat-dev \
+              libavutil-dev libswresample-dev libswscale-dev libopusfile-dev libopus-dev libogg-dev libspeex-dev \
+              libboost-dev libssl-dev zlib1g-dev libfribidi-dev libpcre2-dev libgl-dev libglu1-mesa-dev \
+              libepoxy-dev libwebp-dev portaudio19-dev libjpeg-dev python3-dev python3-venv python3-wheel
+            dpkg-query -W glob2 glob2-data
+            test "$(dpkg --print-architecture)" = amd64
+            rm -rf /var/lib/apt/lists/*
+          '
+          docker commit glob2-deb-env glob2-deb-amd64
+      - name: Build and verify the installed package offline
+        run: |
+          set -euo pipefail
+          docker run --network none \
+            -v "$PWD/inputs:/inputs:ro" \
+            -v "$PWD/outputs:/outputs" \
+            -v "$PWD/content/games/gd-small-2ai.game.gz:/fixture.game.gz:ro" \
+            glob2-deb-amd64 bash -euc '
+              mkdir /build
+              cd /build
+              dpkg-source -x /inputs/glob2_0.11.7.0-1~glob2.1.dsc
+              cd glob2-0.11.7.0
+              dpkg-buildpackage --build=binary --no-sign --jobs=4
+              cd /
+              export GLOB2_USER_DATA_DIR=/tmp/glob2-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy
+              mkdir "$GLOB2_USER_DATA_DIR"
+              touch "$GLOB2_USER_DATA_DIR/sentinel"
+              dpkg --path-include="/usr/share/doc/glob2/*" --path-include="/usr/share/doc/glob2-data/*" -i /build/glob2_*_amd64.deb /build/glob2-data_*_all.deb
+              dpkg-query -W glob2 glob2-data
+              dpkg -V glob2 glob2-data >/tmp/dpkg-verify
+              cat /tmp/dpkg-verify
+              test ! -s /tmp/dpkg-verify
+              /usr/games/glob2 info version --format json
+              set -o pipefail
+              /usr/games/glob2 game repeat /fixture.game.gz --ticks 128 --runs 1 | tee /tmp/match.log
+              grep -F "nox::gui.game.checkSum() = 1cea58cc" /tmp/match.log
+              dpkg --purge glob2 glob2-data
+              test -f "$GLOB2_USER_DATA_DIR/sentinel"
+              cp /build/glob2_*_amd64.deb /build/glob2-data_*_all.deb /outputs/
+              cd /outputs
+              sha256sum ./*.deb > SHA256SUMS
+            '
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: glob2-${{ matrix.distro }}-amd64-candidate
+          path: outputs/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
