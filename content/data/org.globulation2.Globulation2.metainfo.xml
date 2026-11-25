@@ -917,55 +917,55 @@
   <url type="vcs-browser">https://github.com/Globulation2/glob2</url>
   <screenshots>
     <screenshot type="default">
-      <image>https://raw.githubusercontent.com/Globulation2/glob2-marketing/a968359dc95d51e998f63ba4d984d33b04560b39/assets/storefront-approved-v1/01-colony.png</image>
-      <caption>Workers carry wheat to the inns and swarms that feed and grow the colony.</caption>
-      <caption xml:lang="ar">العمال يحملون القمح إلى النُزل والأوكار التي تطعم المستعمرة وتنمّيها.</caption>
-      <caption xml:lang="pt_BR">Trabalhadores levam trigo às tavernas e colmeias que alimentam a colônia e a fazem crescer.</caption>
-      <caption xml:lang="ca">Els treballadors porten blat a les despenses i granges que alimenten i fan créixer la colònia.</caption>
-      <caption xml:lang="cs">Dělníci nosí pšenici do hospod a úlů, díky kterým má kolonie co jíst a roste.</caption>
-      <caption xml:lang="de">Arbeiter bringen Weizen zu den Gasthöfen und Stöcken, die die Kolonie ernähren und wachsen lassen.</caption>
-      <caption xml:lang="da">Arbejdere bærer hvede til de kroer og sværme, der giver kolonien mad og får den til at vokse.</caption>
-      <caption xml:lang="es">Los trabajadores llevan trigo a las posadas y colmenas que alimentan y hacen crecer la colonia.</caption>
-      <caption xml:lang="eo">Laboristoj portas tritikon al la manĝejoj kaj globulejoj, kiuj nutras kaj kreskigas la kolonion.</caption>
-      <caption xml:lang="eu">Langileek garia eramaten dute kolonia elikatu eta hazten duten ostatu eta kofoinetara.</caption>
-      <caption xml:lang="fa">کارگران گندم را به مسافرخانه‌ها و کندوهایی می‌برند که کلونی را سیر و بزرگ می‌کنند.</caption>
-      <caption xml:lang="fr">Les ouvrières portent le blé aux auberges et aux ruches, qui nourrissent et font grandir la colonie.</caption>
-      <caption xml:lang="el">Οι εργάτες κουβαλούν σιτάρι στα πανδοχεία και στα σμήνη που τρέφουν και μεγαλώνουν την αποικία.</caption>
-      <caption xml:lang="hu">A dolgozók búzát hordanak az étkezdékbe és a rajokba, amelyek táplálják és növelik a kolóniát.</caption>
-      <caption xml:lang="it">Gli operai portano il grano alle mense e agli sciami che sfamano e fanno crescere la colonia.</caption>
-      <caption xml:lang="nl">Werkers brengen tarwe naar de herbergen en zwermen die de kolonie voeden en laten groeien.</caption>
-      <caption xml:lang="pl">Robotnicy noszą pszenicę do gospód i rojów, które karmią i powiększają kolonię.</caption>
-      <caption xml:lang="pt_PT">Os trabalhadores levam trigo para as tabernas e colmeias que alimentam e fazem crescer a colónia.</caption>
-      <caption xml:lang="ro">Lucrătorii duc grâu la popasurile și stupii care hrănesc și măresc colonia.</caption>
-      <caption xml:lang="ru">Рабочие несут пшеницу в кабаки и рои, которые кормят колонию и помогают ей расти.</caption>
-      <caption xml:lang="sl">Delavci nosijo pšenico v restavracije in porodnišnice, ki kolonijo hranijo in večajo.</caption>
-      <caption xml:lang="sk">Robotníci nosia pšenicu do jedální a hniezd, vďaka ktorým má kolónia čo jesť a rastie.</caption>
-      <caption xml:lang="sr">Радници носе жито у гостионице и ројеве, који хране и увећавају колонију.</caption>
-      <caption xml:lang="fi">Työläiset kantavat viljaa majataloihin ja pesiin, jotka ruokkivat ja kasvattavat siirtokuntaa.</caption>
-      <caption xml:lang="sv">Arbetare bär vete till värdshusen och svärmarna, som mättar kolonin och får den att växa.</caption>
-      <caption xml:lang="tr">İşçiler, koloniyi besleyen ve büyüten otellere ve yuvalara buğday taşır.</caption>
-      <caption xml:lang="zh_TW">工人把小麥運到客棧和孢子堆，讓殖民地吃飽並成長。</caption>
-      <caption xml:lang="zh_CN">工人把小麦运往食堂和孢子堆，让殖民地吃饱并壮大。</caption>
-      <caption xml:lang="uk">Робітники носять пшеницю до їдалень і роїв, які годують і збільшують колонію.</caption>
-      <caption xml:lang="id">Pekerja membawa gandum ke penginapan dan sarang yang memberi makan dan memperbesar koloni.</caption>
-      <caption xml:lang="vi">Công nhân mang lúa mì về các quán trọ và tổ, nơi nuôi sống và phát triển thuộc địa.</caption>
-      <caption xml:lang="ja">労働者が、コロニーを養い大きくする食堂と巣へ小麦を運びます。</caption>
-      <caption xml:lang="ko">일꾼들이 식민지를 먹이고 키우는 여관과 둥지로 밀을 나릅니다.</caption>
-      <caption xml:lang="hi">श्रमिक गेहूँ को उन सरायों और छत्तों तक ले जाते हैं, जो कॉलोनी को खिलाते और बढ़ाते हैं।</caption>
-      <caption xml:lang="ur">کارکن گندم سرائے اور چھتے تک پہنچاتے ہیں، جو بستی کو خوراک دیتے اور بڑھاتے ہیں۔</caption>
-      <caption xml:lang="sw">Wafanyakazi hubeba ngano hadi nyumba za wageni na viota vinavyolisha na kukuza koloni.</caption>
-      <caption xml:lang="bn">শ্রমিকরা গম বয়ে নিয়ে যায় সরাইখানা ও মৌচাকে, যা উপনিবেশকে খাওয়ায় ও বড় করে।</caption>
-      <caption xml:lang="nb">Arbeidere bærer hvete til vertshusene og svermene som gir kolonien mat og vekst.</caption>
-      <caption xml:lang="ms">Pekerja membawa gandum ke penginapan dan sarang yang memberi makan dan mengembangkan koloni.</caption>
-      <caption xml:lang="mr">वसाहतीचे पोषण आणि वाढ करणाऱ्या खानावळी व पोळ्यांकडे कामगार गहू वाहून नेतात.</caption>
-      <caption xml:lang="ta">குடியிருப்பை ஊட்டி வளர்க்கும் உணவகங்களுக்கும் கூடுகளுக்கும் தொழிலாளர்கள் கோதுமை கொண்டுசெல்கிறார்கள்.</caption>
-      <caption xml:lang="te">కాలనీకి ఆహారం పెట్టి, దాన్ని పెంచే సత్రాలకు, గూళ్లకు కార్మికులు గోధుమను మోసుకెళ్తారు.</caption>
-      <caption xml:lang="fil">Dinadala ng mga manggagawa ang trigo sa panuluyan at pugad na nagpapakain at nagpapalago sa kolonya.</caption>
-      <caption xml:lang="bg">Работници носят пшеница до хановете и рояците, които изхранват и разрастват колонията.</caption>
-      <caption xml:lang="th">คนงานขนข้าวสาลีไปยังโรงเตี๊ยมและรังที่คอยเลี้ยงและขยายอาณานิคม</caption>
+      <image type="source" width="1920" height="1080">https://raw.githubusercontent.com/Globulation2/glob2-marketing/87d7ea0d1e591739f1157dd3ec5506fe92adcae2/assets/storefront-v2/store-packages/appstream/hero-1920x1080.png</image>
+      <caption>Command a whole colony: workers, buildings and warriors in the middle of a match.</caption>
+      <caption xml:lang="ar">قُد مستعمرة كاملة: عمال ومبانٍ ومحاربون في خضم مباراة.</caption>
+      <caption xml:lang="pt_BR">Comande uma colônia inteira: trabalhadores, construções e guerreiros no meio de uma partida.</caption>
+      <caption xml:lang="ca">Dirigeix tota una colònia: treballadors, edificis i guerrers en plena partida.</caption>
+      <caption xml:lang="cs">Velte celé kolonii: dělníci, budovy a válečníci uprostřed zápasu.</caption>
+      <caption xml:lang="de">Lenke eine ganze Kolonie: Arbeiter, Gebäude und Krieger mitten in einer Partie.</caption>
+      <caption xml:lang="da">Styr en hel koloni: arbejdere, bygninger og krigere midt i en kamp.</caption>
+      <caption xml:lang="es">Dirige una colonia entera: trabajadores, edificios y guerreros en plena partida.</caption>
+      <caption xml:lang="eo">Komandu tutan kolonion: laboristoj, konstruaĵoj kaj militistoj meze de matĉo.</caption>
+      <caption xml:lang="eu">Gidatu kolonia oso bat: langileak, eraikinak eta gerlariak partida betean.</caption>
+      <caption xml:lang="fa">به کل کلونی فرمان دهید: کارگران، ساختمان‌ها و جنگجویان در میانهٔ یک مسابقه.</caption>
+      <caption xml:lang="fr">Dirigez toute une colonie : ouvrières, bâtiments et guerrières en pleine partie.</caption>
+      <caption xml:lang="el">Διοικείτε μια ολόκληρη αποικία: εργάτες, κτίρια και πολεμιστές στη μέση ενός αγώνα.</caption>
+      <caption xml:lang="hu">Egy egész kolóniát irányítasz: dolgozók, épületek és harcosok egy mérkőzés közepén.</caption>
+      <caption xml:lang="it">Comanda un’intera colonia: operai, edifici e guerrieri nel pieno di una partita.</caption>
+      <caption xml:lang="nl">Leid een hele kolonie: werkers, gebouwen en soldaten midden in een wedstrijd.</caption>
+      <caption xml:lang="pl">Dowodzisz całą kolonią: robotnicy, budynki i wojownicy w trakcie rozgrywki.</caption>
+      <caption xml:lang="pt_PT">Comanda uma colónia inteira: trabalhadores, edifícios e guerreiros a meio de uma partida.</caption>
+      <caption xml:lang="ro">Conduci o colonie întreagă: lucrători, clădiri și războinici în plin meci.</caption>
+      <caption xml:lang="ru">Управляйте целой колонией: рабочие, здания и воины в разгар матча.</caption>
+      <caption xml:lang="sl">Vodite celotno kolonijo: delavci, zgradbe in vojaki sredi tekme.</caption>
+      <caption xml:lang="sk">Velíte celej kolónii: robotníci, budovy a bojovníci uprostred zápasu.</caption>
+      <caption xml:lang="sr">Командујте целом колонијом: радници, зграде и ратници усред меча.</caption>
+      <caption xml:lang="fi">Johda kokonaista siirtokuntaa: työläisiä, rakennuksia ja sotureita keskellä ottelua.</caption>
+      <caption xml:lang="sv">Styr en hel koloni: arbetare, byggnader och krigare mitt i en match.</caption>
+      <caption xml:lang="tr">Bütün bir koloniyi yönetin: maçın ortasında işçiler, binalar ve savaşçılar.</caption>
+      <caption xml:lang="zh_TW">指揮一整個殖民地：對局進行中的工人、建築和士兵。</caption>
+      <caption xml:lang="zh_CN">指挥一整个殖民地：对局进行中的工人、建筑和战士。</caption>
+      <caption xml:lang="uk">Керуйте цілою колонією: робітники, будівлі та воїни в розпалі матчу.</caption>
+      <caption xml:lang="id">Pimpin seluruh koloni: pekerja, bangunan, dan prajurit di tengah pertandingan.</caption>
+      <caption xml:lang="vi">Chỉ huy cả một thuộc địa: công nhân, công trình và chiến binh giữa một trận đấu.</caption>
+      <caption xml:lang="ja">試合のさなか、労働者、建物、戦士からなるコロニー全体を指揮します。</caption>
+      <caption xml:lang="ko">한창 진행 중인 경기에서 일꾼, 건물, 전사까지 식민지 전체를 지휘하는 모습입니다.</caption>
+      <caption xml:lang="hi">पूरी कॉलोनी की कमान सँभालें: मैच के बीच श्रमिक, इमारतें और योद्धा।</caption>
+      <caption xml:lang="ur">پوری بستی کی کمان سنبھالیں: جاری میچ میں کارکن، عمارتیں اور جنگجو۔</caption>
+      <caption xml:lang="sw">Ongoza koloni zima: wafanyakazi, majengo na mashujaa katikati ya mechi.</caption>
+      <caption xml:lang="bn">গোটা একটি উপনিবেশ পরিচালনা করুন: ম্যাচের মাঝপথে শ্রমিক, ভবন আর যোদ্ধারা।</caption>
+      <caption xml:lang="nb">Styr en hel koloni: arbeidere, bygninger og krigere midt i en kamp.</caption>
+      <caption xml:lang="ms">Kawal seluruh koloni: pekerja, bangunan dan pahlawan di tengah-tengah perlawanan.</caption>
+      <caption xml:lang="mr">संपूर्ण वसाहतीला आदेश द्या: सामन्याच्या मध्यावर कामगार, इमारती आणि योद्धे.</caption>
+      <caption xml:lang="ta">முழுக் குடியிருப்பையும் வழிநடத்துங்கள்: ஆட்டத்தின் நடுவே தொழிலாளர்கள், கட்டிடங்கள், போர்வீரர்கள்.</caption>
+      <caption xml:lang="te">కాలనీ మొత్తాన్ని నడపండి: మ్యాచ్ మధ్యలో కార్మికులు, భవనాలు, యోధులు.</caption>
+      <caption xml:lang="fil">Pamunuan ang buong kolonya: mga manggagawa, gusali at mandirigma sa gitna ng isang match.</caption>
+      <caption xml:lang="bg">Командвайте цяла колония: работници, сгради и воини в разгара на мач.</caption>
+      <caption xml:lang="th">สั่งการทั้งอาณานิคม: คนงาน อาคาร และนักรบกลางแมตช์</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/Globulation2/glob2-marketing/a968359dc95d51e998f63ba4d984d33b04560b39/assets/storefront-approved-v1/02-river-battle.png</image>
+      <image type="source" width="1920" height="1080">https://raw.githubusercontent.com/Globulation2/glob2-marketing/87d7ea0d1e591739f1157dd3ec5506fe92adcae2/assets/storefront-v2/store-packages/appstream/battle-1920x1080.png</image>
       <caption>Warriors from rival colonies fight for the same land.</caption>
       <caption xml:lang="ar">محاربون من مستعمرات منافسة يتقاتلون من أجل الأرض نفسها.</caption>
       <caption xml:lang="pt_BR">Guerreiros de colônias rivais lutam pelo mesmo território.</caption>
@@ -1013,7 +1013,151 @@
       <caption xml:lang="th">นักรบจากอาณานิคมคู่แข่งต่อสู้แย่งชิงดินแดนผืนเดียวกัน</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/Globulation2/glob2-marketing/a968359dc95d51e998f63ba4d984d33b04560b39/assets/storefront-approved-v1/03-four-squares-strategic.png</image>
+      <image type="source" width="1920" height="1080">https://raw.githubusercontent.com/Globulation2/glob2-marketing/87d7ea0d1e591739f1157dd3ec5506fe92adcae2/assets/storefront-v2/store-packages/appstream/ai-coplay-side-by-side-1920x1080.png</image>
+      <caption>A local game shared with the player's own AI agent, connected through the built-in MCP server.</caption>
+      <caption xml:lang="ar">لعبة محلية يتشاركها اللاعب مع وكيل الذكاء الاصطناعي الخاص به، المتصل عبر خادم MCP المدمج.</caption>
+      <caption xml:lang="pt_BR">Partida local compartilhada com o agente de IA do próprio jogador, via servidor MCP integrado.</caption>
+      <caption xml:lang="ca">Partida local compartida amb l'agent d'IA propi del jugador, connectat pel servidor MCP integrat.</caption>
+      <caption xml:lang="cs">Místní hra, kterou hráč sdílí s vlastním AI agentem připojeným přes vestavěný server MCP.</caption>
+      <caption xml:lang="de">Eine lokale Partie gemeinsam mit dem eigenen KI-Agenten, verbunden über den integrierten MCP-Server.</caption>
+      <caption xml:lang="da">Et lokalt spil delt med spillerens egen AI-agent, forbundet via den indbyggede MCP-server.</caption>
+      <caption xml:lang="es">Partida local compartida con el agente de IA del propio jugador mediante el servidor MCP integrado.</caption>
+      <caption xml:lang="eo">Loka ludo kune kun la propra AI-agento de la ludanto, konektita per la enkonstruita MCP-servilo.</caption>
+      <caption xml:lang="eu">Partida lokala, jokalariaren beraren AI agentearekin partekatua, MCP zerbitzari integratuaren bidez.</caption>
+      <caption xml:lang="fa">یک بازی محلی مشترک با عامل هوش مصنوعی خود بازیکن که از طریق سرور داخلی MCP وصل شده است.</caption>
+      <caption xml:lang="fr">Le joueur partage une partie locale avec son propre agent IA, connecté via le serveur MCP intégré.</caption>
+      <caption xml:lang="el">Τοπικό παιχνίδι του παίκτη μαζί με τον δικό του πράκτορα AI, μέσω του ενσωματωμένου διακομιστή MCP.</caption>
+      <caption xml:lang="hu">Közös helyi játék a játékos saját AI-ügynökével, amely a beépített MCP-szerveren át csatlakozik.</caption>
+      <caption xml:lang="it">Una partita locale condivisa con il proprio agente IA, collegato tramite il server MCP integrato.</caption>
+      <caption xml:lang="nl">Een lokaal spel dat de speler deelt met de eigen AI-agent, verbonden via de ingebouwde MCP-server.</caption>
+      <caption xml:lang="pl">Gra lokalna prowadzona wspólnie z własnym agentem AI gracza, połączonym przez wbudowany serwer MCP.</caption>
+      <caption xml:lang="pt_PT">Um jogo local partilhado com o agente de IA do próprio jogador, ligado pelo servidor MCP integrado.</caption>
+      <caption xml:lang="ro">Un joc local jucat alături de propriul agent AI al jucătorului, conectat prin serverul MCP integrat.</caption>
+      <caption xml:lang="ru">Локальная игра вместе с собственным ИИ-агентом игрока, подключённым через встроенный MCP-сервер.</caption>
+      <caption xml:lang="sl">Lokalna igra, ki jo igralec deli s svojim agentom UI, povezanim prek vgrajenega strežnika MCP.</caption>
+      <caption xml:lang="sk">Lokálna hra, ktorú hráč zdieľa s vlastným AI agentom pripojeným cez vstavaný server MCP.</caption>
+      <caption xml:lang="sr">Локална игра коју играч дели са сопственим AI агентом, повезаним преко уграђеног MCP сервера.</caption>
+      <caption xml:lang="fi">Paikallinen peli yhdessä pelaajan oman tekoälyagentin kanssa sisäänrakennetun MCP-palvelimen kautta.</caption>
+      <caption xml:lang="sv">En lokal match som delas med spelarens egen AI-agent, ansluten via den inbyggda MCP-servern.</caption>
+      <caption xml:lang="tr">Oyuncunun, yerleşik MCP sunucusuyla bağlanan kendi yapay zekâ ajanıyla paylaştığı yerel bir oyun.</caption>
+      <caption xml:lang="zh_TW">玩家和自己的 AI 代理共同進行的本機對局，AI 代理透過內建的 MCP 伺服器連線。</caption>
+      <caption xml:lang="zh_CN">一局本地游戏，玩家自己的 AI 智能体通过内置的 MCP 服务器接入并一同游玩。</caption>
+      <caption xml:lang="uk">Локальна гра разом із власним ШІ-агентом гравця, підключеним через вбудований MCP-сервер.</caption>
+      <caption xml:lang="id">Permainan lokal bersama agen AI milik pemain sendiri, yang terhubung lewat server MCP bawaan.</caption>
+      <caption xml:lang="vi">Trận cục bộ chơi chung với tác nhân AI của chính người chơi, kết nối qua máy chủ MCP tích hợp sẵn.</caption>
+      <caption xml:lang="ja">内蔵のMCPサーバーで接続したプレイヤー自身のAIエージェントと、一緒に進めるローカルゲームです。</caption>
+      <caption xml:lang="ko">내장 MCP 서버로 연결한 플레이어 본인의 AI 에이전트와 함께 플레이하는 로컬 게임입니다.</caption>
+      <caption xml:lang="hi">खिलाड़ी के अपने AI एजेंट के साथ साझा स्थानीय मैच; एजेंट बिल्ट-इन MCP सर्वर से जुड़ा है।</caption>
+      <caption xml:lang="ur">مقامی کھیل، جس میں کھلاڑی کا اپنا AI ایجنٹ کھیل میں شامل MCP سرور کے ذریعے جڑ کر شریک ہے۔</caption>
+      <caption xml:lang="sw">Mchezo usio wa mtandaoni pamoja na wakala wa AI wa mchezaji mwenyewe, kupitia seva ya MCP ya mchezo.</caption>
+      <caption xml:lang="bn">স্থানীয় খেলায় খেলোয়াড়ের সাথে তাঁর নিজের এআই এজেন্ট, বিল্ট-ইন MCP সার্ভারের মাধ্যমে যুক্ত।</caption>
+      <caption xml:lang="nb">Et lokalt spill delt med spillerens egen KI-agent, koblet til via den innebygde MCP-serveren.</caption>
+      <caption xml:lang="ms">Permainan setempat bersama ejen AI pemain sendiri, disambungkan melalui pelayan MCP terbina dalam.</caption>
+      <caption xml:lang="mr">अंगभूत MCP सर्व्हरद्वारे जोडलेल्या, खेळाडूच्या स्वतःच्या AI एजंटसोबत खेळला जाणारा स्थानिक सामना.</caption>
+      <caption xml:lang="ta">ஆட்டக்காரரின் சொந்த AI ஏஜென்ட் உள்ளமைந்த MCP சேவையகம் வழியாக இணைந்து பங்கேற்கும் உள்ளக ஆட்டம்.</caption>
+      <caption xml:lang="te">అంతర్నిర్మిత MCP సర్వర్ ద్వారా కనెక్ట్ అయిన ఆటగాడి సొంత AI ఏజెంట్‌తో కలిసి ఆడుతున్న లోకల్ గేమ్.</caption>
+      <caption xml:lang="fil">Lokal na laro kasama ang sariling AI agent ng manlalaro, nakakonekta sa built-in na MCP server.</caption>
+      <caption xml:lang="bg">Локална игра, споделена със собствения ИИ агент на играча, свързан чрез вградения MCP сървър.</caption>
+      <caption xml:lang="th">เกมในเครื่องที่เล่นร่วมกับเอเจนต์ AI ของผู้เล่นเอง ซึ่งเชื่อมต่อผ่านเซิร์ฟเวอร์ MCP ในตัวเกม</caption>
+    </screenshot>
+    <screenshot>
+      <image type="source" width="1920" height="1080">https://raw.githubusercontent.com/Globulation2/glob2-marketing/87d7ea0d1e591739f1157dd3ec5506fe92adcae2/assets/storefront-v2/store-packages/appstream/build-1920x1080.png</image>
+      <caption>Choose a building and how many workers it gets; they gather the materials and build it.</caption>
+      <caption xml:lang="ar">اختر مبنى وعدد العمال المخصصين له؛ وهم يجمعون المواد ويبنونه.</caption>
+      <caption xml:lang="pt_BR">Escolha uma construção e quantos trabalhadores ela recebe; eles coletam os materiais e a constroem.</caption>
+      <caption xml:lang="ca">Tria un edifici i quants treballadors hi assignes; ells recullen els materials i el construeixen.</caption>
+      <caption xml:lang="cs">Vyberte budovu a určete, kolik dělníků dostane; ti nasbírají materiál a postaví ji.</caption>
+      <caption xml:lang="de">Wähle ein Gebäude und die Zahl seiner Arbeiter; sie sammeln das Material und bauen es.</caption>
+      <caption xml:lang="da">Vælg en bygning og antallet af arbejdere – de henter materialerne og bygger den.</caption>
+      <caption xml:lang="es">Elige un edificio y cuántos trabajadores recibe; ellos reúnen los materiales y lo construyen.</caption>
+      <caption xml:lang="eo">Elektu konstruaĵon kaj kiom da laboristoj ĝi ricevu; ili kolektas la materialojn kaj konstruas ĝin.</caption>
+      <caption xml:lang="eu">Aukeratu eraikin bat eta zenbat langile izango dituen; haiek materialak bildu eta eraikiko dute.</caption>
+      <caption xml:lang="fa">ساختمان و تعداد کارگرانش را انتخاب کنید؛ خودشان مصالح را جمع می‌کنند و آن را می‌سازند.</caption>
+      <caption xml:lang="fr">Choisissez un bâtiment et son nombre d’ouvrières ; elles rassemblent les matériaux et le bâtissent.</caption>
+      <caption xml:lang="el">Επιλέγετε ένα κτίριο και πόσους εργάτες θα πάρει· εκείνοι μαζεύουν τα υλικά και το χτίζουν.</caption>
+      <caption xml:lang="hu">Válassz épületet, és add meg, hány dolgozót kap; ők összegyűjtik az építőanyagot, és felépítik.</caption>
+      <caption xml:lang="it">Scegli un edificio e quanti operai assegnargli: raccolgono i materiali e lo costruiscono.</caption>
+      <caption xml:lang="nl">Kies een gebouw en hoeveel werkers het krijgt; zij verzamelen de materialen en bouwen het.</caption>
+      <caption xml:lang="pl">Wybierz budynek i liczbę robotników; sami zbiorą materiały i go postawią.</caption>
+      <caption xml:lang="pt_PT">Escolhe um edifício e quantos trabalhadores recebe; eles recolhem os materiais e constroem-no.</caption>
+      <caption xml:lang="ro">Alegi o clădire și câți lucrători primește; ei adună materialele și o construiesc.</caption>
+      <caption xml:lang="ru">Выберите здание и число рабочих для него — они сами соберут материалы и всё построят.</caption>
+      <caption xml:lang="sl">Izberite zgradbo in število delavcev zanjo; ti zberejo material in jo postavijo.</caption>
+      <caption xml:lang="sk">Vyberte budovu a počet robotníkov, ktorých dostane; tí nazbierajú materiál a postavia ju.</caption>
+      <caption xml:lang="sr">Изаберите зграду и број радника за њу; они сакупљају материјал и граде је.</caption>
+      <caption xml:lang="fi">Valitse rakennus ja sen työläisten määrä; työläiset keräävät materiaalit ja rakentavat sen.</caption>
+      <caption xml:lang="sv">Välj en byggnad och hur många arbetare den får; de samlar in materialet och bygger den.</caption>
+      <caption xml:lang="tr">Bir bina seçin, ona kaç işçi vereceğinizi belirleyin; işçiler malzemeleri toplayıp binayı kurar.</caption>
+      <caption xml:lang="zh_TW">選擇一棟建築，並決定分配多少工人；工人會收集材料，把它蓋好。</caption>
+      <caption xml:lang="zh_CN">选定一座建筑，并决定分给它多少工人；工人会采集材料并把它建好。</caption>
+      <caption xml:lang="uk">Оберіть будівлю й кількість робітників для неї — вони зберуть матеріали та збудують її.</caption>
+      <caption xml:lang="id">Pilih bangunan dan jumlah pekerjanya; mereka mengumpulkan bahan lalu membangunnya.</caption>
+      <caption xml:lang="vi">Chọn một công trình và số công nhân cho nó; công nhân thu gom vật liệu rồi xây lên.</caption>
+      <caption xml:lang="ja">建物と、そこに割り当てる労働者の数を選ぶと、労働者が資材を集めて建設します。</caption>
+      <caption xml:lang="ko">건물과 투입할 일꾼 수를 정하면 일꾼들이 자재를 모아 건물을 짓습니다.</caption>
+      <caption xml:lang="hi">इमारत चुनें और तय करें कि उसे कितने श्रमिक मिलेंगे; वे सामग्री जुटाकर उसे बना देते हैं।</caption>
+      <caption xml:lang="ur">عمارت چنیں اور طے کریں کہ اسے کتنے کارکن ملیں؛ وہ سامان جمع کر کے اسے بنا دیتے ہیں۔</caption>
+      <caption xml:lang="sw">Chagua jengo na idadi ya wafanyakazi wake; wao hukusanya malighafi na kulijenga.</caption>
+      <caption xml:lang="bn">একটি ভবন আর তার শ্রমিকের সংখ্যা বেছে নিন; শ্রমিকরাই উপকরণ জোগাড় করে সেটি তৈরি করে।</caption>
+      <caption xml:lang="nb">Velg en bygning og hvor mange arbeidere den får; de henter materialene og bygger den.</caption>
+      <caption xml:lang="ms">Pilih bangunan dan bilangan pekerjanya; mereka mengumpulkan bahan dan membinanya.</caption>
+      <caption xml:lang="mr">इमारत आणि तिला किती कामगार मिळणार ते निवडा; कामगार साहित्य गोळा करून ती बांधतात.</caption>
+      <caption xml:lang="ta">கட்டிடத்தையும் தொழிலாளர் எண்ணிக்கையையும் தேர்ந்தெடுங்கள்; பொருட்களைச் சேகரித்துக் கட்டுவது அவர்களே.</caption>
+      <caption xml:lang="te">భవనాన్ని, దానికి ఎంతమంది కార్మికులో ఎంచుకోండి; వాళ్లే సామగ్రి సేకరించి దాన్ని నిర్మిస్తారు.</caption>
+      <caption xml:lang="fil">Pumili ng gusali at bilang ng manggagawa nito; sila ang kukuha ng materyales at magtatayo.</caption>
+      <caption xml:lang="bg">Изберете сграда и колко работници да получи; те събират материалите и я построяват.</caption>
+      <caption xml:lang="th">เลือกอาคารและจำนวนคนงานที่จะใช้ แล้วคนงานจะรวบรวมวัสดุและลงมือสร้างเอง</caption>
+    </screenshot>
+    <screenshot>
+      <image type="source" width="1920" height="1080">https://raw.githubusercontent.com/Globulation2/glob2-marketing/87d7ea0d1e591739f1157dd3ec5506fe92adcae2/assets/storefront-v2/store-packages/appstream/maps-1920x1080.png</image>
+      <caption>One of the game's maps, each with its own terrain, resources and routes.</caption>
+      <caption xml:lang="ar">إحدى خرائط اللعبة، ولكل خريطة تضاريسها ومواردها وطرقها.</caption>
+      <caption xml:lang="pt_BR">Um dos mapas do jogo, cada um com terreno, recursos e rotas próprios.</caption>
+      <caption xml:lang="ca">Un dels mapes del joc, cadascun amb terreny, recursos i rutes propis.</caption>
+      <caption xml:lang="cs">Jedna z herních map; každá má vlastní terén, suroviny a cesty.</caption>
+      <caption xml:lang="de">Eine der Karten des Spiels, jede mit eigenem Gelände, eigenen Ressourcen und eigenen Wegen.</caption>
+      <caption xml:lang="da">Et af spillets kort, hvert med sit eget terræn, sine egne ressourcer og sine egne ruter.</caption>
+      <caption xml:lang="es">Uno de los mapas del juego, cada uno con su propio terreno, recursos y rutas.</caption>
+      <caption xml:lang="eo">Unu el la mapoj de la ludo, ĉiu kun propraj tereno, rimedoj kaj vojoj.</caption>
+      <caption xml:lang="eu">Jokoaren mapetako bat; bakoitzak bere lur-eremua, baliabideak eta bideak ditu.</caption>
+      <caption xml:lang="fa">یکی از نقشه‌های بازی؛ هر نقشه زمین، منابع و مسیرهای خودش را دارد.</caption>
+      <caption xml:lang="fr">L’une des cartes du jeu, chacune avec son terrain, ses ressources et ses chemins.</caption>
+      <caption xml:lang="el">Ένας από τους χάρτες του παιχνιδιού, ο καθένας με δικό του έδαφος, πόρους και διαδρομές.</caption>
+      <caption xml:lang="hu">A játék egyik térképe; mindegyiknek saját terepe, nyersanyagai és útvonalai vannak.</caption>
+      <caption xml:lang="it">Una delle mappe del gioco, ognuna con terreno, risorse e percorsi propri.</caption>
+      <caption xml:lang="nl">Een van de kaarten uit het spel, elk met een eigen terrein, eigen grondstoffen en eigen routes.</caption>
+      <caption xml:lang="pl">Jedna z map w grze; każda ma własny teren, zasoby i szlaki.</caption>
+      <caption xml:lang="pt_PT">Um dos mapas do jogo, cada um com o seu próprio terreno, recursos e rotas.</caption>
+      <caption xml:lang="ro">Una dintre hărțile jocului, fiecare cu terenul, resursele și rutele ei.</caption>
+      <caption xml:lang="ru">Одна из карт игры: у каждой свой рельеф, свои ресурсы и пути.</caption>
+      <caption xml:lang="sl">Eden od zemljevidov v igri; vsak ima svoj teren, surovine in poti.</caption>
+      <caption xml:lang="sk">Jedna z máp hry; každá má vlastný terén, suroviny a trasy.</caption>
+      <caption xml:lang="sr">Једна од мапа у игри; свака има свој терен, ресурсе и путеве.</caption>
+      <caption xml:lang="fi">Yksi pelin kartoista: jokaisella on oma maastonsa, omat resurssinsa ja omat reittinsä.</caption>
+      <caption xml:lang="sv">En av spelets kartor, var och en med egen terräng, egna resurser och egna vägar.</caption>
+      <caption xml:lang="tr">Oyunun haritalarından biri; her haritanın kendine özgü arazisi, kaynakları ve yolları vardır.</caption>
+      <caption xml:lang="zh_TW">遊戲中的一張地圖；每張地圖都有自己的地形、資源和路線。</caption>
+      <caption xml:lang="zh_CN">游戏中的一张地图；每张地图都有自己的地形、资源和路线。</caption>
+      <caption xml:lang="uk">Одна з карт гри: кожна має власний рельєф, ресурси й маршрути.</caption>
+      <caption xml:lang="id">Salah satu peta dalam game, masing-masing dengan medan, sumber daya, dan rutenya sendiri.</caption>
+      <caption xml:lang="vi">Một trong các bản đồ của trò chơi, mỗi bản đồ có địa hình, tài nguyên và đường đi riêng.</caption>
+      <caption xml:lang="ja">地形も資源もルートもそれぞれ異なる、ゲーム内マップのひとつです。</caption>
+      <caption xml:lang="ko">지형, 자원, 경로가 저마다 다른 게임 속 지도 가운데 하나입니다.</caption>
+      <caption xml:lang="hi">गेम के नक्शों में से एक; हर नक्शे का अपना भूभाग, अपने संसाधन और अपने रास्ते हैं।</caption>
+      <caption xml:lang="ur">کھیل کے نقشوں میں سے ایک؛ ہر نقشے کی اپنی زمینی ساخت، اپنے وسائل اور اپنے راستے ہیں۔</caption>
+      <caption xml:lang="sw">Mojawapo ya ramani za mchezo; kila moja ina sura yake ya ardhi, rasilimali na njia zake.</caption>
+      <caption xml:lang="bn">গেমের মানচিত্রগুলোর একটি; প্রতিটির আছে নিজস্ব ভূপ্রকৃতি, সম্পদ ও পথ।</caption>
+      <caption xml:lang="nb">Et av kartene i spillet, hvert med sitt eget terreng og sine egne ressurser og ruter.</caption>
+      <caption xml:lang="ms">Salah satu peta dalam permainan, masing-masing dengan rupa bumi, sumber dan laluannya sendiri.</caption>
+      <caption xml:lang="mr">खेळातील नकाशांपैकी एक; प्रत्येक नकाशाचा भूप्रदेश, संसाधने आणि मार्ग वेगळे आहेत.</caption>
+      <caption xml:lang="ta">விளையாட்டின் வரைபடங்களில் ஒன்று; ஒவ்வொன்றுக்கும் தனி நில அமைப்பு, வளங்கள், வழிகள் உண்டு.</caption>
+      <caption xml:lang="te">గేమ్‌లోని మ్యాప్‌లలో ఒకటి; ప్రతి మ్యాప్‌కూ దాని సొంత భూభాగం, వనరులు, దారులు ఉంటాయి.</caption>
+      <caption xml:lang="fil">Isa sa mga mapa ng laro, na bawat isa ay may sariling lupain, likas na yaman at mga ruta.</caption>
+      <caption xml:lang="bg">Една от картите в играта, всяка със собствен терен, ресурси и пътища.</caption>
+      <caption xml:lang="th">หนึ่งในแผนที่ของเกม แต่ละแผนที่มีสภาพพื้นที่ ทรัพยากร และเส้นทางเฉพาะตัว</caption>
+    </screenshot>
+    <screenshot>
+      <image type="source" width="1920" height="1080">https://raw.githubusercontent.com/Globulation2/glob2-marketing/87d7ea0d1e591739f1157dd3ec5506fe92adcae2/assets/storefront-v2/store-packages/appstream/territory-1920x1080.png</image>
       <caption>A wider view of the map shows where rival colonies meet.</caption>
       <caption xml:lang="ar">نظرة أوسع على الخريطة تُظهر أين تلتقي المستعمرات المنافسة.</caption>
       <caption xml:lang="pt_BR">Uma visão mais ampla do mapa mostra onde as colônias rivais se encontram.</caption>
@@ -1061,52 +1205,55 @@
       <caption xml:lang="th">มุมมองแผนที่ที่กว้างขึ้นแสดงให้เห็นจุดที่อาณานิคมคู่แข่งมาบรรจบกัน</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/Globulation2/glob2-marketing/a968359dc95d51e998f63ba4d984d33b04560b39/assets/storefront-approved-v1/04-lava-shield-terrain.png</image>
-      <caption>One of the game's maps, each with its own terrain, resources and routes.</caption>
-      <caption xml:lang="ar">إحدى خرائط اللعبة، ولكل خريطة تضاريسها ومواردها وطرقها.</caption>
-      <caption xml:lang="pt_BR">Um dos mapas do jogo, cada um com terreno, recursos e rotas próprios.</caption>
-      <caption xml:lang="ca">Un dels mapes del joc, cadascun amb terreny, recursos i rutes propis.</caption>
-      <caption xml:lang="cs">Jedna z herních map; každá má vlastní terén, suroviny a cesty.</caption>
-      <caption xml:lang="de">Eine der Karten des Spiels, jede mit eigenem Gelände, eigenen Ressourcen und eigenen Wegen.</caption>
-      <caption xml:lang="da">Et af spillets kort, hvert med sit eget terræn, sine egne ressourcer og sine egne ruter.</caption>
-      <caption xml:lang="es">Uno de los mapas del juego, cada uno con su propio terreno, recursos y rutas.</caption>
-      <caption xml:lang="eo">Unu el la mapoj de la ludo, ĉiu kun propraj tereno, rimedoj kaj vojoj.</caption>
-      <caption xml:lang="eu">Jokoaren mapetako bat; bakoitzak bere lur-eremua, baliabideak eta bideak ditu.</caption>
-      <caption xml:lang="fa">یکی از نقشه‌های بازی؛ هر نقشه زمین، منابع و مسیرهای خودش را دارد.</caption>
-      <caption xml:lang="fr">L’une des cartes du jeu, chacune avec son terrain, ses ressources et ses chemins.</caption>
-      <caption xml:lang="el">Ένας από τους χάρτες του παιχνιδιού, ο καθένας με δικό του έδαφος, πόρους και διαδρομές.</caption>
-      <caption xml:lang="hu">A játék egyik térképe; mindegyiknek saját terepe, nyersanyagai és útvonalai vannak.</caption>
-      <caption xml:lang="it">Una delle mappe del gioco, ognuna con terreno, risorse e percorsi propri.</caption>
-      <caption xml:lang="nl">Een van de kaarten uit het spel, elk met een eigen terrein, eigen grondstoffen en eigen routes.</caption>
-      <caption xml:lang="pl">Jedna z map w grze; każda ma własny teren, zasoby i szlaki.</caption>
-      <caption xml:lang="pt_PT">Um dos mapas do jogo, cada um com o seu próprio terreno, recursos e rotas.</caption>
-      <caption xml:lang="ro">Una dintre hărțile jocului, fiecare cu terenul, resursele și rutele ei.</caption>
-      <caption xml:lang="ru">Одна из карт игры: у каждой свой рельеф, свои ресурсы и пути.</caption>
-      <caption xml:lang="sl">Eden od zemljevidov v igri; vsak ima svoj teren, surovine in poti.</caption>
-      <caption xml:lang="sk">Jedna z máp hry; každá má vlastný terén, suroviny a trasy.</caption>
-      <caption xml:lang="sr">Једна од мапа у игри; свака има свој терен, ресурсе и путеве.</caption>
-      <caption xml:lang="fi">Yksi pelin kartoista: jokaisella on oma maastonsa, omat resurssinsa ja omat reittinsä.</caption>
-      <caption xml:lang="sv">En av spelets kartor, var och en med egen terräng, egna resurser och egna vägar.</caption>
-      <caption xml:lang="tr">Oyunun haritalarından biri; her haritanın kendine özgü arazisi, kaynakları ve yolları vardır.</caption>
-      <caption xml:lang="zh_TW">遊戲中的一張地圖；每張地圖都有自己的地形、資源和路線。</caption>
-      <caption xml:lang="zh_CN">游戏中的一张地图；每张地图都有自己的地形、资源和路线。</caption>
-      <caption xml:lang="uk">Одна з карт гри: кожна має власний рельєф, ресурси й маршрути.</caption>
-      <caption xml:lang="id">Salah satu peta dalam game, masing-masing dengan medan, sumber daya, dan rutenya sendiri.</caption>
-      <caption xml:lang="vi">Một trong các bản đồ của trò chơi, mỗi bản đồ có địa hình, tài nguyên và đường đi riêng.</caption>
-      <caption xml:lang="ja">地形も資源もルートもそれぞれ異なる、ゲーム内マップのひとつです。</caption>
-      <caption xml:lang="ko">지형, 자원, 경로가 저마다 다른 게임 속 지도 가운데 하나입니다.</caption>
-      <caption xml:lang="hi">गेम के नक्शों में से एक; हर नक्शे का अपना भूभाग, अपने संसाधन और अपने रास्ते हैं।</caption>
-      <caption xml:lang="ur">کھیل کے نقشوں میں سے ایک؛ ہر نقشے کی اپنی زمینی ساخت، اپنے وسائل اور اپنے راستے ہیں۔</caption>
-      <caption xml:lang="sw">Mojawapo ya ramani za mchezo; kila moja ina sura yake ya ardhi, rasilimali na njia zake.</caption>
-      <caption xml:lang="bn">গেমের মানচিত্রগুলোর একটি; প্রতিটির আছে নিজস্ব ভূপ্রকৃতি, সম্পদ ও পথ।</caption>
-      <caption xml:lang="nb">Et av kartene i spillet, hvert med sitt eget terreng og sine egne ressurser og ruter.</caption>
-      <caption xml:lang="ms">Salah satu peta dalam permainan, masing-masing dengan rupa bumi, sumber dan laluannya sendiri.</caption>
-      <caption xml:lang="mr">खेळातील नकाशांपैकी एक; प्रत्येक नकाशाचा भूप्रदेश, संसाधने आणि मार्ग वेगळे आहेत.</caption>
-      <caption xml:lang="ta">விளையாட்டின் வரைபடங்களில் ஒன்று; ஒவ்வொன்றுக்கும் தனி நில அமைப்பு, வளங்கள், வழிகள் உண்டு.</caption>
-      <caption xml:lang="te">గేమ్‌లోని మ్యాప్‌లలో ఒకటి; ప్రతి మ్యాప్‌కూ దాని సొంత భూభాగం, వనరులు, దారులు ఉంటాయి.</caption>
-      <caption xml:lang="fil">Isa sa mga mapa ng laro, na bawat isa ay may sariling lupain, likas na yaman at mga ruta.</caption>
-      <caption xml:lang="bg">Една от картите в играта, всяка със собствен терен, ресурси и пътища.</caption>
-      <caption xml:lang="th">หนึ่งในแผนที่ของเกม แต่ละแผนที่มีสภาพพื้นที่ ทรัพยากร และเส้นทางเฉพาะตัว</caption>
+      <image type="source" width="1920" height="1080">https://raw.githubusercontent.com/Globulation2/glob2-marketing/87d7ea0d1e591739f1157dd3ec5506fe92adcae2/assets/storefront-v2/store-packages/appstream/economy-1920x1080.png</image>
+      <caption>Workers carry wheat to the inns and swarms that feed and grow the colony.</caption>
+      <caption xml:lang="ar">العمال يحملون القمح إلى النُزل والأوكار التي تطعم المستعمرة وتنمّيها.</caption>
+      <caption xml:lang="pt_BR">Trabalhadores levam trigo às tavernas e colmeias que alimentam a colônia e a fazem crescer.</caption>
+      <caption xml:lang="ca">Els treballadors porten blat a les despenses i granges que alimenten i fan créixer la colònia.</caption>
+      <caption xml:lang="cs">Dělníci nosí pšenici do hospod a úlů, díky kterým má kolonie co jíst a roste.</caption>
+      <caption xml:lang="de">Arbeiter bringen Weizen zu den Gasthöfen und Stöcken, die die Kolonie ernähren und wachsen lassen.</caption>
+      <caption xml:lang="da">Arbejdere bærer hvede til de kroer og sværme, der giver kolonien mad og får den til at vokse.</caption>
+      <caption xml:lang="es">Los trabajadores llevan trigo a las posadas y colmenas que alimentan y hacen crecer la colonia.</caption>
+      <caption xml:lang="eo">Laboristoj portas tritikon al la manĝejoj kaj globulejoj, kiuj nutras kaj kreskigas la kolonion.</caption>
+      <caption xml:lang="eu">Langileek garia eramaten dute kolonia elikatu eta hazten duten ostatu eta kofoinetara.</caption>
+      <caption xml:lang="fa">کارگران گندم را به مسافرخانه‌ها و کندوهایی می‌برند که کلونی را سیر و بزرگ می‌کنند.</caption>
+      <caption xml:lang="fr">Les ouvrières portent le blé aux auberges et aux ruches, qui nourrissent et font grandir la colonie.</caption>
+      <caption xml:lang="el">Οι εργάτες κουβαλούν σιτάρι στα πανδοχεία και στα σμήνη που τρέφουν και μεγαλώνουν την αποικία.</caption>
+      <caption xml:lang="hu">A dolgozók búzát hordanak az étkezdékbe és a rajokba, amelyek táplálják és növelik a kolóniát.</caption>
+      <caption xml:lang="it">Gli operai portano il grano alle mense e agli sciami che sfamano e fanno crescere la colonia.</caption>
+      <caption xml:lang="nl">Werkers brengen tarwe naar de herbergen en zwermen die de kolonie voeden en laten groeien.</caption>
+      <caption xml:lang="pl">Robotnicy noszą pszenicę do gospód i rojów, które karmią i powiększają kolonię.</caption>
+      <caption xml:lang="pt_PT">Os trabalhadores levam trigo para as tabernas e colmeias que alimentam e fazem crescer a colónia.</caption>
+      <caption xml:lang="ro">Lucrătorii duc grâu la popasurile și stupii care hrănesc și măresc colonia.</caption>
+      <caption xml:lang="ru">Рабочие несут пшеницу в кабаки и рои, которые кормят колонию и помогают ей расти.</caption>
+      <caption xml:lang="sl">Delavci nosijo pšenico v restavracije in porodnišnice, ki kolonijo hranijo in večajo.</caption>
+      <caption xml:lang="sk">Robotníci nosia pšenicu do jedální a hniezd, vďaka ktorým má kolónia čo jesť a rastie.</caption>
+      <caption xml:lang="sr">Радници носе жито у гостионице и ројеве, који хране и увећавају колонију.</caption>
+      <caption xml:lang="fi">Työläiset kantavat viljaa majataloihin ja pesiin, jotka ruokkivat ja kasvattavat siirtokuntaa.</caption>
+      <caption xml:lang="sv">Arbetare bär vete till värdshusen och svärmarna, som mättar kolonin och får den att växa.</caption>
+      <caption xml:lang="tr">İşçiler, koloniyi besleyen ve büyüten otellere ve yuvalara buğday taşır.</caption>
+      <caption xml:lang="zh_TW">工人把小麥運到客棧和孢子堆，讓殖民地吃飽並成長。</caption>
+      <caption xml:lang="zh_CN">工人把小麦运往食堂和孢子堆，让殖民地吃饱并壮大。</caption>
+      <caption xml:lang="uk">Робітники носять пшеницю до їдалень і роїв, які годують і збільшують колонію.</caption>
+      <caption xml:lang="id">Pekerja membawa gandum ke penginapan dan sarang yang memberi makan dan memperbesar koloni.</caption>
+      <caption xml:lang="vi">Công nhân mang lúa mì về các quán trọ và tổ, nơi nuôi sống và phát triển thuộc địa.</caption>
+      <caption xml:lang="ja">労働者が、コロニーを養い大きくする食堂と巣へ小麦を運びます。</caption>
+      <caption xml:lang="ko">일꾼들이 식민지를 먹이고 키우는 여관과 둥지로 밀을 나릅니다.</caption>
+      <caption xml:lang="hi">श्रमिक गेहूँ को उन सरायों और छत्तों तक ले जाते हैं, जो कॉलोनी को खिलाते और बढ़ाते हैं।</caption>
+      <caption xml:lang="ur">کارکن گندم سرائے اور چھتے تک پہنچاتے ہیں، جو بستی کو خوراک دیتے اور بڑھاتے ہیں۔</caption>
+      <caption xml:lang="sw">Wafanyakazi hubeba ngano hadi nyumba za wageni na viota vinavyolisha na kukuza koloni.</caption>
+      <caption xml:lang="bn">শ্রমিকরা গম বয়ে নিয়ে যায় সরাইখানা ও মৌচাকে, যা উপনিবেশকে খাওয়ায় ও বড় করে।</caption>
+      <caption xml:lang="nb">Arbeidere bærer hvete til vertshusene og svermene som gir kolonien mat og vekst.</caption>
+      <caption xml:lang="ms">Pekerja membawa gandum ke penginapan dan sarang yang memberi makan dan mengembangkan koloni.</caption>
+      <caption xml:lang="mr">वसाहतीचे पोषण आणि वाढ करणाऱ्या खानावळी व पोळ्यांकडे कामगार गहू वाहून नेतात.</caption>
+      <caption xml:lang="ta">குடியிருப்பை ஊட்டி வளர்க்கும் உணவகங்களுக்கும் கூடுகளுக்கும் தொழிலாளர்கள் கோதுமை கொண்டுசெல்கிறார்கள்.</caption>
+      <caption xml:lang="te">కాలనీకి ఆహారం పెట్టి, దాన్ని పెంచే సత్రాలకు, గూళ్లకు కార్మికులు గోధుమను మోసుకెళ్తారు.</caption>
+      <caption xml:lang="fil">Dinadala ng mga manggagawa ang trigo sa panuluyan at pugad na nagpapakain at nagpapalago sa kolonya.</caption>
+      <caption xml:lang="bg">Работници носят пшеница до хановете и рояците, които изхранват и разрастват колонията.</caption>
+      <caption xml:lang="th">คนงานขนข้าวสาลีไปยังโรงเตี๊ยมและรังที่คอยเลี้ยงและขยายอาณานิคม</caption>
+    </screenshot>
+    <screenshot>
+      <video container="webm" codec="vp9" width="1920" height="1080">https://raw.githubusercontent.com/Globulation2/glob2-marketing/87d7ea0d1e591739f1157dd3ec5506fe92adcae2/assets/storefront-v2/trailer/glob2-trailer-30s-1080p.webm</video>
     </screenshot>
   </screenshots>
   <releases>
