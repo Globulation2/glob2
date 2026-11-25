@@ -87,10 +87,12 @@ reviewed mirror workflow revision and pins its game source to the selected publi
 commit. Its build exposes the source directory on `PYTHONPATH` so spawned asset
 encoder workers can import the tagged tools during the build.
 Publication also requires matching AppStream release notes and a hosted gameplay
-screenshot. A native Linux capture of the active menu colony is in
-`content/data/screenshots/`; the AppStream metadata pins its URL to the commit that
-introduced it so Flathub can mirror a stable image. Confirm the URL resolves
-before publication, and pin any replacement screenshot to its own commit. Add
+screenshot. The AppStream screenshots and the trailer video are hosted in the
+`glob2-marketing` repository, and the metadata pins their URLs to a commit there
+so Flathub can mirror stable files. `content/data/screenshots/globulation2-gameplay.png`
+is a byte-identical copy of the default (first) screenshot, which `tools/release/release.py`
+compares with the hosted file. Confirm the URLs resolve before publication; when
+the screenshots change, pin the new commit and replace that copy in the same change. Add
 the release notes once the release candidate is settled. The
 256x256 and 512x512 application icons are rendered from the vector icon in
 `content-src/icons/app/` and are installed with the smaller icon sizes.
