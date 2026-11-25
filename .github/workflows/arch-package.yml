@@ -137,25 +137,39 @@ jobs:
             rm -rf /var/lib/apt/lists/*
           '
           docker commit glob2-deb-env glob2-deb-amd64
-      - name: Build and verify the installed package offline
+      - name: Build binary packages offline
         run: |
           set -euo pipefail
           docker run --network none \
             -v "$PWD/inputs:/inputs:ro" \
             -v "$PWD/outputs:/outputs" \
-            -v "$PWD/content/games/gd-small-2ai.game.gz:/fixture.game.gz:ro" \
             glob2-deb-amd64 bash -euc '
               mkdir /build
               cd /build
               dpkg-source -x /inputs/glob2_0.11.7.0-1~glob2.1.dsc
               cd glob2-0.11.7.0
               dpkg-buildpackage --build=binary --no-sign --jobs=4
+              cp /build/glob2_*_amd64.deb /build/glob2-data_*_all.deb /outputs/
+              cd /outputs
+              sha256sum ./*.deb > SHA256SUMS
+            '
+      - name: Verify the installed packages offline
+        run: |
+          set -euo pipefail
+          docker run --network none \
+            -v "$PWD/outputs:/packages:ro" \
+            -v "$PWD/content/games/gd-small-2ai.game.gz:/fixture.game.gz:ro" \
+            glob2-deb-amd64 bash -euc '
+              cd /packages
+              sha256sum -c SHA256SUMS
               cd /
               export GLOB2_USER_DATA_DIR=/tmp/glob2-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy
               mkdir "$GLOB2_USER_DATA_DIR"
               touch "$GLOB2_USER_DATA_DIR/sentinel"
-              # Ubuntu's Docker image strips man pages and docs by default.
-              dpkg --path-include="/usr/share/doc/glob2/*" --path-include="/usr/share/doc/glob2-data/*"                 --path-include="/usr/share/man/man6" --path-include="/usr/share/man/man6/glob2.6.gz"                 -i /build/glob2_*_amd64.deb /build/glob2-data_*_all.deb
+              # The Ubuntu container strips man pages and docs by default.
+              dpkg --path-include="/usr/share/doc/glob2/*" --path-include="/usr/share/doc/glob2-data/*" \
+                --path-include="/usr/share/man/man6" --path-include="/usr/share/man/man6/glob2.6.gz" \
+                -i /packages/glob2_*_amd64.deb /packages/glob2-data_*_all.deb
               dpkg-query -W glob2 glob2-data
               dpkg -V glob2 glob2-data >/tmp/dpkg-verify
               cat /tmp/dpkg-verify
@@ -166,9 +180,6 @@ jobs:
               grep -F "nox::gui.game.checkSum() = 1cea58cc" /tmp/match.log
               dpkg --purge glob2 glob2-data
               test -f "$GLOB2_USER_DATA_DIR/sentinel"
-              cp /build/glob2_*_amd64.deb /build/glob2-data_*_all.deb /outputs/
-              cd /outputs
-              sha256sum ./*.deb > SHA256SUMS
             '
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
