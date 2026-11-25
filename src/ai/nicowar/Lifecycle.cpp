@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2006 Bradley Arsenault
+// Copyright (C) 2006-2026 Bradley Arsenault
 
 #include "AITelemetryFields.h"
 #include "AINicowar.h"

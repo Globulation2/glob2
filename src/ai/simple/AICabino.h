@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2005-2007 Bradley Arsenault
+// Copyright (C) 2005-2026 Bradley Arsenault
 
 #pragma once
 
