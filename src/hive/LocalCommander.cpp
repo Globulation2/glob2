@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "LocalCommander.h"
+#include "AgeGate.h"
 #include "UnitConsts.h"
 #include <deque>
 #include <set>
@@ -2144,6 +2145,11 @@ Json LocalCommander::chat(const Json &args)
 	if (text.find_first_not_of(' ') == std::string::npos)
 		throw std::runtime_error(text.empty() ? "Chat text is empty: pass the message to send"
 											  : "Chat text is only spaces: pass the message to send");
+	// Chat follows the player's age band (src/app/AgeGate.h), whoever types it.
+	if (!AgeGate::chatAllowedNow())
+		throw std::runtime_error(AgeGate::socialFeatures(AgeGate::local().band)
+									 ? "Chat is off in this match: a player in it is under 13 or has not said their age"
+									 : "Chat is off: this player is under 13 or has not said their age (asked before LAN or online play)");
 	if (!gui.sendChatFromAutomation(text))
 		throw std::runtime_error("Chat text is empty: pass the message to send");
 	return {{"sent", true},

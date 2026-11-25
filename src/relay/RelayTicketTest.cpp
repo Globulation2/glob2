@@ -72,6 +72,26 @@ TEST_SUITE("RelayTicket")
 		CHECK(r.claims.simVersion.key() ==
 		      "125-49-3f9a6c1e8b2d47a05e6f1c2b3a4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f");
 		CHECK(r.claims.humanSeatMask == 0b11u);
+		CHECK(r.claims.chat); // absent means chat is on
+	}
+
+	TEST_CASE("the chat claim turns match chat off, and must be a boolean")
+	{
+		SigningKey key(SigningKey::fixtureSeed());
+		auto verdict = [&](json claims) {
+			return verifyTicket(key.sign(RelayTest::ticketHeader(), claims), *fixtureKeys(), at(VERIFY_AT));
+		};
+		json c = RelayTest::fixtureClaims();
+		c["chat"] = false;
+		TicketResult r = verdict(c);
+		REQUIRE(r.ok());
+		CHECK_FALSE(r.claims.chat);
+		c["chat"] = true;
+		r = verdict(c);
+		REQUIRE(r.ok());
+		CHECK(r.claims.chat);
+		c["chat"] = "no";
+		CHECK(verdict(c).error == TicketError::Claims);
 	}
 
 	TEST_CASE("the TEST-ONLY seed reproduces the fixture JWKS key")

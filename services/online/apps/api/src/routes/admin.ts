@@ -3,6 +3,7 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import {
   AdminBanRequest,
+  AdminAgeBandRequest,
   AdminMuteRequest,
   AdminRenameRequest,
   AdminRoleRequest,
@@ -73,6 +74,21 @@ export async function adminRoutes(app: FastifyInstance, identity: Identity): Pro
         actor,
         await target(request),
         input.displayName,
+        input.reason,
+      );
+      return identity.admin.view(updated);
+    },
+  );
+
+  app.post<{ Params: { id: string } }>(
+    '/api/v1/admin/accounts/:id/age-band',
+    async (request): Promise<AdminAccount> => {
+      const { account: actor } = await requireRole(identity, request, 'moderator');
+      const input = body(AdminAgeBandRequest, request.body);
+      const updated = await identity.admin.setAgeBand(
+        actor,
+        await target(request),
+        input.band,
         input.reason,
       );
       return identity.admin.view(updated);

@@ -172,6 +172,12 @@ namespace
 		if (!c.contains("relayUrl") || !c["relayUrl"].is_string() || !validUrl(c["relayUrl"].get<std::string>()))
 			return "relayUrl must be an http(s) or ws(s) URL";
 		out.relayUrl = c["relayUrl"].get<std::string>();
+		if (c.contains("chat"))
+		{
+			if (!c["chat"].is_boolean())
+				return "chat must be a boolean";
+			out.chat = c["chat"].get<bool>();
+		}
 		// entitlements are ignored by relays today (plan section M).
 		return {};
 	}

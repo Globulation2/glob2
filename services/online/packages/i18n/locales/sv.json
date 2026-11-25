@@ -3092,5 +3092,10 @@
   "Delete “{value0}”? This removes the account draft and this device’s recovery copy. Published releases remain available.": "Delete “{value0}”? This removes the account draft and this device’s recovery copy. Published releases remain available.",
   "Withdraw “{value0}” and all its releases? Library downloads and links will stop working. Studio drafts and copies embedded in existing maps or saves remain available.": "Withdraw “{value0}” and all its releases? Library downloads and links will stop working. Studio drafts and copies embedded in existing maps or saves remain available.",
   "Delete this conversation and its source history? Finished music remains in your library.": "Delete this conversation and its source history? Finished music remains in your library.",
-  "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.": "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released."
+  "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.": "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.",
+  "Your age": "Din ålder",
+  "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "Chatt, att dela innehåll utöver privat, att välja ett namn och att ladda upp ett foto är för spelare som är 13 år eller äldre. Vi sparar bara ditt svar, aldrig din födelsedag.",
+  "Under 13": "Yngre än 13",
+  "13 or over": "13 eller äldre",
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "Du har sagt att du är under 13, så chatt och delning är avstängda. En förälder kan kontakta oss för att ändra detta."
 }

@@ -114,6 +114,12 @@ export const MatchAssignment = Open(
     ),
     ratingPreview: Type.Optional(MatchRatingPreview),
     colonySkins: Type.Optional(Type.Array(MatchColonySkin, { maxItems: 32 })),
+    chat: Type.Optional(
+      Type.Boolean({
+        description:
+          'False when match chat is off because a human player is under 13 or has not declared an age; the relay drops chat orders, and clients hide the chat box. Absent means on.',
+      }),
+    ),
   },
   { description: 'Everything a client needs to connect to the relay and load the match.' },
 );

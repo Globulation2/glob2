@@ -25,6 +25,7 @@ import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { CATALOG_RULES, UUID, canModerate } from '../maps/catalog.ts';
 
 import { aiCatalogViews } from './catalogViews.ts';
+import { requireShareable } from '../auth/ageGate.ts';
 export async function aiLibraryRoutes(app: FastifyInstance, identity: Identity) {
   const { db, blobs } = app.services;
   const uploads = new SharedLimit(db, 'ai-upload', CATALOG_RULES.versionsPerHour, 3600000);
@@ -225,6 +226,7 @@ export async function aiLibraryRoutes(app: FastifyInstance, identity: Identity) 
   async function publish(r: FastifyRequest, aiId?: string) {
     const a = await signed(r),
       input = body(PublishAiRequest, r.body);
+    if (input.visibility) requireShareable(a, input.visibility);
     if (a.kind === 'guest' && input.visibility === 'public')
       throw apiError('forbidden', 'Sign in with an account to publish publicly.');
     await enforce(publishes, a.id, undefined, 'Too many publications; wait a while.');
@@ -322,6 +324,7 @@ export async function aiLibraryRoutes(app: FastifyInstance, identity: Identity) 
     const a = await signed(r),
       row = await visible(r.params.id, a, true),
       input = body(UpdateAiRequest, r.body);
+    if (input.visibility) requireShareable(a, input.visibility);
     if (input.visibility === 'public' && a.kind === 'guest')
       throw apiError('forbidden', 'An account is required to publish publicly.');
     await db

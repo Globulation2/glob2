@@ -1026,6 +1026,8 @@ private:
 
 	/// Add a message to the list of messages
 	void addMessage(const GAGCore::Color& color, const std::string &msgText, bool chat);
+	/// Says why chat is off (the age band, or the match), in the message area.
+	void showChatOff();
 
 	//! Word-wrap \a text via setMultiLine and append every resulting line to
 	//! one of the message-history lists. Both histories are LIFO

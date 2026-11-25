@@ -1,4 +1,6 @@
 #include <PerformanceTelemetry.h>
+#include "ScopedAgeBand.h"
+#include "AgeGate.h"
 #include "Map.h"
 #include "sim/snapshot/SnapshotStore.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -2829,9 +2831,29 @@ TEST_CASE("MCP game_building and game_zone queue the panel's orders and report c
 	CHECK(zone->centerY == 12);
 	CHECK(zone->maxX - zone->minX == 3);
 	CHECK(zone->maxY - zone->minY == 2);
+	// Chat is off without a 13-plus age band (src/app/AgeGate.h): game_chat says so
+	// and queues nothing, and so does the chat box.
+	world.gui.chatMask = 0x5;
+	{
+		glob2test::ScopedAgeBand child("under_13");
+		CHECK_THROWS_WITH(commander.call("game_chat", {{"text", "hello allies"}}),
+						  doctest::Contains("Chat is off"));
+		CHECK_FALSE(world.gui.sendChatFromAutomation("hello"));
+		CHECK(queued().empty());
+		// The chat key explains instead of opening a box.
+		world.gui.openChat();
+		CHECK_FALSE(world.gui.typingInputScreen);
+	}
+	{
+		glob2test::ScopedAgeBand adult("13_plus");
+		AgeGate::setMatchChatOn(false); // an online match the platform turned chat off for
+		CHECK_THROWS_WITH(commander.call("game_chat", {{"text", "hello allies"}}),
+						  doctest::Contains("off in this match"));
+		AgeGate::setMatchChatOn(true);
+	}
 	// Chat queues the chat box's message, to the chat box's recipients; empty text
 	// queues nothing.
-	world.gui.chatMask = 0x5;
+	glob2test::ScopedAgeBand adult("13_plus");
 	const auto chat = commander.call("game_chat", {{"text", "hello allies"}});
 	CHECK(chat.at("sent") == true);
 	orders = queued();

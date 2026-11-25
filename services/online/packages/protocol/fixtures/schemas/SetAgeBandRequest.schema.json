@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:SetAgeBandRequest",
+  "title": "SetAgeBandRequest",
+  "type": "object",
+  "required": [
+    "band",
+    "source"
+  ],
+  "properties": {
+    "band": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "under_13"
+        },
+        {
+          "type": "string",
+          "const": "13_plus"
+        }
+      ]
+    },
+    "source": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "self"
+        },
+        {
+          "type": "string",
+          "const": "apple"
+        },
+        {
+          "type": "string",
+          "const": "google_play"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

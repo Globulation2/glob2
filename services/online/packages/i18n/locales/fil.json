@@ -3092,5 +3092,10 @@
   "Delete “{value0}”? This removes the account draft and this device’s recovery copy. Published releases remain available.": "Delete “{value0}”? This removes the account draft and this device’s recovery copy. Published releases remain available.",
   "Withdraw “{value0}” and all its releases? Library downloads and links will stop working. Studio drafts and copies embedded in existing maps or saves remain available.": "Withdraw “{value0}” and all its releases? Library downloads and links will stop working. Studio drafts and copies embedded in existing maps or saves remain available.",
   "Delete this conversation and its source history? Finished music remains in your library.": "Delete this conversation and its source history? Finished music remains in your library.",
-  "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.": "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released."
+  "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.": "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.",
+  "Your age": "Ang edad mo",
+  "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "Ang chat, pagbabahagi ng content nang lampas sa pribado, pagpili ng pangalan at pag-upload ng larawan ay para sa mga manlalarong 13 taong gulang pataas. Ang sagot mo lang ang itinatago, hindi kailanman ang kaarawan mo.",
+  "Under 13": "Wala pang 13",
+  "13 or over": "13 pataas",
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "Sinabi mong wala ka pang 13, kaya naka-off ang chat at pagbabahagi. Maaaring makipag-ugnayan sa amin ang isang magulang para baguhin ito."
 }

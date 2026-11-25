@@ -5,6 +5,7 @@ export const MODERATION_AUDIT_ACTIONS = [
   'account.rename',
   'account.mute',
   'account.unmute',
+  'account.age_band',
   'content.hide',
   'content.restore',
   'report.resolve',

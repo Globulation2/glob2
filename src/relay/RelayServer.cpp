@@ -719,6 +719,12 @@ asio::awaitable<void> RelayServer::Impl::admit(std::shared_ptr<Connection> conne
 		connection->reject(Turn::RejectReason::MatchOver, "The match is over");
 		co_return;
 	}
+	// Any ticket of the match saying chat is off turns it off for the whole match.
+	if (!claims.chat && !it->second->sequencer.chatDisabled())
+	{
+		it->second->sequencer.disableChat();
+		logLine("info", "Match " + claims.matchId + ": chat is off (a player under 13 or without a declared age)");
+	}
 	it->second->attach(connection, claims.seat, hello);
 }
 

@@ -894,6 +894,9 @@ const typedColumns: ColumnLists = {
     'role',
     'status',
     'muted_until',
+    'age_band',
+    'age_band_source',
+    'age_band_at',
     'created_at',
     'updated_at',
     'last_seen_at',
@@ -1544,6 +1547,7 @@ describe('migrations', () => {
         '0057_generator_library',
         '0058_generator_studio',
         '0059_unit_catalogs',
+        '0060_age_bands',
       ]);
       expect(
         (
@@ -1613,7 +1617,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(38);
+      expect(upgraded).toHaveLength(39);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -1767,6 +1771,7 @@ describe('migrations', () => {
         ['0057_generator_library', 'Success'],
         ['0058_generator_studio', 'Success'],
         ['0059_unit_catalogs', 'Success'],
+        ['0060_age_bands', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -1917,6 +1922,7 @@ describe('migrations', () => {
         ['0057_generator_library', 'Success'],
         ['0058_generator_studio', 'Success'],
         ['0059_unit_catalogs', 'Success'],
+        ['0060_age_bands', 'Success'],
       ]);
       expect(
         await db

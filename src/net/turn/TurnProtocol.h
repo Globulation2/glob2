@@ -102,6 +102,7 @@ namespace Turn
 	// checks they agree, so the relay need not include engine headers).
 	constexpr std::uint8_t ORDER_TYPE_NULL = 51;
 	constexpr std::uint8_t ORDER_TYPE_PLAYER_QUIT = 67;
+	constexpr std::uint8_t ORDER_TYPE_TEXT_MESSAGE = 71;
 	constexpr std::uint8_t ORDER_TYPE_VOICE = 72;
 	constexpr std::uint8_t ORDER_TYPE_ADJUST_LATENCY = 100;
 

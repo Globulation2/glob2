@@ -3065,5 +3065,10 @@
   "Delete “{value0}”? This removes the account draft and this device’s recovery copy. Published releases remain available.": "Delete “{value0}”? This removes the account draft and this device’s recovery copy. Published releases remain available.",
   "Withdraw “{value0}” and all its releases? Library downloads and links will stop working. Studio drafts and copies embedded in existing maps or saves remain available.": "Withdraw “{value0}” and all its releases? Library downloads and links will stop working. Studio drafts and copies embedded in existing maps or saves remain available.",
   "Delete this conversation and its source history? Finished music remains in your library.": "Delete this conversation and its source history? Finished music remains in your library.",
-  "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.": "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released."
+  "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.": "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.",
+  "Your age": "Tuổi của bạn",
+  "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "Trò chuyện, chia sẻ nội dung ngoài chế độ riêng tư, chọn tên và tải ảnh lên chỉ dành cho người chơi từ 13 tuổi trở lên. Chúng tôi chỉ lưu câu trả lời của bạn, không bao giờ lưu ngày sinh của bạn.",
+  "Under 13": "Dưới 13",
+  "13 or over": "13 trở lên",
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "Bạn đã cho biết mình dưới 13 tuổi nên tính năng trò chuyện và chia sẻ đã bị tắt. Cha mẹ có thể liên hệ với chúng tôi để thay đổi điều này."
 }

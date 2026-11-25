@@ -31,6 +31,7 @@ import { apiError } from '../errors.ts';
 import { TerrainStudio } from '@glob2/terrain-studio';
 import { HiveError } from '@glob2/billing';
 import { UUID, canModerate } from '../maps/catalog.ts';
+import { requireShareable } from '../auth/ageGate.ts';
 
 export async function setLibraryRoutes(app: FastifyInstance, identity: Identity) {
   const { db, blobs } = app.services;
@@ -531,6 +532,7 @@ export async function setLibraryRoutes(app: FastifyInstance, identity: Identity)
     const a = await signed(r),
       input = body(PublishSetRequest, r.body),
       current = await ownedDraft(r.params.id, a);
+    requireShareable(a, input.visibility);
     await db.transaction().execute(async (trx) => {
       const parent = await trx
         .selectFrom('asset_sets')
@@ -609,6 +611,7 @@ export async function setLibraryRoutes(app: FastifyInstance, identity: Identity)
     const a = await signed(r),
       row = await visible(r.params.id, a, true),
       input = body(UpdateSetRequest, r.body);
+    requireShareable(a, input.visibility);
     await db
       .updateTable('asset_sets')
       .set({ ...input, updated_at: new Date() })

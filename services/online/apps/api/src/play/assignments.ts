@@ -28,6 +28,7 @@ import {
   summarize,
   uploadTitle,
 } from '../history/summaries.ts';
+import { allHaveSocialFeatures } from '../auth/ageGate.ts';
 
 type Db = Kysely<Database>;
 
@@ -77,11 +78,17 @@ export class Assignments {
     const seat = setup.seats.find((s) => s.kind === 'human' && s.accountId === accountId);
     if (!seat) return undefined;
     const humanSeats = setup.seats.filter((s) => s.kind === 'human').map((s) => s.seat);
-    const [title, preview, entitlements, colonySkins] = await Promise.all([
+    const humanAccountIds = setup.seats.flatMap((s) =>
+      s.kind === 'human' && s.accountId ? [s.accountId] : [],
+    );
+    const [title, preview, entitlements, colonySkins, chat] = await Promise.all([
       this.mapTitle(setup),
       matchRatingPreview(this.db, match.id, accountId),
       activeEntitlements(this.db, accountId),
       matchColonySkins(this.db, this.blobs, this.keys, this.origin, matchId),
+      // Match chat is off for everyone while any human player is under 13 or
+      // undeclared; the relay drops chat orders once any ticket says so.
+      allHaveSocialFeatures(this.db, humanAccountIds),
     ]);
     // Appearance freezing can wait for another replica. Do not deliver a relay
     // assignment read before a concurrent failover completed.
@@ -108,6 +115,7 @@ export class Assignments {
       // Verbatim: the relay accepts only tickets naming its registered publicUrl.
       relayUrl: match.public_url,
       entitlements,
+      ...(chat ? {} : { chat: false }),
     };
     return {
       matchId: match.id,
@@ -122,6 +130,7 @@ export class Assignments {
       mapUrl: mapUrl(this.origin, setup.map.hash),
       ...(title ? { mapTitle: title } : {}),
       ...(preview ? { ratingPreview: preview } : {}),
+      ...(chat ? {} : { chat: false }),
     };
   }
 

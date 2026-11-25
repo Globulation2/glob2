@@ -8,6 +8,7 @@ import { requireAccount } from '../identity.ts';
 import { apiError } from '../errors.ts';
 import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { UUID } from '../history/summaries.ts';
+import { requireSocialFeatures } from '../auth/ageGate.ts';
 
 export async function avatarRoutes(app: FastifyInstance, identity: Identity) {
   const { db, blobs } = app.services;
@@ -62,6 +63,7 @@ export async function avatarRoutes(app: FastifyInstance, identity: Identity) {
     const { account } = await requireAccount(identity, request);
     await enforce(writes, account.id, reply, 'You changed your photo recently; try again later.');
     if (account.kind !== 'registered') throw apiError('forbidden', 'Sign in to upload a photo.');
+    requireSocialFeatures(account, 'Players under 13 cannot upload a photo.');
     if (!Buffer.isBuffer(request.body)) throw apiError('bad_request', 'Upload image bytes.');
     return change(account.id, 'uploaded', await canonicalAvatar(request.body));
   });
@@ -71,6 +73,8 @@ export async function avatarRoutes(app: FastifyInstance, identity: Identity) {
     const source = (request.body as { source?: unknown } | null)?.source;
     if (source !== 'automatic' && source !== 'initials')
       throw apiError('bad_request', 'Choose automatic or initials.');
+    if (source === 'automatic')
+      requireSocialFeatures(account, 'Players under 13 use their initials as their picture.');
     return change(account.id, source);
   });
   app.delete('/api/v1/accounts/me/avatar', async (request, reply) => {

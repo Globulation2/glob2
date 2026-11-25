@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 glob2 contributors
 #include "ui/LibraryText.h"
+#include "AgeGate.h"
 #include "RoomScreen.h"
 #include "DeviceProfile.h"
 #include "AINames.h"
@@ -112,9 +113,19 @@ void RoomScreen::openSeat(int seat)
 	invalidate();
 }
 
+namespace
+{
+// Room chat, LAN and online, follows the player's age band (src/app/AgeGate.h);
+// the platform also refuses and withholds online room chat on its side.
+bool roomChatAllowed()
+{
+	return AgeGate::chatAllowed(AgeGate::local(), true);
+}
+}
+
 void RoomScreen::sendChat(const std::string &text)
 {
-	if (text.empty())
+	if (text.empty() || !roomChatAllowed())
 		return;
 	room->sendChat(text);
 	chatDraft.clear();
@@ -249,6 +260,9 @@ void RoomScreen::handle(const RoomBackend::Event &event)
 	case RoomBackend::Event::Chat:
 	{
 		ChatLine line{event.author, event.text, event.system};
+		// Without chat only the room's own notices are shown, never players' messages.
+		if (!line.system && !roomChatAllowed())
+			break;
 		// LAN and legacy backends send "name: text" in one string.
 		if (line.author.empty() && !line.system)
 		{
@@ -942,6 +956,8 @@ Element RoomScreen::chatPanel(const Presentation &p, bool phone)
 	auto input = row({expanded(textField("chat/input", chatDraft, [this](const std::string &v) { chatDraft = v; }, chatOptions)),
 					  width(p.pt(p.touch ? 48 : 34), button("chat/send", "", [this] { sendChat(chatDraft); }, send))},
 					 {p.pt(6), CrossAlign::Center});
+	if (!roomChatAllowed())
+		input = paragraph(tr("[chat off for age]"));
 	return column({phone ? nullptr : heading(tr("[room chat]")), expanded(textEditor("chat/log", chatText(), {}, {true, 8, false, true})), input}, {p.pt(6)});
 }
 

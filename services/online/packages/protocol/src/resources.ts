@@ -64,6 +64,23 @@ export const LinkedIdentity = Open({
   email: Type.Optional(Type.String({ maxLength: 320 })),
 });
 
+/**
+ * Age band of an account. No birthdate is stored. `unknown` (never declared,
+ * or the platform signal was declined) is treated like `under_13`: social
+ * features need `13_plus`.
+ */
+export const AgeBand = Type.Union(
+  [Type.Literal('unknown'), Type.Literal('under_13'), Type.Literal('13_plus')],
+  { description: 'Age band of an account; social features need 13_plus.' },
+);
+/** Who set an account's age band. */
+export const AgeBandSource = Type.Union([
+  Type.Literal('self'),
+  Type.Literal('apple'),
+  Type.Literal('google_play'),
+  Type.Literal('moderator'),
+]);
+
 export const SelfAccount = Open(
   {
     avatarUrl: Type.Optional(Type.String()),
@@ -84,6 +101,14 @@ export const SelfAccount = Open(
     ),
     /** Earliest time of the next rename; absent when a rename is allowed now. */
     renameAvailableAt: Type.Optional(Timestamp),
+    ageBand: Type.Optional(AgeBand),
+    ageBandSource: Type.Optional(AgeBandSource),
+    socialFeatures: Type.Optional(
+      Type.Boolean({
+        description:
+          'True only for 13_plus accounts. Otherwise chat, sharing content beyond private, renaming and avatar uploads are refused (forbidden, details.reason "age_restricted").',
+      }),
+    ),
   },
   { description: 'The signed-in account as its owner sees it.' },
 );
@@ -137,6 +162,19 @@ export const SignOutRequest = Strict({
 });
 /** PATCH /api/v1/accounts/me */
 export const UpdateAccountRequest = Strict({ displayName: DisplayName });
+
+/**
+ * PUT /api/v1/accounts/me/age-band. `self` is the player's own answer to the
+ * one-time age question; `apple` and `google_play` relay the platform's age
+ * signal (Declared Age Range, Play Age Signals). Moving an account to
+ * `under_13` is always allowed and makes its shared content private. Moving
+ * it out of `under_13` is refused (forbidden, details.reason
+ * "age_band_locked") unless the same platform set it, or a moderator does.
+ */
+export const SetAgeBandRequest = Strict({
+  band: Type.Union([Type.Literal('under_13'), Type.Literal('13_plus')]),
+  source: Type.Union([Type.Literal('self'), Type.Literal('apple'), Type.Literal('google_play')]),
+});
 
 /**
  * DELETE /api/v1/accounts/me: deletes the caller's account for good. The
@@ -955,6 +993,9 @@ export type RefreshRequest = Static<typeof RefreshRequest>;
 export type SignOutRequest = Static<typeof SignOutRequest>;
 export type DeleteAccountRequest = Static<typeof DeleteAccountRequest>;
 export type UpdateAccountRequest = Static<typeof UpdateAccountRequest>;
+export type SetAgeBandRequest = Static<typeof SetAgeBandRequest>;
+export type AgeBand = Static<typeof AgeBand>;
+export type AgeBandSource = Static<typeof AgeBandSource>;
 export type AuthProviderInfo = Static<typeof AuthProviderInfo>;
 export type RoomVisibility = Static<typeof RoomVisibility>;
 export type RoomMember = Static<typeof RoomMember>;

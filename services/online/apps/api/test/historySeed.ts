@@ -179,6 +179,9 @@ async function account(
       display_name: name,
       role: extra.role ?? 'user',
       status: extra.status ?? 'active',
+      // Seeded players are 13 plus, so chat, sharing and photos work in tests.
+      age_band: '13_plus',
+      age_band_source: 'self',
       created_at: new Date(Date.now() - (extra.ageDays ?? 60) * DAY),
     })
     .returning('id')

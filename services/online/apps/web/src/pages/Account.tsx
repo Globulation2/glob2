@@ -1,6 +1,7 @@
 import { useFeatures } from '../features.tsx';
 import { getLocale } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
+import { AgeBand } from '../components/AgeBand.tsx';
 import { ProfilePhoto } from '../components/ProfilePhoto.tsx';
 import { useState, type FormEvent } from 'react';
 import type { SelfAccount } from '@glob2/protocol';
@@ -67,6 +68,7 @@ export function Account() {
         </Link>
       </div>
       <div className="account-settings">
+        <AgeBand account={account} onSaved={refresh} />
         {account.kind === 'registered' && <ProfilePhoto account={account} onSaved={refresh} />}
         <div className="card">
           <h2 className="card-title">{t('Sign-in methods')}</h2>

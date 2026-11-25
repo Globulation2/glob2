@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OnlineServices.h"
+#include "AgeGate.h"
 #include "InstanceConfig.h"
 #include "InviteLink.h"
 #include "MapCache.h"
@@ -140,9 +141,42 @@ QuickMatch &Services::quickMatch()
 	return *search;
 }
 
+void Services::syncAgeBand()
+{
+	const auto &account = client.account();
+	if (!account || account->ageBand.empty() || ageSyncPending)
+		return;
+	const auto accountBand = AgeGate::parseBand(account->ageBand);
+	if (!accountBand)
+		return;
+	const AgeGate::Local local = AgeGate::local();
+	const std::string key = account->id + '/' + account->ageBand + '/' + AgeGate::bandName(local.band) + '/' +
+							AgeGate::sourceName(local.source);
+	if (key == ageSyncedKey)
+		return;
+	ageSyncedKey = key;
+	const AgeGate::Reconcile r = AgeGate::reconcile(local, *accountBand);
+	if (r.adopt)
+		AgeGate::store({*r.adopt, AgeGate::Source::Account});
+	if (!r.push)
+		return;
+	ageSyncPending = true;
+	client.setAgeBand(AgeGate::bandName(*r.push), AgeGate::sourceName(r.pushSource),
+					  [this](const PlatformClient::Response &response)
+					  {
+						  ageSyncPending = false;
+						  // The account is locked under 13 (self-declared there, or by a moderator):
+						  // the device follows it.
+						  if (!response.ok && response.error.details.is_object() &&
+							  response.error.details.value("reason", std::string()) == "age_band_locked")
+							  AgeGate::store({AgeGate::Band::Under13, AgeGate::Source::Account});
+					  });
+}
+
 void Services::update()
 {
 	client.update();
+	syncAgeBand();
 	if (search)
 		search->update();
 	// A hook may add or remove hooks: iterate over a snapshot of the ids.

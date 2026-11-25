@@ -57,8 +57,15 @@ class Services
 	HookId addHook(std::function<void()> hook);
 	void removeHook(HookId id);
 
+	// Lines the device's age band up with the signed-in account's (AgeGate::reconcile);
+	// called by update(). Public for tests.
+	void syncAgeBand();
+
   private:
 	std::unique_ptr<QuickMatch> search;
+	// The account and bands last reconciled, and whether a PUT is in flight.
+	std::string ageSyncedKey;
+	bool ageSyncPending = false;
 	std::vector<std::pair<HookId, std::function<void()>>> hooks;
 	HookId nextHook = 1;
 };

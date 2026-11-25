@@ -238,6 +238,9 @@ class PlatformClient
 	void refreshAccount(ResponseHandler handler = {});
 	// PATCH /api/v1/accounts/me {displayName}.
 	void rename(const std::string &displayName, ResponseHandler handler = {});
+	// PUT /api/v1/accounts/me/age-band {band, source}, updating account(). band is
+	// "under_13" or "13_plus"; source "self", "apple" or "google_play".
+	void setAgeBand(const std::string &band, const std::string &source, ResponseHandler handler = {});
 
 	// -- sign-in
 	// Starts a browser sign-in: mode "link" attaches the identity to the

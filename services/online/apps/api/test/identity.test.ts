@@ -36,6 +36,17 @@ async function newGuest(instance = api) {
 }
 
 const bearer = (token: string) => ({ authorization: `Bearer ${token}` });
+/** Answers the age question as 13 plus, so the account may rename and share. */
+async function adult(session: Record<string, unknown>) {
+  const token = (session['tokens'] as { accessToken: string }).accessToken;
+  const response = await fetch(`${api.url}/api/v1/accounts/me/age-band`, {
+    method: 'PUT',
+    headers: { ...bearer(token), 'content-type': 'application/json' },
+    body: JSON.stringify({ band: '13_plus', source: 'self' }),
+  });
+  expect(response.status).toBe(200);
+  return session;
+}
 
 function decode(token: string) {
   const [h, c] = token.split('.');
@@ -363,7 +374,7 @@ describe('local accounts', () => {
         }),
       );
     const bob = await make('bob_r', 'Bob');
-    const bobby = await make('bobby_r', 'bob');
+    const bobby = await adult(await make('bobby_r', 'bob'));
     // A taken name gets a numbered variant at registration.
     expect((bobby['account'] as { displayName: string }).displayName).toMatch(/^bob \d+$/);
 
@@ -508,7 +519,7 @@ describe('administration', () => {
     expect(await runCli(['admin', 'grant', id(chief)], io, env)).toBe(0);
 
     // A test account with a catalog map, deleted from the server's command line.
-    const tester = await register('UxReviewTester');
+    const tester = await adult(await register('UxReviewTester'));
     const map = await json(
       await postJson(
         `${api.url}/api/v1/maps`,

@@ -116,6 +116,8 @@ export const api = {
     request<SelfAccount>('PATCH', '/api/v1/accounts/me/avatar', { body: { source } }),
   stats: (signal?: AbortSignal) => get<InstanceStats>('/api/v1/stats', undefined, signal),
   me: (signal?: AbortSignal) => get<SelfAccount>('/api/v1/accounts/me', undefined, signal),
+  setAgeBand: (band: 'under_13' | '13_plus') =>
+    request<SelfAccount>('PUT', '/api/v1/accounts/me/age-band', { body: { band, source: 'self' } }),
   signOut: () => request<undefined>('POST', '/api/v1/auth/web/sign-out', { body: {} }),
   /** Deletes the signed-in account for good; the current display name confirms it. */
   deleteAccount: (confirmDisplayName: string) =>

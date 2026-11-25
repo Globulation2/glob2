@@ -64,6 +64,9 @@ namespace Relay
 		std::string relayUrl;
 		int seat = -1;
 		std::uint32_t humanSeatMask = 0;
+		/// False when the platform turned match chat off (a player under 13 or
+		/// without a declared age); absent in the ticket means true.
+		bool chat = true;
 		SimVersion simVersion;
 		std::int64_t issuedAt = 0;
 		std::int64_t expiresAt = 0;

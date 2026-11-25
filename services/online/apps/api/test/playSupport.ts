@@ -235,13 +235,43 @@ export interface Player {
 }
 
 /** A new guest with a realtime socket on the given replica. */
-export async function guestPlayer(instance: Instance, sim: SimVersion = SIM): Promise<Player> {
+/**
+ * Answers the one-time age question as the player. Test players are 13_plus
+ * unless a test asks otherwise, so chat and sharing work as before.
+ */
+export async function declareAge(
+  instance: Instance,
+  accessToken: string,
+  band: 'under_13' | '13_plus',
+  source: 'self' | 'apple' | 'google_play' = 'self',
+): Promise<Response> {
+  return fetch(`${instance.url}/api/v1/accounts/me/age-band`, {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json', authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify({ band, source }),
+  });
+}
+
+async function applyAge(instance: Instance, accessToken: string, age: PlayerAge) {
+  if (age === 'unknown') return;
+  const response = await declareAge(instance, accessToken, age);
+  expect(response.status).toBe(200);
+}
+
+export type PlayerAge = 'unknown' | 'under_13' | '13_plus';
+
+export async function guestPlayer(
+  instance: Instance,
+  sim: SimVersion = SIM,
+  age: PlayerAge = '13_plus',
+): Promise<Player> {
   const session = (await json(
     await postJson(`${instance.url}/api/v1/auth/guest`, { platform: 'desktop' }),
   )) as {
     account: { id: string; displayName: string };
     tokens: { accessToken: string };
   };
+  await applyAge(instance, session.tokens.accessToken, age);
   const client = await RealtimeClient.connect(instance.url);
   await client.hello(session.tokens.accessToken, sim);
   return {
@@ -253,7 +283,11 @@ export async function guestPlayer(instance: Instance, sim: SimVersion = SIM): Pr
 }
 
 /** A new registered (local) account with a socket; the instance must enable local auth. */
-export async function registeredPlayer(instance: Instance, name: string): Promise<Player> {
+export async function registeredPlayer(
+  instance: Instance,
+  name: string,
+  age: PlayerAge = '13_plus',
+): Promise<Player> {
   const response = await postJson(`${instance.url}/api/v1/auth/local/register`, {
     username: `${name.toLowerCase()}${randomBytes(3).toString('hex')}`,
     password: 'correct horse battery staple',
@@ -265,6 +299,7 @@ export async function registeredPlayer(instance: Instance, name: string): Promis
     tokens: { accessToken: string };
   };
   expect(response.status).toBe(200);
+  await applyAge(instance, session.tokens.accessToken, age);
   const client = await RealtimeClient.connect(instance.url);
   await client.hello(session.tokens.accessToken);
   return {

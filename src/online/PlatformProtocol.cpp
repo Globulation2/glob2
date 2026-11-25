@@ -264,6 +264,7 @@ std::optional<Account> Account::fromJson(const Json &json)
 	account.displayName = stringField(json, "displayName");
 	account.kind = stringField(json, "kind");
 	account.role = stringField(json, "role");
+	account.ageBand = stringField(json, "ageBand");
 	if (account.id.empty())
 		return std::nullopt;
 	account.raw = json;
