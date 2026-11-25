@@ -2,7 +2,7 @@
 #include "SetLibraryDialog.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-// Copyright (C) 2006 Bradley Arsenault
+// Copyright (C) 2006-2026 Bradley Arsenault
 
 #include <GAG.h>
 #include "GlobalContainer.h"

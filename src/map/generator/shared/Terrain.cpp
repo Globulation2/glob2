@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PowerOfTwo.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-// Copyright (C) 2008 Bradley Arsenault
+// Copyright (C) 2008-2026 Bradley Arsenault
 #include "Terrain.h"
 #include "BalancedStarts.h"
 #include "GenerationWorld.h"
