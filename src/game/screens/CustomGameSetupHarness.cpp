@@ -16,6 +16,7 @@
 #include "AINames.h"
 #include "AIRegistry.h"
 #include "CustomGameScreen.h"
+#include "app/ClientFeatures.h"
 #include "OnlineServices.h"
 #include "InstanceConfig.h"
 #include "Sha256.h"
@@ -87,6 +88,32 @@ struct CountingAI : AIImplementation {
 // Named in friend declarations, so it stays at global scope.
 struct CustomGameSetupHarness
 {
+    // The players tab points to Settings → Custom AIs only on builds that offer that page.
+    static void customAIHintFollowsFeature()
+    {
+        using namespace GAGGUI::ui;
+        GAGGUI::ScreenStack stack(*globalContainer->gfx);
+        CustomGameScreen screen(stack);
+        FixedTextMeasurer text(8, 16);
+        Host host(Glob2UI::themeFor(Glob2UI::Surface::Frontend), [&](const Presentation &p)
+        { return screen.playersTab(p, p.compact() || p.safe.w < p.pt(720)); });
+        host.setMeasurer(&text);
+        host.setPresentation(Presentation::forSurface(1280, 1024, 1, false));
+        host.layoutIfNeeded();
+        std::string shown;
+        std::function<void(Node *)> collect = [&](Node *node)
+        {
+            shown += node->accessibleText() + "\n";
+            for (auto &child : node->children)
+                collect(child.get());
+        };
+        collect(host.root());
+        const std::string hint = Toolkit::getStringTable()->getString(
+            "[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]");
+        REQUIRE(!hint.empty());
+        CHECK((shown.find(hint) != std::string::npos) == ClientFeatures::CommunityAI);
+    }
+
     static void bulkAIChoice()
     {
         using namespace GAGGUI::ui;
@@ -2904,6 +2931,11 @@ TEST_SUITE("CustomGameSetup")
 		glob2test::HeadlessGlobals globals(options);
 		CustomGameSetupHarness::translatedMapModesFit();
 	}
+    TEST_CASE("the players tab mentions Custom AIs only when the build offers them")
+    {
+        glob2test::HeadlessGlobals globals(setupOptions(false));
+        CustomGameSetupHarness::customAIHintFollowsFeature();
+    }
     TEST_CASE("bulk AI choice shares semantic and human behavior and preserves excluded colonies")
     {
         glob2test::HeadlessGlobals globals(setupOptions(false));

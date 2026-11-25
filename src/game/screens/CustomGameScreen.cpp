@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ui/LibraryText.h"
 #include "CustomGameScreen.h"
+#include "app/ClientFeatures.h"
 #include "OnlineServices.h"
 #include "BuildingLibrary.h"
 #include "OnlineStorage.h"
@@ -1551,7 +1552,8 @@ Element CustomGameScreen::playersTab(const Presentation &p, bool narrow)
 		cardOptions.padding = p.pt(10);
 		parts.push_back(fe::card(fe::column(std::move(body), {p.pt(6)}), cardOptions));
 	}
-	if (!forRoom)
+	// Builds without community AI (the free App Store profile) have no Custom AIs settings page.
+	if (!forRoom && ClientFeatures::CommunityAI)
 		parts.push_back(fe::caption(tr("Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.")));
 	return fe::scroll("lobby/players", fe::column(std::move(parts), {p.pt(8)}));
 }
