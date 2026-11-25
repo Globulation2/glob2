@@ -99,7 +99,12 @@ for (const runtime of ['threaded', 'serial']) {
         'WebKit under Playwright routing has no shared memory for a routed origin');
       expect(started.executionMode, 'thread fallback: ' + JSON.stringify(started.threadFallback) +
         ' isolated: ' + await page.evaluate(() => self.crossOriginIsolated)).toBe(runtime);
-      await clickMainMenu(page, 'yog'); await screen(page, 'OnlineHubScreen');
+      await clickMainMenu(page, 'yog');
+      // A fresh browser has no age band: the one-time question comes first
+      // (src/app/AgeGate.h), and answering it opens the hub.
+      await screen(page, 'AgeQuestionScreen');
+      await clickControl(page, 'age.13plus');
+      await screen(page, 'OnlineHubScreen');
       // Online as a guest: the hub offers Sign in.
       await expect.poll(async () => Boolean((await snapshot(page)).controls['account/signin']), {timeout:30000}).toBe(true);
       return platform;
