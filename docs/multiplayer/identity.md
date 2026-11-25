@@ -94,8 +94,10 @@ relayed platform signal: a modified client could claim one, so a platform-set
 **The game** ([`src/app/AgeGate.h`](../../src/app/AgeGate.h)) keeps the band in
 its settings (`ageBand`, `ageBandSource`). Before LAN or online play, while the
 band is unknown, the App Store builds on iOS, iPadOS and macOS 26+ first ask
-Declared Age Range with an age gate of 13 (`platforms/apple/AgeSignal.swift`);
-otherwise, or
+Declared Age Range with an age gate of 13 (`platforms/apple/AgeSignal.swift`), and
+the Google Play build asks Play Age Signals (`PlayAgeSignals.java`: sharing access
+first, then the range; Play shares ranges only in some regions and with the
+player's or a parent's consent); otherwise, or
 when that is declined or unavailable, the game shows its own question (under 13,
 13 or over, Not now). "Not now" keeps the band unknown and asks again next time.
 Without social features the game hides LAN and online room chat and in-match
@@ -110,7 +112,7 @@ account page asks the same question for accounts that have not answered.
 | iOS, iPadOS (App Store) | Declared Age Range on 26+, then the question |
 | macOS (Mac App Store) | Declared Age Range on 26+, then the question |
 | macOS (direct download) | the question |
-| Android (Google Play) | the question (Play Age Signals not wired yet; it needs the `com.google.android.play:age-signals` dependency) |
+| Android (Google Play) | Play Age Signals where Play shares an age range (`platforms/mobile/android-play/`, `com.google.android.play:age-signals`), then the question |
 | Android (F-Droid, Amazon), desktop, Steam, itch, browser | the question |
 | Website accounts | the account page's question |
 

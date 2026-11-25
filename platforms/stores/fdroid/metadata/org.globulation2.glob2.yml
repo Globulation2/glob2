@@ -28,6 +28,7 @@ Builds:
       - services/online/apps/engine-agent/fixtures/ais
       - datasrc
       - games
+      - platforms/mobile/android-play
     prebuild: sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'platform-tools'
     scanignore:
       - content/maps/*.map.gz
@@ -55,6 +56,7 @@ Builds:
       - services/online/apps/engine-agent/fixtures/ais
       - datasrc
       - games
+      - platforms/mobile/android-play
     prebuild: sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'platform-tools'
     scanignore:
       - content/maps/*.map.gz
@@ -82,6 +84,7 @@ Builds:
       - services/online/apps/engine-agent/fixtures/ais
       - datasrc
       - games
+      - platforms/mobile/android-play
     prebuild: sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'platform-tools'
     scanignore:
       - content/maps/*.map.gz

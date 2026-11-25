@@ -124,7 +124,7 @@ match on their devices. LAN games do not use an account and do not contact us.
 | Data | Why |
 | --- | --- |
 | **Account:** an account number, display name, guest or registered status, creation time, when you were last online, when you last renamed, and any moderation status (role, mute, ban) | To run your account and show who you are to other players. |
-| **Age range:** under 13, 13 or over, or not yet answered; whether it came from your own answer, your device's age signal (Apple's Declared Age Range), or a moderator; and when it was set. Never a birthday. | To turn off chat, sharing, choosing a name and uploading a photo for players under 13 or who have not answered. |
+| **Age range:** under 13, 13 or over, or not yet answered; whether it came from your own answer, your device's age signal (Apple's Declared Age Range or Google Play's age signals), or a moderator; and when it was set. Never a birthday. | To turn off chat, sharing, choosing a name and uploading a photo for players under 13 or who have not answered. |
 | **Profile photo:** the cropped photo you upload, or a cached Gravatar image, and your photo preference | To display a public photo alongside your name. Uploaded originals and image metadata are not retained. You can choose initials instead. |
 | **Sign-in:** for a guest, a device credential, of which we store only a one-way hash, and the kind of device (desktop, Android, iOS, browser). If you link a sign-in provider: the provider's name, its identifier for you and, when the provider shares it, your e-mail address. A new account takes the display name the provider suggests. If you use a username and password: the username and a password hash (argon2id); we never store the password itself. | To sign you in, keep you signed in, and let moderators find an account by its linked e-mail address. |
 | **Sessions:** refresh tokens and web-session cookies (stored only as hashes), sign-in attempts from the game to your browser, with a confirmation code and a cookie that binds the attempt to that browser | To keep you signed in safely and detect stolen sign-ins. |
@@ -320,7 +320,10 @@ as little as possible from anyone, children included:
 - Before LAN or online play, the game asks whether you are under 13 or 13 or over.
   On iPhone, iPad and Apple devices with iOS or iPadOS 26 or later, it first asks
   Apple's Declared Age Range, which a parent can set up through Family Sharing; the
-  game learns only whether you are under 13. If you prefer not to answer ("Not
+  game learns only whether you are under 13. The Google Play app likewise asks
+  Google Play's age signals, where Google Play shares an age range (in some regions,
+  and as you or a parent chose); Google Play gives the game an age range and the
+  game keeps only whether it is under 13. If you prefer not to answer ("Not
   now"), or decline to share, the game treats you as under 13 until you answer. On
   the website, your account page asks the same question.
 - For players under 13, and for players who have not answered, chat is off: they

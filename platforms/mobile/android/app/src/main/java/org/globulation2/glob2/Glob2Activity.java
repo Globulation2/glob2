@@ -165,6 +165,29 @@ public final class Glob2Activity extends SDLActivity {
     private String documentError;
     private static native void documentResult(long request, int state, byte[] name, byte[] bytes);
 
+    // Play Age Signals (platforms/mobile/android/AgeSignal.cpp). Only the Google Play
+    // build has PlayAgeSignals; elsewhere this answers false and the game asks its own
+    // question. Called by the native game thread.
+    static native void ageSignalAnswered(int code);
+    public static boolean requestAgeSignals(android.app.Activity activity) {
+        final java.lang.reflect.Method request;
+        try {
+            request = Class.forName("org.globulation2.glob2.PlayAgeSignals")
+                .getDeclaredMethod("request", android.app.Activity.class);
+            request.setAccessible(true);
+        } catch (ReflectiveOperationException absent) {
+            return false;
+        }
+        activity.runOnUiThread(() -> {
+            try {
+                request.invoke(null, activity);
+            } catch (ReflectiveOperationException | RuntimeException failure) {
+                ageSignalAnswered(0);
+            }
+        });
+        return true;
+    }
+
     public boolean openDocument(long request) {
         if (!documentBusy.compareAndSet(false, true)) return false;
         runOnUiThread(() -> {

@@ -1,0 +1,7 @@
+// Google Play Age Signals (src/app/AgeGate.h, PlayAgeSignals.java beside this
+// file). Applied by platforms/mobile/android/app/build.gradle for the Google Play
+// build only. The F-Droid recipe removes this directory before scanning, so no
+// non-free dependency reaches that build. Approved as a Play-only runtime
+// dependency; pin the exact version.
+android.sourceSets.main.java.srcDirs += [new File(playAgeSignalsDir, 'java')]
+dependencies { implementation 'com.google.android.play:age-signals:0.0.6' }

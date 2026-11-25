@@ -948,7 +948,8 @@ MOBILE_EXCLUDED_CLIENT_SOURCES = ('audio/VoiceRecorder.cpp',)
 MOBILE_SOURCES = ('platforms/web/VoiceRecorder.cpp', 'platforms/mobile/MobilePaths.cpp',
                   'platforms/mobile/Documents.cpp', 'platforms/mobile/CertificateTrust.cpp',
                   'platforms/mobile/TemporaryFiles.cpp')
-ANDROID_SOURCES = ('platforms/mobile/android/Documents.cpp', 'platforms/mobile/android/CertificateTrust.cpp')
+ANDROID_SOURCES = ('platforms/mobile/android/Documents.cpp', 'platforms/mobile/android/CertificateTrust.cpp',
+                   'platforms/mobile/android/AgeSignal.cpp')
 IOS_SOURCES = ('platforms/mobile/ios/SafeArea.mm', 'platforms/mobile/ios/Documents.mm',
                'platforms/mobile/ios/LaunchLinks.mm', 'platforms/mobile/ios/CertificateTrust.cpp')
 # iOS compiles this one with automatic reference counting.

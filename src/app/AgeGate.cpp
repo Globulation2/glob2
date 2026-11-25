@@ -7,13 +7,14 @@
 #include <vector>
 
 // The platform age request. The App Store builds for iOS/iPadOS and macOS link
-// platforms/apple/AgeSignal.swift, which defines this symbol; it asks Declared Age
+// platforms/apple/AgeSignal.swift, and Android links platforms/mobile/android/AgeSignal.cpp
+// (Play Age Signals in the Google Play build), which define this symbol; it asks Declared Age
 // Range with an age gate of 13 and calls back exactly once with 0 unavailable,
 // 1 declined, 2 under 13, 3 aged 13 or over, on any thread. Everywhere else the
 // weak default below reports "unavailable".
 extern "C" void glob2_request_age_range(void (*done)(int));
 
-#if defined(__APPLE__)
+#if defined(__APPLE__) || defined(__ANDROID__)
 extern "C" __attribute__((weak)) void glob2_request_age_range(void (*done)(int))
 {
 	done(0);
@@ -225,6 +226,8 @@ Source platformSource()
 {
 #if defined(__APPLE__)
 	return Source::Apple;
+#elif defined(__ANDROID__)
+	return Source::GooglePlay;
 #else
 	return Source::None;
 #endif

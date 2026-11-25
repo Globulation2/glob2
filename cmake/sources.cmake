@@ -1817,6 +1817,7 @@ set(GLOB2_ANDROID_SOURCES
     platforms/mobile/TemporaryFiles.cpp
     platforms/mobile/android/Documents.cpp
     platforms/mobile/android/CertificateTrust.cpp
+    platforms/mobile/android/AgeSignal.cpp
 )
 
 # buildsys/sources.py mobile_sources("ios"): libglob2.a (cmake/mobile.cmake).
