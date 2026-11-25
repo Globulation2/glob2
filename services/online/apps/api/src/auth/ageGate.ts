@@ -6,9 +6,9 @@
 import { sql } from 'kysely';
 import type { Kysely } from 'kysely';
 import type { Account, AgeBand, AgeBandSource, Database } from '@glob2/db';
+import { apiError } from '../errors.ts';
 
 type Db = Kysely<Database>;
-import { apiError } from '../errors.ts';
 
 /** `details.reason` of every refusal made because of the account's age band. */
 export const AGE_RESTRICTED = 'age_restricted';
@@ -19,6 +19,7 @@ const SHARED_CONTENT = [
   { table: 'ais', owner: 'owner_account_id' },
   { table: 'generators', owner: 'owner_account_id' },
   { table: 'asset_sets', owner: 'owner_account_id' },
+  { table: 'building_families', owner: 'owner_account_id' },
 ] as const;
 
 /** Whether an account may use chat and share content: only a 13_plus band does. */
@@ -53,19 +54,20 @@ export async function currentAgeBand(db: Db, accountId: string): Promise<AgeBand
   return row?.age_band ?? 'unknown';
 }
 
-/** Whether every one of these accounts has social features (one query). */
+/** Whether every one of these accounts exists and has social features (one query). */
 export async function allHaveSocialFeatures(
   db: Db,
   accountIds: readonly string[],
 ): Promise<boolean> {
-  if (accountIds.length === 0) return true;
+  const ids = [...new Set(accountIds)];
+  if (ids.length === 0) return true;
   const row = await db
     .selectFrom('accounts')
     .select((eb) => eb.fn.countAll<string>().as('n'))
-    .where('id', 'in', [...accountIds])
-    .where('age_band', '!=', '13_plus')
+    .where('id', 'in', ids)
+    .where('age_band', '=', '13_plus')
     .executeTakeFirstOrThrow();
-  return Number(row.n) === 0;
+  return Number(row.n) === ids.length;
 }
 
 /**
@@ -113,6 +115,9 @@ export async function setAgeBand(
       );
     }
     if (current.age_band === band && current.age_band_source === source) return current;
+    // Under 13 again: keep who set it. A relayed platform claim must not turn a
+    // self-declared or moderator lock into one the same claim could lift.
+    if (current.age_band === 'under_13' && band === 'under_13') return current;
     const updated = await trx
       .updateTable('accounts')
       .set({

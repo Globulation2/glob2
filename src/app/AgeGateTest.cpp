@@ -115,6 +115,26 @@ TEST_SUITE("AgeGate")
 		r = reconcile({Band::ThirteenPlus, Source::Self}, Band::ThirteenPlus);
 		CHECK_FALSE(r.push);
 		CHECK_FALSE(r.adopt);
+		// A moderator lifted the account (a parent's request): the device follows
+		// instead of pushing its self-declared under 13 back and locking it again.
+		r = reconcile({Band::Under13, Source::Self}, Band::ThirteenPlus, true);
+		CHECK(r.adopt == Band::ThirteenPlus);
+		CHECK_FALSE(r.push);
+		// A band the device took from the account follows the account's changes.
+		r = reconcile({Band::Under13, Source::Account}, Band::ThirteenPlus);
+		CHECK(r.adopt == Band::ThirteenPlus);
+		CHECK_FALSE(r.push);
+	}
+
+	TEST_CASE("a rematch's new match keeps chat off when the old match ends after it starts")
+	{
+		ScopedState scope;
+		const auto first = beginMatchChat(true);
+		const auto second = beginMatchChat(false); // created before the old match is destroyed
+		endMatchChat(first);
+		CHECK_FALSE(matchChatOn());
+		endMatchChat(second);
+		CHECK(matchChatOn());
 	}
 
 	TEST_CASE("chat needs a 13 plus band and a match that has not turned chat off")

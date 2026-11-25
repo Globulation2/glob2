@@ -54,7 +54,7 @@ import { apiError } from '../errors.ts';
 import type { ReplicaPresence } from '../realtime/presence.ts';
 import { catalogTitles, generatorLabel, uploadTitle } from '../history/summaries.ts';
 import { versionUrls } from '../maps/catalog.ts';
-import { requireSocialFeatures } from '../auth/ageGate.ts';
+import { currentAgeBand, requireSocialFeatures } from '../auth/ageGate.ts';
 
 type Db = Kysely<Database>;
 
@@ -390,6 +390,17 @@ export class RoomService {
       .where('room_id', '=', roomId)
       .execute();
     return rows.map((r) => r.account_id);
+  }
+
+  /**
+   * A public room shows its free-text name to everyone browsing: only hosts with
+   * social features may list one. Others host by invite link. Read fresh.
+   */
+  private async requirePublicHost(caller: Account): Promise<void> {
+    requireSocialFeatures(
+      { age_band: await currentAgeBand(this.db, caller.id) },
+      'Players under 13 can host rooms by invite link, not public ones.',
+    );
   }
 
   /** Members who receive room chat: those with social features (13_plus). */
@@ -920,6 +931,7 @@ export class RoomService {
   ): Promise<RoomState> {
     if (params.map?.kind === 'scripted' && !generatorSupport)
       throw apiError('update_required', 'Update the game to use shared generators.');
+    if (params.visibility === 'public') await this.requirePublicHost(caller);
     const subject = await accessSubject(this.db, caller.id);
     if (!subject) throw apiError('forbidden', 'Your account cannot host rooms.');
     const decision = await this.access.canHost(subject, {
@@ -1294,6 +1306,7 @@ export class RoomService {
     if (current.host_account_id !== caller.id) {
       throw apiError('forbidden', 'Only the host can change the room.');
     }
+    if (changes.visibility === 'public') await this.requirePublicHost(caller);
     if (changes.map?.kind === 'scripted') {
       const older = await this.db
         .selectFrom('room_members')

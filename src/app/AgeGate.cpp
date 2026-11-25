@@ -107,9 +107,15 @@ Local applyAnswer(Local current, Band answer)
 	return {answer, Source::Self};
 }
 
-Reconcile reconcile(const Local &local, Band accountBand)
+Reconcile reconcile(const Local &local, Band accountBand, bool accountByModerator)
 {
 	Reconcile r;
+	if (accountBand != Band::Unknown && local.band != accountBand &&
+		(accountByModerator || local.source == Source::Account))
+	{
+		r.adopt = accountBand;
+		return r;
+	}
 	const auto pushAs = [&](Band band) {
 		r.push = band;
 		r.pushSource = local.source == Source::Apple || local.source == Source::GooglePlay ? local.source : Source::Self;
@@ -146,6 +152,8 @@ namespace
 std::mutex stateMutex;
 Store installed;
 std::atomic<bool> chatOn{true};
+std::mutex matchMutex;
+std::uint64_t matchToken = 0;
 
 // A platform answer arrives on any thread; it is delivered from the game thread.
 std::mutex signalMutex;
@@ -207,8 +215,24 @@ bool store(const Local &value)
 	return copy.save && copy.save(value);
 }
 
+std::uint64_t beginMatchChat(bool on)
+{
+	std::lock_guard<std::mutex> lock(matchMutex);
+	chatOn = on;
+	return ++matchToken;
+}
+
+void endMatchChat(std::uint64_t token)
+{
+	std::lock_guard<std::mutex> lock(matchMutex);
+	if (token == matchToken)
+		chatOn = true;
+}
+
 void setMatchChatOn(bool on)
 {
+	std::lock_guard<std::mutex> lock(matchMutex);
+	++matchToken;
 	chatOn = on;
 }
 

@@ -1,4 +1,5 @@
 #include "hive/HiveClient.h"
+#include "AgeGate.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -388,6 +389,8 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 				case GameGUIKeyActions::ToggleRecordingVoice:
 					if (globalContainer->voiceRecorder->recordingNow)
 						globalContainer->voiceRecorder->stopRecording();
+					else if (!AgeGate::chatAllowedNow())
+						showChatOff(); // voice is chat too (src/app/AgeGate.h)
 					else
 						globalContainer->voiceRecorder->startRecording();
 					break;

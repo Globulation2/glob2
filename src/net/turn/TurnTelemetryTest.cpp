@@ -258,7 +258,7 @@ TEST_SUITE("TurnTelemetry")
 			CHECK(text.find(banned) == std::string::npos);
 	}
 
-	GLOB2_TEST_CASE("a match with chat turned off drops chat orders from every seat and nothing else", "[network]")
+	GLOB2_TEST_CASE("a match with chat turned off drops text and voice chat from every seat and nothing else", "[network]")
 	{
 		RecordingOutput out;
 		SequencerConfig config;
@@ -280,7 +280,8 @@ TEST_SUITE("TurnTelemetry")
 		CHECK(relay.chatDisabled());
 		relay.onReceive(1, encodeOrder(2, {ORDER_TYPE_TEXT_MESSAGE, 'a'}), now);
 		relay.onReceive(2, encodeOrder(1, {ORDER_TYPE_TEXT_MESSAGE, 'b'}), now);
-		relay.onReceive(2, encodeOrder(2, {20, 1}), now); // a game order still goes through
+		relay.onReceive(2, encodeOrder(2, {ORDER_TYPE_VOICE, 1, 2, 3}), now);
+		relay.onReceive(2, encodeOrder(3, {20, 1}), now); // a game order still goes through
 		for (int i = 0; i < 5; ++i)
 			relay.update(now += 40 * MS);
 		const auto& log = relay.turnLog();
@@ -288,8 +289,9 @@ TEST_SUITE("TurnTelemetry")
 		CHECK(log[1].order == std::vector<std::uint8_t>{20, 1});
 		const SequencerTelemetry& t = relay.telemetry();
 		CHECK(t.seats[0].ordersDropped == 1);
-		CHECK(t.seats[1].ordersDropped == 1);
-		CHECK(relay.stats().ordersDropped == 2);
+		CHECK(t.seats[1].ordersDropped == 2);
+		CHECK(t.seats[1].voiceSequenced == 0);
+		CHECK(relay.stats().ordersDropped == 3);
 	}
 
 	GLOB2_TEST_CASE("relay telemetry counts per-seat orders, deferrals, bundles, lateness and arbitration", "[network]")

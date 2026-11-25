@@ -322,7 +322,15 @@ void Application::withAgeBand(std::function<void()> next)
 		next();
 		return;
 	}
-	AgeGate::requestPlatformSignal([this, next = std::move(next)](AgeGate::Signal signal) {
+	// A slow platform answer (Play Age Signals is a network call) comes back to the
+	// main menu, which is up again meanwhile: only the newest request continues, and
+	// only while the menu is still what the player sees.
+	const std::uint64_t request = ++ageRequest;
+	AgeGate::requestPlatformSignal([this, request, next = std::move(next)](AgeGate::Signal signal) {
+		if (request != ageRequest)
+			return;
+		if (auto *top = screens.top(); top && !dynamic_cast<MainMenuScreen *>(top))
+			return;
 		const AgeGate::Local current = AgeGate::local();
 		const AgeGate::Local updated = AgeGate::applySignal(current, signal, AgeGate::platformSource());
 		if (updated.band != current.band)

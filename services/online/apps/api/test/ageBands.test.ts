@@ -5,7 +5,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { DEFAULT_INSTANCE_CONFIG } from '@glob2/core';
 import { checkDocument as check } from '@glob2/protocol';
-import { mayChangeAgeBand } from '../src/auth/ageGate.ts';
+import { allHaveSocialFeatures, mayChangeAgeBand } from '../src/auth/ageGate.ts';
 import {
   FakeEngine,
   RELAY_KEY,
@@ -41,6 +41,8 @@ beforeAll(async () => {
     relayKeys: [{ key: RELAY_KEY }],
     instance: {
       auth: { ...DEFAULT_INSTANCE_CONFIG.auth, local: { enabled: true, allowRegistration: true } },
+      // Many players connect from one address in this file.
+      limits: { authPerMinute: 1000, guestsPerHour: 1000, realtimeConnectionsPerIp: 1000 },
     },
   });
   engine = new FakeEngine(harness.database.db, harness.blobs);
@@ -138,6 +140,26 @@ describe('age band transitions', () => {
     const grown = await declareAge(api, p.accessToken, '13_plus', 'google_play');
     expect(grown.status).toBe(200);
     expect(await json(grown)).toMatchObject({ ageBand: '13_plus', ageBandSource: 'google_play' });
+  });
+
+  it('counts a match as chat-safe only when every human account exists and is 13 plus', async () => {
+    const a = await guest('13_plus');
+    const b = await guest('13_plus');
+    const db = harness.database.db;
+    expect(await allHaveSocialFeatures(db, [a.accountId, b.accountId, a.accountId])).toBe(true);
+    expect(
+      await allHaveSocialFeatures(db, [a.accountId, '00000000-0000-4000-8000-000000000000']),
+    ).toBe(false);
+    expect(await allHaveSocialFeatures(db, [])).toBe(true);
+  });
+
+  it('keeps a self-declared under 13 locked against a relayed platform claim', async () => {
+    const p = await guest('under_13');
+    // Re-declaring under 13 "from Apple" must not hand the lock to that claim...
+    expect((await declareAge(api, p.accessToken, 'under_13', 'apple')).status).toBe(200);
+    expect(await me(p)).toMatchObject({ ageBand: 'under_13', ageBandSource: 'self' });
+    // ...so the same claim cannot lift it either.
+    expect((await declareAge(api, p.accessToken, '13_plus', 'apple')).status).toBe(403);
   });
 
   it('rejects an unknown band or source', async () => {
@@ -295,6 +317,52 @@ describe('room and match chat', () => {
 describe('sharing, names and photos', () => {
   const createMap = (p: Player, visibility: string) =>
     send(p, 'POST', '/api/v1/maps', { title: `Map ${visibility}`, visibility });
+
+  it('makes a new map private by default for an under-13 player', async () => {
+    const child = await registered('Kiddo', 'under_13');
+    const made = await send(child, 'POST', '/api/v1/maps', { title: 'No visibility given' });
+    expect(made.status).toBe(201);
+    expect(await json(made)).toMatchObject({ visibility: 'private' });
+  });
+
+  it('refuses sharing a building family before looking it up', async () => {
+    const child = await registered('Builder', 'under_13');
+    const missing = '00000000-0000-4000-8000-000000000000';
+    const refused = await send(child, 'PATCH', `/api/v1/buildings/${missing}`, {
+      visibility: 'public',
+    });
+    expect(refused.status).toBe(403);
+    expect(await json(refused)).toMatchObject({ details: { reason: 'age_restricted' } });
+    const adult = await registered('Builder', '13_plus');
+    expect(
+      (await send(adult, 'PATCH', `/api/v1/buildings/${missing}`, { visibility: 'public' })).status,
+    ).toBe(404);
+  });
+
+  it('lets an under-13 player host by invite link but not list a public room', async () => {
+    const child = await guest('under_13');
+    const listed = await child.client.call('room.create', {
+      name: 'Anyone welcome',
+      visibility: 'public',
+      map: { kind: 'generated', generator: GENERATOR },
+      regions: [{ region: 'eu-west', rttMs: 30 }],
+    });
+    expect(listed.error?.code).toBe('forbidden');
+    expect(listed.error?.details).toMatchObject({ reason: 'age_restricted' });
+    const linked = await child.client.ok('room.create', {
+      name: 'Friends only',
+      visibility: 'link',
+      map: { kind: 'generated', generator: GENERATOR },
+      regions: [{ region: 'eu-west', rttMs: 30 }],
+    });
+    const room = linked['room'] as { id: string; revision: number };
+    const relisted = await child.client.call('room.update', {
+      roomId: room.id,
+      revision: room.revision,
+      changes: { visibility: 'public' },
+    });
+    expect(relisted.error?.code).toBe('forbidden');
+  });
 
   it('lets an under-13 player keep maps private but not share them', async () => {
     const child = await registered('Kid', 'under_13');

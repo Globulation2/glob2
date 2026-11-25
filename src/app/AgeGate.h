@@ -94,10 +94,11 @@ struct Reconcile
 	// Store this band locally (Source::Account).
 	std::optional<Band> adopt;
 };
-// accountBand is the account's ageBand; the account wins for Under13 (it may
-// have been set by a moderator or on another device), the device wins when it
-// knows more (the account is Unknown) or is more restrictive.
-Reconcile reconcile(const Local &local, Band accountBand);
+// accountBand is the account's ageBand. The account wins when a moderator set
+// it (a parent's request) or when the device's band came from the account (it
+// changed there since); otherwise under 13 on either side wins over a
+// self-declared 13 plus, and the device fills in an account that knows nothing.
+Reconcile reconcile(const Local &local, Band accountBand, bool accountByModerator = false);
 
 // Whether the current match allows chat: the local band has social features and
 // the online platform has not turned chat off for this match (a player in it is
@@ -120,7 +121,12 @@ Store installedStore();
 Local local();
 bool store(const Local &value);
 
-// Online matches whose assignment says chat is off set this for their lifetime.
+// Online matches whose assignment says chat is off set this for their lifetime:
+// beginMatchChat returns a token, and endMatchChat turns chat back on only if no
+// later match has begun since (a rematch's new match is created before the old
+// one is destroyed). setMatchChatOn sets it outright (tests).
+std::uint64_t beginMatchChat(bool on);
+void endMatchChat(std::uint64_t token);
 void setMatchChatOn(bool on);
 bool matchChatOn();
 // chatAllowed(local(), matchChatOn()).

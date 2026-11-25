@@ -239,6 +239,8 @@ class OnlineMatch
 	// The reconnect request, cancelled with the match.
 	PlatformScope calls;
 	Json assignment;
+	// AgeGate's match chat for this match's lifetime (AgeGate::beginMatchChat).
+	std::uint64_t matchChatToken = 0;
 	Context ctx;
 	Step current = Step::Seat;
 	std::string id, problem, mapPath, relayUrl, ticket;

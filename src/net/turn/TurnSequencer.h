@@ -126,8 +126,8 @@ namespace Turn
 		bool desyncFlagged() const { return flagged; }
 		/// True once every human seat has left.
 		bool matchOver() const { return over; }
-		/// Turns chat off for the rest of the match: every later ORDER_TEXT_MESSAGE,
-		/// from any seat, is dropped before sequencing, so no client receives it. The
+		/// Turns chat off for the rest of the match: every later ORDER_TEXT_MESSAGE and
+		/// ORDER_VOICE_DATA, from any seat, is dropped before sequencing, so no client receives it. The
 		/// relay calls this when a ticket of the match says chat is off (a player under
 		/// 13 or without a declared age). One-way; chat orders never change the game.
 		void disableChat() { chatOff = true; }

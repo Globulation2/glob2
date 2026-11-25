@@ -178,6 +178,12 @@ export class AdminService {
     band: 'under_13' | '13_plus',
     reason?: string,
   ) {
+    if (actor && !(RANK[actor.role] > RANK[target.role])) {
+      throw apiError(
+        'forbidden',
+        'You can only change the age band of accounts with a lower role.',
+      );
+    }
     const updated = await setAgeBand(this.db, target.id, band, 'moderator');
     await this.audit(actor, 'account.age_band', target, {
       from: target.age_band,

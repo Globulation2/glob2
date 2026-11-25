@@ -292,13 +292,13 @@ OnlineMatch::OnlineMatch(PlatformClient &client, MapCache &maps, OnlineStorage &
 	// the HUD hides the chat box for the match's lifetime.
 	const bool chatOn = !(this->assignment.contains("chat") && this->assignment["chat"].is_boolean() &&
 						  !this->assignment["chat"].get<bool>());
-	AgeGate::setMatchChatOn(chatOn);
+	matchChatToken = AgeGate::beginMatchChat(chatOn);
 }
 
 // calls (a member) cancels the reconnect request.
 OnlineMatch::~OnlineMatch()
 {
-	AgeGate::setMatchChatOn(true);
+	AgeGate::endMatchChat(matchChatToken);
 }
 
 void OnlineMatch::parseAssignment()

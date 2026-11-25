@@ -208,7 +208,7 @@ The relay then checks the claims' shape, and reports a failure as `claims`:
 human player who is under 13 or has not declared an age
 ([age bands](identity.md#age-bands)). The first such ticket the relay admits turns
 chat off for the rest of the match (`TurnSequencer::disableChat`, logged once): every
-later `ORDER_TEXT_MESSAGE` from any seat is dropped before sequencing and counted in
+later `ORDER_TEXT_MESSAGE` and `ORDER_VOICE_DATA` from any seat is dropped before sequencing and counted in
 `ordersDropped`, so no client receives it. Chat orders never change the game, so
 this cannot desynchronize a match. A relay older than this rule ignores the claim
 and only the clients hide chat.

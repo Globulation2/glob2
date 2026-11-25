@@ -327,10 +327,11 @@ as little as possible from anyone, children included:
   now"), or decline to share, the game treats you as under 13 until you answer. On
   the website, your account page asks the same question.
 - For players under 13, and for players who have not answered, chat is off: they
-  cannot send room or in-game chat messages and do not see other players'. Online,
-  a match with such a player has chat turned off for everyone in it. They also
-  cannot share maps, AIs, generators, asset sets or music beyond keeping them
-  private, cannot choose a display name (they keep a generated one such as
+  cannot send room or in-game chat messages or voice chat, and do not see or hear
+  other players'. Online, a match with such a player has chat turned off for
+  everyone in it. They can host rooms by invite link but not list public ones. They
+  also cannot share maps, AIs, generators, asset sets, buildings or music beyond
+  keeping them private, cannot choose a display name (they keep a generated one such as
   `Guest-1234`) and cannot upload a photo. Answering "under 13" makes anything they
   had shared private. Single-player, the campaign, the editor, LAN and online
   matches, including quick matches and rooms, stay available.

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "InGameStatistics.h"
+#include "AgeGate.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "PowerOfTwo.h"
@@ -311,8 +312,13 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 
 	// voice step
 	std::shared_ptr<OrderVoiceData> orderVoiceData;
+	const bool voiceAllowed = AgeGate::chatAllowedNow();
+	if (!voiceAllowed && globalContainer->voiceRecorder->recordingNow)
+		globalContainer->voiceRecorder->stopRecording(); // chat went off (a new match, a new answer)
 	while ((orderVoiceData = globalContainer->voiceRecorder->getNextOrder()) != NULL)
 	{
+		if (!voiceAllowed)
+			continue; // recorded before chat went off: never sent
 		orderVoiceData->recipientsMask = chatMask ^ (chatMask & (Team::teamNumberToMask(localPlayer)));
 		enqueueOrder(orderVoiceData);
 	}
