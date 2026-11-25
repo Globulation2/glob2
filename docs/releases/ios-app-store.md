@@ -123,12 +123,15 @@ final set has been reviewed, then place only the selected store assets in
   chat, and shared maps; do not answer all content questions “none” based only on
   the single-player flow. User-generated content, social features and messaging
   stay “yes”. “Social media disabled for users under 13” is “yes” only for a build
-  that asks Declared Age Range (iOS/iPadOS 26+, `platforms/mobile/ios/AgeSignal.swift`)
-  and against an official instance that enforces age bands (both described in
-  [identity](../multiplayer/identity.md#age-bands)); the Mac App Store build asks the
-  game's own question and does not call Declared Age Range yet.
-- The App ID needs the **Declared Age Range** capability: the iOS entitlements
-  carry `com.apple.developer.declared-age-range`, and signing fails without it.
+  that asks Declared Age Range (iOS, iPadOS and macOS 26+,
+  `platforms/apple/AgeSignal.swift`) and against an official instance that enforces
+  age bands (both described in [identity](../multiplayer/identity.md#age-bands)). The
+  one app record carries both platforms, so both builds must include it.
+- The App ID needs the **Declared Age Range** capability. The iOS entitlements carry
+  `com.apple.developer.declared-age-range`, and signing fails without it; for the Mac
+  App Store `platforms/macos/package_app_store.py` adds it from the provisioning
+  profile and refuses a profile without it (ad hoc test builds leave it out and ask
+  the game's question). Download the profiles again after enabling the capability.
 - Confirm age rating, pricing, availability, copyright, support
   contact, and any regional compliance questions in App Store Connect.
   Apple shows its own leading © before the copyright field, so enter

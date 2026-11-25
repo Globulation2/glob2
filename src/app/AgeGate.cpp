@@ -6,8 +6,8 @@
 #include <utility>
 #include <vector>
 
-// The platform age request. Apple builds that link
-// platforms/mobile/ios/AgeSignal.swift define this symbol; it asks Declared Age
+// The platform age request. The App Store builds for iOS/iPadOS and macOS link
+// platforms/apple/AgeSignal.swift, which defines this symbol; it asks Declared Age
 // Range with an age gate of 13 and calls back exactly once with 0 unavailable,
 // 1 declined, 2 under 13, 3 aged 13 or over, on any thread. Everywhere else the
 // weak default below reports "unavailable".

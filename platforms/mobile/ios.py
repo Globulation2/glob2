@@ -156,7 +156,7 @@ def main():
         # Age Range capability for signing. The China edition has no online
         # play and keeps the C++ fallback (always "unavailable").
         entitlements['com.apple.developer.declared-age-range']=True
-        lines += ['target_sources(Glob2 PRIVATE '+cmake_quote(ROOT/'platforms/mobile/ios/AgeSignal.swift')+')',
+        lines += ['target_sources(Glob2 PRIVATE '+cmake_quote(ROOT/'platforms/apple/AgeSignal.swift')+')',
                   'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_SWIFT_VERSION 5.0)',
                   'target_link_options(Glob2 PRIVATE -Wl,-weak_framework,DeclaredAgeRange)']
     write_if_changed(project/'Glob2.entitlements',plistlib.dumps(entitlements).decode())
