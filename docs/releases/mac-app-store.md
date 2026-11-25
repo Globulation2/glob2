@@ -17,6 +17,11 @@ App Store image fields and crop preview before upload. Keep gameplay screenshots
 separate from promotional illustration and use the compiled app's approved icon;
 store presentation changes do not select a build or release the product.
 
+The version's copyright field takes the line given in the
+[iPhone App Store checklist](ios-app-store.md) (Apple adds the leading ©). The
+staged app's `NSHumanReadableCopyright` is set from `APP_COPYRIGHT` in
+`platforms/macos/package_app_store.py`.
+
 ## Local build check
 
 On macOS, run:
