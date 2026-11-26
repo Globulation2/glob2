@@ -1,3 +1,4 @@
+#include "PortalPolicy.h"
 #include "ui/ApiErrorText.h"
 #include "ui/LibraryText.h"
 #include "app/ClientFeatures.h"
@@ -640,7 +641,8 @@ Element OnlineMapsScreen::detailPanel(const Presentation &p, bool phone)
 	if (!phone)
 		actionsRow.push_back(button("maps/use", tr("[maps use in room]"), [this] { useInRoom(); }, use));
 	actionsRow.push_back(button("maps/like", like.selected ? tr("[maps liked]") : tr("[maps like]"), [this] { toggleLike(); }, like));
-	actionsRow.push_back(button("maps/page", tr("[maps map page]"), [this] { openMapPage(); }, page));
+	if (PortalPolicy::externalLinks())
+		actionsRow.push_back(button("maps/page", tr("[maps map page]"), [this] { openMapPage(); }, page));
 	actionsRow.push_back(button("maps/report", detail && detail->reported ? tr("[maps reported]") : tr("[maps report]"),
 								[this] { beginReport(); }, report));
 	WrapOptions grid;

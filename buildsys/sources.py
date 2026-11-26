@@ -583,6 +583,7 @@ CLIENT_SOURCES = (
     'map/Sector.cpp',
     'app/Settings.cpp',
     'app/AgeGate.cpp',
+    'app/PortalPolicy.cpp',
     'app/SystemLanguage.cpp',
     'app/DeviceProfile.cpp',
     'app/DeviceAdaptation.cpp',

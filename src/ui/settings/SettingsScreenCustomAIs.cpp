@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PortalPolicy.h"
 #include "ui/ApiErrorText.h"
 #include "ui/LibraryText.h"
 #include "app/ClientFeatures.h"
@@ -144,9 +145,10 @@ void SettingsScreen::buildCustomAIs()
 		"Linked files are read at game start. Rebuild before starting a new game. Removing a "
 		"link never deletes your file."));
 #endif
-	button(
-		"ai.example", customAIText("Example AI and authoring guide"), []
-		{ AH::openUrl("https://github.com/Globulation2/glob2-javascript-ai-starter-exampler"); });
+	if (PortalPolicy::externalLinks())
+		button(
+			"ai.example", customAIText("Example AI and authoring guide"), []
+			{ AH::openUrl("https://github.com/Globulation2/glob2-javascript-ai-starter-exampler"); });
 	if (s.library.entries().empty())
 		info(customAIText("No custom AIs yet. Import a bundled .js file to get started."));
 	for (const auto &entry : s.library.entries())
@@ -526,34 +528,34 @@ Glob2UI::Element SettingsScreen::buildCustomAILibrary(const Glob2UI::Presentatio
 			paragraph(customAIText("Compatibility checks do not certify safety or playing "
 								   "strength. Only run code from authors you trust."),
 					  {FontRole::Support, true}));
-		top.push_back(wrap(
-			{Glob2UI::button("ais/guide", customAIText("Authoring guide"),
-							 []
-							 {
-								 AH::openUrl("https://github.com/Globulation2/glob2/blob/master/"
-											 "docs/scripting/javascript.md");
-							 }),
-			 Glob2UI::button("ais/api", customAIText("JavaScript API reference"),
-							 []
-							 {
-								 AH::openUrl("https://github.com/Globulation2/glob2/blob/master/"
-											 "docs/scripting/javascript-api.md");
-							 }),
-			 Glob2UI::button(
-				 "ais/starter", customAIText("Starter project"),
-				 []
-				 {
-					 AH::openUrl(
-						 "https://github.com/Globulation2/glob2-javascript-ai-starter-exampler");
-				 }),
-			 Glob2UI::button("ais/gotit", customAIText("Got it"),
-							 [this]
-							 {
-								 customAIs->learn = false;
-								 customAIs->storage->write("ais/onboarding-dismissed", "1");
-								 customAIs->storage->persist();
-								 invalidate();
-							 })}));
+		std::vector<Element> learnButtons;
+		if (PortalPolicy::externalLinks())
+		{
+			learnButtons.push_back(Glob2UI::button("ais/guide", customAIText("Authoring guide"),
+												   []
+												   {
+													   AH::openUrl("https://github.com/Globulation2/glob2/blob/master/"
+																   "docs/scripting/javascript.md");
+												   }));
+			learnButtons.push_back(Glob2UI::button("ais/api", customAIText("JavaScript API reference"),
+												   []
+												   {
+													   AH::openUrl("https://github.com/Globulation2/glob2/blob/master/"
+																   "docs/scripting/javascript-api.md");
+												   }));
+			learnButtons.push_back(Glob2UI::button(
+				"ais/starter", customAIText("Starter project"),
+				[] { AH::openUrl("https://github.com/Globulation2/glob2-javascript-ai-starter-exampler"); }));
+		}
+		learnButtons.push_back(Glob2UI::button("ais/gotit", customAIText("Got it"),
+											   [this]
+											   {
+												   customAIs->learn = false;
+												   customAIs->storage->write("ais/onboarding-dismissed", "1");
+												   customAIs->storage->persist();
+												   invalidate();
+											   }));
+		top.push_back(wrap(std::move(learnButtons)));
 	}
 	if (s.tab == 2)
 	{
@@ -689,31 +691,34 @@ Glob2UI::Element SettingsScreen::buildCustomAILibrary(const Glob2UI::Presentatio
 			}
 			const auto &account = s.calls->client().account();
 			const bool signedIn = account && account->kind == "registered";
-			details.push_back(wrap(
-				{Glob2UI::button("ais/like",
-								 customAIText(ai.value("liked", false) ? "Liked" : "Like"),
-								 [this] { socialOnlineAI(false); },
-								 {.selected = ai.value("liked", false),
-								  .enabled = signedIn && !busy &&
-											 !s.socialPending.contains(s.selectedId)}),
-				 Glob2UI::button(
-					 "ais/favourite",
-					 customAIText(ai.value("favourited", false) ? "Favourited" : "Favourite"),
-					 [this] { socialOnlineAI(true); },
-					 {.selected = ai.value("favourited", false),
-					  .enabled = signedIn && !busy &&
-								 !s.socialPending.contains(s.selectedId)})}));
-			if (!signedIn)
+			// Liking needs an account; a portal without online sign-in has none.
+			if (PortalPolicy::onlineSignIn())
+				details.push_back(wrap(
+					{Glob2UI::button("ais/like",
+									 customAIText(ai.value("liked", false) ? "Liked" : "Like"),
+									 [this] { socialOnlineAI(false); },
+									 {.selected = ai.value("liked", false),
+									  .enabled = signedIn && !busy &&
+												 !s.socialPending.contains(s.selectedId)}),
+					 Glob2UI::button(
+						 "ais/favourite",
+						 customAIText(ai.value("favourited", false) ? "Favourited" : "Favourite"),
+						 [this] { socialOnlineAI(true); },
+						 {.selected = ai.value("favourited", false),
+						  .enabled = signedIn && !busy &&
+									 !s.socialPending.contains(s.selectedId)})}));
+			if (!signedIn && PortalPolicy::onlineSignIn())
 				details.push_back(paragraph(
 					customAIText("Sign in through Online settings to like and favourite AIs."),
 					{FontRole::Support, true}));
-			details.push_back(Glob2UI::button("ais/website", customAIText("Open AI page"),
-											  [this]
-											  {
-												  AH::openUrl(
-													  customAIs->origin + "/ais/" +
-													  Online::urlEncode(customAIs->selectedId));
-											  }));
+			if (PortalPolicy::externalLinks())
+				details.push_back(Glob2UI::button("ais/website", customAIText("Open AI page"),
+												  [this]
+												  {
+													  AH::openUrl(
+														  customAIs->origin + "/ais/" +
+														  Online::urlEncode(customAIs->selectedId));
+												  }));
 		}
 		if (p.touch || p.compact())
 		{
@@ -741,18 +746,20 @@ Glob2UI::Element SettingsScreen::buildCustomAILibrary(const Glob2UI::Presentatio
 									 column(std::move(details), {p.pt(8)})))},
 					{p.pt(16)});
 	}
-	auto footer =
-		actions({{"ais/learn", customAIText("How AIs work"),
-				  [this]
-				  {
-					  customAIs->learn = !customAIs->learn;
-					  invalidate();
-				  },
-				  false},
-				 {"ais/share", customAIText("Share your AI"),
-				  [this] { AH::openUrl(customAIs->origin + "/ais/new"); }, false},
-				 {"ais/close", customAIText("Done"), [this] { dismiss(); }, true, SDLK_ESCAPE}},
-				p);
+	std::vector<MenuAction> footerActions{
+		{"ais/learn", customAIText("How AIs work"),
+		 [this]
+		 {
+			 customAIs->learn = !customAIs->learn;
+			 invalidate();
+		 },
+		 false},
+		{"ais/share", customAIText("Share your AI"),
+		 [this] { AH::openUrl(customAIs->origin + "/ais/new"); }, false},
+		{"ais/close", customAIText("Done"), [this] { dismiss(); }, true, SDLK_ESCAPE}};
+	if (!PortalPolicy::externalLinks())
+		std::erase_if(footerActions, [](const MenuAction &a) { return a.key == "ais/share"; });
+	auto footer = actions(std::move(footerActions), p);
 	Element body;
 	if (desktopPanels)
 		body =

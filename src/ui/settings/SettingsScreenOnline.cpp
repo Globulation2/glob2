@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PortalPolicy.h"
 #include "ui/ApiErrorText.h"
 #include "app/ClientFeatures.h"
 // Copyright (C) 2026 glob2 contributors
@@ -110,8 +111,11 @@ void SettingsScreen::buildHiveMind()
 	toggle("hive.supervision", "Allow supervision for new commands", "The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.", globalContainer->settings.hiveMindSupervision,
 		[this](int v){globalContainer->settings.hiveMindSupervision=v;commit();});
 	info(tr("Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls."));
-	button("hive.account", tr("Commander account and credits"), [origin]{GAGCore::ApplicationHost::openUrl(origin + "/commander");});
-	info(tr("Manage credits and purchases in your browser. Commander assistance is permitted in ranked play."));
+	if (PortalPolicy::externalLinks())
+	{
+		button("hive.account", tr("Commander account and credits"), [origin]{GAGCore::ApplicationHost::openUrl(origin + "/commander");});
+		info(tr("Manage credits and purchases in your browser. Commander assistance is permitted in ranked play."));
+	}
 }
 
 void SettingsScreen::buildOnline()
@@ -324,10 +328,11 @@ void SettingsScreen::buildOnline()
 							Glob2UI::button("online.signout.button", tr("Sign out"), [this] { Online::services().client.signOut(); invalidate(); })},
 						   {p.pt(8), CrossAlign::Center});
 			});
-		custom("online.data.open", [this, origin](const Presentation &p) {
-			return row({expanded(column({label(tr("Download or delete my data")), caption(GAGCore::FormattableString(tr("Opens your account page on %0.")).arg(hostOf(origin)))}, {0})),
-						Glob2UI::button("online.data.open", tr("Open"), [origin] { GAGCore::ApplicationHost::openUrl(origin + "/account"); })},
-					   {p.pt(8), CrossAlign::Center});
-		});
+		if (PortalPolicy::externalLinks())
+			custom("online.data.open", [this, origin](const Presentation &p) {
+				return row({expanded(column({label(tr("Download or delete my data")), caption(GAGCore::FormattableString(tr("Opens your account page on %0.")).arg(hostOf(origin)))}, {0})),
+							Glob2UI::button("online.data.open", tr("Open"), [origin] { GAGCore::ApplicationHost::openUrl(origin + "/account"); })},
+						   {p.pt(8), CrossAlign::Center});
+			});
 	}
 }

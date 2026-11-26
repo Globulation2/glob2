@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "DiscordCommunity.h"
+#include "PortalPolicy.h"
 #include <ApplicationHost.h>
 
 namespace Glob2UI
@@ -9,6 +10,14 @@ namespace
 // One invitation shared by every community entry point.
 constexpr const char *inviteUrl = "https://discord.gg/rQn3Br6AFA";
 } // namespace
+
+void DiscordCommunity::open()
+{
+	if (!PortalPolicy::externalLinks())
+		return;
+	visible = true;
+	status.clear();
+}
 
 Element DiscordCommunity::build(const Presentation &p, std::function<void()> changed)
 {

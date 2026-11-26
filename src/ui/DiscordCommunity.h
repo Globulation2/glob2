@@ -10,11 +10,9 @@ class DiscordCommunity
 {
   public:
 	bool visible = false;
-	void open()
-	{
-		visible = true;
-		status.clear();
-	}
+	// Does nothing in a web portal that forbids external links: the page is
+	// one, and so is its invite link.
+	void open();
 	Element build(const Presentation &p, std::function<void()> changed);
 
   private:

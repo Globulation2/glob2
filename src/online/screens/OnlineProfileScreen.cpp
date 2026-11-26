@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PortalPolicy.h"
 #include "ui/ApiErrorText.h"
 #include "EngineTiming.h"
 #include "online/ReplayAppearance.h"
@@ -388,7 +389,7 @@ Element OnlineProfileScreen::matchRow(int index, const Presentation &p, bool pho
 				expanded(caption(matchKind(match)), 1), width(p.pt(64), caption(minutes)),
 				width(p.pt(80), label(change, {FontRole::Body, false, TextAlign::Left, changeColor})),
 				button(key + "/replay", tr("[profile replay]"), [this, id = match.id] { replay(id); }, replayOptions),
-				width(p.pt(40), button(key + "/page", "", [this, id = match.id] { openMatchPage(id); }, pageOptions))},
+				PortalPolicy::externalLinks() ? width(p.pt(40), button(key + "/page", "", [this, id = match.id] { openMatchPage(id); }, pageOptions)) : nullptr},
 			   {p.pt(8), CrossAlign::Center});
 }
 
@@ -471,7 +472,7 @@ Element OnlineProfileScreen::build(const Presentation &p)
 	panel.subtitle = subtitle;
 	ButtonOptions web;
 	web.icon = uiIcon(UIIcon::ExternalLink);
-	if (!phone)
+	if (!phone && PortalPolicy::externalLinks())
 		panel.headerRight = button("profile/web", tr("[profile full profile web]"), [this] { openWebProfile(); }, web);
 	if (live)
 		if (auto strip = SearchStrip::build(Online::quickMatch(), p))
@@ -495,15 +496,15 @@ Element OnlineProfileScreen::build(const Presentation &p)
 			ButtonOptions pageOptions;
 			pageOptions.icon = uiIcon(UIIcon::ExternalLink);
 			panel.thumbBlock = column({label(matchTitle(match), {FontRole::Heading}), caption(matchKind(match)),
-									   row({backButton, expanded(button("profile/sheet/page", tr("[profile match page]"),
-																		[this, id = match.id] { openMatchPage(id); }, pageOptions)),
+									   row({backButton, PortalPolicy::externalLinks() ? expanded(button("profile/sheet/page", tr("[profile match page]"),
+																		[this, id = match.id] { openMatchPage(id); }, pageOptions)) : nullptr,
 											expanded(button("profile/sheet/replay", tr("[profile replay]"),
 															[this, id = match.id] { replay(id); }, replayOptions))},
 										   {p.pt(8)})},
 									  {p.pt(6)});
 		}
 		else
-			panel.thumbBlock = row({backButton, expanded(button("profile/web", tr("[profile web profile]"), [this] { openWebProfile(); }, web))},
+			panel.thumbBlock = row({backButton, PortalPolicy::externalLinks() ? expanded(button("profile/web", tr("[profile web profile]"), [this] { openWebProfile(); }, web)) : nullptr},
 								   {p.pt(8)});
 	}
 	return onlinePanel(std::move(panel), p);

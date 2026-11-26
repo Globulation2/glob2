@@ -780,7 +780,7 @@ void PlatformClient::pumpRest()
 			response = localError("network", call->fetch ? call->fetch->error()
 														 : std::string("The request failed."));
 
-		if (call->bearer && status == 401 && !call->retried && call->epoch == epoch &&
+		if (call->bearer && status == 401 && !call->retried && call->epoch == epoch && options.signIn &&
 			!config.record(instance).refreshToken.empty())
 		{
 			// The access token was refused: refresh once, then retry.
@@ -969,7 +969,7 @@ void PlatformClient::beginSignIn()
 	if (!tokens.accessToken.empty() || signingIn || refreshing)
 		return;
 	auto &record = config.record(instance);
-	if (!record.autoSignIn)
+	if (!record.autoSignIn || !options.signIn)
 	{
 		authState = Auth::SignedOut;
 		return;
@@ -1061,7 +1061,7 @@ void PlatformClient::refreshTokens()
 	if (refreshing)
 		return;
 	auto &record = config.record(instance);
-	if (record.refreshToken.empty())
+	if (record.refreshToken.empty() || !options.signIn)
 	{
 		refreshAt = 0;
 		return;
@@ -1202,7 +1202,7 @@ void PlatformClient::forgetTokens()
 
 void PlatformClient::signInAsGuest()
 {
-	if (!running)
+	if (!running || !options.signIn)
 		return;
 	auto &record = config.record(instance);
 	record.autoSignIn = true;
@@ -1253,6 +1253,8 @@ void PlatformClient::signOut()
 
 void PlatformClient::beginBrowserSignIn(const std::string &mode, const std::string &provider)
 {
+	if (!options.signIn)
+		return;
 	if (signIn.state == Handoff::State::Starting || signIn.state == Handoff::State::Waiting)
 		cancelBrowserSignIn();
 	signIn = {};

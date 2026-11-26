@@ -219,6 +219,7 @@ set(GLOB2_ENGINE_TESTS_2_SOURCES
     src/render/TerrainPresentationTest.cpp
     src/render/TerrainAnimationTest.cpp
     src/render/torus/TorusRenderIntegrationTest.cpp
+    src/app/PortalModeTest.cpp
     src/app/AdaptiveSettingsTest.cpp
     src/game/orders/FarmAreaTest.cpp
     src/game/GameSpeedTest.cpp
@@ -563,6 +564,7 @@ set(GLOB2_UNIT_TESTS_0_SOURCES
     libs/gag/src/SpriteRenderAtlasTest.cpp
     libs/gag/src/RenderFramePacerTest.cpp
     src/app/DeviceProfileTest.cpp
+    src/app/PortalPolicyTest.cpp
     libs/gag/src/RenderDeviceTest.cpp
     libs/gag/src/ProgrammableGLDeviceTest.cpp
     libs/gag/src/SDLGPUDeviceTest.cpp
@@ -807,6 +809,7 @@ set(GLOB2_UNIT_TESTS_5_REQUIRE
 
 # Production sources whose client objects glob2-unit-tests links.
 set(GLOB2_UNIT_TESTS_REUSED_CLIENT_SOURCES
+    src/app/PortalPolicy.cpp
     src/field/GradientDeviceService.cpp
     src/field/GradientAccelerators.cpp
     src/field/VulkanGradient.cpp
@@ -1490,6 +1493,7 @@ set(GLOB2_ANDROID_ENGINE_TESTS_1_SOURCES
     src/render/TerrainPresentationTest.cpp
     src/render/TerrainAnimationTest.cpp
     src/render/torus/TorusRenderIntegrationTest.cpp
+    src/app/PortalModeTest.cpp
     src/app/AdaptiveSettingsTest.cpp
     src/game/orders/FarmAreaTest.cpp
     src/game/GameSpeedTest.cpp
@@ -1846,6 +1850,7 @@ set(GLOB2_ANDROID_UNIT_TESTS_0_SOURCES
     libs/gag/src/SpriteRenderAtlasTest.cpp
     libs/gag/src/RenderFramePacerTest.cpp
     src/app/DeviceProfileTest.cpp
+    src/app/PortalPolicyTest.cpp
     libs/gag/src/RenderDeviceTest.cpp
     libs/gag/src/ProgrammableGLDeviceTest.cpp
     libs/gag/src/SDLGPUDeviceTest.cpp
@@ -2098,6 +2103,7 @@ set(GLOB2_ANDROID_UNIT_TESTS_4_REQUIRE
 
 # Production sources whose mobile objects the Android unit tests link.
 set(GLOB2_ANDROID_UNIT_REUSED_SOURCES
+    src/app/PortalPolicy.cpp
     src/field/GradientDeviceService.cpp
     src/field/GradientAccelerators.cpp
     src/field/VulkanGradient.cpp

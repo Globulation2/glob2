@@ -121,10 +121,29 @@ class Persistence
 };
 std::unique_ptr<Persistence> persistStorage();
 
+// How a web game portal that embeds the browser build restricts the game: the
+// JSON text of the page's window.GLOB2_PORTAL, which the portal packager writes
+// into index.html. Empty when there is none (our own site, itch, desktop,
+// mobile). Native hosts read the GLOB2_PORTAL environment variable instead, so
+// portal mode can be tried outside a browser. src/app/PortalPolicy.h parses it.
+std::string portalDescription();
+
+// What an openUrl call opens. A portal that forbids external links still lets
+// the online sign-in page open when it allows sign-in (src/app/PortalPolicy.h).
+enum class UrlPurpose
+{
+	Link,
+	SignIn,
+};
+// Off in portal builds that forbid links out of the game: openUrl then opens
+// nothing for UrlPurpose::Link and returns false. On by default.
+void setExternalLinksAllowed(bool allowed);
+bool externalLinksAllowed();
+
 // Opens an http(s) URL in the system browser (a new tab on the web). Returns
 // false when the host cannot, or a popup blocker refused it; browsers allow it
 // reliably only while handling a click.
-bool openUrl(const std::string &url);
+bool openUrl(const std::string &url, UrlPurpose purpose = UrlPurpose::Link);
 // Call while handling a click whose page URL only arrives later (from a server
 // reply): the browser opens an empty tab now, while the click still allows it,
 // and the next openUrl loads the page there. Does nothing on native hosts.

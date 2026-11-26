@@ -240,6 +240,8 @@ ENGINE_TESTS = [
     '#src/ui/settings/SettingsBuildingsTest.cpp',
     '#src/app/SystemLanguageTest.cpp',
     '#src/app/AgeGateTest.cpp',
+    # Opens the main menu's More page (MainMenuScreen::showMore).
+    ('#src/app/PortalModeTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/app/AdaptiveSettingsTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/game/orders/GuardAreaBalanceTest.cpp',
     ('#src/game/orders/FarmAreaTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -268,6 +270,7 @@ UNIT_TESTS = [
     '#libs/gag/src/SpriteRenderAtlasTest.cpp',
     '#libs/gag/src/RenderFramePacerTest.cpp',
     '#src/app/DeviceProfileTest.cpp',
+    '#src/app/PortalPolicyTest.cpp',
     '#libs/gag/src/RenderDeviceTest.cpp',
     '#libs/gag/src/ProgrammableGLDeviceTest.cpp',
     '#libs/gag/src/SDLGPUDeviceTest.cpp',
@@ -418,6 +421,7 @@ UNIT_TESTS = [
 # Production sources the unit binary links. Plain entries reuse the client build's
 # object; entries with `defines` are compiled again for the unit binary only.
 UNIT_PRODUCTION_SOURCES = [
+    '#src/app/PortalPolicy.cpp',
     ('#src/field/OpenCLGradient.cpp', dict(defines=['GLOB2_TEST_DEVICE_FAILURES'])),
     '#src/field/GradientDeviceService.cpp',
     '#src/field/GradientAccelerators.cpp',
