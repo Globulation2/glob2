@@ -26,6 +26,7 @@
 #endif
 #include <RenderBatch.h>
 #include <PresentationWork.h>
+#include <ThreadSupport.h>
 #include <DirectTerrainShader.h>
 #include <RenderDevice.h>
 #include <RenderResources.h>
@@ -475,6 +476,21 @@ struct DirectTerrain::State
                 result.edges[i] = Uint16(std::min<unsigned>(sample.margin, 4095) | (unsigned(sample.slots >> 2) << 12));
             }
             return result;
+        }
+        // Without threads (the serial browser runtime) the graphics thread
+        // builds queued masks itself until the deadline, base masks first.
+        void buildQueued(std::chrono::steady_clock::time_point deadline)
+        {
+            std::lock_guard lock(mutex);
+            while ((!jobs.empty() || !baseJobs.empty()) && std::chrono::steady_clock::now() < deadline)
+            {
+                auto &from = baseJobs.empty() ? jobs : baseJobs;
+                Job job = std::move(from.front());
+                from.pop_front();
+                auto result = build(*materials, job.cell, job.recipe, job.tile, job.generation);
+                result.base = job.base;
+                done.push_back(std::move(result));
+            }
         }
         void work()
         {
@@ -1177,7 +1193,8 @@ struct DirectTerrain::State
     {
         constexpr std::size_t JobsPerHelper = 32;
         const std::size_t cores = std::max(1u, std::thread::hardware_concurrency());
-        const std::size_t helpers = std::min({cores - 1, std::size_t(7), count / JobsPerHelper});
+        const std::size_t helpers = GAGCore::ThreadSupport::available
+            ? std::min({cores - 1, std::size_t(7), count / JobsPerHelper}) : 0;
         std::atomic<std::size_t> next{0};
         const auto run = [&]
         {
@@ -2216,7 +2233,13 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
     const bool baseComplete = hd.base.tile && hd.base.reported && !hd.base.remaining && hd.base.redo.empty();
     hd.pending = baseComplete ? missing.size() : wantedMasks;
     const int columns = atlasSize / tile;
-    if (hd.workers.empty())
+    if (!GAGCore::ThreadSupport::available)
+    {
+        // Hosts without threads build masks inline, below; std::thread would throw
+        // and take every material with it (ANIMATED_TERRAIN_FALLBACK).
+        if (!hd.materials) hd.materials = compositor.cpuMaterialsForRecipes({});
+    }
+    else if (hd.workers.empty())
     {
         hd.materials = compositor.cpuMaterialsForRecipes({});
         // Half the cores (two to six): masks keep pace with a zoom without
@@ -2301,6 +2324,8 @@ void DirectTerrain::prepareHdMasks(const SceneMap &map, int left, int top, int r
         }
     }
     hd.wake.notify_all();
+    if constexpr (!GAGCore::ThreadSupport::available)
+        hd.buildQueued(std::chrono::steady_clock::now() + std::chrono::milliseconds(4));
     // Upload finished masks within a per-frame byte budget.
     std::vector<State::Hd::Result> finished;
     {
