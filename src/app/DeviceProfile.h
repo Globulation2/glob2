@@ -37,6 +37,11 @@ struct DeviceThresholds
 	int lowMapShift = 7;
 	int mobileMidMapShift = 7;
 	int defaultMapShift = 8;
+	// Single-threaded runtime (a browser host without cross-origin isolation,
+	// such as a web portal's iframe): the simulation shares the one thread with
+	// rendering, so new games start small and against one computer opponent.
+	int serialMapShift = 7;
+	int serialColonies = 2;
 	// Session step-down: this many presented frames slower than hitchNs within
 	// hitchWindowNs turn Auto artwork off. Frames in the first hitchGraceNs of
 	// a match (loading, artwork streaming in) and gaps over gapNs (pauses,
@@ -57,7 +62,8 @@ enum class DeviceReason : std::uint8_t
 	AndroidLowRam, // ActivityManager.isLowRamDevice()
 	Cores,         // value = hardware threads
 	Vram,          // value = MiB of device-local GPU memory
-	Override       // GLOB2_DEVICE_TIER or --device-tier
+	Override,      // GLOB2_DEVICE_TIER or --device-tier
+	SerialRuntime  // no threads: GAGCore::ThreadSupport::available is false
 };
 
 struct DeviceInputs
@@ -74,6 +80,8 @@ struct DeviceInputs
 	// Desktop Vulkan: the largest device-local heap of a discrete GPU.
 	std::uint64_t vramMiB = 0;
 	std::string vramSource = "none"; // none, pending, vulkan, integrated, unavailable
+	// The game runs without threads (the serial browser runtime).
+	bool serialRuntime = false;
 };
 
 struct DeviceDecision
@@ -103,6 +111,8 @@ struct DeviceProfile
 	// Auto values. Callers apply them only where the player chose Auto.
 	DeviceDecision highResolutionArtwork() const;
 	DeviceMapSize newMapSize() const;
+	// Colonies in a new game, the player's included; 0 keeps the setup's own default.
+	int newGameColonies() const;
 	// key=value fields for performance telemetry and the startup log.
 	std::string telemetryFields() const;
 

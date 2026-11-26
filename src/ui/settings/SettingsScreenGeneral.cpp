@@ -42,6 +42,7 @@ std::string SettingsScreen::deviceReasonText(int reason, std::uint64_t value)
 	case DeviceReason::Vram: return FormattableString(tr("device video memory %0")).arg(gigabytes(value));
 	case DeviceReason::Override:
 		return FormattableString(tr("device tier override %0")).arg(DeviceProfile::tierName(DeviceProfile::current().tier));
+	case DeviceReason::SerialRuntime: // map size and colonies only; never an artwork reason
 	case DeviceReason::Unknown: break;
 	}
 	return tr("device unknown");
