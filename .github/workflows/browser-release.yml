@@ -11,6 +11,10 @@ on:
         description: Publish to Google Cloud Storage (off builds the portal uploads only)
         type: boolean
         default: true
+      gamejolt:
+        description: Push the Game Jolt upload with gjpush (gamejolt-release approval)
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -181,8 +185,9 @@ jobs:
 
   # Web portals host their own copy of the browser game, so every browser release
   # also produces each portal's upload from the same verified package (no rebuild).
-  # No portal here has an upload API we use yet: download the <portal>-upload
-  # artifact and submit it on the portal's dashboard (docs/releases/<portal>.md).
+  # Game Jolt uploads with gjpush (the gamejolt job); for the others, download the
+  # <portal>-upload artifact and submit it on the portal's dashboard
+  # (docs/releases/<portal>.md).
   # Yandex Games (100 MB unpacked) and Poki (small file size) reject the full
   # package and wait on the small download build; package-portal.py fails above a
   # portal's limit, so adding them here before that build would fail the release.
@@ -238,3 +243,62 @@ jobs:
           path: upload/
           if-no-files-found: error
           compression-level: 0
+
+  # Game Jolt is the one portal with an upload tool: gjpush pushes the verified
+  # gamejolt-upload artifact as a browser build. The gamejolt-release environment
+  # holds GJPUSH_TOKEN and needs the owner's approval (docs/releases/gamejolt.md).
+  gamejolt:
+    needs: portals
+    if: inputs.gamejolt
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: gamejolt-release
+    permissions:
+      contents: read
+    env:
+      GAMEJOLT_GAME_ID: '1122762'
+      GAMEJOLT_PACKAGE_ID: '1154961'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: gamejolt-upload
+          path: upload
+      - name: Verify the Game Jolt upload
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          python3 platforms/web/package-portal.py --portal gamejolt --verify "upload/glob2-${TAG#v}-gamejolt.zip"
+      - name: Install pinned gjpush
+        env:
+          GJPUSH_DIR: ${{ runner.temp }}/gjpush
+        run: |
+          set -euo pipefail
+          mkdir -p "$GJPUSH_DIR"
+          cd "$GJPUSH_DIR"
+          curl --fail --silent --show-error --location --proto '=https' --proto-redir '=https' \
+            https://github.com/gamejolt/cli/releases/download/v0.5.0/linux.zip --output gjpush.zip
+          echo '5e685aa7747ceffccdcba0d45401d155b04e452835ede228c7be6561aa0b9883  gjpush.zip' | sha256sum -c
+          unzip -q gjpush.zip
+          chmod +x gjpush
+          echo "$GJPUSH_DIR" >> "$GITHUB_PATH"
+      - name: Push the browser build to Game Jolt
+        env:
+          GJPUSH_TOKEN: ${{ secrets.GJPUSH_TOKEN }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$GJPUSH_TOKEN" ]]; then
+            echo '::error::Set GJPUSH_TOKEN in the gamejolt-release environment.'
+            exit 1
+          fi
+          # Game Jolt releases are semver; fold the fourth part of MAJOR.MINOR.PATCH.BUILD
+          # into the patch (0.11.8.1 -> 0.11.801) so releases still sort in tag order.
+          IFS=. read -r major minor patch build <<< "${TAG#v}"
+          version="$major.$minor.$((patch * 100 + ${build:-0}))"
+          gjpush --game "$GAMEJOLT_GAME_ID" --package "$GAMEJOLT_PACKAGE_ID" \
+            --release "$version" --browser "upload/glob2-${TAG#v}-gamejolt.zip"
+          echo "Pushed \`glob2-${TAG#v}-gamejolt.zip\` to Game Jolt as release $version." >> "$GITHUB_STEP_SUMMARY"
