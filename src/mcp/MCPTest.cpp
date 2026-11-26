@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Availability.h"
-#include "OnlineUIFixtures.h"
-#include <chrono>
 #if GLOB2_DESKTOP_MCP
 // Establish WinSock2 before SDL fixtures can include Windows headers.
 #include <boost/asio.hpp>
 #include <boost/beast.hpp>
+#include "OnlineUIFixtures.h"
 #include "Protocol.h"
 #include "Guide.h"
 #include "HttpServer.h"
@@ -23,6 +22,7 @@
 #include "UnitConsts.h"
 #include "stats/MetricCatalog.h"
 #include <algorithm>
+#include <chrono>
 #include <set>
 #include <thread>
 #include <fstream>
