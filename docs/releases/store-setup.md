@@ -6,7 +6,7 @@ Configure store credentials and mirror-only publication workflows.
 
 Use the [storefront-v2 listing copy](https://github.com/Globulation2/glob2-marketing/tree/19d01492a8861debe7c0baefadcd49679c3f85a0/translations)
 when maintaining Epic, Steam, GOG, itch.io or other project-controlled listings;
-the [storefront-v2 rollout](https://github.com/Globulation2/glob2-marketing/blob/main/planning/storefront-v2-rollout.md)
+the [storefront-v2 rollout](https://github.com/Globulation2/glob2-marketing/blob/main/planning/storefront-rollout.md)
 records which stores have it. Until the storefront-v2 screenshots and key art are
 hosted, the [storefront-v1 desktop export pack](https://github.com/Globulation2/glob2-marketing/tree/a968359dc95d51e998f63ba4d984d33b04560b39/assets/storefront-approved-v1)
 records the current gameplay order, key-art/logo sources and image provenance. Adapt to each

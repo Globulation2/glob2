@@ -97,7 +97,7 @@ shows these scenes in this order, each with its English overlay caption:
 8. “8 computer opponents” — Several colonies share one map and compete for the same land.
 
 The captions are overlays drawn in a band above the unaltered capture by the
-[caption renderer](https://github.com/Globulation2/glob2-marketing/tree/main/assets/storefront-v2/tools), which sets
+[caption renderer](https://github.com/Globulation2/glob2-marketing/tree/main/assets/storefront/tools), which sets
 every language from the reviewed catalogs; keep them outside essential
 UI and compare the result to an unaltered capture. The first three screenshots
 need to communicate the core game quickly. Apple
