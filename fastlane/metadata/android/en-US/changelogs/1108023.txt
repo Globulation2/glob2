@@ -1,0 +1,1 @@
+Asks your age once and turns chat and sharing off under 13; a smaller, faster-loading browser edition; softer water and smoother terrain across tile edges; correct layout on touch tablets; and a redrawn app icon.
