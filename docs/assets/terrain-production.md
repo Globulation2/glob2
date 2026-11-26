@@ -628,8 +628,9 @@ Water, deep water and dark water use one 4×4 layout with sixteen phases
 (`animation_ticks 6`, preserving the 96-tick loop). Each phase renders 512×512
 periodic fields from plane waves whose wave numbers and animation cycles are
 integers (`WAVE_GRID` sets the block size; wave numbers scale with it).
-Every cell animates locally on the shared clock, so swell crests roll toward the
-lower right and finer cross chop breaks them into moving glints. Deep water
+Every cell animates on the shared clock. Lower-contrast crossing swells break
+up broad bands while finer chop makes the moving glints. The warp bends the
+waves at subpixel precision for smooth lighting on the faces of the swell. Deep water
 reads the same geometry with its darker palette and less chop. Dark water reads
 it again as an inky, heavier swell with little chop and faint cold glints, and
 shades the lee of every swell crest so its troughs read deeper; the shadow comes

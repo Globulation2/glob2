@@ -96,14 +96,16 @@ TEST_SUITE("ProgrammableGLDevice")
             for (unsigned slot = 0; slot < Terrain::StreamedCount; ++slot) {
                 if (slot == Terrain::MaskIndex || slot == Terrain::HdPreviousIndex) continue; // Placeholders.
                 auto texture = std::make_shared<StreamedTexture>();
-                texture->width = 4; texture->height = 2;
-                texture->write({0, 0, 4, 2}, std::vector<std::uint8_t>(32, 0));
+                texture->width = 4;
+                texture->height = slot == Terrain::Art ? 4 : 2;
+                texture->write({0, 0, 4, texture->height}, std::vector<std::uint8_t>(16 * texture->height, 0));
                 texture->write({1, 1, 2, 1}, std::vector<std::uint8_t>(8, 255));
                 terrain->streamed[slot] = texture;
             }
             terrain->wholeMap = true;
             terrain->hd.mapSize[0] = terrain->hd.mapSize[1] = 2;
             terrain->hd.artSize[0] = terrain->hd.artSize[1] = 4;
+            terrain->hd.artTilePixels = 2;
             return terrain;
         };
         const auto frame = [](std::uint64_t identity, std::shared_ptr<const Terrain> terrain) {
@@ -133,7 +135,8 @@ TEST_SUITE("ProgrammableGLDevice")
             CHECK(texture->applied == 2);
             CHECK_FALSE(texture->lost);
         }
-        CHECK(fixture.device->telemetry().resourceBytes >= before + 12 * 32);
+        constexpr std::size_t TextureBytes = 12 * 32 + 32; // The art atlas is 4x4.
+        CHECK(fixture.device->telemetry().resourceBytes >= before + TextureBytes);
         // Later writes apply in place; the texture is not recreated.
         terrain->streamed[Terrain::Cells]->write({0, 0, 1, 1}, std::vector<std::uint8_t>(4, 7));
         REQUIRE(fixture.device->submit(frame(2, terrain)));
@@ -154,7 +157,7 @@ TEST_SUITE("ProgrammableGLDevice")
         const auto held = fixture.device->telemetry().resourceBytes;
         terrain.reset(); fresh.reset();
         fixture.device->trimRetiredResources();
-        CHECK(fixture.device->telemetry().resourceBytes + 12 * 32 <= held);
+        CHECK(fixture.device->telemetry().resourceBytes + TextureBytes <= held);
     }
     GLOB2_TEST_CASE("ordered primitive segments share uploads across state and point changes", "[display]")
     {

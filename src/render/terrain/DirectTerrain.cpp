@@ -14,6 +14,7 @@
 #include "GlobalContainer.h"
 #include "DirectTerrainData.h"
 #include "TerrainCompositor.h"
+#include "TerrainArtBorder.h"
 #include "render/SoftwareTerrainCache.h"
 #include "render/BackgroundWork.h"
 #include "render/scene/SceneMap.h"
@@ -58,6 +59,7 @@ namespace
 constexpr int TilePixels = DirectTerrainData::TilePixels;
 // The resident low-resolution art's pixels a cell (LowArtTile in the shader).
 constexpr int LowArtTile = 16;
+constexpr int LowArtStride = LowArtTile + 2;
 using Pixel = DirectTerrainData::Pixel;
 using Record = DirectTerrainData::Record;
 
@@ -262,21 +264,21 @@ struct DirectTerrain::State
     std::vector<Uint16> tableTiles;
     struct ArtStats { std::size_t visible = 0, absent = 0, stale = 0; } artStats;
     // Writes every variant the palette gained since the last call into the
-    // low-resolution atlas, growing it as needed (64 to 256 tiles a row).
+    // low-resolution atlas, growing it as needed.
     void updateLowArt(TerrainVisual::Compositor &compositor)
     {
         const std::size_t count = palette.sources.size();
         if (lowArt.count == count && lowArt.surface) return;
         const auto started = SDL_GetTicksNS();
-        const int columns = count <= 4096 ? 64 : count <= 16384 ? 128 : 256;
-        const int width = columns * LowArtTile;
+        const int columns = count <= 4096 ? 64 : count <= 16384 ? 128 : 224;
+        const int width = columns * LowArtStride;
         const int rows = std::max(1, int((count + columns - 1) / columns));
         std::size_t from = lowArt.count;
         std::vector<Pixel> initial;
-        if (!lowArt.surface || width != lowArt.width || rows * LowArtTile > lowArt.height)
+        if (!lowArt.surface || width != lowArt.width || rows * LowArtStride > lowArt.height)
         {
             // Room for a quarter more variants, so edits rarely regrow it.
-            const int height = (rows + std::max(1, rows / 4)) * LowArtTile;
+            const int height = (rows + std::max(1, rows / 4)) * LowArtStride;
             bytes -= lowArt.bytes;
             lowArt.width = width;
             lowArt.height = height;
@@ -295,16 +297,17 @@ struct DirectTerrain::State
             if (!surface) input = compositor.phasePixels(source.material, source.variant, 0, true);
             if (stamp.size <= 0 || (surface ? surface->w != stamp.size : input.size() != std::size_t(stamp.size) * stamp.size))
                 continue; // No art: the tile stays transparent.
-            filterTile(LowArtTile, stamp.size, surface ? static_cast<const Uint32 *>(surface->pixels) : nullptr, input, tile);
-            const int x = int(slot % columns) * LowArtTile, y = int(slot / columns) * LowArtTile;
+            filterTile(LowArtTile, stamp.size, surface ? static_cast<const Uint32 *>(surface->pixels) : nullptr, input,
+                       DirectTerrainData::artBorder(compositor, source, 0, true, LowArtTile), tile);
+            const int x = int(slot % columns) * LowArtStride, y = int(slot / columns) * LowArtStride;
             if (!initial.empty())
             {
-                for (int row = 0; row < LowArtTile; ++row)
-                    std::copy_n(tile.data() + row * LowArtTile, LowArtTile,
+                for (int row = 0; row < LowArtStride; ++row)
+                    std::copy_n(tile.data() + row * LowArtStride, LowArtStride,
                                 initial.data() + std::size_t(y + row) * width + x);
             }
             else
-                write(lowArt.surface, MaskIndex, x, y, LowArtTile, LowArtTile, tile.data());
+                write(lowArt.surface, MaskIndex, x, y, LowArtStride, LowArtStride, tile.data());
         }
         if (!initial.empty())
         {
@@ -323,7 +326,7 @@ struct DirectTerrain::State
             unsigned slot, first, parity, phase; // first: the entry's first tile.
             TerrainVisual::Compositor::PhaseSource stamp;
             TerrainVisual::Compositor::MaterialPixels input;
-            std::vector<Pixel> tile;
+            std::vector<Pixel> border, tile;
             bool ahead = false; // Kept with its entry (Entry::ahead), not written.
         };
         std::vector<Job> jobs;
@@ -333,38 +336,35 @@ struct DirectTerrain::State
     };
     std::shared_ptr<ArtBatch> artBatch;
     unsigned artSerial = 0;
-    // Box-filters a tile in premultiplied colour. Point samples at a block's
-    // corner would read a tile's two edges asymmetrically, so neighbouring
-    // variants, blended to meet at their borders, would not.
-    static void filterTile(int pixels, int size, const Uint32 *surface,
-                           const TerrainVisual::Compositor::MaterialPixels &input, std::vector<Pixel> &tile)
+    static TerrainVisual::Compositor::PhaseSource artStamp(TerrainVisual::Compositor &compositor,
+        DirectTerrainData::Source source, unsigned phase, bool native)
     {
-        tile.resize(std::size_t(pixels) * pixels);
-        const int block = std::max(1, size / pixels);
+        auto stamp = compositor.phaseSource(source.material, source.variant, phase, native);
+        const auto &material = compositor.catalog().materials[source.material];
+        if (TerrainVisual::hasArtNeighbors(material))
+            for (int dy = -1; dy <= 1; ++dy)
+                for (int dx = -1; dx <= 1; ++dx)
+                    if (dx || dy)
+                    {
+                        const auto variant = TerrainVisual::artNeighbor(material, source.variant, dx, dy);
+                        const auto neighbor = compositor.phaseSource(source.material, variant, phase, native);
+                        stamp.edgeIdentity = (stamp.edgeIdentity ^ neighbor.identity) * 1099511628211ull;
+                        stamp.edgeRevision = (stamp.edgeRevision ^ neighbor.revision) * 1099511628211ull;
+                    }
+        return stamp;
+    }
+
+    static void filterTile(int pixels, int size, const Uint32 *surface,
+                           const TerrainVisual::Compositor::MaterialPixels &input,
+                           const std::vector<Pixel> &border, std::vector<Pixel> &tile)
+    {
+        const int stride = pixels + 2;
+        tile.resize(std::size_t(stride) * stride);
         for (int y = 0; y < pixels; ++y)
             for (int x = 0; x < pixels; ++x)
-            {
-                unsigned sum[4] = {};
-                for (int dy = 0; dy < block; ++dy)
-                    for (int dx = 0; dx < block; ++dx)
-                    {
-                        const auto index = std::size_t(y * size / pixels + dy) * size + x * size / pixels + dx;
-                        std::array<unsigned char, 4> p;
-                        if (surface)
-                        {
-                            const Uint32 argb = surface[index];
-                            p = {Uint8(argb >> 16), Uint8(argb >> 8), Uint8(argb), Uint8(argb >> 24)};
-                        }
-                        else
-                            p = input[index];
-                        for (int k = 0; k < 3; ++k) sum[k] += unsigned(p[k]) * p[3];
-                        sum[3] += p[3];
-                    }
-                auto &out = tile[y * pixels + x];
-                const unsigned count = unsigned(block * block);
-                for (int k = 0; k < 3; ++k) out[k] = Uint8(sum[3] ? (sum[k] + sum[3] / 2) / sum[3] : 0);
-                out[3] = Uint8((sum[3] + count / 2) / count);
-            }
+                tile[(y + 1) * stride + x + 1] = TerrainVisual::sampleArt(size, pixels, x, y,
+                    [&](std::size_t index) { return surface ? TerrainVisual::artPixel(surface[index]) : input[index]; });
+        TerrainVisual::extendArtTile(tile.data(), pixels, border);
     }
     // Coverage masks for visible mixed cells at the display density (8 to 128
     // texels a side), built by background workers.
@@ -846,7 +846,7 @@ struct DirectTerrain::State
         };
         uploadRecords(Cells, width, height, data.cells);
         uploadIndices(MaskIndex, width, height, data.masks);
-        uploadDevice(Art, DirectTerrainData::AtlasWidth, data.artHeight, data.art);
+        uploadDevice(Art, DirectTerrainData::ArtWidth, data.artHeight, data.art);
         uploadDevice(Coverage, DirectTerrainData::AtlasWidth, data.coverageHeight, data.coverage);
         uploadIndices(Edges, DirectTerrainData::AtlasWidth, data.coverageHeight, data.edges);
         uploadRecords(Variants, DirectTerrainData::VariantWidth, data.variantHeight, data.variants);
@@ -1586,7 +1586,7 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
         state->uploadedVariants = 0;
     };
     constexpr int SmallAtlasSize = 2048;
-    const auto tilesAt = [&](int size) { return std::size_t(size / pixels) * (size / pixels); };
+    const auto tilesAt = [&](int size) { return std::size_t(size / (pixels + 2)) * (size / (pixels + 2)); };
     // The atlas this view wants: a density change refilters every tile
     // anyway, so take the small atlas again when the view fits it twice over
     // (a pan does not grow it straight back), and grow once when it is full.
@@ -1664,10 +1664,10 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
         next.size = wantedSize;
     }
     auto &art = transition ? next : out;
-    const int atlasSize = art.size;
+    const int atlasSize = art.size, stride = pixels + 2;
     // Whole pairs: an odd last tile is never claimed. Records hold sixteen-bit
     // tile numbers below AbsentTile.
-    const unsigned tiles = std::min(unsigned((atlasSize / pixels) * (atlasSize / pixels)), unsigned(State::AbsentTile)) / 2 * 2;
+    const unsigned tiles = std::min(unsigned((atlasSize / stride) * (atlasSize / stride)), unsigned(State::AbsentTile)) / 2 * 2;
     if (tilesWanted > tiles) { out.regions.clear(); return false; }
     std::optional<RestoreGL> restore;
 #ifdef DIRECT_TERRAIN_LEGACY_GL
@@ -1721,7 +1721,8 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
             auto *target = out.serial == batch->serial ? &out : next.serial == batch->serial ? &next : nullptr;
             if (target && target->art && target->pixels == batch->pixels)
             {
-                const int targetColumns = target->size / batch->pixels;
+                const int targetStride = batch->pixels + 2;
+                const int targetColumns = target->size / targetStride;
                 for (auto &job : batch->jobs)
                 {
                     auto found = target->entries.find(job.slot);
@@ -1732,8 +1733,8 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
                         continue;
                     }
                     const unsigned index = job.first + job.parity;
-                    state->write(target->art, State::Art, int(index % targetColumns) * batch->pixels,
-                                 int(index / targetColumns) * batch->pixels, batch->pixels, batch->pixels, job.tile.data());
+                    state->write(target->art, State::Art, int(index % targetColumns) * targetStride,
+                                 int(index / targetColumns) * targetStride, targetStride, targetStride, job.tile.data());
                     found->second.phases[job.parity] = job.phase;
                     found->second.stamps[job.parity] = job.stamp;
                 }
@@ -1754,7 +1755,7 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
             TerrainVisual::Compositor::PhaseSource stamp;
             const Uint32 *surfacePixels; // The frame's own pixels, or null and:
             TerrainVisual::Compositor::MaterialPixels input; // a prepared copy.
-            std::vector<Pixel> tile;
+            std::vector<Pixel> border, tile;
         };
         std::vector<TileJob> jobs;
         std::vector<std::pair<unsigned, State::Animation::Entry *>> added;
@@ -1839,14 +1840,14 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
                 // an HD frame is still resident: sixteen times fewer pixels to
                 // filter, and a stamp that outlives the HD frame's eviction.
                 const bool native = !highResolutionFrames;
-                const auto stamp = compositor.phaseSource(source.material, source.variant, phase, native);
+                const auto stamp = State::artStamp(compositor, source, phase, native);
                 if (entry.phases[parity] == phase && entry.stamps[parity] == stamp) continue;
                 // An animation step whose endpoint the workers filtered ahead:
                 // written now, so the crossfade never draws a stale endpoint.
                 if (entry.ahead.phase == phase && entry.ahead.stamp == stamp &&
-                    entry.ahead.tile.size() == std::size_t(pixels) * pixels)
+                    entry.ahead.tile.size() == std::size_t(stride) * stride)
                 {
-                    jobs.push_back({&entry, parity, phase, stamp, nullptr, {}, std::move(entry.ahead.tile)});
+                    jobs.push_back({&entry, parity, phase, stamp, nullptr, {}, {}, std::move(entry.ahead.tile)});
                     entry.ahead = {};
                     continue;
                 }
@@ -1879,14 +1880,16 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
                         input.resize(std::size_t(stamp.size) * stamp.size);
                         const auto *argb = static_cast<const Uint32 *>(surface->pixels);
                         for (std::size_t i = 0; i < input.size(); ++i)
-                            input[i] = {Uint8(argb[i] >> 16), Uint8(argb[i] >> 8), Uint8(argb[i]), Uint8(argb[i] >> 24)};
+                            input[i] = TerrainVisual::artPixel(argb[i]);
                     }
-                    background->jobs.push_back({slot, entry.tile, parity, phase, stamp, std::move(input), {}});
+                    background->jobs.push_back({slot, entry.tile, parity, phase, stamp, std::move(input),
+                        DirectTerrainData::artBorder(compositor, source, phase, native, pixels), {}});
                     filled = false;
                     continue;
                 }
                 jobs.push_back({&entry, parity, phase, stamp,
-                                surface ? static_cast<const Uint32 *>(surface->pixels) : nullptr, std::move(input), {}});
+                                surface ? static_cast<const Uint32 *>(surface->pixels) : nullptr, std::move(input),
+                                DirectTerrainData::artBorder(compositor, source, phase, native, pixels), {}});
             }
             // While the current endpoints draw, the workers filter the one the
             // next animation step needs (it replaces the current phase's tile).
@@ -1894,7 +1897,7 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
             {
                 const unsigned phase = (absolutePhase + 2) % material.animationFrames;
                 const unsigned parity = absolutePhase % 2;
-                const auto stamp = compositor.phaseSource(source.material, source.variant, phase, !highResolutionFrames);
+                const auto stamp = State::artStamp(compositor, source, phase, !highResolutionFrames);
                 const bool held = entry.phases[parity] == phase && entry.stamps[parity] == stamp;
                 const bool fetched = entry.ahead.phase == phase && entry.ahead.stamp == stamp;
                 if (!held && !fetched)
@@ -1908,10 +1911,11 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
                         input.resize(std::size_t(stamp.size) * stamp.size);
                         const auto *argb = static_cast<const Uint32 *>(surface->pixels);
                         for (std::size_t i = 0; i < input.size(); ++i)
-                            input[i] = {Uint8(argb[i] >> 16), Uint8(argb[i] >> 8), Uint8(argb[i]), Uint8(argb[i] >> 24)};
+                            input[i] = TerrainVisual::artPixel(argb[i]);
                     }
                     if (input.size() == std::size_t(stamp.size) * stamp.size)
-                        background->jobs.push_back({slot, entry.tile, parity, phase, stamp, std::move(input), {}, true});
+                        background->jobs.push_back({slot, entry.tile, parity, phase, stamp, std::move(input),
+                            DirectTerrainData::artBorder(compositor, source, phase, !highResolutionFrames, pixels), {}, true});
                 }
             }
         }
@@ -1922,7 +1926,7 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
         const auto filter = [pixels](TileJob &job)
         {
             if (job.tile.empty()) // Not filtered ahead (Entry::ahead).
-                State::filterTile(pixels, job.stamp.size, job.surfacePixels, job.input, job.tile);
+                State::filterTile(pixels, job.stamp.size, job.surfacePixels, job.input, job.border, job.tile);
         };
         state->filterTiles(jobs.size(), [&](std::size_t i) { filter(jobs[i]); });
         if (!background->jobs.empty())
@@ -1938,17 +1942,17 @@ bool DirectTerrain::prepare(GAGCore::GraphicContext &gfx, const SceneMap &map,
                     for (std::size_t i = task * JobsPerTask; i < last; ++i)
                     {
                         auto &job = background->jobs[i];
-                        State::filterTile(background->pixels, job.stamp.size, nullptr, job.input, job.tile);
+                        State::filterTile(background->pixels, job.stamp.size, nullptr, job.input, job.border, job.tile);
                     }
                     background->remaining.fetch_sub(1, std::memory_order_acq_rel);
                 });
         }
-        const int columns = atlasSize / pixels;
+        const int columns = atlasSize / stride;
         for (auto &job : jobs)
         {
             const unsigned index = job.entry->tile + job.parity;
-            state->write(art.art, State::Art, int(index % columns) * pixels, int(index / columns) * pixels,
-                         pixels, pixels, job.tile.data());
+            state->write(art.art, State::Art, int(index % columns) * stride, int(index / columns) * stride,
+                         stride, stride, job.tile.data());
             job.entry->phases[job.parity] = job.phase;
             job.entry->stamps[job.parity] = job.stamp;
         }

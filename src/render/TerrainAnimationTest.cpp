@@ -22,6 +22,9 @@
 #include "ViewState.h"
 #include "SoftwareTerrainCache.h"
 #include "terrain/DirectTerrain.h"
+#include "terrain/DirectTerrainData.h"
+#include "terrain/TerrainArtBorder.h"
+#include "terrain/TerrainCompositor.h"
 #include "terrain/TerrainCatalogIO.h"
 #include "terrain/TerrainMaterials.h"
 #include <DirectTerrainShader.h>
@@ -515,6 +518,59 @@ TEST_SUITE("TerrainAnimation")
 		}
 		CHECK(animated);
 	}
+
+    TEST_CASE("water atlas gutters take their texels from the adjoining tile at the same phase")
+    {
+        glob2test::HeadlessGlobals globals;
+        auto &compositor = globals->terrainCompositor();
+        const auto &catalog = compositor.catalog();
+        const auto water = catalog.find("water");
+        const auto &material = catalog.materials[water];
+        compositor.finishMaterials(std::span(&water, 1));
+        const int grid = material.variantGrid;
+        REQUIRE(grid > 1);
+
+        // The top-left tile tests wraps in both directions, including the
+        // diagonal. An interior tile also tests edges within the layout.
+        for (const unsigned variant : {0u, unsigned(grid + 1)})
+            for (const unsigned phase : {0u, unsigned(material.animationFrames - 1)})
+                for (const int density : {16, 32, 64})
+                {
+                    const auto border = DirectTerrainData::artBorder(compositor, {water, variant}, phase, true, density);
+                    REQUIRE(border.size() == std::size_t(4 * (density + 1)));
+                    const auto check = [&](int x, int y, const auto &pixel)
+                    {
+                        const auto wrap = [grid, density](int value)
+                        {
+                            const int extent = grid * density;
+                            return (value + extent) % extent;
+                        };
+                        const int wx = wrap(int(variant % grid) * density + x);
+                        const int wy = wrap(int(variant / grid) * density + y);
+                        const unsigned expectedVariant = (wy / density) * grid + wx / density;
+                        const auto *surface = compositor.phaseSurface(water, expectedVariant, phase, true);
+                        REQUIRE(surface);
+                        const auto *source = static_cast<const Uint32 *>(surface->pixels);
+                        const int sourceX = (wx % density) * 32 / density;
+                        const int sourceY = (wy % density) * 32 / density;
+                        const int box = std::max(1, 32 / density);
+                        for (int k = 0; k < 3; ++k)
+                        {
+                            int sum = 0;
+                            for (int row = 0; row < box; ++row)
+                                for (int col = 0; col < box; ++col)
+                                    sum += (source[(sourceY + row) * 32 + sourceX + col] >> (16 - k * 8)) & 255;
+                            CHECK(int(pixel[k]) == (sum + box * box / 2) / (box * box));
+                        }
+                        CHECK(pixel[3] == 255);
+                    };
+                    std::size_t i = 0;
+                    TerrainVisual::visitArtBorder(density, [&](int x, int y, int, int, int, int)
+                    {
+                        check(x, y, border[i++]);
+                    });
+                }
+    }
 
 	TEST_CASE("the direct pass's crossfade and surf follow continuous time across the wrap at every rate")
 	{

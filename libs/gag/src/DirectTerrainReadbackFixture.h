@@ -28,8 +28,9 @@ inline void verifyDirectTerrainReadback(GAGCore::RenderDevice &device)
     REQUIRE(SDL_WriteSurfacePixel(cells.get(), 3, 0, 1, 0, 0, 0));
     setTexture(Terrain::Cells, std::move(cells));
     setTexture(Terrain::MaskIndex, filled(1, 1, {0, 0, 0, 0}));
-    auto art = filled(64, 32, {255, 0, 0, 255});
-    const SDL_Rect secondTile{32, 0, 32, 32};
+    // Two 32-pixel artwork tiles with one texel of padding on every side.
+    auto art = filled(68, 34, {255, 0, 0, 255});
+    const SDL_Rect secondTile{34, 0, 34, 34};
     REQUIRE(SDL_FillSurfaceRect(art.get(), &secondTile, SDL_MapSurfaceRGBA(art.get(), 0, 255, 0, 255)));
     setTexture(Terrain::Art, std::move(art));
     setTexture(Terrain::Coverage, filled(32, 32, {255, 0, 0, 0}));

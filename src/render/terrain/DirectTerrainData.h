@@ -29,6 +29,7 @@ struct DirectTerrainData
     // a straight-edged split until the mask lands. Mask atlas slots stay below.
     static constexpr Uint16 PendingCorners = 0xFF00;
     static constexpr int AtlasWidth = 2048;
+    static constexpr int ArtWidth = AtlasWidth / (TilePixels + 2) * (TilePixels + 2);
     static constexpr int VariantWidth = 256;
     static constexpr unsigned VariantRecords = 8;
 
@@ -46,6 +47,9 @@ struct DirectTerrainData
     // One entry per variant-table slot, including the unused slot zero.
     // The Legacy GL animation pass streams the visible phase endpoints.
     struct Source { TerrainVisual::MaterialId material; unsigned variant; };
+    // Filtered neighbor texels in visitArtBorder order. Empty for art that
+    // should replicate its own edge, or when the sheet has yet to load.
+    static std::vector<Pixel> artBorder(const TerrainVisual::Compositor &, Source, unsigned phase, bool native, int density);
     std::vector<Source> sources;
     std::vector<TerrainVisual::Recipe> pendingCoverage;
     struct CoverageTile

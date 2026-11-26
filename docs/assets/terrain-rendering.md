@@ -575,6 +575,13 @@ drawing.
 Generated/edited pages keep alpha-weighted mip filtering but upload uncompressed
 textures. Driver-side DXT encoding is reserved for artwork with prepared mip
 chains; repeating that encoding on animated terrain updates stalls rendering.
+The direct art atlases and cached animated tile atlases reserve a one-texel
+gutter for linear filtering. An animated material with one positional layout
+takes each gutter texel from the adjacent tile in that layout, including the
+diagonal at each corner and the wrap at the layout boundary. Other materials
+repeat their outer texels. The gutter affects artwork sampling only, independently
+of shoreline coverage and surf.
+
 Crossfades update material revisions on each visual tick. CPU-composed animation
 pages recompose at that cadence; `animation_blend_steps` lowers it
 to that many recompositions per phase (see
