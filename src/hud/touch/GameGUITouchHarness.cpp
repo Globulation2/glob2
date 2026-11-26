@@ -4579,6 +4579,10 @@ class GameGUITouchHarness
 			require(GameGUITouch::isTablet({0, 0, 1024, 768}, true) && GameGUITouch::isTablet({0, 0, 768, 1024}, true),
 					"Automatic touch treats a 600-point screen as a tablet in both orientations");
 			require(!GameGUITouch::isTablet({0, 0, 1024, 540}, true), "Automatic keeps short screens off the tablet HUD");
+			require(GameGUITouch::isTablet({0, 0, 960, 600}, true) && GameGUITouch::isTablet({0, 0, 600, 960}, false),
+					"Automatic treats a 7-inch 600-point window as a tablet in both orientations");
+			require(!GameGUITouch::isTablet({0, 0, 932, 430}, true) && !GameGUITouch::isTablet({0, 0, 599, 960}, false),
+					"Automatic keeps phones and narrower windows on the phone HUD");
 			GAGCore::setProcessEnvironment("GLOB2_TABLET_HUD", "panel", 1);
 			require(!GameGUITouch::isTablet({0, 0, 1024, 768}, true), "GLOB2_TABLET_HUD=panel restores the old layout");
 			SDL_unsetenv_unsafe("GLOB2_TABLET_HUD");
@@ -6172,6 +6176,77 @@ class GameGUITouchHarness
 		require(!touch.animating() && touch.offset == trayEnd, "A mouse drag has no momentum");
 		require(checksum() == before, "Tray scrolling never touches the map data");
 	}
+	static void tabletWindowClassification()
+	{
+		// A Nexus 7 (2013): 1200 x 1920 pixels at 320 dpi, so a 600 x 960 point
+		// edge-to-edge window. Android 15 with gesture navigation reserves a
+		// 24-point status bar and a 32-point navigation bar, leaving 960 x 544
+		// points in landscape. The device class must not change with rotation.
+		struct Restore
+		{
+			std::optional<GAGCore::SafeInsets> insets = GAGCore::mobileSafeInsetsForTesting;
+			~Restore()
+			{
+				GAGCore::mobileSafeInsetsForTesting = insets;
+				GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
+			}
+		} restore;
+		GameGUI gui;
+		auto map = Engine::loadMapHeader("maps/balanced.map");
+		GameHeader players;
+		players.setNumberOfPlayers(1);
+		players.getBasePlayer(0) = BasePlayer(0, "Tablet", 0, BasePlayer::P_LOCAL);
+		require(gui.loadFromHeaders(map, players, true, true), "Tablet classification fixture loads");
+		gui.localTeamNo = gui.localPlayer = 0;
+		gui.adjustLocalTeam();
+		auto *gfx = globalContainer->gfx;
+		SDL_unsetenv_unsafe("GLOB2_TABLET_HUD");
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "touch-auto", 1);
+		gfx->setResponsiveViewport(true, 800, 600);
+		const auto unit = [&] { return gfx->logicalUnitsPerPoint(); };
+		const auto resize = [&](int width, int height, GAGCore::SafeInsets insets)
+		{
+			GAGCore::mobileSafeInsetsForTesting = insets;
+			const int oldW = gfx->getW(), oldH = gfx->getH();
+			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
+			GLOB2_REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())), "Window resize must settle");
+			SDL_Event resized{};
+			resized.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+			GAGCore::GraphicContext::translateMouseEvent(&resized);
+			gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
+			return gui.touch->layout();
+		};
+		struct Case
+		{
+			int width, height;
+			GAGCore::SafeInsets insets;
+			bool tablet;
+			const char *message;
+		};
+		for (const auto &c : {
+				 Case{960, 600, {0, 24, 0, 32}, true, "A 7-inch tablet keeps the tablet rail in landscape"},
+				 Case{600, 960, {0, 24, 0, 32}, true, "A 7-inch tablet keeps the tablet rail in portrait"},
+				 Case{960, 600, {0, 24, 0, 48}, true, "Three-button navigation does not demote a 7-inch tablet"},
+				 Case{932, 430, {59, 0, 59, 21}, false, "A landscape phone keeps the phone HUD"},
+				 Case{960, 590, {0, 0, 0, 0}, false, "A window shorter than 600 points keeps the phone HUD"},
+			 })
+		{
+			const auto ui = resize(c.width, c.height, c.insets);
+			require(gui.touch->usesHUD(), "Automatic touch uses the touch HUD");
+			require(ui.tablet == c.tablet, c.message);
+			if (!ui.tablet)
+				continue;
+			// The rail spans the safe height between the system bars, with room
+			// for all six navigation buttons, and the map keeps the rest.
+			const double u = unit();
+			require(ui.rail.w > 0 && std::abs(ui.rail.y - c.insets.top * u) < .5 &&
+						std::abs(ui.rail.y + ui.rail.h - (c.height - c.insets.bottom) * u) < .5,
+					"The tablet rail stays between the system bars");
+			require(6 * InGameTouchTheme::tabletRailButton * u <= ui.rail.h,
+					"The tablet rail has room for all six navigation buttons");
+			require(ui.world.w > 0 && ui.world.h > 0, "The tablet layout keeps a visible map");
+		}
+	}
 	static void scaledDialogInput()
 	{
 		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 1600, .height = 1200,
@@ -6390,6 +6465,15 @@ TEST_SUITE("GameGUITouch")
     {
         GameGUITouchHarness::liveStatisticsProbability();
     }
+
+	GLOB2_TEST_CASE("automatic touch classifies tablets by window, before system bars", "[display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 800, .height = 600,
+			.screenFlags = GAGCore::GraphicContext::PORTABLEGPU});
+		REQUIRE(NET_Init());
+		GameGUITouchHarness::tabletWindowClassification();
+		NET_Quit();
+	}
 
 	GLOB2_TEST_CASE("attack marks follow mobile minimaps without extra lifetime ticks", "[display][artifacts]")
 	{
