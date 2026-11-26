@@ -285,6 +285,48 @@ TEST_SUITE("SettingsGraphics")
 		}
 	}
 
+	TEST_CASE("the hand prompt asks only touch players, never a mouse player in a small frame")
+	{
+		glob2test::ScopedEnvironment unforced("GLOB2_MOBILE_UI", "");
+		glob2test::HeadlessGlobals globals;
+		auto &settings = globals->settings;
+		const auto restorePreference = GAGCore::presentationPreference;
+		const auto restoreViewport = GAGCore::presentationViewport;
+		const auto restoreInput = GAGCore::presentationInput;
+		settings.thumbSideChosen = false;
+		GAGCore::ViewportMetrics portal;
+		portal.width = 800;
+		portal.height = 450; // a web portal's desktop embed: too short for the spacious layout
+		GAGCore::InputCapabilities mouse;
+		GAGCore::InputCapabilities touch;
+		touch.touch = true;
+		touch.hover = false;
+		for (const auto preference : {GAGCore::PresentationPreference::Automatic, GAGCore::PresentationPreference::Desktop})
+		{
+			GAGCore::presentationPreference = preference;
+			GAGCore::updatePresentation(portal, mouse);
+			// The frame is compact, but a mouse has no thumb side: asking would loop,
+			// since "Use desktop layout" cannot make the frame any bigger.
+			CHECK(GAGCore::presentationState.layout == GAGCore::PresentationLayout::Compact);
+			CHECK(Glob2UI::touchPresentation());
+			CHECK_FALSE(HandPreferenceScreen::needed());
+		}
+		GAGCore::presentationPreference = GAGCore::PresentationPreference::Automatic;
+		GAGCore::updatePresentation(portal, touch);
+		CHECK(HandPreferenceScreen::needed());
+		settings.thumbSideChosen = true;
+		CHECK_FALSE(HandPreferenceScreen::needed());
+		settings.thumbSideChosen = false;
+		{
+			// Phone emulation through the override keeps asking on a mouse host.
+			glob2test::ScopedEnvironment forced("GLOB2_MOBILE_UI", "1");
+			GAGCore::updatePresentation(portal, mouse);
+			CHECK(HandPreferenceScreen::needed());
+		}
+		GAGCore::presentationPreference = restorePreference;
+		GAGCore::updatePresentation(restoreViewport, restoreInput);
+	}
+
 	TEST_CASE("hand-choice screen switches to the desktop layout and keeps the old one after write failure [writes-preferences]")
 	{
 		glob2test::ScopedEnvironment unforced("GLOB2_MOBILE_UI", "");
