@@ -22,6 +22,7 @@ import { apiError } from '../errors.ts';
 import { body } from '../http/validate.ts';
 import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { decodeCursor, encodeCursor, pageSize } from '../admin/cursor.ts';
+import { cursorTimeSql } from '../http/cursorTime.ts';
 import { listEntries, readEntry, ZipError } from './zip.ts';
 
 /** Largest bundle accepted, packed and unpacked. */
@@ -30,6 +31,12 @@ export const CRASH_REPORT_MAX_BYTES = 10 * 1024 * 1024;
 export const CRASH_REPORTS_PER_INSTALL_DAY = 20;
 /** Reports per client address and hour, per replica (memory only). */
 export const CRASH_REPORTS_PER_ADDRESS_HOUR = 60;
+/**
+ * Reports the whole instance accepts per hour, across replicas. Install IDs
+ * and forwarded addresses are client-chosen, so this bounds what a flood can
+ * store (at most this many 10 MB bundles an hour).
+ */
+export const CRASH_REPORTS_PER_HOUR = 600;
 const CONTEXT_MAX_BYTES = 16 * 1024;
 const ID_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const ID = /^[A-HJ-NP-Z2-9]{8}$/;
@@ -40,23 +47,37 @@ export function newCrashReportId(): string {
   return id;
 }
 
-/** A per-replica fixed-window counter whose keys never leave memory. */
+/**
+ * A per-replica fixed-window counter whose keys never leave memory. At most
+ * `capacity` keys are kept: a new key evicts the oldest (Map insertion order),
+ * so a flood of distinct addresses costs O(1) per request and bounded memory.
+ */
 export class MemoryLimit {
   private readonly windows = new Map<string, { start: number; count: number }>();
   readonly max: number;
   readonly windowMs: number;
+  readonly capacity: number;
   private readonly now: () => number;
-  constructor(max: number, windowMs: number, now: () => number = Date.now) {
+  constructor(max: number, windowMs: number, now: () => number = Date.now, capacity = 10_000) {
     this.max = max;
     this.windowMs = windowMs;
     this.now = now;
+    this.capacity = capacity;
+  }
+  get size(): number {
+    return this.windows.size;
   }
   take(key: string): boolean {
     const now = this.now();
-    if (this.windows.size > 10_000)
-      for (const [k, w] of this.windows) if (now - w.start >= this.windowMs) this.windows.delete(k);
     const window = this.windows.get(key);
     if (!window || now - window.start >= this.windowMs) {
+      // Re-inserting moves the key to the newest end.
+      this.windows.delete(key);
+      while (this.windows.size >= this.capacity) {
+        const oldest = this.windows.keys().next();
+        if (oldest.done) break;
+        this.windows.delete(oldest.value);
+      }
       this.windows.set(key, { start: now, count: 1 });
       return true;
     }
@@ -79,6 +100,7 @@ export async function crashReportRoutes(app: FastifyInstance, identity: Identity
     86_400_000,
   );
   const perAddress = new MemoryLimit(CRASH_REPORTS_PER_ADDRESS_HOUR, 3_600_000);
+  const overall = new SharedLimit(db, 'crash-report:all', CRASH_REPORTS_PER_HOUR, 3_600_000);
 
   await app.register(async (scope) => {
     // Browser builds on game portals post from another origin. The route takes
@@ -124,7 +146,16 @@ export async function crashReportRoutes(app: FastifyInstance, identity: Identity
             throw apiError('bad_request', 'Invalid report bundle.');
           throw error;
         }
+        // A retried upload (the answer was lost, or the player left the
+        // screen mid-send) returns the report it already created.
+        const existing = await db
+          .selectFrom('crash_reports')
+          .select('id')
+          .where('submission_id', '=', context.submissionId)
+          .executeTakeFirst();
+        if (existing) return { id: existing.id };
         await enforce(perInstall, context.installId, reply, 'Too many reports; try again later.');
+        await enforce(overall, 'all', reply, 'Too many reports; try again later.');
         const attachments = entries
           .filter((e) => e.name !== 'context.json')
           .map((e) => ({ name: e.name, size: e.size }));
@@ -137,6 +168,7 @@ export async function crashReportRoutes(app: FastifyInstance, identity: Identity
               .insertInto('crash_reports')
               .values({
                 id,
+                submission_id: context.submissionId,
                 kind: context.kind,
                 install_id: context.installId,
                 version: context.version,
@@ -152,12 +184,23 @@ export async function crashReportRoutes(app: FastifyInstance, identity: Identity
                 attachments: JSON.stringify(attachments),
                 bundle_key: key,
               })
-              .onConflict((oc) => oc.column('id').doNothing())
+              .onConflict((oc) => oc.doNothing())
               .returning('id')
               .executeTakeFirst();
             if (inserted) {
               void reply.code(201);
               return { id };
+            }
+            // Either the short ID collided (try another) or the same
+            // submission arrived concurrently (answer with its report).
+            const raced = await db
+              .selectFrom('crash_reports')
+              .select('id')
+              .where('submission_id', '=', context.submissionId)
+              .executeTakeFirst();
+            if (raced) {
+              await blobs.delete(key).catch(() => undefined);
+              return { id: raced.id };
             }
           } catch (error) {
             await blobs.delete(key).catch(() => undefined);
@@ -209,6 +252,7 @@ export async function crashReportRoutes(app: FastifyInstance, identity: Identity
       let query = db
         .selectFrom('crash_reports')
         .selectAll()
+        .select(cursorTimeSql(sql<Date>`received_at`).as('cursor_at'))
         .orderBy('received_at', 'desc')
         .orderBy('id', 'desc')
         .limit(limit + 1);
@@ -239,7 +283,7 @@ export async function crashReportRoutes(app: FastifyInstance, identity: Identity
       return {
         items,
         ...(rows.length > limit && last
-          ? { nextCursor: encodeCursor(last.received_at, last.id) }
+          ? { nextCursor: encodeCursor(last.cursor_at, last.id) }
           : {}),
       };
     },

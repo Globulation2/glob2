@@ -5,6 +5,8 @@
 -- is deleted after two years. No account, name or address is stored.
 CREATE TABLE crash_reports (
   id text PRIMARY KEY CHECK (id ~ '^[A-HJ-NP-Z2-9]{8}$'),
+  -- Chosen by the client per report, so a retried upload finds its report.
+  submission_id uuid NOT NULL UNIQUE,
   kind text NOT NULL CHECK (kind IN ('problem')),
   install_id uuid NOT NULL,
   version text NOT NULL,
@@ -23,5 +25,6 @@ CREATE TABLE crash_reports (
 );
 
 CREATE INDEX crash_reports_received_idx ON crash_reports (received_at DESC, id DESC);
+CREATE UNIQUE INDEX crash_reports_bundle_key_idx ON crash_reports (bundle_key);
 CREATE INDEX crash_reports_bundle_retention_idx ON crash_reports (received_at)
   WHERE bundle_key IS NOT NULL;

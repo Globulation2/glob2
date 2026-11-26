@@ -36,6 +36,8 @@ namespace ProblemReport
 inline constexpr std::size_t LOG_LINES = 200;
 inline constexpr std::size_t LOG_LINE_BYTES = 512;
 void installLogCapture();
+// Restores the streams, SDL's log output and the screen observer (tests).
+void uninstallLogCapture();
 void appendLogLine(const std::string &line);
 std::string recentLog();
 void clearLog(); // tests
@@ -74,6 +76,7 @@ inline constexpr std::size_t BUNDLE_LIMIT = 10 * 1024 * 1024 - 64 * 1024;
 struct Context
 {
 	std::string installId;
+	std::string submissionId; // random per report: the server stores a retry once
 	std::string version;
 	int versionMinor = 0;
 	int simRevision = 0;
@@ -120,6 +123,10 @@ std::string fileName(const Context &context);
 
 // The player's directory (FileManager's first, writable root).
 std::filesystem::path userDirectory();
+// A path as UTF-8 (FileManager and ApplicationHost take UTF-8 everywhere).
+std::string utf8(const std::filesystem::path &path);
+// At most `limit` bytes of `text`, never ending inside a UTF-8 sequence.
+std::string clampUtf8(const std::string &text, std::size_t limit);
 
 // ---------------------------------------------------------------- outbox
 
@@ -140,7 +147,6 @@ class Outbox
 
   private:
 	std::filesystem::path dir;
-	std::uint64_t sequence = 0;
 };
 
 // ---------------------------------------------------------------- upload

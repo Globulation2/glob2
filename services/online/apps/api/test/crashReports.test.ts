@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { deflateRawSync, crc32 } from 'node:zlib';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { schemaIssues, CrashReportContext } from '@glob2/protocol';
@@ -65,6 +66,7 @@ function context(overrides: Record<string, unknown> = {}) {
     schema: 1,
     kind: 'problem',
     installId: INSTALL,
+    submissionId: randomUUID(),
     version: '0.9.6',
     versionMinor: 219,
     simRevision: 170,
@@ -200,9 +202,9 @@ describe('POST /api/v1/crash-reports', () => {
     expect(refused.headers['retry-after']).toBeDefined();
   });
 
-  it('keeps per-address limits in memory only', () => {
+  it('keeps per-address limits in memory only, with bounded memory', () => {
     let now = 0;
-    const limit = new MemoryLimit(2, 1000, () => now);
+    const limit = new MemoryLimit(2, 1000, () => now, 3);
     expect([limit.take('a'), limit.take('a'), limit.take('a'), limit.take('b')]).toEqual([
       true,
       true,
@@ -211,6 +213,24 @@ describe('POST /api/v1/crash-reports', () => {
     ]);
     now = 1000;
     expect(limit.take('a')).toBe(true);
+    // A flood of new addresses evicts the oldest windows instead of growing.
+    for (let i = 0; i < 100; i++) limit.take(`spoofed-${i}`);
+    expect(limit.size).toBe(3);
+  });
+
+  it('stores a retried submission once and answers with the same ID', async () => {
+    const submissionId = randomUUID();
+    const first = await send(bundle({ submissionId }), '192.0.2.40');
+    const again = await send(bundle({ submissionId }), '192.0.2.41');
+    expect(first.statusCode).toBe(201);
+    expect(again.statusCode).toBe(200);
+    expect(again.json<{ id: string }>().id).toBe(first.json<{ id: string }>().id);
+    const rows = await harness.database.db
+      .selectFrom('crash_reports')
+      .select('id')
+      .where('submission_id', '=', submissionId)
+      .execute();
+    expect(rows).toHaveLength(1);
   });
 });
 
@@ -284,5 +304,48 @@ describe('admin crash reports', () => {
       .execute();
     expect(left).toEqual([{ id: old.id, bundle_key: null }]);
     expect((await admin(`/api/v1/admin/crash-reports/${old.id}/bundle`)).statusCode).toBe(404);
+  });
+
+  it('pages through reports received within the same millisecond', async () => {
+    const db = harness.database.db;
+    const ids: string[] = [];
+    for (const micro of ['123456', '123200']) {
+      const { id } = (await send(bundle(), '192.0.2.50')).json<{ id: string }>();
+      await db
+        .updateTable('crash_reports')
+        .set({ received_at: `2099-01-01T00:00:00.${micro}Z` })
+        .where('id', '=', id)
+        .execute();
+      ids.push(id);
+    }
+    const first = (await admin('/api/v1/admin/crash-reports?limit=1')).json<{
+      items: { id: string }[];
+      nextCursor: string;
+    }>();
+    expect(first.items[0]?.id).toBe(ids[0]);
+    const second = (
+      await admin(`/api/v1/admin/crash-reports?limit=1&cursor=${first.nextCursor}`)
+    ).json<{ items: { id: string }[] }>();
+    expect(second.items[0]?.id).toBe(ids[1]);
+    await db.deleteFrom('crash_reports').where('id', 'in', ids).execute();
+  });
+
+  it('deletes stored bundles that no report names', async () => {
+    const orphan = 'crash-reports/orphan-0000.zip';
+    await harness.blobs.put(orphan, Buffer.from('lost upload'));
+    const { id } = (await send(bundle(), '192.0.2.60')).json<{ id: string }>();
+    const kept = (
+      await harness.database.db
+        .selectFrom('crash_reports')
+        .select('bundle_key')
+        .where('id', '=', id)
+        .executeTakeFirstOrThrow()
+    ).bundle_key;
+    const result = await retainCrashReports(harness.database.as('worker').db, harness.blobs, {
+      now: Date.now() + 2 * 86_400_000,
+    });
+    expect(result.deletedOrphanBundles).toBeGreaterThanOrEqual(1);
+    expect(await harness.blobs.size(orphan)).toBeUndefined();
+    expect(await harness.blobs.size(kept!)).toBeDefined();
   });
 });

@@ -57,18 +57,34 @@ export async function retainCrashReports(
   let deletedOrphanBundles = 0;
   if (store.list) {
     const cutoff = (options.now ?? Date.now()) - ORPHAN_GRACE_MS;
+    // One indexed lookup per batch of listed keys (crash_reports_bundle_key_idx).
+    const sweep = async (keys: string[]) => {
+      if (keys.length === 0) return;
+      const known = new Set(
+        (
+          await db
+            .selectFrom('crash_reports')
+            .select('bundle_key')
+            .where('bundle_key', 'in', keys)
+            .execute()
+        ).map((row) => row.bundle_key),
+      );
+      for (const key of keys)
+        if (!known.has(key)) {
+          await store.delete(key);
+          deletedOrphanBundles++;
+        }
+    };
+    let batch: string[] = [];
     for await (const entry of store.list('crash-reports/')) {
       if (entry.modifiedAt.getTime() >= cutoff) continue;
-      const known = await db
-        .selectFrom('crash_reports')
-        .select('id')
-        .where('bundle_key', '=', entry.key)
-        .executeTakeFirst();
-      if (!known) {
-        await store.delete(entry.key);
-        deletedOrphanBundles++;
+      batch.push(entry.key);
+      if (batch.length >= CRASH_RETENTION_BATCH) {
+        await sweep(batch);
+        batch = [];
       }
     }
+    await sweep(batch);
   }
   return {
     deletedBundles,

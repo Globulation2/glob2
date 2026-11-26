@@ -172,6 +172,7 @@ export interface AdminAuditLogTable {
 
 export interface CrashReportsTable {
   id: string;
+  submission_id: string;
   kind: 'problem';
   install_id: string;
   version: string;

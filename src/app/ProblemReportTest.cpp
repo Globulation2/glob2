@@ -46,6 +46,7 @@ Context sampleContext()
 {
 	Context context;
 	context.installId = "3d2c1b0a-9f8e-4d7c-8b6a-5f4e3d2c1b0a";
+	context.submissionId = "8e7d6c5b-4a39-4281-9706-f5e4d3c2b1a0";
 	context.version = "0.9.6";
 	context.versionMinor = 219;
 	context.simRevision = 170;
@@ -146,6 +147,8 @@ TEST_SUITE("ProblemReport")
 		CHECK(first.installId.size() == 36);
 		CHECK(first.installId[14] == '4');
 		CHECK(first.installId == second.installId);
+		CHECK(first.submissionId.size() == 36);
+		CHECK(first.submissionId != second.submissionId); // one per report
 		CHECK_FALSE(first.version.empty());
 		CHECK(first.simRevision > 0);
 		CHECK((first.deviceTier == "low" || first.deviceTier == "mid" || first.deviceTier == "high"));
@@ -178,6 +181,11 @@ TEST_SUITE("ProblemReport")
 		clearLog();
 		appendLogLine(std::string(LOG_LINE_BYTES - 1, 'a') + "\xC3\xA9tail");
 		CHECK(recentLog().size() == LOG_LINE_BYTES - 1 + 1); // the split é is dropped whole
+		// Process-wide streams and SDL's log are restored before the case ends.
+		struct Restore
+		{
+			~Restore() { uninstallLogCapture(); }
+		} restore;
 		installLogCapture();
 		clearLog();
 		std::clog << "Glob2 screen ready: " << "MainMenuScreen" << std::endl;
@@ -188,7 +196,11 @@ TEST_SUITE("ProblemReport")
 		// Screen changes are breadcrumbs on every host, printed or not.
 		GAGCore::ApplicationHost::screenChanged("17ProblemReportScreen");
 		CHECK(recentLog().find("Glob2 screen ready: 17ProblemReportScreen\n") != std::string::npos);
+		uninstallLogCapture();
 		clearLog();
+		std::clog << "after uninstall" << std::endl;
+		GAGCore::ApplicationHost::screenChanged("17ProblemReportScreen");
+		CHECK(recentLog().empty());
 	}
 
 	TEST_CASE("bundles attach the newest save and replay from the player's directory as chosen")
@@ -223,11 +235,27 @@ TEST_SUITE("ProblemReport")
 		CHECK(nlohmann::json::parse(entry(*entries, "context.json"))["description"].get<std::string>().size() ==
 			  DESCRIPTION_LIMIT - 1);
 
-		writeFile(dir.path / "replays/huge.replay", std::string(BUNDLE_LIMIT, 'r'));
+		writeFile(dir.path / "replays/huge.replay", std::string(BUNDLE_LIMIT + 1, 'r'));
 		bundle = build(Choices{}, sampleContext(), dir.path);
 		CHECK(bundle.tooLarge == std::vector<std::string>{"last.replay"});
 		CHECK(bundle.bytes.size() < BUNDLE_LIMIT);
 		clearLog();
+	}
+
+	TEST_CASE("UTF-8 text is clamped without splitting a character")
+	{
+		CHECK(clampUtf8("abc", 5) == "abc");
+		CHECK(clampUtf8("ab\xC3\xA9", 3) == "ab");
+		CHECK(clampUtf8("ab\xC3\xA9", 4) == "ab\xC3\xA9");
+		CHECK(clampUtf8("\xE2\x82\xAC\xE2\x82\xAC", 5) == "\xE2\x82\xAC");
+	}
+
+	TEST_CASE("reports queued in the same millisecond keep separate files")
+	{
+		ScratchDir dir("outbox-names");
+		for (int i = 0; i < 3; ++i)
+			REQUIRE(Outbox(dir.path).add("report " + std::to_string(i)));
+		CHECK(Outbox(dir.path).pending().size() == 3);
 	}
 
 	TEST_CASE("the outbox keeps at most five reports and 10 MB, dropping the oldest")

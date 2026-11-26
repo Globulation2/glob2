@@ -999,6 +999,7 @@ const typedColumns: ColumnLists = {
   ],
   crash_reports: [
     'id',
+    'submission_id',
     'kind',
     'install_id',
     'version',

@@ -45,6 +45,8 @@ export const CrashReportContext = Strict({
   schema: Type.Literal(1),
   kind: CrashReportKind,
   installId: Uuid,
+  /** Random per report: a retried upload of the same report is not stored twice. */
+  submissionId: Uuid,
   /** PACKAGE_VERSION of the build, for example "0.9.6". */
   version: Type.String({ minLength: 1, maxLength: 64, pattern: '^[0-9A-Za-z.+_~-]+$' }),
   versionMinor: Type.Integer({ minimum: 0, maximum: 65535 }),

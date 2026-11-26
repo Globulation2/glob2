@@ -595,6 +595,10 @@ int Glob2::run(const Cli::Request &request)
 	// The windowed client's main thread draws every frame; headless commands
 	// above keep the default so batch runs do not crowd the desktop.
 	GAGCore::ThreadSupport::setCurrentThreadRole(GAGCore::ThreadSupport::ThreadRole::Interactive);
+	// Report a Problem attaches the recent log lines (src/app/ProblemReport.h).
+	// Only the windowed client needs them; headless and tool commands above
+	// keep their streams untouched.
+	ProblemReport::installLogCapture();
 	auto cancelled = std::make_shared<bool>(false);
 	auto launch = [cancelled]
 	{
@@ -701,8 +705,6 @@ int main(int argc, char *argv[])
 	// loses the message whenever stderr is a redirected file.
 	setvbuf(stderr, NULL, _IOLBF, 0);
 	setvbuf(stdout, NULL, _IOLBF, 0);
-	// Report a Problem attaches the recent log lines (src/app/ProblemReport.h).
-	ProblemReport::installLogCapture();
 
 	// FileManager uses SDL_GetBasePath for macOS bundle assets. Never change
 	// the caller's directory: replay, recording and tool paths are caller-relative.

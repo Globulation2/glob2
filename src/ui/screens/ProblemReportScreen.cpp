@@ -28,14 +28,7 @@ ProblemReportScreen::~ProblemReportScreen()
 
 void ProblemReportScreen::setDescription(const std::string &text)
 {
-	std::string value = text;
-	if (value.size() > ProblemReport::DESCRIPTION_LIMIT)
-	{
-		std::size_t cut = ProblemReport::DESCRIPTION_LIMIT;
-		while (cut > 0 && (static_cast<unsigned char>(value[cut]) & 0xC0) == 0x80)
-			--cut;
-		value.resize(cut);
-	}
+	const std::string value = ProblemReport::clampUtf8(text, ProblemReport::DESCRIPTION_LIMIT);
 	report->choices.description = value;
 }
 
@@ -68,15 +61,22 @@ void ProblemReportScreen::saveToFile()
 	}
 	else
 	{
-		// Desktop: keep a copy under reports/ and offer the save dialog for it.
-		const auto path = userDir / "reports" / name;
+		// Desktop: write the bundle under reports/saved/ and offer the save
+		// dialog for it. Only the newest copy is kept: older ones (and the
+		// player data in them) are removed first.
+		const auto dir = userDir / "reports" / "saved";
 		std::error_code error;
-		std::filesystem::create_directories(path.parent_path(), error);
+		for (std::filesystem::directory_iterator it(dir, error), end; !error && it != end; it.increment(error))
+			if (it->path().extension() == ".zip")
+				std::filesystem::remove(it->path(), error);
+		error.clear();
+		const auto path = dir / std::filesystem::u8path(name);
+		std::filesystem::create_directories(dir, error);
 		std::ofstream out(path, std::ios::binary | std::ios::trunc);
 		saved = out.write(built.bytes.data(), static_cast<std::streamsize>(built.bytes.size())).good();
 		out.close();
 		if (saved)
-			AH::exportFilePath(path.string());
+			AH::exportFilePath(ProblemReport::utf8(path));
 	}
 	state = saved ? Status::Saved : Status::SaveFailed;
 	invalidate();

@@ -7,6 +7,7 @@
     "schema",
     "kind",
     "installId",
+    "submissionId",
     "version",
     "versionMinor",
     "simRevision",
@@ -33,6 +34,11 @@
       "description": "What sent the report. Phase 1 knows only Report a Problem."
     },
     "installId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "submissionId": {
       "type": "string",
       "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
       "description": "Lowercase UUID."

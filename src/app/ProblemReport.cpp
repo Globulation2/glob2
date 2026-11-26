@@ -15,6 +15,7 @@
 #include <nlohmann/json.hpp>
 #include <zlib.h>
 #include <algorithm>
+#include <atomic>
 #include <chrono>
 #include <ctime>
 #include <deque>
@@ -41,6 +42,23 @@ namespace fs = std::filesystem;
 
 namespace ProblemReport
 {
+std::string clampUtf8(const std::string &text, std::size_t limit)
+{
+	if (text.size() <= limit)
+		return text;
+	// Cut before the sequence that would cross the limit.
+	std::size_t cut = limit;
+	while (cut > 0 && (static_cast<unsigned char>(text[cut]) & 0xC0) == 0x80)
+		--cut;
+	return text.substr(0, cut);
+}
+
+std::string utf8(const fs::path &path)
+{
+	const auto text = path.u8string();
+	return std::string(text.begin(), text.end());
+}
+
 // ---------------------------------------------------------------- log tail
 
 namespace
@@ -61,14 +79,7 @@ void pushLine(std::string line)
 {
 	if (!line.empty() && line.back() == '\r')
 		line.pop_back();
-	if (line.size() > LOG_LINE_BYTES)
-	{
-		std::size_t cut = LOG_LINE_BYTES;
-		// Never split a UTF-8 sequence.
-		while (cut > 0 && (static_cast<unsigned char>(line[cut]) & 0xC0) == 0x80)
-			--cut;
-		line.resize(cut);
-	}
+	line = clampUtf8(line, LOG_LINE_BYTES);
 	auto &lines = logLines();
 	lines.push_back(std::move(line));
 	while (lines.size() > LOG_LINES)
@@ -128,21 +139,57 @@ void SDLCALL sdlOutput(void *, int category, SDL_LogPriority priority, const cha
 }
 } // namespace
 
+namespace
+{
+struct Installed
+{
+	std::ostream *stream;
+	std::streambuf *original;
+	TeeBuffer *tee;
+};
+std::vector<Installed> &installedTees()
+{
+	static std::vector<Installed> tees;
+	return tees;
+}
+} // namespace
+
 void installLogCapture()
 {
-	static bool installed = false;
-	if (installed)
+	auto &tees = installedTees();
+	if (!tees.empty())
 		return;
-	installed = true;
-	// Never freed: the standard streams flush through them during exit.
+	// Kept until uninstallLogCapture(): the standard streams flush through them
+	// during exit.
 	for (std::ostream *stream : {&std::cout, &std::cerr, &std::clog})
-		stream->rdbuf(new TeeBuffer(stream->rdbuf()));
+	{
+		auto *tee = new TeeBuffer(stream->rdbuf());
+		tees.push_back({stream, stream->rdbuf(tee), tee});
+	}
 	SDL_GetLogOutputFunction(&previousOutput, &previousUserData);
 	SDL_SetLogOutputFunction(sdlOutput, nullptr);
 	// Mobile hosts already SDL_Log each screen; the others tell the observer,
 	// which keeps the same breadcrumb without printing it.
 	GAGCore::ApplicationHost::setScreenObserver(
 		[](const char *name) { appendLogLine(std::string("Glob2 screen ready: ") + (name ? name : "")); });
+}
+
+void uninstallLogCapture()
+{
+	auto &tees = installedTees();
+	if (tees.empty())
+		return;
+	for (auto &installed : tees)
+	{
+		installed.stream->flush();
+		installed.stream->rdbuf(installed.original);
+		delete installed.tee;
+	}
+	tees.clear();
+	SDL_SetLogOutputFunction(previousOutput, previousUserData);
+	previousOutput = nullptr;
+	previousUserData = nullptr;
+	GAGCore::ApplicationHost::setScreenObserver({});
 }
 
 void appendLogLine(const std::string &line)
@@ -243,7 +290,7 @@ std::string utcStamp(const char *format)
 	return text;
 }
 
-std::string newInstallId()
+std::string newUuid()
 {
 	// Version 4 UUID from the system entropy source; nothing to do with the
 	// simulation's random numbers.
@@ -324,7 +371,7 @@ std::string installId(const fs::path &userDir)
 		if (validInstallId(id))
 			return id;
 	}
-	std::string id = newInstallId();
+	std::string id = newUuid();
 	if (writeFileAtomic(file, id + '\n'))
 		persist();
 	return id;
@@ -335,6 +382,7 @@ Context currentContext(const fs::path &userDir)
 {
 	Context context;
 	context.installId = installId(userDir);
+	context.submissionId = newUuid();
 	context.version = PACKAGE_VERSION;
 	context.versionMinor = VERSION_MINOR;
 	context.simRevision = SIM_REVISION;
@@ -357,6 +405,7 @@ std::string contextJson(const Context &context, const std::string &description)
 		{"schema", 1},
 		{"kind", "problem"},
 		{"installId", context.installId},
+		{"submissionId", context.submissionId},
 		{"version", context.version},
 		{"versionMinor", context.versionMinor},
 		{"simRevision", context.simRevision},
@@ -514,7 +563,9 @@ std::optional<std::vector<Entry>> unzip(const std::string &archive)
 fs::path userDirectory()
 {
 	auto *files = GAGCore::Toolkit::getFileManager();
-	return files && files->getDirCount() > 0 ? fs::path(files->getDir(0)) : fs::path();
+	// FileManager paths are UTF-8; on Windows fs::path(std::string) would read
+	// them in the ANSI code page.
+	return files && files->getDirCount() > 0 ? fs::u8path(files->getDir(0)) : fs::path();
 }
 
 std::optional<fs::path> newestFile(const fs::path &dir, const std::string &extension)
@@ -546,20 +597,7 @@ std::optional<fs::path> newestFile(const fs::path &dir, const std::string &exten
 
 Bundle build(const Choices &choices, const Context &context, const fs::path &userDir)
 {
-	std::string description = choices.description.substr(0, DESCRIPTION_LIMIT);
-	// Never end on a partial UTF-8 sequence.
-	while (!description.empty() && (static_cast<unsigned char>(description.back()) & 0x80))
-	{
-		const std::size_t keep = description.size();
-		std::size_t start = keep - 1;
-		while (start > 0 && (static_cast<unsigned char>(description[start]) & 0xC0) == 0x80)
-			--start;
-		const unsigned char lead = static_cast<unsigned char>(description[start]);
-		const std::size_t want = lead >= 0xF0 ? 4 : lead >= 0xE0 ? 3 : lead >= 0xC0 ? 2 : 1;
-		if (keep - start >= want)
-			break;
-		description.resize(start);
-	}
+	const std::string description = clampUtf8(choices.description, DESCRIPTION_LIMIT);
 	Bundle bundle;
 	std::vector<Entry> entries{{"context.json", contextJson(context, description)}};
 	std::size_t total = entries.front().bytes.size() + 256;
@@ -575,16 +613,31 @@ Bundle build(const Choices &choices, const Context &context, const fs::path &use
 		total += bytes->size() + 128;
 		entries.push_back({name, std::move(*bytes)});
 	};
+	// A file is weighed before it is read, so one larger than the whole
+	// bundle is reported as left out, not silently skipped.
+	auto attachFile = [&](const std::string &name, const fs::path &file)
+	{
+		std::error_code error;
+		const auto size = fs::file_size(file, error);
+		if (error)
+			return;
+		if (total + size + 128 > BUNDLE_LIMIT)
+		{
+			bundle.tooLarge.push_back(name);
+			return;
+		}
+		attach(name, readFile(file, BUNDLE_LIMIT));
+	};
 	if (choices.log)
 		attach("log.txt", recentLog());
 	// Attachments keep a .gz suffix when the file has one.
 	const auto gz = [](const fs::path &file) { return file.extension() == ".gz" ? std::string(".gz") : std::string(); };
 	if (choices.save)
 		if (auto file = newestFile(userDir / "games", "game"))
-			attach("save.game" + gz(*file), readFile(*file, BUNDLE_LIMIT));
+			attachFile("save.game" + gz(*file), *file);
 	if (choices.replay)
 		if (auto file = newestFile(userDir / "replays", "replay"))
-			attach("last.replay" + gz(*file), readFile(*file, BUNDLE_LIMIT));
+			attachFile("last.replay" + gz(*file), *file);
 	for (const auto &entry : entries)
 		bundle.attached.push_back(entry.name);
 	bundle.bytes = zip(entries);
@@ -622,8 +675,9 @@ bool Outbox::add(const std::string &bundle)
 						std::chrono::system_clock::now().time_since_epoch())
 						.count();
 	char name[64];
-	std::snprintf(name, sizeof name, "%016lld-%04u.zip", static_cast<long long>(ms),
-				  static_cast<unsigned>(sequence++ % 10000));
+	// Process-wide, so two reports queued in the same millisecond never share a name.
+	static std::atomic<unsigned> sequence{0};
+	std::snprintf(name, sizeof name, "%016lld-%04u.zip", static_cast<long long>(ms), sequence++ % 10000);
 	if (!writeFileAtomic(dir / name, bundle))
 		return false;
 	auto files = pending();
