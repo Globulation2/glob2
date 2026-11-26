@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PortalPolicy.h"
 #include "ui/ApiErrorText.h"
 #include "ui/LibraryText.h"
 #include "app/ClientFeatures.h"
@@ -377,7 +378,7 @@ Element BuildingLibraryScreen::build(const Presentation &p)
 															"/building-studio");
 					  }},
 					 {"buildings/back", Glob2UI::libraryText("Back"), [this] { endExecute(1); }, false, SDLK_ESCAPE}};
-	if constexpr (!ClientFeatures::AuthoringLinks)
+	if (!ClientFeatures::AuthoringLinks || !PortalPolicy::externalLinks())
 		panel.actions.erase(panel.actions.begin());
 	return onlinePanel(std::move(panel), p);
 }

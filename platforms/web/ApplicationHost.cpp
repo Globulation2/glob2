@@ -6,6 +6,7 @@
 #include <BrowserTextInput.h>
 #include <InterfacePresentation.h>
 #include <algorithm>
+#include <atomic>
 #include <map>
 #include <set>
 #include <cstdlib>
@@ -349,9 +350,36 @@ bool presentationMetrics(ViewportMetrics& metrics,InputCapabilities& input)
 // run on the page's thread, synchronously, while the click that caused them still
 // grants transient activation. If a browser refuses the new tab anyway, the page
 // offers a link the player taps instead (glob2OpenUrl in shell.html).
-bool openUrl(const std::string& url)
+namespace { std::atomic<bool> linksAllowed{true}; }
+void setExternalLinksAllowed(bool allowed) { linksAllowed = allowed; }
+bool externalLinksAllowed() { return linksAllowed; }
+// The portal packager writes window.GLOB2_PORTAL before the game scripts; it is
+// read once at startup (src/app/PortalPolicy.cpp). Anything but undefined is
+// passed on, so a malformed value still puts the game in portal mode.
+std::string portalDescription()
+{
+    char* text = reinterpret_cast<char*>(MAIN_THREAD_EM_ASM_PTR({
+        const value = globalThis.GLOB2_PORTAL;
+        if (value === undefined) return 0;
+        let json;
+        try { json = JSON.stringify(value); } catch (_) { json = undefined; }
+        // A value JSON cannot express (a function, a cycle) is still a portal.
+        if (typeof json !== 'string') json = JSON.stringify('unreadable');
+        const size = lengthBytesUTF8(json) + 1;
+        const pointer = _malloc(size);
+        stringToUTF8(json, pointer, size);
+        return pointer;
+    }));
+    if (!text) return {};
+    std::string result(text);
+    free(text);
+    return result;
+}
+bool openUrl(const std::string& url, UrlPurpose purpose)
 {
     if (url.rfind("https://", 0) != 0 && url.rfind("http://", 0) != 0)
+        return false;
+    if (purpose == UrlPurpose::Link && !externalLinksAllowed())
         return false;
     return MAIN_THREAD_EM_ASM_INT({ return Module.glob2OpenUrl(UTF8ToString($0)); }, url.c_str()) != 0;
 }

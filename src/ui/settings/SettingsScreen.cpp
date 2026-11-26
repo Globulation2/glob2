@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PortalPolicy.h"
 #include "app/ClientFeatures.h"
 // Copyright (C) 2007-2026 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -202,8 +203,12 @@ std::vector<SettingsScreen::Category> SettingsScreen::visibleCategories() const
 		result.push_back(Category::Controls);
 	result.push_back(Category::Player);
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
-	result.push_back(Category::Online);
-	if constexpr (ClientFeatures::Commander) result.push_back(Category::HiveMind);
+	// A web portal without online sign-in has no account to manage.
+	if (PortalPolicy::onlineSignIn())
+	{
+		result.push_back(Category::Online);
+		if constexpr (ClientFeatures::Commander) result.push_back(Category::HiveMind);
+	}
 #endif
 	if (GAGCore::Recording::supported())
 		result.push_back(Category::Recording);

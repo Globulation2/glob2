@@ -203,9 +203,19 @@ std::unique_ptr<Persistence> persistStorage()
 {
 	return std::make_unique<NativePersistence>();
 }
-bool openUrl(const std::string &url)
+namespace { std::atomic<bool> linksAllowed{true}; }
+void setExternalLinksAllowed(bool allowed) { linksAllowed = allowed; }
+bool externalLinksAllowed() { return linksAllowed; }
+std::string portalDescription()
+{
+	const char *value = SDL_getenv("GLOB2_PORTAL");
+	return value ? value : "";
+}
+bool openUrl(const std::string &url, UrlPurpose purpose)
 {
 	if (url.rfind("https://", 0) != 0 && url.rfind("http://", 0) != 0)
+		return false;
+	if (purpose == UrlPurpose::Link && !externalLinksAllowed())
 		return false;
 	return SDL_OpenURL(url.c_str());
 }

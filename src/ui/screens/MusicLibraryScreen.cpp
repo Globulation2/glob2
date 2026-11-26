@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "PortalPolicy.h"
 #include "ui/ApiErrorText.h"
 #include "app/ClientFeatures.h"
 #include "MusicUI.h"
@@ -420,18 +421,21 @@ Element MusicLibraryScreen::build(const Presentation &p)
 												  selected.erase(id);
 											  invalidate();
 										  }));
-				cardBody.push_back(
-					button("music.like." + id, "♥ " + std::to_string(release.value("likes", 0)),
-						   [this, id, release]
-						   {
-							   action(id, "/like",
-									  release.value("liked", false) ? HttpFetch::Method::Delete
-																	: HttpFetch::Method::Put);
-						   },
-						   {.enabled = !fetch}));
-				cardBody.push_back(button("music.web." + id,
-										  musicText("Credits, downloads and reporting"),
-										  [this, id] { AH::openUrl(origin + "/music/" + id); }));
+				// Liking needs an account; a portal without online sign-in has none.
+				if (PortalPolicy::onlineSignIn())
+					cardBody.push_back(
+						button("music.like." + id, "♥ " + std::to_string(release.value("likes", 0)),
+							   [this, id, release]
+							   {
+								   action(id, "/like",
+										  release.value("liked", false) ? HttpFetch::Method::Delete
+																		: HttpFetch::Method::Put);
+							   },
+							   {.enabled = !fetch}));
+				if (PortalPolicy::externalLinks())
+					cardBody.push_back(button("music.web." + id,
+											  musicText("Credits, downloads and reporting"),
+											  [this, id] { AH::openUrl(origin + "/music/" + id); }));
 				auto art = cardBody.front();
 				cardBody.erase(cardBody.begin());
 				body.push_back(card(row({art, expanded(column(std::move(cardBody), {p.pt(8)}))},
@@ -462,7 +466,7 @@ Element MusicLibraryScreen::build(const Presentation &p)
 						   }
 					   },
 					   {.enabled = idle}));
-		if constexpr (ClientFeatures::AuthoringLinks)
+		if (ClientFeatures::AuthoringLinks && PortalPolicy::externalLinks())
 			body.push_back(button("music.create", musicText("Share music on the web"),
 							  [this] { AH::openUrl(origin + "/music/new"); }));
 	}

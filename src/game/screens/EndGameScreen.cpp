@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006-2026 Bradley Arsenault
 
+#include "PortalPolicy.h"
 #include "EngineTiming.h"
 #include "EndGameScreen.h"
 #include "FrontendTheme.h"
@@ -766,7 +767,7 @@ Element EndGameScreen::actionBar(const Presentation &p, bool compact)
 	if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
 		actions.push_back({"save-replay", fe::tr("[save replay]"), [this] { saveReplay("replays", "replay"); }});
 	// Wide layouts have the match page under the metric list.
-	if (online && compact)
+	if (online && compact && PortalPolicy::externalLinks())
 		actions.push_back({"match-page", fe::tr("[results match page]"), [this] { openMatchPage(); }});
 	// Rematch after a quick match (Q9): an unrated room with the same players; the
 	// others are invited, and one who asks after them joins the same room.
@@ -852,7 +853,7 @@ Element EndGameScreen::build(const Presentation &p)
 	else
 	{
 		std::vector<Element> side{fe::expanded(metricSidebar(p))};
-		if (online)
+		if (online && PortalPolicy::externalLinks())
 			side.push_back(fe::button("match-page", fe::tr("[results match page]"), [this] { openMatchPage(); },
 									  {.flat = true, .icon = fe::uiIcon(fe::UIIcon::ExternalLink), .iconSize = 16}));
 		parts.push_back(fe::expanded(fe::row({fe::width(p.pt(230), fe::column(std::move(side), {p.pt(4)})), fe::expanded(main)}, {p.pt(12)})));

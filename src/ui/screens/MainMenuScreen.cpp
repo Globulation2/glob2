@@ -3,6 +3,7 @@
 #include "ui/LibraryText.h"
 #include "MainMenuScreen.h"
 #include "GlobalContainer.h"
+#include "PortalPolicy.h"
 #include "ui/ThemeCatalog.h"
 #include <algorithm>
 #include <cmath>
@@ -145,7 +146,8 @@ Element MainMenuScreen::build(const Presentation &p)
 			content.push_back(action("[custom game]", CUSTOM, primaryStyle));
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
 			// Play online sits on the main card, under Custom game; LAN stays under More.
-			content.push_back(action("[play online]", PLAY_ONLINE, rowStyle));
+			if (PortalPolicy::onlineSignIn())
+				content.push_back(action("[play online]", PLAY_ONLINE, rowStyle));
 #endif
 			const bool landscape = p.landscape() && p.safe.h < p.pt(480);
 			if (landscape)
@@ -183,15 +185,17 @@ Element MainMenuScreen::build(const Presentation &p)
 #endif
 			content.push_back(action("[editor]", EDITOR, rowStyle));
 			content.push_back(action("[credits]", CREDITS, rowStyle));
-			content.push_back(button("menu/discord", tr("[Discord community]"), [this] { openCommunity(); }, rowStyle));
+			if (PortalPolicy::externalLinks())
+				content.push_back(button("menu/discord", tr("[Discord community]"), [this] { openCommunity(); }, rowStyle));
 #if defined(GLOB2_MOBILE) && defined(__ANDROID__)
-			content.push_back(button("menu/privacy", Glob2UI::libraryText("Privacy policy"), [] {
+			if (PortalPolicy::externalLinks())
+				content.push_back(button("menu/privacy", Glob2UI::libraryText("Privacy policy"), [] {
 #if defined(GLOB2_AMAZON_RELEASE)
-				GAGCore::ApplicationHost::openUrl("https://glob2.online/privacy/#fire-tablet-edition");
+					GAGCore::ApplicationHost::openUrl("https://glob2.online/privacy/#fire-tablet-edition");
 #else
-				GAGCore::ApplicationHost::openUrl("https://glob2.online/privacy/");
+					GAGCore::ApplicationHost::openUrl("https://glob2.online/privacy/");
 #endif
-			}, rowStyle));
+				}, rowStyle));
 #endif
 #if !defined(__EMSCRIPTEN__) && !defined(GLOB2_MOBILE)
 			content.push_back(action("[quit]", QUIT, rowStyle));
@@ -230,7 +234,8 @@ Element MainMenuScreen::build(const Presentation &p)
 	// Play online is a way to play like the others, under Custom game as on
 	// phones, not a small extra below them.
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
-	content.push_back(action("[play online]", PLAY_ONLINE, launch));
+	if (PortalPolicy::onlineSignIn())
+		content.push_back(action("[play online]", PLAY_ONLINE, launch));
 #endif
 	content.push_back(action("[campaign]", CAMPAIGN, launch));
 	content.push_back(action("[load game]", LOAD_GAME, launch));
@@ -243,15 +248,17 @@ Element MainMenuScreen::build(const Presentation &p)
 	std::vector<Element> utilities{action("[settings]", GAME_SETUP, utility), action("[editor]", EDITOR, utility),
 								   action("[credits]", CREDITS, utility), action("[quit]", QUIT, utility)};
 #if defined(GLOB2_MOBILE) && defined(__ANDROID__)
-	utilities.push_back(button("menu/privacy", Glob2UI::libraryText("Privacy policy"), [] {
+	if (PortalPolicy::externalLinks())
+		utilities.push_back(button("menu/privacy", Glob2UI::libraryText("Privacy policy"), [] {
 #if defined(GLOB2_AMAZON_RELEASE)
-		GAGCore::ApplicationHost::openUrl("https://glob2.online/privacy/#fire-tablet-edition");
+			GAGCore::ApplicationHost::openUrl("https://glob2.online/privacy/#fire-tablet-edition");
 #else
-		GAGCore::ApplicationHost::openUrl("https://glob2.online/privacy/");
+			GAGCore::ApplicationHost::openUrl("https://glob2.online/privacy/");
 #endif
-	}, utility));
+		}, utility));
 #endif
-	utilities.insert(utilities.end() - 1, button("menu/discord", tr("[Discord community]"), [this] { openCommunity(); }, utility));
+	if (PortalPolicy::externalLinks())
+		utilities.insert(utilities.end() - 1, button("menu/discord", tr("[Discord community]"), [this] { openCommunity(); }, utility));
 	WrapOptions grid;
 	grid.maxColumns = 2;
 	grid.minChildWidth = 1;

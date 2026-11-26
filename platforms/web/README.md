@@ -229,6 +229,35 @@ Browser and desktop players in one match must run builds with the same sim
 version; the platform and relay check it (see the
 [turn protocol](../../docs/multiplayer/turn-protocol.md)).
 
+### Portal mode
+
+Web game portals forbid different things, so each portal package turns off only
+what its portal bans. The portal packager writes
+
+```js
+window.GLOB2_PORTAL = { name: "crazygames", externalLinks: false, onlineSignIn: false };
+```
+
+into `index.html` before the game scripts. `ApplicationHost::portalDescription()`
+hands its JSON to `src/app/PortalPolicy`, which the game reads once at startup.
+Without the object (our own site, itch, desktop and mobile) nothing changes. With
+it, a permission is on only when its field is the boolean `true`: a missing field,
+another type or a value that is not an object turns it off.
+
+- `externalLinks: false` hides every button that opens a page outside the game:
+  Discord, the privacy policy, the AI authoring guides and starter project, the
+  update download, match, map, profile, leaderboard, music, AI and Building Studio
+  pages, and the account and commander pages in Settings. `ApplicationHost::openUrl`
+  also refuses links, so a button missed here opens nothing.
+- `onlineSignIn: false` hides Play online, Settings > Online and Hive Mind, liking
+  music and community AIs, and drops invite and online map links; the online client
+  never signs in, as a guest or otherwise. Single player, campaigns, tutorials, the
+  editor and the anonymous community catalogues (music, AIs, generators, buildings)
+  remain. With sign-in allowed, the sign-in page still opens when links are off.
+
+Desktop builds read the same JSON from the `GLOB2_PORTAL` environment variable, to
+try a portal's rules without packaging: `GLOB2_PORTAL='{"externalLinks":false,"onlineSignIn":false}' glob2`.
+
 ## Compatibility
 
 Map generation follows the current native `GenerationService`, including its

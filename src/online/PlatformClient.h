@@ -57,6 +57,10 @@ struct ClientOptions
 	SimVersion simVersion = SimVersion::local();
 	// Create a guest account on first contact when nothing else signs in.
 	bool createGuest = true;
+	// Off in web portals that forbid online sign-in (src/app/PortalPolicy.h):
+	// the client then never signs in, as a guest or otherwise, and stays
+	// anonymous.
+	bool signIn = true;
 	std::int64_t requestTimeoutMs = 15000;
 	std::int64_t connectTimeoutMs = 20000;
 	// Idle time after which the client checks the socket with session.ping,

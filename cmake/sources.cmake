@@ -585,6 +585,7 @@ set(GLOB2_CLIENT_SOURCES
     src/map/Sector.cpp
     src/app/Settings.cpp
     src/app/AgeGate.cpp
+    src/app/PortalPolicy.cpp
     src/app/SystemLanguage.cpp
     src/app/DeviceProfile.cpp
     src/app/DeviceAdaptation.cpp
@@ -1577,6 +1578,7 @@ set(GLOB2_ANDROID_SOURCES
     src/map/Sector.cpp
     src/app/Settings.cpp
     src/app/AgeGate.cpp
+    src/app/PortalPolicy.cpp
     src/app/SystemLanguage.cpp
     src/app/DeviceProfile.cpp
     src/app/DeviceAdaptation.cpp
@@ -2403,6 +2405,7 @@ set(GLOB2_IOS_SOURCES
     src/map/Sector.cpp
     src/app/Settings.cpp
     src/app/AgeGate.cpp
+    src/app/PortalPolicy.cpp
     src/app/SystemLanguage.cpp
     src/app/DeviceProfile.cpp
     src/app/DeviceAdaptation.cpp
@@ -3397,6 +3400,7 @@ set(GLOB2_WEB_SOURCES
     src/map/Sector.cpp
     src/app/Settings.cpp
     src/app/AgeGate.cpp
+    src/app/PortalPolicy.cpp
     src/app/SystemLanguage.cpp
     src/app/DeviceProfile.cpp
     src/app/DeviceAdaptation.cpp

@@ -20,6 +20,7 @@
 #include "AudioPreferenceScreen.h"
 #include "AgeQuestionScreen.h"
 #include "AgeGate.h"
+#include "PortalPolicy.h"
 #include "IntroductionOfferScreen.h"
 #include "CustomGameScreen.h"
 #include "MessageScreen.h"
@@ -177,6 +178,8 @@ Application::Application()
 	: frontend(themedFrontend()), screens(*globalContainer->gfx),
 	  shutdownScreens(*globalContainer->gfx), singlePlayer(screens)
 {
+	// A web portal's restrictions apply before the first screen can open a link.
+	PortalPolicy::current();
 #if GLOB2_DESKTOP_MCP
     mcp = std::make_unique<MCP::UIService>(*globalContainer->gfx);
 	mcp->domainHandler = [this](const std::string &tool, const MCP::Json &args)
@@ -302,7 +305,8 @@ void Application::choose(int choice)
 		break;
 	case MainMenuScreen::PLAY_ONLINE:
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
-		withAgeBand([this] { screens.push(std::make_unique<OnlineHubScreen>(screens)); });
+		if (PortalPolicy::onlineSignIn())
+			withAgeBand([this] { screens.push(std::make_unique<OnlineHubScreen>(screens)); });
 #endif
 		break;
 	case MainMenuScreen::QUIT:
@@ -547,6 +551,14 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 	// An invite link (at launch or while running) opens the online hub from the
 	// main menu; the hub consumes it.
 	static std::uint32_t hubOpenedAt = 0;
+	// A portal without online sign-in has no hub: invite and online map links
+	// are dropped, and a local map link still plays.
+	if (!PortalPolicy::onlineSignIn())
+	{
+		Online::takePendingJoin();
+		if (Online::pendingMapPlay() && Online::pendingMapPlay()->mode != Online::MapPlayRequest::Mode::Local)
+			Online::takePendingMapPlay();
+	}
 	if (Online::pendingJoin() && dynamic_cast<MainMenuScreen *>(screens.top()) &&
 		tick - hubOpenedAt > 2000)
 	{

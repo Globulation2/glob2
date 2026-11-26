@@ -32,7 +32,9 @@ ClientEnvironment ClientEnvironment::native()
 	auto generator = std::make_shared<std::mt19937_64>(std::random_device{}());
 	env.random = [generator]
 	{ return std::uniform_real_distribution<double>(0.0, 1.0)(*generator); };
-	env.openUrl = [](const std::string &url) { return GAGCore::ApplicationHost::openUrl(url); };
+	// The only page the client opens is the sign-in handoff.
+	env.openUrl = [](const std::string &url)
+	{ return GAGCore::ApplicationHost::openUrl(url, GAGCore::ApplicationHost::UrlPurpose::SignIn); };
 	return env;
 }
 } // namespace Online

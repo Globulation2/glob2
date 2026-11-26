@@ -117,6 +117,41 @@ TEST_SUITE("PlatformClient")
 		CHECK_EQ(f.client.account()->displayName, "Guest-7");
 	}
 
+	TEST_CASE("a portal without online sign-in keeps the client anonymous")
+	{
+		// src/app/PortalPolicy.h: no guest, no refresh, no browser sign-in.
+		OnlineFakes::World world;
+		MemoryStorage storage;
+		InstanceConfig config{storage};
+		config.record(ORIGIN).deviceCredential = CREDENTIAL;
+		config.record(ORIGIN).refreshToken = "stored";
+		auto options = testOptions();
+		options.signIn = false;
+		PlatformClient client{config, options, world.environment()};
+		client.start(ORIGIN);
+		CHECK(client.auth() == PlatformClient::Auth::SignedOut);
+		CHECK_EQ(world.http.count("/api/v1/auth/guest"), 0);
+		CHECK_EQ(world.http.count("/api/v1/auth/refresh"), 0);
+		REQUIRE(world.sockets.size() == 1);
+		world.socket().state = NetTransport::State::Connected;
+		client.update();
+		auto hello = world.socket().find("session.hello");
+		REQUIRE(!hello.is_null());
+		CHECK_FALSE(hello["params"].contains("accessToken"));
+		world.socket().respond(hello, Json{{"sessionId", "s-1"},
+											{"serverTime", "2026-09-21T14:13:20Z"},
+											{"simSupported", true}});
+		client.update();
+		CHECK(client.connection() == PlatformClient::Connection::Online);
+		client.beginBrowserSignIn();
+		client.signInAsGuest();
+		client.update();
+		CHECK(world.socket().find("auth.handoff.begin").is_null());
+		CHECK_EQ(world.http.count("/api/v1/auth/guest"), 0);
+		CHECK(world.opened.empty());
+		CHECK(client.auth() == PlatformClient::Auth::SignedOut);
+	}
+
 	TEST_CASE("an unsupported sim version says which side is out of date")
 	{
 		auto mismatchFor = [](const Json &served) {

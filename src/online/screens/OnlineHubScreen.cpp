@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 glob2 contributors
+#include "PortalPolicy.h"
 #include "EngineTiming.h"
 #include "OnlineHubScreen.h"
 #include "CustomGamePreferences.h"
@@ -872,7 +873,7 @@ Element OnlineHubScreen::banner(const Presentation &p)
 		const char *headingKey = serverBehind ? "[hub server behind]" : clientBehind ? "[hub update required]" : "[hub version mismatch]";
 		const char *detailKey = serverBehind ? "[hub server behind detail %0]" : clientBehind ? "[hub update required detail %0]" : "[hub version mismatch detail %0]";
 		std::vector<Element> actions;
-		if (!serverBehind)
+		if (!serverBehind && PortalPolicy::externalLinks())
 			actions.push_back(button("banner/update", tr("[hub get update]"), [] { GAGCore::ApplicationHost::openUrl("https://globulation2.org/download"); }, {.primary = true}));
 		actions.push_back(button("banner/server", tr("[hub change server]"), [this] { openSettings(); }));
 		return card(column({row({icon(uiIcon(UIIcon::Warning), {22, theme().palette.danger}), expanded(column({heading(tr(headingKey)), paragraph(formatted(detailKey, hostOf(data.origin)), {FontRole::Support, true})}, {p.pt(2)}))}, {p.pt(10), CrossAlign::Start}),
@@ -1138,7 +1139,7 @@ Element OnlineHubScreen::lastMatchCard(const Presentation &p, bool phone)
 	if (line.verified)
 		cells.push_back(icon(uiIcon(UIIcon::ShieldCheck), {14, palette.success}));
 	// The match page has the full result (timeline, economy, replay).
-	if (const std::string id = match.value("id", ""); !id.empty() && !data.origin.empty())
+	if (const std::string id = match.value("id", ""); !id.empty() && !data.origin.empty() && PortalPolicy::externalLinks())
 	{
 		ButtonOptions page{.icon = uiIcon(UIIcon::ExternalLink), .iconSize = 16};
 		page.accessibleLabel = page.tooltip = tr("[profile match page]");
@@ -1169,7 +1170,8 @@ Element OnlineHubScreen::playSection(const Presentation &p, bool phone)
 		if (live || pool || also)
 			parts.push_back(column({heading(tr("[hub quick match]")), live, pool, also}, {p.pt(6)}));
 	}
-	parts.push_back(button("hub/discord", tr("[Discord community]"), [this] { community.open(); invalidate(); }, {.icon = uiIcon(UIIcon::Users)}));
+	if (PortalPolicy::externalLinks())
+		parts.push_back(button("hub/discord", tr("[Discord community]"), [this] { community.open(); invalidate(); }, {.icon = uiIcon(UIIcon::Users)}));
 	if (auto last = lastMatchCard(p, phone))
 		parts.push_back(last);
 	if (phone)
@@ -1265,7 +1267,7 @@ Element OnlineHubScreen::leaderboardSection(const Presentation &p, bool phone)
 		rows.push_back(emptyState(uiIcon(UIIcon::Trophy), tr("[hub leaderboard empty]"), {}, p));
 	parts.push_back(column(std::move(rows), {p.pt(4)}));
 	// Below the list, on its own line: beside the title it overflowed with large text.
-	if (!data.origin.empty())
+	if (!data.origin.empty() && PortalPolicy::externalLinks())
 		parts.push_back(align(Alignment::Left, button("leaderboard/full", tr("[hub full leaderboard]"), [this] { GAGCore::ApplicationHost::openUrl(data.origin + "/leaderboard"); },
 													  {.icon = uiIcon(UIIcon::ExternalLink), .iconSize = 16})));
 	return column(std::move(parts), {p.pt(10)});

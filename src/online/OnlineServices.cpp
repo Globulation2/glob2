@@ -7,6 +7,7 @@
 #include "MapCache.h"
 #include "OnlineStorage.h"
 #include "PlatformClient.h"
+#include "PortalPolicy.h"
 #include "QuickMatch.h"
 #include "RelayTransport.h"
 
@@ -119,10 +120,16 @@ std::unique_ptr<InstanceConfig> loadedConfig(OnlineStorage &storage)
 	config->load();
 	return config;
 }
+ClientOptions clientOptions()
+{
+	ClientOptions options;
+	options.signIn = PortalPolicy::onlineSignIn();
+	return options;
+}
 } // namespace
 
 Services::Services(OnlineStorage &storage, MapCache &maps)
-	: ownedConfig(loadedConfig(storage)), ownedClient(std::make_unique<PlatformClient>(*ownedConfig)),
+	: ownedConfig(loadedConfig(storage)), ownedClient(std::make_unique<PlatformClient>(*ownedConfig, clientOptions())),
 	  storage(storage), config(*ownedConfig), client(*ownedClient), maps(maps)
 {
 }
