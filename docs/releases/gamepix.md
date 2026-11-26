@@ -6,7 +6,8 @@ Each [browser publication](browser.md) also builds the GamePix upload: the
 artifact, so the runtime is byte-identical to the published browser game. Download
 the job's `gamepix-upload` artifact (`glob2-VERSION-gamepix.zip`) and submit it on
 the GamePix developer dashboard. GamePix publishes no upload API, so this step is
-manual until it does.
+manual until it does. To rebuild the upload for an existing tag without
+republishing the browser game, dispatch `browser-release.yml` with `publish` off.
 
 ## Package
 

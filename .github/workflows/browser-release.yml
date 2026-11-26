@@ -7,6 +7,10 @@ on:
         description: Existing public vVERSION tag
         required: true
         type: string
+      publish:
+        description: Publish to Google Cloud Storage (off builds the GamePix upload only)
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -97,6 +101,7 @@ jobs:
 
   publish:
     needs: build
+    if: inputs.publish
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     environment: browser-release
@@ -185,10 +190,9 @@ jobs:
     permissions:
       contents: read
     steps:
+      # The packager comes from this workflow's revision: release tags can predate it.
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          repository: Globulation2/glob2
-          ref: ${{ inputs.tag }}
           persist-credentials: false
       - name: Resolve the design system revision the online app pins
         id: design
