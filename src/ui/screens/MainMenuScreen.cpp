@@ -22,6 +22,11 @@ using namespace Glob2UI;
 MainMenuScreen::MainMenuScreen() = default;
 MainMenuScreen::~MainMenuScreen() = default;
 
+bool MainMenuScreen::offersQuit()
+{
+	return !PortalPolicy::current().portal;
+}
+
 // Fit the wordmark once per width and theme with the software blitter; the
 // text heading remains the fallback when the asset is missing.
 void MainMenuScreen::loadWordmark(int logoWidth)
@@ -201,7 +206,8 @@ Element MainMenuScreen::build(const Presentation &p)
 				}, rowStyle));
 #endif
 #if !defined(__EMSCRIPTEN__) && !defined(GLOB2_MOBILE)
-			content.push_back(action("[quit]", QUIT, rowStyle));
+			if (offersQuit())
+				content.push_back(action("[quit]", QUIT, rowStyle));
 #endif
 		}
 		cardOptions.padding = p.pt(12);
@@ -257,7 +263,9 @@ Element MainMenuScreen::build(const Presentation &p)
 	if (BuildFeatures::Editor)
 		utilities.push_back(action("[editor]", EDITOR, utility));
 	utilities.push_back(action("[credits]", CREDITS, utility));
-	utilities.push_back(action("[quit]", QUIT, utility));
+	const bool quit = offersQuit();
+	if (quit)
+		utilities.push_back(action("[quit]", QUIT, utility));
 #if defined(GLOB2_MOBILE) && defined(__ANDROID__)
 	if (PortalPolicy::externalLinks())
 		utilities.push_back(button("menu/privacy", Glob2UI::libraryText("Privacy policy"), [] {
@@ -269,7 +277,7 @@ Element MainMenuScreen::build(const Presentation &p)
 		}, utility));
 #endif
 	if (PortalPolicy::externalLinks())
-		utilities.insert(utilities.end() - 1, button("menu/discord", tr("[Discord community]"), [this] { openCommunity(); }, utility));
+		utilities.insert(quit ? utilities.end() - 1 : utilities.end(), button("menu/discord", tr("[Discord community]"), [this] { openCommunity(); }, utility));
 	WrapOptions grid;
 	grid.maxColumns = 2;
 	grid.minChildWidth = 1;

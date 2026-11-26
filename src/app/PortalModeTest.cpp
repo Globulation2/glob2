@@ -37,7 +37,7 @@ Glob2UI::Presentation presentation(bool touch)
 // The main menu's controls on a desktop and a phone layout ("More" included).
 struct MenuKeys
 {
-	bool online = false, discord = false, campaign = false, tutorial = false, custom = false;
+	bool online = false, discord = false, campaign = false, tutorial = false, custom = false, quit = false;
 };
 MenuKeys menuKeys()
 {
@@ -56,6 +56,7 @@ MenuKeys menuKeys()
 			keys.campaign |= has("menu/" + std::to_string(MainMenuScreen::CAMPAIGN));
 			keys.tutorial |= has("menu/" + std::to_string(MainMenuScreen::TUTORIAL));
 			keys.custom |= has("menu/" + std::to_string(MainMenuScreen::CUSTOM));
+			keys.quit |= has("menu/" + std::to_string(MainMenuScreen::QUIT));
 		}
 	return keys;
 }
@@ -80,6 +81,8 @@ TEST_SUITE("PortalMode")
 #endif
 		CHECK(keys.discord);
 		CHECK(keys.custom);
+		CHECK(keys.quit);
+		CHECK(MainMenuScreen::offersQuit());
 	}
 
 	TEST_CASE("a portal without links or sign-in shows only offline play")
@@ -92,6 +95,17 @@ TEST_SUITE("PortalMode")
 		CHECK(keys.custom);
 		CHECK(keys.campaign);
 		CHECK(keys.tutorial);
+	}
+
+	TEST_CASE("a portal never offers Quit, whatever it allows")
+	{
+		glob2test::HeadlessGlobals globals({.loadStrings = true});
+		for (const char *description : {NoLinksNoSignIn, SignInWithoutLinks, Everything})
+		{
+			ScopedPortal portal(description);
+			CHECK_FALSE(menuKeys().quit);
+			CHECK_FALSE(MainMenuScreen::offersQuit());
+		}
 	}
 
 	TEST_CASE("links and sign-in are switched one at a time")

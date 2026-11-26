@@ -315,7 +315,8 @@ void Application::choose(int choice)
 #endif
 		break;
 	case MainMenuScreen::QUIT:
-		screens.stop();
+		if (MainMenuScreen::offersQuit())
+			screens.stop();
 		break;
 	}
 }
