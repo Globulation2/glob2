@@ -25,6 +25,16 @@ Qualify a release candidate, use the restricted mirror and publish through the t
 - [iOS production submission](ios-production.md).
 - [iOS listing copy](ios-app-store.md).
 - [F-Droid](fdroid.md).
+
+## Web portals
+
+- [Web portal packaging](web-portals.md).
 - [GamePix](gamepix.md).
+- [CrazyGames](crazygames.md).
+- [Newgrounds](newgrounds.md).
+- [Game Jolt](gamejolt.md).
+- [GameDistribution](gamedistribution.md).
+- [Yandex Games](yandex.md).
+- [Poki](poki.md).
 
 [Documentation index](../README.md).

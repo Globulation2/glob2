@@ -54,9 +54,10 @@ allowed actions, preserving its existing list. Configure the environment to
 allow only `master`. Mirror reviewed workflow changes before dispatching; an
 implementation change alone does not publish or replace the live browser.
 
-The `gamepix` job repackages the same verified artifact as the `gamepix-upload`
-artifact for [GamePix](gamepix.md). It has no cloud identity and publishes nothing,
-and it packages with the workflow revision's script, so older tags work. Set the
-`publish` input to false to build both artifacts without replacing the live game.
+The `portals` matrix job repackages the same verified artifact as a
+`<portal>-upload` artifact for each [web portal](web-portals.md). It has no cloud
+identity and publishes nothing, and it packages with the workflow revision's script,
+so older tags work. Set the `publish` input to false to build the portal uploads
+without replacing the live game.
 
 [Release index](README.md) · [Documentation index](../README.md).

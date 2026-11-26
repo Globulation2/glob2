@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       publish:
-        description: Publish to Google Cloud Storage (off builds the GamePix upload only)
+        description: Publish to Google Cloud Storage (off builds the portal uploads only)
         type: boolean
         default: true
 
@@ -179,16 +179,23 @@ jobs:
             echo 'Set GLOB2_BROWSER_PUBLIC_URL to a Caddy or equivalent HTTPS frontend with COOP/COEP headers to publish a threaded public URL.' >> "$GITHUB_STEP_SUMMARY"
           fi
 
-  # GamePix hosts its own copy of the browser game, so every browser release also
-  # produces the GamePix upload from the same verified package (no rebuild).
-  # GamePix has no documented upload API yet: download the gamepix-upload artifact
-  # and submit it on the GamePix developer dashboard (docs/releases/gamepix.md).
-  gamepix:
+  # Web portals host their own copy of the browser game, so every browser release
+  # also produces each portal's upload from the same verified package (no rebuild).
+  # No portal here has an upload API we use yet: download the <portal>-upload
+  # artifact and submit it on the portal's dashboard (docs/releases/<portal>.md).
+  # Yandex Games (100 MB unpacked) and Poki (small file size) reject the full
+  # package and wait on the small download build; package-portal.py fails above a
+  # portal's limit, so adding them here before that build would fail the release.
+  portals:
     needs: build
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        portal: [gamepix, crazygames, newgrounds, gamejolt, gamedistribution]
     steps:
       # The packager comes from this workflow's revision: release tags can predate it.
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -210,20 +217,24 @@ jobs:
         with:
           name: browser-release
           path: candidate
-      - name: Package and verify the GamePix upload
+      - name: Package and verify the portal upload
         env:
           TAG: ${{ inputs.tag }}
+          PORTAL: ${{ matrix.portal }}
+          # Empty until the game is registered; the packager then uses a placeholder ID.
+          GLOB2_GAMEDISTRIBUTION_GAME_ID: ${{ vars.GLOB2_GAMEDISTRIBUTION_GAME_ID }}
         run: |
           set -euo pipefail
-          python3 platforms/web/package-gamepix.py candidate --design-system design-system \
-            --output "gamepix/glob2-${TAG#v}-gamepix.zip"
+          zip="upload/glob2-${TAG#v}-$PORTAL.zip"
+          python3 platforms/web/package-portal.py candidate --portal "$PORTAL" \
+            --design-system design-system --output "$zip"
           {
-            echo "GamePix upload: \`glob2-${TAG#v}-gamepix.zip\` ($(du -h gamepix/*.zip | cut -f1))"
-            echo 'Submit it on the GamePix developer dashboard; see docs/releases/gamepix.md.'
+            python3 platforms/web/package-portal.py --portal "$PORTAL" --verify "$zip" --summary | tail -n 1
+            echo "Submit it on the portal's dashboard; see docs/releases/$PORTAL.md."
           } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: gamepix-upload
-          path: gamepix/
+          name: ${{ matrix.portal }}-upload
+          path: upload/
           if-no-files-found: error
           compression-level: 0
