@@ -95,32 +95,27 @@ jobs:
             '
 
   deb-amd64:
-    if: inputs.package_family == 'deb-amd64'
+    if: inputs.package_family == 'deb-amd64' && inputs.deb_target == 'debian-sid'
     runs-on: ubuntu-24.04
     timeout-minutes: 120
-    strategy:
-      fail-fast: false
-      matrix:
-        distro: ${{ fromJSON(inputs.deb_target == 'ubuntu-26.10' && '["ubuntu-26.10"]' || inputs.deb_target == 'debian-sid' && '["debian-sid"]' || '["debian-sid","ubuntu-26.10"]') }}
     env:
-      DISTRO_IMAGE: ${{ matrix.distro == 'debian-sid' && 'debian:sid' || 'ubuntu:stonking' }}
+      DISTRO_IMAGE: debian:sid
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - name: Verify and unpack the published source kit
+      - name: Verify the published Debian system-artwork source kit
         run: |
           set -euo pipefail
           mkdir inputs outputs
           cd inputs
           release=https://github.com/Globulation2/glob2/releases/download
           curl -fSL --retry 3 "$release/v0.11.7.0/glob2-0.11.7.0.tar.gz" -o glob2_0.11.7.0.orig.tar.gz
-          curl -fSL --retry 3 "$release/linux-debs-v0.11.7.0/glob2_0.11.7.0.orig-encoder-sources.tar.gz" -o glob2_0.11.7.0.orig-encoder-sources.tar.gz
           for extension in dsc debian.tar.xz; do
-            curl -fSL --retry 3 "$release/linux-debs-v0.11.7.0/glob2_0.11.7.0-1.glob2.1.$extension" -o "glob2_0.11.7.0-1~glob2.1.$extension"
+            curl -fSL --retry 3 "$release/linux-debian-system-artwork-v0.11.7.0/glob2_0.11.7.0-1.glob2.3.$extension" -o "glob2_0.11.7.0-1~glob2.3.$extension"
           done
           sha256sum -c <<'HASHES'
           3dffe97a657a8025e48990e7f9581a2108ab81c5c67f8e54fa2b09052a20b5d6  glob2_0.11.7.0.orig.tar.gz
-          1d219eda16abee4f566f15952aee44c6102a5335b457644d006e3ef981f2489d  glob2_0.11.7.0.orig-encoder-sources.tar.gz
-          3538a76b281d673ad543e508a5c35bf1a15b5a5c7632d8134b3255845289ceaf  glob2_0.11.7.0-1~glob2.1.debian.tar.xz
+          03d1ec35124f3e9d92f18641f70b7d572e342a2e7e4944b9683c5d472e32169b  glob2_0.11.7.0-1~glob2.3.dsc
+          e4503dfb86b48de012d35a134dba3697e8c4c5890dc37b25615a634067b76c14  glob2_0.11.7.0-1~glob2.3.debian.tar.xz
           HASHES
       - name: Prepare distro build and upgrade image
         run: |
@@ -131,7 +126,7 @@ jobs:
               libsdl3-dev libsdl3-image-dev libsdl3-ttf-dev libsdl3-net-dev libavcodec-dev libavformat-dev \
               libavutil-dev libswresample-dev libswscale-dev libopusfile-dev libopus-dev libogg-dev libspeex-dev \
               libboost-dev libssl-dev zlib1g-dev libfribidi-dev libpcre2-dev libgl-dev libglu1-mesa-dev \
-              libepoxy-dev libwebp-dev portaudio19-dev libjpeg-dev python3-dev python3-venv python3-wheel
+              libepoxy-dev libwebp-dev portaudio19-dev libjpeg-dev python3-pil
             dpkg-query -W glob2 glob2-data
             test "$(dpkg --print-architecture)" = amd64
             rm -rf /var/lib/apt/lists/*
@@ -146,7 +141,7 @@ jobs:
             glob2-deb-amd64 bash -euc '
               mkdir /build
               cd /build
-              dpkg-source -x /inputs/glob2_0.11.7.0-1~glob2.1.dsc
+              dpkg-source -x /inputs/glob2_0.11.7.0-1~glob2.3.dsc
               cd glob2-0.11.7.0
               dpkg-buildpackage --build=binary --no-sign --jobs=4
               cp /build/glob2_*_amd64.deb /build/glob2-data_*_all.deb /outputs/
@@ -183,7 +178,7 @@ jobs:
             '
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: glob2-${{ matrix.distro }}-amd64-candidate
+          name: glob2-debian-sid-amd64-system-artwork
           path: outputs/
           if-no-files-found: error
           retention-days: 7
