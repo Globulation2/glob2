@@ -1,5 +1,6 @@
 """The served game must include every worker and encoder its runtimes reference."""
 import importlib.util
+import json
 from pathlib import Path
 import subprocess
 import sys
@@ -56,6 +57,19 @@ class InstallWebRuntimeTests(unittest.TestCase):
                 self.assertIn(group[0], result.stderr)
                 self.assertEqual(sorted(p.name for p in self.served.iterdir()), ['index.html'])
                 self.assertEqual((self.served / 'index.html').read_text(), 'previous launcher')
+
+    def test_edition_without_a_worker_feature_installs_without_its_runtime(self):
+        # The lite edition (buildsys/edition.py) keeps the worker names in its
+        # JavaScript glue but compiles the features out and ships none of the files.
+        names = [group[0] for group in installer.WORKER_RUNTIMES if group[0] in installer.WORKER_FEATURES]
+        self.write('threaded/index.js', ' '.join('new Worker("%s")' % name for name in names))
+        features = {feature: False for feature in installer.WORKER_FEATURES.values()}
+        self.write('identity.json', json.dumps({'edition': {'name': 'lite', 'features': features}}))
+        result = self.run_installer()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        for name in names:
+            self.assertFalse((self.served / name).exists())
+        self.assertEqual((self.served / 'index.html').read_text(), 'index.html')
 
     def test_partial_encoder_runtime_leaves_previous_release_untouched(self):
         self.write('recording-worker.js', 'worker')

@@ -25,8 +25,19 @@ WORKER_RUNTIMES = (
     ('asset-video-worker.js', 'asset-video-runtime.js', 'asset-video-runtime.wasm'),
     ('hive-worker.js', 'hive-runtime.js', 'hive-runtime.wasm'),
 )
+# The edition switch (buildsys/edition.py) that compiles each worker runtime out.
+WORKER_FEATURES = {'recording-worker.js': 'recording', 'asset-video-worker.js': 'video_assets',
+                   'hive-worker.js': 'hive'}
 ENCODINGS = ('', '.br', '.gz')
 RECORD = '.installed-assets.json'
+
+
+def edition_features(release):
+    """The edition's feature switches from identity.json (empty for the standard edition)."""
+    try:
+        return json.loads((release / 'identity.json').read_text()).get('edition', {}).get('features', {})
+    except (OSError, ValueError):
+        return {}
 
 
 def localization_files(release):
@@ -36,11 +47,7 @@ def localization_files(release):
     catalogs = Path(__file__).resolve().parents[1] / 'services/online/packages/i18n/locales'
     expected = {'locales/' + path.name for path in catalogs.glob('*.json')}
     # An English-only edition (buildsys/edition.py) ships only the English catalog.
-    try:
-        edition = json.loads((release / 'identity.json').read_text()).get('edition', {})
-    except (OSError, ValueError):
-        edition = {}
-    if edition.get('features', {}).get('translations') is False:
+    if edition_features(release).get('translations') is False:
         expected = {'locales/en.json'}
     actual = {'locales/' + path.name for path in (release / 'locales').glob('*.json')}
     if not expected or actual != expected:
@@ -62,8 +69,14 @@ def entry_files(release):
         names.append('presentation-surface.js')
     names.extend(ENTRY_FILES)
     runtimes = b''.join(scripts.values())
+    features = edition_features(release)
     for group in WORKER_RUNTIMES:
-        if group[0].encode() in runtimes or any((release / name).exists() for name in group):
+        shipped = any((release / name).exists() for name in group)
+        # An edition without the feature keeps the worker's name in the JavaScript glue
+        # but never starts it, and ships none of its files.
+        if features.get(WORKER_FEATURES.get(group[0])) is False and not shipped:
+            continue
+        if group[0].encode() in runtimes or shipped:
             names.extend(group)
     names.extend(localization_files(release))
     names.extend(path.relative_to(release).as_posix()
