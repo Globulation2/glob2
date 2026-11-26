@@ -25,5 +25,6 @@ Qualify a release candidate, use the restricted mirror and publish through the t
 - [iOS production submission](ios-production.md).
 - [iOS listing copy](ios-app-store.md).
 - [F-Droid](fdroid.md).
+- [GamePix](gamepix.md).
 
 [Documentation index](../README.md).
