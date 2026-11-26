@@ -54,4 +54,7 @@ allowed actions, preserving its existing list. Configure the environment to
 allow only `master`. Mirror reviewed workflow changes before dispatching; an
 implementation change alone does not publish or replace the live browser.
 
+The `gamepix` job repackages the same verified artifact as the `gamepix-upload`
+artifact for [GamePix](gamepix.md). It has no cloud identity and publishes nothing.
+
 [Release index](README.md) · [Documentation index](../README.md).
