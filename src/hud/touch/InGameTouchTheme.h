@@ -64,8 +64,8 @@ inline constexpr double tabletPaletteLabel = 22;
 // Tablets show a minimap large enough to aim at, once the screen is this tall.
 inline constexpr double tabletMinimap = 160;
 inline constexpr double tabletMinimapMinimumHeight = 600;
-// A touch screen whose shortest side has this many points is a tablet in both
-// orientations (Android's sw600dp convention).
+// A touch window whose shortest side has this many points, before system bars
+// and cutouts, is a tablet in both orientations (Android's sw600dp convention).
 inline constexpr double tabletShortestSide = 600;
 // Tablets are held by both sides, or rest flat: thumbs reach the side edges,
 // from mid-height up, and the index finger works the map in the middle. The

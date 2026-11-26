@@ -100,8 +100,11 @@ selection invalidation cannot override that toolbox choice on the next frame.
 ### Tablet layout
 
 A touch HUD is a tablet when the player chose the Tablet interface (wherever its
-spacious layout fits), or, unless they chose Phone, when its shortest side is at
-least 600 points, in both orientations (Android's sw600dp convention). Tablets are held by both side edges, or rest flat or in a stand: thumbs
+spacious layout fits), or, unless they chose Phone, when its window's shortest
+side is at least 600 points, in both orientations (Android's sw600dp convention).
+The window is measured before system bars and cutouts, so a 7-inch tablet such
+as a Nexus 7 (600 × 960 points) keeps the tablet HUD in landscape, where its status
+and navigation bars leave about 544 points of height. Tablets are held by both side edges, or rest flat or in a stand: thumbs
 reach the side edges from mid-height up, and the index finger works the map in the
 middle. So the tablet HUD splits its controls across both edges rather than one
 thumb corner:

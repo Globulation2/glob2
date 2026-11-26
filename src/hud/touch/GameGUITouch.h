@@ -84,10 +84,11 @@ class GameGUITouch
 	bool usesHUD() const;
 	//! GLOB2_TABLET_HUD=panel: tablets keep the floating top-right panels.
 	static bool tabletPanelRequested();
-	//! Whether a touch HUD with this usable area (points) and resolved layout is a
-	//! tablet: the Tablet interface wherever its spacious layout fits; otherwise,
-	//! unless Phone or Compact was chosen, a shortest side of at least 600 points.
-	static bool isTablet(GAGCore::ViewRect usablePoints, bool spacious);
+	//! Whether a touch HUD in this window (points, before safe-area insets) with
+	//! this resolved layout is a tablet: the Tablet interface wherever its
+	//! spacious layout fits; otherwise, unless Phone or Compact was chosen, a
+	//! window whose shortest side is at least 600 points, like Android's sw600dp.
+	static bool isTablet(GAGCore::ViewRect windowPoints, bool spacious);
 	//! The last computed layout's tablet flag, for measurements made during layout.
 	mutable bool tabletLayout = false;
 	//! Tablets: the rail's OK/Cancel (placement) or Done (zones) while a tool is active.
