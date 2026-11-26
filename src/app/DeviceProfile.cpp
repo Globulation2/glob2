@@ -2,6 +2,7 @@
 #include "DeviceProfile.h"
 
 #include <MobilePlatform.h>
+#include <ThreadSupport.h>
 
 #include <SDL3/SDL_cpuinfo.h>
 #include <SDL3/SDL_log.h>
@@ -104,11 +105,19 @@ DeviceDecision DeviceProfile::highResolutionArtwork() const
 DeviceMapSize DeviceProfile::newMapSize() const
 {
 	const auto &t = deviceThresholds;
+	// A capability, not a tier: it applies whatever the tier, overrides included.
+	if (inputs.serialRuntime)
+		return {t.serialMapShift, DeviceReason::SerialRuntime, 0};
 	if (tier == DeviceTier::Low)
 		return {t.lowMapShift, reason, reasonValue};
 	if (tier == DeviceTier::Mid && inputs.mobile)
 		return {t.mobileMidMapShift, reason, reasonValue};
 	return {t.defaultMapShift, reason, reasonValue};
+}
+
+int DeviceProfile::newGameColonies() const
+{
+	return inputs.serialRuntime ? deviceThresholds.serialColonies : 0;
 }
 
 std::optional<DeviceTier> DeviceProfile::parseTier(std::string_view text)
@@ -142,6 +151,7 @@ const char *DeviceProfile::reasonName(DeviceReason reason)
 	case DeviceReason::Cores: return "cores";
 	case DeviceReason::Vram: return "vram";
 	case DeviceReason::Override: return "override";
+	case DeviceReason::SerialRuntime: return "serial-runtime";
 	case DeviceReason::Unknown: break;
 	}
 	return "unknown";
@@ -161,7 +171,8 @@ std::string DeviceProfile::telemetryFields() const
 		<< " android_total_mem_mib=" << inputs.androidTotalMemMiB << " vram_mib=" << inputs.vramMiB
 		<< " vram_source=" << inputs.vramSource << " auto_artwork=" << (artwork.on ? "high" : "original")
 		<< " auto_artwork_reason=" << reasonName(artwork.reason)
-		<< " auto_map_size=" << (1 << newMapSize().shift);
+		<< " serial_runtime=" << int(inputs.serialRuntime) << " auto_map_size=" << (1 << newMapSize().shift)
+		<< " auto_colonies=" << newGameColonies();
 	return out.str();
 }
 
@@ -212,6 +223,7 @@ DeviceInputs probeCheap()
 #endif
 	inputs.cores = std::thread::hardware_concurrency();
 	inputs.mobile = GAGCore::platformIsMobile();
+	inputs.serialRuntime = !GAGCore::ThreadSupport::available;
 #ifdef __ANDROID__
 	probeAndroid(inputs);
 #endif

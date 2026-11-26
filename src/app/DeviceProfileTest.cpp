@@ -97,6 +97,24 @@ TEST_SUITE("DeviceProfile")
 		CHECK(DeviceProfile::classify(inputs(1024), DeviceTier::High, "command-line").highResolutionArtwork().on);
 	}
 
+	TEST_CASE("The serial runtime starts new games at 128x128 against one opponent")
+	{
+		auto serial = inputs(16384);
+		serial.serialRuntime = true;
+		const auto p = DeviceProfile::classify(serial);
+		CHECK(p.tier == DeviceTier::High);
+		CHECK(p.newMapSize().shift == 7);
+		CHECK(p.newMapSize().reason == DeviceReason::SerialRuntime);
+		CHECK(p.newGameColonies() == 2);
+		CHECK(p.highResolutionArtwork().on); // artwork still follows memory
+		// A forced tier does not lift it: threads are a capability, not a tier.
+		CHECK(DeviceProfile::classify(serial, DeviceTier::High).newMapSize().shift == 7);
+		CHECK(DeviceProfile::classify(serial).telemetryFields().find("serial_runtime=1") != std::string::npos);
+		// Threaded runtimes keep their setup's own colony default.
+		CHECK(DeviceProfile::classify(inputs(16384)).newGameColonies() == 0);
+		CHECK(DeviceProfile::classify(inputs(2048, 8, true)).newGameColonies() == 0);
+	}
+
 	TEST_CASE("Auto artwork and map size follow the tier; VRAM only for a discrete desktop GPU")
 	{
 		const auto low = DeviceProfile::classify(inputs(2048, 8, true));

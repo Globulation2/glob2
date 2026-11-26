@@ -183,10 +183,14 @@ CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack &screens) : screens(scree
 	else
 	{
 		// No saved lobby: a random map at four colonies (random maps are the default),
-		// at the device's default size. A saved lobby keeps the size it was played at.
+		// or the device's own default (two on the serial runtime), at the device's
+		// default size. A saved lobby keeps the size and colonies it was played at.
 		listMaps();
 		setup.random = true;
-		setup.setCapacity(4);
+		GenerationRequest colonies = setup.generator;
+		colonies.nbTeams = 4;
+		applyDeviceColonies(colonies);
+		setup.setCapacity(colonies.nbTeams);
 		applyDeviceMapSize(setup.generator, setup.capacity);
 		validMap = false;
 		source.clear();
@@ -490,6 +494,7 @@ void CustomGameScreen::resetParameters()
 {
 	GenerationRequest reset;
 	reset.setMethodDefaults(setup.generator.method, setup.generator.catalogSnapshot());
+	applyDeviceColonies(reset);
 	applyDeviceMapSize(reset, reset.nbTeams);
 	reset.nbWorkers = setup.generator.nbWorkers;
 	reset.terrainType = setup.generator.terrainType;
@@ -1258,6 +1263,7 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 												   [this] { chooseLandscape(); })));
 		GenerationRequest defaults;
 		defaults.setMethodDefaults(g.method, g.catalogSnapshot());
+		applyDeviceColonies(defaults);
 		applyDeviceMapSize(defaults, defaults.nbTeams);
 		const bool atDefaults = g.options == defaults.options && g.wDec == defaults.wDec && g.hDec == defaults.hDec && setup.capacity == defaults.nbTeams;
 		left.push_back(fe::wrap({fe::button("generator/reset", tr("Reset to defaults"), [this] { resetParameters(); },

@@ -35,6 +35,16 @@ DeviceProfile device(std::uint64_t ramMiB, bool mobile = false)
 	return DeviceProfile::classify(inputs);
 }
 
+// A fast desktop running the serial browser runtime, as on a web portal.
+DeviceProfile serialDevice()
+{
+	DeviceInputs inputs;
+	inputs.systemRamMiB = 16384;
+	inputs.cores = 8;
+	inputs.serialRuntime = true;
+	return DeviceProfile::classify(inputs);
+}
+
 // Replaces the process profile for one scope.
 struct ScopedDevice
 {
@@ -320,6 +330,25 @@ TEST_SUITE("AdaptiveSettings")
 			screen.resetParameters();
 			CHECK(screen.setup.validation().empty());
 		}
+		// The serial runtime starts a fresh lobby at 128x128 with one computer
+		// opponent, even on a fast desktop, and Reset returns there.
+		{
+			GAGCore::Toolkit::getFileManager()->remove(CustomGamePreferences::filename);
+			ScopedDevice serial(serialDevice());
+			CustomGameScreen screen(stack);
+			CHECK(screen.setup.capacity == 2);
+			CHECK(screen.setup.generator.wDec == 7);
+			CHECK(screen.setup.generator.hDec == 7);
+			CHECK(screen.setup.validation().empty());
+			screen.setup.setCapacity(4);
+			screen.setup.generator.nbTeams = 4;
+			screen.setup.generator.wDec = screen.setup.generator.hDec = 8;
+			screen.resetParameters();
+			CHECK(screen.setup.capacity == 2);
+			CHECK(screen.setup.generator.wDec == 7);
+			CHECK(screen.setup.validation().empty());
+		}
+		GAGCore::Toolkit::getFileManager()->remove(CustomGamePreferences::filename);
 		// A saved lobby is the player's own setup: its size is not adapted.
 		CustomGamePreferences saved;
 		saved.setup.generator.method = lava.method;
