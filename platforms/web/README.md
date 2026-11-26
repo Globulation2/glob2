@@ -29,6 +29,9 @@ python3 tools/dev_build.py target=web release=1 -j8 web-package
 python3 platforms/web/serve.py 8765 --bind 127.0.0.1 --directory build/emscripten/client/release
 ```
 
+The download-size lite edition builds beside it with `edition=lite` (in
+`build/emscripten/client/release/lite`); see [browser editions](../../docs/browser/editions.md).
+
 For routine editing, build one threaded runtime with basic debug symbols:
 
 ```sh

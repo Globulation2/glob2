@@ -1,5 +1,6 @@
 {
   "key": "moor_grass",
+  "small_build_fallback": "lush_grass",
   "sprite": "data/gfx/terrain-moor_grass",
   "profile": "turf",
   "class": "solid",

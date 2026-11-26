@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <BuildFeatures.h>
 #include "app/ClientFeatures.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -93,8 +94,10 @@ void Engine::setOnlineResult(std::shared_ptr<Online::OnlineMatchResult> result)
     if (onlineResult)
     {
         gui.networkMatch.online = true;
+#if GLOB2_HAS_HIVE && GLOB2_HAS_ONLINE
         if constexpr (ClientFeatures::Commander)
             gui.hive=std::make_shared<Hive::Client>(gui,Online::services().client,onlineResult->matchId,gui.localPlayer);
+#endif
         gui.networkMatch.rated = onlineResult->rated;
         gui.networkMatch.fromRoom = onlineResult->fromRoom;
     }

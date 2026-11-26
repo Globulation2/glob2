@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2007 Stephane Magnenat & Luc-Olivier de Charrière
+#include <BuildFeatures.h>
 #include "AI.h"
 #include <Environment.h>
 #include <GraphicContext.h>
@@ -163,7 +164,9 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
 	DeviceProfile::initialize(r.has("--device-tier") ? DeviceProfile::parseTier(r.get("--device-tier")) : std::nullopt,
 							  !runNoX && (r.command == "play" || r.command == "replay"));
 	settings.resolveAdaptiveDefaults();
+#if GLOB2_HAS_ONLINE
 	Online::acceptLaunchRequest(r);
+#endif
 }
 
 gradient_kernel::Configuration GlobalContainer::gradientConfiguration() const

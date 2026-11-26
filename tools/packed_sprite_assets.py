@@ -122,7 +122,8 @@ def write_webp_page_run(frames, size, name, mode, directory, fingerprint):
         filename = f"pack-{name}-{start:04}.webp"
         lossless = mode == "lossless"
         page.save(directory / filename, format="WEBP", lossless=lossless,
-                  quality=75, method=4 if lossless else images.ENCODING["method"], exact=True)
+                  quality=75 if lossless else images.sheet_lossy_quality(),
+                  method=4 if lossless else images.ENCODING["method"], exact=True)
         decoded = Image.open(directory / filename).convert("RGBA")
         if decoded.size != page.size:
             raise ValueError("Packed WebP changed dimensions")

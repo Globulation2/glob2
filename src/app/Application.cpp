@@ -146,8 +146,11 @@ class ShutdownScreen : public Glob2UI::Screen
 		// (bounded by Online::LINGER_MS).
 		if (closing)
 		{
-			if (Online::lingeringRelayConnections() > 0 ||
-				GAGCore::Recording::recorder().status().state == GAGCore::Recording::State::Finalizing)
+#if GLOB2_HAS_ONLINE
+			if (Online::lingeringRelayConnections() > 0)
+				return;
+#endif
+			if (GAGCore::Recording::recorder().status().state == GAGCore::Recording::State::Finalizing)
 				return;
 			endExecute(0);
 			return;
@@ -301,10 +304,12 @@ void Application::choose(int choice)
 			std::cerr << CompileProfile::missing("The map editor") << std::endl;
 		break;
 	case MainMenuScreen::MULTIPLAYERS_LAN:
+#if GLOB2_HAS_LAN
 		withAgeBand([this] { screens.push(std::make_unique<LANMenuScreen>(screens)); });
+#endif
 		break;
 	case MainMenuScreen::PLAY_ONLINE:
-#if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
+#if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE) && GLOB2_HAS_ONLINE
 		if (PortalPolicy::onlineSignIn())
 			withAgeBand([this] { screens.push(std::make_unique<OnlineHubScreen>(screens)); });
 #endif
@@ -411,13 +416,16 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 		GAGCore::StartupPhase::mark("application:first-frame");
 	}
 	lastFrame = tick;
+#if GLOB2_HAS_RECORDING
 	if (GAGCore::Recording::takeFilesRequest()) screens.push(std::make_unique<RecordingFilesScreen>());
+#endif
 	Glob2UI::deliverFinishedRecordings();
 	// Invite links opened while running (macOS and iOS URL events) arrive as
 	// dropped "files"; they become the pending join instead. SDL3 owns the
 	// event's text, so nothing is freed here.
 	std::vector<SDL_Event> withoutLinks;
 	const std::vector<SDL_Event> *delivered = &incoming;
+#if GLOB2_HAS_ONLINE
 	if (std::any_of(incoming.begin(), incoming.end(),
 					[](const SDL_Event &event) { return event.type == SDL_EVENT_DROP_FILE; }))
 	{
@@ -430,8 +438,11 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 		}
 		delivered = &withoutLinks;
 	}
+#endif
 	const auto &events = *delivered;
+#if GLOB2_HAS_ONLINE
 	Online::pump();
+#endif
 	AgeGate::pollPlatformSignal();
 	// Memory signals and the VRAM probe, also while hidden: a trim in the
 	// background is when the system judges the app's size.
@@ -547,7 +558,7 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 	screens.frame(tick, filtered);
 #endif
 #endif
-#if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
+#if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE) && GLOB2_HAS_ONLINE
 	// An invite link (at launch or while running) opens the online hub from the
 	// main menu; the hub consumes it.
 	static std::uint32_t hubOpenedAt = 0;

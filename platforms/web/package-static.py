@@ -26,12 +26,15 @@ LAUNCHER_CORE_ASSETS = {
 }
 
 
-def require_translation_catalogs(names):
-    """A localized launcher must ship every supported locale, without aliases."""
+def require_translation_catalogs(names, english_only=False):
+    """A localized launcher must ship every supported locale, without aliases; an
+    English-only edition (buildsys/edition.py) ships exactly the English one."""
     canonical = {
         "locales/" + path.name
         for path in (ROOT / "services/online/packages/i18n/locales").glob("*.json")
     }
+    if english_only and "locales/en.json" in canonical:
+        canonical = {"locales/en.json"}
     if not canonical:
         raise ValueError("Missing canonical browser translation catalog inventory")
     actual = {name for name in names if name.startswith("locales/") and name.endswith(".json")}
@@ -62,6 +65,13 @@ def package(source, destination):
     if not packages:
         raise ValueError("Expected game data packages in assets/")
     threaded = 'src="loader.js"' in files["html"].decode()
+    # An edition (buildsys/edition.py) records its name; the standard marker is unchanged.
+    try:
+        edition_settings = json.loads((source / "identity.json").read_text()).get("edition", {})
+    except (OSError, ValueError):
+        edition_settings = {}
+    edition = edition_settings.get("name", "standard")
+    english_only = edition_settings.get("features", {}).get("translations") is False
     if threaded:
         files["loader"] = (source / "loader.js").read_bytes()
         for ext in ("js", "wasm"):
@@ -97,7 +107,7 @@ def package(source, destination):
     if b'src="i18n.js"' in files["html"]:
         localization["i18n.js"] = (source / "i18n.js").read_bytes()
         localization.update({"locales/" + path.name: path.read_bytes() for path in sorted((source / "locales").glob("*.json"))})
-        require_translation_catalogs(localization)
+        require_translation_catalogs(localization, english_only)
     launcher_fonts = {}
     if b'href="script-fonts.css"' in files['html']:
         launcher_fonts['script-fonts.css'] = (source / 'script-fonts.css').read_bytes()
@@ -216,6 +226,8 @@ def package(source, destination):
                     "version": version,
                     "threaded": threaded,
                     "music": bool(music),
+                    **({"edition": edition} if edition != "standard" else {}),
+                    **({"englishOnly": True} if english_only else {}),
                 }
             )
             + "\n",
@@ -287,7 +299,8 @@ def verify(directory):
         raise ValueError("Static package contains unexpected or missing files")
     localized = b'src="i18n.js"' in (directory / "index.html").read_bytes()
     if localized or "i18n.js" in expected or any(name.startswith("locales/") for name in expected):
-        require_translation_catalogs(expected)
+        english_only = json.loads((directory / MARKER).read_text()).get("englishOnly", False)
+        require_translation_catalogs(expected, english_only)
     for name, digest in expected.items():
         data = (directory / name).read_bytes()
         if hashlib.sha256(data).hexdigest() != digest:

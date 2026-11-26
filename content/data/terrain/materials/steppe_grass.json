@@ -1,5 +1,6 @@
 {
   "key": "steppe_grass",
+  "small_build_fallback": "lush_grass",
   "sprite": "data/gfx/terrain-steppe_grass",
   "profile": "turf",
   "class": "solid",

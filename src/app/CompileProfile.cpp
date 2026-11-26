@@ -9,7 +9,10 @@
 #define GLOB2_PROFILE_HAS_GENERATORS 1
 #define GLOB2_PROFILE_HAS_EDITOR 1
 #endif
-#if !GLOB2_PROFILE_HAS_EDITOR
+#include <BuildFeatures.h>
+// The editor's entry point, for builds without the editor (compile_profile=core,
+// or an edition without it, which also hides the editor's menu entries).
+#if !GLOB2_PROFILE_HAS_EDITOR || !GLOB2_HAS_EDITOR
 #include "EditorEntry.h"
 bool EditorEntry::open(GAGGUI::ScreenStack &) { return false; }
 #endif
@@ -19,7 +22,7 @@ namespace CompileProfile
 const char *name() { return GLOB2_COMPILE_PROFILE; }
 bool isFull() { return std::string(GLOB2_COMPILE_PROFILE) == "full"; }
 bool hasGenerators() { return GLOB2_PROFILE_HAS_GENERATORS; }
-bool hasEditor() { return GLOB2_PROFILE_HAS_EDITOR; }
+bool hasEditor() { return GLOB2_PROFILE_HAS_EDITOR && GLOB2_HAS_EDITOR; }
 std::string missing(const std::string &what)
 {
 	return what + " is not compiled into this build (compile_profile=" + name() +

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <BuildFeatures.h>
 #include "GenerationWork.h"
 #include "GenerationNumeric.h"
 #include "FortsGenerator.h"
@@ -1492,4 +1493,7 @@ GeneratorDefinition fortsDefinition()
 		 "style:fortified", "fairness:stamped-lattice"}};
 }
 
+// The JavaScript toolkit binds this blueprint; an edition without it leaves it out.
+#if GLOB2_HAS_JS_TOOLKIT
 #include "FortsBlueprint.inc"
+#endif

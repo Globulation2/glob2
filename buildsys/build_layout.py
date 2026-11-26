@@ -127,6 +127,11 @@ def build_identity(arguments, host=None):
     if role == 'client':
         from client_features import resolve
         identity.update(resolve(arguments))
+        import edition
+        identity.update(edition.resolve(arguments, target))
+        identity['client_features'] = edition.client_features(identity, identity['client_features'])
+    elif 'edition' in arguments:
+        raise ValueError('edition applies to the client role only')
     identity.update(development)
     return identity
 
@@ -138,6 +143,15 @@ def default_directory(identity):
     if identity.get('web_legacy_gl') is False:
         base = dict(identity); del base['web_legacy_gl']
         return default_directory(base) / 'direct'
+    import edition
+    edition_name = edition.directory_name(identity)
+    if edition_name:
+        base = dict(identity); del base['edition']
+        from client_features import resolve
+        base['client_features'] = resolve(dict(target=identity['target'], release=identity['mode'] == 'release',
+                                               client_profile=identity['client_profile'],
+                                               distribution=identity['distribution']))['client_features']
+        return default_directory(base) / edition_name
     from client_features import directory_suffix
     feature_suffix = directory_suffix(identity)
     if feature_suffix:

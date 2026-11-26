@@ -888,6 +888,7 @@ set(GLOB2_GAG_SOURCES
     libs/gag/src/SpriteLoad.cpp
     libs/gag/src/SpriteRenderAtlas.cpp
     libs/gag/src/GameplayRecording.cpp
+    libs/gag/src/GameplayRecordingDisabled.cpp
     libs/gag/src/RecordingMetadata.cpp
     libs/gag/src/RecordingEncoder.cpp
     libs/gag/src/RecordingFiles.cpp
@@ -1703,6 +1704,7 @@ set(GLOB2_ANDROID_SOURCES
     libs/gag/src/SpriteLoad.cpp
     libs/gag/src/SpriteRenderAtlas.cpp
     libs/gag/src/GameplayRecording.cpp
+    libs/gag/src/GameplayRecordingDisabled.cpp
     libs/gag/src/RecordingMetadata.cpp
     libs/gag/src/RecordingEncoder.cpp
     libs/gag/src/RecordingFiles.cpp
@@ -2534,6 +2536,7 @@ set(GLOB2_IOS_SOURCES
     libs/gag/src/SpriteLoad.cpp
     libs/gag/src/SpriteRenderAtlas.cpp
     libs/gag/src/GameplayRecording.cpp
+    libs/gag/src/GameplayRecordingDisabled.cpp
     libs/gag/src/RecordingMetadata.cpp
     libs/gag/src/RecordingEncoder.cpp
     libs/gag/src/RecordingFiles.cpp
@@ -3519,6 +3522,7 @@ set(GLOB2_WEB_SOURCES
     libs/gag/src/SpriteLoad.cpp
     libs/gag/src/SpriteRenderAtlas.cpp
     libs/gag/src/GameplayRecording.cpp
+    libs/gag/src/GameplayRecordingDisabled.cpp
     libs/gag/src/RecordingMetadata.cpp
     libs/gag/src/RecordingFiles.cpp
     libs/gag/src/ParallelPresentationWork.cpp

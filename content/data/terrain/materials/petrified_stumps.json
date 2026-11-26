@@ -1,5 +1,6 @@
 {
   "key": "petrified_stumps",
+  "small_build_fallback": "boulders",
   "sprite": "data/gfx/terrain-petrified_stumps",
   "profile": "rock",
   "class": "solid",

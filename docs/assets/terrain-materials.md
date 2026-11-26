@@ -40,6 +40,9 @@ used by the compositor.
 Each material supplies:
 
 - `key`, a stable authoring name, and `sprite`, a `content/data/`-relative sprite prefix;
+- optional `small_build_fallback`, the key of a similar shipped material that draws
+  this one in size-limited builds, which then leave this material's artwork out; see
+  [Browser editions](../browser/editions.md#settings);
 - `variants`, an array of `{ "frame": 272, "weight": 1 }` entries;
 - `profile`, the key of its edge profile, and `preview`, three overview RGB channels;
 - `class` (version 4), the key of its border class;

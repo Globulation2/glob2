@@ -1,5 +1,6 @@
 {
   "key": "clay",
+  "small_build_fallback": "dirt",
   "sprite": "data/gfx/terrain-clay",
   "profile": "soil",
   "class": "solid",

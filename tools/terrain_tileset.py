@@ -358,7 +358,8 @@ def _validate(document, root):
                 limit = 50 * 16 if key == "connected_foreign" else 256
                 if not isinstance(frames, list) or not frames or len(frames) > limit:
                     raise ValueError("Decor frames must be a non-empty array")
-                if key.startswith("connected") and len(frames) % 16:
+                # Interior crowns are checked below (one set per corner colour, or one).
+                if key in ("connected", "connected_foreign") and len(frames) % 16:
                     raise ValueError("Connected decor needs equal variants for all 16 masks")
                 for frame in frames:
                     integer(frame, 0, 65535, "Decor frame")
@@ -371,8 +372,12 @@ def _validate(document, root):
                     raise ValueError("connected_corners must be a boolean")
                 if decor["connected_corners"] and len(decor.get("connected", [])) != 256:
                     raise ValueError("Corner-tiled connected decor needs 16 variants per mask")
-            if "connected_interior" in decor and not decor.get("connected_corners"):
-                raise ValueError("connected_interior needs connected_corners")
+            # Interior crowns come in 16 colour sets, or one set for single-colour
+            # decor (a small build's, tools/package_assets.py trim_decor).
+            if "connected_interior" in decor and not decor.get("connected") :
+                raise ValueError("connected_interior needs connected frames")
+            if "connected_interior" in decor and decor.get("connected_corners") and len(decor["connected_interior"]) % 16:
+                raise ValueError("connected_interior needs equal variants per corner colour")
             if "connected_open" in decor:
                 if not isinstance(decor["connected_open"], bool):
                     raise ValueError("connected_open must be a boolean")
@@ -431,6 +436,16 @@ def _validate(document, root):
     for name in BINDINGS:
         if document["bindings"][name] not in materials:
             raise ValueError(f"Missing binding: {name}")
+    # A small build (tools/package_assets.py fold_terrain) draws a material with the
+    # one it names; that material must ship and must not fold itself.
+    by_key = {m["key"]: m for m in document["materials"]}
+    for m in document["materials"]:
+        if "small_build_fallback" in m:
+            target = m["small_build_fallback"]
+            if target not in by_key or target == m["key"]:
+                raise ValueError(f"Unknown small_build_fallback for {m['key']}: {target}")
+            if "small_build_fallback" in by_key[target]:
+                raise ValueError(f"small_build_fallback of {m['key']} folds again: {target}")
     pairs = set()
     treatments = document.get("pair_treatments", [])
     if not isinstance(treatments, list):

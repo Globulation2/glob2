@@ -1,5 +1,6 @@
 {
   "key": "thicket",
+  "small_build_fallback": "hedge",
   "sprite": "data/gfx/terrain-thicket",
   "profile": "canopy",
   "class": "cover",

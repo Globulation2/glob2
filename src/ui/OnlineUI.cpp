@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <BuildFeatures.h>
 #include "ui/OnlineUI.h"
 
 #include "AINames.h"
@@ -183,6 +184,8 @@ Element emptyState(IconRef glyph, const std::string &text, std::vector<Element> 
 	return padding(Insets::symmetric(p.pt(4), p.pt(6)), column(std::move(parts), {p.pt(8)}));
 }
 
+// Preview images come from the online platform (an edition without it has none).
+#if GLOB2_HAS_ONLINE
 // ------------------------------------------------------------- previews
 
 PreviewImages::PreviewImages() = default;
@@ -277,6 +280,7 @@ GAGCore::DrawableSurface *PreviewImages::get(Online::PlatformClient *client, con
 		4 * 1024 * 1024);
 	return nullptr;
 }
+#endif
 
 // ----------------------------------------------------------------- text
 
@@ -495,6 +499,7 @@ std::int64_t wallClockMs()
 		.count();
 }
 
+#if GLOB2_HAS_ONLINE
 Online::PlatformClient &onlineClient()
 {
 	auto &services = Online::services();
@@ -502,6 +507,7 @@ Online::PlatformClient &onlineClient()
 		services.client.start(services.config.selectedOrigin());
 	return services.client;
 }
+#endif
 
 bool openInstancePage(const std::string &origin, const std::string &path)
 {

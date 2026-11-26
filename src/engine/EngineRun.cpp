@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <BuildFeatures.h>
 #include <PresentationWork.h>
 #include "gradient/MapRouting.h"
 #include "OwnerTickProfile.h"
@@ -1241,7 +1242,7 @@ void Engine::beginSession(Uint64 now)
     st.startTime = now;
     teamEliminatedTick.clear();
     session = st;
-#ifndef __EMSCRIPTEN__
+#if !defined(__EMSCRIPTEN__) && GLOB2_HAS_HIVE
 	if (!turn && !globalContainer->replaying && !globalContainer->liveSpectating &&
 		!gui.game.gameHeader.hasNetworkPlayer() &&
 		gui.localPlayer >= 0 && gui.localPlayer < gui.game.gameHeader.getNumberOfPlayers() &&
@@ -1388,6 +1389,7 @@ bool Engine::serialClientFrame(Uint64 now, const std::vector<SDL_Event>& events,
 void Engine::clientStep(const std::vector<SDL_Event>& events)
 {
     if (!session) throw std::logic_error("No active engine session");
+#if GLOB2_HAS_HIVE
 	if (gui.localHive)
 	{
 		gui.localHive->update();
@@ -1403,6 +1405,7 @@ void Engine::clientStep(const std::vector<SDL_Event>& events)
 			gui.hiveCards->update(SDL_GetTicks());
 		}
 	}
+#endif
 	// Headless sessions never run the GUI step; they only take the notices.
     if (globalContainer->runNoX)
         gui.consumeClientEvents();

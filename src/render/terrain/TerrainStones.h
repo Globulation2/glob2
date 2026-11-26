@@ -23,7 +23,9 @@ namespace TerrainVisual
 //
 // The stone map (tools/artwork/terrain_stones.py) covers one variant block of
 // tiles x tiles cells at four texels per logical pixel, the same in every
-// layout. Each texel names its stone and the two nearest other stones, each as
+// layout. A build without high-resolution artwork may ship it at one or two
+// texels per logical pixel instead (tools/package_assets.py --stone-scale),
+// sampled where native drawing samples it. Each texel names its stone and the two nearest other stones, each as
 // the stone's number among the stones centred in one cell and that cell's
 // offset from the texel's cell, with the distance to each joint, and the
 // texel's signed distance from its own stone's face (negative in the joint).
@@ -32,12 +34,13 @@ namespace TerrainVisual
 class StoneMap
 {
   public:
-	static constexpr int TileTexels = 128;          // Four per logical pixel.
+	static constexpr int TileTexels = 128;          // At the authored four per logical pixel.
 	static constexpr unsigned MaxStonesPerTile = 64; // One decision bit each.
 	// Two size x size RGBA8 blocks side by side (rows of `pitch` bytes), size a
-	// multiple of TileTexels: the stones and nearest neighbours, then the
-	// second neighbours. Throws std::runtime_error on an inconsistent map.
-	StoneMap(const std::uint8_t *rgba, int size, int pitch);
+	// multiple of the cell's texels (32 per texel per pixel): the stones and nearest
+	// neighbours, then the second neighbours. Throws std::runtime_error on an
+	// inconsistent map.
+	StoneMap(const std::uint8_t *rgba, int size, int pitch, int texelsPerPixel = 4);
 	int tiles() const { return tileCount; }
 	struct Texel
 	{
@@ -62,7 +65,7 @@ class StoneMap
 	}
 
   private:
-	int size = 0, tileCount = 0;
+	int size = 0, tileCount = 0, cellTexels = TileTexels, texelShift = 6, texelsPerPixel = 4;
 	std::vector<std::uint32_t> texels, seconds;
 	std::vector<std::vector<std::array<int, 2>>> tileCentres;
 	std::vector<std::array<std::uint64_t, 9>> tileReach;
@@ -84,6 +87,7 @@ class StoneMaps
 	struct Slot
 	{
 		std::string path;
+		int grid = 0;
 		mutable std::once_flag once;
 		mutable std::unique_ptr<StoneMap> map;
 	};

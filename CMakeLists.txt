@@ -73,6 +73,7 @@ include("${GLOB2_ROOT}/cmake/tests.cmake")
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
   "${GLOB2_BRIDGE}" "${GLOB2_ROOT}/buildsys/build_config.py" "${GLOB2_ROOT}/buildsys/checkout_paths.py"
   "${GLOB2_ROOT}/buildsys/build_layout.py" "${GLOB2_ROOT}/buildsys/client_features.py"
+  "${GLOB2_ROOT}/buildsys/edition.py" "${GLOB2_ROOT}/buildsys/sources.py"
   "${GLOB2_ROOT}/buildsys/official_instance.py" "${GLOB2_ROOT}/buildsys/recording_dependencies.py")
 
 # Reconfigures when a provisioned dependency disappears: shared-store entries
@@ -589,6 +590,14 @@ if(GLOB2_COMPILE_PROFILE STREQUAL "core")
   set(GLOB2_PROFILE_GROUPS)
 elseif(NOT GLOB2_COMPILE_PROFILE STREQUAL "full")
   message(FATAL_ERROR "Unknown compile_profile ${GLOB2_COMPILE_PROFILE}")
+endif()
+# An edition (buildsys/edition.py) leaves its disabled features' sources out.
+string(JSON GLOB2_EDITION_EXCLUDED_SOURCES GET "${configuration}" excluded_sources)
+if(GLOB2_EDITION_EXCLUDED_SOURCES)
+  foreach(list_name GLOB2_CLIENT_SOURCES GLOB2_STRICT_NUMERIC_SOURCES GLOB2_GUARDED_NUMERIC_SOURCES
+          GLOB2_GAG_SOURCES GLOB2_MAP_SOURCES GLOB2_SIM_SOURCES)
+    list(REMOVE_ITEM ${list_name} ${GLOB2_EDITION_EXCLUDED_SOURCES})
+  endforeach()
 endif()
 list(TRANSFORM GLOB2_CLIENT_SOURCES PREPEND "${GLOB2_ROOT}/")
 list(TRANSFORM GLOB2_STRICT_NUMERIC_SOURCES PREPEND "${GLOB2_ROOT}/")

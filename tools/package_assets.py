@@ -26,9 +26,29 @@ ASSET_DIRS = ("data", "maps", "campaigns", "scripts")
 PILLOW_VERSION = "12.2.0"
 BROTLI_VERSION = "1.2.0"
 ENCODING = json.loads((ROOT / "tools/image_encoding.json").read_text())
+# An edition's lossy quality (buildsys/edition.py webp_quality). Read from the
+# environment so the spawned encoder processes inherit it; it is part of every
+# image recipe, so its cache entries never mix with the standard quality's.
+LOSSY_QUALITY_VARIABLE = "GLOB2_WEBP_LOSSY_QUALITY"
+if os.environ.get(LOSSY_QUALITY_VARIABLE):
+    ENCODING["quality"] = int(os.environ[LOSSY_QUALITY_VARIABLE])
 WEBP_VERSION = ENCODING["webpVersion"]
 POLICY = "runtime-assets-v1"
 IMAGE_RECIPE = ENCODING["recipe"]
+
+
+def sheet_lossy_quality():
+    """The lossy candidate of sprite sheets and packed sprite groups: Q75, or the
+    edition's lossy quality when that is lower."""
+    return min(75, ENCODING["quality"])
+
+
+def set_lossy_quality(quality):
+    """Encode lossy images at `quality` in this process and the encoders it starts."""
+    if quality is None:
+        return
+    os.environ[LOSSY_QUALITY_VARIABLE] = str(int(quality))
+    ENCODING["quality"] = int(quality)
 
 
 def image_recipe(lossy=True):
@@ -63,6 +83,159 @@ def is_data_image(relative):
     return Path(relative).parent in DATA_IMAGE_DIRECTORIES
 
 
+def small_build_terrain(document, content, *, fold=False, single_colour_decor=False, variant_blocks=0, packed=()):
+    """A smaller terrain catalog for a size-limited edition (buildsys/edition.py).
+
+    - fold: every material with a `small_build_fallback` is left out and its
+      bindings, and pair treatments, name the fallback instead; several terrain
+      names may bind one material, so maps, saves and generators are unaffected.
+    - single_colour_decor: connected decor keeps the corner-colour 0 frame of each
+      corner mask and colour 0's interior crowns, with connected_corners off (every
+      vertex then has the same colour, so neighbours still meet), and no
+      mass-meets-mass frames (the renderer then draws each mass's own corners).
+    - variant_blocks: keep that many interchangeable variant blocks of each
+      static material (docs/assets/terrain-production.md#interchangeable-blocks).
+
+    Decor frames no kept material shows are dropped and the rest renumbered from 0,
+    since Sprite::load stops at the first missing frame; the decor family must be
+    packed into sheets, which pack them under their new numbers. `document` keeps
+    the authored decor numbering, so validation still reads the source frames.
+
+    Returns ({exported file: bytes}, {content files left out}, {source path: renumbered path})."""
+    import copy
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("terrain_catalog", ROOT / "tools/terrain_catalog.py")
+    catalog = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(catalog)
+    content = Path(content)
+    index_path = "data/terrain/tileset.json"
+    index = json.loads((content / index_path).read_text())
+    raw = {m["key"]: json.loads((content / f"data/terrain/materials/{m['key']}.json").read_text())
+           for m in document["materials"] if isinstance(m.get("key"), str)
+           and (content / f"data/terrain/materials/{m['key']}.json").is_file()}
+    changed, dropped = set(), set()
+
+    def frames_of(sprite):
+        name = Path(sprite).name
+        directory = content / Path(sprite).parent
+        return [p.relative_to(content).as_posix() for p in directory.glob(name + "*.png")
+                if re.fullmatch(re.escape(name) + r"\d+r?\.png", p.name)]
+
+    if fold:
+        folds = {m["key"]: m["small_build_fallback"] for m in document["materials"] if "small_build_fallback" in m}
+        decor_sprites = {m["decor"]["sprite"] for m in document["materials"] if "decor" in m}
+        for key in folds:
+            material = next(m for m in document["materials"] if m["key"] == key)
+            dropped.add(f"data/terrain/materials/{key}.json")
+            if material["sprite"] not in decor_sprites:
+                dropped.update(frames_of(material["sprite"]))
+            if "stones" in material:
+                dropped.add(material["stones"].removeprefix("content/"))
+            raw.pop(key, None)
+        document["materials"] = [m for m in document["materials"] if m["key"] not in folds]
+        index["materials"] = [key for key in index["materials"] if key not in folds]
+        for target in (document, index):
+            target["bindings"] = {name: folds.get(key, key) for name, key in target["bindings"].items()}
+            treatments, seen = [], set()
+            for p in target.get("pair_treatments", []):
+                a, b = folds.get(p["a"], p["a"]), folds.get(p["b"], p["b"])
+                if a != b and tuple(sorted((a, b))) not in seen:
+                    seen.add(tuple(sorted((a, b))))
+                    treatments.append(dict(p, a=a, b=b))
+            if "pair_treatments" in target:
+                target["pair_treatments"] = treatments
+        changed.add(index_path)
+
+    if single_colour_decor:
+        for material in document["materials"]:
+            decor = material.get("decor", {})
+            if not decor.get("connected_corners"):
+                continue
+            for target in (decor, raw[material["key"]]["decor"]):
+                target["connected"] = [target["connected"][mask * 16] for mask in range(16)]
+                if "connected_interior" in target:
+                    extra = len(target["connected_interior"]) // 16
+                    target["connected_interior"] = target["connected_interior"][:extra]
+                target.pop("connected_foreign", None)
+                target["connected_corners"] = False
+            changed.add(material["key"])
+
+    if variant_blocks:
+        for material in document["materials"]:
+            blocks, grid = material.get("variant_blocks", 1), material.get("variant_grid")
+            if not grid or blocks <= variant_blocks or material.get("animation_frames", 1) != 1:
+                continue
+            if "variant_block_group" in material:
+                continue
+            cells = grid * grid * variant_blocks
+            kept = {variant["frame"] for variant in material["variants"][:cells]}
+            every = {variant["frame"] for variant in material["variants"]}
+            # Kept frames must stay a prefix of the material's frames.
+            if kept != set(range(len(kept))) or not every <= set(range(len(every))):
+                continue
+            for target in (material, raw[material["key"]]):
+                target["variants"] = target["variants"][:cells]
+                target["variant_blocks"] = variant_blocks
+            for frame in sorted(every - kept):
+                for layer in ("", "r"):
+                    dropped.add(f"{material['sprite']}{frame}{layer}.png".removeprefix("content/"))
+            changed.add(material["key"])
+
+    renames = {}
+    decor_sprites = {m["decor"]["sprite"] for m in document["materials"] if "decor" in m}
+    if (fold or single_colour_decor) and decor_sprites:
+        (sprite,) = decor_sprites  # every decor block shares one sprite
+        if sprite not in packed:
+            raise ValueError("Renumbering decor frames needs the decor family packed into sheets")
+        keys = ("full", "edge", "connected", "connected_interior", "connected_foreign")
+        used = sorted({frame for m in document["materials"] if "decor" in m
+                       for key in keys for frame in m["decor"].get(key, [])})
+        number = {old: new for new, old in enumerate(used)}
+        for m in document["materials"]:
+            if "decor" in m:
+                for key in keys:
+                    if key in raw[m["key"]]["decor"]:
+                        raw[m["key"]]["decor"][key] = [number[frame] for frame in m["decor"][key]]
+                changed.add(m["key"])
+        for path in frames_of(sprite):
+            frame = int(re.search(r"(\d+)r?\.png$", path).group(1))
+            layer = "r" if path.endswith("r.png") else ""
+            if frame in number:
+                renames[content / path] = f"{sprite}{number[frame]}{layer}.png".removeprefix("content/")
+            else:
+                dropped.add(path)
+
+    rewritten = {f"data/terrain/materials/{key}.json": catalog.dump(raw[key]).encode()
+                 for key in changed if key in raw}
+    if index_path in changed:
+        rewritten[index_path] = catalog.dump(index).encode()
+    return rewritten, dropped, renames
+
+
+def downscale_stone_map(source, target, scale):
+    """A terrain stone map at 1/scale of its four texels per logical pixel, for a
+    build without high-resolution artwork. Stone maps are data (ids and joint
+    distances), never filtered: each kept texel is the one at the block's centre,
+    the texel native drawing samples (TerrainStones.cpp StoneMap::at)."""
+    from PIL import Image
+    if scale not in (2, 4):
+        raise ValueError("Stone maps scale by 2 or 4")
+    with Image.open(source) as image:
+        image.load()
+        if image.mode != "RGBA" or image.width % (2 * scale) or image.height % scale:
+            raise ValueError("Unexpected stone map: " + str(source))
+        width, height = image.width // scale, image.height // scale
+        # Each half (stones, second neighbours) shrinks on its own centred grid.
+        result = Image.new("RGBA", (width, height))
+        offset = scale // 2
+        source_pixels, target_pixels = image.load(), result.load()
+        for y in range(height):
+            for x in range(width):
+                target_pixels[x, y] = source_pixels[x * scale + offset, y * scale + offset]
+    result.save(target, format="PNG")
+    return target
+
+
 def is_baked_unit_clip(relative):
     """Identify the authoring and comparison meshes superseded by fitted clips."""
     p = Path(relative)
@@ -73,8 +246,10 @@ def is_baked_unit_clip(relative):
     )
 
 
-def include_asset(relative, platform="generic"):
+def include_asset(relative, platform="generic", exclude=()):
     p = Path(relative)
+    if exclude and p.as_posix().startswith(tuple(exclude)):
+        return False
     if any(x.startswith(".") or x in ("CVS", "__pycache__") for x in p.parts):
         return False
     if (
@@ -101,13 +276,13 @@ def catalog_sha256(terrain_catalog, content):
     return digest.hexdigest()
 
 
-def source_files(root, platform):
+def source_files(root, platform, exclude=()):
     content = Path(root) / CONTENT
     for directory in ASSET_DIRS:
         for p in sorted((content / directory).rglob("*")):
             if p.is_symlink():
                 raise ValueError("Asset symlinks are not supported: " + str(p))
-            if p.is_file() and include_asset(p.relative_to(content), platform):
+            if p.is_file() and include_asset(p.relative_to(content), platform, exclude):
                 relative = p.relative_to(content)
                 if relative.parts[:2] == ('data', 'zik') and p.suffix == '.ogg':
                     raise ValueError('Convert Vorbis music to .opus before packaging: ' + str(relative))
@@ -303,7 +478,7 @@ def encode_image(source, relative, cache, lossy, *, sheet_candidate=None):
     recipe = image_recipe(lossy)
     recipe.update(policy=POLICY, zlib=features.version("zlib"))
     if sheet_candidate is not None:
-        recipe.update(sheet_candidate=sheet_candidate, lossy_quality=75)
+        recipe.update(sheet_candidate=sheet_candidate, lossy_quality=sheet_lossy_quality())
     high_depth = raw[24] > 8
     # PNG IHDR color type 6 is the supported renderer RGBA64 conversion.
     convert_depth = high_depth and raw[25] == 6
@@ -403,7 +578,7 @@ def encode_image(source, relative, cache, lossy, *, sheet_candidate=None):
     return blob, record
 
 
-def sheet_plan(files, root, terrain_sprites=()):
+def sheet_plan(files, root, terrain_sprites=(), extra_families=(), renames=None):
     """{sprite: [sheet]} for the SPRITE_SHEETS frames among files.
 
     Each sheet holds a run of consecutive frames of one layer and one size, at
@@ -411,9 +586,10 @@ def sheet_plan(files, root, terrain_sprites=()):
     from PIL import Image
 
     plans = {}
-    families = {sprite: {} for sprite in (*SPRITE_SHEETS, *sorted(set(terrain_sprites)))}
+    families = {sprite: {} for sprite in (*SPRITE_SHEETS, *sorted(set(terrain_sprites) | set(extra_families)))}
     for source in files:
-        relative = source.relative_to(root).as_posix()
+        # A small build renumbers some frames (small_build_terrain); they pack under their new index.
+        relative = (renames or {}).get(source) or source.relative_to(root).as_posix()
         match = re.fullmatch(r"(.+?)(\d+)(r?)\.png", relative)
         if not match:
             continue
@@ -701,7 +877,15 @@ def _export_assets(
     packed_hd_sprites=False,
     sprite_ffmpeg=None,
     video_sprites=False,
+    exclude=(),
+    lossy_quality=None,
+    sheet_families=(),
+    stone_scale=1,
+    variant_blocks=0,
+    fold_terrain=False,
+    single_colour_decor=False,
 ):
+    set_lossy_quality(lossy_quality)
     root, output = Path(root).resolve(), Path(output).resolve()
     content = root / CONTENT
     catalog = content / "data/terrain/tileset.json"
@@ -725,7 +909,7 @@ def _export_assets(
     if (
         (optimized or catalog.is_file())
         and not ready
-        and (catalog.is_file() or any(p.suffix.lower() == ".png" for p in source_files(root, platform)))
+        and (catalog.is_file() or any(p.suffix.lower() == ".png" for p in source_files(root, platform, exclude)))
     ):
         if worker:
             raise RuntimeError("Packaging requires Pillow 12.2.0 with libwebp 1.6.0")
@@ -753,6 +937,18 @@ def _export_assets(
         if sprite_ffmpeg:
             command.extend(("--sprite-ffmpeg", str(Path(sprite_ffmpeg).resolve())))
         command.append("--lossy-images" if lossy else "--lossless-images")
+        command += [arg for prefix in exclude for arg in ("--exclude", prefix)]
+        if lossy_quality is not None:
+            command += ["--lossy-quality", str(lossy_quality)]
+        command += [arg for family in sheet_families for arg in ("--sheet", family)]
+        if stone_scale != 1:
+            command += ["--stone-scale", str(stone_scale)]
+        if variant_blocks:
+            command += ["--variant-blocks", str(variant_blocks)]
+        if fold_terrain:
+            command.append("--fold-terrain")
+        if single_colour_decor:
+            command.append("--single-colour-decor")
         if cache:
             command += ["--cache", str(cache)]
         subprocess.run(command, check=True)
@@ -784,14 +980,20 @@ def _export_assets(
     output.parent.mkdir(parents=True, exist_ok=True)
     records = []
     destinations = set()
-    files = list(source_files(root, platform))
+    files = list(source_files(root, platform, exclude))
+    rewritten, renames = {}, {}
+    if terrain_document and (variant_blocks or fold_terrain or single_colour_decor):
+        rewritten, dropped, renames = small_build_terrain(
+            terrain_document, content, fold=fold_terrain, single_colour_decor=single_colour_decor,
+            variant_blocks=variant_blocks, packed=set(sheet_families) | set(SPRITE_SHEETS))
+        files = [f for f in files if f.relative_to(content).as_posix() not in dropped]
     if optimized:
         verify_highres_atlases(content)
     terrain_sprites = {
         material["sprite"] for material in terrain_document["materials"]
         if material["sprite"].startswith("data/gfx/terrain-")
     } if (terrain_sheets or video_sprites or sprite_ffmpeg) and terrain_document else set()
-    sheets = sheet_plan(files, content, terrain_sprites) if optimized else {}
+    sheets = sheet_plan(files, content, terrain_sprites, sheet_families, renames) if optimized else {}
     terrain_selections = {}
     hd_selections = {}
     native_selections = {}
@@ -833,6 +1035,7 @@ def _export_assets(
                     group["frames"].append((index, sprite, layer, path))
     packed = {f for plan in sheets.values() for sheet in plan for f in sheet["frames"]}
     packed_fingerprints = {}
+    scaled = None
     with tempfile.TemporaryDirectory(
         prefix=output.name + "-staging-", dir=output.parent
     ) as temporary, encoding_executor(jobs) as encoders:
@@ -851,11 +1054,15 @@ def _export_assets(
         }
         hd_sources = {path for group in hd_groups.values() for _, _, _, path in group["frames"]}
         encoded = {}
+        scaled = Path(tempfile.mkdtemp(prefix=output.name + "-stones-", dir=output.parent)) if stone_scale != 1 else None
         for source in files:
             relative = source.relative_to(content)
             public_png = platform == "linux" and relative.parts[:2] == ("data", "screenshots")
             if optimized and source not in packed and source not in hd_sources and source.suffix.lower() == ".png" and not public_png:
-                encoded[source] = encoders.submit(encode_image, source, relative.as_posix(), cache,
+                image = source
+                if scaled is not None and relative.parent == Path("data/terrain/stones"):
+                    image = downscale_stone_map(source, scaled / relative.name, stone_scale)
+                encoded[source] = encoders.submit(encode_image, image, relative.as_posix(), cache,
                                                   lossy and not is_data_image(relative))
         encoded_sheets = {}
         encoded_terrain = {}
@@ -954,6 +1161,8 @@ def _export_assets(
                         audit_fields["sprite_hd_index_groups"] = hd_index_groups.get(None, [])
                 else:
                     target.write_bytes(re.sub(rb"\.png(?=\s|$)", b".webp", blob.read_bytes()))
+            elif relative.as_posix() in rewritten:
+                target.write_bytes(rewritten[relative.as_posix()])
             else:
                 shutil.copyfile(blob, target)
             records.append(
@@ -1158,6 +1367,8 @@ def _export_assets(
             temp.unlink(missing_ok=True)
         if backup.exists():
             shutil.rmtree(backup)
+    if scaled is not None:
+        shutil.rmtree(scaled, ignore_errors=True)
     return audit
 
 
@@ -1175,6 +1386,13 @@ def export_assets(
     packed_hd_sprites=False,
     sprite_ffmpeg=None,
     video_sprites=False,
+    exclude=(),
+    lossy_quality=None,
+    sheet_families=(),
+    stone_scale=1,
+    variant_blocks=0,
+    fold_terrain=False,
+    single_colour_decor=False,
 ):
     """Export a complete runtime tree and return its source/output audit.
 
@@ -1188,7 +1406,11 @@ def export_assets(
     if (optimized or (Path(root) / CONTENT / "data/terrain/tileset.json").is_file()) and not ready and not worker:
         return _export_assets(root, output, platform, optimized, lossy, cache, worker, jobs,
                               terrain_sheets=terrain_sheets, packed_hd_sprites=packed_hd_sprites,
-                              sprite_ffmpeg=sprite_ffmpeg, video_sprites=video_sprites)
+                              sprite_ffmpeg=sprite_ffmpeg, video_sprites=video_sprites,
+                              exclude=exclude, lossy_quality=lossy_quality,
+                              sheet_families=sheet_families, stone_scale=stone_scale,
+                              variant_blocks=variant_blocks, fold_terrain=fold_terrain,
+                              single_colour_decor=single_colour_decor)
     sys.path.insert(0, str(ROOT / "buildsys"))
     from dev_store import Lease, require_free_space
     if not worker:
@@ -1197,7 +1419,11 @@ def export_assets(
     with Lease(Path(output).resolve(), exclusive=True, track_use=False):
         return _export_assets(root, output, platform, optimized, lossy, cache, worker, jobs,
                               terrain_sheets=terrain_sheets, packed_hd_sprites=packed_hd_sprites,
-                              sprite_ffmpeg=sprite_ffmpeg, video_sprites=video_sprites)
+                              sprite_ffmpeg=sprite_ffmpeg, video_sprites=video_sprites,
+                              exclude=exclude, lossy_quality=lossy_quality,
+                              sheet_families=sheet_families, stone_scale=stone_scale,
+                              variant_blocks=variant_blocks, fold_terrain=fold_terrain,
+                              single_colour_decor=single_colour_decor)
 
 
 def main():
@@ -1227,6 +1453,20 @@ def main():
                         help="Try RGB H.264 for HD groups with the pinned host encoder")
     parser.add_argument("--sprite-ffmpeg", type=Path,
                         help="Try RGB H.264 for HD groups using this pinned host FFmpeg executable")
+    parser.add_argument("--exclude", action="append", default=[],
+                        help="Leave out content paths starting with this prefix (an edition's export)")
+    parser.add_argument("--lossy-quality", type=int,
+                        help="Lossy WebP quality instead of tools/image_encoding.json's (an edition's export)")
+    parser.add_argument("--sheet", action="append", default=[],
+                        help="Also pack this sprite family into sheets (an edition's export)")
+    parser.add_argument("--stone-scale", type=int, default=1,
+                        help="Divide terrain stone maps' resolution (4: native, for builds without HD art)")
+    parser.add_argument("--variant-blocks", type=int, default=0,
+                        help="Keep this many interchangeable terrain variant blocks (an edition's export; 0 all)")
+    parser.add_argument("--fold-terrain", action="store_true",
+                        help="Draw each material with its small_build_fallback (an edition's export)")
+    parser.add_argument("--single-colour-decor", action="store_true",
+                        help="Connected decor with one corner colour and no mass-meets-mass frames")
     parser.add_argument("--jobs", type=int, help="Concurrent image/sheet encoders (default: available CPUs)")
     parser.add_argument("--cache", type=Path)
     parser.add_argument("--worker", action="store_true", help=argparse.SUPPRESS)
@@ -1251,6 +1491,13 @@ def main():
         packed_hd_sprites=args.packed_hd_sprites,
         sprite_ffmpeg=args.sprite_ffmpeg,
         video_sprites=args.video_sprites,
+        exclude=tuple(args.exclude),
+        lossy_quality=args.lossy_quality,
+        sheet_families=tuple(args.sheet),
+        stone_scale=args.stone_scale,
+        variant_blocks=args.variant_blocks,
+        fold_terrain=args.fold_terrain,
+        single_colour_decor=args.single_colour_decor,
     )
     print(
         "Runtime assets: %d -> %d bytes (%d files)"

@@ -1,5 +1,6 @@
 {
   "key": "moss",
+  "small_build_fallback": "lush_grass",
   "sprite": "data/gfx/terrain-moss",
   "profile": "soil",
   "class": "solid",

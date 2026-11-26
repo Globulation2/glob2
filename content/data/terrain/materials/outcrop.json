@@ -1,5 +1,6 @@
 {
   "key": "outcrop",
+  "small_build_fallback": "ridge_rock",
   "sprite": "data/gfx/terrain-outcrop",
   "profile": "rock",
   "class": "solid",

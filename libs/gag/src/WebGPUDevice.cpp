@@ -9,7 +9,9 @@
 #include <map>
 #include <stdexcept>
 #include <tuple>
-#ifdef __EMSCRIPTEN__
+#include <BuildFeatures.h>
+// An edition without WebGPU (GLOB2_HAS_RENDERER_WEBGPU 0) builds the stubs below.
+#if defined(__EMSCRIPTEN__) && GLOB2_HAS_RENDERER_WEBGPU
 #include <RendererShaderLayouts.h>
 extern "C" {
 int glob2_webgpu_attach();

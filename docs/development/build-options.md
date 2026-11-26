@@ -420,6 +420,14 @@ both runtime payloads and the presentation-surface helper before replacing serve
 files, then publishes these dependencies before the game scripts.
 `GLOB2_RENDERER_SHADER_DIR` overrides the shader directory for focused device tests.
 
+## Browser editions
+
+`edition=lite` builds the download-size browser edition, and `feature_<name>=0|1`
+or the edition settings (`webp_quality`, `music_bitrate`, ...) override one switch
+at a time; each combination gets its own directory. Native builds accept the
+compile switches (`python3 tools/dev_build.py edition=lite`) to check gated code
+quickly. See [browser editions](../browser/editions.md).
+
 ## Free launch profiles
 
 Client releases default to `client_profile=free`; development builds default to

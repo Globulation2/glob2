@@ -1,5 +1,6 @@
 {
   "key": "obsidian_ridge",
+  "small_build_fallback": "cliffs",
   "sprite": "data/gfx/terrain-obsidian_ridge",
   "profile": "canopy",
   "class": "cover",

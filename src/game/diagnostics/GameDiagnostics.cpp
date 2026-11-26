@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <BuildFeatures.h>
 #include "PowerOfTwo.h"
 #include "Map.h"
 #include "GameDiagnostics.h"
@@ -114,6 +115,7 @@ Session::Session(Game& game, std::string path, unsigned interval, bool paint, si
 	if (!budget || budget > CaptureBudget) throw std::invalid_argument("Invalid diagnostic capture budget");
 	if (!interval) throw std::invalid_argument("Diagnostic interval must be positive");
 	sceneBudget = png ? sceneBytes(game) : 0;
+#if GLOB2_HAS_AI_MAXIMA
 	for (int p=0; p<game.gameHeader.getNumberOfPlayers(); ++p)
 		if (game.players[p] && game.players[p]->ai)
 			if (auto* maxima = dynamic_cast<AIMaxima::Maxima*>(game.players[p]->ai->aiImplementation))
@@ -122,6 +124,7 @@ Session::Session(Game& game, std::string path, unsigned interval, bool paint, si
 				sink->player = p; sink->team = game.players[p]->teamNumber; sink->interval = interval;
 				maxima->fieldDiagnostics = sink; sinks.push_back(std::move(sink));
 			}
+#endif
 	if (sinks.empty()) throw std::invalid_argument("Maxima field diagnostics require a Maxima player");
 }
 Session::~Session() { for (auto& sink : sinks) sink->enabled = false; }

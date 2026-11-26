@@ -1,5 +1,6 @@
 {
   "key": "icefall",
+  "small_build_fallback": "glacier",
   "sprite": "data/gfx/terrain-icefall",
   "profile": "canopy",
   "class": "cover",

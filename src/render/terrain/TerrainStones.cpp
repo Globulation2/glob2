@@ -8,12 +8,16 @@
 
 namespace TerrainVisual
 {
-StoneMap::StoneMap(const std::uint8_t *rgba, int size, int pitch) : size(size)
+StoneMap::StoneMap(const std::uint8_t *rgba, int size, int pitch, int texelsPerPixel)
+	: size(size), cellTexels(32 * texelsPerPixel), texelShift(texelsPerPixel == 4 ? 6 : texelsPerPixel == 2 ? 7 : 8),
+	  texelsPerPixel(texelsPerPixel)
 {
-	if (size < TileTexels || size % TileTexels || size / TileTexels > 16 ||
-		((size / TileTexels) & (size / TileTexels - 1)))
-		throw std::runtime_error("A stone map must span a power-of-two block of 128-texel cells");
-	tileCount = size / TileTexels;
+	if (texelsPerPixel != 1 && texelsPerPixel != 2 && texelsPerPixel != 4)
+		throw std::runtime_error("A stone map has one, two or four texels per logical pixel");
+	if (size < cellTexels || size % cellTexels || size / cellTexels > 16 ||
+		((size / cellTexels) & (size / cellTexels - 1)))
+		throw std::runtime_error("A stone map must span a power-of-two block of whole cells");
+	tileCount = size / cellTexels;
 	texels.resize(std::size_t(size) * std::size_t(size));
 	seconds.resize(texels.size());
 	// Each stone's centre is the mean of its texels, measured from the cell
@@ -40,15 +44,15 @@ StoneMap::StoneMap(const std::uint8_t *rgba, int size, int pitch) : size(size)
 			seconds[std::size_t(y) * std::size_t(size) + std::size_t(x)] =
 				std::uint32_t(u[0]) | std::uint32_t(u[1] & 15) << 8 | std::uint32_t(u[2]) << 16 | std::uint32_t(u[3]) << 24;
 			const int code = t[1] >> 4, dx = code % 3 - 1, dy = code / 3 - 1;
-			const int tx = x / TileTexels, ty = y / TileTexels;
+			const int tx = x / cellTexels, ty = y / cellTexels;
 			tileReach[std::size_t(ty) * std::size_t(tileCount) + std::size_t(tx)][code] |= std::uint64_t(1) << t[0];
 			const int hx = (tx + dx + tileCount) % tileCount, hy = (ty + dy + tileCount) % tileCount;
 			auto &stones = sums[std::size_t(hy) * std::size_t(tileCount) + std::size_t(hx)];
 			if (stones.size() <= t[0])
 				stones.resize(t[0] + 1u);
 			auto &sum = stones[t[0]];
-			sum.x += x - tx * TileTexels - dx * TileTexels;
-			sum.y += y - ty * TileTexels - dy * TileTexels;
+			sum.x += x - tx * cellTexels - dx * cellTexels;
+			sum.y += y - ty * cellTexels - dy * cellTexels;
 			++sum.n;
 		}
 	}
@@ -56,10 +60,10 @@ StoneMap::StoneMap(const std::uint8_t *rgba, int size, int pitch) : size(size)
 	for (std::size_t i = 0; i < sums.size(); ++i)
 		for (const auto &sum : sums[i])
 		{
-			// Texel centres, four per logical pixel, as Q8 logical pixels in the cell.
+			// Texel centres, as Q8 logical pixels in the cell.
 			const auto centre = [&](std::int64_t total)
 			{
-				return sum.n ? std::clamp(int((total * 2 + sum.n) * 32 / sum.n), 0, 8191) : 4096;
+				return sum.n ? std::clamp(int((total * 2 + sum.n) * (128 / texelsPerPixel) / sum.n), 0, 8191) : 4096;
 			};
 			tileCentres[i].push_back({centre(sum.x), centre(sum.y)});
 		}
@@ -67,8 +71,8 @@ StoneMap::StoneMap(const std::uint8_t *rgba, int size, int pitch) : size(size)
 
 StoneMap::Texel StoneMap::at(int tx, int ty, int px, int py) const
 {
-	const int x = tx * TileTexels + std::clamp(px >> 6, 0, TileTexels - 1);
-	const int y = ty * TileTexels + std::clamp(py >> 6, 0, TileTexels - 1);
+	const int x = tx * cellTexels + std::clamp(px >> texelShift, 0, cellTexels - 1);
+	const int y = ty * cellTexels + std::clamp(py >> texelShift, 0, cellTexels - 1);
 	const auto i = std::size_t(y) * std::size_t(size) + std::size_t(x);
 	const auto t = texels[i], u = seconds[i];
 	// The map stores native pixels x 32; a native pixel is 256 Q8 logical units.
@@ -108,6 +112,7 @@ StoneMaps::StoneMaps(const Catalog &c)
 		SDL_CloseIO(stream);
 		slots[id] = std::make_unique<Slot>();
 		slots[id]->path = path;
+		slots[id]->grid = c.materials[id].variantGrid;
 	}
 }
 
@@ -129,8 +134,14 @@ const StoneMap *StoneMaps::get(MaterialId id) const
 			SDL_ConvertSurface(loaded.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
 		if (!rgba || rgba->w != 2 * rgba->h)
 			throw std::runtime_error("Invalid terrain stone map: " + slot.path);
+		// The authored map has four texels per logical pixel; a build without HD
+		// artwork may ship fewer (TerrainStones.h).
+		// The block is grid x grid cells of 32 logical pixels; without a grid it is
+		// the authored resolution.
+		const int cells = 32 * slot.grid;
+		const int perPixel = slot.grid ? (rgba->h % cells ? 0 : rgba->h / cells) : 4;
 		slot.map = std::make_unique<StoneMap>(static_cast<const std::uint8_t *>(rgba->pixels), rgba->h,
-											  rgba->pitch);
+											  rgba->pitch, perPixel);
 	});
 	return slot.map.get();
 }

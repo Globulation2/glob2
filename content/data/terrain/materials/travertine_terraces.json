@@ -1,5 +1,6 @@
 {
   "key": "travertine_terraces",
+  "small_build_fallback": "sandstone_benches",
   "sprite": "data/gfx/terrain-travertine_terraces",
   "profile": "canopy",
   "class": "cover",

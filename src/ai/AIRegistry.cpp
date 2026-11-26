@@ -2,9 +2,14 @@
 // The one place that names every AI implementation. AI.cpp creates and loads
 // controllers through it, so code that only drives AI (the game, the pipeline)
 // does not link every AI by itself; a test binary can link a smaller registry.
+#include <BuildFeatures.h>
 #include "AIRegistry.h"
+#if GLOB2_HAS_JS_TOOLKIT
 #include "AIJavaScript.h"
+#endif
+#if GLOB2_HAS_AI_MAXIMA
 #include "AIMaxima.h"
+#endif
 #include "AINames.h"
 #include "AINicowar.h"
 #include "AINull.h"
@@ -41,9 +46,10 @@ bool available(int implementationID)
 {
 	switch (implementationID)
 	{
-		case AI::NONE: case AI::NUMBI: case AI::WARRUSH: case AI::ECONO: case AI::NICOWAR: case AI::MAXIMA:
-		case AI::JAVASCRIPT:
+		case AI::NONE: case AI::NUMBI: case AI::WARRUSH: case AI::ECONO: case AI::NICOWAR:
 			return true;
+		case AI::JAVASCRIPT: return GLOB2_HAS_JS_TOOLKIT;
+		case AI::MAXIMA: return GLOB2_HAS_AI_MAXIMA;
 		case AI::CASTOR: return GLOB2_PROFILE_HAS_AI_CASTOR;
 		case AI::CORTEX: return GLOB2_PROFILE_HAS_AI_CORTEX;
 		case AI::CABINO: return GLOB2_PROFILE_HAS_AI_CABINO;
@@ -85,8 +91,10 @@ AIImplementation* create(AI::ImplementationID implementationID, Player *player)
 			return new AIWarrush(player);
 		case AI::ECONO:
 			return new AISharedRuntime::Runtime(new AISharedRuntime::Econo, player);
+#if GLOB2_HAS_AI_MAXIMA
 		case AI::MAXIMA:
 			return new AIMaxima::Maxima(player);
+#endif
 #if GLOB2_PROFILE_HAS_AI_CORTEX
 		case AI::CORTEX:
 			return new AICortex(player);
@@ -95,8 +103,10 @@ AIImplementation* create(AI::ImplementationID implementationID, Player *player)
 		case AI::CABINO:
 			return new Cabino::AICabino(player);
 #endif
+#if GLOB2_HAS_JS_TOOLKIT
 		case AI::JAVASCRIPT:
 			return new AIJavaScript(player);
+#endif
 		default:
 			throw std::runtime_error("Unknown AI implementation");
 	}
@@ -140,11 +150,13 @@ Loaded load(AI::ImplementationID implementationID, GAGCore::InputStream *stream,
 			implementation=new AIWarrush(player);
 			if (!implementation->load(stream, player, versionMinor)) return Loaded::Failed;
 		break;
+#if GLOB2_HAS_AI_MAXIMA
 		case AI::MAXIMA:
 			if(versionMinor<115)
 				throw std::runtime_error("This Maxima save uses a retired strategy format");
 			implementation=new AIMaxima::Maxima(stream,player,versionMinor);
 		break;
+#endif
 #if GLOB2_PROFILE_HAS_AI_CORTEX
 		case AI::CORTEX:
 			implementation=new AICortex(stream, player, versionMinor);
@@ -155,10 +167,12 @@ Loaded load(AI::ImplementationID implementationID, GAGCore::InputStream *stream,
 			implementation=new Cabino::AICabino(stream, player, versionMinor);
 		break;
 #endif
+#if GLOB2_HAS_JS_TOOLKIT
 		case AI::JAVASCRIPT:
 			implementation=new AIJavaScript(player);
 			if(!implementation->load(stream,player,versionMinor)) return Loaded::Failed;
 		break;
+#endif
 		default:
 			fprintf(stderr, "AI id %d does not exist, you probably try to load a map from a more recent version of glob2.\n", implementationID);
 			return Loaded::Failed;

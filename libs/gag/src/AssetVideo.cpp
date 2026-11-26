@@ -3,12 +3,18 @@
 #include "AssetVideoDecoder.h"
 #include <algorithm>
 #include <stdexcept>
-#ifdef __EMSCRIPTEN__
+#include <BuildFeatures.h>
+// The browser decodes H.264 sprite groups in its asset-video worker; an edition
+// without video assets (GLOB2_HAS_VIDEO_ASSETS 0) packs WebP only and has none.
+#if defined(__EMSCRIPTEN__) && GLOB2_HAS_VIDEO_ASSETS
+#define GLOB2_BROWSER_VIDEO 1
+#endif
+#ifdef GLOB2_BROWSER_VIDEO
 #include <ApplicationHost.h>
 #endif
 
 namespace GAGCore {
-#if defined(GLOB2_H264_ASSETS) || defined(__EMSCRIPTEN__)
+#if defined(GLOB2_H264_ASSETS) || defined(GLOB2_BROWSER_VIDEO)
 namespace {
 std::shared_ptr<const AssetImage> makeVideoImage(unsigned width, unsigned height,
         const uint8_t *rgba, int pitch) {
@@ -24,7 +30,7 @@ std::shared_ptr<const AssetImage> makeVideoImage(unsigned width, unsigned height
 }
 #endif
 
-#ifdef __EMSCRIPTEN__
+#ifdef GLOB2_BROWSER_VIDEO
 void AssetLoader::pollBrowserVideo() {
     if (browserVideoJobs.empty()) return;
     using Job = std::deque<BrowserVideoJob>::iterator;
@@ -76,12 +82,14 @@ void AssetLoader::pollBrowserVideo() {
         finish(job, State::Failed);
     }
 }
+#elif defined(__EMSCRIPTEN__)
+void AssetLoader::pollBrowserVideo() {}
 #endif
 
 bool AssetLoader::videoFramesSupported() {
 #ifdef GLOB2_H264_ASSETS
     return AssetVideoDecoder::supported();
-#elif defined(__EMSCRIPTEN__)
+#elif defined(GLOB2_BROWSER_VIDEO)
     return true;
 #else
     return false;
@@ -97,6 +105,10 @@ AssetLoader::Handle<AssetVideoFrames> AssetLoader::requestVideoFrames(const std:
             throw std::runtime_error(std::string(reason) + ": " + path);
         }, 0, priority);
     };
+#if !GLOB2_HAS_VIDEO_ASSETS
+    (void)width; (void)height; (void)frameCount;
+    return failed("H.264 asset decoding is unavailable");
+#else
     if (!path.ends_with(".h264") || !AssetVideoDecoder::validDimensions(width, height, frameCount))
         return failed("Invalid H.264 asset group description");
     if (!videoFramesSupported()) return failed("H.264 asset decoding is unavailable");
@@ -117,7 +129,7 @@ AssetLoader::Handle<AssetVideoFrames> AssetLoader::requestVideoFrames(const std:
         // and parser / packet copies. The read queue accounts for the original.
         return size_t(width + 64) * (height + 64) * 8 * (frameCount + 2) + bytes.get()->size() * 3;
     }, priority);
-#elif defined(__EMSCRIPTEN__)
+#elif defined(GLOB2_BROWSER_VIDEO)
     if (priority == Priority::Required) return failed("Browser video requires asynchronous delivery");
     if (auto result = findReady(key, typeid(AssetVideoFrames), priority))
         return Handle<AssetVideoFrames>(result);
@@ -141,6 +153,7 @@ AssetLoader::Handle<AssetVideoFrames> AssetLoader::requestVideoFrames(const std:
     return frames;
 #else
     return failed("H.264 asset decoding is unavailable");
+#endif
 #endif
 }
 }

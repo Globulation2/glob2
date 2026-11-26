@@ -1,5 +1,6 @@
 {
   "key": "dry_grass",
+  "small_build_fallback": "lush_grass",
   "sprite": "data/gfx/terrain-dry_grass",
   "profile": "turf",
   "class": "solid",

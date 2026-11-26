@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PortalPolicy.h"
 #include "app/ClientFeatures.h"
+#include <BuildFeatures.h>
 // Copyright (C) 2007-2026 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #include "SettingsScreen.h"
@@ -107,18 +108,26 @@ void SettingsScreen::buildRows()
 		buildBuildings();
 	else if (current == Category::Controls)
 		buildKeyboard();
+#if GLOB2_HAS_ONLINE
+	// The Online page also builds the Hive Mind one; both, and the community
+	// AI and generator pages, are online services.
 	else if (current == Category::Online)
 		buildOnline();
 	else if (current == Category::HiveMind)
 		buildHiveMind();
-	else if (current == Category::MCPServer)
-        buildMCP();
-	else if (current == Category::Recording)
-		buildRecording();
 	else if (current == Category::CustomGenerators)
 		buildCustomGenerators();
 	else if (current == Category::CustomAIs)
 		buildCustomAIs();
+#endif
+#if GLOB2_HAS_MCP
+	else if (current == Category::MCPServer)
+        buildMCP();
+#endif
+#if GLOB2_HAS_RECORDING
+	else if (current == Category::Recording)
+		buildRecording();
+#endif
 	else
 		buildGeneral();
 	if (current == Category::Buildings && touchLayout)
@@ -196,6 +205,15 @@ void SettingsScreen::activateSetting(const std::string &id)
 	}
 }
 
+#if !GLOB2_HAS_ONLINE
+// The community AI and generator libraries are online services; without them
+// nothing is ever busy and the library modal never opens.
+bool SettingsScreen::customAIBusy() const { return false; }
+bool SettingsScreen::customGeneratorBusy() const { return false; }
+void SettingsScreen::closeCustomAILibrary() {}
+Glob2UI::Element SettingsScreen::buildCustomAILibrary(const Glob2UI::Presentation &) { return nullptr; }
+#endif
+
 std::vector<SettingsScreen::Category> SettingsScreen::visibleCategories() const
 {
 	std::vector<Category> result{Category::Display, Category::Audio, Category::Gameplay, Category::Buildings};
@@ -203,16 +221,18 @@ std::vector<SettingsScreen::Category> SettingsScreen::visibleCategories() const
 		result.push_back(Category::Controls);
 	result.push_back(Category::Player);
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
-	// A web portal without online sign-in has no account to manage.
-	if (PortalPolicy::onlineSignIn())
+	// A web portal without online sign-in, or an edition without the online
+	// client, has no account to manage.
+	if (BuildFeatures::Online && PortalPolicy::onlineSignIn())
 	{
 		result.push_back(Category::Online);
 		if constexpr (ClientFeatures::Commander) result.push_back(Category::HiveMind);
 	}
 #endif
-	if (GAGCore::Recording::supported())
-		result.push_back(Category::Recording);
-#if GLOB2_DESKTOP_MCP
+	if constexpr (BuildFeatures::Recording)
+		if (GAGCore::Recording::supported())
+			result.push_back(Category::Recording);
+#if GLOB2_DESKTOP_MCP && GLOB2_HAS_MCP
     result.push_back(Category::MCPServer);
 #endif
 	result.push_back(Category::Experiments);
@@ -414,10 +434,12 @@ void SettingsScreen::onTimer(Uint32 tick)
     }
 #endif
 	lastTick = tick;
+#if GLOB2_HAS_ONLINE
 	pollCustomAIs();
 	pollCustomGenerators();
 	if (current == Category::Online)
 		pollOnline();
+#endif
 	if (current == Category::Recording && int(GAGCore::Recording::recorder().status().state) != recordingState)
 		invalidate();
 	if (saveAt && Sint32(tick - saveAt) >= 0)

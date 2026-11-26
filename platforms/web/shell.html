@@ -80,6 +80,10 @@ body.ready #loading{opacity:0;pointer-events:none}
 <div id="open-link" role="alert" hidden><span id="open-link-text"></span><a id="open-link-anchor" target="_blank" rel="noopener"></a><button type="button" id="open-link-close" aria-label="Close" data-i18n-aria="Close">×</button></div>
 </div>
 <script>
+// An edition built without some features (buildsys/edition.py) says which;
+// the standard page has every feature.
+const glob2Edition = globalThis.Glob2Edition || {name: 'standard', features: {}};
+const glob2HasFeature = name => glob2Edition.features[name] !== false;
 // Browser chrome shares the website's locale; the game's saved profile remains independent.
 function browserText(source, params) {
   if (globalThis.Glob2I18n) return Glob2I18n.t(source, params);
@@ -110,7 +114,8 @@ function refreshBrowserLanguage() {
     document.getElementById('open-link-text').textContent = browserText('The browser kept the page from opening.');
   }
 }
-if (globalThis.Glob2I18n) {
+// An English-only edition ships only the English page catalog.
+if (globalThis.Glob2I18n && glob2HasFeature('translations')) {
   for (const locale of Glob2I18n.locales) {
     const option = document.createElement('option');
     option.value = locale.code; option.textContent = locale.name; option.dir = locale.dir; option.lang = locale.code;
@@ -292,6 +297,8 @@ const watchReplay = (() => {
   return state;
 })();
 function browserStartupRenderer(preferences, requested, automatic) {
+  // Without the GL and software renderers, Portable SDL draws through WebGL2.
+  if (!glob2HasFeature('renderer_gl') && !glob2HasFeature('renderer_software')) return 'webgl2';
   // Match Settings::load's renderer preference and legacy screenFlags migration.
   // Decide ownership before Launcher.cpp transfers the canvas to its pthread.
   const saved = /^rendererBackend=([^\r\n;]*)/m.exec(preferences || '');
@@ -320,7 +327,8 @@ function chooseRenderer() {
  }
 var Module = {
   noInitialRun: true,
-  renderer: chooseRenderer() ? 'webgl2' : 'software',
+  renderer: chooseRenderer() || (!glob2HasFeature('renderer_gl') && !glob2HasFeature('renderer_software'))
+    ? 'webgl2' : 'software',
   canvas,
   GL_MAX_TEXTURE_IMAGE_UNITS: 1,
   browserLog: [],
@@ -522,10 +530,10 @@ function interfaceLanguage() {
   return savedPreference('language') || globalThis.Glob2I18n?.getLocale() || (navigator.languages && navigator.languages[0]) || navigator.language || 'en';
 }
 function applyOnlineLanguage() {
-  if (!savedPreference('language') && globalThis.Glob2I18n)
+  if (!savedPreference('language') && globalThis.Glob2I18n && glob2HasFeature('translations'))
     ENV.SDL_PREFERRED_LOCALES = Glob2I18n.getLocale().replace(/-/g, '_');
 }
-function cjkInterface() { return /^(zh|ja|ko)\b/i.test(interfaceLanguage()); }
+function cjkInterface() { return glob2HasFeature('translations') && /^(zh|ja|ko)\b/i.test(interfaceLanguage()); }
 // After the menu is up, the rest of the game data downloads in the background,
 // most needed first (buildsys/web_assets.py):
 // Core and game sprites already arrived together under the loading page.

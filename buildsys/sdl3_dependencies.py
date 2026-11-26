@@ -116,8 +116,19 @@ def static_webp_link_options(prefix, required=True):
     return ['-Dwebp_LINK_LIBRARIES=' + ';'.join(libraries)]
 
 
-def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=False):
+# SDL_image formats besides WebP, which a WebP-only build (trim 'webp_only') leaves
+# out with their stb_image, nanosvg and PNG-writer code.
+IMAGE_FORMATS = ('ANI', 'AVIF', 'BMP', 'GIF', 'JPG', 'JXL', 'LBM', 'PCX', 'PNG', 'PNM', 'QOI', 'SVG', 'TGA',
+                 'TIF', 'XCF', 'XPM', 'XV')
+
+
+def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=False, trim=()):
+    """trim (a browser edition's, buildsys/edition.py): 'no_harfbuzz' builds SDL3_ttf
+    without HarfBuzz shaping; 'webp_only' builds SDL3_image for WebP alone."""
     prefix, work = Path(prefix).resolve(), Path(work).resolve()
+    trim = tuple(sorted(trim))
+    if set(trim) - {'no_harfbuzz', 'webp_only'}:
+        raise ValueError('Unknown SDL3 trim: ' + ', '.join(trim))
     versions = json.loads(LOCK.read_text())
     if emscripten:
         versions = json.loads(LOCK.with_name('sdl3-vendored.json').read_text()) | versions
@@ -125,6 +136,10 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=Fals
                 'platform': platform.platform(), 'machine': platform.machine(),
                 'source_patches': {patch.name: hashlib.sha256(patch.read_bytes()).hexdigest()
                                    for patch in SDL_PATCHES + TTF_PATCHES}}
+    if trim:
+        identity['trim'] = list(trim)
+    if 'no_harfbuzz' in trim:
+        versions.pop('harfbuzz', None)
     if emscripten:
         # The browser runtimes use native WebAssembly exceptions; setjmp/longjmp in
         # these libraries (FreeType) must use the matching WebAssembly mechanism.
@@ -201,6 +216,10 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=Fals
                         '-DCMAKE_CXX_FLAGS=' + ('-pthread ' if threaded else '') + '-fwasm-exceptions -sSUPPORT_LONGJMP=wasm',
                         '-DBUILD_SHARED_LIBS=OFF', '-DSDL_SHARED=OFF', '-DSDL_STATIC=ON',
                         '-DSDLTTF_VENDORED=OFF', '-DSDLTTF_HARFBUZZ=ON']
+        if 'no_harfbuzz' in trim:
+            command = [word for word in command if word != '-DSDLTTF_HARFBUZZ=ON'] + ['-DSDLTTF_HARFBUZZ=OFF']
+        if 'webp_only' in trim and name == 'SDL_image':
+            command += ['-DSDLIMAGE_BACKEND_STB=OFF'] + ['-DSDLIMAGE_' + format + '=OFF' for format in IMAGE_FORMATS]
         subprocess.run(command, env=env, check=True)
         subprocess.run(['cmake', '--build', str(output), '--parallel', str(jobs)], env=env, check=True)
         subprocess.run(['cmake', '--install', str(output)], env=env, check=True)

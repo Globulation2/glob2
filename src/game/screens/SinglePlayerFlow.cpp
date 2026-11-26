@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <BuildFeatures.h>
 #include "AI.h"
 #include "SinglePlayerFlow.h"
 #include "GeneratorStudioScreen.h"
@@ -144,6 +145,10 @@ void SinglePlayerFlow::studio()
 
 void SinglePlayerFlow::generatorStudio()
 {
+	// The studio (generator-studio.html) designs JavaScript generators.
+	if constexpr (!BuildFeatures::JavaScriptToolkit)
+		return;
+#if GLOB2_HAS_JS_TOOLKIT
 	screens.push(std::make_unique<GeneratorStudioScreen>(),
 				 [this](GAGGUI::Screen &screen, int result)
 				 {
@@ -155,6 +160,7 @@ void SinglePlayerFlow::generatorStudio()
 							{ return engine.initCustomFromBytesTask(map, players, 0, -1, bytes); },
 							ReturnTo::MainMenu, bytes);
 				 });
+#endif
 }
 
 void SinglePlayerFlow::introduction()

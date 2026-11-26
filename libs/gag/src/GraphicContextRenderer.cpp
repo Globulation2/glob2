@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <BuildFeatures.h>
 #include "GraphicContextPrivate.h"
 #include <cstring>
 #include <list>
@@ -140,7 +141,8 @@ std::vector<RendererAvailability> GraphicContext::rendererAvailability() const
 {
     std::vector<RendererAvailability> choices;
     for (auto backend : RendererBackends) {
-        bool available = backend == RendererBackend::Auto || backend == RendererBackend::Software ||
+        bool available = backend == RendererBackend::Auto ||
+            (backend == RendererBackend::Software && BuildFeatures::SoftwareRenderer) ||
             backend == RendererBackend::PortableSDL;
         std::string reason;
 #ifdef HAVE_OPENGL
@@ -153,7 +155,7 @@ std::vector<RendererAvailability> GraphicContext::rendererAvailability() const
             available = false;
             reason = "WebGL2 is unavailable in this browser's presentation thread.";
         }
-        if (backend == RendererBackend::WebGPU) {
+        if (backend == RendererBackend::WebGPU && BuildFeatures::WebGPURenderer) {
             available = std::filesystem::exists(rendererShaderDirectory() + "/webgpu/primitive.frag.wgsl");
             if (!available) reason = "This build does not contain the generated WebGPU shaders.";
             else if (!glob2_surface_webgpu_available()) {
@@ -207,15 +209,18 @@ std::vector<RendererBackend> GraphicContext::automaticRendererOrder(Uint32 flags
     // fixed-function emulation, then Legacy GL (builds with it), then Software.
     // WebGPU stays opt-in.
     (void)flags;
-    if (glob2_surface_startup_uses_gl()) {
+    // An edition with neither GL nor software renderers presents through Portable SDL alone.
+    if constexpr (!BuildFeatures::GLRenderer && !BuildFeatures::SoftwareRenderer)
+        return {RendererBackend::PortableSDL};
+    if (glob2_surface_startup_uses_gl() && BuildFeatures::GLRenderer) {
         std::vector<RendererBackend> order{RendererBackend::ProgrammableGL};
 #ifdef HAVE_OPENGL
         order.push_back(RendererBackend::LegacyGL);
 #endif
-        order.push_back(RendererBackend::Software);
+        order.push_back(BuildFeatures::SoftwareRenderer ? RendererBackend::Software : RendererBackend::PortableSDL);
         return order;
     }
-    return {RendererBackend::Software};
+    return {BuildFeatures::SoftwareRenderer ? RendererBackend::Software : RendererBackend::PortableSDL};
 #else
     std::vector<RendererBackend> order;
     if (flags & PREFERDEVICE) {

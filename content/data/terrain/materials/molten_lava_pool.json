@@ -1,5 +1,6 @@
 {
   "key": "molten_lava_pool",
+  "small_build_fallback": "lava",
   "sprite": "data/gfx/terrain-molten_lava_pool",
   "profile": "molten",
   "class": "flow",

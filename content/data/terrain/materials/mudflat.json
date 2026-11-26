@@ -1,5 +1,6 @@
 {
   "key": "mudflat",
+  "small_build_fallback": "hardpan",
   "sprite": "data/gfx/terrain-mudflat",
   "profile": "soil",
   "class": "solid",

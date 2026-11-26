@@ -8,7 +8,11 @@
 #include <bit>
 #include <iostream>
 
+#include <BuildFeatures.h>
+#include "Player.h"
+#if GLOB2_HAS_AI_MAXIMA
 #include "AIMaxima.h"
+#endif
 
 #include <assert.h>
 #include <string.h>
@@ -474,7 +478,9 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 	for (int p=0; p<Team::MAX_COUNT; ++p)
 		resolvedHeader.setAIConfig(p, gameHeader.getAIConfig(p));
 	// Resolve Maxima defaults before publishing the header. AI polling must
-	// treat it as read-only, including on the first tick of a new game.
+	// treat it as read-only, including on the first tick of a new game. An
+	// edition without Maxima refuses its players when it creates their AI.
+#if GLOB2_HAS_AI_MAXIMA
 	for (int p=0; p<resolvedHeader.getNumberOfPlayers(); ++p)
 		if (resolvedHeader.getBasePlayer(p).type ==
 			BasePlayer::playerTypeFromImplementationID(AI::MAXIMA))
@@ -496,6 +502,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 			resolvedHeader.setAIConfig(p,
 				AIMaxima::StrategyResolver::canonicalValues(strategy.values));
 		}
+#endif
 	for (const auto& key : map.requiredResourceExperiments().keys())
 		resolvedHeader.getExperiments().set(key, true, resolvedHeader.catalogExperimentKeys());
 	gameHeader = resolvedHeader;

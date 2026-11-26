@@ -1,3 +1,4 @@
+#include <BuildFeatures.h>
 #include "tutorial/TutorialGuidance.h"
 #include "AgeGate.h"
 #include <GestureScroll.h>
@@ -104,7 +105,9 @@ bool GameGUI::processTypingInput(SDL_Event *event)
     {
         if(hive) {
             hive->commandDraft=typingInputScreen->getText();
+#if GLOB2_HAS_HIVE
             if(typingInputScreen->result()==0)hive->command(hive->commandDraft, globalContainer->settings.hiveMindSupervision);
+#endif
         }
         closeChat();
         return true;

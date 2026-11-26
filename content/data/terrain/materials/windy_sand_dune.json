@@ -1,5 +1,6 @@
 {
   "key": "windy_sand_dune",
+  "small_build_fallback": "pale_sand",
   "sprite": "data/gfx/terrain-windy_sand_dune",
   "profile": "sand",
   "class": "solid",

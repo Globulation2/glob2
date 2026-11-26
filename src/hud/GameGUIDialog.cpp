@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <BuildFeatures.h>
 #include "GameGUIDialog.h"
 #include "ui/RecordingControls.h"
 #include "FormatableString.h"
@@ -445,8 +446,9 @@ Element InGameOptionScreen::build(const Presentation &p)
 	auto &settings = globalContainer->settings;
 	std::vector<Element> parts;
 	parts.push_back(fe::paragraph(fe::tr("[Options]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}));
-	parts.push_back(fe::toggle("colony-skins", fe::tr("[settings Show colony skins]"), settings.showColonySkins,
-        [this](bool value) { globalContainer->settings.showColonySkins = value; invalidate(); }));
+	if (BuildFeatures::Skins)
+		parts.push_back(fe::toggle("colony-skins", fe::tr("[settings Show colony skins]"), settings.showColonySkins,
+			[this](bool value) { globalContainer->settings.showColonySkins = value; invalidate(); }));
 	parts.push_back(fe::toggle("mute", fe::tr("[Mute]"), settings.mute, [this](bool value) { setMute(value); }));
 	if (!settings.mute)
 	{

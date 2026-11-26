@@ -1,6 +1,12 @@
 # Browser publication
 
-Build and publish both browser variants.
+Build and publish both browser variants (serial and threaded) of both
+[editions](../browser/editions.md): the standard client at the bucket root and the
+download-size lite edition under `lite/`. The workflow's build and publish jobs run
+once per edition (`edition: standard` and `edition: lite`); the lite package is
+`browser-release-lite` and publishes to `gs://glob2-browser/lite/`. The self-hosted
+deployment builds both (`deploy/build-web-client.sh`; `GLOB2_WEB_LITE=0` skips lite)
+and serves lite at `/play/lite/`.
 
 
 Dispatch `browser-release.yml` in `genixpro/glob2-release` from `master` with

@@ -1,5 +1,6 @@
 {
   "key": "laterite",
+  "small_build_fallback": "dirt",
   "sprite": "data/gfx/terrain-laterite",
   "profile": "soil",
   "class": "solid",

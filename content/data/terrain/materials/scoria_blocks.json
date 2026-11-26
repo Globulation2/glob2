@@ -1,5 +1,6 @@
 {
   "key": "scoria_blocks",
+  "small_build_fallback": "slate_ashlar",
   "sprite": "data/gfx/terrain-scoria_blocks",
   "profile": "paved",
   "class": "built",
