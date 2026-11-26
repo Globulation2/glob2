@@ -20,6 +20,8 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[2]
 SDK_URL = "https://integration.gamepix.com/sdk/v3/gamepix.sdk.js"
 ADAPTER = "gamepix.js"
+# The GamePix Testing Toolkit and dashboard accept zips up to 200 MB.
+MAX_UPLOAD_BYTES = 200 * 1000 * 1000
 # Fixed timestamp so identical inputs produce an identical zip.
 ZIP_TIME = (2020, 1, 1, 0, 0, 0)
 # Root-absolute references index.html shares with the online app, mapped to
@@ -114,6 +116,9 @@ def write_zip(files, output):
 
 def verify(path):
     """Check an upload: entry point at the root, SDK first, only relative files."""
+    size = Path(path).stat().st_size
+    if size > MAX_UPLOAD_BYTES:
+        raise ValueError(f"Upload is {size} bytes; GamePix accepts at most {MAX_UPLOAD_BYTES}")
     with zipfile.ZipFile(path) as archive:
         names = set(archive.namelist())
         for name in names:

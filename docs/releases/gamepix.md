@@ -12,8 +12,9 @@ republishing the browser game, dispatch `browser-release.yml` with `publish` off
 ## Package
 
 `platforms/web/package-gamepix.py` checks the input with `package-static.py --verify`
-and writes a reproducible zip with `index.html` at its root. GamePix requires every
-game file to load by a relative path, so it:
+and writes a reproducible zip with `index.html` at its root. GamePix accepts
+zips up to 200 MB (the 0.11.8 package is about 131 MB); `verify` fails above that.
+GamePix requires every game file to load by a relative path, so it:
 
 - bundles the website-root assets `index.html` shares with the online app
   (`/theme.js`, `/favicon-32.png` and `/signin/assets/*`) from the
@@ -44,7 +45,13 @@ the game reactivates while GamePix has it paused is suspended again, and a hidde
 stays suspended for the game's own visibility handler. Without the SDK the adapter
 does nothing.
 
-GamePix pages do not send the cross-origin isolation headers, so players get the
+Check an upload with the dashboard's SDK Testing Toolkit before submitting it: it
+hosts the zip on `test.builds.gamepix.com` for 24 hours (the files appear a few
+minutes after the upload finishes) and logs the SDK events. The 0.11.8.1 upload
+logged `LOADING` 1 to 100, `LOADED`, `GAME_START`, the SDK's own
+`FIRST_INTERACTION`, and the toolkit's `PAUSE` and `RESUME`.
+
+GamePix's build host (Amazon S3) sends no cross-origin isolation headers, so players get the
 serial runtime ([hosting](../../platforms/web/README.md)). Saves stay in IndexedDB on
 the player's device; GamePix synchronizes only `localStorage`.
 
@@ -55,7 +62,6 @@ These wait on GamePix's answers to our questions:
 - external links (Discord, privacy policy, source code, online sign-in), which the
   submission guidelines ban;
 - online play and accounts on our own servers;
-- upload size and file-count limits (the package is about 130 MB and 490 files);
 - an upload API, to replace the manual dashboard step;
 - `GamePix.ads.interstitial()` between matches, which needs a bridge from the end of
   a game.

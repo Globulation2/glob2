@@ -64,6 +64,19 @@ class GamePixPackageTests(unittest.TestCase):
             self.assertLess(html.index('src="gamepix.js"'), html.index('src="theme.js"'))
             self.assertIn("url('brand/nunito.woff2')", html)
 
+    def test_oversized_upload_fails(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source, design = self.fixture(directory)
+            output = Path(directory) / "glob2-gamepix.zip"
+            module.write_zip(module.collect(source, design), output)
+            original = module.MAX_UPLOAD_BYTES
+            module.MAX_UPLOAD_BYTES = output.stat().st_size - 1
+            try:
+                with self.assertRaisesRegex(ValueError, "at most"):
+                    module.verify(output)
+            finally:
+                module.MAX_UPLOAD_BYTES = original
+
     def test_output_is_reproducible(self):
         with tempfile.TemporaryDirectory() as directory:
             source, design = self.fixture(directory)
