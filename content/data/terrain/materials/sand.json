@@ -1,5 +1,6 @@
 {
   "key": "sand",
+  "small_build_fallback": "pale_sand",
   "sprite": "data/gfx/terrain-sand",
   "profile": "sand",
   "class": "solid",

@@ -1,5 +1,6 @@
 {
   "key": "pumice",
+  "small_build_fallback": "scree",
   "sprite": "data/gfx/terrain-pumice",
   "profile": "rock",
   "class": "solid",

@@ -11,6 +11,9 @@
 # Extra arguments go to tools/dev_build.py, e.g. official_instance=https://play.example.org.
 # With GLOB2_WEB_INSTALL=0 the client is only built (build/emscripten/client/release)
 # and not installed; deploy/update-host.sh installs it after the new stack is up.
+# The download-size lite edition (docs/browser/editions.md) is built beside it, in
+# build/emscripten/client/release/lite, and served at /play/lite/; GLOB2_WEB_LITE=0
+# skips it.
 set -eu
 root=$(cd "$(dirname "$0")/.." && pwd)
 output=${1:?usage: deploy/build-web-client.sh <output-dir> [build arguments...]}
@@ -23,6 +26,7 @@ docker run --rm \
 	-v glob2-web-toolchain:/toolchain \
 	-e GLOB2_DEV_HOME=/toolchain/dev \
 	-e JOBS="$jobs" \
+	-e LITE="${GLOB2_WEB_LITE:-1}" \
 	-e OWNER="$(id -u):$(id -g)" \
 	-w /source \
 	"$image" sh -euc '
@@ -41,9 +45,16 @@ docker run --rm \
 		python3 tools/dev_build.py target=web release=1 -j"$JOBS" "$@" web-package
 		encoder_python="$(python3 tools/package_assets.py --platform web --encoder-python)"
 		"$encoder_python" platforms/web/precompress.py --require-brotli build/emscripten/client/release
+		if [ "$LITE" != 0 ]; then
+			python3 tools/dev_build.py target=web release=1 edition=lite -j"$JOBS" "$@" web-package
+			"$encoder_python" platforms/web/precompress.py --require-brotli build/emscripten/client/release/lite
+		fi
 		chown -R "$OWNER" build/emscripten
 	' sh "$@"
 
 if [ "${GLOB2_WEB_INSTALL:-1}" != 0 ]; then
 	python3 "$root/deploy/install-web-client.py" "$root/build/emscripten/client/release" "$output"
+	if [ -f "$root/build/emscripten/client/release/lite/index.html" ] && [ "${GLOB2_WEB_LITE:-1}" != 0 ]; then
+		python3 "$root/deploy/install-web-client.py" "$root/build/emscripten/client/release/lite" "$output/lite"
+	fi
 fi

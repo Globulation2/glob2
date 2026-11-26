@@ -1,3 +1,4 @@
+#include <BuildFeatures.h>
 #include "GenerationWork.h"
 #include "GenerationNumeric.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -1255,4 +1256,7 @@ GeneratorDefinition evenGroundDefinition()
 		{"terrain:natural", "feature:lakes", "style:wide-open", "fairness:solved-catchment"}};
 }
 
+// The JavaScript toolkit binds this blueprint; an edition without it leaves it out.
+#if GLOB2_HAS_JS_TOOLKIT
 #include "EvenGroundBlueprint.inc"
+#endif

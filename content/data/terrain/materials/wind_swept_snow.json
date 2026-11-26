@@ -1,5 +1,6 @@
 {
   "key": "wind_swept_snow",
+  "small_build_fallback": "deep_snow",
   "sprite": "data/gfx/terrain-wind_swept_snow",
   "profile": "snow",
   "class": "solid",

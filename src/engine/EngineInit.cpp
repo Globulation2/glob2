@@ -1,3 +1,4 @@
+#include <BuildFeatures.h>
 #include "AIRegistry.h"
 #include "FileFormatVersions.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -752,6 +753,8 @@ GAGCore::CooperativeTask Engine::loadReplayTask(std::string fileName)
 		co_return false;
 	}
 
+#if GLOB2_HAS_ONLINE
+    // A replay of an online match shows the colony skins its players wore.
     if (!globalContainer->runNoX)
     {
         auto &online = Online::services();
@@ -759,6 +762,7 @@ GAGCore::CooperativeTask Engine::loadReplayTask(std::string fileName)
             setColonySkins(std::make_unique<Online::SkinDownloads>(online.storage,appearance->origin,
                 appearance->matchId,std::vector<Online::SkinDownloads::Ticket>{}));
     }
+#endif
 	co_return true;
 }
 

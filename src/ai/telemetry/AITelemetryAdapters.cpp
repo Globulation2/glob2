@@ -5,7 +5,10 @@
 #include "AIWarrush.h"
 #include "AINicowar.h"
 #include "shared_runtime/Runtime.h"
+#include <BuildFeatures.h>
+#if GLOB2_HAS_AI_MAXIMA
 #include "AIMaxima.h"
+#endif
 
 namespace AITelemetry
 {
@@ -104,6 +107,7 @@ void NewNicowar::captureTelemetry()
 	telemetry.set(AITrace::AI5::state_exploration_on_fruit, exploration_on_fruit);
 }
 
+#if GLOB2_HAS_AI_MAXIMA
 void AIMaxima::Maxima::captureTelemetry()
 {
 	if (!director.initialized)
@@ -887,6 +891,7 @@ void AIMaxima::Maxima::captureTelemetry()
 
 
 }
+#endif
 
 void AISharedRuntime::Runtime::captureTelemetry()
 {

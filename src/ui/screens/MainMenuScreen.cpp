@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <cmath>
 #include <ApplicationHost.h>
+#include <BuildFeatures.h>
 
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
@@ -146,7 +147,7 @@ Element MainMenuScreen::build(const Presentation &p)
 			content.push_back(action("[custom game]", CUSTOM, primaryStyle));
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
 			// Play online sits on the main card, under Custom game; LAN stays under More.
-			if (PortalPolicy::onlineSignIn())
+			if (BuildFeatures::Online && PortalPolicy::onlineSignIn())
 				content.push_back(action("[play online]", PLAY_ONLINE, rowStyle));
 #endif
 			const bool landscape = p.landscape() && p.safe.h < p.pt(480);
@@ -181,9 +182,11 @@ Element MainMenuScreen::build(const Presentation &p)
 			back.icon = uiIcon(UIIcon::Back);
 			content.push_back(button("menu/back", tr("[Back]"), [this] { showMore(false); }, back));
 #ifndef __EMSCRIPTEN__
-			content.push_back(action("[lan]", MULTIPLAYERS_LAN, rowStyle));
+			if (BuildFeatures::LAN)
+				content.push_back(action("[lan]", MULTIPLAYERS_LAN, rowStyle));
 #endif
-			content.push_back(action("[editor]", EDITOR, rowStyle));
+			if (BuildFeatures::Editor)
+				content.push_back(action("[editor]", EDITOR, rowStyle));
 			content.push_back(action("[credits]", CREDITS, rowStyle));
 			if (PortalPolicy::externalLinks())
 				content.push_back(button("menu/discord", tr("[Discord community]"), [this] { openCommunity(); }, rowStyle));
@@ -234,7 +237,7 @@ Element MainMenuScreen::build(const Presentation &p)
 	// Play online is a way to play like the others, under Custom game as on
 	// phones, not a small extra below them.
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
-	if (PortalPolicy::onlineSignIn())
+	if (BuildFeatures::Online && PortalPolicy::onlineSignIn())
 		content.push_back(action("[play online]", PLAY_ONLINE, launch));
 #endif
 	content.push_back(action("[campaign]", CAMPAIGN, launch));
@@ -242,11 +245,19 @@ Element MainMenuScreen::build(const Presentation &p)
 	content.push_back(action("[tutorial]", TUTORIAL, launch));
 	content.push_back(spacer(p.pt(compact ? 6 : 12)));
 #ifndef __EMSCRIPTEN__
-	content.push_back(action("[lan]", MULTIPLAYERS_LAN, utility));
-#endif
+	if (BuildFeatures::LAN)
+	{
+		content.push_back(action("[lan]", MULTIPLAYERS_LAN, utility));
+		content.push_back(spacer(p.pt(compact ? 6 : 12)));
+	}
+#else
 	content.push_back(spacer(p.pt(compact ? 6 : 12)));
-	std::vector<Element> utilities{action("[settings]", GAME_SETUP, utility), action("[editor]", EDITOR, utility),
-								   action("[credits]", CREDITS, utility), action("[quit]", QUIT, utility)};
+#endif
+	std::vector<Element> utilities{action("[settings]", GAME_SETUP, utility)};
+	if (BuildFeatures::Editor)
+		utilities.push_back(action("[editor]", EDITOR, utility));
+	utilities.push_back(action("[credits]", CREDITS, utility));
+	utilities.push_back(action("[quit]", QUIT, utility));
 #if defined(GLOB2_MOBILE) && defined(__ANDROID__)
 	if (PortalPolicy::externalLinks())
 		utilities.push_back(button("menu/privacy", Glob2UI::libraryText("Privacy policy"), [] {

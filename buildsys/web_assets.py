@@ -306,10 +306,11 @@ def hd_terrain_packages(root, source):
             for path, families in owners.items() if families != {None}}
 
 
-def plan(root, source=None):
+def plan(root, source=None, drop=()):
     """({package: [paths]} with core first, excluded paths, {core path: browser copy}).
 
-    `source` is the tree to package (the runtime export), `root` the repository."""
+    `source` is the tree to package (the runtime export), `root` the repository.
+    `drop` names optional packages an edition leaves out (edition_packages)."""
     packages = {name: [] for name in PACKAGES}
     files, skipped = [], []
     exporter = load_module(Path(__file__).resolve().parents[1], 'glob2_package_assets', 'tools/package_assets.py')
@@ -358,7 +359,9 @@ def plan(root, source=None):
     missing = [f for f in sim_data_files(root) if f not in packages['core']]
     if missing:
         raise ValueError('simulation data must be in the core package: ' + ', '.join(missing))
-    packages = {name: paths for name, paths in packages.items() if paths or name == 'core'}
+    packages = {name: paths for name, paths in packages.items()
+                if (paths or name == 'core') and name not in drop
+                and not ('hd' in drop and name.startswith('hd-'))}
     return packages, skipped, substitutes
 
 
@@ -417,12 +420,12 @@ def hd_index_blocks(path, data, groups):
     return blocks
 
 
-def write_packages(root, output, source=None):
+def write_packages(root, output, source=None, drop=(), overrides=None):
     """Write assets/<package>[-<part>].<hash>.data under output; return the manifest."""
     root, output = Path(root), Path(output)
     directory = output / 'assets'
     directory.mkdir(parents=True, exist_ok=True)
-    packages, _, substitutes = plan(root, source)
+    packages, _, substitutes = plan(root, source, drop)
     sprite_groups = {}
     sprite_indexes = {}
     hd_indexes = {}
@@ -439,7 +442,7 @@ def write_packages(root, output, source=None):
             pass
     manifest, written = {'version': MANIFEST_VERSION, 'packages': []}, set()
     for name, paths in packages.items():
-        data = {path: contents(root, name, path, substitutes, source) for path in paths}
+        data = {path: (overrides or {}).get(path) or contents(root, name, path, substitutes, source) for path in paths}
         hd_fragments = {path: hd_index_blocks(path, data[path], hd_indexes[path])
                         for path in paths if path in hd_indexes}
         fragments = {}
@@ -515,8 +518,72 @@ def manifest_script(manifest):
             'Module["glob2AssetManifest"] ??= ' + json.dumps(manifest, separators=(',', ':')) + ';\n')
 
 
-def build(root, output, script, source=None):
-    manifest = write_packages(root, output, source)
+ENGLISH_TEXTS = ('data/texts.keys.txt', 'data/texts.en.txt', 'data/texts.list.txt', 'data/texts.incomplete.txt')
+# Never read by the browser client: it draws the system cursor, has no shell, and
+# draws the live menu colony rather than its still image (MenuColony.cpp).
+UNUSED_FILES = ('data/gfx/cursor/', 'data/completions/', 'data/gfx/menu-colony.png')
+MUSIC_COPIES = 'platforms/web/assets/music'
+# Sprite families of many small frames that sheet_sprites packs into sprite sheets
+# (tools/package_assets.py sheet_plan): Sprite::load reads any family's .sheet.
+EDITION_SHEETS = ('data/gfx/terrain-decor', 'data/gfx/terrain', 'data/gfx/ressource', 'data/gfx/mapicon',
+                  'data/gfx/statusicon', 'data/gfx/gamegui')
+
+
+def edition_export(root, identity):
+    """(content prefixes an edition leaves out of the runtime export, optional
+    packages it leaves out of the browser data) for buildsys/edition.py switches."""
+    import edition
+    exclude, drop = [], []
+    if not edition.enabled(identity, 'premade_maps'):
+        exclude.append('maps/')  # random maps and campaign missions remain
+    if not edition.enabled(identity, 'unused_files'):
+        exclude += UNUSED_FILES
+    if not edition.enabled(identity, 'hd_assets'):
+        exclude.append('data/highres/')
+        drop.append('hd')  # and every hd-terrain-<family> package (plan())
+    if not edition.enabled(identity, 'skins'):
+        exclude.append('data/skins/')
+    if not edition.enabled(identity, 'music_sets'):
+        music = Path(root) / 'content/data/zik'
+        exclude += sorted('data/zik/' + path.name + '/' for path in music.iterdir()
+                          if path.is_dir() and path.name != 'original')
+    if not edition.enabled(identity, 'translations'):
+        drop += ['translations', 'font-cjk']
+        exclude.append('data/fonts/scripts/')  # non-Latin fallbacks (TrueTypeFont::scriptFont)
+        # Not even each language's name: the language list holds English alone (overrides()).
+        content = Path(root) / 'content'
+        exclude += sorted(path.relative_to(content).as_posix() for path in (content / 'data').glob('texts.*.txt')
+                          if path.relative_to(content).as_posix() not in ENGLISH_TEXTS)
+    return tuple(exclude), tuple(drop)
+
+
+def edition_overrides(root, identity):
+    """{packaged path: bytes} an edition ships in place of the exported file: the
+    English-only language list, and music re-encoded at the edition's bitrate from
+    the checked-in copies (platforms/web/derive_music.py) that still match their source."""
+    import edition
+    root = Path(root)
+    overrides = {}
+    if not edition.enabled(identity, 'translations'):
+        overrides['data/texts.list.txt'] = b'data/texts.keys.txt\ndata/texts.en.txt\n'
+        overrides['data/texts.incomplete.txt'] = b'data/texts.en.txt\n'
+    bitrate = edition.settings(identity)['music_bitrate']
+    if bitrate:
+        directory = root / MUSIC_COPIES / f'{bitrate}k'
+        try:
+            recorded = json.loads((directory / 'sources.json').read_text())
+        except (OSError, ValueError):
+            raise ValueError(f'No checked-in music at {bitrate} kbps; run platforms/web/derive_music.py --bitrate {bitrate}')
+        for name, entry in recorded.items():
+            source, copy = root / entry['source'], directory / name
+            if (source.is_file() and copy.is_file() and hashlib.sha256(source.read_bytes()).hexdigest() == entry['sha256']
+                    and hashlib.sha256(copy.read_bytes()).hexdigest() == entry['output_sha256']):
+                overrides[entry['source'].removeprefix('content/')] = copy.read_bytes()
+    return overrides
+
+
+def build(root, output, script, source=None, drop=(), overrides=None):
+    manifest = write_packages(root, output, source, drop, overrides or {})
     text = manifest_script(manifest)
     script = Path(script)
     if not script.is_file() or script.read_text() != text:

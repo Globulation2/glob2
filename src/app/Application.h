@@ -3,8 +3,11 @@
 #include <ApplicationHost.h>
 #include <ScreenStack.h>
 #include "SinglePlayerFlow.h"
-#include "OnlineServices.h"
 #include "mcp/Availability.h"
+#include <BuildFeatures.h>
+#if GLOB2_HAS_ONLINE
+#include "OnlineServices.h"
+#endif
 #if GLOB2_DESKTOP_MCP
 namespace MCP { class UIService; }
 #endif
@@ -24,7 +27,9 @@ class Application : public GAGCore::ApplicationHost::Loop
   private:
 	// The online services of this run (Online::services()). Declared first so they
 	// outlive every screen: screens and their requests hold the platform client.
+#if GLOB2_HAS_ONLINE
 	Online::ServicesOwner online;
+#endif
 	std::unique_ptr<FrontendTheme> frontend;
 #if GLOB2_DESKTOP_MCP
 	std::unique_ptr<MCP::UIService> mcp;

@@ -866,6 +866,7 @@ GAG_SOURCES = (
     'SpriteLoad.cpp',
     'SpriteRenderAtlas.cpp',
     'GameplayRecording.cpp',
+    'GameplayRecordingDisabled.cpp',
     'RecordingMetadata.cpp',
     'RecordingEncoder.cpp',
     'RecordingFiles.cpp',
@@ -993,6 +994,66 @@ WEB_WORKER_SOURCES = {
     'hive': ('platforms/web/HiveWorker.cpp', 'src/hive/HiveWorker.cpp', 'src/scripting/javascript/ScriptRuntime.cpp',
              'src/scripting/javascript/ScriptValue.cpp'),
 }
+
+
+# Optional features an edition can leave out (buildsys/edition.py), as paths and
+# path prefixes over every client, libgag and browser source (native, mobile and
+# web lists alike). Leaving a group out removes its objects; the code that stays
+# tests GLOB2_HAS_<FEATURE> (libs/gag/include/BuildFeatures.h) wherever it would
+# otherwise call into the group.
+FEATURE_SOURCES = {
+    'editor': tuple('src/' + path for path in EDITOR_SOURCES) + ('src/campaign/screens/CampaignEditor.cpp',),
+    'online': ('src/online/screens/', 'src/online/PlatformClient', 'src/online/PlatformProtocol.cpp',
+               'src/online/PlatformRoom.cpp', 'src/online/RelayTransport.cpp', 'src/online/RelayProbe.cpp',
+               'src/online/QuickMatch', 'src/online/OnlineHandoff.cpp', 'src/online/OnlineMatch.cpp',
+               'src/online/OnlineServices.cpp', 'src/online/InviteLink.cpp',
+               'src/online/MapCatalog.cpp', 'src/online/OnlineResources.cpp',
+               'src/ui/MapPictures.cpp', 'src/game/screens/MatchStartScreen.cpp',
+               'src/ui/settings/SettingsScreenOnline.cpp', 'src/ui/settings/SettingsScreenCustomAIs.cpp',
+               'src/ui/settings/SettingsScreenCustomGenerators.cpp', 'src/app/cli/TurnClientCommand.cpp',
+               'src/online/ApiErrorText.cpp'),
+    'lan': ('src/net/lan/',),
+    # Shared by several features: left out when every one of them is.
+    'online+lan': ('src/online/MapCache.cpp',),
+    'mcp': ('src/mcp/', 'src/ui/settings/SettingsScreenMCP.cpp'),
+    # The HUD keeps the commander cards (HiveDialog.cpp), which it never opens
+    # without a commander, so it needs no gates of its own.
+    'hive': ('src/hive/GameStats.cpp', 'src/hive/HiveClient.cpp', 'src/hive/HiveObservation.cpp',
+             'src/hive/HiveWorker.cpp', 'src/hive/LocalCommander.cpp', 'src/hive/WorkerProcess.cpp',
+             'platforms/web/HiveBrowserHost.cpp'),
+    # GameplayRecordingDisabled.cpp stands in for the recorder (the frame loop,
+    # mixer and screens call it); the completion notices and metadata stay.
+    'recording': ('src/ui/screens/RecordingFilesScreen.cpp', 'src/ui/settings/SettingsScreenRecording.cpp',
+                  'libs/gag/src/GameplayRecording.cpp', 'libs/gag/src/RecordingFiles.cpp',
+                  'libs/gag/src/RecordingEncoder.cpp', 'libs/gag/src/RecordingSession.cpp',
+                  'platforms/web/RecordingPlatform.cpp'),
+    # The asset-video worker and its codec libraries are what video assets cost;
+    # the runtime's AssetVideo.cpp then reports H.264 sprite groups unsupported.
+    'ai_maxima': ('src/ai/maxima/',),
+    # The renderers have no groups: the GL and WebGPU devices compile to their
+    # 'not built' stubs (ProgrammableGLDevice.cpp and WebGPUDevice.cpp test
+    # GLOB2_HAS_RENDERER_*), and the software rasterizer stays without the software
+    # renderer, since offscreen passes and terrain pages draw with it under every
+    # renderer. GraphicContextRenderer.cpp offers only the compiled renderers.
+    # The music library: browsing, importing and choosing soundtrack sets.
+    'music_sets': ('src/ui/screens/MusicLibraryScreen.cpp', 'src/ui/screens/MusicSetScreen.cpp',
+                   'src/ui/screens/MusicImportScreen.cpp'),
+    'skins': ('src/app/cli/RenderSkin.cpp',),
+    # Map and campaign scripts keep QuickJS (src/scripting/javascript).
+    'js_toolkit': ('src/map/generator/javascript/', 'src/ai/javascript/AIJavaScript.cpp',
+                   'src/game/screens/GeneratorStudioScreen.cpp'),
+    # CommandLine.cpp stays: the browser launches play, replay and join by arguments.
+    'cli': ('src/app/cli/Headless.cpp', 'src/app/cli/MapCommand.cpp', 'src/app/cli/MapStudy.cpp',
+            'src/app/cli/VerifyMatch.cpp'),
+}
+
+
+def feature_sources(features, paths):
+    """The paths, in order, that belong to a feature not in `features` (for a
+    shared group, to none of its features)."""
+    prefixes = tuple(prefix for name, group in FEATURE_SOURCES.items()
+                     if not any(part in features for part in name.split('+')) for prefix in group)
+    return [path for path in paths if path.startswith(prefixes)] if prefixes else []
 
 
 def web_sources():

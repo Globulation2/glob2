@@ -1,5 +1,6 @@
 {
   "key": "overgrown_road",
+  "small_build_fallback": "road",
   "sprite": "data/gfx/terrain-overgrown_road",
   "profile": "paved",
   "class": "built",

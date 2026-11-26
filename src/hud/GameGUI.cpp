@@ -1,3 +1,4 @@
+#include <BuildFeatures.h>
 #include "tutorial/TutorialGuidance.h"
 #include "Map.h"
 #include <ui/TextLayout.h>
@@ -486,7 +487,9 @@ bool GameGUI::enqueueCommanderOrders(const std::vector<std::shared_ptr<Order>> &
 void GameGUI::updateCommander(bool caughtUp)
 {
  if(!hive)return;
+#if GLOB2_HAS_HIVE
  hive->update(caughtUp);
+#endif
  if(!hiveCards && hive->available() && !globalContainer->runNoX) {
  hiveCards=std::make_unique<Hive::Dialog>(hive); hiveCards->compose=[this]{openCommander();}; hiveCards->attach(*globalContainer->gfx);
  }

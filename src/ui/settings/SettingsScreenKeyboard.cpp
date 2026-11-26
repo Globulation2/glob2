@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "app/ClientFeatures.h"
+#include <BuildFeatures.h>
 // Copyright (C) 2007-2026 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #include "SettingsScreen.h"
@@ -64,10 +65,13 @@ void SettingsScreen::buildKeyboard()
         };
     }
     section("Keyboard shortcuts");
-    for(int i=0;i<2;++i){
-        button("keys.mode."+std::to_string(i),tr(i?"Map editor":"Game"),[this,i]{shortcutMode=i?MapEditShortcuts:GameGUIShortcuts;},int(shortcutMode)==i);
-        form.back().columns=2;form.back().column=i;
-    }
+    // Without the map editor there is one shortcut table, so no mode choice.
+    if constexpr (BuildFeatures::Editor){
+        for(int i=0;i<2;++i){
+            button("keys.mode."+std::to_string(i),tr(i?"Map editor":"Game"),[this,i]{shortcutMode=i?MapEditShortcuts:GameGUIShortcuts;},int(shortcutMode)==i);
+            form.back().columns=2;form.back().column=i;
+        }
+    }else shortcutMode=GameGUIShortcuts;
     info(tr("Choose a binding to change it, or add another shortcut for an action."));
     button("keys.restore",tr("Restore default shortcuts"),[this]{modal=Modal::Restore;pendingFocus="restore.cancel";});
     auto& bindings=keyboard().getKeyboardShortcuts();
@@ -75,7 +79,8 @@ void SettingsScreen::buildKeyboard()
     for(int action=0;action<count;++action){
         if(shortcutMode==GameGUIShortcuts && !ClientFeatures::Commander &&
            (action==GameGUIKeyActions::OpenCommander || action==GameGUIKeyActions::StopCommander))continue;
-        if(shortcutMode==GameGUIShortcuts && action==GameGUIKeyActions::ToggleRecording && !GAGCore::Recording::supported())continue;
+        if(shortcutMode==GameGUIShortcuts && action==GameGUIKeyActions::ToggleRecording &&
+           (!BuildFeatures::Recording || !GAGCore::Recording::supported()))continue;
         auto name=shortcutMode==GameGUIShortcuts?GameGUIKeyActions::getName(action):MapEditKeyActions::getName(action);
         auto label=Toolkit::getStringTable()->getString("["+name+"]");
         int index=0;bool found=false;

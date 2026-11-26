@@ -25,8 +25,9 @@ set(bridge "${Python3_EXECUTABLE}" "${GLOB2_BRIDGE}")
 set(ports --use-port=zlib)
 # Release builds compile the game and link at -O3, as native release builds do;
 # QuickJS and openlibm keep -O2 (buildsys/javascript.py), like their native builds.
+# An edition can link for size instead (buildsys/edition.py web_opt).
 if(GLOB2_WEB_RELEASE STREQUAL "release")
-  set(optimization -O3)
+  set(optimization ${GLOB2_WEB_OPTIMIZATION})
   set(javascript_optimization -O2)
 else()
   set(optimization -O0)
@@ -115,6 +116,12 @@ foreach(directory IN LISTS GLOB2_INCLUDE_DIRECTORIES)
     list(APPEND web_common_includes "${GLOB2_ROOT}/${directory}")
   endif()
 endforeach()
+# An edition leaves its disabled features' sources out (buildsys/sources.py FEATURE_SOURCES).
+if(GLOB2_WEB_EXCLUDED_SOURCES)
+  foreach(list_name GLOB2_WEB_SOURCES GLOB2_WEB_STRICT_NUMERIC_SOURCES GLOB2_WEB_GUARDED_NUMERIC_SOURCES)
+    list(REMOVE_ITEM ${list_name} ${GLOB2_WEB_EXCLUDED_SOURCES})
+  endforeach()
+endif()
 list(TRANSFORM GLOB2_WEB_SOURCES PREPEND "${GLOB2_ROOT}/" OUTPUT_VARIABLE web_sources)
 list(TRANSFORM GLOB2_WEB_STRICT_NUMERIC_SOURCES PREPEND "${GLOB2_ROOT}/" OUTPUT_VARIABLE web_strict_sources)
 list(TRANSFORM GLOB2_JAVASCRIPT_SOURCES PREPEND "${GLOB2_ROOT}/" OUTPUT_VARIABLE javascript_sources)
@@ -224,7 +231,9 @@ foreach(variant IN LISTS GLOB2_WEB_VARIANTS)
          -sALLOW_BLOCKING_ON_MAIN_THREAD=0 --js-library "${web}/threaded-egl.js")
   endif()
   set(shaders "${GLOB2_WEB_${upper}_SHADERS}")
-  list(APPEND link --preload-file "${shaders}/webgl2@/shaders/webgl2")
+  if(GLOB2_WEB_GL_SHADERS)
+    list(APPEND link --preload-file "${shaders}/webgl2@/shaders/webgl2")
+  endif()
   if(GLOB2_WEB_${upper}_WEBGPU)
     list(APPEND link --preload-file "${shaders}/webgpu@/shaders/webgpu"
          --preload-file "${shaders}/metadata.json@/shaders/metadata.json")
@@ -236,11 +245,22 @@ foreach(variant IN LISTS GLOB2_WEB_VARIANTS)
   endif()
   list(APPEND link -fwasm-exceptions ${optimization} -sLEGACY_GL_EMULATION=${legacy} -sFETCH=1
        -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sALLOW_MEMORY_GROWTH -sINITIAL_MEMORY=134217728
-       -sSTACK_SIZE=8388608 -sASSERTIONS=1 -sFORCE_FILESYSTEM -lidbfs.js -lwebsocket.js
+       -sSTACK_SIZE=8388608 -sASSERTIONS=${GLOB2_WEB_ASSERTIONS} -sFORCE_FILESYSTEM -lidbfs.js -lwebsocket.js
        "-sEXPORTED_FUNCTIONS=[\"_main\",\"_malloc\",\"_free\"]"
        "-sEXPORTED_RUNTIME_METHODS=[\"callMain\",\"FS\"]"
        --pre-js "${web}/storage.js" --pre-js "${web}/file-selection.js" --pre-js "${web}/audio.js"
-       --pre-js "${web}/recording.js" --pre-js "${web}/runtime.js" ${ports})
+       --pre-js "${web}/runtime.js" ${ports})
+  if("recording" IN_LIST GLOB2_WEB_WORKERS)
+    list(APPEND link --pre-js "${web}/recording.js")
+  endif()
+  if(GLOB2_WEB_CLOSURE)
+    list(APPEND link --closure 1)
+  endif()
+  # index.js.symbols (never packaged) names each function for size attribution
+  # (tools/web_size_report.py --attribute); editions are built to be measured.
+  if(NOT GLOB2_WEB_EDITION STREQUAL "standard")
+    list(APPEND link --emit-symbol-map)
+  endif()
   if(GLOB2_WEB_LEGACY_GL)
     list(APPEND link --pre-js "${web}/legacy-gl-runtime.js" --post-js "${web}/webgl-shaders.js")
   endif()
@@ -254,7 +274,11 @@ foreach(variant IN LISTS GLOB2_WEB_VARIANTS)
   # The SDL prefix can sit under a path with spaces (the shared dependency store
   # in ~/Library/Application Support); target_link_directories quotes it, where a
   # raw -L item in target_link_libraries would be split.
-  set(libraries -lSDL3_ttf -lSDL3_image -lSDL3_net -lSDL3 -lharfbuzz -lfreetype -lwebpdemux
+  set(harfbuzz -lharfbuzz)
+  if(NOT GLOB2_WEB_HARFBUZZ)
+    set(harfbuzz)  # an edition without complex-script shaping (SDL3_ttf built without it)
+  endif()
+  set(libraries -lSDL3_ttf -lSDL3_image -lSDL3_net -lSDL3 ${harfbuzz} -lfreetype -lwebpdemux
       -lwebpmux -lwebp -lsharpyuv)
   foreach(name IN LISTS GLOB2_WEB_OPUS_LIBRARIES)
     list(APPEND libraries "${opus}/lib/lib${name}.a")
@@ -399,12 +423,17 @@ glob2_web_flags(unused_cxx unused_cc music_link "" "" "-O2;-fwasm-exceptions")
 glob2_web_worker(music "${game_cxxflags}" "${web_prefix_map}" "" "" "${music_libraries}"
   "${music_link};--no-entry;-sMODULARIZE=1;-sEXPORT_NAME=createMusicRuntime;-sENVIRONMENT=worker;-sALLOW_MEMORY_GROWTH=1;-sMAXIMUM_MEMORY=268435456;-sEXPORTED_FUNCTIONS=[\"_malloc\",\"_free\"];-sEXPORTED_RUNTIME_METHODS=[\"UTF8ToString\",\"HEAPU8\",\"HEAP16\"]")
 glob2_web_flags(unused_cxx unused_cc recording_link "" "" "-O3;-msimd128;-fwasm-exceptions")
+if("recording" IN_LIST GLOB2_WEB_WORKERS)
 glob2_web_worker(recording "${recording_cxxflags}" "${recording_ccflags}" "${GLOB2_WEB_RECORDING_PREFIX}/include" ""
   "${GLOB2_WEB_RECORDING_LIBRARIES}"
   "${recording_link};--no-entry;-sMODULARIZE=1;-sEXPORT_NAME=createRecordingRuntime;-sENVIRONMENT=worker;-sFILESYSTEM=0;-sALLOW_MEMORY_GROWTH=1;-sINITIAL_MEMORY=33554432;-sMAXIMUM_MEMORY=1073741824;-sSTACK_SIZE=8388608;-sEXPORTED_FUNCTIONS=[\"_malloc\",\"_free\"];-sEXPORTED_RUNTIME_METHODS=[\"ccall\",\"HEAPU8\"]")
+endif()
+if("asset-video" IN_LIST GLOB2_WEB_WORKERS)
 glob2_web_worker(asset-video "${recording_cxxflags}" "${recording_ccflags}" "${GLOB2_WEB_RECORDING_PREFIX}/include"
   GLOB2_H264_ASSETS "${GLOB2_WEB_RECORDING_LIBRARIES}"
   "${recording_link};--no-entry;-sMODULARIZE=1;-sEXPORT_NAME=createAssetVideoRuntime;-sENVIRONMENT=worker;-sFILESYSTEM=0;-sALLOW_MEMORY_GROWTH=1;-sINITIAL_MEMORY=33554432;-sMAXIMUM_MEMORY=268435456;-sSTACK_SIZE=2097152;-sEXPORTED_FUNCTIONS=[\"_glob2_decode_asset_video\",\"_malloc\",\"_free\"];-sEXPORTED_RUNTIME_METHODS=[\"HEAPU8\"]")
+endif()
+if("hive" IN_LIST GLOB2_WEB_WORKERS)
 # Assistant programs never execute in the live game's memory; their interpreter
 # is always optimized (javascript_objects(..., release=True)).
 glob2_web_javascript(glob2_web_hive_javascript "${web_prefix_map}" -O2 "${worker_includes}")
@@ -421,6 +450,7 @@ add_custom_command(OUTPUT "${stamps}/numeric-guard-hive"
   DEPENDS "$<TARGET_OBJECTS:glob2_web_hive_javascript>" COMMAND_EXPAND_LISTS VERBATIM)
 add_custom_target(glob2_web_hive_guard DEPENDS "${stamps}/numeric-guard-hive")
 add_dependencies(glob2_web_hive_worker glob2_web_hive_guard)
+endif()
 
 # ---- Files served beside the page ----
 set(installed)
@@ -432,13 +462,28 @@ function(glob2_web_install destination)
     set_property(GLOBAL APPEND PROPERTY GLOB2_WEB_INSTALLED "${destination}/${name}")
   endforeach()
 endfunction()
-glob2_web_install("${GLOB2_OUT}" "${web}/music-worker.js" "${web}/music-output.js" "${web}/recording-worker.js"
-  "${web}/recording-storage.js" "${web}/recording-video.js" "${web}/asset-video-worker.js" "${web}/hive-worker.js"
-  "${web}/loader.js" "${web}/presentation-surface.js" "${web}/i18n.js")
-file(GLOB locale_files CONFIGURE_DEPENDS "${GLOB2_ROOT}/services/online/packages/i18n/locales/*.json")
+set(page_scripts "${web}/music-worker.js" "${web}/music-output.js" "${web}/loader.js" "${web}/presentation-surface.js"
+    "${web}/i18n.js")
+if("recording" IN_LIST GLOB2_WEB_WORKERS)
+  list(APPEND page_scripts "${web}/recording-worker.js" "${web}/recording-storage.js" "${web}/recording-video.js")
+endif()
+if("asset-video" IN_LIST GLOB2_WEB_WORKERS)
+  list(APPEND page_scripts "${web}/asset-video-worker.js")
+endif()
+if("hive" IN_LIST GLOB2_WEB_WORKERS)
+  list(APPEND page_scripts "${web}/hive-worker.js")
+endif()
+glob2_web_install("${GLOB2_OUT}" ${page_scripts})
+if(GLOB2_WEB_TRANSLATIONS)
+  file(GLOB locale_files CONFIGURE_DEPENDS "${GLOB2_ROOT}/services/online/packages/i18n/locales/*.json")
+else()
+  set(locale_files "${GLOB2_ROOT}/services/online/packages/i18n/locales/en.json")
+endif()
 glob2_web_install("${GLOB2_OUT}/locales" ${locale_files})
-file(GLOB recording_notices "${GLOB2_WEB_RECORDING_PREFIX}/share/licenses/recording/*")
-glob2_web_install("${GLOB2_OUT}/licenses/recording" ${recording_notices})
+if(GLOB2_WEB_RECORDING_PREFIX)
+  file(GLOB recording_notices "${GLOB2_WEB_RECORDING_PREFIX}/share/licenses/recording/*")
+  glob2_web_install("${GLOB2_OUT}/licenses/recording" ${recording_notices})
+endif()
 list(GET GLOB2_WEB_VARIANTS 0 first)
 string(TOUPPER "${first}" upper)
 file(GLOB opus_notices "${GLOB2_WEB_${upper}_OPUS_PREFIX}/share/licenses/opus/*")
@@ -473,10 +518,13 @@ foreach(variant IN LISTS GLOB2_WEB_VARIANTS)
   list(APPEND runtime_files "$<TARGET_FILE:glob2_web_${variant}_runtime>")
 endforeach()
 add_custom_command(OUTPUT ${page_outputs}
-  COMMAND ${bridge} web-page --builddir "${GLOB2_OUT}" ${variant_options}
+  COMMAND ${bridge} web-page --builddir "${GLOB2_OUT}" ${variant_options} ${build_arg_options}
   DEPENDS ${web_runtimes} ${runtime_files} "${web}/shell.html" "${web}/studio-envelope.js"
           "${web}/generator-studio.js" "${web}/studio.js" "${web}/set-preview.js" "${web}/loader.js"
   WORKING_DIRECTORY "${GLOB2_ROOT}" COMMENT "Packaging browser runtimes" VERBATIM)
 add_custom_target(web-package ALL DEPENDS ${page_outputs} ${installed} ${font_outputs})
-add_dependencies(web-package glob2_web_music_worker glob2_web_recording_worker glob2_web_asset-video_worker
-                 glob2_web_hive_worker ${web_runtimes})
+set(worker_targets)
+foreach(worker IN LISTS GLOB2_WEB_WORKERS)
+  list(APPEND worker_targets glob2_web_${worker}_worker)
+endforeach()
+add_dependencies(web-package ${worker_targets} ${web_runtimes})

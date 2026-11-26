@@ -377,9 +377,12 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			require(v.decor.connectedForeign.empty() ||
 				(v.decor.connectedCorners && v.decor.connectedOpen && v.decor.connectedForeign.size() == ForeignCodes * 16),
 				"connected_foreign needs connected_corners, connected_open and 16 colours per code");
+			// Interior crowns come in equal sets per corner colour, or one set when the
+			// frames have no corner colours (a small build's single-colour decor).
 			require(v.decor.connectedInterior.empty() ||
-				(v.decor.connectedCorners && v.decor.connectedInterior.size() % 16 == 0),
-				"connected_interior needs connected_corners and equal variants per colour");
+				(!v.decor.connected.empty() &&
+				 (!v.decor.connectedCorners || v.decor.connectedInterior.size() % 16 == 0)),
+				"connected_interior needs connected frames and equal variants per colour");
 		}
 		if (m.contains("overlay"))
 		{
@@ -539,9 +542,10 @@ int Catalog::decorFrame(MaterialId id, int x, int y, bool edge, std::uint32_t se
 		if (cornerMask == 15 && !d.connectedInterior.empty())
 		{
 			// Interiors never reach a cell edge, so filled cells choose freely.
-			const unsigned extra = unsigned(d.connectedInterior.size()) / 16;
+			const unsigned sets = d.connectedCorners ? 16u : 1u;
+			const unsigned extra = unsigned(d.connectedInterior.size()) / sets;
 			if (const unsigned v = hash(x, y, mapSeedSalt(seed) ^ 0x1e7e10u) % (extra + 1))
-				return d.connectedInterior[(colours & 15u) * extra + v - 1];
+				return d.connectedInterior[(d.connectedCorners ? colours & 15u : 0u) * extra + v - 1];
 		}
 		const unsigned variants = unsigned(d.connected.size()) / 16;
 		const unsigned variant = d.connectedCorners ? colours & 15u :

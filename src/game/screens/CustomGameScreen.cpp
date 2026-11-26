@@ -1,3 +1,4 @@
+#include <BuildFeatures.h>
 #include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ui/LibraryText.h"
@@ -166,6 +167,10 @@ CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack &screens) : screens(scree
 		setup = preferences.setup;
         if(!preferences.missingGeneratorId.empty())message=Glob2UI::bulgarianErrorLocale() ? Glob2UI::literalSurfaceFormat(Glob2UI::nativeSurfaceText("[missing map generator %0]", "Missing map generator: %0. A native landscape was selected."), {preferences.missingGeneratorId}) : "Missing map generator: "+preferences.missingGeneratorId+". A native landscape was selected.";
 		userMaps = preferences.userMaps && separateMapLibraries;
+		// An edition without the premade map library (and the editor that makes
+		// maps of one's own) plays random maps only.
+		if constexpr (!BuildFeatures::PremadeMaps && !BuildFeatures::Editor)
+			setup.random = true;
 		std::copy(std::begin(preferences.expanded), std::end(preferences.expanded), expanded);
 		listMaps();
 		if (setup.random)
@@ -688,10 +693,12 @@ bool CustomGameScreen::generateMap()
 		BuildingLibrary::Selection buildings{globalContainer->buildingsTypes, {}};
 		// Keep this choice fixed across candidate rolls; installed releases never
 		// replace the immutable definitions in a loaded map or save.
+#if GLOB2_HAS_ONLINE
 		if (Online::servicesCreated())
 			buildings = BuildingLibrary(Online::services().storage)
 							.compose(globalContainer->buildingsTypes);
 		else
+#endif
 		{
 			auto storage = Online::makeUserDirectoryStorage();
 			if (storage)
@@ -805,6 +812,7 @@ bool CustomGameScreen::generateMap()
 
 void CustomGameScreen::loadCatalogMap(const Online::MapPlayRequest &request)
 {
+#if GLOB2_HAS_ONLINE
 	GAGCore::ApplicationHost::customGameReady(false);
 	catalogDownload.reset();
 	if (candidates)
@@ -828,12 +836,16 @@ void CustomGameScreen::loadCatalogMap(const Online::MapPlayRequest &request)
 	beginCatalogDownload();
 	message = tr("maps downloading");
 	invalidate();
+#else
+	(void)request; // catalog maps come from the online platform
+#endif
 }
 
 void CustomGameScreen::beginCatalogDownload()
 {
 	if (!catalogRequest)
 		return;
+#if GLOB2_HAS_ONLINE
 	auto &services = Online::services();
 	const auto &request = *catalogRequest;
 	if (!services.maps.contains(request.map.hash) && services.client.origin() == request.origin &&
@@ -843,6 +855,7 @@ void CustomGameScreen::beginCatalogDownload()
 	if (services.client.origin() == request.origin && !services.client.accessToken().empty())
 		headers.emplace_back("Authorization", "Bearer " + services.client.accessToken());
 	catalogDownload = services.maps.fetch(request.origin, request.map.hash, headers);
+#endif
 	catalogRequest.reset();
 }
 
@@ -851,6 +864,7 @@ void CustomGameScreen::onTimer(Uint32 tick)
 	beginCatalogDownload();
 	if (catalogRequest)
 		return;
+#if GLOB2_HAS_ONLINE
 	if (catalogDownload)
 	{
 		const auto state = catalogDownload->state();
@@ -870,6 +884,7 @@ void CustomGameScreen::onTimer(Uint32 tick)
 		catalogDownload.reset();
 		invalidate();
 	}
+#endif
 	const bool busyBefore = previewBusy();
 	const bool validBefore = validMap;
 	const std::string messageBefore = message;
@@ -1038,7 +1053,12 @@ void CustomGameScreen::showAIProfile(int colony)
 
 Element CustomGameScreen::build(const Presentation &p)
 {
-	if (catalogRequest || catalogDownload)
+#if GLOB2_HAS_ONLINE
+	const bool downloading = catalogRequest || catalogDownload;
+#else
+	const bool downloading = false;
+#endif
+	if (downloading)
 		return fe::page(tr("custom game"), fe::hint(message),
 			fe::actions({{"back", tr("Back"), [this] { endExecute(CANCEL); }, false, SDLK_ESCAPE}}, p), p);
 
@@ -1188,7 +1208,8 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 								return row;
 							});
 	};
-	left.push_back(pills("map/mode", localized({"Premade maps", "Random map"}), {fe::UIIcon::Map, fe::UIIcon::Dice}, setup.random, [this](int value) { setMapMode(value); }));
+	if (BuildFeatures::PremadeMaps || BuildFeatures::Editor)
+		left.push_back(pills("map/mode", localized({"Premade maps", "Random map"}), {fe::UIIcon::Map, fe::UIIcon::Dice}, setup.random, [this](int value) { setMapMode(value); }));
 	if (!setup.random)
 	{
 		if (separateMapLibraries)

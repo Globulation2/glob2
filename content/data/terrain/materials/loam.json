@@ -1,5 +1,6 @@
 {
   "key": "loam",
+  "small_build_fallback": "mud",
   "sprite": "data/gfx/terrain-loam",
   "profile": "soil",
   "class": "solid",

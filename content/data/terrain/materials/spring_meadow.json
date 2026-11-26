@@ -1,5 +1,6 @@
 {
   "key": "spring_meadow",
+  "small_build_fallback": "lush_grass",
   "sprite": "data/gfx/terrain-spring_meadow",
   "profile": "brush",
   "class": "solid",

@@ -1,5 +1,6 @@
 {
   "key": "sandstone",
+  "small_build_fallback": "road",
   "sprite": "data/gfx/terrain-sandstone",
   "profile": "paved",
   "class": "built",

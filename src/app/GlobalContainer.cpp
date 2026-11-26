@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2007 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <BuildFeatures.h>
 #include <GameplayRecording.h>
 #include "AgeGate.h"
 #include <Toolkit.h>
@@ -595,6 +596,9 @@ void GlobalContainer::load(void)
 	// A profile without a language (or with one this build no longer ships) follows
 	// the operating system's or browser's preferred languages.
 	StringTable *strings = Toolkit::getStringTable();
+	// An English-only edition ships each language's name but no translations.
+	if constexpr (!BuildFeatures::Translations)
+		settings.language = "en";
 	if (!strings->hasLanguage(settings.language))
 		settings.language = SystemLanguage::choose(SystemLanguage::preferred(),
 			[strings](const std::string &code) { return strings->hasLanguage(code); });

@@ -1,5 +1,6 @@
 {
   "key": "glacier_ice",
+  "small_build_fallback": "ice",
   "sprite": "data/gfx/terrain-glacier_ice",
   "profile": "frozen",
   "class": "solid",

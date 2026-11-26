@@ -1,5 +1,6 @@
 {
   "key": "hoodoos",
+  "small_build_fallback": "termite_mounds",
   "sprite": "data/gfx/terrain-hoodoos",
   "profile": "rock",
   "class": "solid",

@@ -1,5 +1,6 @@
 {
   "key": "void_hole",
+  "small_build_fallback": "chasm",
   "sprite": "data/gfx/terrain-void_hole",
   "profile": "crisp",
   "class": "cut",

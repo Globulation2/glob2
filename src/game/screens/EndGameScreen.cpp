@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006-2026 Bradley Arsenault
 
+#include <BuildFeatures.h>
 #include "PortalPolicy.h"
 #include "EngineTiming.h"
 #include "EndGameScreen.h"
@@ -652,6 +653,7 @@ Element EndGameScreen::onlineBanner(const Presentation &p)
 
 Element EndGameScreen::ratingCard(const Presentation &p)
 {
+#if GLOB2_HAS_ONLINE
 	using V = Online::OnlineMatchResult::Verification;
 	const auto &r = *online;
 	const auto palette = theme().palette;
@@ -725,6 +727,10 @@ Element EndGameScreen::ratingCard(const Presentation &p)
 	options.padding = p.pt(10);
 	options.shadow = false;
 	return fe::card(fe::column(std::move(lines), {p.pt(2)}), options);
+#else
+	(void)p;
+	return nullptr; // no online results without the online platform
+#endif
 }
 
 Element EndGameScreen::compactHeader(const Presentation &p)
@@ -788,7 +794,9 @@ Element EndGameScreen::actionBar(const Presentation &p, bool compact)
 
 void EndGameScreen::openMatchPage()
 {
+#if GLOB2_HAS_ONLINE
 	GAGCore::ApplicationHost::openUrl(online->matchPageUrl());
+#endif
 }
 
 Element EndGameScreen::build(const Presentation &p)
@@ -934,6 +942,7 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 
 void EndGameScreen::rematch()
 {
+#if GLOB2_HAS_ONLINE
 	if (!online)
 		return;
 	Online::RematchRequest request;
@@ -941,20 +950,25 @@ void EndGameScreen::rematch()
 	if (!Online::requestRematch(request))
 		return;
 	endExecute(QUIT);
+#endif
 }
 
 void EndGameScreen::findAnotherMatch()
 {
+#if GLOB2_HAS_ONLINE
 	if (!online || !Online::requestQueueAgain())
 		return;
 	endExecute(QUIT);
+#endif
 }
 
 void EndGameScreen::updateExecution(Uint32 tick)
 {
 	// Verification results arrive through the shared client (Online::pump).
+#if GLOB2_HAS_ONLINE
 	if (online)
 		online->poll(SDL_GetTicks());
+#endif
 	if (online && online->revision != onlineRevision)
 	{
 		onlineRevision = online->revision;

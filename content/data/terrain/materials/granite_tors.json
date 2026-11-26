@@ -1,5 +1,6 @@
 {
   "key": "granite_tors",
+  "small_build_fallback": "cliffs",
   "sprite": "data/gfx/terrain-granite_tors",
   "profile": "canopy",
   "class": "cover",

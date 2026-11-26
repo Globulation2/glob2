@@ -35,6 +35,13 @@ def localization_files(release):
         return ()
     catalogs = Path(__file__).resolve().parents[1] / 'services/online/packages/i18n/locales'
     expected = {'locales/' + path.name for path in catalogs.glob('*.json')}
+    # An English-only edition (buildsys/edition.py) ships only the English catalog.
+    try:
+        edition = json.loads((release / 'identity.json').read_text()).get('edition', {})
+    except (OSError, ValueError):
+        edition = {}
+    if edition.get('features', {}).get('translations') is False:
+        expected = {'locales/en.json'}
     actual = {'locales/' + path.name for path in (release / 'locales').glob('*.json')}
     if not expected or actual != expected:
         raise ValueError('Browser translation catalog inventory mismatch')

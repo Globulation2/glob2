@@ -1,5 +1,6 @@
 {
   "key": "frozen_lake",
+  "small_build_fallback": "ice",
   "sprite": "data/gfx/terrain-frozen_lake",
   "profile": "frozen",
   "class": "solid",

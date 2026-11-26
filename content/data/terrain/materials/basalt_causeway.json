@@ -1,5 +1,6 @@
 {
   "key": "basalt_causeway",
+  "small_build_fallback": "slate_ashlar",
   "sprite": "data/gfx/terrain-basalt_causeway",
   "profile": "paved",
   "class": "built",

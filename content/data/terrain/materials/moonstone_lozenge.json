@@ -1,5 +1,6 @@
 {
   "key": "moonstone_lozenge",
+  "small_build_fallback": "rime_ashlar",
   "sprite": "data/gfx/terrain-moonstone_lozenge",
   "profile": "paved",
   "class": "built",

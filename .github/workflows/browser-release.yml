@@ -52,10 +52,27 @@ jobs:
             exit 1
           fi
 
+  # Each browser edition (buildsys/edition.py) is built, packaged and published
+  # alike: the standard client at the bucket root, the download-size lite edition
+  # under lite/ (docs/browser/editions.md).
   build:
     needs: context
     runs-on: ubuntu-24.04
     timeout-minutes: 180
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - edition: standard
+            arguments: ''
+            source: build/emscripten/client/release
+            output: build/browser-static
+            artifact: ''
+          - edition: lite
+            arguments: edition=lite
+            source: build/emscripten/client/release/lite
+            output: build/browser-static-lite
+            artifact: -lite
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -85,22 +102,26 @@ jobs:
           sudo rm -f /etc/apt/sources.list.d/google-chrome.list /etc/apt/sources.list.d/google-chrome.sources
           sudo apt-get update -qq
           sudo apt-get install -y python3-venv ninja-build nasm libva-dev g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libopusfile-dev libopus-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
-      - name: Build and package browser client
+      - name: Build and package browser client (${{ matrix.edition }})
+        env:
+          EDITION_ARGUMENTS: ${{ matrix.arguments }}
+          SOURCE: ${{ matrix.source }}
+          OUTPUT: ${{ matrix.output }}
         run: |
           set -euo pipefail
           python3 platforms/web/setup.py
-          python3 tools/dev_build.py target=web release=1 client_profile=free -j$(nproc) web-package
-          python3 platforms/web/package-static.py
-          python3 platforms/web/package-static.py --verify build/browser-static
+          python3 tools/dev_build.py target=web release=1 client_profile=free $EDITION_ARGUMENTS -j$(nproc) web-package
+          python3 platforms/web/package-static.py --source "$SOURCE" --output "$OUTPUT"
+          python3 platforms/web/package-static.py --verify "$OUTPUT"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: client-build-browser
-          path: build/emscripten/client/release/identity.json
+          name: client-build-browser${{ matrix.artifact }}
+          path: ${{ matrix.source }}/identity.json
           if-no-files-found: error
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: browser-release
-          path: build/browser-static/
+          name: browser-release${{ matrix.artifact }}
+          path: ${{ matrix.output }}/
           if-no-files-found: error
 
   publish:
@@ -112,8 +133,19 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    strategy:
+      fail-fast: true
+      max-parallel: 1
+      matrix:
+        include:
+          - edition: standard
+            artifact: ''
+            prefix: ''
+          - edition: lite
+            artifact: -lite
+            prefix: /lite
     env:
-      BUCKET: gs://glob2-browser
+      BUCKET: gs://glob2-browser${{ matrix.prefix }}
       PUBLIC_URL: ${{ vars.GLOB2_BROWSER_PUBLIC_URL }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -123,7 +155,7 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          name: browser-release
+          name: browser-release${{ matrix.artifact }}
           path: candidate
       - name: Verify candidate
         working-directory: candidate
@@ -154,7 +186,7 @@ jobs:
       - name: Upload assets then publish entry point
         run: python3 platforms/web/publish-static.py candidate "$BUCKET"
       - name: Verify threaded public frontend
-        if: env.PUBLIC_URL != ''
+        if: env.PUBLIC_URL != '' && matrix.edition == 'standard'
         run: |
           python3 - <<'PYTHON'
           import os
@@ -175,11 +207,11 @@ jobs:
         env:
           TAG: ${{ inputs.tag }}
         run: |
-          echo "Published browser release $TAG to $BUCKET" >> "$GITHUB_STEP_SUMMARY"
+          echo "Published browser release $TAG (${{ matrix.edition }} edition) to $BUCKET" >> "$GITHUB_STEP_SUMMARY"
           if [ -n "$PUBLIC_URL" ]; then
             echo "Threaded public frontend: $PUBLIC_URL (HTTPS and isolation headers verified)" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo 'Serial fallback: https://storage.googleapis.com/glob2-browser/index.html' >> "$GITHUB_STEP_SUMMARY"
+            echo "Serial fallback: https://storage.googleapis.com/glob2-browser${{ matrix.prefix }}/index.html" >> "$GITHUB_STEP_SUMMARY"
             echo 'Set GLOB2_BROWSER_PUBLIC_URL to a Caddy or equivalent HTTPS frontend with COOP/COEP headers to publish a threaded public URL.' >> "$GITHUB_STEP_SUMMARY"
           fi
 

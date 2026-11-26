@@ -1,5 +1,6 @@
 {
   "key": "penitentes",
+  "small_build_fallback": "ridge_rock",
   "sprite": "data/gfx/terrain-penitentes",
   "profile": "rock",
   "class": "solid",

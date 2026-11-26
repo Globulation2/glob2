@@ -1,3 +1,4 @@
+#include <BuildFeatures.h>
 #include "ui/DiagnosticText.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
@@ -115,7 +116,9 @@ class CustomGameScreen : public Glob2UI::Screen
 	friend struct CustomGameSetupHarness;
 	GAGGUI::ScreenStack &screens;
 	CustomGameSetup setup;
+#if GLOB2_HAS_ONLINE
 	std::unique_ptr<Online::MapCache::Download> catalogDownload;
+#endif
 	std::optional<Online::MapPlayRequest> catalogRequest;
 	void beginCatalogDownload();
 	MapHeader mapHeader;

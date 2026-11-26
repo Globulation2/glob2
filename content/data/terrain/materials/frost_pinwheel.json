@@ -1,5 +1,6 @@
 {
   "key": "frost_pinwheel",
+  "small_build_fallback": "rime_ashlar",
   "sprite": "data/gfx/terrain-frost_pinwheel",
   "profile": "paved",
   "class": "built",

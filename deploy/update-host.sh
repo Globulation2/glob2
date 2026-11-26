@@ -227,6 +227,10 @@ fi
 phase=install
 if [ -n "$web" ]; then
 	python3 deploy/install-web-client.py "$root/build/emscripten/client/release" "$web"
+	# The lite edition, when the build has one, at /play/lite/.
+	if [ -f "$root/build/emscripten/client/release/lite/index.html" ]; then
+		python3 deploy/install-web-client.py "$root/build/emscripten/client/release/lite" "$web/lite"
+	fi
 fi
 phase=done
 git rev-parse HEAD > "$state.tmp" && mv "$state.tmp" "$state"

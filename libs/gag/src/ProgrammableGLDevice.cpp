@@ -5,7 +5,9 @@
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
-#if defined(HAVE_OPENGL) || defined(GLOB2_PROGRAMMABLE_GL) || defined(__EMSCRIPTEN__)
+#include <BuildFeatures.h>
+// An edition without the GL renderers (GLOB2_HAS_RENDERER_GL 0) builds the stubs below.
+#if (defined(HAVE_OPENGL) || defined(GLOB2_PROGRAMMABLE_GL) || defined(__EMSCRIPTEN__)) && GLOB2_HAS_RENDERER_GL
 #include <RendererShaderLayouts.h>
 #include <SDL3/SDL_opengl.h>
 #include <DirectTerrainShader.h>

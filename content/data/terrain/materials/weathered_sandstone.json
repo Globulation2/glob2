@@ -1,5 +1,6 @@
 {
   "key": "weathered_sandstone",
+  "small_build_fallback": "shale",
   "sprite": "data/gfx/terrain-weathered_sandstone",
   "profile": "rock",
   "class": "solid",

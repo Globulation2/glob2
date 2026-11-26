@@ -41,7 +41,8 @@ def add_package(config, *, datadir, version, font, darwin, windows, china, ident
     if china:
         config.add("GLOB2_CHINA_RELEASE", "Mainland China local-play client", "1")
     from client_features import header
-    config.f.write(header(identity))
+    import edition
+    config.f.write(header(identity) + edition.header(identity))
 
 
 def add_native_wss(config):

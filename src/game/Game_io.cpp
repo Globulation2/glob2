@@ -10,7 +10,10 @@
 #include <set>
 #include <charconv>
 
+#include <BuildFeatures.h>
+#if GLOB2_HAS_AI_MAXIMA
 #include "AIMaximaStrategy.h"
+#endif
 #include "Player.h"
 
 #include <assert.h>
@@ -203,10 +206,12 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream,SaveLoadPro
 	// The header is resolved by controller constructors, before their own saved
 	// execution state is read. Migrate with the actual source format here so an
 	// old embedded strategy is not mistaken for an incomplete current one.
+#if GLOB2_HAS_AI_MAXIMA
 	std::string strategyError;
 	if (!AIMaxima::StrategyResolver::upgradeSavedConfigurations(
 			gameHeader, versionMinor, strategyError))
 		throw std::runtime_error("Maxima strategy error: " + strategyError);
+#endif
 	// Resolve before any entity takes a descriptor pointer. Older files must
 	// never inherit edited repository definitions.
 	if (gameHeader.getBuildingCatalogSnapshot().empty()) buildingsTypes.initLegacy();

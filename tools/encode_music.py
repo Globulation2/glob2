@@ -14,6 +14,11 @@ RECIPE = ['-af', 'aresample=48000,asetpts=N/SR/TB', '-c:a', 'libopus', '-b:a', '
 RATE = 48000
 
 
+def recipe(bitrate='48k'):
+    """RECIPE at another stereo bitrate (the standard one is 48k)."""
+    return [bitrate if word == '48k' else word for word in RECIPE]
+
+
 def _page_crc(page):
     page[22:26] = b'\0' * 4
     crc = 0
@@ -94,7 +99,7 @@ def _crop_loop(path, warm_frames, frames):
     raise ValueError('Encoder output ended before the loop end')
 
 
-def encode(source, target, expected_frames=None, loop=False):
+def encode(source, target, expected_frames=None, loop=False, bitrate='48k'):
     source, target = Path(source), Path(target)
     if target.suffix != '.opus' or source.resolve() == target.resolve():
         raise ValueError('Output must be a distinct .opus file')
@@ -125,7 +130,7 @@ def encode(source, target, expected_frames=None, loop=False):
             if expected_frames is None:
                 expected_frames = source_frames
         subprocess.run(['ffmpeg', '-v', 'error', '-nostdin', '-y', *input_args,
-                        *RECIPE, str(staged)], check=True)
+                        *recipe(bitrate), str(staged)], check=True)
         if warm_frames:
             _crop_loop(staged, warm_frames, source_frames)
         # Decode to disk rather than keeping a full soundtrack in memory.
@@ -142,7 +147,7 @@ def encode(source, target, expected_frames=None, loop=False):
         if len(streams) != 1 or streams[0]['codec_name'] != 'opus' or streams[0]['channels'] != 2:
             raise ValueError('Expected a single stereo Opus stream')
         record = dict(source=str(source), source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(), file=str(target), frames=frames, seconds=frames / RATE,
-                      bytes=staged.stat().st_size, sample_rate=RATE, recipe=RECIPE,
+                      bytes=staged.stat().st_size, sample_rate=RATE, recipe=recipe(bitrate),
                       loop_preroll_frames=warm_frames,
                       encoder=subprocess.check_output(['ffmpeg', '-version'], text=True).splitlines()[0])
         staged.replace(target)
@@ -156,8 +161,10 @@ def main():
     parser.add_argument('--expected-frames', type=int)
     parser.add_argument('--loop', action='store_true', help='encode circular history and trim it using pre-skip/end granules')
     parser.add_argument('--metadata', type=Path)
+    parser.add_argument('--bitrate', default='48k',
+                        help='stereo Opus bitrate (48k for every shipped set; lower for size-limited editions)')
     args = parser.parse_args()
-    record = encode(args.source, args.target, args.expected_frames, loop=args.loop)
+    record = encode(args.source, args.target, args.expected_frames, loop=args.loop, bitrate=args.bitrate)
     if args.metadata: args.metadata.write_text(json.dumps(record, indent=2) + '\n')
     print(json.dumps(record, indent=2))
 

@@ -29,7 +29,10 @@
 #include "ComputeThreads.h"
 #include "field/OpenCLGradient.h"
 #include "field/GradientAccelerators.h"
+#include <BuildFeatures.h>
+#if GLOB2_HAS_AI_MAXIMA
 #include "AIMaximaStrategy.h"
+#endif
 #include "AIRegistry.h"
 #include "Game.h"
 #include "GameRuleOverrides.h"
@@ -654,6 +657,7 @@ struct HeadlessRunner
 				std::string error;
 				if(std::string config;AIRegistry::applyTuning(ai,overrides[p],config))
 					header.setAIConfig(p,config);
+#if GLOB2_HAS_AI_MAXIMA
 				else if(ai==AI::MAXIMA)
 				{
 					AIMaxima::StrategyConfigOptions config;
@@ -664,6 +668,7 @@ struct HeadlessRunner
 					if(!AIMaxima::StrategyResolver::resolve(config,&header,resolved,error)) throw std::invalid_argument(error);
 					header.setAIConfig(p,AIMaxima::StrategyResolver::canonicalValues(resolved.values));
 				}
+#endif
 				else if(!overrides[p].empty()) throw std::invalid_argument("AI has no runtime parameters: " + players[p]);
 			}
 			std::set<int> scriptedPlayers;
@@ -1045,7 +1050,9 @@ int runHeadlessCommand(const Cli::Request &request)
 	{
 		isolateEnvironment();
 		if(command=="match verify") return runVerifyMatch(request);
+#if GLOB2_HAS_ONLINE
 		if(command=="online turn-client") return runTurnClient(request);
+#endif
         if(command=="assets compose-buildings")
         {
             std::string base, artwork;
@@ -1141,7 +1148,9 @@ int runHeadlessCommand(const Cli::Request &request)
 				std::string name=AINames::getCLIName(ai);std::transform(name.begin(),name.end(),name.begin(),[](unsigned char c){return std::tolower(c);});
 				std::cout << "{\"id\":" << ai << ",\"name\":" << quote(name) << ",\"parameters\":";
 				if(const std::string schema=AIRegistry::tuningSchemaJson(ai);!schema.empty())std::cout<<schema;
+#if GLOB2_HAS_AI_MAXIMA
 				else if(ai==AI::MAXIMA)std::cout<<AIMaxima::StrategyResolver::schemaJson();
+#endif
 				else std::cout<<"[]";
 				std::cout<<'}';
 			}

@@ -49,6 +49,7 @@
 #include "Engine.h"
 #include "Headless.h"
 #include "scripting/javascript/ScriptCommand.h"
+#include <BuildFeatures.h>
 #include "hive/HiveWorker.h"
 #include "hive/HiveClient.h"
 #include "Application.h"
@@ -387,18 +388,23 @@ public:
 
 int Glob2::run(const Cli::Request &request)
 {
+	const bool suppliedGenerators = request.has("--generator-package");
+#if GLOB2_HAS_JS_TOOLKIT
 	Online::MemoryStorage generatorStorage;
 	MapGeneration::JavaScript::Library generatorLibrary(generatorStorage);
-	const bool suppliedGenerators = request.has("--generator-package");
 	for (const auto &package : request.all("--generator-package"))
 		generatorLibrary.put(MapGeneration::JavaScript::Package::load(package)->canonical);
 	if (suppliedGenerators)
 		generatorLibrary.publish();
+#endif
 	auto dispatch = [&]()
 	{
+#if GLOB2_HAS_SKINS
 		const int skin = runRenderSkin(request);
 		if (skin >= 0)
 			return skin;
+#endif
+#if GLOB2_HAS_CLI
 		// Map tools fork/join on every core unless a runner of several processes
 		// narrows each one (--compute-threads 1 keeps a process on one core).
 		if (request.command.rfind("map ", 0) == 0 && request.has("--compute-threads"))
@@ -441,10 +447,15 @@ int Glob2::run(const Cli::Request &request)
 		}
 		if (request.command.rfind("map ", 0) == 0 && request.command != "map study")
 			return runMapCommand(request);
+#endif
 		const int script = runScriptCommand(request);
 		if (script >= 0)
 			return script;
+#if GLOB2_HAS_CLI
 		return runHeadlessCommand(request);
+#else
+		return -1; // an edition without the command-line tools only plays
+#endif
 	};
 	// Machine payloads retain their schemas. Text views are presentation only.
 	const bool inspection =
@@ -499,8 +510,10 @@ int Glob2::run(const Cli::Request &request)
 	{
 		try
 		{
+#if GLOB2_HAS_JS_TOOLKIT
 			auto storage = Online::makeUserDirectoryStorage();
 			MapGeneration::JavaScript::Library(*storage).publish();
+#endif
 		}
 		catch (const std::exception &error)
 		{
@@ -648,8 +661,10 @@ int main(int argc, char *argv[])
 							  << '\n';
 			return finish(0);
 		}
+#if GLOB2_HAS_HIVE
 		if (request.command == "dev hive-worker")
 			return finish(Hive::workerMain());
+#endif
 	}
 	catch (const std::invalid_argument &error)
 	{
@@ -662,7 +677,9 @@ int main(int argc, char *argv[])
 		return finish(3);
 	}
 
+#if GLOB2_HAS_HIVE
 	Hive::setExecutable(argv[0]);
+#endif
 #ifdef GLOB2_MOBILE
 	try
 	{

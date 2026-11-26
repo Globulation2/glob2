@@ -1,3 +1,4 @@
+#include <BuildFeatures.h>
 #include "MusicLibraryScreen.h"
 #include <ScreenStack.h>
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -50,6 +51,9 @@ std::string SettingsScreen::deviceReasonText(int reason, std::uint64_t value)
 // resolution are explicit and never adapted.
 void SettingsScreen::artworkRows()
 {
+	// An edition without high-resolution artwork has only the original.
+	if constexpr (!BuildFeatures::HDArtwork)
+		return;
 	auto &s = globalContainer->settings;
 	using Choice = Settings::AdaptiveChoice;
 	choice("graphics.artwork", "Artwork", "Apply artwork on the next game or editor load.",
@@ -181,14 +185,16 @@ void SettingsScreen::buildGeneral()
 				commit();
 			});
 		};
-		effect("graphics.skins", "Show colony skins", "Turn off to use classic units, swarms and building colors on this device.", &Settings::showColonySkins);
+		if (BuildFeatures::Skins)
+			effect("graphics.skins", "Show colony skins", "Turn off to use classic units, swarms and building colors on this device.", &Settings::showColonySkins);
 		effect("graphics.clouds", "Clouds", "Show cloud cover above the map.", &Settings::clouds);
 		effect("graphics.shadows", "Cloud shadows", "Show cloud shadows on the ground independently of cloud cover.", &Settings::cloudShadows);
 		effect("graphics.particles", "Building particles", "Show smoke and other building particles.", &Settings::buildingParticles);
 		appearance("graphics.magic", "Magic effects", "Choose animated magic effects or a simple visible effect.", &Settings::fullMagicEffects, "Simple", "Full");
 		artworkRows();
 #ifndef GLOB2_MOBILE
-		if (!touchLayout || globalContainer->gfx->isNativeDesktop())
+		// Only the GL renderers draw the torus; an edition without them never offers it.
+		if (BuildFeatures::GLRenderer && (!touchLayout || globalContainer->gfx->isNativeDesktop()))
 		{
 			toggle("graphics.torus", "Automatic torus view",
                    "Automatically show the torus overview while moving around the map.",
@@ -296,6 +302,10 @@ void SettingsScreen::buildGeneral()
         {
             auto *gfx = globalContainer->gfx;
             const auto availability = gfx->rendererAvailability();
+            // An edition with a single renderer has nothing to choose.
+            const auto choices = std::count_if(availability.begin(), availability.end(), [](const auto &entry) {
+                return entry.available && entry.backend != RendererBackend::Auto; });
+            if (choices > 1) {
             std::vector<RendererBackend> backends;
             std::vector<std::string> labels;
             for (const auto &entry : availability) {
@@ -320,6 +330,7 @@ void SettingsScreen::buildGeneral()
             // Auto falling through its order keeps a reason for the log, but
             // nothing the player chose failed.
             if (status.phase == RendererSwitchPhase::Failed && !status.reason.empty()) info(tr("Renderer unavailable"));
+            }
         }
 		if (touchLayout)
 			choice("display.zoomdrag", "One-finger zoom", "Double-tap the map, hold, then drag to zoom.",
@@ -346,9 +357,11 @@ void SettingsScreen::buildGeneral()
 	else if (current == Category::Audio)
 	{
 		info(tr("Adjust music and voice volume."));
+#if GLOB2_HAS_MUSIC_SETS
         if(screens) button("audio.library", tr("Music library · Browse, install and import"), [this] {
             screens->push(std::make_unique<MusicLibraryScreen>(*screens), [this](GAGGUI::Screen&,int){ invalidate(); });
         });
+#endif
 		toggle("audio.mute", "Mute audio", "Keep your volume levels while silencing audio.", s.mute,
 			   [this](int v)
 			   {
@@ -358,6 +371,8 @@ void SettingsScreen::buildGeneral()
 				   globalContainer->mix->setVolume(s.musicVolume, s.voiceVolume, s.mute);
 				   commit();
 			   });
+		// One soundtrack (an edition without the other sets) leaves nothing to choose.
+		if (BuildFeatures::MusicSets || SoundMixer::getMusicSets().size() > 1)
 		{
 			auto sets = SoundMixer::getMusicSets();
 			sets.insert(sets.begin(), "");
@@ -450,6 +465,13 @@ void SettingsScreen::buildGeneral()
 				   globalContainer->settings.autosaveGames = v;
 				   commit();
 			   });
+	}
+	else if (current == Category::Player && !BuildFeatures::Translations)
+	{
+		// An English-only edition has no language to choose.
+		auto &r =
+			add("player.name", Kind::Text, tr("Player name"), tr("Name shown to other players."));
+		r.value = s.getUsername();
 	}
 	else if (current == Category::Player)
 	{
