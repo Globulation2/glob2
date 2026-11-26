@@ -54,8 +54,8 @@ python3 platforms/web/package-portal.py --portal crazygames --verify artifacts/p
 
 The inline script sets `window.GLOB2_PORTAL = {name, externalLinks, onlineSignIn}`
 before any game script runs. The game reads it to hide links that leave the portal
-and online sign-in where a portal bans them; outside a portal upload the object is
-absent and nothing changes.
+and online sign-in where a portal bans them, and in every portal it drops Quit from
+the main menu; outside a portal upload the object is absent and nothing changes.
 
 ## Runtime
 

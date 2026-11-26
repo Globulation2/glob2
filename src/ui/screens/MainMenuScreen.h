@@ -27,6 +27,10 @@ class MainMenuScreen : public Glob2UI::Screen
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 
 	void openCommunity() { community.open(); invalidate(); }
+	// Whether the menu offers Quit (the button and Escape on the top level). A web
+	// portal hosts the game in its own page, where quitting would only leave an
+	// empty frame, so portal mode never offers it (src/app/PortalPolicy.h).
+	static bool offersQuit();
 
   protected:
 	void onEscape() override
@@ -38,7 +42,7 @@ class MainMenuScreen : public Glob2UI::Screen
 		}
 		else if (more)
 			showMore(false);
-		else
+		else if (offersQuit())
 			endExecute(QUIT);
 	}
 	bool panel() const override { return false; }

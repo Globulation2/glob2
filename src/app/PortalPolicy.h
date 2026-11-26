@@ -16,6 +16,8 @@
 // online play and everything that signs in to our online servers (Play online,
 // Settings > Online and Hive Mind, invite links, liking community AIs) and
 // keeps the online client from signing in, so only offline play remains.
+// In any portal the main menu offers no Quit (MainMenuScreen::offersQuit): the
+// portal's page hosts the game, and quitting would leave an empty frame.
 
 #include <string>
 #include <string_view>

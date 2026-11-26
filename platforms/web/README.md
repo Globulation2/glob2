@@ -257,6 +257,9 @@ another type or a value that is not an object turns it off.
   never signs in, as a guest or otherwise. Single player, campaigns, tutorials, the
   editor and the anonymous community catalogues (music, AIs, generators, buildings)
   remain. With sign-in allowed, the sign-in page still opens when links are off.
+- In any portal, whatever it allows, the main menu offers no Quit, and Escape on
+  its top level does nothing: the portal's page hosts the game, and quitting would
+  leave an empty frame.
 
 Desktop builds read the same JSON from the `GLOB2_PORTAL` environment variable, to
 try a portal's rules without packaging: `GLOB2_PORTAL='{"externalLinks":false,"onlineSignIn":false}' glob2`.
