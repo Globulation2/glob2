@@ -5,6 +5,9 @@
 #include "PortalPolicy.h"
 
 #include <ApplicationHost.h>
+#include <SDL3/SDL.h>
+
+#include <string>
 
 using PortalPolicy::parse;
 
@@ -17,6 +20,21 @@ TEST_SUITE("PortalPolicy")
 		CHECK(policy.externalLinks);
 		CHECK(policy.onlineSignIn);
 		CHECK(policy.name.empty());
+	}
+
+	TEST_CASE("a host without GLOB2_PORTAL reports no portal and allows everything")
+	{
+		// Our own site, itch, desktop and mobile: nothing set, nothing changes.
+		const char *saved = SDL_getenv("GLOB2_PORTAL");
+		const std::string previous = saved ? saved : "";
+		SDL_unsetenv_unsafe("GLOB2_PORTAL");
+		CHECK(GAGCore::ApplicationHost::portalDescription().empty());
+		const auto policy = parse(GAGCore::ApplicationHost::portalDescription());
+		CHECK_FALSE(policy.portal);
+		CHECK(policy.externalLinks);
+		CHECK(policy.onlineSignIn);
+		if (saved)
+			SDL_setenv_unsafe("GLOB2_PORTAL", previous.c_str(), 1);
 	}
 
 	TEST_CASE("a complete description is read as written")
