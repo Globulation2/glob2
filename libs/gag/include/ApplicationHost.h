@@ -163,6 +163,9 @@ bool copyText(const std::string &text);
 
 // Read-only diagnostics; hosts decide whether and how to publish them.
 void screenChanged(const char *name);
+// Also told every screenChanged name, on every host (Report a Problem keeps
+// them as breadcrumbs in its log tail). Empty removes it.
+void setScreenObserver(std::function<void(const char *)> observer);
 void importChanged(const char *state);
 void simulationAdvanced(std::uint32_t tick);
 void matchFrame(bool paused);

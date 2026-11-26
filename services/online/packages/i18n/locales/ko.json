@@ -3070,5 +3070,13 @@
   "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "채팅, 비공개 이외의 콘텐츠 공유, 이름 정하기, 사진 업로드는 13세 이상 플레이어만 이용할 수 있어요. 생일은 절대 저장하지 않고 답변만 저장해요.",
   "Under 13": "13세 미만",
   "13 or over": "13세 이상",
-  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "13세 미만이라고 답해서 채팅과 공유가 꺼져 있어요. 이를 바꾸려면 부모님이 저희에게 연락하면 돼요."
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "13세 미만이라고 답해서 채팅과 공유가 꺼져 있어요. 이를 바꾸려면 부모님이 저희에게 연락하면 돼요.",
+  "Problem reports": "문제 신고",
+  "Platform": "플랫폼",
+  "Device": "기기",
+  "Files": "파일",
+  "Download bundle": "번들 다운로드",
+  "No problem reports yet.": "아직 문제 신고가 없습니다.",
+  "No description.": "설명이 없습니다.",
+  "Bundle deleted after 90 days.": "번들은 90일 후 삭제되었습니다."
 }

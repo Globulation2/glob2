@@ -41,7 +41,11 @@ must declare what the official instance collects when a player goes online (acco
 and display name, optional e-mail address from a sign-in provider, user IDs, in-game
 and room chat, uploaded maps, match and connection-quality data, IP addresses in logs
 and rate limits), plus first-party online account activity (90-day identifiable
-markers and 24-month anonymous daily totals). It is sent over TLS; nothing is used
+markers and 24-month anonymous daily totals), plus problem reports a player
+chooses to send (Report a Problem: "Crash logs" and "Diagnostics", optional,
+user-initiated, not linked to the user, with any attached saved game and replay as
+"Other app content"; see the policy's
+[problem reports](../mobile/privacy-policy.md#problem-reports)). It is sent over TLS; nothing is used
 for advertising or tracking across apps or sites. Players can download their data
 and delete their account at
 `https://app.glob2.online/account`. Single-player, editor and LAN play collect

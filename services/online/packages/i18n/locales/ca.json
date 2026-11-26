@@ -3124,5 +3124,13 @@
   "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "El xat, compartir contingut més enllà del privat, triar un nom i pujar una foto són per a jugadors de 13 anys o més. Només guardem la teva resposta, mai la teva data de naixement.",
   "Under 13": "Menys de 13",
   "13 or over": "13 o més",
-  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "Has dit que tens menys de 13 anys, així que el xat i la compartició estan desactivats. Un pare o una mare pot contactar amb nosaltres per canviar-ho."
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "Has dit que tens menys de 13 anys, així que el xat i la compartició estan desactivats. Un pare o una mare pot contactar amb nosaltres per canviar-ho.",
+  "Problem reports": "Informes de problemes",
+  "Platform": "Plataforma",
+  "Device": "Dispositiu",
+  "Files": "Fitxers",
+  "Download bundle": "Baixa el paquet",
+  "No problem reports yet.": "Encara no hi ha informes de problemes.",
+  "No description.": "Sense descripció.",
+  "Bundle deleted after 90 days.": "El paquet s'ha suprimit al cap de 90 dies."
 }

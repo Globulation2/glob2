@@ -28,6 +28,20 @@ class ClientFeaturesTests(unittest.TestCase):
         self.assertFalse(override['client_features']['commander'])
         self.assertTrue(override['client_features']['authoring_links'])
 
+    def test_problem_reports_upload_except_where_compiled_out(self):
+        self.assertTrue(resolve({'release': 1})['problem_reports'])
+        self.assertIn('#define GLOB2_PROBLEM_REPORTS 1', header(resolve({'release': 1})))
+        self.assertIn('#define GLOB2_DISTRIBUTION_NAME "app_store"', header(resolve({'target': 'ios'})))
+        for args in ({'china': 1}, {'amazon': 1, 'target': 'android'}, {'problem_reports': 0}):
+            with self.subTest(args=args):
+                self.assertFalse(resolve(args)['problem_reports'])
+        fdroid = build_identity({'target': 'android', 'release': 1, 'problem_reports': 0}, 'linux')
+        play = build_identity({'target': 'android', 'release': 1}, 'linux')
+        self.assertIn('#define GLOB2_PROBLEM_REPORTS 0', header(fdroid))
+        self.assertNotEqual(default_directory(fdroid), default_directory(play))
+        self.assertEqual(dependency_identity(fdroid), dependency_identity(play))
+        with self.assertRaises(ValueError): resolve({'problem_reports': 'maybe'})
+
     def test_invalid_values_fail_closed(self):
         for args in ({'client_profile': 'unknown'}, {'distribution': 'unknown'}, {'feature_commander': 'auto'}):
             with self.subTest(args=args), self.assertRaises(ValueError): resolve(args)

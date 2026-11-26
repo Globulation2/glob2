@@ -7210,3 +7210,39 @@ Tundramaa
 
 [chat off in this match]
 
+[Report a problem]
+
+[report problem explanation]
+
+[What happened?]
+
+[report recent log]
+
+[report last save]
+
+[report last replay]
+
+[report always included]
+
+[report send]
+
+[report save to file]
+
+[report sending]
+
+[report sent %0]
+
+[report queued]
+
+[report refused]
+
+[report saved]
+
+[report save failed]
+
+[report send needs age]
+
+[report send not built]
+
+[report too large %0]
+

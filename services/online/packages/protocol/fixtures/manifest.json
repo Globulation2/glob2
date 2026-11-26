@@ -14,6 +14,8 @@
     "AdminBanRequest": "schemas/AdminBanRequest.schema.json",
     "AdminContent": "schemas/AdminContent.schema.json",
     "AdminContentList": "schemas/AdminContentList.schema.json",
+    "AdminCrashReport": "schemas/AdminCrashReport.schema.json",
+    "AdminCrashReportList": "schemas/AdminCrashReportList.schema.json",
     "AdminFinanceCash": "schemas/AdminFinanceCash.schema.json",
     "AdminFinanceCost": "schemas/AdminFinanceCost.schema.json",
     "AdminFinanceCredit": "schemas/AdminFinanceCredit.schema.json",
@@ -55,6 +57,8 @@
     "ClientNetworkSummary": "schemas/ClientNetworkSummary.schema.json",
     "ColonySkinClaims": "schemas/ColonySkinClaims.schema.json",
     "ColonySkinVersion": "schemas/ColonySkinVersion.schema.json",
+    "CrashReportContext": "schemas/CrashReportContext.schema.json",
+    "CrashReportReceipt": "schemas/CrashReportReceipt.schema.json",
     "CreateMapRequest": "schemas/CreateMapRequest.schema.json",
     "EngineJob": "schemas/EngineJob.schema.json",
     "EngineJobResult": "schemas/EngineJobResult.schema.json",
@@ -1638,6 +1642,32 @@
       "schema": "ValidateGeneratorPayload",
       "valid": true,
       "note": "The engine parses source and tests the author example."
+    },
+    {
+      "file": "valid/CrashReportContext/problem-report.json",
+      "schema": "CrashReportContext",
+      "valid": true,
+      "note": "Report a Problem from the main menu (src/app/ProblemReport.cpp writes this shape)."
+    },
+    {
+      "file": "invalid/CrashReportContext/extra-field.json",
+      "schema": "CrashReportContext",
+      "valid": false,
+      "stage": "schema",
+      "note": "Unknown fields are refused: the context carries a fixed, minimal set."
+    },
+    {
+      "file": "invalid/CrashReportContext/description-too-long.json",
+      "schema": "CrashReportContext",
+      "valid": false,
+      "stage": "schema",
+      "note": "The description is at most 2,000 characters."
+    },
+    {
+      "file": "valid/CrashReportReceipt/receipt.json",
+      "schema": "CrashReportReceipt",
+      "valid": true,
+      "note": "The short ID shown to the player."
     }
   ],
   "tickets": {

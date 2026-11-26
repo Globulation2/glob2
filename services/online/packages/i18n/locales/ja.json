@@ -3070,5 +3070,13 @@
   "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "チャット、非公開以外でのコンテンツ共有、名前の設定、写真のアップロードは13歳以上のプレイヤー向けです。保存されるのは回答だけで、誕生日は保存されません。",
   "Under 13": "13歳未満",
   "13 or over": "13歳以上",
-  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "13歳未満と回答したため、チャットと共有はオフになっています。変更するには、保護者の方からお問い合わせください。"
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "13歳未満と回答したため、チャットと共有はオフになっています。変更するには、保護者の方からお問い合わせください。",
+  "Problem reports": "問題の報告",
+  "Platform": "プラットフォーム",
+  "Device": "デバイス",
+  "Files": "ファイル",
+  "Download bundle": "バンドルをダウンロード",
+  "No problem reports yet.": "問題の報告はまだありません。",
+  "No description.": "説明はありません。",
+  "Bundle deleted after 90 days.": "バンドルは 90 日後に削除されました。"
 }

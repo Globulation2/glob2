@@ -3205,5 +3205,13 @@
   "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "الدردشة ومشاركة المحتوى خارج النطاق الخاص واختيار اسم ورفع صورة متاحة للاعبين الذين تبلغ أعمارهم 13 عامًا أو أكثر. نحتفظ بإجابتك فقط، وليس بتاريخ ميلادك أبدًا.",
   "Under 13": "أقل من 13",
   "13 or over": "13 أو أكثر",
-  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "قلت إن عمرك أقل من 13 عامًا، لذا فإن الدردشة والمشاركة متوقفتان. يمكن لأحد الوالدين التواصل معنا لتغيير ذلك."
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "قلت إن عمرك أقل من 13 عامًا، لذا فإن الدردشة والمشاركة متوقفتان. يمكن لأحد الوالدين التواصل معنا لتغيير ذلك.",
+  "Problem reports": "بلاغات المشكلات",
+  "Platform": "المنصة",
+  "Device": "الجهاز",
+  "Files": "الملفات",
+  "Download bundle": "تنزيل الحزمة",
+  "No problem reports yet.": "لا توجد بلاغات مشكلات بعد.",
+  "No description.": "لا يوجد وصف.",
+  "Bundle deleted after 90 days.": "حُذفت الحزمة بعد 90 يومًا."
 }

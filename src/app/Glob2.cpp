@@ -46,6 +46,7 @@
 #include "CampaignMenuScreen.h"
 #include "CampaignMainMenu.h"
 #include "CreditScreen.h"
+#include "ProblemReport.h"
 #include "Engine.h"
 #include "Headless.h"
 #include "scripting/javascript/ScriptCommand.h"
@@ -700,6 +701,8 @@ int main(int argc, char *argv[])
 	// loses the message whenever stderr is a redirected file.
 	setvbuf(stderr, NULL, _IOLBF, 0);
 	setvbuf(stdout, NULL, _IOLBF, 0);
+	// Report a Problem attaches the recent log lines (src/app/ProblemReport.h).
+	ProblemReport::installLogCapture();
 
 	// FileManager uses SDL_GetBasePath for macOS bundle assets. Never change
 	// the caller's directory: replay, recording and tool paths are caller-relative.

@@ -31,6 +31,7 @@ const std::pair<const char *, Color Palette::*> paletteTokens[] = {
 	{"paper", &Palette::paper},
 	{"panel", &Palette::panel},
 	{"field", &Palette::field},
+	{"input", &Palette::input},
 	{"rail", &Palette::rail},
 	{"line", &Palette::line},
 	{"accent", &Palette::accent},
@@ -285,6 +286,7 @@ Theme ThemeCatalog::builtinDark()
 	c.paper = Color(43, 28, 66);
 	c.panel = Color(43, 28, 66, 244);
 	c.field = Color(65, 43, 88);
+	c.input = Color(31, 20, 48);
 	c.rail = Color(55, 36, 78);
 	c.line = Color(199, 165, 87);
 	c.accent = Color(199, 165, 87);

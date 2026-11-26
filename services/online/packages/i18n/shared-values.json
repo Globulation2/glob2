@@ -949,7 +949,8 @@
     "Delete “{value0}”? This removes the account draft and this device’s recovery copy. Published releases remain available.",
     "Withdraw “{value0}” and all its releases? Library downloads and links will stop working. Studio drafts and copies embedded in existing maps or saves remain available.",
     "Delete this conversation and its source history? Finished music remains in your library.",
-    "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released."
+    "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.",
+    "Platform"
   ],
   "de": [
     "#{slot0}",
@@ -2829,7 +2830,8 @@
     "Delete “{value0}”? This removes the account draft and this device’s recovery copy. Published releases remain available.",
     "Withdraw “{value0}” and all its releases? Library downloads and links will stop working. Studio drafts and copies embedded in existing maps or saves remain available.",
     "Delete this conversation and its source history? Finished music remains in your library.",
-    "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released."
+    "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.",
+    "Platform"
   ],
   "id": [
     " · ",
@@ -3036,7 +3038,8 @@
     "Delete “{value0}”? This removes the account draft and this device’s recovery copy. Published releases remain available.",
     "Withdraw “{value0}” and all its releases? Library downloads and links will stop working. Studio drafts and copies embedded in existing maps or saves remain available.",
     "Delete this conversation and its source history? Finished music remains in your library.",
-    "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released."
+    "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.",
+    "Platform"
   ],
   "it": [
     " / {slot0}",
@@ -3855,7 +3858,8 @@
     "Delete “{value0}”? This removes the account draft and this device’s recovery copy. Published releases remain available.",
     "Withdraw “{value0}” and all its releases? Library downloads and links will stop working. Studio drafts and copies embedded in existing maps or saves remain available.",
     "Delete this conversation and its source history? Finished music remains in your library.",
-    "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released."
+    "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.",
+    "Platform"
   ],
   "nb": [
     " ({slot0})",
@@ -4297,7 +4301,8 @@
     "Delete “{value0}”? This removes the account draft and this device’s recovery copy. Published releases remain available.",
     "Withdraw “{value0}” and all its releases? Library downloads and links will stop working. Studio drafts and copies embedded in existing maps or saves remain available.",
     "Delete this conversation and its source history? Finished music remains in your library.",
-    "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released."
+    "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.",
+    "Platform"
   ],
   "pl": [
     " ({slot0})",
@@ -6509,7 +6514,8 @@
     "Delete “{value0}”? This removes the account draft and this device’s recovery copy. Published releases remain available.",
     "Withdraw “{value0}” and all its releases? Library downloads and links will stop working. Studio drafts and copies embedded in existing maps or saves remain available.",
     "Delete this conversation and its source history? Finished music remains in your library.",
-    "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released."
+    "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.",
+    "Platform"
   ],
   "uk": [
     " ({slot0})",
@@ -7774,7 +7780,9 @@
     "Delete this conversation and its source history? Finished music remains in your library.",
     "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.",
     "Building (music mood)",
-    "Building (generation progress)"
+    "Building (generation progress)",
+    "Platform",
+    "Device"
   ],
   "bg": [
     " ({slot0})",

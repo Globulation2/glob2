@@ -3097,5 +3097,13 @@
   "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "Chat, deling af indhold ud over privat, valg af navn og upload af billede er for spillere på 13 år eller derover. Vi gemmer kun dit svar, aldrig din fødselsdag.",
   "Under 13": "Yngre end 13",
   "13 or over": "13 eller derover",
-  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "Du har sagt, at du er under 13, så chat og deling er slået fra. En forælder kan kontakte os for at ændre det."
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "Du har sagt, at du er under 13, så chat og deling er slået fra. En forælder kan kontakte os for at ændre det.",
+  "Problem reports": "Problemrapporter",
+  "Platform": "Platform",
+  "Device": "Enhed",
+  "Files": "Filer",
+  "Download bundle": "Download pakke",
+  "No problem reports yet.": "Ingen problemrapporter endnu.",
+  "No description.": "Ingen beskrivelse.",
+  "Bundle deleted after 90 days.": "Pakken blev slettet efter 90 dage."
 }

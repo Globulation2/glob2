@@ -43,5 +43,5 @@ def development_identity(arguments, target, release=False, profile=False):
 
 
 def dependency_identity(identity):
-    return {key: value for key, value in identity.items() if key not in DEVELOPMENT_KEYS and key not in ('client_profile', 'distribution', 'client_features')}
+    return {key: value for key, value in identity.items() if key not in DEVELOPMENT_KEYS and key not in ('client_profile', 'distribution', 'client_features', 'problem_reports')}
 

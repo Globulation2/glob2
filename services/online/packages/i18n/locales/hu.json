@@ -3097,5 +3097,13 @@
   "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "A csevegés, a tartalmak privátnál szélesebb körű megosztása, a névválasztás és a fotófeltöltés 13 éves vagy idősebb játékosoknak szól. Csak a válaszodat tároljuk, a születésnapodat soha.",
   "Under 13": "13 év alatt",
   "13 or over": "13 vagy idősebb",
-  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "Azt mondtad, hogy 13 évesnél fiatalabb vagy, ezért a csevegés és a megosztás ki van kapcsolva. Egy szülő felveheti velünk a kapcsolatot, hogy ezt megváltoztassa."
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "Azt mondtad, hogy 13 évesnél fiatalabb vagy, ezért a csevegés és a megosztás ki van kapcsolva. Egy szülő felveheti velünk a kapcsolatot, hogy ezt megváltoztassa.",
+  "Problem reports": "Hibabejelentések",
+  "Platform": "Platform",
+  "Device": "Eszköz",
+  "Files": "Fájlok",
+  "Download bundle": "Csomag letöltése",
+  "No problem reports yet.": "Még nincsenek hibabejelentések.",
+  "No description.": "Nincs leírás.",
+  "Bundle deleted after 90 days.": "A csomag 90 nap után törölve."
 }

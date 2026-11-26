@@ -17,6 +17,7 @@ import {
 } from '@glob2/core';
 import { LeaderElection, assertLease, createDatabase } from '@glob2/db';
 import { collectBlobs } from './blobGc.ts';
+import { retainCrashReports } from './crashReportRetention.ts';
 import { ENGINE_RESULT_TASK } from '@glob2/protocol';
 import { runMaintenance } from './maintenance.ts';
 import {
@@ -132,6 +133,11 @@ try {
       name: 'blob garbage collection',
       intervalMs: 6 * 3600_000,
       run: () => collectBlobs(database.db, blobs, { logger }),
+    },
+    {
+      name: 'crash report retention',
+      intervalMs: 3600_000,
+      run: () => retainCrashReports(database.db, blobs, { logger }),
     },
   ];
   if (queues.length > 0) {

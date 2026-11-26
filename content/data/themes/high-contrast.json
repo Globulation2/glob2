@@ -9,6 +9,7 @@
 		"paper": "#000000",
 		"panel": "#000000fa",
 		"field": "#121212",
+		"input": "#000000",
 		"rail": "#1a1a1a",
 		"line": "#ffffff",
 		"accent": "#ffd400",

@@ -447,7 +447,10 @@ store requirements separately; a feature profile does not establish acceptance.
 Each capability can be overridden with `feature_commander`,
 `feature_authoring_links`, `feature_community_ai` and
 `feature_community_generators` (0 or 1). Restricted China/Amazon editions still
-force Commander and authoring links off. Resolved capabilities are recorded in
+force Commander and authoring links off. `problem_reports=0` keeps
+[Report a Problem](../multiplayer/problem-reports.md) to Save to file, never
+uploading; it defaults to off for China/Amazon editions, and the F-Droid
+(`android.py --fdroid`) and Fedora package builds pass it. Resolved capabilities are recorded in
 `identity.json` beside the build outputs and in generated `BuildConfig.h`.
 Distinct profiles use isolated output directories; dependencies remain shared.
 An explicit `--build` directory refuses an incompatible existing identity.

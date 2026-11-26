@@ -1017,7 +1017,7 @@ class TextField : public Node
 				cursor = std::min(state.cursor, value.size());
 			}
 		}
-		frame.canvas.fillRounded(bounds, mt.radius, options.enabled ? p.field : p.disabled);
+		frame.canvas.fillRounded(bounds, mt.radius, options.enabled ? p.input : p.disabled);
 		frame.canvas.strokeRect(bounds, active ? p.ink : p.line);
 		const Rect inner = bounds.inset(Insets::symmetric(mt.gap, 0));
 		std::string shown = accessibleText();
@@ -1446,7 +1446,7 @@ class TextEditor : public Node
 		const auto &mt = frame.layout.metrics;
 		const auto &m = frame.canvas.measurer();
 		const bool active = frame.editing(key);
-		frame.canvas.fillRounded(bounds, mt.radius, options.readOnly ? p.rail : p.field);
+		frame.canvas.fillRounded(bounds, mt.radius, options.readOnly ? p.rail : p.input);
 		frame.canvas.strokeRect(bounds, active ? p.ink : p.line);
 		if (auto *surface = frame.canvas.surface(); surface && active)
 		{

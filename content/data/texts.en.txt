@@ -7210,3 +7210,39 @@ Not now
 Chat is off for players under 13 and for players who have not said their age.
 [chat off in this match]
 Chat is off in this match: a player in it is under 13 or has not said their age.
+[Report a problem]
+Report a problem
+[report problem explanation]
+Tell us what went wrong. We use your report only to find and fix the problem.
+[What happened?]
+What happened?
+[report recent log]
+Recent log
+[report last save]
+Last saved game
+[report last replay]
+Last replay
+[report always included]
+Always included: game version, platform, where you got the game and the kind of device. Your account is never included.
+[report send]
+Send
+[report save to file]
+Save to file
+[report sending]
+Sending the report…
+[report sent %0]
+Report sent. Your report ID is %0: quote it on Discord or by email.
+[report queued]
+You seem to be offline. The report will be sent when you are back online.
+[report refused]
+The report could not be sent. You can save it to a file instead.
+[report saved]
+Report saved. Attach the file when you contact us on Discord or by email.
+[report save failed]
+The report could not be saved.
+[report send needs age]
+Sending reports is for players aged 13 or over. You can save the report to a file and share it with a parent's help.
+[report send not built]
+This version of the game cannot send reports. Save the report to a file and share it on Discord or by email.
+[report too large %0]
+Left out because the report would be too large: %0

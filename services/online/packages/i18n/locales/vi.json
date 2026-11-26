@@ -3070,5 +3070,13 @@
   "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "Trò chuyện, chia sẻ nội dung ngoài chế độ riêng tư, chọn tên và tải ảnh lên chỉ dành cho người chơi từ 13 tuổi trở lên. Chúng tôi chỉ lưu câu trả lời của bạn, không bao giờ lưu ngày sinh của bạn.",
   "Under 13": "Dưới 13",
   "13 or over": "13 trở lên",
-  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "Bạn đã cho biết mình dưới 13 tuổi nên tính năng trò chuyện và chia sẻ đã bị tắt. Cha mẹ có thể liên hệ với chúng tôi để thay đổi điều này."
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "Bạn đã cho biết mình dưới 13 tuổi nên tính năng trò chuyện và chia sẻ đã bị tắt. Cha mẹ có thể liên hệ với chúng tôi để thay đổi điều này.",
+  "Problem reports": "Báo cáo sự cố",
+  "Platform": "Nền tảng",
+  "Device": "Thiết bị",
+  "Files": "Tệp",
+  "Download bundle": "Tải xuống gói",
+  "No problem reports yet.": "Chưa có báo cáo sự cố nào.",
+  "No description.": "Không có mô tả.",
+  "Bundle deleted after 90 days.": "Gói đã bị xóa sau 90 ngày."
 }

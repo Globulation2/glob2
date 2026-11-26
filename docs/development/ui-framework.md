@@ -1255,8 +1255,10 @@ Only the main menu's launch buttons use the Heading font for buttons.
 ### Theme
 
 `Theme` carries a palette of semantic colour tokens (ink, muted, paper, panel,
-field, rail, line, accent, accentInk, selected, hover, focus, scrim, disabled,
-danger, success, warning, shadow, pressed, backdrop, neutral, placeholder), the
+field, input, rail, line, accent, accentInk, selected, hover, focus, scrim, disabled,
+danger, success, warning, shadow, pressed, backdrop, neutral, placeholder; `field`
+fills buttons and choices, `input` the text fields and editors the player types
+in, so the two never look alike), the
 HUD tokens drawn outside the controls (`hud`: ink, paper, field, selected,
 border, readout, the dial colours, destroy, erasePreview), the menu `backdrop`,
 font roles (Title, Heading, Body, Support, Caption mapped to toolkit font names)

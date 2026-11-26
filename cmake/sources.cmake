@@ -303,6 +303,7 @@ set(GLOB2_CLIENT_SOURCES
     src/ui/screens/HandPreferenceScreen.cpp
     src/ui/screens/AudioPreferenceScreen.cpp
     src/ui/screens/AgeQuestionScreen.cpp
+    src/ui/screens/ProblemReportScreen.cpp
     src/ui/DiscordCommunity.cpp
     src/map/Map.cpp
     src/map/TerrainProperties.cpp
@@ -585,6 +586,7 @@ set(GLOB2_CLIENT_SOURCES
     src/map/Sector.cpp
     src/app/Settings.cpp
     src/app/AgeGate.cpp
+    src/app/ProblemReport.cpp
     src/app/PortalPolicy.cpp
     src/app/SystemLanguage.cpp
     src/app/DeviceProfile.cpp
@@ -1297,6 +1299,7 @@ set(GLOB2_ANDROID_SOURCES
     src/ui/screens/HandPreferenceScreen.cpp
     src/ui/screens/AudioPreferenceScreen.cpp
     src/ui/screens/AgeQuestionScreen.cpp
+    src/ui/screens/ProblemReportScreen.cpp
     src/ui/DiscordCommunity.cpp
     src/map/Map.cpp
     src/map/TerrainProperties.cpp
@@ -1579,6 +1582,7 @@ set(GLOB2_ANDROID_SOURCES
     src/map/Sector.cpp
     src/app/Settings.cpp
     src/app/AgeGate.cpp
+    src/app/ProblemReport.cpp
     src/app/PortalPolicy.cpp
     src/app/SystemLanguage.cpp
     src/app/DeviceProfile.cpp
@@ -2125,6 +2129,7 @@ set(GLOB2_IOS_SOURCES
     src/ui/screens/HandPreferenceScreen.cpp
     src/ui/screens/AudioPreferenceScreen.cpp
     src/ui/screens/AgeQuestionScreen.cpp
+    src/ui/screens/ProblemReportScreen.cpp
     src/ui/DiscordCommunity.cpp
     src/map/Map.cpp
     src/map/TerrainProperties.cpp
@@ -2407,6 +2412,7 @@ set(GLOB2_IOS_SOURCES
     src/map/Sector.cpp
     src/app/Settings.cpp
     src/app/AgeGate.cpp
+    src/app/ProblemReport.cpp
     src/app/PortalPolicy.cpp
     src/app/SystemLanguage.cpp
     src/app/DeviceProfile.cpp
@@ -3121,6 +3127,7 @@ set(GLOB2_WEB_SOURCES
     src/ui/screens/HandPreferenceScreen.cpp
     src/ui/screens/AudioPreferenceScreen.cpp
     src/ui/screens/AgeQuestionScreen.cpp
+    src/ui/screens/ProblemReportScreen.cpp
     src/ui/DiscordCommunity.cpp
     src/map/Map.cpp
     src/map/TerrainProperties.cpp
@@ -3403,6 +3410,7 @@ set(GLOB2_WEB_SOURCES
     src/map/Sector.cpp
     src/app/Settings.cpp
     src/app/AgeGate.cpp
+    src/app/ProblemReport.cpp
     src/app/PortalPolicy.cpp
     src/app/SystemLanguage.cpp
     src/app/DeviceProfile.cpp

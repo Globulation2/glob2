@@ -3151,5 +3151,13 @@
   "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "Chat, sdílení obsahu nad rámec soukromého, výběr jména a nahrání fotky jsou pro hráče od 13 let. Uchováváme jen tvou odpověď, nikdy tvé datum narození.",
   "Under 13": "Méně než 13",
   "13 or over": "13 a více",
-  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "Podle tvé odpovědi je ti méně než 13 let, takže chat a sdílení jsou vypnuté. Rodič nás může kontaktovat a změnit to."
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "Podle tvé odpovědi je ti méně než 13 let, takže chat a sdílení jsou vypnuté. Rodič nás může kontaktovat a změnit to.",
+  "Problem reports": "Hlášení problémů",
+  "Platform": "Platforma",
+  "Device": "Zařízení",
+  "Files": "Soubory",
+  "Download bundle": "Stáhnout balíček",
+  "No problem reports yet.": "Zatím žádná hlášení problémů.",
+  "No description.": "Bez popisu.",
+  "Bundle deleted after 90 days.": "Balíček byl po 90 dnech smazán."
 }

@@ -80,7 +80,7 @@ python3 buildsys/sdl3_dependencies.py --prefix "$GLOB2_SDL3_PREFIX" --work build
 export RPM_PACKAGE_NAME=%{name} RPM_PACKAGE_VERSION=%{version} \
     RPM_PACKAGE_RELEASE=%{release} RPM_ARCH=%{_arch}
 # A shipping build (no build-prefix rpath or debug-path mapping) for installation.
-cmake -S . -B build/rpm -G Ninja -DGLOB2_BUILD_ARGS="release=1 retain_symbols=1 optimized_assets=1" \
+cmake -S . -B build/rpm -G Ninja -DGLOB2_BUILD_ARGS="release=1 retain_symbols=1 optimized_assets=1 problem_reports=0" \
     -DGLOB2_CXXFLAGS="%{optflags}" -DGLOB2_LINKFLAGS="%{build_ldflags}" -DGLOB2_SHIPPING=ON \
     -DGLOB2_BINDIR=%{_bindir} -DGLOB2_INSTALLDIR=%{_datadir} -DGLOB2_DATADIR=%{_datadir}
 cmake --build build/rpm --target glob2 -- -j2

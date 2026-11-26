@@ -634,7 +634,21 @@ public:
 }
 std::unique_ptr<Persistence> persistStorage() { return std::make_unique<BrowserPersistence>(); }
 void importChanged(const char* state) { diagnostics.import = state; }
-void screenChanged(const char* name) { diagnostics.screen = diagnostics.screenClass = name; }
+namespace
+{
+std::function<void(const char *)> &screenObserver()
+{
+    static std::function<void(const char *)> observer;
+    return observer;
+}
+}
+void setScreenObserver(std::function<void(const char *)> observer) { screenObserver() = std::move(observer); }
+void screenChanged(const char* name)
+{
+    diagnostics.screen = diagnostics.screenClass = name;
+    if (screenObserver())
+        screenObserver()(name);
+}
 void simulationAdvanced(std::uint32_t tick) {
     diagnostics.tick = tick; diagnostics.hasTick = true; diagnostics.screen = "match";
 }
