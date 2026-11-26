@@ -1,5 +1,5 @@
 pkgname=glob2
-pkgver=0.11.7.0
+pkgver=0.11.8.1
 pkgrel=1
 pkgdesc='Real-time strategy game with automatic unit task assignment'
 arch=('x86_64')
@@ -16,7 +16,7 @@ source=("https://github.com/Globulation2/glob2/releases/download/v${pkgver}/glob
         'https://files.pythonhosted.org/packages/a5/98/9118a0659646f1628c592ef9bb48e0056efa6bf27c951fd12a178e0136fb/pybind11-3.0.2.tar.gz'
         'https://files.pythonhosted.org/packages/8c/21/c2bcdd5906101a30244eaffc1b6e6ce71a31bd0742a01eb89e660ebfac2d/pillow-12.2.0.tar.gz')
 noextract=('libwebp-1.6.0.tar.gz' 'setuptools-80.9.0.tar.gz' 'pybind11-3.0.2.tar.gz' 'pillow-12.2.0.tar.gz')
-sha256sums=('3dffe97a657a8025e48990e7f9581a2108ab81c5c67f8e54fa2b09052a20b5d6'
+sha256sums=('7211fed861ff91bce838a6e68029dc2acc5ea2ce8cab9c74af9677aa50deeb05'
             'be5f1f6cadb2387b5de256243334e1bc6b4b9a6325e85732a0e7f3ae0f352a06'
             'e4ab7009bf0629fd11982d4c2aa83964cf244cffba7347ecd39019a9e38c4564'
             'f36b47402ecde768dbfafc46e8e4207b4360c654f1f3bb84475f0a28628fb19c'

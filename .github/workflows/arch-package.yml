@@ -65,7 +65,7 @@ jobs:
             cd /build
             runuser -u builder -- env CMAKE_BUILD_PARALLEL_LEVEL=4 makepkg --noextract --noconfirm
           '
-          docker cp arch-result:/build/glob2-0.11.7.0-1-x86_64.pkg.tar.zst .
+          docker cp arch-result:/build/glob2-0.11.8.1-1-x86_64.pkg.tar.zst .
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: glob2-arch-x86_64-candidate
@@ -77,7 +77,7 @@ jobs:
           set -eu
           docker run --network none \
             -v "$PWD/content/games/gd-small-2ai.game.gz:/fixture.game.gz:ro" \
-            -v "$PWD/glob2-0.11.7.0-1-x86_64.pkg.tar.zst:/glob2.pkg.tar.zst:ro" \
+            -v "$PWD/glob2-0.11.8.1-1-x86_64.pkg.tar.zst:/glob2.pkg.tar.zst:ro" \
             glob2-arch-sources bash -ec '
               export GLOB2_USER_DATA_DIR=/tmp/glob2-profile
               export SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy
