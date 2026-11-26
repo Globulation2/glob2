@@ -6,6 +6,7 @@
 #include "GlobalContainer.h"
 #include "scene/SceneMap.h"
 #include "terrain/TerrainCompositor.h"
+#include "terrain/TerrainArtBorder.h"
 #include <PerformanceTelemetry.h>
 #include <algorithm>
 #include <cmath>
@@ -1058,6 +1059,55 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
     return true;
 }
 
+namespace
+{
+struct ArtSource
+{
+    int size = 0;
+    std::span<const TerrainVisual::ArtPixel> pixels;
+};
+
+template<class Source>
+std::vector<Uint32> terrainArtBorder(const TerrainVisual::Material &material, unsigned variant,
+                                    int density, Source source)
+{
+    if (!TerrainVisual::hasArtNeighbors(material)) return {};
+    std::array<ArtSource, 9> neighbors{};
+    for (int dy = -1; dy <= 1; ++dy)
+        for (int dx = -1; dx <= 1; ++dx)
+            if (dx || dy)
+            {
+                auto &neighbor = neighbors[(dy + 1) * 3 + dx + 1];
+                neighbor = source(TerrainVisual::artNeighbor(material, variant, dx, dy), dx, dy);
+                if (neighbor.pixels.empty()) return {};
+            }
+    std::vector<Uint32> border;
+    border.reserve(4 * (density + 1));
+    TerrainVisual::visitArtBorder(density, [&](int, int, int dx, int dy, int sx, int sy)
+    {
+        const auto &neighbor = neighbors[(dy + 1) * 3 + dx + 1];
+        const auto p = TerrainVisual::sampleArt(neighbor.size, density, sx, sy,
+            [&](std::size_t index) { return neighbor.pixels[index]; });
+        border.push_back(Uint32(p[3]) << 24 | Uint32(p[0]) << 16 | Uint32(p[1]) << 8 | p[2]);
+    });
+    return border;
+}
+
+ArtSource snapshotArt(const TerrainVisual::Compositor::CpuMaterials &snapshot,
+                      TerrainVisual::MaterialId id, unsigned variant)
+{
+    const auto &texture = snapshot.textures[id][variant];
+    return {texture.size, texture.pixels ? std::span<const TerrainVisual::ArtPixel>(*texture.pixels)
+                                         : std::span<const TerrainVisual::ArtPixel>()};
+}
+
+template<class Row>
+void writeArtBorder(SDL_Rect tile, const std::vector<Uint32> &border, Row row)
+{
+    TerrainVisual::extendArtRows(tile.w, border, [&](int y) { return row(tile.y + y) + tile.x; });
+}
+}
+
 SoftwareTerrainCache::AnimatedTiles *SoftwareTerrainCache::animatedTile(TerrainVisual::Compositor &compositor,
                                                                        const TerrainVisual::Recipe &recipe,
                                                                        SDL_Rect &source, int scale, int reduction)
@@ -1068,8 +1118,8 @@ SoftwareTerrainCache::AnimatedTiles *SoftwareTerrainCache::animatedTile(TerrainV
     auto &set = animatedTiles[{unsigned(id), scale, reduction}];
     set.used = frame;
     const int variants = int(material.variants.size());
-    // Tiles at the page's density, each in a one-texel border copied from its
-    // edge, so linear sampling of a scaled page never reads a neighbour.
+    // Tiles at the page's density, each with a one-texel gutter for linear
+    // filtering. Continuous animated layouts take it from the adjacent art.
     const int n = NativeTilePixels * scale / reduction, cell = n + 2;
     if (!set.atlas)
     {
@@ -1115,13 +1165,16 @@ SoftwareTerrainCache::AnimatedTiles *SoftwareTerrainCache::animatedTile(TerrainV
         else
             compositor.compose(recipe, atlas, source.x, source.y, scale);
         const auto row = [&](int y) { return reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(atlas->pixels) + y * atlas->pitch); };
-        for (int y = source.y; y < source.y + n; ++y)
+        const auto border = terrainArtBorder(material, variant, n, [&](unsigned adjacent, int dx, int dy) -> ArtSource
         {
-            row(y)[cx] = row(y)[source.x];
-            row(y)[source.x + n] = row(y)[source.x + n - 1];
-        }
-        std::memcpy(row(cy) + cx, row(source.y) + cx, std::size_t(cell) * 4);
-        std::memcpy(row(cy + cell - 1) + cx, row(source.y + n - 1) + cx, std::size_t(cell) * 4);
+            if (shown) return snapshotArt(*shown, id, adjacent);
+            auto neighbor = recipe;
+            neighbor.x += dx;
+            neighbor.y += dy;
+            const auto texture = compositor.preparedMaterial(neighbor, id);
+            return {texture.size, texture.pixels};
+        });
+        writeArtBorder(source, border, row);
         set.opaque[variant] = allAlpha<255>(*atlas, source);
         set.revisions[variant] = revision;
         set.changed = true;
@@ -1202,8 +1255,8 @@ std::uint64_t packStamp(std::uint64_t hash, int size) { return (hash << 12) | st
 // Keyframes of a page's own animated cells, or of the uniform cells of one
 // material at one density (one entry per variant). Each entry has a slot for
 // each of three keyframes in one atlas, a row of Columns entries wide; each
-// slot is bordered by a copy of its edge so that linear sampling of a scaled
-// view never reads its neighbour. The atlas keeps its CPU pixels: finished
+// slot has a one-texel gutter for linear filtering, taken from the adjacent
+// art for continuous animated layouts. The atlas keeps its CPU pixels: finished
 // keyframes write into them and upload as dirty rectangles.
 struct SoftwareTerrainCache::KeyframeSet
 {
@@ -1298,18 +1351,12 @@ struct SoftwareTerrainCache::KeyframeSet
 		auto *surface = atlas->getSDLSurface();
 		return reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(surface->pixels) + y * surface->pitch);
 	}
-	void write(int entry, int ring, const Uint32 *pixels)
+	void write(int entry, int ring, const Uint32 *pixels, const std::vector<Uint32> &border)
 	{
 		const SDL_Rect r = slot(entry, ring);
 		for (int y = 0; y < n; ++y)
-		{
-			Uint32 *out = row(r.y + y);
-			std::memcpy(out + r.x, pixels + std::size_t(y) * n, std::size_t(n) * 4);
-			out[r.x - 1] = out[r.x];
-			out[r.x + n] = out[r.x + n - 1];
-		}
-		std::memcpy(row(r.y - 1) + r.x - 1, row(r.y) + r.x - 1, std::size_t(n + 2) * 4);
-		std::memcpy(row(r.y + n) + r.x - 1, row(r.y + n - 1) + r.x - 1, std::size_t(n + 2) * 4);
+			std::memcpy(row(r.y + y) + r.x, pixels + std::size_t(y) * n, std::size_t(n) * 4);
+		writeArtBorder(r, border, [&](int y) { return row(y); });
 		dirty.push_back({r.x - 1, r.y - 1, n + 2, n + 2});
 	}
 	void read(int entry, int ring, Uint32 *pixels) const
@@ -1370,6 +1417,7 @@ struct SoftwareTerrainCache::KeyframeJob
 		// animation changes are composed again.
 		std::optional<TerrainVisual::Compositor::Refresh> refresh;
 		std::unique_ptr<Uint32[]> pixels;
+		std::vector<Uint32> border;
 		std::optional<TerrainVisual::Compositor::CellMask> mask;
 	};
 	std::vector<Item> items;
@@ -1413,6 +1461,14 @@ struct SoftwareTerrainCache::KeyframeJob
 				else
 					materials->compose(item.recipe, &out, scale, scratch, uniform ? nullptr : mask,
 									   item.refresh ? &*item.refresh : nullptr, uniform ? 1 : reduction);
+				if (uniform && !item.recipe.calmed())
+				{
+					const auto id = item.recipe.corners[0];
+					const auto &catalog = *materials->definitions;
+					const auto variant = catalog.variantIndex(id, item.recipe.x, item.recipe.y, item.recipe.seed);
+					item.border = terrainArtBorder(catalog.materials[id], variant, n,
+						[&](unsigned neighbor, int, int) { return snapshotArt(*materials, id, neighbor); });
+				}
 				item.composed = true;
 			}
 		}
@@ -1610,7 +1666,7 @@ void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor
 			slot.pending = NoKey;
 			if (failed || !item.composed)
 				continue;
-			set->write(item.entry, ring, item.pixels.get());
+			set->write(item.entry, ring, item.pixels.get(), item.border);
 			slot.key = job->key;
 			slot.generation = job->generation;
 			slot.epoch = job->epoch;

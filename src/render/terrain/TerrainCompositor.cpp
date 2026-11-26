@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "TerrainCompositor.h"
+#include "TerrainArtBorder.h"
 #include "TerrainBuiltins.h"
 #include <atomic>
 #include <unordered_map>
@@ -951,9 +952,23 @@ void Compositor::releasePreparedTextures()
 void Compositor::includeBoundarySources(Usage &usage) const
 {
     for (unsigned id = 0; id < usage.size(); ++id)
-        if (!definitions.materials[id].periodicEdges &&
-            std::any_of(usage[id].begin(), usage[id].end(), [](auto v) { return v != 0; }))
-            usage[id][0] = 1;
+    {
+        const auto &material = definitions.materials[id];
+        auto &variants = usage[id];
+        if (std::none_of(variants.begin(), variants.end(), [](auto v) { return v != 0; }))
+            continue;
+        if (!material.periodicEdges)
+            variants[0] = 1;
+        else if (hasArtNeighbors(material))
+        {
+            const auto requested = variants;
+            for (unsigned variant = 0; variant < requested.size(); ++variant)
+                if (requested[variant])
+                    for (int dy = -1; dy <= 1; ++dy)
+                        for (int dx = -1; dx <= 1; ++dx)
+                            variants[artNeighbor(material, variant, dx, dy)] = 1;
+        }
+    }
 }
 const std::vector<std::uint32_t> &Compositor::pageUsage(const SceneMap &map, int px, int py) const
 {

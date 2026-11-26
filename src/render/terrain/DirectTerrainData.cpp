@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "DirectTerrainData.h"
 #include "TerrainCompositor.h"
+#include "TerrainArtBorder.h"
 #include "render/scene/SceneMap.h"
 #include <PresentationWork.h>
 #include <algorithm>
@@ -73,6 +74,35 @@ struct Atlas
         writeTile(count++, write);
     }
 };
+}
+
+// Copy just the filtered border before the stream window (and its source
+// surfaces) can change. Workers can still box-filter the tile interior.
+std::vector<DirectTerrainData::Pixel> DirectTerrainData::artBorder(const TerrainVisual::Compositor &compositor,
+    DirectTerrainData::Source source, unsigned phase, bool native, int pixels)
+{
+    const auto &material = compositor.catalog().materials[source.material];
+    if (!TerrainVisual::hasArtNeighbors(material)) return {};
+    std::array<const SDL_Surface *, 9> neighbors{};
+    for (int dy = -1; dy <= 1; ++dy)
+        for (int dx = -1; dx <= 1; ++dx)
+            if (dx || dy)
+            {
+                const auto variant = TerrainVisual::artNeighbor(material, source.variant, dx, dy);
+                auto *surface = compositor.phaseSurface(source.material, variant, phase, native);
+                if (!surface) return {}; // A material sheet can still be loading.
+                neighbors[(dy + 1) * 3 + dx + 1] = surface;
+            }
+    std::vector<Pixel> border;
+    border.reserve(4 * (pixels + 1));
+    TerrainVisual::visitArtBorder(pixels, [&](int, int, int dx, int dy, int sx, int sy)
+    {
+        const auto *surface = neighbors[(dy + 1) * 3 + dx + 1];
+        const auto *argb = static_cast<const Uint32 *>(surface->pixels);
+        border.push_back(TerrainVisual::sampleArt(surface->w, pixels, sx, sy,
+            [&](std::size_t index) { return TerrainVisual::artPixel(argb[index]); }));
+    });
+    return border;
 }
 
 void DirectTerrainData::appendRecords(std::vector<Record> &variants, const TerrainVisual::Material &material, Uint16 first)
@@ -163,7 +193,7 @@ DirectTerrainData::Build DirectTerrainData::begin(SceneMap map, std::shared_ptr<
             }
         co_return data;
     }
-    Atlas<Pixel> art;
+    Atlas<Pixel, TilePixels + 2> art;
     Atlas<Pixel, MaskPixels> coverage;
     Atlas<Uint16, MaskPixels> edges;
     const auto mapBytes = count * (sizeof(Record) + sizeof(Uint16) + sizeof(Pixel) + sizeof(Uint8));
@@ -192,8 +222,15 @@ DirectTerrainData::Build DirectTerrainData::begin(SceneMap map, std::shared_ptr<
             const auto pixels = compositor.nativeMaterialPixels(id, variant, phase);
             if (pixels.size() != TilePixels * TilePixels)
                 throw std::runtime_error("Direct terrain requires 32-pixel native material frames");
-            art.append(maxSize, remainingBytes, [&](Pixel *out, int y) {
-                std::copy_n(pixels.data() + y * TilePixels, TilePixels, out);
+            constexpr int stride = TilePixels + 2;
+            std::array<Pixel, stride * stride> tile;
+            for (int y = 0; y < TilePixels; ++y)
+                std::copy_n(pixels.data() + y * TilePixels, TilePixels, tile.data() + (y + 1) * stride + 1);
+            const auto border = artBorder(compositor, {id, variant}, phase, true, TilePixels);
+            TerrainVisual::extendArtTile(tile.data(), TilePixels, border);
+            art.append(maxSize, remainingBytes, [&](Pixel *out, int y)
+            {
+                std::copy_n(tile.data() + y * stride, stride, out);
             });
         }
         const auto slot = static_cast<Uint16>(variants.size() / VariantRecords);

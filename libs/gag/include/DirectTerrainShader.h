@@ -52,9 +52,10 @@ const float artTilePixels = 32.0;
 #endif
 
 vec2 atlasUV(float index, vec2 pixel, vec2 size) {
-    float columns = size.x / artTilePixels;
-    vec2 base = vec2(mod(index, columns), floor(index / columns)) * artTilePixels;
-    return (base + pixel * (artTilePixels / 32.0)) / size;
+    float stride = artTilePixels + 2.0;
+    float columns = floor(size.x / stride);
+    vec2 base = vec2(mod(index, columns), floor(index / columns)) * stride;
+    return (base + 1.0 + pixel * (artTilePixels / 32.0)) / size;
 }
 
 vec2 maskAtlasUV(float index, vec2 pixel) {
@@ -181,10 +182,10 @@ vec4 variantRecord(float index, float field) {
 // (it is being replaced at another density): the cell draws that art.
 const float LowArtTile = 16.0;
 vec4 lowArt(float index, vec2 uv) {
-    float columns = coverageSize.x / LowArtTile;
-    vec2 base = vec2(mod(index, columns), floor(index / columns)) * LowArtTile;
-    vec2 pixel = clamp(uv * (LowArtTile / 32.0), vec2(0.5), vec2(LowArtTile - 0.5));
-    return DIRECT_TERRAIN_SAMPLE(coverageIndex, (base + pixel) / coverageSize);
+    float stride = LowArtTile + 2.0;
+    float columns = floor(coverageSize.x / stride);
+    vec2 base = vec2(mod(index, columns), floor(index / columns)) * stride;
+    return DIRECT_TERRAIN_SAMPLE(coverageIndex, (base + 1.0 + uv * (LowArtTile / 32.0)) / coverageSize);
 }
 #endif
 
@@ -335,7 +336,8 @@ void main() {
     }
     vec4 indices = readRecord(cells, slot, mapSize);
     float halfTexel = 16.0 / artTilePixels;
-    vec2 uv = clamp(fract(world) * 32.0, vec2(halfTexel), vec2(32.0 - halfTexel));
+    vec2 artPixel = fract(world) * 32.0;
+    vec2 uv = clamp(artPixel, vec2(halfTexel), vec2(32.0 - halfTexel));
 #ifdef DIRECT_TERRAIN_HD_MASKS
     // Legacy GL: one mask atlas at the display density. Zero is a uniform cell;
     // 65280 and up a mixed cell whose mask is still being built, drawn from
@@ -375,7 +377,7 @@ void main() {
     vec4 quiet = DIRECT_TERRAIN_SAMPLE(shoreCalm, cell);
     vec2 position = uv / 32.0;
     float calm = mix(mix(quiet.x, quiet.y, position.x), mix(quiet.z, quiet.w, position.x), position.y);
-    vec4 color = material(indices.x, uv, calm);
+    vec4 color = material(indices.x, artPixel, calm);
 #ifdef DIRECT_TERRAIN_HD_MASKS
     vec4 weights = vec4(0.0);
     if (mixed) {
@@ -398,9 +400,9 @@ void main() {
 #endif
         weights /= max(dot(weights, vec4(1.0)), 0.00001);
         color *= weights.x;
-        if (weights.y > 0.0) color += weights.y * material(indices.y, uv, calm);
-        if (weights.z > 0.0) color += weights.z * material(indices.z, uv, calm);
-        if (weights.w > 0.0) color += weights.w * material(indices.w, uv, calm);
+        if (weights.y > 0.0) color += weights.y * material(indices.y, artPixel, calm);
+        if (weights.z > 0.0) color += weights.z * material(indices.z, artPixel, calm);
+        if (weights.w > 0.0) color += weights.w * material(indices.w, artPixel, calm);
 #ifdef DIRECT_TERRAIN_HD_MASKS
         // The split carries no edge: no contact shading or surf until the mask lands.
         vec3 edge = split ? vec3(0.0) : hdEdgeAt(base ? 2 : retired ? 1 : 0, hd - 1.0, uv, atlasSize, atlasTile);
