@@ -8,6 +8,7 @@ import { scrubMatchNames } from '@glob2/play';
 import { cursorTimeSql } from '../http/cursorTime.ts';
 import { apiError } from '../errors.ts';
 import type { AccountService } from './accounts.ts';
+import { setAgeBand } from './ageGate.ts';
 
 export type Role = Account['role'];
 
@@ -167,6 +168,28 @@ export class AdminService {
       reason ? { reason } : {},
     );
     if (banned) await this.effects.endSessions(target.id, 'banned');
+    return updated;
+  }
+
+  /** Sets the age band as a moderator (a parent's request, or an appeal). */
+  async setAgeBand(
+    actor: Account | undefined,
+    target: Account,
+    band: 'under_13' | '13_plus',
+    reason?: string,
+  ) {
+    if (actor && !(RANK[actor.role] > RANK[target.role])) {
+      throw apiError(
+        'forbidden',
+        'You can only change the age band of accounts with a lower role.',
+      );
+    }
+    const updated = await setAgeBand(this.db, target.id, band, 'moderator');
+    await this.audit(actor, 'account.age_band', target, {
+      from: target.age_band,
+      to: band,
+      ...(reason ? { reason } : {}),
+    });
     return updated;
   }
 

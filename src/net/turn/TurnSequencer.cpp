@@ -402,7 +402,7 @@ void TurnSequencer::handleOrder(int seat, const OrderSubmit& submit, std::uint64
 	}
 	s.lastClientSequence = submit.clientSequence;
 	const std::uint8_t type = submit.order[0];
-	if (type == ORDER_TYPE_NULL || type == ORDER_TYPE_ADJUST_LATENCY)
+	if (type == ORDER_TYPE_NULL || type == ORDER_TYPE_ADJUST_LATENCY || (chatOff && (type == ORDER_TYPE_TEXT_MESSAGE || type == ORDER_TYPE_VOICE)))
 	{
 		++counters.ordersDropped;
 		if (t)

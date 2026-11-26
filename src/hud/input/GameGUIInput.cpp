@@ -1,4 +1,5 @@
 #include "tutorial/TutorialGuidance.h"
+#include "AgeGate.h"
 #include <GestureScroll.h>
 #include "hive/HiveDialog.h"
 #include "MapZoomControls.h"
@@ -81,7 +82,7 @@ bool GameGUI::processScrollableWidget(SDL_Event *event)
 // recipients, without the keyboard focus that typing into the box needs.
 bool GameGUI::sendChatFromAutomation(const std::string &text)
 {
-	if (text.empty())
+	if (text.empty() || !AgeGate::chatAllowedNow())
 		return false;
 	enqueueOrder(shared_ptr<Order>(new MessageOrder(chatMask, MessageOrder::NORMAL_MESSAGE_TYPE, text.c_str())));
 	return true;
@@ -132,7 +133,9 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 			}
 		}
 
-		if (!message.empty())
+		if (!AgeGate::chatAllowedNow())
+			showChatOff();
+		else if (!message.empty())
 			enqueueOrder(shared_ptr<Order>(new MessageOrder(nchatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message.c_str())));
 	}
 	closeChat();

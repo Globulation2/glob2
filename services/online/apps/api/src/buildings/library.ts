@@ -26,6 +26,7 @@ import { body } from '../http/validate.ts';
 import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { apiError } from '../errors.ts';
 import { UUID } from '../maps/catalog.ts';
+import { requireShareable } from '../auth/ageGate.ts';
 
 export async function buildingLibraryRoutes(app: FastifyInstance, identity: Identity) {
   const { db, blobs } = app.services;
@@ -249,6 +250,7 @@ export async function buildingLibraryRoutes(app: FastifyInstance, identity: Iden
   app.patch<{ Params: { id: string } }>('/api/v1/buildings/:id', async (r) => {
     const a = await signed(r),
       input = body(UpdateBuildingFamilyRequest, r.body);
+    if (input.visibility !== undefined) requireShareable(a, input.visibility);
     if (input.name !== undefined && !input.name.trim())
       throw apiError('bad_request', 'Choose a family name.');
     const family = await db.transaction().execute(async (trx) => {
@@ -310,6 +312,7 @@ export async function buildingLibraryRoutes(app: FastifyInstance, identity: Iden
   app.post<{ Params: { id: string } }>('/api/v1/building-drafts/:id/publish', async (r, reply) => {
     const a = await signed(r),
       input = body(PublishBuildingRequest, r.body);
+    requireShareable(a, input.visibility);
     await enforce(publishes, a.id, reply, 'Too many building releases.');
     const draft = UUID.test(r.params.id)
       ? await db

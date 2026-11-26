@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OnlineServices.h"
+#include <chrono>
+#include "AgeGate.h"
 #include "InstanceConfig.h"
 #include "InviteLink.h"
 #include "MapCache.h"
@@ -140,9 +142,53 @@ QuickMatch &Services::quickMatch()
 	return *search;
 }
 
+void Services::syncAgeBand()
+{
+	const auto &account = client.account();
+	if (!account || account->ageBand.empty() || ageSyncPending)
+		return;
+	const auto accountBand = AgeGate::parseBand(account->ageBand);
+	if (!accountBand)
+		return;
+	const AgeGate::Local local = AgeGate::local();
+	const std::string key = account->id + '/' + account->ageBand + '/' + account->ageBandSource + '/' +
+							AgeGate::bandName(local.band) + '/' + AgeGate::sourceName(local.source);
+	const auto now = std::chrono::steady_clock::now();
+	if (key == ageSyncedKey || (key == ageSyncFailedKey && now < ageSyncRetryAt))
+		return;
+	ageSyncedKey = key;
+	const AgeGate::Reconcile r = AgeGate::reconcile(local, *accountBand, account->ageBandSource == "moderator");
+	if (r.adopt)
+		AgeGate::store({*r.adopt, AgeGate::Source::Account});
+	if (!r.push)
+		return;
+	ageSyncPending = true;
+	client.setAgeBand(AgeGate::bandName(*r.push), AgeGate::sourceName(r.pushSource),
+					  [this, key](const PlatformClient::Response &response)
+					  {
+						  ageSyncPending = false;
+						  if (response.ok)
+							  return;
+						  // The account is locked under 13 (self-declared there, or by a moderator):
+						  // the device follows it.
+						  if (response.error.details.is_object() &&
+							  response.error.details.value("reason", std::string()) == "age_band_locked")
+						  {
+							  AgeGate::store({AgeGate::Band::Under13, AgeGate::Source::Account});
+							  return;
+						  }
+						  // Anything else (offline, a server error) is tried again: an account
+						  // the device knows is under 13 must not keep chat.
+						  ageSyncedKey.clear();
+						  ageSyncFailedKey = key;
+						  ageSyncRetryAt = std::chrono::steady_clock::now() + std::chrono::seconds(30);
+					  });
+}
+
 void Services::update()
 {
 	client.update();
+	syncAgeBand();
 	if (search)
 		search->update();
 	// A hook may add or remove hooks: iterate over a snapshot of the ids.

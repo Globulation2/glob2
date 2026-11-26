@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2007 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <GameplayRecording.h>
+#include "AgeGate.h"
 #include <Toolkit.h>
 #include <GAG.h>
 #include <GUIBase.h>
@@ -81,6 +82,30 @@ GlobalContainer::GlobalContainer(const char *profileName, const std::string& bui
 
 	// load user preference
 	settings.load();
+	// The age band lives in the preferences; read and saved through the global
+	// container of the moment (harnesses replace it).
+	AgeGate::setStore({
+		[] {
+			if (!globalContainer)
+				return AgeGate::Local{};
+			const auto &s = globalContainer->settings;
+			return AgeGate::Local{AgeGate::parseBand(s.ageBand).value_or(AgeGate::Band::Unknown),
+								  AgeGate::parseSource(s.ageBandSource).value_or(AgeGate::Source::None)};
+		},
+		[](const AgeGate::Local &value) {
+			if (!globalContainer)
+				return false;
+			auto &s = globalContainer->settings;
+			const auto band = s.ageBand, source = s.ageBandSource;
+			s.ageBand = AgeGate::bandName(value.band);
+			s.ageBandSource = value.band == AgeGate::Band::Unknown ? "" : AgeGate::sourceName(value.source);
+			if (s.save())
+				return true;
+			s.ageBand = band;
+			s.ageBandSource = source;
+			return false;
+		},
+	});
 	Glob2UI::applyThemes(settings.menuTheme, settings.gameTheme);
 
 	applyScrollTuning(settings, reducedMotion);

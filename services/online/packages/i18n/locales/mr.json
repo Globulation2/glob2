@@ -3092,5 +3092,10 @@
   "Delete “{value0}”? This removes the account draft and this device’s recovery copy. Published releases remain available.": "Delete “{value0}”? This removes the account draft and this device’s recovery copy. Published releases remain available.",
   "Withdraw “{value0}” and all its releases? Library downloads and links will stop working. Studio drafts and copies embedded in existing maps or saves remain available.": "Withdraw “{value0}” and all its releases? Library downloads and links will stop working. Studio drafts and copies embedded in existing maps or saves remain available.",
   "Delete this conversation and its source history? Finished music remains in your library.": "Delete this conversation and its source history? Finished music remains in your library.",
-  "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.": "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released."
+  "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.": "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.",
+  "Your age": "तुझे वय",
+  "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "चॅट, खाजगीपलीकडे सामग्री शेअर करणे, नाव निवडणे आणि फोटो अपलोड करणे हे 13 वर्षे किंवा त्याहून अधिक वयाच्या खेळाडूंसाठी आहे. फक्त तुझे उत्तर ठेवले जाते, तुझा वाढदिवस कधीच नाही.",
+  "Under 13": "13 पेक्षा कमी",
+  "13 or over": "13 किंवा अधिक",
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "तू सांगितलेस की तुझे वय 13 पेक्षा कमी आहे, म्हणून चॅट आणि शेअरिंग बंद आहे. हे बदलण्यासाठी पालक आमच्याशी संपर्क साधू शकतात."
 }

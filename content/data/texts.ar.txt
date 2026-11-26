@@ -7190,3 +7190,23 @@ GL فقط
 
 [hub no assisted queues]
 
+[How old are you?]
+
+[age question explanation]
+
+[age question privacy]
+
+[age question not now]
+
+[age question save failed]
+
+[Under 13]
+
+[13 or over]
+
+[Not now]
+
+[chat off for age]
+
+[chat off in this match]
+

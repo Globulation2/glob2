@@ -110,6 +110,9 @@ The relay looks at the first byte of each order, which is the order type
   pipeline and has no meaning here.
 - `ORDER_PLAYER_QUIT_GAME` (67) is accepted only when its 4-byte player field equals
   the sender's seat. It is sequenced, and then the seat is marked left.
+- `ORDER_TEXT_MESSAGE` (71) and `ORDER_VOICE_DATA` (72) are dropped once the match's
+  chat is off (a ticket said `chat: false`; see [relay tickets](relay.md#tickets)),
+  from every seat.
 - `ORDER_VOICE_DATA` (72) is sequenced and broadcast like any order, but it is left out
   of the turn log, resync and the match record. Voice does not change simulation state,
   and the replay writer already leaves it out.

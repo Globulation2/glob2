@@ -1297,6 +1297,9 @@ export async function exportAccount(
           last_seen_at: account.last_seen_at,
           display_name_changed_at: account.display_name_changed_at,
           muted_until: account.muted_until,
+          age_band: account.age_band,
+          age_band_source: account.age_band_source,
+          age_band_at: account.age_band_at,
         }),
         signIn: {
           identities: rows(identities),

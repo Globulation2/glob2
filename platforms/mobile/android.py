@@ -196,7 +196,10 @@ def main():
         (project/'glob2-build.json').write_text(json.dumps({'root':str(ROOT),'command':native_command,
             'release':args.release,'version_code':args.version_code,
             'version_name':version_name,'arch':args.arch,'abis':list(arches),'package_name':package_name,
-            'official_instance_host':official_instance.host(official_instance.origin())},indent=2)+'\n')
+            'official_instance_host':official_instance.host(official_instance.origin()),
+            # Google Play Age Signals: the Play-only library goes into the Google Play
+            # build alone (platforms/mobile/android-play/, src/app/AgeGate.h).
+            'play_age_signals':not (args.fdroid or args.amazon_apk or args.china)},indent=2)+'\n')
         generated=project/'app/generated'
         if generated.exists(): shutil.rmtree(generated)
         generated.mkdir(parents=True)

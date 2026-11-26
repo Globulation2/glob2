@@ -54,6 +54,7 @@ import {
   type VersionRow,
   type Viewer,
 } from './catalog.ts';
+import { requireShareable, socialFeatures } from '../auth/ageGate.ts';
 
 const SORTS: readonly MapSort[] = ['recent', 'likes', 'plays', 'downloads'];
 
@@ -300,7 +301,12 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
   app.post('/api/v1/maps', async (request, reply) => {
     const viewer = await signedIn(request);
     const input = body(CreateMapRequest, request.body);
-    const visibility = input.visibility ?? CATALOG_RULES.defaultVisibility;
+    // Without social features a map is private unless the request says otherwise
+    // (and then refused): src/auth/ageGate.ts.
+    const visibility =
+      input.visibility ??
+      (socialFeatures(viewer.account) ? CATALOG_RULES.defaultVisibility : 'private');
+    requireShareable(viewer.account, visibility);
     if (visibility === 'public' && !mayPublish(viewer.account)) {
       throw apiError(
         'forbidden',
@@ -330,6 +336,7 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
     const viewer = await signedIn(request);
     const map = await ownedMap(db, request.params.id, viewer);
     const input = body(UpdateMapRequest, request.body);
+    if (input.visibility) requireShareable(viewer.account, input.visibility);
     if (input.visibility === 'public' && !mayPublish(viewer.account)) {
       throw apiError(
         'forbidden',

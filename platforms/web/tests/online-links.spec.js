@@ -60,6 +60,14 @@ async function fakePlatform(page, served) {
 }
 
 const snapshot = page => page.evaluate(() => glob2Diagnostics.snapshot());
+// Play online from the main menu. A fresh browser has no age band, so the one-time
+// question comes first (src/app/AgeGate.h); answering it opens the hub.
+const openOnline = async page => {
+  await clickMainMenu(page, 'yog');
+  await screen(page, 'AgeQuestionScreen');
+  await clickControl(page, 'age.13plus');
+  await screen(page, 'OnlineHubScreen');
+};
 const screen = (page, name) => name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async () => (await snapshot(page)).screen, {timeout:60000}).toContain(name);
 
 // What a click opened: a tab, or (a browser that refuses the tab) the page's link,
@@ -99,7 +107,7 @@ for (const runtime of ['threaded', 'serial']) {
         'WebKit under Playwright routing has no shared memory for a routed origin');
       expect(started.executionMode, 'thread fallback: ' + JSON.stringify(started.threadFallback) +
         ' isolated: ' + await page.evaluate(() => self.crossOriginIsolated)).toBe(runtime);
-      await clickMainMenu(page, 'yog'); await screen(page, 'OnlineHubScreen');
+      await openOnline(page);
       // Online as a guest: the hub offers Sign in.
       await expect.poll(async () => Boolean((await snapshot(page)).controls['account/signin']), {timeout:30000}).toBe(true);
       return platform;
@@ -112,7 +120,7 @@ for (const runtime of ['threaded', 'serial']) {
       });
       await page.goto(url().slice(ORIGIN.length)); await screen(page, 'MainMenuScreen');
       expect((await snapshot(page)).executionMode).toBe(runtime);
-      await clickMainMenu(page, 'yog'); await screen(page, 'OnlineHubScreen');
+      await openOnline(page);
       // Early reconnects replace the offline banner during a mouse press and
       // move the link away from its release point. Four failures put the real
       // client in a longer backoff window; wait for its offline layout too.

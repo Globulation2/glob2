@@ -1,4 +1,5 @@
 #include "app/ClientFeatures.h"
+#include "ScopedAgeBand.h"
 #include "Map.h"
 #include "hive/HiveClient.h"
 #include <type_traits>
@@ -475,6 +476,7 @@ TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindP
 	if constexpr (!ClientFeatures::Commander) return;
 	glob2test::HeadlessGlobals globals(
 		{.display = true, .loadStrings = true, .width = 1000, .height = 800});
+	glob2test::ScopedAgeBand chatAge; // these tests send chat
 	// GameGUI owns the client and saves its state during destruction, so its
 	// borrowed storage and platform must outlive the GUI.
 	Online::MemoryStorage storage;
@@ -1190,6 +1192,7 @@ TEST_CASE("Hive cards remain inspectable and actionable above the text composer 
 		  doctest::test_suite("HiveMindPresentation"))
 {
 	glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 1000, .height = 800});
+	glob2test::ScopedAgeBand chatAge; // these tests send chat
 	glob2test::HeadlessGame world({.discovered = true, .loadDefaultRace = true, .header = true});
 	auto &gui = world.gui;
 	// HeadlessGame deliberately skips client initialization; this fixture paints
@@ -1475,6 +1478,7 @@ TEST_CASE("local game tools report resource fields, numeric status and initial p
 		  doctest::test_suite("HiveMindIntegration"))
 {
 	glob2test::HeadlessGlobals globals({.seed = 19});
+	glob2test::ScopedAgeBand chatAge; // these tests send chat
 	PresentationFrame published; // Outlives the GUI that points at it.
 	glob2test::HeadlessGame world({.wDec = 6, .hDec = 6, .teams = 2, .clearImmobile = true,
 								   .loadDefaultRace = true, .header = true});

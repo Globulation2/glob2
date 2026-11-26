@@ -3065,5 +3065,10 @@
   "Soft glass bells and rounded synth pads, curious and unhurried. A playful answering melody, with a deeper pulse as the colony grows.": "เสียงกระดิ่งแก้วแผ่วเบาและซินธ์แพดโทนกลมกล่อม ชวนใคร่รู้และไม่เร่งรีบ มีทำนองโต้ตอบอย่างขี้เล่น พร้อมจังหวะทุ้มลึกขึ้นเมื่ออาณานิคมเติบโต",
   "A waltz for the rain": "วอลซ์แด่สายฝน",
   "A cozy folk waltz with recorder and kalimba. Sparse, breathing phrases for calm, a lilting rhythm for building, and warm low strings for combat.": "เพลงวอลซ์โฟล์กบรรยากาศอบอุ่น บรรเลงด้วยขลุ่ยรีคอร์เดอร์และคาลิมบา ช่วงสงบใช้วลีดนตรีโปร่งที่เว้นช่วงพัก ช่วงก่อสร้างใช้จังหวะพลิ้วไหว และช่วงต่อสู้ใช้เสียงเครื่องสายทุ้มที่อบอุ่น",
-  "Untitled skin": "สกินไม่มีชื่อ"
+  "Untitled skin": "สกินไม่มีชื่อ",
+  "Your age": "อายุของคุณ",
+  "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "การแชท การแชร์เนื้อหานอกเหนือจากแบบส่วนตัว การตั้งชื่อ และการอัปโหลดรูปภาพ สำหรับผู้เล่นที่มีอายุ 13 ปีขึ้นไป เราเก็บไว้เฉพาะคำตอบของคุณ ไม่เคยเก็บวันเกิดของคุณ",
+  "Under 13": "ต่ำกว่า 13",
+  "13 or over": "13 ขึ้นไป",
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "คุณบอกว่าอายุต่ำกว่า 13 ปี จึงปิดการแชทและการแชร์ไว้ ผู้ปกครองสามารถติดต่อเราเพื่อเปลี่ยนการตั้งค่านี้ได้"
 }

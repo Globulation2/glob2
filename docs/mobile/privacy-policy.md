@@ -13,8 +13,9 @@ Boom Drive, Unit 346, Oakville, Ontario L6H 7X5, Canada ("we"). For privacy
 questions and requests, contact **bradley.allen.arsenault@gmail.com**
 or write to that address.
 
-Last updated: 20 November 2026. Website analytics choices were added to the
-unified game, online service and Fire tablet policy.
+Last updated: 24 November 2026. Chat and other social features became available
+only to players aged 13 or over, with the age range the game asks for or reads
+from Apple devices.
 
 ## Public website browsing
 
@@ -73,8 +74,12 @@ avoid posting private information in public repository issues.
 - We record minimal first-party activity for online accounts, described below. The
   apps contain no advertising or third-party analytics or crash-reporting services;
   nothing tracks you across other apps or sites, and we do not sell your data.
-- The game has no minimum age. Playing online as a guest needs no e-mail address,
-  no real name and no account details at all.
+- The game has no minimum age, but chat and other social features are only for
+  players aged 13 or over: before LAN or online play the game asks for your age
+  range (under 13, or 13 or over) or, on Apple devices, uses Apple's age range
+  sharing. We keep only that answer, never a birthday. See [Children](#children).
+  Playing online as a guest needs no e-mail address, no real name and no account
+  details at all.
 - You can download a copy of your data and delete your account yourself: in the
   game, **Settings > Online > Download or delete my data** opens your account page,
   [app.glob2.online/account](https://app.glob2.online/account).
@@ -95,6 +100,11 @@ your device backups, according to your device settings. Neither app requests acc
 your contacts, location, camera or microphone. In the browser game, the same data is
 kept in your browser's storage for the site.
 
+The game's settings also hold your age range (under 13, 13 or over, or not yet
+answered) and where it came from (your answer, your Apple device, or your online
+account). It is used to turn chat and sharing off for younger players, on the
+device and, when you play online, on your account.
+
 You can delete local data through your device's storage settings, by uninstalling the
 app, or by clearing the site's data in your browser.
 
@@ -102,7 +112,9 @@ app, or by clearing the site's data in your browser.
 
 LAN games connect devices on the same local network directly. The devices exchange
 network addresses, the player names chosen in the game, game data, in-game text chat
-and voice chat from players who use it (the mobile apps do not record voice). Other players can keep a record or replay of a shared
+and voice chat from players who use it (the mobile apps do not record voice). Text
+chat in LAN rooms and matches is off on the device of a player who is under 13 or
+has not said their age; the game still plays. Other players can keep a record or replay of a shared
 match on their devices. LAN games do not use an account and do not contact us.
 
 ## Online play
@@ -112,6 +124,7 @@ match on their devices. LAN games do not use an account and do not contact us.
 | Data | Why |
 | --- | --- |
 | **Account:** an account number, display name, guest or registered status, creation time, when you were last online, when you last renamed, and any moderation status (role, mute, ban) | To run your account and show who you are to other players. |
+| **Age range:** under 13, 13 or over, or not yet answered; whether it came from your own answer, your device's age signal (Apple's Declared Age Range or Google Play's age signals), or a moderator; and when it was set. Never a birthday. | To turn off chat, sharing, choosing a name and uploading a photo for players under 13 or who have not answered. |
 | **Profile photo:** the cropped photo you upload, or a cached Gravatar image, and your photo preference | To display a public photo alongside your name. Uploaded originals and image metadata are not retained. You can choose initials instead. |
 | **Sign-in:** for a guest, a device credential, of which we store only a one-way hash, and the kind of device (desktop, Android, iOS, browser). If you link a sign-in provider: the provider's name, its identifier for you and, when the provider shares it, your e-mail address. A new account takes the display name the provider suggests. If you use a username and password: the username and a password hash (argon2id); we never store the password itself. | To sign you in, keep you signed in, and let moderators find an account by its linked e-mail address. |
 | **Sessions:** refresh tokens and web-session cookies (stored only as hashes), sign-in attempts from the game to your browser, with a confirmation code and a cookie that binds the attempt to that browser | To keep you signed in safely and detect stolen sign-ins. |
@@ -291,8 +304,9 @@ for advertising or sell it.
 
 ## Children
 
-Globulation 2 is a family-friendly game and has no minimum age. The game and the
-service are built to collect as little as possible from anyone, children included:
+Globulation 2 is a family-friendly game and has no minimum age. Social features
+are only for players aged 13 or over. The game and the service are built to collect
+as little as possible from anyone, children included:
 
 - Single-player, the campaign, the map editor and LAN games send nothing to us.
 - Online play works as a guest, which needs no e-mail address, no real name, no
@@ -303,9 +317,31 @@ service are built to collect as little as possible from anyone, children include
   tracking by advertisers, and we never sell data or use it for marketing.
   Optional purchases and AI tools on the website are described above; they are
   separate from offline gameplay.
-- Online play does include room chat and in-game text chat with other players,
+- Before LAN or online play, the game asks whether you are under 13 or 13 or over.
+  On iPhone, iPad and Apple devices with iOS or iPadOS 26 or later, it first asks
+  Apple's Declared Age Range, which a parent can set up through Family Sharing; the
+  game learns only whether you are under 13. The Google Play app likewise asks
+  Google Play's age signals, where Google Play shares an age range (in some regions,
+  and as you or a parent chose); Google Play gives the game an age range and the
+  game keeps only whether it is under 13. If you prefer not to answer ("Not
+  now"), or decline to share, the game treats you as under 13 until you answer. On
+  the website, your account page asks the same question.
+- For players under 13, and for players who have not answered, chat is off: they
+  cannot send room or in-game chat messages or voice chat, and do not see or hear
+  other players'. Online, a match with such a player has chat turned off for
+  everyone in it. They can host rooms by invite link but not list public ones. They
+  also cannot share maps, AIs, generators, asset sets, buildings or music beyond
+  keeping them private, cannot choose a display name (they keep a generated one such as
+  `Guest-1234`) and cannot upload a photo. Answering "under 13" makes anything they
+  had shared private. Single-player, the campaign, the editor, LAN and online
+  matches, including quick matches and rooms, stay available.
+- An answer of "under 13" cannot be changed in the game or on the website. When a
+  child turns 13, or the answer was a mistake, a parent or guardian can ask us at
+  the contact address to change it; on Apple devices, the device's age range
+  updates it automatically.
+- Players aged 13 or over have room chat and in-game text chat with other players,
   and a registered account chooses its own display name, which is public. Parents
-  may want to tell children not to use their real name as a display name or share
+  may want to tell teenagers not to use their real name as a display name or share
   personal details in chat. Moderators can mute, rename and ban accounts.
 
 A parent or guardian can download or delete a child's account on the account page
@@ -381,7 +417,8 @@ enter a host address manually. A manually entered address can lead outside your
 local network. The game requests Android's Internet permission for these
 connections. When you choose to host or join a game, the host and participants
 exchange network addresses, player names chosen in the game, gameplay state,
-and any in-game chat messages. Other participants can retain data from a shared
+and any in-game chat messages (chat is off on the tablet of a player who is under
+13 or has not said their age). Other participants can retain data from a shared
 match on their own devices. The game does not collect this information for the
 Globulation 2 project.
 

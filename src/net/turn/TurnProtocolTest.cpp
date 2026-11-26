@@ -29,6 +29,7 @@ using namespace turntest;
 static_assert(ORDER_TYPE_NULL == ORDER_NULL, "relay order ids must mirror NetConsts.h");
 static_assert(ORDER_TYPE_PLAYER_QUIT == ORDER_PLAYER_QUIT_GAME, "relay order ids must mirror NetConsts.h");
 static_assert(ORDER_TYPE_VOICE == ORDER_VOICE_DATA, "relay order ids must mirror NetConsts.h");
+static_assert(ORDER_TYPE_TEXT_MESSAGE == ORDER_TEXT_MESSAGE, "relay order ids must mirror NetConsts.h");
 static_assert(ORDER_TYPE_ADJUST_LATENCY == ORDER_ADJUST_LATENCY, "relay order ids must mirror NetConsts.h");
 
 namespace

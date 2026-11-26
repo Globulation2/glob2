@@ -7190,3 +7190,23 @@ You host this game: leaving ends it for everyone.
 A JavaScript AI stopped: %0. Its colony receives no more orders; Menu → AI telemetry shows the full error.
 [hub no assisted queues]
 This server has no quick-match queues for players with the MCP server enabled. Turn it off in Settings to search the others.
+[How old are you?]
+How old are you?
+[age question explanation]
+Chat with other players is for players aged 13 or over. Single-player, the campaign, LAN and online matches work for everyone.
+[age question privacy]
+Only your answer is kept, never your birthday. If you are under 13, it cannot be changed here later.
+[age question not now]
+Not now keeps chat off. You will be asked again the next time you play with others.
+[age question save failed]
+Your answer could not be saved. Please try again.
+[Under 13]
+Under 13
+[13 or over]
+13 or over
+[Not now]
+Not now
+[chat off for age]
+Chat is off for players under 13 and for players who have not said their age.
+[chat off in this match]
+Chat is off in this match: a player in it is under 13 or has not said their age.

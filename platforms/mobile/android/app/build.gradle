@@ -36,6 +36,16 @@ android {
     packaging { jniLibs { useLegacyPackaging false } }
 }
 
+// Google Play Age Signals (src/app/AgeGate.h): only the Google Play build has the
+// Play-only library and its bridge; android.py turns it off for F-Droid, Amazon and
+// China, and the F-Droid recipe removes platforms/mobile/android-play before scanning.
+def playAgeSignals = new File(nativeBuild.root, 'platforms/mobile/android-play/play.gradle')
+if (nativeBuild.play_age_signals) {
+    if (!playAgeSignals.exists()) throw new GradleException("The Google Play build needs ${playAgeSignals}")
+    ext.playAgeSignalsDir = playAgeSignals.parentFile
+    apply from: playAgeSignals
+}
+
 tasks.register('compileGlob2', Exec) {
     workingDir nativeBuild.root
     commandLine nativeBuild.command

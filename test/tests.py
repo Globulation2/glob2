@@ -239,6 +239,7 @@ ENGINE_TESTS = [
     '#src/ui/settings/SettingsExperimentsTest.cpp',
     '#src/ui/settings/SettingsBuildingsTest.cpp',
     '#src/app/SystemLanguageTest.cpp',
+    '#src/app/AgeGateTest.cpp',
     ('#src/app/AdaptiveSettingsTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/game/orders/GuardAreaBalanceTest.cpp',
     ('#src/game/orders/FarmAreaTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -639,6 +640,7 @@ SIM_SUPPORT = [
 SIM_PRODUCTION_SOURCES = MAP_PRODUCTION_SOURCES + [
     '#src/app/GlobalContainer.cpp',
     '#src/app/Settings.cpp',
+    '#src/app/AgeGate.cpp',
     '#src/app/SystemLanguage.cpp',
     '#src/app/DeviceProfile.cpp',
     '#src/app/CompileProfile.cpp',

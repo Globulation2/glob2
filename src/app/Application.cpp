@@ -18,6 +18,8 @@
 #include "MainMenuScreen.h"
 #include "HandPreferenceScreen.h"
 #include "AudioPreferenceScreen.h"
+#include "AgeQuestionScreen.h"
+#include "AgeGate.h"
 #include "IntroductionOfferScreen.h"
 #include "CustomGameScreen.h"
 #include "MessageScreen.h"
@@ -296,17 +298,50 @@ void Application::choose(int choice)
 			std::cerr << CompileProfile::missing("The map editor") << std::endl;
 		break;
 	case MainMenuScreen::MULTIPLAYERS_LAN:
-		screens.push(std::make_unique<LANMenuScreen>(screens));
+		withAgeBand([this] { screens.push(std::make_unique<LANMenuScreen>(screens)); });
 		break;
 	case MainMenuScreen::PLAY_ONLINE:
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
-		screens.push(std::make_unique<OnlineHubScreen>(screens));
+		withAgeBand([this] { screens.push(std::make_unique<OnlineHubScreen>(screens)); });
 #endif
 		break;
 	case MainMenuScreen::QUIT:
 		screens.stop();
 		break;
 	}
+}
+
+// Before playing with others: while the age band is unknown, ask the platform's
+// age signal (Declared Age Range on Apple builds), then the one-time question.
+// Every answer, "Not now" included, continues to `next`: LAN and online play
+// stay available, only their chat depends on the band (src/app/AgeGate.h).
+void Application::withAgeBand(std::function<void()> next)
+{
+	if (!AgeGate::shouldAsk(AgeGate::local()))
+	{
+		next();
+		return;
+	}
+	// A slow platform answer (Play Age Signals is a network call) comes back to the
+	// main menu, which is up again meanwhile: only the newest request continues, and
+	// only while the menu is still what the player sees.
+	const std::uint64_t request = ++ageRequest;
+	AgeGate::requestPlatformSignal([this, request, next = std::move(next)](AgeGate::Signal signal) {
+		if (request != ageRequest)
+			return;
+		if (auto *top = screens.top(); top && !dynamic_cast<MainMenuScreen *>(top))
+			return;
+		const AgeGate::Local current = AgeGate::local();
+		const AgeGate::Local updated = AgeGate::applySignal(current, signal, AgeGate::platformSource());
+		if (updated.band != current.band)
+			AgeGate::store(updated);
+		if (!AgeGate::shouldAsk(updated))
+		{
+			next();
+			return;
+		}
+		screens.push(std::make_unique<AgeQuestionScreen>(), [next](GAGGUI::Screen &, int) { next(); });
+	});
 }
 
 // The browser installs some data after the main menu is up (buildsys/web_assets.py);
@@ -393,6 +428,7 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 	}
 	const auto &events = *delivered;
 	Online::pump();
+	AgeGate::pollPlatformSignal();
 	// Memory signals and the VRAM probe, also while hidden: a trim in the
 	// background is when the system judges the app's size.
 	DeviceAdaptation::serviceFrame(events);

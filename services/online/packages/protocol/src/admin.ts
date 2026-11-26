@@ -33,6 +33,14 @@ export const AdminMuteRequest = Strict({
   minutes: Type.Integer({ minimum: 0, maximum: 525600 }),
   reason: Type.Optional(Reason),
 });
+/**
+ * POST /api/v1/admin/accounts/{id}/age-band (moderators): sets the band on a
+ * parent's request or an appeal; the only way out of a self-declared under_13.
+ */
+export const AdminAgeBandRequest = Strict({
+  band: Type.Union([Type.Literal('under_13'), Type.Literal('13_plus')]),
+  reason: Type.Optional(Reason),
+});
 /** POST /api/v1/admin/accounts/{id}/ban (administrators only); banned false lifts a ban. */
 export const AdminBanRequest = Strict({ banned: Type.Boolean(), reason: Type.Optional(Reason) });
 /** POST /api/v1/admin/accounts/{id}/role (administrators only). */
@@ -40,5 +48,6 @@ export const AdminRoleRequest = Strict({ role: AccountRole, reason: Type.Optiona
 
 export type AdminRenameRequest = Static<typeof AdminRenameRequest>;
 export type AdminMuteRequest = Static<typeof AdminMuteRequest>;
+export type AdminAgeBandRequest = Static<typeof AdminAgeBandRequest>;
 export type AdminBanRequest = Static<typeof AdminBanRequest>;
 export type AdminRoleRequest = Static<typeof AdminRoleRequest>;

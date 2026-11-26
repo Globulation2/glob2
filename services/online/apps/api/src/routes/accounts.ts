@@ -6,11 +6,13 @@ import type { Kysely } from 'kysely';
 import type { Database } from '@glob2/db';
 import {
   DeleteAccountRequest,
+  SetAgeBandRequest,
   UpdateAccountRequest,
   type PublicAccount,
   type SelfAccount,
 } from '@glob2/protocol';
 import { exportAccount } from '../auth/accountExport.ts';
+import { setAgeBand } from '../auth/ageGate.ts';
 import { apiError } from '../errors.ts';
 import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { body } from '../http/validate.ts';
@@ -37,6 +39,13 @@ export async function accountRoutes(
     const { displayName } = body(UpdateAccountRequest, request.body);
     const renamed = await identity.accounts.rename(account, displayName);
     return identity.accounts.selfView(renamed);
+  });
+
+  // The one-time age question, or a platform age signal relayed by the game.
+  app.put('/api/v1/accounts/me/age-band', async (request): Promise<SelfAccount> => {
+    const { account } = await requireAccount(identity, request);
+    const { band, source } = body(SetAgeBandRequest, request.body);
+    return identity.accounts.selfView(await setAgeBand(db, account.id, band, source));
   });
 
   // "Download my data" (privacy policy; GDPR/PIPEDA access requests): every

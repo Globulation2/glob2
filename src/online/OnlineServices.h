@@ -3,6 +3,7 @@
 
 #include "InviteLink.h"
 
+#include <chrono>
 #include <cstdint>
 #include <functional>
 #include <memory>
@@ -57,8 +58,18 @@ class Services
 	HookId addHook(std::function<void()> hook);
 	void removeHook(HookId id);
 
+	// Lines the device's age band up with the signed-in account's (AgeGate::reconcile);
+	// called by update(). Public for tests.
+	void syncAgeBand();
+
   private:
 	std::unique_ptr<QuickMatch> search;
+	// The account and bands last reconciled, and whether a PUT is in flight.
+	std::string ageSyncedKey;
+	bool ageSyncPending = false;
+	// After a failed PUT (not a lock), the same reconcile waits before trying again.
+	std::string ageSyncFailedKey;
+	std::chrono::steady_clock::time_point ageSyncRetryAt{};
 	std::vector<std::pair<HookId, std::function<void()>>> hooks;
 	HookId nextHook = 1;
 };

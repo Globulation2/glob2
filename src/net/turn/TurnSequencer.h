@@ -126,6 +126,12 @@ namespace Turn
 		bool desyncFlagged() const { return flagged; }
 		/// True once every human seat has left.
 		bool matchOver() const { return over; }
+		/// Turns chat off for the rest of the match: every later ORDER_TEXT_MESSAGE and
+		/// ORDER_VOICE_DATA, from any seat, is dropped before sequencing, so no client receives it. The
+		/// relay calls this when a ticket of the match says chat is off (a player under
+		/// 13 or without a declared age). One-way; chat orders never change the game.
+		void disableChat() { chatOff = true; }
+		bool chatDisabled() const { return chatOff; }
 		/// True when the players agree the game is over: some client left with
 		/// Quit(GameFinished), and so did every other human seat still in the match at
 		/// that moment. One client's claim alone decides nothing (a seat that lost its
@@ -242,6 +248,7 @@ namespace Turn
 		bool presenceDirty = true;
 		bool flagged = false;
 		bool over = false;
+		bool chatOff = false;
 		bool incomplete = false;
 		std::uint32_t finishedClaims = 0;     ///< seats that sent Quit(GameFinished)
 		std::uint32_t inMatchAtFirstClaim = 0; ///< human seats not yet left at the first claim

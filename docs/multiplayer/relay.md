@@ -201,7 +201,17 @@ The relay then checks the claims' shape, and reports a failure as `claims`:
   non-empty, and `seat` is one of them;
 - `simVersion` is exactly `{versionMinor, netProtocol, dataHash}`;
 - `relayUrl` is an http(s) or ws(s) URL;
+- `chat`, when present, is a boolean;
 - `iss` equals `GLOB2_RELAY_TICKET_ISSUER` when that is set.
+
+**Chat off.** The platform sets `chat: false` in every ticket of a match with a
+human player who is under 13 or has not declared an age
+([age bands](identity.md#age-bands)). The first such ticket the relay admits turns
+chat off for the rest of the match (`TurnSequencer::disableChat`, logged once): every
+later `ORDER_TEXT_MESSAGE` and `ORDER_VOICE_DATA` from any seat is dropped before sequencing and counted in
+`ordersDropped`, so no client receives it. Chat orders never change the game, so
+this cannot desynchronize a match. A relay older than this rule ignores the claim
+and only the clients hide chat.
 
 When `GLOB2_RELAY_PUBLIC_URL` is set, a ticket's `relayUrl` must equal it exactly
 (`Reject(2)`, `Ticket is for another relay`), so a ticket works only on the relay the

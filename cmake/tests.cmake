@@ -123,6 +123,7 @@ set(GLOB2_ENGINE_TESTS_0_SOURCES
     src/ui/settings/SettingsExperimentsTest.cpp
     src/ui/settings/SettingsBuildingsTest.cpp
     src/app/SystemLanguageTest.cpp
+    src/app/AgeGateTest.cpp
     src/game/orders/GuardAreaBalanceTest.cpp
     src/ui/UIIconsTest.cpp
     src/game/screens/CustomGameSetupHarness.cpp
@@ -1180,6 +1181,7 @@ set(GLOB2_SIM_TESTS_REUSED_CLIENT_SOURCES
     src/team/BaseTeam.cpp
     src/app/GlobalContainer.cpp
     src/app/Settings.cpp
+    src/app/AgeGate.cpp
     src/app/SystemLanguage.cpp
     src/app/DeviceProfile.cpp
     src/app/CompileProfile.cpp
@@ -1408,6 +1410,7 @@ set(GLOB2_ANDROID_ENGINE_TESTS_0_SOURCES
     src/ui/settings/SettingsExperimentsTest.cpp
     src/ui/settings/SettingsBuildingsTest.cpp
     src/app/SystemLanguageTest.cpp
+    src/app/AgeGateTest.cpp
     src/game/orders/GuardAreaBalanceTest.cpp
     src/ui/UIIconsTest.cpp
     src/game/screens/CustomGameSetupHarness.cpp

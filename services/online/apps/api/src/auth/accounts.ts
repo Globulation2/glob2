@@ -13,6 +13,7 @@ import {
 } from '@glob2/protocol';
 import { apiError } from '../errors.ts';
 import { randomSecret, sha256Hex } from './secrets.ts';
+import { requireSocialFeatures, socialFeatures } from './ageGate.ts';
 
 type Db = Kysely<Database> | Transaction<Database>;
 
@@ -159,7 +160,10 @@ export class AccountService {
         ...(identity.email ? { email: identity.email } : {}),
       })),
       entitlements: entitlements.map((row) => row.entitlement),
-      canRename: account.kind === 'registered',
+      canRename: account.kind === 'registered' && socialFeatures(account),
+      ageBand: account.age_band,
+      ...(account.age_band_source ? { ageBandSource: account.age_band_source } : {}),
+      socialFeatures: socialFeatures(account),
       ...(renameAt ? { renameAvailableAt: iso(renameAt) } : {}),
     };
   }
@@ -271,6 +275,7 @@ export class AccountService {
           'Guests get generated names; link a sign-in method to choose one.',
         );
       }
+      requireSocialFeatures(account, 'Players under 13 keep their generated name.');
       const availableAt = this.renameAvailableAt(account);
       if (availableAt) {
         throw apiError('rate_limited', 'Display names can only be changed once per interval.', {

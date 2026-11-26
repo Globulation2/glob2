@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <stdio.h>
+#include "AgeGate.h"
 #include "Map.h"
 #include <stdarg.h>
 #include <math.h>
@@ -243,6 +244,9 @@ void GameGUI::handleClientEvent(ClientEventVariant&& event)
 		}
 		else if constexpr (std::is_same_v<T, ClientEvent::ChatMessage>)
 		{
+			// Players without chat (src/app/AgeGate.h) see no one's messages.
+			if (!AgeGate::chatAllowedNow())
+				return;
 			if (e.messageOrderType==MessageOrder::NORMAL_MESSAGE_TYPE)
 			{
 				if (e.recipientsMask &(Team::teamNumberToMask(localPlayer)))
@@ -265,8 +269,9 @@ void GameGUI::handleClientEvent(ClientEventVariant&& event)
 		}
 		else if constexpr (std::is_same_v<T, ClientEvent::VoiceData>)
 		{
-			// Headless games (bots, the verifier) have no mixer.
-			if (globalContainer->mix && (e.order->recipientsMask & (Team::teamNumberToMask(localPlayer))))
+			// Headless games (bots, the verifier) have no mixer. Players without chat
+			// (src/app/AgeGate.h) hear no one.
+			if (globalContainer->mix && AgeGate::chatAllowedNow() && (e.order->recipientsMask & (Team::teamNumberToMask(localPlayer))))
 				globalContainer->mix->addVoiceData(e.order);
 		}
 		else if constexpr (std::is_same_v<T, ClientEvent::PlayerQuit>)

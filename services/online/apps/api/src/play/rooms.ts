@@ -54,6 +54,7 @@ import { apiError } from '../errors.ts';
 import type { ReplicaPresence } from '../realtime/presence.ts';
 import { catalogTitles, generatorLabel, uploadTitle } from '../history/summaries.ts';
 import { versionUrls } from '../maps/catalog.ts';
+import { currentAgeBand, requireSocialFeatures } from '../auth/ageGate.ts';
 
 type Db = Kysely<Database>;
 
@@ -387,6 +388,29 @@ export class RoomService {
       .selectFrom('room_members')
       .select('account_id')
       .where('room_id', '=', roomId)
+      .execute();
+    return rows.map((r) => r.account_id);
+  }
+
+  /**
+   * A public room shows its free-text name to everyone browsing: only hosts with
+   * social features may list one. Others host by invite link. Read fresh.
+   */
+  private async requirePublicHost(caller: Account): Promise<void> {
+    requireSocialFeatures(
+      { age_band: await currentAgeBand(this.db, caller.id) },
+      'Players under 13 can host rooms by invite link, not public ones.',
+    );
+  }
+
+  /** Members who receive room chat: those with social features (13_plus). */
+  async chatRecipientIds(roomId: string, db: Db = this.db): Promise<string[]> {
+    const rows = await db
+      .selectFrom('room_members as m')
+      .innerJoin('accounts as a', 'a.id', 'm.account_id')
+      .select('m.account_id')
+      .where('m.room_id', '=', roomId)
+      .where('a.age_band', '=', '13_plus')
       .execute();
     return rows.map((r) => r.account_id);
   }
@@ -907,6 +931,7 @@ export class RoomService {
   ): Promise<RoomState> {
     if (params.map?.kind === 'scripted' && !generatorSupport)
       throw apiError('update_required', 'Update the game to use shared generators.');
+    if (params.visibility === 'public') await this.requirePublicHost(caller);
     const subject = await accessSubject(this.db, caller.id);
     if (!subject) throw apiError('forbidden', 'Your account cannot host rooms.');
     const decision = await this.access.canHost(subject, {
@@ -1281,6 +1306,7 @@ export class RoomService {
     if (current.host_account_id !== caller.id) {
       throw apiError('forbidden', 'Only the host can change the room.');
     }
+    if (changes.visibility === 'public') await this.requirePublicHost(caller);
     if (changes.map?.kind === 'scripted') {
       const older = await this.db
         .selectFrom('room_members')
@@ -1503,10 +1529,12 @@ export class RoomService {
     // socket signed in.
     const current = await this.db
       .selectFrom('accounts')
-      .select(['muted_until', 'status'])
+      .select(['muted_until', 'status', 'age_band'])
       .where('id', '=', caller.id)
       .executeTakeFirst();
     if (!current || current.status !== 'active') throw apiError('forbidden', 'Account inactive.');
+    // Read fresh too, like the mute: under-13 and undeclared players have no chat.
+    requireSocialFeatures(current, 'Chat is off for players under 13.');
     if (current.muted_until && current.muted_until > new Date()) {
       throw apiError('forbidden', 'You are muted.', {
         mutedUntil: current.muted_until.toISOString(),

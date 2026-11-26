@@ -49,6 +49,12 @@ export const MatchTicketClaims = Open(
       maxItems: 64,
       description: 'Entitlement keys of the account. Relays ignore them today.',
     }),
+    chat: Type.Optional(
+      Type.Boolean({
+        description:
+          'False when a human player of the match may not use chat (age band not 13_plus). The relay then drops every chat order of the match, from any seat, once any ticket of the match says false. Absent means true.',
+      }),
+    ),
   },
   {
     description:

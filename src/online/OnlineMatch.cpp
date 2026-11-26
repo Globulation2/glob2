@@ -2,6 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "OnlineMatch.h"
+#include "AgeGate.h"
 #include "mcp/Availability.h"
 #include "PlatformApi.h"
 #include "SkinDownloads.h"
@@ -286,10 +287,19 @@ OnlineMatch::OnlineMatch(PlatformClient &client, MapCache &maps, OnlineStorage &
 		outcome->provisional = preview.value("provisional", false);
 	}
 	outcome->listen(client);
+	// The platform turns chat off for the whole match when a player in it is under
+	// 13 or undeclared (MatchAssignment.chat false); the relay drops chat orders and
+	// the HUD hides the chat box for the match's lifetime.
+	const bool chatOn = !(this->assignment.contains("chat") && this->assignment["chat"].is_boolean() &&
+						  !this->assignment["chat"].get<bool>());
+	matchChatToken = AgeGate::beginMatchChat(chatOn);
 }
 
 // calls (a member) cancels the reconnect request.
-OnlineMatch::~OnlineMatch() = default;
+OnlineMatch::~OnlineMatch()
+{
+	AgeGate::endMatchChat(matchChatToken);
+}
 
 void OnlineMatch::parseAssignment()
 {

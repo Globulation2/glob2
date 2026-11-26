@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AdminAgeBandRequest",
+  "title": "AdminAgeBandRequest",
+  "type": "object",
+  "required": [
+    "band"
+  ],
+  "properties": {
+    "band": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "under_13"
+        },
+        {
+          "type": "string",
+          "const": "13_plus"
+        }
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    }
+  },
+  "additionalProperties": false
+}

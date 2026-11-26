@@ -40,6 +40,11 @@ type NullableJson<T> = ColumnType<T | null, string | T | null | undefined, strin
 export type JsonValue =
   string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 
+/** Age band of an account; social features need '13_plus'. */
+export type AgeBand = 'unknown' | 'under_13' | '13_plus';
+/** Who set an account's age band. */
+export type AgeBandSource = 'self' | 'apple' | 'google_play' | 'moderator';
+
 export interface AccountsTable {
   avatar_source: Defaulted<'automatic' | 'uploaded' | 'initials'>;
   avatar_key: Nullable<string>;
@@ -53,6 +58,9 @@ export interface AccountsTable {
   role: Defaulted<'user' | 'moderator' | 'admin'>;
   status: Defaulted<'active' | 'banned' | 'deleted'>;
   muted_until: NullableTimestamp;
+  age_band: Defaulted<AgeBand>;
+  age_band_source: Nullable<AgeBandSource>;
+  age_band_at: NullableTimestamp;
   created_at: Timestamp;
   updated_at: Timestamp;
   last_seen_at: NullableTimestamp;

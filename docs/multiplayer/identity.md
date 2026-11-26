@@ -44,6 +44,8 @@ or surrounding spaces), a role (`user`, `moderator`, `admin`) and a status
 | `POST /api/v1/auth/local/sign-in` | `LocalSignInRequest` → `SignInResponse` |
 | `POST /api/v1/auth/web/sign-out` | ends the browser's web session |
 | `GET /api/v1/accounts/me`, `PATCH …/me` | `SelfAccount`; `UpdateAccountRequest` |
+| `PUT /api/v1/accounts/me/age-band` | `SetAgeBandRequest` → `SelfAccount`; see [age bands](#age-bands) |
+| `POST /api/v1/admin/accounts/{id}/age-band` | moderators: `AdminAgeBandRequest` → `AdminAccount` |
 | `DELETE /api/v1/accounts/me/identities/{provider}` | 204; unlinks that sign-in method. A registered account keeps at least one: removing the last is `409 conflict` (`details.reason: last_sign_in_method`); an unlinked provider is `404` |
 | `GET /api/v1/accounts/{id}` | `PublicAccount` |
 | `GET /.well-known/jwks.json` | `PlatformJwks` |
@@ -52,6 +54,73 @@ Authenticated REST calls send `Authorization: Bearer <access token>`. Errors are
 `ErrorBody` documents (`unauthenticated` 401, `forbidden` 403, `conflict` 409,
 `rate_limited` 429, …).
 
+
+## Age bands
+
+Chat and other social features are only for players aged 13 or over. Each
+account has an age band (`accounts.age_band`): `unknown` (the default, also for
+every account that existed before bands), `under_13` or `13_plus`, with who set it
+(`age_band_source`: `self`, `apple`, `google_play` or `moderator`) and when. No
+birthdate is stored. `SelfAccount` carries `ageBand`, `ageBandSource` and
+`socialFeatures`, which is true only for `13_plus`: **`unknown` is restricted like
+`under_13`**, so a player who never answers, declines the platform's request or
+uses an old client has no social features until a band is set.
+
+Without social features the platform refuses, with `forbidden` and
+`details.reason: "age_restricted"` (and `details.ageBand`):
+
+| Surface | Restriction |
+| --- | --- |
+| Room chat | `room.chat` is refused; `room.chat` events are not delivered to such members, whoever sends them. The band is read when the message is sent, like a mute. |
+| Match chat | Tickets of a match with any such human player (or a seat whose account is gone) carry `chat: false`, and so does its `MatchAssignment`; the relay then drops every text and voice chat order of the match, from every seat ([relay](relay.md#tickets)). Clients hide the chat box and neither record nor play voice. |
+| Rooms | Hosting by invite link works; listing a `public` room, whose free-text name everyone browsing sees, is refused on create and update. |
+| Sharing | Maps, AIs, generators, asset sets and building families stay `private`: creating, publishing or updating them as `public` or `unlisted` is refused, and a new map without a visibility is `private`. Music cannot be published. |
+| Profile | No rename (`canRename` is false; the account keeps its generated name) and no photo upload or Gravatar (`automatic`); initials only. |
+
+Moving an account to `under_13` also makes its maps, AIs, generators, asset sets
+and building families private, unpublishes its music and switches its photo to initials, in one
+transaction. Single-player, campaigns, LAN, rooms, quick matches and rated play
+are unaffected.
+
+**Setting the band.** `PUT /api/v1/accounts/me/age-band` `{band, source}` records
+the game's one-time question (`self`) or a platform signal the game relays
+(`apple`, `google_play`). Moving to `under_13` is always allowed. Leaving
+`under_13` is refused (`forbidden`, `details.reason: "age_band_locked"`) unless
+the same platform set it (a child on a parent-managed Apple account who turns 13)
+or a moderator of a higher role does it with `POST /api/v1/admin/accounts/{id}/age-band`,
+audited as `account.age_band` (a parent's request, an appeal). Declaring `under_13`
+again keeps the existing source, so a relayed platform claim cannot take over a
+self-declared or moderator lock and then lift it. The platform cannot verify a
+relayed platform signal: a modified client could claim one, so a platform-set
+`under_13` is only as strong as the client that reported it.
+
+**The game** ([`src/app/AgeGate.h`](../../src/app/AgeGate.h)) keeps the band in
+its settings (`ageBand`, `ageBandSource`). Before LAN or online play, while the
+band is unknown, the App Store builds on iOS, iPadOS and macOS 26+ first ask
+Declared Age Range with an age gate of 13 (`platforms/apple/AgeSignal.swift`), and
+the Google Play build asks Play Age Signals (`PlayAgeSignals.java`: sharing access
+first, then the range; Play shares ranges only in some regions and with the
+player's or a parent's consent); otherwise, or
+when that is declined or unavailable, the game shows its own question (under 13,
+13 or over, Not now). "Not now" keeps the band unknown and asks again next time.
+Without social features the game hides LAN and online room chat and in-match
+chat (sending and showing), records and plays no voice chat, and the MCP
+`game_chat` tool refuses. Signed in, the
+client lines the device up with the account (`AgeGate::reconcile`): an unknown
+side takes the other's band; a band the device took from the account, and any
+band a moderator set, follow the account; otherwise `under_13` on either side wins
+over a self-declared `13_plus`, and a locked account band is adopted by the device.
+A failed update is retried after 30 seconds. The website's
+account page asks the same question for accounts that have not answered.
+
+| Platform | Age signal |
+| --- | --- |
+| iOS, iPadOS (App Store) | Declared Age Range on 26+, then the question |
+| macOS (Mac App Store) | Declared Age Range on 26+, then the question |
+| macOS (direct download) | the question |
+| Android (Google Play) | Play Age Signals where Play shares an age range (`platforms/mobile/android-play/`, `com.google.android.play:age-signals`), then the question |
+| Android (F-Droid, Amazon), desktop, Steam, itch, browser | the question |
+| Website accounts | the account page's question |
 
 ## Profile photos
 

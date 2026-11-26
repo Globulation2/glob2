@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Settings.h"
+#include "AgeGate.h"
 #include "DeviceProfile.h"
 #include "EngineTiming.h"
 #include "BuildingType.h"
@@ -194,6 +195,8 @@ void Settings::load(std::string filename)
     thumbSideChosen = false;
     audioPreferenceChosen = false;
     introductionOffered = false;
+    ageBand = "unknown";
+    ageBandSource.clear();
     rendererBackend = GAGCore::RendererBackend::Auto;
     targetRenderFps = 60;
 	setGraphicsDetail(true);
@@ -237,6 +240,15 @@ void Settings::load(std::string filename)
 		READ_PARSED_STRING(username);
         if (const auto value=parsed.find("introductionOffered"); value!=parsed.end())
             introductionOffered=value->second=="1";
+		if (const auto value = parsed.find("ageBand"); value != parsed.end() && AgeGate::parseBand(value->second))
+		{
+			ageBand = value->second;
+			if (const auto source = parsed.find("ageBandSource");
+				source != parsed.end() && AgeGate::parseSource(source->second))
+				ageBandSource = source->second;
+			if (ageBand == "unknown")
+				ageBandSource.clear();
+		}
 		// "password" (the YOG lobby's remembered password) is no longer read, and
 		// the next save drops it from the file.
 		READ_PARSED_INT(screenWidth);
@@ -499,6 +511,9 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "mute=%d\n", mute);
 		Utilities::streamprintf(stream, "introductionOffered=%d\n", introductionOffered);
 		Utilities::streamprintf(stream, "audioPreferenceChosen=%d\n", audioPreferenceChosen);
+		Utilities::streamprintf(stream, "ageBand=%s\n", ageBand.c_str());
+		if (!ageBandSource.empty())
+			Utilities::streamprintf(stream, "ageBandSource=%s\n", ageBandSource.c_str());
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
 		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);
 		Utilities::streamprintf(stream, "edgeScrollFullscreen=%d\n", edgeScrollFullscreen);

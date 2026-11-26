@@ -130,6 +130,7 @@ glob2_identity(GLOB2_DEV_FAST dev_fast OFF)
 glob2_identity(GLOB2_RETAIN_SYMBOLS retain_symbols OFF)
 glob2_identity(GLOB2_COMPILE_PROFILE compile_profile full)
 glob2_identity(GLOB2_IDENTITY_LINKER linker default)
+glob2_identity(GLOB2_DISTRIBUTION distribution direct)
 glob2_identity(GLOB2_LEAN_IMAGES lean_images OFF)
 glob2_identity(GLOB2_SIZE_OPTIMIZATION size_optimization "")
 # recording_codec=vp9|av1: WebM recording with the client's Opus (native Linux;
@@ -749,6 +750,10 @@ add_executable(glob2 "${GLOB2_ROOT}/${GLOB2_CLIENT_ENTRY_POINT}")
 set_target_properties(glob2 PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${GLOB2_OUT}/src")
 target_link_libraries(glob2 PRIVATE glob2_client_settings)
 glob2_link(glob2 glob2_client Glob2JavaScript gag usl)
+# Mac App Store builds: the Declared Age Range shim (cmake/apple-age-signal.cmake).
+if(darwin AND GLOB2_DISTRIBUTION STREQUAL "app_store")
+  include("${CMAKE_CURRENT_LIST_DIR}/cmake/apple-age-signal.cmake")
+endif()
 # The runtime assets come with glob2, the test binaries and test programs.
 add_dependencies(glob2 glob2_runtime_assets glob2_numeric_guard)
 

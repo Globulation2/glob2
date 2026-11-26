@@ -76,8 +76,11 @@ account. When a replica's last socket for an account closes, it marks the accoun
 disconnected in its rooms. A replica that still holds a socket for a member listed
 as disconnected marks it connected again when it next delivers that room.
 
-**Chat.** `room.chat` reaches every member through the same fan-out. A muted account
-(`accounts.muted_until`, set by moderators) gets `forbidden`. The mute is read when
+**Chat.** `room.chat` reaches every member aged 13 or over through the same
+fan-out; members under 13 or without a declared age neither send (`forbidden`,
+`details.reason: "age_restricted"`) nor receive it ([age bands](identity.md#age-bands)).
+A muted account (`accounts.muted_until`, set by moderators) gets `forbidden`. A host
+under 13 or without a declared age can create `link` rooms only. The mute is read when
 the message is sent, so it applies without signing in again. Each account may send 8
 messages per 10 seconds on each replica.
 

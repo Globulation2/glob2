@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "InGameStatistics.h"
+#include "ScopedAgeBand.h"
 #include "Map.h"
 #include "sim/snapshot/SnapshotStore.h"
 #include "tutorial/TutorialGuidance.h"
@@ -6667,6 +6668,7 @@ TEST_SUITE("GameGUITouch")
 		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
 		                                  .screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
 		glob2test::HeadlessGlobals globals(options);
+		glob2test::ScopedAgeBand chatAge; // the tactical chat action opens the composer
 		REQUIRE(NET_Init());
 		verifyTouchFontRaster();
 		GameGUITouchHarness::run();

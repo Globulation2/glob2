@@ -28,8 +28,11 @@ Online play creates an account, initially a guest account. Keep your sign-in
 credentials private. Do not use someone else's account without permission.
 Contact us if you believe your account has been compromised.
 
-The game has no minimum age. Parents and guardians should help children decide
-what to share in public names, profiles, uploads and chat. Where a child cannot
+The game has no minimum age. Chat, sharing content, choosing a display name and
+uploading a photo are only for players aged 13 or over; the game asks for your
+age range before you play with others, and an account marked under 13 keeps these
+off until a parent or guardian asks us to change it. Parents and guardians should
+help children decide what to share in public names, profiles, uploads and chat. Where a child cannot
 agree to service terms under applicable law, a parent or guardian must assist
 with the child's use of the online service.
 

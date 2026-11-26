@@ -131,7 +131,7 @@ def main():
     # Resolved by the CMake bridge (mobile-configure): usually the shared dependency store.
     recording_prefix=Path((output/'recording-prefix.txt').read_text().strip())
     libraries += [recording_prefix/'lib'/('lib'+name+'.a') for name in ('avformat','avcodec','swscale','swresample','avutil','x264')]
-    lines=['cmake_minimum_required(VERSION 3.24)','project(Glob2 LANGUAGES C CXX OBJC OBJCXX)',
+    lines=['cmake_minimum_required(VERSION 3.24)','project(Glob2 LANGUAGES C CXX OBJC OBJCXX'+('' if args.china else ' Swift')+')',
         'set(CMAKE_CXX_STANDARD 20)', 'set(CMAKE_CXX_STANDARD_REQUIRED ON)',
         'add_executable(Glob2 MACOSX_BUNDLE '+cmake_quote(ROOT/('platforms/mobile/ios/ScriptTests.mm' if args.script_tests else 'src/app/Glob2.cpp'))+')',
         'install(TARGETS Glob2 BUNDLE DESTINATION Applications)',
@@ -150,6 +150,15 @@ def main():
         entitlements.pop('com.apple.developer.associated-domains',None)
     else:
         entitlements['com.apple.developer.associated-domains']=['applinks:'+official_instance.host(official_instance.origin())]
+        # Declared Age Range (iOS 26+): the age signal for social features
+        # (src/app/AgeGate.h). The framework is weak: older systems run without
+        # it and ask the game's own age question. The App ID needs the Declared
+        # Age Range capability for signing. The China edition has no online
+        # play and keeps the C++ fallback (always "unavailable").
+        entitlements['com.apple.developer.declared-age-range']=True
+        lines += ['target_sources(Glob2 PRIVATE '+cmake_quote(ROOT/'platforms/apple/AgeSignal.swift')+')',
+                  'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_SWIFT_VERSION 5.0)',
+                  'target_link_options(Glob2 PRIVATE -Wl,-weak_framework,DeclaredAgeRange)']
     write_if_changed(project/'Glob2.entitlements',plistlib.dumps(entitlements).decode())
     lines.append('set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS '+cmake_quote(project/'Glob2.entitlements')+')')
     if args.script_tests:

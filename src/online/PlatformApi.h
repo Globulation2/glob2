@@ -28,6 +28,10 @@ inline std::string accountMe()
 {
 	return path("/accounts/me");
 }
+inline std::string accountAgeBand()
+{
+	return path("/accounts/me/age-band");
+}
 inline std::string accountIdentity(const std::string &provider)
 {
 	return path("/accounts/me/identities/" + urlEncode(provider));

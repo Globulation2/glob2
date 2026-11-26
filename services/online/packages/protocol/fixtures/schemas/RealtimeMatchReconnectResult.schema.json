@@ -937,6 +937,10 @@
         }
       },
       "maxItems": 32
+    },
+    "chat": {
+      "type": "boolean",
+      "description": "False when match chat is off because a human player is under 13 or has not declared an age; the relay drops chat orders, and clients hide the chat box. Absent means on."
     }
   },
   "description": "Everything a client needs to connect to the relay and load the match."

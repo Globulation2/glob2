@@ -3065,5 +3065,10 @@
   "Delete “{value0}”? This removes the account draft and this device’s recovery copy. Published releases remain available.": "Delete “{value0}”? This removes the account draft and this device’s recovery copy. Published releases remain available.",
   "Withdraw “{value0}” and all its releases? Library downloads and links will stop working. Studio drafts and copies embedded in existing maps or saves remain available.": "Withdraw “{value0}” and all its releases? Library downloads and links will stop working. Studio drafts and copies embedded in existing maps or saves remain available.",
   "Delete this conversation and its source history? Finished music remains in your library.": "Delete this conversation and its source history? Finished music remains in your library.",
-  "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.": "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released."
+  "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.": "Reconcile {value0} input ({value1} cached; {value2} cache write) and {value3} output tokens? Verified usage is charged up to the {value4}-credit reservation and the remainder is released.",
+  "Your age": "나이",
+  "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "채팅, 비공개 이외의 콘텐츠 공유, 이름 정하기, 사진 업로드는 13세 이상 플레이어만 이용할 수 있어요. 생일은 절대 저장하지 않고 답변만 저장해요.",
+  "Under 13": "13세 미만",
+  "13 or over": "13세 이상",
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "13세 미만이라고 답해서 채팅과 공유가 꺼져 있어요. 이를 바꾸려면 부모님이 저희에게 연락하면 돼요."
 }

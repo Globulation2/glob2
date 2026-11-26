@@ -92,6 +92,9 @@ struct Account
 	std::string displayName;
 	std::string kind; // guest | registered
 	std::string role; // user | moderator | admin
+	// unknown | under_13 | 13_plus; empty from instances without age bands.
+	std::string ageBand;
+	std::string ageBandSource; // self | apple | google_play | moderator, or empty
 	Json raw;
 	static std::optional<Account> fromJson(const Json &json);
 };

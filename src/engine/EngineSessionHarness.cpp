@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
+#include "ScopedAgeBand.h"
 #include "sim/snapshot/SnapshotStore.h"
 #include "gradient/MapRouting.h"
 #include "HeadlessGlobals.h"
@@ -1085,6 +1086,7 @@ TEST_SUITE("EngineSession")
 		glob2test::ScopedEnvironment serialSession("GLOB2_SIM_THREAD", "0");
 		glob2test::ScopedEnvironment desktopUI("GLOB2_MOBILE_UI", "0");
 		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display = true, .loadStrings = true, .width = 800, .height = 600});
+		glob2test::ScopedAgeBand chatAge; // chat needs a 13-plus age band (src/app/AgeGate.h)
 		REQUIRE(NET_Init());
 		struct NetworkScope { ~NetworkScope() { NET_Quit(); } } network;
 		globalContainer->settings.gameSpeed = Settings::GAME_SPEED_MAXIMUM;

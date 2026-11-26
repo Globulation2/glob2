@@ -1,4 +1,5 @@
 #include "tutorial/TutorialModel.h"
+#include "AgeGate.h"
 #include "hive/HiveDialog.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "InGameStatistics.h"
@@ -102,12 +103,26 @@ std::unique_ptr<Glob2UI::InGameDialog> GameGUI::makeLeaveConfirmation() const
 												 strings.getString("[keep playing]"));
 }
 
+void GameGUI::showChatOff()
+{
+	const bool ownBand = AgeGate::socialFeatures(AgeGate::local().band);
+	addMessage(GAGCore::Color(230, 230, 230),
+			   Toolkit::getStringTable()->getString(ownBand ? "[chat off in this match]" : "[chat off for age]"), false);
+}
+
 void GameGUI::openChat()
 {
     if (inGameMenu == IGM_STATISTICS) closeDialog();
     if (statisticsPanel) statisticsPanel->cancelEmbeddedInput();
 	if (typingInputScreen)
 		return;
+	// Under 13, undeclared, or a match the platform turned chat off for: say why
+	// instead of opening a box whose messages would go nowhere.
+	if (!AgeGate::chatAllowedNow())
+	{
+		showChatOff();
+		return;
+	}
 	if (touch)
 		touch->cancel(true);
 	typingInputScreen = std::make_unique<InGameTextInput>();

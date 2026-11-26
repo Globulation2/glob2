@@ -217,7 +217,8 @@ export class PlayRealtime {
         return;
       }
       case 'roomChat': {
-        const members = this.local(await rooms.memberIds(message.roomId));
+        // Under-13 and undeclared members get no room chat, from anyone.
+        const members = this.local(await rooms.chatRecipientIds(message.roomId));
         if (members.length === 0) return;
         const chat = await rooms.chatMessage(message.messageId);
         if (!chat) return;

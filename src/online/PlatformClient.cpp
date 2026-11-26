@@ -928,6 +928,22 @@ void PlatformClient::refreshAccount(ResponseHandler handler)
 		 });
 }
 
+void PlatformClient::setAgeBand(const std::string &band, const std::string &source, ResponseHandler handler)
+{
+	rest(HttpFetch::Method::Put, Api::accountAgeBand(), Json{{"band", band}, {"source", source}},
+		 [this, handler = std::move(handler)](const Response &response)
+		 {
+			 if (response.ok)
+				 if (auto parsed = Account::fromJson(response.result))
+				 {
+					 currentAccount = parsed;
+					 changed();
+				 }
+			 if (handler)
+				 handler(response);
+		 });
+}
+
 void PlatformClient::rename(const std::string &displayName, ResponseHandler handler)
 {
 	rest(HttpFetch::Method::Patch, Api::accountMe(), Json{{"displayName", displayName}},

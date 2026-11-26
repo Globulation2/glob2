@@ -116,6 +116,7 @@ import {
   SignInResponse,
   SignOutRequest,
   UpdateAccountRequest,
+  SetAgeBandRequest,
   UpdateMapRequest,
 } from './resources.ts';
 import { SimVersion } from './simVersion.ts';
@@ -140,6 +141,7 @@ import {
   AdminAccountList,
   AdminBanRequest,
   AdminMuteRequest,
+  AdminAgeBandRequest,
   AdminRenameRequest,
   AdminRoleRequest,
 } from './admin.ts';
@@ -289,6 +291,7 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   RefreshRequest: { schema: RefreshRequest },
   SignOutRequest: { schema: SignOutRequest },
   UpdateAccountRequest: { schema: UpdateAccountRequest },
+  SetAgeBandRequest: { schema: SetAgeBandRequest },
   LocalRegisterRequest: { schema: LocalRegisterRequest },
   LocalSignInRequest: { schema: LocalSignInRequest },
   IdentityConflict: { schema: IdentityConflict },
@@ -296,6 +299,7 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   AdminAccountList: { schema: AdminAccountList },
   AdminRenameRequest: { schema: AdminRenameRequest },
   AdminMuteRequest: { schema: AdminMuteRequest },
+  AdminAgeBandRequest: { schema: AdminAgeBandRequest },
   AdminBanRequest: { schema: AdminBanRequest },
   AdminRoleRequest: { schema: AdminRoleRequest },
   RoomMapSelection: { schema: RoomMapSelection },

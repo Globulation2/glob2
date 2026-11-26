@@ -40,4 +40,7 @@ class Application : public GAGCore::ApplicationHost::Loop
 	void mainMenu();
 	void installStagedAssets();
 	void choose(int choice);
+	void withAgeBand(std::function<void()> next);
+	std::uint64_t ageRequest = 0; ///< the newest withAgeBand request
+
 };

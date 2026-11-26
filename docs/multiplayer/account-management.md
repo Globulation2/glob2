@@ -25,6 +25,7 @@ at `/admin`; see [administration and reporting](../hosting/admin-reporting.md).
 | `GET /api/v1/admin/accounts/{id}` | moderator | `AdminAccount` |
 | `POST …/{id}/rename` | moderator | `AdminRenameRequest`; bypasses the rename interval |
 | `POST …/{id}/mute` | moderator | `AdminMuteRequest`; `minutes: 0` lifts it |
+| `POST …/{id}/age-band` | moderator | `AdminAgeBandRequest`; the only way out of a self-declared `under_13` ([age bands](identity.md#age-bands)) |
 | `POST …/{id}/ban` | admin | `AdminBanRequest`; ends every session of the account at once |
 | `POST …/{id}/role` | admin | `AdminRoleRequest` |
 | `DELETE …/{id}?reason=` | admin | deletes the account (`204`), see below |
@@ -44,7 +45,7 @@ snapshot (`apps/api/src/auth/accountExport.ts`):
 
 | Section | Contents |
 | --- | --- |
-| `account` | id, kind, display name, role, status, creation, last seen, last rename, mute |
+| `account` | id, kind, display name, role, status, creation, last seen, last rename, mute, age band (with its source and time) |
 | `signIn` | linked identities (provider, subject, e-mail; for local accounts the username), device credentials, refresh tokens and web sessions (platform and times), browser sign-in attempts |
 | `entitlements`, `moderation` | entitlements; moderation actions about the account (action, details, time; not who took them) |
 | `ratings`, `ratingHistory` | ratings per ladder, and every rating change |

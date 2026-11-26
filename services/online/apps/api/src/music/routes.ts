@@ -24,6 +24,7 @@ import { authenticate, requireAccount, requireRole, type Identity } from '../ide
 import { apiError } from '../errors.ts';
 import { body } from '../http/validate.ts';
 import { enforce, SharedLimit } from '../http/rateLimits.ts';
+import { requireSocialFeatures } from '../auth/ageGate.ts';
 
 export async function musicRoutes(app: FastifyInstance, identity: Identity): Promise<void> {
   const { db, blobs } = app.services;
@@ -272,7 +273,10 @@ export async function musicRoutes(app: FastifyInstance, identity: Identity): Pro
       return view(updated, request);
     });
   app.post<Id>('/api/v1/music/:id/publish', async (request) => {
-    await registered(request);
+    requireSocialFeatures(
+      await registered(request),
+      'Players under 13 can keep music private but not publish it.',
+    );
     const row = await visible(request.params.id, request, true);
     const publication = row.authoring
       ? body(Strict({ license: MusicLicense }), request.body)
