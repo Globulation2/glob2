@@ -33,7 +33,7 @@
       }
     };
     const breaks = core.createBreaks(win, {
-      session, audio, firstStart: true,
+      session, audio, firstStart: true, awaitInput: true,
       show: ad => {
         if (typeof win.gdsdk?.showAd !== 'function' || sdkState === 'failed') return null;
         if (sdkState === 'ready') return showAd();

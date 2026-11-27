@@ -393,3 +393,64 @@ test('watchShell ignores focus unless asked', () => {
   assert.equal(session.active, true);
   assert.equal(listeners.blur, undefined);
 });
+
+// A window whose frame has had no player input yet (navigator.userActivation),
+// with capture listeners the test can fire.
+function untouchedWindow() {
+  const win = adWindow('test');
+  const listeners = new Map();
+  win.navigator = {userActivation: {hasBeenActive: false}};
+  win.addEventListener = (name, listener) => listeners.set(name, listener);
+  win.removeEventListener = name => listeners.delete(name);
+  win.touch = name => { win.navigator.userActivation.hasBeenActive = true; listeners.get(name)?.({type: name}); };
+  win.listening = () => listeners.size;
+  return win;
+}
+
+test('a match that starts before any player input reports gameplay and asks for its break at the first input', async () => {
+  const win = untouchedWindow();
+  const {breaks, shown, gameplay, session, ad} = breaksFixture({firstStart: true, awaitInput: true}, win);
+  assert.equal(breaks.matchBreak('start'), false);
+  assert.deepEqual(gameplay, []);
+  assert.deepEqual(shown, []);
+  win.touch('pointerup');
+  assert.equal(win.listening(), 0);
+  assert.deepEqual(shown, []);
+  win.timers.advance(100);
+  assert.deepEqual(shown, ['start']);
+  assert.equal(breaks.held, true);
+  ad().resolve(); await settle();
+  assert.equal(session.active, true);
+  assert.deepEqual(gameplay, [true]);
+  win.touch('keyup'); win.timers.advance(100);
+  assert.deepEqual(shown, ['start']);
+});
+
+test('a match that ends before any player input reports nothing', () => {
+  const win = untouchedWindow();
+  const {breaks, shown, gameplay} = breaksFixture({firstStart: true, awaitInput: true}, win);
+  breaks.matchBreak('start');
+  win.touch('keyup');
+  assert.equal(breaks.matchBreak('end'), false);
+  win.timers.advance(100);
+  assert.deepEqual(gameplay, []);
+  assert.deepEqual(shown, []);
+});
+
+test('once the player has interacted, a match start is reported at once', () => {
+  const win = untouchedWindow();
+  win.navigator.userActivation.hasBeenActive = true;
+  const {breaks, shown, gameplay} = breaksFixture({firstStart: true, awaitInput: true}, win);
+  assert.equal(breaks.matchBreak('start'), true);
+  assert.deepEqual(shown, ['start']);
+  assert.equal(win.listening(), 0);
+  assert.deepEqual(gameplay, []);
+});
+
+test('without awaitInput a match start is reported before any player input', () => {
+  const win = untouchedWindow();
+  const {breaks, shown} = breaksFixture({firstStart: true}, win);
+  assert.equal(breaks.matchBreak('start'), true);
+  assert.deepEqual(shown, ['start']);
+  assert.equal(win.listening(), 0);
+});

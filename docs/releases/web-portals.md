@@ -82,8 +82,14 @@ A portal's first visit lands in gameplay, as CrazyGames ("land in gameplay") and
 Poki (easy onboarding) ask: instead of the first-run questions and the main menu,
 the game loads the introduction lesson at once (`PortalPolicy::landsInFirstLesson`,
 `Application::mainMenu`) and marks the introduction offered, so later visits open
-the main menu. The lesson reports `start`, `end` and `leave` like any match (no
-ad before it, as it is the page's first match). Leaving it asks the first-run
+the main menu. The lesson reports `start`, `end` and `leave` like any match (an
+ad break before it only on the portals that allow one before the first match,
+`firstStart`). On Poki and GameDistribution
+(`awaitInput` in `createBreaks`), that start, and its break, are reported only at
+the player's first key, click or tap in the game's frame: Poki's Inspector flags a
+`gameplayStart()` without a player interaction, and GameDistribution's mobile ads
+must start inside a tap. CrazyGames reports it at once, because its QA Tool times
+loading up to the first `gameplayStart()`. Leaving it asks the first-run
 questions it skipped (the touch audio and hand choices), then opens the main menu,
 or the lesson list when the player chose it from the lesson's end.
 `ads` is the profile's `ads` field: true only for the five portals marked in the
