@@ -59,6 +59,32 @@ test('the main menu is not gameplay', () => {
   assert.deepEqual(events, [true, false]);
 });
 
+test('firstScreen counts the first interactive screen as gameplay until the first match ends', () => {
+  const events = [];
+  const session = createSession({loaded: () => events.push('loaded'), gameplay: active => events.push(active)},
+                                {firstScreen: true});
+  session.progress(50);
+  assert.deepEqual(events, []);
+  session.start();
+  assert.deepEqual(events, ['loaded', true]);
+  // Entering the first match continues the same gameplay.
+  session.match(true);
+  assert.deepEqual(events, ['loaded', true]);
+  session.match(false);
+  assert.deepEqual(events, ['loaded', true, false]);
+  // The menus after the first match are breaks; later matches are gameplay.
+  session.match(true); session.match(false);
+  assert.deepEqual(events, ['loaded', true, false, true, false]);
+});
+
+test('firstScreen still stops gameplay while the game is held', () => {
+  const events = [];
+  const session = createSession({gameplay: active => events.push(active)}, {firstScreen: true});
+  session.start();
+  session.hold(true); session.hold(false);
+  assert.deepEqual(events, [true, false, true]);
+});
+
 test('holds are reasons: a portal pause outlasts the end of an ad', () => {
   const session = createSession();
   session.start(); session.match(true);

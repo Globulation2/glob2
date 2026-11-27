@@ -22,7 +22,8 @@
 // and a match start then waits for it. Our own site, itch, the stores, Game
 // Jolt and Newgrounds never carry ads.
 // In any portal the main menu offers no Quit (MainMenuScreen::offersQuit): the
-// portal's page hosts the game, and quitting would leave an empty frame.
+// portal's page hosts the game, and quitting would leave an empty frame. The
+// in-game menu offers no AI telemetry, a developer's view (InGameMainScreen).
 
 #include <string>
 #include <string_view>

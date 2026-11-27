@@ -24,8 +24,18 @@ the release packages the lite edition instead.
 ## Runtime adapter
 
 `crazygames.js` waits for `CrazyGames.SDK.init()`, then calls
-`SDK.game.loadingStart()`, `loadingStop()` when the main menu is ready, and
-`gameplayStart()`/`gameplayStop()` as a match starts and ends. Following the [game module guide](https://docs.crazygames.com/sdk/game/),
+`SDK.game.loadingStart()`, and `loadingStop()` with the first `gameplayStart()` as
+soon as the first screen is interactive (the sound choice, the introduction offer
+or the main menu). The QA Tool's "Load time" runs from Play Now to that first
+`gameplayStart()`; reporting it only when a match started counted the first-run
+questions and the player's time in the menus (61.9 s in the QA Tool, against a
+bar of about 20 s). That first gameplay lasts into the first match; from its end
+on, `gameplayStop()` and `gameplayStart()` follow the matches, and the menus
+between them are breaks, as the game module guide asks. The
+[technical requirements](https://docs.crazygames.com/requirements/technical/) say
+the first gameplay event should exclude menus when measuring the initial download;
+here the initial download up to the interactive screen is the lite edition's
+menu download, the figure this page's 50 MB check already uses. Following the [game module guide](https://docs.crazygames.com/sdk/game/),
 it does not report gameplay around tab switches, and the player's
 `settings.muteAudio` (read at start and through `addSettingsChangeListener`) silences
 the game's audio. Signals reached before `init()` resolves are replayed after it;

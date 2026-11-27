@@ -20,6 +20,7 @@
 #include "Game.h"
 #include "GameObjectives.h"
 #include "GameHints.h"
+#include "PortalPolicy.h"
 
 namespace fe = Glob2UI;
 using fe::Element;
@@ -67,7 +68,9 @@ Element InGameMainScreen::build(const Presentation &p)
 		buttons.push_back(item("load", loadLabel, LOAD_GAME));
 	if(hiveMind)buttons.push_back(item("hive",fe::tr("[settings Hive Mind]"),HIVE_MIND));
 
-	buttons.push_back(item("telemetry", fe::tr("[AI telemetry]"), AI_TELEMETRY));
+	// AI telemetry is a developer's view; portal players never need it.
+	if (!PortalPolicy::current().portal)
+		buttons.push_back(item("telemetry", fe::tr("[AI telemetry]"), AI_TELEMETRY));
 	buttons.push_back(item("options", fe::tr("[Options]"), OPTIONS));
     buttons.push_back(item("settings", fe::tr("[settings]"), SETTINGS));
 	buttons.push_back(item("pause", pauseText, PAUSE_GAME, false, SDLK_UNKNOWN, pauseEnabled));
@@ -76,11 +79,30 @@ Element InGameMainScreen::build(const Presentation &p)
 	if (tutorial) buttons.push_back(item("intro/restart", fe::tr("[tutorial restart]"), TUTORIAL_RESTART));
 	// Leaving ends the list, away from the everyday choices (it asks first).
 	buttons.push_back(item("quit", quitLabel, QUIT_GAME));
+	// Short frames (a landscape phone, a portal's desktop frame) lay the list out
+	// in two columns when the width allows, so it fits without scrolling; it
+	// still scrolls, by wheel or drag, wherever it does not.
+	Element list;
+	if (compactLayout(p))
+	{
+		fe::WrapOptions grid;
+		grid.gap = p.pt(8);
+		grid.maxColumns = 2;
+		grid.minChildWidth = p.pt(150);
+		list = fe::wrap(std::move(buttons), grid);
+	}
+	else
+		list = fe::column(std::move(buttons), {p.pt(8)});
 	// Return stays pinned below the list so it is always in reach.
 	return fe::column({fe::paragraph(fe::tr("[Menu]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}),
-					   fe::footer(fe::scroll("menu/scroll", fe::column(std::move(buttons), {p.pt(8)})),
+					   fe::footer(fe::scroll("menu/scroll", std::move(list)),
 								  item("return", returnLabel, RETURN_GAME, true, SDLK_ESCAPE))},
 					  {p.pt(12)});
+}
+
+bool InGameMainScreen::compactLayout(const Presentation &p)
+{
+	return p.safe.h < p.pt(640);
 }
 
 InGameConfirmScreen::InGameConfirmScreen(std::string title, std::string body, std::string confirmLabel,

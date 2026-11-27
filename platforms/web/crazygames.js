@@ -13,7 +13,11 @@
   function create(win, core = loadCore(win)) {
     const audio = core.createAudio(win);
     let sdk = null;
-    // CrazyGames asks not to report gameplay around tab switches.
+    // CrazyGames asks not to report gameplay around tab switches. Its QA tool
+    // times loading from "Play Now" to the first gameplayStart, so the first one
+    // comes with loadingStop at the first interactive screen (a first-run
+    // question or the main menu) and lasts into the first match; after that,
+    // gameplay is the matches and the menus between them are breaks.
     const session = core.createSession({
       loaded: () => sdk?.game?.loadingStop?.(),
       gameplay: active => {
@@ -21,7 +25,7 @@
         if (active) sdk.game?.gameplayStart?.();
         else sdk.game?.gameplayStop?.();
       },
-    }, { visibility: false });
+    }, { visibility: false, firstScreen: true });
     // The player's CrazyGames "mute audio" setting silences the game until cleared.
     const applySettings = settings => audio.set('muted', Boolean(settings?.muteAudio));
 

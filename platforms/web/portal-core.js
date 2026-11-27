@@ -62,23 +62,29 @@
   }
 
   // Loading and gameplay as portals want them: whole, increasing percentages,
-  // one `loaded` when the main menu is interactive, then `gameplay(true/false)`
-  // whenever the player is in a match that is playable (loaded, visible and not
-  // held by the portal or an ad). The game reports matches through
-  // window.glob2PortalHost (createBreaks). Portals that ask for gameplay events
-  // only around real pauses (CrazyGames) pass {visibility: false} so tab
-  // switches change nothing.
+  // one `loaded` when the first screen is interactive (a first-run question or
+  // the main menu), then `gameplay(true/false)` whenever the player is in a match
+  // that is playable (loaded, visible and not held by the portal or an ad). The
+  // game reports matches through window.glob2PortalHost (createBreaks). Portals
+  // that ask for gameplay events only around real pauses (CrazyGames) pass
+  // {visibility: false} so tab switches change nothing. Portals that time loading
+  // to the first gameplay event (CrazyGames) pass {firstScreen: true}: gameplay
+  // then also counts from that first interactive screen until the first match
+  // ends, so the first start marks the end of loading; from then on only matches
+  // count. Ad breaks never depend on this: they follow the matches themselves.
   function createSession(handlers = {}, options = {}) {
     let reported = -1;
     let ready = false;
     let hidden = false;
     let playing = false;
+    let matched = false;
     let active = false;
     // Why the game is held: 'portal' (the SDK's own pause), 'ad' (a break we
     // requested). Each reason is a flag, so repeated holds are idempotent.
     const holds = new Set();
     const sync = () => {
-      const playable = ready && playing && !hidden && !holds.size;
+      const opening = options.firstScreen === true && !matched;
+      const playable = ready && (playing || opening) && !hidden && !holds.size;
       if (playable === active) return;
       active = playable;
       handlers.gameplay?.(playable);
@@ -107,7 +113,11 @@
         else holds.delete(reason);
         sync();
       },
-      match(isPlaying) { playing = Boolean(isPlaying); sync(); },
+      match(isPlaying) {
+        playing = Boolean(isPlaying);
+        if (playing) matched = true;
+        sync();
+      },
       get ready() { return ready; },
       get active() { return active; },
       get playing() { return playing; },
