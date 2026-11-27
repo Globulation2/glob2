@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from sharpen_upscales import RECIPE as SHARPENED_RESOURCE, crisp_alpha  # noqa: E402
 import ripen_wheat  # noqa: E402
+import cast_shadows  # noqa: E402
 WORLD_FRAME = re.compile(r'(terrain|ressource|water|cloud|black|shade|area-clearing|area-forbidden|area-guard|bullet|explosion|magiceffect|particle)\d+r?\.png')
 RECOVERED_RESOURCES = set(range(14)) | set(range(15, 19)) | set(range(20, 25))
 
@@ -94,8 +95,10 @@ SHADOW_FRAME = re.compile(r'(.+\d)s')
 
 def validate_shadows(root, pack, frames):
     """A frame's shadow layer is its own frame, `<frame>s` (native `<frame>s.png`,
-    HD row and manifest entry with a base layer): black, sharing the frame's
-    top-left corner and at least its size (it reaches past it to the lower right)."""
+    HD row and manifest entry with a base layer, cast by tools/artwork/cast_shadows.py):
+    black, sharing the frame's top-left corner and at least its size (it reaches
+    past it to the lower right); the classic layer is the HD one area-averaged.
+    Bases the spec de-shadows have no baked shadow pixels left."""
     gfx = root / 'content/data/gfx'
     natives = {p.stem for p in gfx.glob('*.png') if SHADOW_FRAME.fullmatch(p.stem)
                and ((gfx / (p.stem[:-1] + '.png')).exists() or (gfx / (p.stem[:-1] + 'r.png')).exists())}
@@ -108,9 +111,21 @@ def validate_shadows(root, pack, frames):
         width, height = rgba(base).size
         require(frame['width'] >= width and frame['height'] >= height, f'Shadow smaller than its frame: {frame_id}')
         require([layer['role'] for layer in frame['layers']] == ['base'], f'Shadow layer roles: {frame_id}')
+        require(frame['recipe'].startswith(cast_shadows.RECIPE), f'Shadow recipe: {frame_id}')
+        layers = []
         for path in (gfx / (frame_id + '.png'), pack / frame['layers'][0]['file']):
             pixels = np.asarray(rgba(path))
             require(not pixels[..., :3][pixels[..., 3] > 0].any(), f'Shadow layer is not black: {path}')
+            layers.append(pixels[..., 3])
+        require(layers[1].shape == (layers[0].shape[0] * 4, layers[0].shape[1] * 4) and
+                np.array_equal(cast_shadows.downscale(layers[1]), layers[0]),
+                f'Classic shadow is not the HD shadow area-averaged: {frame_id}')
+    if (root / cast_shadows.SPECS).exists():
+        for frame_id, spec in cast_shadows.load_specs(root).items():
+            if spec['strip']:
+                for path in (gfx / (frame_id + '.png'), pack / (frame_id + '.png')):
+                    require(not cast_shadows.strip_mask(np.asarray(rgba(path))).any(),
+                            f'Baked shadow left in a de-shadowed base: {path}')
     return len(natives)
 
 
@@ -135,14 +150,18 @@ def validate_resources(root, pack, manifest, frames):
             expected = ripen_wheat.ripen(rgba(pack / (stage4 + '.png')),
                                          rgba(root / 'content/data/gfx' / (stage4 + '.png')),
                                          rgba(root / 'content/data/gfx' / (name + '.png')))
+            if cast_shadows.strips(name, root):  # cast_shadows.py ripens the de-shadowed stage 4
+                expected = cast_shadows.strip(expected)
             require(tile.tobytes() == expected.tobytes(), f'Ripe wheat pixels: {name}')
         elif i in RECOVERED_RESOURCES:
             frame = frames[name]
             require(frame['recipe'].startswith(('recovered original tree:', 'recovered original wheat:',
                                                'recovered original papyrus:')), f'Resource recipe: {name}')
             native = rgba(root / frame['sources'][1]['path'])
-            require(tile.tobytes() == native.resize(tile.size, Image.Resampling.LANCZOS).tobytes(),
-                    f'Recovered resource pixels: {name}')
+            expected = native.resize(tile.size, Image.Resampling.LANCZOS)
+            if cast_shadows.strips(name, root):  # cast_shadows.py removes the baked shadow
+                expected = cast_shadows.strip(expected)
+            require(tile.tobytes() == expected.tobytes(), f'Recovered resource pixels: {name}')
         else:
             original = rgba(root / 'content/data/gfx' / (name + '.png'))
             alpha = original.getchannel('A').resize(tile.size, Image.Resampling.BILINEAR)

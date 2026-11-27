@@ -115,7 +115,8 @@ class ShadowLayerValidationTests(unittest.TestCase):
         Image.new('RGBA', (2, 2), (200, 10, 10, 255)).save(self.gfx / 'inn0b0.png')
         self.shadow((3, 3), (0, 0, 0, 90))
         self.frames = {'inn0b0': dict(width=2, height=2, layers=[dict(role='base', file='inn0b0.png')]),
-                       'inn0b0s': dict(width=3, height=3, layers=[dict(role='base', file='inn0b0s.png')])}
+                       'inn0b0s': dict(width=3, height=3, recipe='cast ground shadow v1: block',
+                                       layers=[dict(role='base', file='inn0b0s.png')])}
 
     def shadow(self, size, colour):
         Image.new('RGBA', size, colour).save(self.gfx / 'inn0b0s.png')

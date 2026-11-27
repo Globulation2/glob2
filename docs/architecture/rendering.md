@@ -927,6 +927,33 @@ of `GraphicContext::drawSkinMesh`); pre-rendered skin sprites draw without it. D
 stars, glows and hearts are drawn procedurally by `UnitEffectArt`, one set per team hue, so the
 effects ship no new image assets.
 
+### Ground shadow pass
+
+Buildings and resources cast their ground shadows from a separate, optional
+**shadow layer** per sprite frame (`Sprite::shadowFrame`): black, alpha the
+coverage, sharing the frame's top-left corner and larger to the lower right.
+Natively it is the frame's `<frame>s.webp`, or a `shadow` run in the family's
+`.sheet` index (`<file> shadow <first> <count> <w> <h>`; packed `GLOB2_SPRITES 2`
+indices use the same word); it never adds frames and keeps its CPU pixels. The
+HD layer is the HD index row `<frame>s` (base column only), loaded on first use
+by `Sprite::highResolutionShadowFrame` from a plain file or a packed `@` token,
+and must be exactly 4× the native one.
+
+`ShadowMask` (`src/render/ShadowMask.h`) draws them in `drawSceneMap` after the
+terrain and before resources, units and buildings, so nothing standing in a
+shadow is darkened by it. Each 8×8-tile map chunk composes, on the CPU, the
+maximum coverage of every visible shadow reaching it (buildings anchored like
+`buildingSpriteOffset`, resources centred on their cell, with the same fog
+rules as their own draws), so shadows never stack; the visible chunk masks are
+drawn as textures at `Sunlight::groundShadowOpacity`, faded with the terrain
+overview. Every renderer, the software one included, draws the same masks. A
+chunk recomposes only when the shadows reaching it change (layer, frame,
+position or a newly loaded HD layer). Masks are one pixel per map pixel while
+the HD sprite policy shows native artwork and two while it shows HD (HD layers
+area-averaged by two); the cache keeps 64 MiB, and the pass is skipped beyond
+160 visible chunks. Shadows are cast by `tools/artwork/cast_shadows.py`; see
+[lighting](../assets/lighting.md#ground-shadows).
+
 ### Additive draws
 
 `GraphicContext::drawSurfaceAdditive` adds a surface's light (its colour times alpha) to

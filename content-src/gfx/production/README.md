@@ -6,7 +6,10 @@ markers; `ai-upscaled/` contains reviewed enhanced sprites; `ai-materials/`
 contains historical generated terrain and water; `original-materials/` contains
 original-based grass, sand and their connected composites; `procedural-materials/` contains the
 HD frames of the procedurally synthesised terrain catalogue; `resampled-masks/` contains deterministic
-mask resizes. `atlases/` holds the padded mip levels, and `pack-metadata/` the
+mask resizes; `shadows/` contains the ground shadow layers (`<frame>s.png`)
+that `tools/artwork/cast_shadows.py` casts from the specs in
+`content-src/gfx/shadows/specs.json` (rerun it after replacing any base or
+team layer it casts from). `atlases/` holds the padded mip levels, and `pack-metadata/` the
 PNG source index, provenance and hashes. Classic fallback assets remain unchanged.
 
 Run `python3 tools/artwork/package_runtime.py --check` before packaging, then

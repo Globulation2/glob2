@@ -29,7 +29,8 @@ contact shadows, fog) are neutral and fine anywhere.
 
 | Area | Constant | Notes |
 | --- | --- | --- |
-| Runtime (C++) | `src/render/Sunlight.h` | Cloud shadows, flying units' shadows and the torus specular sun. Use it for any new runtime shading. |
+| Runtime (C++) | `src/render/Sunlight.h` | Cloud shadows, flying units' shadows, ground shadow opacity and the torus specular sun. Use it for any new runtime shading. |
+| Building and resource shadows | `tools/artwork/cast_shadows.py` reads `shadowX`, `shadowY` and `flightHeight` from `Sunlight.h` | See [ground shadows](#ground-shadows). |
 | Flying units | `src/render/GameRenderUnits.cpp` | Explorer renders carry no ground shadow; the air-unit pass first draws each flyer's silhouette `flightHeight` along the sun, over ground units and buildings, then every flyer above them. The throw is a little longer than the swarm's tallest shadow, so explorers read as flying above it. |
 | In-game cloud shadows | `src/render/clouds/DynamicClouds.cpp` | The shadow is the cloud field moved along the sun by `cloudShadowThrow` × `cloudHeight`. |
 | Intro cloud cover | `src/render/clouds/IntroCover.cpp` | Shadow offset (30, 40) and puff slope (7, 9), shared with the GL shader. |
@@ -49,16 +50,46 @@ where `-∇h · L` is positive, and a normal-based Lambert term is `n · L` with
 pointing out of the surface. Check new shading on a synthetic disc: the
 upper-left rim must come out brighter than the lower-right one.
 
+## Ground shadows
+
+Buildings and resources do not bake their shadows into their sprites. Each
+frame that casts one has a separate **shadow layer** `<frame>s` (classic
+`content/data/gfx/<frame>s.png` and HD `<frame>s.png`, 4× the classic one):
+black, its alpha the shadow's coverage at full strength, sharing the frame's
+top-left corner and larger by whatever reaches past it to the lower right.
+The game draws them in one pass after the terrain and before resources, units
+and buildings (`src/render/ShadowMask.h`): every shadow reaching a map chunk is
+merged with a maximum, so overlapping shadows never stack, and the merged mask
+is drawn at `Sunlight::groundShadowOpacity` (0.32). Nothing standing in a
+shadow is darkened by it, and a building drawn later covers the shadows behind
+it. See [rendering](../architecture/rendering.md#ground-shadow-pass).
+
+`tools/artwork/cast_shadows.py` casts every layer from the frame's own
+silhouette (base alpha ≥ 200 or team alpha ≥ 20), deterministically and
+without AI, following `content-src/gfx/shadows/specs.json`:
+
+| Method | Used for | How |
+| --- | --- | --- |
+| `block` with a height | low-rise buildings, construction sites, wheat and rocks (8–10 HD px contact shadows) | the footprint is the silhouette eroded upward by the height, swept 1.1 × the height along (0.6, 0.8) |
+| `block` with hand-placed `blocks` and `spires` | tall or spiky buildings (towers, chimneys, masts, the barracks blade, swarm spikes) | each box of the silhouette gets its own height; a spire pixel's height is its row above `base_y` plus `base_h`, so thin parts cast long thin shadows |
+| `canopy` | trees and fruit trees | each canopy pixel lands 0.5 × its height above the trunk along the sun, blurred 7 HD px, plus a trunk contact shadow |
+
+Throws are capped at 45 native pixels, under the explorers' `flightHeight` of
+52, so flying units still read as above everything. The classic layer is the HD
+layer area-averaged, so classic and HD shadows match. Specs are hand-built per
+building family and reviewed on sheets (`cast_shadows.py --review DIR`);
+automatic depth estimation was rejected. Damaged variants share their
+building's spec. The tool also removes the shadows the old art baked in: only
+near-black, semi-transparent base pixels (alpha < 220, every channel < 45), so
+translucent art such as the barracks blade stays.
+
 ## Known exceptions
 
 These do not follow the sun yet and should be fixed when the art is next
 reworked:
 
-- Large classic buildings (hospital, school, inn, racetrack, defence tower,
-  market, pool, barracks) cast shadows straight right or up-right, as if lit
-  from the left or lower left. The high-resolution frames inherit this from the
-  classic art.
-- Wheat dots are highlighted on the upper left but cast their shadows up-right.
+- Swarm construction sites (team layer only), flags and walls carry no
+  ground shadow layer yet.
 - The explorer's own render is lit almost from the front and above (its key
   lamp sits near the camera); papyrus is faintly lit from the upper right.
 - Hedge and thicket canopies can only drift their long shadow 0.3 pixels right

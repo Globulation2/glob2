@@ -1,0 +1,567 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
+"""Cast the ground shadows of buildings and resources into their shadow layers.
+
+Every frame named in `content-src/gfx/shadows/specs.json` gets a shadow layer
+`<frame>s` (Sprite::shadowFrame; the game composes them in one pass, see
+docs/assets/lighting.md): black, its alpha the shadow's coverage at full
+strength, sharing the frame's top-left corner and reaching past it to the lower
+right. The renderer applies Sunlight::groundShadowOpacity.
+
+For each frame the tool
+
+1. removes the shadow the old art baked in, when the spec says `strip`: only
+   near-black, semi-transparent base pixels (alpha < 220, every channel < 45)
+   go, so translucent art (the barracks blade) stays. Removal is idempotent;
+2. takes the silhouette: base alpha >= `body_alpha` (200 for buildings) or team
+   layer alpha >= 20, in HD pixels;
+3. casts it along the sun (`src/render/Sunlight.h` shadowX/shadowY, 53.13
+   degrees below horizontal) by its spec's method:
+   * `block`: the footprint is the silhouette eroded upward by the height H and
+     swept H * 1.1 along the sun. `blocks` give boxes of the silhouette their
+     own heights (main masses, low ring tubes); `spires` give each silhouette
+     pixel in a box the height of its row above `base_y` plus `base_h`, so
+     chimneys, masts and towers cast their own long, thin shadows. Throws are
+     capped at 180 HD px (45 native), under the explorers' flightHeight of 52.
+     A 2 px blur softens the edges;
+   * `canopy` (trees): every canopy pixel is projected to the ground along the
+     sun by `ratio` times its height above the trunk base, blurred, plus a soft
+     contact shadow at the trunk;
+4. writes the HD shadow (padded right and bottom to whole 4-native-pixel steps)
+   and the classic one, which is the HD layer area-averaged 4x, so both match.
+
+It writes de-shadowed classic and HD base layers, the `<frame>s` layers in
+`content/data/gfx` and both HD pack copies (production folder `shadows/`), the
+manifest entries, `frames.txt` rows (`<frame>s W H 4 <frame>s.png -`) and
+`package.json` records, with the tool, spec and input hashes as provenance.
+Ripe wheat (`ressource14`, `ressource19`) is re-ripened from its de-shadowed
+stage-4 frame with ripen_wheat.ripen, then de-shadowed, as validate_runtime.py
+recomputes it. The resource atlas is rebuilt. Rerunning on the committed art
+changes nothing.
+
+Run it last, after anything that rewrites base layers:
+
+    python3 tools/artwork/sharpen_upscales.py   # if rerun: rewrites sharpened bases
+    python3 tools/artwork/ripen_wheat.py        # if rerun: rewrites the ripe wheat
+    python3 tools/artwork/cast_shadows.py       # de-shadow, cast, register, atlas
+    python3 tools/artwork/package_runtime.py --check
+    python3 tools/artwork/runtime_provenance.py
+    python3 tools/artwork/validate_runtime.py
+
+    python3 tools/artwork/cast_shadows.py --review artifacts/shadows  # review sheets only
+    python3 tools/artwork/cast_shadows.py --frames inn2b0 --review artifacts/shadows
+
+Deterministic, without AI. Needs NumPy, SciPy and Pillow.
+"""
+import argparse
+import hashlib
+import io
+import json
+import math
+import multiprocessing
+import os
+import re
+import sys
+from pathlib import Path
+
+import numpy as np
+from PIL import Image
+from scipy import ndimage
+
+ROOT = Path(__file__).resolve().parents[2]
+SPECS = Path("content-src/gfx/shadows/specs.json")
+GFX = Path("content/data/gfx")
+PACK = Path("content/data/highres/v1")
+CATEGORY = "shadows"
+RECIPE = "cast ground shadow v1"
+SCALE = 4
+STEP = 4  # shadow canvases grow in whole steps of this many native pixels
+MARGIN = 256  # HD pixels of room for a shadow past the frame while casting
+# Baked shadows: near-black, semi-transparent pixels.
+STRIP_ALPHA, STRIP_DARK = 220, 45
+
+
+def _sunlight():
+    """The shadow direction and the explorers' flight height from src/render/Sunlight.h."""
+    text = (ROOT / "src/render/Sunlight.h").read_text()
+    sx, sy = (float(v) for v in re.search(r"shadowX\s*=\s*([\d.]+)f,\s*shadowY\s*=\s*([\d.]+)f", text).groups())
+    flight = float(re.search(r"flightHeight\s*=\s*([\d.]+)f", text).group(1))
+    norm = math.hypot(sx, sy)
+    return (sx / norm, sy / norm), flight
+
+
+SHADOW, FLIGHT_HEIGHT = _sunlight()
+DEFAULTS = {
+    "ratio": 1.1,          # throw per unit of height (boulders in terrain_decor use 1.15)
+    "cap": 180,            # longest throw, HD px: 45 native, under the 52 px flight height
+    "blur": 2.0,           # softening of block shadows, HD px
+    "body_alpha": 200,     # base pixels at least this opaque cast
+    "team_alpha": 20,      # so do team-layer pixels this opaque (translucent blades)
+    "height": 0, "blocks": [], "spires": [],
+    "strip": True,
+    "contact": 10,         # canopy: trunk contact shadow height, HD px
+}
+
+
+def file_sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def load_specs(root=ROOT):
+    """{frame id: spec} with the defaults filled in, in file order."""
+    document = json.loads((root / SPECS).read_text())
+    if document.get("version") != 1:
+        raise ValueError("Unknown shadow spec version")
+    defaults = dict(DEFAULTS, **document.get("defaults", {}))
+    specs = {}
+    for family in document["families"]:
+        unknown = set(family) - set(DEFAULTS) - {"frames", "method", "note"}
+        if unknown:
+            raise ValueError(f"Unknown shadow spec fields: {sorted(unknown)}")
+        if family["method"] not in ("block", "canopy"):
+            raise ValueError("Unknown shadow method: " + family["method"])
+        for frame in family["frames"]:
+            if frame in specs:
+                raise ValueError("Duplicate shadow spec: " + frame)
+            spec = dict(defaults, **{k: v for k, v in family.items() if k not in ("frames", "note")})
+            if spec["cap"] > FLIGHT_HEIGHT * SCALE:
+                raise ValueError(f"{frame}: shadow cap above the flight height")
+            specs[frame] = spec
+    return specs
+
+
+def strips(frame_id, root=ROOT):
+    """Whether this frame's base layers are de-shadowed (validate_runtime.py)."""
+    spec = load_specs(root).get(frame_id)
+    return bool(spec and spec["strip"])
+
+
+def strip_mask(rgba):
+    """The baked-shadow pixels of an RGBA array."""
+    alpha = rgba[..., 3]
+    return (alpha > 0) & (alpha < STRIP_ALPHA) & (rgba[..., :3].max(-1) < STRIP_DARK)
+
+
+def strip(image):
+    """The image without its baked shadow (idempotent); a PIL image or RGBA array."""
+    array = np.array(image.convert("RGBA") if isinstance(image, Image.Image) else image, np.uint8)
+    array[strip_mask(array), 3] = 0
+    return Image.fromarray(array, "RGBA") if isinstance(image, Image.Image) else array
+
+
+# --- casting ---------------------------------------------------------------
+
+def footprint(body, height):
+    """Silhouette pixels with `height` more silhouette pixels straight above them:
+    in the 3/4 view a block of that height covers its footprint swept up by it."""
+    height = int(round(height))
+    if height <= 0:
+        return body.copy()
+    run = np.zeros(body.shape, np.int32)
+    for y in range(body.shape[0]):
+        run[y] = (run[y - 1] + 1) * body[y] if y else body[y]
+    return run > height
+
+
+def sweep(mask, length):
+    """The union of the mask moved 0..length along the sun."""
+    steps = int(max(abs(length * SHADOW[0]), abs(length * SHADOW[1]))) + 1
+    out = np.zeros(mask.shape, bool)
+    h, w = mask.shape
+    for t in np.linspace(0, 1, steps + 1):
+        dx, dy = int(round(t * length * SHADOW[0])), int(round(t * length * SHADOW[1]))
+        out[dy:, dx:] |= mask[:h - dy, :w - dx]
+    return out
+
+
+def cast_segments(heights, mask, ratio, cap):
+    """Each mask pixel of height h casts a segment from its ground point (h below
+    it) h * ratio (at most cap) along the sun."""
+    h, w = mask.shape
+    ys, xs = np.nonzero(mask & (heights > 0.5))
+    acc = np.zeros((h, w), bool)
+    if not len(xs):
+        return acc
+    height = heights[ys, xs]
+    length = np.minimum(height * ratio, cap)
+    gx, gy = xs.astype(float), ys + height
+    tx, ty = gx + length * SHADOW[0], gy + length * SHADOW[1]
+    for t in np.linspace(0, 1, int(max(8, length.max() / 2))):
+        px = np.rint(gx + (tx - gx) * t).astype(int)
+        py = np.rint(gy + (ty - gy) * t).astype(int)
+        ok = (px >= 0) & (px < w) & (py >= 0) & (py < h)
+        acc[py[ok], px[ok]] = True
+    return ndimage.binary_closing(acc, iterations=1)
+
+
+def block_shadow(body, spec):
+    """Blocks with their own heights, the rest at `height`, and spires."""
+    yy = np.mgrid[:body.shape[0], :body.shape[1]][0]
+    spire = np.zeros_like(body)
+    heights = np.zeros(body.shape)
+    for x0, y0, x1, y1, base_y, base_h in spec["spires"]:
+        box = np.zeros_like(body)
+        box[y0:y1, x0:x1] = True
+        part = box & body
+        spire |= part
+        heights[part] = np.maximum(heights[part], np.clip(base_y - yy[part], 0, None) + base_h)
+    main = body & ~spire
+    claimed = np.zeros_like(body)
+    parts = []
+    for x0, y0, x1, y1, height in spec["blocks"]:
+        box = np.zeros_like(body)
+        box[y0:y1, x0:x1] = True
+        part = main & box & ~claimed
+        claimed |= part
+        parts.append((height, part))
+    parts.append((spec["height"], main & ~claimed))
+    shadow = np.zeros_like(body)
+    for height, part in parts:
+        if part.any():
+            shadow |= sweep(footprint(part, height), height * min(spec["ratio"], spec["cap"] / max(height, 1)))
+    if spire.any():
+        shadow |= cast_segments(heights, spire, spec["ratio"], spec["cap"])
+    return ndimage.gaussian_filter(shadow.astype(float), spec["blur"])
+
+
+def canopy_shadow(body, spec):
+    """Each canopy pixel lands `ratio` times its height above the trunk base
+    along the sun; blurred, with a contact shadow at the trunk."""
+    h, w = body.shape
+    heights = np.zeros((h, w))
+    for x in range(w):
+        ys = np.nonzero(body[:, x])[0]
+        if len(ys):
+            heights[ys, x] = ys.max() - ys
+    ys, xs = np.nonzero(body)
+    height = heights[ys, xs]
+    px = np.rint(xs + height * spec["ratio"] * SHADOW[0]).astype(int)
+    py = np.rint(ys + height + height * spec["ratio"] * SHADOW[1]).astype(int)
+    ok = (px >= 0) & (px < w) & (py >= 0) & (py < h)
+    projected = np.zeros((h, w), bool)
+    projected[py[ok], px[ok]] = True
+    projected = ndimage.binary_closing(projected, iterations=3)
+    soft = np.clip(ndimage.gaussian_filter(projected.astype(float), spec["blur"]) * 1.15, 0, 1)
+    contact = cast_segments(np.minimum(heights, spec["contact"]), body, DEFAULTS["ratio"],
+                            spec["contact"] * DEFAULTS["ratio"])
+    return np.maximum(soft, ndimage.gaussian_filter(contact.astype(float), 2.0))
+
+
+def cast(base, team, spec):
+    """(HD shadow alpha, classic shadow alpha) as uint8 arrays for a de-shadowed
+    HD base (and optional team layer) at SCALE x the classic frame."""
+    body = base[..., 3] >= spec["body_alpha"]
+    if team is not None:
+        # A team layer shares the base's top-left corner; it may be smaller.
+        h, w = min(team.shape[0], body.shape[0]), min(team.shape[1], body.shape[1])
+        body[:h, :w] |= team[:h, :w, 3] >= spec["team_alpha"]
+    h0, w0 = body.shape
+    canvas = np.zeros((h0 + MARGIN, w0 + MARGIN), bool)
+    canvas[:h0, :w0] = body
+    mask = (canopy_shadow if spec["method"] == "canopy" else block_shadow)(canvas, spec)
+    ys, xs = np.nonzero(mask > 0.5 / 255)
+    unit = STEP * SCALE
+    right = -(-max(0, (xs.max() + 1 if len(xs) else 0) - w0) // unit) * unit
+    bottom = -(-max(0, (ys.max() + 1 if len(ys) else 0) - h0) // unit) * unit
+    hd = np.rint(np.clip(mask[:h0 + bottom, :w0 + right], 0, 1) * 255).astype(np.uint8)
+    return hd, downscale(hd)
+
+
+def downscale(hd):
+    """The classic shadow: the HD alpha area-averaged SCALE x SCALE, rounded."""
+    h, w = hd.shape
+    blocks = hd.reshape(h // SCALE, SCALE, w // SCALE, SCALE).astype(np.int64).sum((1, 3))
+    return ((blocks * 2 + SCALE * SCALE) // (2 * SCALE * SCALE)).astype(np.uint8)
+
+
+def shadow_image(alpha):
+    out = np.zeros(alpha.shape + (4,), np.uint8)
+    out[..., 3] = alpha
+    return Image.fromarray(out, "RGBA")
+
+
+# --- frames ------------------------------------------------------------------
+
+def _open(path):
+    with Image.open(path) as image:
+        return np.asarray(image.convert("RGBA"))
+
+
+def _png(image):
+    buffer = io.BytesIO()
+    image.save(buffer, format="PNG", optimize=False)
+    return buffer.getvalue()
+
+
+def compute(job):
+    """One frame: (frame id, {"hd", "classic": de-shadowed bases, "hd_shadow",
+    "classic_shadow": shadow alphas}) as arrays."""
+    frame_id, spec, root, inputs = job
+    root = Path(root)
+    hd = inputs.get("hd") if inputs.get("hd") is not None else _open(root / PACK / f"{frame_id}.png")
+    classic = inputs.get("classic") if inputs.get("classic") is not None else _open(root / GFX / f"{frame_id}.png")
+    team_path = root / PACK / f"{frame_id}r.png"
+    team = _open(team_path) if team_path.exists() else None
+    if spec["strip"]:
+        hd = strip(hd)
+        if not inputs.get("classic_stripped"):
+            classic = strip(classic)
+    if hd.shape[:2] != (classic.shape[0] * SCALE, classic.shape[1] * SCALE):
+        raise ValueError(f"{frame_id}: HD base is not {SCALE}x the classic frame")
+    hd_shadow, classic_shadow = cast(hd, team, spec)
+    return frame_id, {"hd": hd, "classic": classic, "hd_shadow": hd_shadow, "classic_shadow": classic_shadow}
+
+
+def run(frame_ids, specs, root=ROOT, jobs=None):
+    """{frame id: computed layers} for these frames, the ripe wheat after its
+    stage-4 frame (re-ripened from it with ripen_wheat.ripen)."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import ripen_wheat
+    ripe = {f"ressource{r}": f"ressource{s}" for r, s in ripen_wheat.RIPE.items()}
+    first = [f for f in frame_ids if f not in ripe]
+    with multiprocessing.get_context("spawn").Pool(jobs or os.cpu_count()) as pool:
+        results = dict(pool.map(compute, [(f, specs[f], str(root), {}) for f in first], chunksize=1))
+        second = []
+        for frame_id in frame_ids:
+            if frame_id not in ripe:
+                continue
+            stage4 = ripe[frame_id]
+            if stage4 not in results:
+                raise ValueError(f"{frame_id} needs its stage-4 frame {stage4} in the same run")
+            # The ripe sprite has the stage-4 shape (ripen_wheat requires it): both
+            # lose the baked-shadow pixels of either.
+            classic = np.array(_open(root / GFX / f"{frame_id}.png"))
+            if specs[frame_id]["strip"]:
+                stage4_classic = np.array(results[stage4]["classic"])
+                both = strip_mask(_open(root / GFX / f"{stage4}.png")) | strip_mask(classic)
+                classic[both, 3] = 0
+                stage4_classic[both, 3] = 0
+                results[stage4] = dict(results[stage4], classic=stage4_classic)
+            hd = np.asarray(ripen_wheat.ripen(Image.fromarray(results[stage4]["hd"]),
+                                              Image.fromarray(results[stage4]["classic"]),
+                                              Image.fromarray(classic)))
+            second.append((frame_id, specs[frame_id], str(root),
+                           {"hd": hd, "classic": classic, "classic_stripped": True}))
+        results.update(pool.map(compute, second, chunksize=1))
+    return results
+
+
+# --- registration ---------------------------------------------------------------
+
+def _source(path, root):
+    return {"path": str(Path(path).relative_to(root)) if Path(path).is_absolute() else str(path),
+            "sha256": file_sha(root / path)}
+
+
+def write(results, specs, root=ROOT):
+    """Write layers and register them in both pack copies; returns changed paths."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import highres_pack
+    production = root / highres_pack.PRODUCTION
+    runtime = root / highres_pack.RUNTIME
+    manifest = json.loads((production / "pack-metadata/manifest.json").read_text())
+    rows = highres_pack._read_rows(production / "pack-metadata/frames.txt")
+    index = json.loads((production / "package.json").read_text())
+    records = {record["runtime"]: record for record in index["files"]}
+    frames = {frame["id"]: frame for frame in manifest["frames"]}
+    changed = []
+
+    def put(path, data):
+        if not path.exists() or path.read_bytes() != data:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+            changed.append(str(path.relative_to(root)))
+
+    # De-shadowed bases first: their hashes are the shadows' sources. Rewrite
+    # only changed pixels, so committed encodings stay as they are.
+    renamed = {}
+    for frame_id, layers in results.items():
+        classic = root / GFX / f"{frame_id}.png"
+        if not np.array_equal(_open(classic), layers["classic"]):
+            before = file_sha(classic)
+            put(classic, _png(Image.fromarray(layers["classic"], "RGBA")))
+            renamed[str(GFX / f"{frame_id}.png")] = before
+        name = f"{frame_id}.png"
+        if not np.array_equal(_open(runtime / name), layers["hd"]):
+            data = _png(Image.fromarray(layers["hd"], "RGBA"))
+            put(production / records[name]["source"], data)
+            put(runtime / name, data)
+            digest = hashlib.sha256(data).hexdigest()
+            records[name]["sha256"] = digest
+            for layer in frames[frame_id]["layers"]:
+                if layer["file"] == name:
+                    layer["sha256"] = digest
+    # Sources naming a rewritten classic sprite (the ripe wheat's) follow it.
+    for frame in manifest["frames"]:
+        for source in frame.get("sources", []):
+            if source["path"] in renamed:
+                source["sha256"] = file_sha(root / source["path"])
+
+    tool = {"path": "tools/artwork/cast_shadows.py", "sha256": file_sha(Path(__file__).resolve())}
+    for frame_id, layers in results.items():
+        shadow_id = f"{frame_id}s"
+        name = f"{shadow_id}.png"
+        classic_data = _png(shadow_image(layers["classic_shadow"]))
+        hd_data = _png(shadow_image(layers["hd_shadow"]))
+        put(root / GFX / name, classic_data)
+        relative = f"{CATEGORY}/{name}"
+        put(production / relative, hd_data)
+        put(runtime / name, hd_data)
+        digest = hashlib.sha256(hd_data).hexdigest()
+        height, width = layers["classic_shadow"].shape
+        spec = specs[frame_id]
+        sources = [tool, _source(SPECS, root), _source(PACK / f"{frame_id}.png", root)]
+        if (runtime / f"{frame_id}r.png").exists():
+            sources.append(_source(PACK / f"{frame_id}r.png", root))
+        sources.append(_source(GFX / f"{frame_id}.png", root))
+        entry = {
+            "id": shadow_id, "width": width, "height": height, "scale": SCALE,
+            "recipe": f"{RECIPE}: {spec['method']}",
+            "layers": [{"file": name, "role": "base", "sha256": digest, "source_sha256": digest,
+                        "logical_width": width, "logical_height": height,
+                        "original_sha256": hashlib.sha256(classic_data).hexdigest()}],
+            "sources": sources,
+        }
+        if shadow_id in frames:
+            manifest["frames"][[f["id"] for f in manifest["frames"]].index(shadow_id)] = entry
+        else:
+            position = [f["id"] for f in manifest["frames"]].index(frame_id) + 1
+            manifest["frames"].insert(position, entry)
+        frames[shadow_id] = entry
+        row = [shadow_id, str(width), str(height), str(SCALE), name, "-"]
+        ids = [r[0] for r in rows]
+        if shadow_id in ids:
+            rows[ids.index(shadow_id)] = row
+        else:
+            rows.insert(ids.index(frame_id) + 1, row)
+        record = records.get(name)
+        if record is None:
+            record = {"runtime": name, "source": relative, "sha256": digest}
+            index["files"].append(record)
+            records[name] = record
+        record.update(source=relative, sha256=digest)
+    before = {p: (root / p).read_bytes() for p in (highres_pack.PRODUCTION / "pack-metadata/manifest.json",
+                                                   highres_pack.PRODUCTION / "pack-metadata/frames.txt",
+                                                   highres_pack.PRODUCTION / "package.json")}
+    highres_pack._save_metadata(manifest, rows, index, root)
+    changed += [str(p) for p, data in before.items() if (root / p).read_bytes() != data]
+    return changed
+
+
+def prune(specs, root=ROOT):
+    """Unregister shadow layers whose frames left the spec file."""
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import highres_pack
+    manifest = json.loads((root / highres_pack.PRODUCTION / "pack-metadata/manifest.json").read_text())
+    stale = [f["id"] for f in manifest["frames"]
+             if f["recipe"].startswith(RECIPE) and f["id"][:-1] not in specs]
+    if stale:
+        highres_pack.unregister_frames(stale, root)
+        for frame_id in stale:
+            (root / GFX / f"{frame_id}.png").unlink(missing_ok=True)
+    return stale
+
+
+# --- review -----------------------------------------------------------------
+
+def composite(base, team, shadow, scale, background=(88, 128, 64), opacity=None):
+    """The frame on grass with its shadow at the game's opacity and red team colour."""
+    if opacity is None:
+        opacity = float(re.search(r"groundShadowOpacity\s*=\s*([\d.]+)f",
+                                  (ROOT / "src/render/Sunlight.h").read_text()).group(1))
+    h, w = shadow.shape
+    canvas = np.zeros((h, w, 3))
+    canvas[:] = background
+    canvas *= (1 - opacity * shadow[..., None] / 255.0)
+    for layer in ((base, False), (team, True)):
+        image, recolour = layer
+        if image is None:
+            continue
+        rgb = image[..., :3].astype(float)
+        if recolour:
+            luma = rgb.mean(-1, keepdims=True) / 255
+            rgb = luma * np.array([225.0, 45.0, 40.0])
+        ih, iw = min(image.shape[0], h), min(image.shape[1], w)
+        rgb, a = rgb[:ih, :iw], image[:ih, :iw, 3:4] / 255.0
+        canvas[:ih, :iw] = canvas[:ih, :iw] * (1 - a) + rgb * a
+    out = Image.fromarray(np.clip(canvas, 0, 255).astype(np.uint8), "RGB")
+    return out.resize((max(1, round(w * scale)), max(1, round(h * scale))), Image.Resampling.LANCZOS)
+
+
+def review(results, specs, directory, root=ROOT):
+    """One sheet per family: each frame's HD composite at game zoom 1 and 2, and classic at 2x."""
+    from PIL import ImageDraw
+    directory.mkdir(parents=True, exist_ok=True)
+    families = {}
+    for frame_id in results:
+        family = re.sub(r"\d+$", "", frame_id) if not frame_id.startswith("ressource") else \
+            f"ressource-{specs[frame_id]['method']}-{int(frame_id[9:]) // 10}"
+        families.setdefault(family, []).append(frame_id)
+    for family, frame_ids in families.items():
+        tiles = []
+        for frame_id in frame_ids:
+            layers = results[frame_id]
+            team_path = root / PACK / f"{frame_id}r.png"
+            team = _open(team_path) if team_path.exists() else None
+            classic_team_path = root / GFX / f"{frame_id}r.png"
+            classic_team = _open(classic_team_path) if classic_team_path.exists() else None
+            hd = composite(layers["hd"], team, layers["hd_shadow"], 1 / SCALE * 1)
+            hd2 = composite(layers["hd"], team, layers["hd_shadow"], 2 / SCALE)
+            classic = composite(layers["classic"], classic_team, layers["classic_shadow"], 1).resize(
+                (hd2.width, hd2.height), Image.Resampling.NEAREST)
+            tiles.append((frame_id, [hd, hd2, classic]))
+        width = max(sum(t.width for t in images) + 8 * len(images) for _, images in tiles) + 8
+        height = sum(max(t.height for t in images) + 20 for _, images in tiles) + 8
+        sheet = Image.new("RGB", (width, height), (24, 24, 24))
+        draw = ImageDraw.Draw(sheet)
+        y = 4
+        for frame_id, images in tiles:
+            spec = specs[frame_id]
+            draw.text((8, y), f"{frame_id}  {spec['method']} H={spec['height']} blocks={len(spec['blocks'])} "
+                              f"spires={len(spec['spires'])}  [zoom 1 HD | zoom 2 HD | classic 2x]",
+                      fill=(255, 255, 255))
+            x, y = 8, y + 16
+            for image in images:
+                sheet.paste(image, (x, y))
+                x += image.width + 8
+            y += max(t.height for t in images) + 4
+        sheet.save(directory / f"{family}.png")
+    return sorted(families)
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--frames", nargs="*", help="only these frames (default: every spec)")
+    parser.add_argument("--review", type=Path, help="write review sheets here instead of the pack")
+    parser.add_argument("--jobs", type=int, help="parallel frames (default: every CPU)")
+    args = parser.parse_args(argv)
+    specs = load_specs()
+    frame_ids = args.frames or list(specs)
+    missing = [f for f in frame_ids if f not in specs]
+    if missing:
+        parser.error(f"no shadow spec for {missing}")
+    for frame_id in frame_ids:
+        if not (ROOT / GFX / f"{frame_id}.png").exists() or not (ROOT / PACK / f"{frame_id}.png").exists():
+            parser.error(f"{frame_id}: no classic or HD base layer")
+    results = run(frame_ids, specs, jobs=args.jobs)
+    if args.review:
+        names = review(results, specs, args.review)
+        print(f"Wrote {len(names)} review sheets to {args.review}")
+        return
+    if args.frames is None:
+        stale = prune(specs)
+        if stale:
+            print(f"Unregistered {len(stale)} shadow layers without a spec")
+    changed = write(results, specs)
+    if any(f.startswith("ressource") for f in results):
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import highres_pack
+        atlas = [highres_pack.PRODUCTION / "atlases" / f"ressource-atlas-mip{i}.png" for i in range(4)]
+        before = {p: (ROOT / p).read_bytes() if (ROOT / p).exists() else b"" for p in atlas}
+        highres_pack.rebuild_resource_atlas()
+        changed += [str(p) for p, data in before.items() if (ROOT / p).read_bytes() != data]
+    print(f"Cast {len(results)} shadow layers; {len(changed)} files changed")
+
+
+if __name__ == "__main__":
+    main()
