@@ -1534,7 +1534,7 @@ SoftwareTerrainCache::KeySnapshot *SoftwareTerrainCache::keySnapshot(std::int64_
 
 std::int64_t SoftwareTerrainCache::keyframeTarget(int time)
 {
-	const auto now = floorDivide(time, keyframeInterval);
+	const auto now = keyBase(floorDivide(time, keyframeInterval));
 	std::erase_if(keySnapshots, [&](const KeySnapshot &snapshot) { return snapshot.key < now || snapshot.key > now + 2; });
 	// A missing snapshot first (after a jump, or on a still clock), then one
 	// taken from older artwork, a few frames apart; otherwise the next key.
@@ -1669,6 +1669,7 @@ void SoftwareTerrainCache::dropKeyframes()
 	keyframeJobs.clear();
 	overlayJobs.clear();
 	keySnapshots.clear();
+	viewKey = NoKey;
 	keyframeDraws.clear();
 	overlayDraws.clear();
 	uniformKeyframes.clear();
@@ -1806,9 +1807,12 @@ void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor
 	};
 	std::vector<Want> wants;
 	// Wants the keyframes of `entry` from the current one to the next but one.
+	// The view's key, from which keyframes are wanted: behind `now` while the
+	// workers have not given every shown cell the keys after it.
+	std::int64_t base = keyBase(now);
 	const auto wantKeys = [&](const std::shared_ptr<KeyframeSet> &set, int entry, Chunk &page, int cell)
 	{
-		for (auto key = now; key <= now + 2; ++key)
+		for (auto key = base; key <= base + 2; ++key)
 		{
 			const auto &slot = set->entries[entry].slots[ringSlot(key)];
 			const auto *snapshot = keySnapshot(key);
@@ -1828,7 +1832,7 @@ void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor
 	keyframeDraws.clear();
 	overlayDraws.clear();
 	keyframeMisses = 0;
-	sharedKeyframeCells = calmOverlayCells = ownKeyframeCells = stillKeyframeCells = 0;
+	sharedKeyframeCells = calmOverlayCells = ownKeyframeCells = stillKeyframeCells = tornKeyframeCells = 0;
 	const Uint64 ticks = SDL_GetTicks();
 	const SDL_Rect margin{paintBounds.x - 64, paintBounds.y - 64, paintBounds.w + 128, paintBounds.h + 128};
 	const auto &catalog = compositor.catalog();
@@ -1851,17 +1855,58 @@ void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor
 			if (other && at(*other))
 				return;
 	};
-	for (auto &copy : copies)
+	// What each shown animated cell can draw, gathered over every copy first:
+	// which key the view shows depends on all of them.
+	struct Source
 	{
-		copy.keyframeBegin = copy.keyframeEnd = std::uint32_t(keyframeDraws.size());
-		copy.overlayBegin = copy.overlayEnd = std::uint32_t(overlayDraws.size());
+		std::shared_ptr<KeyframeSet> set;
+		int entry = -1;
+		Chunk *page = nullptr; // Whose cell `cell` the entry is.
+		int cell = 0;
+		bool has(std::int64_t key) const
+		{
+			return set && entry >= 0 && set->entries[entry].slots[ringSlot(key)].key == key;
+		}
+	};
+	struct Plan
+	{
+		std::size_t copy;
+		SDL_Rect cell, shown;
+		// The cell's own density's keyframes, and another density's that the
+		// view drew until now (a zoom changed the pages' density), scaled.
+		Source own, other;
+		KeyframeSet *calm = nullptr; // The calm overlay, when the cell needs one and has it.
+		int calmEntry = -1;
+		bool blocked = false; // A calmed cell without its overlay: its page's still pixels show.
+		bool native = false;
+		// The source holding both keys, else one holding `first`, else none.
+		const Source *pick(std::int64_t first, std::int64_t second) const
+		{
+			if (own.has(first) && own.has(second)) return &own;
+			if (other.has(first) && other.has(second)) return &other;
+			if (own.has(first)) return &own;
+			if (other.has(first)) return &other;
+			return nullptr;
+		}
+		bool holds(std::int64_t key) const { return !blocked && (own.has(key) || other.has(key)); }
+		bool any(std::int64_t from, std::int64_t to) const
+		{
+			for (auto key = from; key <= to; ++key)
+				if (holds(key)) return true;
+			return false;
+		}
+	};
+	std::vector<Plan> plans;
+	const auto overlayReady = [](KeyframeSet *s, int e) { return s && e >= 0 && s->entries[e].slots[0].key == 0; };
+	for (std::size_t c = 0; c < copies.size(); ++c)
+	{
+		auto &copy = copies[c];
 		Chunk &page = *copy.chunk;
 		if (!page.valid || !page.cpuComposed)
 			continue;
 		classifyKeyframes(page, compositor);
 		const auto own = page.keyframes;
 		own->used = frame;
-		bool ready = true;
 		const SDL_Rect cells = drawnCells(copy);
 		const int scale = page.scale, reduction = page.downsample;
 		for (int y = cells.y; y < cells.y + cells.h; ++y)
@@ -1918,124 +1963,135 @@ void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor
 				sharedKeyframeCells += kind == 1;
 				calmOverlayCells += kind == 3;
 				ownKeyframeCells += kind == 2;
-				// What the cell draws: its own density's keyframes and overlay
-				// when they are there, else another density's that the view
-				// drew until now (a zoom changed the pages' density), scaled,
-				// so that the water keeps moving while its own density's arrive.
-				struct Source
+				Plan plan{c, cell, shown, {set, entry, &page, i}};
+				plan.calm = overlay;
+				plan.calmEntry = overlayEntry;
+				const bool ownKeys = plan.own.has(base) && plan.own.has(base + 1);
+				plan.native = ownKeys && plan.own.has(now) && plan.own.has(now + 1) &&
+							  (!overlay || overlayReady(overlay, overlayEntry));
+				if (!ownKeys)
 				{
-					std::shared_ptr<KeyframeSet> set;
-					int entry = -1;
-					Chunk *page = nullptr; // Whose cell `cell` the entry is.
-					int cell = 0;
-					bool first = false, second = false;
-					bool both() const { return first && second; }
-				};
-				const auto keysOf = [&](const std::shared_ptr<KeyframeSet> &s, int e, Chunk &at, int j)
-				{
-					Source source{s, e, &at, j};
-					if (s && e >= 0)
+					// Another density's keyframes of the cell, the one holding the most.
+					const auto better = [&](const Source &candidate)
 					{
-						const auto &slots = s->entries[e].slots;
-						source.first = slots[ringSlot(now)].key == now;
-						source.second = slots[ringSlot(now + 1)].key == now + 1;
+						const auto count = [&](const Source &source)
+						{ return int(source.has(base)) + int(source.has(base + 1)) + int(source.has(now)) + int(source.has(now + 1)); };
+						if (count(candidate) > count(plan.other))
+							plan.other = candidate;
+					};
+					if (kind == 1 || kind == 3)
+					{
+						const auto id = tile.recipe.corners[0];
+						const auto variant = catalog.variantIndex(id, tile.recipe.x, tile.recipe.y, tile.recipe.seed);
+						for (auto &[density, shared] : uniformKeyframes)
+							if (std::get<0>(density) == unsigned(id) && shared != set && variant < shared->entryOf.size())
+								better({shared, shared->entryOf[variant], &page, i});
 					}
-					return source;
-				};
-				const auto overlayReady = [](KeyframeSet *s, int e) { return s && e >= 0 && s->entries[e].slots[0].key == 0; };
-				Source keys = keysOf(set, entry, page, i);
-				KeyframeSet *calm = overlay;
-				int calmEntry = overlayEntry;
-				const bool native = keys.both() && (!overlay || overlayReady(overlay, overlayEntry));
-				if (!native)
-				{
-					if (!keys.both())
-					{
-						Source other;
-						if (kind == 1 || kind == 3)
-						{
-							const auto id = tile.recipe.corners[0];
-							const auto variant = catalog.variantIndex(id, tile.recipe.x, tile.recipe.y, tile.recipe.seed);
-							for (auto &[density, shared] : uniformKeyframes)
-								if (std::get<0>(density) == unsigned(id) && shared.get() != set.get() &&
-									variant < shared->entryOf.size())
-								{
-									const auto candidate = keysOf(shared, shared->entryOf[variant], page, i);
-									if (candidate.both() || (!other.first && !other.second && (candidate.first || candidate.second)))
-										other = candidate;
-									if (other.both())
-										break;
-								}
-						}
-						else
-							forOtherPages(page, x, y, [&](Chunk &at, int j)
-							{
-								if (!at.keyframes || at.keyframes->kind[j] != 2 || at.keyframes->entryOf[j] < 0)
-									return false;
-								const int e = at.keyframes->entryOf[j];
-								if (!(at.keyframes->entries[e].tile.recipe == tile.recipe))
-									return false;
-								const auto candidate = keysOf(at.keyframes, e, at, j);
-								if (candidate.both() || (!other.first && !other.second && (candidate.first || candidate.second)))
-									other = candidate;
-								return other.both();
-							});
-						if (other.both() || (!keys.first && !keys.second))
-							keys = other.set ? other : keys;
-					}
-					if (overlay && !overlayReady(overlay, overlayEntry))
-					{
-						calm = nullptr;
+					else
 						forOtherPages(page, x, y, [&](Chunk &at, int j)
 						{
-							if (!at.calmOverlays || at.calmOverlays->entryOf[j] < 0)
-								return false;
-							const int e = at.calmOverlays->entryOf[j];
-							if (!overlayReady(at.calmOverlays.get(), e) || !(at.calmOverlays->entries[e].tile.recipe == tile.recipe))
-								return false;
-							calm = at.calmOverlays.get();
-							calmEntry = e;
-							return true;
+							if (at.keyframes && at.keyframes->kind[j] == 2 && at.keyframes->entryOf[j] >= 0 &&
+								at.keyframes->entries[at.keyframes->entryOf[j]].tile.recipe == tile.recipe)
+								better({at.keyframes, at.keyframes->entryOf[j], &at, j});
+							return false;
 						});
-					}
 				}
-				// Without its overlay a calmed cell would show uncalmed waves:
-				// its page's still pixels show until the overlay arrives.
-				if (overlay && !calm)
-					keys.first = keys.second = false;
-				ready = ready && keys.both();
-				keyframeMisses += !native;
-				if (!keys.first && !keys.second)
+				if (overlay && !overlayReady(overlay, overlayEntry))
 				{
-					++stillKeyframeCells;
-					continue; // The page's own pixels show until a keyframe arrives.
+					plan.calm = nullptr;
+					forOtherPages(page, x, y, [&](Chunk &at, int j)
+					{
+						if (!at.calmOverlays || at.calmOverlays->entryOf[j] < 0)
+							return false;
+						const int e = at.calmOverlays->entryOf[j];
+						if (!overlayReady(at.calmOverlays.get(), e) || !(at.calmOverlays->entries[e].tile.recipe == tile.recipe))
+							return false;
+						plan.calm = at.calmOverlays.get();
+						plan.calmEntry = e;
+						return true;
+					});
+					// Without its overlay a calmed cell would show uncalmed waves.
+					plan.blocked = !plan.calm;
 				}
-				// Another density's keyframes go on animating until the cell's own arrive.
-				keys.set->used = frame;
-				if (keys.set != set)
-					wantKeys(keys.set, keys.entry, *keys.page, keys.cell);
-				const auto source = [&](KeyframeSet &from, SDL_Rect r)
-				{
-					return SDL_Rect{r.x + (shown.x - cell.x) * from.scale / from.reduction,
-									r.y + (shown.y - cell.y) * from.scale / from.reduction,
-									shown.w * from.scale / from.reduction, shown.h * from.scale / from.reduction};
-				};
-				const auto keySource = [&](std::int64_t key) { return source(*keys.set, keys.set->slot(keys.entry, ringSlot(key))); };
-				KeyframeDraw draw{keys.set.get(), shown, keySource(keys.first ? now : now + 1), keySource(now + 1), copy.alpha, 0};
-				if (keys.both() && weight > 0)
-					draw.secondAlpha = keyframeAlpha(copy.alpha, weight);
-				keyframeDraws.push_back(draw);
-				if (calm)
-				{
-					calm->used = frame;
-					overlayDraws.push_back({calm, shown, source(*calm, calm->slot(calmEntry, 0)), copy.alpha});
-				}
+				keyframeMisses += !plan.native;
+				plans.push_back(std::move(plan));
 			}
+	}
+	// The key the view shows. Cells with no keyframe near it yet (newly in
+	// view, or blocked) show their page's still pixels and do not hold the
+	// others back. Every other cell shows the same key, so that water never
+	// tears into cells at different phases when the workers fall behind: the
+	// view walks forward a key at a time once every cell holds the next one,
+	// and crossfades at the presentation's time once it has caught up.
+	std::int64_t view = base;
+	const auto counted = [&](const Plan &plan) { return plan.any(view, now + 1); };
+	const auto all = [&](std::int64_t key)
+	{
+		return std::all_of(plans.begin(), plans.end(), [&](const Plan &plan) { return !counted(plan) || plan.holds(key); });
+	};
+	while (view < now && all(view + 1))
+		++view;
+	const bool crossfade = view == now && all(now) && all(now + 1) && weight > 0;
+	const bool together = all(view);
+	viewKey = view;
+	// Each drawn cell's phase: the key it shows and whether it crossfades.
+	std::map<std::pair<std::int64_t, bool>, std::size_t> phases;
+	std::size_t next = 0;
+	for (std::size_t c = 0; c < copies.size(); ++c)
+	{
+		auto &copy = copies[c];
+		copy.keyframeBegin = std::uint32_t(keyframeDraws.size());
+		copy.overlayBegin = std::uint32_t(overlayDraws.size());
+		bool ready = true;
+		for (; next < plans.size() && plans[next].copy == c; ++next)
+		{
+			const auto &plan = plans[next];
+			// Together: the view's key, crossfading to the next while the
+			// presentation is at it. Otherwise (some cell lacks the view's key,
+			// as after a jump) each cell shows what it holds of the presentation's.
+			const std::int64_t first = together ? view : now;
+			const Source *source = plan.blocked ? nullptr : plan.pick(first, first + 1);
+			if (!together && !source && !plan.blocked)
+				source = plan.pick(now + 1, now + 1);
+			const bool both = source && source->has(first) && source->has(first + 1);
+			ready = ready && both;
+			if (!source)
+			{
+				++stillKeyframeCells;
+				continue; // The page's own pixels show until a keyframe arrives.
+			}
+			auto &set = *source->set;
+			// Another density's keyframes go on animating until the cell's own arrive.
+			set.used = frame;
+			if (source == &plan.other)
+				wantKeys(source->set, source->entry, *source->page, source->cell);
+			const auto &shown = plan.shown, &cell = plan.cell;
+			const auto region = [&](KeyframeSet &from, SDL_Rect r)
+			{
+				return SDL_Rect{r.x + (shown.x - cell.x) * from.scale / from.reduction,
+								r.y + (shown.y - cell.y) * from.scale / from.reduction,
+								shown.w * from.scale / from.reduction, shown.h * from.scale / from.reduction};
+			};
+			const auto keySource = [&](std::int64_t key) { return region(set, set.slot(source->entry, ringSlot(key))); };
+			const std::int64_t shownKey = source->has(first) ? first : first + 1;
+			KeyframeDraw draw{&set, shown, keySource(shownKey), keySource(first + 1), copy.alpha, 0};
+			if (both && (together ? crossfade : weight > 0))
+				draw.secondAlpha = keyframeAlpha(copy.alpha, weight);
+			++phases[{shownKey, draw.secondAlpha > 0}];
+			keyframeDraws.push_back(draw);
+			if (plan.calm)
+			{
+				plan.calm->used = frame;
+				overlayDraws.push_back({plan.calm, shown, region(*plan.calm, plan.calm->slot(plan.calmEntry, 0)), copy.alpha});
+			}
+		}
+		Chunk &page = *copy.chunk;
 		// A page arriving over a fallback fades in once its animated cells
 		// can animate, rather than showing them still meanwhile (for at
 		// most HoldMs): until then the fallback beneath shows alone.
 		constexpr Uint64 HoldMs = 500;
-		if (copy.alpha < 255 && page.arrived && !ready && (!page.arrivalHeld || ticks - page.arrivalHeld < HoldMs))
+		if (page.valid && page.cpuComposed && copy.alpha < 255 && page.arrived && !ready &&
+			(!page.arrivalHeld || ticks - page.arrivalHeld < HoldMs))
 		{
 			if (!page.arrivalHeld)
 				page.arrivalHeld = ticks;
@@ -2050,6 +2106,10 @@ void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor
 		std::sort(keyframeDraws.begin() + copy.keyframeBegin, keyframeDraws.end(),
 				  [](const KeyframeDraw &a, const KeyframeDraw &b) { return std::less<>()(a.set, b.set); });
 	}
+	std::size_t drawn = 0, common = 0;
+	for (const auto &[phase, cells] : phases)
+		drawn += cells, common = std::max(common, cells);
+	tornKeyframeCells = drawn - common;
 	// Launch the wanted keyframes, the current key first, in jobs of one key
 	// and density, within a bound on what is in flight and on this frame's
 	// graphics-thread work.
