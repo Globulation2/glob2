@@ -479,12 +479,12 @@ void GlobalContainer::loadGameGraphics()
 void GlobalContainer::requestGameGraphics()
 {
     if (gameGraphicsRequested) return;
-#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
-    // Desktop legacy OpenGL draws terrain with the direct pass, which samples
-    // material frames. Only the menu backdrop draws this sheet, from its
-    // standalone frames: its HD atlas would cost about 90 MiB in memory and
-    // again on the GPU and never be drawn. The browser's pages still use it.
+    // Terrain draws from material frames on every renderer. Only the menu
+    // backdrop and loading screen draw this legacy sheet, from its standalone
+    // frames: its HD atlas would cost about 90 MiB in memory and again on the
+    // GPU, and exports no longer ship it (tools/package_assets.py).
     Sprite::skipHighResolutionAtlas("data/gfx/terrain");
+#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
     // Resources draw from standalone frames, like every other sprite: their
     // atlas sampled its whole mip chain trilinearly, where the HD sprite
     // policy has every renderer sample one level (its fruit and trees drew

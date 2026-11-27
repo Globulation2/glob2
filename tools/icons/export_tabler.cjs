@@ -11,7 +11,11 @@ if (require('@resvg/resvg-js/package.json').version !== '2.6.2')
 const root = path.resolve(__dirname, '../..');
 const source = path.join(root, 'content-src/icons/tabler');
 const manifest = JSON.parse(fs.readFileSync(path.join(source, 'manifest.json')));
-for (const icon of manifest.icons) {
+const gui = path.join(root, 'content/data/gui');
+// One sprite per raster size (data/gui/tabler-<pixels>-, frame i: manifest icon i),
+// so exports pack each into a sheet; tabler.txt names the frames for FrontendUI.
+fs.writeFileSync(path.join(gui, 'tabler.txt'), manifest.icons.map((icon) => icon.name + '\n').join(''));
+for (const [frame, icon] of manifest.icons.entries()) {
   const bytes = fs.readFileSync(path.join(source, `${icon.name}.svg`));
   if (crypto.createHash('sha256').update(bytes).digest('hex') !== icon.sha256)
     throw new Error(`Source changed: ${icon.name}; update the manifest deliberately`);
@@ -19,6 +23,6 @@ for (const icon of manifest.icons) {
   for (const points of [20, 24]) for (const scale of [1, 2, 3]) {
     const pixels = points * scale;
     const renderer = new Resvg(svg, { fitTo: { mode: 'width', value: pixels } });
-    fs.writeFileSync(path.join(root, 'content/data/gui', `tabler-${icon.name}-${pixels}.png`), renderer.render().asPng());
+    fs.writeFileSync(path.join(gui, `tabler-${pixels}-${frame}.png`), renderer.render().asPng());
   }
 }

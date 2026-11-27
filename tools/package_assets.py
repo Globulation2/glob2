@@ -81,10 +81,17 @@ def lossless_webp():
     return dict(lossless=True, quality=ENCODING["losslessQuality"], method=ENCODING["losslessMethod"], exact=True)
 
 
-# Sprites whose frames optimized exports pack into sheets. Opening thousands of
-# small files dominated loading them; GAGCore::Sprite::load reads <name>.sheet
-# in place of <name><i>.webp and <name><i>r.webp when it exists.
-SPRITE_SHEETS = ("data/gfx/unit",)
+# Every optimized export packs each sprite family under SHEET_ROOTS, the frames
+# <name><i>.png and <name><i>r.png, into sheets. Opening thousands of small files
+# dominated loading them; GAGCore::Sprite::load reads <name>.sheet in place of
+# <name><i>.webp and <name><i>r.webp when it exists, on every platform and
+# renderer. Families with fewer frame files than SHEET_MIN_FILES gain nothing
+# from a sheet and its index. A family with a gap in its frame numbers stays as
+# files: Sprite::load stops at the gap, and a sheet would show frames behind it.
+# Terrain material families pack only as packed sprite groups (native_sprite_groups).
+SHEET_ROOTS = ("data/gfx/", "data/gui/")
+SHEET_MIN_FILES = 3
+FRAME_FILE = re.compile(r"(.+?)(\d+)(r?)\.png")
 SHEET_COLUMNS = 16
 SHEET_FRAMES = 256
 SHEET_HEADER = """\
@@ -268,6 +275,22 @@ def is_baked_unit_clip(relative):
     )
 
 
+# The legacy connected tileset (data/gfx/terrain) remains the source of the terrain
+# artwork tools, but the game draws only the menu backdrop and loading screen from
+# it: frames 0-15, 64-71 and 128-143 (GlobalContainer, FrontendTheme). Exports keep
+# the frames up to the last of those (Sprite::load needs them contiguous) and none
+# of its HD atlas, which every renderer skips.
+LEGACY_TERRAIN_FRAMES = 144
+LEGACY_TERRAIN_FRAME = re.compile(r"data/(?:gfx|highres/v1)/terrain(\d+)r?\.png")
+
+
+def legacy_terrain_unused(relative):
+    """Whether an export leaves out this legacy terrain frame or atlas level."""
+    match = LEGACY_TERRAIN_FRAME.fullmatch(relative)
+    return (bool(match) and int(match[1]) >= LEGACY_TERRAIN_FRAMES) or \
+        relative.startswith("data/highres/v1/terrain-atlas-mip")
+
+
 def include_asset(relative, platform="generic", exclude=()):
     p = Path(relative)
     if exclude and p.as_posix().startswith(tuple(exclude)):
@@ -283,7 +306,7 @@ def include_asset(relative, platform="generic", exclude=()):
     if p.as_posix() in ("data/highres/v1/manifest.json", "data/highres/v1/README.md",
                         "data/fonts/script-probes.json"):
         return False
-    if is_baked_unit_clip(p):
+    if is_baked_unit_clip(p) or legacy_terrain_unused(p.as_posix()):
         return False
     if p.parts[:2] == ("data", "screenshots") and platform != "linux":
         return False
@@ -605,19 +628,34 @@ def encode_image(source, relative, cache, lossy, *, quality=None):
     return blob, record
 
 
-def sheet_plan(files, root, terrain_sprites=(), extra_families=(), renames=None):
-    """{sprite: [sheet]} for the SPRITE_SHEETS frames among files.
+def sprite_families(files, root, renames=None, excluded=()):
+    """The sprite families under SHEET_ROOTS that sheet_plan packs by default."""
+    frames = {}
+    for source in files:
+        relative = (renames or {}).get(source) or source.relative_to(root).as_posix()
+        match = FRAME_FILE.fullmatch(relative)
+        if match and relative.startswith(SHEET_ROOTS):
+            frames.setdefault(match[1], set()).add((int(match[2]), match[3]))
+    return {family for family, found in frames.items()
+            if family not in excluded and len(found) >= SHEET_MIN_FILES
+            and {index for index, _ in found} == set(range(1 + max(index for index, _ in found)))}
+
+
+def sheet_plan(files, root, terrain_sprites=(), extra_families=(), renames=None, excluded=()):
+    """{sprite: [sheet]} for the sprite families (sprite_families), terrain
+    sprites and extra families among files.
 
     Each sheet holds a run of consecutive frames of one layer and one size, at
     most SHEET_FRAMES of them, so the loader can cut equally sized tiles."""
     from PIL import Image
 
     plans = {}
-    families = {sprite: {} for sprite in (*SPRITE_SHEETS, *sorted(set(terrain_sprites) | set(extra_families)))}
+    default = sprite_families(files, root, renames, set(excluded) - set(terrain_sprites))
+    families = {sprite: {} for sprite in sorted(default | set(terrain_sprites) | set(extra_families))}
     for source in files:
         # A small build renumbers some frames (small_build_terrain); they pack under their new index.
         relative = (renames or {}).get(source) or source.relative_to(root).as_posix()
-        match = re.fullmatch(r"(.+?)(\d+)(r?)\.png", relative)
+        match = FRAME_FILE.fullmatch(relative)
         if not match:
             continue
         prefix, digits, layer = match.groups()
@@ -649,8 +687,8 @@ def sheet_plan(files, root, terrain_sprites=(), extra_families=(), renames=None)
                     run = None
                     continue
                 raw = source.read_bytes()
-                if raw[24] > 8:
-                    raise ValueError("Sprite sheets are 8-bit: " + str(source))
+                if raw[24] > 8 and raw[25] != 6:
+                    raise ValueError("Sprite sheets are 8-bit or RGBA64: " + str(source))
                 size = Image.open(io.BytesIO(raw)).size
                 if run is None or run["size"] != size or len(run["frames"]) == SHEET_FRAMES:
                     run = dict(rotated=rotated, first=index, size=size, frames=[])
@@ -662,6 +700,12 @@ def sheet_plan(files, root, terrain_sprites=(), extra_families=(), renames=None)
     return plans
 
 
+def sheet_columns(sheet):
+    """Tiles per row: SHEET_COLUMNS, or fewer for a short run (the loader
+    derives the count from the sheet's width)."""
+    return min(SHEET_COLUMNS, len(sheet["frames"]))
+
+
 def pack_sheet(sheet, root, cache):
     """Return a cached PNG of the sheet, every tile verified against its frame."""
     from PIL import Image
@@ -670,7 +714,8 @@ def pack_sheet(sheet, root, cache):
     layout = dict(
         policy=POLICY,
         pillow=Image.__version__,
-        columns=SHEET_COLUMNS,
+        columns=sheet_columns(sheet),
+        depth="renderer-rgba8-round-nearest-div257",
         frames=[
             [f.relative_to(root).as_posix(), hashlib.sha256(f.read_bytes()).hexdigest()]
             for f in sheet["frames"]
@@ -684,11 +729,12 @@ def pack_sheet(sheet, root, cache):
             return packed
         except (OSError, ValueError):
             pass
-    rows = -(-len(sheet["frames"]) // SHEET_COLUMNS)
-    image = Image.new("RGBA", (SHEET_COLUMNS * width, rows * height), (0, 0, 0, 0))
+    columns = sheet_columns(sheet)
+    rows = -(-len(sheet["frames"]) // columns)
+    image = Image.new("RGBA", (columns * width, rows * height), (0, 0, 0, 0))
     for index, source in enumerate(sheet["frames"]):
-        frame = Image.open(source).convert("RGBA")
-        box = ((index % SHEET_COLUMNS) * width, (index // SHEET_COLUMNS) * height)
+        frame = decoded_rgba(source.read_bytes())
+        box = ((index % columns) * width, (index // columns) * height)
         # Pasting without a mask replaces alpha too, keeping the frame's exact pixels.
         image.paste(frame, box)
         if image.crop(box + (box[0] + width, box[1] + height)).tobytes() != frame.tobytes():
@@ -707,12 +753,12 @@ def verify_sheet(sheet, path, exact=False):
     width, height = sheet["size"]
     with Image.open(path) as decoded:
         image = decoded.convert("RGBA")
-    if image.size != (SHEET_COLUMNS * width, -(-len(sheet["frames"]) // SHEET_COLUMNS) * height):
+    columns = sheet_columns(sheet)
+    if image.size != (columns * width, -(-len(sheet["frames"]) // columns) * height):
         raise ValueError("Sheet dimensions changed")
     for index, source in enumerate(sheet["frames"]):
-        with Image.open(source) as decoded:
-            frame = decoded.convert("RGBA")
-        x, y = (index % SHEET_COLUMNS) * width, (index // SHEET_COLUMNS) * height
+        frame = decoded_rgba(source.read_bytes())
+        x, y = (index % columns) * width, (index // columns) * height
         tile = image.crop((x, y, x + width, y + height))
         if tile.getchannel("A").tobytes() != frame.getchannel("A").tobytes() or (
                 exact and tile.tobytes() != frame.tobytes()):
@@ -789,8 +835,9 @@ def terrain_runtime_fingerprints(compiler, sources, root, stage, sheets, packed_
             with Image.open(path) as decoded:
                 image = decoded.convert("RGBA")
             width, height = sheet["size"]
+            columns = sheet_columns(sheet)
             for index, name in relevant:
-                x, y = index % SHEET_COLUMNS * width, index // SHEET_COLUMNS * height
+                x, y = index % columns * width, index // columns * height
                 fingerprints[name] = compiler.pixel_fingerprint(
                     image.crop((x, y, x + width, y + height))
                 )
@@ -1025,7 +1072,7 @@ def _export_assets(
     if terrain_document and (variant_blocks or fold_terrain or single_colour_decor):
         rewritten, dropped, renames = small_build_terrain(
             terrain_document, content, fold=fold_terrain, single_colour_decor=single_colour_decor,
-            variant_blocks=variant_blocks, packed=set(sheet_families) | set(SPRITE_SHEETS))
+            variant_blocks=variant_blocks, packed=set(sheet_families) | sprite_families(files, content))
         files = [f for f in files if f.relative_to(content).as_posix() not in dropped]
     if optimized:
         verify_highres_atlases(content)
@@ -1033,7 +1080,9 @@ def _export_assets(
         material["sprite"] for material in terrain_document["materials"]
         if material["sprite"].startswith("data/gfx/terrain-")
     } if (terrain_sheets or video_sprites or sprite_ffmpeg) and terrain_document else set()
-    sheets = sheet_plan(files, content, terrain_sprites, sheet_families, renames) if optimized else {}
+    # Material families pack only as terrain sheets (terrain_sprites) or native groups.
+    materials = {material["sprite"] for material in (terrain_document or {}).get("materials", [])}
+    sheets = sheet_plan(files, content, terrain_sprites, sheet_families, renames, materials) if optimized else {}
     terrain_selections = {}
     hd_selections = {}
     native_selections = {}
@@ -1187,7 +1236,10 @@ def _export_assets(
                     if platform == "web":
                         audit_fields["sprite_hd_index_groups"] = hd_index_groups.get(None, [])
                 else:
-                    target.write_bytes(re.sub(rb"\.png(?=\s|$)", b".webp", blob.read_bytes()))
+                    lines = blob.read_text().splitlines()
+                    lines = lines[:1] + [line for line in lines[1:] if len(line.split()) != 6
+                                         or not legacy_terrain_unused("data/highres/v1/" + line.split()[4])]
+                    target.write_bytes(re.sub(rb"\.png(?=\s|$)", b".webp", ("\n".join(lines) + "\n").encode()))
             elif relative.as_posix() in rewritten:
                 target.write_bytes(rewritten[relative.as_posix()])
             else:

@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 from pathlib import Path
 import sys
 import tempfile
@@ -717,15 +718,204 @@ class SpriteSheetExportTests(unittest.TestCase):
         self.assertFalse((self.output / "data/gfx/unit.sheet").exists())
         self.assertEqual((self.output / "data/gfx/unit5r.png").read_bytes(), (self.gfx / "unit5r.png").read_bytes())
 
-    def test_frames_behind_a_gap_are_rejected(self):
+    def test_a_family_with_a_gap_stays_as_frames(self):
+        # Sprite::load stops at the gap; a sheet would make unit8r appear.
         Image.new("RGBA", (4, 4)).save(self.gfx / "unit8r.png")
+        self.export(lossy=False)
+        self.assertFalse((self.output / "data/gfx/unit.sheet").exists())
+        self.assertTrue((self.output / "data/gfx/unit8r.webp").exists())
         with self.assertRaises(ValueError):
-            self.export()
+            package_assets.sheet_plan(sorted(self.gfx.iterdir()), self.root / "content",
+                                      extra_families={"data/gfx/unit"})
+
+    def test_every_sprite_family_packs_and_short_runs_stay_narrow(self):
+        cursor = self.gfx / "cursor"
+        cursor.mkdir()
+        frames = {}
+        for index in range(3):
+            pixels = bytes((index * 41 + p) % 256 for p in range(5 * 6 * 4))
+            Image.frombytes("RGBA", (5, 6), pixels).save(cursor / f"click{index}r.png")
+            frames[index] = pixels
+        # Too few frame files for a sheet: a family of two, and one with a single frame.
+        Image.new("RGBA", (2, 2)).save(self.gfx / "cloud0.png")
+        Image.new("RGBA", (2, 2)).save(self.gfx / "pair0.png")
+        Image.new("RGBA", (2, 2)).save(self.gfx / "pair1.png")
+        self.export(lossy=False)
+        (line,) = [line.split() for line in (self.output / "data/gfx/cursor/click.sheet")
+                   .read_text().splitlines() if line and not line.startswith("#")]
+        self.assertEqual(line[1:], ["rotated", "0", "3", "5", "6"])
+        with Image.open(self.output / "data/gfx/cursor" / Path(line[0]).name) as image:
+            self.assertEqual(image.size, (15, 6))  # three columns, not SHEET_COLUMNS
+            image = image.convert("RGBA")
+            self.assertEqual({i: image.crop((5 * i, 0, 5 * i + 5, 6)).tobytes() for i in frames}, frames)
+        shipped = {p.name for p in (self.output / "data/gfx").iterdir()}
+        self.assertTrue({"cloud0.webp", "pair0.webp", "pair1.webp"} <= shipped)
+        self.assertFalse(any(name.startswith("click") for name in shipped))
+
+    def test_rgba64_frames_round_like_standalone_images(self):
+        import struct, zlib
+        def png(samples, width, height):
+            def chunk(tag, data):
+                return struct.pack(">I", len(data)) + tag + data + struct.pack(">I", zlib.crc32(tag + data))
+            rows = b"".join(b"\0" + struct.pack(">%dH" % (width * 4), *samples[y * width * 4:(y + 1) * width * 4])
+                            for y in range(height))
+            return (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 16, 6, 0, 0, 0))
+                    + chunk(b"IDAT", zlib.compress(rows)) + chunk(b"IEND", b""))
+        expected = {}
+        for index in range(3):
+            samples = [(index * 9001 + p * 257 + 128) % 65536 for p in range(2 * 2 * 4)]
+            (self.gfx / f"pool0b{index}.png").write_bytes(png(samples, 2, 2))
+            expected[index] = bytes((v + 128) // 257 for v in samples)
+        self.export(lossy=False)
+        (line,) = [line.split() for line in (self.output / "data/gfx/pool0b.sheet").read_text().splitlines()
+                   if line and not line.startswith("#")]
+        with Image.open(self.output / "data/gfx" / line[0]) as image:
+            image = image.convert("RGBA")
+            self.assertEqual({i: image.crop((2 * i, 0, 2 * i + 2, 2)).tobytes() for i in expected}, expected)
+
+    def test_every_optimized_export_packs_terrain_decor(self):
+        # Native and standard web exports pass no edition sheet families; decor still packs.
+        decor = {}
+        for index in range(5):
+            pixels = bytes((index * 53 + p) % 256 for p in range(2 * 2 * 4))
+            Image.frombytes("RGBA", (2, 2), pixels).save(self.gfx / f"terrain-decor{index}.png")
+            decor[index] = pixels
+        for options in (dict(lossy=False), dict(lossy=False, platform="macos", packed_hd_sprites=True)):
+            with self.subTest(**options):
+                audit = self.export(**options)
+                shipped = {p.name for p in (self.output / "data/gfx").iterdir()}
+                self.assertFalse(any(re.fullmatch(r"terrain-decor\d+\.\w+", name) for name in shipped))
+                lines = [line.split() for line in (self.output / "data/gfx/terrain-decor.sheet").read_text().splitlines()
+                         if line and not line.startswith("#")]
+                self.assertEqual([line[1:] for line in lines], [["image", "0", "5", "2", "2"]])
+                with Image.open(next((self.output / "data/gfx").glob(Path(lines[0][0]).stem + ".*"))) as image:
+                    image = image.convert("RGBA")
+                    self.assertEqual({i: image.crop((2 * i, 0, 2 * i + 2, 2)).tobytes() for i in decor}, decor)
+                packed = {f["source"] for item in audit["files"] for f in item.get("packed_from", ())}
+                self.assertTrue({f"data/gfx/terrain-decor{i}.png" for i in decor} <= packed)
+
+    def test_exports_keep_only_the_legacy_terrain_the_menus_draw(self):
+        hd = self.root / "content/data/highres/v1"
+        hd.mkdir(parents=True)
+        rows = ["GLOB2_HIGHRES 1"]
+        for index in (0, 143, 144, 300):
+            Image.new("RGBA", (2, 2), (index % 256, 1, 2, 255)).save(self.gfx / f"terrain{index}.png")
+            Image.new("RGBA", (8, 8), (index % 256, 1, 2, 255)).save(hd / f"terrain{index}.png")
+            rows.append(f"terrain{index} 2 2 4 terrain{index}.png -")
+        self.assertFalse(include_asset("data/highres/v1/terrain-atlas-mip0.png"))
+        self.assertTrue(include_asset("data/highres/v1/terrain-lava0.png"))
+        (hd / "frames.txt").write_text("\n".join(rows) + "\n")
+        for options in (dict(lossy=False), dict(lossy=False, platform="macos", packed_hd_sprites=True)):
+            with self.subTest(**options):
+                audit = self.export(**options)
+                sources = {item["source"] for item in audit["files"]} | {
+                    f["source"] for item in audit["files"] for f in item.get("packed_from", ())}
+                native = {s for s in sources if s.startswith("data/gfx/terrain")}
+                self.assertEqual(native, {"data/gfx/terrain0.png", "data/gfx/terrain143.png"})
+                if not options.get("packed_hd_sprites"):  # packed HD frames are recorded by group
+                    self.assertTrue({"data/highres/v1/terrain0.png", "data/highres/v1/terrain143.png"} <= sources)
+                self.assertFalse(any(re.search(r"terrain(144|300)\b", s) for s in sources))
+                self.assertFalse(any("terrain144" in p.name or "terrain300" in p.name
+                                     for p in self.output.rglob("*")))
+                index = (self.output / "data/highres/v1/frames.txt").read_text()
+                self.assertEqual([line.split()[0] for line in index.splitlines()[1:]], ["terrain0", "terrain143"])
+
+    def test_hd_terrain_decor_packs_into_webp_page_groups(self):
+        from tools import packed_sprite_assets
+        hd = self.root / "content/data/highres/v1"
+        hd.mkdir(parents=True)
+        decor, rows = {}, ["GLOB2_HIGHRES 1"]
+        for index in range(5):
+            size = 8 if index < 3 else 4  # a size change starts a new page run
+            pixels = bytes((index * 29 + p) % 256 for p in range(size * size * 4))
+            Image.frombytes("RGBA", (size, size), pixels).save(hd / f"terrain-decor{index}.png")
+            decor[f"terrain-decor{index}"] = pixels
+            rows.append(f"terrain-decor{index} {size // 4} {size // 4} 4 terrain-decor{index}.png -")
+        (hd / "frames.txt").write_text("\n".join(rows) + "\n")
+        # 8x8 frames are 256 decoded bytes: frames 0-1 fill the first group, 2-4 the second.
+        with patch.object(packed_sprite_assets, "GROUP_PIXEL_BYTES", 512):
+            audit = self.export(lossy=False, platform="macos", packed_hd_sprites=True)
+        self.assertEqual(set(audit["hd_sprite_selections"]), {"terrain-decor-0-base", "terrain-decor-1-base"})
+        shipped = {p.name for p in (self.output / "data/highres/v1").iterdir()}
+        self.assertFalse(any(re.fullmatch(r"terrain-decor\d+\.\w+", name) for name in shipped))
+        header, *lines = (self.output / "data/highres/v1/frames.txt").read_text().splitlines()
+        self.assertEqual(header, "GLOB2_HIGHRES 2")
+        unpacked = {}
+        for line in lines:
+            ident, width, height, scale, base, team = line.split()
+            self.assertEqual(team, "-")
+            page, *geometry = base[1:].split(",")
+            self.assertTrue(page.startswith("pack-terrain-decor-"))
+            x, y, w, h = map(int, geometry)
+            with Image.open(self.output / "data/highres/v1" / page) as image:
+                unpacked[ident] = image.convert("RGBA").crop((x, y, x + w, y + h)).tobytes()
+        self.assertEqual(unpacked, decor)
+
+    def test_other_hd_frames_pool_into_webp_page_groups_by_size(self):
+        hd = self.root / "content/data/highres/v1"
+        hd.mkdir(parents=True)
+        expected, rows = {}, ["GLOB2_HIGHRES 1"]
+        for ident, size, team in (("inn0b0", 8, True), ("mapicon0", 4, False), ("inn0b1", 8, False),
+                                  ("mapicon1", 4, False), ("cloud", 4, False)):
+            layers = []
+            for suffix in ("", "r") if team else ("",):
+                pixels = bytes((len(ident) * 31 + len(suffix) * 7 + p) % 256 for p in range(size * size * 4))
+                Image.frombytes("RGBA", (size, size), pixels).save(hd / f"{ident}{suffix}.png")
+                expected[ident, suffix] = pixels
+                layers.append(f"{ident}{suffix}.png")
+            rows.append(f"{ident} {size // 4} {size // 4} 4 {layers[0]} {layers[1] if team else '-'}")
+        (hd / "frames.txt").write_text("\n".join(rows) + "\n")
+        audit = self.export(lossy=False, platform="macos", packed_hd_sprites=True)
+        self.assertEqual(set(audit["hd_sprite_selections"]), {"sprites-0-base", "sprites-0-team"})
+        self.assertFalse(any(p.suffix == ".webp" and not p.name.startswith("pack-")
+                             for p in (self.output / "data/highres/v1").iterdir()))
+        unpacked = {}
+        for line in (self.output / "data/highres/v1/frames.txt").read_text().splitlines()[1:]:
+            ident, _, _, _, base, team = line.split()
+            for suffix, token in (("", base), ("r", team)):
+                if token == "-":
+                    continue
+                page, *geometry = token[1:].split(",")
+                x, y, w, h = map(int, geometry)
+                with Image.open(self.output / "data/highres/v1" / page) as image:
+                    unpacked[ident, suffix] = image.convert("RGBA").crop((x, y, x + w, y + h)).tobytes()
+        self.assertEqual(unpacked, expected)
 
 
+
+
+def _x264_ffmpeg():
+    import shutil, subprocess
+    ffmpeg = shutil.which("ffmpeg")
+    if not ffmpeg:
+        return None
+    encoders = subprocess.run([ffmpeg, "-hide_banner", "-encoders"], capture_output=True, text=True).stdout
+    return ffmpeg if "libx264rgb" in encoders else None
 
 
 class VerifiedSpritePackTests(unittest.TestCase):
+    @unittest.skipUnless(_x264_ffmpeg(), "needs ffmpeg with libx264rgb")
+    def test_video_alpha_is_one_block_per_chunk(self):
+        import zlib
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            frames = []
+            for index in range(8):  # one unit direction: a chunk of eight
+                image = Image.new("RGBA", (16, 16), (30 * index, 90, 200, 255))
+                image.putpixel((3, 4), (10, 20, 30, 50 + index))  # partial alpha in every frame
+                frames.append((index, image))
+            result = packed.write_video(frames, (16, 16), "clip", dict(material=None, crf=20),
+                                        _x264_ffmpeg(), Path(tmp), None)
+            self.assertNotIn("rejected", result)
+            alpha = [name for name in result["files"] if not name.endswith(".h264")]
+            self.assertEqual(alpha, ["pack-clip-0000.za"])
+            planes = zlib.decompress((Path(tmp) / alpha[0]).read_bytes())
+            self.assertEqual(len(planes), 8 * 16 * 16)
+            for index, image in frames:
+                self.assertEqual(planes[index * 256:(index + 1) * 256], image.getchannel("A").tobytes())
+                self.assertIn(",pack-clip-0000.za,16,16,8,", result["refs"][index])
+
     def test_video_group_exceeding_runtime_memory_is_rejected_before_encoding(self):
         from types import SimpleNamespace
         from tools import packed_sprite_assets as packed

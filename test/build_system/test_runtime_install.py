@@ -59,8 +59,8 @@ class RuntimeInstallTests(unittest.TestCase):
         self.assertTrue(unrelated.is_file())
 
     def test_frames_packed_into_sheets_leave_the_install(self):
-        frame = self.source / "content/data/gfx/unit0r.png"
-        Image.new("RGBA", (4, 4), (9, 8, 7, 255)).save(frame)
+        for index in range(3):  # a family needs three frame files for a sheet (SHEET_MIN_FILES)
+            Image.new("RGBA", (4, 4), (9, 8, index, 255)).save(self.source / f"content/data/gfx/unit{index}r.png")
         install_export(self.exported, self.installed)
         export_assets(self.source, self.exported, optimized=False)
         install_export(self.exported, self.installed)
@@ -75,8 +75,8 @@ class RuntimeInstallTests(unittest.TestCase):
         self.assertEqual(changed.read_bytes(), b"user artwork")
 
     def test_legacy_install_frames_packed_into_sheets_are_removed(self):
-        frame = self.source / "content/data/gfx/unit0r.png"
-        Image.new("RGBA", (4, 4), (9, 8, 7, 255)).save(frame)
+        for index in range(3):  # a family needs three frame files for a sheet (SHEET_MIN_FILES)
+            Image.new("RGBA", (4, 4), (9, 8, index, 255)).save(self.source / f"content/data/gfx/unit{index}r.png")
         export_assets(self.source, self.exported)
         legacy = self.installed / "data/gfx/unit0r.png"
         legacy.parent.mkdir(parents=True)

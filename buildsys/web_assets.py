@@ -534,10 +534,6 @@ ENGLISH_TEXTS = ('data/texts.keys.txt', 'data/texts.en.txt', 'data/texts.list.tx
 # draws the live menu colony rather than its still image (MenuColony.cpp).
 UNUSED_FILES = ('data/gfx/cursor/', 'data/completions/', 'data/gfx/menu-colony.png')
 MUSIC_COPIES = 'platforms/web/assets/music'
-# Sprite families of many small frames that sheet_sprites packs into sprite sheets
-# (tools/package_assets.py sheet_plan): Sprite::load reads any family's .sheet.
-EDITION_SHEETS = ('data/gfx/terrain-decor', 'data/gfx/terrain', 'data/gfx/ressource', 'data/gfx/mapicon',
-                  'data/gfx/statusicon', 'data/gfx/gamegui')
 
 
 def edition_export(root, identity):
