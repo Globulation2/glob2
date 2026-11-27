@@ -1,0 +1,30 @@
+{
+  "version": "2.3.9",
+  "licence": "MIT OR Apache-2.0",
+  "source": "https://github.com/mozilla/dump_syms/releases/tag/v2.3.9",
+  "Linux-x86_64": {
+    "url": "https://github.com/mozilla/dump_syms/releases/download/v2.3.9/dump_syms-x86_64-unknown-linux-gnu.tar.xz",
+    "sha256": "0fc852a86b00337407d9d423cc388a24c3b489ccaaedcf92623cad57af5ca8ad",
+    "binary": "dump_syms-x86_64-unknown-linux-gnu/dump_syms"
+  },
+  "Linux-aarch64": {
+    "url": "https://github.com/mozilla/dump_syms/releases/download/v2.3.9/dump_syms-aarch64-unknown-linux-gnu.tar.xz",
+    "sha256": "1b8d6ab436fbfeb9820d4a21413cc77c50c6a4221cff25a830f5d53ba0aaa732",
+    "binary": "dump_syms-aarch64-unknown-linux-gnu/dump_syms"
+  },
+  "Darwin-x86_64": {
+    "url": "https://github.com/mozilla/dump_syms/releases/download/v2.3.9/dump_syms-x86_64-apple-darwin.tar.xz",
+    "sha256": "e255caf99e403b31613c756babcead8463f6e600c1a9e1e5531fbe27a7e29cf2",
+    "binary": "dump_syms-x86_64-apple-darwin/dump_syms"
+  },
+  "Darwin-arm64": {
+    "url": "https://github.com/mozilla/dump_syms/releases/download/v2.3.9/dump_syms-aarch64-apple-darwin.tar.xz",
+    "sha256": "4945b7e5de0d7ad403822635f0fb912b69990fc412741ff2b7b512e168c40a32",
+    "binary": "dump_syms-aarch64-apple-darwin/dump_syms"
+  },
+  "Windows-AMD64": {
+    "url": "https://github.com/mozilla/dump_syms/releases/download/v2.3.9/dump_syms-x86_64-pc-windows-msvc.zip",
+    "sha256": "bdf48486220708808a3e00aec78856ee1cce096189d47a1e2cb1c635f93bacc7",
+    "binary": "dump_syms.exe"
+  }
+}

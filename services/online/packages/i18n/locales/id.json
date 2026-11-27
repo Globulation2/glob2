@@ -3078,5 +3078,11 @@
   "Download bundle": "Unduh paket",
   "No problem reports yet.": "Belum ada laporan masalah.",
   "No description.": "Tidak ada deskripsi.",
-  "Bundle deleted after 90 days.": "Paket dihapus setelah 90 hari."
+  "Bundle deleted after 90 days.": "Paket dihapus setelah 90 hari.",
+  "Crashes": "Crash",
+  "No crashes yet.": "Belum ada crash.",
+  "Installs": "Instalasi",
+  "Stack": "Stack",
+  "Channel": "Kanal",
+  "Show reports": "Tampilkan laporan"
 }

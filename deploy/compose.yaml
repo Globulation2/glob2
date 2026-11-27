@@ -117,6 +117,8 @@ services:
     command: [node, apps/api/src/main.ts]
     environment:
       AI_STUDIO_OPENAI_API_KEY: ${AI_STUDIO_OPENAI_API_KEY:-}
+      # Release workflows upload crash symbols with it (docs/multiplayer/crash-reports.md).
+      CRASH_SYMBOL_UPLOAD_TOKEN: ${CRASH_SYMBOL_UPLOAD_TOKEN:-}
       AI_STUDIO_STRIPE_SECRET_KEY: ${AI_STUDIO_STRIPE_SECRET_KEY:-}
       AI_STUDIO_STRIPE_WEBHOOK_SECRET: ${AI_STUDIO_STRIPE_WEBHOOK_SECRET:-}
       GENERATOR_STUDIO_OPENAI_API_KEY: ${GENERATOR_STUDIO_OPENAI_API_KEY:-}
@@ -181,6 +183,38 @@ services:
     deploy:
       replicas: ${GLOB2_WORKER_REPLICAS:-1}
     stop_grace_period: 40s
+    depends_on:
+      init: {condition: service_completed_successfully}
+
+  # Symbolicates and groups crash reports (docs/multiplayer/crash-reports.md).
+  crash-worker:
+    <<: [*hardening, *platform-image]
+    command: [node, apps/crash-worker/src/main.ts]
+    environment:
+      <<: *platform-environment
+      DATABASE_URL: postgres://glob2_worker@postgres:5432/glob2
+      DATABASE_PASSWORD_FILE: /var/lib/glob2/db/worker/password
+      RELAY_KEYS_FILE: ''
+      ENGINE_AGENT_KEYS_FILE: ''
+      CRASH_SYMBOL_CACHE_DIR: /var/cache/glob2-crash-symbols
+      CRASH_SYMBOL_CACHE_BYTES: ${CRASH_SYMBOL_CACHE_BYTES:-8589934592}
+    volumes:
+      - db-worker-secret:/var/lib/glob2/db/worker:ro
+      - blobs:/var/lib/glob2/blobs
+      - crash-symbols:/var/cache/glob2-crash-symbols
+      - *instance-config
+    networks: [backend]
+    tmpfs: ['/tmp:size=256m,mode=1777']
+    mem_limit: 4g
+    cpus: 1
+    pids_limit: 64
+    stop_grace_period: 3m
+    healthcheck:
+      test: [CMD, node, -e, "const t=Number(require('fs').readFileSync('/tmp/glob2-crash-worker-health','utf8'));process.exit(Date.now()-t<90000?0:1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
     depends_on:
       init: {condition: service_completed_successfully}
 
@@ -509,6 +543,7 @@ volumes:
   db-migrator-secret: {}
   db-api-secret: {}
   db-worker-secret: {}
+  crash-symbols: {}
   relay-spool: {}
   caddy-data: {}
   caddy-config: {}

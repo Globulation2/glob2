@@ -3105,5 +3105,11 @@
   "Download bundle": "Elŝuti la pakaĵon",
   "No problem reports yet.": "Ankoraŭ neniuj problemraportoj.",
   "No description.": "Neniu priskribo.",
-  "Bundle deleted after 90 days.": "La pakaĵo estis forigita post 90 tagoj."
+  "Bundle deleted after 90 days.": "La pakaĵo estis forigita post 90 tagoj.",
+  "Crashes": "Kraŝoj",
+  "No crashes yet.": "Ankoraŭ neniuj kraŝoj.",
+  "Installs": "Instaloj",
+  "Stack": "Stako",
+  "Channel": "Kanalo",
+  "Show reports": "Montri raportojn"
 }

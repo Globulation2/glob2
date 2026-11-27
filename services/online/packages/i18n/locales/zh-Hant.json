@@ -3078,5 +3078,11 @@
   "Download bundle": "下載資料包",
   "No problem reports yet.": "尚無問題回報。",
   "No description.": "無描述。",
-  "Bundle deleted after 90 days.": "資料包已在 90 天後刪除。"
+  "Bundle deleted after 90 days.": "資料包已在 90 天後刪除。",
+  "Crashes": "當機",
+  "No crashes yet.": "尚無當機。",
+  "Installs": "安裝數",
+  "Stack": "呼叫堆疊",
+  "Channel": "通路",
+  "Show reports": "顯示回報"
 }

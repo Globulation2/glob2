@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "source": "abort",
+  "message": "RuntimeError: memory access out of bounds",
+  "stack": "RuntimeError: memory access out of bounds\n    at glob2.wasm.wasm-function[4127]:0x1a2b3c\n    at glob2.wasm.wasm-function[88]:0x4f00",
+  "buildId": "9f86d081884c7d659a2feaa0c55ad015"
+}

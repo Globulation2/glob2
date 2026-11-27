@@ -3105,5 +3105,11 @@
   "Download bundle": "Pakua kifurushi",
   "No problem reports yet.": "Bado hakuna ripoti za matatizo.",
   "No description.": "Hakuna maelezo.",
-  "Bundle deleted after 90 days.": "Kifurushi kilifutwa baada ya siku 90."
+  "Bundle deleted after 90 days.": "Kifurushi kilifutwa baada ya siku 90.",
+  "Crashes": "Hitilafu za kuzima",
+  "No crashes yet.": "Bado hakuna hitilafu za kuzima.",
+  "Installs": "Usakinishaji",
+  "Stack": "Mrundikano",
+  "Channel": "Chaneli",
+  "Show reports": "Onyesha ripoti"
 }

@@ -11,7 +11,8 @@ import { PageControls, useAdminFilters } from './filters.tsx';
 export function ProblemReports() {
   useLocale();
   const { values } = useAdminFilters();
-  const load = useLoad((signal) => api.adminCrashReports(values, signal), [JSON.stringify(values)]);
+  const query = { ...values, kind: 'problem' };
+  const load = useLoad((signal) => api.adminCrashReports(query, signal), [JSON.stringify(query)]);
   return (
     <Loaded load={load}>
       {(page) => (
@@ -30,7 +31,9 @@ export function ProblemReports() {
 const kilobytes = (bytes: number) =>
   formatNumber(Math.max(1, Math.round(bytes / 1024)), { style: 'unit', unit: 'kilobyte' });
 
-function Report({ report }: { report: AdminCrashReport }) {
+const STATUS = { none: '', pending: 'Pending', done: 'Completed', failed: 'Failed' } as const;
+
+export function Report({ report }: { report: AdminCrashReport }) {
   const base = `/api/v1/admin/crash-reports/${report.id}`;
   return (
     <article className="card" aria-labelledby={`problem-${report.id}`}>
@@ -53,6 +56,20 @@ function Report({ report }: { report: AdminCrashReport }) {
         <dd>
           <code>{[report.deviceClass, report.deviceTier].join(' · ')}</code>
         </dd>
+        {report.status !== 'none' && (
+          <>
+            <dt>{t('Status')}</dt>
+            <dd>
+              {t(STATUS[report.status])}
+              {report.reason && (
+                <>
+                  {' · '}
+                  <code>{report.reason}</code>
+                </>
+              )}
+            </dd>
+          </>
+        )}
         <dt>{t('Description')}</dt>
         <dd style={{ whiteSpace: 'pre-wrap' }}>{report.description || t('No description.')}</dd>
         <dt>{t('Files')}</dt>

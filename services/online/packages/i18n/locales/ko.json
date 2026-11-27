@@ -3078,5 +3078,11 @@
   "Download bundle": "번들 다운로드",
   "No problem reports yet.": "아직 문제 신고가 없습니다.",
   "No description.": "설명이 없습니다.",
-  "Bundle deleted after 90 days.": "번들은 90일 후 삭제되었습니다."
+  "Bundle deleted after 90 days.": "번들은 90일 후 삭제되었습니다.",
+  "Crashes": "충돌",
+  "No crashes yet.": "아직 충돌이 없습니다.",
+  "Installs": "설치 수",
+  "Stack": "스택",
+  "Channel": "채널",
+  "Show reports": "신고 보기"
 }

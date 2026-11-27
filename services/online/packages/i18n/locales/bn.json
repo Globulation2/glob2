@@ -3105,5 +3105,11 @@
   "Download bundle": "বান্ডেল ডাউনলোড করুন",
   "No problem reports yet.": "এখনও কোনো সমস্যার রিপোর্ট নেই।",
   "No description.": "কোনো বিবরণ নেই।",
-  "Bundle deleted after 90 days.": "৯০ দিন পরে বান্ডেল মুছে ফেলা হয়েছে।"
+  "Bundle deleted after 90 days.": "৯০ দিন পরে বান্ডেল মুছে ফেলা হয়েছে।",
+  "Crashes": "ক্র্যাশ",
+  "No crashes yet.": "এখনো কোনো ক্র্যাশ নেই।",
+  "Installs": "ইনস্টল",
+  "Stack": "স্ট্যাক",
+  "Channel": "চ্যানেল",
+  "Show reports": "রিপোর্ট দেখাও"
 }

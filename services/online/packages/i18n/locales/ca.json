@@ -3132,5 +3132,11 @@
   "Download bundle": "Baixa el paquet",
   "No problem reports yet.": "Encara no hi ha informes de problemes.",
   "No description.": "Sense descripció.",
-  "Bundle deleted after 90 days.": "El paquet s'ha suprimit al cap de 90 dies."
+  "Bundle deleted after 90 days.": "El paquet s'ha suprimit al cap de 90 dies.",
+  "Crashes": "Errors greus",
+  "No crashes yet.": "Encara no hi ha errors greus.",
+  "Installs": "Instal·lacions",
+  "Stack": "Pila",
+  "Channel": "Canal",
+  "Show reports": "Mostra els informes"
 }

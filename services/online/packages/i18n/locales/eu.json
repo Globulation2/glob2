@@ -3105,5 +3105,11 @@
   "Download bundle": "Deskargatu sorta",
   "No problem reports yet.": "Oraindik ez dago arazo-txostenik.",
   "No description.": "Deskribapenik ez.",
-  "Bundle deleted after 90 days.": "Sorta 90 egunen buruan ezabatu da."
+  "Bundle deleted after 90 days.": "Sorta 90 egunen buruan ezabatu da.",
+  "Crashes": "Hutsegiteak",
+  "No crashes yet.": "Oraindik ez dago hutsegiterik.",
+  "Installs": "Instalazioak",
+  "Stack": "Pila",
+  "Channel": "Kanala",
+  "Show reports": "Erakutsi txostenak"
 }

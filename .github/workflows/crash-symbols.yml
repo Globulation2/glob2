@@ -1,0 +1,57 @@
+name: Upload crash symbols
+
+# Uploads a release's crash symbols to glob2-online before it is published
+# (docs/multiplayer/crash-reports.md#symbols). Build jobs hold no secrets: they
+# hand their unstripped binaries, .dSYM bundles and wasm symbol maps over as
+# artifacts named crash-symbols-<prefix>-*, and this job, the only one holding
+# CRASH_SYMBOL_UPLOAD_TOKEN (crash-symbols environment), dumps and uploads them
+# with this repository's tools/symbols/upload_symbols.py. Callers make their
+# publishing jobs need it, so a release whose crashes could not be read is
+# never published. Builds of tags cut before crash symbols hand over nothing,
+# and the job then passes with a notice.
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: Release tag or version (v0.11.8.1); empty for PACKAGE_VERSION
+        required: false
+        default: ''
+        type: string
+      artifacts:
+        description: Artifact name pattern to collect, such as crash-symbols-play-*
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  upload:
+    if: >-
+      github.repository == 'genixpro/glob2-release' &&
+      github.repository_id == 1397722696
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    environment: crash-symbols
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          sparse-checkout: |
+            buildsys
+            tools/symbols
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: ${{ inputs.artifacts }}
+          path: ${{ runner.temp }}/crash-symbols
+      - name: Dump and upload
+        env:
+          CRASH_SYMBOL_UPLOAD_TOKEN: ${{ secrets.CRASH_SYMBOL_UPLOAD_TOKEN }}
+          SYMBOL_VERSION: ${{ inputs.version }}
+          GLOB2_TOOL_CACHE: ${{ runner.temp }}/glob2-dump-syms
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/crash-symbols"
+          arguments=(--scan "$RUNNER_TEMP/crash-symbols")
+          if [ -n "$SYMBOL_VERSION" ]; then arguments+=(--version "${SYMBOL_VERSION#v}"); fi
+          python3 tools/symbols/upload_symbols.py "${arguments[@]}"

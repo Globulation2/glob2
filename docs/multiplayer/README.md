@@ -18,7 +18,7 @@ Client, service and protocol documentation for the current online stack.
 - [Ratings and matchmaking](ratings-and-matchmaking.md).
 - [History and web interface](history-and-web.md).
 - [Connection quality](connection-quality.md).
-- [Problem reports](problem-reports.md).
+- [Problem reports](problem-reports.md) and [crash reports](crash-reports.md).
 - [LAN protocol](lan.md).
 - [LAN playtest](lan-playtest.md).
 

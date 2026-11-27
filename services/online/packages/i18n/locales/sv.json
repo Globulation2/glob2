@@ -3105,5 +3105,11 @@
   "Download bundle": "Ladda ned paketet",
   "No problem reports yet.": "Inga problemrapporter än.",
   "No description.": "Ingen beskrivning.",
-  "Bundle deleted after 90 days.": "Paketet raderades efter 90 dagar."
+  "Bundle deleted after 90 days.": "Paketet raderades efter 90 dagar.",
+  "Crashes": "Krascher",
+  "No crashes yet.": "Inga krascher än.",
+  "Installs": "Installationer",
+  "Stack": "Stack",
+  "Channel": "Kanal",
+  "Show reports": "Visa rapporter"
 }

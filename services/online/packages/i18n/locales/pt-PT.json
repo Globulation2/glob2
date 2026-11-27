@@ -3132,5 +3132,11 @@
   "Download bundle": "Transferir pacote",
   "No problem reports yet.": "Ainda não há relatórios de problemas.",
   "No description.": "Sem descrição.",
-  "Bundle deleted after 90 days.": "Pacote eliminado ao fim de 90 dias."
+  "Bundle deleted after 90 days.": "Pacote eliminado ao fim de 90 dias.",
+  "Crashes": "Falhas",
+  "No crashes yet.": "Ainda não há falhas.",
+  "Installs": "Instalações",
+  "Stack": "Pilha",
+  "Channel": "Canal",
+  "Show reports": "Mostrar relatórios"
 }

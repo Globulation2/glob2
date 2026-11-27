@@ -5,15 +5,25 @@
 // short ID the player can quote. Admins list reports and download bundles or
 // single attachments under /api/v1/admin/crash-reports.
 //
+// Crash bundles (docs/multiplayer/crash-reports.md) carry their crash in one
+// more entry and are accepted only from releases whose symbols were uploaded;
+// each queues a CRASH_PROCESS_TASK job for apps/crash-worker in the same
+// transaction as its row.
+//
 // Privacy: nothing ties a report to an account, and the client address is used
 // only by an in-memory limiter, never stored (the shared Postgres limiter keys
 // on the random install ID instead).
 import { randomInt, randomUUID } from 'node:crypto';
 import type { FastifyInstance } from 'fastify';
-import { sql } from 'kysely';
+import { sql, type Selectable } from 'kysely';
+import type { CrashReportsTable } from '@glob2/db';
 import {
+  CRASH_PAYLOAD_ENTRIES,
   CrashReportContext,
+  type AdminCrashGroup,
+  type AdminCrashGroupList,
   type AdminCrashReport,
+  type AdminCrashReportDetail,
   type AdminCrashReportList,
   type CrashReportReceipt,
 } from '@glob2/protocol';
@@ -23,7 +33,7 @@ import { body } from '../http/validate.ts';
 import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { decodeCursor, encodeCursor, pageSize } from '../admin/cursor.ts';
 import { cursorTimeSql } from '../http/cursorTime.ts';
-import { listEntries, readEntry, ZipError } from './zip.ts';
+import { CRASH_PROCESS_TASK, listEntries, readEntry, ZipError } from '@glob2/core';
 
 /** Largest bundle accepted, packed and unpacked. */
 export const CRASH_REPORT_MAX_BYTES = 10 * 1024 * 1024;
@@ -38,6 +48,7 @@ export const CRASH_REPORTS_PER_ADDRESS_HOUR = 60;
  */
 export const CRASH_REPORTS_PER_HOUR = 600;
 const CONTEXT_MAX_BYTES = 16 * 1024;
+
 const ID_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const ID = /^[A-HJ-NP-Z2-9]{8}$/;
 
@@ -85,6 +96,40 @@ export class MemoryLimit {
     window.count++;
     return true;
   }
+}
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+function summary(row: Selectable<CrashReportsTable>): AdminCrashReport {
+  return {
+    id: row.id,
+    kind: row.kind,
+    status: row.status,
+    ...(row.group_id ? { groupId: row.group_id } : {}),
+    ...(row.reason ? { reason: row.reason } : {}),
+    receivedAt: row.received_at.toISOString(),
+    version: row.version,
+    versionMinor: row.version_minor,
+    simRevision: row.sim_revision,
+    distribution: row.distribution,
+    platform: row.platform,
+    os: row.os,
+    deviceClass: row.device_class,
+    deviceTier: row.device_tier,
+    description: row.description,
+    installId: row.install_id,
+    size: row.size,
+    attachments: row.attachments,
+    bundleAvailable: row.bundle_key !== null,
+  };
+}
+
+/** Group list paging: an opaque offset, since groups sort by a computed count. */
+function groupOffset(cursor: string | undefined): number {
+  if (cursor === undefined) return 0;
+  const offset = /^o([0-9]{1,7})$/.exec(cursor);
+  if (!offset?.[1]) throw apiError('bad_request', 'Invalid cursor.');
+  return Number(offset[1]);
 }
 
 function contentType(name: string): string {
@@ -154,6 +199,21 @@ export async function crashReportRoutes(app: FastifyInstance, identity: Identity
           .where('submission_id', '=', context.submissionId)
           .executeTakeFirst();
         if (existing) return { id: existing.id };
+        const crash = context.kind === 'problem' ? undefined : CRASH_PAYLOAD_ENTRIES[context.kind];
+        if (crash) {
+          const payload = entries.find((e) => e.name === crash);
+          if (!payload || payload.size === 0)
+            throw apiError('bad_request', 'Invalid report bundle.');
+          // Only releases with uploaded symbols can be read; a report from any
+          // other build would never get a stack.
+          const released = await db
+            .selectFrom('crash_releases')
+            .select('version')
+            .where('version', '=', context.version)
+            .executeTakeFirst();
+          if (!released)
+            throw apiError('forbidden', 'Crash reports are accepted only from released versions.');
+        }
         await enforce(perInstall, context.installId, reply, 'Too many reports; try again later.');
         await enforce(overall, 'all', reply, 'Too many reports; try again later.');
         const attachments = entries
@@ -164,29 +224,41 @@ export async function crashReportRoutes(app: FastifyInstance, identity: Identity
           const key = `crash-reports/${id.toLowerCase()}-${randomUUID()}.zip`;
           await blobs.put(key, bundle);
           try {
-            const inserted = await db
-              .insertInto('crash_reports')
-              .values({
-                id,
-                submission_id: context.submissionId,
-                kind: context.kind,
-                install_id: context.installId,
-                version: context.version,
-                version_minor: context.versionMinor,
-                sim_revision: context.simRevision,
-                distribution: context.distribution,
-                platform: context.platform,
-                os: context.os,
-                device_class: context.deviceClass,
-                device_tier: context.deviceTier,
-                description: context.description,
-                size: bundle.length,
-                attachments: JSON.stringify(attachments),
-                bundle_key: key,
-              })
-              .onConflict((oc) => oc.doNothing())
-              .returning('id')
-              .executeTakeFirst();
+            const inserted = await db.transaction().execute(async (trx) => {
+              const row = await trx
+                .insertInto('crash_reports')
+                .values({
+                  id,
+                  submission_id: context.submissionId,
+                  kind: context.kind,
+                  install_id: context.installId,
+                  version: context.version,
+                  version_minor: context.versionMinor,
+                  sim_revision: context.simRevision,
+                  distribution: context.distribution,
+                  platform: context.platform,
+                  os: context.os,
+                  device_class: context.deviceClass,
+                  device_tier: context.deviceTier,
+                  description: context.description,
+                  size: bundle.length,
+                  attachments: JSON.stringify(attachments),
+                  bundle_key: key,
+                  status: crash ? 'pending' : 'none',
+                  match_tick: context.match?.tick ?? null,
+                  match_seed: context.match?.seed ?? null,
+                })
+                .onConflict((oc) => oc.doNothing())
+                .returning('id')
+                .executeTakeFirst();
+              if (row && crash)
+                await sql`SELECT graphile_worker.add_job(
+                  identifier => ${CRASH_PROCESS_TASK}::text,
+                  payload => ${JSON.stringify({ id })}::json,
+                  job_key => ${`crash-${id}`}::text,
+                  max_attempts => 3)`.execute(trx);
+              return row;
+            });
             if (inserted) {
               void reply.code(201);
               return { id };
@@ -243,7 +315,7 @@ export async function crashReportRoutes(app: FastifyInstance, identity: Identity
     return Buffer.concat(chunks);
   };
 
-  app.get<{ Querystring: { cursor?: string; limit?: string } }>(
+  app.get<{ Querystring: { cursor?: string; limit?: string; group?: string; kind?: string } }>(
     '/api/v1/admin/crash-reports',
     async (r): Promise<AdminCrashReportList> => {
       await requireRole(identity, r, 'admin');
@@ -260,25 +332,18 @@ export async function crashReportRoutes(app: FastifyInstance, identity: Identity
         query = query.where(
           sql<boolean>`(received_at, id) < (${cursor.exactAt}::timestamptz, ${cursor.id})`,
         );
+      if (r.query.kind !== undefined) {
+        const kind = r.query.kind;
+        if (kind !== 'problem' && !Object.hasOwn(CRASH_PAYLOAD_ENTRIES, kind))
+          throw apiError('bad_request', 'Unknown report kind.');
+        query = query.where('kind', '=', kind as AdminCrashReport['kind']);
+      }
+      if (r.query.group !== undefined) {
+        if (!UUID.test(r.query.group)) throw apiError('bad_request', 'Invalid crash group.');
+        query = query.where('group_id', '=', r.query.group);
+      }
       const rows = await query.execute();
-      const items: AdminCrashReport[] = rows.slice(0, limit).map((row) => ({
-        id: row.id,
-        kind: row.kind,
-        receivedAt: row.received_at.toISOString(),
-        version: row.version,
-        versionMinor: row.version_minor,
-        simRevision: row.sim_revision,
-        distribution: row.distribution,
-        platform: row.platform,
-        os: row.os,
-        deviceClass: row.device_class,
-        deviceTier: row.device_tier,
-        description: row.description,
-        installId: row.install_id,
-        size: row.size,
-        attachments: row.attachments,
-        bundleAvailable: row.bundle_key !== null,
-      }));
+      const items: AdminCrashReport[] = rows.slice(0, limit).map(summary);
       const last = rows[limit - 1];
       return {
         items,
@@ -288,6 +353,89 @@ export async function crashReportRoutes(app: FastifyInstance, identity: Identity
       };
     },
   );
+
+  app.get<{ Params: { id: string } }>(
+    '/api/v1/admin/crash-reports/:id',
+    async (r): Promise<AdminCrashReportDetail> => {
+      await requireRole(identity, r, 'admin');
+      const row = ID.test(r.params.id)
+        ? await db
+            .selectFrom('crash_reports')
+            .selectAll()
+            .where('id', '=', r.params.id)
+            .executeTakeFirst()
+        : undefined;
+      if (!row) throw apiError('not_found', 'No such report.');
+      return { report: summary(row), frames: row.frames ?? [] };
+    },
+  );
+
+  // Groups sorted by affected installs, counted over the reports that match
+  // the filters (a release, platform or channel).
+  app.get<{
+    Querystring: {
+      cursor?: string;
+      limit?: string;
+      version?: string;
+      platform?: string;
+      distribution?: string;
+    };
+  }>('/api/v1/admin/crash-groups', async (r): Promise<AdminCrashGroupList> => {
+    await requireRole(identity, r, 'admin');
+    const limit = pageSize(r.query.limit);
+    const offset = groupOffset(r.query.cursor);
+    const { version, platform, distribution } = r.query;
+    let counts = db
+      .selectFrom('crash_reports')
+      .select((eb) => [
+        'group_id',
+        eb.fn.countAll<string>().as('reports'),
+        sql<string>`count(DISTINCT install_id)`.as('installs'),
+        sql<string[]>`array_agg(DISTINCT platform ORDER BY platform)`.as('platforms'),
+        sql<string[]>`array_agg(DISTINCT distribution ORDER BY distribution)`.as('distributions'),
+      ])
+      .where('group_id', 'is not', null)
+      .groupBy('group_id');
+    if (version) counts = counts.where('version', '=', version);
+    if (platform) counts = counts.where('platform', '=', platform);
+    if (distribution) counts = counts.where('distribution', '=', distribution);
+    const rows = await db
+      .with('counts', () => counts)
+      .selectFrom('counts')
+      .innerJoin('crash_groups as g', 'g.id', 'counts.group_id')
+      .select([
+        'g.id',
+        'g.signature',
+        'g.first_version',
+        'g.last_version',
+        'g.first_seen_at',
+        'g.last_seen_at',
+        'counts.reports',
+        'counts.installs',
+        'counts.platforms',
+        'counts.distributions',
+      ])
+      .orderBy(sql`counts.installs::bigint`, 'desc')
+      .orderBy(sql`counts.reports::bigint`, 'desc')
+      .orderBy('g.last_seen_at', 'desc')
+      .orderBy('g.id')
+      .limit(limit + 1)
+      .offset(offset)
+      .execute();
+    const items: AdminCrashGroup[] = rows.slice(0, limit).map((row) => ({
+      id: row.id,
+      signature: row.signature,
+      firstVersion: row.first_version,
+      lastVersion: row.last_version,
+      firstSeenAt: row.first_seen_at.toISOString(),
+      lastSeenAt: row.last_seen_at.toISOString(),
+      reports: Number(row.reports),
+      installs: Number(row.installs),
+      platforms: row.platforms,
+      distributions: row.distributions,
+    }));
+    return { items, ...(rows.length > limit ? { nextCursor: `o${offset + limit}` } : {}) };
+  });
 
   app.get<{ Params: { id: string } }>(
     '/api/v1/admin/crash-reports/:id/bundle',

@@ -235,6 +235,14 @@ jobs:
           assert isinstance(paths, list) and sys.argv[2] in paths, 'Installed runtime assets are not discoverable'
           PY
           ldd "$stage/usr/bin/glob2" | grep -F "$stage/usr/bin/../lib/glob2/libSDL3_image"
+      - name: Hand over crash symbols
+        if: ${{ inputs.tag != '' && hashFiles('tools/symbols/dump_syms.json') != '' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: crash-symbols-release-linux
+          path: build/linux/client/release/lean-images/src/glob2.debug
+          if-no-files-found: error
+          retention-days: 7
       - name: Measure original-assets Linux baseline
         run: |
           stage="$PWD/artifacts/size-baseline"
@@ -488,6 +496,14 @@ jobs:
             --output artifacts/package-sizes/candidate.json
           python3 tools/release/package_sizes.py compare artifacts/package-sizes/baseline.json \
             artifacts/package-sizes/candidate.json --output artifacts/package-sizes/comparison.json
+      - name: Hand over crash symbols
+        if: ${{ inputs.tag != '' && hashFiles('tools/symbols/dump_syms.json') != '' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: crash-symbols-release-windows
+          path: build/mingw/client/release/lean-images/src/glob2.exe.debug
+          if-no-files-found: error
+          retention-days: 7
       - name: Compare Windows decoder performance on identical packaged images
         run: |
           python3 tools/release/benchmark_decoder.py --assets artifacts/release-smoke/Globulation2 \
@@ -636,6 +652,14 @@ jobs:
           if-no-files-found: error
           retention-days: 90
 
+      - name: Hand over crash symbols
+        if: ${{ inputs.tag != '' && hashFiles('tools/symbols/dump_syms.json') != '' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: crash-symbols-release-macos-${{ matrix.architecture }}
+          path: build/darwin/client/release/symbols/
+          if-no-files-found: error
+          retention-days: 7
   flatpak-package:
     if: ${{ inputs.build_flatpak }}
     needs: preflight
@@ -737,3 +761,13 @@ jobs:
         with:
           name: compiler-profile-portability
           path: artifacts/profile-platforms/portability.json
+
+  # Uploads this release's crash symbols before anything is published
+  # (docs/multiplayer/crash-reports.md#symbols).
+  crash-symbols:
+    needs: [linux-package, windows-package, macos-package]
+    if: ${{ inputs.tag != '' }}
+    uses: ./.github/workflows/crash-symbols.yml
+    with:
+      version: ${{ inputs.tag }}
+      artifacts: crash-symbols-release-*

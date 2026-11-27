@@ -152,6 +152,7 @@ PLATFORM_STACK_PATHS = (
     'services/online/packages/db/migrations/', 'services/online/apps/api/src/main.ts',
     'services/online/apps/worker/src/main.ts', 'services/online/apps/engine-agent/src/main.ts',
     'services/online/apps/music-worker/', 'services/online/apps/ai-music-worker/',
+    'services/online/apps/crash-worker/src/main.ts',
 )
 TRANSPORT_HARNESSES = {'NetConnectionHarness.cpp', 'NativeMultiplayerPeer.cpp', 'WssTransportHarness.cpp',
                        'WssListenerHarness.cpp', 'LANDiscoveryHarness.cpp', 'run-network-transport-tests.py'}

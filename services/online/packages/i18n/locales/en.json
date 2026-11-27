@@ -3105,5 +3105,11 @@
   "Download bundle": "Download bundle",
   "No problem reports yet.": "No problem reports yet.",
   "No description.": "No description.",
-  "Bundle deleted after 90 days.": "Bundle deleted after 90 days."
+  "Bundle deleted after 90 days.": "Bundle deleted after 90 days.",
+  "Crashes": "Crashes",
+  "No crashes yet.": "No crashes yet.",
+  "Installs": "Installs",
+  "Stack": "Stack",
+  "Channel": "Channel",
+  "Show reports": "Show reports"
 }

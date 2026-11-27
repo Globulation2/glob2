@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:WebErrorReport",
+  "title": "WebErrorReport",
+  "type": "object",
+  "required": [
+    "schema",
+    "source",
+    "message",
+    "stack",
+    "buildId"
+  ],
+  "properties": {
+    "schema": {
+      "type": "number",
+      "const": 1
+    },
+    "source": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "error"
+        },
+        {
+          "type": "string",
+          "const": "unhandledrejection"
+        },
+        {
+          "type": "string",
+          "const": "abort"
+        }
+      ]
+    },
+    "message": {
+      "type": "string",
+      "maxLength": 1024
+    },
+    "stack": {
+      "type": "string",
+      "maxLength": 32768
+    },
+    "buildId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{32}$"
+    }
+  },
+  "additionalProperties": false
+}

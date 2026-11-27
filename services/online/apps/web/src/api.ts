@@ -5,6 +5,8 @@ import { t } from './messages.ts';
 // same-origin fetches, which the API's CSRF check accepts.
 import type {
   AdminCrashReportList,
+  AdminCrashReportDetail,
+  AdminCrashGroupList,
   AiProfile,
   PlayerDirectory,
   AdminAccount,
@@ -185,6 +187,14 @@ export const api = {
     }),
   adminCrashReports: (query: Query = {}, signal?: AbortSignal) =>
     get<AdminCrashReportList>('/api/v1/admin/crash-reports', query, signal),
+  adminCrashReport: (id: string, signal?: AbortSignal) =>
+    get<AdminCrashReportDetail>(
+      `/api/v1/admin/crash-reports/${encodeURIComponent(id)}`,
+      {},
+      signal,
+    ),
+  adminCrashGroups: (query: Query = {}, signal?: AbortSignal) =>
+    get<AdminCrashGroupList>('/api/v1/admin/crash-groups', query, signal),
   adminMatches: (query: Query = {}, signal?: AbortSignal) =>
     get<MatchList>('/api/v1/admin/matches', query, signal),
   adminReports: (query: Query = {}, signal?: AbortSignal) =>

@@ -166,6 +166,14 @@ jobs:
             --version "$VERSION" --source-commit "$SOURCE_COMMIT" \
             --workflow-commit "$WORKFLOW_COMMIT"
           tar -C artifacts/gog/windows -czf artifacts/gog/windows.tar.gz .
+      - name: Hand over crash symbols
+        if: ${{ inputs.mode == 'stage' && !inputs.reuse_released_payload && hashFiles('source/tools/symbols/dump_syms.json') != '' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: crash-symbols-gog-windows
+          path: source/build/mingw/client/release/lean-images/src/glob2.exe.debug
+          if-no-files-found: error
+          retention-days: 7
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: gog-windows
@@ -274,6 +282,14 @@ jobs:
           GLOB2_USER_DATA_DIR="$PWD/artifacts/gog-profile" \
             artifacts/gog/linux/start.sh "${repeat_args[@]}"
           tar -C artifacts/gog/linux -czf artifacts/gog/linux.tar.gz .
+      - name: Hand over crash symbols
+        if: ${{ inputs.mode == 'stage' && !inputs.reuse_released_payload && hashFiles('source/tools/symbols/dump_syms.json') != '' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: crash-symbols-gog-linux
+          path: source/build/linux/client/release/lean-images/src/glob2.debug
+          if-no-files-found: error
+          retention-days: 7
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: gog-linux
@@ -342,6 +358,14 @@ jobs:
               ./Contents/MacOS/glob2 "${repeat_args[@]}"
           )
           tar -C artifacts/gog/macos -czf artifacts/gog/macos.tar.gz .
+      - name: Hand over crash symbols
+        if: ${{ inputs.mode == 'stage' && !inputs.reuse_released_payload && hashFiles('source/tools/symbols/dump_syms.json') != '' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: crash-symbols-gog-macos
+          path: source/build/darwin/client/release/symbols/
+          if-no-files-found: error
+          retention-days: 7
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: gog-macos
@@ -357,7 +381,7 @@ jobs:
       github.triggering_actor == 'genixpro' &&
       github.event_name == 'workflow_dispatch' &&
       github.ref == 'refs/heads/master'
-    needs: [preflight, windows-smoke, linux, macos]
+    needs: [preflight, windows-smoke, linux, macos, crash-symbols]
     timeout-minutes: 90
     runs-on: ubuntu-24.04
     environment: gog-staging
@@ -610,3 +634,13 @@ jobs:
           name: gog-released-macos-${{ matrix.architecture }}
           path: artifacts/gog/macos-${{ matrix.architecture }}.zip
           if-no-files-found: error
+
+  # Uploads this release's crash symbols before anything is published
+  # (docs/multiplayer/crash-reports.md#symbols).
+  crash-symbols:
+    needs: [windows, linux, macos]
+    if: ${{ inputs.mode == 'stage' && !inputs.reuse_released_payload }}
+    uses: ./.github/workflows/crash-symbols.yml
+    with:
+      version: ${{ inputs.tag }}
+      artifacts: crash-symbols-gog-*

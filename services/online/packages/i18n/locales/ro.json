@@ -3132,5 +3132,11 @@
   "Download bundle": "Descarcă pachetul",
   "No problem reports yet.": "Încă nu există rapoarte de probleme.",
   "No description.": "Fără descriere.",
-  "Bundle deleted after 90 days.": "Pachetul a fost șters după 90 de zile."
+  "Bundle deleted after 90 days.": "Pachetul a fost șters după 90 de zile.",
+  "Crashes": "Blocări",
+  "No crashes yet.": "Încă nu există blocări.",
+  "Installs": "Instalări",
+  "Stack": "Stivă",
+  "Channel": "Canal",
+  "Show reports": "Arată rapoartele"
 }

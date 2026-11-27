@@ -256,9 +256,11 @@ foreach(variant IN LISTS GLOB2_WEB_VARIANTS)
   if(GLOB2_WEB_CLOSURE)
     list(APPEND link --closure 1)
   endif()
-  # index.js.symbols (never packaged) names each function for size attribution
-  # (tools/web_size_report.py --attribute); editions are built to be measured.
-  if(NOT GLOB2_WEB_EDITION STREQUAL "standard")
+  # index.js.symbols (never packaged) names each function: for size attribution
+  # (tools/web_size_report.py --attribute; editions are built to be measured) and,
+  # in release builds, for the crash symbols the release workflows upload
+  # (docs/multiplayer/crash-reports.md#symbols). The .wasm is the same either way.
+  if(NOT GLOB2_WEB_EDITION STREQUAL "standard" OR GLOB2_MODE STREQUAL "release")
     list(APPEND link --emit-symbol-map)
   endif()
   if(GLOB2_WEB_LEGACY_GL)

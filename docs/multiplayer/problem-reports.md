@@ -2,9 +2,10 @@
 
 Report a Problem lets a player send the recent log, their newest save and replay,
 and a short description to the official glob2-online instance, or save the same
-bundle to a file. It is the first phase of in-house error reporting: every report
-goes to glob2-online and to no third-party service. Crash capture, symbolication,
-crash grouping and release gates build on the same endpoint later.
+bundle to a file. Every report goes to glob2-online and to no third-party service.
+[Crash reports](crash-reports.md) use the same bundle and endpoint, and add
+symbolication and crash grouping; crash capture in the game and release gates
+come later.
 
 ## In the game
 
@@ -85,7 +86,7 @@ bundle as `application/zip` without signing in, and answers `201 {"id": "K7M2QX9
   in `crash_reports` (migration `0061`).
 
 Administrators (`role = admin`) see reports under **Admin → Problem reports**
-(`GET /api/v1/admin/crash-reports`), newest first, and download the bundle or one
+(`GET /api/v1/admin/crash-reports?kind=problem`), newest first, and download the bundle or one
 attachment (`…/:id/bundle`, `…/:id/attachments/:name`). Every download is written
 to the admin audit log as `crash_report.download`.
 

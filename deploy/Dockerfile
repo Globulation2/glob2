@@ -3,7 +3,7 @@
 # Images for the self-hosted stack (deploy/compose.yaml).
 #
 #   target        image                         contents
-#   platform      glob2-platform                platform-api, platform-worker and the operator CLI
+#   platform      glob2-platform                platform-api, platform-worker, crash-worker and the operator CLI
 #   skin-render-worker glob2-skin-render-worker   isolated OpenGL sprite generation
 #   music-worker  glob2-music-worker            isolated community audio conversion
 #   engine-agent  glob2-engine-agent:<simver>   engine-agent + headless glob2 + data (one per sim version)
@@ -11,11 +11,12 @@
 #   caddy         glob2-caddy                   Caddy + Caddyfile + built apps/web
 #
 # Build stages: source → cpp-base → relay-build; engine-source
-# → engine-build; node-deps → web-build / platform-runtime-deps.
+# → engine-build; node-deps → web-build / platform-runtime-deps; crash-tools.
 
 ARG NODE_IMAGE=node:22-bookworm-slim
 ARG UBUNTU_IMAGE=ubuntu:24.04
 ARG CADDY_IMAGE=caddy:2.11.4-alpine
+ARG RUST_IMAGE=rust:1.99.1-slim-bookworm
 
 # ---------------------------------------------------------------- C++ build
 
@@ -134,6 +135,7 @@ COPY services/online/apps/skin-render-worker/package.json apps/skin-render-worke
 COPY services/online/apps/ai-map-worker/package.json apps/ai-map-worker/
 COPY services/online/apps/api/package.json apps/api/
 COPY services/online/apps/worker/package.json apps/worker/
+COPY services/online/apps/crash-worker/package.json apps/crash-worker/
 COPY services/online/apps/engine-agent/package.json apps/engine-agent/
 COPY services/online/apps/web/package.json apps/web/
 RUN --mount=type=cache,id=glob2-npm,target=/root/.npm test -n "$GLOB2_DESIGN_SYSTEM_SHA" && npm ci --no-audit --no-fund && node scripts/design-system.mjs
@@ -170,6 +172,7 @@ COPY services/online/tsconfig.base.json services/online/tsconfig.json ./
 COPY services/online/packages packages
 COPY services/online/apps/api apps/api
 COPY services/online/apps/worker apps/worker
+COPY services/online/apps/crash-worker apps/crash-worker
 COPY services/online/apps/music-worker apps/music-worker
 COPY services/online/apps/skin-render-worker apps/skin-render-worker
 COPY services/online/apps/engine-agent apps/engine-agent
@@ -187,6 +190,42 @@ COPY platforms/web/assets/sans-core.ttf /app/platforms/web/assets/sans-core.ttf
 RUN rm -rf packages/*/test apps/*/test && \
     find packages apps -name '*.test.ts' -delete
 
+# ---------------------------------------------------------------- crash tools
+
+# minidump-stackwalk from rust-minidump (MIT; docs/multiplayer/crash-reports.md)
+# for the crash worker, built from its checksum-verified source release with its
+# own lockfile. The stage runs on the build machine and cross-compiles for the
+# image's architecture (the release ships no arm64 Linux binary), so arm64
+# images need no emulated Rust build. The Rust image's Debian release matches
+# NODE_IMAGE's, so the binary links against the same glibc.
+FROM --platform=$BUILDPLATFORM ${RUST_IMAGE} AS crash-tools
+ARG TARGETARCH
+ARG MINIDUMP_STACKWALK_VERSION=0.27.0
+ARG MINIDUMP_STACKWALK_SOURCE_SHA256=588eecc275b83736307b9e96845837d9872117c9520b123f11c8a107cffc9660
+RUN --mount=type=cache,id=glob2-cargo-registry,target=/usr/local/cargo/registry \
+    --mount=type=cache,id=glob2-crash-tools-${TARGETARCH},target=/build/target \
+    set -eu; \
+    case "$TARGETARCH" in \
+      amd64) target=x86_64-unknown-linux-gnu; triple=x86_64-linux-gnu ;; \
+      arm64) target=aarch64-unknown-linux-gnu; triple=aarch64-linux-gnu ;; \
+      *) echo "crash-tools: unsupported architecture $TARGETARCH" >&2; exit 1 ;; \
+    esac; \
+    if [ "$(dpkg --print-architecture)" = "$TARGETARCH" ]; then packages=gcc; linker=gcc; \
+    else packages="gcc-$(echo "$triple" | tr _ -) libc6-dev-$TARGETARCH-cross"; linker="$triple-gcc"; fi; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends ca-certificates curl libc6-dev $packages; \
+    rm -rf /var/lib/apt/lists/*; \
+    rustup target add "$target"; \
+    curl -fsSL -o /tmp/source.tar.gz \
+      "https://github.com/rust-minidump/rust-minidump/releases/download/v$MINIDUMP_STACKWALK_VERSION/source.tar.gz"; \
+    echo "$MINIDUMP_STACKWALK_SOURCE_SHA256  /tmp/source.tar.gz" | sha256sum -c -; \
+    mkdir -p /src; tar -xzf /tmp/source.tar.gz -C /src --strip-components=1; \
+    upper="$(echo "$target" | tr a-z- A-Z_)"; \
+    export "CARGO_TARGET_${upper}_LINKER=$linker" "CC_$(echo "$target" | tr - _)=$linker"; \
+    cd /src; \
+    cargo build --locked --release --package minidump-stackwalk --target "$target" --target-dir /build/target; \
+    install -D -m 755 "/build/target/$target/release/minidump-stackwalk" /out/minidump-stackwalk
+
 # ---------------------------------------------------------------- runtime images
 
 # platform-api (default command), platform-worker (`node apps/worker/src/main.ts`)
@@ -196,10 +235,12 @@ ARG GLOB2_DESIGN_SYSTEM_SHA
 LABEL org.glob2.design-system-revision=${GLOB2_DESIGN_SYSTEM_SHA}
 RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /nonexistent glob2 && \
     mkdir -p /var/lib/glob2/blobs /var/lib/glob2/keys /var/lib/glob2/relay /var/lib/glob2/engine-agent \
-      /var/lib/glob2/db/migrator /var/lib/glob2/db/api /var/lib/glob2/db/worker /etc/glob2 && \
-    chown -R 10001:10001 /var/lib/glob2 && \
+      /var/lib/glob2/db/migrator /var/lib/glob2/db/api /var/lib/glob2/db/worker /etc/glob2 \
+      /var/cache/glob2-crash-symbols && \
+    chown -R 10001:10001 /var/lib/glob2 /var/cache/glob2-crash-symbols && \
     chmod 700 /var/lib/glob2/keys /var/lib/glob2/relay /var/lib/glob2/engine-agent /var/lib/glob2/db/*
 COPY --from=platform-runtime-deps /app/services/online /app/services/online
+COPY --from=crash-tools /out/minidump-stackwalk /usr/local/bin/minidump-stackwalk
 COPY --from=platform-runtime-deps /app/content/data/fonts /app/content/data/fonts
 COPY --from=platform-runtime-deps /app/platforms/web/assets /app/platforms/web/assets
 COPY examples/javascript /app/examples/javascript

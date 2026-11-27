@@ -3105,5 +3105,11 @@
   "Download bundle": "I-download ang bundle",
   "No problem reports yet.": "Wala pang ulat ng problema.",
   "No description.": "Walang paglalarawan.",
-  "Bundle deleted after 90 days.": "Binura ang bundle pagkalipas ng 90 araw."
+  "Bundle deleted after 90 days.": "Binura ang bundle pagkalipas ng 90 araw.",
+  "Crashes": "Mga pag-crash",
+  "No crashes yet.": "Wala pang pag-crash.",
+  "Installs": "Mga install",
+  "Stack": "Stack",
+  "Channel": "Channel",
+  "Show reports": "Ipakita ang mga ulat"
 }

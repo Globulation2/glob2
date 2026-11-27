@@ -29,9 +29,21 @@
         {
           "type": "string",
           "const": "problem"
+        },
+        {
+          "type": "string",
+          "const": "crash"
+        },
+        {
+          "type": "string",
+          "const": "metrickit"
+        },
+        {
+          "type": "string",
+          "const": "web"
         }
       ],
-      "description": "What sent the report. Phase 1 knows only Report a Problem."
+      "description": "What sent the report: Report a Problem, a Crashpad minidump, an iOS MetricKit crash diagnostic, or a browser error."
     },
     "installId": {
       "type": "string",
@@ -170,6 +182,26 @@
     "description": {
       "type": "string",
       "maxLength": 2000
+    },
+    "match": {
+      "type": "object",
+      "required": [
+        "tick",
+        "seed"
+      ],
+      "properties": {
+        "tick": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        }
+      },
+      "additionalProperties": false
     },
     "createdAt": {
       "type": "string",

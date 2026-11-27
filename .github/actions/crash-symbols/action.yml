@@ -1,0 +1,50 @@
+name: Upload crash symbols
+description: >-
+  Uploads a release build's debug symbols to glob2-online so its crash reports
+  can be read (docs/multiplayer/crash-reports.md#symbols). The step fails, and
+  with it the release job, when the symbols cannot be dumped or uploaded. Jobs
+  call it from the checkout they build, guarded by hashFiles, so builds of tags
+  cut before crash symbols existed (which cannot send crash reports) skip it.
+inputs:
+  token:
+    description: CRASH_SYMBOL_UPLOAD_TOKEN, the release workflows' secret.
+    required: true
+  version:
+    description: Release version or tag (v0.11.8.1); empty for the checkout's PACKAGE_VERSION.
+    required: false
+    default: ''
+  files:
+    description: Unstripped binaries or .dSYM bundles, one per line.
+    required: false
+    default: ''
+  wasm:
+    description: The shipped .wasm file of a browser build.
+    required: false
+    default: ''
+  symbol-map:
+    description: That build's Emscripten symbol map.
+    required: false
+    default: ''
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        CRASH_SYMBOL_UPLOAD_TOKEN: ${{ inputs.token }}
+        SYMBOL_VERSION: ${{ inputs.version }}
+        SYMBOL_FILES: ${{ inputs.files }}
+        SYMBOL_WASM: ${{ inputs.wasm }}
+        SYMBOL_MAP: ${{ inputs.symbol-map }}
+        GLOB2_TOOL_CACHE: ${{ runner.temp }}/glob2-dump-syms
+      run: |
+        set -euo pipefail
+        python=python3
+        if ! command -v python3 >/dev/null 2>&1 || ! python3 -c '' >/dev/null 2>&1; then python=python; fi
+        arguments=()
+        if [ -n "$SYMBOL_VERSION" ]; then arguments+=(--version "${SYMBOL_VERSION#v}"); fi
+        while IFS= read -r file; do
+          [ -n "$file" ] && arguments+=("$file")
+        done <<< "$SYMBOL_FILES"
+        if [ -n "$SYMBOL_WASM" ]; then arguments+=(--wasm "$SYMBOL_WASM" --symbol-map "$SYMBOL_MAP"); fi
+        # The script of the source tree this action came from (the build's checkout).
+        "$python" "$GITHUB_ACTION_PATH/../../../tools/symbols/upload_symbols.py" "${arguments[@]}"

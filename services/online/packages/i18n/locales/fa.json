@@ -3105,5 +3105,11 @@
   "Download bundle": "دانلود بسته",
   "No problem reports yet.": "هنوز گزارش مشکلی وجود ندارد.",
   "No description.": "بدون توضیح.",
-  "Bundle deleted after 90 days.": "بسته پس از ۹۰ روز حذف شد."
+  "Bundle deleted after 90 days.": "بسته پس از ۹۰ روز حذف شد.",
+  "Crashes": "خرابی‌ها",
+  "No crashes yet.": "هنوز خرابی‌ای نیست.",
+  "Installs": "نصب‌ها",
+  "Stack": "پشته",
+  "Channel": "کانال",
+  "Show reports": "نمایش گزارش‌ها"
 }

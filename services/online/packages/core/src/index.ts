@@ -16,3 +16,4 @@ export * from './skinSprites.ts';
 
 export * from './generatorLibrary.ts';
 export * from './generatorAccess.ts';
+export * from './bundleZip.ts';

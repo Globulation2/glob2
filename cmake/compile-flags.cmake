@@ -22,11 +22,19 @@ macro(glob2_drop_debug_and_optimization)
     list(FILTER ${list_name} EXCLUDE REGEX "^-[gO]")
   endforeach()
 endmacro()
-# Release builds outside macOS link with -s, so they compile without -g unless
-# a distribution keeps symbols for its debug packages. macOS bundles keep a dSYM.
+# Release builds outside macOS compile with line tables only (-g1) unless a
+# distribution keeps full symbols for its debug packages; macOS bundles keep a
+# dSYM. The client keeps its symbols beside it as glob2.debug and is then
+# stripped (GLOB2_SPLIT_SYMBOLS below), and every other program links with -s, so
+# nothing shipped carries symbols. Release workflows upload glob2.debug's symbols
+# for crash reports (docs/multiplayer/crash-reports.md#symbols). Debug
+# information never changes the generated code (GCC and Clang both guarantee
+# it), so the stripped client is the same program either way.
+set(GLOB2_SPLIT_SYMBOLS OFF)
 if(GLOB2_MODE STREQUAL "release" AND NOT GLOB2_RETAIN_SYMBOLS AND NOT darwin)
-  list(REMOVE_ITEM cxxflags -g)
-  list(REMOVE_ITEM linkflags -g)
+  list(TRANSFORM cxxflags REPLACE "^-g$" "-g1")
+  list(TRANSFORM linkflags REPLACE "^-g$" "-g1")
+  set(GLOB2_SPLIT_SYMBOLS ON)
 endif()
 # Every native target is an executable over static archives, so position-independent
 # executable code suffices; -fPIC would make GCC treat each global function as

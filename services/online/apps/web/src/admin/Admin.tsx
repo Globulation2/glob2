@@ -9,6 +9,7 @@ import { UnifiedReports, Content, Audit } from './Moderation.tsx';
 import { Accounts } from './Accounts.tsx';
 import { Matches } from './Matches.tsx';
 import { ProblemReports } from './ProblemReports.tsx';
+import { Crashes } from './Crashes.tsx';
 // Central administration; legacy music and skin report URLs remain supported.
 import { GameArt } from '../art.tsx';
 import { Link } from '../router.tsx';
@@ -23,6 +24,7 @@ const TABS = [
   { id: 'content', name: 'Content' },
   { id: 'audit', name: 'Audit' },
   { id: 'problems', name: 'Problem reports' },
+  { id: 'crashes', name: 'Crashes' },
   { id: 'operations', name: 'Operations' },
 ];
 
@@ -67,7 +69,7 @@ export function Admin({ tab }: { tab: string | undefined }) {
       >
         {TABS.filter(
           (t) =>
-            !['overview', 'operations', 'finances', 'problems'].includes(t.id) ||
+            !['overview', 'operations', 'finances', 'problems', 'crashes'].includes(t.id) ||
             account.role === 'admin',
         ).map((tab) => (
           <Link
@@ -87,6 +89,8 @@ export function Admin({ tab }: { tab: string | undefined }) {
       {current === 'music' && <MusicReports />}
       {current === 'content' && <Content />}
       {current === 'audit' && <Audit />}
+      {current === 'crashes' &&
+        (account.role === 'admin' ? <Crashes /> : <p>{t('Administrator access is required.')}</p>)}
       {current === 'problems' &&
         (account.role === 'admin' ? (
           <ProblemReports />

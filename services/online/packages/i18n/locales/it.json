@@ -3132,5 +3132,11 @@
   "Download bundle": "Scarica il pacchetto",
   "No problem reports yet.": "Ancora nessuna segnalazione di problemi.",
   "No description.": "Nessuna descrizione.",
-  "Bundle deleted after 90 days.": "Pacchetto eliminato dopo 90 giorni."
+  "Bundle deleted after 90 days.": "Pacchetto eliminato dopo 90 giorni.",
+  "Crashes": "Arresti anomali",
+  "No crashes yet.": "Nessun arresto anomalo per ora.",
+  "Installs": "Installazioni",
+  "Stack": "Stack",
+  "Channel": "Canale",
+  "Show reports": "Mostra segnalazioni"
 }

@@ -188,6 +188,14 @@ jobs:
       - name: Build and verify Android App Bundle
         run: python3 platforms/mobile/android.py bundle --arch arm64-v8a --release --version-code '${{ steps.version.outputs.code }}'
 
+      - name: Hand over crash symbols
+        if: ${{ hashFiles('tools/symbols/dump_syms.json') != '' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: crash-symbols-play
+          path: build/android/device/arm64-v8a/24/client/release/lib/libmain.so
+          if-no-files-found: error
+          retention-days: 7
       - name: Hand off unsigned bundle to isolated signing job
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -199,7 +207,7 @@ jobs:
           retention-days: 1
 
   release:
-    needs: build
+    needs: [build, crash-symbols]
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     environment: ${{ inputs.track == 'production' && 'google-play-production' || 'google-play-internal' }}
@@ -274,3 +282,13 @@ jobs:
             --bundle build/android/device/arm64-v8a/24/client/release/android-project/app/build/outputs/bundle/release/app-release-play.aab \
             --version-code '${{ needs.build.outputs.code }}' \
             --release-notes "$GLOB2_RELEASE_NOTES" --track "${{ inputs.track }}"
+
+  # Uploads this release's crash symbols before anything is published
+  # (docs/multiplayer/crash-reports.md#symbols).
+  crash-symbols:
+    needs: build
+    if: ${{ !inputs.preflight_only }}
+    uses: ./.github/workflows/crash-symbols.yml
+    with:
+      version: ${{ inputs.tag }}
+      artifacts: crash-symbols-play

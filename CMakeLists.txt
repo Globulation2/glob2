@@ -726,6 +726,10 @@ endif()
 set(test_link_options ${link_options})
 list(REMOVE_ITEM test_link_options -s -mwindows)
 
+if(GLOB2_SPLIT_SYMBOLS AND NOT CMAKE_STRIP)
+  message(FATAL_ERROR "Release builds strip the client after keeping its symbols; no strip tool was found")
+endif()
+
 # Every program links `ARGN` (object libraries and archives) before the
 # libraries, with its library directories and LINKFLAGS (the test flags for tests).
 function(glob2_link target)
@@ -737,6 +741,18 @@ function(glob2_link target)
     if(darwin)
       target_link_libraries(${target} PRIVATE "-framework Foundation")  # test/support/TestActivity_mac.mm
     endif()
+  elseif(GLOB2_SPLIT_SYMBOLS AND target STREQUAL "glob2")
+    # The shipped client: linked with its symbols and a build ID (which
+    # minidumps name it by), copied to glob2.debug for the release workflows'
+    # symbol upload, then stripped as -s would (cmake/compile-flags.cmake).
+    set(client_link_options ${link_options})
+    list(REMOVE_ITEM client_link_options -s)
+    target_link_options(${target} PRIVATE ${client_link_options} -Wl,--build-id)
+    add_custom_command(TARGET ${target} POST_BUILD
+      COMMAND "${CMAKE_COMMAND}" -E copy "$<TARGET_FILE:${target}>" "$<TARGET_FILE:${target}>.debug"
+      COMMAND "${CMAKE_STRIP}" --strip-all "$<TARGET_FILE:${target}>"
+      COMMENT "Keeping glob2's symbols in $<TARGET_FILE_NAME:${target}>.debug and stripping it"
+      VERBATIM)
   else()
     target_link_options(${target} PRIVATE ${link_options})
   endif()

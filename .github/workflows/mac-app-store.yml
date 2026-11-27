@@ -94,7 +94,7 @@ jobs:
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 tools/dev_build.py release=1 client_profile=free distribution=app_store --build=build/darwin/client/release bundle -j2 \
-            CXXFLAGS="-I$openssl/include" \
+            CXXFLAGS="-g -I$openssl/include" \
             LINKFLAGS="-L$openssl/lib"
 
       - name: Smoke test public compiled game
@@ -188,10 +188,18 @@ jobs:
           if-no-files-found: error
           retention-days: 90
 
+      - name: Hand over crash symbols
+        if: ${{ inputs.upload && hashFiles('tools/symbols/dump_syms.json') != '' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: crash-symbols-mas
+          path: build/darwin/client/release/symbols/
+          if-no-files-found: error
+          retention-days: 7
   upload:
     name: Sign and upload to App Store Connect
     if: ${{ github.repository == 'genixpro/glob2-release' && github.repository_id == 1397722696 && github.actor == 'genixpro' && github.actor_id == 6193625 && github.triggering_actor == 'genixpro' && github.ref == 'refs/heads/master' && github.event_name == 'workflow_dispatch' && inputs.upload }}
-    needs: build
+    needs: [build, crash-symbols]
     runs-on: macos-26
     environment: mac-app-store
     timeout-minutes: 60
@@ -350,3 +358,13 @@ jobs:
           security delete-keychain "$RUNNER_TEMP/glob2-app-store.keychain-db" || true
           rm -f "$RUNNER_TEMP/glob2-app.p12" "$RUNNER_TEMP/glob2-installer.p12" \
             "$RUNNER_TEMP/glob2.provisionprofile" "$RUNNER_TEMP/glob2-auth.p8"
+
+  # Uploads this release's crash symbols before anything is published
+  # (docs/multiplayer/crash-reports.md#symbols).
+  crash-symbols:
+    needs: build
+    if: ${{ inputs.upload }}
+    uses: ./.github/workflows/crash-symbols.yml
+    with:
+      version: ${{ inputs.tag }}
+      artifacts: crash-symbols-mas

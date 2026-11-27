@@ -3105,5 +3105,11 @@
   "Download bundle": "Lataa paketti",
   "No problem reports yet.": "Ei vielä ongelmailmoituksia.",
   "No description.": "Ei kuvausta.",
-  "Bundle deleted after 90 days.": "Paketti poistettiin 90 päivän jälkeen."
+  "Bundle deleted after 90 days.": "Paketti poistettiin 90 päivän jälkeen.",
+  "Crashes": "Kaatumiset",
+  "No crashes yet.": "Ei vielä kaatumisia.",
+  "Installs": "Asennukset",
+  "Stack": "Pino",
+  "Channel": "Kanava",
+  "Show reports": "Näytä raportit"
 }

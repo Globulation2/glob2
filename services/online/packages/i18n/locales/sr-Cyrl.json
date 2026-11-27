@@ -3132,5 +3132,11 @@
   "Download bundle": "Преузми пакет",
   "No problem reports yet.": "Још нема пријава проблема.",
   "No description.": "Нема описа.",
-  "Bundle deleted after 90 days.": "Пакет је обрисан после 90 дана."
+  "Bundle deleted after 90 days.": "Пакет је обрисан после 90 дана.",
+  "Crashes": "Падови",
+  "No crashes yet.": "Још нема падова.",
+  "Installs": "Инсталације",
+  "Stack": "Стек",
+  "Channel": "Канал",
+  "Show reports": "Прикажи пријаве"
 }

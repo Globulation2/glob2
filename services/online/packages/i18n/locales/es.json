@@ -3132,5 +3132,11 @@
   "Download bundle": "Descargar paquete",
   "No problem reports yet.": "Todavía no hay informes de problemas.",
   "No description.": "Sin descripción.",
-  "Bundle deleted after 90 days.": "El paquete se eliminó a los 90 días."
+  "Bundle deleted after 90 days.": "El paquete se eliminó a los 90 días.",
+  "Crashes": "Cierres inesperados",
+  "No crashes yet.": "Aún no hay cierres inesperados.",
+  "Installs": "Instalaciones",
+  "Stack": "Pila",
+  "Channel": "Canal",
+  "Show reports": "Mostrar informes"
 }

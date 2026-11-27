@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:CrashSymbolReceipt",
+  "title": "CrashSymbolReceipt",
+  "type": "object",
+  "required": [
+    "kind",
+    "module",
+    "debugId",
+    "version",
+    "replaced"
+  ],
+  "properties": {
+    "kind": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "breakpad"
+        },
+        {
+          "type": "string",
+          "const": "wasm"
+        }
+      ]
+    },
+    "module": {
+      "type": "string"
+    },
+    "debugId": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+){2,3}$"
+    },
+    "replaced": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

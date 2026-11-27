@@ -3078,5 +3078,11 @@
   "Download bundle": "バンドルをダウンロード",
   "No problem reports yet.": "問題の報告はまだありません。",
   "No description.": "説明はありません。",
-  "Bundle deleted after 90 days.": "バンドルは 90 日後に削除されました。"
+  "Bundle deleted after 90 days.": "バンドルは 90 日後に削除されました。",
+  "Crashes": "クラッシュ",
+  "No crashes yet.": "クラッシュはまだありません。",
+  "Installs": "インストール数",
+  "Stack": "スタック",
+  "Channel": "チャネル",
+  "Show reports": "報告を表示"
 }

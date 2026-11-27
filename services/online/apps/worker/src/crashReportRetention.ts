@@ -2,7 +2,10 @@
 // a report's bundle (log, save, replay) is deleted after
 // CRASH_BUNDLE_RETENTION_DAYS and its summary row after
 // CRASH_REPORT_RETENTION_DAYS. Bundles that no row names, left by an upload
-// that failed after storing its bytes, are deleted after a day.
+// that failed after storing its bytes, are deleted after a day. Crash groups
+// (docs/multiplayer/crash-reports.md) go once their last report is gone and
+// they were last seen two years ago. Symbol files are kept; only uploads no
+// crash_symbols row names (a failed or replaced upload) are swept.
 import { sql, type Kysely } from 'kysely';
 import type { BlobStore, Logger } from '@glob2/core';
 import type { Database } from '@glob2/db';
@@ -16,6 +19,8 @@ export interface CrashRetentionResult {
   deletedBundles: number;
   deletedReports: number;
   deletedOrphanBundles: number;
+  deletedGroups: number;
+  deletedOrphanSymbols: number;
 }
 
 const days = (n: number) => sql<Date>`now() - make_interval(days => ${n})`;
@@ -54,29 +59,28 @@ export async function retainCrashReports(
       SELECT id FROM crash_reports
       WHERE bundle_key IS NULL AND received_at < ${days(CRASH_REPORT_RETENTION_DAYS)}
       LIMIT ${CRASH_RETENTION_BATCH})`.execute(db);
-  let deletedOrphanBundles = 0;
-  if (store.list) {
-    const cutoff = (options.now ?? Date.now()) - ORPHAN_GRACE_MS;
-    // One indexed lookup per batch of listed keys (crash_reports_bundle_key_idx).
+  const groups = await sql`
+    DELETE FROM crash_groups WHERE id IN (
+      SELECT g.id FROM crash_groups g
+      WHERE g.last_seen_at < ${days(CRASH_REPORT_RETENTION_DAYS)}
+        AND NOT EXISTS (SELECT 1 FROM crash_reports r WHERE r.group_id = g.id)
+      LIMIT ${CRASH_RETENTION_BATCH})`.execute(db);
+  const cutoff = (options.now ?? Date.now()) - ORPHAN_GRACE_MS;
+  // One indexed lookup per batch of listed keys (the unique key indexes).
+  const sweepOrphans = async (prefix: string, known: (keys: string[]) => Promise<Set<string>>) => {
+    let deleted = 0;
+    if (!store.list) return deleted;
     const sweep = async (keys: string[]) => {
       if (keys.length === 0) return;
-      const known = new Set(
-        (
-          await db
-            .selectFrom('crash_reports')
-            .select('bundle_key')
-            .where('bundle_key', 'in', keys)
-            .execute()
-        ).map((row) => row.bundle_key),
-      );
+      const named = await known(keys);
       for (const key of keys)
-        if (!known.has(key)) {
+        if (!named.has(key)) {
           await store.delete(key);
-          deletedOrphanBundles++;
+          deleted++;
         }
     };
     let batch: string[] = [];
-    for await (const entry of store.list('crash-reports/')) {
+    for await (const entry of store.list(prefix)) {
       if (entry.modifiedAt.getTime() >= cutoff) continue;
       batch.push(entry.key);
       if (batch.length >= CRASH_RETENTION_BATCH) {
@@ -85,10 +89,39 @@ export async function retainCrashReports(
       }
     }
     await sweep(batch);
-  }
+    return deleted;
+  };
+  const deletedOrphanBundles = await sweepOrphans(
+    'crash-reports/',
+    async (keys) =>
+      new Set(
+        (
+          await db
+            .selectFrom('crash_reports')
+            .select('bundle_key')
+            .where('bundle_key', 'in', keys)
+            .execute()
+        ).flatMap((row) => (row.bundle_key ? [row.bundle_key] : [])),
+      ),
+  );
+  const deletedOrphanSymbols = await sweepOrphans(
+    'crash-symbols/',
+    async (keys) =>
+      new Set(
+        (
+          await db
+            .selectFrom('crash_symbols')
+            .select('blob_key')
+            .where('blob_key', 'in', keys)
+            .execute()
+        ).map((row) => row.blob_key),
+      ),
+  );
   return {
     deletedBundles,
     deletedReports: Number(reports.numAffectedRows ?? 0n),
     deletedOrphanBundles,
+    deletedGroups: Number(groups.numAffectedRows ?? 0n),
+    deletedOrphanSymbols,
   };
 }

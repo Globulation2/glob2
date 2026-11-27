@@ -3105,5 +3105,11 @@
   "Download bundle": "Изтегляне на пакета",
   "No problem reports yet.": "Все още няма доклади за проблеми.",
   "No description.": "Няма описание.",
-  "Bundle deleted after 90 days.": "Пакетът е изтрит след 90 дни."
+  "Bundle deleted after 90 days.": "Пакетът е изтрит след 90 дни.",
+  "Crashes": "Сривове",
+  "No crashes yet.": "Все още няма сривове.",
+  "Installs": "Инсталации",
+  "Stack": "Стек",
+  "Channel": "Канал",
+  "Show reports": "Покажи докладите"
 }

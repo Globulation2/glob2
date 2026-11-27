@@ -109,7 +109,7 @@ class ReleaseWorkflowTests(unittest.TestCase):
         self.assertIn('        type: boolean\n        default: false',inputs)
         upload=text.split('\n  upload-dev:',1)[1]
         self.assertIn('    if: ${{ inputs.upload }}',upload)
-        self.assertIn('    needs: [preflight, smoke-test]',upload)
+        self.assertIn('    needs: [preflight, smoke-test, crash-symbols]',upload)
         self.assertIn('    environment: epic-dev',upload)
 
     def test_epic_smoke_uses_tag_cli_and_rejects_unknown_versions(self):
@@ -241,7 +241,7 @@ class ReleaseWorkflowTests(unittest.TestCase):
         self.assertIn('default: true\n        type: boolean',call)
         self.assertIn("environment: ${{ inputs.upload && 'ios-testflight' || '' }}",text)
         self.assertIn('Require channel configuration before building\n        if: ${{ inputs.upload }}',text)
-        self.assertIn('  upload:\n    if: ${{ inputs.upload }}\n    needs: build',text)
+        self.assertIn('  upload:\n    if: ${{ inputs.upload }}\n    needs: [build, crash-symbols]',text)
         self.assertIn("github.repository_id == 1397722696",text)
         self.assertIn('EXPECTED_COMMIT',text)
         upload=text.split('\n  upload:\n',1)[1]
