@@ -242,6 +242,7 @@ ENGINE_TESTS = [
     '#src/app/AgeGateTest.cpp',
     '#src/app/ProblemReportTest.cpp',
     '#src/app/CrashCaptureTest.cpp',
+    '#src/app/ReleaseCheckTest.cpp',
     # Opens the main menu's More page (MainMenuScreen::showMore).
     ('#src/app/PortalModeTest.cpp', dict(cxxflags=['-fno-access-control'])),
     # Sets GameGUI's menu and pause state directly.

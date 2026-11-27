@@ -6,6 +6,7 @@ Qualify a release candidate, use the restricted mirror and publish through the t
 
 - [Mirror and packaging policy](releasing.md).
 - [Qualification and download manifests](downloads.md).
+- [Release check](release-check.md): the scripted run every release job plays.
 - [Desktop publication](desktop.md).
 - [Browser publication](browser.md).
 - [Desktop store configuration](store-setup.md).

@@ -126,6 +126,7 @@ set(GLOB2_ENGINE_TESTS_0_SOURCES
     src/app/AgeGateTest.cpp
     src/app/ProblemReportTest.cpp
     src/app/CrashCaptureTest.cpp
+    src/app/ReleaseCheckTest.cpp
     src/game/orders/GuardAreaBalanceTest.cpp
     src/ui/UIIconsTest.cpp
     src/game/screens/CustomGameSetupHarness.cpp
@@ -1419,6 +1420,7 @@ set(GLOB2_ANDROID_ENGINE_TESTS_0_SOURCES
     src/app/AgeGateTest.cpp
     src/app/ProblemReportTest.cpp
     src/app/CrashCaptureTest.cpp
+    src/app/ReleaseCheckTest.cpp
     src/game/orders/GuardAreaBalanceTest.cpp
     src/ui/UIIconsTest.cpp
     src/game/screens/CustomGameSetupHarness.cpp

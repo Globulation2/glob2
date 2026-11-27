@@ -589,6 +589,7 @@ set(GLOB2_CLIENT_SOURCES
     src/app/ProblemReport.cpp
     src/app/CrashCapture.cpp
     src/app/CrashCapturePlatform.cpp
+    src/app/ReleaseCheck.cpp
     src/app/PortalPolicy.cpp
     src/app/SystemLanguage.cpp
     src/app/DeviceProfile.cpp
@@ -1588,6 +1589,7 @@ set(GLOB2_ANDROID_SOURCES
     src/app/ProblemReport.cpp
     src/app/CrashCapture.cpp
     src/app/CrashCapturePlatform.cpp
+    src/app/ReleaseCheck.cpp
     src/app/PortalPolicy.cpp
     src/app/SystemLanguage.cpp
     src/app/DeviceProfile.cpp
@@ -2422,6 +2424,7 @@ set(GLOB2_IOS_SOURCES
     src/app/ProblemReport.cpp
     src/app/CrashCapture.cpp
     src/app/CrashCapturePlatform.cpp
+    src/app/ReleaseCheck.cpp
     src/app/PortalPolicy.cpp
     src/app/SystemLanguage.cpp
     src/app/DeviceProfile.cpp
@@ -3425,6 +3428,7 @@ set(GLOB2_WEB_SOURCES
     src/app/ProblemReport.cpp
     src/app/CrashCapture.cpp
     src/app/CrashCapturePlatform.cpp
+    src/app/ReleaseCheck.cpp
     src/app/PortalPolicy.cpp
     src/app/SystemLanguage.cpp
     src/app/DeviceProfile.cpp

@@ -24,6 +24,8 @@ def main():
     parser.add_argument('--simulator-set', default='build/mobile-tools/ios-simulators')
     parser.add_argument('--output', default='build/mobile-smoke-ios')
     parser.add_argument('--command-timeout', type=int, default=180, help='Bound simctl commands on slower hosted simulators')
+    parser.add_argument('--release-check', action='store_true',
+                        help='also run the release check (docs/releases/release-check.md) and require it to pass')
     args = parser.parse_args()
     device_set = (ROOT / args.simulator_set).resolve()
     output = (ROOT / args.output).resolve()
@@ -128,6 +130,33 @@ def main():
         if first == second: raise RuntimeError('Termination did not produce a fresh process')
         screenshot('relaunched')
         summary['checks'].append('termination and fresh-process relaunch')
+        if args.release_check:
+            # simctl hands SIMCTL_CHILD_* to the app as its environment (src/app/ReleaseCheck.h).
+            run('terminate', args.device, PACKAGE)
+            os.environ['SIMCTL_CHILD_GLOB2_RELEASE_CHECK'] = 'all'
+            try:
+                check, paths, began = start('release-check')
+            finally:
+                os.environ.pop('SIMCTL_CHILD_GLOB2_RELEASE_CHECK', None)
+            verdict = re.compile(r'Glob2 release check (passed|failed[^\r\n]*)')
+            deadline = time.monotonic() + 1800
+            found = None
+            while not found and time.monotonic() < deadline:
+                log = ''.join(path.read_text(errors='replace') for path in paths if path.exists())
+                found = verdict.search(log)
+                if not found:
+                    system_log = run('spawn', args.device, 'log', 'show', '--start', began, '--style', 'compact',
+                                     '--predicate', f'processIdentifier == {check} AND eventMessage CONTAINS "Glob2 release check"',
+                                     timeout=60)
+                    (output/'release-check-system.log').write_text(system_log)
+                    found = verdict.search(system_log)
+                if not found:
+                    time.sleep(10)
+            if not found:
+                raise RuntimeError('The release check did not finish')
+            if not found.group(0).endswith('passed'):
+                raise RuntimeError(found.group(0))
+            summary['checks'].append('release check')
         summary['passed'] = True
     except Exception as failure:
         summary['error'] = str(failure)

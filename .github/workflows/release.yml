@@ -181,7 +181,9 @@ jobs:
           test "$ready" -eq 1
           python3 platforms/mobile/android.py sign --arch x86_64 --release --fdroid
           python3 platforms/mobile/android.py install --arch x86_64 --release --fdroid --serial emulator-5580 --adb-port 15037
-          python3 platforms/mobile/smoke.py --serial emulator-5580 --avd glob2-api35-x64 --package org.globulation2.glob2
+          # The release check (docs/releases/release-check.md) needs a tag that has it.
+          check=(); if [ -f src/app/ReleaseCheck.h ]; then check=(--release-check); fi
+          python3 platforms/mobile/smoke.py --serial emulator-5580 --avd glob2-api35-x64 --package org.globulation2.glob2 "${check[@]}"
           python3 platforms/mobile/emulator.py stop --arch x86_64
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
@@ -241,6 +243,17 @@ jobs:
           assert isinstance(paths, list) and sys.argv[2] in paths, 'Installed runtime assets are not discoverable'
           PY
           ldd "$stage/usr/bin/glob2" | grep -F "$stage/usr/bin/../lib/glob2/libSDL3_image"
+      - name: Run the release check
+        # docs/releases/release-check.md; tags cut before it have no check.
+        if: ${{ hashFiles('src/app/ReleaseCheck.h') != '' }}
+        run: python3 tools/release/release_check.py build/linux/client/release/lean-images/src/glob2 --output artifacts/release-check
+      - name: Keep the release check's output
+        if: ${{ failure() && hashFiles('src/app/ReleaseCheck.h') != '' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: release-check-linux
+          path: artifacts/release-check
+          if-no-files-found: ignore
       - name: Hand over crash symbols
         if: ${{ inputs.tag != '' && hashFiles('tools/symbols/dump_syms.json') != '' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -502,6 +515,17 @@ jobs:
             --output artifacts/package-sizes/candidate.json
           python3 tools/release/package_sizes.py compare artifacts/package-sizes/baseline.json \
             artifacts/package-sizes/candidate.json --output artifacts/package-sizes/comparison.json
+      - name: Run the release check
+        # docs/releases/release-check.md, on the unpacked release zip; tags cut before it have no check.
+        if: ${{ hashFiles('src/app/ReleaseCheck.h') != '' }}
+        run: python3 tools/release/release_check.py artifacts/release-smoke/Globulation2/glob2.exe --output artifacts/release-check
+      - name: Keep the release check's output
+        if: ${{ failure() && hashFiles('src/app/ReleaseCheck.h') != '' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: release-check-windows
+          path: artifacts/release-check
+          if-no-files-found: ignore
       - name: Hand over crash symbols
         if: ${{ inputs.tag != '' && hashFiles('tools/symbols/dump_syms.json') != '' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -641,6 +665,17 @@ jobs:
           echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 tools/dev_build.py -j2 release=1 client_profile=free CXXFLAGS="-g -mmacosx-version-min=15.0" LINKFLAGS="-mmacosx-version-min=15.0" package
+      - name: Run the release check
+        # docs/releases/release-check.md; tags cut before it have no check.
+        if: ${{ hashFiles('src/app/ReleaseCheck.h') != '' }}
+        run: python3 tools/release/release_check.py build/darwin/client/release/src/glob2 --output artifacts/release-check
+      - name: Keep the release check's output
+        if: ${{ failure() && hashFiles('src/app/ReleaseCheck.h') != '' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: release-check-macos-${{ matrix.architecture }}
+          path: artifacts/release-check
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: client-build-macos-${{ matrix.architecture }}

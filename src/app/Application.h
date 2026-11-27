@@ -13,6 +13,7 @@ namespace MCP { class UIService; }
 #endif
 
 class FrontendTheme;
+namespace ReleaseCheck { class Runner; }
 
 // Shared application state. Scheduling/event polling belong to platform hosts.
 class Application : public GAGCore::ApplicationHost::Loop
@@ -52,6 +53,7 @@ class Application : public GAGCore::ApplicationHost::Loop
 	void choose(int choice);
 	void withAgeBand(std::function<void()> next);
 	std::uint64_t ageRequest = 0; ///< the newest withAgeBand request
+	std::unique_ptr<ReleaseCheck::Runner> releaseCheck; ///< GLOB2_RELEASE_CHECK runs (src/app/ReleaseCheck.h)
 	bool crashesOffered = false; ///< the last run's crashes were looked at
 	void offerCrashReports();
 

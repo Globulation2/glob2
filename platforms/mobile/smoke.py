@@ -75,6 +75,8 @@ def main():
     parser.add_argument('--adb-port', type=int, default=15037)
     parser.add_argument('--output', default='build/mobile-smoke')
     parser.add_argument('--package', choices=(PACKAGE,), default=PACKAGE)
+    parser.add_argument('--release-check', action='store_true',
+                        help='also run the release check (docs/releases/release-check.md) and require it to pass')
     args = parser.parse_args()
     package = args.package
     validate_target(args.serial, args.adb_port, args.avd)
@@ -203,6 +205,20 @@ def main():
         if restored_profile != persisted_profile:
             raise RuntimeError('Profile contents changed across background/resume and relaunch')
         summary['checks'].append('application profile persistence')
+        if args.release_check:
+            # The scripted run of src/app/ReleaseCheck.h, started by the intent extra
+            # Glob2Activity copies into GLOB2_RELEASE_CHECK.
+            run('shell', 'am', 'force-stop', package)
+            run('logcat', '-c')
+            run('shell', 'am', 'start', '-n', package+'/org.globulation2.glob2.Glob2Activity',
+                '--es', 'glob2.releaseCheck', 'all', timeout=60)
+            verdict = re.compile(r'Glob2 release check (passed|failed[^\r\n]*)')
+            wait_for(lambda: verdict.search(logs()), 'the release check', timeout=1800)
+            found = verdict.search(logs()).group(0)
+            first_log += logs()
+            if not found.endswith('passed'):
+                raise RuntimeError(found)
+            summary['checks'].append('release check')
         summary['passed'] = True
     except Exception as failure:
         summary['error'] = str(failure)

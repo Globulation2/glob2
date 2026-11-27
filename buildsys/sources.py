@@ -587,6 +587,7 @@ CLIENT_SOURCES = (
     'app/ProblemReport.cpp',
     'app/CrashCapture.cpp',
     'app/CrashCapturePlatform.cpp',
+    'app/ReleaseCheck.cpp',
     'app/PortalPolicy.cpp',
     'app/SystemLanguage.cpp',
     'app/DeviceProfile.cpp',

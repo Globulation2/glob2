@@ -62,6 +62,12 @@ class Engine
 	friend class HighResolutionIntegrationHarness;
 	friend class SoftwareRenderBenchmark;
 public:
+	/// The tick of the scene last drawn, and leaving as the in-game menu's Leave
+	/// does: the release check (src/app/ReleaseCheck.h) plays through these.
+	Uint32 drawnTick() const;
+	void quitFromMenu();
+	/// Whether the game ended on its own and showed its end-of-game dialog.
+	bool endOfGameShown() const;
 	std::vector<GAGGUI::ui::Host*> inspectionHosts() { return gui.inspectionHosts(); }
 	//! Constructor
 	Engine();

@@ -10,6 +10,7 @@
 
 #include "EndGameScreen.h"
 #include "Engine.h"
+#include "render/scene/Scene.h"
 #include "sim/snapshot/SnapshotChecksum.h"
 #include "hive/HiveClient.h"
 #include "OnlineServices.h"
@@ -115,6 +116,21 @@ std::unique_ptr<GAGGUI::Screen> Engine::endRunScreen()
     if (onlineResult)
         screen->setOnlineResult(onlineResult);
     return screen;
+}
+
+Uint32 Engine::drawnTick() const
+{
+    return gui.drawnScene().tick;
+}
+
+void Engine::quitFromMenu()
+{
+    gui.quitFromMenu();
+}
+
+bool Engine::endOfGameShown() const
+{
+    return gui.endOfGameShown();
 }
 
 Team* Engine::gameTeam(int team)

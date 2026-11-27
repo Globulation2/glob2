@@ -127,6 +127,13 @@ public final class Glob2Activity extends SDLActivity {
     @Override
     protected void onCreate(Bundle state) {
         keepLaunchLink(getIntent());
+        // The release check (src/app/ReleaseCheck.h): release workflows start the
+        // game with --es glob2.releaseCheck all (or a step list).
+        String releaseCheck = getIntent() == null ? null : getIntent().getStringExtra("glob2.releaseCheck");
+        if (releaseCheck != null && releaseCheck.matches("[a-z0-9,]{1,64}")) {
+            try { android.system.Os.setenv("GLOB2_RELEASE_CHECK", releaseCheck, true); }
+            catch (android.system.ErrnoException ignored) { }
+        }
         super.onCreate(state);
         if (mLayout == null) return;
         mLayout.setOnApplyWindowInsetsListener((view, insets) -> {
