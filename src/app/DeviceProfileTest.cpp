@@ -181,6 +181,24 @@ TEST_SUITE("DeviceProfile")
 		CHECK(DeviceProfile::classify(inputs(2048, 8, true)).telemetryFields().find("render_budget=standard") != std::string::npos);
 	}
 
+	TEST_CASE("HD artwork is BC7 on desktops with 8 or more threads, BC3 below, never on phones or browsers")
+	{
+		CHECK(DeviceProfile::classify(inputs(16384, 8)).bc7Artwork().on);
+		CHECK(DeviceProfile::classify(inputs(16384, 32)).bc7Artwork().on);
+		CHECK(DeviceProfile::classify(inputs(16384, 8)).bc7Artwork().value == 8);
+		CHECK_FALSE(DeviceProfile::classify(inputs(16384, 7)).bc7Artwork().on);
+		CHECK_FALSE(DeviceProfile::classify(inputs(16384, 4)).bc7Artwork().on);
+		CHECK_FALSE(DeviceProfile::classify(inputs(16384, 0)).bc7Artwork().on); // unknown
+		CHECK_FALSE(DeviceProfile::classify(inputs(8192, 8, true)).bc7Artwork().on); // a phone
+		auto browser = inputs(16384, 16);
+		browser.browser = true;
+		CHECK_FALSE(DeviceProfile::classify(browser).bc7Artwork().on);
+		// A tier override does not change it: the encode cost is per thread.
+		CHECK(DeviceProfile::classify(inputs(2048, 8), DeviceTier::Low).bc7Artwork().on);
+		CHECK(DeviceProfile::classify(inputs(16384, 8)).telemetryFields().find("hd_blocks=bc7") != std::string::npos);
+		CHECK(DeviceProfile::classify(inputs(16384, 6)).telemetryFields().find("hd_blocks=bc3") != std::string::npos);
+	}
+
 	TEST_CASE("telemetry fields record the tier and every input")
 	{
 		auto in = inputs(2765, 8, true);

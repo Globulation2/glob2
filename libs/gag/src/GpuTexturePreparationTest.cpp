@@ -4,6 +4,7 @@
 #include "GraphicContextPrivate.h"
 #include <AssetLoader.h>
 #include <RenderDevice.h>
+#include <MobilePlatform.h>
 #include <algorithm>
 #include <cmath>
 #include <cstring>
@@ -156,7 +157,7 @@ void portablePreparation(bool cpu)
 } // namespace
 TEST_SUITE("GpuTexturePreparation")
 {
-	TEST_CASE("render devices get premultiplied BC3 where sampled, else premultiplied ASTC 4x4")
+	TEST_CASE("render devices get premultiplied BC7 on desktop, else BC3 where sampled, else premultiplied ASTC 4x4")
 	{
 		using Compression = AssetImage::BlockCompression;
 		RenderDeviceCapabilities capabilities;
@@ -173,6 +174,18 @@ TEST_SUITE("GpuTexturePreparation")
 		CHECK(preferredDeviceBlockCompression(capabilities) == Compression::PremultipliedBC3);
 		capabilities.astc4x4Textures = false;
 		CHECK(preferredDeviceBlockCompression(capabilities) == Compression::PremultipliedBC3);
+		// BC7 where sampled and the device profile wants it, on desktop only:
+		// phones keep BC3 or ASTC.
+		capabilities.bc7Textures = true;
+		CHECK(preferredDeviceBlockCompression(capabilities) == Compression::PremultipliedBC3); // not wanted
+		const bool wanted = AssetImage::bc7Wanted.exchange(true);
+		struct Restore { bool value; ~Restore() { AssetImage::bc7Wanted = value; } } restore{wanted};
+#if defined(__EMSCRIPTEN__)
+		CHECK(preferredDeviceBlockCompression(capabilities) == Compression::PremultipliedBC3);
+#else
+		CHECK(preferredDeviceBlockCompression(capabilities) ==
+			  (platformIsMobile() ? Compression::PremultipliedBC3 : Compression::PremultipliedBC7));
+#endif
 	}
 	TEST_CASE("SDL premultiplication preserves pixels state and queued revisions [display]")
 	{

@@ -29,11 +29,15 @@ struct AssetImage {
     // textures (SDL GPU); legacy OpenGL never uploads it. PremultipliedASTC4x4
     // does the same with astcenc, also 16 bytes per 4x4, for SDL GPU devices
     // without BC3 (phones); the browser build has no ASTC encoder.
-    enum class BlockCompression : unsigned char { Uncompressed, BC3, ETC2, PremultipliedBC3, PremultipliedASTC4x4 };
+    // PremultipliedBC7 does the same with etcpak's bc7enc, also 16 bytes per
+    // 4x4, for desktop render devices that sample BC7: fewer colour and alpha
+    // artifacts than BC3 at the same size, at a slower encode.
+    enum class BlockCompression : unsigned char { Uncompressed, BC3, ETC2, PremultipliedBC3, PremultipliedASTC4x4, PremultipliedBC7 };
     //! True for the formats a render device samples as premultiplied blocks.
     static constexpr bool premultipliedBlocks(BlockCompression format)
     {
-        return format == BlockCompression::PremultipliedBC3 || format == BlockCompression::PremultipliedASTC4x4;
+        return format == BlockCompression::PremultipliedBC3 || format == BlockCompression::PremultipliedASTC4x4 ||
+            format == BlockCompression::PremultipliedBC7;
     }
     // compressed: the level's blocks in the image's compression, prepared on
     // the worker; empty below 4x4 or without compression.
@@ -46,6 +50,10 @@ struct AssetImage {
 #else
     inline static std::atomic<BlockCompression> highResolutionCompression{BlockCompression::Uncompressed};
 #endif
+    //! Whether render devices that sample BC7 get it (preferredDeviceBlockCompression):
+    //! the device profile's choice at startup, for desktops whose asset workers
+    //! absorb its slower encode. Off until set, so BC3 stays the default.
+    inline static std::atomic<bool> bc7Wanted{false};
     //! The blocks of a level's pixels, 16 bytes each in row order; empty for
     //! Uncompressed or a level under 4x4. bgra tells the pixels' byte order from RGBA.
     static std::vector<unsigned char> compressBlocks(const unsigned char *pixels, int width, int height,

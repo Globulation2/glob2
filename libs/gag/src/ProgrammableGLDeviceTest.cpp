@@ -844,11 +844,14 @@ TEST_SUITE("ProgrammableGLDevice")
         for (bool es : {false, true}) {
             GLFixture fixture(es); auto &device = *fixture.device;
             const auto capabilities = device.capabilities();
-            const auto format = capabilities.bc3Textures ? TextureCompression::BC3 :
-                capabilities.astc4x4Textures ? TextureCompression::ASTC4x4 : TextureCompression::Uncompressed;
-            if (format == TextureCompression::Uncompressed) { MESSAGE("Context samples no block format"); continue; }
+            if (!capabilities.bc3Textures && !capabilities.bc7Textures && !capabilities.astc4x4Textures)
+                MESSAGE("Context samples no block format");
+            for (const auto format : {TextureCompression::BC3, TextureCompression::BC7, TextureCompression::ASTC4x4}) {
+            if (!capabilities.supports(format)) continue;
+            CAPTURE(int(format));
             const auto encoding = format == TextureCompression::BC3 ? AssetImage::BlockCompression::PremultipliedBC3
-                                                                    : AssetImage::BlockCompression::PremultipliedASTC4x4;
+                : format == TextureCompression::BC7 ? AssetImage::BlockCompression::PremultipliedBC7
+                                                    : AssetImage::BlockCompression::PremultipliedASTC4x4;
             RenderResources resources; auto base = surface(8, 8); REQUIRE(base);
             // Level zero opaque red, level one half-transparent green; 2x2 and 1x1 carry no blocks.
             const std::array<SDL_Color, 2> colours{{{255, 0, 0, 255}, {0, 255, 0, 128}}};
@@ -893,6 +896,7 @@ TEST_SUITE("ProgrammableGLDevice")
             DrawPacket broken; broken.kind = DrawPacket::Kind::Blit; broken.texture = invalid; broken.source = {0, 0, 4, 4}; broken.destination = {0, 0, 4, 4};
             RenderFrame frame; frame.logicalWidth = frame.logicalHeight = 16; frame.packets = {broken};
             CHECK_THROWS_AS(device.submit(std::move(frame)), std::invalid_argument);
+            }
         }
     }
 }

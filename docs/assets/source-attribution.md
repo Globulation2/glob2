@@ -31,8 +31,9 @@ See content/data/javascript-licenses.txt and third_party/README.md.
 JSON library (platform messages):
 nlohmann/json v3.12.0 (MIT). See content/data/json-license.txt and third_party/README.md.
 
-Texture block compression (BC3 and ETC2 encoding of high-resolution textures):
-etcpak 2.1 by Bartosz Taudul and contributors (BSD 3-Clause).
+Texture block compression (BC3, BC7 and ETC2 encoding of high-resolution textures):
+etcpak 2.1 by Bartosz Taudul and contributors (BSD 3-Clause), with its bundled
+bc7enc by Richard Geldreich, Jr. (MIT).
 See content/data/etcpak-license.txt and third_party/README.md.
 
 ASTC texture compression (ASTC 4x4 encoding of high-resolution textures for phones):

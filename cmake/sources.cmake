@@ -970,6 +970,7 @@ set(GLOB2_GAG_SOURCES
     third_party/etcpak/etcpak/ProcessRGB.cpp
     third_party/etcpak/etcpak/Tables.cpp
     third_party/etcpak/etcpak/Dither.cpp
+    third_party/etcpak/etcpak/bc7enc.cpp
     third_party/astcenc/astcenc/astcenc_averages_and_directions.cpp
     third_party/astcenc/astcenc/astcenc_block_sizes.cpp
     third_party/astcenc/astcenc/astcenc_color_quantize.cpp
@@ -1790,6 +1791,7 @@ set(GLOB2_ANDROID_SOURCES
     third_party/etcpak/etcpak/ProcessRGB.cpp
     third_party/etcpak/etcpak/Tables.cpp
     third_party/etcpak/etcpak/Dither.cpp
+    third_party/etcpak/etcpak/bc7enc.cpp
     third_party/astcenc/astcenc/astcenc_averages_and_directions.cpp
     third_party/astcenc/astcenc/astcenc_block_sizes.cpp
     third_party/astcenc/astcenc/astcenc_color_quantize.cpp
@@ -2628,6 +2630,7 @@ set(GLOB2_IOS_SOURCES
     third_party/etcpak/etcpak/ProcessRGB.cpp
     third_party/etcpak/etcpak/Tables.cpp
     third_party/etcpak/etcpak/Dither.cpp
+    third_party/etcpak/etcpak/bc7enc.cpp
     third_party/astcenc/astcenc/astcenc_averages_and_directions.cpp
     third_party/astcenc/astcenc/astcenc_block_sizes.cpp
     third_party/astcenc/astcenc/astcenc_color_quantize.cpp
@@ -3616,6 +3619,7 @@ set(GLOB2_WEB_SOURCES
     third_party/etcpak/etcpak/ProcessRGB.cpp
     third_party/etcpak/etcpak/Tables.cpp
     third_party/etcpak/etcpak/Dither.cpp
+    third_party/etcpak/etcpak/bc7enc.cpp
     libs/usl/src/code.cpp
     libs/usl/src/debug.cpp
     libs/usl/src/interpreter.cpp

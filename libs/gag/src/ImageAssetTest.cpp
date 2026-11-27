@@ -12,6 +12,9 @@
 #endif
 #include <etcpak/ProcessDxtc.hpp>
 #include <etcpak/ProcessRGB.hpp>
+// The decoder bundled with etcpak, vendored for these checks only.
+#define BCDEC_IMPLEMENTATION
+#include <etcpak/bcdec.h>
 #include <RenderMemory.h>
 #include <stdexcept>
 #include <SDL3/SDL.h>
@@ -231,6 +234,63 @@ TEST_CASE("worker-prepared premultiplied ASTC 4x4 levels decode close to their p
         CHECK(worstAlpha <= (level.width >= 16 ? 18 : 32));
     }
 }
+TEST_CASE("worker-prepared premultiplied BC7 levels decode close to their premultiplied pixels") {
+    // The gradient, hard edges and graded alpha of the BC3 case above.
+    auto *surface = SDL_CreateSurface(64, 32, SDL_PIXELFORMAT_ARGB8888);
+    REQUIRE(surface != nullptr);
+    for (int y = 0; y < surface->h; ++y) for (int x = 0; x < surface->w; ++x) {
+        auto *p = static_cast<unsigned char*>(surface->pixels) + y * surface->pitch + x * 4;
+        const bool cell = ((x / 8) + (y / 8)) % 2;
+        p[0] = x < 32 ? 40 + x * 4 : (cell ? 30 : 210);
+        p[1] = x < 32 ? 30 + y * 5 : (cell ? 60 : 190);
+        p[2] = x < 32 ? 90 + (x + y) * 2 : (cell ? 40 : 170);
+        p[3] = x < 48 ? 255 : (y * 8) % 256;
+    }
+    using Compression = GAGCore::AssetImage::BlockCompression;
+    // The RGBA chain the blocks replace, prepared without encoding.
+    GAGCore::AssetImage reference(SDL_DuplicateSurface(surface));
+    REQUIRE(reference.surface != nullptr);
+    reference.prepareUpload(true, false);
+    CHECK(reference.compression == Compression::Uncompressed);
+    const auto previous = GAGCore::AssetImage::highResolutionCompression.exchange(Compression::PremultipliedBC7);
+    struct Restore { Compression value; ~Restore() { GAGCore::AssetImage::highResolutionCompression = value; } } restore{previous};
+    GAGCore::AssetImage image(surface);
+    image.prepareUpload(true);
+    CHECK(image.compression == Compression::PremultipliedBC7);
+    REQUIRE(image.mips.size() == reference.mips.size());
+    REQUIRE(image.mips.size() > 3);
+    for (size_t index = 0; index < image.mips.size(); ++index) {
+        const auto &level = image.mips[index];
+        const auto &pixels = reference.mips[index].pixels;
+        CAPTURE(level.width);
+        if (level.width < 4 || level.height < 4) { CHECK(level.compressed.empty()); CHECK_FALSE(level.pixels.empty()); continue; }
+        // The device samples and restores from the blocks alone.
+        CHECK(level.pixels.empty());
+        REQUIRE(level.compressed.size() == size_t(level.width / 4) * (level.height / 4) * 16);
+        std::vector<unsigned char> decoded(pixels.size());
+        const auto *block = level.compressed.data();
+        for (int by = 0; by < level.height; by += 4)
+            for (int bx = 0; bx < level.width; bx += 4, block += 16)
+                bcdec_bc7(block, decoded.data() + (size_t(by) * level.width + bx) * 4, level.width * 4);
+        REQUIRE(decoded.size() == pixels.size());
+        double squared = 0; int worstAlpha = 0;
+        for (size_t i = 0; i < pixels.size(); i += 4) {
+            const unsigned alpha = pixels[i + 3];
+            for (int c = 0; c < 3; ++c) {
+                // Reference bytes are BGRA; decoded ones RGBA, premultiplied as SDL GPU rounds.
+                const int expected = int((unsigned(pixels[i + 2 - c]) * alpha + 127) / 255);
+                const double d = int(decoded[i + c]) - expected; squared += d * d;
+            }
+            worstAlpha = std::max(worstAlpha, std::abs(int(decoded[i + 3]) - int(alpha)));
+        }
+        const double rmse = std::sqrt(squared / (3.0 * level.width * level.height));
+        // Tighter than BC3's bounds from 16 pixels (measured: rmse 1.2 to 5.5,
+        // alpha within 1); below, ASTC's, as BC7 also codes alpha with colour
+        // in the blocks that mix the gradient, both cells and graded alpha.
+        CHECK(rmse < (level.width >= 16 ? 8 : 24));
+        CHECK(worstAlpha <= (level.width >= 16 ? 4 : 32));
+    }
+}
 TEST_CASE("premultiplied ASTC 4x4 blocks keep flat translucent colour and alpha") {
     using Compression = GAGCore::AssetImage::BlockCompression;
     std::vector<unsigned char> translucent(8 * 4 * 4);
@@ -260,7 +320,7 @@ TEST_CASE("HD frame block encoding timing [artifacts][benchmark]") {
     const char *strideText = std::getenv("GLOB2_BLOCK_BENCH_STRIDE");
     const unsigned stride = strideText ? unsigned(std::max(1, std::atoi(strideText))) : 32u;
     struct Totals { double seconds = 0, worst = 0; };
-    std::array<Totals, 2> totals{}; // BC3, ASTC
+    std::array<Totals, 3> totals{}; // BC3, ASTC, BC7
     std::uint64_t sampled = 0, all = 0, sampledPixels = 0;
     std::string line;
     for (unsigned index = 0; std::getline(frames, line);) {
@@ -281,13 +341,14 @@ TEST_CASE("HD frame block encoding timing [artifacts][benchmark]") {
             const auto start = Clock::now();
             for (const auto &level : image.mips)
                 GAGCore::AssetImage::compressBlocks(level.pixels.data(), level.width, level.height,
-                    format == 0 ? Compression::PremultipliedBC3 : Compression::PremultipliedASTC4x4, true);
+                    format == 0 ? Compression::PremultipliedBC3
+                    : format == 1 ? Compression::PremultipliedASTC4x4 : Compression::PremultipliedBC7, true);
             const double seconds = std::chrono::duration<double>(Clock::now() - start).count();
             totals[format].seconds += seconds; totals[format].worst = std::max(totals[format].worst, seconds);
         }
     }
     REQUIRE(sampled > 0);
-    const char *names[] = {"premultiplied BC3 (etcpak)", "premultiplied ASTC 4x4 (astcenc)"};
+    const char *names[] = {"premultiplied BC3 (etcpak)", "premultiplied ASTC 4x4 (astcenc)", "premultiplied BC7 (bc7enc)"};
     MESSAGE("HD frames: " << sampled << " of " << all << " sampled, " << sampledPixels / 1e6
             << " Mpx of chains");
     for (size_t format = 0; format < totals.size(); ++format) {

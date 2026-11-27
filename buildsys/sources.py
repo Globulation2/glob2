@@ -857,7 +857,8 @@ RELAY_TEST_SOURCES = ('relay/RelayTestMain.cpp', 'relay/RelayTicketTest.cpp', 'r
 # The SSE4.1 copy of them, which native x86 builds compile with -msse4.1 (CMakeLists.txt).
 SSE41_SOURCES = ('libs/gag/src/EtcpakSse41.cpp',)
 ETCPAK_SOURCES = ('third_party/etcpak/etcpak/ProcessDxtc.cpp', 'third_party/etcpak/etcpak/ProcessRGB.cpp',
-                  'third_party/etcpak/etcpak/Tables.cpp', 'third_party/etcpak/etcpak/Dither.cpp')
+                  'third_party/etcpak/etcpak/Tables.cpp', 'third_party/etcpak/etcpak/Dither.cpp',
+                  'third_party/etcpak/etcpak/bc7enc.cpp')
 # ARM's ASTC encoder (astcenc's core library), for render devices that sample
 # ASTC 4x4. The browser build leaves it out with AstcEncoder.cpp.
 ASTCENC_SOURCES = tuple('third_party/astcenc/astcenc/astcenc_' + name + '.cpp' for name in (

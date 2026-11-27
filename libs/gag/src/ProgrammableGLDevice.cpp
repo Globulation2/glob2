@@ -193,7 +193,7 @@ class ProgrammableGLDevice final : public RenderDevice
     TeamColorProgram teamProgram;
     bool supportsWorld = false, supportsSkins = false;
     // Block formats sampled directly (see TextureCompression and initCompression).
-    bool bc3Supported = false, astcSupported = false;
+    bool bc3Supported = false, astcSupported = false, bc7Supported = false;
     struct SkinProgram { GLuint program=0; GLint shell=-1,furLength=-1,shellDepth=-1,region=-1,bones=-1,view=-1,normalView=-1,paint=-1,material=-1; };
     SkinProgram skinProgram, rigProgram;
     GLuint screenDepth = 0;
@@ -535,15 +535,17 @@ class ProgrammableGLDevice final : public RenderDevice
     }
     void initCompression(bool es)
     {
-        // Prepared artwork as blocks: BC3 where S3TC is sampled (desktop), ASTC
-        // 4x4 on GL ES devices with the LDR profile (phones). The browser build
-        // keeps uncompressed uploads. GLOB2_TEXTURE_COMPRESSION=none|bc3|astc
-        // restricts it, as on SDL GPU.
+        // Prepared artwork as blocks: BC3 where S3TC is sampled and BC7 where
+        // BPTC is (desktop), ASTC 4x4 on GL ES devices with the LDR profile
+        // (phones). The browser build keeps uncompressed uploads.
+        // GLOB2_TEXTURE_COMPRESSION=none|bc3|bc7|astc restricts it, as on SDL GPU.
 #ifndef __EMSCRIPTEN__
         const char *wanted = SDL_getenv_unsafe("GLOB2_TEXTURE_COMPRESSION");
         const std::string choice = wanted ? wanted : "";
         bc3Supported = (choice.empty() || choice == "bc3") && SDL_GL_ExtensionSupported("GL_EXT_texture_compression_s3tc");
         astcSupported = (choice.empty() || choice == "astc") && es && SDL_GL_ExtensionSupported("GL_KHR_texture_compression_astc_ldr");
+        bc7Supported = (choice.empty() || choice == "bc7") &&
+            (SDL_GL_ExtensionSupported("GL_ARB_texture_compression_bptc") || SDL_GL_ExtensionSupported("GL_EXT_texture_compression_bptc"));
 #else
         (void)es;
 #endif
@@ -551,6 +553,7 @@ class ProgrammableGLDevice final : public RenderDevice
     static GLenum blockFormat(TextureCompression compression)
     {
         return compression == TextureCompression::BC3 ? 0x83F3 /* GL_COMPRESSED_RGBA_S3TC_DXT5_EXT */
+             : compression == TextureCompression::BC7 ? 0x8E8C /* GL_COMPRESSED_RGBA_BPTC_UNORM */
                                                       : 0x93B0 /* GL_COMPRESSED_RGBA_ASTC_4x4_KHR */;
     }
     //! Levels the device stores: blocks of a compressed revision, or RGBA8 levels.
@@ -562,7 +565,8 @@ class ProgrammableGLDevice final : public RenderDevice
     {
         const auto &descriptor = source.descriptor;
         if ((descriptor.compression == TextureCompression::BC3 && !bc3Supported) ||
-            (descriptor.compression == TextureCompression::ASTC4x4 && !astcSupported))
+            (descriptor.compression == TextureCompression::ASTC4x4 && !astcSupported) ||
+            (descriptor.compression == TextureCompression::BC7 && !bc7Supported))
             throw std::invalid_argument("GL device cannot sample this block format");
         if (target) throw std::invalid_argument("Compressed textures cannot be render targets");
         if (descriptor.alpha != TextureDescriptor::Alpha::Premultiplied || descriptor.mips != TextureDescriptor::Mips::Generated ||
@@ -1589,7 +1593,7 @@ void main() {
     {
         RenderDeviceCapabilities result{true, true, timingSupported, maxTexture, supportsWorld, supportsWorld, supportsSkins,supportsTerrain,directTerrainProgram != 0};
         result.teamColor = teamProgram.program != 0;
-        result.bc3Textures = bc3Supported; result.astc4x4Textures = astcSupported;
+        result.bc3Textures = bc3Supported; result.astc4x4Textures = astcSupported; result.bc7Textures = bc7Supported;
         result.directTerrainStreaming = directTerrainProgram != 0 && directTerrainHdProgram != 0;
         return result;
     }

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "DeviceProfile.h"
 
+#include <AssetLoader.h>
 #include <MobilePlatform.h>
 #include <RenderResources.h>
 #include <ThreadSupport.h>
@@ -117,6 +118,14 @@ DeviceDecision DeviceProfile::largeRenderBudget() const
 			DeviceReason::Memory, memory};
 }
 
+DeviceDecision DeviceProfile::bc7Artwork() const
+{
+	// Not a tier: the encode cost falls on the asset workers, one per thread
+	// but one. Unknown thread counts keep BC3.
+	return {!inputs.mobile && !inputs.browser && inputs.cores >= deviceThresholds.bc7CoresAtLeast,
+			DeviceReason::Cores, inputs.cores};
+}
+
 DeviceMapSize DeviceProfile::newMapSize() const
 {
 	const auto &t = deviceThresholds;
@@ -188,7 +197,8 @@ std::string DeviceProfile::telemetryFields() const
 		<< " auto_artwork_reason=" << reasonName(artwork.reason)
 		<< " serial_runtime=" << int(inputs.serialRuntime) << " auto_map_size=" << (1 << newMapSize().shift)
 		<< " auto_colonies=" << newGameColonies()
-		<< " render_budget=" << (largeRenderBudget().on ? "large" : "standard");
+		<< " render_budget=" << (largeRenderBudget().on ? "large" : "standard")
+		<< " hd_blocks=" << (bc7Artwork().on ? "bc7" : "bc3");
 	return out.str();
 }
 
@@ -414,6 +424,8 @@ void DeviceProfile::initialize(std::optional<DeviceTier> commandLine, bool probe
 										  : (large ? GAGCore::RenderBudget::desktopLarge() : GAGCore::RenderBudget::desktop());
 		if (!GAGCore::selectPlatformRenderBudget(budget))
 			SDL_Log("Render budget already in use; keeping %s", GAGCore::RenderBudget::name(GAGCore::platformRenderBudget()));
+		// Before the first presentation device chooses its block format.
+		GAGCore::AssetImage::bc7Wanted = s.profile->bc7Artwork().on;
 	}
 	if (probeVram) // windowed runs; headless tools keep their output clean
 		SDL_Log("Device profile: %s", current().telemetryFields().c_str());

@@ -7,11 +7,13 @@
 #include <webp/decode.h>
 #include <etcpak/ProcessDxtc.hpp>
 #include <etcpak/ProcessRGB.hpp>
+#include <etcpak/bc7enc.h>
 #include "EtcpakSse41.h"
 #ifndef GLOB2_WEBGL2
 #include "AstcEncoder.h"
 #endif
 #include <cstring>
+#include <string_view>
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -130,7 +132,36 @@ std::vector<unsigned char> AssetImage::compressBlocks(const unsigned char *pixel
     std::vector<std::uint64_t> encoded(count * 2);
     // The SSE4.1 build where the CPU runs it: the same blocks about three times faster.
     static const auto simd = EtcpakSse41::available();
-    if (format == BlockCompression::BC3 || format == BlockCompression::PremultipliedBC3) {
+    if (format == BlockCompression::PremultipliedBC7) {
+        // bc7enc's tables are shared by every worker; build them once.
+        static const bc7enc_compress_block_params params = [] {
+            bc7enc_compress_block_init();
+            bc7enc_compress_block_params p;
+            bc7enc_compress_block_params_init(&p);
+            // Equal RGBA weights: the default perceptual YCbCr weights favour
+            // luma over alpha, and premultiplied sprite edges then lose up to
+            // 95 levels of alpha in small mips (ImageAssets); equal ones keep
+            // them within BC3's and ASTC's bounds.
+            bc7enc_compress_block_params_init_linear_weights(&p);
+            // Mode 1 searches 16 of its 64 partitions: 8 ms an HD frame
+            // against 11.7 ms for all of them on a desktop core, which in the
+            // pan and zoom scenario keeps frames waiting for HD near BC3's count.
+            p.m_max_partitions = 16;
+            // Speed against quality, for measurement: uber 0 (fastest) to 4,
+            // up to 64 mode 1 partitions searched, perceptual weights and the
+            // alpha weight.
+            if (const char *uber = std::getenv("GLOB2_BC7_UBER_LEVEL"))
+                p.m_uber_level = std::min<unsigned>(BC7ENC_MAX_UBER_LEVEL, unsigned(std::strtoul(uber, nullptr, 10)));
+            if (const char *partitions = std::getenv("GLOB2_BC7_PARTITIONS"))
+                p.m_max_partitions = std::min<unsigned>(BC7ENC_MAX_PARTITIONS, unsigned(std::strtoul(partitions, nullptr, 10)));
+            if (const char *weights = std::getenv("GLOB2_BC7_WEIGHTS"); weights && std::string_view(weights) == "perceptual")
+                bc7enc_compress_block_params_init_perceptual_weights(&p);
+            if (const char *alpha = std::getenv("GLOB2_BC7_ALPHA_WEIGHT"))
+                p.m_weights[3] = unsigned(std::strtoul(alpha, nullptr, 10));
+            return p;
+        }();
+        CompressBc7(source.data(), encoded.data(), std::uint32_t(count), size_t(width), &params);
+    } else if (format == BlockCompression::BC3 || format == BlockCompression::PremultipliedBC3) {
         if (simd.bc3) simd.bc3(source.data(), encoded.data(), std::uint32_t(count), size_t(width));
         else CompressBc3(source.data(), encoded.data(), std::uint32_t(count), size_t(width));
     } else {

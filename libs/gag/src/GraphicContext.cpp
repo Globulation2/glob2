@@ -14,6 +14,7 @@
 #include <UiScale.h>
 #include <Toolkit.h>
 #include <AssetLoader.h>
+#include <MobilePlatform.h>
 #include <FileManager.h>
 #include <SupportFunctions.h>
 #include <InterfacePresentation.h>
@@ -141,9 +142,18 @@ int GraphicContext::maximumTextureSize() const
 	AssetImage::BlockCompression preferredDeviceBlockCompression(const RenderDeviceCapabilities &capabilities)
 	{
 		// The device honours GLOB2_TEXTURE_COMPRESSION when it reports formats.
-		// BC3 wherever it is sampled (desktop): etcpak encodes it several times
-		// faster than astcenc does ASTC. ASTC 4x4 where only it is (phones), at
-		// the same 16 bytes per block. The browser build has no ASTC encoder.
+		// BC7 on desktop devices that sample it, where the device profile
+		// wants it (AssetImage::bc7Wanted: 8 or more hardware threads): fewer
+		// artifacts than BC3 at the same 16 bytes per block, from a slower
+		// encoder those asset workers absorb. Never on phones (few sample it,
+		// and their workers are slower) nor in the browser. Otherwise BC3 wherever it is
+		// sampled: etcpak encodes it several times faster than astcenc does
+		// ASTC. ASTC 4x4 where only it is (phones), at the same size. The
+		// browser build has no ASTC encoder.
+#ifndef __EMSCRIPTEN__
+		if (capabilities.bc7Textures && AssetImage::bc7Wanted.load(std::memory_order_relaxed) && !platformIsMobile())
+			return AssetImage::BlockCompression::PremultipliedBC7;
+#endif
 		if (capabilities.bc3Textures) return AssetImage::BlockCompression::PremultipliedBC3;
 #ifndef GLOB2_WEBGL2
 		if (capabilities.astc4x4Textures) return AssetImage::BlockCompression::PremultipliedASTC4x4;
@@ -162,8 +172,15 @@ int GraphicContext::maximumTextureSize() const
 	}
 	void selectDeviceBlockCompression(const RenderDevice &device)
 	{
-		AssetImage::highResolutionCompression = highResolutionBlocksWanted()
+		const auto chosen = highResolutionBlocksWanted()
 			? preferredDeviceBlockCompression(device.capabilities()) : AssetImage::BlockCompression::Uncompressed;
+		// Once per change, so logs and benchmarks show which encoder HD artwork pays for.
+		if (AssetImage::highResolutionCompression.exchange(chosen) != chosen)
+		{
+			using Compression = AssetImage::BlockCompression;
+			SDL_Log("HD artwork blocks: %s", chosen == Compression::PremultipliedBC7 ? "bc7"
+				: chosen == Compression::PremultipliedBC3 ? "bc3" : chosen == Compression::PremultipliedASTC4x4 ? "astc4x4" : "none");
+		}
 	}
 	const bool EXPERIMENTAL = false;
 
