@@ -39,8 +39,6 @@
     {"note": "draft: racetrack level 3, the lamp tower, spiral, workshop, pods and the raised tube", "frames": ["racetrack2b0"], "method": "block", "height": 15,
      "blocks": [[615, 10, 765, 405, 100], [295, 175, 425, 445, 60], [35, 495, 265, 768, 70], [35, 335, 185, 480, 30],
                 [295, 575, 435, 705, 25], [555, 555, 705, 705, 25], [120, 10, 615, 330, 45]]},
-    {"note": "draft: swarm, the dome and four spikes (team layer)", "frames": ["swarm0b0"], "method": "block", "height": 50,
-     "spires": [[5, 35, 95, 445, 445, 0], [95, 75, 170, 425, 425, 0], [240, 15, 305, 330, 330, 0], [335, 55, 415, 445, 445, 0]]},
     {"note": "construction sites: low block", "frames": ["hosp0c0", "hosp1c0", "hosp2c0", "inn0c0", "inn1c0", "inn2c0", "school1c0", "pool0c0", "racetrack0c0"],
      "method": "block", "height": 12},
     {"note": "generic building sites: low block", "frames": ["buildingsite0", "buildingsite1", "buildingsite2", "buildingsite3", "buildingsite4", "buildingsite5"],

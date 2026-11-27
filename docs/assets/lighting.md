@@ -71,7 +71,7 @@ without AI, following `content-src/gfx/shadows/specs.json`:
 | Method | Used for | How |
 | --- | --- | --- |
 | `block` with a height | low-rise buildings, construction sites, wheat and rocks (8–10 HD px contact shadows) | the footprint is the silhouette eroded upward by the height, swept 1.1 × the height along (0.6, 0.8) |
-| `block` with hand-placed `blocks` and `spires` | tall or spiky buildings (towers, chimneys, masts, the barracks blade, swarm spikes) | each box of the silhouette gets its own height; a spire pixel's height is its row above `base_y` plus `base_h`, so thin parts cast long thin shadows |
+| `block` with hand-placed `blocks` and `spires` | tall or spiky buildings (towers, chimneys, masts, the barracks blade) | each box of the silhouette gets its own height; a spire pixel's height is its row above `base_y` plus `base_h`, so thin parts cast long thin shadows |
 | `canopy` | trees and fruit trees | each canopy pixel lands 0.5 × its height above the trunk along the sun, blurred 7 HD px, plus a trunk contact shadow |
 
 Throws are capped at 45 native pixels, under the explorers' `flightHeight` of

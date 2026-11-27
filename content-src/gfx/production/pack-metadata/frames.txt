@@ -1,6 +1,5 @@
 GLOB2_HIGHRES 1
 swarm0b0 128 128 4 swarm0b0.png swarm0b0r.png
-swarm0b0s 132 152 4 swarm0b0s.png -
 swarm0c0 128 128 4 swarm0c0.png swarm0c0r.png
 inn0b0 64 64 4 inn0b0.png inn0b0r.png
 inn0b0s 68 68 4 inn0b0s.png -
