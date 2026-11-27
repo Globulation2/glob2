@@ -221,6 +221,7 @@ set(GLOB2_ENGINE_TESTS_2_SOURCES
     src/render/TerrainAnimationTest.cpp
     src/render/torus/TorusRenderIntegrationTest.cpp
     src/app/PortalModeTest.cpp
+    src/game/screens/MatchPlayReporterTest.cpp
     src/app/AdaptiveSettingsTest.cpp
     src/game/orders/FarmAreaTest.cpp
     src/game/GameSpeedTest.cpp
@@ -1496,6 +1497,7 @@ set(GLOB2_ANDROID_ENGINE_TESTS_1_SOURCES
     src/render/TerrainAnimationTest.cpp
     src/render/torus/TorusRenderIntegrationTest.cpp
     src/app/PortalModeTest.cpp
+    src/game/screens/MatchPlayReporterTest.cpp
     src/app/AdaptiveSettingsTest.cpp
     src/game/orders/FarmAreaTest.cpp
     src/game/GameSpeedTest.cpp
