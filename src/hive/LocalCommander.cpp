@@ -2575,14 +2575,14 @@ void LocalCommander::checkEconomy()
 			if (stock * 5 > capacity * 2)
 				watch.armed = true; // back above 40%: the next shortage is a new one
 			const int cx = bx + type->width / 2, cy = by + type->height / 2;
-			int near = 0;
+			int nearby = 0; // not near: windef.h defines it to nothing on mingw
 			for (const auto &[ux, uy] : hungry)
-				near += apart(ux, uy, cx, cy) <= InnHungryRadius;
-			if (stock * 5 <= capacity && near >= InnHungryUnits && watch.armed &&
+				nearby += apart(ux, uy, cx, cy) <= InnHungryRadius;
+			if (stock * 5 <= capacity && nearby >= InnHungryUnits && watch.armed &&
 				(!watch.lastAlert || now >= watch.lastAlert + InnAlertCooldownTicks))
 			{
 				alert("inn_low_food", name + " low on food: " + std::to_string(stock) + "/" + std::to_string(capacity) +
-										  " wheat, " + std::to_string(near) + " hungry units within " +
+										  " wheat, " + std::to_string(nearby) + " hungry units within " +
 										  std::to_string(InnHungryRadius) + " tiles, " + std::to_string(assigned) +
 										  " of " + std::to_string(requested) + " workers fetching");
 				watch.armed = false;
