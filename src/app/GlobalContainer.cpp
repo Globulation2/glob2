@@ -35,7 +35,6 @@
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
 #include "ScrollTuning.h"
-#include "PortalPolicy.h"
 #include "field/GradientDeviceService.h"
 
 #include <ApplicationHost.h>
@@ -328,8 +327,6 @@ void GlobalContainer::openLoadingScreen(void)
 		if (changed && !settings.save()) std::cerr << "Could not save display preferences." << std::endl;
 	});
 #endif
-	// Read the portal policy before the first frame, so a portal's F11 is off from the start.
-	PortalPolicy::current();
 	gfx->setCompactWindowAllowed(true);
 	gfx->refreshPresentation();
 	gfx->setMinRes(640, 480);
