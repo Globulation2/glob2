@@ -35,7 +35,7 @@
     // Poki: gameplayStop (the hold), mute and stop input, commercialBreak, then
     // unmute and gameplayStart when its promise settles.
     const breaks = core.createBreaks(win, {
-      session, audio, points: ['start', 'resume'], firstStart: true, minInterval: 0,
+      session, audio, points: ['start', 'resume'], firstStart: true, minInterval: 0, awaitInput: true,
       show: ad => sdk?.commercialBreak ? sdk.commercialBreak(() => ad.started()) : null,
     });
     core.installHost(win, breaks);

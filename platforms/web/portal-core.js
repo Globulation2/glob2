@@ -152,7 +152,7 @@
   // the next is one break, never two back to back. A break that does
   // not start within startTimeout, or does not finish within maxDuration,
   // releases the game anyway, so a stalled SDK or an ad blocker never blocks it.
-  function createBreaks(win, {session, audio, show, firstStart = false, muteOnStart = false,
+  function createBreaks(win, {session, audio, show, firstStart = false, muteOnStart = false, awaitInput = false,
                               points = ['start', 'leave'], minInterval = 180000, startTimeout = 10000, maxDuration = 180000, now = () => win.performance?.now?.() ?? Date.now()} = {}) {
     const enabled = win.GLOB2_PORTAL?.ads === true && typeof show === 'function';
     const asks = new Set(points.filter(point => point === 'start' || point === 'leave' || point === 'resume'));
@@ -203,15 +203,57 @@
       return true;
     }
 
+    // A match can start before the player has touched the page: a portal's
+    // first visit opens the introduction lesson by itself. With awaitInput,
+    // that start is reported, and its break asked for, only at the first key,
+    // click or tap in the game's frame: Poki's Inspector flags a gameplayStart
+    // without a player interaction, and GameDistribution's mobile ads must
+    // start inside the player's tap. navigator.userActivation tells whether the
+    // frame has had one; where a browser lacks it the start is reported at once.
+    // CrazyGames leaves it off: its QA Tool times loading up to the first
+    // gameplayStart, which must not include the player reading the briefing.
+    // The break begins just after that input is released, so the press itself
+    // still reaches the game (the click that closes the lesson briefing is not
+    // swallowed by the hold) while the browser's transient activation, which
+    // lasts seconds, still lets the ad play sound.
+    const activation = awaitInput ? win.navigator?.userActivation : null;
+    const inputs = ['pointerup', 'mouseup', 'touchend', 'keyup'];
+    let waiting = false;
+    function begin() {
+      if (!waiting) return;
+      waiting = false;
+      request('start');
+      session.match(true);
+    }
+    function playerArrived() {
+      for (const name of inputs) win.removeEventListener?.(name, playerArrived, true);
+      if (waiting) win.setTimeout(begin, 100);
+    }
+    function awaitPlayer() {
+      if (waiting) return;
+      waiting = true;
+      for (const name of inputs) win.addEventListener?.(name, playerArrived, true);
+    }
+
     const breaks = {
       // Returns true when an ad break holds the game; the game then waits for
       // held to clear before it starts the match.
       matchBreak(point) {
         if (point === 'start') {
+          if (activation && !activation.hasBeenActive) {
+            awaitPlayer();
+            return false;
+          }
+          waiting = false;
           // Hold first, so gameplay is reported only once the break is over.
           const held = request('start');
           session.match(true);
           return held;
+        }
+        if (waiting && (point === 'end' || point === 'leave')) {
+          // The match ended before the player touched it: nothing was reported.
+          waiting = false;
+          return false;
         }
         if (point === 'pause') {
           session.pause(true);
