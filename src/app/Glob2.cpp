@@ -47,6 +47,7 @@
 #include "CampaignMainMenu.h"
 #include "CreditScreen.h"
 #include "ProblemReport.h"
+#include "CrashCapture.h"
 #include "Engine.h"
 #include "Headless.h"
 #include "scripting/javascript/ScriptCommand.h"
@@ -599,6 +600,9 @@ int Glob2::run(const Cli::Request &request)
 	// Only the windowed client needs them; headless and tool commands above
 	// keep their streams untouched.
 	ProblemReport::installLogCapture();
+	// Crash capture (src/app/CrashCapture.h): mirrors that log into the session
+	// file and starts Crashpad (Android) or MetricKit (iOS) where built.
+	CrashCapture::startPlatform(ProblemReport::userDirectory());
 	auto cancelled = std::make_shared<bool>(false);
 	auto launch = [cancelled]
 	{

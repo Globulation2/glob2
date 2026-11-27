@@ -45,7 +45,10 @@ markers and 24-month anonymous daily totals), plus problem reports a player
 chooses to send (Report a Problem: "Crash logs" and "Diagnostics", optional,
 user-initiated, not linked to the user, with any attached saved game and replay as
 "Other app content"; see the policy's
-[problem reports](../mobile/privacy-policy.md#problem-reports)). It is sent over TLS; nothing is used
+[problem reports](../mobile/privacy-policy.md#problem-reports)), plus crash reports
+the game offers after a crash ("Crash logs" and "Diagnostics" again: optional,
+collected only after the player agrees, not linked to the user, not shared; see
+[crash reports](../mobile/privacy-policy.md#crash-reports)). It is sent over TLS; nothing is used
 for advertising or tracking across apps or sites. Players can download their data
 and delete their account at
 `https://app.glob2.online/account`. Single-player, editor and LAN play collect

@@ -44,6 +44,7 @@ A zip of stored entries, written by `ProblemReport::zip` (`src/app/ProblemReport
 | `log.txt` | the last 200 log lines, each at most 512 bytes |
 | `save.game[.gz]` | the newest `games/*.game[.gz]` in the player's directory |
 | `last.replay[.gz]` | the newest `replays/*.replay[.gz]` in the player's directory |
+| `minidump.dmp`, `metrickit.json` or `java-exception.txt`, and `crash-log.txt` | "The last crash", shown when a [crash](crash-reports.md#capture-in-the-game) waits on the device (players who may not send keep theirs for Save to file) |
 
 Shipped content is never attached. Files that would push the bundle past 10 MB are
 left out and named on the screen. The context holds the schema number, the kind

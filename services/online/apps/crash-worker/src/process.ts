@@ -16,6 +16,7 @@ import {
 } from './minidump.ts';
 import { symbolicateMetricKit } from './metrickit.ts';
 import { symbolicateWeb } from './web.ts';
+import { symbolicateJava } from './java.ts';
 import { signature } from './signature.ts';
 import type { SymbolCache } from './symbols.ts';
 
@@ -69,6 +70,7 @@ export async function symbolicate(
   }
   if (kind === 'metrickit') return symbolicateMetricKit(tools.cache, payload.toString('utf8'));
   if (kind === 'web') return symbolicateWeb(tools.cache, payload.toString('utf8'));
+  if (kind === 'java') return symbolicateJava(payload.toString('utf8'));
   return withScratchDir(tools.scratch, async (work) => {
     const dump = join(work, 'minidump.dmp');
     await writeFile(dump, payload);

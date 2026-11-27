@@ -43,5 +43,18 @@ def development_identity(arguments, target, release=False, profile=False):
 
 
 def dependency_identity(identity):
-    return {key: value for key, value in identity.items() if key not in DEVELOPMENT_KEYS and key not in ('client_profile', 'distribution', 'client_features', 'problem_reports')}
+    result = {key: value for key, value in identity.items() if key not in DEVELOPMENT_KEYS and key not in ('client_profile', 'distribution', 'client_features', 'problem_reports')}
+    # Android bundles include Crashpad (docs/multiplayer/crash-reports.md) except
+    # for a standard build without reports, F-Droid's, which builds every
+    # dependency from source. The Fire tablet and China editions share their
+    # bundles with builds that report and simply do not link it.
+    if (identity.get('target') == 'android' and not identity.get('problem_reports', True)
+            and not identity.get('amazon') and not identity.get('china')):
+        result['crash_capture'] = False
+    return result
+
+
+def crash_capture(identity):
+    """Whether a build links Crashpad: Android builds that send problem reports."""
+    return identity.get('target') == 'android' and bool(identity.get('problem_reports', True))
 

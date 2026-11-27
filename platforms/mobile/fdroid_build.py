@@ -71,7 +71,7 @@ def main():
     env["JAVA_HOME"] = str(mobile_tools(ROOT) / jdk["directory"] / jdk["java_home"])
     gradle = mobile_tools(ROOT) / "gradle-8.13/bin/gradle"
     subprocess.run([sys.executable, "platforms/mobile/dependencies.py", "--arch", arch, "--release", "--jobs", "2",
-                    "--android-sdk", str(sdk)], cwd=ROOT, env=env, check=True)
+                    "--no-crash-capture", "--android-sdk", str(sdk)], cwd=ROOT, env=env, check=True)
     subprocess.run([sys.executable, "platforms/mobile/android.py", "build", "--arch", arch, "--release", "--fdroid", "--jobs", "2",
                     "--android-sdk", str(sdk), "--gradle", str(gradle)], cwd=ROOT, env=env, check=True)
     source = (ROOT / "build/android/device" / arch / str(toolchain["min_api"]) /

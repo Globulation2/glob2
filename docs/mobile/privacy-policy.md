@@ -14,7 +14,9 @@ questions and requests, contact **bradley.allen.arsenault@gmail.com**
 or write to that address.
 
 Last updated: 26 November 2026. Players aged 13 or over can send us a problem
-report from the game's main menu; see [Problem reports](#problem-reports).
+report from the game's main menu, and on Android and iOS a crash report after
+the game closes unexpectedly; see [Problem reports](#problem-reports) and
+[Crash reports](#crash-reports).
 
 ## Public website browsing
 
@@ -64,7 +66,7 @@ avoid posting private information in public repository issues.
 
 - Single-player games, the campaign, the map editor and LAN games work without an
   account and send nothing to us, unless you choose to send us a
-  [problem report](#problem-reports).
+  [problem report](#problem-reports) or a [crash report](#crash-reports).
 - Opening online play creates an account. It starts as a guest account, without an
   e-mail address or a name; a guest gets a generated name such as `Guest-1234`.
 - We keep what online play needs: your account, how you sign in, your matches, ratings,
@@ -309,8 +311,9 @@ are only for players aged 13 or over. The game and the service are built to coll
 as little as possible from anyone, children included:
 
 - Single-player, the campaign, the map editor and LAN games send nothing to us.
-  Players under 13, or who have not said their age, cannot send problem reports;
-  they can save one to a file and share it with a parent's help.
+  Players under 13, or who have not said their age, cannot send problem or crash
+  reports and are never asked to; they can save one to a file and share it with a
+  parent's help.
 - Online play works as a guest, which needs no e-mail address, no real name, no
   birthday and no account details: the game makes up a name such as `Guest-1234`.
   An account with a username and password needs no e-mail address either. Signing
@@ -408,6 +411,35 @@ report after two years. **Save to file** writes the same report to your device
 instead, for you to share yourself; it sends nothing. The F-Droid, Linux
 distribution, China and Fire tablet editions cannot send reports. To have a report
 deleted sooner, send us its ID.
+
+### Crash reports
+
+On Android and iOS, if the game closes unexpectedly, the next time it starts it
+asks **Send a crash report?** Nothing is sent unless you press **Send** or
+**Always send**; **Don't send** deletes it. **Always send** sends later crash
+reports without asking, and **Settings > Privacy** turns that off again. Only
+players aged 13 or over are asked; for anyone else the crash stays on the device,
+where **Report a problem > Save to file** can include it.
+
+A crash report holds the same "always" details as a problem report (version,
+platform, device kind, time and the random install ID) and:
+
+- the technical record of the crash: on Android a minidump (the state of the
+  game's threads and a small part of its memory when it crashed, which can by
+  chance hold text the game was showing) or the error of the app's Java code;
+  on iOS the crash diagnostic iOS itself prepares for the app (MetricKit);
+- the game's recent log from the session that crashed, and, if a match was
+  running, its map seed and how far it had played.
+
+It never includes what you typed, your saved games or replays, your account,
+name or e-mail address, and like problem reports it is not linked to your online
+account, and we do not keep your IP address with it. The game captures crashes
+itself and sends them only to us at app.glob2.online; no third-party
+crash-reporting service is involved. We use crash reports only to find and fix
+crashes. We delete the minidump or diagnostic and the log after 90 days, and the
+rest (the readable stack trace and the details above) after two years. The
+F-Droid, Linux distribution, China and Fire tablet editions do not capture
+crashes.
 
 ## Your rights
 

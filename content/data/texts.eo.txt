@@ -7246,3 +7246,31 @@ Tundra grundo
 
 [report too large %0]
 
+[report last crash]
+
+[crash prompt title]
+
+[crash prompt message]
+
+[crash prompt send]
+
+[crash prompt always]
+
+[crash prompt dont send]
+
+[settings Privacy]
+
+[settings Crash reports]
+
+[settings Always send crash reports]
+
+[settings Send a report after a crash without asking. It holds the recent log and the crash, never your account or name.]
+
+[settings Crash reports can be sent only by players aged 13 or over. A crash stays on this device, and Report a problem can save it to a file.]
+
+[settings Test crash report]
+
+[settings The game closes now, as it would after a crash. When it starts again, it offers the crash report.]
+
+[settings Close the game]
+

@@ -15,10 +15,16 @@ import { Page } from './resources.ts';
 export const CrashReportId = Type.String({ pattern: '^[A-HJ-NP-Z2-9]{8}$' });
 
 export const CrashReportKind = Type.Union(
-  [Type.Literal('problem'), Type.Literal('crash'), Type.Literal('metrickit'), Type.Literal('web')],
+  [
+    Type.Literal('problem'),
+    Type.Literal('crash'),
+    Type.Literal('metrickit'),
+    Type.Literal('web'),
+    Type.Literal('java'),
+  ],
   {
     description:
-      'What sent the report: Report a Problem, a Crashpad minidump, an iOS MetricKit crash diagnostic, or a browser error.',
+      'What sent the report: Report a Problem, a Crashpad minidump, an iOS MetricKit crash diagnostic, a browser error, or an uncaught Java exception on Android.',
   },
 );
 export type CrashReportKind = Static<typeof CrashReportKind>;
@@ -31,6 +37,7 @@ export const CRASH_PAYLOAD_ENTRIES = {
   crash: 'minidump.dmp',
   metrickit: 'metrickit.json',
   web: 'web-error.json',
+  java: 'java-exception.txt',
 } as const satisfies Record<Exclude<CrashReportKind, 'problem'>, string>;
 
 /** Build distribution channels (buildsys/client_features.py DISTRIBUTIONS). */

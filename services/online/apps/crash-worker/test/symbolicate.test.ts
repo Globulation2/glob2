@@ -9,6 +9,8 @@ import { framesOf } from '../src/minidump.ts';
 import { compareVersions, inGame, normalizeFunction, signature } from '../src/signature.ts';
 import { breakpadPath, safeModule, type SymbolCache } from '../src/symbols.ts';
 import { symbolicateWeb, wasmFrames } from '../src/web.ts';
+import { javaFrames, symbolicateJava } from '../src/java.ts';
+import { UnreadableCrash } from '../src/minidump.ts';
 
 const work = mkdtempSync(join(tmpdir(), 'glob2-crash-test-'));
 
@@ -241,5 +243,48 @@ describe('browser errors', () => {
   });
   it('refuses a payload that is not a WebErrorReport', async () => {
     await expect(symbolicateWeb(cacheOf({}), '{"schema":1}')).rejects.toThrow(/WebErrorReport/);
+  });
+});
+
+describe('Java exceptions', () => {
+  const TEXT = [
+    'thread: SDLThread',
+    'java.lang.IllegalStateException: surface lost',
+    '\tat org.libsdl.app.SDLActivity.onNativeSurfaceChanged(SDLActivity.java:812)',
+    '\tat org.globulation2.glob2.Glob2Activity.setPreparingAssets(Glob2Activity.java:41)',
+    '\tat android.os.Handler.dispatchMessage(Handler.java:106)',
+    '\tat java.lang.reflect.Method.invoke(Native Method)',
+    'Caused by: java.io.IOException: closed',
+    '\tat org.globulation2.glob2.CertificateTrust.verify(Unknown Source)',
+    '',
+  ].join('\n');
+
+  it("reads the thrown exception's frames, not its causes", () => {
+    const frames = javaFrames(TEXT);
+    expect(frames).toHaveLength(4);
+    expect(frames[0]).toEqual({
+      module: 'java',
+      offset: '0x0',
+      function: 'org.libsdl.app.SDLActivity.onNativeSurfaceChanged',
+      file: 'SDLActivity.java',
+      line: 812,
+      inGame: false,
+    });
+    expect(frames[1]?.inGame).toBe(true);
+    expect(frames[3]).toEqual({
+      module: 'java',
+      offset: '0x0',
+      function: 'java.lang.reflect.Method.invoke',
+      inGame: false,
+    });
+  });
+
+  it("names the exception and groups by the game's own frames", () => {
+    const result = symbolicateJava(TEXT);
+    expect(result.reason).toBe('java.lang.IllegalStateException: surface lost');
+    expect(signature(result.frames)).toBe(
+      'org.globulation2.glob2.Glob2Activity.setPreparingAssets',
+    );
+    expect(() => symbolicateJava('thread: main\nnothing here\n')).toThrow(UnreadableCrash);
   });
 });

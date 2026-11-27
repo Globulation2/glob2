@@ -334,6 +334,29 @@ describe('crash reports', () => {
     expect(row.frames?.map((f) => f.function)).toEqual(['Unit::step(int)', 'Engine::run()']);
   });
 
+  it('reads uncaught Java exceptions from Android', async () => {
+    const sent = await report(
+      'java',
+      [
+        [
+          'java-exception.txt',
+          [
+            'thread: main',
+            'java.lang.NullPointerException: no surface',
+            '\tat org.globulation2.glob2.Glob2Activity.setPreparingAssets(Glob2Activity.java:41)',
+            '\tat android.os.Handler.handleCallback(Handler.java:942)',
+          ].join('\n'),
+        ],
+      ],
+      { platform: 'android', distribution: 'google_play' },
+    );
+    expect(sent.statusCode).toBe(201);
+    const row = await processReport(sent.json<{ id: string }>().id);
+    expect(row.status).toBe('done');
+    expect(row.reason).toBe('java.lang.NullPointerException: no surface');
+    expect(row.frames?.[0]).toMatchObject({ module: 'java', line: 41, inGame: true });
+  });
+
   it('marks a crash that cannot be read as failed instead of retrying', async () => {
     const sent = await report('web', [['web-error.json', '{"schema":1}']]);
     const row = await processReport(sent.json<{ id: string }>().id);

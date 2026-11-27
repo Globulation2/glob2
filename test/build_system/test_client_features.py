@@ -5,7 +5,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'buildsys'))
 from client_features import resolve, header
 from build_layout import build_identity, default_directory
-from dev_build import dependency_identity
+from dev_build import crash_capture, dependency_identity
 
 class ClientFeaturesTests(unittest.TestCase):
     def test_release_is_free_and_development_is_full(self):
@@ -39,7 +39,14 @@ class ClientFeaturesTests(unittest.TestCase):
         play = build_identity({'target': 'android', 'release': 1}, 'linux')
         self.assertIn('#define GLOB2_PROBLEM_REPORTS 0', header(fdroid))
         self.assertNotEqual(default_directory(fdroid), default_directory(play))
-        self.assertEqual(dependency_identity(fdroid), dependency_identity(play))
+        # F-Droid's bundle leaves Crashpad out (docs/multiplayer/crash-reports.md);
+        # otherwise it is the Play bundle, and the Fire tablet edition shares that.
+        self.assertEqual(dependency_identity(fdroid), dict(dependency_identity(play), crash_capture=False))
+        amazon = build_identity({'target': 'android', 'release': 1, 'amazon': 1}, 'linux')
+        self.assertNotIn('crash_capture', dependency_identity(amazon))
+        self.assertTrue(crash_capture(play))
+        self.assertFalse(crash_capture(fdroid) or crash_capture(amazon))
+        self.assertFalse(crash_capture(build_identity({'target': 'ios', 'release': 1}, 'darwin')))
         with self.assertRaises(ValueError): resolve({'problem_reports': 'maybe'})
 
     def test_invalid_values_fail_closed(self):

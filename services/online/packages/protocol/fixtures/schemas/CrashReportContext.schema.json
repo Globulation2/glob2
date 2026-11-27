@@ -41,9 +41,13 @@
         {
           "type": "string",
           "const": "web"
+        },
+        {
+          "type": "string",
+          "const": "java"
         }
       ],
-      "description": "What sent the report: Report a Problem, a Crashpad minidump, an iOS MetricKit crash diagnostic, or a browser error."
+      "description": "What sent the report: Report a Problem, a Crashpad minidump, an iOS MetricKit crash diagnostic, a browser error, or an uncaught Java exception on Android."
     },
     "installId": {
       "type": "string",

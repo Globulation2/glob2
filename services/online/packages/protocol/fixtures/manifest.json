@@ -1681,6 +1681,12 @@
       "note": "A Crashpad crash during a match: the bundle also holds minidump.dmp."
     },
     {
+      "file": "valid/CrashReportContext/java-exception.json",
+      "schema": "CrashReportContext",
+      "valid": true,
+      "note": "An uncaught Java exception on Android: the bundle also holds java-exception.txt."
+    },
+    {
       "file": "invalid/CrashReportContext/unknown-kind.json",
       "schema": "CrashReportContext",
       "valid": false,

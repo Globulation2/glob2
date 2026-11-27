@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ProblemReport.h"
+#include "CrashCapture.h"
 #include "DeviceProfile.h"
 #include "HttpFetch.h"
 #include "InstanceConfig.h"
@@ -81,6 +82,8 @@ void pushLine(std::string line)
 		line.pop_back();
 	line = clampUtf8(line, LOG_LINE_BYTES);
 	auto &lines = logLines();
+	// The session file keeps the log through a crash (src/app/CrashCapture.h).
+	CrashCapture::mirrorLine(line);
 	lines.push_back(std::move(line));
 	while (lines.size() > LOG_LINES)
 		lines.pop_front();
@@ -630,6 +633,10 @@ Bundle build(const Choices &choices, const Context &context, const fs::path &use
 	};
 	if (choices.log)
 		attach("log.txt", recentLog());
+	// A crash that may not be sent waits on the device; the player can pass it on.
+	if (choices.crash)
+		for (auto &entry : CrashCapture::newestCrashEntries(userDir))
+			attach(entry.name, std::move(entry.bytes));
 	// Attachments keep a .gz suffix when the file has one.
 	const auto gz = [](const fs::path &file) { return file.extension() == ".gz" ? std::string(".gz") : std::string(); };
 	if (choices.save)

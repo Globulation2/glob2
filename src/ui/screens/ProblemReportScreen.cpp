@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ProblemReportScreen.h"
 #include "ProblemReport.h"
+#include "CrashCapture.h"
 #include <ApplicationHost.h>
 #include <FormatableString.h>
 #include <filesystem>
@@ -16,6 +17,9 @@ struct ProblemReportScreen::Report
 	std::unique_ptr<ProblemReport::Upload> upload;
 	std::string pendingBytes;
 	std::vector<std::string> leftOut;
+	// A crash kept on the device (players who may not send, or "Don't send"
+	// not chosen yet) can go into the report.
+	bool crashWaiting = !CrashCapture::pending(ProblemReport::userDirectory()).empty();
 };
 
 ProblemReportScreen::ProblemReportScreen() : report(std::make_unique<Report>()) {}
@@ -131,6 +135,9 @@ Element ProblemReportScreen::build(const Presentation &p)
 						  [this](bool on) { report->choices.save = on; invalidate(); }, editing, trailing));
 	body.push_back(toggle("report.replay", tr("[report last replay]"), report->choices.replay,
 						  [this](bool on) { report->choices.replay = on; invalidate(); }, editing, trailing));
+	if (report->crashWaiting)
+		body.push_back(toggle("report.crash", tr("[report last crash]"), report->choices.crash,
+							  [this](bool on) { report->choices.crash = on; invalidate(); }, editing, trailing));
 	body.push_back(hint(tr("[report always included]")));
 	switch (report->policy)
 	{

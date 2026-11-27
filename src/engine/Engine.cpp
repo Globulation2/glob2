@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "CrashCapture.h"
 #include <BuildFeatures.h>
 #include "app/ClientFeatures.h"
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -40,6 +41,7 @@ Engine::~Engine()
 {
     cancelInputDispatches();
     stopSimulationThread();
+    CrashCapture::matchEnded();
     // Observers may capture locals destroyed before the Engine during unwinding.
     // Explicit session finalization drains callbacks while their owners are alive.
     if (turn) turn->onChecksum = {};

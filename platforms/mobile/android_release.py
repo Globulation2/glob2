@@ -190,7 +190,9 @@ def verify_apk(apk, arch, sdk, root=ROOT, require_dependency_manifest=True):
             from build_layout import build_identity
             from dev_build import dependency_identity
             from mobile_toolchain import discover
-            build_configuration = dependency_identity(build_identity({'target':'android','arch':arch,'release':1}))
+            # F-Droid builds send no reports, so their bundle has no Crashpad.
+            build_configuration = dependency_identity(build_identity({'target':'android','arch':arch,'release':1,
+                                                                      'problem_reports':0}))
             prefix=dependency_prefix(root,build_configuration,discover(build_configuration,{'android_sdk':str(sdk)})['fingerprint'])
         manifest = prefix / "manifest.json"
         if not manifest.is_file():

@@ -5,6 +5,9 @@
 // Copyright (C) 2007-2026 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #include "SettingsScreen.h"
+#include "CrashCapture.h"
+#include "MessageScreen.h"
+#include <ScreenStack.h>
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
 #include "SoundMixer.h"
@@ -93,8 +96,8 @@ std::string SettingsScreen::categoryName(Category category) const
 	const char *names[] = {
 		"Display & graphics", "Audio",         "Gameplay",  "Building defaults", "Controls",
 		"Language & player",  "Online",        "Hive Mind", "Recording",         "Experiments",
-		"Custom AIs",         "Map generators", "MCP server"};
-	static_assert(std::size(names) == std::size_t(Category::MCPServer) + 1,
+		"Custom AIs",         "Map generators", "MCP server", "Privacy"};
+	static_assert(std::size(names) == std::size_t(Category::Privacy) + 1,
 				  "a name for every settings category");
 	return tr(names[int(category)]);
 }
@@ -128,6 +131,8 @@ void SettingsScreen::buildRows()
 	else if (current == Category::Recording)
 		buildRecording();
 #endif
+	else if (current == Category::Privacy)
+		buildPrivacy();
 	else
 		buildGeneral();
 	if (current == Category::Buildings && touchLayout)
@@ -220,6 +225,9 @@ std::vector<SettingsScreen::Category> SettingsScreen::visibleCategories() const
 	if (!touchLayout)
 		result.push_back(Category::Controls);
 	result.push_back(Category::Player);
+	// Crash reports: only builds that capture crashes have choices to make.
+	if (CrashCapture::built())
+		result.push_back(Category::Privacy);
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
 	// A web portal without online sign-in, or an edition without the online
 	// client, has no account to manage.
@@ -543,8 +551,9 @@ Element SettingsScreen::categoryNavigation(const Presentation &p, bool sidebar)
 	static constexpr UIIcon icons[] = {
 		UIIcon::Display,  UIIcon::Audio,       UIIcon::Gameplay, UIIcon::Buildings,
 		UIIcon::Controls, UIIcon::Player,      UIIcon::Online,   UIIcon::Crown,
-		UIIcon::Start,    UIIcon::Experiments, UIIcon::Robot,    UIIcon::Map,      UIIcon::Server};
-	static_assert(std::size(icons) == std::size_t(Category::MCPServer) + 1,
+		UIIcon::Start,    UIIcon::Experiments, UIIcon::Robot,    UIIcon::Map,      UIIcon::Server,
+		UIIcon::Lock};
+	static_assert(std::size(icons) == std::size_t(Category::Privacy) + 1,
 				  "an icon for every settings category");
 	if (sidebar)
 	{
@@ -813,4 +822,38 @@ Element SettingsScreen::build(const Presentation &p)
 		return center(sized({maxW, h}, card(page, cardOptions)));
 	}
 	return center(maxWidth(maxW, card(page, cardOptions)));
+}
+
+// Settings > Privacy: crash reports (docs/multiplayer/crash-reports.md#consent).
+void SettingsScreen::buildPrivacy()
+{
+	section("Crash reports");
+	if (ProblemReport::currentSendPolicy() == ProblemReport::SendPolicy::Allowed)
+		toggle("privacy.crashReports", "Always send crash reports",
+			   "Send a report after a crash without asking. It holds the recent log and the crash, never your account or name.",
+			   globalContainer->settings.alwaysSendCrashReports,
+			   [this](int v)
+			   {
+				   globalContainer->settings.alwaysSendCrashReports = v != 0;
+				   commit();
+			   });
+	else
+		info(tr("Crash reports can be sent only by players aged 13 or over. A crash stays on this device, and Report a problem can save it to a file."));
+	button("privacy.testCrash", tr("Test crash report"),
+		   [this]
+		   {
+			   if (!screens)
+				   return;
+			   auto &strings = *GAGCore::Toolkit::getStringTable();
+			   auto confirm = std::make_unique<MessageScreen>(
+				   tr("Test crash report"),
+				   tr("The game closes now, as it would after a crash. When it starts again, it offers the crash report."),
+				   std::vector<std::string>{tr("Close the game"), strings.getString("[Cancel]")});
+			   confirm->setPrimary(1);
+			   screens->push(std::move(confirm), [](GAGGUI::Screen &, int choice)
+							 {
+								 if (choice == 0)
+									 CrashCapture::crashForTest();
+							 });
+		   });
 }

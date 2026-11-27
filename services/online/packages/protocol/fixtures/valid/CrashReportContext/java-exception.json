@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "kind": "java",
+  "installId": "3d2c1b0a-9f8e-4d7c-8b6a-5f4e3d2c1b0a",
+  "submissionId": "2c3d4e5f-6071-4829-93a4-b5c6d7e8f9a0",
+  "version": "0.11.8.1",
+  "versionMinor": 219,
+  "simRevision": 170,
+  "distribution": "google_play",
+  "platform": "android",
+  "os": "Android API 34",
+  "deviceClass": "phone",
+  "deviceTier": "mid",
+  "description": "",
+  "createdAt": "2026-10-01T12:00:00Z"
+}

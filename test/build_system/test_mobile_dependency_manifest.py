@@ -63,7 +63,13 @@ class MobileDependencyManifestTests(unittest.TestCase):
                     (prefix / 'share/glob2/sdl-java').mkdir(parents=True)
                     library = prefix / 'library.a'
                     library.write_bytes(b'verified dependency')
-                    dep_identity = dependency_identity(build_identity({'target': 'android', 'arch': arch, 'release': 1, 'china': 0}))
+                    dep_identity = dependency_identity(build_identity({'target': 'android', 'arch': arch, 'release': 1, 'china': 0,
+                                                                       **({'problem_reports': 0} if fdroid else {})}))
+                    # Builds that send reports package Crashpad's handler from the bundle.
+                    handler = prefix / 'tools/crashpad/crashpad_handler'
+                    if not fdroid:
+                        handler.parent.mkdir(parents=True)
+                        handler.write_bytes(b'crash handler')
                     manifest = {'identity': dep_identity, 'toolchain': {'compiler': 'pinned'},
                         'archives': {'library.a': hashlib.sha256(library.read_bytes()).hexdigest()}}
                     if corruption == 'identity': manifest['identity'] = dict(dep_identity, arch='wrong')
@@ -89,6 +95,14 @@ class MobileDependencyManifestTests(unittest.TestCase):
                         with self.assertRaises(ValueError if corruption else PackagingReached):
                             android.main()
                         self.assertEqual(export.called, corruption is None)
+                        # The project stays at the standard path that sign and install use.
+                        project = root / default_directory(build_identity(
+                            {'target': 'android', 'arch': arch, 'release': 1, 'china': 0, 'amazon': 0})) / 'android-project'
+                        packaged = project / 'app/generated/jniLibs' / arch / 'libcrashpad_handler.so'
+                        if corruption is None:
+                            self.assertEqual(packaged.is_file(), not fdroid)
+                            build = json.loads((project / 'glob2-build.json').read_text())
+                            self.assertEqual(build['crash_handler'], not fdroid)
 
     def test_existing_bundle_matches_native_consumer_for_all_mobile_targets(self):
         cases = [('android', arch, 'device') for arch in ('arm64-v8a', 'armeabi-v7a', 'x86_64')]

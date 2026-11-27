@@ -67,6 +67,8 @@ struct Choices
 	bool log = true;
 	bool save = true;
 	bool replay = true;
+	// The newest crash waiting on the device (src/app/CrashCapture.h), if any.
+	bool crash = true;
 };
 inline constexpr std::size_t DESCRIPTION_LIMIT = 2000;
 // The server accepts 10 MB; attachments that would pass this are left out.
