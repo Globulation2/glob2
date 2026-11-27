@@ -89,6 +89,7 @@ SDL_GPUTextureFormat gpuFormat(TextureCompression compression)
     switch (compression) {
     case TextureCompression::BC3: return SDL_GPU_TEXTUREFORMAT_BC3_RGBA_UNORM;
     case TextureCompression::ASTC4x4: return SDL_GPU_TEXTUREFORMAT_ASTC_4x4_UNORM;
+    case TextureCompression::BC7: return SDL_GPU_TEXTUREFORMAT_BC7_RGBA_UNORM;
     case TextureCompression::Uncompressed: break;
     }
     return SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
@@ -336,7 +337,7 @@ class SDLGPUDevice final : public RenderDevice
     std::array<std::size_t, std::tuple_size_v<decltype(RenderBudget::classes)>> classBytes{};
     std::map<const GeometryRevision *, GeometryPtr> geometryCache;
     bool worldAvailable = false, skinAvailable = false, terrainAvailable = false, teamColorAvailable = false;
-    bool bc3Supported = false, astcSupported = false;
+    bool bc3Supported = false, astcSupported = false, bc7Supported = false;
     // False on Vulkan devices without depthClamp: SDL then requires depth clipping.
     bool depthClamping = true;
     std::array<SDL_GPUShader *,2> terrainShaders{};
@@ -735,7 +736,8 @@ class SDLGPUDevice final : public RenderDevice
     void validateBlocks(const TextureRevision &source, bool asTarget) const
     {
         const auto format = source.descriptor.compression;
-        if ((format == TextureCompression::BC3 && !bc3Supported) || (format == TextureCompression::ASTC4x4 && !astcSupported))
+        if ((format == TextureCompression::BC3 && !bc3Supported) || (format == TextureCompression::ASTC4x4 && !astcSupported) ||
+            (format == TextureCompression::BC7 && !bc7Supported))
             throw std::invalid_argument("SDL GPU device cannot sample this block format");
         if (asTarget) throw std::invalid_argument("Compressed textures cannot be render targets");
         if (source.descriptor.alpha != TextureDescriptor::Alpha::Premultiplied || source.descriptor.mips != TextureDescriptor::Mips::Generated ||
@@ -1138,8 +1140,8 @@ class SDLGPUDevice final : public RenderDevice
             texturePool.limit = std::min<std::size_t>(32 * 1024 * 1024, TotalBudget / 8); texturePool.open = true;
             texturePool.fits = [this](std::size_t bytes) { return idleFits(bytes); };
             if (window) { claimed = SDL_ClaimWindowForGPUDevice(device, window); if (!claimed) fail("claim GPU window"); }
-            // Block formats for prepared artwork. Desktop GPUs decode BC3 and most
-            // mobile GPUs ASTC; GLOB2_TEXTURE_COMPRESSION=none|bc3|astc restricts it.
+            // Block formats for prepared artwork. Desktop GPUs decode BC3 and BC7,
+            // most mobile GPUs ASTC; GLOB2_TEXTURE_COMPRESSION=none|bc3|bc7|astc restricts it.
             const char *wanted = SDL_getenv_unsafe("GLOB2_TEXTURE_COMPRESSION");
             const std::string choice = wanted ? wanted : "";
             const auto sampled = [&](SDL_GPUTextureFormat format) {
@@ -1147,6 +1149,7 @@ class SDLGPUDevice final : public RenderDevice
             };
             bc3Supported = (choice.empty() || choice == "bc3") && sampled(SDL_GPU_TEXTUREFORMAT_BC3_RGBA_UNORM);
             astcSupported = (choice.empty() || choice == "astc") && sampled(SDL_GPU_TEXTUREFORMAT_ASTC_4x4_UNORM);
+            bc7Supported = (choice.empty() || choice == "bc7") && sampled(SDL_GPU_TEXTUREFORMAT_BC7_RGBA_UNORM);
             vertexShader = loadShader("primitive", "vertex", 1, 0);
             fragmentShader = loadShader("primitive", "fragment", 1, 1);
             SDL_GPUSamplerCreateInfo sampler{}; sampler.min_filter = sampler.mag_filter = SDL_GPU_FILTER_NEAREST;
@@ -1178,7 +1181,7 @@ class SDLGPUDevice final : public RenderDevice
     RenderDeviceCapabilities capabilities() const override
     {
         RenderDeviceCapabilities result{true, true, false, MaximumTextureSize, worldAvailable, worldAvailable, skinAvailable, terrainAvailable, directTerrainPipeline != nullptr, directTerrainHdPipeline != nullptr};
-        result.bc3Textures = bc3Supported; result.astc4x4Textures = astcSupported;
+        result.bc3Textures = bc3Supported; result.astc4x4Textures = astcSupported; result.bc7Textures = bc7Supported;
         result.teamColor = teamColorAvailable;
         return result;
     }

@@ -1,0 +1,7 @@
+--- a/etcpak/bc7enc.h	2026-11-27 12:07:45.152299007 -0500
++++ b/etcpak/bc7enc.h	2026-11-27 12:07:45.153629445 -0500
+@@ -1,3 +1,4 @@
++#pragma once
+ // File: bc7enc.h - Richard Geldreich, Jr. - MIT license or public domain (see end of bc7enc.c)
+ // If you use this software in a product, attribution / credits is requested but not required.
+ #include <stdlib.h>

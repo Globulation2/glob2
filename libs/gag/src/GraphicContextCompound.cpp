@@ -370,6 +370,7 @@ SpriteDrawBatch::~SpriteDrawBatch() noexcept(false)
 		const auto blocksFor = [this](AssetImage::BlockCompression prepared) {
 			const auto format = prepared == AssetImage::BlockCompression::PremultipliedBC3 ? TextureCompression::BC3
 				: prepared == AssetImage::BlockCompression::PremultipliedASTC4x4 ? TextureCompression::ASTC4x4
+				: prepared == AssetImage::BlockCompression::PremultipliedBC7 ? TextureCompression::BC7
 				: TextureCompression::Uncompressed;
 			return presentationDevice->capabilities().supports(format) ? format : TextureCompression::Uncompressed;
 		};

@@ -25,9 +25,9 @@ struct BufferHandle
     explicit operator bool() const { return generation != 0; }
     bool operator==(const BufferHandle &) const = default;
 };
-// GPU block formats a device may sample directly. Both store 16 bytes for
+// GPU block formats a device may sample directly. Each stores 16 bytes for
 // each 4x4 texels; blocks hold premultiplied colour.
-enum class TextureCompression : unsigned char { Uncompressed, BC3, ASTC4x4 };
+enum class TextureCompression : unsigned char { Uncompressed, BC3, ASTC4x4, BC7 };
 //! Bytes of one level's 4x4 blocks.
 constexpr std::size_t compressedLevelBytes(int width, int height)
 {

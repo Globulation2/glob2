@@ -1106,6 +1106,42 @@ TEST_SUITE("SDLGPUDevice")
         frame.packets={blit(invalid,{0,0,4,4})};CHECK_THROWS_AS(gpu->submit(frame),std::invalid_argument);
     }
 
+    GLOB2_TEST_CASE("Vulkan samples premultiplied BC7 chains from block-only restoration snapshots", "[display][isolated]")
+    {
+        const char *shaders=std::getenv("GLOB2_TEST_SHADER_DIRECTORY");if(!shaders)return;
+        Video video;auto gpu=makeSDLGPUDevice(nullptr,16,16,shaders);
+        if(!gpu->capabilities().bc7Textures){MESSAGE("Device lacks BC7 sampling");return;}
+        RenderResources resources;auto base=surface(8,8);REQUIRE(base);
+        // Level zero opaque red, level one half-transparent green; 2x2 and 1x1 carry no blocks.
+        const std::array<SDL_Color,2> colours{{{255,0,0,255},{0,255,0,128}}};
+        std::array<std::vector<unsigned char>,2> encoded;std::array<RenderMipLevel,4> levels{{{8,8},{4,4},{2,2},{1,1}}};
+        for(unsigned level=0;level<2;++level) {
+            const int size=8>>level;std::vector<unsigned char> rgba(std::size_t(size)*size*4);
+            for(std::size_t i=0;i<rgba.size();i+=4){rgba[i]=colours[level].r;rgba[i+1]=colours[level].g;rgba[i+2]=colours[level].b;rgba[i+3]=colours[level].a;}
+            encoded[level]=AssetImage::compressBlocks(rgba.data(),size,size,AssetImage::BlockCompression::PremultipliedBC7,false);
+            REQUIRE(encoded[level].size()==compressedLevelBytes(size,size));
+            levels[level].compression=TextureCompression::BC7;
+            levels[level].blocks={reinterpret_cast<const std::byte *>(encoded[level].data()),encoded[level].size()};
+        }
+        TextureDescriptor descriptor;descriptor.compression=TextureCompression::BC7;descriptor.sampling=TextureDescriptor::Sampling::Linear;
+        auto handle=resources.create(base.get(),1,descriptor,levels);REQUIRE(handle);auto snapshot=resources.snapshot(handle);REQUIRE(snapshot);
+        CHECK_FALSE(snapshot->pixels);CHECK(snapshot->bytes==80);
+        RenderFrame frame;frame.logicalWidth=frame.logicalHeight=16;std::uint64_t identity=0;
+        const auto draw=[&](int size){
+            auto packet=blit(snapshot,{0,0,float(size),float(size)});packet.linear=true;
+            frame.identity=++identity;frame.packets={fill({0,0,16,16},{0,0,0,255}),packet};REQUIRE(gpu->submit(frame));gpu->present();
+            CaptureRequest request;request.identity=identity;Surface capture(gpu->captureSynchronously(request),SDL_DestroySurface);REQUIRE(capture);
+            return pixel(capture.get(),size/2,size/2);
+        };
+        auto red=draw(8);CHECK(red.r>=250);CHECK(red.g<=4);CHECK(red.b<=4);
+        // The blocks hold premultiplied colour, blended over black once.
+        auto green=draw(4);CHECK(green.r<=4);CHECK(std::abs(int(green.g)-128)<=6);CHECK(green.b<=4);
+        // Trimming forgets the GPU copy; the block-only snapshot restores it.
+        gpu->trimRetiredResources();red=draw(8);CHECK(red.r>=250);
+        auto invalid=std::make_shared<TextureRevision>(*snapshot);invalid->blocks.back().pop_back();
+        frame.packets={blit(invalid,{0,0,4,4})};CHECK_THROWS_AS(gpu->submit(frame),std::invalid_argument);
+    }
+
     GLOB2_TEST_CASE("Vulkan samples premultiplied ASTC 4x4 chains from block-only restoration snapshots", "[display][isolated]")
     {
         const char *shaders=std::getenv("GLOB2_TEST_SHADER_DIRECTORY");if(!shaders)return;

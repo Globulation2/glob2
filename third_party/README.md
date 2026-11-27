@@ -23,20 +23,27 @@ etcpak 2.1 (BSD 3-Clause), from https://github.com/wolfpld/etcpak (tag `2.1`,
 commit `7f15da4739cc5f8562311bdbb800436986d268ca`). `etcpak/etcpak/` holds only
 the block encoders and what they include: `ProcessDxtc`, `ProcessRGB`, `Tables`
 and `Dither` (`.cpp` and `.hpp`), `ForceInline.hpp`, `Math.hpp`, `Vector.hpp`
-and `ProcessCommon.hpp`, with the upstream `LICENSE.txt` and `AUTHORS.txt`
-beside it. The command-line tool, image loading, decoders, threading and the
-BC7 encoder are left out. The sources are unmodified except
-`patches/etcpak-0001-no-bc7.patch`, which removes `CompressBc7` and its
-`bc7enc.h` include from `ProcessDxtc`, so `bc7enc` need not be vendored.
+and `ProcessCommon.hpp`, and the BC7 encoder etcpak bundles, Richard Geldreich's
+`bc7enc` (`bc7enc.cpp`, `bc7enc.h`; MIT or public domain, used under MIT), with
+the upstream `LICENSE.txt` and `AUTHORS.txt` beside it. `bcdec.h`, etcpak's
+bundled BC decoder (Sergii Kudlai; MIT or Unlicense), is vendored for tests only:
+`ImageAssets` decodes BC7 blocks with it, and nothing shipped includes it. The
+command-line tool, image loading, the other decoders and threading are left out.
+The sources are unmodified except `patches/etcpak-0001-bc7enc-include-once.patch`,
+which adds `#pragma once` to `bc7enc.h`, which has no include guard, so the
+SSE4.1 copy below can include it once at global scope.
 
-`buildsys/sources.py` compiles the four sources into libgag on every platform
+`buildsys/sources.py` compiles the five sources into libgag on every platform
 (`ETCPAK_SOURCES`) and puts `third_party/etcpak` on the include path; include
 the encoders as `<etcpak/ProcessDxtc.hpp>` and `<etcpak/ProcessRGB.hpp>`.
 `AssetImage::compressBlocks` (`libs/gag/src/AssetLoader.cpp`) is the only
-caller: asset workers encode high-resolution texture levels to BC3, or to ETC2
-with EAC alpha for GPUs without S3TC. The encoders pick SSE4.1, AVX2 or NEON
+caller: asset workers encode high-resolution texture levels to BC3, to BC7 on
+desktops whose device profile wants it (8 or more hardware threads, a device
+that samples BC7), or to ETC2 with EAC alpha for GPUs without S3TC. bc7enc has
+no SIMD path; its tables are built once (`bc7enc_compress_block_init`) and it
+encodes with equal RGBA weights. The encoders pick SSE4.1, AVX2 or NEON
 paths from the compiler's target macros, so the baseline x86-64 build of these
-four sources is the portable path. `libs/gag/src/EtcpakSse41.cpp` compiles them
+sources is the portable path. `libs/gag/src/EtcpakSse41.cpp` compiles them
 a second time inside a namespace, with `-msse4.1` for that file alone on x86
 GCC and Clang builds (`CMakeLists.txt`), and the encoders use that copy when
 `__builtin_cpu_supports("sse4.1")` says the processor runs it: about three

@@ -17,11 +17,11 @@ struct RenderDeviceCapabilities
     // DirectTerrainDraw::streamed: streamed HD direct terrain.
     bool directTerrainStreaming = false;
     // Block formats the device samples directly (see TextureCompression).
-    bool bc3Textures = false, astc4x4Textures = false;
+    bool bc3Textures = false, astc4x4Textures = false, bc7Textures = false;
     bool supports(TextureCompression format) const
     {
         return format == TextureCompression::Uncompressed || (format == TextureCompression::BC3 && bc3Textures) ||
-            (format == TextureCompression::ASTC4x4 && astc4x4Textures);
+            (format == TextureCompression::ASTC4x4 && astc4x4Textures) || (format == TextureCompression::BC7 && bc7Textures);
     }
     // DrawPacket::Material::TeamColor blits, so team layers need no CPU recolour.
     bool teamColor = false;

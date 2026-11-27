@@ -38,6 +38,10 @@ struct DeviceThresholds
 	// memory (a "16 GB" machine reports a little under 16 GiB). Not in a
 	// browser, whose Wasm heap has a fixed maximum.
 	std::uint64_t largeBudgetDesktopMemoryAtLeastMiB = 15 * 1024;
+	// HD artwork as BC7 rather than BC3 (desktop GPUs that sample it): only
+	// with this many hardware threads or more, whose asset workers absorb
+	// bc7enc's slower encode. Never on phones or in a browser.
+	unsigned bc7CoresAtLeast = 8;
 	// New-game and new-map size, as a power of two (7 = 128, 8 = 256).
 	int lowMapShift = 7;
 	int mobileMidMapShift = 7;
@@ -122,6 +126,9 @@ struct DeviceProfile
 	// startup (initialize), before any presentation device exists; a VRAM
 	// probe finishing later does not change it.
 	DeviceDecision largeRenderBudget() const;
+	// Whether HD artwork is encoded as BC7 where the device samples it
+	// (GAGCore::AssetImage::bc7Wanted), set once at startup; value = threads.
+	DeviceDecision bc7Artwork() const;
 	// Colonies in a new game, the player's included; 0 keeps the setup's own default.
 	int newGameColonies() const;
 	// key=value fields for performance telemetry and the startup log.

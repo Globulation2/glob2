@@ -20,6 +20,13 @@
 #include <stdint.h>
 #include <string.h>
 #include <x86intrin.h>
+// At global scope, so ProcessDxtc's include of it below adds nothing (the
+// header is made include-once by third_party/patches): its CompressBc7 copy
+// calls the portable bc7enc, which has no SIMD path to rebuild.
+#include "../../../third_party/etcpak/etcpak/bc7enc.h"
+// Likewise its declarations, whose forward-declared BC7 parameters must name
+// bc7enc's type rather than one of this namespace's.
+#include "../../../third_party/etcpak/etcpak/ProcessDxtc.hpp"
 
 namespace etcpak_sse41
 {
