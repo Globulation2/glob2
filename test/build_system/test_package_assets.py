@@ -6,6 +6,7 @@ import re
 from pathlib import Path
 import sys
 import tempfile
+import types
 import unittest
 from unittest.mock import patch
 from PIL import Image
@@ -184,12 +185,19 @@ class AssetExportTests(unittest.TestCase):
     def test_worker_in_configured_encoder_needs_no_quality_gate(self):
         # Windows release jobs configure a Pillow-only encoder; video sprites
         # fall back to SSIM there instead of failing the export.
+        # The export then builds the embedded sprite encoder (FFmpeg, which needs
+        # NASM); reaching that build means the readiness check let it through.
         def ready(require_brotli=False, require_quality=False):
             return not require_quality
-        with patch.object(package_assets, "encoder_ready", side_effect=ready):
+        class Reached(Exception):
+            pass
+        def build(*args, **kwargs):
+            raise Reached
+        encoder = types.ModuleType("recording_dependencies")
+        encoder.build = build
+        with patch.object(package_assets, "encoder_ready", side_effect=ready), \
+                patch.dict(sys.modules, {"recording_dependencies": encoder}), self.assertRaises(Reached):
             self.export(worker=True, video_sprites=True)
-        self.assertTrue((self.output / "data/gfx/test.png").is_file()
-                        or any(self.output.rglob("*.webp")) or any(self.output.rglob("*.png")))
 
     def test_parallel_encoder_failure_preserves_existing_export(self):
         self.export(jobs=1)
