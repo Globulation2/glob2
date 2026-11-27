@@ -82,7 +82,7 @@ model (MIT weights, hosted by fal.ai) and stages the meshes outside the
 repository; they are not committed. `mesh_shadows.py` aligns each mesh to the
 sprite with an orthographic camera at the sprites' one shared view, 59.6° below
 the horizontal (yaw over the full turn, mirrored or not; roll, scale and
-translation refined), gates it (tolerant silhouette fit ≥ 0.85, a solid
+translation refined), gates it (tolerant silhouette fit ≥ 0.80, a solid
 footprint rather than a relief, no taller than the sprite; up to four seeds,
 the best passing one kept, preferring the height closest to the building's
 other variants; variants with the same silhouette share one mask), and casts it: a visible surface point H screen px
@@ -93,8 +93,13 @@ no lower than that piece's base in its column, so a mesh seated too low casts no
 slab below the building and separate pieces cast separately; shadow parts not
 touching the sprite are dropped. Buildings whose meshes fail the gate keep a
 `block` spec at their reviewed length. barracks0b0's old shadow was painted
-opaque into its art; its spec's `paint_out` relights it to the sand around it
-before casting (HD, and classic from the area-averaged HD mask).
+opaque into its art; two masked FLUX.1 Fill [pro] passes (fal.ai) repainted it
+as sand before the mesh was made, recorded with their masks, prompts and hashes
+in `content-src/gfx/shadows/inpaint/` (the classic base takes the HD result
+area-averaged 4×). The pass outputs keep the input alpha; `cast_shadows.py`'s
+`strip` then clears the translucent near-black edge pixels as for every frame.
+A mesh record's `sprite` hashes name the base the mesh was aligned to, before
+that strip; rerun `mesh_shadows.py` whenever a frame's opaque art changes.
 
 **Shadow length is art direction.** One sun direction serves everything, but
 each building's `length` (screen px of throw per screen px of height, default
