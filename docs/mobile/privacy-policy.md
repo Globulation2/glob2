@@ -13,9 +13,8 @@ Boom Drive, Unit 346, Oakville, Ontario L6H 7X5, Canada ("we"). For privacy
 questions and requests, contact **bradley.allen.arsenault@gmail.com**
 or write to that address.
 
-Last updated: 24 November 2026. Chat and other social features became available
-only to players aged 13 or over, with the age range the game asks for or reads
-from Apple devices.
+Last updated: 26 November 2026. Players aged 13 or over can send us a problem
+report from the game's main menu; see [Problem reports](#problem-reports).
 
 ## Public website browsing
 
@@ -64,7 +63,8 @@ avoid posting private information in public repository issues.
 ## Game and online service summary
 
 - Single-player games, the campaign, the map editor and LAN games work without an
-  account and send nothing to us.
+  account and send nothing to us, unless you choose to send us a
+  [problem report](#problem-reports).
 - Opening online play creates an account. It starts as a guest account, without an
   e-mail address or a name; a guest gets a generated name such as `Guest-1234`.
 - We keep what online play needs: your account, how you sign in, your matches, ratings,
@@ -309,6 +309,8 @@ are only for players aged 13 or over. The game and the service are built to coll
 as little as possible from anyone, children included:
 
 - Single-player, the campaign, the map editor and LAN games send nothing to us.
+  Players under 13, or who have not said their age, cannot send problem reports;
+  they can save one to a file and share it with a parent's help.
 - Online play works as a guest, which needs no e-mail address, no real name, no
   birthday and no account details: the game makes up a name such as `Guest-1234`.
   An account with a username and password needs no e-mail address either. Signing
@@ -376,6 +378,36 @@ credentials, private studio prompts or generated source. Financial records
 retained for purchase reconciliation remain after account deletion, as
 described in [Optional purchases and AI features](#optional-purchases-and-ai-features). Uncertain or unavailable facts are labeled;
 we do not infer historical activity from last-seen timestamps.
+
+## Problem reports
+
+**Report a problem** on the main menu lets you tell us what went wrong. Nothing is
+sent unless you press **Send**, and only players aged 13 or over can send. A report
+holds:
+
+- what you typed under "What happened?" (up to 2,000 characters);
+- if you leave them ticked: the game's recent log (its last 200 lines of technical
+  messages, such as which screens you opened), your most recently saved game and
+  your most recent replay. Saves and replays hold the player names of that game;
+- always: the game's version and simulation revision, the platform and operating
+  system name, where you got the game (for example the App Store or our website),
+  the kind of device (phone, tablet or desktop and a performance tier), the time,
+  and a random install ID that the game makes up on first use and that tells us how
+  many installations a problem affects.
+
+A report is not linked to your online account, your name or your e-mail address,
+and we do not keep your IP address with it; we use the address only briefly, in
+memory, to stop floods of reports. Reports go to us at app.glob2.online and to no
+one else. The game shows a short report ID that you can quote when you contact us.
+If you are offline, the report waits on your device (at most five reports and
+10 MB) and is sent from the main menu later.
+
+We use reports only to find and fix problems. Only our administrators can read them.
+We delete the attached log, save and replay after 90 days and the rest of the
+report after two years. **Save to file** writes the same report to your device
+instead, for you to share yourself; it sends nothing. The F-Droid, Linux
+distribution, China and Fire tablet editions cannot send reports. To have a report
+deleted sooner, send us its ID.
 
 ## Your rights
 

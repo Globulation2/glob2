@@ -3097,5 +3097,13 @@
   "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "চ্যাট, ব্যক্তিগতের বাইরে কনটেন্ট শেয়ার করা, নাম বেছে নেওয়া এবং ছবি আপলোড করা 13 বা তার বেশি বয়সী খেলোয়াড়দের জন্য। শুধু তোমার উত্তরটি রাখা হয়, তোমার জন্মদিন কখনোই নয়।",
   "Under 13": "13-এর কম",
   "13 or over": "13 বা তার বেশি",
-  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "তুমি বলেছ তোমার বয়স 13-এর কম, তাই চ্যাট ও শেয়ারিং বন্ধ আছে। এটি পরিবর্তন করতে একজন অভিভাবক আমাদের সাথে যোগাযোগ করতে পারেন।"
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "তুমি বলেছ তোমার বয়স 13-এর কম, তাই চ্যাট ও শেয়ারিং বন্ধ আছে। এটি পরিবর্তন করতে একজন অভিভাবক আমাদের সাথে যোগাযোগ করতে পারেন।",
+  "Problem reports": "সমস্যার রিপোর্ট",
+  "Platform": "প্ল্যাটফর্ম",
+  "Device": "ডিভাইস",
+  "Files": "ফাইল",
+  "Download bundle": "বান্ডেল ডাউনলোড করুন",
+  "No problem reports yet.": "এখনও কোনো সমস্যার রিপোর্ট নেই।",
+  "No description.": "কোনো বিবরণ নেই।",
+  "Bundle deleted after 90 days.": "৯০ দিন পরে বান্ডেল মুছে ফেলা হয়েছে।"
 }

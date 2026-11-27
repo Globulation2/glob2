@@ -115,8 +115,10 @@ final set has been reviewed, then place only the selected store assets in
 - Match the store version to the build's `CFBundleShortVersionString` before
   selecting the build in App Store Connect.
 - Complete the App Privacy questionnaire from an audit of actual data collection,
-  including optional online accounts, chat, shared maps, and colony-skin
-  purchases. Use the maintained [privacy policy](../mobile/privacy-policy.md) and the
+  including optional online accounts, chat, shared maps, colony-skin
+  purchases and Report a Problem (Diagnostics: crash data and other diagnostic
+  data, not linked to the user, not used for tracking, as the policy's
+  [problem reports](../mobile/privacy-policy.md#problem-reports) describes). Use the maintained [privacy policy](../mobile/privacy-policy.md) and the
   account-deletion URL documented in [mobile development](../mobile/development.md).
   Verify that the published policy is reachable before submitting the store version.
 - Assess the age-rating questions against current gameplay combat, multiplayer

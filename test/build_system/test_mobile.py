@@ -279,7 +279,11 @@ class MobileBuildTests(unittest.TestCase):
         amazon = build_identity({'target':'android','release':'1','amazon':'1'})
         self.assertNotEqual(default_directory(standard), default_directory(amazon))
         self.assertEqual(default_directory(amazon), default_directory(standard)/'amazon')
-        self.assertEqual({key:value for key,value in amazon.items() if key!='amazon'}, standard)
+        # The Fire tablet edition differs only in its edition flag and in leaving
+        # Report a Problem uploads out (docs/multiplayer/problem-reports.md).
+        self.assertFalse(amazon['problem_reports'])
+        self.assertEqual({key:value for key,value in amazon.items() if key not in ('amazon', 'problem_reports')},
+                         {key:value for key,value in standard.items() if key!='problem_reports'})
 
     def test_wrong_architecture_cannot_reuse_output(self):
         with tempfile.TemporaryDirectory() as directory:

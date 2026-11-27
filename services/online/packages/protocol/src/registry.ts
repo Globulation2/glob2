@@ -1,5 +1,6 @@
 import { generatorSchemas } from './generators.ts';
 import { adminConsoleSchemas } from './adminConsole.ts';
+import { crashReportSchemas } from './crashReports.ts';
 import {
   BuildingPackage,
   PublishBuildingRequest,
@@ -244,6 +245,9 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   ),
   ...Object.fromEntries(Object.entries(studioSchemas).map(([name, schema]) => [name, { schema }])),
   ...Object.fromEntries(Object.entries(hiveSchemas).map(([name, schema]) => [name, { schema }])),
+  ...Object.fromEntries(
+    Object.entries(crashReportSchemas).map(([name, schema]) => [name, { schema }]),
+  ),
   // Simulation and match description
   SimVersion: { schema: SimVersion },
   GeneratorDescriptor: { schema: GeneratorDescriptor },

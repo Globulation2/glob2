@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:CrashReportContext",
+  "title": "CrashReportContext",
+  "type": "object",
+  "required": [
+    "schema",
+    "kind",
+    "installId",
+    "submissionId",
+    "version",
+    "versionMinor",
+    "simRevision",
+    "distribution",
+    "platform",
+    "os",
+    "deviceClass",
+    "deviceTier",
+    "description",
+    "createdAt"
+  ],
+  "properties": {
+    "schema": {
+      "type": "number",
+      "const": 1
+    },
+    "kind": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "problem"
+        }
+      ],
+      "description": "What sent the report. Phase 1 knows only Report a Problem."
+    },
+    "installId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "submissionId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[0-9A-Za-z.+_~-]+$"
+    },
+    "versionMinor": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "simRevision": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    },
+    "distribution": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "direct"
+        },
+        {
+          "type": "string",
+          "const": "browser"
+        },
+        {
+          "type": "string",
+          "const": "steam"
+        },
+        {
+          "type": "string",
+          "const": "epic"
+        },
+        {
+          "type": "string",
+          "const": "google_play"
+        },
+        {
+          "type": "string",
+          "const": "app_store"
+        },
+        {
+          "type": "string",
+          "const": "microsoft"
+        },
+        {
+          "type": "string",
+          "const": "amazon"
+        },
+        {
+          "type": "string",
+          "const": "china"
+        }
+      ]
+    },
+    "platform": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "linux"
+        },
+        {
+          "type": "string",
+          "const": "windows"
+        },
+        {
+          "type": "string",
+          "const": "macos"
+        },
+        {
+          "type": "string",
+          "const": "ios"
+        },
+        {
+          "type": "string",
+          "const": "android"
+        },
+        {
+          "type": "string",
+          "const": "web"
+        },
+        {
+          "type": "string",
+          "const": "other"
+        }
+      ]
+    },
+    "os": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "deviceClass": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "desktop"
+        },
+        {
+          "type": "string",
+          "const": "tablet"
+        },
+        {
+          "type": "string",
+          "const": "phone"
+        }
+      ]
+    },
+    "deviceTier": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "low"
+        },
+        {
+          "type": "string",
+          "const": "mid"
+        },
+        {
+          "type": "string",
+          "const": "high"
+        }
+      ]
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "createdAt": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "RFC 3339 date-time."
+    }
+  },
+  "additionalProperties": false
+}

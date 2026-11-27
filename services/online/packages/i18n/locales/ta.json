@@ -3097,5 +3097,13 @@
   "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "அரட்டை, தனிப்பட்டதைத் தாண்டி உள்ளடக்கத்தைப் பகிர்தல், பெயரைத் தேர்ந்தெடுத்தல், புகைப்படத்தைப் பதிவேற்றுதல் ஆகியவை 13 வயது அல்லது அதற்கு மேற்பட்ட வீரர்களுக்கானவை. உங்கள் பதில் மட்டுமே சேமிக்கப்படும், உங்கள் பிறந்தநாள் ஒருபோதும் சேமிக்கப்படாது.",
   "Under 13": "13-க்குக் கீழ்",
   "13 or over": "13 அல்லது அதற்கு மேல்",
-  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "நீங்கள் 13 வயதுக்குக் குறைவானவர் என்று கூறியதால், அரட்டையும் பகிர்வும் முடக்கப்பட்டுள்ளன. இதை மாற்ற பெற்றோர் எங்களைத் தொடர்புகொள்ளலாம்."
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "நீங்கள் 13 வயதுக்குக் குறைவானவர் என்று கூறியதால், அரட்டையும் பகிர்வும் முடக்கப்பட்டுள்ளன. இதை மாற்ற பெற்றோர் எங்களைத் தொடர்புகொள்ளலாம்.",
+  "Problem reports": "சிக்கல் அறிக்கைகள்",
+  "Platform": "தளம்",
+  "Device": "சாதனம்",
+  "Files": "கோப்புகள்",
+  "Download bundle": "தொகுப்பைப் பதிவிறக்கு",
+  "No problem reports yet.": "இதுவரை சிக்கல் அறிக்கைகள் இல்லை.",
+  "No description.": "விளக்கம் இல்லை.",
+  "Bundle deleted after 90 days.": "90 நாட்களுக்குப் பிறகு தொகுப்பு நீக்கப்பட்டது."
 }

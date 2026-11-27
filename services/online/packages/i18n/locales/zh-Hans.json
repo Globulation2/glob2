@@ -3070,5 +3070,13 @@
   "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "聊天、在私密范围之外分享内容、选择名字和上传照片仅限 13 岁及以上的玩家。我们只保存你的回答，绝不保存你的生日。",
   "Under 13": "未满 13 岁",
   "13 or over": "13 岁及以上",
-  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "你表示自己未满 13 岁，因此聊天和分享功能已关闭。家长可以联系我们更改此设置。"
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "你表示自己未满 13 岁，因此聊天和分享功能已关闭。家长可以联系我们更改此设置。",
+  "Problem reports": "问题报告",
+  "Platform": "平台",
+  "Device": "设备",
+  "Files": "文件",
+  "Download bundle": "下载数据包",
+  "No problem reports yet.": "暂无问题报告。",
+  "No description.": "无描述。",
+  "Bundle deleted after 90 days.": "数据包已在 90 天后删除。"
 }

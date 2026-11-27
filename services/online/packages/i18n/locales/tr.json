@@ -3097,5 +3097,13 @@
   "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "Sohbet, içeriği özelin ötesinde paylaşma, isim seçme ve fotoğraf yükleme 13 yaş ve üzeri oyuncular içindir. Yalnızca cevabını saklarız, doğum gününü asla.",
   "Under 13": "13 yaş altı",
   "13 or over": "13 veya üzeri",
-  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "13 yaşından küçük olduğunu söyledin, bu yüzden sohbet ve paylaşım kapalı. Bir ebeveyn bunu değiştirmek için bizimle iletişime geçebilir."
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "13 yaşından küçük olduğunu söyledin, bu yüzden sohbet ve paylaşım kapalı. Bir ebeveyn bunu değiştirmek için bizimle iletişime geçebilir.",
+  "Problem reports": "Sorun bildirimleri",
+  "Platform": "Platform",
+  "Device": "Cihaz",
+  "Files": "Dosyalar",
+  "Download bundle": "Paketi indir",
+  "No problem reports yet.": "Henüz sorun bildirimi yok.",
+  "No description.": "Açıklama yok.",
+  "Bundle deleted after 90 days.": "Paket 90 gün sonra silindi."
 }

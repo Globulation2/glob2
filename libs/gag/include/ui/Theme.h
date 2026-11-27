@@ -26,6 +26,9 @@ struct Palette
 	GAGCore::Color paper{240, 241, 223};
 	GAGCore::Color panel{230, 231, 210};
 	GAGCore::Color field{249, 250, 240};
+	// Behind text the player types (text fields and editors), set apart from
+	// buttons, which use `field`.
+	GAGCore::Color input{255, 255, 255};
 	GAGCore::Color rail{225, 231, 209};
 	GAGCore::Color line{194, 207, 183};
 	GAGCore::Color accent{227, 192, 119};

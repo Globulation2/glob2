@@ -21,10 +21,13 @@ class MainMenuScreen : public Glob2UI::Screen
 		EDITOR,
 		CREDITS,
 		QUIT,
+		REPORT_PROBLEM, // Report a Problem (docs/multiplayer/problem-reports.md)
 	};
 	MainMenuScreen();
 	~MainMenuScreen() override;
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+	// Sends queued problem reports while the main menu is up.
+	void onTimer(Uint32 tick) override;
 
 	void openCommunity() { community.open(); invalidate(); }
 	// Whether the menu offers Quit (the button and Escape on the top level). A web

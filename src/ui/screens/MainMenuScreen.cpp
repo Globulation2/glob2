@@ -4,6 +4,7 @@
 #include "MainMenuScreen.h"
 #include "GlobalContainer.h"
 #include "PortalPolicy.h"
+#include "ProblemReport.h"
 #include "ui/ThemeCatalog.h"
 #include <algorithm>
 #include <cmath>
@@ -117,6 +118,9 @@ Element MainMenuScreen::build(const Presentation &p)
 		case QUIT:
 			options.icon = uiIcon(UIIcon::Quit);
 			break;
+		case REPORT_PROBLEM:
+			options.icon = uiIcon(UIIcon::Warning);
+			break;
 		default:
 			break;
 		}
@@ -192,6 +196,7 @@ Element MainMenuScreen::build(const Presentation &p)
 #endif
 			if (BuildFeatures::Editor)
 				content.push_back(action("[editor]", EDITOR, rowStyle));
+			content.push_back(action("[Report a problem]", REPORT_PROBLEM, rowStyle));
 			content.push_back(action("[credits]", CREDITS, rowStyle));
 			if (PortalPolicy::externalLinks())
 				content.push_back(button("menu/discord", tr("[Discord community]"), [this] { openCommunity(); }, rowStyle));
@@ -262,6 +267,7 @@ Element MainMenuScreen::build(const Presentation &p)
 	std::vector<Element> utilities{action("[settings]", GAME_SETUP, utility)};
 	if (BuildFeatures::Editor)
 		utilities.push_back(action("[editor]", EDITOR, utility));
+	utilities.push_back(action("[Report a problem]", REPORT_PROBLEM, utility));
 	utilities.push_back(action("[credits]", CREDITS, utility));
 	const bool quit = offersQuit();
 	if (quit)
@@ -288,6 +294,11 @@ Element MainMenuScreen::build(const Presentation &p)
 							cardOptions));
 	const int margin = std::clamp(p.safe.w / 20, p.pt(20), p.pt(72));
 	return padding({margin, 0, 0, 0}, align(Alignment::Left, panel));
+}
+
+void MainMenuScreen::onTimer(Uint32 tick)
+{
+	ProblemReport::pumpOutbox(tick);
 }
 
 void MainMenuScreen::showMore(bool value)

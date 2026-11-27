@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "kind": "problem",
+  "installId": "3d2c1b0a-9f8e-4d7c-8b6a-5f4e3d2c1b0a",
+  "submissionId": "8e7d6c5b-4a39-4281-9706-f5e4d3c2b1a0",
+  "version": "0.9.6",
+  "versionMinor": 219,
+  "simRevision": 170,
+  "distribution": "app_store",
+  "platform": "ios",
+  "os": "iOS 26.1",
+  "deviceClass": "phone",
+  "deviceTier": "high",
+  "description": "The game closed after I won.",
+  "createdAt": "2026-10-01T12:00:00Z"
+}

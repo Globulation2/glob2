@@ -46,6 +46,7 @@
 #include "CampaignMenuScreen.h"
 #include "CampaignMainMenu.h"
 #include "CreditScreen.h"
+#include "ProblemReport.h"
 #include "Engine.h"
 #include "Headless.h"
 #include "scripting/javascript/ScriptCommand.h"
@@ -594,6 +595,10 @@ int Glob2::run(const Cli::Request &request)
 	// The windowed client's main thread draws every frame; headless commands
 	// above keep the default so batch runs do not crowd the desktop.
 	GAGCore::ThreadSupport::setCurrentThreadRole(GAGCore::ThreadSupport::ThreadRole::Interactive);
+	// Report a Problem attaches the recent log lines (src/app/ProblemReport.h).
+	// Only the windowed client needs them; headless and tool commands above
+	// keep their streams untouched.
+	ProblemReport::installLogCapture();
 	auto cancelled = std::make_shared<bool>(false);
 	auto launch = [cancelled]
 	{

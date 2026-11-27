@@ -24,7 +24,7 @@ void checkSameTokens(const Theme &file, const Theme &builtin)
 {
 #define TOKEN(group, name) CHECK_MESSAGE(same(file.group.name, builtin.group.name), #group "." #name)
 	TOKEN(palette, ink); TOKEN(palette, muted); TOKEN(palette, paper); TOKEN(palette, panel);
-	TOKEN(palette, field); TOKEN(palette, rail); TOKEN(palette, line); TOKEN(palette, accent);
+	TOKEN(palette, field); TOKEN(palette, input); TOKEN(palette, rail); TOKEN(palette, line); TOKEN(palette, accent);
 	TOKEN(palette, accentInk); TOKEN(palette, selected); TOKEN(palette, hover); TOKEN(palette, focus);
 	TOKEN(palette, scrim); TOKEN(palette, disabled); TOKEN(palette, danger); TOKEN(palette, success);
 	TOKEN(palette, warning); TOKEN(palette, shadow); TOKEN(palette, pressed); TOKEN(palette, backdrop);
@@ -99,6 +99,7 @@ TEST_CASE("colours parse and print as #rrggbb[aa]")
 			// Body text on paper, fields and opaque panels: WCAG AA.
 			CHECK(Glob2UI::contrastRatio(p.ink, p.paper) >= 4.5);
 			CHECK(Glob2UI::contrastRatio(p.ink, over(p.field, p.paper)) >= 4.5);
+			CHECK(Glob2UI::contrastRatio(p.ink, over(p.input, p.paper)) >= 4.5);
 			CHECK(Glob2UI::contrastRatio(p.muted, p.paper) >= 3.0);
 			// Labels on the default action and on HUD panels over a mid-tone map.
 			CHECK(Glob2UI::contrastRatio(p.accentInk, p.accent) >= 4.5);

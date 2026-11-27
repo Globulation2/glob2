@@ -3124,5 +3124,13 @@
   "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "Le chat, le partage de contenu au-delà du privé, le choix d’un nom et l’envoi d’une photo sont réservés aux joueurs de 13 ans ou plus. Seule ta réponse est conservée, jamais ta date de naissance.",
   "Under 13": "Moins de 13 ans",
   "13 or over": "13 ans ou plus",
-  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "Tu as indiqué avoir moins de 13 ans, donc le chat et le partage sont désactivés. Un parent peut nous contacter pour changer cela."
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "Tu as indiqué avoir moins de 13 ans, donc le chat et le partage sont désactivés. Un parent peut nous contacter pour changer cela.",
+  "Problem reports": "Signalements de problèmes",
+  "Platform": "Plateforme",
+  "Device": "Appareil",
+  "Files": "Fichiers",
+  "Download bundle": "Télécharger le paquet",
+  "No problem reports yet.": "Aucun signalement de problème pour l'instant.",
+  "No description.": "Aucune description.",
+  "Bundle deleted after 90 days.": "Paquet supprimé au bout de 90 jours."
 }

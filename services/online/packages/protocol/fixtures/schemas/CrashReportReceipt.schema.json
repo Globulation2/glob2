@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:CrashReportReceipt",
+  "title": "CrashReportReceipt",
+  "type": "object",
+  "required": [
+    "id"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-HJ-NP-Z2-9]{8}$"
+    }
+  },
+  "additionalProperties": false
+}

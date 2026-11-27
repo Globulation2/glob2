@@ -32,6 +32,7 @@
 #include "KeyboardManager.h"
 #include "GameGUIKeyActions.h"
 #include "CreditScreen.h"
+#include "ProblemReportScreen.h"
 #include "CompileProfile.h"
 #include "DeviceAdaptationSession.h"
 #include <iostream>
@@ -297,6 +298,9 @@ void Application::choose(int choice)
 		break;
 	case MainMenuScreen::CREDITS:
 		screens.push(std::make_unique<CreditScreen>());
+		break;
+	case MainMenuScreen::REPORT_PROBLEM:
+		screens.push(std::make_unique<ProblemReportScreen>());
 		break;
 	case MainMenuScreen::EDITOR:
 		// A compile_profile=core build has no editor; the button then only explains why.

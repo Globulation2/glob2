@@ -3151,5 +3151,13 @@
   "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "Чат, поширення контенту поза приватним доступом, вибір імені та завантаження фото доступні гравцям від 13 років. Ми зберігаємо лише твою відповідь, ніколи — дату народження.",
   "Under 13": "Менше 13",
   "13 or over": "13 або більше",
-  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "За твоєю відповіддю тобі менше 13 років, тому чат і поширення вимкнено. Батьки можуть зв’язатися з нами, щоб це змінити."
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "За твоєю відповіддю тобі менше 13 років, тому чат і поширення вимкнено. Батьки можуть зв’язатися з нами, щоб це змінити.",
+  "Problem reports": "Повідомлення про проблеми",
+  "Platform": "Платформа",
+  "Device": "Пристрій",
+  "Files": "Файли",
+  "Download bundle": "Завантажити пакет",
+  "No problem reports yet.": "Повідомлень про проблеми ще немає.",
+  "No description.": "Без опису.",
+  "Bundle deleted after 90 days.": "Пакет видалено через 90 днів."
 }

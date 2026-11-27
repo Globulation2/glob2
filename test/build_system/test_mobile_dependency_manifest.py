@@ -50,7 +50,10 @@ class MobileDependencyManifestTests(unittest.TestCase):
                 with self.subTest(arch=arch, command=command, corruption=corruption), tempfile.TemporaryDirectory() as task:
                     root = Path(task).resolve()
                     from build_layout import default_directory
-                    identity = build_identity({'target': 'android', 'arch': arch, 'release': 1, 'china': 0, 'amazon': 0})
+                    # android.py --fdroid builds without problem report uploads, in
+                    # that variant's own native output directory.
+                    identity = build_identity({'target': 'android', 'arch': arch, 'release': 1, 'china': 0, 'amazon': 0,
+                                               **({'problem_reports': 0} if fdroid else {})})
                     output = root / default_directory(identity)
                     (output / 'lib').mkdir(parents=True)
                     (output / 'lib/libmain.so').write_bytes(b'native client')

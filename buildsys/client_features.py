@@ -24,15 +24,25 @@ def resolve(arguments):
             raise ValueError('feature_' + name + ' must be a boolean')
         values[name] = value in ('1', 'true', 'yes', 'on')
     # Existing restricted editions take precedence over explicit overrides.
-    if any(str(arguments.get(name, 0)).lower() in ('1', 'true', 'yes', 'on') for name in ('china', 'amazon')):
+    restricted = any(str(arguments.get(name, 0)).lower() in ('1', 'true', 'yes', 'on') for name in ('china', 'amazon'))
+    if restricted:
         values.update(commander=False, authoring_links=False)
-    return {'client_profile': profile, 'distribution': distribution, 'client_features': values}
+    # Report a Problem may upload to glob2-online (docs/multiplayer/problem-reports.md).
+    # problem_reports=0 keeps only Save to file: F-Droid, distribution packages and
+    # the China and Fire tablet editions, which never talk to our servers this way.
+    reports = str(arguments.get('problem_reports', int(not restricted and distribution not in ('china', 'amazon')))).lower()
+    if reports not in ('0', '1', 'true', 'false', 'yes', 'no', 'on', 'off'):
+        raise ValueError('problem_reports must be a boolean')
+    return {'client_profile': profile, 'distribution': distribution, 'client_features': values,
+            'problem_reports': reports in ('1', 'true', 'yes', 'on')}
 
 
 def header(identity):
     features = identity.get('client_features', resolve({})['client_features'])
     return ''.join('#define GLOB2_FEATURE_' + name.upper() + ' ' + str(int(features[name])) + '\n'
-                   for name in FEATURES)
+                   for name in FEATURES) + (
+        '#define GLOB2_PROBLEM_REPORTS ' + str(int(identity.get('problem_reports', True))) + '\n'
+        '#define GLOB2_DISTRIBUTION_NAME "' + identity.get('distribution', 'direct') + '"\n')
 
 
 def directory_suffix(identity):
@@ -45,4 +55,5 @@ def directory_suffix(identity):
     if actual == default:
         return ''
     bits = ''.join(str(int(identity['client_features'][name])) for name in FEATURES)
-    return 'client-' + identity['client_profile'] + '-' + identity['distribution'] + '-' + bits
+    reports = '' if identity.get('problem_reports', True) else '-noreports'
+    return 'client-' + identity['client_profile'] + '-' + identity['distribution'] + '-' + bits + reports

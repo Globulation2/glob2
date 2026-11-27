@@ -3070,5 +3070,13 @@
   "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "การแชท การแชร์เนื้อหานอกเหนือจากแบบส่วนตัว การตั้งชื่อ และการอัปโหลดรูปภาพ สำหรับผู้เล่นที่มีอายุ 13 ปีขึ้นไป เราเก็บไว้เฉพาะคำตอบของคุณ ไม่เคยเก็บวันเกิดของคุณ",
   "Under 13": "ต่ำกว่า 13",
   "13 or over": "13 ขึ้นไป",
-  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "คุณบอกว่าอายุต่ำกว่า 13 ปี จึงปิดการแชทและการแชร์ไว้ ผู้ปกครองสามารถติดต่อเราเพื่อเปลี่ยนการตั้งค่านี้ได้"
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "คุณบอกว่าอายุต่ำกว่า 13 ปี จึงปิดการแชทและการแชร์ไว้ ผู้ปกครองสามารถติดต่อเราเพื่อเปลี่ยนการตั้งค่านี้ได้",
+  "Problem reports": "รายงานปัญหา",
+  "Platform": "แพลตฟอร์ม",
+  "Device": "อุปกรณ์",
+  "Files": "ไฟล์",
+  "Download bundle": "ดาวน์โหลดชุดไฟล์",
+  "No problem reports yet.": "ยังไม่มีรายงานปัญหา",
+  "No description.": "ไม่มีคำอธิบาย",
+  "Bundle deleted after 90 days.": "ลบชุดไฟล์แล้วหลังจาก 90 วัน"
 }

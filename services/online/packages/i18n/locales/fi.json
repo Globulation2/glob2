@@ -3097,5 +3097,13 @@
   "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "Chat, sisällön jakaminen yksityistä laajemmin, nimen valitseminen ja kuvan lataaminen ovat 13-vuotiaille ja sitä vanhemmille pelaajille. Tallennamme vain vastauksesi, emme koskaan syntymäpäivääsi.",
   "Under 13": "Alle 13",
   "13 or over": "13 tai yli",
-  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "Kerroit olevasi alle 13-vuotias, joten chat ja jakaminen ovat pois päältä. Vanhempi voi ottaa meihin yhteyttä muuttaakseen tämän."
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "Kerroit olevasi alle 13-vuotias, joten chat ja jakaminen ovat pois päältä. Vanhempi voi ottaa meihin yhteyttä muuttaakseen tämän.",
+  "Problem reports": "Ongelmailmoitukset",
+  "Platform": "Alusta",
+  "Device": "Laite",
+  "Files": "Tiedostot",
+  "Download bundle": "Lataa paketti",
+  "No problem reports yet.": "Ei vielä ongelmailmoituksia.",
+  "No description.": "Ei kuvausta.",
+  "Bundle deleted after 90 days.": "Paketti poistettiin 90 päivän jälkeen."
 }

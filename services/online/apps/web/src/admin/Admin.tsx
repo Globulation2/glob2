@@ -8,6 +8,7 @@ import { Finances } from './Finances.tsx';
 import { UnifiedReports, Content, Audit } from './Moderation.tsx';
 import { Accounts } from './Accounts.tsx';
 import { Matches } from './Matches.tsx';
+import { ProblemReports } from './ProblemReports.tsx';
 // Central administration; legacy music and skin report URLs remain supported.
 import { GameArt } from '../art.tsx';
 import { Link } from '../router.tsx';
@@ -21,6 +22,7 @@ const TABS = [
   { id: 'reports', name: 'Reports' },
   { id: 'content', name: 'Content' },
   { id: 'audit', name: 'Audit' },
+  { id: 'problems', name: 'Problem reports' },
   { id: 'operations', name: 'Operations' },
 ];
 
@@ -64,7 +66,9 @@ export function Admin({ tab }: { tab: string | undefined }) {
         style={{ marginBottom: 'var(--sp-4)' }}
       >
         {TABS.filter(
-          (t) => !['overview', 'operations', 'finances'].includes(t.id) || account.role === 'admin',
+          (t) =>
+            !['overview', 'operations', 'finances', 'problems'].includes(t.id) ||
+            account.role === 'admin',
         ).map((tab) => (
           <Link
             key={tab.id}
@@ -83,6 +87,12 @@ export function Admin({ tab }: { tab: string | undefined }) {
       {current === 'music' && <MusicReports />}
       {current === 'content' && <Content />}
       {current === 'audit' && <Audit />}
+      {current === 'problems' &&
+        (account.role === 'admin' ? (
+          <ProblemReports />
+        ) : (
+          <p>{t('Administrator access is required.')}</p>
+        ))}
       {current === 'overview' &&
         (account.role === 'admin' ? <Overview /> : <p>{t('Administrator access is required.')}</p>)}
       {current === 'finances' &&

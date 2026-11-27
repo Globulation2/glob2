@@ -47,6 +47,7 @@ import { skinRoutes } from './skins/routes.ts';
 import { accountRoutes } from './routes/accounts.ts';
 import { adminRoutes } from './routes/admin.ts';
 import { adminConsoleRoutes } from './admin/routes.ts';
+import { crashReportRoutes } from './crashReports/routes.ts';
 import { operationsRoutes } from './admin/operations.ts';
 import { analyticsRoutes } from './admin/analytics.ts';
 import { financeRoutes } from './admin/finances.ts';
@@ -296,6 +297,7 @@ export async function buildApp(
   await buildingStudioRoutes(app);
   await adminRoutes(app, identity);
   await adminConsoleRoutes(app, identity);
+  await crashReportRoutes(app, identity);
   await operationsRoutes(app, identity);
   await analyticsRoutes(app, identity);
   await financeRoutes(app, identity);

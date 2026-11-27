@@ -3097,5 +3097,13 @@
   "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "చాట్, ప్రైవేట్‌కు మించి కంటెంట్‌ను షేర్ చేయడం, పేరును ఎంచుకోవడం మరియు ఫోటోను అప్‌లోడ్ చేయడం 13 ఏళ్లు లేదా అంతకంటే ఎక్కువ వయస్సు ఉన్న ఆటగాళ్ల కోసం. మీ సమాధానం మాత్రమే ఉంచబడుతుంది, మీ పుట్టినరోజు ఎప్పుడూ కాదు.",
   "Under 13": "13 కంటే తక్కువ",
   "13 or over": "13 లేదా అంతకంటే ఎక్కువ",
-  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "మీ వయస్సు 13 కంటే తక్కువ అని చెప్పారు, కాబట్టి చాట్ మరియు షేరింగ్ ఆఫ్‌లో ఉన్నాయి. దీన్ని మార్చడానికి తల్లిదండ్రులు మమ్మల్ని సంప్రదించవచ్చు."
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "మీ వయస్సు 13 కంటే తక్కువ అని చెప్పారు, కాబట్టి చాట్ మరియు షేరింగ్ ఆఫ్‌లో ఉన్నాయి. దీన్ని మార్చడానికి తల్లిదండ్రులు మమ్మల్ని సంప్రదించవచ్చు.",
+  "Problem reports": "సమస్య నివేదికలు",
+  "Platform": "ప్లాట్‌ఫారమ్",
+  "Device": "పరికరం",
+  "Files": "ఫైల్‌లు",
+  "Download bundle": "బండిల్‌ను డౌన్‌లోడ్ చేయండి",
+  "No problem reports yet.": "ఇంకా సమస్య నివేదికలు లేవు.",
+  "No description.": "వివరణ లేదు.",
+  "Bundle deleted after 90 days.": "90 రోజుల తర్వాత బండిల్ తొలగించబడింది."
 }

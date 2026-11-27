@@ -35,6 +35,7 @@ at most 1000 rows per table and run) and collects blobs every six hours:
 | Match proposals, finished queue tickets | 30 days |
 | Engine agents not seen | 7 days |
 | Spilled NOTIFY payloads | 1 hour |
+| [Problem reports](../multiplayer/problem-reports.md) | bundles (log, save, replay) 90 days; the summary row two years; bundles no row names, one day (hourly, `apps/worker/src/crashReportRetention.ts`) |
 | Blobs | unreferenced ones (no map version, preview, match artifact, upload, generated map (warm pool maps included), or match played on the map) 7 days after creation; stored files no `blobs` row names, 7 days after they were written |
 
 Matches, participants, ratings, rating history, catalog maps, map download counts

@@ -262,9 +262,24 @@ bool copyText(const std::string &text)
 	return SDL_SetClipboardText(text.c_str());
 }
 void importChanged(const char *) {}
+namespace
+{
+std::function<void(const char *)> &screenObserver()
+{
+	static std::function<void(const char *)> observer;
+	return observer;
+}
+}
+void setScreenObserver(std::function<void(const char *)> observer)
+{
+	screenObserver() = std::move(observer);
+}
 void screenChanged(const char *name) {
 #ifdef GLOB2_MOBILE
     SDL_Log("Glob2 screen ready: %s", name);
+#else
+    if (screenObserver())
+        screenObserver()(name);
 #endif
 }
 void simulationAdvanced(std::uint32_t) {}

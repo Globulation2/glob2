@@ -3097,5 +3097,13 @@
   "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "Txata, edukia pribatutik haratago partekatzea, izen bat aukeratzea eta argazki bat igotzea 13 urte edo gehiagoko jokalarientzat dira. Zure erantzuna bakarrik gordetzen dugu, inoiz ez zure jaiotze-data.",
   "Under 13": "13 baino gutxiago",
   "13 or over": "13 edo gehiago",
-  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "13 urte baino gutxiago dituzula esan duzu, beraz txata eta partekatzea desaktibatuta daude. Guraso batek gurekin harremanetan jar daiteke hau aldatzeko."
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "13 urte baino gutxiago dituzula esan duzu, beraz txata eta partekatzea desaktibatuta daude. Guraso batek gurekin harremanetan jar daiteke hau aldatzeko.",
+  "Problem reports": "Arazo-txostenak",
+  "Platform": "Plataforma",
+  "Device": "Gailua",
+  "Files": "Fitxategiak",
+  "Download bundle": "Deskargatu sorta",
+  "No problem reports yet.": "Oraindik ez dago arazo-txostenik.",
+  "No description.": "Deskribapenik ez.",
+  "Bundle deleted after 90 days.": "Sorta 90 egunen buruan ezabatu da."
 }

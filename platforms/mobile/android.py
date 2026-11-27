@@ -157,6 +157,8 @@ def main():
         return
     arches=('arm64-v8a','armeabi-v7a') if args.amazon_apk else (args.arch,)
     base_options={'target':'android','release':int(args.release),'china':int(args.china)}
+    # F-Droid builds keep Report a Problem's Save to file but never upload.
+    if args.fdroid: base_options['problem_reports']=0
     outputs={abi:ROOT/default_directory(build_identity(dict(base_options,arch=abi,
              amazon=int(args.amazon_apk)))) for abi in arches}
     dependency_outputs={abi:ROOT/default_directory(build_identity(dict(base_options,arch=abi))) for abi in arches}
@@ -173,6 +175,7 @@ def main():
     for abi in arches:
         subprocess.run([sys.executable,str(ROOT/'tools/dev_build.py'),'target=android','arch='+abi,
             'release='+str(int(args.release)),'china='+str(int(args.china)),'amazon='+str(int(args.amazon_apk)),
+            *(['problem_reports=0'] if args.fdroid else []),
             'android_sdk='+str(sdk),'mobile_deps='+str(prefixes[abi]),'-j'+str(args.jobs)],cwd=ROOT,env=native_env,check=True)
         renderer_shaders.require_sdl_gpu_shaders(outputs[abi]/'shaders','android')
     with BuildLock(output):

@@ -170,6 +170,26 @@ export interface AdminAuditLogTable {
   created_at: Timestamp;
 }
 
+export interface CrashReportsTable {
+  id: string;
+  submission_id: string;
+  kind: 'problem';
+  install_id: string;
+  version: string;
+  version_minor: number;
+  sim_revision: number;
+  distribution: string;
+  platform: string;
+  os: string;
+  device_class: string;
+  device_tier: string;
+  description: string;
+  size: number;
+  attachments: DefaultedJson<{ name: string; size: number }[]>;
+  bundle_key: Nullable<string>;
+  received_at: Timestamp;
+}
+
 export interface BlobsTable {
   sha256: string;
   size: number;
@@ -1532,6 +1552,7 @@ export interface Database {
   auth_flows: AuthFlowsTable;
   entitlements: EntitlementsTable;
   admin_audit_log: AdminAuditLogTable;
+  crash_reports: CrashReportsTable;
   blobs: BlobsTable;
   image_webp_renditions: { source_sha256: string; webp_sha256: string };
   relays: RelaysTable;

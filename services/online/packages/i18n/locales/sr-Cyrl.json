@@ -3124,5 +3124,13 @@
   "Chat, sharing content beyond private, choosing a name and uploading a photo are for players aged 13 or over. Only your answer is kept, never your birthday.": "Ћаскање, дељење садржаја ван приватног, избор имена и отпремање фотографије су за играче од 13 или више година. Чувамо само твој одговор, никада твој датум рођења.",
   "Under 13": "Испод 13",
   "13 or over": "13 или више",
-  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "Према твом одговору имаш мање од 13 година, па су ћаскање и дељење искључени. Родитељ може да нас контактира да би ово променио."
+  "You said you are under 13, so chat and sharing are off. A parent can contact us to change this.": "Према твом одговору имаш мање од 13 година, па су ћаскање и дељење искључени. Родитељ може да нас контактира да би ово променио.",
+  "Problem reports": "Пријаве проблема",
+  "Platform": "Платформа",
+  "Device": "Уређај",
+  "Files": "Датотеке",
+  "Download bundle": "Преузми пакет",
+  "No problem reports yet.": "Још нема пријава проблема.",
+  "No description.": "Нема описа.",
+  "Bundle deleted after 90 days.": "Пакет је обрисан после 90 дана."
 }
