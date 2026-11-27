@@ -593,7 +593,8 @@ While a phase draws, the workers filter the endpoint after next
 (`Animation::Entry::ahead`), so the step that needs it writes it at once: a
 step never draws a stale endpoint while its new one is filtered.
 Static page draws omit those complete cells, so alpha and fog apply once.
-Shore calming fades wave contrast over two tiles from the shoreline.
+Shore calming fades wave contrast over four tiles from the shoreline, keeping an
+eighth of it at the shoreline itself.
 Device composition keeps up to 1024 material source
 textures and never evicts one the current frame already drew, so a view with
 several four-layout materials (256 variants each) does not re-upload its own

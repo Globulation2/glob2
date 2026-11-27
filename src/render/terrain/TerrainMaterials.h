@@ -112,8 +112,8 @@ constexpr int SurfWashInQ10 = 224;
 // ends ShoreCalmReachQ8 (Q8 cells) from the shoreline, which lies halfway
 // between a land and a liquid vertex; ShoreCalmContrastQ8 is the share of the
 // wave contrast kept at the shoreline itself.
-constexpr int ShoreCalmReachQ8 = 512; // Two tiles.
-constexpr int ShoreCalmContrastQ8 = 64;
+constexpr int ShoreCalmReachQ8 = 1024; // Four tiles.
+constexpr int ShoreCalmContrastQ8 = 32;
 // Q8 calm of a liquid vertex whose nearest non-surf vertex is at squared
 // vertex distance d2 (zero means none within reach).
 unsigned shoreCalmAt(int d2);
