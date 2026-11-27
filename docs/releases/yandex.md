@@ -26,7 +26,8 @@ spaces or Cyrillic in file names.
   `Glob2I18n.setLocale`, the locale the shell passes to the game as its startup
   language. A language the player saved in the game still wins, as on the website;
 - calls `features.LoadingAPI.ready()` when the main menu is ready and
-  `features.GameplayAPI.start()`/`stop()` as a match starts, ends and pauses
+  `features.GameplayAPI.start()`/`stop()` as a match starts and ends and around
+  the in-game menu and pauses
   ([game ready](https://yandex.com/dev/games/doc/en/sdk/sdk-gameready));
 - silences audio and holds the game on `game_api_pause`, restoring both on
   `game_api_resume`;

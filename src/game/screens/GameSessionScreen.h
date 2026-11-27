@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "MatchPlayReporter.h"
 #include <GUIBase.h>
 #include <EventQueue.h>
 #include <InterfacePresentation.h>
@@ -67,6 +68,8 @@ class GameSessionScreen : public GAGGUI::Screen
 	// the match, and it was told the match ended. Relay matches report nothing:
 	// a break must never delay a lockstep game.
 	bool breakAsked = false, inMatch = false, endReported = false;
+	// Pause and resume of a local match's play for the host (portal gameplay events).
+	MatchPlayReporter play;
 	// Once simulation ends, keep the save dialog alive through durable persistence.
 	bool finishingSession = false;
 #ifdef __EMSCRIPTEN__

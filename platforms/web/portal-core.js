@@ -63,8 +63,8 @@
 
   // Loading and gameplay as portals want them: whole, increasing percentages,
   // one `loaded` when the main menu is interactive, then `gameplay(true/false)`
-  // whenever the player is in a match that is playable (loaded, visible and not
-  // held by the portal or an ad). The game reports matches through
+  // whenever the player is in a match that is playable (loaded, visible, not
+  // paused or in the in-game menu, and not held by the portal or an ad). The game reports matches through
   // window.glob2PortalHost (createBreaks). Portals that ask for gameplay events
   // only around real pauses (CrazyGames) pass {visibility: false} so tab
   // switches change nothing.
@@ -73,12 +73,14 @@
     let ready = false;
     let hidden = false;
     let playing = false;
+    // Play stopped inside a match: the in-game menu or a pause ('pause'/'resume').
+    let paused = false;
     let active = false;
     // Why the game is held: 'portal' (the SDK's own pause), 'ad' (a break we
     // requested). Each reason is a flag, so repeated holds are idempotent.
     const holds = new Set();
     const sync = () => {
-      const playable = ready && playing && !hidden && !holds.size;
+      const playable = ready && playing && !paused && !hidden && !holds.size;
       if (playable === active) return;
       active = playable;
       handlers.gameplay?.(playable);
@@ -107,10 +109,17 @@
         else holds.delete(reason);
         sync();
       },
-      match(isPlaying) { playing = Boolean(isPlaying); sync(); },
+      match(isPlaying) {
+        playing = Boolean(isPlaying);
+        // A match starts and ends in play; a pause belongs to one match.
+        paused = false;
+        sync();
+      },
+      pause(isPaused) { paused = playing && Boolean(isPaused); sync(); },
       get ready() { return ready; },
       get active() { return active; },
       get playing() { return playing; },
+      get paused() { return paused; },
       get held() { return holds.size > 0; },
     };
     return session;
@@ -121,8 +130,11 @@
   // calls window.glob2PortalHost.matchBreak(point) through ApplicationHost:
   //   'start'  before a match starts (after the player chose to play),
   //   'end'    the match is over and its results are showing,
-  //   'leave'  the player left a finished match for the menu.
-  // A break may run an ad at 'start' and 'leave' only. The adapter's show(ad)
+  //   'leave'  the player left a finished match for the menu,
+  //   'pause'  play stopped inside a match (the in-game menu or a pause),
+  //   'resume' play continued.
+  // A break may run an ad at 'start' and 'leave' only; 'pause' and 'resume'
+  // only change gameplay, never ask for an ad and never start the 3 minutes. The adapter's show(ad)
   // requests the SDK's interstitial and returns a promise that settles when the
   // break is over; it calls ad.started() when the ad really plays (some SDKs
   // want audio muted only then) and returns null when it cannot ask. While a
@@ -194,6 +206,10 @@
           const held = request('start');
           session.match(true);
           return held;
+        }
+        if (point === 'pause' || point === 'resume') {
+          session.pause(point === 'pause');
+          return false;
         }
         if (point === 'end' || point === 'leave') session.match(false);
         return point === 'leave' ? request('leave') : false;

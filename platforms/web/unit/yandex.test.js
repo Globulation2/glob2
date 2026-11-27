@@ -117,3 +117,14 @@ test('without the Yandex SDK a break holds nothing', async () => {
   win.glob2PortalHost.matchBreak('start');
   assert.equal(win.glob2PortalHost.matchBreak('leave'), false);
 });
+
+test('GameplayAPI stops for the in-game menu and pauses and starts on resume, with no ad', async () => {
+  const {win, calls, adapter} = adFixture();
+  await adapter.connect();
+  adapter.session.start();
+  for (const point of ['start', 'pause', 'resume', 'pause', 'end'])
+    win.glob2PortalHost.matchBreak(point);
+  assert.deepEqual(calls, ['start', 'stop', 'start', 'stop']);
+  assert.equal(win.glob2PortalHost.matchBreak('leave'), true);
+  assert.deepEqual(calls.slice(-1), ['showFullscreenAdv']);
+});

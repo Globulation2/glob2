@@ -87,3 +87,15 @@ test('without the Poki SDK a break holds nothing', async () => {
   assert.equal(win.glob2PortalHost.matchBreak('leave'), false);
   assert.equal(win.glob2PortalHost.held, false);
 });
+
+test('the in-game menu and pauses stop gameplay and resuming starts it, with no commercialBreak', async () => {
+  const {win, calls, adapter} = adFixture();
+  await adapter.connect();
+  adapter.session.start();
+  for (const point of ['start', 'pause', 'resume', 'pause', 'pause', 'resume', 'pause', 'end'])
+    win.glob2PortalHost.matchBreak(point);
+  assert.deepEqual(calls, ['gameLoadingFinished', 'gameplayStart', 'gameplayStop', 'gameplayStart',
+                           'gameplayStop', 'gameplayStart', 'gameplayStop']);
+  assert.equal(win.glob2PortalHost.matchBreak('leave'), true);
+  assert.deepEqual(calls.slice(-1), ['commercialBreak']);
+});

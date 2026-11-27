@@ -25,7 +25,9 @@ the release packages the lite edition instead.
 
 `crazygames.js` waits for `CrazyGames.SDK.init()`, then calls
 `SDK.game.loadingStart()`, `loadingStop()` when the main menu is ready, and
-`gameplayStart()`/`gameplayStop()` as a match starts and ends. The QA Tool's
+`gameplayStart()`/`gameplayStop()` as a match starts and ends and around the
+in-game menu and pauses ("every game break (entering a menu, ending level, pausing
+the game)", [game module guide](https://docs.crazygames.com/sdk/game/)). The QA Tool's
 "Load time" runs from Play Now to the first `gameplayStart()`, so it includes the
 first-run questions and menus; that is intended. The
 [technical requirements](https://docs.crazygames.com/requirements/technical/) want
@@ -48,7 +50,6 @@ resumes it ([video ads](https://docs.crazygames.com/sdk/video-ads/)).
 
 ## Open items
 
-- the 20 MB mobile-homepage initial download;
-- `gameplayStop()` around in-game pauses.
+- the 20 MB mobile-homepage initial download.
 
 [Web portals](web-portals.md) · [Release index](README.md) · [Documentation index](../README.md).

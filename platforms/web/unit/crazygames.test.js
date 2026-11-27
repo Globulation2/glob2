@@ -102,3 +102,15 @@ test('without the CrazyGames SDK a break holds nothing', async () => {
   win.glob2PortalHost.matchBreak('start');
   assert.equal(win.glob2PortalHost.matchBreak('leave'), false);
 });
+
+test('entering the menu or pausing stops gameplay; resuming starts it; no midgame ad', async () => {
+  const {win, calls, adapter} = adFixture();
+  await adapter.connect();
+  adapter.session.start();
+  for (const point of ['start', 'pause', 'resume', 'pause', 'resume', 'pause', 'end'])
+    win.glob2PortalHost.matchBreak(point);
+  assert.deepEqual(calls, ['loadingStart', 'loadingStop', 'gameplayStart', 'gameplayStop', 'gameplayStart',
+                           'gameplayStop', 'gameplayStart', 'gameplayStop']);
+  assert.equal(win.glob2PortalHost.matchBreak('leave'), true);
+  assert.deepEqual(calls.slice(-1), ['requestAd midgame']);
+});

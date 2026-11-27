@@ -19,8 +19,9 @@ external requests by default and wants outbound links through
 ## Runtime adapter
 
 `poki.js` waits for `PokiSDK.init()`, then calls `gameLoadingFinished()` once the
-main menu is ready, and `gameplayStart()`/`gameplayStop()` as a match starts,
-ends or is paused and as the page is hidden
+main menu is ready, and `gameplayStart()`/`gameplayStop()` as a match starts and
+ends, around the in-game menu and pauses
+([gameplay events](web-portals.md#ad-breaks)) and as the page is hidden
 ([HTML5 SDK](https://developers.poki.com/guide/sdk-html5)). At the natural breaks
 the game reports ([ad breaks](web-portals.md#ad-breaks)), except before the first
 match, it calls `gameplayStop()`, mutes and pauses the game, calls

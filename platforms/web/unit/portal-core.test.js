@@ -231,3 +231,60 @@ test('no SDK to ask is not a break and starts no clock', () => {
   assert.equal(breaks.matchBreak('leave'), true);
   assert.deepEqual(shown, ['ad']);
 });
+
+// The game reports the in-game menu and pauses as 'pause' and 'resume'.
+test('pause and resume stop and restart gameplay once each and never run a break', () => {
+  const {breaks, shown, gameplay, session} = breaksFixture();
+  breaks.matchBreak('start');
+  assert.equal(breaks.matchBreak('pause'), false);
+  assert.equal(breaks.matchBreak('pause'), false);
+  assert.equal(breaks.matchBreak('resume'), false);
+  assert.equal(breaks.matchBreak('resume'), false);
+  breaks.matchBreak('pause'); breaks.matchBreak('resume');
+  assert.deepEqual(gameplay, [true, false, true, false, true]);
+  assert.deepEqual(shown, []);
+  assert.equal(breaks.held, false);
+  assert.equal(breaks.requests, 0);
+  assert.equal(session.paused, false);
+});
+
+test('leaving a match from the menu sends one stop; the next match starts in play', () => {
+  const {win, breaks, shown, gameplay} = breaksFixture();
+  breaks.matchBreak('start');
+  breaks.matchBreak('pause');
+  breaks.matchBreak('end');
+  assert.deepEqual(gameplay, [true, false]);
+  assert.equal(breaks.matchBreak('leave'), true);
+  assert.deepEqual(shown, ['leave']);
+});
+
+test('a pause outside a match changes nothing; an ad release does not restart a paused match', async () => {
+  const {win, breaks, gameplay, session, ad} = breaksFixture();
+  breaks.matchBreak('pause');
+  assert.deepEqual(gameplay, []);
+  assert.equal(session.paused, false);
+  // First match, finished, left (break), then the next start after 3 minutes runs a break.
+  breaks.matchBreak('start'); breaks.matchBreak('end'); breaks.matchBreak('leave');
+  ad().resolve(); await settle();
+  win.timers.advance(180000);
+  assert.equal(breaks.matchBreak('start'), true);
+  breaks.matchBreak('pause');
+  ad().resolve(); await settle();
+  assert.deepEqual(gameplay, [true, false]);
+  breaks.matchBreak('resume');
+  assert.deepEqual(gameplay, [true, false, true]);
+});
+
+test('pauses do not start or reset the three minutes between breaks', async () => {
+  const {win, breaks, shown, ad} = breaksFixture();
+  breaks.matchBreak('start'); breaks.matchBreak('end');
+  assert.equal(breaks.matchBreak('leave'), true);
+  ad().resolve(); await settle();
+  breaks.matchBreak('start');
+  win.timers.advance(120000);
+  breaks.matchBreak('pause'); breaks.matchBreak('resume');
+  win.timers.advance(60000);
+  breaks.matchBreak('end');
+  assert.equal(breaks.matchBreak('leave'), true);
+  assert.deepEqual(shown, ['leave', 'leave']);
+});

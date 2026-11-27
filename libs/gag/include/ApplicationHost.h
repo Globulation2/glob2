@@ -131,15 +131,19 @@ std::string portalDescription();
 // Natural breaks in play, for web portal packages that show ads between
 // matches (platforms/web/portal-core.js, docs/releases/web-portals.md#ad-breaks).
 // The game reports every local match: Starting before its first tick, Ended
-// when its results show, Left when the player leaves it for the menu. The host
-// decides whether a break runs an ad. matchBreak returns true when the host now
-// holds the game for one; a caller about to start a match then waits until
-// hostHeld() is false. Native hosts, and pages without a portal, return false.
+// when its results show, Left when the player leaves it for the menu. Within a
+// match it also reports Paused when play stops for the in-game menu or a pause
+// and Resumed when play continues; those mark gameplay only and never run an ad.
+// The host decides whether a break runs an ad. matchBreak returns true when the
+// host now holds the game for one; a caller about to start a match then waits
+// until hostHeld() is false. Native hosts, and pages without a portal, return false.
 enum class MatchBreak
 {
 	Starting,
 	Ended,
 	Left,
+	Paused,
+	Resumed,
 };
 bool matchBreak(MatchBreak point);
 // Whether the host holds the game: an ad break, or a portal SDK's own pause.
