@@ -6,7 +6,7 @@ Each pair shows the recovered source preview on the left and the current classic
 
 | Historical source | Game reference | Identification evidence |
 | --- | --- | --- |
-| [__building5.xcf](originals/buildings/barracks/level-1/__building5.xcf) | `barracks0b0` | Terracotta arena, circular court and detached upper-left details; the runtime frames are mirrored horizontally (`tools/artwork/mirror_buildings.py`) so the shadow falls right. |
+| [__building5.xcf](originals/buildings/barracks/level-1/__building5.xcf) | `barracks0b0` | Terracotta arena, circular court and detached upper-left details. |
 | [__building12.xcf](originals/buildings/barracks/level-3/__building12.xcf) | `barracks2b0` | Stone arena, perimeter machinery and rear tower; variant A. |
 | [__building19.xcf](originals/buildings/barracks/level-3/__building19.xcf) | `barracks2b0` | Same third-level stone arena and rear tower; variant B. Keep both until registration/state differences are checked. |
 | [auberge-goth-64.xcf](originals/buildings/inn/level-2/auberge-goth-64.xcf) | `inn1b0` | Gothic circular enclosure and pointed roof towers. |

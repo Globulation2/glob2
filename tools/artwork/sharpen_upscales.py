@@ -16,8 +16,6 @@ and sharpens every AI-upscaled base layer:
   so soft shadows, smoke and glow stay as drawn.
 
 Team-colour layers are masks that the game recolours; they stay unchanged.
-Frames listed in mirror_buildings.MIRRORED are mirrored after sharpening, as
-mirror_buildings.py committed them, so a rerun still reproduces them.
 The ripe wheat frames are rebuilt by ripen_wheat.py instead.
 
 The inputs are the AI-upscaled finals as committed at SOURCE_REV and are read
@@ -41,13 +39,12 @@ import sys
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageOps
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from highres_pack import (RUNTIME, register_frames, registered,  # noqa: E402
                           rebuild_resource_atlas, source_record)
-from mirror_buildings import MIRRORED  # noqa: E402
 
 SOURCE_REV = "dfe50af992"  # last commit with the unsharpened AI finals
 SOURCE_RECIPES = ("current", "outline_repair", "painted_repair", "crystal_repair",
@@ -117,8 +114,6 @@ def main(argv=None):
             raise SystemExit(f"{frame_id}: recipe changed since {SOURCE_REV}: {current['recipe']}")
         before = Image.open(io.BytesIO(data)).convert("RGBA")
         after = sharpen(before, crisp=frame_id.startswith("ressource"))
-        if frame_id in MIRRORED:
-            after = ImageOps.mirror(after)
         results.append((frame_id, recipe, before, after, hashlib.sha256(data).hexdigest()))
     if args.sheet:
         size = 128

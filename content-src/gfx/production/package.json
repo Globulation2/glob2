@@ -259,12 +259,12 @@
     {
       "runtime": "barracks0b0.png",
       "source": "ai-upscaled/barracks0b0.png",
-      "sha256": "1a82dd8de7c245dd3b7d6809e778234a85629be171018884bc1dab0ac15bc779"
+      "sha256": "310aea97260311325cbc4a9ffb0db240fd3075213fc71699a0241ecf961206f6"
     },
     {
       "runtime": "barracks0b0r.png",
       "source": "ai-upscaled/barracks0b0r.png",
-      "sha256": "f5a2e7d7260b5a5b7e5cbe82a9d409061637be10b5dd7e6974731e85f7b50384"
+      "sha256": "f5e15042e0d6f805f7be3097b7d8312364f5b62de6a2f05818e51213f173cd70"
     },
     {
       "runtime": "barracks1b0.png",
@@ -2764,7 +2764,7 @@
     {
       "runtime": "manifest.json",
       "source": "pack-metadata/manifest.json",
-      "sha256": "ba7ad9b17f844a7b5b19684959075f934fae2b7d916234fa2083d599e9d53f1c"
+      "sha256": "ad598a998ba143d93300a1b8649523b505fd164d8454b307a84f1674e886c50e"
     },
     {
       "runtime": "frames.txt",
