@@ -632,7 +632,10 @@ live in `deviceThresholds`:
 A phone or tablet that reports no memory is Mid: Safari, every iOS browser and
 Firefox have no `navigator.deviceMemory`, and most such phones hold 4 to 8 GB.
 A discrete desktop GPU with less than 1 GiB of device-local memory also starts
-with original artwork. `GLOB2_DEVICE_TIER=low|mid|high` or
+with original artwork. A High phone, and a High desktop that reports at least
+15 GiB, take the large [render budget](#runtime-backend-selection)
+(`DeviceProfile::largeRenderBudget`, `render_budget=large` in telemetry); an
+override decides it outright. `GLOB2_DEVICE_TIER=low|mid|high` or
 `play --device-tier low|mid|high` overrides the tier for testing.
 
 **Auto semantics.** Adaptive settings have an Auto state, and Auto is the
@@ -667,7 +670,14 @@ path, when the OS reports memory pressure or the game sustains hitches: 40
 presented frames over 50 ms within 15 seconds, outside the first 20 seconds of a
 match and ignoring gaps over a second (an O(1) ring of timestamps). The player is
 told once in game, and Settings > Display offers to keep original artwork as the
-default. Memory signals respond by severity (`DeviceAdaptation::respond`):
+default. Hitches while HD frames were short of device room (refused it, or evicted
+to make it, since the match started or the last trigger) first hold HD admission
+for the rest of the match instead (`Sprite::holdHighResolutionAdmission`): the
+frames already uploaded keep drawing HD, the others draw native, and nothing more
+loads, uploads or is evicted, so a view whose HD frames do not fit stops paying for
+them. If the hitches continue while held, HD steps down as before; the next match
+starts unheld. Holds are logged (`held=1`) but not announced. Memory signals respond
+by severity (`DeviceAdaptation::respond`):
 
 | Signal | Response |
 | --- | --- |
@@ -1421,10 +1431,28 @@ backgrounded game first. Each mobile class still holds twice its largest single
 texture (the 22.4 MiB authored HD terrain block, 16 MiB skin atlas pages, sixteen
 downsampled 1024x1024 terrain pages), since a class limit is also the largest
 texture it admits; GPU terrain composition falls back to CPU pages when the view's
-pages exceed the TerrainPage class. `GLOB2_RENDER_BUDGET=mobile` (or `desktop`)
-overrides the choice to measure one platform's budget on another, and
+pages exceed the TerrainPage class.
+
+Devices with memory to spare take a large budget, chosen once at startup from the
+[device profile](#device-profile-and-adaptive-defaults)
+(`GAGCore::selectPlatformRenderBudget`, before any presentation device exists).
+`RenderBudget::mobileLarge`, for a High-tier phone (about 8 GB), holds 320 MiB in
+total: General 128, SkinAtlas 32, TerrainPage 96, TerrainMask 32 MiB and 48 MiB of
+geometry. The standard phone General class leaves HD frames 18 MiB, less than a busy
+view draws, so on such a phone they were evicted and uploaded again every few
+seconds; 128 MiB leaves them 48. `RenderBudget::desktopLarge`, for a desktop that
+reports at least 15 GiB, holds 1 GiB: General 512, SkinAtlas 64, TerrainPage 256,
+TerrainMask 64 MiB and 96 MiB of geometry, room for a 2x (Retina) view zoomed out
+over a large map. The browser never takes a large budget, since its Wasm heap has a
+fixed maximum, and a desktop VRAM probe that finishes later does not change it.
+Each budget also carries the terrain caches' limits (`RenderBudget::Terrain`), so
+they scale with it; see [software rendering](software-rendering.md).
+`GLOB2_RENDER_BUDGET=desktop|mobile|desktop-large|mobile-large`
+overrides the choice to measure one budget on another device, and
 `GLOB2_RENDER_BUDGET_TOTAL_MIB` replaces the total alone (the class limits stay),
-for tests and memory experiments that need the combined limit to bind. WebGPU keeps its own limits.
+for tests and memory experiments that need the combined limit to bind. Test binaries
+choose the platform's standard budget before any fixture runs, so results do not
+depend on the test machine's memory. WebGPU keeps its own limits.
 
 `SDL_EVENT_LOW_MEMORY` and backgrounding (`SDL_EVENT_WILL_ENTER_BACKGROUND`,
 `SDL_EVENT_DID_ENTER_BACKGROUND`) call `GraphicContext::trimPresentationMemory`,

@@ -8,8 +8,11 @@
 #include <vector>
 
 // Session step-down: memory pressure and sustained hitches turn Auto
-// high-resolution artwork off for the rest of the session. Local presentation
-// only; nothing here reaches the simulation, saves or orders.
+// high-resolution artwork off for the rest of the session. Hitches while HD
+// frames were short of device room first hold HD admission for the match
+// (the frames already uploaded keep drawing HD; GAGCore::Sprite::
+// holdHighResolutionAdmission), and step down only if they continue. Local
+// presentation only; nothing here reaches the simulation, saves or orders.
 namespace DeviceAdaptation
 {
 // The memory signals the operating system sends.
@@ -86,6 +89,7 @@ struct Event
 	MemorySignal signal = MemorySignal::Count; // the OS signal behind a Memory cause
 	Trim trim = Trim::None;
 	bool steppedDown = false; // Auto artwork turned off (false: explicit or already off)
+	bool held = false;        // HD admission held instead (hitches while HD was short of room)
 };
 
 // Applies responses through hooks so tests drive it without a renderer.
@@ -98,6 +102,11 @@ class Controller
 		std::function<bool()> artworkAutoOn;
 		// Turn Auto artwork off for the session (asynchronous HD release).
 		std::function<void()> stepDownArtwork;
+		// True when HD frames were refused device room, or evicted to make it,
+		// since the last call (the hitches then come from re-uploading them).
+		std::function<bool()> artworkShortOfRoom;
+		// Hold (true) or resume (false) HD admission.
+		std::function<void(bool)> holdArtwork;
 		// The single trim entry point.
 		std::function<void(Trim)> trim;
 		// Telemetry for every handled signal and step-down.
@@ -105,11 +114,14 @@ class Controller
 	};
 	Controller(Hooks hooks, bool androidLevels, HitchWindow::Config config = HitchWindow::defaults());
 	void signal(MemorySignal signal);
-	void matchStarted(std::uint64_t nowNs) { hitches.restart(nowNs); }
+	// Restarts the hitch grace period and resumes a held HD admission: the
+	// next map and zoom may fit.
+	void matchStarted(std::uint64_t nowNs);
 	void presented(std::uint64_t nowNs);
 	// A step-down the player has not been told about yet (taken once).
 	bool takeNotice();
 	bool steppedDown() const { return stepped; }
+	bool holding() const { return held; }
 	std::optional<Event> stepDownEvent() const { return stepEvent; }
 	unsigned signals(MemorySignal signal) const { return counts[unsigned(signal)]; }
 
@@ -117,7 +129,7 @@ class Controller
 	Hooks hooks;
 	bool androidLevels;
 	HitchWindow hitches;
-	bool stepped = false, notice = false;
+	bool stepped = false, notice = false, held = false;
 	std::optional<Event> stepEvent;
 	std::array<unsigned, unsigned(MemorySignal::Count)> counts{};
 	bool stepDown(Event event);

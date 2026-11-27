@@ -6,6 +6,8 @@
 #define SDL_MAIN_HANDLED
 #endif
 #include <Environment.h>
+#include <MobilePlatform.h>
+#include <RenderResources.h>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #define DOCTEST_CONFIG_IMPLEMENT
@@ -140,6 +142,12 @@ int main(int argc, char **argv)
 	// Map animations advance one step per drawn frame, so drawn phases do not
 	// depend on how fast the test machine renders.
 	AnimationClock::fixedSteps = 1;
+	// Choose the platform's own render budget before any fixture parses a
+	// command line: the device profile would otherwise choose a large one by
+	// the test machine's memory. GLOB2_RENDER_BUDGET set by an isolated case
+	// still applies, at first use.
+	GAGCore::selectPlatformRenderBudget(GAGCore::platformIsMobile() ? GAGCore::RenderBudget::mobile()
+																	 : GAGCore::RenderBudget::desktop());
 	doctest::Context context(argc, argv);
 	context.setOption("no-breaks", true);
 	const int result = context.run();

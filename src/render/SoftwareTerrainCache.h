@@ -44,18 +44,18 @@ class SoftwareTerrainCache
 	static constexpr int SourceHalo =
 		std::max({1, TerrainVisual::ShoreCalmSearch, TerrainVisual::StoneSearch});
 	static constexpr int SourceSpan = ChunkTiles + 1 + 2 * SourceHalo;
-	static constexpr std::size_t Budget = 32u * 1024u * 1024u, GPUBudget = 128u * 1024u * 1024u;
-	// Preserve the existing density/GPU allowance; keep inactive zoom pixels
-	// in an additional bounded CPU reserve rather than recomposing them.
-#if defined(__ANDROID__) || defined(__EMSCRIPTEN__)
-	static constexpr std::size_t GPUCacheBudget = GPUBudget;
-#else
-	static constexpr std::size_t GPUCacheBudget = GPUBudget + 128u * 1024u * 1024u;
-#endif
+	// Software pages; the GPU limits follow GAGCore::platformRenderBudget().terrain.
+	static constexpr std::size_t Budget = 32u * 1024u * 1024u;
+	// GPU density selection and resident page textures.
+	static std::size_t GPUBudget();
+	// GPU-mode pages in all: the density allowance, plus inactive zoom pixels
+	// kept in a bounded CPU reserve rather than recomposed.
+	static std::size_t GPUCacheBudget();
 	// Coverage kept for mixed cells next to animated materials, so a phase change
 	// re-blends their textures instead of re-sampling coverage. Half of the software
 	// density budget (a quarter of the GPU one); cells beyond it compose without a kept mask.
-	static constexpr std::size_t MaskBudget = Budget / 2, GPUMaskBudget = GPUBudget / 4;
+	static constexpr std::size_t MaskBudget = Budget / 2;
+	static std::size_t GPUMaskBudget() { return GPUBudget() / 4; }
 	struct HeldMask
 	{
 		TerrainVisual::Compositor::CellMask mask;

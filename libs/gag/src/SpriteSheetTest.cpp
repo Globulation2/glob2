@@ -325,7 +325,7 @@ namespace {
 // Draws the unit sheet's HD frames on a device with the phone budget until its
 // room for retained HD frames runs out, then moves to other frames: the idle
 // blocks are evicted, oldest first, so the new frames draw HD, and the evicted
-// ones reload when they are drawn again.
+// ones reload when they are drawn again, unless HD admission is held.
 void checkIdleHighResolutionEviction(GAGCore::RendererBackend backend)
 {
     glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", "");
@@ -394,6 +394,20 @@ void checkIdleHighResolutionEviction(GAGCore::RendererBackend backend)
         [&](unsigned i) { return units.experimentImages[i] == nullptr; });
     REQUIRE(evicted != earlier.end());
     const unsigned evictedFrame = *evicted;
+    // Held, uploaded frames keep drawing HD while everything else stays
+    // native: nothing reloads, wants room or is evicted.
+    {
+        struct Resume { ~Resume() { GAGCore::Sprite::holdHighResolutionAdmission(false); } } resume;
+        GAGCore::Sprite::holdHighResolutionAdmission(true);
+        CHECK(GAGCore::Sprite::highResolutionAdmissionHolding());
+        const auto before = counts();
+        for (unsigned i = 0; i < 200; ++i) { frame(later); frame(earlier); }
+        CHECK(units.experimentImages[evictedFrame] == nullptr);
+        CHECK(counts().evicted == before.evicted);
+        CHECK(counts().room == before.room);
+        CHECK(counts().drawn > before.drawn);
+    }
+    CHECK_FALSE(GAGCore::Sprite::highResolutionAdmissionHolding());
     for (unsigned i = 0; i < 4000 && !units.experimentImages[evictedFrame]; ++i) frame({evictedFrame});
     CHECK(units.experimentImages[evictedFrame] != nullptr);
 }

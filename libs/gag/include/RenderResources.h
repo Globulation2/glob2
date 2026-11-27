@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <deque>
 #include <memory>
+#include <optional>
+#include <string_view>
 #include <vector>
 #include <span>
 #include <cstddef>
@@ -77,16 +79,39 @@ struct RenderBudget
     std::size_t total = 0;                 // Textures, depth and transient device work together.
     std::array<std::size_t, 4> classes{};  // By TextureDescriptor::BudgetClass.
     std::size_t geometry = 0;              // Persistent device geometry.
+    // The composed terrain page cache (SoftwareTerrainCache) and the direct
+    // terrain pass's tables and art, which account their own storage.
+    struct Terrain
+    {
+        std::size_t resident = 0; // Resident page textures and GPU density selection.
+        std::size_t cache = 0;    // GPU-mode pages in all: CPU pixels, bookkeeping and textures.
+        std::size_t direct = 0;   // Direct terrain map tables, art atlas and coverage masks.
+        bool operator==(const Terrain &) const = default;
+    } terrain;
     std::size_t classLimit(TextureDescriptor::BudgetClass category) const
     { return classes.at(std::size_t(category)); }
     bool operator==(const RenderBudget &) const = default;
     static RenderBudget desktop();
     static RenderBudget mobile();
+    // Devices with memory to spare (a 16 GB desktop, an 8 GB phone): room for
+    // the HD frames and terrain pages a high-density view wants at once.
+    static RenderBudget desktopLarge();
+    static RenderBudget mobileLarge();
+    // desktop, mobile, desktop-large, mobile-large; nullopt for any other name.
+    static std::optional<RenderBudget> named(std::string_view name);
+    static const char *name(const RenderBudget &);
 };
-// The budget of this device: mobile on phones and tablets (the Android and
-// iOS builds, and the browser build on them; GAGCore::platformIsMobile),
-// desktop elsewhere. GLOB2_RENDER_BUDGET=mobile or desktop overrides it (measurement).
+// The budget of this device: what selectPlatformRenderBudget chose, else
+// mobile on phones and tablets (the Android and iOS builds, and the browser
+// build on them; GAGCore::platformIsMobile) and desktop elsewhere.
+// GLOB2_RENDER_BUDGET=<name> replaces it (measurement), and
+// GLOB2_RENDER_BUDGET_TOTAL_MIB replaces its total alone. Fixed at first use.
 const RenderBudget &platformRenderBudget();
+// The application's choice, from the device profile, made before any
+// presentation device exists. The first choice stands: false, changing
+// nothing, once one was made or the budget is in use. The environment
+// overrides still apply over it at first use.
+bool selectPlatformRenderBudget(const RenderBudget &);
 enum class GeometryLayout { Primitive32, World48, Skin40, SkinRig72 };
 struct GeometryRevision
 {

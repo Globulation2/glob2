@@ -425,8 +425,8 @@ void layeredCache(bool gpu, bool hd = false)
 		compare();
 		compare();
 		globals->gfx->endMapTransform();
-		CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
-		CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget);
+		CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget());
+		CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget());
 	}
 	CHECK(fixture.checksum() == checksum);
 	if (!gpu)
@@ -584,8 +584,8 @@ TEST_SUITE("TerrainPresentation")
                 gfx.beginMapTransform(1,0,0,0,0,512,512);
                 REQUIRE(cache.prepareAtResolution(scene,*globals->terrain,0,0,15,15,vx,vy,fixture.team->me,whole,animation,scale,false,reduction));
                 cache.draw(gfx);gfx.endMapTransform();gfx.renderer->flush();
-                CHECK(cache.bytes()<=SoftwareTerrainCache::GPUCacheBudget);
-                CHECK(cache.residentTextureBytes()<=SoftwareTerrainCache::GPUBudget);
+                CHECK(cache.bytes()<=SoftwareTerrainCache::GPUCacheBudget());
+                CHECK(cache.residentTextureBytes()<=SoftwareTerrainCache::GPUBudget());
                 if(didRecordDeviceFrame(*gfx.renderer))break;
                 // Dense retained CPU pages can require several bounded upload
                 // submissions. Retry the same view until it is published.
@@ -596,7 +596,7 @@ TEST_SUITE("TerrainPresentation")
             std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> rgba(SDL_ConvertSurface(pixels.get(),SDL_PIXELFORMAT_RGBA32),SDL_DestroySurface);REQUIRE(rgba);
             std::vector<Uint8> result(std::size_t(rgba->w)*rgba->h*4);
             for(int y=0;y<rgba->h;++y)std::memcpy(result.data()+std::size_t(y)*rgba->w*4,static_cast<Uint8 *>(rgba->pixels)+y*rgba->pitch,rgba->w*4);
-            CHECK(cache.bytes()<=SoftwareTerrainCache::GPUCacheBudget);CHECK(cache.residentTextureBytes()<=SoftwareTerrainCache::GPUBudget);
+            CHECK(cache.bytes()<=SoftwareTerrainCache::GPUCacheBudget());CHECK(cache.residentTextureBytes()<=SoftwareTerrainCache::GPUBudget());
             CHECK(gfx.renderDevice()->telemetry().resourceBytes<=GAGCore::platformRenderBudget().total);
             gfx.nextFrame();return result;
         };
@@ -2133,8 +2133,8 @@ TEST_SUITE("TerrainPresentation")
 					REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 65, 65, x - 1, y - 1,
 						fixture.team->me, true, 19, true));
 					cache.draw(*globals->gfx);
-					CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
-					CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget);
+					CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget());
+					CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget());
 				}
 		};
 		sweep();
@@ -2184,7 +2184,7 @@ TEST_SUITE("TerrainPresentation")
 								  strip.y + strip.h - 1, 0, 0, fixture.team->me, true, 0, true));
 			CHECK(tiled.resolution == 1);
 			CHECK(tiled.cacheRebuilds() == rebuilds);
-			CHECK(tiled.bytes() <= SoftwareTerrainCache::GPUBudget);
+			CHECK(tiled.bytes() <= SoftwareTerrainCache::GPUBudget());
 		}
 	}
 	TEST_CASE(
@@ -2276,8 +2276,8 @@ TEST_SUITE("TerrainPresentation")
 		const auto rebuilt = cache.cacheRebuilds();
 		CHECK(draw(true) == expected);
 		CHECK(cache.cacheRebuilds() == rebuilt);
-		CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
-		CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget);
+		CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget());
+		CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget());
 		CHECK(std::any_of(cache.chunks.begin(), cache.chunks.end(),
 			[](const auto &chunk) { return bool(chunk->parked); }));
 		CHECK(fixture.checksum() == checksum);
@@ -2311,7 +2311,7 @@ TEST_SUITE("TerrainPresentation")
 					31, 31, fixture.team->me, whole, time, scale, false, reduction));
 				pages.draw(gfx);
 				gfx.endMapTransform();
-				CHECK(pages.bytes() <= SoftwareTerrainCache::GPUBudget);
+				CHECK(pages.bytes() <= SoftwareTerrainCache::GPUBudget());
 			};
 			const auto pixels = [&]
 			{
@@ -2515,8 +2515,8 @@ TEST_SUITE("TerrainPresentation")
 			CHECK(admitted);
 			if (!admitted)
 				continue;
-			CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
-			CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget);
+			CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget());
+			CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget());
 			CHECK(cache.cacheRebuilds() == rebuilds);
 			CHECK(cache.cacheHits() >= rebuilds * 5);
 			REQUIRE(!cache.chunks.empty());
@@ -2638,8 +2638,8 @@ TEST_SUITE("TerrainPresentation")
 			CHECK(hidpiAdmitted);
 			if (hidpiAdmitted)
 				CHECK(chunkPixels(*cache.copies.front().chunk)->w == SoftwareTerrainCache::ChunkPixels);
-			CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
-			CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget);
+			CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget());
+			CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget());
 		}
 	}
 	TEST_CASE("portable pages compose HD frames only above one screen pixel per logical pixel [display]")
@@ -2779,7 +2779,7 @@ TEST_SUITE("TerrainPresentation")
 		page->parked.reset(page->image->takePixels());
 		page->image.reset();
 		std::size_t added = 0;
-		while (cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget)
+		while (cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget())
 		{
 			auto idle = std::make_unique<SoftwareTerrainCache::Chunk>();
 			idle->x = 1024 + int(added++) * SoftwareTerrainCache::ChunkTiles;
@@ -2793,7 +2793,7 @@ TEST_SUITE("TerrainPresentation")
 		CHECK(!page->parked);
 		CHECK(std::size_t(std::count_if(cache.chunks.begin(), cache.chunks.end(),
 			[](const auto &chunk) { return chunk->scale == 4; })) < added);
-		CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
+		CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget());
 	}
 	TEST_CASE("a portable page retired after its pixels were released composes again [display]")
 	{
@@ -3088,8 +3088,8 @@ TEST_SUITE("TerrainPresentation")
 									  fixture.team->me, true, 19, true));
 				CHECK(chunkPixels(*cache.copies.front().chunk)->w == side);
 				CHECK(cache.cacheRebuilds() == rebuilds);
-				CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget);
-				CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget);
+				CHECK(cache.bytes() <= SoftwareTerrainCache::GPUCacheBudget());
+				CHECK(cache.residentTextureBytes() <= SoftwareTerrainCache::GPUBudget());
 			}
 		}
 	}

@@ -562,7 +562,7 @@ before measured frame N. The benchmark prints `PRESENTATION_TRIM` with the devic
 registry's snapshot bytes and the device's resource bytes, then
 `PRESENTATION_TRIM_AFTER` every ten frames for sixty frames; compare them, and
 the `FRAME_RENDER_MEMORY` lines around frame N, to see what the trim freed. Set
-`GLOB2_RENDER_BUDGET=mobile` to run the scenario under the phone budgets.
+`GLOB2_RENDER_BUDGET=mobile` (or `mobile-large`, `desktop-large`) to run the scenario under the phone budgets (or the large ones).
 
 In the game client, legacy OpenGL records the same tracked GPU total as the
 `render.resource_bytes` gauge, and `GLOB2_TEAM_TIMELINE=1` adds a

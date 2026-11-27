@@ -58,7 +58,10 @@ terrain cache is transient presentation state: 16×16-cell composed pages, a 32 
 software storage reservation including pixels, recipes and borrowed views, and a
 separate 128 MiB allowance for GPU density selection and resident texture/mip
 reservations. The desktop GPU-mode cache has a 256 MiB total ceiling, including
-CPU pixels and bookkeeping; Android/browser builds retain the 128 MiB total limit.
+CPU pixels and bookkeeping; phones and the browser retain the 128 MiB total limit.
+The GPU limits come from the platform's `RenderBudget::Terrain`: the large phone
+budget keeps 128 MiB resident within 192 MiB, the large desktop one 256 MiB within
+512 MiB ([render budgets](rendering.md#runtime-backend-selection)).
 On desktop, the additional CPU retention allowance avoids evicting inactive
 zoom densities. GPU views retain pixels and textures across sampling
 changes, retiring idle textures first when needed. When the visible textures

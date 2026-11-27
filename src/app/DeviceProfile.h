@@ -33,6 +33,11 @@ struct DeviceThresholds
 	// Desktop only: a discrete GPU whose largest device-local heap is smaller
 	// starts with original artwork. Phones share memory between CPU and GPU.
 	std::uint64_t artworkVramBelowMiB = 1024;
+	// The large presentation budgets (GAGCore::RenderBudget::desktopLarge and
+	// mobileLarge): a High phone, or a desktop reporting at least this much
+	// memory (a "16 GB" machine reports a little under 16 GiB). Not in a
+	// browser, whose Wasm heap has a fixed maximum.
+	std::uint64_t largeBudgetDesktopMemoryAtLeastMiB = 15 * 1024;
 	// New-game and new-map size, as a power of two (7 = 128, 8 = 256).
 	int lowMapShift = 7;
 	int mobileMidMapShift = 7;
@@ -82,6 +87,8 @@ struct DeviceInputs
 	std::string vramSource = "none"; // none, pending, vulkan, integrated, unavailable
 	// The game runs without threads (the serial browser runtime).
 	bool serialRuntime = false;
+	// The browser build, threaded or serial.
+	bool browser = false;
 };
 
 struct DeviceDecision
@@ -111,6 +118,10 @@ struct DeviceProfile
 	// Auto values. Callers apply them only where the player chose Auto.
 	DeviceDecision highResolutionArtwork() const;
 	DeviceMapSize newMapSize() const;
+	// Whether presentation takes the large render budget. Applied once at
+	// startup (initialize), before any presentation device exists; a VRAM
+	// probe finishing later does not change it.
+	DeviceDecision largeRenderBudget() const;
 	// Colonies in a new game, the player's included; 0 keeps the setup's own default.
 	int newGameColonies() const;
 	// key=value fields for performance telemetry and the startup log.
@@ -127,7 +138,8 @@ struct DeviceProfile
 	// The process profile. The first call probes the cheap inputs (memory,
 	// cores, Android's ActivityManager) and honours GLOB2_DEVICE_TIER.
 	static const DeviceProfile &current();
-	// Startup: applies a --device-tier override and, on desktop windowed runs,
+	// Startup: applies a --device-tier override, selects the render budget
+	// (GAGCore::selectPlatformRenderBudget) and, on desktop windowed runs,
 	// starts the background Vulkan VRAM probe. Logs the profile once.
 	static void initialize(std::optional<DeviceTier> commandLine, bool probeVram);
 	// Non-blocking, once a frame: folds a finished VRAM probe into current().

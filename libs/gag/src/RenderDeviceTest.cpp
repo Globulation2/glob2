@@ -4,6 +4,8 @@
 #include <deque>
 #include <array>
 #include <cstring>
+#include <string_view>
+#include <utility>
 
 using namespace GAGCore;
 namespace
@@ -488,6 +490,43 @@ TEST_SUITE("RenderDevice")
         CHECK_FALSE(resources.create(wide.get(), 1, skin));
         CHECK(resources.create(wide.get(), 1));
         CHECK_FALSE(resources.create(wide.get(), 1)); // General is full.
+    }
+    TEST_CASE("large budgets hold at least their standard ones, and every budget has a name")
+    {
+        constexpr std::size_t MiB = 1024 * 1024;
+        const std::pair<RenderBudget, RenderBudget> pairs[] = {
+            {RenderBudget::desktop(), RenderBudget::desktopLarge()}, {RenderBudget::mobile(), RenderBudget::mobileLarge()}};
+        for (const auto &[standard, large] : pairs) {
+            CAPTURE(RenderBudget::name(large));
+            CHECK(large.total > standard.total);
+            CHECK(large.geometry >= standard.geometry);
+            for (std::size_t i = 0; i < 4; ++i) {
+                CHECK(large.classes[i] >= standard.classes[i]);
+                CHECK(large.classes[i] <= large.total);
+            }
+            CHECK(large.terrain.resident >= standard.terrain.resident);
+            CHECK(large.terrain.cache >= standard.terrain.cache);
+            CHECK(large.terrain.direct >= standard.terrain.direct);
+            CHECK(large.terrain.cache >= large.terrain.resident);
+        }
+        // A High phone's General class leaves HD frames (3/8 of it) more than
+        // the 18 MiB the standard phone budget does.
+        CHECK(RenderBudget::mobileLarge().classLimit(TextureDescriptor::BudgetClass::General) / 8 * 3 >= 48 * MiB);
+        // The large phone budget stays below the standard desktop one.
+        CHECK(RenderBudget::mobileLarge().total < RenderBudget::desktop().total);
+        for (const char *name : {"desktop", "mobile", "desktop-large", "mobile-large"}) {
+            CAPTURE(name);
+            REQUIRE(RenderBudget::named(name));
+            CHECK(std::string_view(RenderBudget::name(*RenderBudget::named(name))) == name);
+        }
+        CHECK_FALSE(RenderBudget::named("huge"));
+        auto custom = RenderBudget::desktop();
+        custom.total += MiB;
+        CHECK(std::string_view(RenderBudget::name(custom)) == "custom");
+        // The test main chose the platform's budget first; later choices change nothing.
+        const auto before = platformRenderBudget();
+        CHECK_FALSE(selectPlatformRenderBudget(RenderBudget::desktopLarge()));
+        CHECK(platformRenderBudget() == before);
     }
     TEST_CASE("transient source views with no asset identity cannot reuse old pixels")
     {
