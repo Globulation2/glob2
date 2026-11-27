@@ -3111,5 +3111,19 @@
   "Installs": "Kurulumlar",
   "Stack": "Yığın",
   "Channel": "Kanal",
-  "Show reports": "Raporları göster"
+  "Show reports": "Raporları göster",
+  "Groups": "Gruplar",
+  "State": "Durum",
+  "New": "Yeni",
+  "Triaged": "Ayıklandı",
+  "Fixed in": "Düzeltildiği sürüm",
+  "Reopened after the fix in {value0}": "{value0} sürümündeki düzeltmeden sonra yeniden açıldı",
+  "GitHub issue": "GitHub sorunu",
+  "Crash-free sessions": "Çökmesiz oturumlar",
+  "Crash-free installs": "Çökmesiz kurulumlar",
+  "Sessions": "Oturumlar",
+  "Crash reports": "Çökme raporları",
+  "Affected installs": "Etkilenen kurulumlar",
+  "New in this release": "Bu sürümde yeni",
+  "No releases yet.": "Henüz sürüm yok."
 }

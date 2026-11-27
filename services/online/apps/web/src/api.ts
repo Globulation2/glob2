@@ -7,6 +7,9 @@ import type {
   AdminCrashReportList,
   AdminCrashReportDetail,
   AdminCrashGroupList,
+  AdminCrashReleaseList,
+  CrashGroupStateReceipt,
+  CrashGroupStateRequest,
   AiProfile,
   PlayerDirectory,
   AdminAccount,
@@ -195,6 +198,14 @@ export const api = {
     ),
   adminCrashGroups: (query: Query = {}, signal?: AbortSignal) =>
     get<AdminCrashGroupList>('/api/v1/admin/crash-groups', query, signal),
+  adminCrashReleases: (query: Query = {}, signal?: AbortSignal) =>
+    get<AdminCrashReleaseList>('/api/v1/admin/crash-releases', query, signal),
+  setCrashGroupState: (id: string, body: CrashGroupStateRequest) =>
+    request<CrashGroupStateReceipt>(
+      'POST',
+      `/api/v1/admin/crash-groups/${encodeURIComponent(id)}/state`,
+      { body },
+    ),
   adminMatches: (query: Query = {}, signal?: AbortSignal) =>
     get<MatchList>('/api/v1/admin/matches', query, signal),
   adminReports: (query: Query = {}, signal?: AbortSignal) =>

@@ -3084,5 +3084,19 @@
   "Installs": "インストール数",
   "Stack": "スタック",
   "Channel": "チャネル",
-  "Show reports": "報告を表示"
+  "Show reports": "報告を表示",
+  "Groups": "グループ",
+  "State": "状態",
+  "New": "新規",
+  "Triaged": "確認済み",
+  "Fixed in": "修正版",
+  "Reopened after the fix in {value0}": "{value0} での修正後に再発",
+  "GitHub issue": "GitHub の Issue",
+  "Crash-free sessions": "クラッシュのないセッション",
+  "Crash-free installs": "クラッシュのないインストール",
+  "Sessions": "セッション",
+  "Crash reports": "クラッシュレポート",
+  "Affected installs": "影響を受けたインストール",
+  "New in this release": "このリリースで新規",
+  "No releases yet.": "リリースはまだありません。"
 }

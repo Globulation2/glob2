@@ -198,6 +198,8 @@ services:
       ENGINE_AGENT_KEYS_FILE: ''
       CRASH_SYMBOL_CACHE_DIR: /var/cache/glob2-crash-symbols
       CRASH_SYMBOL_CACHE_BYTES: ${CRASH_SYMBOL_CACHE_BYTES:-8589934592}
+      CRASH_GITHUB_REPOSITORY: ${CRASH_GITHUB_REPOSITORY:-}
+      CRASH_GITHUB_TOKEN: ${CRASH_GITHUB_TOKEN:-}
     volumes:
       - db-worker-secret:/var/lib/glob2/db/worker:ro
       - blobs:/var/lib/glob2/blobs

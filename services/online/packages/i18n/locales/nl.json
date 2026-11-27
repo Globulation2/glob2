@@ -3111,5 +3111,19 @@
   "Installs": "Installaties",
   "Stack": "Stack",
   "Channel": "Kanaal",
-  "Show reports": "Meldingen tonen"
+  "Show reports": "Meldingen tonen",
+  "Groups": "Groepen",
+  "State": "Toestand",
+  "New": "Nieuw",
+  "Triaged": "Beoordeeld",
+  "Fixed in": "Opgelost in",
+  "Reopened after the fix in {value0}": "Heropend na de oplossing in {value0}",
+  "GitHub issue": "GitHub-issue",
+  "Crash-free sessions": "Crashvrije sessies",
+  "Crash-free installs": "Crashvrije installaties",
+  "Sessions": "Sessies",
+  "Crash reports": "Crashrapporten",
+  "Affected installs": "Getroffen installaties",
+  "New in this release": "Nieuw in deze versie",
+  "No releases yet.": "Nog geen versies."
 }

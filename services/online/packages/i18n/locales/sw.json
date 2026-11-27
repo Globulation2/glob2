@@ -3111,5 +3111,19 @@
   "Installs": "Usakinishaji",
   "Stack": "Mrundikano",
   "Channel": "Chaneli",
-  "Show reports": "Onyesha ripoti"
+  "Show reports": "Onyesha ripoti",
+  "Groups": "Vikundi",
+  "State": "Hali",
+  "New": "Mpya",
+  "Triaged": "Imepangwa",
+  "Fixed in": "Imerekebishwa katika",
+  "Reopened after the fix in {value0}": "Imefunguliwa tena baada ya marekebisho katika {value0}",
+  "GitHub issue": "Suala la GitHub",
+  "Crash-free sessions": "Vipindi bila kuanguka",
+  "Crash-free installs": "Usakinishaji bila kuanguka",
+  "Sessions": "Vipindi",
+  "Crash reports": "Ripoti za kuanguka",
+  "Affected installs": "Usakinishaji ulioathirika",
+  "New in this release": "Mpya katika toleo hili",
+  "No releases yet.": "Bado hakuna matoleo."
 }

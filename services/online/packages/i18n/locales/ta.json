@@ -3111,5 +3111,19 @@
   "Installs": "நிறுவல்கள்",
   "Stack": "ஸ்டாக்",
   "Channel": "சேனல்",
-  "Show reports": "அறிக்கைகளைக் காட்டு"
+  "Show reports": "அறிக்கைகளைக் காட்டு",
+  "Groups": "குழுக்கள்",
+  "State": "நிலை",
+  "New": "புதியது",
+  "Triaged": "வகைப்படுத்தப்பட்டது",
+  "Fixed in": "சரிசெய்யப்பட்ட பதிப்பு",
+  "Reopened after the fix in {value0}": "{value0} இல் சரிசெய்த பின் மீண்டும் திறக்கப்பட்டது",
+  "GitHub issue": "GitHub சிக்கல்",
+  "Crash-free sessions": "செயலிழப்பற்ற அமர்வுகள்",
+  "Crash-free installs": "செயலிழப்பற்ற நிறுவல்கள்",
+  "Sessions": "அமர்வுகள்",
+  "Crash reports": "செயலிழப்பு அறிக்கைகள்",
+  "Affected installs": "பாதிக்கப்பட்ட நிறுவல்கள்",
+  "New in this release": "இந்த வெளியீட்டில் புதியது",
+  "No releases yet.": "இன்னும் வெளியீடுகள் இல்லை."
 }

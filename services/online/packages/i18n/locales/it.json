@@ -3138,5 +3138,19 @@
   "Installs": "Installazioni",
   "Stack": "Stack",
   "Channel": "Canale",
-  "Show reports": "Mostra segnalazioni"
+  "Show reports": "Mostra segnalazioni",
+  "Groups": "Gruppi",
+  "State": "Stato",
+  "New": "Nuovo",
+  "Triaged": "Valutato",
+  "Fixed in": "Corretto in",
+  "Reopened after the fix in {value0}": "Riaperto dopo la correzione in {value0}",
+  "GitHub issue": "Issue di GitHub",
+  "Crash-free sessions": "Sessioni senza crash",
+  "Crash-free installs": "Installazioni senza crash",
+  "Sessions": "Sessioni",
+  "Crash reports": "Segnalazioni di crash",
+  "Affected installs": "Installazioni colpite",
+  "New in this release": "Nuovo in questa versione",
+  "No releases yet.": "Ancora nessuna versione."
 }

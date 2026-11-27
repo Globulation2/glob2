@@ -3138,5 +3138,19 @@
   "Installs": "Instal·lacions",
   "Stack": "Pila",
   "Channel": "Canal",
-  "Show reports": "Mostra els informes"
+  "Show reports": "Mostra els informes",
+  "Groups": "Grups",
+  "State": "Estat",
+  "New": "Nou",
+  "Triaged": "Classificat",
+  "Fixed in": "Corregit a",
+  "Reopened after the fix in {value0}": "Reobert després de la correcció a {value0}",
+  "GitHub issue": "Incidència de GitHub",
+  "Crash-free sessions": "Sessions sense errors greus",
+  "Crash-free installs": "Instal·lacions sense errors greus",
+  "Sessions": "Sessions",
+  "Crash reports": "Informes d'errors greus",
+  "Affected installs": "Instal·lacions afectades",
+  "New in this release": "Nou en aquesta versió",
+  "No releases yet.": "Encara no hi ha versions."
 }

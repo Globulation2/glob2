@@ -182,11 +182,131 @@ numerically.
 
 Administrators see **Admin → Crashes** (`GET /api/v1/admin/crash-groups`): groups
 sorted by affected installs (distinct install IDs), then reports, filterable by
-version, platform and channel. Opening a group lists its reports
+version, platform, channel and [triage state](#triage). Each group shows its state
+and [GitHub issue](#github-issues), and has the triage controls. **Releases** in the
+same tab is the [per-release view](#crash-free-rates). Opening a group lists its reports
 (`GET /api/v1/admin/crash-reports?group=…`) with their context and attachments,
 and each report's stack (`GET /api/v1/admin/crash-reports/:id`), in-game frames
 in bold. **Admin → Problem reports** shows only Report a Problem bundles
 (`?kind=problem`).
+
+## Release gates
+
+Crash reports tell what crashed; release gates tell whether a release crashes
+more than the one before it, so it is not promoted to more players until that is
+understood.
+
+### Session counts
+
+Crash-free rates need the sessions that did not crash. Only installs whose player
+chose **Always send** count them, so the rates are over those installs alone:
+their sessions, and the crash reports of installs that reported sessions in that
+release. The game sends its count with `POST /api/v1/crash-sessions`:
+
+```json
+{
+  "schema": 1,
+  "installId": "3d2c1b0a-9f8e-4d7c-8b6a-5f4e3d2c1b0a",
+  "version": "0.11.8.4",
+  "versionMinor": 219,
+  "distribution": "google_play",
+  "platform": "android",
+  "day": "2026-11-27",
+  "sessions": 3
+}
+```
+
+- **Body.** `application/json`, a `CrashSessionPing`
+  (`services/online/packages/protocol/src/crashReports.ts`), at most 4 KB, no
+  other fields. `installId`, `versionMinor`, `distribution` and `platform` are the
+  same values as in the install's crash bundles; `version` must be a release
+  version (three or four numbers). No cookies or tokens; any origin may send it
+  (CORS `*`, preflight allowed for `content-type`).
+- **`day` and `sessions`.** A session is one launch of the game, counted when it
+  starts, so a session that later crashes is counted too. `day` is the UTC day
+  it started on, and `sessions` the running total of sessions the install
+  started that day, from 1 to 500. The server keeps the largest total it has
+  seen for that install and day, so a resent or retried ping changes nothing and
+  a lost answer is safe to retry.
+- **When.** Count only while `alwaysSendCrashReports` is on, and only in builds
+  that send crash reports (not `problem_reports=0` builds). Send the current
+  day's total at most once an hour (for example from the main menu, after a
+  launch), and a finished day's final total when next online. Keep at most the
+  last seven days on the device; drop a day once its total was accepted and the
+  day is over. Turning **Always send** off deletes the waiting counts.
+- **Answers.** `204` accepted. `400` a malformed body or a `day` outside the last
+  seven UTC days (up to tomorrow, for clock skew): drop that day. `403` a version
+  without uploaded symbols (a development or unreleased build): drop the counts
+  and do not retry that version. `429` (`Retry-After` seconds) and `5xx`: keep the
+  counts and retry later.
+- **Limits.** 48 pings per install a day across replicas, 240 per client address
+  an hour per replica (memory only) and 60,000 an hour for the instance. The
+  address is never stored.
+
+Each install and day is a `crash_session_installs` row (the install's running
+total, the only rows holding install IDs, used to count distinct installs), and
+each day, release, platform and channel a `crash_session_days` row with its
+sessions and distinct installs.
+
+### Crash-free rates
+
+`GET /api/v1/admin/crash-releases` (administrators, **Admin → Crashes →
+Releases**) lists registered releases, newest first (versions compared
+numerically), ten at a time. For each:
+
+- **Crash-free sessions** (1 − crash reports ÷ sessions) and **crash-free
+  installs** (1 − installs with a crash ÷ installs), over opted-in installs only,
+  overall and per platform and channel. Only fatal kinds count (`crash`,
+  `metrickit`, `web`, `java`); Report a Problem bundles do not.
+- Every crash report of the release, whatever its consent, and the distinct
+  installs that sent them.
+- **New in this release**: the groups whose first release it is, most affected
+  installs first, with their triage state.
+
+### Promotion gate
+
+`GET /api/v1/crash-releases/:version/gate` answers whether a release may be
+promoted to a wider audience. It takes `Authorization: Bearer` with
+`CRASH_SYMBOL_UPLOAD_TOKEN` (503 when unset, 404 for an unregistered version) and
+answers a `CrashReleaseGate`: a `verdict` and the `reasons` behind it.
+
+- **Fail** when the release's crash-free sessions are more than 0.5 percentage
+  points (`tolerance` 0.005) below the newest earlier release with at least 1000
+  opted-in sessions, or when a group new in this release and still `new` is among
+  the five groups with the most affected installs in it (`untriagedGroups`).
+- **Insufficient data** when the release has fewer than 1000 opted-in sessions
+  (`minimumSessions`) and no check failed: never a pass.
+- **Pass** otherwise. With no earlier release of 1000 sessions, the comparison is
+  skipped and the reasons say so.
+
+`tools/release/crash_gate.py --version 0.11.8.4` calls it (origin
+`GLOB2_CRASH_SYMBOL_ORIGIN`, default the official instance) and exits 0 on pass,
+1 on fail, 2 on insufficient data (0 with `--allow-insufficient`) and 3 when the
+gate could not be asked; `test/build_system/test_crash_gate.py` covers it. The
+[release runbook](../releases/downloads.md#crash-reports-before-promotion) runs it
+before every promotion.
+
+### Triage
+
+Every group starts `new`. Administrators set it with
+`POST /api/v1/admin/crash-groups/:id/state` (`{"state": "triaged"}`, or
+`{"state": "resolved", "fixedIn": "0.11.8.5"}` naming the first release with the
+fix); each change is written to the admin audit log as `crash_group.state`. When
+the crash worker files a report of a `resolved` group from its `fixedIn` release
+or a later one, the group is `new` again; `fixedIn` stays, and the admin page
+shows it as reopened after that fix. Reports from older releases leave it
+resolved.
+
+### GitHub issues
+
+With `CRASH_GITHUB_REPOSITORY` (for example `Globulation2/glob2`) and
+`CRASH_GITHUB_TOKEN` (a token that may create issues there) set for the crash
+worker, each new group queues one `crash:github-issue` job (job key
+`crash-issue-<group>`), which opens an issue and stores its number and link on
+the group. The issue holds the signature, the top ten frames with
+repository-relative paths, the first release, report and install counts per
+platform and channel, and a link to the group's admin page; never install IDs,
+logs, descriptions or anything else a player sent. Unset, no jobs are queued.
 
 ## Retention
 
@@ -194,6 +314,8 @@ Crash reports follow the problem report retention: bundles (the minidump,
 MetricKit payload or browser error, and any log) after 90 days, and rows, with
 their symbolicated frames, after two years. A crash group is deleted once its
 last report is gone and it was last seen two years ago.
+Session counts, with the install IDs they hold, are deleted two years after
+their day.
 
 ## Deployment
 
@@ -206,6 +328,9 @@ the host's environment for platform-api, and the same value as a
 `CRASH_SYMBOL_UPLOAD_TOKEN` secret of the release mirror's `crash-symbols` and
 `windows-store` environments. Until both are set, release workflows fail at
 their symbol upload.
+Set `CRASH_GITHUB_REPOSITORY` and `CRASH_GITHUB_TOKEN` in the host's environment
+for the crash worker to open [GitHub issues](#github-issues); a fine-grained token
+limited to that repository's issues is enough.
 
 ## Trying it locally
 
@@ -220,6 +345,8 @@ MINIDUMP_STACKWALK=/path/to/minidump-stackwalk node services/online/apps/crash-w
 ```
 
 `apps/api/test/crashGroups.test.ts` covers uploads, crash bundles, processing,
-grouping and the admin views. Its minidump case runs where `minidump-stackwalk`
+grouping and the admin views. `apps/api/test/crashReleases.test.ts` covers session
+counts, the release view, the gate, triage and GitHub issues (with a stubbed
+`fetch`). Its minidump case runs where `minidump-stackwalk`
 is installed (`MINIDUMP_STACKWALK`), against the rust-minidump test dump in
 `apps/crash-worker/test/fixtures/`.

@@ -5,7 +5,9 @@
 // that failed after storing its bytes, are deleted after a day. Crash groups
 // (docs/multiplayer/crash-reports.md) go once their last report is gone and
 // they were last seen two years ago. Symbol files are kept; only uploads no
-// crash_symbols row names (a failed or replaced upload) are swept.
+// crash_symbols row names (a failed or replaced upload) are swept. Session
+// counts (crash_session_installs, which hold install IDs, and the daily
+// crash_session_days totals) go after CRASH_REPORT_RETENTION_DAYS too.
 import { sql, type Kysely } from 'kysely';
 import type { BlobStore, Logger } from '@glob2/core';
 import type { Database } from '@glob2/db';
@@ -21,6 +23,7 @@ export interface CrashRetentionResult {
   deletedOrphanBundles: number;
   deletedGroups: number;
   deletedOrphanSymbols: number;
+  deletedSessionRows: number;
 }
 
 const days = (n: number) => sql<Date>`now() - make_interval(days => ${n})`;
@@ -65,6 +68,13 @@ export async function retainCrashReports(
       WHERE g.last_seen_at < ${days(CRASH_REPORT_RETENTION_DAYS)}
         AND NOT EXISTS (SELECT 1 FROM crash_reports r WHERE r.group_id = g.id)
       LIMIT ${CRASH_RETENTION_BATCH})`.execute(db);
+  const sessionCutoff = sql<string>`(now() - make_interval(days => ${CRASH_REPORT_RETENTION_DAYS}))::date`;
+  const sessionInstalls = await sql`
+    DELETE FROM crash_session_installs WHERE (install_id, day, version, platform, distribution) IN (
+      SELECT install_id, day, version, platform, distribution FROM crash_session_installs
+      WHERE day < ${sessionCutoff} LIMIT ${CRASH_RETENTION_BATCH * 10})`.execute(db);
+  const sessionDays = await sql`
+    DELETE FROM crash_session_days WHERE day < ${sessionCutoff}`.execute(db);
   const cutoff = (options.now ?? Date.now()) - ORPHAN_GRACE_MS;
   // One indexed lookup per batch of listed keys (the unique key indexes).
   const sweepOrphans = async (prefix: string, known: (keys: string[]) => Promise<Set<string>>) => {
@@ -123,5 +133,7 @@ export async function retainCrashReports(
     deletedOrphanBundles,
     deletedGroups: Number(groups.numAffectedRows ?? 0n),
     deletedOrphanSymbols,
+    deletedSessionRows:
+      Number(sessionInstalls.numAffectedRows ?? 0n) + Number(sessionDays.numAffectedRows ?? 0n),
   };
 }

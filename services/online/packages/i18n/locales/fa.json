@@ -3111,5 +3111,19 @@
   "Installs": "نصب‌ها",
   "Stack": "پشته",
   "Channel": "کانال",
-  "Show reports": "نمایش گزارش‌ها"
+  "Show reports": "نمایش گزارش‌ها",
+  "Groups": "گروه‌ها",
+  "State": "وضعیت",
+  "New": "جدید",
+  "Triaged": "بررسی‌شده",
+  "Fixed in": "رفع‌شده در",
+  "Reopened after the fix in {value0}": "پس از رفع در {value0} دوباره باز شد",
+  "GitHub issue": "مسئله در GitHub",
+  "Crash-free sessions": "نشست‌های بدون خرابی",
+  "Crash-free installs": "نصب‌های بدون خرابی",
+  "Sessions": "نشست‌ها",
+  "Crash reports": "گزارش‌های خرابی",
+  "Affected installs": "نصب‌های آسیب‌دیده",
+  "New in this release": "جدید در این نسخه",
+  "No releases yet.": "هنوز نسخه‌ای نیست."
 }

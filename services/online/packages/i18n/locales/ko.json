@@ -3084,5 +3084,19 @@
   "Installs": "설치 수",
   "Stack": "스택",
   "Channel": "채널",
-  "Show reports": "신고 보기"
+  "Show reports": "신고 보기",
+  "Groups": "그룹",
+  "State": "상태",
+  "New": "새 항목",
+  "Triaged": "분류됨",
+  "Fixed in": "수정된 버전",
+  "Reopened after the fix in {value0}": "{value0}에서 수정된 뒤 다시 열림",
+  "GitHub issue": "GitHub 이슈",
+  "Crash-free sessions": "충돌 없는 세션",
+  "Crash-free installs": "충돌 없는 설치",
+  "Sessions": "세션",
+  "Crash reports": "충돌 보고서",
+  "Affected installs": "영향받은 설치",
+  "New in this release": "이 릴리스에서 새로 발생",
+  "No releases yet.": "아직 릴리스가 없습니다."
 }

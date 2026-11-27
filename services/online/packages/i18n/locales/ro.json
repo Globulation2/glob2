@@ -3138,5 +3138,19 @@
   "Installs": "Instalări",
   "Stack": "Stivă",
   "Channel": "Canal",
-  "Show reports": "Arată rapoartele"
+  "Show reports": "Arată rapoartele",
+  "Groups": "Grupuri",
+  "State": "Stare",
+  "New": "Nou",
+  "Triaged": "Triat",
+  "Fixed in": "Remediat în",
+  "Reopened after the fix in {value0}": "Redeschis după remedierea din {value0}",
+  "GitHub issue": "Problemă pe GitHub",
+  "Crash-free sessions": "Sesiuni fără blocări",
+  "Crash-free installs": "Instalări fără blocări",
+  "Sessions": "Sesiuni",
+  "Crash reports": "Rapoarte de blocare",
+  "Affected installs": "Instalări afectate",
+  "New in this release": "Nou în această versiune",
+  "No releases yet.": "Încă nu există versiuni."
 }

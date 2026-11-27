@@ -3165,5 +3165,19 @@
   "Installs": "Установки",
   "Stack": "Стек",
   "Channel": "Канал",
-  "Show reports": "Показать отчёты"
+  "Show reports": "Показать отчёты",
+  "Groups": "Группы",
+  "State": "Состояние",
+  "New": "Новая",
+  "Triaged": "Разобрана",
+  "Fixed in": "Исправлено в",
+  "Reopened after the fix in {value0}": "Открыта снова после исправления в {value0}",
+  "GitHub issue": "Задача на GitHub",
+  "Crash-free sessions": "Сеансы без сбоев",
+  "Crash-free installs": "Установки без сбоев",
+  "Sessions": "Сеансы",
+  "Crash reports": "Отчёты о сбоях",
+  "Affected installs": "Затронутые установки",
+  "New in this release": "Новое в этой версии",
+  "No releases yet.": "Версий пока нет."
 }

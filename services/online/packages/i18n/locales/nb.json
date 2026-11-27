@@ -3111,5 +3111,19 @@
   "Installs": "Installasjoner",
   "Stack": "Stakk",
   "Channel": "Kanal",
-  "Show reports": "Vis rapporter"
+  "Show reports": "Vis rapporter",
+  "Groups": "Grupper",
+  "State": "Tilstand",
+  "New": "Ny",
+  "Triaged": "Vurdert",
+  "Fixed in": "Rettet i",
+  "Reopened after the fix in {value0}": "Gjenåpnet etter rettingen i {value0}",
+  "GitHub issue": "GitHub-sak",
+  "Crash-free sessions": "Økter uten krasj",
+  "Crash-free installs": "Installasjoner uten krasj",
+  "Sessions": "Økter",
+  "Crash reports": "Krasjrapporter",
+  "Affected installs": "Berørte installasjoner",
+  "New in this release": "Nytt i denne utgivelsen",
+  "No releases yet.": "Ingen utgivelser ennå."
 }

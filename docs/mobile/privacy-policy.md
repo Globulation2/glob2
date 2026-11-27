@@ -13,7 +13,7 @@ Boom Drive, Unit 346, Oakville, Ontario L6H 7X5, Canada ("we"). For privacy
 questions and requests, contact **bradley.allen.arsenault@gmail.com**
 or write to that address.
 
-Last updated: 26 November 2026. Players aged 13 or over can send us a problem
+Last updated: 27 November 2026. Players aged 13 or over can send us a problem
 report from the game's main menu, and on Android and iOS a crash report after
 the game closes unexpectedly; see [Problem reports](#problem-reports) and
 [Crash reports](#crash-reports).
@@ -440,6 +440,12 @@ crashes. We delete the minidump or diagnostic and the log after 90 days, and the
 rest (the readable stack trace and the details above) after two years. The
 F-Droid, Linux distribution, China and Fire tablet editions do not capture
 crashes.
+
+If you chose **Always send**, the game also sends, about once a day, how many
+times it was started that day, with its version, platform, edition and the
+random install ID, so we can tell what share of sessions ends in a crash. These
+counts are never sent otherwise, are not linked to your account or IP address,
+and are deleted after two years. Turning **Always send** off stops them.
 
 ## Your rights
 

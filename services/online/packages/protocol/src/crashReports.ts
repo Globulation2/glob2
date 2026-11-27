@@ -147,6 +147,21 @@ export type CrashReportStatus = Static<typeof CrashReportStatus>;
 
 export const CrashGroupId = Uuid;
 
+/** A released version: three or four dot-separated numbers, as tags name them (v0.11.8.1). */
+export const ReleaseVersion = Type.String({ pattern: '^[0-9]+(\\.[0-9]+){2,3}$' });
+
+/**
+ * Triage state of a crash group (docs/multiplayer/crash-reports.md#triage):
+ * every group starts 'new'; 'resolved' names the release that fixed it, and a
+ * resolved group that recurs in that release or a later one is 'new' again.
+ */
+export const CrashGroupState = Type.Union([
+  Type.Literal('new'),
+  Type.Literal('triaged'),
+  Type.Literal('resolved'),
+]);
+export type CrashGroupState = Static<typeof CrashGroupState>;
+
 /** One frame of a symbolicated stack, innermost first. */
 export const CrashFrame = Strict({
   /** File name of the module (glob2, glob2.exe, libmain.so, glob2.wasm, ...). */
@@ -212,6 +227,13 @@ export const AdminCrashGroup = Strict({
   installs: Type.Integer({ minimum: 0 }),
   platforms: Type.Array(Type.String()),
   distributions: Type.Array(Type.String()),
+  state: CrashGroupState,
+  /** The release a resolved group was fixed in; kept when the group reopens. */
+  fixedIn: Type.Optional(Type.String()),
+  /** The GitHub issue opened for the group, if any. */
+  githubIssue: Type.Optional(
+    Strict({ number: Type.Integer({ minimum: 1 }), url: Type.String({ maxLength: 512 }) }),
+  ),
 });
 export type AdminCrashGroup = Static<typeof AdminCrashGroup>;
 
@@ -227,9 +249,6 @@ export type AdminCrashGroupList = Static<typeof AdminCrashGroupList>;
 export const CrashSymbolKind = Type.Union([Type.Literal('breakpad'), Type.Literal('wasm')]);
 export type CrashSymbolKind = Static<typeof CrashSymbolKind>;
 
-/** A released version: three or four dot-separated numbers, as tags name them (v0.11.8.1). */
-export const ReleaseVersion = Type.String({ pattern: '^[0-9]+(\\.[0-9]+){2,3}$' });
-
 export const CrashSymbolReceipt = Strict({
   kind: CrashSymbolKind,
   /** The debug file name minidumps refer to (glob2, glob2.pdb, libmain.so, glob2.wasm). */
@@ -242,6 +261,119 @@ export const CrashSymbolReceipt = Strict({
 });
 export type CrashSymbolReceipt = Static<typeof CrashSymbolReceipt>;
 
+/** Body of POST /api/v1/admin/crash-groups/:id/state. */
+export const CrashGroupStateRequest = Strict({
+  state: CrashGroupState,
+  /** Required for 'resolved': the first release that has the fix. */
+  fixedIn: Type.Optional(ReleaseVersion),
+});
+export type CrashGroupStateRequest = Static<typeof CrashGroupStateRequest>;
+
+export const CrashGroupStateReceipt = Strict({
+  id: CrashGroupId,
+  state: CrashGroupState,
+  fixedIn: Type.Optional(ReleaseVersion),
+});
+export type CrashGroupStateReceipt = Static<typeof CrashGroupStateReceipt>;
+
+/** A UTC calendar day, YYYY-MM-DD. */
+export const UtcDay = Type.String({ pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' });
+
+/**
+ * Body of POST /api/v1/crash-sessions (docs/multiplayer/crash-reports.md#session-counts):
+ * how many sessions one install started on one UTC day, sent only by installs
+ * whose player chose "Always send". The count is the day's running total, so
+ * a resent or retried ping changes nothing; the server keeps the largest.
+ */
+export const CrashSessionPing = Strict({
+  schema: Type.Literal(1),
+  installId: Uuid,
+  version: ReleaseVersion,
+  versionMinor: Type.Integer({ minimum: 0, maximum: 65535 }),
+  distribution: CrashReportDistribution,
+  platform: CrashReportPlatform,
+  /** The UTC day the sessions started on: today or one of the six days before. */
+  day: UtcDay,
+  /** Sessions started that day so far, the crashed ones included. */
+  sessions: Type.Integer({ minimum: 1, maximum: 500 }),
+});
+export type CrashSessionPing = Static<typeof CrashSessionPing>;
+
+/** Crash-free rates over one slice of a release's opted-in sessions. */
+export const CrashFreeStats = Strict({
+  /** Sessions and distinct installs that "Always send" installs reported. */
+  sessions: Type.Integer({ minimum: 0 }),
+  installs: Type.Integer({ minimum: 0 }),
+  /** Crash reports from those installs, and how many of them crashed at all. */
+  crashedSessions: Type.Integer({ minimum: 0 }),
+  crashedInstalls: Type.Integer({ minimum: 0 }),
+  /** Share of sessions and installs without a crash, 0 to 1; absent without sessions. */
+  crashFreeSessions: Type.Optional(Type.Number({ minimum: 0, maximum: 1 })),
+  crashFreeInstalls: Type.Optional(Type.Number({ minimum: 0, maximum: 1 })),
+});
+export type CrashFreeStats = Static<typeof CrashFreeStats>;
+
+/** A group first seen in a release, with its reports in that release. */
+export const AdminCrashReleaseGroup = Strict({
+  id: CrashGroupId,
+  signature: Type.String(),
+  state: CrashGroupState,
+  reports: Type.Integer({ minimum: 0 }),
+  installs: Type.Integer({ minimum: 0 }),
+});
+export type AdminCrashReleaseGroup = Static<typeof AdminCrashReleaseGroup>;
+
+/** One release in GET /api/v1/admin/crash-releases. */
+export const AdminCrashRelease = Strict({
+  version: ReleaseVersion,
+  /** When its first symbols were uploaded. */
+  registeredAt: Timestamp,
+  /** Crash-free rates over every opted-in session. */
+  overall: CrashFreeStats,
+  /** The same per platform and channel, most sessions first. */
+  breakdown: Type.Array(
+    Strict({ platform: Type.String(), distribution: Type.String(), stats: CrashFreeStats }),
+  ),
+  /** Every crash report of the release (any consent) and distinct installs sending them. */
+  reports: Type.Integer({ minimum: 0 }),
+  affectedInstalls: Type.Integer({ minimum: 0 }),
+  /** Groups whose first release this is, most affected installs first (at most ten). */
+  newGroups: Type.Array(AdminCrashReleaseGroup),
+});
+export type AdminCrashRelease = Static<typeof AdminCrashRelease>;
+
+export const AdminCrashReleaseList = Page(AdminCrashRelease);
+export type AdminCrashReleaseList = Static<typeof AdminCrashReleaseList>;
+
+/**
+ * Answer of GET /api/v1/crash-releases/:version/gate
+ * (docs/multiplayer/crash-reports.md#promotion-gate): whether a release may be
+ * promoted to a wider audience.
+ */
+export const CrashReleaseGate = Strict({
+  version: ReleaseVersion,
+  verdict: Type.Union([
+    Type.Literal('pass'),
+    Type.Literal('fail'),
+    Type.Literal('insufficient_data'),
+  ]),
+  /** One line per check that failed or could not be decided, or why it passed. */
+  reasons: Type.Array(Type.String()),
+  /** The release compared against: the newest registered one before this. */
+  previousVersion: Type.Optional(ReleaseVersion),
+  sessions: Type.Integer({ minimum: 0 }),
+  crashFreeSessions: Type.Optional(Type.Number({ minimum: 0, maximum: 1 })),
+  previousSessions: Type.Optional(Type.Integer({ minimum: 0 })),
+  previousCrashFreeSessions: Type.Optional(Type.Number({ minimum: 0, maximum: 1 })),
+  /** How far below the previous release crash-free sessions may fall (a fraction). */
+  tolerance: Type.Number({ minimum: 0, maximum: 1 }),
+  /** Fewest sessions either release needs before the comparison counts. */
+  minimumSessions: Type.Integer({ minimum: 0 }),
+  /** New groups among the release's five most affecting installs that are still 'new'. */
+  untriagedGroups: Type.Array(AdminCrashReleaseGroup),
+});
+export type CrashReleaseGate = Static<typeof CrashReleaseGate>;
+
 export const crashReportSchemas = {
   CrashReportContext,
   CrashReportReceipt,
@@ -252,4 +384,11 @@ export const crashReportSchemas = {
   AdminCrashGroup,
   AdminCrashGroupList,
   CrashSymbolReceipt,
+  CrashGroupStateRequest,
+  CrashGroupStateReceipt,
+  CrashSessionPing,
+  CrashFreeStats,
+  AdminCrashRelease,
+  AdminCrashReleaseList,
+  CrashReleaseGate,
 };

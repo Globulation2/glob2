@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:CrashReleaseGate",
+  "title": "CrashReleaseGate",
+  "type": "object",
+  "required": [
+    "version",
+    "verdict",
+    "reasons",
+    "sessions",
+    "tolerance",
+    "minimumSessions",
+    "untriagedGroups"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+){2,3}$"
+    },
+    "verdict": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "pass"
+        },
+        {
+          "type": "string",
+          "const": "fail"
+        },
+        {
+          "type": "string",
+          "const": "insufficient_data"
+        }
+      ]
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "previousVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+){2,3}$"
+    },
+    "sessions": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "crashFreeSessions": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "previousSessions": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "previousCrashFreeSessions": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "tolerance": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "minimumSessions": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "untriagedGroups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "signature",
+          "state",
+          "reports",
+          "installs"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "description": "Lowercase UUID."
+          },
+          "signature": {
+            "type": "string"
+          },
+          "state": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "new"
+              },
+              {
+                "type": "string",
+                "const": "triaged"
+              },
+              {
+                "type": "string",
+                "const": "resolved"
+              }
+            ]
+          },
+          "reports": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "installs": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -3111,5 +3111,19 @@
   "Installs": "ఇన్‌స్టాల్‌లు",
   "Stack": "స్టాక్",
   "Channel": "ఛానెల్",
-  "Show reports": "నివేదికలను చూపించు"
+  "Show reports": "నివేదికలను చూపించు",
+  "Groups": "సమూహాలు",
+  "State": "స్థితి",
+  "New": "కొత్తది",
+  "Triaged": "పరిశీలించబడింది",
+  "Fixed in": "సరిచేసిన వెర్షన్",
+  "Reopened after the fix in {value0}": "{value0}లో సరిచేసిన తర్వాత మళ్లీ తెరవబడింది",
+  "GitHub issue": "GitHub ఇష్యూ",
+  "Crash-free sessions": "క్రాష్ లేని సెషన్లు",
+  "Crash-free installs": "క్రాష్ లేని ఇన్‌స్టాల్‌లు",
+  "Sessions": "సెషన్లు",
+  "Crash reports": "క్రాష్ నివేదికలు",
+  "Affected installs": "ప్రభావిత ఇన్‌స్టాల్‌లు",
+  "New in this release": "ఈ విడుదలలో కొత్తది",
+  "No releases yet.": "ఇంకా విడుదలలు లేవు."
 }

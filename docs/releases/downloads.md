@@ -11,6 +11,23 @@ network version gates, compare cross-platform simulation checksums for any
 simulation changes, and play the release candidate. Retain the resulting files
 and logs under `artifacts/` and attach review evidence to the release PR.
 
+### Crash reports before promotion
+
+Before promoting a release to a wider audience (staged downloads to stable, a
+Play or TestFlight test track to production, a rollout percentage increase),
+check **Admin → Crashes → Releases** and Google Play vitals, then run the
+[crash gate](../multiplayer/crash-reports.md#promotion-gate):
+
+```sh
+CRASH_SYMBOL_UPLOAD_TOKEN=… python3 tools/release/crash_gate.py --version VERSION
+```
+
+It exits 0 on pass, 1 on fail (crash-free sessions more than 0.5 points below
+the previous release, or an untriaged crash group new in this release among
+its five most affecting installs) and 2 while the release has fewer than 1000
+opted-in sessions. Triage or fix what fails it; do not promote on
+`--allow-insufficient` without saying so in the release notes for maintainers.
+
 
 ## Qualified downloads manifest
 

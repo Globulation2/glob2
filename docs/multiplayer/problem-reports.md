@@ -4,8 +4,7 @@ Report a Problem lets a player send the recent log, their newest save and replay
 and a short description to the official glob2-online instance, or save the same
 bundle to a file. Every report goes to glob2-online and to no third-party service.
 [Crash reports](crash-reports.md) use the same bundle and endpoint, and add
-symbolication and crash grouping; crash capture in the game and release gates
-come later.
+symbolication, crash grouping and [release gates](crash-reports.md#release-gates).
 
 ## In the game
 

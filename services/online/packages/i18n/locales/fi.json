@@ -3111,5 +3111,19 @@
   "Installs": "Asennukset",
   "Stack": "Pino",
   "Channel": "Kanava",
-  "Show reports": "Näytä raportit"
+  "Show reports": "Näytä raportit",
+  "Groups": "Ryhmät",
+  "State": "Tila",
+  "New": "Uusi",
+  "Triaged": "Käsitelty",
+  "Fixed in": "Korjattu versiossa",
+  "Reopened after the fix in {value0}": "Avattu uudelleen korjauksen jälkeen versiossa {value0}",
+  "GitHub issue": "GitHub-tiketti",
+  "Crash-free sessions": "Kaatumattomat istunnot",
+  "Crash-free installs": "Kaatumattomat asennukset",
+  "Sessions": "Istunnot",
+  "Crash reports": "Kaatumisraportit",
+  "Affected installs": "Kohteena olevat asennukset",
+  "New in this release": "Uutta tässä versiossa",
+  "No releases yet.": "Ei vielä versioita."
 }

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:CrashFreeStats",
+  "title": "CrashFreeStats",
+  "type": "object",
+  "required": [
+    "sessions",
+    "installs",
+    "crashedSessions",
+    "crashedInstalls"
+  ],
+  "properties": {
+    "sessions": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "installs": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "crashedSessions": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "crashedInstalls": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "crashFreeSessions": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "crashFreeInstalls": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    }
+  },
+  "additionalProperties": false
+}

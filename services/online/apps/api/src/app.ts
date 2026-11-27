@@ -49,6 +49,7 @@ import { adminRoutes } from './routes/admin.ts';
 import { adminConsoleRoutes } from './admin/routes.ts';
 import { crashReportRoutes } from './crashReports/routes.ts';
 import { crashSymbolRoutes } from './crashReports/symbols.ts';
+import { crashReleaseRoutes } from './crashReports/releases.ts';
 import { operationsRoutes } from './admin/operations.ts';
 import { analyticsRoutes } from './admin/analytics.ts';
 import { financeRoutes } from './admin/finances.ts';
@@ -300,6 +301,7 @@ export async function buildApp(
   await adminConsoleRoutes(app, identity);
   await crashReportRoutes(app, identity);
   await crashSymbolRoutes(app);
+  await crashReleaseRoutes(app, identity);
   await operationsRoutes(app, identity);
   await analyticsRoutes(app, identity);
   await financeRoutes(app, identity);

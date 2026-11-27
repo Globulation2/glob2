@@ -3111,5 +3111,19 @@
   "Installs": "Instaloj",
   "Stack": "Stako",
   "Channel": "Kanalo",
-  "Show reports": "Montri raportojn"
+  "Show reports": "Montri raportojn",
+  "Groups": "Grupoj",
+  "State": "Stato",
+  "New": "Nova",
+  "Triaged": "Ordigita",
+  "Fixed in": "Riparita en",
+  "Reopened after the fix in {value0}": "Remalfermita post la riparo en {value0}",
+  "GitHub issue": "GitHub-problemo",
+  "Crash-free sessions": "Seancoj sen kraŝo",
+  "Crash-free installs": "Instaloj sen kraŝo",
+  "Sessions": "Seancoj",
+  "Crash reports": "Kraŝraportoj",
+  "Affected installs": "Trafitaj instaloj",
+  "New in this release": "Nova en ĉi tiu eldono",
+  "No releases yet.": "Ankoraŭ neniuj eldonoj."
 }

@@ -3111,5 +3111,19 @@
   "Installs": "Инсталации",
   "Stack": "Стек",
   "Channel": "Канал",
-  "Show reports": "Покажи докладите"
+  "Show reports": "Покажи докладите",
+  "Groups": "Групи",
+  "State": "Състояние",
+  "New": "Нов",
+  "Triaged": "Разгледан",
+  "Fixed in": "Поправен в",
+  "Reopened after the fix in {value0}": "Отворен отново след поправката в {value0}",
+  "GitHub issue": "Проблем в GitHub",
+  "Crash-free sessions": "Сесии без сривове",
+  "Crash-free installs": "Инсталации без сривове",
+  "Sessions": "Сесии",
+  "Crash reports": "Доклади за сривове",
+  "Affected installs": "Засегнати инсталации",
+  "New in this release": "Ново в тази версия",
+  "No releases yet.": "Все още няма версии."
 }

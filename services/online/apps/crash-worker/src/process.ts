@@ -5,7 +5,14 @@ import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { sql, type Kysely } from 'kysely';
 import { CRASH_PAYLOAD_ENTRIES } from '@glob2/protocol';
-import { listEntries, readEntry, ZipError, type BlobStore, type Logger } from '@glob2/core';
+import {
+  CRASH_GITHUB_ISSUE_TASK,
+  listEntries,
+  readEntry,
+  ZipError,
+  type BlobStore,
+  type Logger,
+} from '@glob2/core';
 import type { Database } from '@glob2/db';
 import { withScratchDir } from '@glob2/engine/process';
 import {
@@ -27,6 +34,8 @@ export interface CrashTools {
   cache: SymbolCache;
   /** Scratch space for extracted dumps and stackwalk output. */
   scratch?: string;
+  /** Queue a CRASH_GITHUB_ISSUE_TASK job for each new group (GitHub issues configured). */
+  issues?: boolean;
 }
 
 async function readAll(stream: NodeJS.ReadableStream): Promise<Buffer> {
@@ -117,6 +126,9 @@ export async function processCrashReport(
       .catch((err: unknown) => logger.warn({ err }, 'Symbol cache eviction failed'));
   }
   const key = signature(result.frames);
+  const reopens = sql`crash_groups.state = 'resolved'
+    AND string_to_array(excluded.last_version, '.')::int[]
+      >= string_to_array(crash_groups.fixed_in, '.')::int[]`;
   await db.transaction().execute(async (trx) => {
     // First and last releases compare numerically; crash reports only come
     // from registered release versions (crash_releases), all of them numeric.
@@ -132,10 +144,22 @@ export async function processCrashReport(
             > string_to_array(crash_groups.last_version, '.')::int[]
             THEN excluded.last_version ELSE crash_groups.last_version END`,
           last_seen_at: sql<Date>`now()`,
+          // A resolved group that recurs in its fixed-in release or later is
+          // untriaged again (docs/multiplayer/crash-reports.md#triage).
+          state: sql<'new' | 'triaged' | 'resolved'>`CASE WHEN ${reopens} THEN 'new'
+            ELSE crash_groups.state END`,
+          state_changed_at: sql<Date | null>`CASE WHEN ${reopens} THEN now()
+            ELSE crash_groups.state_changed_at END`,
         }),
       )
-      .returning('id')
+      .returning(['id', sql<boolean>`xmax = 0`.as('created')])
       .executeTakeFirstOrThrow();
+    if (group.created && tools.issues)
+      await sql`SELECT graphile_worker.add_job(
+        identifier => ${CRASH_GITHUB_ISSUE_TASK}::text,
+        payload => ${JSON.stringify({ groupId: group.id })}::json,
+        job_key => ${`crash-issue-${group.id}`}::text,
+        max_attempts => 5)`.execute(trx);
     await trx
       .updateTable('crash_reports')
       .set({

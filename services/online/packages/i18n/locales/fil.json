@@ -3111,5 +3111,19 @@
   "Installs": "Mga install",
   "Stack": "Stack",
   "Channel": "Channel",
-  "Show reports": "Ipakita ang mga ulat"
+  "Show reports": "Ipakita ang mga ulat",
+  "Groups": "Mga grupo",
+  "State": "Kalagayan",
+  "New": "Bago",
+  "Triaged": "Nasuri na",
+  "Fixed in": "Naayos sa",
+  "Reopened after the fix in {value0}": "Muling binuksan pagkatapos ng ayos sa {value0}",
+  "GitHub issue": "Isyu sa GitHub",
+  "Crash-free sessions": "Mga session na walang crash",
+  "Crash-free installs": "Mga install na walang crash",
+  "Sessions": "Mga session",
+  "Crash reports": "Mga ulat ng crash",
+  "Affected installs": "Mga apektadong install",
+  "New in this release": "Bago sa release na ito",
+  "No releases yet.": "Wala pang release."
 }

@@ -3111,5 +3111,19 @@
   "Installs": "Installationer",
   "Stack": "Stack",
   "Channel": "Kanal",
-  "Show reports": "Visa rapporter"
+  "Show reports": "Visa rapporter",
+  "Groups": "Grupper",
+  "State": "Tillstånd",
+  "New": "Ny",
+  "Triaged": "Bedömd",
+  "Fixed in": "Åtgärdad i",
+  "Reopened after the fix in {value0}": "Återöppnad efter rättelsen i {value0}",
+  "GitHub issue": "GitHub-ärende",
+  "Crash-free sessions": "Sessioner utan krascher",
+  "Crash-free installs": "Installationer utan krascher",
+  "Sessions": "Sessioner",
+  "Crash reports": "Kraschrapporter",
+  "Affected installs": "Berörda installationer",
+  "New in this release": "Nytt i den här versionen",
+  "No releases yet.": "Inga versioner än."
 }
