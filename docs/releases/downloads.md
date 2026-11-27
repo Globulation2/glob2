@@ -28,6 +28,17 @@ its five most affecting installs) and 2 while the release has fewer than 1000
 opted-in sessions. Triage or fix what fails it; do not promote on
 `--allow-insufficient` without saying so in the release notes for maintainers.
 
+The store promotions run the gate themselves, with the gate script from the
+mirror's revision rather than the tag: `android-play-internal.yml` on the
+`production` track, and `ios-production.yml` and `mac-app-store-production.yml`
+at `submit` and `publish`. A failing or undecided gate stops the workflow before
+it touches the store. Their `allow_insufficient_crash_data` input passes
+`--allow-insufficient`. Tags cut before crash reporting (no
+`src/app/CrashCapture.h`) skip the gate. Each of those environments
+(`google-play-production`, `ios-testflight`, `mac-app-store`) holds
+`CRASH_SYMBOL_UPLOAD_TOKEN`. Staged downloads and rollout percentages are still
+checked by hand.
+
 
 ## Qualified downloads manifest
 

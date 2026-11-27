@@ -321,7 +321,8 @@ answers a `CrashReleaseGate`: a `verdict` and the `reasons` behind it.
 1 on fail, 2 on insufficient data (0 with `--allow-insufficient`) and 3 when the
 gate could not be asked; `test/build_system/test_crash_gate.py` covers it. The
 [release runbook](../releases/downloads.md#crash-reports-before-promotion) runs it
-before every promotion.
+before every promotion, and the Play production, iOS and Mac App Store
+promotion workflows run it themselves.
 
 ### Triage
 

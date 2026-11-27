@@ -22,6 +22,11 @@ on:
         required: false
         default: false
         type: boolean
+      allow_insufficient_crash_data:
+        description: Promote although the release has too few opted-in sessions for the crash gate (say so in the maintainer notes)
+        required: false
+        default: false
+        type: boolean
   workflow_call:
     inputs:
       source_commit:
@@ -40,6 +45,10 @@ on:
         default: Globulation 2 release.
         type: string
       preflight_only:
+        required: false
+        default: false
+        type: boolean
+      allow_insufficient_crash_data:
         required: false
         default: false
         type: boolean
@@ -103,6 +112,34 @@ jobs:
           if [[ -n "$EXPECTED_COMMIT" ]]; then test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"; fi
           echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        if: ${{ inputs.track == 'production' && !inputs.preflight_only }}
+        with:
+          ref: ${{ github.sha }}
+          path: release-driver
+          sparse-checkout: |
+            tools/release/crash_gate.py
+            buildsys/official_instance.py
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Hold the promotion on the crash-free gate
+        # docs/releases/downloads.md#crash-reports-before-promotion. The gate comes from
+        # this workflow's revision; tags cut before crash reporting have no sessions to judge.
+        if: ${{ inputs.track == 'production' && !inputs.preflight_only }}
+        env:
+          CRASH_SYMBOL_UPLOAD_TOKEN: ${{ secrets.CRASH_SYMBOL_UPLOAD_TOKEN }}
+          TAG: ${{ inputs.tag }}
+          ALLOW_INSUFFICIENT: ${{ inputs.allow_insufficient_crash_data }}
+        run: |
+          set -euo pipefail
+          if [ ! -f src/app/CrashCapture.h ]; then
+            echo "::notice::$TAG predates crash reporting; no crash gate"
+            exit 0
+          fi
+          test -n "$CRASH_SYMBOL_UPLOAD_TOKEN" || { echo 'Set CRASH_SYMBOL_UPLOAD_TOKEN in this environment' >&2; exit 1; }
+          arguments=(--version "${TAG#v}")
+          if [ "$ALLOW_INSUFFICIENT" = true ]; then arguments+=(--allow-insufficient); fi
+          python3 release-driver/tools/release/crash_gate.py "${arguments[@]}" | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Install pinned Play API preflight tools
         run: |
           python3 -m venv "$RUNNER_TEMP/play-preflight-tools"
