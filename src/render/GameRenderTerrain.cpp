@@ -459,6 +459,121 @@ void MapDrawer::drawMapResources(int left, int top, int right, int bot, int view
 	flush();
 }
 
+void MapDrawer::drawMapDecorOccluders(int y, DecorDepth depth, int left, int right, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, MapRenderState *render)
+{
+	const auto &compositor = globalContainer->terrainCompositor(sceneMap.frozenAssetBundle());
+	if (compositor.decorReach().up <= 0)
+		return; // No decor rises above its cell.
+	Uint32 visibleTeams = Team::teamNumberToMask(localTeam);
+	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
+	const int mapY = (y + viewportY) & sceneMap.getMaskH();
+	const auto visible = [&](int x)
+	{
+		return (drawOptions & Game::DRAW_WHOLE_MAP) != 0 ||
+			   sceneMap.isMapPartiallyDiscovered(x + viewportX - 1, y + viewportY - 1, x + viewportX + 1,
+												 y + viewportY + 1, visibleTeams);
+	};
+	// The row's frames as drawMapResources recorded them this frame, when it did.
+	const ResourceRowCache::Row *cached = nullptr;
+	if (render && render->resourceRows)
+	{
+		const auto &rows = *render->resourceRows;
+		if (rows.stamp.map == sceneMap.cacheKey() && rows.stamp.terrain == sceneMap.terrainRevision() &&
+			rows.stamp.decor == compositor.decorSprite() && rows.rows.size() == std::size_t(sceneMap.getH()) &&
+			rows.rows[mapY].built)
+			cached = &rows.rows[mapY];
+	}
+	const auto tierField = cached ? nullptr : compositor.tierField(sceneMap);
+	struct Tall
+	{
+		int x, slot, frame;
+		GAGCore::Sprite *sprite;
+	};
+	std::vector<Tall> tall;
+	std::vector<std::pair<int, int>> spans; // Screen pixel columns the tall decor covers.
+	for (int x = left; x <= right; ++x)
+	{
+		const int mapX = (x + viewportX) & sceneMap.getMaskW();
+		std::array<TerrainVisual::Compositor::DecorLayer, TerrainVisual::Compositor::DecorSlots> layers{};
+		if (cached)
+		{
+			for (unsigned slot = 0; slot < layers.size(); ++slot)
+				if (mapX < int(cached->decor[slot].frames.size()) && cached->decor[slot].frames[mapX] >= 0)
+					layers[slot] = {compositor.decorSprite(), cached->decor[slot].frames[mapX]};
+		}
+		else
+			layers = compositor.decorLayers(sceneMap, x + viewportX, y + viewportY, tierField.get());
+		bool shown = false, checked = false;
+		std::optional<bool> front;
+		for (unsigned slot = 0; slot < layers.size(); ++slot)
+		{
+			const auto &layer = layers[slot];
+			if (!layer.sprite || layer.frame < 0)
+				continue;
+			const int h = layer.sprite->getH(layer.frame);
+			if (TerrainVisual::decorOffsetY(h) + TerrainVisual::Compositor::decorSlotRise(slot) <= 0)
+				continue; // Within its cell: it hides nothing drawn behind it.
+			if (depth != DecorDepth::All)
+			{
+				if (!front)
+					front = compositor.decorInFront(sceneMap, x + viewportX, y + viewportY);
+				if (*front != (depth == DecorDepth::Front))
+					break;
+			}
+			if (!checked)
+				shown = visible(x), checked = true;
+			if (!shown)
+				break;
+			tall.push_back({x, int(slot), layer.frame, layer.sprite});
+			const int w = layer.sprite->getW(layer.frame), left = (x << 5) - TerrainVisual::decorOffsetX(w);
+			spans.push_back({left, left + w});
+		}
+	}
+	if (tall.empty())
+		return;
+	// In the row's order: decor slot by slot, then the resources in front of it.
+	std::stable_sort(tall.begin(), tall.end(), [](const Tall &a, const Tall &b) { return a.slot < b.slot; });
+	GAGCore::Sprite *pending = nullptr;
+	const auto use = [&](GAGCore::Sprite *sprite)
+	{
+		if (pending && pending != sprite)
+			globalContainer->gfx->finishDrawingSprite(pending, 255);
+		pending = sprite;
+	};
+	for (const auto &decor : tall)
+	{
+		use(decor.sprite);
+		globalContainer->gfx->drawSprite(
+			(decor.x << 5) - TerrainVisual::decorOffsetX(decor.sprite->getW(decor.frame)),
+			(y << 5) - TerrainVisual::decorOffsetY(decor.sprite->getH(decor.frame)) -
+				TerrainVisual::Compositor::decorSlotRise(unsigned(decor.slot)),
+			decor.sprite, decor.frame);
+	}
+	auto &catalog = ResourceSprites::resolve(sceneMap.frozenResourceRegistry(), sceneMap.frozenAssetBundle());
+	const bool capture = (drawOptions & Game::DRAW_TILED_CAPTURE) != 0;
+	for (int x = left; x <= right; ++x)
+	{
+		const auto &r = sceneMap.getResource(x + viewportX, y + viewportY);
+		if (r.type == NO_RES_TYPE)
+			continue;
+		const auto &presentation = sceneMap.resourceRegistry().presentation(static_cast<ResourceId>(r.type));
+		GAGCore::Sprite *sprite = catalog.sprite(static_cast<ResourceId>(r.type), capture);
+		const int imgid = presentation.frame(r.amount, (x + viewportX) & sceneMap.getMaskW(),
+											 (y + viewportY) & sceneMap.getMaskH(), sceneMap.tick);
+		if (!sprite || imgid >= sprite->getFrameCount())
+			continue;
+		const int w = sprite->getW(imgid), h = sprite->getH(imgid);
+		const int rx = (x << 5) - ((w - 32) >> 1);
+		if (std::none_of(spans.begin(), spans.end(), [&](const auto &span) { return rx < span.second && rx + w > span.first; }) ||
+			!visible(x))
+			continue;
+		use(sprite);
+		globalContainer->gfx->drawSprite(rx, (y << 5) - ((h - 32) >> 1), sprite, imgid);
+	}
+	if (pending)
+		globalContainer->gfx->finishDrawingSprite(pending, 255);
+}
+
 void MapDrawer::drawMapOverview(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, MapRenderState& render)
 {
 	const Uint8 alpha = Uint8(std::clamp(render.detail.terrainOverview, 0.f, 1.f) * 255);
