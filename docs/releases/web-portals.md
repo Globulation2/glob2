@@ -74,16 +74,10 @@ table above. Like the other fields it fails closed: only a JSON `true` turns it 
 music) can be silenced while a portal pauses or mutes the game; audio the game
 reactivates meanwhile is suspended again, and a hidden page stays suspended for the
 game's own visibility handler. It reads the shell's download bar as loading
-progress and the body's `ready` class as the first interactive screen (a first-run
-question such as the sound choice or the introduction offer, or the main menu),
-and reports gameplay as active while the player is in a match, the page is visible
-and neither the portal nor an ad holds the game; the menus are not gameplay. A
-portal that times loading up to the first gameplay event (CrazyGames) also counts
-the first interactive screen as gameplay until the first match ends
-(`createSession` option `firstScreen`), so its first gameplay start marks the end
-of loading; Poki, Yandex Games and the others report only matches, around actual
-play as their SDKs ask. Ad breaks follow the matches the game reports, whatever
-gameplay an adapter sends. Each adapter turns these signals into its SDK's calls; without the SDK (an ad blocker, a local test)
+progress and the body's `ready` class as the interactive main menu, and reports
+gameplay as active while the player is in a match, the page is visible and neither
+the portal nor an ad holds the game; the menus are not gameplay. Each adapter turns
+these signals into its SDK's calls; without the SDK (an ad blocker, a local test)
 an adapter does nothing and the game runs.
 
 ## Ad breaks
