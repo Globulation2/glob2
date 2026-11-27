@@ -22,6 +22,7 @@
 #include <fstream>
 #include <cstdlib>
 #include "Building.h"
+#include "Unit.h"
 #include "render/scene/Scene.h"
 #include "sim/snapshot/SnapshotStore.h"
 #include "GameGUIToolManager.h"
@@ -1585,8 +1586,12 @@ TEST_CASE("local game tools report resource fields, numeric status and initial p
 		  std::string::npos);
 	CHECK(refusal({{"building", "warflag"}, {"x", 24}, {"y", 24}, {"builders", 3}}).find("builders") !=
 		  std::string::npos);
-	CHECK(refusal({{"building", "inn"}, {"x", 24}, {"y", 24}, {"workers", 99}}).find("0..20 (got 99)") !=
-		  std::string::npos);
+	// A count above what the game takes is capped and reported, not refused.
+	placed = commander.call("game_place", {{"building", "inn"}, {"x", 24}, {"y", 24}, {"workers", 99}});
+	CHECK(placed.at("settings").at("workers") == 20);
+	CHECK(placed.at("settings").at("workers_capped") == true);
+	while (HiveToolsTestAccess::tools(world.gui).getOrder())
+		;
 	CHECK(refusal({{"building", "inn"}, {"x", 24}, {"y", 24}, {"priority", "urgent"}}).find("priority must be") !=
 		  std::string::npos);
 	// "No room" names what was in the way, and suggests near only when it was not passed.
@@ -1644,6 +1649,171 @@ TEST_CASE("local game tools report resource fields, numeric status and initial p
 			CHECK(row.contains("summary"));
 			CHECK_FALSE(row.contains("seconds"));
 		}
+}
+
+TEST_CASE("local game tools raise own economy alerts, read names loosely and name the fix" *
+		  doctest::test_suite("HiveMindIntegration"))
+{
+	glob2test::HeadlessGlobals globals({.seed = 23});
+	PresentationFrame published; // Outlives the GUI that points at it.
+	glob2test::HeadlessGame world({.wDec = 6, .hDec = 6, .teams = 2, .clearImmobile = true,
+								   .loadDefaultRace = true, .header = true});
+	REQUIRE(world.addBuilding("swarm", 4, 4));
+	Building *inn = world.addBuilding("inn", 14, 4);
+	Building *flag = world.addBuilding("warflag", 40, 40);
+	flag->maxUnitWorking = 5; // requests warriors the colony does not have
+	const int siteType = world.game.buildingsTypes.getTypeNum("inn", 0, true);
+	REQUIRE(siteType >= 0);
+	Building *site = world.game.addBuilding(14, 14, siteType, 0);
+	REQUIRE(site);
+	world.game.map.setBuilding(14, 14, site->type->width, site->type->height, site->gid);
+	// Two hungry workers beside the empty Inn.
+	for (int i = 0; i < 2; ++i)
+		world.addUnit(WORKER, 18 + i, 6)->medical = Unit::MED_HUNGRY;
+	// A wood field the colony can see, later cut down.
+	for (int y = 20; y < 26; ++y)
+		for (int x = 20; x < 26; ++x)
+			world.game.map.setResourceByIndex(x, y, WOOD, 0);
+	const auto vision = world.game.teams[0]->me;
+	const auto reveal = [&]
+	{
+		world.game.map.setMapDiscovered(0, 0, 64, 64, vision);
+		world.game.map.switchFogOfWar();
+		world.game.map.setMapDiscovered(0, 0, 64, 64, vision);
+	};
+	reveal();
+	world.gui.localPlayer = world.gui.localTeamNo = 0;
+	world.gui.adjustLocalTeam();
+	world.game.players[0]->type = BasePlayer::P_LOCAL;
+	world.game.snapshots().invalidateBoundary();
+	world.gui.rebuildBuildingChoices(false);
+	world.gui.prepareLocalPresentation(published);
+	world.gui.setPublishedScene(&published);
+	Hive::LocalCommander commander(world.gui, [](Json input)
+	{
+		std::promise<Json> ready;
+		ready.set_value(Hive::invoke(input));
+		return ready.get_future();
+	});
+	world.game.stepCounter = 100;
+	// Game time passes without running the simulation, so nothing else changes meanwhile.
+	const auto pass = [&](unsigned ticks)
+	{
+		world.game.stepCounter += ticks;
+		world.game.snapshots().invalidateBoundary();
+		commander.update();
+	};
+	const auto alertsOf = [&](const std::string &kind)
+	{
+		Json found = Json::array();
+		const auto reply = commander.call("game_world", {{"detail", "alerts"}});
+		for (const auto &alert : reply.at("alerts"))
+			if (alert.at("kind") == kind)
+				found.push_back(alert);
+		return found;
+	};
+	auto state = commander.call("game_world", Json::object()); // starts the colony's memory
+	pass(1);
+	auto low = alertsOf("inn_low_food");
+	INFO(low.dump());
+	REQUIRE(low.size() == 1);
+	CHECK(low[0].at("building").at("id") == inn->gid);
+	CHECK(low[0].at("event").get<std::string>().find("0/10 wheat, 2 hungry units") != std::string::npos);
+	CHECK(alertsOf("site_stalled").empty()); // not yet: a site gets a minute
+	CHECK(alertsOf("flag_unstaffed").empty());
+	pass(2000);
+	pass(200);
+	const auto stalled = alertsOf("site_stalled");
+	INFO(stalled.dump());
+	REQUIRE(stalled.size() == 1);
+	CHECK(stalled[0].at("building").at("id") == site->gid);
+	CHECK(stalled[0].at("event").get<std::string>().find("builders assigned 0 of") != std::string::npos);
+	const auto unstaffed = alertsOf("flag_unstaffed");
+	INFO(unstaffed.dump());
+	REQUIRE(unstaffed.size() == 1);
+	CHECK(unstaffed[0].at("event").get<std::string>().find("0 of 5 warriors") != std::string::npos);
+	CHECK(unstaffed[0].at("event").get<std::string>().find("you have 0 free warriors") != std::string::npos);
+	// Each is told once a spell, not every check: the Inn waits until it refills.
+	CHECK(alertsOf("inn_low_food").at(0).at("n") == 1);
+	CHECK(alertsOf("site_stalled").at(0).at("n") == 1);
+	// The field falls to nothing in view: reported once, as the colony saw it.
+	CHECK(alertsOf("resource_field_low").empty());
+	for (int y = 20; y < 26; ++y)
+		for (int x = 20; x < 26; ++x)
+			world.game.map.setNoResource(x, y, 0);
+	reveal();
+	pass(200);
+	pass(200);
+	const auto field = alertsOf("resource_field_low");
+	INFO(field.dump());
+	REQUIRE(field.size() == 1);
+	CHECK(field[0].at("n") == 1);
+	CHECK(field[0].at("event").get<std::string>().find("trees field low: 0 left") != std::string::npos);
+	// Only the colony's own buildings and the fields it has seen: no other team appears.
+	const auto everything = commander.call("game_world", {{"detail", "alerts"}});
+	for (const auto &alert : everything.at("alerts"))
+		CHECK_FALSE(alert.contains("team"));
+
+	// game_wait wakes on them when asked, and compact leaves out what rarely changes.
+	auto waited = commander.call("game_wait", {{"until", {"economy"}}, {"since_tick", 0}, {"compact", true}});
+	INFO(waited.dump());
+	CHECK(waited.at("reason") == "economy");
+	CHECK(waited.at("trigger").at("kind") == "inn_low_food");
+	CHECK_FALSE(waited.contains("session"));
+	CHECK_FALSE(waited.contains("team"));
+	CHECK_FALSE(waited.at("status").contains("hud_sampled"));
+	CHECK_FALSE(waited.at("status").contains("prestige"));
+	CHECK(waited.at("status").contains("units_free"));
+	const auto plain = commander.call("game_wait", {{"until", {"site_stalled"}}, {"since_tick", 0}});
+	CHECK(plain.contains("session")); // the default reply is unchanged
+	CHECK(plain.at("status").contains("hud_sampled"));
+	commander.call("game_world", {{"compact", true}});
+	CHECK_FALSE(commander.call("game_world", {{"compact", true}, {"detail", "alerts"}}).contains("losses"));
+	// include adds sections to the wait's reply, and serves each whatever the detail.
+	waited = commander.call("game_wait", {{"until", {"economy"}}, {"since_tick", 0}, {"include", {"buildings"}}});
+	CHECK(waited.contains("alerts"));
+	CHECK(waited.contains("status"));
+	CHECK_FALSE(waited.at("buildings").empty());
+	CHECK_FALSE(commander.call("game_world", {{"include", {"buildings"}}}).at("buildings").empty());
+	CHECK(commander.call("game_world", {{"detail", "brief"}, {"include", {"resources"}}}).contains("resources"));
+
+	// Building names: case, spaces and underscores; a resource gets a hint.
+	HiveToolsTestAccess::tools(world.gui).deactivateTool();
+	while (HiveToolsTestAccess::tools(world.gui).getOrder())
+		;
+	auto placed = commander.call("game_place", {{"building", "War_Flag"}, {"x", 50}, {"y", 50}, {"workers", 60}});
+	INFO(placed.dump());
+	CHECK(placed.at("building") == "warflag");
+	CHECK(placed.at("building_requested") == "War_Flag");
+	CHECK(placed.at("settings").at("workers_capped") == true);
+	placed = commander.call("game_place", {{"building", "exploration flag"}, {"x", 52}, {"y", 52}});
+	CHECK(placed.at("building") == "explorationflag");
+	while (HiveToolsTestAccess::tools(world.gui).getOrder())
+		;
+	CHECK_THROWS_WITH(commander.call("game_place", {{"building", "wheat"}, {"x", 30}, {"y", 4}}),
+					  doctest::Contains("wheat is a resource, not a building: place an inn"));
+	// Out-of-range reads are capped and reported under settings.
+	state = commander.call("game_world", {{"resource_radius", 100}});
+	CHECK(state.at("settings").at("resource_radius") == 64);
+	CHECK(state.at("settings").at("resource_radius_capped") == true);
+	CHECK(state.at("resources_scope").at("resource_radius") == 64);
+
+	// A wrong generation of your own building names the current one and its type.
+	unsigned innGeneration = 0;
+	for (const auto &b : state.at("colony").at("buildings"))
+		if (b.at("id") == inn->gid)
+			innGeneration = b.at("generation");
+	const auto passCurrent = "pass generation " + std::to_string(innGeneration) + " if you mean that inn";
+	CHECK_THROWS_WITH(commander.call("game_building", {{"id", inn->gid}, {"generation", innGeneration + 7},
+													   {"workers", 2}}),
+					  doctest::Contains(passCurrent.c_str()));
+	// Production on anything but a Swarm names the building and the colony's Swarms.
+	CHECK_THROWS_WITH(commander.call("game_building", {{"id", inn->gid}, {"generation", innGeneration},
+													   {"production", {{"workers", 2}}}}),
+					  doctest::Contains("This inn does not produce units"));
+	CHECK_THROWS_WITH(commander.call("game_building", {{"id", inn->gid}, {"generation", innGeneration},
+													   {"production", {{"workers", 2}}}}),
+					  doctest::Contains("yours: swarm id"));
 }
 
 TEST_CASE("local Hive names sessions, missing arguments, limits and program cadence" *
