@@ -808,8 +808,9 @@ TEST_SUITE("TerrainAnimation")
 		CHECK(cells.shared > 0);
 		CHECK(cells.own > 0);
 		CHECK(cells.own <= island);
-		// It moves within a step, as the shared keyframes crossfade under it.
-		CHECK(change(whole, half, calmed) > 0.05);
+		// It moves within a step, as the shared keyframes crossfade under it:
+		// a little, as the calm band keeps an eighth of the waves at the shore.
+		CHECK(change(whole, half, calmed) > 0.02);
 		portable.reset(); // One display scene at a time.
 		// And it shows what the direct pass shows there, at whole and half steps.
 		for (auto backend : {RendererBackend::SDLGPU, RendererBackend::ProgrammableGL})

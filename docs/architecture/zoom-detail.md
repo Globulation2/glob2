@@ -112,7 +112,7 @@ it is saved, checksummed or read by the simulation.
   endpoints every frame, while static cells keep their cached pages. Its source
   atlas uses at most 16 MiB plus a material table and shares the native atlas's
   map metadata, discovery and coverage. Shore calming fades wave contrast over
-  two tiles from land.
+  four tiles from land.
 - Units cross-fade to team-coloured markers (dot worker, triangle warrior, diamond
   explorer). Bullets, explosions, death animations, the magic effect and the
   level-up number go with the unit sprites. Building sprites cross-fade to chips in the
