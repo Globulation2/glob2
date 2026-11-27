@@ -33,7 +33,9 @@ android {
         debug { jniDebuggable true }
         release { minifyEnabled false; ndk { debugSymbolLevel 'FULL' } }
     }
-    packaging { jniLibs { useLegacyPackaging false } }
+    // Builds with Crashpad extract their native libraries at install, so Android
+    // can run its handler (lib/<abi>/libcrashpad_handler.so) after a crash.
+    packaging { jniLibs { useLegacyPackaging nativeBuild.crash_handler ?: false } }
 }
 
 // Google Play Age Signals (src/app/AgeGate.h): only the Google Play build has the

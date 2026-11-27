@@ -126,6 +126,8 @@ public:
 	void chooseEffect(bool Settings::*field, bool on);
 	/// Periodically saves the game in progress as "Auto save".
 	bool autosaveGames;
+	/// Settings > Privacy: send crash reports without asking (src/app/CrashCapture.h).
+	bool alwaysSendCrashReports;
 	// Local compute preference. An absent value defaults off in both graphical and headless sessions.
 	std::optional<bool> gpuCompute;
 	std::optional<gradient_kernel::Backend> gradientBackend;

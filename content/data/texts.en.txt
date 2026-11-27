@@ -7246,3 +7246,31 @@ Sending reports is for players aged 13 or over. You can save the report to a fil
 This version of the game cannot send reports. Save the report to a file and share it on Discord or by email.
 [report too large %0]
 Left out because the report would be too large: %0
+[report last crash]
+The last crash
+[crash prompt title]
+Globulation 2 closed unexpectedly
+[crash prompt message]
+Send a crash report? It holds the recent log and the crash, never your account or name.
+[crash prompt send]
+Send
+[crash prompt always]
+Always send
+[crash prompt dont send]
+Don't send
+[settings Privacy]
+Privacy
+[settings Crash reports]
+Crash reports
+[settings Always send crash reports]
+Always send crash reports
+[settings Send a report after a crash without asking. It holds the recent log and the crash, never your account or name.]
+Send a report after a crash without asking. It holds the recent log and the crash, never your account or name.
+[settings Crash reports can be sent only by players aged 13 or over. A crash stays on this device, and Report a problem can save it to a file.]
+Crash reports can be sent only by players aged 13 or over. A crash stays on this device, and Report a problem can save it to a file.
+[settings Test crash report]
+Test crash report
+[settings The game closes now, as it would after a crash. When it starts again, it offers the crash report.]
+The game closes now, as it would after a crash. When it starts again, it offers the crash report.
+[settings Close the game]
+Close the game

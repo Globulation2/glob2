@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "CrashCapture.h"
 #include <BuildFeatures.h>
 #include <PresentationWork.h>
 #include "gradient/MapRouting.h"
@@ -334,6 +335,7 @@ void Engine::drawFrame(MainLoopState& st, bool everyFrame, const PresentationFra
 		// reading the live simulation's tick or timing from the rendering thread.
 		GAGCore::Recording::recorder().matchFrame(scene ? scene->tick : gui.game.stepCounter,
 				gui.gamePaused || gui.hardPause, scene ? int(scene->tickInterval) : st.speed);
+		CrashCapture::matchTick(scene ? scene->tick : gui.game.stepCounter);
         try
         {
             gui.drawAll(gui.localTeamNo);

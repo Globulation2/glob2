@@ -99,6 +99,12 @@ add_library(glob2_mobile OBJECT ${mobile_sources})
 add_dependencies(glob2_mobile glob2_generated)
 list(TRANSFORM GLOB2_MOBILE_STRICT_NUMERIC_SOURCES PREPEND "${GLOB2_ROOT}/")
 set_source_files_properties(${GLOB2_MOBILE_STRICT_NUMERIC_SOURCES} PROPERTIES COMPILE_OPTIONS "${GLOB2_STRICT_CXXFLAGS}")
+# Crashpad's headers (mini_chromium's base/ and build/ among them) only for the
+# file that starts it, so their names never shadow the game's.
+if(GLOB2_MOBILE_CRASHPAD_INCLUDE)
+  set_source_files_properties("${GLOB2_ROOT}/platforms/mobile/android/CrashCapture.cpp" PROPERTIES
+    INCLUDE_DIRECTORIES "${GLOB2_MOBILE_CRASHPAD_INCLUDE}")
+endif()
 if(NOT android)
   list(TRANSFORM GLOB2_IOS_ARC_SOURCES PREPEND "${GLOB2_ROOT}/")
   set_source_files_properties(${GLOB2_IOS_ARC_SOURCES} PROPERTIES COMPILE_OPTIONS -fobjc-arc)

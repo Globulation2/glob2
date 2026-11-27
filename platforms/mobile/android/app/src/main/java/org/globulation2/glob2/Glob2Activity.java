@@ -165,6 +165,38 @@ public final class Glob2Activity extends SDLActivity {
     private String documentError;
     private static native void documentResult(long request, int state, byte[] name, byte[] bytes);
 
+    // Crash capture (platforms/mobile/android/CrashCapture.cpp): where the APK's
+    // native libraries, Crashpad's handler among them, were extracted.
+    public static String nativeLibraryDirectory(android.app.Activity activity) {
+        return activity.getApplicationInfo().nativeLibraryDir;
+    }
+
+    // An uncaught Java exception is written to the game's reports/crashes/ as text
+    // (<id>.java.txt) before Android's own handler ends the app; the next launch
+    // offers it as a crash report. Called once by the native game thread.
+    public static void captureJavaCrashes(String directory) {
+        final Thread.UncaughtExceptionHandler previous = Thread.getDefaultUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler((thread, failure) -> {
+            try {
+                java.io.File folder = new java.io.File(directory);
+                folder.mkdirs();
+                String name = java.util.UUID.randomUUID().toString().replace("-", "");
+                java.io.StringWriter text = new java.io.StringWriter();
+                text.write("thread: " + thread.getName() + "\n");
+                failure.printStackTrace(new java.io.PrintWriter(text, true));
+                byte[] bytes = text.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8);
+                java.io.File part = new java.io.File(folder, name + ".java.txt.part");
+                try (java.io.FileOutputStream out = new java.io.FileOutputStream(part)) {
+                    out.write(bytes, 0, Math.min(bytes.length, 64 * 1024));
+                }
+                part.renameTo(new java.io.File(folder, name + ".java.txt"));
+            } catch (Throwable ignored) {
+                // Never let the report hide the crash itself.
+            }
+            if (previous != null) previous.uncaughtException(thread, failure);
+        });
+    }
+
     // Play Age Signals (platforms/mobile/android/AgeSignal.cpp). Only the Google Play
     // build has PlayAgeSignals; elsewhere this answers false and the game asks its own
     // question. Called by the native game thread.

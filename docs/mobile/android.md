@@ -52,7 +52,12 @@ callbacks. Update
 `platforms/mobile/android/libmain.exports` if Android or SDL needs to look up a
 new entry point by name.
 The F-Droid build mode adds `--fdroid` to the Android build, sign, install, and
-launch commands. Both F-Droid and Play use `org.globulation2.glob2`. The
+launch commands. It builds without problem report uploads or crash capture, so
+its dependency bundle leaves Crashpad out: build it with
+`dependencies.py --no-crash-capture` (`fdroid_build.py` and CI do). Other
+Android builds package Crashpad's handler as `libcrashpad_handler.so` and
+extract native libraries at install; see
+[crash capture](../multiplayer/crash-reports.md#capture-in-the-game). Both F-Droid and Play use `org.globulation2.glob2`. The
 F-Droid release uses
 `platforms/mobile/android-release.json` for its static version
 name and base code. The three single-ABI APKs have codes `10 * base + 1` for

@@ -42,6 +42,17 @@
     "openssl",
     "boost-beast"
   ],
+  "features": {
+    "crash-capture": {
+      "description": "Crashpad for Android builds that send crash reports (docs/multiplayer/crash-reports.md)",
+      "dependencies": [
+        {
+          "name": "crashpad",
+          "platform": "android"
+        }
+      ]
+    }
+  },
   "vcpkg-configuration": {
     "overlay-ports": [
       "../../buildsys/vcpkg-ports"

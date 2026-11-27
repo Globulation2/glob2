@@ -29,7 +29,10 @@ class MobileReleaseDependencyIdentityTests(unittest.TestCase):
                 prefix.mkdir()
                 (prefix / 'manifest.json').write_text(json.dumps({'archives': {'lib/libSDL3.so': 'pinned'}}))
             sdk = root / 'sdk'
-            canonical = dependency_identity(build_identity({'target': 'android', 'arch': arch, 'release': 1}))
+            # The F-Droid producer (android.py --fdroid) builds without reports.
+            canonical = dependency_identity(build_identity({'target': 'android', 'arch': arch, 'release': 1,
+                                                            'problem_reports': 0}))
+            self.assertFalse(canonical['crash_capture'])
             with patch.object(android_release, 'release_identity', return_value={'versionName': 'test'}), \
                  patch.object(android_release, 'version_code', return_value=1), \
                  patch.object(android_release, 'isolated', return_value=False), \

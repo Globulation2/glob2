@@ -77,6 +77,7 @@ Settings::Settings()
 	highResolutionArtworkChoice=AdaptiveChoice::Auto;
 	resolveAdaptiveDefaults();
 	autosaveGames=true;
+	alwaysSendCrashReports=false;
 	resetDefaultUnitsAssigned();
 	resetDefaultFlagRadius();
 	
@@ -343,6 +344,7 @@ void Settings::load(std::string filename)
 		else if (const auto legacy = parsed.find("highResolutionArtwork"); legacy != parsed.end())
 			highResolutionArtworkChoice = std::atoi(legacy->second.c_str()) ? AdaptiveChoice::Auto : AdaptiveChoice::Off;
 		READ_PARSED_INT(autosaveGames);
+		READ_PARSED_INT(alwaysSendCrashReports);
 		// The file decides the set: absent or empty means nothing enabled, the
 		// default, rather than whatever this object held before.
 		experiments.clear();
@@ -539,6 +541,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "adaptiveZoomDetail=%d\n", adaptiveZoomDetail);
 		Utilities::streamprintf(stream, "smoothFog=%d\n", smoothFog);
 		Utilities::streamprintf(stream, "autosaveGames=%d\n", autosaveGames);
+		Utilities::streamprintf(stream, "alwaysSendCrashReports=%d\n", alwaysSendCrashReports);
 		if (gpuCompute.has_value())
 			Utilities::streamprintf(stream, "gpuCompute=%d\n", *gpuCompute);
         if(gradientBackend)Utilities::streamprintf(stream,"gradientBackend=%s\n",gradient_kernel::backendName(*gradientBackend));

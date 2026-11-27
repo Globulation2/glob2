@@ -29,6 +29,8 @@ export function isGameModule(module: string): boolean {
  * comes from neither a bundled library's sources nor a runtime function.
  */
 export function inGame(frame: Omit<CrashFrame, 'inGame'>): boolean {
+  // Java frames (module "java"): the game's Android activity and its helpers.
+  if (frame.module === 'java') return /^org\.globulation2\./.test(frame.function ?? '');
   if (!isGameModule(frame.module) || !frame.function) return false;
   if (frame.file && LIBRARY_FILE.test(frame.file)) return false;
   return !LIBRARY_FUNCTION.test(frame.function);

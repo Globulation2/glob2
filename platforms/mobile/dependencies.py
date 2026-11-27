@@ -93,6 +93,11 @@ def main():
     parser.add_argument("--android-sdk")
     parser.add_argument("--release", action="store_true")
     parser.add_argument("--china", action="store_true")
+    parser.add_argument(
+        "--no-crash-capture",
+        action="store_true",
+        help="Leave Crashpad out of an Android bundle: F-Droid builds, which send no reports",
+    )
     parser.add_argument("--jobs", type=int, default=6)
     args = parser.parse_args()
     if args.jobs < 1:
@@ -105,6 +110,10 @@ def main():
         "release": int(args.release),
         "china": int(args.china),
     }
+    if args.no_crash_capture:
+        if args.target != "android":
+            parser.error("--no-crash-capture is for Android bundles")
+        options["problem_reports"] = 0
     if args.android_sdk:
         options["android_sdk"] = args.android_sdk
     if args.developer_dir:
@@ -241,6 +250,11 @@ def main():
                     "--x-install-root=" + str(installed),
                     "--x-buildtrees-root=" + str(scratch / "vcpkg-buildtrees"),
                     "--x-packages-root=" + str(scratch / "vcpkg-packages"),
+                    *(
+                        ["--x-feature=crash-capture"]
+                        if identity.get("crash_capture", args.target == "android")
+                        else []
+                    ),
                 ],
                 env=env,
                 check=True,

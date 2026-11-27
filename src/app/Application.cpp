@@ -34,6 +34,7 @@
 #include "GameGUIKeyActions.h"
 #include "CreditScreen.h"
 #include "ProblemReportScreen.h"
+#include "CrashCapture.h"
 #include "CompileProfile.h"
 #include "DeviceAdaptationSession.h"
 #include <iostream>
@@ -384,6 +385,49 @@ void Application::withAgeBand(std::function<void()> next)
 	});
 }
 
+// Crash reports are opt-in (docs/multiplayer/crash-reports.md#consent): a
+// player who may send is asked, unless they chose Always send; players under
+// 13, or who never said their age, are never asked and keep the crash for Save
+// to file.
+void Application::offerCrashReports()
+{
+	const auto userDir = ProblemReport::userDirectory();
+	if (CrashCapture::pending(userDir).empty())
+		return;
+	const auto consent = globalContainer->settings.alwaysSendCrashReports ? CrashCapture::Consent::Always
+																		   : CrashCapture::Consent::Ask;
+	switch (CrashCapture::decide(ProblemReport::currentSendPolicy(), consent))
+	{
+	case CrashCapture::Action::KeepLocal:
+		return;
+	case CrashCapture::Action::Send:
+		CrashCapture::queueAll(userDir);
+		return;
+	case CrashCapture::Action::Ask:
+		break;
+	}
+	auto &strings = *GAGCore::Toolkit::getStringTable();
+	auto prompt = std::make_unique<MessageScreen>(
+		strings.getString("[crash prompt title]"), strings.getString("[crash prompt message]"),
+		std::vector<std::string>{strings.getString("[crash prompt send]"), strings.getString("[crash prompt always]"),
+								 strings.getString("[crash prompt dont send]")});
+	screens.push(std::move(prompt),
+				 [userDir](GAGGUI::Screen &, int choice)
+				 {
+					 if (choice == 1)
+					 {
+						 globalContainer->settings.alwaysSendCrashReports = true;
+						 if (!globalContainer->settings.save())
+							 std::cerr << "Could not save the crash report choice." << std::endl;
+					 }
+					 if (choice == 0 || choice == 1)
+						 CrashCapture::queueAll(userDir);
+					 else if (choice == 2)
+						 CrashCapture::discardAll(userDir);
+					 // Quitting with the question open leaves them for next time.
+				 });
+}
+
 // The browser installs some data after the main menu is up (buildsys/web_assets.py);
 // native hosts never report an installation.
 void Application::installStagedAssets()
@@ -636,6 +680,14 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 	}
 
 #endif
+	// Crashes of earlier runs, once the main menu is up; MetricKit may deliver
+	// one later in the run.
+	if (CrashCapture::built() && screens.running() && dynamic_cast<MainMenuScreen *>(screens.top()) &&
+		(!crashesOffered || CrashCapture::takeArrival()))
+	{
+		crashesOffered = true;
+		offerCrashReports();
+	}
 	if (!screens.running())
 	{
 		if (screens.result() == GAGGUI::Screen::QUIT_APPLICATION)

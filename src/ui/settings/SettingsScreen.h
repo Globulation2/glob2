@@ -35,7 +35,8 @@ class SettingsScreen : public Glob2UI::Screen
 		Experiments,
 		CustomAIs,
 		CustomGenerators,
-        MCPServer
+        MCPServer,
+		Privacy
 	};
 	enum class Kind
 	{
@@ -159,6 +160,7 @@ class SettingsScreen : public Glob2UI::Screen
 	void buildHiveMind();
 	// Settings > Recording (SettingsScreenRecording.cpp): controls, hotkey, FFmpeg status.
 	void buildRecording();
+	void buildPrivacy();
     void buildMCP();
     std::string mcpStatus;
 	// Rebuild the Recording tab when session state changes.

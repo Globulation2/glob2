@@ -587,6 +587,7 @@ set(GLOB2_CLIENT_SOURCES
     src/app/Settings.cpp
     src/app/AgeGate.cpp
     src/app/ProblemReport.cpp
+    src/app/CrashCapture.cpp
     src/app/PortalPolicy.cpp
     src/app/SystemLanguage.cpp
     src/app/DeviceProfile.cpp
@@ -1583,6 +1584,7 @@ set(GLOB2_ANDROID_SOURCES
     src/app/Settings.cpp
     src/app/AgeGate.cpp
     src/app/ProblemReport.cpp
+    src/app/CrashCapture.cpp
     src/app/PortalPolicy.cpp
     src/app/SystemLanguage.cpp
     src/app/DeviceProfile.cpp
@@ -1826,6 +1828,7 @@ set(GLOB2_ANDROID_SOURCES
     platforms/mobile/android/Documents.cpp
     platforms/mobile/android/CertificateTrust.cpp
     platforms/mobile/android/AgeSignal.cpp
+    platforms/mobile/android/CrashCapture.cpp
 )
 
 # buildsys/sources.py mobile_sources("ios"): libglob2.a (cmake/mobile.cmake).
@@ -2413,6 +2416,7 @@ set(GLOB2_IOS_SOURCES
     src/app/Settings.cpp
     src/app/AgeGate.cpp
     src/app/ProblemReport.cpp
+    src/app/CrashCapture.cpp
     src/app/PortalPolicy.cpp
     src/app/SystemLanguage.cpp
     src/app/DeviceProfile.cpp
@@ -2533,6 +2537,7 @@ set(GLOB2_IOS_SOURCES
     platforms/mobile/ios/Documents.mm
     platforms/mobile/ios/LaunchLinks.mm
     platforms/mobile/ios/CertificateTrust.cpp
+    platforms/mobile/ios/CrashCapture.mm
     libs/gag/src/AssetLoader.cpp
     libs/gag/src/EtcpakSse41.cpp
     libs/gag/src/AstcEncoder.cpp
@@ -2662,6 +2667,7 @@ set(GLOB2_IOS_SOURCES
 # buildsys/sources.py IOS_ARC_SOURCES.
 set(GLOB2_IOS_ARC_SOURCES
     platforms/mobile/ios/Documents.mm
+    platforms/mobile/ios/CrashCapture.mm
 )
 
 # Mobile sources compiled with GLOB2_STRICT_CXXFLAGS (javascript.strict_numeric_source).
@@ -3411,6 +3417,7 @@ set(GLOB2_WEB_SOURCES
     src/app/Settings.cpp
     src/app/AgeGate.cpp
     src/app/ProblemReport.cpp
+    src/app/CrashCapture.cpp
     src/app/PortalPolicy.cpp
     src/app/SystemLanguage.cpp
     src/app/DeviceProfile.cpp

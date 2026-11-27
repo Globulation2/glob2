@@ -1,5 +1,6 @@
 #include <BuildFeatures.h>
 #include "AIRegistry.h"
+#include "CrashCapture.h"
 #include "FileFormatVersions.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -550,6 +551,9 @@ void Engine::finishGameInit()
 	if(globalContainer->liveSpectating) gui.configureLiveSpectatorView();
 
 	net = std::make_unique<NetEngine>(gui.game.gameHeader.getNumberOfPlayers(), gui.localPlayer);
+	// A crash report names the match that was running (src/app/CrashCapture.h);
+	// the simulation thread has not started, and the seed is fixed from here.
+	CrashCapture::matchStarted(gui.game.gameHeader.getRandomSeed());
 
 	// Initialise the replay writer, unless we're showing a replay.
 	// GLOB2_REPLAY_PATH overrides the default output path (used by the

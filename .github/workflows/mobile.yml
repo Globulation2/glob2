@@ -112,7 +112,7 @@ jobs:
         run: python3 .github/scripts/ci_dependency_cache.py verify --prefix 'build/android/device/${{ matrix.arch }}/24/client/release/vcpkg-installed' --key "$DEPENDENCY_KEY"
       - name: Build pinned target dependencies
         id: build_pinned_target_dependencies
-        run: python3 platforms/mobile/dependencies.py --arch '${{ matrix.arch }}' --release --jobs 2
+        run: python3 platforms/mobile/dependencies.py --arch '${{ matrix.arch }}' --release --no-crash-capture --jobs 2
       - name: Seal and save pinned Android dependencies
         id: seal_android_dependencies
         env:

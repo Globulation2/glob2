@@ -6,10 +6,61 @@ glob2-online symbolicates each one against the symbols its release uploaded and
 files it under a crash group, so maintainers see "this crash, 40 installs, since
 0.11.7" rather than 40 separate reports. Nothing goes to a third-party service.
 
-This page covers the server side and the symbols. The game does not capture
-crashes yet: Crashpad (Windows, macOS, Linux, Android), MetricKit (iOS) and the
-browser error hooks come in later phases and only need to send the bundles
-described here.
+Android (Crashpad, plus uncaught Java exceptions) and iOS (MetricKit) capture
+crashes; Crashpad on Windows, macOS and Linux and the browser's error hooks come
+later and only need to send the bundles described here.
+
+## Capture in the game
+
+`src/app/CrashCapture.h` holds what every platform shares; the platform layers
+are `platforms/mobile/android/CrashCapture.cpp` and
+`platforms/mobile/ios/CrashCapture.mm`. Builds without reports
+(`problem_reports=0`: F-Droid, the Fire tablet and China editions, distribution
+packages) capture nothing.
+
+| Platform | Capture | Left in `reports/crashes/` |
+| --- | --- | --- |
+| Android | Crashpad's handler, started only when the game crashes | `<id>.dmp`, moved out of Crashpad's database (`reports/crashpad/`) at the next launch |
+| Android | `Glob2Activity.captureJavaCrashes`, the default uncaught-exception handler | `<id>.java.txt`: the thread and the stack |
+| iOS | A MetricKit subscriber: iOS delivers each crash to the next run, some time after launch | `<id>.metrickit.json`, one `MXCrashDiagnostic` |
+
+- **Crashpad on Android.** Crashpad comes from the pinned vcpkg baseline
+  (Apache-2.0) through the `crash-capture` feature of
+  `platforms/mobile/vcpkg.json`; F-Droid's bundle, which F-Droid builds from
+  source, leaves it out (`dependencies.py --no-crash-capture`, dependency
+  identity `crash_capture: false`). `android.py` packages the handler as
+  `lib/<abi>/libcrashpad_handler.so` (about 1 MB per ABI), and Gradle then
+  extracts native libraries at install (`useLegacyPackaging`), because Android
+  runs executables only from the extracted library directory. The game links
+  Crashpad's client (`GLOB2_CRASHPAD`) and starts the handler when it crashes
+  (`StartHandlerAtCrash`), with no upload URL: the game sends reports itself.
+- **The crashed session's log.** While the game runs, its recent log and the
+  running match (the map seed, then each drawn tick) are mirrored into
+  `reports/session.log`, a 64 KB file mapped into memory, so a crash loses
+  nothing written before it. The next launch keeps it as
+  `reports/previous-session.log`, and the newest crash captured since that
+  session began takes it as its `log.txt` and `match`, once. Only the UI thread
+  writes the match; nothing touches the simulation thread.
+- **Caps.** At most five crashes and 10 MB wait on disk, the oldest dropped
+  first; queued reports then follow the
+  [outbox](problem-reports.md) caps.
+
+### Consent
+
+Crash reports are opt-in. Once the main menu is up, waiting crashes are handled
+by `CrashCapture::decide`:
+
+- A player who may send ([problem report](problem-reports.md) rules: aged 13 or
+  over, a build and page that allow sending) is asked "Globulation 2 closed
+  unexpectedly. Send a crash report?" with **Send**, **Always send** and
+  **Don't send**. **Always send** sets `alwaysSendCrashReports`, which
+  **Settings > Privacy** turns off again; **Don't send** deletes them.
+- Players under 13, or who never said their age, are never asked. Their crashes
+  stay on the device, and **Report a problem > Save to file** can add the newest
+  one ("The last crash") for them to share.
+- **Settings > Privacy > Test crash report** closes the game with a deliberate
+  crash in `CrashCapture::crashForTest`, to check the whole path on a release
+  build (TestFlight, Play internal testing).
 
 ## Crash bundles
 
@@ -22,8 +73,10 @@ A crash bundle is a [problem report bundle](problem-reports.md#the-bundle) whose
 | `crash` | `minidump.dmp` | A Crashpad minidump |
 | `metrickit` | `metrickit.json` | `MXCrashDiagnostic.jsonRepresentation()`, unchanged |
 | `web` | `web-error.json` | A `WebErrorReport`: message, stack and the wasm build ID |
+| `java` | `java-exception.txt` | An uncaught Java exception on Android, as `printStackTrace` writes it |
 
-The context may also carry `match` (the tick and map seed of a running match).
+The context may also carry `match` (the tick and map seed of a running match),
+and the bundle the crashed session's log as `log.txt`.
 `POST /api/v1/crash-reports` refuses a crash bundle without its entry (400) and
 one from a version that has no uploaded symbols (403, so the client drops it);
 Report a Problem bundles are accepted from any build. An accepted crash report is
@@ -101,6 +154,8 @@ The retention job deletes only uploads that no row names.
   each UUID to a Breakpad debug ID and looks the offsets up in that `.sym` file.
 - **Browser** stacks name wasm frames by function index (`wasm-function[N]`),
   which the build's symbol map turns into names.
+- **Java** exceptions are already symbolic; frames in `org.globulation2` are
+  in-game.
 
 Symbols are decompressed into `CRASH_SYMBOL_CACHE_DIR` on first use, laid out the
 way `minidump-stackwalk` searches them, and the least recently used files go once
