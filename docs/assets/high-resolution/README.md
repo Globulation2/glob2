@@ -38,6 +38,11 @@ resource frames get a crisp outline and sharpened shading, while buildings, wall
 and effects get colour sharpening only, so soft shadows, smoke and glow survive.
 Team-colour layers stay unchanged. It reads its inputs from Git, so rerunning it
 reproduces the committed pixels, then rebuilds the resource atlas.
+World light comes from the left, so building shadows fall to the right or
+down-right. `tools/artwork/mirror_buildings.py` mirrors the frames drawn lit
+from the other side (barracks level 1) across every layer: classic, team, mini
+and HD. It reads its inputs from Git too, and the sharpening pass mirrors the
+same frames, so both tools keep reproducing the committed pixels.
 AI candidates are generated into fresh staging directories only; see the
 [candidate pipeline](../../../tools/artwork/ai/README.md). Production packaging
 reproduces the committed reviewed finals without model inference.
