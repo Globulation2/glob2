@@ -35,10 +35,12 @@ SHELL = """<!doctype html>
 </body></html>
 """
 
+# (externalLinks, onlineSignIn, ads). Ads only where the portal requires or
+# expects them (owner decision, 2026-11-26).
 POLICIES = {
-    "gamepix": (False, False), "crazygames": (False, False), "newgrounds": (True, True),
-    "gamejolt": (True, True), "gamedistribution": (False, False), "yandex": (False, False),
-    "poki": (False, False),
+    "gamepix": (False, False, True), "crazygames": (False, False, True), "newgrounds": (True, True, False),
+    "gamejolt": (True, True, False), "gamedistribution": (False, False, True), "yandex": (False, False, True),
+    "poki": (False, False, True),
 }
 
 
@@ -92,10 +94,21 @@ class PortalProfileTests(unittest.TestCase):
                 self.assertIn(profile.size_basis, ("zip", "unpacked"))
 
     def test_policies_follow_the_portal_rules(self):
-        for name, (links, sign_in) in POLICIES.items():
+        for name, (links, sign_in, ads) in POLICIES.items():
             with self.subTest(portal=name):
                 self.assertEqual(module.portal(name).policy,
-                                 {"name": name, "externalLinks": links, "onlineSignIn": sign_in})
+                                 {"name": name, "externalLinks": links, "onlineSignIn": sign_in, "ads": ads})
+
+    def test_ad_portals_load_an_sdk_and_an_adapter_with_ad_breaks(self):
+        for profile in module.PORTALS.values():
+            with self.subTest(portal=profile.name):
+                if not profile.ads:
+                    self.assertEqual(profile.adapters, (module.CORE,))
+                    continue
+                self.assertIsNotNone(profile.sdk_url)
+                adapter = (module.WEB / profile.adapters[-1]).read_text()
+                self.assertIn("createBreaks(", adapter)
+                self.assertIn("installHost(", adapter)
 
     def test_unknown_portal_fails(self):
         with self.assertRaisesRegex(ValueError, "Unknown portal"):
@@ -250,3 +263,32 @@ class ShellTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PortalReleaseMatrixTests(unittest.TestCase):
+    """browser-release.yml packages each portal from the edition it needs."""
+
+    LITE = {"crazygames", "poki", "yandex"}
+
+    def matrix(self):
+        workflow = (ROOT / ".github/workflows/browser-release.yml").read_text()
+        job = workflow.split("\n  portals:\n", 1)[1].split("\n  # Game Jolt is the one portal", 1)[0]
+        return job, dict(re.findall(r"- \{portal: (\w+), edition: '?(-lite|)'?\}", job))
+
+    def test_every_portal_is_packaged_once_from_its_edition(self):
+        job, legs = self.matrix()
+        self.assertEqual(set(legs), set(module.PORTALS))
+        self.assertEqual(job.count("- {portal:"), len(module.PORTALS))
+        for portal, edition in legs.items():
+            with self.subTest(portal=portal):
+                self.assertEqual(edition, "-lite" if portal in self.LITE else "")
+
+    def test_lite_legs_read_the_lite_artifact_and_upload_distinct_names(self):
+        job, _ = self.matrix()
+        self.assertIn("name: browser-release${{ matrix.edition }}", job)
+        self.assertIn("name: ${{ matrix.portal }}${{ matrix.edition }}-upload", job)
+        self.assertIn('zip="upload/glob2-${TAG#v}-$PORTAL$EDITION.zip"', job)
+
+    def test_game_jolt_push_still_reads_the_standard_upload(self):
+        workflow = (ROOT / ".github/workflows/browser-release.yml").read_text()
+        self.assertIn("name: gamejolt-upload", workflow.split("\n  gamejolt:\n", 1)[1])

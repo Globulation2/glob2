@@ -9,7 +9,8 @@ game runtime is byte-identical to the browser release. Only index.html changes:
 the website-root brand assets it shares with the online app are bundled under
 brand/, and the portal policy (window.GLOB2_PORTAL), any SDK configuration, the
 SDK, platforms/web/portal-core.js and the portal's adapter are injected before its
-first script. Gzip sidecars and checksums are dropped because portals serve the
+first script. The policy's `ads` field marks the uploads whose adapter shows the
+portal's ads at natural breaks between matches. Gzip sidecars and checksums are dropped because portals serve the
 files themselves. Packaging fails when the upload exceeds the portal's documented
 size or file-count limit.
 """
@@ -72,6 +73,10 @@ class Portal:
     game_id_env: str = None
     # Pattern every file path in the upload must match, where the portal restricts it.
     file_name: str = None
+    # Whether the upload shows the portal's ads at natural breaks between matches
+    # (portal-core.js createBreaks). True only where the portal requires or expects
+    # ads; our own site, itch, the stores, Game Jolt and Newgrounds never carry them.
+    ads: bool = False
 
     @property
     def adapters(self):
@@ -79,7 +84,8 @@ class Portal:
 
     @property
     def policy(self):
-        return {"name": self.name, "externalLinks": self.external_links, "onlineSignIn": self.online_sign_in}
+        return {"name": self.name, "externalLinks": self.external_links, "onlineSignIn": self.online_sign_in,
+                "ads": self.ads}
 
 
 PORTALS = {portal.name: portal for portal in (
@@ -88,7 +94,7 @@ PORTALS = {portal.name: portal for portal in (
         sdk_url="https://integration.gamepix.com/sdk/v3/gamepix.sdk.js",
         configuration="window.GamePixConfig={lifecycle:'manual'};",
         scripts=("SDK", CORE, "gamepix.js"),
-        external_links=False, online_sign_in=False,
+        external_links=False, online_sign_in=False, ads=True,
         # Not in the published docs; the Testing Toolkit and dashboard reject
         # larger zips.
         max_bytes=200 * MB,
@@ -99,12 +105,14 @@ PORTALS = {portal.name: portal for portal in (
         "crazygames", "CrazyGames",
         sdk_url="https://sdk.crazygames.com/crazygames-sdk-v3.js",
         scripts=("SDK", CORE, "crazygames.js"),
-        external_links=False, online_sign_in=False,
+        external_links=False, online_sign_in=False, ads=True,
         max_bytes=250 * MB, max_files=1500, size_basis="unpacked",
         first_download_bytes=50 * MB,
         sources=("https://docs.crazygames.com/requirements/technical/",
                  "https://docs.crazygames.com/sdk/intro/",
-                 "https://docs.crazygames.com/sdk/game/"),
+                 "https://docs.crazygames.com/sdk/game/",
+                 "https://docs.crazygames.com/sdk/video-ads/",
+                 "https://docs.crazygames.com/requirements/ads/"),
     ),
     Portal(
         "newgrounds", "Newgrounds",
@@ -127,7 +135,7 @@ PORTALS = {portal.name: portal for portal in (
         sdk_url="https://html5.api.gamedistribution.com/main.min.js",
         configuration="window.GD_OPTIONS={gameId:%(game_id)s};",
         scripts=(CORE, "gamedistribution.js", "SDK"),
-        external_links=False, online_sign_in=False,
+        external_links=False, online_sign_in=False, ads=True,
         game_id_env="GLOB2_GAMEDISTRIBUTION_GAME_ID",
         # GameDistribution documents no size or file-count limit.
         sources=("https://github.com/GameDistribution/GD-HTML5/wiki/SDK-Implementation",),
@@ -136,7 +144,7 @@ PORTALS = {portal.name: portal for portal in (
         "yandex", "Yandex Games",
         sdk_url="/sdk.js",
         scripts=("SDK", CORE, "yandex.js"),
-        external_links=False, online_sign_in=False,
+        external_links=False, online_sign_in=False, ads=True,
         # Requirement 1.21: at most 100 MB uncompressed; 1.22: one index.html at
         # the root and no spaces or Cyrillic in file names.
         max_bytes=100 * MB, size_basis="unpacked",
@@ -144,13 +152,14 @@ PORTALS = {portal.name: portal for portal in (
         sources=("https://yandex.com/dev/games/doc/en/concepts/requirements",
                  "https://yandex.com/dev/games/doc/en/sdk/sdk-about",
                  "https://yandex.com/dev/games/doc/en/sdk/sdk-gameready",
-                 "https://yandex.com/dev/games/doc/en/sdk/sdk-environment"),
+                 "https://yandex.com/dev/games/doc/en/sdk/sdk-environment",
+                 "https://yandex.com/dev/games/doc/en/sdk/sdk-adv"),
     ),
     Portal(
         "poki", "Poki",
         sdk_url="https://game-cdn.poki.com/scripts/v2/poki-sdk.js",
         scripts=("SDK", CORE, "poki.js"),
-        external_links=False, online_sign_in=False,
+        external_links=False, online_sign_in=False, ads=True,
         # Poki states no limit, only that players leave after ten seconds of
         # loading; the full package is too large, so Poki gets a small build.
         sources=("https://developers.poki.com/guide/sdk-html5",

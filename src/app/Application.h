@@ -40,6 +40,8 @@ class Application : public GAGCore::ApplicationHost::Loop
 	std::uint32_t lastFrame = 0;
 	int pendingViewportWidth = 0, pendingViewportHeight = 0;
 	bool hidden = false;
+	// A web portal holds the game for an ad or its own pause (ApplicationHost::hostHeld).
+	bool held = false;
 	bool framed = false, drawn = false; // startup phase marks (GAGCore::StartupPhase)
 	bool quitting = false;
 	void mainMenu();

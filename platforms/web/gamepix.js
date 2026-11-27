@@ -2,7 +2,11 @@
 // GamePix portal adapter, injected only by platforms/web/package-portal.py after
 // the GamePix SDK and portal-core.js and before every game script. GamePix requires
 // pause/resume handlers that mute audio; they must be idempotent, so paused state is
-// a flag rather than a counter (portal-core.js).
+// a flag rather than a counter (portal-core.js). Ad breaks:
+// GamePix.ads.interstitial() at the natural pauses the game reports
+// (portal-core.js createBreaks), never before the first match and at most one
+// break every three minutes, as for every ad portal. The SDK calls
+// the pause and resume handlers around the ad itself.
 (() => {
   'use strict';
 
@@ -19,6 +23,16 @@
         win.GamePix?.lifecycle?.gameStart?.();
       },
     });
+    const breaks = core.createBreaks(win, {
+      session, audio,
+      show: () => {
+        const ads = win.GamePix?.ads;
+        if (typeof ads?.interstitial === 'function') return ads.interstitial();
+        if (typeof win.GamePix?.interstitialAd === 'function') return win.GamePix.interstitialAd();
+        return null;
+      },
+    });
+    core.installHost(win, breaks);
     return {
       pause: audio.pause,
       resume: audio.resume,
@@ -27,6 +41,7 @@
       get paused() { return audio.paused; },
       contexts: audio.contexts,
       session,
+      breaks,
     };
   }
 
