@@ -94,7 +94,11 @@ The game reports natural breaks to the page through
 
 Relay (online) matches report nothing, so a break never delays a lockstep game.
 `createBreaks` asks the adapter's SDK for an interstitial only when the policy has
-`ads: true`, one break at a time, and never during play or on first load. While a
+`ads: true`, one break at a time, and never during play or on first load. After
+every break, whether or not an ad played, it skips further breaks for 3 minutes
+from when the break ended, on top of the SDK's own limits: leaving a match and
+starting the next is one break, never two back to back. GameDistribution's
+pre-roll starts that clock too; an SDK that is not there to ask starts none. While a
 break runs it holds the game: the session reports gameplay stopped, audio is
 silenced (through the same `AudioContext` wrapper as portal pauses), and
 `glob2PortalHost.held` is true. The browser host samples `held` once per frame;
@@ -106,13 +110,13 @@ that is missing, rejects, throws, or reports no fill, a cooldown or an ad blocke
 simply runs no ad. A break whose ad has not started within 10 seconds, or has run
 for 3 minutes, releases the game anyway.
 
-| Portal | Call | First match | Interval |
+| Portal | Call | First match | Interval (ours: 3 minutes after every break, plus) |
 | --- | --- | --- | --- |
 | Poki | `PokiSDK.commercialBreak(onStart)`, between `gameplayStop()` and `gameplayStart()` | no ad | Poki's ad timer |
-| GameDistribution | `gdsdk.showAd()`; `SDK_GAME_PAUSE`/`SDK_GAME_START` mark the ad | pre-roll | the SDK's |
+| GameDistribution | `gdsdk.showAd()`; `SDK_GAME_PAUSE`/`SDK_GAME_START` mark the ad | pre-roll, which starts our 3 minutes | the SDK's |
 | Yandex Games | `ysdk.adv.showFullscreenAdv({callbacks: {onOpen, onClose, onError}})` | no ad | Yandex's (too-frequent calls close at once) |
 | CrazyGames | `CrazyGames.SDK.ad.requestAd('midgame', {adStarted, adFinished, adError})`; audio mutes at `adStarted` | no ad | the SDK's 3-minute cooldown (`adCooldown`) |
-| GamePix | `GamePix.ads.interstitial()` (or the legacy `interstitialAd()`); its `pause`/`resume` events mute | no ad | at least 3 minutes between our requests |
+| GamePix | `GamePix.ads.interstitial()` (or the legacy `interstitialAd()`); its `pause`/`resume` events mute | no ad | none documented |
 
 CrazyGames shows no ads during Basic Launch (`adError` with `adsDisabled`); the
 call is the one Full Launch uses.

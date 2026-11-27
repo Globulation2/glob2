@@ -94,9 +94,12 @@ test('a finished match shows one fullscreen ad and gameplay resumes after onClos
   options.callbacks.onClose(true); await settle();
   assert.equal(win.glob2PortalHost.held, false);
   assert.equal(context.state, 'running');
-  assert.equal(win.glob2PortalHost.matchBreak('start'), true);
+  assert.equal(win.glob2PortalHost.matchBreak('start'), false);
+  win.glob2PortalHost.matchBreak('end');
+  win.timers.advance(180000);
+  assert.equal(win.glob2PortalHost.matchBreak('leave'), true);
   options.callbacks.onClose(false); await settle();
-  assert.deepEqual(calls, ['start', 'stop', 'showFullscreenAdv', 'showFullscreenAdv', 'start']);
+  assert.deepEqual(calls, ['start', 'stop', 'showFullscreenAdv', 'start', 'stop', 'showFullscreenAdv']);
 });
 
 test('onError ends a Yandex break', async () => {

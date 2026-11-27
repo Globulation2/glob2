@@ -67,10 +67,15 @@ test('a finished match runs one commercialBreak between gameplayStop and gamepla
   ad().resolve(); await settle();
   assert.equal(win.glob2PortalHost.held, false);
   assert.equal(context.state, 'running');
+  // Starting the next match right away is the same break: no second ad.
+  assert.equal(win.glob2PortalHost.matchBreak('start'), false);
+  win.glob2PortalHost.matchBreak('end');
+  win.glob2PortalHost.matchBreak('leave');
+  win.timers.advance(180000);
   assert.equal(win.glob2PortalHost.matchBreak('start'), true);
   ad().resolve(); await settle();
   assert.deepEqual(calls, ['gameLoadingFinished', 'gameplayStart', 'gameplayStop', 'commercialBreak',
-                           'commercialBreak', 'gameplayStart']);
+                           'gameplayStart', 'gameplayStop', 'commercialBreak', 'gameplayStart']);
 });
 
 test('without the Poki SDK a break holds nothing', async () => {

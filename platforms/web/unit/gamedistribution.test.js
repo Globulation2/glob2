@@ -40,7 +40,7 @@ test('the adapter creates GD_OPTIONS when the packager did not', () => {
   assert.equal(typeof win.GD_OPTIONS.onEvent, 'function');
 });
 
-test('the first match start shows the required pre-roll; a finished match shows a mid-roll', async () => {
+test('the first match start shows the required pre-roll; a mid-roll comes three minutes after it', async () => {
   let ad = null;
   const shown = [];
   const win = adWindow('gamedistribution', {GD_OPTIONS: {gameId: 'abc'}});
@@ -56,6 +56,11 @@ test('the first match start shows the required pre-roll; a finished match shows 
   assert.equal(win.glob2PortalHost.held, false);
   assert.equal(adapter.session.active, true);
   win.glob2PortalHost.matchBreak('end');
+  // The pre-roll started the three minutes.
+  assert.equal(win.glob2PortalHost.matchBreak('leave'), false);
+  win.glob2PortalHost.matchBreak('start');
+  win.glob2PortalHost.matchBreak('end');
+  win.timers.advance(180000);
   assert.equal(win.glob2PortalHost.matchBreak('leave'), true);
   ad.resolve(); await settle();
   assert.equal(win.glob2PortalHost.held, false);

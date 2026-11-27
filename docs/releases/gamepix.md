@@ -25,7 +25,8 @@ and `resume` events silence and restore the game's audio; both are safe to repea
 as the [SDK documentation](https://partners.gamepix.com/sdk/doc/javascript)
 requires. At the natural breaks the game reports
 ([ad breaks](web-portals.md#ad-breaks)), except before the first match and at most
-once every three minutes (GamePix documents no interval), it calls
+one break every three minutes (our floor for every ad portal; GamePix documents
+no interval), it calls
 `GamePix.ads.interstitial()` (or the legacy `GamePix.interstitialAd()`) and holds
 the game until its promise resolves; any `success: false` just ends the break.
 GamePix synchronizes only `localStorage`, so saves stay on the device.

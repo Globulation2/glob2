@@ -130,21 +130,24 @@
   // reads glob2PortalHost.held to pause its simulation and input. Audio is
   // silenced from the request, or from ad.started() with {muteOnStart: true}.
   // firstStart allows a break before the first match since the page loaded
-  // (GameDistribution's required pre-roll); minInterval (ms) is a floor between
-  // our own requests on top of the SDK's own frequency rules. A break that does
+  // (GameDistribution's required pre-roll). minInterval (ms, 3 minutes) is our
+  // own gap after every break, measured from when it ended, whether or not an ad
+  // played, on top of the SDK's own frequency rules: leaving a match and starting
+  // the next is one break, never two back to back. A break that does
   // not start within startTimeout, or does not finish within maxDuration,
   // releases the game anyway, so a stalled SDK or an ad blocker never blocks it.
-  function createBreaks(win, {session, audio, show, firstStart = false, minInterval = 0, muteOnStart = false,
-                              startTimeout = 10000, maxDuration = 180000, now = () => Date.now()} = {}) {
+  function createBreaks(win, {session, audio, show, firstStart = false, muteOnStart = false,
+                              minInterval = 180000, startTimeout = 10000, maxDuration = 180000, now = () => win.performance?.now?.() ?? Date.now()} = {}) {
     const enabled = win.GLOB2_PORTAL?.ads === true && typeof show === 'function';
     let starts = 0;
     let last = -Infinity;
     let current = null;
     let requests = 0;
 
-    function release(token) {
+    function release(token, requested = true) {
       if (current !== token) return;
       current = null;
+      if (requested) last = now();
       win.clearTimeout?.(token.timer);
       audio.set('ad', false);
       session.hold(false, 'ad');
@@ -172,10 +175,9 @@
       let pending;
       try { pending = show(ad, point); } catch (error) { pending = null; win.console?.warn?.('Ad break failed', error); }
       if (!pending) {
-        release(token);
+        release(token, false);
         return false;
       }
-      last = now();
       requests += 1;
       if (!token.playing) token.timer = win.setTimeout?.(() => { if (!token.playing) release(token); }, startTimeout);
       Promise.resolve(pending).catch(error => win.console?.warn?.('Ad break failed', error))

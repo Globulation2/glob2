@@ -4,8 +4,8 @@
 // pause/resume handlers that mute audio; they must be idempotent, so paused state is
 // a flag rather than a counter (portal-core.js). Ad breaks:
 // GamePix.ads.interstitial() at the natural pauses the game reports
-// (portal-core.js createBreaks), never before the first match and at most once
-// every three minutes (GamePix documents no interval of its own). The SDK calls
+// (portal-core.js createBreaks), never before the first match and at most one
+// break every three minutes, as for every ad portal. The SDK calls
 // the pause and resume handlers around the ad itself.
 (() => {
   'use strict';
@@ -24,7 +24,7 @@
       },
     });
     const breaks = core.createBreaks(win, {
-      session, audio, minInterval: 180000,
+      session, audio,
       show: () => {
         const ads = win.GamePix?.ads;
         if (typeof ads?.interstitial === 'function') return ads.interstitial();

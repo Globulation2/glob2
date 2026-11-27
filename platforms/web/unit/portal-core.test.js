@@ -84,7 +84,7 @@ function breaksFixture(options = {}, win = adWindow('test')) {
 }
 
 test('no break runs before the first match; leaving a match runs one and holds the game until it ends', async () => {
-  const {breaks, shown, gameplay, context, session, ad} = breaksFixture();
+  const {win, breaks, shown, gameplay, context, session, ad} = breaksFixture();
   assert.equal(breaks.matchBreak('start'), false);
   assert.deepEqual(gameplay, [true]);
   assert.equal(breaks.matchBreak('end'), false);
@@ -95,6 +95,7 @@ test('no break runs before the first match; leaving a match runs one and holds t
   ad().resolve(); await settle();
   assert.equal(breaks.held, false);
   assert.equal(context.state, 'running');
+  win.timers.advance(180000);
   assert.equal(breaks.matchBreak('start'), true);
   assert.equal(session.active, false);
   ad().resolve(); await settle();
@@ -166,6 +167,7 @@ test('a stalled SDK releases the game: before the ad starts and after it runs to
   win.timers.advance(100);
   assert.equal(breaks.held, false);
   assert.equal(context.state, 'running');
+  win.timers.advance(180000);
   breaks.matchBreak('leave');
   ad().handle.started();
   win.timers.advance(999);
@@ -183,4 +185,49 @@ test('installHost gives the game matchBreak and held', async () => {
   assert.equal(host.held, true);
   ad().resolve(); await settle();
   assert.equal(host.held, false);
+});
+
+test('leaving a match and starting the next within three minutes is one break', async () => {
+  const {win, breaks, shown, ad} = breaksFixture();
+  breaks.matchBreak('start'); breaks.matchBreak('end');
+  assert.equal(breaks.matchBreak('leave'), true);
+  win.timers.advance(5000);
+  ad().resolve(); await settle();
+  win.timers.advance(179999);
+  assert.equal(breaks.matchBreak('start'), false);
+  assert.deepEqual(shown, ['leave']);
+});
+
+test('the three minutes run from the end of the break, then a start asks again', async () => {
+  const {win, breaks, shown, ad} = breaksFixture();
+  breaks.matchBreak('start'); breaks.matchBreak('end');
+  breaks.matchBreak('leave');
+  win.timers.advance(5000);
+  ad().resolve(); await settle();
+  win.timers.advance(180000);
+  assert.equal(breaks.matchBreak('start'), true);
+  assert.deepEqual(shown, ['leave', 'start']);
+});
+
+test('a break whose ad never started still starts the three minutes', async () => {
+  const {win, breaks, shown, ad} = breaksFixture();
+  breaks.matchBreak('start'); breaks.matchBreak('end');
+  breaks.matchBreak('leave');
+  ad().resolve(false); await settle();
+  assert.equal(breaks.matchBreak('start'), false);
+  win.timers.advance(180000);
+  assert.equal(breaks.matchBreak('start'), true);
+  assert.deepEqual(shown, ['leave', 'start']);
+});
+
+test('no SDK to ask is not a break and starts no clock', () => {
+  const win = adWindow('test');
+  let available = false;
+  const shown = [];
+  const breaks = createBreaks(win, {session: createSession(), audio: createAudio(win), firstStart: true,
+    show: () => available ? (shown.push('ad'), new Promise(() => {})) : null});
+  assert.equal(breaks.matchBreak('start'), false);
+  available = true;
+  assert.equal(breaks.matchBreak('leave'), true);
+  assert.deepEqual(shown, ['ad']);
 });

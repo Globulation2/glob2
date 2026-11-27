@@ -30,7 +30,9 @@ the game reports ([ad breaks](web-portals.md#ad-breaks)) it calls
 `gdsdk.showAd()` and holds the game until its promise settles or
 `SDK_GAME_START` arrives. Unlike the other portals this includes the first match:
 the SDK guide asks for a pre-roll on the start button, and activation needs it
-viewed once. The SDK sets the interval, so most requests show nothing.
+viewed once. The pre-roll starts the 3-minute gap every ad break is followed by
+([ad breaks](web-portals.md#ad-breaks)), and the SDK applies its own interval on
+top.
 
 ## Open items
 

@@ -25,6 +25,7 @@ function fakeTimers() {
       for (const [id, timer] of [...pending]) if (timer.at <= clock) { pending.delete(id); timer.callback(); }
     },
     get pending() { return pending.size; },
+    get now() { return clock; },
   };
 }
 
@@ -32,7 +33,8 @@ function fakeTimers() {
 function adWindow(name, extra = {}) {
   const timers = fakeTimers();
   return fakeWindow({GLOB2_PORTAL: {name, externalLinks: false, onlineSignIn: false, ads: true},
-                     setTimeout: timers.setTimeout, clearTimeout: timers.clearTimeout, timers, ...extra});
+                     setTimeout: timers.setTimeout, clearTimeout: timers.clearTimeout, timers,
+                     performance: {now: () => timers.now}, ...extra});
 }
 
 // A promise with its resolve function, standing in for an ad that is playing.
