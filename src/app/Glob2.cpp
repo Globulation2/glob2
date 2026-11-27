@@ -602,6 +602,7 @@ int Glob2::run(const Cli::Request &request)
 	ProblemReport::installLogCapture();
 	// Crash capture (src/app/CrashCapture.h): mirrors that log into the session
 	// file and starts Crashpad (Android) or MetricKit (iOS) where built.
+	CrashCapture::setAlwaysSendSource([] { return globalContainer->settings.alwaysSendCrashReports; });
 	CrashCapture::startPlatform(ProblemReport::userDirectory());
 	auto cancelled = std::make_shared<bool>(false);
 	auto launch = [cancelled]

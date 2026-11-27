@@ -517,10 +517,13 @@ class SimulationPathTest(unittest.TestCase):
         definitions = re.findall(r'\badd_compile_definitions\s*\(([^)]*)\)', code)
         self.assertEqual(sorted(' '.join(d.split()) for d in definitions),
                          ['${recording_define}', 'GL_SILENCE_DEPRECATION'])
-        # Per-source options: only etcpak's SSE4.1 encoders in libgag.
+        # Per-source options: only etcpak's SSE4.1 encoders in libgag, and the
+        # Linux crash-capture layer's Crashpad headers (app code, no simulation).
         properties = re.findall(r'set_source_files_properties\s*\(([^)]*)\)', code)
         self.assertEqual([' '.join(p.split()) for p in properties],
-                         ['${GLOB2_SSE41_SOURCES} TARGET_DIRECTORY gag PROPERTIES COMPILE_OPTIONS "-msse4.1"'])
+                         ['${GLOB2_SSE41_SOURCES} TARGET_DIRECTORY gag PROPERTIES COMPILE_OPTIONS "-msse4.1"',
+                          '"${GLOB2_ROOT}/${GLOB2_CRASHPAD_SOURCE}" TARGET_DIRECTORY glob2_client PROPERTIES '
+                          'INCLUDE_DIRECTORIES "${crashpad_prefix}/include/crashpad" COMPILE_DEFINITIONS "GLOB2_CRASHPAD=1"'])
         for name in ('compile-flags', 'numeric-contract'):
             self.assertIn(f'include("${{GLOB2_ROOT}}/cmake/{name}.cmake")', text)
 

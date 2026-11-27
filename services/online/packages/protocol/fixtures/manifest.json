@@ -75,6 +75,7 @@
     "EngineJobResult": "schemas/EngineJobResult.schema.json",
     "EquipSkinRequest": "schemas/EquipSkinRequest.schema.json",
     "ErrorBody": "schemas/ErrorBody.schema.json",
+    "ErrorReport": "schemas/ErrorReport.schema.json",
     "GenerateMapPayload": "schemas/GenerateMapPayload.schema.json",
     "GenerateMapResult": "schemas/GenerateMapResult.schema.json",
     "GenerateScriptMapPayload": "schemas/GenerateScriptMapPayload.schema.json",
@@ -1692,6 +1693,25 @@
       "schema": "CrashReportContext",
       "valid": true,
       "note": "An uncaught Java exception on Android: the bundle also holds java-exception.txt."
+    },
+    {
+      "file": "valid/CrashReportContext/error-report.json",
+      "schema": "CrashReportContext",
+      "valid": true,
+      "note": "A non-fatal error report from a player who chose Always send: the bundle also holds error.json."
+    },
+    {
+      "file": "valid/ErrorReport/map-load.json",
+      "schema": "ErrorReport",
+      "valid": true,
+      "note": "A map that failed to load, with the engine diagnostic."
+    },
+    {
+      "file": "invalid/ErrorReport/unknown-category.json",
+      "schema": "ErrorReport",
+      "valid": false,
+      "stage": "schema",
+      "note": "Only the categories the game reports."
     },
     {
       "file": "invalid/CrashReportContext/unknown-kind.json",

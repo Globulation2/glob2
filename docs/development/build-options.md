@@ -307,7 +307,11 @@ adds `-O3`, links with `-O3` and strips with `-s` (test binaries
 keep their symbols) unless `retain_symbols=1`. Outside macOS, release builds
 compile with `-g1` instead of `-g`, and the client links unstripped with a build ID,
 is copied to `src/glob2.debug` (`glob2.exe.debug`) and is then stripped, so the
-release workflows can upload its [crash symbols](../multiplayer/crash-reports.md#symbols). Native release builds also
+release workflows can upload its [crash symbols](../multiplayer/crash-reports.md#symbols). On Linux,
+`GLOB2_CRASHPAD_PREFIX` (a prefix from `buildsys/crashpad_dependencies.py`, which needs
+clang) links Crashpad for [crash capture](../multiplayer/crash-reports.md#capture-in-the-game)
+into builds that send reports, copies its handler beside the built `glob2` and
+installs it as `lib/glob2/crashpad_handler`. Native release builds also
 optimize the C++ across files at link time: GCC (Linux, MinGW) with `-flto=auto`, clang with
 `-flto=thin` (on Linux only when `ld.lld` is installed, which then links; on macOS
 with a per-executable `-object_path_lto` directory, so the dSYM keeps its debug

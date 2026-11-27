@@ -233,4 +233,132 @@ TEST_SUITE("CrashCapture")
 		CHECK(takeArrival());
 		CHECK_FALSE(takeArrival());
 	}
+
+	TEST_CASE("browser crashes wait in the same directory and bundle as web-error.json")
+	{
+		ScratchDir dir("web");
+		CHECK(std::string(fileSuffix(Kind::Web)) == ".web.json");
+		CHECK(std::string(entryName(Kind::Web)) == "web-error.json");
+		const std::string report = R"({"schema":1,"source":"abort","message":"unreachable","stack":"","buildId":"9f86d081884c7d659a2feaa0c55ad015"})";
+		std::filesystem::create_directories(crashesDirectory(dir.path));
+		std::ofstream(crashesDirectory(dir.path) / "0123456789abcdef0123456789abcdef.web.json") << report;
+		const auto crashes = pending(dir.path);
+		REQUIRE(crashes.size() == 1);
+		CHECK(crashes.front().kind == Kind::Web);
+		const auto entries = ProblemReport::unzip(bundle(crashes.front(), sampleContext()));
+		REQUIRE(entries);
+		CHECK(entry(*entries, "web-error.json") == report);
+		CHECK(nlohmann::json::parse(entry(*entries, "context.json"))["kind"] == "web");
+	}
+
+	TEST_CASE("non-fatal errors are capped per day and match the server's ErrorReport fixture")
+	{
+		ScratchDir dir("errors");
+		for (int i = 0; i < ERRORS_PER_DAY; ++i)
+			CHECK(takeErrorSlot(dir.path, "2026-11-27"));
+		CHECK_FALSE(takeErrorSlot(dir.path, "2026-11-27"));
+		CHECK(takeErrorSlot(dir.path, "2026-11-28")); // a new day starts again
+		const auto json = nlohmann::json::parse(errorJson(ErrorCategory::Network, std::string(3000, 'x')));
+		CHECK(json["category"] == "network");
+		CHECK(json["message"].get<std::string>().size() == ERROR_MESSAGE_BYTES);
+		std::ifstream file(glob2test::sourceRoot() /
+						   "services/online/packages/protocol/fixtures/valid/ErrorReport/map-load.json");
+		REQUIRE(file);
+		const auto errorFixture = nlohmann::json::parse(file);
+		sameShape(nlohmann::json::parse(errorJson(ErrorCategory::MapLoad, "x")),
+				  errorFixture.contains("value") ? errorFixture["value"] : errorFixture);
+		const auto context = nlohmann::json::parse(contextJson(sampleContext(), Kind::Minidump, std::nullopt));
+		auto errorContext = context;
+		errorContext["kind"] = "error";
+		sameShape(errorContext, fixture("error-report.json"));
+	}
+
+	TEST_CASE("non-fatal errors go out only with Always send, once per message")
+	{
+		resetErrorsForTests();
+		glob2test::HeadlessGlobals globals;
+		const auto userDir = ProblemReport::userDirectory();
+		REQUIRE_FALSE(userDir.empty());
+		std::error_code error;
+		std::filesystem::remove_all(userDir / "reports", error);
+		struct Restore
+		{
+			AgeGate::Store previous = AgeGate::installedStore();
+			~Restore()
+			{
+				AgeGate::setStore(previous);
+				setAlwaysSendSource({});
+				resetErrorsForTests();
+			}
+		} restore;
+		AgeGate::setStore({[] { return AgeGate::Local{AgeGate::Band::ThirteenPlus, AgeGate::Source::Self}; },
+						   [](const AgeGate::Local &) { return true; }});
+		CHECK_FALSE(reportError(ErrorCategory::MapLoad, "unknown terrain"));
+		setAlwaysSendSource([] { return true; });
+		CHECK(reportError(ErrorCategory::MapLoad, "unknown terrain"));
+		CHECK_FALSE(reportError(ErrorCategory::MapLoad, "unknown terrain"));
+		ProblemReport::Outbox outbox(userDir);
+		const auto queued = outbox.pending();
+		REQUIRE(queued.size() == 1);
+		std::ifstream in(queued.front(), std::ios::binary);
+		const std::string bytes((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
+		const auto entries = ProblemReport::unzip(bytes);
+		REQUIRE(entries);
+		CHECK(nlohmann::json::parse(entry(*entries, "context.json"))["kind"] == "error");
+		CHECK(nlohmann::json::parse(entry(*entries, "error.json"))["message"] == "unknown terrain");
+		AgeGate::setStore({[] { return AgeGate::Local{AgeGate::Band::Under13, AgeGate::Source::Self}; },
+						   [](const AgeGate::Local &) { return true; }});
+		CHECK_FALSE(reportError(ErrorCategory::Network, "relay closed"));
+		std::filesystem::remove_all(userDir / "reports", error);
+	}
+
+	TEST_CASE("session counts are kept only with Always send and resend running totals")
+	{
+		ScratchDir dir("sessions");
+		struct Restore
+		{
+			~Restore() { setAlwaysSendSource({}); }
+		} restore;
+		countSession(dir.path, "2026-11-27");
+		CHECK(readSessions(dir.path).empty()); // not opted in: nothing kept
+		setAlwaysSendSource([] { return true; });
+		SessionDays old{{"2026-11-10", {3, 0, 0}}};
+		writeSessions(dir.path, old);
+		countSession(dir.path, "2026-11-26");
+		countSession(dir.path, "2026-11-27");
+		countSession(dir.path, "2026-11-27");
+		auto days = readSessions(dir.path);
+		REQUIRE(days.size() == 2); // a week-old day is forgotten
+		CHECK(days["2026-11-26"].sessions == 1);
+		CHECK(days["2026-11-27"].sessions == 2);
+
+		const std::int64_t now = 1'795'000'000;
+		CHECK(nextSessionPing(days, "2026-11-27", now) == std::optional<std::string>("2026-11-26"));
+		applySessionAnswer(days, "2026-11-26", 1, 204, "2026-11-27", now);
+		CHECK_FALSE(days.count("2026-11-26")); // finished and accepted: done
+		CHECK(nextSessionPing(days, "2026-11-27", now) == std::optional<std::string>("2026-11-27"));
+		applySessionAnswer(days, "2026-11-27", 2, 204, "2026-11-27", now);
+		CHECK(days["2026-11-27"].sent == 2);
+		days["2026-11-27"].sessions = 3;
+		CHECK_FALSE(nextSessionPing(days, "2026-11-27", now + 60)); // today: at most hourly
+		CHECK(nextSessionPing(days, "2026-11-27", now + 3600));
+		applySessionAnswer(days, "2026-11-27", 3, 503, "2026-11-27", now + 3600);
+		CHECK(days["2026-11-27"].sent == 2); // kept for a retry
+		applySessionAnswer(days, "2026-11-27", 3, 403, "2026-11-27", now + 3600);
+		CHECK(days.empty()); // refused: dropped
+
+		const auto body = nlohmann::json::parse(sessionPingJson(sampleContext(), "2026-11-27", 3));
+		CHECK(body["day"] == "2026-11-27");
+		CHECK(body["sessions"] == 3);
+		CHECK(body["installId"] == sampleContext().installId);
+		CHECK(body.size() == 8);
+		std::ifstream pingFile(glob2test::sourceRoot() /
+							   "services/online/packages/protocol/fixtures/valid/CrashSessionPing/daily-sessions.json");
+		REQUIRE(pingFile);
+		sameShape(body, nlohmann::json::parse(pingFile));
+
+		setAlwaysSendSource([] { return false; });
+		countSession(dir.path, "2026-11-27");
+		CHECK_FALSE(std::filesystem::exists(dir.path / "reports" / "sessions.json")); // opting out deletes them
+	}
 }

@@ -48,9 +48,13 @@
         {
           "type": "string",
           "const": "java"
+        },
+        {
+          "type": "string",
+          "const": "error"
         }
       ],
-      "description": "What sent the report: Report a Problem, a Crashpad minidump, an iOS MetricKit crash diagnostic, a browser error, or an uncaught Java exception on Android."
+      "description": "What sent the report: Report a Problem, a Crashpad minidump, an iOS MetricKit crash diagnostic, a browser error, or an uncaught Java exception on Android, or a non-fatal error the game survived."
     },
     "status": {
       "anyOf": [

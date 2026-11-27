@@ -24,6 +24,7 @@ import {
 import { symbolicateMetricKit } from './metrickit.ts';
 import { symbolicateWeb } from './web.ts';
 import { symbolicateJava } from './java.ts';
+import { readErrorReport } from './error.ts';
 import { signature } from './signature.ts';
 import type { SymbolCache } from './symbols.ts';
 
@@ -80,6 +81,7 @@ export async function symbolicate(
   if (kind === 'metrickit') return symbolicateMetricKit(tools.cache, payload.toString('utf8'));
   if (kind === 'web') return symbolicateWeb(tools.cache, payload.toString('utf8'));
   if (kind === 'java') return symbolicateJava(payload.toString('utf8'));
+  if (kind === 'error') return readErrorReport(payload.toString('utf8'));
   return withScratchDir(tools.scratch, async (work) => {
     const dump = join(work, 'minidump.dmp');
     await writeFile(dump, payload);
@@ -125,7 +127,7 @@ export async function processCrashReport(
       .evict()
       .catch((err: unknown) => logger.warn({ err }, 'Symbol cache eviction failed'));
   }
-  const key = signature(result.frames);
+  const key = result.signature ?? signature(result.frames);
   const reopens = sql`crash_groups.state = 'resolved'
     AND string_to_array(excluded.last_version, '.')::int[]
       >= string_to_array(crash_groups.fixed_in, '.')::int[]`;

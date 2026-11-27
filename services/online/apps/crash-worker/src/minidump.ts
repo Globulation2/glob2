@@ -19,6 +19,8 @@ export interface Stackwalker {
 export interface Symbolicated {
   frames: CrashFrame[];
   reason: string;
+  /** A group signature of its own, for reports without a stack (kind "error"). */
+  signature?: string;
 }
 
 /** Thrown for input that will never symbolicate: the report is marked failed. */

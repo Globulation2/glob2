@@ -128,8 +128,10 @@ product's `Main` branch before submitting for certification:
    submitting; use a manual hold if certification should finish before launch.
 2. **Properties:** Strategy is the primary genre; Simulation is an additional
    genre. Declare PC single-player and online multiplayer. Use
-   `https://glob2.online/privacy/` for privacy, `https://glob2.online/` for the
-   website, and the current support contact published in that privacy policy.
+   `https://glob2.online/privacy/` for privacy (it covers the optional
+   [crash reports](../mobile/privacy-policy.md#crash-reports) the game offers
+   after a crash), `https://glob2.online/` for the website, and the current
+   support contact published in that privacy policy.
    Review the customer-visible contact address and phone: Partner Center can use
    the developer account's contact details when product fields are blank.
    Verify hardware requirements against the packaged release; do not infer them

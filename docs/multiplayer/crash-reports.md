@@ -6,15 +6,16 @@ glob2-online symbolicates each one against the symbols its release uploaded and
 files it under a crash group, so maintainers see "this crash, 40 installs, since
 0.11.7" rather than 40 separate reports. Nothing goes to a third-party service.
 
-Android (Crashpad, plus uncaught Java exceptions) and iOS (MetricKit) capture
-crashes; Crashpad on Windows, macOS and Linux and the browser's error hooks come
-later and only need to send the bundles described here.
+Every platform captures crashes: Crashpad on Android and Linux, MetricKit on
+iOS and macOS, Windows' own minidump writer, and the browser's error hooks. The
+game also sends a few non-fatal errors for players who chose Always send.
 
 ## Capture in the game
 
-`src/app/CrashCapture.h` holds what every platform shares; the platform layers
-are `platforms/mobile/android/CrashCapture.cpp` and
-`platforms/mobile/ios/CrashCapture.mm`. Builds without reports
+`src/app/CrashCapture.h` holds what every platform shares. Each build links one
+platform layer: `platforms/mobile/android/CrashCapture.cpp`,
+`platforms/apple/CrashCapture.mm` (iOS and macOS) or
+`src/app/CrashCapturePlatform.cpp` (Windows, Linux, the browser). Builds without reports
 (`problem_reports=0`: F-Droid, the Fire tablet and China editions, distribution
 packages) capture nothing.
 
@@ -22,7 +23,10 @@ packages) capture nothing.
 | --- | --- | --- |
 | Android | Crashpad's handler, started only when the game crashes | `<id>.dmp`, moved out of Crashpad's database (`reports/crashpad/`) at the next launch |
 | Android | `Glob2Activity.captureJavaCrashes`, the default uncaught-exception handler | `<id>.java.txt`: the thread and the stack |
-| iOS | A MetricKit subscriber: iOS delivers each crash to the next run, some time after launch | `<id>.metrickit.json`, one `MXCrashDiagnostic` |
+| iOS, macOS | A MetricKit subscriber: the system delivers each crash to the next run, some time after launch | `<id>.metrickit.json`, one `MXCrashDiagnostic` |
+| Windows | An unhandled-exception filter (and `SIGABRT`) wakes a thread made at startup, which writes the crashed thread's minidump with `dbghelp`'s `MiniDumpWriteDump` | `<id>.dmp` |
+| Linux | Crashpad's handler, shipped as `lib/glob2/crashpad_handler` (or beside the binary) and started only when the game crashes | `<id>.dmp`, moved out of `reports/crashpad/` at the next launch |
+| Browser | `shell.html` (`glob2CrashCapture`): a WebAssembly trap, an Emscripten abort, or an error or rejection whose stack is the game's | `<id>.web.json`, a `WebErrorReport` with the `.wasm` file's build ID, in the saved files |
 
 - **Crashpad on Android.** Crashpad comes from the pinned vcpkg baseline
   (Apache-2.0) through the `crash-capture` feature of
@@ -34,6 +38,24 @@ packages) capture nothing.
   runs executables only from the extracted library directory. The game links
   Crashpad's client (`GLOB2_CRASHPAD`) and starts the handler when it crashes
   (`StartHandlerAtCrash`), with no upload URL: the game sends reports itself.
+- **Windows and macOS use the system.** Windows writes minidumps with `dbghelp`
+  (part of Windows) from a thread of its own, so a crash that used up the stack
+  still gets one; MinGW builds need no Crashpad. macOS uses MetricKit as iOS
+  does (macOS 12 and later; the game needs 15), which also works inside the Mac
+  App Store sandbox, where Crashpad's handler could not attach.
+- **Crashpad on Linux.** `buildsys/crashpad_dependencies.py` builds it from the
+  same pinned port through the overlay in `buildsys/vcpkg-ports/crashpad`, which
+  uses Crashpad's socket HTTP transport without TLS, so it links neither libcurl
+  nor a second OpenSSL (the game never uploads through Crashpad). Builds set
+  `GLOB2_CRASHPAD_PREFIX` to its prefix: the GitHub release and GOG Linux
+  builds do, and CI's Linux variants job crashes such a build on purpose
+  (`test/crash_capture_smoke.py`). Without it, and in distribution packages
+  (`problem_reports=0`), Linux captures nothing.
+- **The browser** keeps the error in the saved files (IndexedDB) and offers it
+  at the next visit like any other crash. Its build ID is the first 32 hex
+  digits of the SHA-256 of the `.wasm` file that ran (`Module.glob2WasmFile`),
+  which the release workflow's symbol map upload uses too. Errors that are not
+  the game's (extensions, a blocked request) are ignored.
 - **The crashed session's log.** While the game runs, its recent log and the
   running match (the map seed, then each drawn tick) are mirrored into
   `reports/session.log`, a 64 KB file mapped into memory, so a crash loses
@@ -44,6 +66,17 @@ packages) capture nothing.
 - **Caps.** At most five crashes and 10 MB wait on disk, the oldest dropped
   first; queued reports then follow the
   [outbox](problem-reports.md) caps.
+
+### Non-fatal errors
+
+Some failures do not crash the game but deserve a look: a map or saved game that
+fails to load (`GameLoadScreen`), and an online match that fails
+(`OnlineMatch::fail`, the reason only). `CrashCapture::reportError` sends them as
+kind `error` with an `error.json` entry (`ErrorReport`: category `map-load` or
+`network`, and the message), the context and the recent log, only for players
+who chose **Always send**, at most five a day per install
+(`reports/errors-today`) and once per message per run. The crash worker groups
+them by category and message with numbers and quoted names blanked.
 
 ### Consent
 
@@ -74,6 +107,7 @@ A crash bundle is a [problem report bundle](problem-reports.md#the-bundle) whose
 | `metrickit` | `metrickit.json` | `MXCrashDiagnostic.jsonRepresentation()`, unchanged |
 | `web` | `web-error.json` | A `WebErrorReport`: message, stack and the wasm build ID |
 | `java` | `java-exception.txt` | An uncaught Java exception on Android, as `printStackTrace` writes it |
+| `error` | `error.json` | A non-fatal `ErrorReport`: its category and message |
 
 The context may also carry `match` (the tick and map seed of a running match),
 and the bundle the crashed session's log as `log.txt`.
@@ -228,6 +262,9 @@ release. The game sends its count with `POST /api/v1/crash-sessions`:
   started that day, from 1 to 500. The server keeps the largest total it has
   seen for that install and day, so a resent or retried ping changes nothing and
   a lost answer is safe to retry.
+- **In the game** (`CrashCapture::countSession` at launch and
+  `CrashCapture::pumpSessions` from the main menu's timer, like the outbox),
+  the counts wait in `reports/sessions.json`.
 - **When.** Count only while `alwaysSendCrashReports` is on, and only in builds
   that send crash reports (not `problem_reports=0` builds). Send the current
   day's total at most once an hour (for example from the main menu, after a

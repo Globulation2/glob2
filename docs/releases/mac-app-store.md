@@ -80,7 +80,10 @@ Dispatch `mac-app-store-production.yml` from mirror `master` with the public
 macOS versions, states and attached builds; `prepare` creates or binds the
 tagged macOS version with `MANUAL` release; `submit` checks the listing (Mac
 screenshots, localized descriptions, HTTPS support and privacy URLs, review
-contact) and requests review; `publish` releases an approved version. Only one
+contact) and requests review (keep the App Privacy answers in step with the
+policy: Diagnostics, crash data and other diagnostic data from the game's
+optional [crash reports](../mobile/privacy-policy.md#crash-reports), not linked
+to the user and not used for tracking); `publish` releases an approved version. Only one
 macOS version can be open at a time, so use `supersede` with the inspected
 `draft_version_id` and its current `replace_draft_build_id` to turn an older
 manual-release version that is waiting for review, or withdrawn, into the new

@@ -360,7 +360,8 @@ set(frameworks)
 if(darwin)
   set(frameworks Security CoreFoundation)
   if(NOT relay)
-    list(APPEND frameworks AppKit)
+    # MetricKit: crash diagnostics (src/app/CrashCapture.h).
+    list(APPEND frameworks AppKit MetricKit)
   endif()
 endif()
 if(windows)
@@ -375,7 +376,8 @@ if(windows)
     set(regex_libraries systre tre intl iconv)
   endif()
   set(platform_libraries ws2_32 mswsock crypt32)
-  set(windows_libraries wsock32 winmm)
+  # dbghelp writes crash minidumps (the crash-capture layer, src/app/CrashCapture.h).
+  set(windows_libraries wsock32 winmm dbghelp)
   set(gl_name opengl32)
   set(glu_name glu32)
 else()
@@ -684,18 +686,38 @@ set(platform_trust_sources)
 if(windows)
   set(platform_trust_sources ${GLOB2_MINGW_TRUST_SOURCES})
 elseif(darwin)
-  set(platform_trust_sources ${GLOB2_DARWIN_TRUST_SOURCES})
+  # The macOS crash-capture layer (MetricKit) rides along with the trust sources.
+  set(platform_trust_sources ${GLOB2_DARWIN_TRUST_SOURCES} ${GLOB2_DARWIN_CRASH_SOURCES})
 endif()
 list(TRANSFORM platform_trust_sources PREPEND "${GLOB2_ROOT}/" OUTPUT_VARIABLE trust_sources)
 add_library(glob2_client OBJECT ${client_sources} ${trust_sources})
 target_link_libraries(glob2_client PRIVATE glob2_client_settings)
 add_dependencies(glob2_client glob2_generated glob2_build_stamp)
 
+# Crash capture on Linux (src/app/CrashCapture.h): Crashpad from
+# buildsys/crashpad_dependencies.py, for builds that send reports. Its headers
+# (mini_chromium's base/ and build/ among them) only reach the file that starts it.
+set(GLOB2_CRASHPAD_PREFIX "$ENV{GLOB2_CRASHPAD_PREFIX}" CACHE PATH "Crashpad prefix for Linux crash capture (GLOB2_CRASHPAD_PREFIX)")
+glob2_identity(GLOB2_SENDS_REPORTS problem_reports ON)
+set(crashpad_libraries)
+if(GLOB2_CRASHPAD_PREFIX AND CMAKE_SYSTEM_NAME STREQUAL "Linux" AND GLOB2_SENDS_REPORTS)
+  file(REAL_PATH "${GLOB2_CRASHPAD_PREFIX}" crashpad_prefix)
+  foreach(name client client_common util base)
+    set(archive "${crashpad_prefix}/lib/libvcpkg_crashpad_${name}.a")
+    if(NOT EXISTS "${archive}")
+      message(FATAL_ERROR "GLOB2_CRASHPAD_PREFIX lacks ${archive}; run buildsys/crashpad_dependencies.py")
+    endif()
+    list(APPEND crashpad_libraries "${archive}")
+  endforeach()
+  set_source_files_properties("${GLOB2_ROOT}/${GLOB2_CRASHPAD_SOURCE}" TARGET_DIRECTORY glob2_client PROPERTIES
+    INCLUDE_DIRECTORIES "${crashpad_prefix}/include/crashpad" COMPILE_DEFINITIONS "GLOB2_CRASHPAD=1")
+endif()
+
 
 
 # Link inputs in dependency order; a library named again later moves to its
 # last position.
-set(libraries ${zlib_libraries} ${regex_libraries} pthread ssl crypto ${platform_libraries} ${opengl_libraries}
+set(libraries ${crashpad_libraries} ${zlib_libraries} ${regex_libraries} pthread ssl crypto ${platform_libraries} ${opengl_libraries}
     ${fribidi_libraries} ${portaudio_libraries} ${recording_libraries} SDL3_net opusfile opus ogg SDL3_ttf SDL3_image speex
     ${windows_libraries} ${sdl3_libraries} ${webp_libraries})
 list(REVERSE libraries)
@@ -781,6 +803,12 @@ if(darwin AND GLOB2_DISTRIBUTION STREQUAL "app_store")
 endif()
 # The runtime assets come with glob2, the test binaries and test programs.
 add_dependencies(glob2 glob2_runtime_assets glob2_numeric_guard)
+# A build-tree glob2 finds Crashpad's handler beside it, as packages install it.
+if(crashpad_libraries)
+  add_custom_command(TARGET glob2 POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${crashpad_prefix}/bin/crashpad_handler" "$<TARGET_FILE_DIR:glob2>/crashpad_handler"
+    VERBATIM)
+endif()
 
 # ---- Stage 3: test binaries, test programs and harnesses ----
 # None is part of the default build; aliases name them
@@ -1041,6 +1069,9 @@ if(GLOB2_SDL3_PREFIX)
 endif()
 if(GLOB2_LEAN_IMAGES)
   list(APPEND install_arguments "--lean-image-prefix=${lean_image_prefix}")
+endif()
+if(crashpad_libraries)
+  list(APPEND install_arguments "--crashpad-prefix=${crashpad_prefix}")
 endif()
 string(REPLACE ";" "\" \"" install_arguments "${install_arguments}")
 install(CODE "

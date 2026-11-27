@@ -450,6 +450,23 @@ jobs:
           python3 test/SoftwareStartupTest.py build-software/src/glob2
           python3 test/run_tests.py --binary engine --build-dir build-software --no-display --filter 'TorusRender/*software*' --junit artifacts/tests/software-junit.xml
 
+      # Crash capture on Linux (docs/multiplayer/crash-reports.md): the release
+      # build with Crashpad, crashed on purpose, keeps a minidump for next launch.
+      - name: Restore the Crashpad prefix
+        if: ${{ matrix.compiler == 'g++-13' }}
+        uses: actions/cache@v4
+        with:
+          path: build/crashpad-ci/prefix
+          key: crashpad-${{ matrix.runner }}-${{ hashFiles('buildsys/crashpad_dependencies.py', 'buildsys/vcpkg-ports/crashpad/**', 'buildsys/triplets/**', 'platforms/mobile/vcpkg.json') }}
+      - name: Crash a release build with Crashpad
+        id: crash_capture
+        if: ${{ matrix.compiler == 'g++-13' }}
+        run: |
+          python3 buildsys/crashpad_dependencies.py --prefix build/crashpad-ci/prefix --work build/crashpad-ci/work --jobs 2
+          GLOB2_CRASHPAD_PREFIX="$PWD/build/crashpad-ci/prefix" GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix \
+            python3 tools/dev_build.py CXX=${{ matrix.compiler }} -j$(nproc) release=1 --build=build-crashpad build-crashpad/src/glob2
+          python3 test/crash_capture_smoke.py build-crashpad/src/glob2
+
       # A run that touched a widely included header and still shows near-total
       # direct hits means the cache is not seeing the change.
       - name: Report the cache statistics
