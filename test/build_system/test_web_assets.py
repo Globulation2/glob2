@@ -382,6 +382,8 @@ class WebAssetPackageTests(unittest.TestCase):
                 for part in entry['parts']:
                     blob = (output / part['url']).read_bytes()
                     self.assertEqual(len(blob), part['size'])
+                    # Portal uploaders refuse a gzip-looking file as an archive.
+                    self.assertNotEqual(blob[:2], web_assets.GZIP_MAGIC, part['url'])
                     if entry['name'] != 'core' and len(part['files']) > 1:
                         self.assertLessEqual(part['size'], web_assets.PART_BYTES + 2_000_000)
                     for path, start, end in part['files'][:50]:
