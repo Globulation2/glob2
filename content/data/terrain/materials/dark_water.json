@@ -1,6 +1,5 @@
 {
   "key": "dark_water",
-  "small_build_fallback": "deep_water",
   "sprite": "data/gfx/terrain-dark_water",
   "profile": "still",
   "class": "pool",

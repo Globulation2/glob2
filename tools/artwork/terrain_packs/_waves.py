@@ -7,8 +7,9 @@ The waters are cells of one 4x4-cell periodic block (`variant_grid`),
 so a wave field four cells across continues over every cell edge. The field is
 a sum of plane waves with whole wave numbers on that block, each advancing a
 whole number of cycles per loop: every cell animates locally and all cells
-share the clock. Crossing swells break up long bands, while finer chop
-creates moving glints. Deep water reads the same field (same seed and wind), so
+share the clock, so crests roll across open water in one direction. A swell
+toward the lower right sets the bands; finer cross chop breaks their crests
+into moving glints. Deep water reads the same field (same seed and wind), so
 crests carry on across the shallow/deep blend; so does dark water. Statistics
 only, no pixels read."""
 import math
@@ -37,8 +38,7 @@ WAVE_SIN = [math.sin(TAU * i / WAVE_SIZE) for i in range(WAVE_SIZE)]
 
 
 # (kx, ky, cycles per loop, amplitude): cycles per block; a wave moves toward +k.
-WAVE_SWELL = [(2, 1, 1, 0.55), (1, 2, 1, 0.45), (3, -2, 2, 0.45),
-              (-1, 3, 2, 0.35), (4, 1, 2, 0.30), (2, -4, 2, 0.25)]
+WAVE_SWELL = [(2, 1, 1, 1.0), (3, 1, 1, 0.45), (3, 2, 1, 0.35), (4, 2, 2, 0.30)]
 
 
 # At most four cycles per loop: a term moves no more than a quarter of its
@@ -49,7 +49,7 @@ WAVE_CHOP = [(5, 1, 2, 0.5), (4, 4, 2, 0.45), (6, -1, 2, 0.4), (3, 6, 2, 0.35), 
              (17, -5, 4, 0.1), (16, 11, 4, 0.1)]
 
 
-# A static periodic warp bends crests without introducing whole-pixel ridges.
+# A static periodic warp (integer render px) bends the crests.
 WAVE_WARP = [(1, 2, 12), (2, -1, 9), (1, -1, 6)]
 
 
@@ -59,8 +59,8 @@ _WAVE_CACHE = {}
 def wave_fields(phase, phases=WAVE_PHASES, layout=0):
     """Periodic ocean geometry shared by both depths; layout0 defines edges.
 
-    Whole wave numbers and phase cycles preserve the loop. The warp keeps
-    subpixel offsets so its derivative can shade the swell smoothly.
+    Integer sine-table samples preserve the loop exactly. Vectorization keeps
+    all phases/layouts practical at1024px without changing wavelength/speed.
     """
     key = (phase, phases)
     if layout == 0 and key in _WAVE_CACHE:
@@ -83,14 +83,14 @@ def wave_fields(phase, phases=WAVE_PHASES, layout=0):
         value = np.zeros((size, size))
         for i, (kx, ky, amplitude, ph) in enumerate(warp):
             value += amplitude * table[(kx * xx + ky * yy + ph + quarter * axis * (i + 1)) % size]
-        offsets.append(value)
+        offsets.append(np.rint(value).astype(np.int64))
     xw, yw = xx + offsets[0], yy + offsets[1]
     out = []
     for components in (swell, chop):
         total = sum(c[3] for c in components)
         values = np.zeros((size, size))
         for kx, ky, cycles, amplitude, ph in components:
-            values += (amplitude / total) * np.sin((TAU / size) * (kx * xw + ky * yw + ph - cycles * phase * (size // phases)))
+            values += (amplitude / total) * table[(kx * xw + ky * yw + ph - cycles * phase * (size // phases)) % size]
         out.append(values.ravel())
     swell_values = out[0].reshape(size, size)
     # Positive on faces that rise toward the lower right, which turn up-left
