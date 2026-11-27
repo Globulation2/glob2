@@ -1257,11 +1257,6 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="0.11.8.6" date="2026-11-27">
-      <description>
-        <p>Rebuilds 0.11.8.5 for Windows, Linux packages and the stores. Captures crashes on Windows, macOS, Linux and the browser so they can be reported; hides ground units behind tall decor in front of them; keeps walls on raised terrain seams; gives roomy devices larger render budgets; and shows a light wordmark on the loading screen.</p>
-      </description>
-    </release>
     <release version="0.11.8.5" date="2026-11-27">
       <description>
         <p>Captures crashes on Windows, macOS, Linux and the browser so they can be reported; hides ground units behind tall decor in front of them; keeps walls on raised terrain seams; gives roomy devices larger render budgets and encodes HD artwork as BC7 on desktops with 8 or more threads; and shows a light wordmark on the loading screen.</p>
