@@ -16,8 +16,8 @@ republishing the browser game, dispatch `browser-release.yml` with `publish` off
 | --- | --- | --- | --- | --- | --- |
 | GamePix | [gamepix.md](gamepix.md) | GamePix SDK v3 | no, no | yes | standard |
 | CrazyGames | [crazygames.md](crazygames.md) | CrazyGames SDK v3 | no, no | yes (none in Basic Launch) | lite: 50 MB initial download |
-| Newgrounds | [newgrounds.md](newgrounds.md) | none | yes, yes | no | standard |
-| Game Jolt | [gamejolt.md](gamejolt.md) | none | yes, yes | no | standard |
+| Newgrounds | [newgrounds.md](newgrounds.md) | none | yes, no | no | standard |
+| Game Jolt | [gamejolt.md](gamejolt.md) | none | yes, no | no | standard |
 | GameDistribution | [gamedistribution.md](gamedistribution.md) | GameDistribution HTML5 SDK | no, no | yes | standard |
 | Yandex Games | [yandex.md](yandex.md) | Yandex Games SDK (`/sdk.js`) | no, no | yes | lite: 100 MB unpacked |
 | Poki | [poki.md](poki.md) | Poki SDK v2 | no, no | yes | lite: small download |
@@ -74,6 +74,9 @@ The inline script sets `window.GLOB2_PORTAL = {name, externalLinks, onlineSignIn
 before any game script runs. The game reads it to hide links that leave the portal
 and online sign-in where a portal bans them, and in every portal it drops Quit from
 the main menu; outside a portal upload the object is absent and nothing changes.
+Online sign-in is off in every portal package: the game would reach the online
+service (`app.glob2.online`) from the portal's own origin, and the service sends no
+CORS headers, so Play online could not connect even where a portal allows it.
 In every portal the game also offers no fullscreen control of its own (CrazyGames
 forbids one; the portal's page has its own button): Settings > Display has no
 Window mode and F11 does nothing (`ApplicationHost::fullscreenControlAllowed`).

@@ -8,8 +8,10 @@ Newgrounds, with `index.html` at the zip root.
 ## Package
 
 `package-portal.py --portal newgrounds` injects only `portal-core.js` (Newgrounds
-needs no SDK) with the policy `{externalLinks: true, onlineSignIn: true}`: links to
-our site and online play stay. The profile fails uploads above 250 MB zipped. That
+needs no SDK) with the policy `{externalLinks: true, onlineSignIn: false}`: links to
+our site stay, and Play online is hidden. The game would reach the online service
+at `app.glob2.online` from the portal's own origin, and the service sends no CORS
+headers, so online play could not connect from a Newgrounds page. The profile fails uploads above 250 MB zipped. That
 figure is the commonly cited project limit; the
 [Newgrounds wiki](https://www.newgrounds.com/wiki/help-information/content-submission/games-and-movies)
 was not readable without signing in, so confirm it on the upload form. The 0.11.8
