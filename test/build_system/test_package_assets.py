@@ -181,6 +181,16 @@ class AssetExportTests(unittest.TestCase):
         command = run.call_args.args[0]
         self.assertEqual(command[command.index("--jobs") + 1], "3")
 
+    def test_worker_in_configured_encoder_needs_no_quality_gate(self):
+        # Windows release jobs configure a Pillow-only encoder; video sprites
+        # fall back to SSIM there instead of failing the export.
+        def ready(require_brotli=False, require_quality=False):
+            return not require_quality
+        with patch.object(package_assets, "encoder_ready", side_effect=ready):
+            self.export(worker=True, video_sprites=True)
+        self.assertTrue((self.output / "data/gfx/test.png").is_file()
+                        or any(self.output.rglob("*.webp")) or any(self.output.rglob("*.png")))
+
     def test_parallel_encoder_failure_preserves_existing_export(self):
         self.export(jobs=1)
         original_audit = self.output.with_suffix(".json").read_bytes()

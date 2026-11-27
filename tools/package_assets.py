@@ -990,14 +990,17 @@ def _export_assets(
     needs_brotli = platform == "web" and optimized and (packed_hd_sprites or video_sprites or sprite_ffmpeg)
     # Only exports that encode sprite video need the pinned SSIMULACRA2 gate.
     needs_quality = bool(optimized and lossy and (video_sprites or sprite_ffmpeg))
-    ready = encoder_ready(needs_brotli, needs_quality)
+    # A worker may run in a configured GLOB2_ASSET_ENCODER_PYTHON without
+    # SSIMULACRA2 (encoder_python); its video gate then falls back to SSIM.
+    ready = encoder_ready(needs_brotli, needs_quality and not worker)
     if (
         (optimized or catalog.is_file())
         and not ready
         and (catalog.is_file() or any(p.suffix.lower() == ".png" for p in source_files(root, platform, exclude)))
     ):
         if worker:
-            raise RuntimeError("Packaging requires Pillow 12.2.0 with libwebp 1.6.0")
+            raise RuntimeError(f"Packaging requires Pillow {PILLOW_VERSION} with libwebp {WEBP_VERSION}"
+                               + (f" and brotli {BROTLI_VERSION}" if needs_brotli else ""))
         command = [
             encoder_python(needs_brotli, needs_quality),
             str(Path(__file__).resolve()),

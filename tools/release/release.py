@@ -131,7 +131,6 @@ def verify_install(stage):
         "usr/share/glob2/data/fonts/sans.ttf",
         "usr/share/glob2/data/maxima/duel.strategy",
         "usr/share/glob2/data/usl/Language/Runtime/Control.usl",
-        "usr/share/glob2/data/gfx/ressource0.png",
         "usr/share/glob2/maps/SmallForTwo.map.gz",
     )
     required += tuple("usr/share/glob2/" + path for path in packaged_assets(ROOT))
@@ -143,6 +142,12 @@ def verify_install(stage):
     missing = [name for name in required if not (stage / name).is_file()
                and not (name.startswith('usr/share/glob2/data/') and name.endswith('.png')
                         and (stage / Path(name).with_suffix('.webp')).is_file())]
+    # Optimized exports pack the resource sprites into a sheet
+    # (tools/package_assets.py SHEET_ROOTS); other installs keep their frames.
+    resources = assets / "data/gfx"
+    if not any((resources / name).is_file()
+               for name in ("ressource.sheet", "ressource0.png", "ressource0.webp")):
+        missing.append("usr/share/glob2/data/gfx/ressource.sheet")
     if missing:
         raise SystemExit(f"incomplete installation: {missing}")
 
