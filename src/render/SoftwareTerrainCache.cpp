@@ -830,6 +830,15 @@ bool surfStepChanged(TerrainVisual::MaterialId id, unsigned previousTime,
     return surfStepChanged(id, previousTime, compositor, compositor.surfTime());
 }
 
+// Whether any material the cell may draw changed: its palette, as the page
+// records its revisions, so a stone path's ground counts as well as its corners.
+template <class Changed>
+bool paletteChanged(const TerrainVisual::Recipe &recipe, Changed materialChanged)
+{
+    std::array<TerrainVisual::MaterialId, 4> palette;
+    const unsigned count = recipe.palette(palette);
+    return std::any_of(palette.begin(), palette.begin() + count, materialChanged);
+}
 // An unchanged mixed cell recomposes only the samples its changed textures
 // and advanced surf reach; the page keeps every other sample's pixels.
 template <class Changed>
@@ -938,8 +947,7 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
             continue;
         const auto &tile = tiles[i];
         if (wasValid && page.tiles[i] == tile && !page.stale[i] &&
-            (!tile.discovered || (std::none_of(tile.recipe.corners.begin(),
-                                               tile.recipe.corners.end(), materialChanged) &&
+            (!tile.discovered || (!paletteChanged(tile.recipe, materialChanged) &&
                                   (keyframing || !tileSurfChanged(tile.recipe, page.surfTime, compositor)))))
             continue;
         changed.push_back(i);
@@ -3025,7 +3033,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 				// the page keeps those beside its own cells at the same phase.
 				if (!tile.discovered || (entry.overlay[i] && !bordersPage(i)))
 					continue;
-				if (entry.stale[i] || std::any_of(tile.recipe.corners.begin(), tile.recipe.corners.end(), materialChanged) ||
+				if (entry.stale[i] || paletteChanged(tile.recipe, materialChanged) ||
 					(!keyframing && tileSurfChanged(tile.recipe, entry.surfTime, compositor, now)))
 				{
 					if (shown[i])
@@ -3548,8 +3556,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 								continue;
 							if (wasValid && entry->tiles[i] == tiles[i] && !entry->stale[i] &&
 								(!tiles[i].discovered ||
-								 std::none_of(tiles[i].recipe.corners.begin(),
-											  tiles[i].recipe.corners.end(), materialChanged) &&
+								 !paletteChanged(tiles[i].recipe, materialChanged) &&
                                  (keyframing || !tileSurfChanged(tiles[i].recipe, entry->surfTime, compositor))))
 								continue;
 							dirty[i] = true;

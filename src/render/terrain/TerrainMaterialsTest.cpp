@@ -1001,7 +1001,7 @@ TEST_SUITE("TerrainMaterials")
 		auto &ice = definitions.materials[id];
 		ice.sprite = "data/gfx/terrain";
 		ice.variantGrid = 0; ice.variantBlocks = 1;
-		ice.variants = {{272, 1}};
+		ice.variants = {{142, 1}};
 		ice.totalWeight = 1;
 		ice.animationFrames = 2;
 		ice.animationStride = 1;
@@ -1019,7 +1019,10 @@ TEST_SUITE("TerrainMaterials")
 				frame->markPixelsChanged();
 			}
 		};
-		auto *a = globals->terrain->nativeFrame(272), *b = globals->terrain->nativeFrame(273);
+		// Borrow the last two legacy tiles exports keep (tools/package_assets.py
+		// LEGACY_TERRAIN_FRAMES): writable native frames no shipped material draws.
+		auto *a = globals->terrain->nativeFrame(142), *b = globals->terrain->nativeFrame(143);
+		REQUIRE((a && b));
 		RestoreFrame restoreA{a, {SDL_DuplicateSurface(a->getSDLSurface()), SDL_DestroySurface}};
 		RestoreFrame restoreB{b, {SDL_DuplicateSurface(b->getSDLSurface()), SDL_DestroySurface}};
 		REQUIRE(restoreA.original);
@@ -1067,14 +1070,15 @@ TEST_SUITE("TerrainMaterials")
 		auto &ice = definitions.materials[id];
 		ice.sprite = "data/gfx/terrain";
 		ice.variantGrid = 0; ice.variantBlocks = 1;
-		ice.variants = {{272, 1}};
+		ice.variants = {{142, 1}};
 		ice.totalWeight = 1;
 		ice.animationFrames = 2;
 		ice.animationStride = 1;
 		ice.animationTicks = 8;
 		ice.animationBlendSteps = 2;
 		ice.periodicEdges = true;
-		auto *a = globals->terrain->nativeFrame(272), *b = globals->terrain->nativeFrame(273);
+		auto *a = globals->terrain->nativeFrame(142), *b = globals->terrain->nativeFrame(143);
+		REQUIRE((a && b));
 		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> originalA(
 			SDL_DuplicateSurface(a->getSDLSurface()), SDL_DestroySurface),
 			originalB(SDL_DuplicateSurface(b->getSDLSurface()), SDL_DestroySurface);
@@ -1208,7 +1212,7 @@ TEST_SUITE("TerrainMaterials")
 		auto &ice = definitions.materials[definitions.find("ice")];
 		ice.sprite = "data/gfx/terrain";
 		ice.variantGrid = 0; ice.variantBlocks = 1;
-		ice.variants = {{272, 1}};
+		ice.variants = {{142, 1}};
 		ice.totalWeight = 1;
 		ice.animationFrames = 2;
 		ice.animationStride = 1;
@@ -1360,7 +1364,7 @@ TEST_SUITE("TerrainMaterials")
 				material["sprite"] = "data/gfx/terrain";
 				material.erase("variant_grid"); material.erase("variant_blocks"); material.erase("variant_block_group");
 				material.erase("stones"); // A stone map spans a variant block.
-				material["variants"] = {{{"frame", 272}, {"weight", 1}}};
+				material["variants"] = {{{"frame", 142}, {"weight", 1}}};
 			}
 		const auto directory = glob2test::artifactDir() / "data/terrain/startup-override";
 		std::filesystem::create_directories(directory);
@@ -1373,7 +1377,7 @@ TEST_SUITE("TerrainMaterials")
 			{"catalog", document},
 			{"pages", {{{"size", {128, 128}}, {"levels", {"page.webp"}}}}},
 			{"frames",
-			 {{{"source", "data/gfx/terrain272.png"},
+			 {{{"source", "data/gfx/terrain142.png"},
 			   {"page", 0},
 			   {"rect", {4, 4, 32, 32}},
 			   {"native_rgba_fnv1a64", "422c101433645325"}}}}};
@@ -1381,7 +1385,8 @@ TEST_SUITE("TerrainMaterials")
 			std::ofstream output(directory / "atlas.json");
 			output << packed;
 		}
-		auto *native = globals->terrain->nativeFrame(272);
+		auto *native = globals->terrain->nativeFrame(142);
+		REQUIRE(native);
 		struct RestoreNativeFrame
 		{
 			GAGCore::DrawableSurface *frame;
@@ -1401,7 +1406,7 @@ TEST_SUITE("TerrainMaterials")
 		const auto definitions = TerrainVisual::Catalog::parse(document);
 		const auto pack = TerrainVisual::CompiledPack::load(definitions);
 		REQUIRE(pack);
-		REQUIRE(pack->matches("data/gfx/terrain272.png", native->getSDLSurface()));
+		REQUIRE(pack->matches("data/gfx/terrain142.png", native->getSDLSurface()));
 
 		// Startup revision tracking sees this surface as clean. Only comparison
 		// with the exported pixels prevents the stale pack from replacing it.
