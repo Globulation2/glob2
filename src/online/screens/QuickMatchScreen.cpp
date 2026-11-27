@@ -829,7 +829,11 @@ Element MatchFoundScreen::build(const Presentation &p)
 	}
 	CardOptions dialog;
 	dialog.padding = p.pt(18);
-	return center(maxWidth(p.pt(720), card(column({column(std::move(heading), {p.pt(6)}), content, bottom}, {p.pt(14)}), dialog)));
+	// The body scrolls above the answers: an AI's profile can outgrow a laptop window.
+	return center(maxWidth(p.pt(720), card(footer(scroll("found/body", column({column(std::move(heading), {p.pt(6)}), content},
+																			  {p.pt(14)})),
+												  bottom),
+										   dialog)));
 }
 
 // ============================================================== presenter
