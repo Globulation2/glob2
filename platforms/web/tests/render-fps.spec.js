@@ -15,8 +15,10 @@ for (const compact of [false, true]) {
     if (compact) {
       await screen(page, 'AudioPreferenceScreen');
       await clickControl(page, 'audio.silence');
-      await screen(page, 'HandPreferenceScreen');
-      await clickControl(page, 'hand.right');
+      // A compact mouse host is not asked for its thumb side (HandPreferenceScreen::needed).
+      await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().screen)).not.toContain('AudioPreferenceScreen');
+      if ((await page.evaluate(() => glob2Diagnostics.snapshot().screen)).includes('HandPreferenceScreen'))
+        await clickControl(page, 'hand.right');
     }
     await screen(page, 'MainMenuScreen');
     await clickMainMenu(page, 'settings');

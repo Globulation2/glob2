@@ -12,6 +12,7 @@
 #include <numeric>
 #include "TerrainMaterials.h"
 #include "TerrainCompositor.h"
+#include "TerrainArtBorder.h"
 #include "TerrainCatalogIO.h"
 #include "render/SoftwareTerrainCache.h"
 #include "render/scene/SceneMap.h"
@@ -2878,8 +2879,15 @@ TEST_CASE("selected terrain preparation bounds pixels and preserves retained sna
         }
         auto selected = compositor.cpuMaterials();
         const auto [selectedPixels, selectedVariants] = retainedPixels(selected);
-        CHECK(selectedVariants == 1);
-        CHECK(selectedPixels == std::size_t(blended.size * blended.size));
+        // Animated water filters across tile edges, so its chosen variant brings
+        // its art neighbours (Compositor::includeBoundarySources), and no more.
+        std::set<unsigned> neighbourhood{0};
+        if (TerrainVisual::hasArtNeighbors(c.materials[water]))
+            for (int dy = -1; dy <= 1; ++dy)
+                for (int dx = -1; dx <= 1; ++dx)
+                    neighbourhood.insert(TerrainVisual::artNeighbor(c.materials[water], 0, dx, dy));
+        CHECK(selectedVariants == neighbourhood.size());
+        CHECK(selectedPixels == neighbourhood.size() * std::size_t(blended.size * blended.size));
         // The byte admission includes catalog metadata, but its live pixel payload
         // is one chosen variant rather than the complete 256-variant bank.
         CHECK(selected->bytes >= selectedPixels * sizeof(TerrainVisual::Compositor::MaterialPixels::value_type));
