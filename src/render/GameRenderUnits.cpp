@@ -24,6 +24,7 @@
 #include "MapDrawer.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
+#include "terrain/TerrainCompositor.h"
 #include "Order.h"
 #include "Unit.h"
 #include "unit/render/UnitDrawGeometry.h"
@@ -359,13 +360,26 @@ void MapDrawer::drawMapGroundUnits(int left, int top, int right, int bot, int sw
 	//Reset the mouse unit to NULL, as this time around there may not be a unit
 	//under the mouse pointer
 	view.mouseUnit=UnitRef();
+	// Tall decor rises into the rows above its own: after each row of units the
+	// next row's tall decor draws again, over the units behind it, and the rows
+	// below the view whose decor reaches into it after the last. Not over the
+	// terrain overview a zoom out fades in, nor beneath unit markers.
+	const auto &detail = view.render.detail;
+	const bool occlude = detail.terrainOverview <= 0 && detail.unitSprite > 0;
+	const auto reach = globalContainer->terrainCompositor(scene.map.frozenAssetBundle()).decorReach();
+	const int below = (reach.up + 31) >> 5, side = (reach.side + 31) >> 5;
 	for (int y=top-1; y<=bot; y++)
+	{
 		for (int x=left-1; x<=right; x++)
 		{
 			Uint16 gid=scene.map.getGroundUnit(x+viewportX, y+viewportY);
 			if (gid!=NOGUID)
 				drawUnit(x, y, gid, viewportX, viewportY, (sw>>5), (sh>>5), localTeam, drawOptions, view, scene);
 		}
+		if (occlude)
+			for (int row = y + 1; row <= (y == bot ? bot + below : y + 1); ++row)
+				drawMapDecorOccluders(row, left - 1 - side, right + side, viewportX, viewportY, localTeam, drawOptions, scene.map, &view.render);
+	}
 }
 
 
