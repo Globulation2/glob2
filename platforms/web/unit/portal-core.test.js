@@ -1,7 +1,7 @@
 const {test} = require('node:test');
 const assert = require('node:assert/strict');
-const {createAudio, createSession, watchShell} = require('../portal-core');
-const {fakeWindow} = require('./portal-fixture');
+const {createAudio, createSession, createBreaks, installHost, watchShell} = require('../portal-core');
+const {fakeWindow, adWindow, deferred, settle} = require('./portal-fixture');
 
 test('every reason must clear before audio resumes', () => {
   const win = fakeWindow();
@@ -19,11 +19,12 @@ test('the audio tracker is created once per window', () => {
   assert.equal(createAudio(win), createAudio(win));
 });
 
-test('gameplay follows loaded, visible and not held', () => {
+test('gameplay follows loaded, in a match, visible and not held', () => {
   const events = [];
   const session = createSession({gameplay: active => events.push(active), loaded: () => events.push('loaded')});
   session.visible(true); session.hold(true);
   session.start();
+  session.match(true);
   session.hold(false); session.visible(false); session.visible(false); session.visible(true);
   assert.deepEqual(events, ['loaded', true, false, true]);
 });
@@ -44,6 +45,142 @@ test('watchShell reads the download bar, ready state and visibility', () => {
   watchShell(win, session);
   bar.value = '40'; observers[0]();
   body.classes.add('ready'); observers[0]();
+  session.match(true);
   win.document.hidden = true; listeners.visibilitychange();
   assert.deepEqual(calls, [0, 40, 100, 'loaded', true, false]);
+});
+
+test('the main menu is not gameplay', () => {
+  const events = [];
+  const session = createSession({gameplay: active => events.push(active)});
+  session.start();
+  assert.deepEqual(events, []);
+  session.match(true); session.match(false);
+  assert.deepEqual(events, [true, false]);
+});
+
+test('holds are reasons: a portal pause outlasts the end of an ad', () => {
+  const session = createSession();
+  session.start(); session.match(true);
+  session.hold(true, 'ad'); session.hold(true);
+  session.hold(false, 'ad');
+  assert.equal(session.active, false);
+  session.hold(false);
+  assert.equal(session.active, true);
+});
+
+function breaksFixture(options = {}, win = adWindow('test')) {
+  const audio = createAudio(win);
+  const gameplay = [];
+  const session = createSession({gameplay: active => gameplay.push(active)});
+  session.start();
+  const shown = [];
+  let ad = deferred();
+  const breaks = createBreaks(win, {session, audio, show: (handle, point) => {
+    shown.push(point); ad = deferred(); ad.handle = handle; return ad.promise;
+  }, ...options});
+  const context = new win.AudioContext();
+  return {win, audio, session, breaks, shown, gameplay, context, ad: () => ad};
+}
+
+test('no break runs before the first match; leaving a match runs one and holds the game until it ends', async () => {
+  const {breaks, shown, gameplay, context, session, ad} = breaksFixture();
+  assert.equal(breaks.matchBreak('start'), false);
+  assert.deepEqual(gameplay, [true]);
+  assert.equal(breaks.matchBreak('end'), false);
+  assert.equal(breaks.matchBreak('leave'), true);
+  assert.deepEqual(shown, ['leave']);
+  assert.equal(breaks.held, true);
+  assert.equal(context.state, 'suspended');
+  ad().resolve(); await settle();
+  assert.equal(breaks.held, false);
+  assert.equal(context.state, 'running');
+  assert.equal(breaks.matchBreak('start'), true);
+  assert.equal(session.active, false);
+  ad().resolve(); await settle();
+  assert.equal(session.active, true);
+  assert.deepEqual(gameplay, [true, false, true]);
+  assert.equal(breaks.requests, 2);
+});
+
+test('firstStart allows a break before the first match', () => {
+  const {breaks, shown} = breaksFixture({firstStart: true});
+  assert.equal(breaks.matchBreak('start'), true);
+  assert.deepEqual(shown, ['start']);
+});
+
+test('a package whose policy has no ads never asks for one', () => {
+  const win = fakeWindow({GLOB2_PORTAL: {name: 'newgrounds', externalLinks: true, onlineSignIn: true, ads: false}});
+  const {breaks, shown} = breaksFixture({}, win);
+  breaks.matchBreak('start'); breaks.matchBreak('leave'); breaks.matchBreak('start');
+  assert.deepEqual(shown, []);
+  assert.equal(breaks.enabled, false);
+});
+
+test('without the SDK (null, a throw or an ad blocker) the game is never held', async () => {
+  const win = adWindow('test');
+  const session = createSession();
+  const audio = createAudio(win);
+  const context = new win.AudioContext();
+  for (const show of [() => null, () => { throw new Error('blocked'); }, () => Promise.reject(new Error('blocked'))]) {
+    const breaks = createBreaks(win, {session, audio, show, firstStart: true});
+    breaks.matchBreak('start');
+    await settle();
+    assert.equal(breaks.held, false);
+    assert.equal(context.state, 'running');
+  }
+});
+
+test('muteOnStart keeps audio until the ad really plays', async () => {
+  const {breaks, context, ad} = breaksFixture({muteOnStart: true});
+  breaks.matchBreak('leave');
+  assert.equal(breaks.held, true);
+  assert.equal(context.state, 'running');
+  ad().handle.started();
+  assert.equal(context.state, 'suspended');
+  ad().resolve(); await settle();
+  assert.equal(context.state, 'running');
+});
+
+test('minInterval spaces our own requests', () => {
+  let clock = 0;
+  const {breaks, shown, ad} = breaksFixture({minInterval: 1000, now: () => clock});
+  breaks.matchBreak('leave');
+  breaks.finished();
+  clock = 500; breaks.matchBreak('leave');
+  clock = 1000; breaks.matchBreak('leave');
+  assert.deepEqual(shown, ['leave', 'leave']);
+  ad().resolve();
+});
+
+test('one break at a time', () => {
+  const {breaks, shown} = breaksFixture();
+  assert.equal(breaks.matchBreak('leave'), true);
+  assert.equal(breaks.matchBreak('leave'), false);
+  assert.deepEqual(shown, ['leave']);
+});
+
+test('a stalled SDK releases the game: before the ad starts and after it runs too long', () => {
+  const {win, breaks, context, ad} = breaksFixture({startTimeout: 100, maxDuration: 1000});
+  breaks.matchBreak('leave');
+  win.timers.advance(100);
+  assert.equal(breaks.held, false);
+  assert.equal(context.state, 'running');
+  breaks.matchBreak('leave');
+  ad().handle.started();
+  win.timers.advance(999);
+  assert.equal(breaks.held, true);
+  win.timers.advance(1);
+  assert.equal(breaks.held, false);
+  assert.equal(win.timers.pending, 0);
+});
+
+test('installHost gives the game matchBreak and held', async () => {
+  const {win, breaks, ad} = breaksFixture();
+  const host = installHost(win, breaks);
+  assert.equal(win.glob2PortalHost, host);
+  assert.equal(host.matchBreak('leave'), true);
+  assert.equal(host.held, true);
+  ad().resolve(); await settle();
+  assert.equal(host.held, false);
 });

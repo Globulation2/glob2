@@ -63,17 +63,22 @@
 
   // Loading and gameplay as portals want them: whole, increasing percentages,
   // one `loaded` when the main menu is interactive, then `gameplay(true/false)`
-  // whenever the game is playable (loaded, visible and not held by the portal).
-  // Portals that ask for gameplay events only around real pauses (CrazyGames)
-  // pass {visibility: false} so tab switches change nothing.
+  // whenever the player is in a match that is playable (loaded, visible and not
+  // held by the portal or an ad). The game reports matches through
+  // window.glob2PortalHost (createBreaks). Portals that ask for gameplay events
+  // only around real pauses (CrazyGames) pass {visibility: false} so tab
+  // switches change nothing.
   function createSession(handlers = {}, options = {}) {
     let reported = -1;
     let ready = false;
     let hidden = false;
-    let held = false;
+    let playing = false;
     let active = false;
+    // Why the game is held: 'portal' (the SDK's own pause), 'ad' (a break we
+    // requested). Each reason is a flag, so repeated holds are idempotent.
+    const holds = new Set();
     const sync = () => {
-      const playable = ready && !hidden && !held;
+      const playable = ready && playing && !hidden && !holds.size;
       if (playable === active) return;
       active = playable;
       handlers.gameplay?.(playable);
@@ -97,11 +102,118 @@
         hidden = !isVisible;
         sync();
       },
-      hold(isHeld) { held = Boolean(isHeld); sync(); },
+      hold(isHeld, reason = 'portal') {
+        if (isHeld) holds.add(reason);
+        else holds.delete(reason);
+        sync();
+      },
+      match(isPlaying) { playing = Boolean(isPlaying); sync(); },
       get ready() { return ready; },
       get active() { return active; },
+      get playing() { return playing; },
+      get held() { return holds.size > 0; },
     };
     return session;
+  }
+
+  // Ad breaks at the natural pauses the game reports, for portal packages whose
+  // policy carries ads (window.GLOB2_PORTAL.ads, package-portal.py). The game
+  // calls window.glob2PortalHost.matchBreak(point) through ApplicationHost:
+  //   'start'  before a match starts (after the player chose to play),
+  //   'end'    the match is over and its results are showing,
+  //   'leave'  the player left a finished match for the menu.
+  // A break may run an ad at 'start' and 'leave' only. The adapter's show(ad)
+  // requests the SDK's interstitial and returns a promise that settles when the
+  // break is over; it calls ad.started() when the ad really plays (some SDKs
+  // want audio muted only then) and returns null when it cannot ask. While a
+  // break runs the session is held: gameplay is reported stopped and the game
+  // reads glob2PortalHost.held to pause its simulation and input. Audio is
+  // silenced from the request, or from ad.started() with {muteOnStart: true}.
+  // firstStart allows a break before the first match since the page loaded
+  // (GameDistribution's required pre-roll); minInterval (ms) is a floor between
+  // our own requests on top of the SDK's own frequency rules. A break that does
+  // not start within startTimeout, or does not finish within maxDuration,
+  // releases the game anyway, so a stalled SDK or an ad blocker never blocks it.
+  function createBreaks(win, {session, audio, show, firstStart = false, minInterval = 0, muteOnStart = false,
+                              startTimeout = 10000, maxDuration = 180000, now = () => Date.now()} = {}) {
+    const enabled = win.GLOB2_PORTAL?.ads === true && typeof show === 'function';
+    let starts = 0;
+    let last = -Infinity;
+    let current = null;
+    let requests = 0;
+
+    function release(token) {
+      if (current !== token) return;
+      current = null;
+      win.clearTimeout?.(token.timer);
+      audio.set('ad', false);
+      session.hold(false, 'ad');
+    }
+
+    function request(point) {
+      if (!enabled || current) return false;
+      if (point === 'start' && starts++ === 0 && !firstStart) return false;
+      if (now() - last < minInterval) return false;
+      const token = {playing: false};
+      const ad = {
+        started() {
+          if (current !== token || token.playing) return;
+          token.playing = true;
+          audio.set('ad', true);
+          win.clearTimeout?.(token.timer);
+          token.timer = win.setTimeout?.(() => release(token), maxDuration);
+        },
+      };
+      token.ad = ad;
+      // Held before show(): an SDK may pause the game synchronously.
+      current = token;
+      session.hold(true, 'ad');
+      if (!muteOnStart) audio.set('ad', true);
+      let pending;
+      try { pending = show(ad, point); } catch (error) { pending = null; win.console?.warn?.('Ad break failed', error); }
+      if (!pending) {
+        release(token);
+        return false;
+      }
+      last = now();
+      requests += 1;
+      if (!token.playing) token.timer = win.setTimeout?.(() => { if (!token.playing) release(token); }, startTimeout);
+      Promise.resolve(pending).catch(error => win.console?.warn?.('Ad break failed', error))
+        .then(() => release(token));
+      return true;
+    }
+
+    const breaks = {
+      // Returns true when an ad break holds the game; the game then waits for
+      // held to clear before it starts the match.
+      matchBreak(point) {
+        if (point === 'start') {
+          // Hold first, so gameplay is reported only once the break is over.
+          const held = request('start');
+          session.match(true);
+          return held;
+        }
+        if (point === 'end' || point === 'leave') session.match(false);
+        return point === 'leave' ? request('leave') : false;
+      },
+      // For SDKs that announce an ad's start and end as events (GameDistribution).
+      started() { current?.ad.started(); },
+      finished() { if (current) release(current); },
+      get held() { return session.held; },
+      get active() { return current !== null; },
+      get requests() { return requests; },
+      get enabled() { return enabled; },
+    };
+    return breaks;
+  }
+
+  // The object the game's ApplicationHost reaches (platforms/web/ApplicationHost.cpp).
+  function installHost(win, breaks) {
+    win.glob2PortalHost = {
+      matchBreak: point => breaks.matchBreak(String(point)),
+      get held() { return breaks.held; },
+    };
+    return win.glob2PortalHost;
   }
 
   // The shell's progress bar is the download state; body.ready marks the first
@@ -125,7 +237,7 @@
     else doc.addEventListener('DOMContentLoaded', observe, { once: true });
   }
 
-  const core = { createAudio, createSession, watchShell };
+  const core = { createAudio, createSession, createBreaks, installHost, watchShell };
   if (typeof module === 'object' && module.exports) module.exports = core;
   else if (typeof window === 'object') {
     window.glob2PortalCore = core;

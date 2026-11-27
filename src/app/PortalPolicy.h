@@ -4,7 +4,7 @@
 // Portal mode: what a web game portal that embeds the browser build lets the
 // game offer (platforms/web/README.md#portal-mode). The portal packager writes
 //
-//   window.GLOB2_PORTAL = { name: "<portal>", externalLinks: <bool>, onlineSignIn: <bool> }
+//   window.GLOB2_PORTAL = { name: "<portal>", externalLinks: <bool>, onlineSignIn: <bool>, ads: <bool> }
 //
 // into index.html before the game scripts; ApplicationHost::portalDescription()
 // hands its JSON text to the game. Without it (our own site, itch, desktop,
@@ -16,6 +16,11 @@
 // online play and everything that signs in to our online servers (Play online,
 // Settings > Online and Hive Mind, invite links, liking community AIs) and
 // keeps the online client from signing in, so only offline play remains.
+// ads true marks the packages whose portal requires or expects ads (Poki,
+// GameDistribution, Yandex Games, CrazyGames, GamePix): their adapter may run an
+// ad break when the game reports a natural pause (ApplicationHost::matchBreak),
+// and a match start then waits for it. Our own site, itch, the stores, Game
+// Jolt and Newgrounds never carry ads.
 // In any portal the main menu offers no Quit (MainMenuScreen::offersQuit): the
 // portal's page hosts the game, and quitting would leave an empty frame.
 
@@ -32,6 +37,8 @@ struct Policy
 	bool portal = false;
 	bool externalLinks = true;
 	bool onlineSignIn = true;
+	// Whether the portal package may show ads at natural breaks. Never outside a portal.
+	bool ads = false;
 };
 
 // Parses portalDescription() text. Empty text means no portal: everything
@@ -53,5 +60,9 @@ inline bool externalLinks()
 inline bool onlineSignIn()
 {
 	return current().onlineSignIn;
+}
+inline bool ads()
+{
+	return current().ads;
 }
 } // namespace PortalPolicy

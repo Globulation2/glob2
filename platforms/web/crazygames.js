@@ -23,8 +23,25 @@
       },
     }, { visibility: false });
     // The player's CrazyGames "mute audio" setting silences the game until cleared.
-    // No ads are shown yet; adStarted/adFinished will pause through audio.pause().
     const applySettings = settings => audio.set('muted', Boolean(settings?.muteAudio));
+
+    // Midgame ads at the natural pauses the game reports (portal-core.js
+    // createBreaks), never before the first match. The game is held from the
+    // request, as CrazyGames asks, and muted only once adStarted fires. The SDK
+    // enforces its cooldown (adCooldown) and answers adsDisabled in Basic Launch;
+    // every adError just ends the break.
+    const breaks = core.createBreaks(win, {
+      session, audio, muteOnStart: true,
+      show: ad => {
+        if (!sdk?.ad?.requestAd) return null;
+        return new Promise(resolve => sdk.ad.requestAd('midgame', {
+          adStarted: () => ad.started(),
+          adFinished: () => resolve(true),
+          adError: error => resolve(error?.code || false),
+        }));
+      },
+    });
+    core.installHost(win, breaks);
 
     function connect() {
       const candidate = win.CrazyGames?.SDK;
@@ -44,7 +61,7 @@
       });
     }
 
-    return { audio, session, connect, get sdk() { return sdk; } };
+    return { audio, session, breaks, connect, get sdk() { return sdk; } };
   }
 
   if (typeof module === 'object' && module.exports) module.exports = { create };

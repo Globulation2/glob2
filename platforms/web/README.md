@@ -238,7 +238,7 @@ Web game portals forbid different things, so each portal package turns off only
 what its portal bans. The portal packager writes
 
 ```js
-window.GLOB2_PORTAL = { name: "crazygames", externalLinks: false, onlineSignIn: false };
+window.GLOB2_PORTAL = { name: "crazygames", externalLinks: false, onlineSignIn: false, ads: true };
 ```
 
 into `index.html` before the game scripts. `ApplicationHost::portalDescription()`
@@ -257,6 +257,11 @@ another type or a value that is not an object turns it off.
   never signs in, as a guest or otherwise. Single player, campaigns, tutorials, the
   editor and the anonymous community catalogues (music, AIs, generators, buildings)
   remain. With sign-in allowed, the sign-in page still opens when links are off.
+- `ads: true` (Poki, GameDistribution, Yandex Games, CrazyGames and GamePix only)
+  lets the portal adapter run an ad break at the natural pauses the game reports
+  through `ApplicationHost::matchBreak`; a match about to start then waits, and
+  while `ApplicationHost::hostHeld()` is true no screen frame runs
+  ([ad breaks](../../docs/releases/web-portals.md#ad-breaks)).
 - In any portal, whatever it allows, the main menu offers no Quit, and Escape on
   its top level does nothing: the portal's page hosts the game, and quitting would
   leave an empty frame.

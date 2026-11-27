@@ -454,6 +454,15 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 		globalContainer->gfx->resetRenderPacing();
 		screens.suspendExecution();
 	}
+	// A web portal holds the game while an ad plays between matches, or while its
+	// SDK pauses it (ApplicationHost::hostHeld): like a hidden page, no screen
+	// frame runs, so the simulation and input stop until the portal releases it.
+	if (const bool nowHeld = GAGCore::ApplicationHost::hostHeld(); nowHeld != held)
+	{
+		held = nowHeld;
+		globalContainer->gfx->resetRenderPacing();
+		screens.suspendExecution();
+	}
 #if GLOB2_DESKTOP_MCP
 	if (hidden)
 		screens.pollInputReceipts();
@@ -482,7 +491,7 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 		return false;
 	};
 	std::erase_if(filtered, recordingShortcut);
-	if (hidden)
+	if (hidden || held)
 	{
 #if GLOB2_DESKTOP_MCP
 		// Visibility suspension already cancels buffered consumer receipts.
@@ -613,13 +622,13 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 
 void Application::draw()
 {
-    if (!hidden) (quitting ? shutdownScreens : screens).draw();
+    if (!hidden && !held) (quitting ? shutdownScreens : screens).draw();
     if (!drawn) { drawn = true; GAGCore::StartupPhase::mark("application:drawn"); }
 }
 
 std::uint32_t Application::delay(std::uint32_t now)
 {
-	if (hidden)
+	if (hidden || held)
 		return 100;
 	const auto elapsed = static_cast<std::uint32_t>(now - lastFrame);
 	return (quitting ? shutdownScreens : screens).delay(now, elapsed < 40 ? 40 - elapsed : 0);
