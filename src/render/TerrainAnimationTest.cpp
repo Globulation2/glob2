@@ -767,4 +767,64 @@ TEST_SUITE("TerrainAnimation")
 			}
 		}
 	}
+
+	TEST_CASE("portable SDL calms open water from shared keyframes under still overlays [display]")
+	{
+		if (!wanted(RendererBackend::PortableSDL))
+			return;
+		std::optional<Scene> portable(std::in_place, RendererBackend::PortableSDL);
+		if (!portable->available())
+		{
+			MESSAGE("portable SDL unavailable here; omitted");
+			return;
+		}
+		// The calmed band: water cells near the island that are not shore cells,
+		// which the shore-calm reach quiets.
+		std::vector<std::size_t> calmed;
+		std::size_t island = 0; // cells on the island or within a cell of it
+		for (int cy = 0; cy < Height / 32; ++cy)
+			for (int cx = 0; cx < Width / 32; ++cx)
+			{
+				island += nearIsland(cx, cy, 1);
+				if (!nearIsland(cx, cy, 2) || nearIsland(cx, cy, 0))
+					continue;
+				for (int y = cy * 32 + 2; y < cy * 32 + 30; ++y)
+					for (int x = cx * 32 + 2; x < cx * 32 + 30; ++x)
+						calmed.push_back((std::size_t(y) * Width + x) * 4);
+			}
+		const auto whole = portable->at(81591, 0.f), half = portable->at(81591, 0.5f);
+		const auto *pages = portable->view.render.existingTerrainCache();
+		REQUIRE(pages);
+		const auto cells = pages->keyframeCells();
+		CAPTURE(cells.shared);
+		CAPTURE(cells.calmOverlay);
+		CAPTURE(cells.own);
+		// Calmed open water no longer composes keyframes of its own: only the
+		// island's cells and those just around it, where land and surf mix, do.
+		CHECK(cells.calmOverlay > 0);
+		CHECK(cells.shared > 0);
+		CHECK(cells.own > 0);
+		CHECK(cells.own <= island);
+		// It moves within a step, as the shared keyframes crossfade under it.
+		CHECK(change(whole, half, calmed) > 0.05);
+		portable.reset(); // One display scene at a time.
+		// And it shows what the direct pass shows there, at whole and half steps.
+		for (auto backend : {RendererBackend::SDLGPU, RendererBackend::ProgrammableGL})
+		{
+			if (!wanted(backend))
+				continue;
+			Scene direct(backend);
+			if (!direct.available())
+				continue;
+			CAPTURE(GAGCore::rendererBackendName(backend));
+			const auto referenceWhole = direct.at(81591, 0.f), referenceHalf = direct.at(81591, 0.5f);
+			const double wholeChange = change(whole, referenceWhole, calmed), halfChange = change(half, referenceHalf, calmed);
+			CAPTURE(wholeChange);
+			CAPTURE(halfChange);
+			CHECK(wholeChange < 3.0);
+			CHECK(halfChange < 3.0);
+			CHECK(halfChange < change(half, referenceWhole, calmed));
+			break;
+		}
+	}
 }

@@ -2256,29 +2256,13 @@ void Compositor::composePixels(const Catalog &definitions, const StoneMaps &ston
 	// vector/array accessors for every channel of every instrumented pixel.
     const auto *sources = prepared.data();
 	const bool uniform = r.uniform();
-	// Q8 shore calm of a sample, for animated liquids near land.
-	const unsigned calmStrength = 256 - ShoreCalmContrastQ8;
-	// applyShoreCalm's `keep` for each sample of a calmed cell: shoreCalm's
-	// bilinear sum, regrouped exactly by row, then the same integer arithmetic.
-	thread_local std::vector<unsigned> keepStorage, axisStorage;
+	// applyShoreCalm's `keep` for each sample of a calmed cell (shoreCalmKeep,
+	// which the portable renderer's calm overlays also compose from).
+	thread_local std::vector<unsigned> keepStorage;
 	const auto prepareKeep = [&]
 	{
 		keepStorage.resize(std::size_t(size) * size);
-		axisStorage.resize(size);
-		for (int i = 0; i < size; ++i)
-			axisStorage[i] = unsigned(2 * i + 1) * 128 / size;
-		for (int y = 0; y < size; ++y)
-		{
-			const unsigned fy = axisStorage[y];
-			const unsigned left = r.calm[0] * (256 - fy) + r.calm[2] * fy;
-			const unsigned right = r.calm[1] * (256 - fy) + r.calm[3] * fy;
-			for (int x = 0; x < size; ++x)
-			{
-				const unsigned fx = axisStorage[x];
-				const unsigned calm = (left * (256 - fx) + right * fx + 32768) >> 16;
-				keepStorage[std::size_t(y) * size + x] = 256 - calm * calmStrength / 255;
-			}
-		}
+		shoreCalmKeep(r.calm, size, keepStorage.data());
 		return keepStorage.data();
 	};
 	const auto calmed = [](unsigned value, unsigned keep, unsigned mean)

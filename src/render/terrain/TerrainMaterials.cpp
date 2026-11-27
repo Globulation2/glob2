@@ -635,6 +635,26 @@ void applyShoreCalm(unsigned calm, unsigned strength, const std::array<unsigned 
 	for (int k = 0; k < 3; ++k)
 		rgb[k] = (rgb[k] * keep + mean[k] * (256 - keep) + 128) / 256;
 }
+void shoreCalmKeep(const std::array<std::uint8_t, 4> &corners, int size, unsigned *keep)
+{
+	const unsigned strength = 256 - ShoreCalmContrastQ8;
+	thread_local std::vector<unsigned> axis;
+	axis.resize(size);
+	for (int i = 0; i < size; ++i)
+		axis[i] = unsigned(2 * i + 1) * 128 / size;
+	for (int y = 0; y < size; ++y)
+	{
+		const unsigned fy = axis[y];
+		const unsigned left = corners[0] * (256 - fy) + corners[2] * fy;
+		const unsigned right = corners[1] * (256 - fy) + corners[3] * fy;
+		for (int x = 0; x < size; ++x)
+		{
+			const unsigned fx = axis[x];
+			const unsigned calm = (left * (256 - fx) + right * fx + 32768) >> 16;
+			keep[std::size_t(y) * size + x] = 256 - calm * strength / 255;
+		}
+	}
+}
 namespace
 {
 // surfBump over its whole period, and the bump of the wash's rise at each

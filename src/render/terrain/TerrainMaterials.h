@@ -127,6 +127,11 @@ unsigned shoreCalm(const std::array<std::uint8_t, 4> &corners, unsigned fx, unsi
 // mirrored exactly by libs/gag/shaders/terrain-compose-fragment.glsl.
 void applyShoreCalm(unsigned calm, unsigned strength, const std::array<unsigned char, 3> &mean,
 					unsigned rgb[3]);
+// applyShoreCalm's `keep` (Q8; 256 keeps the full waves) at every sample of a
+// cell composed `size` samples a side whose corners have calm `corners`:
+// shoreCalm's bilinear calm at each sample centre, regrouped exactly by row,
+// then the contrast ShoreCalmContrastQ8 leaves. Writes size * size values.
+void shoreCalmKeep(const std::array<std::uint8_t, 4> &corners, int size, unsigned *keep);
 // Raised objects drawn over a material's cells with the resources, in screen
 // row order, so they overlap neighbouring cells (boulders, hedges, rock).
 // `full` frames are for cells surrounded by the same material, `edge` frames

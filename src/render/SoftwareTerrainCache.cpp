@@ -1276,6 +1276,7 @@ struct SoftwareTerrainCache::KeyframeSet
 		std::shared_ptr<HeldMask> mask;
 	};
 	int scale, reduction, n;
+	int rings; // Bands of the atlas: KeyframeRing, or 1 for still calm overlays.
 	std::unique_ptr<TerrainVisual::Surface> atlas;
 	std::vector<Entry> entries;
 	std::vector<int> entryOf; // By cell (page sets) or variant (uniform sets); -1 none.
@@ -1286,8 +1287,8 @@ struct SoftwareTerrainCache::KeyframeSet
 	std::uint64_t tileStamp = ~std::uint64_t(0);
 	std::array<std::uint8_t, ChunkTiles * ChunkTiles> kind{};
 	std::uint32_t serials = 0;
-	KeyframeSet(int scale, int reduction, std::size_t keys)
-		: scale(scale), reduction(reduction), n(NativeTilePixels * scale / reduction), entryOf(keys, -1) {}
+	KeyframeSet(int scale, int reduction, std::size_t keys, int rings = KeyframeRing)
+		: scale(scale), reduction(reduction), n(NativeTilePixels * scale / reduction), rings(rings), entryOf(keys, -1) {}
 	// Each keyframe of the ring has a band of the atlas, entries in rows of
 	// Columns within it, so the keyframes of one key upload as one rectangle.
 	int bandRows = 0;
@@ -1304,7 +1305,7 @@ struct SoftwareTerrainCache::KeyframeSet
 			return;
 		const int rows = std::max(wanted, bandRows * 2), width = Columns * (n + 2);
 		std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
-			SDL_CreateSurface(width, KeyframeRing * rows * (n + 2), SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+			SDL_CreateSurface(width, rings * rows * (n + 2), SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
 		if (!pixels)
 			throw std::bad_alloc();
 		SDL_FillSurfaceRect(pixels.get(), nullptr, 0);
@@ -1312,7 +1313,7 @@ struct SoftwareTerrainCache::KeyframeSet
 		{
 			const auto *old = atlas->getSDLSurface();
 			const int bandHeight = bandRows * (n + 2);
-			for (int ring = 0; ring < KeyframeRing; ++ring)
+			for (int ring = 0; ring < rings; ++ring)
 				for (int y = 0; y < bandHeight; ++y)
 					std::memcpy(static_cast<Uint8 *>(pixels->pixels) + (ring * rows * (n + 2) + y) * pixels->pitch,
 								static_cast<const Uint8 *>(old->pixels) + (ring * bandHeight + y) * old->pitch,
@@ -1480,6 +1481,43 @@ struct SoftwareTerrainCache::KeyframeJob
 	}
 };
 
+// Calm overlays of uniform calmed animated cells, composed by a worker. The
+// composition calms each sample to (p * keep + mean * (256 - keep)) / 256
+// (applyShoreCalm): the material's shared, uncalmed keyframe drawn first and
+// then the mean at alpha 1 - keep over it, to within 8-bit alpha. The overlay
+// never changes with time, so a cell composes it once rather than every keyframe.
+struct SoftwareTerrainCache::OverlayJob
+{
+	struct Item
+	{
+		std::weak_ptr<KeyframeSet> set;
+		int entry = 0;
+		std::uint32_t serial = 0;
+		std::array<std::uint8_t, 4> calm{};
+		std::array<unsigned char, 3> mean{};
+		int n = 0;
+		std::unique_ptr<Uint32[]> pixels;
+	};
+	std::vector<Item> items;
+	std::atomic<bool> cancelled{false}, done{false};
+	void run()
+	{
+		std::vector<unsigned> keep;
+		for (auto &item : items)
+		{
+			if (cancelled.load(std::memory_order_relaxed))
+				break;
+			const std::size_t count = std::size_t(item.n) * item.n;
+			keep.resize(count);
+			TerrainVisual::shoreCalmKeep(item.calm, item.n, keep.data());
+			const Uint32 rgb = Uint32(item.mean[0]) << 16 | Uint32(item.mean[1]) << 8 | item.mean[2];
+			for (std::size_t i = 0; i < count; ++i)
+				item.pixels[i] = Uint32((255 * (256 - keep[i]) + 128) / 256) << 24 | rgb;
+		}
+		done.store(true, std::memory_order_release);
+	}
+};
+
 std::uint64_t SoftwareTerrainCache::pageRevision(const TerrainVisual::Compositor &compositor,
 												 TerrainVisual::MaterialId id) const
 {
@@ -1592,49 +1630,80 @@ void SoftwareTerrainCache::classifyKeyframes(Chunk &page, const TerrainVisual::C
 	if (set.tileStamp == page.tileStamp)
 		return;
 	set.tileStamp = page.tileStamp;
-	std::size_t own = 0;
+	std::size_t own = 0, calmed = 0;
 	for (int i = 0; i < ChunkTiles * ChunkTiles; ++i)
 	{
 		const auto &tile = page.tiles[i];
 		std::uint8_t kind = 0;
+		// 1: the material's shared keyframes; 3: those under a still calm
+		// overlay (a uniform cell differs from its shared keyframe only by its
+		// calm); 2: keyframes of its own (mixed, halo and stone cells).
 		if (i % ChunkTiles < page.span && i / ChunkTiles < page.span && tile.discovered &&
 			animatesCell(tile.recipe, compositor))
-			kind = tile.recipe.uniform() && !tile.recipe.calmed() ? 1 : 2;
+			kind = !tile.recipe.uniform() ? 2 : tile.recipe.calmed() ? 3 : 1;
 		set.kind[i] = kind;
 		own += kind == 2;
+		calmed += kind == 3;
 	}
 	// The atlas holds every cell of the page that needs one at once.
 	if (own)
 		set.reserve(std::max(own, set.entries.size()));
+	if (calmed)
+	{
+		if (!page.calmOverlays)
+			page.calmOverlays = std::make_shared<KeyframeSet>(page.scale, page.downsample,
+															  std::size_t(ChunkTiles) * ChunkTiles, 1);
+		page.calmOverlays->reserve(std::max(calmed, page.calmOverlays->entries.size()));
+	}
 }
 
 void SoftwareTerrainCache::dropKeyframes()
 {
 	for (auto &job : keyframeJobs)
 		job->cancelled.store(true, std::memory_order_relaxed);
-	if (keyframeJobs.empty() && keySnapshots.empty() && uniformKeyframes.empty() && keyframeDraws.empty())
+	for (auto &job : overlayJobs)
+		job->cancelled.store(true, std::memory_order_relaxed);
+	if (keyframeJobs.empty() && overlayJobs.empty() && keySnapshots.empty() && uniformKeyframes.empty() &&
+		keyframeDraws.empty() && overlayDraws.empty())
 		return;
 	keyframeJobs.clear();
+	overlayJobs.clear();
 	keySnapshots.clear();
 	keyframeDraws.clear();
+	overlayDraws.clear();
 	uniformKeyframes.clear();
 	// Slots awaiting the cancelled jobs would wait for ever: start again.
 	for (auto &chunk : chunks)
+	{
 		chunk->keyframes.reset();
+		chunk->calmOverlays.reset();
+	}
 	for (auto &page : basePages)
 		if (page)
+		{
 			page->keyframes.reset();
+			page->calmOverlays.reset();
+		}
 }
 
 std::size_t SoftwareTerrainCache::keyframeBytes() const
 {
 	std::size_t total = 0;
 	for (const auto &chunk : chunks)
+	{
 		if (chunk->keyframes)
 			total += chunk->keyframes->bytes();
+		if (chunk->calmOverlays)
+			total += chunk->calmOverlays->bytes();
+	}
 	for (const auto &page : basePages)
-		if (page && page->keyframes)
-			total += page->keyframes->bytes();
+		if (page)
+		{
+			if (page->keyframes)
+				total += page->keyframes->bytes();
+			if (page->calmOverlays)
+				total += page->calmOverlays->bytes();
+		}
 	for (const auto &[key, set] : uniformKeyframes)
 		total += set->bytes();
 	return total;
@@ -1677,6 +1746,28 @@ void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor
 		}
 		return true;
 	});
+	// Finished calm overlays go into their pages' overlay atlases.
+	std::erase_if(overlayJobs, [&](const std::shared_ptr<OverlayJob> &job)
+	{
+		if (!job->done.load(std::memory_order_acquire))
+			return false;
+		for (auto &item : job->items)
+		{
+			auto set = item.set.lock();
+			if (!set || item.entry >= int(set->entries.size()))
+				continue;
+			auto &entry = set->entries[item.entry];
+			auto &slot = entry.slots[0];
+			if (entry.serial != item.serial || slot.pending != 0)
+				continue;
+			slot.pending = NoKey;
+			set->write(item.entry, 0, item.pixels.get(), {});
+			slot.key = 0;
+			if (std::find(written.begin(), written.end(), set) == written.end())
+				written.push_back(set);
+		}
+		return true;
+	});
 	for (auto &set : written)
 		set->flush();
 	// Snapshots of other keys than the one prepared this frame are checked
@@ -1714,14 +1805,25 @@ void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor
 		int cell;
 	};
 	std::vector<Want> wants;
+	// Calm overlays the view's cells need, composed once each.
+	struct OverlayWant
+	{
+		std::shared_ptr<KeyframeSet> set;
+		int entry;
+		TerrainVisual::Recipe recipe;
+	};
+	std::vector<OverlayWant> overlayWants;
 	keyframeDraws.clear();
+	overlayDraws.clear();
 	keyframeMisses = 0;
+	sharedKeyframeCells = calmOverlayCells = ownKeyframeCells = 0;
 	const Uint64 ticks = SDL_GetTicks();
 	const SDL_Rect margin{paintBounds.x - 64, paintBounds.y - 64, paintBounds.w + 128, paintBounds.h + 128};
 	const auto &catalog = compositor.catalog();
 	for (auto &copy : copies)
 	{
 		copy.keyframeBegin = copy.keyframeEnd = std::uint32_t(keyframeDraws.size());
+		copy.overlayBegin = copy.overlayEnd = std::uint32_t(overlayDraws.size());
 		Chunk &page = *copy.chunk;
 		if (!page.valid || !page.cpuComposed)
 			continue;
@@ -1745,14 +1847,33 @@ void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor
 				const auto &tile = page.tiles[i];
 				std::shared_ptr<KeyframeSet> set;
 				int entry;
-				if (kind == 1)
+				KeyframeSet *overlay = nullptr;
+				int overlayEntry = -1;
+				if (kind == 1 || kind == 3)
 				{
 					const auto id = tile.recipe.corners[0];
 					auto &shared = uniformKeyframes[{unsigned(id), scale, reduction}];
 					if (!shared)
 						shared = std::make_shared<KeyframeSet>(scale, reduction, catalog.materials[id].variants.size());
 					set = shared;
-					entry = set->entryFor(catalog.variantIndex(id, tile.recipe.x, tile.recipe.y, tile.recipe.seed), tile, true);
+					// The shared keyframe is the material's uncalmed composition:
+					// a calmed cell must not stand for the variant there.
+					Tile water = tile;
+					water.recipe.calm = {};
+					entry = set->entryFor(catalog.variantIndex(id, tile.recipe.x, tile.recipe.y, tile.recipe.seed), water, true);
+					if (kind == 3)
+					{
+						// Released while the page drew none of its calmed cells.
+						if (!page.calmOverlays)
+							page.calmOverlays = std::make_shared<KeyframeSet>(scale, reduction,
+								std::size_t(ChunkTiles) * ChunkTiles, 1);
+						overlay = page.calmOverlays.get();
+						page.calmOverlays->used = frame;
+						overlayEntry = overlay->entryFor(std::size_t(i), tile, false);
+						const auto &slot = overlay->entries[overlayEntry].slots[0];
+						if (slot.key != 0 && slot.pending != 0)
+							overlayWants.push_back({page.calmOverlays, overlayEntry, tile.recipe});
+					}
 				}
 				else
 				{
@@ -1770,8 +1891,15 @@ void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor
 				}
 				if (!SDL_GetRectIntersection(&cell, &paintBounds, &shown))
 					continue;
+				sharedKeyframeCells += kind == 1;
+				calmOverlayCells += kind == 3;
+				ownKeyframeCells += kind == 2;
 				const auto &slots = set->entries[entry].slots;
-				const bool first = slots[ringSlot(now)].key == now, second = slots[ringSlot(now + 1)].key == now + 1;
+				bool first = slots[ringSlot(now)].key == now, second = slots[ringSlot(now + 1)].key == now + 1;
+				// Without its overlay a calmed cell would show uncalmed waves:
+				// its page's still pixels show until the overlay arrives.
+				if (overlay && overlay->entries[overlayEntry].slots[0].key != 0)
+					first = second = false;
 				ready = ready && first && second;
 				keyframeMisses += !(first && second);
 				if (!first && !second)
@@ -1786,6 +1914,13 @@ void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor
 				if (first && second && weight > 0)
 					draw.secondAlpha = keyframeAlpha(copy.alpha, weight);
 				keyframeDraws.push_back(draw);
+				if (overlay)
+				{
+					const SDL_Rect r = overlay->slot(overlayEntry, 0);
+					overlayDraws.push_back({overlay, shown,
+						{r.x + (shown.x - cell.x) * scale / reduction, r.y + (shown.y - cell.y) * scale / reduction,
+						 shown.w * scale / reduction, shown.h * scale / reduction}, copy.alpha});
+				}
 			}
 		// A page arriving over a fallback fades in once its animated cells
 		// can animate, rather than showing them still meanwhile (for at
@@ -1798,8 +1933,10 @@ void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor
 			page.arrived = ticks;
 			copy.alpha = 0;
 			keyframeDraws.resize(copy.keyframeBegin);
+			overlayDraws.resize(copy.overlayBegin);
 		}
 		copy.keyframeEnd = std::uint32_t(keyframeDraws.size());
+		copy.overlayEnd = std::uint32_t(overlayDraws.size());
 		// The page's cells do not overlap: draw them atlas by atlas.
 		std::sort(keyframeDraws.begin() + copy.keyframeBegin, keyframeDraws.end(),
 				  [](const KeyframeDraw &a, const KeyframeDraw &b) { return std::less<>()(a.set, b.set); });
@@ -1890,14 +2027,63 @@ void SoftwareTerrainCache::updateKeyframes(TerrainVisual::Compositor &compositor
 	for (auto &[key, job] : filling)
 		if (job)
 			submit(job);
+	// Launch the wanted calm overlays: each composes once for its cell.
+	constexpr std::size_t OverlaysPerJob = 32, OverlaysPerFrame = 1024, OverlaysInFlight = 4096;
+	std::size_t overlaysInFlight = 0;
+	for (const auto &job : overlayJobs)
+		overlaysInFlight += job->items.size();
+	std::shared_ptr<OverlayJob> overlayJob;
+	std::size_t overlaysLaunched = 0;
+	for (auto &want : overlayWants)
+	{
+		if (overlaysLaunched >= OverlaysPerFrame || overlaysInFlight + overlaysLaunched >= OverlaysInFlight)
+			break;
+		auto &entry = want.set->entries[want.entry];
+		auto &slot = entry.slots[0];
+		if (slot.pending == 0 || slot.key == 0)
+			continue; // Wanted by another copy of the same page this frame.
+		if (!overlayJob)
+			overlayJob = std::make_shared<OverlayJob>();
+		OverlayJob::Item item;
+		item.set = want.set;
+		item.entry = want.entry;
+		item.serial = entry.serial;
+		item.calm = want.recipe.calm;
+		item.mean = catalog.materials[want.recipe.corners[0]].calmMean;
+		item.n = want.set->n;
+		item.pixels.reset(new Uint32[std::size_t(item.n) * item.n]);
+		slot.pending = 0;
+		overlayJob->items.push_back(std::move(item));
+		++overlaysLaunched;
+		if (overlayJob->items.size() >= OverlaysPerJob)
+		{
+			overlayJobs.push_back(overlayJob);
+			BackgroundWork::submit([job = overlayJob] { job->run(); }, BackgroundWork::Priority::Visible);
+			overlayJob.reset();
+		}
+	}
+	if (overlayJob)
+	{
+		overlayJobs.push_back(overlayJob);
+		BackgroundWork::submit([job = overlayJob] { job->run(); }, BackgroundWork::Priority::Visible);
+	}
 	// Keyframes of pages the view has left for two seconds, and of uniform
 	// cells at a density it left for ten, go.
 	for (auto &chunk : chunks)
+	{
 		if (chunk->keyframes && chunk->keyframes->used + 120 < frame)
 			chunk->keyframes.reset();
+		if (chunk->calmOverlays && chunk->calmOverlays->used + 120 < frame)
+			chunk->calmOverlays.reset();
+	}
 	for (auto &page : basePages)
-		if (page && page->keyframes && page->keyframes->used + 120 < frame)
-			page->keyframes.reset();
+		if (page)
+		{
+			if (page->keyframes && page->keyframes->used + 120 < frame)
+				page->keyframes.reset();
+			if (page->calmOverlays && page->calmOverlays->used + 120 < frame)
+				page->calmOverlays.reset();
+		}
 	std::erase_if(uniformKeyframes, [&](const auto &entry) { return entry.second->used + 600 < frame; });
 }
 
@@ -3858,6 +4044,17 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 					const auto &d = cell.destination;
 					target.drawSurface(d.x, d.y, d.w, d.h, atlas, source.x, source.y, source.w, source.h, alpha);
 				}
+			// Calm overlays over their cells' crossfaded shared keyframes.
+			for (auto k = copy.overlayBegin; k < copy.overlayEnd; ++k)
+			{
+				const auto &cell = overlayDraws[k];
+				auto *atlas = cell.set->atlas.get();
+				if (!atlas || !cell.alpha)
+					continue;
+				const auto &d = cell.destination;
+				const auto &s = cell.source;
+				target.drawSurface(d.x, d.y, d.w, d.h, atlas, s.x, s.y, s.w, s.h, cell.alpha);
+			}
 			continue;
 		}
 		const SDL_Rect cells = drawnCells(copy);
