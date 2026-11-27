@@ -62,6 +62,7 @@ what the simulation computes.
 | Setting | Standard | Lite | Effect |
 | --- | --- | --- | --- |
 | `webp_quality` | 90 | 75 | lossy WebP quality; terrain sheets and packed sprite groups use at most 75 ([by kind of image](../development/package-size.md#lossy-webp-quality)) |
+| `sprite_target` | 75 | 70 | SSIMULACRA2 score packed sprite groups must reach when picking from the [quality curves](../development/package-size.md#sprite-quality-curves) |
 | `web_opt` | `O3` | `O3` | compile and link optimization (`Oz` trades speed for about 1.7 MB) |
 | `web_assertions` | 1 | 0 | Emscripten runtime assertions |
 | `web_closure` | 0 | 0 | Closure-compiled JavaScript glue |

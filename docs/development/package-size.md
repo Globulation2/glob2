@@ -18,6 +18,62 @@ both candidates. Unsupported higher-depth modes fail the export without
 quantization; their source artwork remains untouched. Fonts, meshes, music and
 platform icon containers are outside this policy.
 
+### Sprite quality curves
+
+Every packed export, standard or lite, desktop or browser, packs native
+terrain families and unit clips (and, where it has HD art, HD groups) as sprite
+groups that choose their codec and setting from precomputed size/quality curves in
+`tools/sprite-quality-curves.json`. For every group the curve records stored
+bytes, browser transfer bytes (Brotli) and the SSIMULACRA2 score (libjxl's reference
+tool) of lossless
+WebP, lossy WebP at qualities 40–95 and, for groups that admit video, H.264 at
+CRF 18–34. An export takes the cheapest point that reaches its target among the
+codecs that build has (no H.264 without the pinned sprite encoder, or for
+native browser groups), using stored bytes for native packages and transfer
+bytes for browsers, and encodes only that point. Ties prefer lossless, then
+WebP, then H.264. If the chosen video point does not encode on that machine,
+the best point without video is used.
+
+The target is `spriteTargets` in `tools/image_encoding.json`: `default` (85, the
+desktop platforms), or a platform name to override it (`android` and `ios`: 80,
+`web`: 75). Browser editions can set
+`sprite_target` ([editions](../browser/editions.md#settings)) and any export
+can pass `--sprite-target`. The audit records each group's `curve` (target,
+chosen point, predicted bytes and score) next to its actual size, the export's
+`sprite_quality_target`, and `sprite_curve_fallbacks`.
+
+Each curve is keyed by its group's source frames and spec, the WebP encoder
+(Pillow, libwebp and the encoding settings), the pinned FFmpeg and x264 sources
+(not the binary, which differs between machines) and the metric version. A
+group whose curve is missing or stale is packed with the fixed settings below
+(lossless, Q75 WebP and its video CRF, with the SSIMULACRA2 gate), and the
+export warns and lists it. A video curve from another encoder leaves the
+group's WebP points usable. Regenerate after changing artwork, encoders or
+packing:
+
+```sh
+python3 tools/sprite_quality_curves.py            # measures only stale groups
+python3 tools/sprite_quality_curves.py --check    # lists stale groups, exit 1 if any
+python3 tools/sprite_quality_curves.py --only 'hd/terrain-*'
+```
+
+It scores with libjxl's `ssimulacra2` tool at the version pinned as
+`LIBJXL_VERSION` in `tools/packed_sprite_assets.py` (Homebrew `jpeg-xl`); it is
+several times faster than the numpy port the fallback gate uses and peaks near
+0.8 GB on an HD mosaic. Exports never run it: they compare each curve's recorded
+metric with the pin. The tool runs in the pinned `-brotli-quality` encoder
+environment, caps concurrent scoring with `--scorers`, defaults to a third of
+the CPUs, and writes as each group finishes, so an interrupted run keeps its
+progress; workers exit if the tool is killed. A full run measures
+every group at every grid point and takes a while; later runs only measure what
+changed. An edition whose groups have different frames (lite trims terrain with
+`variant_blocks`, `terrain_fallbacks` and `single_colour_decor`) gets its own
+curves, `<scope>/<name>@<edition>`, measured from those frames; groups an edition
+shares with the standard export use the standard curve. Editions therefore differ
+only in their target and the codecs they have (lite has no HD art and no H.264).
+The targets are 85 for desktop, 80 for mobile, 75 for standard browser builds
+and 70 for lite.
+
 ### Lossy WebP quality
 
 One number sets every lossy quality: the edition's `webp_quality`, whose
@@ -29,15 +85,15 @@ its quality from it (`tools/package_assets.py`, `group_lossy_quality`):
 | --- | --- | --- | --- |
 | Standalone images: menus, backgrounds, UI, HD frames outside a group | `webp_quality` | 90 | 75 |
 | Sprite sheet pages (`<sprite>-sheet-N.webp`, `encode_sheet`) | `webp_quality` | not shipped | 75 |
-| Terrain material sheets and packed sprite groups (`pack-*.webp`) | at most 75 | 75 | 75 |
+| Packed sprite groups (`pack-*`): terrain families and unit clips | from the [quality curves](#sprite-quality-curves); at most 75 without one | curve, target 85 (desktop), 80 (mobile) or 75 (browser) | curve, target 70 |
 | Terrain stone maps | always lossless | | |
 
-Which kind a sprite is depends on the build. Release builds with packed sprites
-(every standard build) put unit and terrain sprites into packed sprite groups,
-which may also choose H.264 (native platforms and HD groups). Lite packs no
-sprite groups: unit sprites and its sheet families become sprite sheet pages
-and terrain becomes material sheets. Debug and source builds encode everything
-losslessly. The terrain and group lossy candidate keeps the name `q75` in
+Which kind a sprite is depends on the build. Every release build, lite
+included, puts unit and terrain sprites into packed sprite groups that pick
+from the quality curves; native platforms and HD groups may also choose H.264,
+and lite (no HD art, no H.264 decoder) chooses among lossless and lossy WebP.
+Lite's other sheet families become sprite sheet pages. Debug and source builds
+encode everything losslessly. The terrain and group lossy candidate keeps the name `q75` in
 audits and caches whatever its quality.
 
 Independent image encodings and sprite-sheet packing run concurrently. Build
@@ -179,12 +235,13 @@ HD terrain/resource atlases also have exact source frame placement verified befo
 encoding; the renderer checks their exact alpha against decoded HD frames, allowing
 independently encoded lossy RGB to differ.
 
-Release packages use `sprite_packing=auto`. For each catalog terrain family
-and stock unit clip and layer, the exporter compares lossless and Q75 WebP
-sheets with one eligible RGB H.264 candidate. Native and HD resolutions are
-scored separately. Lossless must preserve RGBA exactly, and every candidate
-must preserve exact alpha and logical frame coverage. H.264 is admitted only
-when it looks at least as good as Q75 WebP: both decoded candidates are scored
+Release packages use `sprite_packing=auto`. Each catalog terrain family and
+stock unit clip and layer, at native and HD resolution separately, is packed at
+the point its [quality curve](#sprite-quality-curves) chooses. Without a current
+curve the exporter compares lossless and Q75 WebP sheets with one eligible RGB
+H.264 candidate. Lossless must preserve RGBA exactly, and every candidate
+must preserve exact alpha and logical frame coverage. Without a curve, H.264 is
+admitted only when it looks at least as good as Q75 WebP: both decoded candidates are scored
 against the source frames with [SSIMULACRA2](https://github.com/cloudinary/ssimulacra2),
 laid out as mosaics of up to 16×16 frames (single tiles are too small for its
 six scales) and averaged by pixel count. Groups with partial alpha are scored

@@ -1,5 +1,6 @@
 """Runtime export selection, identity, cleanup and source preservation."""
 
+import json
 import os
 from pathlib import Path
 import sys
@@ -111,7 +112,12 @@ class TerrainEncoderHandoffTests(unittest.TestCase):
                                          min(c["stored_bytes"] for c in candidates.values()))
                         self.assertTrue((output / (family + ".sheet")).is_file())
                         self.assertFalse((output / (family + "0.webp")).exists())
-                        with Image.open(output / (family + "-sheet-0.webp")) as sheet:
+                        # Terrain families pack as sprite groups in every packed export.
+                        packs = sorted((output / "data/gfx").glob("pack-terrain-test-base-*.webp"))
+                        self.assertTrue(packs)
+                        self.assertEqual(audit["native_sprite_selections"]["terrain-test-base"]["curve"],
+                                         {"fallback": "no curve"})
+                        with Image.open(packs[0]) as sheet:
                             self.assertEqual(sheet.convert("RGBA").crop((0, 0, 32, 32))
                                              .getchannel("A").getextrema(), (255, 255))
                     else:
@@ -838,6 +844,176 @@ class VerifiedSpritePackTests(unittest.TestCase):
                 _, _, cache_hit = packed.encode_group(
                     "test", group, root / "cache", "generic", ("encoder", "hash"), True)
             self.assertFalse(cache_hit)
+
+
+class SpriteQualityCurveTests(unittest.TestCase):
+    def group(self, root, video=True):
+        source = root / "frame.png"
+        if not source.exists():
+            VerifiedSpritePackTests.frame().save(source)
+        return dict(material=None, crf=26 if video else None, frames=[(0, "unit0", 5, source)])
+
+    def curve(self, group, **overrides):
+        from tools import packed_sprite_assets as packed
+
+        entry = dict(group=packed.group_identity(group), webp_encoder=packed.webp_identity(),
+                     metric=packed.metric_identity(),
+                     h264_encoder=packed.video_identity() if group["crf"] is not None else None,
+                     lossless=[9000, 8000],
+                     # [stored, transfer, score]: WebP is cheaper stored, video cheaper to download.
+                     webp={"60": [1000, 900, 55.0], "80": [1500, 1400, 72.0], "95": [3000, 2900, 90.0]},
+                     h264={"30": [800, 500, 50.0], "24": [1700, 1000, 74.0], "18": [2500, 1600, 85.0]})
+        entry.update(overrides)
+        return entry
+
+    def test_selection_takes_the_cheapest_point_meeting_the_target(self):
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            group = self.group(Path(tmp))
+            curve = self.curve(group)
+            pick = packed.select_point(curve, group, 70, True, True, "macos")
+            self.assertEqual((pick["codec"], pick["setting"], pick["predicted_bytes"]), ("webp", 80, 1500))
+            # Browsers count transfer bytes, where video is cheaper.
+            pick = packed.select_point(curve, group, 70, True, True, "web")
+            self.assertEqual((pick["codec"], pick["setting"]), ("h264", 24.0))
+            # A higher target moves up the curve; an unreachable one falls back to lossless.
+            self.assertEqual(packed.select_point(curve, group, 80, True, True, "macos")["setting"], 18.0)
+            self.assertEqual(packed.select_point(curve, group, 99, True, True, "macos")["codec"], "lossless")
+            # Lossless builds have only the lossless point.
+            self.assertEqual(packed.select_point(curve, group, 50, False, True, "macos")["codec"], "lossless")
+
+    def test_selection_uses_only_the_codecs_a_build_has(self):
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            group = self.group(Path(tmp))
+            curve = self.curve(group)
+            # No sprite encoder (or a CRF-less group): video points are never chosen.
+            pick = packed.select_point(curve, group, 70, True, False, "web")
+            self.assertEqual((pick["codec"], pick["setting"]), ("webp", 80))
+            # A video curve measured with another encoder keeps WebP usable.
+            pick = packed.select_point(self.curve(group, h264_encoder="other"), group, 70, True, True, "web")
+            self.assertEqual(pick["codec"], "webp")
+            self.assertIn("another encoder", pick["note"])
+
+    def test_stale_or_missing_curves_fall_back(self):
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            group = self.group(Path(tmp))
+            self.assertEqual(packed.select_point(None, group, 70, True, True, "macos"), {"fallback": "no curve"})
+            self.assertEqual(packed.select_point(self.curve(group, webp_encoder="old"), group, 70, True, True,
+                                                 "macos")["fallback"], "encoder or metric changed")
+            curve = self.curve(group)
+            VerifiedSpritePackTests.frame((44, 106, 215, 127)).save(group["frames"][0][3])
+            self.assertEqual(packed.select_point(curve, group, 70, True, True, "macos")["fallback"],
+                             "sources changed")
+
+    def test_ties_prefer_lossless_then_webp_then_video(self):
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            group = self.group(Path(tmp))
+            curve = self.curve(group, lossless=[1000, 1000], webp={"80": [1000, 1000, 80.0]},
+                               h264={"24": [1000, 1000, 80.0]})
+            self.assertEqual(packed.select_point(curve, group, 70, True, True, "macos")["codec"], "lossless")
+            curve["lossless"] = [2000, 2000]
+            self.assertEqual(packed.select_point(curve, group, 70, True, True, "macos")["codec"], "webp")
+
+    def test_curve_choice_encodes_only_the_chosen_point_at_its_setting(self):
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            group = self.group(root)
+            calls = []
+            real_webp = packed.write_webp
+
+            def webp(*args, **kwargs):
+                calls.append((args[2], kwargs.get("setting")))
+                return real_webp(*args, **kwargs)
+
+            with patch.object(packed, "write_webp", side_effect=webp), \
+                 patch.object(packed, "write_video", side_effect=AssertionError("video not chosen")):
+                _, result, cache_hit = packed.encode_group(
+                    "test", group, root / "cache", "macos", ("encoder", "hash"), True,
+                    curve=self.curve(group), target=70)
+            self.assertFalse(cache_hit)
+            self.assertEqual(calls, [(packed.images.GROUP_LOSSY_MODE, 80)])
+            self.assertEqual(result["winner"], packed.images.GROUP_LOSSY_MODE)
+            self.assertEqual((result["curve"]["codec"], result["curve"]["setting"], result["curve"]["target"]),
+                             ("webp", 80, 70))
+            self.assertIn("stored_bytes", result["candidates"][result["winner"]])
+            # A different target is a different pack; the same one is a warm cache hit.
+            with patch.object(packed, "write_webp", side_effect=AssertionError("warm encode")):
+                _, _, cache_hit = packed.encode_group(
+                    "test", group, root / "cache", "macos", ("encoder", "hash"), True,
+                    curve=self.curve(group), target=70)
+            self.assertTrue(cache_hit)
+            _, other, _ = packed.encode_group("test", group, root / "cache", "macos", ("encoder", "hash"), True,
+                                              curve=self.curve(group), target=50)
+            self.assertEqual(other["curve"]["setting"], 60)
+
+    def test_rejected_video_point_falls_back_to_the_best_point_without_video(self):
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            group = self.group(root)
+            with patch.object(packed, "write_video", return_value={"rejected": "video group exceeds decoded size limit"}):
+                _, result, _ = packed.encode_group("test", group, root / "cache", "web", ("encoder", "hash"), True,
+                                                   curve=self.curve(group), target=70)
+            self.assertEqual(result["winner"], packed.images.GROUP_LOSSY_MODE)
+            self.assertEqual((result["curve"]["codec"], result["curve"]["setting"]), ("webp", 80))
+            self.assertIn("video point rejected", result["curve"]["note"])
+
+    def test_missing_curve_keeps_the_fixed_candidates_and_says_so(self):
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            group = self.group(root, video=False)
+            _, result, _ = packed.encode_group("test", group, root / "cache", "macos", None, True, target=70)
+            self.assertEqual(result["curve"], {"fallback": "no curve"})
+            self.assertEqual(set(result["candidates"]), {"lossless", packed.images.GROUP_LOSSY_MODE})
+
+    def test_edition_groups_find_their_own_curve(self):
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            standard = self.group(root)
+            trimmed_source = root / "trimmed.png"
+            VerifiedSpritePackTests.frame((10, 20, 30, 255)).save(trimmed_source)
+            trimmed = dict(standard, frames=[(0, "unit0", 5, trimmed_source)])
+            curves = {"native/test": self.curve(standard), "native/test@lite": self.curve(trimmed)}
+            self.assertIs(packed.find_curve(curves, "native", "test", standard), curves["native/test"])
+            self.assertIs(packed.find_curve(curves, "native", "test", trimmed), curves["native/test@lite"])
+            # A group no curve describes gets the standard one, which selection reports stale.
+            other = dict(standard, frames=[(0, "unit0", 4, trimmed_source)])
+            self.assertIs(packed.find_curve(curves, "native", "test", other), curves["native/test"])
+            self.assertEqual(packed.select_point(packed.find_curve(curves, "native", "test", other), other, 70,
+                                                 True, False, "web")["fallback"], "sources changed")
+
+    def test_platform_targets_default_and_override(self):
+        with patch.dict(package_assets.SPRITE_TARGETS, {"default": 70, "web": 62}, clear=True):
+            self.assertEqual(package_assets.sprite_target_for("macos"), 70)
+            self.assertEqual(package_assets.sprite_target_for("web"), 62)
+
+    def test_curve_file_is_current_for_its_recorded_groups(self):
+        """Committed curves must parse, use the current format and cover the grids."""
+        from tools import packed_sprite_assets as packed
+
+        document = json.loads(packed.CURVE_FILE.read_text())
+        self.assertEqual(document["version"], packed.CURVE_VERSION)
+        self.assertEqual(document["webp_grid"], list(packed.WEBP_GRID))
+        self.assertEqual(document["crf_grid"], [float(c) for c in packed.CRF_GRID])
+        for key, entry in document["groups"].items():
+            self.assertRegex(key, r"^(native|hd)/")
+            self.assertEqual(sorted(entry["webp"], key=int), [str(q) for q in packed.WEBP_GRID])
+            if entry["h264_encoder"]:
+                self.assertEqual(sorted(entry["h264"], key=float), [packed.crf_key(c) for c in packed.CRF_GRID])
 
 
 if __name__ == "__main__":

@@ -94,6 +94,7 @@ EXPORT_TOOLS = (
     "tools/terrain_catalog.py",
     "tools/asset-requirements.txt",
     "tools/asset-quality-requirements.txt",
+    "tools/sprite-quality-curves.json",
     "tools/image_encoding.json",
     "buildsys/runtime_assets.py",
     "buildsys/shared_assets.py",

@@ -590,6 +590,8 @@ def web_assets_export(args):
     options = edition.settings(identity)
     quality = options['webp_quality']
     quality = None if quality == edition.DEFAULT_WEBP_QUALITY else quality
+    sprite_target = options['sprite_target']
+    sprite_target = None if sprite_target == edition.DEFAULT_SPRITE_TARGET else sprite_target
     sheet_families = web_assets.EDITION_SHEETS if options['sheet_sprites'] else ()
     stone_scale = 4 if options['native_stones'] else 1
     inputs = list(source_files(ROOT, 'web', exclude))
@@ -602,13 +604,13 @@ def web_assets_export(args):
                       video_sprites=packing == 'video', exclude=exclude, lossy_quality=quality,
                       sheet_families=sheet_families, stone_scale=stone_scale,
                       variant_blocks=options['variant_blocks'], fold_terrain=options['terrain_fallbacks'],
-                      single_colour_decor=options['single_colour_decor'])
+                      single_colour_decor=options['single_colour_decor'], sprite_target=sprite_target)
     # The standard edition keeps its key, so its shared export is reused as before.
     terrain = {key: options[key] for key in ('variant_blocks', 'terrain_fallbacks', 'single_colour_decor')}
-    variant = [] if not exclude and quality is None and not sheet_families and stone_scale == 1 and \
-        not any(terrain.values()) else [
+    variant = [] if not exclude and quality is None and sprite_target is None and not sheet_families and \
+        stone_scale == 1 and not any(terrain.values()) else [
         {'exclude': list(exclude), 'webp_quality': quality, 'sheets': list(sheet_families), 'stones': stone_scale,
-         **terrain}]
+         **terrain, **({'sprite_target': sprite_target} if sprite_target is not None else {})}]
     key = shared_assets.content_key(ROOT, inputs + tools, ['runtime-assets-v1', 'web', release, packing] + variant)
     shared_assets.export(ROOT, asset_root, key, produce)  # also writes runtime-assets.json
     web_assets.build(ROOT, output, str(output / 'asset-manifest.js'), asset_root, drop,
@@ -630,6 +632,7 @@ WEB_ASSET_TOOLS = ('tools/package_assets.py', 'tools/packed_sprite_assets.py', '
                    'buildsys/recording-versions.json', 'buildsys/runtime_assets.py', 'buildsys/shared_assets.py',
                    'buildsys/web_assets.py', 'tools/terrain_tileset.py', 'tools/terrain_catalog.py',
                    'tools/asset-requirements.txt', 'tools/asset-quality-requirements.txt',
+                   'tools/sprite-quality-curves.json',
                    'tools/image_encoding.json')
 WEB_PLAN_INPUTS = ('deploy/sim_version.py', 'platforms/web/derive_assets.py', 'src/app/GlobalContainer.cpp',
                    'src/map/TerrainPresentation.h', 'content/data/terrain/tileset.json',

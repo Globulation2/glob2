@@ -41,9 +41,9 @@ IMAGE_RECIPE = ENCODING["recipe"]
 #
 #   standalone images, and sprite sheet pages     quality
 #     (unit-sheet-*, an edition's sheet families: encode_sheet)
-#   terrain material sheets, and packed sprite    group_lossy_quality(quality),
-#     groups (encode_terrain_sheet_group,          at most GROUP_QUALITY_CEILING
-#     packed_sprite_assets.encode_group)
+#   packed sprite groups without a current        group_lossy_quality(quality),
+#     quality curve (packed_sprite_assets.          at most GROUP_QUALITY_CEILING
+#     encode_group; with one, the curve picks)
 #
 # docs/development/package-size.md#lossy-webp-quality shows which kind each build's sprites are.
 DEFAULT_LOSSY_QUALITY = ENCODING["quality"]
@@ -51,6 +51,14 @@ GROUP_QUALITY_CEILING = 75
 # The lossy candidate's name in terrain sheet and sprite group selections. It is
 # stored in cache keys and audits, so it keeps its name whatever the quality is.
 GROUP_LOSSY_MODE = "q75"
+# Perceptual score each platform's sprite groups must reach when picking from the
+# precomputed quality curves ("default", or a platform name); an edition or
+# export can override it (buildsys/edition.py sprite_target, --sprite-target).
+SPRITE_TARGETS = ENCODING["spriteTargets"]
+
+
+def sprite_target_for(platform):
+    return SPRITE_TARGETS.get(platform, SPRITE_TARGETS["default"])
 
 
 def group_lossy_quality(quality=None):
@@ -498,12 +506,10 @@ def publish_cache_file(temporary, destination, attempts=50, delay=0.05):
         temporary.unlink(missing_ok=True)
 
 
-def encode_image(source, relative, cache, lossy, *, quality=None, sheet_candidate=None):
+def encode_image(source, relative, cache, lossy, *, quality=None):
     """Cache the smallest allowed encoding after validating dimensions and pixels.
 
-    `quality` is the edition's lossy quality (None: the standard one). A terrain
-    sheet candidate (`sheet_candidate`: "lossless" or GROUP_LOSSY_MODE) encodes
-    only that mode, at group_lossy_quality."""
+    `quality` is the edition's lossy quality (None: the standard one)."""
     from PIL import Image, features
 
     raw = source.read_bytes()
@@ -512,8 +518,6 @@ def encode_image(source, relative, cache, lossy, *, quality=None, sheet_candidat
     expected = rgba.tobytes()
     recipe = image_recipe(lossy, quality)
     recipe.update(policy=POLICY, zlib=features.version("zlib"))
-    if sheet_candidate is not None:
-        recipe.update(sheet_candidate=sheet_candidate, lossy_quality=group_lossy_quality(quality))
     high_depth = raw[24] > 8
     # PNG IHDR color type 6 is the supported renderer RGBA64 conversion.
     convert_depth = high_depth and raw[25] == 6
@@ -556,10 +560,9 @@ def encode_image(source, relative, cache, lossy, *, quality=None, sheet_candidat
     # Both encodings use the same renderer-visible reference, including RGBA64.
     profile = {k: image.info[k] for k in ("icc_profile", "exif") if k in image.info}
     candidates = []
-    if sheet_candidate != GROUP_LOSSY_MODE:
-        stream = io.BytesIO()
-        rgba.save(stream, format="WEBP", **lossless_webp(), **profile)
-        candidates.append((stream.getvalue(), ".webp", False))
+    stream = io.BytesIO()
+    rgba.save(stream, format="WEBP", **lossless_webp(), **profile)
+    candidates.append((stream.getvalue(), ".webp", False))
     if recipe["lossy"] and (not high_depth or convert_depth):
         profile = {k: image.info[k] for k in ("icc_profile", "exif") if k in image.info}
         stream = io.BytesIO()
@@ -868,24 +871,31 @@ def encode_sheet(sheet, root, cache, lossy, relative, quality=None):
     return source, blob, record
 
 
-def encode_terrain_sheet_group(sheets, root, cache, lossy, quality=None):
-    """Choose a single WebP mode for the whole material family: lossless, or lossy
-    at group_lossy_quality(quality)."""
-    candidates = {}
-    sources = [pack_sheet(sheet, root, cache) for sheet in sheets]
-    for mode in (("lossless", GROUP_LOSSY_MODE) if lossy else ("lossless",)):
-        pages = []
-        for sheet, source in zip(sheets, sources):
-            blob, record = encode_image(source, sheet["name"], cache, mode == GROUP_LOSSY_MODE,
-                                        quality=quality, sheet_candidate=mode)
-            verify_sheet(sheet, blob, exact=not record["lossy"])
-            pages.append((source, blob, record))
-        candidates[mode] = pages
-    scores = {mode: dict(stored_bytes=sum(blob.stat().st_size for _, blob, _ in pages)
-                         + len(sheet_index(sheets)))
-              for mode, pages in candidates.items()}
-    winner = min(scores, key=lambda mode: scores[mode]["stored_bytes"])
-    return candidates[winner], dict(winner=winner, candidates=scores)
+def native_sprite_groups(sheets, terrain_sprites, terrain_document):
+    """{sprite: {group name: group}} for the native terrain families and unit clips
+    packed as sprite groups (packed_sprite_assets.encode_group), from sheet_plan."""
+    from tools import packed_sprite_assets
+    groups = {}
+    materials = {m["sprite"]: m for m in (terrain_document or {}).get("materials", [])}
+    for sprite, pages in sheets.items():
+        if sprite not in terrain_sprites and sprite != "data/gfx/unit":
+            continue
+        for page in pages:
+            layer = 5 if page["rotated"] else 4
+            for offset, path in enumerate(page["frames"]):
+                index = page["first"] + offset
+                stem = Path(sprite).name
+                if sprite == "data/gfx/unit":
+                    clip, measured = packed_sprite_assets.unit_clip(index)
+                    stem += "-" + clip
+                    crf = 26 if layer == 5 and measured is not None else None
+                else:
+                    crf = 26
+                name = stem + ("-team" if layer == 5 else "-base")
+                group = groups.setdefault(sprite, {}).setdefault(name, dict(
+                    material=materials.get(sprite), crf=crf, native=True, fingerprints=sprite in terrain_sprites, frames=[]))
+                group["frames"].append((index, sprite, layer, path))
+    return groups
 
 
 def _export_assets(
@@ -909,6 +919,7 @@ def _export_assets(
     variant_blocks=0,
     fold_terrain=False,
     single_colour_decor=False,
+    sprite_target=None,
 ):
     quality = lossy_quality  # the edition's; None: the standard one
     root, output = Path(root).resolve(), Path(output).resolve()
@@ -976,6 +987,8 @@ def _export_assets(
             command.append("--fold-terrain")
         if single_colour_decor:
             command.append("--single-colour-decor")
+        if sprite_target is not None:
+            command += ["--sprite-target", str(sprite_target)]
         if cache:
             command += ["--cache", str(cache)]
         subprocess.run(command, check=True)
@@ -1024,11 +1037,17 @@ def _export_assets(
     terrain_selections = {}
     hd_selections = {}
     native_selections = {}
+    sprite_goal = None
     hd_rows, hd_groups, hd_references, hd_index_groups = [], {}, {}, {}
-    if optimized and (packed_hd_sprites or video_sprites or sprite_ffmpeg):
+    # Every packed export, lite included, packs terrain families and unit clips as
+    # curve-driven sprite groups; editions differ only in their target and codecs.
+    packed_route = optimized and (terrain_sheets or packed_hd_sprites or video_sprites or sprite_ffmpeg)
+    encoder = None
+    if packed_route:
         if str(ROOT) not in sys.path:
             sys.path.insert(0, str(ROOT))
         from tools import packed_sprite_assets
+    if optimized and (packed_hd_sprites or video_sprites or sprite_ffmpeg):
         hd_rows, hd_groups = packed_sprite_assets.plan(content, terrain_document)
         if video_sprites and not sprite_ffmpeg and lossy:
             sys.path.insert(0, str(ROOT / "buildsys"))
@@ -1039,27 +1058,7 @@ def _export_assets(
                 prefix = build(directory / "prefix", directory / "sources", jobs=jobs, sprite_tool=True)
             sprite_ffmpeg = prefix / "bin" / ("ffmpeg.exe" if os.name == "nt" else "ffmpeg")
         encoder = packed_sprite_assets.encoder_identity(sprite_ffmpeg) if sprite_ffmpeg else None
-    native_groups = {}
-    if optimized and (packed_hd_sprites or video_sprites or sprite_ffmpeg):
-        materials = {m["sprite"]: m for m in (terrain_document or {}).get("materials", [])}
-        for sprite, pages in sheets.items():
-            if sprite not in terrain_sprites and sprite != "data/gfx/unit":
-                continue
-            for page in pages:
-                layer = 5 if page["rotated"] else 4
-                for offset, path in enumerate(page["frames"]):
-                    index = page["first"] + offset
-                    stem = Path(sprite).name
-                    if sprite == "data/gfx/unit":
-                        clip, measured = packed_sprite_assets.unit_clip(index)
-                        stem += "-" + clip
-                        crf = 26 if layer == 5 and measured is not None else None
-                    else:
-                        crf = 26
-                    name = stem + ("-team" if layer == 5 else "-base")
-                    group = native_groups.setdefault(sprite, {}).setdefault(name, dict(
-                        material=materials.get(sprite), crf=crf, native=True, fingerprints=sprite in terrain_sprites, frames=[]))
-                    group["frames"].append((index, sprite, layer, path))
+    native_groups = native_sprite_groups(sheets, terrain_sprites, terrain_document) if packed_route else {}
     packed = {f for plan in sheets.values() for sheet in plan for f in sheet["frames"]}
     packed_fingerprints = {}
     scaled = None
@@ -1069,14 +1068,17 @@ def _export_assets(
         stage = Path(temporary)
         # Submit independent work before consuming it in source order. Workers
         # never publish the export or mutate its ordered audit/destination set.
+        curves = packed_sprite_assets.load_curves() if hd_groups or native_groups else {}
+        sprite_goal = sprite_target if sprite_target is not None else sprite_target_for(platform)
         hd_futures = {
             name: encoders.submit(packed_sprite_assets.encode_group, name, group, cache, platform, encoder, lossy,
-                                  quality)
+                                  quality, packed_sprite_assets.find_curve(curves, "hd", name, group), sprite_goal)
             for name, group in hd_groups.items()
         }
         native_futures = {
             sprite: {name: encoders.submit(packed_sprite_assets.encode_group, name, group, cache, platform,
-                                          encoder if platform != "web" else None, lossy, quality)
+                                          encoder if platform != "web" else None, lossy, quality,
+                                          packed_sprite_assets.find_curve(curves, "native", name, group), sprite_goal)
                      for name, group in groups.items()}
             for sprite, groups in native_groups.items()
         }
@@ -1093,12 +1095,8 @@ def _export_assets(
                 encoded[source] = encoders.submit(encode_image, image, relative.as_posix(), cache,
                                                   lossy and not is_data_image(relative), quality=quality)
         encoded_sheets = {}
-        encoded_terrain = {}
         for sprite, plan in sheets.items():
             if sprite in native_futures:
-                continue
-            if sprite in terrain_sprites:
-                encoded_terrain[sprite] = encoders.submit(encode_terrain_sheet_group, plan, content, cache, lossy, quality)
                 continue
             for sheet in plan:
                 relative = Path(sprite).parent / sheet["name"]
@@ -1254,10 +1252,7 @@ def _export_assets(
                     output_bytes=len(blob), lossy=False, recipe=packed_sprite_assets.PACK_RECIPE,
                     sprite_index_groups=index_groups))
                 continue
-            if sprite in encoded_terrain:
-                pages, terrain_selections[sprite] = encoded_terrain[sprite].result()
-            else:
-                pages = [encoded_sheets[Path(sprite).parent / sheet["name"]].result() for sheet in plan]
+            pages = [encoded_sheets[Path(sprite).parent / sheet["name"]].result() for sheet in plan]
             for sheet, (source, blob, record) in zip(plan, pages):
                 relative = Path(sprite).parent / sheet["name"]
                 destination = relative.with_suffix(record["suffix"])
@@ -1326,6 +1321,16 @@ def _export_assets(
                     source_sha256=catalog_digest, output_sha256=hashlib.sha256(target.read_bytes()).hexdigest(),
                     source_bytes=0, output_bytes=target.stat().st_size, lossy=False,
                     recipe=None, generated_by="tools/terrain_tileset.py"))
+        # Groups the quality curves did not describe were packed with the fixed
+        # settings; regenerate tools/sprite-quality-curves.json to cover them.
+        fallbacks = sorted(
+            f"{scope}/{name}: {selection['curve']['fallback']}"
+            for scope, selections in (("hd", hd_selections), ("native", native_selections))
+            for name, selection in selections.items() if "fallback" in selection.get("curve", {}))
+        if fallbacks:
+            print(f"warning: {len(fallbacks)} sprite groups have no current quality curve and used fixed "
+                  "settings (run tools/sprite_quality_curves.py): " + ", ".join(fallbacks[:8]) +
+                  (" ..." if len(fallbacks) > 8 else ""), file=sys.stderr)
         audit = dict(
             policy=POLICY,
             platform=platform,
@@ -1336,6 +1341,8 @@ def _export_assets(
             terrain_sheet_selections=terrain_selections,
             hd_sprite_selections=hd_selections,
             native_sprite_selections=native_selections,
+            sprite_quality_target=sprite_goal if (hd_selections or native_selections) else None,
+            sprite_curve_fallbacks=fallbacks,
             source_bytes=sum(x["source_bytes"] for x in records),
             output_bytes=sum(x["output_bytes"] for x in records),
         )
@@ -1423,6 +1430,7 @@ def export_assets(
     variant_blocks=0,
     fold_terrain=False,
     single_colour_decor=False,
+    sprite_target=None,
 ):
     """Export a complete runtime tree and return its source/output audit.
 
@@ -1442,7 +1450,7 @@ def export_assets(
                               exclude=exclude, lossy_quality=lossy_quality,
                               sheet_families=sheet_families, stone_scale=stone_scale,
                               variant_blocks=variant_blocks, fold_terrain=fold_terrain,
-                              single_colour_decor=single_colour_decor)
+                              single_colour_decor=single_colour_decor, sprite_target=sprite_target)
     sys.path.insert(0, str(ROOT / "buildsys"))
     from dev_store import Lease, require_free_space
     if not worker:
@@ -1455,7 +1463,7 @@ def export_assets(
                               exclude=exclude, lossy_quality=lossy_quality,
                               sheet_families=sheet_families, stone_scale=stone_scale,
                               variant_blocks=variant_blocks, fold_terrain=fold_terrain,
-                              single_colour_decor=single_colour_decor)
+                              single_colour_decor=single_colour_decor, sprite_target=sprite_target)
 
 
 def main():
@@ -1499,6 +1507,8 @@ def main():
                         help="Draw each material with its small_build_fallback (an edition's export)")
     parser.add_argument("--single-colour-decor", action="store_true",
                         help="Connected decor with one corner colour and no mass-meets-mass frames")
+    parser.add_argument("--sprite-target", type=float,
+                        help="Perceptual score sprite groups must reach (default: tools/image_encoding.json)")
     parser.add_argument("--jobs", type=int, help="Concurrent image/sheet encoders (default: available CPUs)")
     parser.add_argument("--cache", type=Path)
     parser.add_argument("--worker", action="store_true", help=argparse.SUPPRESS)
@@ -1531,6 +1541,7 @@ def main():
         variant_blocks=args.variant_blocks,
         fold_terrain=args.fold_terrain,
         single_colour_decor=args.single_colour_decor,
+        sprite_target=args.sprite_target,
     )
     print(
         "Runtime assets: %d -> %d bytes (%d files)"
