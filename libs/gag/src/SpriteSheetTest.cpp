@@ -989,6 +989,9 @@ TEST_CASE("HD sprite textures follow the zoom's detail band and free covered nat
     glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
     glob2test::ToolkitScope toolkit;
     auto *context = GAGCore::Toolkit::initGraphic(64, 64, GAGCore::GraphicContext::USEGPU, "HD detail bands");
+    // The policy starts from the display's raster scale: pin density one, so a
+    // 2x (HiDPI) display starts at the same HD level as a 1x one.
+    GAGCore::Sprite::resetHighResolutionPolicy(1);
     REQUIRE(context->hasUnitShader());
     struct Restore {
         ~Restore() {
@@ -1052,6 +1055,9 @@ TEST_CASE("team-coloured buildings draw through the shader without recoloured co
     glob2test::unsetEnv("GLOB2_EXPERIMENT_TEXTURE_DIR");
     glob2test::ToolkitScope toolkit;
     auto *context = GAGCore::Toolkit::initGraphic(256, 256, GAGCore::GraphicContext::USEGPU, "building team shader");
+    // The policy starts from the display's raster scale: pin density one, so a
+    // 2x (HiDPI) display starts at the same HD level as a 1x one.
+    GAGCore::Sprite::resetHighResolutionPolicy(1);
     REQUIRE(context->hasUnitShader());
     struct RestoreNativeArt { ~RestoreNativeArt() { GAGCore::Sprite::setHighResolution(false); } } restoreNativeArt;
     GAGCore::Sprite::setHighResolution(true);
@@ -1069,8 +1075,11 @@ TEST_CASE("team-coloured buildings draw through the shader without recoloured co
         context->drawSprite(8, 8, 96, 96, &building, index); // The sized overload takes the same path.
         context->finishDrawingSprite(&building, 255);
         glFinish();
-        std::vector<unsigned char> pixels(256 * 256 * 4);
-        glReadPixels(0, 0, 256, 256, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+        // The whole drawable: on a 2x (HiDPI) display it holds four pixels a
+        // logical one, and GL's rows start at its bottom.
+        const int width = context->getDrawableW(), height = context->getDrawableH();
+        std::vector<unsigned char> pixels(std::size_t(width) * height * 4);
+        glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
         context->nextFrame();
         return pixels;
     };
@@ -1109,6 +1118,9 @@ TEST_CASE("portable HD uses standalone frames without requesting GL atlases [dis
     glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
     glob2test::ToolkitScope toolkit;
     GAGCore::Toolkit::initGraphic(64, 64, GAGCore::GraphicContext::PORTABLEGPU, "portable HD frames");
+    // The policy starts from the display's raster scale: pin density one, so a
+    // 2x (HiDPI) display starts at the same HD level as a 1x one.
+    GAGCore::Sprite::resetHighResolutionPolicy(1);
     GAGCore::Sprite sprite;
     REQUIRE(sprite.load("data/gfx/terrain"));
     // Each requested frame contributes its base image; no four GL atlas mips.
@@ -1199,6 +1211,9 @@ void checkModernStandaloneHD(GAGCore::RendererBackend backend, bool switchDuring
     glob2test::ScopedEnvironment selection("GLOB2_RENDERER", requested.c_str());
     glob2test::ToolkitScope toolkit;
     auto *context = GAGCore::Toolkit::initGraphic(64, 64, 0, "modern standalone HD frames");
+    // The policy starts from the display's raster scale: pin density one, so a
+    // 2x (HiDPI) display starts at the same HD level as a 1x one.
+    GAGCore::Sprite::resetHighResolutionPolicy(1);
     const auto choices = context->rendererAvailability();
     const auto choice = std::find_if(choices.begin(), choices.end(), [backend](const auto &entry) { return entry.backend == backend; });
     REQUIRE(choice != choices.end());
