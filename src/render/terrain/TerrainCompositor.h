@@ -259,6 +259,10 @@ class Compositor
 	};
 	std::array<DecorLayer, DecorSlots> decorLayers(const SceneMap &, int x, int y,
 		const TierField *tiers = nullptr) const;
+	// Whether a cell's decor stands at its south edge (a decor-bearing corner
+	// there), so in front of what stands in the cell's open part and its row,
+	// rather than only at its north corners, behind them.
+	bool decorInFront(const SceneMap &, int x, int y) const;
 	// The frame of terrace `tier` (1..MaxDecorTiers) over a cell, or -1.
 	int decorTierFrame(const SceneMap &, const TierField &, int x, int y, int tier) const;
 	// Flat animated overlays (fertile glints), drawn under decor. A cell draws

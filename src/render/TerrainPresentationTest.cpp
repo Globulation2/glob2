@@ -3943,6 +3943,67 @@ TEST_SUITE("TerrainValidation")
 		CHECK(risen * 20 <= behind);
 	}
 
+	// Decor at its cell's south edge stands in front of what stands in the
+	// cell's open part: a unit beside a glacier's jutting corner, in the corner's
+	// own cell, is hidden by the corner, not drawn over it.
+	TEST_CASE("decor at a cell's south edge hides the unit standing in the cell [display][artifacts]")
+	{
+		constexpr int Size = 512;
+		glob2test::HeadlessGlobals globals({.display = true, .width = Size, .height = Size, .seed = 7331});
+		globals->terrainCompositor().prepare(false, 0);
+		glob2test::HeadlessGame fixture({.wDec = 4, .hDec = 4, .discovered = true,
+			.loadDefaultRace = true, .header = true, .seed = 7331});
+		auto &map = fixture.game.map;
+		// A glacier with a step: its corner at vertex (6, 8) juts into cell (5, 7).
+		for (int y = 1; y <= 15; ++y)
+			for (int x = (y < 8 ? 9 : 6); x <= 14; ++x)
+				map.setVertexTerrain(x, y, GLACIER);
+		constexpr int cx = 5, cy = 7;
+		REQUIRE(map.isFreeForGroundUnit(cx, cy, false, 1));
+		ViewState view;
+		const auto draw = [&]
+		{
+			auto *gfx = globals->gfx;
+			gfx->setClipRect();
+			gfx->drawFilledRect(0, 0, Size, Size, 0, 0, 0);
+			gfx->beginMapTransform(1.f, 0, 0, 0, 0, Size, Size);
+			glob2test::drawMap(fixture.game, 0, 0, Size, Size, 0, 0, 0, 0, 0, view,
+							   Uint32(Game::DRAW_NO_CLOUD_LAYER | Game::DRAW_WHOLE_MAP), nullptr, nullptr, true);
+			gfx->endMapTransform();
+			GAGCore::Sprite::flushBatches(gfx);
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(
+				SDL_ConvertSurface(gfx->getSDLSurface(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+			REQUIRE(pixels);
+			gfx->nextFrame();
+			return pixels;
+		};
+		const auto without = draw();
+		REQUIRE(fixture.game.addUnit(cx, cy, 0, WARRIOR, 3, 0, 0, 0));
+		const auto with = draw();
+		REQUIRE(IMG_SavePNG(with.get(), (glob2test::artifactDir() / "corner-hides-unit.png").string().c_str()));
+		REQUIRE(with->w * Size == with->h * Size);
+		const int density = std::max(1, with->w / Size);
+		const auto at = [&](const SDL_Surface *surface, int x, int y)
+		{ return static_cast<const Uint8 *>(surface->pixels) + y * density * surface->pitch + x * density * 4; };
+		int iced = 0, shown = 0, open = 0;
+		for (int y = cy * 32 - 16; y < cy * 32 + 32; ++y)
+			for (int x = cx * 32 - 16; x < cx * 32 + 48; ++x)
+			{
+				const auto *a = at(without.get(), x, y), *b = at(with.get(), x, y);
+				const bool ice = a[2] > a[0] + 16 && a[2] > a[1]; // Bluish: the glacier, not grass.
+				const bool differs = std::abs(a[0] - b[0]) + std::abs(a[1] - b[1]) + std::abs(a[2] - b[2]) > 24;
+				iced += ice;
+				if (differs)
+					++(ice ? shown : open);
+			}
+		CAPTURE(iced);
+		CAPTURE(shown);
+		CAPTURE(open);
+		REQUIRE(iced > 0);
+		CHECK(open > 0);          // The unit shows over the grass of its cell,
+		CHECK(shown * 20 <= iced); // not over the glacier's corner in front of it.
+	}
+
 	TEST_CASE("cliffs beside foliage and crags [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(

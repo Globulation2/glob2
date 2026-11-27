@@ -1289,6 +1289,13 @@ bool Compositor::massWithin(const SceneMap &map, int x, int y, int reach) const
 				return true;
 	return false;
 }
+bool Compositor::decorInFront(const SceneMap &map, int x, int y) const
+{
+	const auto corners = map.cellCorners(x & map.getMaskW(), y & map.getMaskH());
+	// Corners 2 and 3 are the south ones; slot kind 3 is open ground.
+	return decorSlot(materialFor(map, corners[2])) != 3 || decorSlot(materialFor(map, corners[3])) != 3;
+}
+
 std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLayers(const SceneMap &map, int x, int y,
 	const TierField *tiers) const
 {

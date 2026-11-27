@@ -459,7 +459,7 @@ void MapDrawer::drawMapResources(int left, int top, int right, int bot, int view
 	flush();
 }
 
-void MapDrawer::drawMapDecorOccluders(int y, int left, int right, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, MapRenderState *render)
+void MapDrawer::drawMapDecorOccluders(int y, DecorDepth depth, int left, int right, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, MapRenderState *render)
 {
 	const auto &compositor = globalContainer->terrainCompositor(sceneMap.frozenAssetBundle());
 	if (compositor.decorReach().up <= 0)
@@ -504,6 +504,7 @@ void MapDrawer::drawMapDecorOccluders(int y, int left, int right, int viewportX,
 		else
 			layers = compositor.decorLayers(sceneMap, x + viewportX, y + viewportY, tierField.get());
 		bool shown = false, checked = false;
+		std::optional<bool> front;
 		for (unsigned slot = 0; slot < layers.size(); ++slot)
 		{
 			const auto &layer = layers[slot];
@@ -512,6 +513,13 @@ void MapDrawer::drawMapDecorOccluders(int y, int left, int right, int viewportX,
 			const int h = layer.sprite->getH(layer.frame);
 			if (TerrainVisual::decorOffsetY(h) + TerrainVisual::Compositor::decorSlotRise(slot) <= 0)
 				continue; // Within its cell: it hides nothing drawn behind it.
+			if (depth != DecorDepth::All)
+			{
+				if (!front)
+					front = compositor.decorInFront(sceneMap, x + viewportX, y + viewportY);
+				if (*front != (depth == DecorDepth::Front))
+					break;
+			}
 			if (!checked)
 				shown = visible(x), checked = true;
 			if (!shown)

@@ -78,8 +78,12 @@ namespace MapDrawer
 	void drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, MapRenderState *render = nullptr);
 	//! Draws again, over the ground units already drawn, the decor of screen row
 	//! `y` that rises above its cell, and the row's resources in front of it, so
-	//! that tall decor hides the units behind it (in the rows above).
-	void drawMapDecorOccluders(int y, int left, int right, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, MapRenderState *render);
+	//! that tall decor hides the units behind it: those in the rows above, and,
+	//! for decor at its cell's south edge, those in its own row.
+	//! Which of the row's tall decor: what stands at its cells' south edge (in
+	//! front of the row's units), what stands only at their north corners, or all.
+	enum class DecorDepth { Front, Back, All };
+	void drawMapDecorOccluders(int y, DecorDepth depth, int left, int right, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap, MapRenderState *render);
 	///draws the ground units. up till now those are workers and warriors
 	void drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const PresentationFrame& scene);
 	///draws debug information. switched in the code.
