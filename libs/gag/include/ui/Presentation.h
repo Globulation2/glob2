@@ -96,6 +96,13 @@ Presentation resolvePresentation(GAGCore::DrawableSurface &surface, double touch
 double comfortScale(const Presentation &presentation, bool followsDesktop);
 // Multiplies the presentation's point and text units by `scale`.
 void applyComfortScale(Presentation &presentation, double scale);
+// Pointer hosts draw text at authored pixels of the logical surface. When that
+// surface is shown smaller than one pixel per point (gameplay's 800x600 floor in
+// a 674x322 portal frame or a portrait phone), the text shrinks with it while
+// every point-sized control does not. This sizes such text in points, as touch
+// hosts do, so it reads at its authored size on screen; it changes nothing at
+// one logical pixel per point or below, on touch hosts or on native desktops.
+void applyScaledSurfaceText(Presentation &presentation);
 // Fill textGrowth, textScale and textUnit from `unit`, `touch` and the player's
 // preference (GAGCore::userTextScale); resolvePresentation() calls it.
 void applyTextSize(Presentation &presentation, double touchTextScale = 1);

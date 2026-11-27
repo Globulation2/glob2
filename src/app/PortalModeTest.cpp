@@ -9,6 +9,11 @@
 #include "ui/DiscordCommunity.h"
 #include "ProblemReportScreen.h"
 #include "GameGUIDialog.h"
+#include "Application.h"
+#include "GameLoadScreen.h"
+#include "GlobalContainer.h"
+#include "IntroductionOfferScreen.h"
+#include "ScopedEnvironment.h"
 #include <ApplicationHost.h>
 #include <ui/Host.h>
 #include <ui/TextLayout.h>
@@ -214,6 +219,34 @@ TEST_SUITE("PortalMode")
 		CHECK(settings.category() != SettingsScreen::Category::Online);
 	}
 
+	// CrazyGames forbids a fullscreen control of the game's own: the portal's
+	// page has one. Every portal loses Settings' window mode and F11.
+	TEST_CASE("portals offer no fullscreen control of their own")
+	{
+		glob2test::HeadlessGlobals globals({.loadStrings = true});
+		{
+			ScopedPortal portal("");
+			CHECK(GAGCore::ApplicationHost::fullscreenControlAllowed());
+			CHECK(SettingsScreen::offersWindowMode());
+		}
+		for (const char *description : {NoLinksNoSignIn, SignInWithoutLinks, Everything})
+		{
+			INFO(description);
+			ScopedPortal portal(description);
+			CHECK_FALSE(GAGCore::ApplicationHost::fullscreenControlAllowed());
+			CHECK_FALSE(SettingsScreen::offersWindowMode());
+		}
+		for (const char *description : AdPortals)
+		{
+			INFO(description);
+			ScopedPortal portal(description);
+			CHECK_FALSE(GAGCore::ApplicationHost::fullscreenControlAllowed());
+			CHECK_FALSE(SettingsScreen::offersWindowMode());
+		}
+		// Leaving the portal restores both.
+		CHECK(GAGCore::ApplicationHost::fullscreenControlAllowed() == !PortalPolicy::current().portal);
+	}
+
 	TEST_CASE("the Discord panel does not open without external links")
 	{
 		glob2test::HeadlessGlobals globals({.loadStrings = true});
@@ -323,5 +356,56 @@ TEST_SUITE("PortalMode")
 				CHECK(tree->find("report.back") != nullptr);
 			}
 		}
+	}
+
+	// CrazyGames and Poki want new players in gameplay at once: a portal's first
+	// visit skips the first-run questions and the main menu for the introduction.
+	TEST_CASE("a portal's first visit lands in the introduction lesson")
+	{
+		glob2test::HeadlessGlobals globals({.loadStrings = true});
+		{
+			ScopedPortal portal("");
+			CHECK_FALSE(PortalPolicy::landsInFirstLesson(false, false));
+		}
+		for (const char *description : AdPortals)
+		{
+			INFO(description);
+			ScopedPortal portal(description);
+			CHECK(PortalPolicy::landsInFirstLesson(false, false));
+			// Only the first visit, and never over storage the browser could not restore.
+			CHECK_FALSE(PortalPolicy::landsInFirstLesson(true, false));
+			CHECK_FALSE(PortalPolicy::landsInFirstLesson(false, true));
+		}
+	}
+
+	TEST_CASE("the first portal visit opens the lesson loader and leaving it reaches the main menu [display][writes-preferences]")
+	{
+		glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI", "0");
+		glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true, .width = 1024, .height = 768});
+		globals->settings.audioPreferenceChosen = true;
+		globals->settings.thumbSideChosen = true;
+		{
+			// Outside a portal the first run still asks first.
+			ScopedPortal portal("");
+			globals->settings.introductionOffered = false;
+			Application application;
+			application.screens.frame(0, {});
+			CHECK(dynamic_cast<IntroductionOfferScreen *>(application.screens.top()));
+		}
+		ScopedPortal portal(AdPortals[0]);
+		globals->settings.introductionOffered = false;
+		Application application;
+		application.screens.frame(0, {});
+		auto *loader = dynamic_cast<GameLoadScreen *>(application.screens.top());
+		REQUIRE(loader);
+		CHECK(globals->settings.introductionOffered);
+		Settings saved;
+		saved.load();
+		CHECK(saved.introductionOffered);
+		// Leaving before the lesson starts still lands on the main menu.
+		loader->onEscape();
+		for (Uint32 tick = 40; tick < 400 && !dynamic_cast<MainMenuScreen *>(application.screens.top()); tick += 40)
+			application.screens.frame(tick, {});
+		CHECK(dynamic_cast<MainMenuScreen *>(application.screens.top()));
 	}
 }

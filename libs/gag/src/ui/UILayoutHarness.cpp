@@ -1403,6 +1403,26 @@ TEST_SUITE("UILayout")
 		REQUIRE(host.find("chat"));
 		CHECK(host.find("chat")->bounds.h >= host.metrics().minTarget);
 	}
+	// Gameplay's 800x600 floor in a 674x322 portal frame draws its surface at
+	// 0.54 pixels per point, in a 360x640 portrait frame at 0.45: dialogs over it
+	// size text in points so it is not 7 px; one pixel per point keeps authored pixels.
+	TEST_CASE("text follows points on a surface drawn below one pixel per point")
+	{
+		auto at = [](double unit, bool touch)
+		{
+			auto p = Presentation::forSurface(1255, 600, unit, touch);
+			p.textScale = p.textGrowth = 1;
+			p.textUnit = touch ? unit : 1;
+			applyScaledSurfaceText(p);
+			return p.textUnit;
+		};
+		CHECK(at(1.0, false) == doctest::Approx(1.0));
+		CHECK(at(0.5, false) == doctest::Approx(1.0));
+		CHECK(at(1.86, false) == doctest::Approx(1.86));
+		CHECK(at(2.22, false) == doctest::Approx(2.22));
+		// Touch hosts already size text in points.
+		CHECK(at(1.86, true) == doctest::Approx(1.86));
+	}
 	TEST_CASE("wrap columns") { checkWrapColumns(); }
 	TEST_CASE("footer folds") { checkFooterFolds(); }
 	TEST_CASE("scroll clamp and wheel") { checkScrollClampAndWheel(); }

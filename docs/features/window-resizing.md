@@ -117,6 +117,8 @@ The follow-up audit covers these drawing paths:
 | Main-view map markers | Repeat the marker and preserve clipping; minimap markers and lifetime updates remain single. |
 | Minimap, offscreen arrows, mouse placement previews, screen-space messages and clouds | Keep their existing view-specific behavior; these are not duplicated as map objects. |
 
+In a web portal neither is offered: the portal's page has its own fullscreen
+button ([web portals](../releases/web-portals.md#portal-policy)). Otherwise
 Windowed/Fullscreen and F11 share a live desktop-fullscreen transition, retaining
 windowed dimensions and restoring state on failure. The transition waits for SDL to
 finish the fullscreen change before requesting the restored client size, then

@@ -21,6 +21,11 @@
 // ad break when the game reports a natural pause (ApplicationHost::matchBreak),
 // and a match start then waits for it. Our own site, itch, the stores, Game
 // Jolt and Newgrounds never carry ads.
+// A portal's first visit (the introduction never offered, storage readable)
+// starts straight in the introduction lesson, as CrazyGames and Poki ask new
+// players to land in gameplay: no first-run questions, no main menu first.
+// Leaving the lesson reaches the first-run questions still unanswered, then
+// the main menu (Application::mainMenu).
 // In any portal the main menu offers no Quit (MainMenuScreen::offersQuit): the
 // portal's page hosts the game, and quitting would leave an empty frame. The
 // in-game menu offers no AI telemetry, a developer's view (InGameMainScreen).
@@ -65,5 +70,11 @@ inline bool onlineSignIn()
 inline bool ads()
 {
 	return current().ads;
+}
+// Whether this start skips the first-run questions and the main menu for the
+// introduction lesson: only in a portal, only before the introduction was offered.
+inline bool landsInFirstLesson(bool introductionOffered, bool storageRestoreFailed)
+{
+	return current().portal && !introductionOffered && !storageRestoreFailed;
 }
 } // namespace PortalPolicy

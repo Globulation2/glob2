@@ -108,6 +108,8 @@ class UIDialog
 	// Where the measured panel goes inside that area; defaults to centered.
 	virtual Rect place(Size measured, Rect area);
 	virtual void paintPanel(Canvas &canvas, Rect panel);
+	// Last word on the frame's presentation; the default keeps what the surface resolved.
+	virtual void adjustPresentation(Presentation &) {}
 	void refreshPresentation();
 
   private:

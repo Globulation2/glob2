@@ -161,6 +161,11 @@ enum class UrlPurpose
 // nothing for UrlPurpose::Link and returns false. On by default.
 void setExternalLinksAllowed(bool allowed);
 bool externalLinksAllowed();
+// Off in portal mode, where the portal's page offers its own fullscreen button
+// and some portals (CrazyGames) forbid the game's: F11 then does nothing and
+// Settings offers no window mode. On by default.
+void setFullscreenControlAllowed(bool allowed);
+bool fullscreenControlAllowed();
 
 // Opens an http(s) URL in the system browser (a new tab on the web). Returns
 // false when the host cannot, or a popup blocker refused it; browsers allow it

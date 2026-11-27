@@ -80,6 +80,9 @@ class SettingsScreen : public Glob2UI::Screen
 	// Stable semantic interface, also used by native integration tests.
 	void selectCategory(Category category);
 	std::vector<Category> visibleCategories() const;
+	// Whether Display offers the Window mode (fullscreen) choice: never in a
+	// portal, whose page has its own fullscreen button (src/app/PortalPolicy.h).
+	static bool offersWindowMode();
 	Category category() const { return current; }
 	// Rows with their laid-out rectangles.
 	const std::vector<Row> &rows();

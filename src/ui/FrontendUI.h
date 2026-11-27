@@ -168,6 +168,10 @@ class InGameDialog : public UIDialog
 	// Available content bounds with a visible 16-point gutter outside the panel.
 	GAGGUI::ui::Rect insetAvailable(const Presentation &p, const GAGGUI::ui::Metrics &m);
 	bool scrim() const override { return false; }
+	// Gameplay's surface is often drawn smaller than its points (its 800x600 floor
+	// in a portal frame or on a phone); text then follows the points like the
+	// HUD and the main menu do (ui::applyScaledSurfaceText).
+	void adjustPresentation(Presentation &presentation) override;
 	// Action row: content-sized buttons at the right on pointer hosts, the touch
 	// action grid otherwise.
 	Element dialogActions(std::vector<MenuAction> items, const Presentation &p) const;

@@ -1104,7 +1104,10 @@ Element CustomGameScreen::build(const Presentation &p)
 		if (narrow && p.textGrowth > 1.2)
 			options.role = fe::FontRole::Support;
 		static constexpr fe::UIIcon tabIcons[] = {fe::UIIcon::Map, fe::UIIcon::Users, fe::UIIcon::Rules};
-		options.icon = rowIcon(p, tabIcons[i]);
+		// A short landscape row also carries Back and Start; below phone-landscape
+		// widths (a 640x360 portal frame) the icons would push "Players" onto two lines.
+		const bool tabRowIcons = !topActions || p.safe.w >= p.textPt(760);
+		options.icon = tabRowIcons ? rowIcon(p, tabIcons[i]) : fe::IconRef{};
 		options.iconSize = narrow || topActions ? 20 : 24;
 		auto tab = fe::button("tab/" + std::to_string(i), titles[std::size_t(i)], [this, i] { selectTab(i); }, options);
 		// Desktop tabs carry their current choice underneath, as before.
