@@ -109,7 +109,7 @@ def rgb_error(reference, decoded):
                for index, count in enumerate(diff.histogram(mask=visible)))
 
 
-def write_webp_page_run(frames, size, name, mode, directory, fingerprint):
+def write_webp_page_run(frames, size, name, mode, directory, fingerprint, quality=None):
     width, height = size
     columns = min(images.SHEET_COLUMNS, 2048 // width)
     capacity = min(images.SHEET_FRAMES, columns * (2048 // height))
@@ -121,9 +121,10 @@ def write_webp_page_run(frames, size, name, mode, directory, fingerprint):
             page.paste(image, (offset % columns * width, offset // columns * height))
         filename = f"pack-{name}-{start:04}.webp"
         lossless = mode == "lossless"
-        page.save(directory / filename, format="WEBP", lossless=lossless,
-                  quality=75 if lossless else images.sheet_lossy_quality(),
-                  method=4 if lossless else images.ENCODING["method"], exact=True)
+        page.save(directory / filename, format="WEBP",
+                  **(images.lossless_webp() if lossless else dict(
+                      lossless=False, quality=images.group_lossy_quality(quality),
+                      method=images.ENCODING["method"], exact=True)))
         decoded = Image.open(directory / filename).convert("RGBA")
         if decoded.size != page.size:
             raise ValueError("Packed WebP changed dimensions")
@@ -143,10 +144,11 @@ def write_webp_page_run(frames, size, name, mode, directory, fingerprint):
     return dict(files=files, refs=refs, visible_rgb_sse=error, fingerprints=fingerprints)
 
 
-def write_webp(frames, name, mode, directory, fingerprint):
+def write_webp(frames, name, mode, directory, fingerprint, quality=None):
     result = dict(files=[], refs={}, visible_rgb_sse=0, fingerprints={})
     for run, (size, frames_with_size) in enumerate(groupby(frames, key=lambda item: item[1].size)):
-        page = write_webp_page_run(list(frames_with_size), size, f"{name}-{run:03}", mode, directory, fingerprint)
+        page = write_webp_page_run(list(frames_with_size), size, f"{name}-{run:03}", mode, directory, fingerprint,
+                                   quality)
         result["files"].extend(page["files"])
         result["refs"].update(page["refs"])
         result["fingerprints"].update(page["fingerprints"])
@@ -293,7 +295,10 @@ def brotli_size(payload):
     return len(brotli.compress(payload, quality=DATA_BROTLI_QUALITY, lgwin=BROTLI_WINDOW))
 
 
-def encode_group(name, group, cache, platform, encoder, lossy):
+def encode_group(name, group, cache, platform, encoder, lossy, quality=None):
+    """Pack a sprite group: lossless, lossy at images.group_lossy_quality(quality)
+    (`quality`: the edition's lossy quality, None: the standard one) or, with an
+    encoder and a CRF, video; the smallest admissible candidate wins."""
     fingerprint = None
     if group.get("fingerprints"):
         from tools.terrain_tileset import pixel_fingerprint
@@ -304,7 +309,7 @@ def encode_group(name, group, cache, platform, encoder, lossy):
         size_policy = (images.BROTLI_VERSION, PART_BYTES, DATA_BROTLI_QUALITY, BROTLI_WINDOW)
     sources = sorted(group["frames"])
     key = hashlib.sha256(json.dumps([PACK_RECIPE, name, group["crf"], group["material"],
-        platform, encoder, lossy, bool(fingerprint), images.image_recipe(), zlib.ZLIB_RUNTIME_VERSION,
+        platform, encoder, lossy, bool(fingerprint), images.image_recipe(quality=quality), zlib.ZLIB_RUNTIME_VERSION,
         size_policy, bool(group.get("native")), group.get("index_rows"),
         [[index, ident, layer, hashlib.sha256(path.read_bytes()).hexdigest()]
          for index, ident, layer, path in sources]], sort_keys=True).encode()).hexdigest()
@@ -330,11 +335,11 @@ def encode_group(name, group, cache, platform, encoder, lossy):
     with tempfile.TemporaryDirectory(prefix="sprite-candidates-", dir=cache) as temp:
         temp = Path(temp)
         candidates = {}
-        modes = ["lossless", "q75"] if lossy else ["lossless"]
+        modes = ["lossless", images.GROUP_LOSSY_MODE] if lossy else ["lossless"]
         for mode in modes:
             target = temp / mode
             target.mkdir()
-            candidates[mode] = write_webp(frames, name, mode, target, fingerprint)
+            candidates[mode] = write_webp(frames, name, mode, target, fingerprint, quality)
         if encoder and lossy and group["crf"] is not None:
             target = temp / "video"
             target.mkdir()
@@ -342,7 +347,7 @@ def encode_group(name, group, cache, platform, encoder, lossy):
                 video = write_video(frames, size, name, group, encoder[0], target, fingerprint)
             except subprocess.CalledProcessError as error:
                 video = dict(rejected="video codec failed", detail=error.stderr.decode(errors="replace").strip()[:512])
-            if "rejected" not in video and video["visible_rgb_sse"] > candidates["q75"]["visible_rgb_sse"]:
+            if "rejected" not in video and video["visible_rgb_sse"] > candidates[images.GROUP_LOSSY_MODE]["visible_rgb_sse"]:
                 video["rejected"] = "above Q75 squared RGB error ceiling"
             candidates["video"] = video
         for mode, candidate in candidates.items():

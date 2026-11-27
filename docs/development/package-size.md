@@ -9,14 +9,36 @@ Release packagers share `tools/package_assets.py`. Original artwork stays in
 `build/`. Runtime artwork is WebP in every client build: units, buildings,
 terrain, resources, effects, UI, icons, wordmarks and browser menu art. Release
 bundles choose the smaller of lossless WebP Q75/method 4 and lossy WebP
-Q90/method 6. Both candidates use `exact=True`; lossy explicitly uses
-`lossless=False`. Dimensions and decoded alpha must match for every candidate.
+method 6 at the quality in [Lossy WebP quality](#lossy-webp-quality). Both
+candidates use `exact=True`; lossy explicitly uses `lossless=False`. Dimensions and decoded alpha must match for every candidate.
 Lossless candidates also require full RGBA equality, including RGB beneath
 transparent pixels. Higher-depth RGBA PNG sources use the renderer's 8-bit RGBA
 representation (rounded normalized 16-bit channels, as SDL converts RGBA64) for
 both candidates. Unsupported higher-depth modes fail the export without
 quantization; their source artwork remains untouched. Fonts, meshes, music and
 platform icon containers are outside this policy.
+
+### Lossy WebP quality
+
+One number sets every lossy quality: the edition's `webp_quality`, whose
+standard value is `quality` in `tools/image_encoding.json` (90; lite uses 75,
+see [editions](../browser/editions.md#settings)). Each kind of image derives
+its quality from it (`tools/package_assets.py`, `group_lossy_quality`):
+
+| Kind of image | Lossy quality | Standard | Lite |
+| --- | --- | --- | --- |
+| Standalone images: menus, backgrounds, UI, HD frames outside a group | `webp_quality` | 90 | 75 |
+| Sprite sheet pages (`<sprite>-sheet-N.webp`, `encode_sheet`) | `webp_quality` | not shipped | 75 |
+| Terrain material sheets and packed sprite groups (`pack-*.webp`) | at most 75 | 75 | 75 |
+| Terrain stone maps | always lossless | | |
+
+Which kind a sprite is depends on the build. Release builds with packed sprites
+(every standard build) put unit and terrain sprites into packed sprite groups,
+which may also choose H.264 (native platforms and HD groups). Lite packs no
+sprite groups: unit sprites and its sheet families become sprite sheet pages
+and terrain becomes material sheets. Debug and source builds encode everything
+losslessly. The terrain and group lossy candidate keeps the name `q75` in
+audits and caches whatever its quality.
 
 Independent image encodings and sprite-sheet packing run concurrently. Build
 exports use `GLOB2_ASSET_JOBS` workers (a CMake cache variable, default 8);
