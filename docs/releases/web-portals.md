@@ -75,8 +75,14 @@ music) can be silenced while a portal pauses or mutes the game; audio the game
 reactivates meanwhile is suspended again, and a hidden page stays suspended for the
 game's own visibility handler. It reads the shell's download bar as loading
 progress and the body's `ready` class as the interactive main menu, and reports
-gameplay as active while the player is in a match, the page is visible and neither
-the portal nor an ad holds the game; the menus are not gameplay. Each adapter turns
+gameplay as active while the player is in a match, play is not stopped, the page
+is visible and neither the portal nor an ad holds the game; the menus are not
+gameplay. Play stops while the in-game menu, or a dialog opened from it (save,
+load, options, a confirmation) or Settings, covers the match, and while the game
+is paused (`pause` and `resume` below, from `GameGUI::playStopped` through
+`MatchPlayReporter`); the side panels (alliances, objectives, statistics) and chat
+are play. Each change is reported once: opening the menu of a paused game is one
+stop, and only a return to play is a start. Each adapter turns
 these signals into its SDK's calls; without the SDK (an ad blocker, a local test)
 an adapter does nothing and the game runs.
 
@@ -91,8 +97,23 @@ The game reports natural breaks to the page through
 | `start` | a local match is about to run its first tick, after the player chose to play (from the menu, the next tutorial lesson or a loaded game) | yes, except before the first match since the page loaded (GameDistribution: its required pre-roll runs there) |
 | `end` | the match is over and its results show | no; gameplay stops |
 | `leave` | the player leaves the finished match for the menu | yes |
+| `pause` | play stops inside a local match: the in-game menu opens or the game is paused | no; gameplay stops |
+| `resume` | play continues: the menu closes and the game is not paused | no; gameplay starts |
 
-Relay (online) matches report nothing, so a break never delays a lockstep game.
+`pause` and `resume` change only gameplay: they never ask for an ad and neither
+start nor reset the 3 minutes. Leaving a match from the menu reports `end` and
+`leave` with no `resume` in between, so gameplay stops once.
+
+| Portal | Gameplay events around the menu and pauses |
+| --- | --- |
+| Poki | `gameplayStop()` / `gameplayStart()` |
+| CrazyGames | `SDK.game.gameplayStop()` / `gameplayStart()` |
+| Yandex Games | `features.GameplayAPI.stop()` / `start()` |
+| GameDistribution | none (its SDK has no gameplay events; `SDK_GAME_PAUSE` still holds the game) |
+| GamePix | none (its lifecycle has no gameplay events) |
+
+Relay (online) matches report nothing, pauses included, so a break never delays a
+lockstep game.
 `createBreaks` asks the adapter's SDK for an interstitial only when the policy has
 `ads: true`, one break at a time, and never during play or on first load. After
 every break, whether or not an ad played, it skips further breaks for 3 minutes

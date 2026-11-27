@@ -94,6 +94,9 @@ void GameGUI::requestPause(bool pause)
 		return;
 	}
 	enqueueOrder(std::make_shared<PauseGameOrder>(pause));
+	// The order takes effect at a later tick; until then play counts as what was asked.
+	requestedPause = pause;
+	requestedPauseAt = SDL_GetTicks();
 }
 
 void GameGUI::setPublishedScene(const PresentationFrame* scene)

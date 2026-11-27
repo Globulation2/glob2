@@ -116,7 +116,7 @@ TEST_SUITE("PortalPolicy")
 	TEST_CASE("a native host runs no breaks and never holds the game")
 	{
 		using GAGCore::ApplicationHost::MatchBreak;
-		for (const auto point : {MatchBreak::Starting, MatchBreak::Ended, MatchBreak::Left})
+		for (const auto point : {MatchBreak::Starting, MatchBreak::Ended, MatchBreak::Left, MatchBreak::Paused, MatchBreak::Resumed})
 			CHECK_FALSE(GAGCore::ApplicationHost::matchBreak(point));
 		CHECK_FALSE(GAGCore::ApplicationHost::hostHeld());
 	}

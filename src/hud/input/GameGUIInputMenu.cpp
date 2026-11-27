@@ -62,6 +62,33 @@ void GameGUI::closeDialog()
 	gameMenuScreen.reset();
 }
 
+bool GameGUI::playStopped() const
+{
+	// Quitting from the menu: the match ends next, with its own stop.
+	if (flushOutgoingAndExit)
+		return true;
+	// A pause order lands at a later tick; follow the request meanwhile (at most
+	// two seconds, so an order that never lands cannot hold play stopped).
+	if (requestedPause && *requestedPause != gamePaused && SDL_GetTicks() - requestedPauseAt < 2000)
+		return *requestedPause;
+	if (gamePaused || hardPause)
+		return true;
+	switch (inGameMenu)
+	{
+	case IGM_MAIN:
+	case IGM_LOAD:
+	case IGM_SAVE:
+	case IGM_OPTION:
+	case IGM_HIVE:
+	case IGM_CONFIRM_LEAVE:
+	case IGM_TELEMETRY:
+	case IGM_TUTORIAL_RESTART:
+		return true;
+	default:
+		return false;
+	}
+}
+
 void GameGUI::openMainMenu()
 {
 	auto menu = std::make_unique<InGameMainScreen>(globalContainer->replaying, !globalContainer->isViewingGame(), gamePaused);

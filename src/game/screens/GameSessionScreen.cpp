@@ -97,6 +97,7 @@ bool GameSessionScreen::awaitMatchBreak()
 
 void GameSessionScreen::matchEnded()
 {
+	play.stopped();
 	if (!inMatch || endReported)
 		return;
 	endReported = true;
@@ -206,6 +207,8 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 		// The simulation runs on its own thread where threads exist; otherwise
 		// (the browser build, thread creation failure) this host steps it serially.
 		engine->startSimulationThread(clock);
+		if (inMatch)
+			play.started();
 	}
 	else
 	{
@@ -273,7 +276,12 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 			nextTick = clock + engine->sessionDelay(clock);
         }
 	}
-	if (running && engine->takeSettingsRequest()) {
+	const bool settings = running && engine->takeSettingsRequest();
+	// The in-game menu (and what it opens), Settings over the match and pauses
+	// stop play for the host; it resumes on the first frame back in play.
+	if (running)
+		play.update(settings || engine->playStopped());
+	if (settings) {
         engine->suspendInput(); cancelScreenInputReceipt(); input.clear();
         stack.push(std::make_unique<SettingsScreen>(&stack));
         return;

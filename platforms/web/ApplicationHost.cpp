@@ -381,7 +381,11 @@ std::string portalDescription()
 // no host to ask and nothing is held.
 bool matchBreak(MatchBreak point)
 {
-    const char* name = point == MatchBreak::Starting ? "start" : point == MatchBreak::Ended ? "end" : "leave";
+    const char* name = point == MatchBreak::Starting ? "start"
+                     : point == MatchBreak::Ended    ? "end"
+                     : point == MatchBreak::Left     ? "leave"
+                     : point == MatchBreak::Paused   ? "pause"
+                                                     : "resume";
     return MAIN_THREAD_EM_ASM_INT({
         try { return globalThis.glob2PortalHost?.matchBreak?.(UTF8ToString($0)) ? 1 : 0; }
         catch (error) { console.warn('Portal break failed', error); return 0; }

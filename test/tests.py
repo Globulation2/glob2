@@ -243,6 +243,8 @@ ENGINE_TESTS = [
     '#src/app/ProblemReportTest.cpp',
     # Opens the main menu's More page (MainMenuScreen::showMore).
     ('#src/app/PortalModeTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    # Sets GameGUI's menu and pause state directly.
+    ('#src/game/screens/MatchPlayReporterTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/app/AdaptiveSettingsTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/game/orders/GuardAreaBalanceTest.cpp',
     ('#src/game/orders/FarmAreaTest.cpp', dict(cxxflags=['-fno-access-control'])),
