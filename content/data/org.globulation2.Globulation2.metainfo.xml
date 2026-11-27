@@ -1257,6 +1257,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.11.8.4" date="2026-11-27">
+      <description>
+        <p>Adds Report a Problem to the main menu, and on Android and iOS keeps crash reports and asks before sending them; fixes the in-game menu, window fit and first-visit lesson in small browser frames, and stops asking mouse players which hand they use; keeps a resized desktop window filled with the portable renderer; calms shoreline water; and gives MCP agents economy alerts and more forgiving tool arguments.</p>
+      </description>
+    </release>
     <release version="0.11.8.3" date="2026-11-26">
       <description>
         <p>Rebuilds 0.11.8.2 for Google Play and the Apple stores. Asks your age once and turns chat and sharing off for players under 13 or who have not answered; adds a smaller, faster-loading browser edition and keeps high-detail terrain on browsers without threads; softens water swells and smooths terrain across tile edges; picks the tablet layout correctly on touch tablets; shows the Custom AIs lobby hint only where Custom AIs are offered; and redraws the application icon.</p>
