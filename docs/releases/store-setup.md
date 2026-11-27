@@ -101,6 +101,17 @@ and does not submit or publish a product.
 
 ## Store setup
 
+Publish an approved version before staging or submitting anything that would
+replace it. Several stores approve a version and then wait for a manual
+publish step: Epic Stage entities reading "Ready for Live", a Partner Center
+submission set to publish manually, an App Store version in "Pending Developer
+Release", and a Play release held by managed publishing. Pushing new changes
+over an approved version restarts review and can leave the product with no
+public listing; Epic approved this product twice in late 2026 without either
+version reaching Live. Hold an approved version back only on a deliberate
+decision, and check submitted reviews at least daily so an approval is
+published as soon as it lands.
+
 ### Steam
 
 The existing Steam pipeline stages **Windows only**. Finish Steamworks partner
@@ -178,7 +189,10 @@ Artifacts and Binaries page, open the Windows artifact and make the new binary
 active for Windows; newly uploaded binaries are inactive and scheduled for
 deletion until activated. Install and test that active Dev build through the
 Epic launcher, then move the candidate through Stage and review, and promote
-it to Live in the portal.
+it to Live in the portal. Before every Push to Stage, open Release Management:
+if any Stage entity reads "Ready for Live", push the approved entities to Live
+first. An offer whose available date is unknown goes Live as a "Coming soon"
+page without a download, so that needs no binary or date.
 
 The native CLI accepts the documented Epic Launcher `-KEY=VALUE` fields and
 `-EpicPortal` switch without treating them as game commands. Their values are
