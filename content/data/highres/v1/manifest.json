@@ -135,33 +135,41 @@
     },
     {
       "id": "inn0b0s",
-      "width": 68,
+      "width": 64,
       "height": 68,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "inn0b0s.png",
           "role": "base",
-          "sha256": "4a73c022396e6345794689ac0b3cbc1c42450081dd1179db5df82ac44483d465",
-          "source_sha256": "4a73c022396e6345794689ac0b3cbc1c42450081dd1179db5df82ac44483d465",
-          "logical_width": 68,
+          "sha256": "55ed157aa155fbd3cdc76e4646d4f59473c235e3579896cb8a7138af88933b24",
+          "source_sha256": "55ed157aa155fbd3cdc76e4646d4f59473c235e3579896cb8a7138af88933b24",
+          "logical_width": 64,
           "logical_height": 68,
-          "original_sha256": "7aee0a1ef8b034e0d4ae431aadb56ee334b80cdab2548c8ea975322c6bff8414"
+          "original_sha256": "bd2383c1f54540e73f367e78a97070fe392870d5edc825ff2b907babf0037289"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/inn0b0.png",
           "sha256": "916e4285a2679e22593f5525d6a3d57643f84390629c559b24ba29bbaa9d9f21"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/inn0b0s.png",
+          "sha256": "22f06f58effee30ebfbbb7446b8689bc22f2ea43ede4e7bda13aaae350dc6375"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/inn0b0.json",
+          "sha256": "7224381756de24d087378f39d8413e154e41e0e3700fdd4a68fdee72c1f58d68"
         },
         {
           "path": "content/data/highres/v1/inn0b0r.png",
@@ -223,33 +231,41 @@
     },
     {
       "id": "inn0b1s",
-      "width": 68,
+      "width": 64,
       "height": 68,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "inn0b1s.png",
           "role": "base",
-          "sha256": "5e2d61a6371d23b258331694304d9981939c9af248b11e0477b65b696f003c04",
-          "source_sha256": "5e2d61a6371d23b258331694304d9981939c9af248b11e0477b65b696f003c04",
-          "logical_width": 68,
+          "sha256": "755bfe4cac3bbc63bc5f714af949888dce977fde20cb66cb1544e27bf85cb8a3",
+          "source_sha256": "755bfe4cac3bbc63bc5f714af949888dce977fde20cb66cb1544e27bf85cb8a3",
+          "logical_width": 64,
           "logical_height": 68,
-          "original_sha256": "2cf33d174659a1117fd0568a2b7c84d40c6f29350704b9764b46c981582e4c5f"
+          "original_sha256": "c1ef5610ac4039a507cc2c11d125158a5bf59a63caf419a5267f36932b0bd981"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/inn0b1.png",
           "sha256": "bb5619bc85a000342ffe59039a7748d1483a9e09e392777b8f478189171824ff"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/inn0b1s.png",
+          "sha256": "fb6f69692047b35d942238de58d1c0dd213f45a95779952ba1f213ccea8d4288"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/inn0b1.json",
+          "sha256": "288ed518bb41d5ee4c04f24b4fefbcddaf4fa4788b68ebea9cb6ad8c2e8837b5"
         },
         {
           "path": "content/data/gfx/inn0b1.png",
@@ -307,33 +323,41 @@
     },
     {
       "id": "inn0c0s",
-      "width": 68,
-      "height": 68,
+      "width": 64,
+      "height": 76,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "inn0c0s.png",
           "role": "base",
-          "sha256": "a388487aa7673586256c65d92572ee31c4c32e0210909539d2defa1183ced6ad",
-          "source_sha256": "a388487aa7673586256c65d92572ee31c4c32e0210909539d2defa1183ced6ad",
-          "logical_width": 68,
-          "logical_height": 68,
-          "original_sha256": "54b9932e8811ac42302383edcfe3b272bbf138e2cd0f6ec615be044d2bbd85a1"
+          "sha256": "c4b89ff177c7937709620d157bf23265c33cd95fd7f168a24a25ad9575f82a2e",
+          "source_sha256": "c4b89ff177c7937709620d157bf23265c33cd95fd7f168a24a25ad9575f82a2e",
+          "logical_width": 64,
+          "logical_height": 76,
+          "original_sha256": "b274fc0b770ef013c8138c3c91c05b49efaac5e1e50dc62c670b3ae1f75d669f"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/inn0c0.png",
           "sha256": "80c31b09c7b81889bc9160cd361490b19790408cbc409902a30048521bb1351f"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/inn0c0s.png",
+          "sha256": "cb7b79b5a4ef8eb421ff5c567f30bfc1b53328efe59e63f79d28431ed2e1e695"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/inn0c0.json",
+          "sha256": "540890b9f66bef3eea63164f50893b36c5d222d755403e3934883b8b621e0ea3"
         },
         {
           "path": "content/data/gfx/inn0c0.png",
@@ -400,33 +424,41 @@
     },
     {
       "id": "inn1b0s",
-      "width": 72,
-      "height": 77,
+      "width": 68,
+      "height": 73,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "inn1b0s.png",
           "role": "base",
-          "sha256": "37d8a8b9877825a466df25971ecce3f09f184b97ae707b6cbe1a6ad7839c5abf",
-          "source_sha256": "37d8a8b9877825a466df25971ecce3f09f184b97ae707b6cbe1a6ad7839c5abf",
-          "logical_width": 72,
-          "logical_height": 77,
-          "original_sha256": "6327748b3c2e6de06c7ea33fbc8175a05ac9eee7c0982351fcc14a383ac4d43e"
+          "sha256": "13fcc96abc6b15b191256a21c340ae0a92842a2a3cb7564fa6f7e7555cbe25f5",
+          "source_sha256": "13fcc96abc6b15b191256a21c340ae0a92842a2a3cb7564fa6f7e7555cbe25f5",
+          "logical_width": 68,
+          "logical_height": 73,
+          "original_sha256": "0e208950eb5168dc5f9f08fe52410ae10c5bcc265766c5d3ad8f47e376fd2bff"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/inn1b0.png",
           "sha256": "c10f459c7aadf4005c419d1d9c6827f4fa63c6e025c50beb205a2746482ff2f1"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/inn1b0s.png",
+          "sha256": "417243e787d92503104f7dbf9aa3ea218816b14119a913071e0a02dea6c55276"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/inn1b0.json",
+          "sha256": "0b3b8dda8ec219cc408af7ccfd0cb6d0653c970f7db72dc860117f17df9fdcb4"
         },
         {
           "path": "content/data/highres/v1/inn1b0r.png",
@@ -500,30 +532,38 @@
       "width": 72,
       "height": 77,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "inn1b1s.png",
           "role": "base",
-          "sha256": "6b8e44c21f3e07f026a75d4a4a3cb3886230ccb116ef514872246ae7551373a1",
-          "source_sha256": "6b8e44c21f3e07f026a75d4a4a3cb3886230ccb116ef514872246ae7551373a1",
+          "sha256": "5600906c4d9033a7df1bbf63fdfcd65606b97b847433a45322e5bf40be4ce46b",
+          "source_sha256": "5600906c4d9033a7df1bbf63fdfcd65606b97b847433a45322e5bf40be4ce46b",
           "logical_width": 72,
           "logical_height": 77,
-          "original_sha256": "b6507ec36512e443ee163e3fc625ad666ab612ee96ce95d7a29a1416d65cd248"
+          "original_sha256": "e237ca444e12f272b15eef23d890f635797f2fcf1f63cb7df458f86ccfeed76f"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/inn1b1.png",
           "sha256": "dd46227a5674fa271c37e3d876b6c417bb2ff3ecdf229e5582e764ce591f996f"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/inn1b1s.png",
+          "sha256": "489f1d5a53fb33abae114c31a2d4e1c912aba5915e13093dcc5efab43e4389f3"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/inn1b1.json",
+          "sha256": "a43cf34b68dded7698e6f7fc2d3a7781847847ad24726e17c34a4f8276552590"
         },
         {
           "path": "content/data/highres/v1/inn1b1r.png",
@@ -585,33 +625,41 @@
     },
     {
       "id": "inn1c0s",
-      "width": 68,
+      "width": 64,
       "height": 64,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "inn1c0s.png",
           "role": "base",
-          "sha256": "06e19f4ef1763496a8185f34ffdbae38e0f254550a7ed5a3f3d1b5a7d8a64843",
-          "source_sha256": "06e19f4ef1763496a8185f34ffdbae38e0f254550a7ed5a3f3d1b5a7d8a64843",
-          "logical_width": 68,
+          "sha256": "4f5ce71359578806aba488fbbdceffc135cc8822c68c107fefcfd233b13aa863",
+          "source_sha256": "4f5ce71359578806aba488fbbdceffc135cc8822c68c107fefcfd233b13aa863",
+          "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "c76c37f0b7c1e5c678b332771d6398cfa82279656a7b0db487dcf9a76198e597"
+          "original_sha256": "7bb86c1518a27138424faf5e174845984bcd22ed0d3d6d605d82cbeb01e3e48e"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/inn1c0.png",
           "sha256": "e65f0f74f2a6ead26ecc1cf8071282a46d1cfc16215ffdeb4caa2630ec3397b8"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/inn1c0s.png",
+          "sha256": "4f5ce71359578806aba488fbbdceffc135cc8822c68c107fefcfd233b13aa863"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/inn1c0.json",
+          "sha256": "725a0c7cb946dc4391810abe024dae362899de27bc4783f5c811174f98949e24"
         },
         {
           "path": "content/data/gfx/inn1c0.png",
@@ -678,33 +726,41 @@
     },
     {
       "id": "inn2b0s",
-      "width": 112,
-      "height": 100,
+      "width": 100,
+      "height": 108,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "inn2b0s.png",
           "role": "base",
-          "sha256": "b58e0e386ce6f2029a8a88af136f9a745236fd33ca7b0eaae39abdd2c1cfa424",
-          "source_sha256": "b58e0e386ce6f2029a8a88af136f9a745236fd33ca7b0eaae39abdd2c1cfa424",
-          "logical_width": 112,
-          "logical_height": 100,
-          "original_sha256": "f8462423089e0203168069657d17b881174a3a0dba1da68f2d134851d2855413"
+          "sha256": "69bcb34ef77a94e59a1677e288e98da8392eb1bdaa7816888ed44e347f99a4c1",
+          "source_sha256": "69bcb34ef77a94e59a1677e288e98da8392eb1bdaa7816888ed44e347f99a4c1",
+          "logical_width": 100,
+          "logical_height": 108,
+          "original_sha256": "193fc6948e4f10e331bc3f40e0388efff89cc5fbd4b2b52ce5bd9d156e1bf99e"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/inn2b0.png",
           "sha256": "5f66da4869f77c4f1ea256fdd06fa950323f7322e85cb6794c3a8f1e46b5c6f2"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/inn2b0s.png",
+          "sha256": "f2c96b4a718fa01cb7d5f530b3e5fcf5f3276f8f36ebdfb0f8df17035ae0e5bf"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/inn2b0.json",
+          "sha256": "9929fe792ffe00220b7730563ada8646b29d877f72030e11fd839469609eb78e"
         },
         {
           "path": "content/data/highres/v1/inn2b0r.png",
@@ -769,30 +825,38 @@
       "width": 96,
       "height": 100,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "inn2c0s.png",
           "role": "base",
-          "sha256": "7c57e822f211fb3061006c42f681e83bbbbe682e498afafb7e88e7bd66f5da53",
-          "source_sha256": "7c57e822f211fb3061006c42f681e83bbbbe682e498afafb7e88e7bd66f5da53",
+          "sha256": "9c1fadb40f48c4e7d8417370208d896a99e75b763b437f324c47c516104b0202",
+          "source_sha256": "9c1fadb40f48c4e7d8417370208d896a99e75b763b437f324c47c516104b0202",
           "logical_width": 96,
           "logical_height": 100,
-          "original_sha256": "7b6d26705943a604b0d0417de0a0e3c1f681c05af42a7e09f2c43606feb7274f"
+          "original_sha256": "5d8e19ad59c88219e4ac1e1db1af98a4061bb4991b5db428704a45951f498d6a"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/inn2c0.png",
           "sha256": "a1ce615ff70eb52c992289f7adb799afa3d2b1c1c3ead39ec33cea362c0b641a"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/inn2c0s.png",
+          "sha256": "fccf7b6d6b92b3b2193e981b0038555f28ca3606ed1c19b0f42e2503f3ac209b"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/inn2c0.json",
+          "sha256": "7bffeebd868350a19397632c46b6fbb5c21252dbdb6f176d3a8e50b828a19dc1"
         },
         {
           "path": "content/data/gfx/inn2c0.png",
@@ -860,32 +924,40 @@
     {
       "id": "hosp0b0s",
       "width": 64,
-      "height": 68,
+      "height": 80,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "hosp0b0s.png",
           "role": "base",
-          "sha256": "d27f27ff86b1693483490c188e17cc9b69967edc2dec9871369aa0d6f4f9769a",
-          "source_sha256": "d27f27ff86b1693483490c188e17cc9b69967edc2dec9871369aa0d6f4f9769a",
+          "sha256": "0b9e93fc9e2cb6c4816cf6617d28b6fb1c7dde240ec82b5717c2fba6da9c291f",
+          "source_sha256": "0b9e93fc9e2cb6c4816cf6617d28b6fb1c7dde240ec82b5717c2fba6da9c291f",
           "logical_width": 64,
-          "logical_height": 68,
-          "original_sha256": "fcbf823e23d5eb2528f3811f63248d904fe9e6562b5d2316f5e6951408397593"
+          "logical_height": 80,
+          "original_sha256": "27d6e1200b6f93a4a19c9d478dd44009ed5dbe6185c57bd6df6a9a6a41f2acc3"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/hosp0b0.png",
           "sha256": "68e17c60ab5801442b7b84360a71475eda1e4eb1d5ffe19f81f0f67b74bc7ca2"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/hosp0b1s.png",
+          "sha256": "312e6f5f610fce6df731fb9a183d9f5d84d3ec83c5705d1369112838dabfe2da"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/hosp0b1.json",
+          "sha256": "4a195443fe54c94e727c24a5c132f047011d9f503d02dfc8de823da518886a7a"
         },
         {
           "path": "content/data/highres/v1/hosp0b0r.png",
@@ -948,32 +1020,40 @@
     {
       "id": "hosp0b1s",
       "width": 64,
-      "height": 68,
+      "height": 80,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "hosp0b1s.png",
           "role": "base",
-          "sha256": "2a1487e085e90faa28949c49af31466ba2cbe4727d701e69a6f91291faf1d899",
-          "source_sha256": "2a1487e085e90faa28949c49af31466ba2cbe4727d701e69a6f91291faf1d899",
+          "sha256": "0b9e93fc9e2cb6c4816cf6617d28b6fb1c7dde240ec82b5717c2fba6da9c291f",
+          "source_sha256": "0b9e93fc9e2cb6c4816cf6617d28b6fb1c7dde240ec82b5717c2fba6da9c291f",
           "logical_width": 64,
-          "logical_height": 68,
-          "original_sha256": "0ba00401ce1c490eb8bf531863c59a9bab38ab590f5f65725b2451a3ca344789"
+          "logical_height": 80,
+          "original_sha256": "27d6e1200b6f93a4a19c9d478dd44009ed5dbe6185c57bd6df6a9a6a41f2acc3"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/hosp0b1.png",
           "sha256": "6285bca7967d70f17c756093d6a668934369783f6a0bbdcd9b5b85218f4a5253"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/hosp0b1s.png",
+          "sha256": "312e6f5f610fce6df731fb9a183d9f5d84d3ec83c5705d1369112838dabfe2da"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/hosp0b1.json",
+          "sha256": "4a195443fe54c94e727c24a5c132f047011d9f503d02dfc8de823da518886a7a"
         },
         {
           "path": "content/data/gfx/hosp0b1.png",
@@ -1034,30 +1114,38 @@
       "width": 68,
       "height": 68,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "hosp0c0s.png",
           "role": "base",
-          "sha256": "536278c3a7434dbe4ba9a6e3fff72084ead88826159a94f12aac543e41b7d401",
-          "source_sha256": "536278c3a7434dbe4ba9a6e3fff72084ead88826159a94f12aac543e41b7d401",
+          "sha256": "0710dd20e55f336e545e3aff235e9d02c092d93003453ce8b1abea6cbaa3df07",
+          "source_sha256": "0710dd20e55f336e545e3aff235e9d02c092d93003453ce8b1abea6cbaa3df07",
           "logical_width": 68,
           "logical_height": 68,
-          "original_sha256": "0a6a44b45d9bc585476e127a8651d1eeb9cc20aa2d5307311cce9e90c416264b"
+          "original_sha256": "7eb04a3a13276f576c1dab1d0fd0dd3ff4f1a425251cfcdb6e208b070d912599"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/hosp0c0.png",
           "sha256": "8eaae81c04ded09067291de0e6a5f6534d76f4a2bd11a2cfd34e741c6536bebc"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/hosp0c0s.png",
+          "sha256": "a5aefdbd894019bcd85671d289d4fe3b72f5e67690098c867e78fa605e150c5a"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/hosp0c0.json",
+          "sha256": "ace5444a808546a2b5d67b3c3bbe3766ef610343e12b7bfd3dda20081f5ec3fe"
         },
         {
           "path": "content/data/gfx/hosp0c0.png",
@@ -1127,30 +1215,38 @@
       "width": 68,
       "height": 88,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "hosp1b0s.png",
           "role": "base",
-          "sha256": "f8c7424da78b9ca030bc0cce509fbc9fcacae2111f0b0ebb9073359b900a5871",
-          "source_sha256": "f8c7424da78b9ca030bc0cce509fbc9fcacae2111f0b0ebb9073359b900a5871",
+          "sha256": "6e52576338bd24c8c4a0e9e7c6892ec59fb5ab0d1e36837ce40baf0d4df55d9e",
+          "source_sha256": "6e52576338bd24c8c4a0e9e7c6892ec59fb5ab0d1e36837ce40baf0d4df55d9e",
           "logical_width": 68,
           "logical_height": 88,
-          "original_sha256": "f87844a46c19c4df220abe5ee19d08d5143799cba26e3a7f55c2f6c15195132b"
+          "original_sha256": "ac8e34c2e112d94234d60dfeba20db00f3b362455139a62794f57e3b96e12c90"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/hosp1b0.png",
           "sha256": "7b6421a91192b8349f6da8681f43a74e08779bc8bfd3cbbde2e9c8426f339841"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/hosp1b0s.png",
+          "sha256": "4f22e73d895d940e92c0708bd756c8b035dae56d771181098019eddb892f85b0"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/hosp1b0.json",
+          "sha256": "7d95e629ca854211d2d2ce45a7f3e0e2f71a0cfe535192cce2e82cb6a9c0188d"
         },
         {
           "path": "content/data/highres/v1/hosp1b0r.png",
@@ -1215,30 +1311,38 @@
       "width": 64,
       "height": 68,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "hosp1c0s.png",
           "role": "base",
-          "sha256": "5895256ec82b88faaffe8a0b61256e4411a2ac7e0ff901f0cca366fc8237ea8f",
-          "source_sha256": "5895256ec82b88faaffe8a0b61256e4411a2ac7e0ff901f0cca366fc8237ea8f",
+          "sha256": "5cd4e071a0ee94db68eec2626fd3fdb26654038473a81edc6e302717cf611611",
+          "source_sha256": "5cd4e071a0ee94db68eec2626fd3fdb26654038473a81edc6e302717cf611611",
           "logical_width": 64,
           "logical_height": 68,
-          "original_sha256": "7812d9248af2a5d92bbf9248cfb797945bb660375cc29f9aa5a511ecd85fb931"
+          "original_sha256": "cff9382ac46e299ece30063c3a8c6e148e63e8c7988642edfb0c3eb2ac121de2"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/hosp1c0.png",
           "sha256": "7261dddd322faa8a7daabcc26a93068ceef3af3d3d1403b708d1f382072349a4"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/hosp1c0s.png",
+          "sha256": "538c0b143e8ffc119f307916574bfd889c7eaa13a33e010ac077f4d1000df609"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/hosp1c0.json",
+          "sha256": "45e7b7d7639b26ac6d0b4a4916a7565c1610493e5332e6ffda8f19dc27ce8d92"
         },
         {
           "path": "content/data/gfx/hosp1c0.png",
@@ -1305,33 +1409,41 @@
     },
     {
       "id": "hosp2b0s",
-      "width": 72,
-      "height": 89,
+      "width": 76,
+      "height": 93,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "hosp2b0s.png",
           "role": "base",
-          "sha256": "dfc172afdb7dff7f3269272ba1f6de6e5571c3c68ba50141379757bd7a95464b",
-          "source_sha256": "dfc172afdb7dff7f3269272ba1f6de6e5571c3c68ba50141379757bd7a95464b",
-          "logical_width": 72,
-          "logical_height": 89,
-          "original_sha256": "3dc0763f231429c2d3596aec7edf4d20eedd4b9a6c4b0db8b4554597037d2b62"
+          "sha256": "2d2743a0e639b4a6a0723fda2511eea2baf08ed092ceaa628b8b770d03e50a74",
+          "source_sha256": "2d2743a0e639b4a6a0723fda2511eea2baf08ed092ceaa628b8b770d03e50a74",
+          "logical_width": 76,
+          "logical_height": 93,
+          "original_sha256": "17cfc69b8bf5b342b6d45bf5e1432e6702b9f26103d2a240aa036eca3a8c9cd0"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/hosp2b0.png",
           "sha256": "959d8fb3c92f8a1a705fed7a296343de85e8208fd4bf2286660a25cddd819bc5"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/hosp2b0s.png",
+          "sha256": "195f423804b8da3ff18a92b4ce0bc2688c191d2ce3f0863f6322fe54ed77d666"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/hosp2b0.json",
+          "sha256": "e715a8caddeb37927bdfceee3de8de17da4b2553772fd287c051590bc3a21dc9"
         },
         {
           "path": "content/data/highres/v1/hosp2b0r.png",
@@ -1393,33 +1505,41 @@
     },
     {
       "id": "hosp2c0s",
-      "width": 64,
-      "height": 81,
+      "width": 72,
+      "height": 85,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "hosp2c0s.png",
           "role": "base",
-          "sha256": "8b967e7e48ad11944c08219435fb826926ad788527b48f150223611fb6e1168c",
-          "source_sha256": "8b967e7e48ad11944c08219435fb826926ad788527b48f150223611fb6e1168c",
-          "logical_width": 64,
-          "logical_height": 81,
-          "original_sha256": "c8bbabbeab72b628f9cab9232b0dd9153392a348a745264d0b4dec59947554d4"
+          "sha256": "a785ced0af9b54e0414ed0096898baff06821fd1660cd3ad947e7d6052514f0b",
+          "source_sha256": "a785ced0af9b54e0414ed0096898baff06821fd1660cd3ad947e7d6052514f0b",
+          "logical_width": 72,
+          "logical_height": 85,
+          "original_sha256": "4e72fe6c1f256939c3c53697b0f25c6aacf461eb084418d24141c78602db85d8"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/hosp2c0.png",
           "sha256": "017377deb5a64f95197be3c1ea4361f7957a2d7d03c089225ac63199f537e9bd"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/hosp2c0s.png",
+          "sha256": "2fcce1fcdcb40fd5e3d6bf917c8c57704fe4df1e91aa3cb09682feed9118e8d7"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/hosp2c0.json",
+          "sha256": "aa010aa53898327470d9fc0a901da630ab9f2371a315e365e7ab0f9dbc9c385d"
         },
         {
           "path": "content/data/gfx/hosp2c0.png",
@@ -1534,30 +1654,38 @@
       "width": 132,
       "height": 132,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "racetrack0b0s.png",
           "role": "base",
-          "sha256": "f0a91eb46dfed4304d6850cc28930ef8da2c3d02ed2ed9ac10868fdcb64ed698",
-          "source_sha256": "f0a91eb46dfed4304d6850cc28930ef8da2c3d02ed2ed9ac10868fdcb64ed698",
+          "sha256": "ac6b72fb5645168f2256790d1c58a48978267d84256c6b659a3778781308946d",
+          "source_sha256": "ac6b72fb5645168f2256790d1c58a48978267d84256c6b659a3778781308946d",
           "logical_width": 132,
           "logical_height": 132,
-          "original_sha256": "afdd2486b499155f233837761439f506671a8ead99861e0fec0e669edef27583"
+          "original_sha256": "17a40b3ba9556b29ca3fbb78f40d139a7fab60af3f9428c664d04eaf43faf1ff"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/racetrack0b0.png",
           "sha256": "3e18026d1809adf2b3ad66fb66b9637dbc1afebc454aa6952cff984ade8f997d"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/racetrack0b1s.png",
+          "sha256": "8880b7aba888fc4723cf17e6790b16cc6ea50d01ed5c49ddb95178e08850c8a1"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/racetrack0b1.json",
+          "sha256": "a53d29da40eff5e028a4895cc71cd17e43276888b34ec7e48ed85b760e977126"
         },
         {
           "path": "content/data/highres/v1/racetrack0b0r.png",
@@ -1631,30 +1759,38 @@
       "width": 132,
       "height": 132,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "racetrack0b1s.png",
           "role": "base",
-          "sha256": "70f79cbd2d2c8a08ee5655a15fef5a3afce4bff6bf1c4cc3c7bc3c3b8fb47355",
-          "source_sha256": "70f79cbd2d2c8a08ee5655a15fef5a3afce4bff6bf1c4cc3c7bc3c3b8fb47355",
+          "sha256": "ac6b72fb5645168f2256790d1c58a48978267d84256c6b659a3778781308946d",
+          "source_sha256": "ac6b72fb5645168f2256790d1c58a48978267d84256c6b659a3778781308946d",
           "logical_width": 132,
           "logical_height": 132,
-          "original_sha256": "0506e03fcd3c6f6e9b17c22519f9a60c1623fda89865ee673825a6e8ddafe4ab"
+          "original_sha256": "17a40b3ba9556b29ca3fbb78f40d139a7fab60af3f9428c664d04eaf43faf1ff"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/racetrack0b1.png",
           "sha256": "f27baa86aba1cb2c034c61b7b493791f454be6c9cf97696cc431ea2efbb71926"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/racetrack0b1s.png",
+          "sha256": "8880b7aba888fc4723cf17e6790b16cc6ea50d01ed5c49ddb95178e08850c8a1"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/racetrack0b1.json",
+          "sha256": "a53d29da40eff5e028a4895cc71cd17e43276888b34ec7e48ed85b760e977126"
         },
         {
           "path": "content/data/highres/v1/racetrack0b1r.png",
@@ -1728,30 +1864,38 @@
       "width": 132,
       "height": 132,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "racetrack0b2s.png",
           "role": "base",
-          "sha256": "f85977311fb43c01d6d0ae4514183fd980cb90d4206d7545b2788183bba38604",
-          "source_sha256": "f85977311fb43c01d6d0ae4514183fd980cb90d4206d7545b2788183bba38604",
+          "sha256": "850a44d9a2ae0145940f52a44512534607530ba1b8b355f1ef440d307f0bed1d",
+          "source_sha256": "850a44d9a2ae0145940f52a44512534607530ba1b8b355f1ef440d307f0bed1d",
           "logical_width": 132,
           "logical_height": 132,
-          "original_sha256": "cd760ac43f5e8862d53cd5e56ad56cb99debe3c8bf17831db78ee0c52c14595a"
+          "original_sha256": "ee52a05e2ea7b54df6d686dd4d47a170f85b476a2b1e132724629c71b84a5086"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/racetrack0b2.png",
           "sha256": "a96edddab95bdd08d31281aea31de7fb913900c11a622aac020718c8a9dacdec"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/racetrack0b2s.png",
+          "sha256": "0e8e9c8cdc5148ba8b8c33fde1dcf8082b65dfba649213575cfd84a696f4108f"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/racetrack0b2.json",
+          "sha256": "a7e3afc4f7e9901ec6c88e9b1bba1db5bb9167b04e92249c3a3f262993c31ce2"
         },
         {
           "path": "content/data/highres/v1/racetrack0b2r.png",
@@ -1823,32 +1967,40 @@
     {
       "id": "racetrack0c0s",
       "width": 128,
-      "height": 132,
+      "height": 136,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "racetrack0c0s.png",
           "role": "base",
-          "sha256": "e25943cca8b8805d0b3094b10692459a00a238c554527e263ceef34018abc2f8",
-          "source_sha256": "e25943cca8b8805d0b3094b10692459a00a238c554527e263ceef34018abc2f8",
+          "sha256": "d5050c5e7351be1da1aa14ae92666c8e31472451770f195d44df19a036a03bf1",
+          "source_sha256": "d5050c5e7351be1da1aa14ae92666c8e31472451770f195d44df19a036a03bf1",
           "logical_width": 128,
-          "logical_height": 132,
-          "original_sha256": "b6ec3f6988ab8f8d9518921209dfdb4b29cdf24c730b2ac018d1d9b2e0a00cd9"
+          "logical_height": 136,
+          "original_sha256": "f860a395e0a4ba1ac6a2cdbbcabb7f275c6810463ff44a3c986fc1cb17894909"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/racetrack0c0.png",
           "sha256": "a1bb7aabab9081ae8ebec3d0886bdbe95379d1fe2285103831b1e5926e92f06b"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/racetrack0c0s.png",
+          "sha256": "54055b7f05f49b90baaaf2dffa0c32d6cd2f3d8157f43aab295b1ddf0b2284f1"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/racetrack0c0.json",
+          "sha256": "edf46814a38bc0cd944806fc899f93779461fb4fd621080aa9d583796d27caf8"
         },
         {
           "path": "content/data/highres/v1/racetrack0c0r.png",
@@ -1974,33 +2126,41 @@
     },
     {
       "id": "racetrack1b0s",
-      "width": 200,
+      "width": 196,
       "height": 204,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "racetrack1b0s.png",
           "role": "base",
-          "sha256": "e03e1a2dd7e1471b34ecd404de769a4427d7c820ece9f48eef4c5a9c2a50589e",
-          "source_sha256": "e03e1a2dd7e1471b34ecd404de769a4427d7c820ece9f48eef4c5a9c2a50589e",
-          "logical_width": 200,
+          "sha256": "379c0b2a9b9b4392c7505ac7c3a8dfbe2ff8b784664f808214719d5a77b2fd1d",
+          "source_sha256": "379c0b2a9b9b4392c7505ac7c3a8dfbe2ff8b784664f808214719d5a77b2fd1d",
+          "logical_width": 196,
           "logical_height": 204,
-          "original_sha256": "6e0e679a59c72359d4d7ca7e6cce564967fb200386bc991efa38146b2b1265ef"
+          "original_sha256": "446b6ce6a2d9cc865bfb02fd310a493e0ae61309e68c956f7dc771c1426859bc"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/racetrack1b0.png",
           "sha256": "08523868625ea6f0ba16577f7f03b9f6683f9f02a8a4d54f3fe1f7eaad167b3f"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/racetrack1b0s.png",
+          "sha256": "0d78afa4e253704e5f2cc02aa18cd75dd333ab4728af67a19faa921fc3b4780b"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/racetrack1b0.json",
+          "sha256": "e48b199a8b19a96b8f880789d603ca76989bba1982cbb6cc8829861a6dddfecd"
         },
         {
           "path": "content/data/highres/v1/racetrack1b0r.png",
@@ -2071,33 +2231,41 @@
     },
     {
       "id": "racetrack1b1s",
-      "width": 200,
-      "height": 204,
+      "width": 204,
+      "height": 208,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "racetrack1b1s.png",
           "role": "base",
-          "sha256": "85733a5a914cd840c9cf3ff4cf25c68df1d9940715dd8c3cfe3b1ffdf3280c97",
-          "source_sha256": "85733a5a914cd840c9cf3ff4cf25c68df1d9940715dd8c3cfe3b1ffdf3280c97",
-          "logical_width": 200,
-          "logical_height": 204,
-          "original_sha256": "e27ac4759d2bb3b9fbb4927e5ca54d5604317c6bf0c9533c353abfb21a92791e"
+          "sha256": "22aa4ffdd3c18c7823c09888adbbd0473d60dfe7f61fc7c4bcb9706ccdbadff8",
+          "source_sha256": "22aa4ffdd3c18c7823c09888adbbd0473d60dfe7f61fc7c4bcb9706ccdbadff8",
+          "logical_width": 204,
+          "logical_height": 208,
+          "original_sha256": "650b457c23b7d67dce3e5324b44793a554f04c0a55198dc1bbd14d3c56242d1d"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/racetrack1b1.png",
           "sha256": "f359947a3dac019e6202454d402a750a4b08752f52e66677d212fb7191e2f3e0"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/racetrack1b1s.png",
+          "sha256": "c1f172f8bf1d6971fa5b4f30093c705099dd26382e8a0a943c0cc10f62fb5112"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/racetrack1b1.json",
+          "sha256": "c421a5637fe3057995bb2f05fd352b5a3544226459d9103938f7e3980569b6df"
         },
         {
           "path": "content/data/highres/v1/racetrack1b1r.png",
@@ -2168,33 +2336,41 @@
     },
     {
       "id": "racetrack1b2s",
-      "width": 200,
-      "height": 204,
+      "width": 204,
+      "height": 208,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "racetrack1b2s.png",
           "role": "base",
-          "sha256": "c80007199f320a19d2f310686ba08cd28ecd9cf07893bc2ca3382b528ab844f1",
-          "source_sha256": "c80007199f320a19d2f310686ba08cd28ecd9cf07893bc2ca3382b528ab844f1",
-          "logical_width": 200,
-          "logical_height": 204,
-          "original_sha256": "cd22da7e8d93711147ad94f48e5f54e6fbb6b344a6f6356a360213006f8b63f4"
+          "sha256": "0dc7a49655d5e4ad8b2ce4a85a04417a7334ace273ea086b51138704bef4e5f2",
+          "source_sha256": "0dc7a49655d5e4ad8b2ce4a85a04417a7334ace273ea086b51138704bef4e5f2",
+          "logical_width": 204,
+          "logical_height": 208,
+          "original_sha256": "3feabf5d9e0190e592d5ee8c1cc6aab05d47046c0dae21f7f004a7a763020490"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/racetrack1b2.png",
           "sha256": "3ec47a719a69fa002dcb5b1410c8be22ce555bb828c8cce19a642c48ef3e3c3f"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/racetrack1b2s.png",
+          "sha256": "5ec597cd10de303112544b3817580b26a4aa23047ca9b1836b10db551eb6041b"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/racetrack1b2.json",
+          "sha256": "3b7d310a4e75d862c7acfdd482b895aecfa1f07b007f33c9eb24d50cb7fa968b"
         },
         {
           "path": "content/data/highres/v1/racetrack1b2r.png",
@@ -2266,32 +2442,40 @@
     {
       "id": "racetrack2b0s",
       "width": 192,
-      "height": 200,
+      "height": 196,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "racetrack2b0s.png",
           "role": "base",
-          "sha256": "2ebcfd14105008e90e597dfeca209ccfc2884693d5e41842b893b3e2b4ae6e04",
-          "source_sha256": "2ebcfd14105008e90e597dfeca209ccfc2884693d5e41842b893b3e2b4ae6e04",
+          "sha256": "e1266289822ed301f6f72685fe50064a7b5606cc6587b9a570593ed47e3e3981",
+          "source_sha256": "e1266289822ed301f6f72685fe50064a7b5606cc6587b9a570593ed47e3e3981",
           "logical_width": 192,
-          "logical_height": 200,
-          "original_sha256": "449893aec8f4fbe1bba2d8af469cd95bda9d7b385af5b29df552717403291dc1"
+          "logical_height": 196,
+          "original_sha256": "e7e303ebda064a28edff22d7eb739457b22dd20840a254d79ba20eeeedfeb765"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/racetrack2b0.png",
           "sha256": "2c2731f16f3a3f002e5ce358e4877b168a4746c6542acb76dd1e61a145ad82ad"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/racetrack2b0s.png",
+          "sha256": "c4f0d9ce948bf9e63063935cde6afe864277b3d0bbccdc46a1894d0fea33fb84"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/racetrack2b0.json",
+          "sha256": "cf1f2d51fd749e2a7826631c2ad9f1f4ce14a7bf913260f4f6e5013324ef4ec1"
         },
         {
           "path": "content/data/highres/v1/racetrack2b0r.png",
@@ -2363,32 +2547,40 @@
     {
       "id": "pool0b0s",
       "width": 128,
-      "height": 128,
+      "height": 132,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "pool0b0s.png",
           "role": "base",
-          "sha256": "1848327ff13ea42852580e78172099eae1410cb3edae09bf17801df76c030e24",
-          "source_sha256": "1848327ff13ea42852580e78172099eae1410cb3edae09bf17801df76c030e24",
+          "sha256": "237869a2e2c6a79d309e0fd2d84fd93dfc7af5e9dee9f6a011a9bb5dd9c4ed49",
+          "source_sha256": "237869a2e2c6a79d309e0fd2d84fd93dfc7af5e9dee9f6a011a9bb5dd9c4ed49",
           "logical_width": 128,
-          "logical_height": 128,
-          "original_sha256": "44cccd07ed1f15d5d0764fa673fc4ab133371b5742da107313d801a080486df2"
+          "logical_height": 132,
+          "original_sha256": "99ac4531e08be6470f64505108044429cb64de2cfc79d4e56ea51445c54f0347"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/pool0b0.png",
           "sha256": "7770191154c4290b52255f23d948aab0b733e2d855ad4428999fa42b1d11d0bf"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/pool0b0s.png",
+          "sha256": "838465f6a96f6d4e90f279b815226386566fd3042a0c27f28153e16d27ef23b1"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/pool0b0.json",
+          "sha256": "3cdd1711b96fca3f6c99edd3e79c4e749ea30e775a2dc3aa079b0968a3688664"
         },
         {
           "path": "content/data/highres/v1/pool0b0r.png",
@@ -2460,32 +2652,40 @@
     {
       "id": "pool0b1s",
       "width": 128,
-      "height": 128,
+      "height": 132,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "pool0b1s.png",
           "role": "base",
-          "sha256": "0de680504ef10d2b45528a9b42e76ebbe231a857bf070bf0f71a47afd4ff6dfe",
-          "source_sha256": "0de680504ef10d2b45528a9b42e76ebbe231a857bf070bf0f71a47afd4ff6dfe",
+          "sha256": "237869a2e2c6a79d309e0fd2d84fd93dfc7af5e9dee9f6a011a9bb5dd9c4ed49",
+          "source_sha256": "237869a2e2c6a79d309e0fd2d84fd93dfc7af5e9dee9f6a011a9bb5dd9c4ed49",
           "logical_width": 128,
-          "logical_height": 128,
-          "original_sha256": "e3c15e81e4ba5441e5327ce1248915bb51cb52c2a36d6061e95e702af69c4aab"
+          "logical_height": 132,
+          "original_sha256": "99ac4531e08be6470f64505108044429cb64de2cfc79d4e56ea51445c54f0347"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/pool0b1.png",
           "sha256": "efbf4abd5ce9173752471f46a4ef192047f3d29dd681925498f579d5bfcb5a8b"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/pool0b0s.png",
+          "sha256": "838465f6a96f6d4e90f279b815226386566fd3042a0c27f28153e16d27ef23b1"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/pool0b0.json",
+          "sha256": "3cdd1711b96fca3f6c99edd3e79c4e749ea30e775a2dc3aa079b0968a3688664"
         },
         {
           "path": "content/data/highres/v1/pool0b1r.png",
@@ -2550,30 +2750,38 @@
       "width": 128,
       "height": 132,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "pool0c0s.png",
           "role": "base",
-          "sha256": "39cc53e46fbdac7bbc731e7706569bd8d59c7aa712117e6ba8adc6a574ec7b2f",
-          "source_sha256": "39cc53e46fbdac7bbc731e7706569bd8d59c7aa712117e6ba8adc6a574ec7b2f",
+          "sha256": "ce8553d95b300fcacdd5fe681f97928332adfabb2e864b7c6ba832aedcda50e6",
+          "source_sha256": "ce8553d95b300fcacdd5fe681f97928332adfabb2e864b7c6ba832aedcda50e6",
           "logical_width": 128,
           "logical_height": 132,
-          "original_sha256": "5e26a272e1704aad4b15b31619834f2412b92456f0b1613c8382ceeb341852b1"
+          "original_sha256": "f638a92d054d222339b0e6de108c6f9b4c235cc7f85ebc1ada17d227715a9269"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/pool0c0.png",
           "sha256": "964d4b180a9ecabca15b95735a261cc0137291adba9aada7bd88a650d1083dd3"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/pool0c0s.png",
+          "sha256": "7634c9366111a33d4334b0acb8fd0d5618eb5dbe812e4a01aab60f69d37ece7b"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/pool0c0.json",
+          "sha256": "a02902c9000a83014c13361d921152fb8682664419df9c9eb828293166244aa1"
         },
         {
           "path": "content/data/gfx/pool0c0.png",
@@ -2641,32 +2849,40 @@
     {
       "id": "pool1b0s",
       "width": 192,
-      "height": 174,
+      "height": 182,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "pool1b0s.png",
           "role": "base",
-          "sha256": "be2f8de51588ba93b13b0817eca63fd52cf615a00016a7e2fed4b9d9a5853002",
-          "source_sha256": "be2f8de51588ba93b13b0817eca63fd52cf615a00016a7e2fed4b9d9a5853002",
+          "sha256": "973c37072a85ab2089f550e6686fd2f9a7125489505ca61da01a9edbc5ae9dc2",
+          "source_sha256": "973c37072a85ab2089f550e6686fd2f9a7125489505ca61da01a9edbc5ae9dc2",
           "logical_width": 192,
-          "logical_height": 174,
-          "original_sha256": "dafd5916ab847127d4f10353a73bb77663ac17747bdec6d43639ad5ea7ec7c56"
+          "logical_height": 182,
+          "original_sha256": "9910b50f4b510ef8b9f8b3534a8bb0f62705d9b191c53e084cc2f5af5905def7"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/pool1b0.png",
           "sha256": "0e70c08c644e4564cff5e89fb58bc59c4ac4ebd05f93ac03d96058244bcaea9b"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/pool1b0s.png",
+          "sha256": "2eadb9aa1fe308788b67017f00464bee0439533cbdf2267866bf4af049f5e917"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/pool1b0.json",
+          "sha256": "0a976798c13e3680cd35347d4f3f9af8b4d9ed6f6db5209561ac0d2abab520a3"
         },
         {
           "path": "content/data/highres/v1/pool1b0r.png",
@@ -2740,30 +2956,38 @@
       "width": 192,
       "height": 203,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "pool2b0s.png",
           "role": "base",
-          "sha256": "a8fa5ef847ec90969da65b069a4fe5fef84b14e637c0060df6d7660c272b3130",
-          "source_sha256": "a8fa5ef847ec90969da65b069a4fe5fef84b14e637c0060df6d7660c272b3130",
+          "sha256": "61aa227a637cc868e5ce446008a330301238a68f7468577e9bcfcd7639dfdca8",
+          "source_sha256": "61aa227a637cc868e5ce446008a330301238a68f7468577e9bcfcd7639dfdca8",
           "logical_width": 192,
           "logical_height": 203,
-          "original_sha256": "c94af98e8a2dea499f2bae09727629b685933fc236f4a3db7a0b77f77ab81fd5"
+          "original_sha256": "8198562cf85a50110cbd9505ba4c87d6f0ff59dd5b93d5b80f6ad216250c02a8"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/pool2b0.png",
           "sha256": "9880cd89dd96c8080bf40cb5de743929364b2b38ed4547156a5e3490cdf77700"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/pool2b0s.png",
+          "sha256": "61aa227a637cc868e5ce446008a330301238a68f7468577e9bcfcd7639dfdca8"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/pool2b0.json",
+          "sha256": "ff642960de0e43e13738339aabeebd7763e4588ad9ca556fa8fed23e123cdc31"
         },
         {
           "path": "content/data/highres/v1/pool2b0r.png",
@@ -2785,7 +3009,7 @@
         {
           "file": "barracks0b0.png",
           "role": "base",
-          "sha256": "c30bbaf1a43f84838824416c48387fdf544f20467e6435c653cb59d2b06aa548",
+          "sha256": "438512d9033b36342e65a61abf1f362216bc97b310149f5d9aad3ca5fa78efa2",
           "source_sha256": "abdaafae9018a61c10fc3a99f214f409e24bcc1ea6d4d8cfb0d4acbe8694f847",
           "logical_width": 128,
           "logical_height": 128,
@@ -2805,6 +3029,14 @@
         {
           "path": "tools/artwork/ai/dat2_upscale.py",
           "sha256": "96667bde8194d1fc2aa6073dbdbdd5b3ee2a0daacdf148f90081933b2ac70d5a"
+        },
+        {
+          "path": "content-src/gfx/shadows/inpaint/barracks0b0.json",
+          "sha256": "bbc314079839eb02bb0fa59b4ff3fab261fea5d27f76367b624b03fe7ff66a6f"
+        },
+        {
+          "path": "content-src/gfx/shadows/inpaint/barracks0b0_mask.png",
+          "sha256": "c8a1d8f83b82f1b85fe820bfada710faa37d007e2261513ec82aa55fdfbb71e5"
         }
       ],
       "models": [
@@ -2830,37 +3062,63 @@
       "weights": {
         "4xBHI_dat2_real": 0.75,
         "4xRealWebPhoto_v3_atd": 0.25
+      },
+      "inpaint": {
+        "endpoint": "fal-ai/flux-pro/v1/fill",
+        "passes": [
+          {
+            "seed": 1,
+            "prompt": "hand-painted top-down strategy game sprite, sunlit pale sand arena floor with fine cracks and grooves, same painterly style and lighting as the rest of the image, plain bare sand only, no shadow, no dark areas, no plants, no objects",
+            "input_sha256": "abdaafae9018a61c10fc3a99f214f409e24bcc1ea6d4d8cfb0d4acbe8694f847",
+            "output_sha256": "7286a5a50c7c8bc523319c0ce8fe743143af7986659530c263f7f3805e2ac36f"
+          },
+          {
+            "seed": 1,
+            "prompt": "hand-painted top-down strategy game sprite, sunlit pale sand arena floor with fine cracks and grooves, same painterly style and lighting as the rest of the image, plain bare sand only, no shadow, no dark areas, no plants, no objects",
+            "input_sha256": "7286a5a50c7c8bc523319c0ce8fe743143af7986659530c263f7f3805e2ac36f",
+            "output_sha256": "730209470dbe05017a37c0c091ba9dcce70ec5abdc8706da17293261da18d231"
+          }
+        ],
+        "mask_sha256": "c8a1d8f83b82f1b85fe820bfada710faa37d007e2261513ec82aa55fdfbb71e5"
       }
     },
     {
       "id": "barracks0b0s",
-      "width": 136,
-      "height": 128,
+      "width": 132,
+      "height": 132,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "barracks0b0s.png",
           "role": "base",
-          "sha256": "ea4d14558de34da3b3af61d75a4e49f142579d419932aec4c858af1de311b624",
-          "source_sha256": "ea4d14558de34da3b3af61d75a4e49f142579d419932aec4c858af1de311b624",
-          "logical_width": 136,
-          "logical_height": 128,
-          "original_sha256": "a00cfb29da95d45e27e9daf3767bf5037b147709f342ddd13f6e909ae528862d"
+          "sha256": "1c37caabfc6a5e278569e73533910bc6d0e50bddfe77fe2a65f1d2da63862782",
+          "source_sha256": "1c37caabfc6a5e278569e73533910bc6d0e50bddfe77fe2a65f1d2da63862782",
+          "logical_width": 132,
+          "logical_height": 132,
+          "original_sha256": "f210029219d569c6b4ed8f1d68912526386fbd842eb8139c9f364a34a2ae2e31"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/barracks0b0.png",
-          "sha256": "c30bbaf1a43f84838824416c48387fdf544f20467e6435c653cb59d2b06aa548"
+          "sha256": "438512d9033b36342e65a61abf1f362216bc97b310149f5d9aad3ca5fa78efa2"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/barracks0b0s.png",
+          "sha256": "e1bbad368f32d638bdc91f26436d41ee0e8a7999cab1e11b396875875ac9e9f1"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/barracks0b0.json",
+          "sha256": "ed7965bf2f72550fc1ee632e43b07b79aba6d7955409bd2ce215ff7b5537a333"
         },
         {
           "path": "content/data/highres/v1/barracks0b0r.png",
@@ -2868,7 +3126,7 @@
         },
         {
           "path": "content/data/gfx/barracks0b0.png",
-          "sha256": "678508c07a0d38877830b6bbe1f1ad9af49cf2bca840c3f59874de1aa396d984"
+          "sha256": "3e3cddc7ce2204d4d806afb04527a479cc9dcf50ee86ac13d9a895af12b37bb1"
         }
       ]
     },
@@ -2931,33 +3189,41 @@
     },
     {
       "id": "barracks1b0s",
-      "width": 144,
+      "width": 128,
       "height": 146,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "barracks1b0s.png",
           "role": "base",
-          "sha256": "664698ef2f60bd74e8dc57af6223b9ebf1ab2b3d2b8f65ccd311b8d1bd4d4c5a",
-          "source_sha256": "664698ef2f60bd74e8dc57af6223b9ebf1ab2b3d2b8f65ccd311b8d1bd4d4c5a",
-          "logical_width": 144,
+          "sha256": "462bbee7108bf6af3df75e751801239533f8c127152bff0e17256b7a6468d6f3",
+          "source_sha256": "462bbee7108bf6af3df75e751801239533f8c127152bff0e17256b7a6468d6f3",
+          "logical_width": 128,
           "logical_height": 146,
-          "original_sha256": "b2188405b7fc26ea6a9643caef037fb2b3adfe9aa3e4b694f916901499a7a018"
+          "original_sha256": "19bfd974394edc01491f9f2b1d0abef0b7576ac3c2cb6988a9da2c10d13a9bc1"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/barracks1b0.png",
           "sha256": "4e441178d0cc0c4f51fdb7be6ae7d15af23db15cc161bb3911da479c7579f965"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/barracks1b0s.png",
+          "sha256": "ca39f871f0068f28a270da2c1339ca833f0046aecb3af4f6581405522fb93502"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/barracks1b0.json",
+          "sha256": "1fd76c1b02a54bd56144177f7b9dcb20706eadd343e867ace704798f521592f5"
         },
         {
           "path": "content/data/highres/v1/barracks1b0r.png",
@@ -3028,33 +3294,41 @@
     },
     {
       "id": "barracks2b0s",
-      "width": 132,
-      "height": 140,
+      "width": 136,
+      "height": 148,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "barracks2b0s.png",
           "role": "base",
-          "sha256": "54e0f24d53080e2bbd78c2ffc13577bdada9ceaaeab1d863a863682cd1edc4d5",
-          "source_sha256": "54e0f24d53080e2bbd78c2ffc13577bdada9ceaaeab1d863a863682cd1edc4d5",
-          "logical_width": 132,
-          "logical_height": 140,
-          "original_sha256": "8e78d5e8c0e727c9c710c130c396c914a1ceb85b9920cc4a9e3e03b7c642607d"
+          "sha256": "fa2dcdadfdfc07a465a5256461d43d2cd1e51dd30550c03846244f0ffa3c5f0a",
+          "source_sha256": "fa2dcdadfdfc07a465a5256461d43d2cd1e51dd30550c03846244f0ffa3c5f0a",
+          "logical_width": 136,
+          "logical_height": 148,
+          "original_sha256": "a7cd40e925e389a96641bff5aa4c45e0bfedd5de6b965cadde57292e664d4ae9"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/barracks2b0.png",
           "sha256": "61c7377a07ac95004e16500906b0c6289b55c747c197270b38a8e117082912e5"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/barracks2b0s.png",
+          "sha256": "6f9be9fd51448d9c94db7c49eb83b8935dba8267c9ab798013d97f7ad10187b1"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/barracks2b0.json",
+          "sha256": "646ea00e3fc2230d1732f3a0bc4fde1cd6630341a3b6eacf5cc902bade38311b"
         },
         {
           "path": "content/data/highres/v1/barracks2b0r.png",
@@ -3116,33 +3390,41 @@
     },
     {
       "id": "school0b0s",
-      "width": 72,
-      "height": 72,
+      "width": 68,
+      "height": 68,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "school0b0s.png",
           "role": "base",
-          "sha256": "48ce72bb237507f6dc4bd3187bc3f68bf61aec6cce984f645e03837764f11a9f",
-          "source_sha256": "48ce72bb237507f6dc4bd3187bc3f68bf61aec6cce984f645e03837764f11a9f",
-          "logical_width": 72,
-          "logical_height": 72,
-          "original_sha256": "6422cf9a33868fdcafe61d487bb7371029d0ec848adc58dfdab886754bff5b5c"
+          "sha256": "ff3d0d4826e8d018e8efe1bce68661f04131cfce216f37d0c4e0b86c5c8051a4",
+          "source_sha256": "ff3d0d4826e8d018e8efe1bce68661f04131cfce216f37d0c4e0b86c5c8051a4",
+          "logical_width": 68,
+          "logical_height": 68,
+          "original_sha256": "110bfa73f34fc0dccf780797331d0bd2a37e7d726482a17636a4c649c80a2fcc"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/school0b0.png",
           "sha256": "bf0e570569e6d420c0edd29c1860baffcf413b0e9c4e1e10dce5096b389962df"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/school0b0s.png",
+          "sha256": "f236a17ded865ed04213e8ad26af30007bb03d822ebe0b492d1387531c213054"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/school0b0.json",
+          "sha256": "1e641c4e7231f49e711209589594a312dfe24696c32e87074c556aceba70771f"
         },
         {
           "path": "content/data/gfx/school0b0.png",
@@ -3200,33 +3482,41 @@
     },
     {
       "id": "school0b1s",
-      "width": 72,
-      "height": 72,
+      "width": 68,
+      "height": 68,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "school0b1s.png",
           "role": "base",
-          "sha256": "f705c6d1ef8292d04c09b87f1111b75be1d77d2584fe966e9edd573fc01d1ad3",
-          "source_sha256": "f705c6d1ef8292d04c09b87f1111b75be1d77d2584fe966e9edd573fc01d1ad3",
-          "logical_width": 72,
-          "logical_height": 72,
-          "original_sha256": "f442cb8ebf327749f0f1fc9680c64a3136fbb76579536d58e7eba353168f996e"
+          "sha256": "5b88af06d8e01d391135f3509c685454d261abc973c240a5a8417d0b086451d8",
+          "source_sha256": "5b88af06d8e01d391135f3509c685454d261abc973c240a5a8417d0b086451d8",
+          "logical_width": 68,
+          "logical_height": 68,
+          "original_sha256": "33af5e5ad101bb3b3335f0ad7bcd8f007db174501ab079bd5449c186a124b3b4"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/school0b1.png",
           "sha256": "bde9db38dd1a4e3848c59f9b45a090c4aab3dd662adff6ba9089a0d9c01f006d"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/school0b1s.png",
+          "sha256": "67e93afee7b144a60fca3e4106e457bfbad2704067297e2b97474d96f03910bd"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/school0b1.json",
+          "sha256": "010c0af3a71d38859a8ed74179138c897aec4bacb80da582a08170f49dd79eed"
         },
         {
           "path": "content/data/gfx/school0b1.png",
@@ -3428,30 +3718,38 @@
       "width": 64,
       "height": 82,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "school1b0s.png",
           "role": "base",
-          "sha256": "cb073d088c4f9702783a9cc42701e7e2f0c35b721d4c1218fc7d12ad8cbbcb44",
-          "source_sha256": "cb073d088c4f9702783a9cc42701e7e2f0c35b721d4c1218fc7d12ad8cbbcb44",
+          "sha256": "56aa1e1968b2bf10f2b884abf4ada910db1c660c38bc8fc49f628998559bca50",
+          "source_sha256": "56aa1e1968b2bf10f2b884abf4ada910db1c660c38bc8fc49f628998559bca50",
           "logical_width": 64,
           "logical_height": 82,
-          "original_sha256": "edd376cf7bffb9f6e5f1af5caec73c1a83c462e1db91b9b91579bac767908ba8"
+          "original_sha256": "a582a55241b071b62c9e58f3c6bd49f2bf0fdc544ab02f3bf4625dcc646322c7"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/school1b0.png",
           "sha256": "62401712597442571a1cbf5fdde56955936334266951006a40f0ff69b546fe90"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/school1b0s.png",
+          "sha256": "3757d3eac05333bd14d9d81d977c91aeba14cbebcf81051acf0675271f15a802"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/school1b0.json",
+          "sha256": "252823b65a951f8a0e05669be142255e451b6295a92f3004bbba79eb3ae596ca"
         },
         {
           "path": "content/data/highres/v1/school1b0r.png",
@@ -3525,30 +3823,38 @@
       "width": 64,
       "height": 82,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "school1b1s.png",
           "role": "base",
-          "sha256": "79f56cf2d3f9a1e18513df80fdf0bba4aa4b37f4cbdac45631765e641c348fab",
-          "source_sha256": "79f56cf2d3f9a1e18513df80fdf0bba4aa4b37f4cbdac45631765e641c348fab",
+          "sha256": "56aa1e1968b2bf10f2b884abf4ada910db1c660c38bc8fc49f628998559bca50",
+          "source_sha256": "56aa1e1968b2bf10f2b884abf4ada910db1c660c38bc8fc49f628998559bca50",
           "logical_width": 64,
           "logical_height": 82,
-          "original_sha256": "2e4558fc3d1db5d5f504b50db10bf6dbe5902c2ce4509861f783d5d9a00d3de7"
+          "original_sha256": "a582a55241b071b62c9e58f3c6bd49f2bf0fdc544ab02f3bf4625dcc646322c7"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/school1b1.png",
           "sha256": "dd07b8a74ec6b1069f85cf660a820fe92b91833ed086938fb4a927429cbe906d"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/school1b0s.png",
+          "sha256": "3757d3eac05333bd14d9d81d977c91aeba14cbebcf81051acf0675271f15a802"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/school1b0.json",
+          "sha256": "252823b65a951f8a0e05669be142255e451b6295a92f3004bbba79eb3ae596ca"
         },
         {
           "path": "content/data/highres/v1/school1b1r.png",
@@ -3620,32 +3926,40 @@
     {
       "id": "school1b2s",
       "width": 64,
-      "height": 82,
+      "height": 78,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "school1b2s.png",
           "role": "base",
-          "sha256": "e4eb5ce3cfd0aed58103cd9c8814d682b40295131828d34e80c7978f51bc48f1",
-          "source_sha256": "e4eb5ce3cfd0aed58103cd9c8814d682b40295131828d34e80c7978f51bc48f1",
+          "sha256": "8dba644787ac7a4ff5de4e7f78230af1cc599d0455170e7a8c8169d80473707a",
+          "source_sha256": "8dba644787ac7a4ff5de4e7f78230af1cc599d0455170e7a8c8169d80473707a",
           "logical_width": 64,
-          "logical_height": 82,
-          "original_sha256": "d5f7b59173c6c48a29ac02e5ad2cef62e053d166e0a2e5c0e0ff680952da7df2"
+          "logical_height": 78,
+          "original_sha256": "52d5544c680370b36438430815d06794749af959fa3e19955af4cd951aa1b04f"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/school1b2.png",
           "sha256": "b9622d7c320f0c34ac210a1547e6eaa3cd063dcc9d9cdc3f4c7935cd4b1787fc"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/school1b2s.png",
+          "sha256": "e0d0af583406672dc4b7dea60da00780505d3b17b2247a1b1d87f9c88755977f"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/school1b2.json",
+          "sha256": "504905812fcec1f0df42a2613c1100ffa4b6ba5b02bf9573f4219802a038d1f8"
         },
         {
           "path": "content/data/highres/v1/school1b2r.png",
@@ -3719,30 +4033,38 @@
       "width": 63,
       "height": 74,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "school1c0s.png",
           "role": "base",
-          "sha256": "6482a89765d85300d71f1f4b2e6b60c6617d75380348f30029cc71e676609220",
-          "source_sha256": "6482a89765d85300d71f1f4b2e6b60c6617d75380348f30029cc71e676609220",
+          "sha256": "5d90949cae8f68a264a30485251cbd4e60268772c32651c0f4c31356b38ebb98",
+          "source_sha256": "5d90949cae8f68a264a30485251cbd4e60268772c32651c0f4c31356b38ebb98",
           "logical_width": 63,
           "logical_height": 74,
-          "original_sha256": "ca285b63db74b33ce4bcb621d42d6e445f486611d6f6719c6d3caf4617389fd7"
+          "original_sha256": "227321db378ba53f3049ae22b4912f3adef9f0a79b529ea3a744fffb890aa7a8"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/school1c0.png",
           "sha256": "127b8e545568b1e440845e756c5532e51ed242e581c037d0e56c23f3fd8fb365"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/school1c0s.png",
+          "sha256": "93da2307de1ba83e5225bf19f2479ec912599776f6d2f736d4d21336daa26f1a"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/school1c0.json",
+          "sha256": "c5d053a4ea26a95b994c9146e72098626d6f7e09f054e8f87fdd6f6473a87159"
         },
         {
           "path": "content/data/highres/v1/school1c0r.png",
@@ -3816,30 +4138,38 @@
       "width": 68,
       "height": 68,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "school2b0s.png",
           "role": "base",
-          "sha256": "e4932a35963de6a86200461b542b180bb576cbbf53659b1a74a40afffaf61299",
-          "source_sha256": "e4932a35963de6a86200461b542b180bb576cbbf53659b1a74a40afffaf61299",
+          "sha256": "77586c4acc4785d1af1e03a7247041350074c41f5ebaea2e7babf7a311f68388",
+          "source_sha256": "77586c4acc4785d1af1e03a7247041350074c41f5ebaea2e7babf7a311f68388",
           "logical_width": 68,
           "logical_height": 68,
-          "original_sha256": "01e8384db41607698f45a799551d8f85459dc088bd086570846f71b608681cdd"
+          "original_sha256": "c5c2a56dd1eff2dd8a72f63af811a92b1410b73e638ff2009dc1e4ae1a20e427"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/school2b0.png",
           "sha256": "090c2bd4c18a1befa505d5f5d9f44f943c7b0a57d77b14e084e0de73e6c1b8c9"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/school2b0s.png",
+          "sha256": "5b62a2d61c148134d6e6ef9dbec8de310707fc7b4ef5b5313570ce166e487b68"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/school2b0.json",
+          "sha256": "5a8719d799ef8e7d9c90055fa9a2fc40698a8362b7a73b58dda50e2f76a710db"
         },
         {
           "path": "content/data/highres/v1/school2b0r.png",
@@ -3913,30 +4243,38 @@
       "width": 68,
       "height": 63,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "defencetower0b0s.png",
           "role": "base",
-          "sha256": "362be3039db795b4acb195b02641985e36d9eede0213d68543ac7926d1bcaacf",
-          "source_sha256": "362be3039db795b4acb195b02641985e36d9eede0213d68543ac7926d1bcaacf",
+          "sha256": "b28e4ba32e484b21199d184c15fdde6b4c409599d064fd3f77343f76ffbbab40",
+          "source_sha256": "b28e4ba32e484b21199d184c15fdde6b4c409599d064fd3f77343f76ffbbab40",
           "logical_width": 68,
           "logical_height": 63,
-          "original_sha256": "5dbb807f286f564cb193f81082dbe784665f909f7672aa8d3b7dca589276afa6"
+          "original_sha256": "abfca6e503fabc04e84575545beb72f8bf3c46fb8eb3305263bb2f38a8a2d8f8"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/defencetower0b0.png",
           "sha256": "bb492c68b7aa424de067496e6940dc1d9b9510e5df758e44ac09fc5294cf39bd"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/defencetower0b0s.png",
+          "sha256": "55f898bfb2eba11fc9203214cdc0b6d7cf288ed60eb95846270449d26023393b"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/defencetower0b0.json",
+          "sha256": "1615eef11e3d7d94b2816a0dafd2191b003b43ed4ae575631a29b6e031d172d7"
         },
         {
           "path": "content/data/highres/v1/defencetower0b0r.png",
@@ -4007,33 +4345,41 @@
     },
     {
       "id": "defencetower1b0s",
-      "width": 88,
-      "height": 128,
+      "width": 84,
+      "height": 120,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "defencetower1b0s.png",
           "role": "base",
-          "sha256": "700293a97946e93d90b2956e391e1ac3162ede78fd1706644f23d20697aef28b",
-          "source_sha256": "700293a97946e93d90b2956e391e1ac3162ede78fd1706644f23d20697aef28b",
-          "logical_width": 88,
-          "logical_height": 128,
-          "original_sha256": "17faedc27d2e19f9a568ba58deec550421b8fd598e358e54cd50459b6085daee"
+          "sha256": "36dad6739e8c04d26b6fbbe43aeab48b6acf1ed1e855b54f95678e47e3e8de8e",
+          "source_sha256": "36dad6739e8c04d26b6fbbe43aeab48b6acf1ed1e855b54f95678e47e3e8de8e",
+          "logical_width": 84,
+          "logical_height": 120,
+          "original_sha256": "f6591190fdccbe4edb843d82fae0c7f18bd3f16f43a82c709931e88d375223c4"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/defencetower1b0.png",
           "sha256": "3c5c32d983c842609a91ae6c355b0e5a72aabd0733b5fd4e10b2431473ac03de"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/defencetower1b0s.png",
+          "sha256": "845cd370836159731fb2489073eb47adb33d6e3c5532ce7f9c6a149aa0b29c05"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/defencetower1b0.json",
+          "sha256": "609ab6bd4b545852397d15ee845fbdd41cc6aadfb536f8db71ab5502731306e6"
         },
         {
           "path": "content/data/highres/v1/defencetower1b0r.png",
@@ -4104,33 +4450,41 @@
     },
     {
       "id": "defencetower1b1s",
-      "width": 88,
-      "height": 128,
+      "width": 84,
+      "height": 120,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "defencetower1b1s.png",
           "role": "base",
-          "sha256": "a1c045fd067e41c737bcc77f05f14ba7b909ba741e20cb252fb7b0dfa5ee514c",
-          "source_sha256": "a1c045fd067e41c737bcc77f05f14ba7b909ba741e20cb252fb7b0dfa5ee514c",
-          "logical_width": 88,
-          "logical_height": 128,
-          "original_sha256": "19c03a93307f171b353d99dfd2852cdc1b74660c76ebca64dae093abb7f497e2"
+          "sha256": "36dad6739e8c04d26b6fbbe43aeab48b6acf1ed1e855b54f95678e47e3e8de8e",
+          "source_sha256": "36dad6739e8c04d26b6fbbe43aeab48b6acf1ed1e855b54f95678e47e3e8de8e",
+          "logical_width": 84,
+          "logical_height": 120,
+          "original_sha256": "f6591190fdccbe4edb843d82fae0c7f18bd3f16f43a82c709931e88d375223c4"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/defencetower1b1.png",
           "sha256": "50e5c01a6462527542ec2cf9f6e49135593dcca49fa589d7411372e98868eefc"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/defencetower1b0s.png",
+          "sha256": "845cd370836159731fb2489073eb47adb33d6e3c5532ce7f9c6a149aa0b29c05"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/defencetower1b0.json",
+          "sha256": "609ab6bd4b545852397d15ee845fbdd41cc6aadfb536f8db71ab5502731306e6"
         },
         {
           "path": "content/data/highres/v1/defencetower1b1r.png",
@@ -4201,33 +4555,41 @@
     },
     {
       "id": "defencetower1b2s",
-      "width": 88,
+      "width": 84,
       "height": 128,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "defencetower1b2s.png",
           "role": "base",
-          "sha256": "0a2c4a309e521818f4602f2264204f384803e1e298b6de5c8551d7f9c2e53cd4",
-          "source_sha256": "0a2c4a309e521818f4602f2264204f384803e1e298b6de5c8551d7f9c2e53cd4",
-          "logical_width": 88,
+          "sha256": "9ded2758b4eee3a2dc40102260bfe444a42174d6c05997bc727ca4ba4657223f",
+          "source_sha256": "9ded2758b4eee3a2dc40102260bfe444a42174d6c05997bc727ca4ba4657223f",
+          "logical_width": 84,
           "logical_height": 128,
-          "original_sha256": "4d62daa83adddfccefcf7992faa259876cf0d0fb85fce9eb610d58a56822004e"
+          "original_sha256": "ef5afb6536a863d1272bab0e1903c2acaab418e4624d91fc1311a1419575275d"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/defencetower1b2.png",
           "sha256": "a1db00d91926454f85a185ef0530be9cf60bd2ec0290627d7f742ff032a7e7d6"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/defencetower1b2s.png",
+          "sha256": "33d284aecc147bc2ecd18525f883bab930e30c0b9fb9c98dbec90fd2a95b8b71"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/defencetower1b2.json",
+          "sha256": "bbdd92df30256919f0be5596dc38eb6a5a938ae85c03729dcbcb0d1019c1e462"
         },
         {
           "path": "content/data/highres/v1/defencetower1b2r.png",
@@ -4298,33 +4660,41 @@
     },
     {
       "id": "defencetower2b0s",
-      "width": 68,
-      "height": 76,
+      "width": 72,
+      "height": 88,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "defencetower2b0s.png",
           "role": "base",
-          "sha256": "ef3492ceead1ee3a1b7f004d120a2a351d0ca3d398d72738a47155ee150e4f04",
-          "source_sha256": "ef3492ceead1ee3a1b7f004d120a2a351d0ca3d398d72738a47155ee150e4f04",
-          "logical_width": 68,
-          "logical_height": 76,
-          "original_sha256": "1a10f24c6c7e8d1bd2971c48982f11565bed3b621eefd2b15043d3086d875831"
+          "sha256": "8b2e3a0abe40b00120281a43d2eae4773d599c6d156a6b4d80a8091f9c15a09b",
+          "source_sha256": "8b2e3a0abe40b00120281a43d2eae4773d599c6d156a6b4d80a8091f9c15a09b",
+          "logical_width": 72,
+          "logical_height": 88,
+          "original_sha256": "f7afa279806ce307d9be72fed540753e969be68dcb86d9551e9ad1c12b7399de"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/defencetower2b0.png",
           "sha256": "c27e79d302bfa5b2707f6411cede6f537357727353c9c1016bac78bfacbec5cd"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/defencetower2b0s.png",
+          "sha256": "27449f374717d6c548db54126464909d33768e4c49c8968e26016733ef105983"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/defencetower2b0.json",
+          "sha256": "fd0a32746f991cdf34fe186fae0e9e846ab123618c1acf1627d3114d0327d8bf"
         },
         {
           "path": "content/data/highres/v1/defencetower2b0r.png",
@@ -4395,33 +4765,41 @@
     },
     {
       "id": "market0b0s",
-      "width": 104,
+      "width": 108,
       "height": 123,
       "scale": 4,
-      "recipe": "cast ground shadow v1: block",
+      "recipe": "cast ground shadow v1: mesh",
       "layers": [
         {
           "file": "market0b0s.png",
           "role": "base",
-          "sha256": "d41cde82d766277988d0a8f0d4c4baa7723b5259ea9b9ab7dabbda8cc8c482d1",
-          "source_sha256": "d41cde82d766277988d0a8f0d4c4baa7723b5259ea9b9ab7dabbda8cc8c482d1",
-          "logical_width": 104,
+          "sha256": "4b2a167f1c24ab7cbfdc56b6ca8cc4f4017e2ff22b7ebae1bd1e11f163210314",
+          "source_sha256": "4b2a167f1c24ab7cbfdc56b6ca8cc4f4017e2ff22b7ebae1bd1e11f163210314",
+          "logical_width": 108,
           "logical_height": 123,
-          "original_sha256": "d239b42906abf8ae0cb36fab19540af7a0b7c5f3386408911764eac9f70c8ebd"
+          "original_sha256": "09a476b3351da9c6a035e3b3a5654f1378c9eadeb645157dc4b52bbc89aa4cc0"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/market0b0.png",
           "sha256": "501eb67be2fc77c92df7685711b5b79214e883314689c0fe9c8192e61bb2b317"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/market0b0s.png",
+          "sha256": "a353eaa46f81c0f98f2bb7f71a7895dc2ada9d4f72e4c58afb3b4e4ff1d22353"
+        },
+        {
+          "path": "content-src/gfx/shadows/mesh/market0b0.json",
+          "sha256": "fe49ce7acb8a01056b09e42521a9777ba182bb91356df6aad2b9ce038bbe48d3"
         },
         {
           "path": "content/data/highres/v1/market0b0r.png",
@@ -5038,11 +5416,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/buildingsite0.png",
@@ -5100,21 +5478,21 @@
         {
           "file": "buildingsite4s.png",
           "role": "base",
-          "sha256": "347eb9a49507593a043eb0eabc5ac4d766cb04e028de8a80e1afa7c3c7f08407",
-          "source_sha256": "347eb9a49507593a043eb0eabc5ac4d766cb04e028de8a80e1afa7c3c7f08407",
+          "sha256": "0acfbf393367463582475ed36715e01d9fa4e7372540a19f3b5abd341371979f",
+          "source_sha256": "0acfbf393367463582475ed36715e01d9fa4e7372540a19f3b5abd341371979f",
           "logical_width": 192,
           "logical_height": 192,
-          "original_sha256": "faa3be43db9a1613c1ef97cc94bbd00f0ab3bbb81155dece9cdec3fce94e8f9a"
+          "original_sha256": "185fb7acdec4931c142d1a672a25a01e51d2854c1e1b4cf49b05f7dc407af5c4"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/buildingsite4.png",
@@ -5172,21 +5550,21 @@
         {
           "file": "buildingsite1s.png",
           "role": "base",
-          "sha256": "91d49e774f60d732f2f259a82d858cf06d692a74802d576ff8720c4faa479fc0",
-          "source_sha256": "91d49e774f60d732f2f259a82d858cf06d692a74802d576ff8720c4faa479fc0",
+          "sha256": "92bfe71f34c1ff71f9b108f5fb52b55adc3c74e6a8bbfe780b62ea92b8a958d3",
+          "source_sha256": "92bfe71f34c1ff71f9b108f5fb52b55adc3c74e6a8bbfe780b62ea92b8a958d3",
           "logical_width": 64,
           "logical_height": 64,
-          "original_sha256": "b4dfbf75d5969cfcf6782537c23e770538df764172707b5ddb72d65f72006122"
+          "original_sha256": "d786bdce430880388f03c1f9b2373a878fcfd9f6572414a1566ae06009948623"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/buildingsite1.png",
@@ -5237,28 +5615,28 @@
     {
       "id": "buildingsite2s",
       "width": 96,
-      "height": 100,
+      "height": 96,
       "scale": 4,
       "recipe": "cast ground shadow v1: block",
       "layers": [
         {
           "file": "buildingsite2s.png",
           "role": "base",
-          "sha256": "3b89b99df734168f344f401d523bf295081692a897a158b25b57587b0cc49e50",
-          "source_sha256": "3b89b99df734168f344f401d523bf295081692a897a158b25b57587b0cc49e50",
+          "sha256": "cda0ebb01a7091bc727829141d8143180438bd3e0068162a79d100c37948d20a",
+          "source_sha256": "cda0ebb01a7091bc727829141d8143180438bd3e0068162a79d100c37948d20a",
           "logical_width": 96,
-          "logical_height": 100,
-          "original_sha256": "3555bb8d13ab9b1009578cf06626a8d57f221fbafb8bd5f31bf43c10e5b4ba54"
+          "logical_height": 96,
+          "original_sha256": "2178f318b6383be5f57637e59695c616ac9b904eea24aeadb955f2d6f8043628"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/buildingsite2.png",
@@ -5316,21 +5694,21 @@
         {
           "file": "buildingsite3s.png",
           "role": "base",
-          "sha256": "c2b3abf67d384b8d22d3aea231268c52e762204bed818a82d7aecf61f79407e2",
-          "source_sha256": "c2b3abf67d384b8d22d3aea231268c52e762204bed818a82d7aecf61f79407e2",
+          "sha256": "40f4b5b01b94221b3a0b727d74d0c2875b69e179e05dfb3d29068736f6e9653e",
+          "source_sha256": "40f4b5b01b94221b3a0b727d74d0c2875b69e179e05dfb3d29068736f6e9653e",
           "logical_width": 128,
           "logical_height": 128,
-          "original_sha256": "53bfb4d973edb9476b5e0172f03bc9aa73391e8811b1d3b4b0b5ee91c592d24c"
+          "original_sha256": "8ac9d8eb9045b3f17670046895cf9e0b96361252d41095ff2b97a7df605090e4"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/buildingsite3.png",
@@ -5388,21 +5766,21 @@
         {
           "file": "buildingsite5s.png",
           "role": "base",
-          "sha256": "2dbe319db6bb782f632dedb05855aa20536c5b49edc035d71ceabe92c041f142",
-          "source_sha256": "2dbe319db6bb782f632dedb05855aa20536c5b49edc035d71ceabe92c041f142",
+          "sha256": "2690eef1f6b339c4087427447ebb813b764ed70daa704ccef0cc12f670347731",
+          "source_sha256": "2690eef1f6b339c4087427447ebb813b764ed70daa704ccef0cc12f670347731",
           "logical_width": 196,
           "logical_height": 196,
-          "original_sha256": "3c806d70e591b924d831deea7104ec629df0c556c53982ab4bac6bcad8824204"
+          "original_sha256": "d98739fc80d005fe63301dd8a69e743d20b85c75d9b2d25bd4c9a8a6243f9f39"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/buildingsite5.png",
@@ -16936,11 +17314,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource0.png",
@@ -17043,11 +17421,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource1.png",
@@ -17150,11 +17528,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource2.png",
@@ -17257,11 +17635,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource3.png",
@@ -17364,11 +17742,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource4.png",
@@ -17449,11 +17827,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource5.png",
@@ -17556,11 +17934,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource6.png",
@@ -17663,11 +18041,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource7.png",
@@ -17770,11 +18148,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource8.png",
@@ -17877,11 +18255,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource9.png",
@@ -17973,11 +18351,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource10.png",
@@ -18080,11 +18458,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource11.png",
@@ -18187,11 +18565,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource12.png",
@@ -18294,11 +18672,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource13.png",
@@ -18370,11 +18748,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource14.png",
@@ -18466,11 +18844,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource15.png",
@@ -18573,11 +18951,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource16.png",
@@ -18680,11 +19058,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource17.png",
@@ -18787,11 +19165,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource18.png",
@@ -18863,11 +19241,11 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource19.png",
@@ -19513,15 +19891,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource30.png",
-          "sha256": "15670bd743cd1fd72375d7a10222ef546a8d583849ae1b0ab8b58d88b1286207"
+          "sha256": "1581290859b469e439bdcd93d082bfe9c2133af97ab9c6da5a5382ebb7bf0e0a"
         },
         {
           "path": "content/data/gfx/ressource30.png",
@@ -19573,15 +19951,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource31.png",
-          "sha256": "fb2b25a7a20a8a63a76b71f1416a030d371cddc3cee2f40af02ef4211e4f6212"
+          "sha256": "79b76c7a2d9de2bcde3f2226b2f5bc30c6929cd85b131678083c2be0407acbe2"
         },
         {
           "path": "content/data/gfx/ressource31.png",
@@ -19633,15 +20011,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource32.png",
-          "sha256": "cbbd8b8c26d2e9edda90a276ae8f14fdd778072f06ddade6bcb0a5319b166510"
+          "sha256": "6c2b30db76b5ef8ed1fa244661be73b5ce8253b80aa2e6f7a78ccbeb1ac5185a"
         },
         {
           "path": "content/data/gfx/ressource32.png",
@@ -19693,15 +20071,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource33.png",
-          "sha256": "9596999454ae0982674f54792eae51496c1ba3b996d8f6ac4a395a695508907a"
+          "sha256": "e0a6c25d4939433fa217859d0a113a89ea78d69898e317371a64e9e39f4ef5da"
         },
         {
           "path": "content/data/gfx/ressource33.png",
@@ -19753,15 +20131,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource34.png",
-          "sha256": "7386a08ad9aa87b475500f40249dc29d6ed8781aee40c611ccab22eb04eccfa2"
+          "sha256": "0143ce1236f824710792f33c57c23ea60976dc710b359d8dd05135edd5ae602b"
         },
         {
           "path": "content/data/gfx/ressource34.png",
@@ -19813,15 +20191,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource35.png",
-          "sha256": "1a9160614d617997d4a25043e02821bac873bbdd1ff509b7b70539178eee6a21"
+          "sha256": "f79882c9aa90073563d6a4087951a9cfeec99359fff6a9920ef01b12ecd88589"
         },
         {
           "path": "content/data/gfx/ressource35.png",
@@ -19873,15 +20251,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource36.png",
-          "sha256": "22afc024164962c70287bf580fc7b7d324e3eaf6688d9b0f9070ecc21300c133"
+          "sha256": "a2c96bd747eef91a2c807d3f6b0e99d3a70df553f667ed4eac47f6950ef882ce"
         },
         {
           "path": "content/data/gfx/ressource36.png",
@@ -19933,15 +20311,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource37.png",
-          "sha256": "48bd96fad4c606dc2321ce16afd06f99c82e13b91a90c35201e380c3762ecc9e"
+          "sha256": "19d6af1e566770bead070628298425a777cfe45ff13ea5124fa20eb22ef0e574"
         },
         {
           "path": "content/data/gfx/ressource37.png",
@@ -19993,15 +20371,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource38.png",
-          "sha256": "c96b6c9b1d7176c0505445e03382aba9f5da73a24f2debb84190ae16413ebff0"
+          "sha256": "b5fc4f97801125f2aadbed54105c5a6adfef285be2374fbb42fe211b3d507ff4"
         },
         {
           "path": "content/data/gfx/ressource38.png",
@@ -20053,15 +20431,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource39.png",
-          "sha256": "d151f19e36efd8735b3dc0710971320f97b13a10818fcec6b29285ba746c4375"
+          "sha256": "92d9b3716821fc9e9dfaecbb084be7ee64e8d30f2601fb786009131bf0a2c2cd"
         },
         {
           "path": "content/data/gfx/ressource39.png",
@@ -20353,15 +20731,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource50.png",
-          "sha256": "2ece0ef416e05b91f2698ddc474a14635dd0b285614c87f2d827476b46a4cfc6"
+          "sha256": "3a89493130599efe0fbd265f3a5786cb452fa3212a51d29f891d397130cb6d2c"
         },
         {
           "path": "content/data/gfx/ressource50.png",
@@ -20413,15 +20791,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource51.png",
-          "sha256": "68bd5a5f3a8787e78c78c84bfac788ae830d77e69831dda6be230003322cfd03"
+          "sha256": "1ad6c58b3bc41ff69ec1cc51ab223f9d67b031b30d0ceaff60320f47dd423b7a"
         },
         {
           "path": "content/data/gfx/ressource51.png",
@@ -20473,15 +20851,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource52.png",
-          "sha256": "3e394e151f8afacb65781fd654a8e4443a2f9f7a2b0bb6d5cb04646b907400e7"
+          "sha256": "22ee8f92195c2d47628b9a137710a1e31cba2d4644078d7c6e7d9f3d97a409af"
         },
         {
           "path": "content/data/gfx/ressource52.png",
@@ -20533,15 +20911,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource53.png",
-          "sha256": "c904643286a746e3133028760a26ef532522a9ef5d45c798e253a6330276debc"
+          "sha256": "57fadcb866a7805ccee8218af39c7bf13c6168da5959b0a6e90ac968ffcf8835"
         },
         {
           "path": "content/data/gfx/ressource53.png",
@@ -20593,15 +20971,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource54.png",
-          "sha256": "78e69ed1b6d44f11c100ca06d29408c5adb0f19bbe80be46fd633e553c23a919"
+          "sha256": "6813fcd72e65a5dbb547528e8ca629fc2a14603230603e511a8eaec92258f870"
         },
         {
           "path": "content/data/gfx/ressource54.png",
@@ -20653,15 +21031,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource55.png",
-          "sha256": "2ece0ef416e05b91f2698ddc474a14635dd0b285614c87f2d827476b46a4cfc6"
+          "sha256": "3a89493130599efe0fbd265f3a5786cb452fa3212a51d29f891d397130cb6d2c"
         },
         {
           "path": "content/data/gfx/ressource55.png",
@@ -20713,15 +21091,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource56.png",
-          "sha256": "9b3be98c5da884eded6d9d75b2412391e06bb9b3c3f7045abb6e85e77adc8ea7"
+          "sha256": "c8bedcb8ebbc5655b905308ca7b4a88f06b1b936c9a87b359fa67315dbbfd803"
         },
         {
           "path": "content/data/gfx/ressource56.png",
@@ -20773,15 +21151,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource57.png",
-          "sha256": "a6c660db6efb431f7597b4ef73aef880d5ec0a997f0ab1a0e7925d2ddc25037f"
+          "sha256": "02c8f13577c60cd3409b3538368d56aaf4e4f6de70e638d0ca0215baabc2414e"
         },
         {
           "path": "content/data/gfx/ressource57.png",
@@ -20833,15 +21211,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource58.png",
-          "sha256": "f773037773518961be983120cbee54f841e33d32708c5f3973111b80fdef0e07"
+          "sha256": "2e07af60ac01be87b35ace8af5ff56cfdafc433f88d09ebe9446deaaf94a7102"
         },
         {
           "path": "content/data/gfx/ressource58.png",
@@ -20893,15 +21271,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource59.png",
-          "sha256": "e6332027215ebe7c42fb074d3a75d556433c6e04e391f5f61b0cff27484047a6"
+          "sha256": "60ee1d0e9ce23f6005e6642b95756d2faa3d3b524bb4234176da20bdf706b627"
         },
         {
           "path": "content/data/gfx/ressource59.png",
@@ -20953,15 +21331,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource60.png",
-          "sha256": "2ece0ef416e05b91f2698ddc474a14635dd0b285614c87f2d827476b46a4cfc6"
+          "sha256": "3a89493130599efe0fbd265f3a5786cb452fa3212a51d29f891d397130cb6d2c"
         },
         {
           "path": "content/data/gfx/ressource60.png",
@@ -21013,15 +21391,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource61.png",
-          "sha256": "574fbb4a58477861c16567d27614abdd489b53a385450b09d31159ebf64e2667"
+          "sha256": "962c3009e4286082d0693dada2915ff81aaa8c536c27890700a7be6c4e3185bd"
         },
         {
           "path": "content/data/gfx/ressource61.png",
@@ -21073,15 +21451,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource62.png",
-          "sha256": "33e20190147e856351f37760fb3729af014b55452321d3961c2d97af8b5661f1"
+          "sha256": "9172cda4210fa7f14e630ce0cdbcc3cdaa1d9655f63d8180fea3ee71473196d2"
         },
         {
           "path": "content/data/gfx/ressource62.png",
@@ -21133,15 +21511,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource63.png",
-          "sha256": "cb0bfc98fe3af35766edc31d45a27652662270d48d1163c8ba3b671bbc25e70c"
+          "sha256": "cf7695819b2e5bf3fb9f7a87204f9367dd99a410abd5f5436036a7e30029c240"
         },
         {
           "path": "content/data/gfx/ressource63.png",
@@ -21193,15 +21571,15 @@
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "ead95317a2838760b84cc82f7155fc682367d247d5b007fb9c9effc7498b7c49"
+          "sha256": "14c6755027a69f4b94f30127279be656229c34884bf03fd482ee78f29677b12b"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "90084116c6eeb6f7ad87ae80c51402427fd2e549383b20e2040410beee04566b"
+          "sha256": "4a796f1b46afd2a26718db98033e83e9739eb1f07abfd71c5917ffd061ffecf9"
         },
         {
           "path": "content/data/highres/v1/ressource64.png",
-          "sha256": "a2ffb5eae011172e35c5ff11e8eb9437b5af7f3556c8d007a02b8d3583a74569"
+          "sha256": "482a7af2a5b30ecd06d9f7fdacb3b1dbcc873a79b76797042a36cafe07598a16"
         },
         {
           "path": "content/data/gfx/ressource64.png",

@@ -91,8 +91,15 @@ def _sunlight():
 
 
 SHADOW, FLIGHT_HEIGHT = _sunlight()
+# Building shadow length: screen px of throw per screen px of height. Specs set
+# it per building as art direction (`length`), so small buildings read as low
+# and towers as tall; see docs/assets/lighting.md for the sun elevations.
+SHADOW_LENGTH = 0.6
+MESH = Path("content-src/gfx/shadows/mesh")  # mesh_shadows.py masks and records
 DEFAULTS = {
-    "ratio": 1.1,          # throw per unit of height (boulders in terrain_decor use 1.15)
+    "ratio": 1.1,          # block and contact throw per unit of height (boulders in terrain_decor use 1.15)
+    "length": SHADOW_LENGTH,  # mesh: throw per unit of height, cast by mesh_shadows.py
+    "mesh": None,          # mesh: the frame whose mask this one shares (damaged variants); default itself
     "cap": 180,            # longest throw, HD px: 45 native, under the 52 px flight height
     "blur": 2.0,           # softening of block shadows, HD px
     "body_alpha": 200,     # base pixels at least this opaque cast
@@ -100,6 +107,14 @@ DEFAULTS = {
     "height": 0, "blocks": [], "spires": [],
     "strip": True,
     "contact": 10,         # canopy: trunk contact shadow height, HD px
+    "paint_out": None,     # an old shadow painted opaque into the art: relit away (paint_out)
+}
+PAINT_OUT = {  # the `relight` paint-out's detection and relighting, HD px
+    "alpha": 220, "dark": 75, "chroma": 40,                # opaque, dark, grey: the painted shadow
+    "open": 2, "min_area": 1500,                            # ...in large connected regions
+    "lit_alpha": 200, "lit_bright": 170, "lit_chroma": 90,  # the lit ground it lies on
+    "contrast": 0.9, "local": 40, "lit_match": 45,         # keep 90% of its texture; lit colour within ~40 px
+    "dilate": 2, "feather": 2.5, "gain": 1.6,              # soft edge
 }
 
 
@@ -107,18 +122,20 @@ def file_sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def load_specs(root=ROOT):
+def load_specs(root=ROOT, path=None):
     """{frame id: spec} with the defaults filled in, in file order."""
-    document = json.loads((root / SPECS).read_text())
+    document = json.loads(Path(path or root / SPECS).read_text())
     if document.get("version") != 1:
         raise ValueError("Unknown shadow spec version")
     defaults = dict(DEFAULTS, **document.get("defaults", {}))
     specs = {}
     for family in document["families"]:
         unknown = set(family) - set(DEFAULTS) - {"frames", "method", "note"}
+        if family.get("paint_out") and family["paint_out"].get("method") != "relight":
+            raise ValueError("Unknown paint-out method: " + str(family["paint_out"].get("method")))
         if unknown:
             raise ValueError(f"Unknown shadow spec fields: {sorted(unknown)}")
-        if family["method"] not in ("block", "canopy"):
+        if family["method"] not in ("block", "canopy", "mesh"):
             raise ValueError("Unknown shadow method: " + family["method"])
         for frame in family["frames"]:
             if frame in specs:
@@ -126,6 +143,8 @@ def load_specs(root=ROOT):
             spec = dict(defaults, **{k: v for k, v in family.items() if k not in ("frames", "note")})
             if spec["cap"] > FLIGHT_HEIGHT * SCALE:
                 raise ValueError(f"{frame}: shadow cap above the flight height")
+            if spec["method"] == "mesh":
+                spec["mesh"] = spec["mesh"] or frame
             specs[frame] = spec
     return specs
 
@@ -140,6 +159,66 @@ def strip_mask(rgba):
     """The baked-shadow pixels of an RGBA array."""
     alpha = rgba[..., 3]
     return (alpha > 0) & (alpha < STRIP_ALPHA) & (rgba[..., :3].max(-1) < STRIP_DARK)
+
+
+def paint_out_mask(rgba, params):
+    """The opaque painted-shadow pixels: dark, grey, in large connected regions."""
+    p = dict(PAINT_OUT, **params)
+    rgb = rgba[..., :3].astype(int)
+    chroma = rgb.max(-1) - rgb.min(-1)
+    mask = (rgba[..., 3] >= p["alpha"]) & (rgb.max(-1) < p["dark"]) & (chroma < p["chroma"])
+    mask = ndimage.binary_opening(mask, iterations=p["open"])
+    labels, count = ndimage.label(mask)
+    sizes = ndimage.sum(mask, labels, range(1, count + 1))
+    return np.isin(labels, 1 + np.nonzero(sizes > p["min_area"])[0])
+
+
+def relight(rgba, mask, params, scale=1):
+    """Relight `mask` (HD px / scale for a classic frame) to the lit ground around it."""
+    p = dict(PAINT_OUT, **params)
+    if not mask.any():
+        return rgba
+    out = rgba.astype(float)
+    rgb = out[..., :3]
+    chroma = rgb.max(-1) - rgb.min(-1)
+    lit = (rgba[..., 3] > p["lit_alpha"]) & (rgb.max(-1) > p["lit_bright"]) & (chroma < p["lit_chroma"]) & ~mask
+    if not lit.any():
+        return rgba
+    # The local lit colour comes only from ground close to the typical lit colour,
+    # not from the building beside it.
+    lit &= np.abs(rgb - rgb[lit].mean(0)).max(-1) < p["lit_match"]
+    sigma = p["local"] / scale
+    weight = ndimage.gaussian_filter(lit.astype(float), sigma)
+    local = np.stack([ndimage.gaussian_filter(rgb[..., c] * lit, sigma) for c in range(3)], -1)
+    local = np.where(weight[..., None] > 1e-3, local / np.maximum(weight[..., None], 1e-9), rgb[lit].mean(0))
+    shadow_mean, shadow_std = rgb[mask].mean(0), rgb[mask].std(0) + 1e-6
+    relit = (rgb - shadow_mean) / shadow_std * rgb[lit].std(0) * p["contrast"] + local
+    # How far into the shadow each pixel is: lit pixels at the edge stay as they are.
+    luma, local_luma = rgb.mean(-1), local.mean(-1)
+    darkness = np.clip((local_luma - luma) / np.maximum(local_luma - shadow_mean.mean(), 1.0), 0, 1)
+    darkness[mask] = 1.0
+    edge = ndimage.binary_dilation(mask, iterations=max(1, round(p["dilate"] / scale)))
+    blend = np.clip(ndimage.gaussian_filter(edge.astype(float), p["feather"] / scale) * p["gain"], 0, 1) * darkness
+    blend[rgba[..., 3] == 0] = 0
+    out[..., :3] = rgb + blend[..., None] * (relit - rgb)
+    return np.clip(np.rint(out), 0, 255).astype(np.uint8)
+
+
+def deshadow(hd, classic, spec):
+    """The bases without their old shadows: baked semi-transparent ones stripped,
+    and for a `paint_out` spec the painted opaque one relit (classic from the HD
+    mask area-averaged). Idempotent."""
+    if spec.get("strip"):
+        hd = strip(hd)
+        classic = strip(classic) if classic is not None else None
+    if spec.get("paint_out"):
+        params = {k: v for k, v in spec["paint_out"].items() if k != "method"}
+        mask = paint_out_mask(hd, params)
+        hd = relight(hd, mask, params)
+        if classic is not None:
+            small = downscale(mask.astype(np.uint8) * 255) >= 64  # any quarter of a classic pixel
+            classic = relight(classic, small, params, SCALE)
+    return hd, classic
 
 
 def strip(image):
@@ -267,6 +346,36 @@ def cast(base, team, spec):
     return hd, downscale(hd)
 
 
+def mesh_record(spec, root=ROOT):
+    """The committed mesh_shadows.py record of a mesh spec, checked against it."""
+    path = root / MESH / f"{spec['mesh']}.json"
+    if not path.exists():
+        raise ValueError(f"{spec['mesh']}: no mesh shadow in {MESH}; run tools/artwork/mesh_shadows.py")
+    record = json.loads(path.read_text())
+    if record["shadow"]["length"] != spec["length"]:
+        raise ValueError(f"{spec['mesh']}: its mesh shadow was cast at length {record['shadow']['length']}, "
+                         f"the spec says {spec['length']}; rerun tools/artwork/mesh_shadows.py")
+    return record
+
+
+def mesh_layer(spec, shape, root=ROOT):
+    """The HD shadow alpha of a mesh spec: its committed mask (the frame's top-left
+    corner), on a canvas covering the frame, padded right and bottom to whole steps."""
+    mesh_record(spec, root)
+    return mesh_pad(_open(root / MESH / f"{spec['mesh']}s.png")[..., 3], *shape)
+
+
+def mesh_pad(mask, h0, w0):
+    """A mask at the frame's top-left corner on the frame's canvas, padded right and bottom to whole steps."""
+    unit = STEP * SCALE
+    right = -(-max(0, mask.shape[1] - w0) // unit) * unit
+    bottom = -(-max(0, mask.shape[0] - h0) // unit) * unit
+    out = np.zeros((h0 + bottom, w0 + right), np.uint8)
+    h, w = min(mask.shape[0], out.shape[0]), min(mask.shape[1], out.shape[1])
+    out[:h, :w] = mask[:h, :w]
+    return out
+
+
 def downscale(hd):
     """The classic shadow: the HD alpha area-averaged SCALE x SCALE, rounded."""
     h, w = hd.shape
@@ -302,13 +411,17 @@ def compute(job):
     classic = inputs.get("classic") if inputs.get("classic") is not None else _open(root / GFX / f"{frame_id}.png")
     team_path = root / PACK / f"{frame_id}r.png"
     team = _open(team_path) if team_path.exists() else None
-    if spec["strip"]:
-        hd = strip(hd)
-        if not inputs.get("classic_stripped"):
-            classic = strip(classic)
+    if inputs.get("classic_stripped"):
+        hd = deshadow(hd, None, spec)[0]
+    else:
+        hd, classic = deshadow(hd, classic, spec)
     if hd.shape[:2] != (classic.shape[0] * SCALE, classic.shape[1] * SCALE):
         raise ValueError(f"{frame_id}: HD base is not {SCALE}x the classic frame")
-    hd_shadow, classic_shadow = cast(hd, team, spec)
+    if spec["method"] == "mesh":
+        hd_shadow = mesh_layer(spec, hd.shape[:2], root)
+        classic_shadow = downscale(hd_shadow)
+    else:
+        hd_shadow, classic_shadow = cast(hd, team, spec)
     return frame_id, {"hd": hd, "classic": classic, "hd_shadow": hd_shadow, "classic_shadow": classic_shadow}
 
 
@@ -411,6 +524,8 @@ def write(results, specs, root=ROOT):
         height, width = layers["classic_shadow"].shape
         spec = specs[frame_id]
         sources = [tool, _source(SPECS, root), _source(PACK / f"{frame_id}.png", root)]
+        if spec["method"] == "mesh":
+            sources += [_source(MESH / f"{spec['mesh']}s.png", root), _source(MESH / f"{spec['mesh']}.json", root)]
         if (runtime / f"{frame_id}r.png").exists():
             sources.append(_source(PACK / f"{frame_id}r.png", root))
         sources.append(_source(GFX / f"{frame_id}.png", root))

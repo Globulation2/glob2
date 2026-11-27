@@ -259,7 +259,7 @@
     {
       "runtime": "barracks0b0.png",
       "source": "ai-upscaled/barracks0b0.png",
-      "sha256": "c30bbaf1a43f84838824416c48387fdf544f20467e6435c653cb59d2b06aa548"
+      "sha256": "438512d9033b36342e65a61abf1f362216bc97b310149f5d9aad3ca5fa78efa2"
     },
     {
       "runtime": "barracks0b0r.png",
@@ -2764,12 +2764,12 @@
     {
       "runtime": "manifest.json",
       "source": "pack-metadata/manifest.json",
-      "sha256": "dc34e72f526c89770091e550cddbfb2251f7f4c3385e9776dc36d635b70efb6b"
+      "sha256": "a14726a9c6d215f5931292e6cfac1077272e8d88729dde71c712bb2c06027694"
     },
     {
       "runtime": "frames.txt",
       "source": "pack-metadata/frames.txt",
-      "sha256": "4f60769a675f6686b45be31e2d13e90bfdf3dcf10fe4d3381e53a8f2e96609e3"
+      "sha256": "6473bd7ba2af3e9ece320a165ef06140e4bbd5fc2e61c17d2ff0aa0d2f8984b5"
     },
     {
       "runtime": "README.md",
@@ -163879,222 +163879,222 @@
     {
       "runtime": "hosp0b0s.png",
       "source": "shadows/hosp0b0s.png",
-      "sha256": "d27f27ff86b1693483490c188e17cc9b69967edc2dec9871369aa0d6f4f9769a"
+      "sha256": "0b9e93fc9e2cb6c4816cf6617d28b6fb1c7dde240ec82b5717c2fba6da9c291f"
     },
     {
       "runtime": "hosp0b1s.png",
       "source": "shadows/hosp0b1s.png",
-      "sha256": "2a1487e085e90faa28949c49af31466ba2cbe4727d701e69a6f91291faf1d899"
+      "sha256": "0b9e93fc9e2cb6c4816cf6617d28b6fb1c7dde240ec82b5717c2fba6da9c291f"
     },
     {
       "runtime": "hosp1b0s.png",
       "source": "shadows/hosp1b0s.png",
-      "sha256": "f8c7424da78b9ca030bc0cce509fbc9fcacae2111f0b0ebb9073359b900a5871"
+      "sha256": "6e52576338bd24c8c4a0e9e7c6892ec59fb5ab0d1e36837ce40baf0d4df55d9e"
     },
     {
       "runtime": "hosp2b0s.png",
       "source": "shadows/hosp2b0s.png",
-      "sha256": "dfc172afdb7dff7f3269272ba1f6de6e5571c3c68ba50141379757bd7a95464b"
+      "sha256": "2d2743a0e639b4a6a0723fda2511eea2baf08ed092ceaa628b8b770d03e50a74"
     },
     {
       "runtime": "inn2b0s.png",
       "source": "shadows/inn2b0s.png",
-      "sha256": "b58e0e386ce6f2029a8a88af136f9a745236fd33ca7b0eaae39abdd2c1cfa424"
+      "sha256": "69bcb34ef77a94e59a1677e288e98da8392eb1bdaa7816888ed44e347f99a4c1"
     },
     {
       "runtime": "inn1b0s.png",
       "source": "shadows/inn1b0s.png",
-      "sha256": "37d8a8b9877825a466df25971ecce3f09f184b97ae707b6cbe1a6ad7839c5abf"
+      "sha256": "13fcc96abc6b15b191256a21c340ae0a92842a2a3cb7564fa6f7e7555cbe25f5"
     },
     {
       "runtime": "inn1b1s.png",
       "source": "shadows/inn1b1s.png",
-      "sha256": "6b8e44c21f3e07f026a75d4a4a3cb3886230ccb116ef514872246ae7551373a1"
+      "sha256": "5600906c4d9033a7df1bbf63fdfcd65606b97b847433a45322e5bf40be4ce46b"
     },
     {
       "runtime": "inn0b0s.png",
       "source": "shadows/inn0b0s.png",
-      "sha256": "4a73c022396e6345794689ac0b3cbc1c42450081dd1179db5df82ac44483d465"
+      "sha256": "55ed157aa155fbd3cdc76e4646d4f59473c235e3579896cb8a7138af88933b24"
     },
     {
       "runtime": "inn0b1s.png",
       "source": "shadows/inn0b1s.png",
-      "sha256": "5e2d61a6371d23b258331694304d9981939c9af248b11e0477b65b696f003c04"
+      "sha256": "755bfe4cac3bbc63bc5f714af949888dce977fde20cb66cb1544e27bf85cb8a3"
     },
     {
       "runtime": "school2b0s.png",
       "source": "shadows/school2b0s.png",
-      "sha256": "e4932a35963de6a86200461b542b180bb576cbbf53659b1a74a40afffaf61299"
+      "sha256": "77586c4acc4785d1af1e03a7247041350074c41f5ebaea2e7babf7a311f68388"
     },
     {
       "runtime": "school1b0s.png",
       "source": "shadows/school1b0s.png",
-      "sha256": "cb073d088c4f9702783a9cc42701e7e2f0c35b721d4c1218fc7d12ad8cbbcb44"
+      "sha256": "56aa1e1968b2bf10f2b884abf4ada910db1c660c38bc8fc49f628998559bca50"
     },
     {
       "runtime": "school1b1s.png",
       "source": "shadows/school1b1s.png",
-      "sha256": "79f56cf2d3f9a1e18513df80fdf0bba4aa4b37f4cbdac45631765e641c348fab"
+      "sha256": "56aa1e1968b2bf10f2b884abf4ada910db1c660c38bc8fc49f628998559bca50"
     },
     {
       "runtime": "school1b2s.png",
       "source": "shadows/school1b2s.png",
-      "sha256": "e4eb5ce3cfd0aed58103cd9c8814d682b40295131828d34e80c7978f51bc48f1"
+      "sha256": "8dba644787ac7a4ff5de4e7f78230af1cc599d0455170e7a8c8169d80473707a"
     },
     {
       "runtime": "school0b0s.png",
       "source": "shadows/school0b0s.png",
-      "sha256": "48ce72bb237507f6dc4bd3187bc3f68bf61aec6cce984f645e03837764f11a9f"
+      "sha256": "ff3d0d4826e8d018e8efe1bce68661f04131cfce216f37d0c4e0b86c5c8051a4"
     },
     {
       "runtime": "school0b1s.png",
       "source": "shadows/school0b1s.png",
-      "sha256": "f705c6d1ef8292d04c09b87f1111b75be1d77d2584fe966e9edd573fc01d1ad3"
+      "sha256": "5b88af06d8e01d391135f3509c685454d261abc973c240a5a8417d0b086451d8"
     },
     {
       "runtime": "market0b0s.png",
       "source": "shadows/market0b0s.png",
-      "sha256": "d41cde82d766277988d0a8f0d4c4baa7723b5259ea9b9ab7dabbda8cc8c482d1"
+      "sha256": "4b2a167f1c24ab7cbfdc56b6ca8cc4f4017e2ff22b7ebae1bd1e11f163210314"
     },
     {
       "runtime": "pool0b0s.png",
       "source": "shadows/pool0b0s.png",
-      "sha256": "1848327ff13ea42852580e78172099eae1410cb3edae09bf17801df76c030e24"
+      "sha256": "237869a2e2c6a79d309e0fd2d84fd93dfc7af5e9dee9f6a011a9bb5dd9c4ed49"
     },
     {
       "runtime": "pool0b1s.png",
       "source": "shadows/pool0b1s.png",
-      "sha256": "0de680504ef10d2b45528a9b42e76ebbe231a857bf070bf0f71a47afd4ff6dfe"
+      "sha256": "237869a2e2c6a79d309e0fd2d84fd93dfc7af5e9dee9f6a011a9bb5dd9c4ed49"
     },
     {
       "runtime": "pool1b0s.png",
       "source": "shadows/pool1b0s.png",
-      "sha256": "be2f8de51588ba93b13b0817eca63fd52cf615a00016a7e2fed4b9d9a5853002"
+      "sha256": "973c37072a85ab2089f550e6686fd2f9a7125489505ca61da01a9edbc5ae9dc2"
     },
     {
       "runtime": "pool2b0s.png",
       "source": "shadows/pool2b0s.png",
-      "sha256": "a8fa5ef847ec90969da65b069a4fe5fef84b14e637c0060df6d7660c272b3130"
+      "sha256": "61aa227a637cc868e5ce446008a330301238a68f7468577e9bcfcd7639dfdca8"
     },
     {
       "runtime": "barracks0b0s.png",
       "source": "shadows/barracks0b0s.png",
-      "sha256": "ea4d14558de34da3b3af61d75a4e49f142579d419932aec4c858af1de311b624"
+      "sha256": "1c37caabfc6a5e278569e73533910bc6d0e50bddfe77fe2a65f1d2da63862782"
     },
     {
       "runtime": "barracks1b0s.png",
       "source": "shadows/barracks1b0s.png",
-      "sha256": "664698ef2f60bd74e8dc57af6223b9ebf1ab2b3d2b8f65ccd311b8d1bd4d4c5a"
+      "sha256": "462bbee7108bf6af3df75e751801239533f8c127152bff0e17256b7a6468d6f3"
     },
     {
       "runtime": "barracks2b0s.png",
       "source": "shadows/barracks2b0s.png",
-      "sha256": "54e0f24d53080e2bbd78c2ffc13577bdada9ceaaeab1d863a863682cd1edc4d5"
+      "sha256": "fa2dcdadfdfc07a465a5256461d43d2cd1e51dd30550c03846244f0ffa3c5f0a"
     },
     {
       "runtime": "defencetower0b0s.png",
       "source": "shadows/defencetower0b0s.png",
-      "sha256": "362be3039db795b4acb195b02641985e36d9eede0213d68543ac7926d1bcaacf"
+      "sha256": "b28e4ba32e484b21199d184c15fdde6b4c409599d064fd3f77343f76ffbbab40"
     },
     {
       "runtime": "defencetower1b0s.png",
       "source": "shadows/defencetower1b0s.png",
-      "sha256": "700293a97946e93d90b2956e391e1ac3162ede78fd1706644f23d20697aef28b"
+      "sha256": "36dad6739e8c04d26b6fbbe43aeab48b6acf1ed1e855b54f95678e47e3e8de8e"
     },
     {
       "runtime": "defencetower1b1s.png",
       "source": "shadows/defencetower1b1s.png",
-      "sha256": "a1c045fd067e41c737bcc77f05f14ba7b909ba741e20cb252fb7b0dfa5ee514c"
+      "sha256": "36dad6739e8c04d26b6fbbe43aeab48b6acf1ed1e855b54f95678e47e3e8de8e"
     },
     {
       "runtime": "defencetower1b2s.png",
       "source": "shadows/defencetower1b2s.png",
-      "sha256": "0a2c4a309e521818f4602f2264204f384803e1e298b6de5c8551d7f9c2e53cd4"
+      "sha256": "9ded2758b4eee3a2dc40102260bfe444a42174d6c05997bc727ca4ba4657223f"
     },
     {
       "runtime": "defencetower2b0s.png",
       "source": "shadows/defencetower2b0s.png",
-      "sha256": "ef3492ceead1ee3a1b7f004d120a2a351d0ca3d398d72738a47155ee150e4f04"
+      "sha256": "8b2e3a0abe40b00120281a43d2eae4773d599c6d156a6b4d80a8091f9c15a09b"
     },
     {
       "runtime": "racetrack0b0s.png",
       "source": "shadows/racetrack0b0s.png",
-      "sha256": "f0a91eb46dfed4304d6850cc28930ef8da2c3d02ed2ed9ac10868fdcb64ed698"
+      "sha256": "ac6b72fb5645168f2256790d1c58a48978267d84256c6b659a3778781308946d"
     },
     {
       "runtime": "racetrack0b1s.png",
       "source": "shadows/racetrack0b1s.png",
-      "sha256": "70f79cbd2d2c8a08ee5655a15fef5a3afce4bff6bf1c4cc3c7bc3c3b8fb47355"
+      "sha256": "ac6b72fb5645168f2256790d1c58a48978267d84256c6b659a3778781308946d"
     },
     {
       "runtime": "racetrack0b2s.png",
       "source": "shadows/racetrack0b2s.png",
-      "sha256": "f85977311fb43c01d6d0ae4514183fd980cb90d4206d7545b2788183bba38604"
+      "sha256": "850a44d9a2ae0145940f52a44512534607530ba1b8b355f1ef440d307f0bed1d"
     },
     {
       "runtime": "racetrack1b0s.png",
       "source": "shadows/racetrack1b0s.png",
-      "sha256": "e03e1a2dd7e1471b34ecd404de769a4427d7c820ece9f48eef4c5a9c2a50589e"
+      "sha256": "379c0b2a9b9b4392c7505ac7c3a8dfbe2ff8b784664f808214719d5a77b2fd1d"
     },
     {
       "runtime": "racetrack1b1s.png",
       "source": "shadows/racetrack1b1s.png",
-      "sha256": "85733a5a914cd840c9cf3ff4cf25c68df1d9940715dd8c3cfe3b1ffdf3280c97"
+      "sha256": "22aa4ffdd3c18c7823c09888adbbd0473d60dfe7f61fc7c4bcb9706ccdbadff8"
     },
     {
       "runtime": "racetrack1b2s.png",
       "source": "shadows/racetrack1b2s.png",
-      "sha256": "c80007199f320a19d2f310686ba08cd28ecd9cf07893bc2ca3382b528ab844f1"
+      "sha256": "0dc7a49655d5e4ad8b2ce4a85a04417a7334ace273ea086b51138704bef4e5f2"
     },
     {
       "runtime": "racetrack2b0s.png",
       "source": "shadows/racetrack2b0s.png",
-      "sha256": "2ebcfd14105008e90e597dfeca209ccfc2884693d5e41842b893b3e2b4ae6e04"
+      "sha256": "e1266289822ed301f6f72685fe50064a7b5606cc6587b9a570593ed47e3e3981"
     },
     {
       "runtime": "hosp0c0s.png",
       "source": "shadows/hosp0c0s.png",
-      "sha256": "536278c3a7434dbe4ba9a6e3fff72084ead88826159a94f12aac543e41b7d401"
+      "sha256": "0710dd20e55f336e545e3aff235e9d02c092d93003453ce8b1abea6cbaa3df07"
     },
     {
       "runtime": "hosp1c0s.png",
       "source": "shadows/hosp1c0s.png",
-      "sha256": "5895256ec82b88faaffe8a0b61256e4411a2ac7e0ff901f0cca366fc8237ea8f"
+      "sha256": "5cd4e071a0ee94db68eec2626fd3fdb26654038473a81edc6e302717cf611611"
     },
     {
       "runtime": "hosp2c0s.png",
       "source": "shadows/hosp2c0s.png",
-      "sha256": "8b967e7e48ad11944c08219435fb826926ad788527b48f150223611fb6e1168c"
+      "sha256": "a785ced0af9b54e0414ed0096898baff06821fd1660cd3ad947e7d6052514f0b"
     },
     {
       "runtime": "inn0c0s.png",
       "source": "shadows/inn0c0s.png",
-      "sha256": "a388487aa7673586256c65d92572ee31c4c32e0210909539d2defa1183ced6ad"
+      "sha256": "c4b89ff177c7937709620d157bf23265c33cd95fd7f168a24a25ad9575f82a2e"
     },
     {
       "runtime": "inn1c0s.png",
       "source": "shadows/inn1c0s.png",
-      "sha256": "06e19f4ef1763496a8185f34ffdbae38e0f254550a7ed5a3f3d1b5a7d8a64843"
+      "sha256": "4f5ce71359578806aba488fbbdceffc135cc8822c68c107fefcfd233b13aa863"
     },
     {
       "runtime": "inn2c0s.png",
       "source": "shadows/inn2c0s.png",
-      "sha256": "7c57e822f211fb3061006c42f681e83bbbbe682e498afafb7e88e7bd66f5da53"
+      "sha256": "9c1fadb40f48c4e7d8417370208d896a99e75b763b437f324c47c516104b0202"
     },
     {
       "runtime": "school1c0s.png",
       "source": "shadows/school1c0s.png",
-      "sha256": "6482a89765d85300d71f1f4b2e6b60c6617d75380348f30029cc71e676609220"
+      "sha256": "5d90949cae8f68a264a30485251cbd4e60268772c32651c0f4c31356b38ebb98"
     },
     {
       "runtime": "pool0c0s.png",
       "source": "shadows/pool0c0s.png",
-      "sha256": "39cc53e46fbdac7bbc731e7706569bd8d59c7aa712117e6ba8adc6a574ec7b2f"
+      "sha256": "ce8553d95b300fcacdd5fe681f97928332adfabb2e864b7c6ba832aedcda50e6"
     },
     {
       "runtime": "racetrack0c0s.png",
       "source": "shadows/racetrack0c0s.png",
-      "sha256": "e25943cca8b8805d0b3094b10692459a00a238c554527e263ceef34018abc2f8"
+      "sha256": "d5050c5e7351be1da1aa14ae92666c8e31472451770f195d44df19a036a03bf1"
     },
     {
       "runtime": "buildingsite0s.png",
@@ -164104,27 +164104,27 @@
     {
       "runtime": "buildingsite1s.png",
       "source": "shadows/buildingsite1s.png",
-      "sha256": "91d49e774f60d732f2f259a82d858cf06d692a74802d576ff8720c4faa479fc0"
+      "sha256": "92bfe71f34c1ff71f9b108f5fb52b55adc3c74e6a8bbfe780b62ea92b8a958d3"
     },
     {
       "runtime": "buildingsite2s.png",
       "source": "shadows/buildingsite2s.png",
-      "sha256": "3b89b99df734168f344f401d523bf295081692a897a158b25b57587b0cc49e50"
+      "sha256": "cda0ebb01a7091bc727829141d8143180438bd3e0068162a79d100c37948d20a"
     },
     {
       "runtime": "buildingsite3s.png",
       "source": "shadows/buildingsite3s.png",
-      "sha256": "c2b3abf67d384b8d22d3aea231268c52e762204bed818a82d7aecf61f79407e2"
+      "sha256": "40f4b5b01b94221b3a0b727d74d0c2875b69e179e05dfb3d29068736f6e9653e"
     },
     {
       "runtime": "buildingsite4s.png",
       "source": "shadows/buildingsite4s.png",
-      "sha256": "347eb9a49507593a043eb0eabc5ac4d766cb04e028de8a80e1afa7c3c7f08407"
+      "sha256": "0acfbf393367463582475ed36715e01d9fa4e7372540a19f3b5abd341371979f"
     },
     {
       "runtime": "buildingsite5s.png",
       "source": "shadows/buildingsite5s.png",
-      "sha256": "2dbe319db6bb782f632dedb05855aa20536c5b49edc035d71ceabe92c041f142"
+      "sha256": "2690eef1f6b339c4087427447ebb813b764ed70daa704ccef0cc12f670347731"
     },
     {
       "runtime": "ressource0s.png",

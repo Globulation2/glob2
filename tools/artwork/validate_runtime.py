@@ -122,6 +122,16 @@ def validate_shadows(root, pack, frames):
                 f'Classic shadow is not the HD shadow area-averaged: {frame_id}')
     if (root / cast_shadows.SPECS).exists():
         for frame_id, spec in cast_shadows.load_specs(root).items():
+            if spec['method'] == 'mesh' and frame_id + 's' in frames:
+                # The committed mesh mask, cast at the spec's length (mesh_record checks it), padded.
+                size = rgba(pack / (frame_id + '.png')).size
+                expected = cast_shadows.mesh_layer(spec, (size[1], size[0]), root)
+                require(np.array_equal(np.asarray(rgba(pack / (frame_id + 's.png')))[..., 3], expected),
+                        f'Shadow layer is not its mesh mask: {frame_id}')
+            if spec['paint_out']:
+                params = {k: v for k, v in spec['paint_out'].items() if k != 'method'}
+                require(not cast_shadows.paint_out_mask(np.asarray(rgba(pack / (frame_id + '.png'))), params).any(),
+                        f'Painted-out shadow left in: {frame_id}')
             if spec['strip']:
                 for path in (gfx / (frame_id + '.png'), pack / (frame_id + '.png')):
                     require(not cast_shadows.strip_mask(np.asarray(rgba(path))).any(),

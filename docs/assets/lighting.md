@@ -15,7 +15,7 @@ the upper left.
 | Quantity | Value |
 | --- | --- |
 | Light comes from | the **upper left**, horizontal direction (−0.6, −0.8), about 127° |
-| Sun elevation | about 42° above the ground; as a 3D vector toward the light, normalize(−0.62, −0.78, 0.9) |
+| Sun elevation for shading | about 42° above the ground; as a 3D vector toward the light, normalize(−0.62, −0.78, 0.9). Lit faces and highlights use it; cast ground shadows are shorter, see [ground shadows](#ground-shadows) |
 | Shadows fall toward | the **lower right**, direction (0.6, 0.8), about 53° below horizontal |
 | Lit faces | those turned up and to the left; rims and edges facing the lower right fall dark |
 | Tolerance | new work stays within ±10° of 127° (shadows within ±10° of 53° below horizontal) |
@@ -64,24 +64,64 @@ is drawn at `Sunlight::groundShadowOpacity` (0.32). Nothing standing in a
 shadow is darkened by it, and a building drawn later covers the shadows behind
 it. See [rendering](../architecture/rendering.md#ground-shadow-pass).
 
-`tools/artwork/cast_shadows.py` casts every layer from the frame's own
-silhouette (base alpha ≥ 200 or team alpha ≥ 20), deterministically and
-without AI, following `content-src/gfx/shadows/specs.json`:
+`tools/artwork/cast_shadows.py` registers every layer, following
+`content-src/gfx/shadows/specs.json`, deterministically and offline:
 
 | Method | Used for | How |
 | --- | --- | --- |
-| `block` with a height | low-rise buildings, construction sites, wheat and rocks (8–10 HD px contact shadows) | the footprint is the silhouette eroded upward by the height, swept 1.1 × the height along (0.6, 0.8) |
-| `block` with hand-placed `blocks` and `spires` | tall or spiky buildings (towers, chimneys, masts, the barracks blade) | each box of the silhouette gets its own height; a spire pixel's height is its row above `base_y` plus `base_h`, so thin parts cast long thin shadows |
+| `mesh` | buildings and their construction frames | the mask `tools/artwork/mesh_shadows.py` cast from a TRELLIS 3D model of the sprite (`content-src/gfx/shadows/mesh/<frame>s.png`, with its record `<frame>.json`) |
+| `block` with a height | building sites, wheat and rocks (8–10 HD px contact shadows), and buildings whose meshes fail the gate | the footprint is the silhouette (base alpha ≥ 200 or team alpha ≥ 20) eroded upward by the height, swept `ratio` × the height along the sun |
+| `block` with `blocks` and `spires` | fallback geometry kept on every building entry | each box of the silhouette gets its own height; a spire pixel's height is its row above `base_y` plus `base_h` |
 | `canopy` | trees and fruit trees | each canopy pixel lands 0.5 × its height above the trunk along the sun, blurred 7 HD px, plus a trunk contact shadow |
+
+The swarm keeps the shadow drawn into its art and has no spec.
+
+**Building meshes.** `tools/artwork/ai/trellis_meshes.py` sends each building
+sprite (de-shadowed, team layer composited, 2×) to the TRELLIS image-to-3D
+model (MIT weights, hosted by fal.ai) and stages the meshes outside the
+repository; they are not committed. `mesh_shadows.py` aligns each mesh to the
+sprite with an orthographic camera at the sprites' one shared view, 59.6° below
+the horizontal (yaw over the full turn, mirrored or not; roll, scale and
+translation refined), gates it (tolerant silhouette fit ≥ 0.85, a solid
+footprint rather than a relief, no taller than the sprite; up to four seeds,
+the best passing one kept, preferring the height closest to the building's
+other variants; variants with the same silhouette share one mask), and casts it: a visible surface point H screen px
+above the mesh's ground stands at (x, y + H) and throws `length` × H, at most
+45 native px, along (0.6, 0.8), blurred 2 HD px. A world height h shows as
+h × cos 59.6° on screen. A point's ground stays on its own piece of the sprite,
+no lower than that piece's base in its column, so a mesh seated too low casts no
+slab below the building and separate pieces cast separately; shadow parts not
+touching the sprite are dropped. Buildings whose meshes fail the gate keep a
+`block` spec at their reviewed length. barracks0b0's old shadow was painted
+opaque into its art; its spec's `paint_out` relights it to the sand around it
+before casting (HD, and classic from the area-averaged HD mask).
+
+**Shadow length is art direction.** One sun direction serves everything, but
+each building's `length` (screen px of throw per screen px of height, default
+`SHADOW_LENGTH` 0.6) is set in specs.json so small buildings read as low and
+towers as tall (from 0.2 for pools and the barracks' sunken arena to 1.1 for
+the level 3 hospital). Reviewers compare a building at every candidate length
+with `mesh_shadows.py --lengths DIR`; where two reviewers differed, the shorter
+length was taken. In ground terms, with the camera at 59.6°, a
+screen length r is a ground shadow of 0.56 r per unit of height
+(r cos 59.6° √(0.6² + 0.8²/sin² 59.6°)), so the sun stands at
+atan(1 / 0.56 r):
+
+| length | 0.2 | 0.3 | 0.45 | 0.6 | 0.8 | 1.1 |
+| --- | --- | --- | --- | --- | --- | --- |
+| true sun elevation | 84° | 80° | 76° | 71° | 66° | 58° |
+
+(Reading a screen length r as the ground shadow, as this page once did with
+"42°" for 1.1, ignores the view's foreshortening.) On the ground the shadows
+fall at 57° south of east; on screen at 53°, along (0.6, 0.8).
 
 Throws are capped at 45 native pixels, under the explorers' `flightHeight` of
 52, so flying units still read as above everything. The classic layer is the HD
-layer area-averaged, so classic and HD shadows match. Specs are hand-built per
-building family and reviewed on sheets (`cast_shadows.py --review DIR`);
-automatic depth estimation was rejected. Damaged variants share their
-building's spec. The tool also removes the shadows the old art baked in: only
-near-black, semi-transparent base pixels (alpha < 220, every channel < 45), so
-translucent art such as the barracks blade stays.
+layer area-averaged, so classic and HD shadows match. Damaged variants share
+their building's mask where their geometry matches. The tool also removes the
+shadows the old art baked in: only near-black, semi-transparent base pixels
+(alpha < 220, every channel < 45), so translucent art such as the barracks
+blade stays.
 
 ## Known exceptions
 

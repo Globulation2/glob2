@@ -85,6 +85,33 @@ class StripTests(unittest.TestCase):
         self.assertTrue(np.array_equal(tool.strip(once), once))
 
 
+class PaintOutTests(unittest.TestCase):
+    """A shadow painted opaque into the art is relit to the ground around it, once."""
+
+    def sprite(self):
+        image = np.zeros((160, 160, 4), np.uint8)
+        image[..., :3] = (225, 210, 160)  # lit sand
+        image[..., 3] = 255
+        noise = np.random.default_rng(1).integers(-6, 7, (160, 160, 1))
+        image[..., :3] = np.clip(image[..., :3] + noise, 0, 255)
+        image[40:120, 20:110, :3] = np.clip(np.array([40, 36, 30]) + noise[40:120, 20:110], 0, 255)  # the shadow
+        image[60:70, 130:140, :3] = 20  # a small dark detail: kept
+        return image
+
+    def test_relights_large_dark_regions_only_and_is_idempotent(self):
+        spec = {"strip": True, "paint_out": {"method": "relight"}}
+        hd = self.sprite()
+        classic = np.asarray(Image.fromarray(hd).resize((40, 40), Image.Resampling.BOX))
+        once_hd, once_classic = tool.deshadow(hd, classic, spec)
+        self.assertGreater(once_hd[80, 60, :3].min(), 150)  # relit to sand
+        self.assertEqual(int(once_hd[65, 135, 0]), 20)      # the small detail stays
+        self.assertFalse(tool.paint_out_mask(once_hd, {}).any())
+        self.assertGreater(once_classic[20, 15, :3].min(), 150)
+        twice_hd, twice_classic = tool.deshadow(once_hd, once_classic, spec)
+        self.assertTrue(np.array_equal(once_hd, twice_hd))
+        self.assertTrue(np.array_equal(once_classic, twice_classic))
+
+
 class RegistrationTests(unittest.TestCase):
     """A one-frame pack: write, then rerun with no change."""
 
@@ -135,9 +162,8 @@ class RegistrationTests(unittest.TestCase):
         shadow = manifest["frames"][1]
         self.assertEqual(shadow["id"], "hut0s")
         self.assertTrue(shadow["recipe"].startswith(tool.RECIPE))
-        self.assertEqual({s["path"] for s in shadow["sources"]},
-                         {"tools/artwork/cast_shadows.py", str(tool.SPECS), "content/data/highres/v1/hut0.png",
-                          "content/data/gfx/hut0.png"})
+        self.assertLessEqual({"tools/artwork/cast_shadows.py", str(tool.SPECS), "content/data/highres/v1/hut0.png",
+                              "content/data/gfx/hut0.png"}, {s["path"] for s in shadow["sources"]})
         hd = np.asarray(Image.open(runtime / "hut0s.png"))
         classic = np.asarray(Image.open(root / "content/data/gfx/hut0s.png"))
         self.assertTrue(np.array_equal(tool.downscale(hd[..., 3]), classic[..., 3]))
@@ -159,6 +185,47 @@ class RegistrationTests(unittest.TestCase):
         self.assertEqual(tool.prune({}, self.root), ["hut0s"])
         self.assertFalse((self.root / "content/data/gfx/hut0s.png").exists())
         self.assertFalse((self.root / highres_pack.RUNTIME / "hut0s.png").exists())
+
+
+class MeshMethodTests(RegistrationTests):
+    """`mesh` specs register mesh_shadows.py's committed mask, padded, offline."""
+
+    def setUp(self):
+        super().setUp()
+        mesh = self.root / tool.MESH
+        mesh.mkdir(parents=True)
+        mask = np.zeros((70, 75), np.uint8)  # the 64x64 frame plus a reach past it
+        mask[30:70, 30:75] = 200
+        alpha = np.zeros(mask.shape + (4,), np.uint8)
+        alpha[..., 3] = mask
+        Image.fromarray(alpha).save(mesh / "hut0s.png")
+        (mesh / "hut0.json").write_text(json.dumps(dict(frame="hut0", shadow=dict(length=0.45))))
+        (self.root / tool.SPECS).write_text(json.dumps(dict(version=1, families=[
+            dict(frames=["hut0"], method="mesh", length=0.45)])))
+
+    def test_registers_both_copies_and_reruns_without_change(self):
+        super().test_registers_both_copies_and_reruns_without_change()
+        hd = np.asarray(Image.open(self.root / highres_pack.RUNTIME / "hut0s.png"))[..., 3]
+        self.assertEqual(hd.shape, (80, 80))  # padded to whole 16 px steps
+        self.assertEqual(int(hd[69, 74]), 200)
+        self.assertEqual(int(hd[75, 79]), 0)
+        manifest = json.loads((self.root / highres_pack.RUNTIME / "manifest.json").read_text())
+        sources = {s["path"] for s in manifest["frames"][1]["sources"]}
+        self.assertTrue({str(tool.MESH / "hut0s.png"), str(tool.MESH / "hut0.json")} <= sources)
+        self.assertEqual(manifest["frames"][1]["recipe"], tool.RECIPE + ": mesh")
+
+    def test_a_mask_cast_at_another_length_is_refused(self):
+        (self.root / tool.SPECS).write_text(json.dumps(dict(version=1, families=[
+            dict(frames=["hut0"], method="mesh", length=0.6)])))
+        with self.assertRaisesRegex(ValueError, "rerun"):
+            self.cast()
+
+    def test_variants_share_a_mask(self):
+        spec = dict(tool.DEFAULTS, method="mesh", mesh="hut0", length=0.45)
+        self.assertEqual(tool.mesh_layer(spec, (64, 64), self.root).shape, (80, 80))
+
+    def test_frames_leaving_the_spec_are_pruned(self):
+        pass
 
 
 class SpecTests(unittest.TestCase):

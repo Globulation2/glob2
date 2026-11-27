@@ -1,0 +1,56 @@
+{
+ "frame": "inn2b0",
+ "model": "TRELLIS (microsoft/TRELLIS-image-large, MIT) via fal.ai",
+ "endpoint": "fal-ai/trellis",
+ "seed": 1,
+ "request_id": "01a21f0f-5092-7001-9458-5776f0ccc47b",
+ "mesh_sha256": "3f8f8cb85c2e690e829b1150f8f783a49bb3665d0dfeaa17c1a10c9d28546f5c",
+ "input_sha256": "f8a626a15aada32d422c88f9735595a9852a397d21da3bdd0c604af3f9a5ea6f",
+ "input_sources": {
+  "base_sha256": "bfc65a4560ab7affe702bd614bc85d62eac277504b840f976713c89d77d228a1",
+  "team_sha256": "aac2c350d6ad68479c36df11f8301ad7a1010d9341626a0df7fc0708086ce4b9"
+ },
+ "sprite": {
+  "base_sha256": "5f66da4869f77c4f1ea256fdd06fa950323f7322e85cb6794c3a8f1e46b5c6f2",
+  "team_sha256": "aac2c350d6ad68479c36df11f8301ad7a1010d9341626a0df7fc0708086ce4b9"
+ },
+ "camera": {
+  "elevation_deg": 59.6,
+  "yaw_deg": 270.06,
+  "roll_deg": 1.87,
+  "scale_px": 415.619,
+  "tx": 193.21,
+  "ty": 196.54,
+  "mirrored": false,
+  "up": "glb +y"
+ },
+ "metrics": {
+  "silhouette_fit": 0.8659,
+  "silhouette_iou": 0.6422,
+  "depth_ratio": 1.215,
+  "max_height_unclamped_hd": 96.7,
+  "max_height_hd": 96.7,
+  "p95_height_hd": 72.3,
+  "sprite_height_hd": 371
+ },
+ "gate": {
+  "passed": true,
+  "reasons": []
+ },
+ "shadow": {
+  "length": 0.8,
+  "cap_hd": 180,
+  "blur_hd": 2.0,
+  "sun": [
+   0.6,
+   0.8
+  ]
+ },
+ "tool_sha256": "ef7085947059783d0a5b9eb561363b51d1ca253eb58d76750c9564a7d42242a0",
+ "packages": {
+  "numpy": "2.5.5",
+  "scipy": "1.18.1",
+  "PIL": "13.0.0",
+  "trimesh": "5.2.2"
+ }
+}
