@@ -806,7 +806,8 @@ function publishPresentationMetrics() {
     safe: {left:parseFloat(style.paddingLeft)||0, top:parseFloat(style.paddingTop)||0,
       right:parseFloat(style.paddingRight)||0, bottom:parseFloat(style.paddingBottom)||0},
     keyboardInset:visual ? Math.max(0,height-visual.height-visual.offsetTop) : 0,
-    touch:navigator.maxTouchPoints>0 || touchMedia.matches,
+    touch:typeof window.glob2PresentationOverride?.touch === 'boolean' ? window.glob2PresentationOverride.touch
+      : navigator.maxTouchPoints>0 || touchMedia.matches,
     pointer:pointerMedia.matches, hover:hoverMedia.matches
   };
   const previous = Module.layoutViewport;
@@ -817,6 +818,9 @@ function publishPresentationMetrics() {
 }
 for (const media of [pointerMedia,hoverMedia,touchMedia]) media.addEventListener('change',publishPresentationMetrics);
 addEventListener('resize',publishPresentationMetrics);
+// A portal adapter that knows the device (CrazyGames' SDK system info) sets
+// window.glob2PresentationOverride = {touch} and dispatches this event.
+addEventListener('glob2-presentation-override',publishPresentationMetrics);
 window.visualViewport?.addEventListener('resize',publishPresentationMetrics);
 window.visualViewport?.addEventListener('scroll',publishPresentationMetrics);
 publishPresentationMetrics();

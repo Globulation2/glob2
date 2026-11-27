@@ -128,3 +128,25 @@ test('GameplayAPI stops for the in-game menu and pauses and starts on resume, wi
   assert.equal(win.glob2PortalHost.matchBreak('leave'), true);
   assert.deepEqual(calls.slice(-1), ['showFullscreenAdv']);
 });
+
+test('the Yandex page watches window focus: blur stops gameplay and audio until focus returns', async () => {
+  const {calls, win, adapter} = fixture({lang: 'en'});
+  const listeners = {};
+  win.addEventListener = (name, listener) => { listeners[name] = listener; };
+  win.document = {hidden: false, body: null, hasFocus: () => true, addEventListener() {}};
+  const context = new win.AudioContext();
+  await adapter.connect();
+  require('../portal-core').watchShell(win, adapter.session, {focus: true, audio: adapter.audio});
+  adapter.session.start();
+  adapter.session.match(true);
+  listeners.blur();
+  assert.equal(context.state, 'suspended');
+  listeners.focus();
+  assert.equal(context.state, 'running');
+  assert.deepEqual(calls, ['ready', 'start', 'stop', 'start']);
+});
+
+test('the Yandex bootstrap asks watchShell for focus handling', () => {
+  const source = require('node:fs').readFileSync(require('node:path').join(__dirname, '../yandex.js'), 'utf8');
+  assert.match(source, /watchShell\(window, adapter\.session, \{focus: true/);
+});

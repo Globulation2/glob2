@@ -22,9 +22,10 @@ order. A failed push can be rerun; gjpush resumes a partial upload.
 
 `package-portal.py --portal gamejolt` injects only `portal-core.js` (Game Jolt
 needs no SDK) with the policy `{externalLinks: true, onlineSignIn: true}`. Game
-Jolt documents no size or file-count limit for browser builds
-([web builds help](https://gamejolt.com/help/web-builds)), so the profile enforces
-none. The 0.11.8 upload is 132.0 MB and 494 files.
+Jolt publishes no size or file-count limit for browser builds (its
+[help docs](https://gamejolt.com/help-docs) have no article on them), so the
+profile enforces none. The 0.11.8 upload, 132.0 MB and 494 files, was accepted on
+2026-11-26.
 
 ## Open items
 

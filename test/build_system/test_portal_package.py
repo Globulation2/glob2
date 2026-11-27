@@ -194,6 +194,50 @@ class PortalPackageTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "collides"):
                 module.collect(source, design, module.portal("newgrounds"))
 
+    def test_portal_pages_block_selection_callout_panning_and_zoom(self):
+        for profile in module.PORTALS.values():
+            with self.subTest(portal=profile.name):
+                html, _ = module.rewrite_index(SHELL, profile, module.game_id(profile))
+                style = html[html.index("<style>body{"):html.index("</style>")]
+                for rule in ("-webkit-user-select:none", "-moz-user-select:none", "-ms-user-select:none",
+                             ";user-select:none", "-webkit-touch-callout:none", ";touch-action:none"):
+                    self.assertIn(rule, style)
+                # The game's DOM text fields stay usable.
+                self.assertIn("input,textarea{", style)
+                self.assertIn("user-select:text", style)
+                self.assertLess(html.index("<style>body{"), html.index("<script>window.GLOB2_PORTAL="))
+                viewport = module.VIEWPORT.search(html).group(1)
+                self.assertIn("user-scalable=no", viewport)
+                self.assertIn("maximum-scale=1", viewport)
+                self.assertLess(html.index('name="viewport"'), html.index("<script"))
+
+    def test_existing_viewport_keeps_its_settings_and_gains_no_zoom(self):
+        shell = SHELL.replace("<head>", '<head>\n<meta name="viewport" content="width=device-width,'
+                                       'initial-scale=1,viewport-fit=cover,user-scalable=yes">')
+        html, _ = module.rewrite_index(shell, module.portal("gamepix"))
+        self.assertEqual(len(module.VIEWPORT.findall(html)), 1)
+        self.assertEqual(module.VIEWPORT.search(html).group(1),
+                         "width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no")
+
+    def test_verify_rejects_an_upload_without_the_page_style_or_no_zoom_viewport(self):
+        profile = module.portal("gamepix")
+        for broken in (lambda html: html.replace(module.PAGE_STYLE, ""),
+                       lambda html: html.replace(",user-scalable=no", "")):
+            with self.subTest(), tempfile.TemporaryDirectory() as directory:
+                source, design = fixture(directory)
+                files = module.collect(source, design, profile)
+                files["index.html"] = broken(files["index.html"].decode()).encode()
+                output = Path(directory) / "bad.zip"
+                module.write_zip(files, output)
+                with self.assertRaisesRegex(ValueError, "page style|user-scalable"):
+                    module.verify(output, profile)
+
+    def test_sources_avoid_retired_pages(self):
+        sources = {source for profile in module.PORTALS.values() for source in profile.sources}
+        self.assertNotIn("https://gamejolt.com/help/web-builds", sources)
+        self.assertNotIn("https://yandex.com/dev/games/doc/en/sdk/sdk-gameready", sources)
+        self.assertIn("https://yandex.com/dev/games/doc/en/sdk/sdk-game-events", module.portal("yandex").sources)
+
     def test_verify_rejects_a_reordered_upload(self):
         profile = module.portal("crazygames")
         with tempfile.TemporaryDirectory() as directory:
@@ -259,6 +303,9 @@ class ShellTests(unittest.TestCase):
                 self.assertIn("brand/glob-64.png", needed)
                 without_sdk = html.replace(f'src="{profile.sdk_url}"', "") if profile.sdk_url else html
                 self.assertNotRegex(without_sdk, module.ROOT_REFERENCE)
+                self.assertEqual(len(module.VIEWPORT.findall(html)), 1)
+                self.assertIn("user-scalable=no", module.VIEWPORT.search(html).group(1))
+                self.assertIn("interactive-widget=resizes-visual", module.VIEWPORT.search(html).group(1))
 
 
 if __name__ == "__main__":

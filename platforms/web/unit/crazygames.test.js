@@ -114,3 +114,36 @@ test('entering the menu or pausing stops gameplay; resuming starts it; no midgam
   assert.equal(win.glob2PortalHost.matchBreak('leave'), true);
   assert.deepEqual(calls.slice(-1), ['requestAd midgame']);
 });
+
+function deviceFixture(type) {
+  const events = [];
+  const game = {settings: {muteAudio: false}};
+  const SDK = {init: () => Promise.resolve(), game, user: {systemInfo: {device: {type}}}};
+  const win = fakeWindow({CrazyGames: {SDK}, Event: class { constructor(name) { this.type = name; } },
+                          dispatchEvent: event => events.push(event.type)});
+  return {win, events, adapter: create(win)};
+}
+
+test('touch presentation follows the SDK device type, not touch detection', async () => {
+  for (const [type, touch] of [['mobile', true], ['tablet', true], ['desktop', false]]) {
+    const {win, events, adapter} = deviceFixture(type);
+    await adapter.connect();
+    assert.deepEqual(win.glob2PresentationOverride, {touch}, type);
+    assert.deepEqual(events, ['glob2-presentation-override']);
+  }
+});
+
+test('an unknown or missing device type leaves the shell to decide', async () => {
+  for (const type of [undefined, 'console']) {
+    const {win, events, adapter} = deviceFixture(type);
+    await adapter.connect();
+    assert.equal(win.glob2PresentationOverride, undefined);
+    assert.deepEqual(events, []);
+  }
+});
+
+test('shell.html prefers the portal presentation override and republishes on its event', () => {
+  const shell = require('node:fs').readFileSync(require('node:path').join(__dirname, '../shell.html'), 'utf8');
+  assert.match(shell, /typeof window\.glob2PresentationOverride\?\.touch === 'boolean'/);
+  assert.match(shell, /addEventListener\('glob2-presentation-override',publishPresentationMetrics\)/);
+});

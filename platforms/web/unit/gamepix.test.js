@@ -57,11 +57,47 @@ test('closed contexts are forgotten', () => {
   assert.equal(adapter.contexts.size, 0);
 });
 
-test('loading reports increasing whole percentages, then loaded and gameStart once', () => {
+test('loading reports increasing whole percentages, then loaded once at the main menu', () => {
   const {calls, adapter} = fixture();
   adapter.progress('12.7'); adapter.progress(12); adapter.progress(5); adapter.progress(140);
   adapter.start(); adapter.start(); adapter.progress(50);
-  assert.deepEqual(calls, [['loading', 12], ['loading', 100], ['loaded'], ['gameStart']]);
+  assert.deepEqual(calls, [['loading', 12], ['loading', 100], ['loaded']]);
+  assert.equal(adapter.started, false);
+});
+
+test('gameStart fires once, when the first match is playing', () => {
+  const {calls, adapter} = fixture();
+  adapter.start();
+  adapter.session.match(true);
+  adapter.session.match(false);
+  adapter.session.match(true);
+  assert.deepEqual(calls, [['loading', 100], ['loaded'], ['gameStart']]);
+  assert.equal(adapter.started, true);
+});
+
+test('a GamePix pause holds the game as well as silencing it, idempotently', () => {
+  const {win, adapter} = fixture();
+  const context = new win.AudioContext();
+  adapter.start();
+  adapter.session.match(true);
+  adapter.pause(); adapter.pause();
+  assert.equal(adapter.session.held, true);
+  assert.equal(adapter.session.active, false);
+  assert.equal(context.state, 'suspended');
+  adapter.resume(); adapter.resume();
+  assert.equal(adapter.session.held, false);
+  assert.equal(adapter.session.active, true);
+  assert.equal(context.state, 'running');
+});
+
+test('a GamePix pause before the first match delays gameStart until play', () => {
+  const {calls, adapter} = fixture();
+  adapter.start();
+  adapter.pause();
+  adapter.session.match(true);
+  assert.deepEqual(calls.slice(-1), [['loaded']]);
+  adapter.resume();
+  assert.deepEqual(calls.slice(-1), [['gameStart']]);
 });
 
 test('the adapter works without the SDK', () => {

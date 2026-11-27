@@ -4,6 +4,8 @@
 // before every game script. Yandex requires the interface language to follow
 // environment.i18n.lang, LoadingAPI.ready() once the game is playable, and
 // GameplayAPI.start/stop around gameplay; game_api_pause/resume silence the game.
+// A window without focus counts as a hidden tab (requirements 1.3 and 1.19.3):
+// gameplay stops and audio is silenced until focus returns.
 // Ad breaks: adv.showFullscreenAdv at the logical pauses the game reports
 // (portal-core.js createBreaks, requirement 4.4), never before the first match;
 // Yandex controls the frequency and answers too-frequent calls with onClose(false).
@@ -81,6 +83,6 @@
     const adapter = create(window);
     window.glob2Yandex = adapter;
     adapter.connect();
-    window.glob2PortalCore.watchShell(window, adapter.session);
+    window.glob2PortalCore.watchShell(window, adapter.session, {focus: true, audio: adapter.audio});
   }
 })();

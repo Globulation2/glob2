@@ -28,7 +28,11 @@ game's audio and marks gameplay paused, and `SDK_GAME_START` restores both. A
 handler already in `GD_OPTIONS` still receives every event. At the natural breaks
 the game reports ([ad breaks](web-portals.md#ad-breaks)) it calls
 `gdsdk.showAd()` and holds the game until its promise settles or
-`SDK_GAME_START` arrives. Unlike the other portals this includes the first match:
+`SDK_GAME_START` arrives. It never calls `showAd()` before the SDK announces
+`SDK_READY`: a break requested earlier holds the game and waits for it, and asks
+only if the break is still waiting (the 10-second start timeout releases the game
+otherwise); `SDK_ERROR` ends a waiting break without an ad and no later break
+asks. Unlike the other portals this includes the first match:
 the SDK guide asks for a pre-roll on the start button, and activation needs it
 viewed once. The pre-roll starts the 3-minute gap every ad break is followed by
 ([ad breaks](web-portals.md#ad-breaks)), and the SDK applies its own interval on
@@ -37,5 +41,14 @@ top.
 ## Open items
 
 - register the game and set `GLOB2_GAMEDISTRIBUTION_GAME_ID`.
+- GameDistribution asks for `showAd()` from inside a touch-up or mouse-up handler
+  so ads work on mobile. Our breaks come from the game loop: the `start` break
+  fires when the match is about to run its first tick, after the map has loaded,
+  frames after the click on Play, and the page cannot tell which DOM click chose
+  to play. Calling `showAd()` from that click would need the game to report the
+  intent synchronously from its input handling (a C++ change), and waiting for a
+  further tap would hold the player at an unexplained pause, so neither is done.
+  Test the pre-roll on iOS Safari and Android Chrome inside an iframe before
+  submitting.
 
 [Web portals](web-portals.md) · [Release index](README.md) · [Documentation index](../README.md).

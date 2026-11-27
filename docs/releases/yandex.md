@@ -28,7 +28,13 @@ spaces or Cyrillic in file names.
 - calls `features.LoadingAPI.ready()` when the main menu is ready and
   `features.GameplayAPI.start()`/`stop()` as a match starts and ends and around
   the in-game menu and pauses
-  ([game ready](https://yandex.com/dev/games/doc/en/sdk/sdk-gameready));
+  ([game events](https://yandex.com/dev/games/doc/en/sdk/sdk-game-events));
+- treats a window without focus like a hidden tab (requirements 1.3 and 1.19.3):
+  on `blur` it calls `GameplayAPI.stop()` during a match and silences audio, and
+  on `focus` restores both, so clicking into another window or the Yandex page
+  around the game stops gameplay and sound. A page that loads without focus
+  starts silent until the first click focuses it. The simulation itself keeps
+  running while unfocused; only a hidden tab pauses it;
 - silences audio and holds the game on `game_api_pause`, restoring both on
   `game_api_resume`;
 - at the logical pauses the game reports (requirement 4.4,

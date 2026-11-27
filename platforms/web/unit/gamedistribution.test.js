@@ -47,6 +47,7 @@ test('the first match start shows the required pre-roll; a mid-roll comes three 
   const adapter = create(win);
   win.gdsdk = {showAd: () => { shown.push('showAd'); ad = deferred(); return ad.promise; }};
   const context = new win.AudioContext();
+  win.GD_OPTIONS.onEvent({name: 'SDK_READY'});
   adapter.session.start();
   assert.equal(win.glob2PortalHost.matchBreak('start'), true);
   win.GD_OPTIONS.onEvent({name: 'SDK_GAME_PAUSE'});
@@ -73,4 +74,50 @@ test('without gdsdk (an ad blocker) a break holds nothing', () => {
   create(win);
   assert.equal(win.glob2PortalHost.matchBreak('start'), false);
   assert.equal(win.glob2PortalHost.held, false);
+});
+
+function readyFixture() {
+  const shown = [];
+  let ad = null;
+  const win = adWindow('gamedistribution', {GD_OPTIONS: {gameId: 'abc'}});
+  const adapter = create(win);
+  win.gdsdk = {showAd: () => { shown.push('showAd'); ad = deferred(); return ad.promise; }};
+  adapter.session.start();
+  return {win, adapter, shown, ad: () => ad};
+}
+
+test('a pre-roll requested before SDK_READY waits for it and only then calls showAd', async () => {
+  const {win, adapter, shown, ad} = readyFixture();
+  assert.equal(adapter.sdkState, 'loading');
+  assert.equal(win.glob2PortalHost.matchBreak('start'), true);
+  assert.deepEqual(shown, []);
+  assert.equal(win.glob2PortalHost.held, true);
+  win.GD_OPTIONS.onEvent({name: 'SDK_READY'});
+  assert.deepEqual(shown, ['showAd']);
+  ad().resolve(); await settle();
+  assert.equal(win.glob2PortalHost.held, false);
+  assert.equal(adapter.session.active, true);
+});
+
+test('a break the start timeout released before SDK_READY never calls showAd', async () => {
+  const {win, shown} = readyFixture();
+  win.glob2PortalHost.matchBreak('start');
+  win.timers.advance(10000);
+  assert.equal(win.glob2PortalHost.held, false);
+  win.GD_OPTIONS.onEvent({name: 'SDK_READY'});
+  await settle();
+  assert.deepEqual(shown, []);
+});
+
+test('SDK_ERROR ends a waiting break without an ad, and later breaks are not asked', async () => {
+  const {win, adapter, shown} = readyFixture();
+  win.glob2PortalHost.matchBreak('start');
+  win.GD_OPTIONS.onEvent({name: 'SDK_ERROR'});
+  await settle();
+  assert.equal(win.glob2PortalHost.held, false);
+  assert.equal(adapter.sdkState, 'failed');
+  win.glob2PortalHost.matchBreak('end');
+  win.timers.advance(180000);
+  assert.equal(win.glob2PortalHost.matchBreak('leave'), false);
+  assert.deepEqual(shown, []);
 });

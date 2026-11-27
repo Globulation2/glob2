@@ -133,24 +133,29 @@
   //   'leave'  the player left a finished match for the menu,
   //   'pause'  play stopped inside a match (the in-game menu or a pause),
   //   'resume' play continued.
-  // A break may run an ad at 'start' and 'leave' only; 'pause' and 'resume'
-  // only change gameplay, never ask for an ad and never start the 3 minutes. The adapter's show(ad)
+  // points lists where a break may run an ad: 'start' and 'leave' by default,
+  // the natural breaks between matches; Poki asks before every return to play
+  // instead ('start' and 'resume'). 'end' and 'pause' never ask; a point not
+  // listed only changes gameplay and never starts the minimum gap. The adapter's show(ad)
   // requests the SDK's interstitial and returns a promise that settles when the
   // break is over; it calls ad.started() when the ad really plays (some SDKs
-  // want audio muted only then) and returns null when it cannot ask. While a
+  // want audio muted only then), reads ad.active to know whether the break still
+  // waits for it, and returns null when it cannot ask. While a
   // break runs the session is held: gameplay is reported stopped and the game
   // reads glob2PortalHost.held to pause its simulation and input. Audio is
   // silenced from the request, or from ad.started() with {muteOnStart: true}.
   // firstStart allows a break before the first match since the page loaded
-  // (GameDistribution's required pre-roll). minInterval (ms, 3 minutes) is our
-  // own gap after every break, measured from when it ended, whether or not an ad
-  // played, on top of the SDK's own frequency rules: leaving a match and starting
+  // (GameDistribution's required pre-roll, Poki). minInterval (ms, 3 minutes by
+  // default; 0 turns it off) is our own gap after every break, measured from
+  // when it ended, whether or not an ad played, on top of the SDK's own
+  // frequency rules: leaving a match and starting
   // the next is one break, never two back to back. A break that does
   // not start within startTimeout, or does not finish within maxDuration,
   // releases the game anyway, so a stalled SDK or an ad blocker never blocks it.
   function createBreaks(win, {session, audio, show, firstStart = false, muteOnStart = false,
-                              minInterval = 180000, startTimeout = 10000, maxDuration = 180000, now = () => win.performance?.now?.() ?? Date.now()} = {}) {
+                              points = ['start', 'leave'], minInterval = 180000, startTimeout = 10000, maxDuration = 180000, now = () => win.performance?.now?.() ?? Date.now()} = {}) {
     const enabled = win.GLOB2_PORTAL?.ads === true && typeof show === 'function';
+    const asks = new Set(points.filter(point => point === 'start' || point === 'leave' || point === 'resume'));
     let starts = 0;
     let last = -Infinity;
     let current = null;
@@ -166,11 +171,12 @@
     }
 
     function request(point) {
-      if (!enabled || current) return false;
       if (point === 'start' && starts++ === 0 && !firstStart) return false;
-      if (now() - last < minInterval) return false;
+      if (!enabled || current || !asks.has(point)) return false;
+      if (minInterval > 0 && now() - last < minInterval) return false;
       const token = {playing: false};
       const ad = {
+        get active() { return current === token; },
         started() {
           if (current !== token || token.playing) return;
           token.playing = true;
@@ -207,9 +213,16 @@
           session.match(true);
           return held;
         }
-        if (point === 'pause' || point === 'resume') {
-          session.pause(point === 'pause');
+        if (point === 'pause') {
+          session.pause(true);
           return false;
+        }
+        if (point === 'resume') {
+          // Only a return to play from a pause in a match; held before play
+          // resumes, so gameplay starts only after the break.
+          const held = session.paused ? request('resume') : false;
+          session.pause(false);
+          return held;
         }
         if (point === 'end' || point === 'leave') session.match(false);
         return point === 'leave' ? request('leave') : false;
@@ -235,8 +248,11 @@
   }
 
   // The shell's progress bar is the download state; body.ready marks the first
-  // interactive frame (onApplicationStarted in shell.html).
-  function watchShell(win, session) {
+  // interactive frame (onApplicationStarted in shell.html). With {focus: true}
+  // (Yandex Games, requirements 1.3 and 1.19.3) a window without focus counts as
+  // a hidden page for gameplay, and audio is silenced until focus returns. The
+  // simulation is not held for it: the shell pauses only a hidden page.
+  function watchShell(win, session, {focus = false, audio = win.glob2PortalAudio} = {}) {
     const doc = win.document;
     const observe = () => {
       const bar = doc.getElementById('loading-bar');
@@ -249,8 +265,18 @@
       observer.observe(doc.body, { attributes: true, attributeFilter: ['class'] });
       read();
     };
-    doc.addEventListener?.('visibilitychange', () => session.visible?.(!doc.hidden));
-    if (session.visible) session.visible(!doc.hidden);
+    let focused = true;
+    const update = () => {
+      session.visible?.(!doc.hidden && focused);
+      if (focus) audio?.set('blur', !focused);
+    };
+    doc.addEventListener?.('visibilitychange', update);
+    if (focus) {
+      focused = typeof doc.hasFocus === 'function' ? doc.hasFocus() : true;
+      win.addEventListener?.('blur', () => { focused = false; update(); });
+      win.addEventListener?.('focus', () => { focused = true; update(); });
+    }
+    update();
     if (doc.body) observe();
     else doc.addEventListener('DOMContentLoaded', observe, { once: true });
   }
