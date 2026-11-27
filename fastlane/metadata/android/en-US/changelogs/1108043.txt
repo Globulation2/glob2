@@ -1,0 +1,1 @@
+Report a Problem in the main menu; on Android, crash reports are kept and only sent if you agree. Fixes the in-game menu on small screens, keeps resized windows filled, calms shoreline water, and gives MCP agents economy alerts.
