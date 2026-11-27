@@ -266,8 +266,9 @@ for(const mode of ['serial','threaded']) {
     // Only the launcher policy is forced; canvas transfer and GL stay real.
     await page.route(url.href,async route=>{
       const response=await route.fetch();const body=await response.text();
-      const policy="renderer: chooseRenderer() ? 'webgl2' : 'software',";
-      expect(body).toContain(policy);
+      // The standard edition's launcher policy (shell.html, var Module).
+      const policy=/renderer: chooseRenderer\(\) \|\| [^\n]*\n\s*\? 'webgl2' : 'software',/;
+      expect(body).toMatch(policy);
       await route.fulfill({response,body:body.replace(policy,"renderer: 'webgl2',")});
     });
     const errors=[];page.on('pageerror',error=>errors.push(String(error)));

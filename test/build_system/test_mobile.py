@@ -285,6 +285,18 @@ class MobileBuildTests(unittest.TestCase):
         self.assertEqual({key:value for key,value in amazon.items() if key not in ('amazon', 'problem_reports')},
                          {key:value for key,value in standard.items() if key!='problem_reports'})
 
+    def test_fdroid_packages_native_output_from_its_own_directory(self):
+        # F-Droid's native build (problem_reports=0) lands in its own directory,
+        # while the Android project stays at the standard path that sign and
+        # install use, so packaging must read shaders and libmain.so from the
+        # native build's directory.
+        standard = build_identity({'target':'android','release':'1'})
+        fdroid = build_identity({'target':'android','release':'1','problem_reports':'0'})
+        self.assertNotEqual(default_directory(standard), default_directory(fdroid))
+        source = (Path(__file__).resolve().parents[2]/'platforms/mobile/android.py').read_text()
+        self.assertIn('export_packaged_assets(outputs[args.arch],', source)
+        self.assertNotIn("output/'lib/libmain.so'", source)
+
     def test_wrong_architecture_cannot_reuse_output(self):
         with tempfile.TemporaryDirectory() as directory:
             prepare_directory(directory, build_identity({'target':'android'}))

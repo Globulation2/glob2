@@ -10,6 +10,8 @@ function profile(language, online) {
   const contents = language === null ? '' : `language=${language}\nhighResolutionArtwork=0\n`;
   const context = vm.createContext({
     ENV:{}, navigator:{languages:['en-US']},
+    // Defined above the tested slice; the standard edition has every feature.
+    glob2HasFeature:() => true,
     Glob2I18n:{getLocale:() => online},
     FS:{analyzePath:() => ({exists:language !== null}),readFile:() => contents},
   });

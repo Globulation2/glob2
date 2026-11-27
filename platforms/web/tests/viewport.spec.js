@@ -17,7 +17,8 @@ test.beforeEach(async ({page}) => {
   await expect.poll(async () => (await snapshot(page)).screen, {timeout:60000}).toMatch(/MainMenuScreen|HandPreferenceScreen|AudioPreferenceScreen|IntroductionOfferScreen/);
   if ((await snapshot(page)).screen.includes('AudioPreferenceScreen')) {
     await clickControl(page,'audio.silence');
-    await screen(page,'HandPreferenceScreen');
+    // The thumb side is asked only on touch hosts (HandPreferenceScreen::needed).
+    await expect.poll(async () => (await snapshot(page)).screen).not.toContain('AudioPreferenceScreen');
   }
   if ((await snapshot(page)).screen.includes('HandPreferenceScreen')) await clickControl(page,'hand.right');
   await screen(page,'MainMenuScreen');
