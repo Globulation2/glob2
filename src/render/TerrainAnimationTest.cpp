@@ -47,6 +47,7 @@
 #include <map>
 #include <memory>
 #include <optional>
+#include <set>
 #include <string>
 #include <string_view>
 #include <thread>
@@ -182,12 +183,13 @@ struct Scene
 	bool available() const { return gfx->backendSwitchStatus().active == backend; }
 
 	// One frame of the full map draw, captured as Width x Height RGBA.
+	float zoom = 1.f;
 	std::vector<Uint8> frame(bool paused)
 	{
 		gfx->setClipRect();
 		gfx->drawFilledRect(0, 0, Width, Height, 11, 23, 37);
-		gfx->beginMapTransform(1.f, 0, 0, 0, 0, Width, Height);
-		glob2test::drawMap(fixture->game, 0, 0, Width, Height, 0, 0, 0, 0, 0, view,
+		gfx->beginMapTransform(zoom, 0, 0, 0, 0, Width, Height);
+		glob2test::drawMap(fixture->game, 0, 0, int(Width / zoom), int(Height / zoom), 0, 0, 0, 0, 0, view,
 						   Uint32(Game::DRAW_NO_CLOUD_LAYER | Game::DRAW_WHOLE_MAP), nullptr, nullptr, paused);
 		gfx->endMapTransform();
 		return capture();
@@ -766,5 +768,110 @@ TEST_SUITE("TerrainAnimation")
 				CHECK(half < behind);
 			}
 		}
+	}
+
+	TEST_CASE("portable SDL calms open water from shared keyframes under still overlays [display]")
+	{
+		if (!wanted(RendererBackend::PortableSDL))
+			return;
+		std::optional<Scene> portable(std::in_place, RendererBackend::PortableSDL);
+		if (!portable->available())
+		{
+			MESSAGE("portable SDL unavailable here; omitted");
+			return;
+		}
+		// The calmed band: water cells near the island that are not shore cells,
+		// which the shore-calm reach quiets.
+		std::vector<std::size_t> calmed;
+		std::size_t island = 0; // cells on the island or within a cell of it
+		for (int cy = 0; cy < Height / 32; ++cy)
+			for (int cx = 0; cx < Width / 32; ++cx)
+			{
+				island += nearIsland(cx, cy, 1);
+				if (!nearIsland(cx, cy, 2) || nearIsland(cx, cy, 0))
+					continue;
+				for (int y = cy * 32 + 2; y < cy * 32 + 30; ++y)
+					for (int x = cx * 32 + 2; x < cx * 32 + 30; ++x)
+						calmed.push_back((std::size_t(y) * Width + x) * 4);
+			}
+		const auto whole = portable->at(81591, 0.f), half = portable->at(81591, 0.5f);
+		const auto *pages = portable->view.render.existingTerrainCache();
+		REQUIRE(pages);
+		const auto cells = pages->keyframeCells();
+		CAPTURE(cells.shared);
+		CAPTURE(cells.calmOverlay);
+		CAPTURE(cells.own);
+		// Calmed open water no longer composes keyframes of its own: only the
+		// island's cells and those just around it, where land and surf mix, do.
+		CHECK(cells.calmOverlay > 0);
+		CHECK(cells.shared > 0);
+		CHECK(cells.own > 0);
+		CHECK(cells.own <= island);
+		// It moves within a step, as the shared keyframes crossfade under it.
+		CHECK(change(whole, half, calmed) > 0.05);
+		portable.reset(); // One display scene at a time.
+		// And it shows what the direct pass shows there, at whole and half steps.
+		for (auto backend : {RendererBackend::SDLGPU, RendererBackend::ProgrammableGL})
+		{
+			if (!wanted(backend))
+				continue;
+			Scene direct(backend);
+			if (!direct.available())
+				continue;
+			CAPTURE(GAGCore::rendererBackendName(backend));
+			const auto referenceWhole = direct.at(81591, 0.f), referenceHalf = direct.at(81591, 0.5f);
+			const double wholeChange = change(whole, referenceWhole, calmed), halfChange = change(half, referenceHalf, calmed);
+			CAPTURE(wholeChange);
+			CAPTURE(halfChange);
+			CHECK(wholeChange < 3.0);
+			CHECK(halfChange < 3.0);
+			CHECK(halfChange < change(half, referenceWhole, calmed));
+			break;
+		}
+	}
+
+	// A zoom changes the density the view's pages compose at, and keyframes
+	// are composed per density: until the new density's arrive, the water
+	// draws the previous one's rather than its page's still pixels. The clock
+	// stands still, so the previous density always holds the keyframes shown
+	// and the check is independent of how fast the workers compose.
+	TEST_CASE("portable SDL water draws the previous density's keyframes while a zoom changes density [display]")
+	{
+		if (!wanted(RendererBackend::PortableSDL))
+			return;
+		Scene scene(RendererBackend::PortableSDL);
+		if (!scene.available())
+		{
+			MESSAGE("portable SDL unavailable here; omitted");
+			return;
+		}
+		// Settled zoomed out, every cell the zoom in shows has keyframes at
+		// that density alone.
+		scene.zoom = 0.4f;
+		scene.at(81591, 0.5f);
+		const auto *pages = scene.view.render.existingTerrainCache();
+		REQUIRE(pages);
+		std::set<std::pair<int, int>> densities;
+		std::size_t still = 0, animated = 0, borrowed = 0;
+		// In from 0.4 to 1.6.
+		constexpr int Frames = 120;
+		const double start = scene.view.render.animationNow().value();
+		for (int f = 1; f <= Frames; ++f)
+		{
+			scene.zoom = 0.4f + 1.2f * float(f) / Frames;
+			scene.live(1); // A nanosecond a frame: the clock stays within the key.
+			densities.insert({pages->samplingResolution(), pages->samplingReduction()});
+			const auto cells = pages->keyframeCells();
+			still += cells.still;
+			animated += cells.shared + cells.calmOverlay + cells.own;
+			borrowed += pages->missingKeyframeCells() - cells.still;
+		}
+		CAPTURE(densities.size());
+		CAPTURE(animated);
+		CAPTURE(borrowed);
+		CHECK(scene.view.render.animationNow().value() == doctest::Approx(start).epsilon(1e-6));
+		CHECK(densities.size() >= 3);
+		CHECK(borrowed > 0); // Cells drew another density's keyframes.
+		CHECK(still == 0);
 	}
 }

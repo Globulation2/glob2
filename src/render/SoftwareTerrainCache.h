@@ -151,6 +151,10 @@ class SoftwareTerrainCache
 		// The portable renderer's keyframes of this page's animated cells
 		// (see KeyframeSet), and a count of changes to `tiles` they follow.
 		std::shared_ptr<KeyframeSet> keyframes;
+		// Calm overlays of the page's uniform calmed animated cells: each such
+		// cell draws its material's shared keyframes, then this still overlay
+		// (the calm mean at 1 - keep) over them, instead of keyframes of its own.
+		std::shared_ptr<KeyframeSet> calmOverlays;
 		std::uint64_t tileStamp = 0;
 	};
 	static constexpr std::size_t ChunkStorageBytes =
@@ -167,8 +171,10 @@ class SoftwareTerrainCache
 		// The part of the page drawn, in logical pixels from its origin: a
 		// coarser stand-in draws only the cells of the page it stands in for.
 		SDL_Rect clip{0, 0, ChunkPixels, ChunkPixels};
-		// The page's keyframe draws (keyframeDraws), drawn over it.
+		// The page's keyframe draws (keyframeDraws), drawn over it, then its
+		// calm overlay draws (overlayDraws) over those.
 		std::uint32_t keyframeBegin = 0, keyframeEnd = 0;
+		std::uint32_t overlayBegin = 0, overlayEnd = 0;
 	};
 	//! How long a page that arrives over a fallback takes to fade in.
 	static constexpr Uint64 FadeMs = 150;
@@ -281,7 +287,17 @@ class SoftwareTerrainCache
 		Uint8 firstAlpha, secondAlpha; // 0: not drawn.
 	};
 	std::vector<KeyframeDraw> keyframeDraws;
+	struct OverlayJob;
+	std::vector<std::shared_ptr<OverlayJob>> overlayJobs;
+	struct OverlayDraw
+	{
+		KeyframeSet *set;
+		SDL_Rect destination, source;
+		Uint8 alpha;
+	};
+	std::vector<OverlayDraw> overlayDraws;
 	std::size_t keyframeMisses = 0;
+	std::size_t sharedKeyframeCells = 0, calmOverlayCells = 0, ownKeyframeCells = 0, stillKeyframeCells = 0;
 	// The keyframe this frame's animation time prepares the compositor for.
 	std::int64_t keyframeTarget(int time);
 	// Takes or refreshes that keyframe's snapshot after the compositor prepared it.
@@ -387,6 +403,19 @@ class SoftwareTerrainCache
 	//! Animated cells the last prepare showed without both of their current
 	//! keyframes (portable renderer): they hold a still or a single keyframe.
 	std::size_t missingKeyframeCells() const { return keyframeMisses; }
+	//! Animated cells the portable renderer drew last frame (or tried to), by how
+	//! they animate: from a material's shared keyframes alone, from them with a
+	//! still calm overlay, or from keyframes composed for the cell itself; and
+	//! of them, those that showed their page's still pixels, with no keyframe
+	//! of any density to draw.
+	struct KeyframeCells
+	{
+		std::size_t shared = 0, calmOverlay = 0, own = 0, still = 0;
+	};
+	KeyframeCells keyframeCells() const
+	{
+		return {sharedKeyframeCells, calmOverlayCells, ownKeyframeCells, stillKeyframeCells};
+	}
 	std::size_t pendingPages() const { return pending.size(); }
 	// Benchmark override for comparing stable page density with adaptive sampling.
 	int benchmarkDownsample = 0;
