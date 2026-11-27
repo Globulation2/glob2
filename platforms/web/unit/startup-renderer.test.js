@@ -6,7 +6,8 @@ const {test} = require('node:test');
 const shell = readFileSync(path.join(__dirname, '../shell.html'), 'utf8');
 const start = shell.indexOf('function browserStartupRenderer(');
 const end = shell.indexOf('// End browser startup renderer.', start);
-const context = vm.createContext({});
+// glob2HasFeature is defined above the tested slice; the standard edition has every feature.
+const context = vm.createContext({glob2HasFeature:() => true});
 vm.runInContext(shell.slice(start, end), context);
 const transport = context.browserStartupRenderer;
 
