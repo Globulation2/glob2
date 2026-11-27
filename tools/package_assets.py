@@ -25,6 +25,8 @@ CONTENT = "content"
 ASSET_DIRS = ("data", "maps", "campaigns", "scripts")
 PILLOW_VERSION = "12.2.0"
 BROTLI_VERSION = "1.2.0"
+# Perceptual gate for sprite video (packed_sprite_assets.quality_metric).
+SSIMULACRA2_VERSION = "0.3.0"
 # Every WebP encoding setting. Never modified at run time: an edition's quality is
 # passed down explicitly (the `quality` arguments below).
 ENCODING = json.loads((ROOT / "tools/image_encoding.json").read_text())
@@ -301,7 +303,8 @@ def source_files(root, platform, exclude=()):
                 yield p
 
 
-def encoder_ready(require_brotli=False):
+def encoder_ready(require_brotli=False, require_quality=False):
+    """require_quality: the pinned SSIMULACRA2 gate for sprite video."""
     try:
         from PIL import Image, features
 
@@ -309,12 +312,13 @@ def encoder_ready(require_brotli=False):
             Image.__version__ == PILLOW_VERSION
             and features.version("webp") == WEBP_VERSION
             and (not require_brotli or __import__("brotli").__version__ == BROTLI_VERSION)
+            and (not require_quality or __import__("ssimulacra2").__version__ == SSIMULACRA2_VERSION)
         )
     except ImportError:
         return False
 
 
-def encoder_probe_command(python, require_brotli=False):
+def encoder_probe_command(python, require_brotli=False, require_quality=False):
     """Validate external interpreters against the same pins as encoder_ready."""
     return [
         str(python),
@@ -322,18 +326,23 @@ def encoder_probe_command(python, require_brotli=False):
         "from PIL import Image, features; "
         f"assert Image.__version__ == {PILLOW_VERSION!r} "
         f"and features.version('webp') == {WEBP_VERSION!r}" +
-        (f"; import brotli; assert brotli.__version__ == {BROTLI_VERSION!r}" if require_brotli else ""),
+        (f"; import brotli; assert brotli.__version__ == {BROTLI_VERSION!r}" if require_brotli else "") +
+        (f"; import ssimulacra2; assert ssimulacra2.__version__ == {SSIMULACRA2_VERSION!r}"
+         if require_quality else ""),
     ]
 
 
-def encoder_python(require_brotli=False):
-    """Use a private, pinned build-time environment, never modify system Python."""
+def encoder_python(require_brotli=False, require_quality=False):
+    """Use a private, pinned build-time environment, never modify system Python.
+
+    A configured GLOB2_ASSET_ENCODER_PYTHON need not provide SSIMULACRA2: the
+    sprite video gate falls back to SSIM there (packed_sprite_assets.quality_metric)."""
     configured = os.environ.get("GLOB2_ASSET_ENCODER_PYTHON")
     if configured:
         subprocess.run(encoder_probe_command(configured), check=True)
         if not require_brotli or subprocess.run(encoder_probe_command(configured, True), capture_output=True).returncode == 0:
             return configured
-    if encoder_ready(require_brotli):
+    if encoder_ready(require_brotli, require_quality):
         return sys.executable
     sys.path.insert(0, str(ROOT / "buildsys"))
     from dev_store import cache, Lease
@@ -342,6 +351,7 @@ def encoder_python(require_brotli=False):
         "asset-encoder-"
         + POLICY
         + ("-brotli" if require_brotli else "")
+        + ("-quality" if require_quality else "")
         + "-py"
         + str(sys.version_info.major)
         + "."
@@ -351,7 +361,7 @@ def encoder_python(require_brotli=False):
     python = (
         location / "venv" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
     )
-    probe_command = encoder_probe_command(python, require_brotli)
+    probe_command = encoder_probe_command(python, require_brotli, require_quality)
     with Lease(location):
         ready = (
             python.exists()
@@ -378,7 +388,8 @@ def encoder_python(require_brotli=False):
                     "--only-binary=:all:",
                     "-r",
                     str(ROOT / "tools/asset-requirements.txt"),
-                ],
+                ]
+                + (["-r", str(ROOT / "tools/asset-quality-requirements.txt")] if require_quality else []),
                 check=True,
                 stdout=sys.stderr,
             )
@@ -569,16 +580,6 @@ def encode_image(source, relative, cache, lossy, *, quality=None, sheet_candidat
         lossy=is_lossy,
         recipe=recipe,
     )
-    if sheet_candidate is not None:
-        from PIL import ImageChops
-
-        if is_lossy:
-            visible = rgba.getchannel("A").point(lambda value: 255 if value else 0)
-            diff = ImageChops.difference(rgba.convert("RGB"), decoded_rgba(data).convert("RGB"))
-            record["visible_rgb_sse"] = sum((index % 256) ** 2 * count
-                                            for index, count in enumerate(diff.histogram(mask=visible)))
-        else:
-            record["visible_rgb_sse"] = 0
     entry.mkdir(parents=True, exist_ok=True)
     # Unique temporary files also permit independent exporters sharing this cache.
     with tempfile.NamedTemporaryFile(dir=entry, delete=False) as f:
@@ -873,8 +874,7 @@ def encode_terrain_sheet_group(sheets, root, cache, lossy, quality=None):
             pages.append((source, blob, record))
         candidates[mode] = pages
     scores = {mode: dict(stored_bytes=sum(blob.stat().st_size for _, blob, _ in pages)
-                         + len(sheet_index(sheets)),
-                         visible_rgb_sse=sum(record["visible_rgb_sse"] for _, _, record in pages))
+                         + len(sheet_index(sheets)))
               for mode, pages in candidates.items()}
     winner = min(scores, key=lambda mode: scores[mode]["stored_bytes"])
     return candidates[winner], dict(winner=winner, candidates=scores)
@@ -922,7 +922,9 @@ def _export_assets(
     ):
         raise ValueError("Unknown asset platform: " + platform)
     needs_brotli = platform == "web" and optimized and (packed_hd_sprites or video_sprites or sprite_ffmpeg)
-    ready = encoder_ready(True) if needs_brotli else encoder_ready()
+    # Only exports that encode sprite video need the pinned SSIMULACRA2 gate.
+    needs_quality = bool(optimized and lossy and (video_sprites or sprite_ffmpeg))
+    ready = encoder_ready(needs_brotli, needs_quality)
     if (
         (optimized or catalog.is_file())
         and not ready
@@ -931,7 +933,7 @@ def _export_assets(
         if worker:
             raise RuntimeError("Packaging requires Pillow 12.2.0 with libwebp 1.6.0")
         command = [
-            encoder_python(True) if needs_brotli else encoder_python(),
+            encoder_python(needs_brotli, needs_quality),
             str(Path(__file__).resolve()),
             "--source",
             str(root),
@@ -1422,7 +1424,9 @@ def export_assets(
     """
     jobs = packaging_jobs(jobs)
     needs_brotli = platform == "web" and optimized and (packed_hd_sprites or video_sprites or sprite_ffmpeg)
-    ready = encoder_ready(True) if needs_brotli else encoder_ready()
+    # Only exports that encode sprite video need the pinned SSIMULACRA2 gate.
+    needs_quality = bool(optimized and lossy and (video_sprites or sprite_ffmpeg))
+    ready = encoder_ready(needs_brotli, needs_quality)
     if (optimized or (Path(root) / CONTENT / "data/terrain/tileset.json").is_file()) and not ready and not worker:
         return _export_assets(root, output, platform, optimized, lossy, cache, worker, jobs,
                               terrain_sheets=terrain_sheets, packed_hd_sprites=packed_hd_sprites,
@@ -1492,7 +1496,8 @@ def main():
     parser.add_argument("--worker", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.encoder_python:
-        print(encoder_python(args.platform == "web"))
+        # Release builders export sprite video, so provide the SSIMULACRA2 gate too.
+        print(encoder_python(args.platform == "web", True))
         return
     if args.jobs is not None and args.jobs < 1:
         parser.error("--jobs must be a positive integer")

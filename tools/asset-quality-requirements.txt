@@ -1,0 +1,6 @@
+# Build-time sprite video quality gate only (packed_sprite_assets.quality_metric);
+# never installed in the shipped application. Installed with asset-requirements.txt
+# into encoder environments that export sprite video.
+numpy==2.5.5
+scipy==1.18.1
+ssimulacra2==0.3.0

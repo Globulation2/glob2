@@ -93,6 +93,7 @@ EXPORT_TOOLS = (
     "tools/terrain_tileset.py",
     "tools/terrain_catalog.py",
     "tools/asset-requirements.txt",
+    "tools/asset-quality-requirements.txt",
     "tools/image_encoding.json",
     "buildsys/runtime_assets.py",
     "buildsys/shared_assets.py",
