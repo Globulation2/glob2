@@ -244,6 +244,7 @@ jobs:
     needs: package
     if: ${{ inputs.tag != '' }}
     uses: ./.github/workflows/crash-symbols.yml
+    secrets: inherit
     with:
       version: ${{ inputs.tag }}
       artifacts: crash-symbols-steam

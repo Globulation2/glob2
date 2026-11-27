@@ -768,6 +768,7 @@ jobs:
     needs: [linux-package, windows-package, macos-package]
     if: ${{ inputs.tag != '' }}
     uses: ./.github/workflows/crash-symbols.yml
+    secrets: inherit
     with:
       version: ${{ inputs.tag }}
       artifacts: crash-symbols-release-*

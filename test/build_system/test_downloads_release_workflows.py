@@ -182,6 +182,17 @@ class ReleaseWorkflowTests(unittest.TestCase):
             self.assertNotIn('secrets.',build)
             self.assertIn('needs.credentials.outputs.commit',build)
 
+    def test_crash_symbol_callers_pass_secrets(self):
+        # Environment secrets reach a called workflow only when its caller passes
+        # secrets, so without this the upload sees an empty token.
+        callers=[path for path in sorted((ROOT/'.github/workflows').glob('*.yml'))
+                 if 'uses: ./.github/workflows/crash-symbols.yml' in path.read_text()]
+        self.assertGreaterEqual(len(callers),8)
+        for path in callers:
+            with self.subTest(path.name):
+                self.assertIn('    uses: ./.github/workflows/crash-symbols.yml\n    secrets: inherit\n',
+                              path.read_text())
+
     def test_only_mobile_upload_callers_inherit_release_secrets(self):
         text=(ROOT/'.github/workflows/github-release.yml').read_text()
         for job in ('play-candidate', 'ios-candidate'):

@@ -361,6 +361,7 @@ jobs:
     needs: build
     if: ${{ inputs.publish || inputs.gamejolt }}
     uses: ./.github/workflows/crash-symbols.yml
+    secrets: inherit
     with:
       version: ${{ inputs.tag }}
       artifacts: crash-symbols-browser*
