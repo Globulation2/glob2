@@ -21,15 +21,15 @@ platform icon containers are outside this policy.
 ### Lossy WebP quality
 
 One number sets every lossy quality: the edition's `webp_quality`, whose
-standard value is `quality` in `tools/image_encoding.json` (90; lite uses 70,
+standard value is `quality` in `tools/image_encoding.json` (90; lite uses 75,
 see [editions](../browser/editions.md#settings)). Each kind of image derives
 its quality from it (`tools/package_assets.py`, `group_lossy_quality`):
 
 | Kind of image | Lossy quality | Standard | Lite |
 | --- | --- | --- | --- |
-| Standalone images: menus, backgrounds, UI, HD frames outside a group | `webp_quality` | 90 | 70 |
-| Sprite sheet pages (`<sprite>-sheet-N.webp`, `encode_sheet`) | `webp_quality` | not shipped | 70 |
-| Terrain material sheets and packed sprite groups (`pack-*.webp`) | at most 75 | 75 | 70 |
+| Standalone images: menus, backgrounds, UI, HD frames outside a group | `webp_quality` | 90 | 75 |
+| Sprite sheet pages (`<sprite>-sheet-N.webp`, `encode_sheet`) | `webp_quality` | not shipped | 75 |
+| Terrain material sheets and packed sprite groups (`pack-*.webp`) | at most 75 | 75 | 75 |
 | Terrain stone maps | always lossless | | |
 
 Which kind a sprite is depends on the build. Release builds with packed sprites

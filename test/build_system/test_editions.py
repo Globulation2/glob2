@@ -28,7 +28,7 @@ class EditionTests(unittest.TestCase):
         self.assertEqual(default_directory(identity).as_posix(), 'build/emscripten/client/release/lite')
         settings = edition.settings(identity)
         self.assertFalse(any(settings['features'].values()))
-        self.assertEqual(settings['webp_quality'], 70)
+        self.assertEqual(settings['webp_quality'], 75)
         self.assertEqual(settings['web_opt'], 'O3')
         self.assertIn('#define GLOB2_HAS_EDITOR 0', edition.header(identity))
         # Ruled-out client capabilities follow the switches.

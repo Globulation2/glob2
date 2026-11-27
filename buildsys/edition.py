@@ -58,7 +58,7 @@ WEB_FEATURES = ('hd_assets', 'video_assets', 'renderer_gl', 'renderer_software',
 # Browser data and link settings: name -> (standard, lite, kind). Kinds: 'int' within
 # its range, 'bool', or a tuple of the allowed values.
 SETTINGS = {
-    'webp_quality': (DEFAULT_WEBP_QUALITY, 70, (1, 100)),   # lossy WebP quality (docs/development/package-size.md)
+    'webp_quality': (DEFAULT_WEBP_QUALITY, 75, (1, 100)),   # lossy WebP quality (docs/development/package-size.md)
     'web_opt': ('O3', 'O3', ('O3', 'Os', 'Oz')),            # compile and link optimization (lite keeps speed)
     'web_assertions': (True, False, 'bool'),                # Emscripten runtime assertions
     'web_closure': (False, False, 'bool'),                  # Closure-compile the JavaScript glue
