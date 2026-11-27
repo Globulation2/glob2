@@ -629,7 +629,8 @@ def web_assets_export(args):
 WEB_ASSET_TOOLS = ('tools/package_assets.py', 'tools/packed_sprite_assets.py', 'buildsys/recording_dependencies.py',
                    'buildsys/recording-versions.json', 'buildsys/runtime_assets.py', 'buildsys/shared_assets.py',
                    'buildsys/web_assets.py', 'tools/terrain_tileset.py', 'tools/terrain_catalog.py',
-                   'tools/asset-requirements.txt', 'tools/image_encoding.json')
+                   'tools/asset-requirements.txt', 'tools/asset-quality-requirements.txt',
+                   'tools/image_encoding.json')
 WEB_PLAN_INPUTS = ('deploy/sim_version.py', 'platforms/web/derive_assets.py', 'src/app/GlobalContainer.cpp',
                    'src/map/TerrainPresentation.h', 'content/data/terrain/tileset.json',
                    'content/data/resources/registry.json')

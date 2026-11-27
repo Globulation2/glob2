@@ -183,14 +183,23 @@ Release packages use `sprite_packing=auto`. For each catalog terrain family
 and stock unit clip and layer, the exporter compares lossless and Q75 WebP
 sheets with one eligible RGB H.264 candidate. Native and HD resolutions are
 scored separately. Lossless must preserve RGBA exactly, and every candidate
-must preserve exact alpha and logical frame coverage. The sum of squared
-RGB errors over pixels with nonzero source alpha in the Q75 sheets sets the
-group's error ceiling. Video stores nonopaque alpha in separate zlib blocks.
+must preserve exact alpha and logical frame coverage. H.264 is admitted only
+when it looks at least as good as Q75 WebP: both decoded candidates are scored
+against the source frames with [SSIMULACRA2](https://github.com/cloudinary/ssimulacra2),
+laid out as mosaics of up to 16×16 frames (single tiles are too small for its
+six scales) and averaged by pixel count. Groups with partial alpha are scored
+over a dark and a light background and the worse score counts, as libjxl's
+tool does. Encoder environments that export video install the pinned
+`tools/asset-quality-requirements.txt`; a configured
+`GLOB2_ASSET_ENCODER_PYTHON` without it falls back to SSIM on numpy, and an
+encoder with neither rejects video. The audit records the metric as
+`quality_metric`, and cached selections are keyed by it. Video stores
+nonopaque alpha in separate zlib blocks.
 
 The exporter uses stored bytes for native packages and Brotli transfer sizes
 for browser sprite payload parts and group index blocks. The browser assembles
 each index at installation, merging the base and team layers by frame ID in
-optional HD indexes. The audit records size, error, rejections,
+optional HD indexes. The audit records size, perceptual scores, rejections,
 and whether the verified group came from cache. Equal scores prefer lossless
 WebP, then Q75 WebP, then H.264. The native compiled terrain fingerprint uses
 the decoded pixels of the winning candidate.

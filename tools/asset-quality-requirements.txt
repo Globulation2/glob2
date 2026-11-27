@@ -1,0 +1,10 @@
+# Build-time sprite video quality gate only (packed_sprite_assets.quality_metric);
+# never installed in the shipped application. Installed with asset-requirements.txt
+# into encoder environments that export sprite video. Python 3.10 (Ubuntu 22.04's)
+# takes the last releases with its wheels; an environment that cannot install these
+# exports without them, and the gate falls back to SSIM or rejects video.
+numpy==2.5.5; python_version >= "3.11"
+numpy==2.2.6; python_version < "3.11"
+scipy==1.18.1; python_version >= "3.11"
+scipy==1.15.3; python_version < "3.11"
+ssimulacra2==0.3.0

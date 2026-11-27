@@ -109,7 +109,6 @@ class TerrainEncoderHandoffTests(unittest.TestCase):
                         self.assertEqual(set(candidates), {"lossless", "q75"})
                         self.assertEqual(candidates[selection["winner"]]["stored_bytes"],
                                          min(c["stored_bytes"] for c in candidates.values()))
-                        self.assertEqual(candidates["lossless"]["visible_rgb_sse"], 0)
                         self.assertTrue((output / (family + ".sheet")).is_file())
                         self.assertFalse((output / (family + "0.webp")).exists())
                         with Image.open(output / (family + "-sheet-0.webp")) as sheet:
@@ -732,26 +731,60 @@ class VerifiedSpritePackTests(unittest.TestCase):
                                         "oversized", group, "ffmpeg", None, None)
         self.assertEqual(result, {"rejected": "video group exceeds decoded size limit"})
 
-    def test_small_video_above_q75_ceiling_loses_and_warm_cache_never_encodes(self):
+    @staticmethod
+    def frame(colour=(43, 106, 215, 127), size=32):
+        """A frame with texture, so lossy WebP and a fake video have something to lose."""
+        image = Image.new("RGBA", (size, size), colour)
+        for x in range(0, size, 2):
+            for y in range(size):
+                image.putpixel((x, y), (colour[0] // 2, colour[1], 255 - colour[2], colour[3]))
+        return image
+
+    def fake_video(self, decoded):
+        def encode(frames, size, name, spec, ffmpeg, directory, fingerprint):
+            (directory / "tiny.h264").write_bytes(b"1")
+            return dict(files=["tiny.h264"], refs={0: "@tiny.h264,-,32,32,1,0,0,0,32,32"},
+                        decoded={0: decoded}, fingerprints={})
+        return encode
+
+    def test_identical_frames_score_perfectly_with_either_metric(self):
         from tools import packed_sprite_assets as packed
 
+        frames = {0: self.frame(), 1: self.frame((200, 30, 90, 255))}
+        metrics = [m for m in ("ssimulacra2", "ssim") if m == "ssim" or packed.quality_metric() == m]
+        try:
+            import numpy  # noqa: F401
+        except ImportError:
+            self.skipTest("perceptual metrics need numpy")
+        for metric in metrics:
+            with self.subTest(metric=metric):
+                self.assertEqual(packed.perceptual_score(frames, dict(frames), metric),
+                                 100.0 if metric == "ssimulacra2" else 1.0)
+
+    def test_video_that_looks_worse_than_q75_loses_and_warm_cache_never_encodes(self):
+        from tools import packed_sprite_assets as packed
+
+        metric = packed.quality_metric()
+        if metric is None:
+            self.skipTest("perceptual metrics need numpy")
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             source = root / "frame.png"
-            Image.new("RGBA", (8, 8), (43, 106, 215, 127)).save(source)
+            self.frame().save(source)
             group = dict(material=None, crf=26, frames=[(0, "unit0", 5, source)])
+            # Same alpha, texture smeared away: what the perceptual gate exists to catch.
+            smeared = Image.new("RGBA", (32, 32), (65, 106, 128, 127))
 
-            def over_budget(frames, size, name, spec, ffmpeg, directory, fingerprint):
-                (directory / "tiny.h264").write_bytes(b"1")
-                return dict(files=["tiny.h264"], refs={0: "@tiny.h264,-,8,8,1,0,0,0,8,8"},
-                            visible_rgb_sse=100_000_000, fingerprints={})
-
-            with patch.object(packed, "write_video", side_effect=over_budget):
+            with patch.object(packed, "write_video", side_effect=self.fake_video(smeared)):
                 directory, result, cache_hit = packed.encode_group(
                     "test", group, root / "cache", "generic", ("encoder", "hash"), True)
             self.assertFalse(cache_hit)
+            self.assertEqual(result["quality_metric"], metric)
             self.assertNotEqual(result["winner"], "video")
-            self.assertEqual(result["candidates"]["video"]["rejected"], "above Q75 squared RGB error ceiling")
+            video, webp = result["candidates"]["video"], result["candidates"]["q75"]
+            self.assertLess(video[metric], webp[metric])
+            self.assertEqual(video["rejected"], "below Q75 " + {"ssimulacra2": "SSIMULACRA2", "ssim": "SSIM"}[metric])
+            self.assertNotIn("decoded", video)
             self.assertFalse((directory / "tiny.h264").exists())
             with patch.object(packed, "write_webp", side_effect=AssertionError("warm encode")), \
                  patch.object(packed, "write_video", side_effect=AssertionError("warm encode")):
@@ -759,8 +792,49 @@ class VerifiedSpritePackTests(unittest.TestCase):
                     "test", group, root / "cache", "generic", ("encoder", "hash"), True)
             self.assertTrue(cache_hit)
             self.assertEqual(result["winner"], warm["winner"])
-            Image.new("RGBA", (8, 8), (44, 106, 215, 127)).save(source)
-            with patch.object(packed, "write_video", side_effect=over_budget):
+            self.frame((44, 106, 215, 127)).save(source)
+            with patch.object(packed, "write_video", side_effect=self.fake_video(smeared)):
+                _, _, cache_hit = packed.encode_group(
+                    "test", group, root / "cache", "generic", ("encoder", "hash"), True)
+            self.assertFalse(cache_hit)
+
+    def test_video_that_looks_as_good_as_q75_wins_when_smaller(self):
+        from tools import packed_sprite_assets as packed
+
+        if packed.quality_metric() is None:
+            self.skipTest("perceptual metrics need numpy")
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "frame.png"
+            self.frame().save(source)
+            group = dict(material=None, crf=26, frames=[(0, "unit0", 5, source)])
+            with patch.object(packed, "write_video", side_effect=self.fake_video(self.frame())):
+                _, result, _ = packed.encode_group(
+                    "test", group, root / "cache", "generic", ("encoder", "hash"), True)
+            self.assertEqual(result["winner"], "video")
+            self.assertNotIn("rejected", result["candidates"]["video"])
+
+    def test_video_without_any_perceptual_metric_is_rejected(self):
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "frame.png"
+            self.frame().save(source)
+            group = dict(material=None, crf=26, frames=[(0, "unit0", 5, source)])
+            with patch.object(packed, "quality_metric", return_value=None), \
+                 patch.object(packed, "write_video", side_effect=self.fake_video(self.frame())):
+                _, result, _ = packed.encode_group(
+                    "test", group, root / "cache", "generic", ("encoder", "hash"), True)
+            self.assertNotEqual(result["winner"], "video")
+            self.assertEqual(result["candidates"]["video"]["rejected"], "no perceptual quality metric available")
+            # A later encoder with a metric must not reuse the metric-less selection.
+            try:
+                import numpy  # noqa: F401
+            except ImportError:
+                return
+            with patch.object(packed, "quality_metric", return_value="ssim"), \
+                 patch.object(packed, "write_video", side_effect=self.fake_video(self.frame())):
                 _, _, cache_hit = packed.encode_group(
                     "test", group, root / "cache", "generic", ("encoder", "hash"), True)
             self.assertFalse(cache_hit)

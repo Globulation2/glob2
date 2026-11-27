@@ -12,7 +12,7 @@ import subprocess
 import tempfile
 import zlib
 
-from PIL import Image, ImageChops
+from PIL import Image
 
 from tools import package_assets as images
 
@@ -26,7 +26,11 @@ TERRAIN_CRF = {
     "terrain-molten_lava_pool": 29.5,
 }
 UNIT_CRF = (31, 31, 30.25, 31.25, 30, 29.5, 29.75)
-PACK_RECIPE = "packed-sprites-v8"
+PACK_RECIPE = "packed-sprites-v9"
+# Perceptual gate for video candidates: frames per side of each scored mosaic,
+# and the dark and light backgrounds that frames with partial alpha are scored over.
+QUALITY_CELLS = 16
+QUALITY_BACKGROUNDS = (0.1, 0.9)
 
 
 def encoder_identity(ffmpeg):
@@ -102,18 +106,103 @@ def plan(content, catalog):
     return rows, groups
 
 
-def rgb_error(reference, decoded):
-    visible = reference.getchannel("A").point(lambda value: 255 if value else 0)
-    diff = ImageChops.difference(reference.convert("RGB"), decoded.convert("RGB"))
-    return sum((index % 256) ** 2 * count
-               for index, count in enumerate(diff.histogram(mask=visible)))
+def quality_metric():
+    """The perceptual metric this encoder can run: SSIMULACRA2 from the pinned
+    asset requirements, else SSIM on numpy alone (build pipelines that provide
+    their own encoder), else None, which rejects video."""
+    try:
+        import ssimulacra2
+        if ssimulacra2.__version__ == images.SSIMULACRA2_VERSION:
+            return "ssimulacra2"
+    except ImportError:
+        pass
+    try:
+        import numpy  # noqa: F401
+        return "ssim"
+    except ImportError:
+        return None
 
 
-def write_webp_page_run(frames, size, name, mode, directory, fingerprint, quality=None):
+def _ssimulacra2(reference, distorted):
+    import io
+    from ssimulacra2 import compute_ssimulacra2
+
+    streams = []
+    for image in (reference, distorted):
+        stream = io.BytesIO()
+        image.save(stream, format="PNG", compress_level=0)
+        stream.seek(0)
+        streams.append(stream)
+    return compute_ssimulacra2(*streams)
+
+
+def _ssim(reference, distorted):
+    """Mean SSIM (Wang et al. 2004: 11-tap Gaussian, sigma 1.5) over RGB channels."""
+    import numpy as np
+
+    taps = np.exp(-0.5 * (np.arange(-5, 6) / 1.5) ** 2)
+    taps /= taps.sum()
+
+    def blur(plane):
+        if min(plane.shape) < len(taps):
+            return np.full((1, 1), plane.mean())
+        rows = sum(w * plane[:, i:plane.shape[1] - len(taps) + 1 + i] for i, w in enumerate(taps))
+        return sum(w * rows[i:rows.shape[0] - len(taps) + 1 + i, :] for i, w in enumerate(taps))
+
+    a = np.asarray(reference, dtype=np.float64)
+    b = np.asarray(distorted, dtype=np.float64)
+    c1, c2 = (0.01 * 255) ** 2, (0.03 * 255) ** 2
+    scores = []
+    for channel in range(3):
+        x, y = a[:, :, channel], b[:, :, channel]
+        mx, my = blur(x), blur(y)
+        vx, vy, cov = blur(x * x) - mx * mx, blur(y * y) - my * my, blur(x * y) - mx * my
+        scores.append((((2 * mx * my + c1) * (2 * cov + c2)) /
+                       ((mx * mx + my * my + c1) * (vx + vy + c2))).mean())
+    return float(sum(scores) / 3)
+
+
+def perceptual_score(references, decoded, metric):
+    """`metric` ("ssimulacra2" or "ssim") of decoded frames against their sources.
+
+    Single tiles are too small for multi-scale metrics, so frames are laid out
+    in index order on mosaics of up to QUALITY_CELLS x QUALITY_CELLS cells and
+    the mosaic scores are averaged by pixel count. As libjxl's ssimulacra2
+    does, groups with partial alpha are flattened over a dark and a light
+    background and the worse score counts; opaque groups use mid grey."""
+    scorer = _ssimulacra2 if metric == "ssimulacra2" else _ssim
+    order = sorted(references)
+    width = max(references[index].width for index in order)
+    height = max(references[index].height for index in order)
+    opaque = all(references[index].getchannel("A").getextrema() == (255, 255) for index in order)
+    backgrounds = (0.5,) if opaque else QUALITY_BACKGROUNDS
+    total = pixels = 0
+    for start in range(0, len(order), QUALITY_CELLS * QUALITY_CELLS):
+        batch = order[start:start + QUALITY_CELLS * QUALITY_CELLS]
+        columns = min(QUALITY_CELLS, len(batch))
+        size = (columns * width, -(-len(batch) // columns) * height)
+        pages = []
+        for frames in (references, decoded):
+            page = Image.new("RGBA", size, (0, 0, 0, 0))
+            for offset, index in enumerate(batch):
+                page.paste(frames[index], (offset % columns * width, offset // columns * height))
+            pages.append(page)
+        scores = []
+        for background in backgrounds:
+            level = round(background * 255)
+            flat = [Image.alpha_composite(Image.new("RGBA", size, (level, level, level, 255)), page).convert("RGB")
+                    for page in pages]
+            scores.append(scorer(*flat))
+        total += min(scores) * size[0] * size[1]
+        pixels += size[0] * size[1]
+    return round(total / pixels, 2 if metric == "ssimulacra2" else 5)
+
+
+def write_webp_page_run(frames, size, name, mode, directory, fingerprint, quality=None, keep_decoded=False):
     width, height = size
     columns = min(images.SHEET_COLUMNS, 2048 // width)
     capacity = min(images.SHEET_FRAMES, columns * (2048 // height))
-    refs, files, error, fingerprints = {}, [], 0, {}
+    refs, files, decoded_frames, fingerprints = {}, [], {}, {}
     for start in range(0, len(frames), capacity):
         batch = frames[start:start + capacity]
         page = Image.new("RGBA", (columns * width, -(-len(batch) // columns) * height))
@@ -136,23 +225,23 @@ def write_webp_page_run(frames, size, name, mode, directory, fingerprint, qualit
                 lossless and crop.tobytes() != reference.tobytes()
             ):
                 raise ValueError("Packed WebP changed required pixels")
-            if not lossless:
-                error += rgb_error(reference, crop)
+            if keep_decoded:
+                decoded_frames[index] = crop
             if fingerprint:
                 fingerprints[index] = fingerprint(crop)
             refs[index] = f"@{filename},{x},{y},{width},{height}"
-    return dict(files=files, refs=refs, visible_rgb_sse=error, fingerprints=fingerprints)
+    return dict(files=files, refs=refs, decoded=decoded_frames, fingerprints=fingerprints)
 
 
-def write_webp(frames, name, mode, directory, fingerprint, quality=None):
-    result = dict(files=[], refs={}, visible_rgb_sse=0, fingerprints={})
+def write_webp(frames, name, mode, directory, fingerprint, quality=None, keep_decoded=False):
+    result = dict(files=[], refs={}, decoded={}, fingerprints={})
     for run, (size, frames_with_size) in enumerate(groupby(frames, key=lambda item: item[1].size)):
         page = write_webp_page_run(list(frames_with_size), size, f"{name}-{run:03}", mode, directory, fingerprint,
-                                   quality)
+                                   quality, keep_decoded)
         result["files"].extend(page["files"])
         result["refs"].update(page["refs"])
+        result["decoded"].update(page["decoded"])
         result["fingerprints"].update(page["fingerprints"])
-        result["visible_rgb_sse"] += page["visible_rgb_sse"]
     return result
 
 
@@ -195,7 +284,7 @@ def video_layout(frames, material, size):
 
 def write_video(frames, size, name, group, ffmpeg, directory, fingerprint):
     lookup = dict(frames)
-    refs, files, error, fingerprints = {}, [], 0, {}
+    refs, files, decoded_frames, fingerprints = {}, [], {}, {}
     common = [ffmpeg, "-hide_banner", "-loglevel", "error", "-nostdin", "-threads", "1",
               "-filter_threads", "1"]
     for chunk, (layout, columns) in enumerate(video_layout(frames, group["material"], size)):
@@ -249,7 +338,7 @@ def write_video(frames, size, name, group, ffmpeg, directory, fingerprint):
                 crop = image.crop((x, y, x + crop_width, y + crop_height))
                 if crop.getchannel("A").tobytes() != reference.getchannel("A").tobytes():
                     return dict(rejected="video changed source alpha")
-                error += rgb_error(lookup[index], crop)
+                decoded_frames[index] = crop
                 if fingerprint:
                     fingerprints[index] = fingerprint(crop)
                 ref = f"@{filename},{alpha_file},{canvas[0]},{canvas[1]},{count},{frame}"
@@ -258,7 +347,7 @@ def write_video(frames, size, name, group, ffmpeg, directory, fingerprint):
                 refs[index] = ref
     if set(refs) != set(lookup):
         return dict(rejected="video layout does not cover logical frames")
-    return dict(files=files, refs=refs, visible_rgb_sse=error, fingerprints=fingerprints)
+    return dict(files=files, refs=refs, decoded=decoded_frames, fingerprints=fingerprints)
 
 
 def score(candidate, directory, platform, sources, group):
@@ -308,8 +397,11 @@ def encode_group(name, group, cache, platform, encoder, lossy, quality=None):
         from buildsys.web_assets import PART_BYTES, DATA_BROTLI_QUALITY, BROTLI_WINDOW
         size_policy = (images.BROTLI_VERSION, PART_BYTES, DATA_BROTLI_QUALITY, BROTLI_WINDOW)
     sources = sorted(group["frames"])
+    # The gate's metric is part of the key: an SSIM selection is redone once SSIMULACRA2 is available.
+    perceptual = quality_metric() if encoder and lossy and group["crf"] is not None else None
     key = hashlib.sha256(json.dumps([PACK_RECIPE, name, group["crf"], group["material"],
         platform, encoder, lossy, bool(fingerprint), images.image_recipe(quality=quality), zlib.ZLIB_RUNTIME_VERSION,
+        perceptual,
         size_policy, bool(group.get("native")), group.get("index_rows"),
         [[index, ident, layer, hashlib.sha256(path.read_bytes()).hexdigest()]
          for index, ident, layer, path in sources]], sort_keys=True).encode()).hexdigest()
@@ -336,20 +428,32 @@ def encode_group(name, group, cache, platform, encoder, lossy, quality=None):
         temp = Path(temp)
         candidates = {}
         modes = ["lossless", images.GROUP_LOSSY_MODE] if lossy else ["lossless"]
+        video_eligible = bool(encoder and lossy and group["crf"] is not None)
         for mode in modes:
             target = temp / mode
             target.mkdir()
-            candidates[mode] = write_webp(frames, name, mode, target, fingerprint, quality)
-        if encoder and lossy and group["crf"] is not None:
+            candidates[mode] = write_webp(frames, name, mode, target, fingerprint, quality,
+                                          keep_decoded=video_eligible and mode == images.GROUP_LOSSY_MODE)
+        if video_eligible:
             target = temp / "video"
             target.mkdir()
             try:
                 video = write_video(frames, size, name, group, encoder[0], target, fingerprint)
             except subprocess.CalledProcessError as error:
                 video = dict(rejected="video codec failed", detail=error.stderr.decode(errors="replace").strip()[:512])
-            if "rejected" not in video and video["visible_rgb_sse"] > candidates[images.GROUP_LOSSY_MODE]["visible_rgb_sse"]:
-                video["rejected"] = "above Q75 squared RGB error ceiling"
+            if "rejected" not in video and perceptual is None:
+                video["rejected"] = "no perceptual quality metric available"
+            elif "rejected" not in video:
+                # Video only ships when it looks at least as good as Q75 WebP.
+                references = dict(frames)
+                webp = candidates[images.GROUP_LOSSY_MODE]
+                webp[perceptual] = perceptual_score(references, webp["decoded"], perceptual)
+                video[perceptual] = perceptual_score(references, video["decoded"], perceptual)
+                if video[perceptual] < webp[perceptual]:
+                    video["rejected"] = "below Q75 " + {"ssimulacra2": "SSIMULACRA2", "ssim": "SSIM"}[perceptual]
             candidates["video"] = video
+        for candidate in candidates.values():
+            candidate.pop("decoded", None)
         for mode, candidate in candidates.items():
             if "files" in candidate:
                 candidate.update(score(candidate, temp / mode, platform, sources, group))
@@ -357,7 +461,7 @@ def encode_group(name, group, cache, platform, encoder, lossy, quality=None):
         winner = min((mode for mode in candidates if "rejected" not in candidates[mode]),
                      key=lambda mode: candidates[mode][metric])
         chosen = candidates[winner]
-        result = dict(winner=winner, refs=chosen["refs"], fingerprints=chosen["fingerprints"],
+        result = dict(winner=winner, refs=chosen["refs"], fingerprints=chosen["fingerprints"], quality_metric=perceptual,
                       candidates={mode: {key: value for key, value in candidate.items()
                                          if key not in ("files", "refs", "fingerprints")}
                                   for mode, candidate in candidates.items()},
