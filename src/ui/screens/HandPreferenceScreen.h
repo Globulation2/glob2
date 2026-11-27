@@ -16,6 +16,12 @@ class HandPreferenceScreen : public Glob2UI::Screen
 	// With a screen stack the screen offers "Use desktop layout" behind a
 	// confirmation, for desktops that were wrongly detected as touch devices.
 	explicit HandPreferenceScreen(GAGGUI::ScreenStack *screens = nullptr) : screens(screens) {}
+	// Whether the first-launch prompt should run: the thumb side is unchosen and
+	// the player uses touch. A mouse host in a small frame (a web portal's 800x450
+	// desktop embed) gets the compact layout but has no thumb to place, and its
+	// "Use desktop layout" cannot make the frame fit, so asking would loop. A
+	// GLOB2_MOBILE_UI override keeps asking whenever it requests phone controls.
+	static bool needed();
 	const char *recordingId() const override { return "hand_preference"; }
 	Glob2UI::Element build(const Glob2UI::Presentation &p) override;
 	void choose(int side);

@@ -222,6 +222,11 @@ wrongly detected as touch devices. A confirmation dialog follows; confirming
 saves the Desktop interface preference, applies it and opens the desktop main
 menu without choosing a thumb side, so the prompt returns if the player later
 picks a touch interface.
+The prompt appears only for touch input, or when a `GLOB2_MOBILE_UI` override
+requests phone controls. A mouse host in a frame too small for the spacious
+layout, such as a web portal's 800×450 desktop embed, gets the compact layout
+without being asked, since it has no thumb to place and a larger layout would
+not fit.
 
 ### Building and flag inspectors
 

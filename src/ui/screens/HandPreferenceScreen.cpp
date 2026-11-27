@@ -152,6 +152,15 @@ void HandPreferenceScreen::choose(int side)
 	endExecute(side);
 }
 
+bool HandPreferenceScreen::needed()
+{
+	if (globalContainer->settings.thumbSideChosen)
+		return false;
+	if (GAGCore::presentationOverride())
+		return Glob2UI::touchPresentation();
+	return GAGCore::presentationState.touch;
+}
+
 void HandPreferenceScreen::confirmDesktopLayout()
 {
 	if (!screens || confirming) return;
