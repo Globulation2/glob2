@@ -128,7 +128,10 @@ PORTALS = {portal.name: portal for portal in (
     Portal(
         "newgrounds", "Newgrounds",
         scripts=(CORE,),
-        external_links=True, online_sign_in=True,
+        # Online play stays off: the game would reach app.glob2.online from the
+        # portal's origin, and the online service sends no CORS headers (its
+        # preflight answers 404), so Play online could never connect there.
+        external_links=True, online_sign_in=False,
         # About 250 MB; no official page we could read states it, so the figure
         # is unconfirmed (docs/releases/newgrounds.md).
         max_bytes=250 * MB,
@@ -137,7 +140,8 @@ PORTALS = {portal.name: portal for portal in (
     Portal(
         "gamejolt", "Game Jolt",
         scripts=(CORE,),
-        external_links=True, online_sign_in=True,
+        # Online play off for the same reason as Newgrounds.
+        external_links=True, online_sign_in=False,
         # Game Jolt documents no size or file-count limit for browser builds.
         # Game Jolt publishes no browser-build limits (its help docs have no
         # article on them); a 132 MB, 494-file upload was accepted on 2026-11-26.

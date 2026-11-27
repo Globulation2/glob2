@@ -38,8 +38,8 @@ SHELL = """<!doctype html>
 # (externalLinks, onlineSignIn, ads). Ads only where the portal requires or
 # expects them (owner decision, 2026-11-26).
 POLICIES = {
-    "gamepix": (False, False, True), "crazygames": (False, False, True), "newgrounds": (True, True, False),
-    "gamejolt": (True, True, False), "gamedistribution": (False, False, True), "yandex": (False, False, True),
+    "gamepix": (False, False, True), "crazygames": (False, False, True), "newgrounds": (True, False, False),
+    "gamejolt": (True, False, False), "gamedistribution": (False, False, True), "yandex": (False, False, True),
     "poki": (False, False, True),
 }
 
