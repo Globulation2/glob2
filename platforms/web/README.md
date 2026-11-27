@@ -259,7 +259,8 @@ another type or a value that is not an object turns it off.
   remain. With sign-in allowed, the sign-in page still opens when links are off.
 - `ads: true` (Poki, GameDistribution, Yandex Games, CrazyGames and GamePix only)
   lets the portal adapter run an ad break at the natural pauses the game reports
-  through `ApplicationHost::matchBreak`; a match about to start then waits, and
+  through `ApplicationHost::matchBreak`; a match about to start (and on Poki,
+  play resuming from the in-game menu or a pause) then waits, and
   while `ApplicationHost::hostHeld()` is true no screen frame runs
   ([ad breaks](../../docs/releases/web-portals.md#ad-breaks)).
 - In any portal, whatever it allows, the main menu offers no Quit, and Escape on

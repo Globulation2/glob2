@@ -2,9 +2,11 @@
 // Poki portal adapter, injected only by platforms/web/package-portal.py after the
 // Poki SDK and portal-core.js and before every game script. PokiSDK.init() rejects
 // under ad blockers; the game must still load, so every call waits on init and a
-// rejection only leaves the SDK unused. Ad breaks: commercialBreak() at the
-// natural pauses the game reports (portal-core.js createBreaks), never before the
-// first match; Poki's own ad timer decides whether an ad plays.
+// rejection only leaves the SDK unused. Ad breaks: commercialBreak() before every
+// gameplayStart() the player asks for (portal-core.js createBreaks): each match
+// start, the first included, and each return to play from the in-game menu or a
+// pause, never on the way back to the menu. Poki's own system decides whether an
+// ad plays, so there is no minimum gap of ours (developers.poki.com/guide/sdk-html5).
 (() => {
   'use strict';
 
@@ -30,10 +32,10 @@
       },
     });
 
-    // Poki: gameplayStop (the hold), mute, commercialBreak, then unmute and
-    // gameplayStart when its promise settles.
+    // Poki: gameplayStop (the hold), mute and stop input, commercialBreak, then
+    // unmute and gameplayStart when its promise settles.
     const breaks = core.createBreaks(win, {
-      session, audio,
+      session, audio, points: ['start', 'resume'], firstStart: true, minInterval: 0,
       show: ad => sdk?.commercialBreak ? sdk.commercialBreak(() => ad.started()) : null,
     });
     core.installHost(win, breaks);

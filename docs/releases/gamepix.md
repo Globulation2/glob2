@@ -19,11 +19,15 @@ external links. The GamePix Testing Toolkit and dashboard accept zips up to 200 
 
 ## Runtime adapter
 
-`gamepix.js` reports the shell's download bar to `GamePix.lifecycle.loading`, and
-calls `loaded()` and `gameStart()` once the main menu is ready. The SDK's `pause`
-and `resume` events silence and restore the game's audio; both are safe to repeat,
-as the [SDK documentation](https://partners.gamepix.com/sdk/doc/javascript)
-requires. At the natural breaks the game reports
+`gamepix.js` reports the shell's download bar to `GamePix.lifecycle.loading` and
+calls `loaded()` once the main menu is ready. It calls `gameStart()` once, when
+real gameplay starts: the first match the player starts is playing, as the
+[SDK documentation](https://partners.gamepix.com/sdk/doc/javascript) asks ("when
+the first level, timer, or active gameplay loop begins"), not at the menu. The
+SDK's `pause` event holds the game (no frames, so the simulation, timers and
+input stop) and silences its audio, and `resume` restores both, as it does for
+GameDistribution's `SDK_GAME_PAUSE`; both are flags, so repeating either does
+nothing, as the documentation requires. At the natural breaks the game reports
 ([ad breaks](web-portals.md#ad-breaks)), except before the first match and at most
 one break every three minutes (our floor for every ad portal; GamePix documents
 no interval), it calls

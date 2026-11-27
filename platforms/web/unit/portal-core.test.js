@@ -288,3 +288,108 @@ test('pauses do not start or reset the three minutes between breaks', async () =
   assert.equal(breaks.matchBreak('leave'), true);
   assert.deepEqual(shown, ['leave', 'leave']);
 });
+
+test('points choose where a break may ask: Poki asks at start and resume, never at leave', async () => {
+  const {breaks, shown, gameplay, ad} = breaksFixture({points: ['start', 'resume'], firstStart: true, minInterval: 0});
+  assert.equal(breaks.matchBreak('start'), true);
+  ad().resolve(); await settle();
+  assert.equal(breaks.matchBreak('pause'), false);
+  assert.equal(breaks.matchBreak('resume'), true);
+  assert.equal(breaks.held, true);
+  ad().resolve(); await settle();
+  breaks.matchBreak('end');
+  assert.equal(breaks.matchBreak('leave'), false);
+  assert.equal(breaks.matchBreak('start'), true);
+  ad().resolve(); await settle();
+  assert.deepEqual(shown, ['start', 'resume', 'start']);
+  // Each return to play is one stop and one start, the start after the break.
+  assert.deepEqual(gameplay, [true, false, true, false, true]);
+});
+
+test('by default resume never asks and leave does', () => {
+  const {breaks, shown} = breaksFixture();
+  breaks.matchBreak('start'); breaks.matchBreak('pause'); breaks.matchBreak('resume');
+  breaks.matchBreak('end');
+  assert.equal(breaks.matchBreak('leave'), true);
+  assert.deepEqual(shown, ['leave']);
+});
+
+test('a point that is not listed asks nothing and starts no clock', async () => {
+  const {win, breaks, shown, ad} = breaksFixture({points: ['start']});
+  breaks.matchBreak('start'); breaks.matchBreak('end');
+  assert.equal(breaks.matchBreak('leave'), false);
+  win.timers.advance(1);
+  assert.equal(breaks.matchBreak('start'), true);
+  ad().resolve(); await settle();
+  assert.deepEqual(shown, ['start']);
+});
+
+test('minInterval 0 leaves the frequency to the SDK', async () => {
+  const {breaks, shown, ad} = breaksFixture({minInterval: 0});
+  breaks.matchBreak('start'); breaks.matchBreak('end');
+  breaks.matchBreak('leave');
+  ad().resolve(); await settle();
+  assert.equal(breaks.matchBreak('start'), true);
+  assert.deepEqual(shown, ['leave', 'start']);
+});
+
+test('ad.active tells the adapter whether its break still waits', () => {
+  const {win, breaks, ad} = breaksFixture({startTimeout: 100});
+  breaks.matchBreak('start'); breaks.matchBreak('end'); breaks.matchBreak('leave');
+  const handle = ad().handle;
+  assert.equal(handle.active, true);
+  win.timers.advance(100);
+  assert.equal(handle.active, false);
+});
+
+function focusWindow(hasFocus = true) {
+  const listeners = {}, docListeners = {};
+  const win = fakeWindow({addEventListener: (name, listener) => { listeners[name] = listener; }});
+  win.document = {hidden: false, body: null, hasFocus: () => hasFocus,
+                  addEventListener: (name, listener) => { docListeners[name] = listener; }};
+  return {win, listeners, docListeners};
+}
+
+test('watchShell with focus treats a window without focus as hidden and silences audio', () => {
+  const {win, listeners, docListeners} = focusWindow();
+  const audio = createAudio(win);
+  const context = new win.AudioContext();
+  const gameplay = [];
+  const session = createSession({gameplay: active => gameplay.push(active)});
+  watchShell(win, session, {focus: true, audio});
+  session.start(); session.match(true);
+  listeners.blur();
+  assert.equal(context.state, 'suspended');
+  assert.equal(session.active, false);
+  // Focus alone does not show a hidden tab.
+  win.document.hidden = true; docListeners.visibilitychange();
+  listeners.focus();
+  assert.equal(session.active, false);
+  win.document.hidden = false; docListeners.visibilitychange();
+  assert.equal(session.active, true);
+  assert.equal(context.state, 'running');
+  assert.deepEqual(gameplay, [true, false, true]);
+});
+
+test('watchShell with focus starts silent when the page loads without focus', () => {
+  const {win, listeners} = focusWindow(false);
+  const audio = createAudio(win);
+  const session = createSession();
+  watchShell(win, session, {focus: true, audio});
+  const context = new win.AudioContext();
+  context.resume();
+  assert.equal(context.state, 'suspended');
+  listeners.focus();
+  assert.equal(context.state, 'running');
+  session.start(); session.match(true);
+  assert.equal(session.active, true);
+});
+
+test('watchShell ignores focus unless asked', () => {
+  const {win, listeners} = focusWindow(false);
+  const session = createSession();
+  watchShell(win, session);
+  session.start(); session.match(true);
+  assert.equal(session.active, true);
+  assert.equal(listeners.blur, undefined);
+});

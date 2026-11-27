@@ -54,28 +54,27 @@ function adFixture() {
   return {win, calls, adapter: create(win), ad: () => ad};
 }
 
-test('a finished match runs one commercialBreak between gameplayStop and gameplayStart', async () => {
+test('every match start, the first included, runs commercialBreak between gameplayStop and gameplayStart', async () => {
   const {win, calls, adapter, ad} = adFixture();
   const context = new win.AudioContext();
   await adapter.connect();
   adapter.session.start();
-  assert.equal(win.glob2PortalHost.matchBreak('start'), false);
-  win.glob2PortalHost.matchBreak('end');
-  assert.equal(win.glob2PortalHost.matchBreak('leave'), true);
+  assert.equal(win.glob2PortalHost.matchBreak('start'), true);
   assert.equal(context.state, 'suspended');
   assert.equal(win.glob2PortalHost.held, true);
   ad().resolve(); await settle();
   assert.equal(win.glob2PortalHost.held, false);
   assert.equal(context.state, 'running');
-  // Starting the next match right away is the same break: no second ad.
-  assert.equal(win.glob2PortalHost.matchBreak('start'), false);
   win.glob2PortalHost.matchBreak('end');
-  win.glob2PortalHost.matchBreak('leave');
-  win.timers.advance(180000);
+  // Returning to the menu is not a return to play: no break there.
+  assert.equal(win.glob2PortalHost.matchBreak('leave'), false);
+  assert.equal(win.glob2PortalHost.held, false);
+  // No gap of ours: the next start asks again at once and Poki decides.
   assert.equal(win.glob2PortalHost.matchBreak('start'), true);
   ad().resolve(); await settle();
-  assert.deepEqual(calls, ['gameLoadingFinished', 'gameplayStart', 'gameplayStop', 'commercialBreak',
-                           'gameplayStart', 'gameplayStop', 'commercialBreak', 'gameplayStart']);
+  assert.deepEqual(calls, ['gameLoadingFinished', 'commercialBreak', 'gameplayStart', 'gameplayStop',
+                           'commercialBreak', 'gameplayStart']);
+  assert.equal(adapter.breaks.requests, 2);
 });
 
 test('without the Poki SDK a break holds nothing', async () => {
@@ -88,14 +87,35 @@ test('without the Poki SDK a break holds nothing', async () => {
   assert.equal(win.glob2PortalHost.held, false);
 });
 
-test('the in-game menu and pauses stop gameplay and resuming starts it, with no commercialBreak', async () => {
+test('resuming from the in-game menu or a pause runs commercialBreak before gameplayStart', async () => {
+  const {win, calls, adapter, ad} = adFixture();
+  const context = new win.AudioContext();
+  await adapter.connect();
+  adapter.session.start();
+  win.glob2PortalHost.matchBreak('start');
+  ad().resolve(); await settle();
+  calls.length = 0;
+  assert.equal(win.glob2PortalHost.matchBreak('pause'), false);
+  assert.equal(win.glob2PortalHost.matchBreak('resume'), true);
+  assert.equal(win.glob2PortalHost.held, true);
+  assert.equal(context.state, 'suspended');
+  assert.equal(adapter.session.paused, false);
+  assert.equal(adapter.session.active, false);
+  ad().resolve(); await settle();
+  assert.equal(win.glob2PortalHost.held, false);
+  assert.equal(context.state, 'running');
+  assert.deepEqual(calls, ['gameplayStop', 'commercialBreak', 'gameplayStart']);
+  // A pause ended by leaving the match is no return to play.
+  win.glob2PortalHost.matchBreak('pause');
+  win.glob2PortalHost.matchBreak('end');
+  assert.equal(win.glob2PortalHost.matchBreak('leave'), false);
+  assert.deepEqual(calls.slice(-2), ['gameplayStart', 'gameplayStop']);
+});
+
+test('a resume outside a paused match asks for nothing', async () => {
   const {win, calls, adapter} = adFixture();
   await adapter.connect();
   adapter.session.start();
-  for (const point of ['start', 'pause', 'resume', 'pause', 'pause', 'resume', 'pause', 'end'])
-    win.glob2PortalHost.matchBreak(point);
-  assert.deepEqual(calls, ['gameLoadingFinished', 'gameplayStart', 'gameplayStop', 'gameplayStart',
-                           'gameplayStop', 'gameplayStart', 'gameplayStop']);
-  assert.equal(win.glob2PortalHost.matchBreak('leave'), true);
-  assert.deepEqual(calls.slice(-1), ['commercialBreak']);
+  assert.equal(win.glob2PortalHost.matchBreak('resume'), false);
+  assert.deepEqual(calls, ['gameLoadingFinished']);
 });
