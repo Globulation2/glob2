@@ -290,9 +290,10 @@ A material opts in with a `decor` block:
   Barriers masses), connected foliage (hedge and thicket), every other obstacle
   (stone pillars and the Outcrops looks), then the terraces of tiered masses.
   Every mass at a cell draws, so none ends in a square notch along the cell
-  grid: masses fill the first layers in rank order (more north corners, then
-  more corners, then the lower id), and foliage beside three masses draws after
-  them. Each layer draws only from its own corners, so cliffs show their walls
+  grid: masses fill the first layers north to south (by the mean row of their
+  own corners, then the lower id), a mass on two diagonal corners beside another
+  mass drawing each corner as its own layer, and foliage beside three mass
+  layers draws after them. Each layer draws only from its own corners, so cliffs show their walls
   where they meet foliage or crags, and the foliage keeps its own edge on the
   other side (crags keep clear of the rim, below). Eligibility follows rendered
   material bindings, including custom materials.
@@ -432,13 +433,20 @@ Glacier sets `connected_open` like cliffs; against crags it keeps its walls,
 as cliffs do.
 
 Where an open-edged mass meets another connected material (another mass, or
-hedge and thicket), each draws only its own corners, the mass with more north
-corners first, and the mass stands back from the other: its `connected_foreign`
+hedge and thicket), each draws only its own corners, north to south, and the
+mass stands back from the other: its `connected_foreign`
 frames count each corner as its own, open ground or another mass, and a foreign
 corner counts as -1 in the corner field, so the rim crosses a quarter of the way
 from its own corner and two masses stand apart across a valley half a cell wide,
 each with its own rim and wall. Along an edge only that edge's two corners count,
-so these frames agree with their neighbours too. There are 50 such corner codes
+so these frames agree with their neighbours too. The tops rise twenty pixels
+over a valley of sixteen, so the southern mass's top overlaps the northern
+one's wall: a cell draws its masses north to south by the mean row of their own
+corners, so cells on either side of a seam agree on which stands in front, and
+no wall stops square at a cell edge. A mass on two diagonal corners lies north of
+the other mass on one side and south of it on the other, so each of its corners
+draws as its own layer, the other counted as open ground, which changes nothing
+along the cell edges. There are 50 such corner codes
 (base 3, with at least one own and one foreign corner), 16 colours each. Hedge
 against thicket still joins.
 

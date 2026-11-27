@@ -10,6 +10,7 @@
 #include "DrawFixtures.h"
 #include <Environment.h>
 #include "ScopedEnvironment.h"
+#include <bit>
 #include <optional>
 #include <fstream>
 #include "TerrainPresentation.h"
@@ -4010,8 +4011,8 @@ TEST_SUITE("TerrainValidation")
 		// Where three or four masses meet, every one draws, or a missing one
 		// would end in a square notch along the neighbouring cells' edges. Each
 		// stands back from every other corner, all masses or foliage here. Masses
-		// rank by more north corners, then more corners, then lower material id,
-		// and take slots 0 onward in that order.
+		// draw north to south, by the mean row of their own corners, then lower
+		// material id, and take slots 0 onward in that order.
 		const auto glacier = catalog.find("glacier"), obsidian = catalog.find("obsidian_ridge");
 		const auto apart = [&](auto id, unsigned own, int x, int y) {
 			const int frame = catalog.decorForeignFrame(id, own, 15u ^ own, colours(x, y));
@@ -4019,11 +4020,11 @@ TEST_SUITE("TerrainValidation")
 			return frame;
 		};
 		// Cell (22, 6): icefall on the west corners, cliffs north-east, glacier
-		// south-east.
+		// south-east. The cliffs lie wholly north, so they draw first.
 		{
 			const auto three = compositor.decorLayers(scene, 22, 6);
-			CHECK(three[0].frame == apart(icefall, 0b0101, 22, 6));
-			CHECK(three[1].frame == apart(cliffs, 0b0010, 22, 6));
+			CHECK(three[0].frame == apart(cliffs, 0b0010, 22, 6));
+			CHECK(three[1].frame == apart(icefall, 0b0101, 22, 6));
 			CHECK(three[2].frame == apart(glacier, 0b1000, 22, 6));
 			CHECK(three[3].frame == -1);
 		}
@@ -4069,6 +4070,117 @@ TEST_SUITE("TerrainValidation")
 		GAGCore::Sprite::flushBatches(globals->gfx);
 		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
 			(glob2test::artifactDir() / "raised-icefall.png").string().c_str()));
+	}
+
+	TEST_CASE("glacier and icefall meet along stepped and diagonal seams [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(
+			{.display = true, .width = 1024, .height = 1024, .seed = 7331});
+		globals->terrainCompositor().prepare(false, 0);
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .discovered = true,
+			.loadDefaultRace = true, .header = true, .seed = 7331});
+		auto &map = fixture.game.map;
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 32; ++x)
+				map.setVertexTerrain(x, y, DEEP_SNOW);
+		// West: icefall left of a glacier, the border stepping one vertex east
+		// every two rows, so the masses meet along vertical runs and diagonals.
+		for (int y = 2; y <= 13; ++y)
+			for (int x = 2; x <= 13; ++x)
+				map.setVertexTerrain(x, y, x < 5 + (y - 2) / 2 ? ICEFALL : GLACIER);
+		// East: a V, icefall wedges on both sides of a glacier tongue that
+		// narrows southward, the borders one-vertex diagonals.
+		for (int y = 2; y <= 13; ++y)
+			for (int x = 17; x <= 30; ++x)
+				map.setVertexTerrain(x, y, std::abs(2 * x - 47) < 14 - y ? GLACIER : ICEFALL);
+		// South: the masses touch only at diagonal vertices, a checkerboard
+		// of 2x2 blocks.
+		for (int y = 18; y <= 29; ++y)
+			for (int x = 2; x <= 29; ++x)
+				map.setVertexTerrain(x, y, ((x / 2) + (y / 2)) % 2 ? GLACIER : ICEFALL);
+
+		SceneMap scene;
+		glob2test::observeMap(map, scene);
+		auto &compositor = globals->terrainCompositor();
+		const auto &catalog = compositor.catalog();
+		const auto glacier = catalog.find("glacier"), icefall = catalog.find("icefall");
+		const auto colours = [&](int x, int y) { return TerrainVisual::cornerColours(x, y, 31, 31, scene.terrainSeed()); };
+		const auto apart = [&](auto id, unsigned own, unsigned foreign, int x, int y) {
+			const int frame = catalog.decorForeignFrame(id, own, foreign, colours(x, y));
+			CHECK(frame >= 0);
+			return frame;
+		};
+		// Both tops rise alike, so the mass further south stands in front: its
+		// layer draws last. Cell (4, 3) is the step's west cell, the glacier on
+		// its north-east corner alone. Ranking by north corners and then corner
+		// count drew the icefall first there but last in cell (5, 3) beside it,
+		// so the glacier's wall stopped square at their shared edge.
+		{
+			const auto step = compositor.decorLayers(scene, 4, 3);
+			CHECK(step[0].frame == apart(glacier, 0b0010, 0b1101, 4, 3));
+			CHECK(step[1].frame == apart(icefall, 0b1101, 0b0010, 4, 3));
+			const auto east = compositor.decorLayers(scene, 5, 3);
+			CHECK(east[0].frame == apart(glacier, 0b1011, 0b0100, 5, 3));
+			CHECK(east[1].frame == apart(icefall, 0b0100, 0b1011, 5, 3));
+		}
+		// Cell (3, 19) meets diagonally: icefall north-west and south-east,
+		// glacier north-east and south-west. Each mass is north of the other on
+		// one side, so each corner draws as its own layer, the north ones first.
+		{
+			const auto diagonal = compositor.decorLayers(scene, 3, 19);
+			const auto first = std::min(glacier, icefall), second = std::max(glacier, icefall);
+			const auto north = [&](auto id) { return id == icefall ? 0b0001u : 0b0010u; };
+			const auto south = [&](auto id) { return id == icefall ? 0b1000u : 0b0100u; };
+			const auto foreign = [&](auto id) { return id == icefall ? 0b0110u : 0b1001u; };
+			CHECK(diagonal[0].frame == apart(first, north(first), foreign(first), 3, 19));
+			CHECK(diagonal[1].frame == apart(second, north(second), foreign(second), 3, 19));
+			CHECK(diagonal[2].frame == apart(first, south(first), foreign(first), 3, 19));
+			CHECK(diagonal[3].frame == apart(second, south(second), foreign(second), 3, 19));
+		}
+		// Over the whole map, every cell's mass layers draw north to south, and
+		// none spans two diagonal corners beside another mass.
+		// The own corners of a mass's connected_foreign frame, or 0 when the
+		// frame is not one of that material's.
+		const auto frameOwn = [&](auto id, int frame, int x, int y) {
+			for (unsigned own = 1; own < 16; ++own)
+				for (unsigned foreign = 1; foreign < 16; ++foreign)
+					if (!(own & foreign) && catalog.decorForeignFrame(id, own, foreign, colours(x, y)) == frame)
+						return own;
+			return 0u;
+		};
+		int seams = 0;
+		for (int y = 0; y < 31; ++y)
+			for (int x = 0; x < 31; ++x)
+			{
+				const auto layers = compositor.decorLayers(scene, x, y);
+				const auto corners = scene.cellCorners(x, y);
+				const bool mixed = std::any_of(corners.begin(), corners.end(), [&](auto t) { return t != corners[0]; }) &&
+					std::all_of(corners.begin(), corners.end(), [](auto t) { return t == GLACIER || t == ICEFALL; });
+				if (!mixed)
+					continue;
+				++seams;
+				CAPTURE(x);
+				CAPTURE(y);
+				double previous = -1;
+				for (unsigned slot = 0; slot < 4 && layers[slot].frame >= 0; ++slot)
+				{
+					const auto id = frameOwn(glacier, layers[slot].frame, x, y) ? glacier : icefall;
+					const unsigned own = frameOwn(id, layers[slot].frame, x, y);
+					REQUIRE(own);
+					CHECK(own != 0b1001u);
+					CHECK(own != 0b0110u);
+					const double row = double(std::popcount(own >> 2)) / std::popcount(own);
+					CHECK(row >= previous);
+					previous = row;
+				}
+			}
+		CHECK(seams > 40);
+
+		MapDrawer::drawMapTerrain(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		MapDrawer::drawMapResources(0, 0, 31, 31, 0, 0, 0, Game::DRAW_WHOLE_MAP, scene);
+		GAGCore::Sprite::flushBatches(globals->gfx);
+		REQUIRE(IMG_SavePNG(globals->gfx->getSDLSurface(),
+			(glob2test::artifactDir() / "glacier-icefall-seams.png").string().c_str()));
 	}
 
 	TEST_CASE("large barrier masses terrace toward their middle [display][artifacts]")
