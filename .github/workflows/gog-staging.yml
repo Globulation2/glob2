@@ -641,6 +641,7 @@ jobs:
     needs: [windows, linux, macos]
     if: ${{ inputs.mode == 'stage' && !inputs.reuse_released_payload }}
     uses: ./.github/workflows/crash-symbols.yml
+    secrets: inherit
     with:
       version: ${{ inputs.tag }}
       artifacts: crash-symbols-gog-*
