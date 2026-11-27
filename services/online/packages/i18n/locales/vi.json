@@ -3084,5 +3084,19 @@
   "Installs": "Lượt cài đặt",
   "Stack": "Ngăn xếp",
   "Channel": "Kênh",
-  "Show reports": "Hiện báo cáo"
+  "Show reports": "Hiện báo cáo",
+  "Groups": "Nhóm",
+  "State": "Trạng thái",
+  "New": "Mới",
+  "Triaged": "Đã phân loại",
+  "Fixed in": "Đã sửa trong",
+  "Reopened after the fix in {value0}": "Mở lại sau bản sửa trong {value0}",
+  "GitHub issue": "Issue trên GitHub",
+  "Crash-free sessions": "Phiên không bị lỗi văng",
+  "Crash-free installs": "Lượt cài không bị lỗi văng",
+  "Sessions": "Phiên",
+  "Crash reports": "Báo cáo lỗi văng",
+  "Affected installs": "Lượt cài bị ảnh hưởng",
+  "New in this release": "Mới trong bản phát hành này",
+  "No releases yet.": "Chưa có bản phát hành nào."
 }

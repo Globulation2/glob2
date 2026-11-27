@@ -3084,5 +3084,19 @@
   "Installs": "安裝數",
   "Stack": "呼叫堆疊",
   "Channel": "通路",
-  "Show reports": "顯示回報"
+  "Show reports": "顯示回報",
+  "Groups": "群組",
+  "State": "狀態",
+  "New": "新建",
+  "Triaged": "已分類",
+  "Fixed in": "修正於",
+  "Reopened after the fix in {value0}": "在 {value0} 修正後再次出現",
+  "GitHub issue": "GitHub 議題",
+  "Crash-free sessions": "無當機工作階段",
+  "Crash-free installs": "無當機安裝",
+  "Sessions": "工作階段",
+  "Crash reports": "當機報告",
+  "Affected installs": "受影響的安裝",
+  "New in this release": "此版本新增",
+  "No releases yet.": "尚無版本。"
 }

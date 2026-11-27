@@ -3111,5 +3111,19 @@
   "Installs": "ইনস্টল",
   "Stack": "স্ট্যাক",
   "Channel": "চ্যানেল",
-  "Show reports": "রিপোর্ট দেখাও"
+  "Show reports": "রিপোর্ট দেখাও",
+  "Groups": "গ্রুপ",
+  "State": "অবস্থা",
+  "New": "নতুন",
+  "Triaged": "যাচাই করা হয়েছে",
+  "Fixed in": "যেখানে ঠিক হয়েছে",
+  "Reopened after the fix in {value0}": "{value0}-এ সংশোধনের পর আবার খোলা হয়েছে",
+  "GitHub issue": "GitHub ইস্যু",
+  "Crash-free sessions": "ক্র্যাশমুক্ত সেশন",
+  "Crash-free installs": "ক্র্যাশমুক্ত ইনস্টল",
+  "Sessions": "সেশন",
+  "Crash reports": "ক্র্যাশ রিপোর্ট",
+  "Affected installs": "প্রভাবিত ইনস্টল",
+  "New in this release": "এই রিলিজে নতুন",
+  "No releases yet.": "এখনও কোনো রিলিজ নেই।"
 }

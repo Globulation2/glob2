@@ -3165,5 +3165,19 @@
   "Installs": "Instalace",
   "Stack": "Zásobník",
   "Channel": "Kanál",
-  "Show reports": "Zobrazit hlášení"
+  "Show reports": "Zobrazit hlášení",
+  "Groups": "Skupiny",
+  "State": "Stav",
+  "New": "Nové",
+  "Triaged": "Roztříděné",
+  "Fixed in": "Opraveno ve verzi",
+  "Reopened after the fix in {value0}": "Znovu otevřeno po opravě ve verzi {value0}",
+  "GitHub issue": "Issue na GitHubu",
+  "Crash-free sessions": "Relace bez pádu",
+  "Crash-free installs": "Instalace bez pádu",
+  "Sessions": "Relace",
+  "Crash reports": "Hlášení o pádech",
+  "Affected installs": "Zasažené instalace",
+  "New in this release": "Nové v této verzi",
+  "No releases yet.": "Zatím žádné verze."
 }

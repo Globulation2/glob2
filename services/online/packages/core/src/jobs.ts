@@ -84,3 +84,10 @@ export async function startJobRunner(options: JobRunnerOptions): Promise<Runner>
  * the API queues it with the report's row (docs/multiplayer/crash-reports.md).
  */
 export const CRASH_PROCESS_TASK = 'crash:process';
+
+/**
+ * Opens a GitHub issue for a new crash group (payload `{ groupId }`); the
+ * crash worker queues it when it creates the group and runs it when
+ * CRASH_GITHUB_REPOSITORY and CRASH_GITHUB_TOKEN are set.
+ */
+export const CRASH_GITHUB_ISSUE_TASK = 'crash:github-issue';

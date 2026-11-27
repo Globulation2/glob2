@@ -16,6 +16,8 @@
     "AdminContentList": "schemas/AdminContentList.schema.json",
     "AdminCrashGroup": "schemas/AdminCrashGroup.schema.json",
     "AdminCrashGroupList": "schemas/AdminCrashGroupList.schema.json",
+    "AdminCrashRelease": "schemas/AdminCrashRelease.schema.json",
+    "AdminCrashReleaseList": "schemas/AdminCrashReleaseList.schema.json",
     "AdminCrashReport": "schemas/AdminCrashReport.schema.json",
     "AdminCrashReportDetail": "schemas/AdminCrashReportDetail.schema.json",
     "AdminCrashReportList": "schemas/AdminCrashReportList.schema.json",
@@ -60,8 +62,13 @@
     "ClientNetworkSummary": "schemas/ClientNetworkSummary.schema.json",
     "ColonySkinClaims": "schemas/ColonySkinClaims.schema.json",
     "ColonySkinVersion": "schemas/ColonySkinVersion.schema.json",
+    "CrashFreeStats": "schemas/CrashFreeStats.schema.json",
+    "CrashGroupStateReceipt": "schemas/CrashGroupStateReceipt.schema.json",
+    "CrashGroupStateRequest": "schemas/CrashGroupStateRequest.schema.json",
+    "CrashReleaseGate": "schemas/CrashReleaseGate.schema.json",
     "CrashReportContext": "schemas/CrashReportContext.schema.json",
     "CrashReportReceipt": "schemas/CrashReportReceipt.schema.json",
+    "CrashSessionPing": "schemas/CrashSessionPing.schema.json",
     "CrashSymbolReceipt": "schemas/CrashSymbolReceipt.schema.json",
     "CreateMapRequest": "schemas/CreateMapRequest.schema.json",
     "EngineJob": "schemas/EngineJob.schema.json",
@@ -1711,6 +1718,38 @@
       "schema": "CrashSymbolReceipt",
       "valid": true,
       "note": "Answer to a release workflow uploading the Linux binary symbols."
+    },
+    {
+      "file": "valid/CrashSessionPing/daily-sessions.json",
+      "schema": "CrashSessionPing",
+      "valid": true,
+      "note": "An \"Always send\" install reporting the sessions it started today so far; resending the same total changes nothing."
+    },
+    {
+      "file": "invalid/CrashSessionPing/development-version.json",
+      "schema": "CrashSessionPing",
+      "valid": false,
+      "stage": "schema",
+      "note": "Only release versions count sessions; development builds send none."
+    },
+    {
+      "file": "invalid/CrashSessionPing/zero-sessions.json",
+      "schema": "CrashSessionPing",
+      "valid": false,
+      "stage": "schema",
+      "note": "A day without sessions is not sent."
+    },
+    {
+      "file": "valid/CrashGroupStateRequest/resolve.json",
+      "schema": "CrashGroupStateRequest",
+      "valid": true,
+      "note": "An administrator marks a crash group fixed in the next release."
+    },
+    {
+      "file": "valid/CrashReleaseGate/insufficient-data.json",
+      "schema": "CrashReleaseGate",
+      "valid": true,
+      "note": "A release with too few opted-in sessions is neither passed nor failed."
     }
   ],
   "tickets": {

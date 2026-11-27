@@ -1,0 +1,15 @@
+{
+  "version": "0.11.8.4",
+  "verdict": "insufficient_data",
+  "reasons": [
+    "0.11.8.4 has 120 opted-in sessions; the comparison needs 1000."
+  ],
+  "previousVersion": "0.11.8.3",
+  "sessions": 120,
+  "crashFreeSessions": 0.99,
+  "previousSessions": 5400,
+  "previousCrashFreeSessions": 0.995,
+  "tolerance": 0.005,
+  "minimumSessions": 1000,
+  "untriagedGroups": []
+}

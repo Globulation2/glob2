@@ -5,10 +5,13 @@
 //   MINIDUMP_STACKWALK        minidump-stackwalk binary (default /usr/local/bin/minidump-stackwalk)
 //   CRASH_SYMBOL_CACHE_DIR    decompressed symbols (default /tmp/glob2-crash-symbols)
 //   CRASH_SYMBOL_CACHE_BYTES  cache size before least recently used files go (default 8 GiB)
+//   CRASH_GITHUB_REPOSITORY   owner/name to open an issue on for each new crash group (unset: none)
+//   CRASH_GITHUB_TOKEN        a token that may create issues there
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { sql } from 'kysely';
 import { createDatabase } from '@glob2/db';
 import {
+  CRASH_GITHUB_ISSUE_TASK,
   CRASH_PROCESS_TASK,
   createBlobStore,
   createLogger,
@@ -20,6 +23,7 @@ import {
 import { runProcess } from '@glob2/engine/process';
 import { processCrashReport } from './process.ts';
 import { SymbolCache } from './symbols.ts';
+import { githubIssueConfig, openCrashIssue } from './githubIssue.ts';
 
 const config = loadConfig();
 const logger = createLogger('crash-worker', config.logLevel);
@@ -50,7 +54,12 @@ await prepareJobQueue(database.pool, logger);
 const blobs = createBlobStore(config.blobs);
 await mkdir(cacheDir, { recursive: true });
 const cache = new SymbolCache(cacheDir, database.db, blobs, cacheBytes);
-const tools = { stackwalk: { binary, signal: abort.signal }, cache };
+const issues = githubIssueConfig(process.env, config.publicOrigin);
+logger.info(
+  issues ? { repository: issues.repository } : {},
+  issues ? 'Opening GitHub issues for new crash groups' : 'GitHub issues for crash groups are off',
+);
+const tools = { stackwalk: { binary, signal: abort.signal }, cache, issues: !!issues };
 
 const runner = await startJobRunner({
   pool: database.pool,
@@ -68,6 +77,13 @@ const runner = await startJobRunner({
         logger,
         helpers.job.attempts >= helpers.job.max_attempts,
       );
+    },
+    [CRASH_GITHUB_ISSUE_TASK]: async (payload) => {
+      const groupId = (payload as { groupId?: unknown })?.groupId;
+      if (typeof groupId !== 'string') throw new Error('Missing crash group id');
+      // Queued while issues were configured, then turned off: nothing to do.
+      if (!issues) return;
+      await openCrashIssue(database.db, issues, groupId, logger);
     },
   },
 });

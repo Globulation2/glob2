@@ -140,6 +140,9 @@ production access. Recruit actual testers, record their feedback, and follow
 Internal testing does not satisfy this requirement. Store availability must
 remain unpublished in website data until production is verified.
 
+Before dispatching production, check Play vitals and run the
+[crash gate](downloads.md#crash-reports-before-promotion) for the tag's version.
+
 The same workflow accepts an explicit `track: production`. Configure a separate
 `google-play-production` mirror environment with the same owner approval,
 master-only deployment policy and signing-secret names. Reuse the backed-up Play

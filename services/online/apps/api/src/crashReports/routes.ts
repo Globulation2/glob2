@@ -379,12 +379,15 @@ export async function crashReportRoutes(app: FastifyInstance, identity: Identity
       version?: string;
       platform?: string;
       distribution?: string;
+      state?: string;
     };
   }>('/api/v1/admin/crash-groups', async (r): Promise<AdminCrashGroupList> => {
     await requireRole(identity, r, 'admin');
     const limit = pageSize(r.query.limit);
     const offset = groupOffset(r.query.cursor);
-    const { version, platform, distribution } = r.query;
+    const { version, platform, distribution, state } = r.query;
+    if (state !== undefined && !['new', 'triaged', 'resolved'].includes(state))
+      throw apiError('bad_request', 'Unknown crash group state.');
     let counts = db
       .selectFrom('crash_reports')
       .select((eb) => [
@@ -399,10 +402,12 @@ export async function crashReportRoutes(app: FastifyInstance, identity: Identity
     if (version) counts = counts.where('version', '=', version);
     if (platform) counts = counts.where('platform', '=', platform);
     if (distribution) counts = counts.where('distribution', '=', distribution);
-    const rows = await db
+    let grouped = db
       .with('counts', () => counts)
       .selectFrom('counts')
-      .innerJoin('crash_groups as g', 'g.id', 'counts.group_id')
+      .innerJoin('crash_groups as g', 'g.id', 'counts.group_id');
+    if (state) grouped = grouped.where('g.state', '=', state as AdminCrashGroup['state']);
+    const rows = await grouped
       .select([
         'g.id',
         'g.signature',
@@ -410,6 +415,10 @@ export async function crashReportRoutes(app: FastifyInstance, identity: Identity
         'g.last_version',
         'g.first_seen_at',
         'g.last_seen_at',
+        'g.state',
+        'g.fixed_in',
+        'g.github_issue',
+        'g.github_issue_url',
         'counts.reports',
         'counts.installs',
         'counts.platforms',
@@ -433,6 +442,11 @@ export async function crashReportRoutes(app: FastifyInstance, identity: Identity
       installs: Number(row.installs),
       platforms: row.platforms,
       distributions: row.distributions,
+      state: row.state,
+      ...(row.fixed_in ? { fixedIn: row.fixed_in } : {}),
+      ...(row.github_issue && row.github_issue_url
+        ? { githubIssue: { number: row.github_issue, url: row.github_issue_url } }
+        : {}),
     }));
     return { items, ...(rows.length > limit ? { nextCursor: `o${offset + limit}` } : {}) };
   });

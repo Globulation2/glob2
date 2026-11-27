@@ -3084,5 +3084,19 @@
   "Installs": "Pemasangan",
   "Stack": "Tindanan",
   "Channel": "Saluran",
-  "Show reports": "Tunjukkan laporan"
+  "Show reports": "Tunjukkan laporan",
+  "Groups": "Kumpulan",
+  "State": "Keadaan",
+  "New": "Baharu",
+  "Triaged": "Sudah disaring",
+  "Fixed in": "Dibaiki dalam",
+  "Reopened after the fix in {value0}": "Dibuka semula selepas pembaikan dalam {value0}",
+  "GitHub issue": "Isu GitHub",
+  "Crash-free sessions": "Sesi tanpa ranap",
+  "Crash-free installs": "Pemasangan tanpa ranap",
+  "Sessions": "Sesi",
+  "Crash reports": "Laporan ranap",
+  "Affected installs": "Pemasangan terjejas",
+  "New in this release": "Baharu dalam keluaran ini",
+  "No releases yet.": "Belum ada keluaran."
 }

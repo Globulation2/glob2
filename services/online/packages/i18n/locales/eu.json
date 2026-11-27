@@ -3111,5 +3111,19 @@
   "Installs": "Instalazioak",
   "Stack": "Pila",
   "Channel": "Kanala",
-  "Show reports": "Erakutsi txostenak"
+  "Show reports": "Erakutsi txostenak",
+  "Groups": "Taldeak",
+  "State": "Egoera",
+  "New": "Berria",
+  "Triaged": "Sailkatua",
+  "Fixed in": "Hemen konpondua",
+  "Reopened after the fix in {value0}": "{value0} bertsioko konponketaren ondoren berriro irekia",
+  "GitHub issue": "GitHub-eko arazoa",
+  "Crash-free sessions": "Hutsegiterik gabeko saioak",
+  "Crash-free installs": "Hutsegiterik gabeko instalazioak",
+  "Sessions": "Saioak",
+  "Crash reports": "Hutsegite-txostenak",
+  "Affected installs": "Eragindako instalazioak",
+  "New in this release": "Berria bertsio honetan",
+  "No releases yet.": "Oraindik ez dago bertsiorik."
 }

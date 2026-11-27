@@ -3111,5 +3111,19 @@
   "Installs": "इंस्टॉल",
   "Stack": "स्टैक",
   "Channel": "चैनल",
-  "Show reports": "रिपोर्ट दिखाएँ"
+  "Show reports": "रिपोर्ट दिखाएँ",
+  "Groups": "समूह",
+  "State": "स्थिति",
+  "New": "नया",
+  "Triaged": "जाँचा गया",
+  "Fixed in": "इसमें ठीक हुआ",
+  "Reopened after the fix in {value0}": "{value0} में सुधार के बाद फिर से खोला गया",
+  "GitHub issue": "GitHub इश्यू",
+  "Crash-free sessions": "क्रैश-रहित सत्र",
+  "Crash-free installs": "क्रैश-रहित इंस्टॉल",
+  "Sessions": "सत्र",
+  "Crash reports": "क्रैश रिपोर्ट",
+  "Affected installs": "प्रभावित इंस्टॉल",
+  "New in this release": "इस रिलीज़ में नया",
+  "No releases yet.": "अभी कोई रिलीज़ नहीं।"
 }

@@ -3111,5 +3111,19 @@
   "Installs": "انسٹالز",
   "Stack": "اسٹیک",
   "Channel": "چینل",
-  "Show reports": "رپورٹس دکھائیں"
+  "Show reports": "رپورٹس دکھائیں",
+  "Groups": "گروپ",
+  "State": "حالت",
+  "New": "نیا",
+  "Triaged": "جانچا گیا",
+  "Fixed in": "اس میں درست ہوا",
+  "Reopened after the fix in {value0}": "{value0} میں درستی کے بعد دوبارہ کھولا گیا",
+  "GitHub issue": "GitHub مسئلہ",
+  "Crash-free sessions": "کریش کے بغیر سیشن",
+  "Crash-free installs": "کریش کے بغیر انسٹال",
+  "Sessions": "سیشن",
+  "Crash reports": "کریش رپورٹس",
+  "Affected installs": "متاثرہ انسٹال",
+  "New in this release": "اس ریلیز میں نیا",
+  "No releases yet.": "ابھی کوئی ریلیز نہیں۔"
 }

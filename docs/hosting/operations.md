@@ -37,6 +37,7 @@ at most 1000 rows per table and run) and collects blobs every six hours:
 | Spilled NOTIFY payloads | 1 hour |
 | [Problem reports](../multiplayer/problem-reports.md) and [crash reports](../multiplayer/crash-reports.md) | bundles (log, save, replay, minidump) 90 days; the summary row and its symbolicated frames two years; crash groups two years after their last report; bundles no row names, one day (hourly, `apps/worker/src/crashReportRetention.ts`) |
 | [Crash symbols](../multiplayer/crash-reports.md#symbols) | kept for every release; uploads no `crash_symbols` row names, one day |
+| [Crash-free session counts](../multiplayer/crash-reports.md#session-counts) | per-install day totals (`crash_session_installs`, the only rows with install IDs) and daily totals (`crash_session_days`) two years after their day (hourly, `apps/worker/src/crashReportRetention.ts`) |
 | Blobs | unreferenced ones (no map version, preview, match artifact, upload, generated map (warm pool maps included), or match played on the map) 7 days after creation; stored files no `blobs` row names, 7 days after they were written |
 
 Matches, participants, ratings, rating history, catalog maps, map download counts

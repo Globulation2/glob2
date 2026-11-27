@@ -231,6 +231,30 @@ export interface CrashGroupsTable {
   last_version: string;
   first_seen_at: Timestamp;
   last_seen_at: Timestamp;
+  state: Defaulted<'new' | 'triaged' | 'resolved'>;
+  fixed_in: Nullable<string>;
+  state_changed_at: NullableTimestamp;
+  github_issue: Nullable<number>;
+  github_issue_url: Nullable<string>;
+}
+
+/** One install's sessions on one UTC day (its running total). */
+export interface CrashSessionInstallsTable {
+  day: string;
+  version: string;
+  platform: string;
+  distribution: string;
+  install_id: string;
+  sessions: number;
+}
+
+export interface CrashSessionDaysTable {
+  day: string;
+  version: string;
+  platform: string;
+  distribution: string;
+  sessions: Defaulted<string | number>;
+  installs: Defaulted<number>;
 }
 
 export interface BlobsTable {
@@ -1599,6 +1623,8 @@ export interface Database {
   crash_releases: CrashReleasesTable;
   crash_symbols: CrashSymbolsTable;
   crash_groups: CrashGroupsTable;
+  crash_session_installs: CrashSessionInstallsTable;
+  crash_session_days: CrashSessionDaysTable;
   blobs: BlobsTable;
   image_webp_renditions: { source_sha256: string; webp_sha256: string };
   relays: RelaysTable;

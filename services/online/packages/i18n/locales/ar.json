@@ -3219,5 +3219,19 @@
   "Installs": "التثبيتات",
   "Stack": "مكدس الاستدعاءات",
   "Channel": "القناة",
-  "Show reports": "عرض البلاغات"
+  "Show reports": "عرض البلاغات",
+  "Groups": "المجموعات",
+  "State": "الحالة",
+  "New": "جديد",
+  "Triaged": "تم الفرز",
+  "Fixed in": "أُصلح في",
+  "Reopened after the fix in {value0}": "أُعيد فتحه بعد الإصلاح في {value0}",
+  "GitHub issue": "مشكلة على GitHub",
+  "Crash-free sessions": "جلسات بلا أعطال",
+  "Crash-free installs": "تثبيتات بلا أعطال",
+  "Sessions": "الجلسات",
+  "Crash reports": "تقارير الأعطال",
+  "Affected installs": "التثبيتات المتأثرة",
+  "New in this release": "جديد في هذا الإصدار",
+  "No releases yet.": "لا توجد إصدارات بعد."
 }

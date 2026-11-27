@@ -3084,5 +3084,19 @@
   "Installs": "การติดตั้ง",
   "Stack": "สแต็ก",
   "Channel": "ช่องทาง",
-  "Show reports": "แสดงรายงาน"
+  "Show reports": "แสดงรายงาน",
+  "Groups": "กลุ่ม",
+  "State": "สถานะ",
+  "New": "ใหม่",
+  "Triaged": "คัดแยกแล้ว",
+  "Fixed in": "แก้ไขในรุ่น",
+  "Reopened after the fix in {value0}": "เปิดอีกครั้งหลังการแก้ไขในรุ่น {value0}",
+  "GitHub issue": "Issue บน GitHub",
+  "Crash-free sessions": "เซสชันที่ไม่แครช",
+  "Crash-free installs": "การติดตั้งที่ไม่แครช",
+  "Sessions": "เซสชัน",
+  "Crash reports": "รายงานการแครช",
+  "Affected installs": "การติดตั้งที่ได้รับผลกระทบ",
+  "New in this release": "ใหม่ในรุ่นนี้",
+  "No releases yet.": "ยังไม่มีรุ่นที่เผยแพร่"
 }

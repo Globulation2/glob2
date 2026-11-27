@@ -3084,5 +3084,19 @@
   "Installs": "安装数",
   "Stack": "调用栈",
   "Channel": "渠道",
-  "Show reports": "显示报告"
+  "Show reports": "显示报告",
+  "Groups": "分组",
+  "State": "状态",
+  "New": "新建",
+  "Triaged": "已分诊",
+  "Fixed in": "修复于",
+  "Reopened after the fix in {value0}": "在 {value0} 修复后再次出现",
+  "GitHub issue": "GitHub 议题",
+  "Crash-free sessions": "无崩溃会话",
+  "Crash-free installs": "无崩溃安装",
+  "Sessions": "会话",
+  "Crash reports": "崩溃报告",
+  "Affected installs": "受影响的安装",
+  "New in this release": "本版本新增",
+  "No releases yet.": "还没有版本。"
 }

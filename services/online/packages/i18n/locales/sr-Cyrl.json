@@ -3138,5 +3138,19 @@
   "Installs": "Инсталације",
   "Stack": "Стек",
   "Channel": "Канал",
-  "Show reports": "Прикажи пријаве"
+  "Show reports": "Прикажи пријаве",
+  "Groups": "Групе",
+  "State": "Стање",
+  "New": "Нова",
+  "Triaged": "Прегледана",
+  "Fixed in": "Исправљено у",
+  "Reopened after the fix in {value0}": "Поново отворено после исправке у {value0}",
+  "GitHub issue": "Проблем на GitHub-у",
+  "Crash-free sessions": "Сесије без пада",
+  "Crash-free installs": "Инсталације без пада",
+  "Sessions": "Сесије",
+  "Crash reports": "Извештаји о падовима",
+  "Affected installs": "Погођене инсталације",
+  "New in this release": "Ново у овом издању",
+  "No releases yet.": "Још нема издања."
 }

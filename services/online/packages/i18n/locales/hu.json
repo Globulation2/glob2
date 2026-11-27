@@ -3111,5 +3111,19 @@
   "Installs": "Telepítések",
   "Stack": "Verem",
   "Channel": "Csatorna",
-  "Show reports": "Jelentések megjelenítése"
+  "Show reports": "Jelentések megjelenítése",
+  "Groups": "Csoportok",
+  "State": "Állapot",
+  "New": "Új",
+  "Triaged": "Átnézve",
+  "Fixed in": "Javítva ebben",
+  "Reopened after the fix in {value0}": "Újranyitva a(z) {value0} javítása után",
+  "GitHub issue": "GitHub-hibajegy",
+  "Crash-free sessions": "Összeomlás nélküli munkamenetek",
+  "Crash-free installs": "Összeomlás nélküli telepítések",
+  "Sessions": "Munkamenetek",
+  "Crash reports": "Összeomlás-jelentések",
+  "Affected installs": "Érintett telepítések",
+  "New in this release": "Új ebben a kiadásban",
+  "No releases yet.": "Még nincs kiadás."
 }

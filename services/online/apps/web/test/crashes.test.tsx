@@ -3,6 +3,7 @@ import { afterEach, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import type {
   AdminCrashGroupList,
+  AdminCrashReleaseList,
   AdminCrashReportDetail,
   AdminCrashReportList,
 } from '@glob2/protocol';
@@ -11,13 +12,21 @@ import { RouterProvider } from '../src/router.tsx';
 import { api } from '../src/api.ts';
 
 vi.mock('../src/api.ts', () => ({
-  api: { adminCrashGroups: vi.fn(), adminCrashReports: vi.fn(), adminCrashReport: vi.fn() },
+  api: {
+    adminCrashGroups: vi.fn(),
+    adminCrashReports: vi.fn(),
+    adminCrashReport: vi.fn(),
+    adminCrashReleases: vi.fn(),
+    setCrashGroupState: vi.fn(),
+  },
 }));
 afterEach(() => {
   cleanup();
   vi.mocked(api.adminCrashGroups).mockReset();
   vi.mocked(api.adminCrashReports).mockReset();
   vi.mocked(api.adminCrashReport).mockReset();
+  vi.mocked(api.adminCrashReleases).mockReset();
+  vi.mocked(api.setCrashGroupState).mockReset();
   window.history.replaceState(null, '', '/');
 });
 
@@ -58,6 +67,7 @@ it('lists crash groups by installs, filters them and opens a group with its stac
         installs: 9,
         platforms: ['windows'],
         distributions: ['steam'],
+        state: 'new',
       },
     ],
   } satisfies AdminCrashGroupList);
@@ -103,4 +113,102 @@ it('lists crash groups by installs, filters them and opens a group with its stac
   expect(await screen.findByText('Unit::step(int)')).toBeTruthy();
   expect(screen.getByText('unit/Unit.cpp:412')).toBeTruthy();
   expect(screen.getByText('ntdll.dll+0x11')).toBeTruthy();
+});
+
+it('resolves a group with the release that fixed it', async () => {
+  vi.mocked(api.adminCrashGroups).mockResolvedValue({
+    items: [
+      {
+        id: GROUP,
+        signature: 'Unit::step(int)',
+        firstVersion: '0.11.8.1',
+        lastVersion: '0.11.8.1',
+        firstSeenAt: '2026-11-20T12:00:00Z',
+        lastSeenAt: '2026-11-26T12:00:00Z',
+        reports: 3,
+        installs: 2,
+        platforms: ['android'],
+        distributions: ['google_play'],
+        state: 'new',
+        fixedIn: '0.11.8.0',
+        githubIssue: { number: 42, url: 'https://github.com/Globulation2/glob2/issues/42' },
+      },
+    ],
+  } satisfies AdminCrashGroupList);
+  vi.mocked(api.setCrashGroupState).mockResolvedValue({
+    id: GROUP,
+    state: 'resolved',
+    fixedIn: '0.11.8.2',
+  });
+  render(
+    <RouterProvider>
+      <Crashes />
+    </RouterProvider>,
+  );
+  expect(await screen.findByText(/Reopened after the fix in 0\.11\.8\.0/)).toBeTruthy();
+  expect(screen.getByRole('link', { name: '#42' }).getAttribute('href')).toBe(
+    'https://github.com/Globulation2/glob2/issues/42',
+  );
+  const card = screen.getByRole('article');
+  const select = card.querySelector('select') as HTMLSelectElement;
+  fireEvent.change(select, { target: { value: 'resolved' } });
+  const save = screen.getByRole('button', { name: 'Save' }) as HTMLButtonElement;
+  fireEvent.change(screen.getByLabelText('Fixed in'), { target: { value: '' } });
+  expect(save.disabled).toBe(true);
+  fireEvent.change(screen.getByLabelText('Fixed in'), { target: { value: ' 0.11.8.2 ' } });
+  fireEvent.click(save);
+  await vi.waitFor(() =>
+    expect(api.setCrashGroupState).toHaveBeenCalledWith(GROUP, {
+      state: 'resolved',
+      fixedIn: '0.11.8.2',
+    }),
+  );
+  expect(await screen.findByText('0.11.8.2')).toBeTruthy();
+});
+
+it('shows crash-free rates per release and the groups new in it', async () => {
+  window.history.replaceState(null, '', '/?view=releases');
+  vi.mocked(api.adminCrashReleases).mockResolvedValue({
+    items: [
+      {
+        version: '0.11.8.4',
+        registeredAt: '2026-11-25T12:00:00Z',
+        overall: {
+          sessions: 2000,
+          installs: 400,
+          crashedSessions: 10,
+          crashedInstalls: 8,
+          crashFreeSessions: 0.995,
+          crashFreeInstalls: 0.98,
+        },
+        breakdown: [
+          {
+            platform: 'android',
+            distribution: 'google_play',
+            stats: {
+              sessions: 2000,
+              installs: 400,
+              crashedSessions: 10,
+              crashedInstalls: 8,
+              crashFreeSessions: 0.995,
+              crashFreeInstalls: 0.98,
+            },
+          },
+        ],
+        reports: 14,
+        affectedInstalls: 11,
+        newGroups: [{ id: GROUP, signature: 'Map::load()', state: 'new', reports: 4, installs: 3 }],
+      },
+    ],
+  } satisfies AdminCrashReleaseList);
+  render(
+    <RouterProvider>
+      <Crashes />
+    </RouterProvider>,
+  );
+  expect(await screen.findByText('0.11.8.4')).toBeTruthy();
+  expect(screen.getAllByText('99.50%').length).toBe(2);
+  expect(screen.getAllByText('98.00%').length).toBe(2);
+  expect(screen.getByText('Map::load()')).toBeTruthy();
+  expect(api.adminCrashGroups).not.toHaveBeenCalled();
 });

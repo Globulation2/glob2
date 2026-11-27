@@ -3165,5 +3165,19 @@
   "Installs": "Namestitve",
   "Stack": "Sklad",
   "Channel": "Kanal",
-  "Show reports": "Prikaži poročila"
+  "Show reports": "Prikaži poročila",
+  "Groups": "Skupine",
+  "State": "Stanje",
+  "New": "Nova",
+  "Triaged": "Pregledana",
+  "Fixed in": "Popravljeno v",
+  "Reopened after the fix in {value0}": "Znova odprto po popravku v {value0}",
+  "GitHub issue": "Zadeva na GitHubu",
+  "Crash-free sessions": "Seje brez sesutja",
+  "Crash-free installs": "Namestitve brez sesutja",
+  "Sessions": "Seje",
+  "Crash reports": "Poročila o sesutjih",
+  "Affected installs": "Prizadete namestitve",
+  "New in this release": "Novo v tej izdaji",
+  "No releases yet.": "Izdaj še ni."
 }

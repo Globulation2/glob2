@@ -3111,5 +3111,19 @@
   "Installs": "Installationen",
   "Stack": "Stack",
   "Channel": "Kanal",
-  "Show reports": "Berichte anzeigen"
+  "Show reports": "Berichte anzeigen",
+  "Groups": "Gruppen",
+  "State": "Zustand",
+  "New": "Neu",
+  "Triaged": "Gesichtet",
+  "Fixed in": "Behoben in",
+  "Reopened after the fix in {value0}": "Nach der Behebung in {value0} wieder geöffnet",
+  "GitHub issue": "GitHub-Issue",
+  "Crash-free sessions": "Absturzfreie Sitzungen",
+  "Crash-free installs": "Absturzfreie Installationen",
+  "Sessions": "Sitzungen",
+  "Crash reports": "Absturzberichte",
+  "Affected installs": "Betroffene Installationen",
+  "New in this release": "Neu in dieser Version",
+  "No releases yet.": "Noch keine Versionen."
 }

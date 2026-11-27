@@ -3111,5 +3111,19 @@
   "Installs": "Εγκαταστάσεις",
   "Stack": "Στοίβα",
   "Channel": "Κανάλι",
-  "Show reports": "Εμφάνιση αναφορών"
+  "Show reports": "Εμφάνιση αναφορών",
+  "Groups": "Ομάδες",
+  "State": "Κατάσταση",
+  "New": "Νέο",
+  "Triaged": "Αξιολογημένο",
+  "Fixed in": "Διορθώθηκε στην",
+  "Reopened after the fix in {value0}": "Άνοιξε ξανά μετά τη διόρθωση στην {value0}",
+  "GitHub issue": "Ζήτημα στο GitHub",
+  "Crash-free sessions": "Συνεδρίες χωρίς κατάρρευση",
+  "Crash-free installs": "Εγκαταστάσεις χωρίς κατάρρευση",
+  "Sessions": "Συνεδρίες",
+  "Crash reports": "Αναφορές κατάρρευσης",
+  "Affected installs": "Επηρεασμένες εγκαταστάσεις",
+  "New in this release": "Νέο σε αυτή την έκδοση",
+  "No releases yet.": "Δεν υπάρχουν ακόμη εκδόσεις."
 }
