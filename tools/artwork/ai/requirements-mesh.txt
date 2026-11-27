@@ -1,0 +1,15 @@
+# Optional, isolated environment for the TRELLIS mesh shadow tools:
+# tools/artwork/ai/trellis_meshes.py (fal.ai client, staging only) and
+# tools/artwork/mesh_shadows.py (offline alignment and casting). Deliberately NOT
+# included by requirements-dev.txt; cast_shadows.py and packaging need none of it.
+#
+#   uv venv --python 3.13 .venv-mesh
+#   uv pip install --python .venv-mesh/bin/python -r tools/artwork/ai/requirements-mesh.txt
+#
+# NumPy/SciPy/Pillow/trimesh take part in the alignment and casting, so a different
+# version can change the committed masks; mesh_shadows.py records them per frame.
+fal-client==1.0.3
+trimesh==5.2.2
+numpy==2.5.5
+scipy==1.18.1
+Pillow==13.0.0

@@ -67,6 +67,80 @@ Each recipe records classic source hashes, Python image-tool versions and, for
 inference, the executable and selected model-file hashes. Retain this record with
 the reviewed candidate selection.
 
+## DAT2 building candidates
+
+`dat2_upscale.py` stages candidates for the AI-upscaled building frames:
+finished, construction and variant frames with their team layers. Recovered
+originals, walls and building sites are excluded. It runs transformer SR
+models on MPS or CPU, then a deterministic CPU assembly: joint team-layer
+unmixing with the classic hue, luminance-only sharpening and back-projection to
+the classic. Its docstring lists the steps.
+
+`--variant` picks the models; `MODELS` records each file's hash, URL and licence.
+`bhi`, `nomos` and `atd` are the CC-BY-4.0 models by Philip Hofmann (credit him):
+4xBHI_dat2_real, 4xNomos8kDAT and 4xRealWebPhoto_v3_atd. Variants use them
+alone or as equal-weight ensembles (`bhi-atd`, `bhi-nomos-atd`, ...).
+`--weights bhi=0.5,nomos=0.3,atd=0.2` instead runs a weighted ensemble, recipe
+`dat2 weighted chain ensemble v1`, with the weights in the provenance and
+manifest. Only recipes whose models all allow commercial use can be promoted.
+`usv2-bhi` reproduces the approved bench look with 4x-UltraSharpV2, which is
+CC-BY-NC-SA; it is reference-only.
+Inference needs the separate environment in `requirements-dat2.txt`.
+
+```sh
+python tools/artwork/ai/dat2_upscale.py --list-buildings
+python tools/artwork/ai/dat2_upscale.py --weights bhi=0.75,atd=0.25 --all-buildings --classic-rev HEAD \
+  --models /path/to/models --output /tmp/glob2-dat2 [--device cpu] [--streams 2] [--jobs 15]
+python3 tools/artwork/ai/dat2_upscale.py --promote /tmp/glob2-dat2 --dry-run
+python3 tools/artwork/ai/dat2_upscale.py --promote /tmp/glob2-dat2 [--only a,b | --skip c]
+```
+
+Every finished frame is stored at once in a persistent frame cache
+(`<output>.frames`, or `--cache DIR`). Each entry is keyed by the classic
+bytes, recipe, weights, model hashes, device and assembly version. A rerun
+reuses matching, hash-verified entries and computes only the rest.
+`--resume-from DIR` imports finished frames from an earlier staging or
+salvage directory. A failing frame does not stop the others: the run
+finishes, reports the failures and publishes nothing.
+Staging follows the rules above: a fresh directory, all-or-nothing, with
+`provenance/<frame>.json` recording the classic and candidate hashes, model hashes,
+licences, package versions and recipe. MPS reproduces earlier MPS runs exactly.
+CPU inference is deterministic too, but differs from MPS by at most one float16
+step. Each MPS stream needs 4–7 GB, so use two streams on a 24 GB machine.
+Promotion needs only Pillow and copies the reviewed PNGs byte-for-byte. It writes
+base and team layers into `content-src/gfx/production/ai-upscaled/` and
+`content/data/highres/v1/`, then updates both manifests, `frames.txt` and
+`package.json`. It refuses reference-only variants, and candidates whose classic
+source or staged bytes have changed. Afterwards rerun `sharpen_upscales.py`
+(it skips `dat2 ` recipes and refreshes its own source hash), then
+`runtime_provenance.py` and the checks below.
+
+## TRELLIS meshes for building shadows
+
+Building ground shadows are cast from 3D models of the sprites
+([ground shadows](../../../docs/assets/lighting.md#ground-shadows)).
+`trellis_meshes.py` sends each building frame (base without its baked shadow,
+team layer composited, upscaled 2x) to Microsoft TRELLIS
+(`microsoft/TRELLIS-image-large`, MIT-licensed weights) hosted by fal.ai as
+`fal-ai/trellis`, one request per seed, about $0.02 and 25-75 s each, in
+parallel. It writes GLB meshes and per-request records (endpoint, seed, input
+and sprite hashes, mesh hash, request id, timings) to a fresh staging directory
+outside the repository; meshes are never committed. The key comes from
+`FAL_KEY` or `~/.config/fal/key` and is never printed.
+
+    uv venv --python 3.13 .venv-mesh
+    uv pip install --python .venv-mesh/bin/python -r tools/artwork/ai/requirements-mesh.txt
+    .venv-mesh/bin/python tools/artwork/ai/trellis_meshes.py --all-buildings --output /tmp/glob2-meshes
+    .venv-mesh/bin/python tools/artwork/ai/trellis_meshes.py --frames hosp0b0 --seeds 2 3 4 \
+        --output /tmp/glob2-meshes --append                  # retries for gate failures
+    .venv-mesh/bin/python tools/artwork/mesh_shadows.py --meshes /tmp/glob2-meshes \
+        --out content-src/gfx/shadows/mesh --review artifacts/mesh-review --lengths artifacts/lengths
+    python3 tools/artwork/cast_shadows.py                    # registers the masks, offline
+
+`mesh_shadows.py` runs no inference: it aligns, gates and casts the staged
+meshes and commits only the masks and their records. Builds and
+`cast_shadows.py` never call fal.ai.
+
 ## Terrain and water
 
 The committed final tiles contain shared original-based grass and sand,

@@ -40,6 +40,7 @@ Luc-Olivier de Charrière <NuageBleu at gmail dot com> (swarm, old terrains, bui
 Gabriel Walt <diz at ysagoon dot com> (mouse cursors)
 Joey Marshall <JoeyMarshall at ml1 dot net> (additional drawing, coloring)
 Stéphane Magnenat <stephane at magnenat dot net> (GUI, new water)
+Philip Hofmann (4xBHI_dat2_real and 4xRealWebPhoto_v3_atd upscaling models, CC BY 4.0, used for the HD buildings)
 
 
 *
