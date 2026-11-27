@@ -297,7 +297,7 @@ class SoftwareTerrainCache
 	};
 	std::vector<OverlayDraw> overlayDraws;
 	std::size_t keyframeMisses = 0;
-	std::size_t sharedKeyframeCells = 0, calmOverlayCells = 0, ownKeyframeCells = 0;
+	std::size_t sharedKeyframeCells = 0, calmOverlayCells = 0, ownKeyframeCells = 0, stillKeyframeCells = 0;
 	// The keyframe this frame's animation time prepares the compositor for.
 	std::int64_t keyframeTarget(int time);
 	// Takes or refreshes that keyframe's snapshot after the compositor prepared it.
@@ -405,12 +405,17 @@ class SoftwareTerrainCache
 	std::size_t missingKeyframeCells() const { return keyframeMisses; }
 	//! Animated cells the portable renderer drew last frame (or tried to), by how
 	//! they animate: from a material's shared keyframes alone, from them with a
-	//! still calm overlay, or from keyframes composed for the cell itself.
+	//! still calm overlay, or from keyframes composed for the cell itself; and
+	//! of them, those that showed their page's still pixels, with no keyframe
+	//! of any density to draw.
 	struct KeyframeCells
 	{
-		std::size_t shared = 0, calmOverlay = 0, own = 0;
+		std::size_t shared = 0, calmOverlay = 0, own = 0, still = 0;
 	};
-	KeyframeCells keyframeCells() const { return {sharedKeyframeCells, calmOverlayCells, ownKeyframeCells}; }
+	KeyframeCells keyframeCells() const
+	{
+		return {sharedKeyframeCells, calmOverlayCells, ownKeyframeCells, stillKeyframeCells};
+	}
 	std::size_t pendingPages() const { return pending.size(); }
 	// Benchmark override for comparing stable page density with adaptive sampling.
 	int benchmarkDownsample = 0;
