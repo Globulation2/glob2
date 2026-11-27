@@ -6,5 +6,11 @@
   "exact": true,
   "alphaQuality": 100,
   "losslessQuality": 75,
-  "losslessMethod": 4
+  "losslessMethod": 4,
+  "spriteTargets": {
+    "default": 85,
+    "android": 80,
+    "ios": 80,
+    "web": 75
+  }
 }
