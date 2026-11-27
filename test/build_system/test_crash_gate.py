@@ -97,5 +97,28 @@ class CrashGateTests(unittest.TestCase):
         self.assertEqual(self.run_main(answers=[gate('maybe')])[0], 3)
 
 
+class PromotionWorkflowTests(unittest.TestCase):
+    """The store promotions hold on the gate (docs/releases/downloads.md#crash-reports-before-promotion)."""
+
+    WORKFLOWS = {
+        'android-play-internal.yml': "inputs.track == 'production'",
+        'ios-production.yml': "inputs.stage == 'submit' || inputs.stage == 'publish'",
+        'mac-app-store-production.yml': "inputs.stage == 'submit' || inputs.stage == 'publish'",
+    }
+
+    def test_each_promotion_runs_the_gate_before_the_store(self):
+        for name, condition in self.WORKFLOWS.items():
+            with self.subTest(name):
+                text = (ROOT / '.github/workflows' / name).read_text()
+                gate = text.index('python3 release-driver/tools/release/crash_gate.py')
+                self.assertIn(condition, text[text.rindex('- name: Hold the promotion on the crash-free gate', 0, gate):gate])
+                self.assertIn('allow_insufficient_crash_data', text)
+                self.assertIn('tools/release/crash_gate.py\n            buildsys/official_instance.py', text)
+                self.assertIn('secrets.CRASH_SYMBOL_UPLOAD_TOKEN', text)
+                store = 'Install pinned Play API preflight tools' if name.startswith('android') else \
+                    'Perform only the explicitly selected owner production action'
+                self.assertLess(gate, text.index(store))
+
+
 if __name__ == '__main__':
     unittest.main()
