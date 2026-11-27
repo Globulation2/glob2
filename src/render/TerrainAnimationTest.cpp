@@ -40,6 +40,7 @@
 #endif
 #endif
 #include <algorithm>
+#include <atomic>
 #include <chrono>
 #include <cmath>
 #include <cstdlib>
@@ -872,6 +873,52 @@ TEST_SUITE("TerrainAnimation")
 		CHECK(scene.view.render.animationNow().value() == doctest::Approx(start).epsilon(1e-6));
 		CHECK(densities.size() >= 3);
 		CHECK(borrowed > 0); // Cells drew another density's keyframes.
+		CHECK(still == 0);
+	}
+
+	// With the machine's cores busy, as with other programs running, the
+	// workers fall behind the keyframes the view wants: the water then holds
+	// or slows as one, never tearing into cells at different phases.
+	TEST_CASE("portable SDL water keeps one phase across the view while the machine is loaded [display]")
+	{
+		if (!wanted(RendererBackend::PortableSDL))
+			return;
+		Scene scene(RendererBackend::PortableSDL);
+		if (!scene.available())
+		{
+			MESSAGE("portable SDL unavailable here; omitted");
+			return;
+		}
+		const auto start = scene.at(81591, 0.f);
+		const auto *pages = scene.view.render.existingTerrainCache();
+		REQUIRE(pages);
+		std::atomic<bool> busy{true};
+		std::vector<std::thread> load;
+		for (unsigned i = 0; i < std::max(2u, std::thread::hardware_concurrency() * 2); ++i)
+			load.emplace_back([&busy]
+			{
+				volatile std::uint64_t spin = 0;
+				while (busy.load(std::memory_order_relaxed))
+					spin = spin + 1;
+			});
+		std::size_t torn = 0, still = 0, tornFrames = 0;
+		std::vector<Uint8> last;
+		for (int f = 0; f < 240; ++f)
+		{
+			last = scene.live(16'666'667);
+			const auto cells = pages->keyframeCells();
+			torn += cells.torn;
+			still += cells.still;
+			tornFrames += cells.torn + cells.still > 0;
+		}
+		busy = false;
+		for (auto &thread : load)
+			thread.join();
+		CAPTURE(torn);
+		CAPTURE(still);
+		CAPTURE(tornFrames);
+		CHECK(change(start, last, scene.open) > 0); // The water moved.
+		CHECK(torn == 0);
 		CHECK(still == 0);
 	}
 }

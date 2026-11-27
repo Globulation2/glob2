@@ -8,6 +8,7 @@
 #include <cmath>
 #include <array>
 #include <cstdint>
+#include <limits>
 #include <map>
 #include <memory>
 #include <optional>
@@ -275,6 +276,18 @@ class SoftwareTerrainCache
 	};
 	std::vector<KeySnapshot> keySnapshots;
 	std::uint64_t keyGeneration = 0;
+	// The key every animated cell of the view shows (see updateKeyframes):
+	// the presentation's key while the workers keep up, else an earlier one
+	// all of them hold, which walks forward as theirs arrive. INT64_MIN: none.
+	std::int64_t viewKey = std::numeric_limits<std::int64_t>::min();
+	// Keys the view may fall behind the presentation before it jumps to it.
+	static constexpr std::int64_t MaxKeyLag = 8;
+	// The first key keyframes are composed and snapshots kept from: the view's.
+	std::int64_t keyBase(std::int64_t now) const
+	{
+		return viewKey != std::numeric_limits<std::int64_t>::min() && viewKey <= now && now - viewKey <= MaxKeyLag
+				   ? viewKey : now;
+	}
 	struct KeyframeJob;
 	std::vector<std::shared_ptr<KeyframeJob>> keyframeJobs;
 	// Uniform uncalmed animated cells share one keyframe per variant at each
@@ -297,7 +310,8 @@ class SoftwareTerrainCache
 	};
 	std::vector<OverlayDraw> overlayDraws;
 	std::size_t keyframeMisses = 0;
-	std::size_t sharedKeyframeCells = 0, calmOverlayCells = 0, ownKeyframeCells = 0, stillKeyframeCells = 0;
+	std::size_t sharedKeyframeCells = 0, calmOverlayCells = 0, ownKeyframeCells = 0, stillKeyframeCells = 0,
+				tornKeyframeCells = 0;
 	// The keyframe this frame's animation time prepares the compositor for.
 	std::int64_t keyframeTarget(int time);
 	// Takes or refreshes that keyframe's snapshot after the compositor prepared it.
@@ -407,14 +421,15 @@ class SoftwareTerrainCache
 	//! they animate: from a material's shared keyframes alone, from them with a
 	//! still calm overlay, or from keyframes composed for the cell itself; and
 	//! of them, those that showed their page's still pixels, with no keyframe
-	//! of any density to draw.
+	//! of any density to draw, and those drawn at another phase (key and
+	//! crossfade) than most of the view's cells.
 	struct KeyframeCells
 	{
-		std::size_t shared = 0, calmOverlay = 0, own = 0, still = 0;
+		std::size_t shared = 0, calmOverlay = 0, own = 0, still = 0, torn = 0;
 	};
 	KeyframeCells keyframeCells() const
 	{
-		return {sharedKeyframeCells, calmOverlayCells, ownKeyframeCells, stillKeyframeCells};
+		return {sharedKeyframeCells, calmOverlayCells, ownKeyframeCells, stillKeyframeCells, tornKeyframeCells};
 	}
 	std::size_t pendingPages() const { return pending.size(); }
 	// Benchmark override for comparing stable page density with adaptive sampling.
