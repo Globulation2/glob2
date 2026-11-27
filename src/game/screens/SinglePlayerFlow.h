@@ -3,6 +3,7 @@
 #include <ScreenStack.h>
 #include "GameLoadScreen.h"
 #include "OnlineHandoff.h"
+#include <functional>
 #include <memory>
 #include <string>
 class Engine;
@@ -16,6 +17,10 @@ class SinglePlayerFlow
 	void custom(const std::optional<Online::MapPlayRequest> &map = std::nullopt);
 	void load();
     void introduction();
+	// The introduction lesson with nothing beneath it (a portal's first visit,
+	// Application::mainMenu): `finished` gets the lesson's navigation
+	// (Tutorial::MainMenu, Tutorial::Lessons, or -1 when it ended otherwise).
+	void introduction(std::function<void(int navigation)> finished);
     void lessons();
 	void studio();
 	void generatorStudio();
@@ -25,6 +30,7 @@ class SinglePlayerFlow
 	GAGGUI::ScreenStack &screens;
 	enum class ReturnTo { MainMenu, CustomSetup, Lessons };
     void returnTo(ReturnTo destination);
+	// `finished`, when set, replaces the return to `destination`.
 	void launch(GameLoadScreen::Initializer initialize, ReturnTo destination,
-				std::shared_ptr<void> mapFile = nullptr);
+				std::shared_ptr<void> mapFile = nullptr, std::function<void(int navigation)> finished = {});
 };

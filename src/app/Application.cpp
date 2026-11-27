@@ -21,6 +21,7 @@
 #include "AgeQuestionScreen.h"
 #include "AgeGate.h"
 #include "PortalPolicy.h"
+#include "tutorial/TutorialModel.h"
 #include "IntroductionOfferScreen.h"
 #include "CustomGameScreen.h"
 #include "MessageScreen.h"
@@ -247,8 +248,32 @@ Application::~Application()
 #endif
 }
 
-void Application::mainMenu()
+bool Application::mainMenu()
 {
+	if (PortalPolicy::landsInFirstLesson(globalContainer->settings.introductionOffered,
+										 GAGCore::ApplicationHost::storageRestoreFailed()))
+	{
+		// Portals want new players in gameplay at once. Like accepting the
+		// first-run offer, this marks the introduction offered; a failed save only
+		// means the next visit starts in the lesson again, so it never blocks.
+		globalContainer->settings.introductionOffered = true;
+		try
+		{
+			if (globalContainer->settings.save())
+				GAGCore::ApplicationHost::persistStorage();
+		}
+		catch (const std::exception &)
+		{
+		}
+		// Nothing lies beneath the lesson: leaving it asks the questions it
+		// skipped, then opens the main menu (and the lesson list when chosen).
+		singlePlayer.introduction([this](int navigation)
+		{
+			if (mainMenu() && navigation == Tutorial::Lessons)
+				singlePlayer.lessons();
+		});
+		return false;
+	}
 #ifdef GLOB2_MOBILE
 	const bool mobileAudio = true;
 #else
@@ -258,23 +283,24 @@ void Application::mainMenu()
 	{
 		screens.push(std::make_unique<AudioPreferenceScreen>(),
 			[this](GAGGUI::Screen &, int) { mainMenu(); });
-		return;
+		return false;
 	}
 	if (HandPreferenceScreen::needed())
 	{
 		screens.push(std::make_unique<HandPreferenceScreen>(&screens),
 			[this](GAGGUI::Screen &, int) { mainMenu(); });
-		return;
+		return false;
 	}
     if (!globalContainer->settings.introductionOffered && !GAGCore::ApplicationHost::storageRestoreFailed())
     {
         screens.push(std::make_unique<IntroductionOfferScreen>(),
             [this](GAGGUI::Screen &,int result) { mainMenu(); if (result==1) singlePlayer.introduction(); });
-        return;
+        return false;
     }
 	// Rebuild translated labels after returning from settings.
 	screens.push(std::make_unique<MainMenuScreen>(),
 				 [this](GAGGUI::Screen &, int choice) { choose(choice); });
+	return true;
 }
 
 void Application::choose(int choice)

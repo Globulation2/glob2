@@ -9,6 +9,7 @@
 #include "GlobalContainer.h"
 #include "DeviceAdaptationSession.h"
 #include "DeviceProfile.h"
+#include "PortalPolicy.h"
 #include "field/GradientAccelerators.h"
 #include "SoundMixer.h"
 #include "ui/ThemeCatalog.h"
@@ -93,6 +94,13 @@ void SettingsScreen::artworkRows()
 				   .arg(deviceReasonText(int(decision.reason), decision.value));
 }
 
+bool SettingsScreen::offersWindowMode()
+{
+	// A portal's page offers its own fullscreen button and some (CrazyGames)
+	// forbid the game's, so portals get no window mode; F11 is off there too.
+	return !PortalPolicy::current().portal;
+}
+
 void SettingsScreen::buildGeneral()
 {
 	auto &s = globalContainer->settings;
@@ -111,24 +119,27 @@ void SettingsScreen::buildGeneral()
 		{
 			// Mobile uses the OS-managed viewport and portable renderer.
 			section("Display");
-			choice("display.mode", "Window mode", "Choose a window or fill the screen.",
-				   bool(s.screenFlags & GraphicContext::FULLSCREEN),
-				   {tr("Windowed"), tr("Fullscreen")},
-				   [this](int v)
-				   {
-					   changeDisplay(
-						   [v](Settings &s)
-						   {
-							   if (v)
+			if (offersWindowMode())
+			{
+				choice("display.mode", "Window mode", "Choose a window or fill the screen.",
+					   bool(s.screenFlags & GraphicContext::FULLSCREEN),
+					   {tr("Windowed"), tr("Fullscreen")},
+					   [this](int v)
+					   {
+						   changeDisplay(
+							   [v](Settings &s)
 							   {
-								   s.screenFlags |= GraphicContext::FULLSCREEN;
-							   }
-							   else
-							   {
-								   s.screenFlags &= ~GraphicContext::FULLSCREEN;
-							   }
-						   });
-				   });
+								   if (v)
+								   {
+									   s.screenFlags |= GraphicContext::FULLSCREEN;
+								   }
+								   else
+								   {
+									   s.screenFlags &= ~GraphicContext::FULLSCREEN;
+								   }
+							   });
+					   });
+			}
 
 			{
 				// 0 follows the desktop; the rest are the scales desktops actually offer.

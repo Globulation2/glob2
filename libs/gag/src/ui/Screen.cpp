@@ -201,7 +201,8 @@ void UIDialog::refreshPresentation()
 {
 	if (!surface)
 		return;
-	const auto p = resolvePresentation(*surface, themeValue.touchTextScale);
+	auto p = resolvePresentation(*surface, themeValue.touchTextScale);
+	adjustPresentation(p);
 	ensureMeasurer(measurer, measurerTouch, measurerUnit, themeValue, p, hostValue);
 	hostValue.setPresentation(p);
 }

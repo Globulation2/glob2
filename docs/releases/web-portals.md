@@ -74,6 +74,18 @@ The inline script sets `window.GLOB2_PORTAL = {name, externalLinks, onlineSignIn
 before any game script runs. The game reads it to hide links that leave the portal
 and online sign-in where a portal bans them, and in every portal it drops Quit from
 the main menu; outside a portal upload the object is absent and nothing changes.
+In every portal the game also offers no fullscreen control of its own (CrazyGames
+forbids one; the portal's page has its own button): Settings > Display has no
+Window mode and F11 does nothing (`ApplicationHost::fullscreenControlAllowed`).
+
+A portal's first visit lands in gameplay, as CrazyGames ("land in gameplay") and
+Poki (easy onboarding) ask: instead of the first-run questions and the main menu,
+the game loads the introduction lesson at once (`PortalPolicy::landsInFirstLesson`,
+`Application::mainMenu`) and marks the introduction offered, so later visits open
+the main menu. The lesson reports `start`, `end` and `leave` like any match (no
+ad before it, as it is the page's first match). Leaving it asks the first-run
+questions it skipped (the touch audio and hand choices), then opens the main menu,
+or the lesson list when the player chose it from the lesson's end.
 `ads` is the profile's `ads` field: true only for the five portals marked in the
 table above. Like the other fields it fails closed: only a JSON `true` turns it on.
 

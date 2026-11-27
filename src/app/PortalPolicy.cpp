@@ -53,5 +53,6 @@ void install(const Policy &policy)
 {
 	installed() = policy;
 	GAGCore::ApplicationHost::setExternalLinksAllowed(policy.externalLinks);
+	GAGCore::ApplicationHost::setFullscreenControlAllowed(!policy.portal);
 }
 } // namespace PortalPolicy

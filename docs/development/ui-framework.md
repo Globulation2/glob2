@@ -1091,6 +1091,13 @@ points, like every other metric: the framework measures and draws it at
 (`TrueTypeFont::updateRenderScale`). One text size then holds on every touch
 surface. Pointer hosts keep the authored pixel sizes times the preference, so
 desktop layouts are unchanged at 100% (`applyTextSize()` holds the rule).
+Dialogs over gameplay and the editor (`Glob2UI::InGameDialog`) are the exception:
+when their surface is drawn smaller than one pixel per point (`unit` above 1, as
+the 800x600 floor makes it in a 674x322 portal frame or a pointer-driven portrait
+phone), authored pixels would shrink to about 7 px while their point-sized buttons
+do not, so they size text in points as touch hosts do
+(`ui::applyScaledSurfaceText`, from `InGameDialog::adjustPresentation`). At one
+pixel per point (native desktops, large browser windows) nothing changes.
 
 - The player's preference (`Settings::textSizePercent`, 100–150%, in Settings
   > Display and the in-game options) sets `GAGCore::userTextScale` through

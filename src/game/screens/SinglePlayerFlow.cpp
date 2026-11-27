@@ -26,20 +26,21 @@ void SinglePlayerFlow::returnTo(ReturnTo destination)
 }
 
 void SinglePlayerFlow::launch(GameLoadScreen::Initializer initialize, ReturnTo destination,
-							  std::shared_ptr<void> mapFile)
+							  std::shared_ptr<void> mapFile, std::function<void(int navigation)> finished)
 {
 	// The stack destroys the choosing screen before this loader reads its map,
 	// so mapFile lives until the loader's own entry is released.
 	screens.push(
 		std::make_unique<GameLoadScreen>(std::move(initialize)),
-		[this, destination, mapFile = std::move(mapFile)](GAGGUI::Screen &screen, int result)
+		[this, destination, mapFile = std::move(mapFile), finished](GAGGUI::Screen &screen, int result)
 		{
 			if (result == 1)
 				screens.push(std::make_unique<GameSessionScreen>(
 								 screens, static_cast<GameLoadScreen &>(screen).takeEngine()),
-							 [this, destination](GAGGUI::Screen &, int navigation)
+							 [this, destination, finished](GAGGUI::Screen &, int navigation)
 							 {
-								 if (navigation==Tutorial::Lessons) lessons();
+								 if (finished) finished(navigation);
+								 else if (navigation==Tutorial::Lessons) lessons();
                                  else if (navigation!=Tutorial::MainMenu) returnTo(destination);
 							 });
 			else if (result == 2)
@@ -51,11 +52,13 @@ void SinglePlayerFlow::launch(GameLoadScreen::Initializer initialize, ReturnTo d
 				screens.push(std::make_unique<MessageScreen>(
 								 static_cast<GameLoadScreen &>(screen).failureMessage(),
 								 std::vector<std::string>{strings.getString("[ok]")}),
-							 [this, destination](GAGGUI::Screen &, int)
+							 [this, destination, finished](GAGGUI::Screen &, int)
 							 {
-								 returnTo(destination);
+								 if (finished) finished(-1);
+								 else returnTo(destination);
 							 });
 			}
+			else if (finished) finished(-1);
 			else returnTo(destination);
 		});
 }
@@ -166,6 +169,12 @@ void SinglePlayerFlow::generatorStudio()
 void SinglePlayerFlow::introduction()
 {
     launch([](Engine &engine) { return engine.initCampaignTask(Tutorial::IntroductionMap); },ReturnTo::Lessons);
+}
+
+void SinglePlayerFlow::introduction(std::function<void(int navigation)> finished)
+{
+    launch([](Engine &engine) { return engine.initCampaignTask(Tutorial::IntroductionMap); }, ReturnTo::Lessons,
+           nullptr, std::move(finished));
 }
 
 void SinglePlayerFlow::lessons()

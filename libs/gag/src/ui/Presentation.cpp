@@ -60,6 +60,13 @@ void applyComfortScale(Presentation &p, double scale)
 	p.textUnit *= scale;
 }
 
+void applyScaledSurfaceText(Presentation &p)
+{
+	if (p.touch || p.unit <= 1)
+		return;
+	p.textUnit = std::max(p.textUnit, p.unit * p.textScale);
+}
+
 void applyTextSize(Presentation &p, double touchTextScale)
 {
 	const double user = GAGCore::userTextScale > 0 ? GAGCore::userTextScale : 1;

@@ -155,6 +155,11 @@ Dialog::Dialog() : UIDialog(themeFor(Surface::Frontend)) {}
 
 InGameDialog::InGameDialog(Surface surface) : UIDialog(themeFor(surface)) {}
 
+void InGameDialog::adjustPresentation(Presentation &p)
+{
+	GAGGUI::ui::applyScaledSurfaceText(p);
+}
+
 Element InGameDialog::dialogActions(std::vector<MenuAction> items, const Presentation &p) const
 {
 	return actions(std::move(items), p);

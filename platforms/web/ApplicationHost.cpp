@@ -355,6 +355,9 @@ bool presentationMetrics(ViewportMetrics& metrics,InputCapabilities& input)
 namespace { std::atomic<bool> linksAllowed{true}; }
 void setExternalLinksAllowed(bool allowed) { linksAllowed = allowed; }
 bool externalLinksAllowed() { return linksAllowed; }
+namespace { std::atomic<bool> fullscreenAllowed{true}; }
+void setFullscreenControlAllowed(bool allowed) { fullscreenAllowed = allowed; }
+bool fullscreenControlAllowed() { return fullscreenAllowed; }
 // The portal packager writes window.GLOB2_PORTAL before the game scripts; it is
 // read once at startup (src/app/PortalPolicy.cpp). Anything but undefined is
 // passed on, so a malformed value still puts the game in portal mode.

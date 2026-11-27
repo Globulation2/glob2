@@ -206,6 +206,9 @@ std::unique_ptr<Persistence> persistStorage()
 namespace { std::atomic<bool> linksAllowed{true}; }
 void setExternalLinksAllowed(bool allowed) { linksAllowed = allowed; }
 bool externalLinksAllowed() { return linksAllowed; }
+namespace { std::atomic<bool> fullscreenAllowed{true}; }
+void setFullscreenControlAllowed(bool allowed) { fullscreenAllowed = allowed; }
+bool fullscreenControlAllowed() { return fullscreenAllowed; }
 std::string portalDescription()
 {
 	const char *value = SDL_getenv("GLOB2_PORTAL");

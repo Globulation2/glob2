@@ -44,7 +44,10 @@ class Application : public GAGCore::ApplicationHost::Loop
 	bool held = false;
 	bool framed = false, drawn = false; // startup phase marks (GAGCore::StartupPhase)
 	bool quitting = false;
-	void mainMenu();
+	// Asks the first-run questions still unanswered, else opens the main menu;
+	// true when it opened the main menu. A portal's first visit starts in the
+	// introduction lesson instead (PortalPolicy::landsInFirstLesson).
+	bool mainMenu();
 	void installStagedAssets();
 	void choose(int choice);
 	void withAgeBand(std::function<void()> next);

@@ -859,7 +859,7 @@ int GraphicContext::maximumTextureSize() const
 		switch (event->type)
 		{
             case SDL_EVENT_KEY_DOWN:
-                if(event->key.key==SDLK_F11 && !event->key.repeat)_gc->toggleFullscreen();
+                if(event->key.key==SDLK_F11 && !event->key.repeat && ApplicationHost::fullscreenControlAllowed())_gc->toggleFullscreen();
                 break;
             case SDL_EVENT_RENDER_DEVICE_RESET:
             case SDL_EVENT_RENDER_TARGETS_RESET:
