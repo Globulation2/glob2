@@ -25,38 +25,50 @@ CONTENT = "content"
 ASSET_DIRS = ("data", "maps", "campaigns", "scripts")
 PILLOW_VERSION = "12.2.0"
 BROTLI_VERSION = "1.2.0"
+# Every WebP encoding setting. Never modified at run time: an edition's quality is
+# passed down explicitly (the `quality` arguments below).
 ENCODING = json.loads((ROOT / "tools/image_encoding.json").read_text())
-# An edition's lossy quality (buildsys/edition.py webp_quality). Read from the
-# environment so the spawned encoder processes inherit it; it is part of every
-# image recipe, so its cache entries never mix with the standard quality's.
-LOSSY_QUALITY_VARIABLE = "GLOB2_WEBP_LOSSY_QUALITY"
-if os.environ.get(LOSSY_QUALITY_VARIABLE):
-    ENCODING["quality"] = int(os.environ[LOSSY_QUALITY_VARIABLE])
 WEBP_VERSION = ENCODING["webpVersion"]
 POLICY = "runtime-assets-v1"
 IMAGE_RECIPE = ENCODING["recipe"]
 
+# Lossy WebP quality. Each image is encoded losslessly too and the smaller file
+# ships, so quality only matters where lossy wins; data images (stone maps) are
+# always lossless. One number, the edition's `webp_quality` (standard:
+# DEFAULT_LOSSY_QUALITY), sets it for each kind of image:
+#
+#   standalone images, and sprite sheet pages     quality
+#     (unit-sheet-*, an edition's sheet families: encode_sheet)
+#   terrain material sheets, and packed sprite    group_lossy_quality(quality),
+#     groups (encode_terrain_sheet_group,          at most GROUP_QUALITY_CEILING
+#     packed_sprite_assets.encode_group)
+#
+# docs/development/package-size.md#lossy-webp-quality shows which kind each build's sprites are.
+DEFAULT_LOSSY_QUALITY = ENCODING["quality"]
+GROUP_QUALITY_CEILING = 75
+# The lossy candidate's name in terrain sheet and sprite group selections. It is
+# stored in cache keys and audits, so it keeps its name whatever the quality is.
+GROUP_LOSSY_MODE = "q75"
 
-def sheet_lossy_quality():
-    """The lossy candidate of sprite sheets and packed sprite groups: Q75, or the
-    edition's lossy quality when that is lower."""
-    return min(75, ENCODING["quality"])
+
+def group_lossy_quality(quality=None):
+    """The lossy quality of terrain material sheets and packed sprite groups."""
+    return min(GROUP_QUALITY_CEILING, DEFAULT_LOSSY_QUALITY if quality is None else quality)
 
 
-def set_lossy_quality(quality):
-    """Encode lossy images at `quality` in this process and the encoders it starts."""
-    if quality is None:
-        return
-    os.environ[LOSSY_QUALITY_VARIABLE] = str(int(quality))
-    ENCODING["quality"] = int(quality)
-
-
-def image_recipe(lossy=True):
-    """Stable encoding identity, also used by browser derivative provenance."""
+def image_recipe(lossy=True, quality=None):
+    """Stable encoding identity, also used by browser derivative provenance.
+    `quality` is the edition's lossy quality (None: the standard one)."""
     return dict(image_recipe=IMAGE_RECIPE, pillow=PILLOW_VERSION, webp=WEBP_VERSION,
                 lossless_quality=ENCODING["losslessQuality"], method=ENCODING["losslessMethod"], lossy=lossy,
-                lossy_quality=ENCODING["quality"], lossy_method=ENCODING["method"], exact=ENCODING["exact"],
+                lossy_quality=DEFAULT_LOSSY_QUALITY if quality is None else int(quality),
+                lossy_method=ENCODING["method"], exact=ENCODING["exact"],
                 conversion="16-bit-rgba-to-renderer-8-bit; reject-other-high-depth")
+
+
+def lossless_webp():
+    """Pillow save arguments of every lossless WebP encoding."""
+    return dict(lossless=True, quality=ENCODING["losslessQuality"], method=ENCODING["losslessMethod"], exact=True)
 
 
 # Sprites whose frames optimized exports pack into sheets. Opening thousands of
@@ -467,18 +479,22 @@ def publish_cache_file(temporary, destination, attempts=50, delay=0.05):
         temporary.unlink(missing_ok=True)
 
 
-def encode_image(source, relative, cache, lossy, *, sheet_candidate=None):
-    """Cache the smallest allowed encoding after validating dimensions and pixels."""
+def encode_image(source, relative, cache, lossy, *, quality=None, sheet_candidate=None):
+    """Cache the smallest allowed encoding after validating dimensions and pixels.
+
+    `quality` is the edition's lossy quality (None: the standard one). A terrain
+    sheet candidate (`sheet_candidate`: "lossless" or GROUP_LOSSY_MODE) encodes
+    only that mode, at group_lossy_quality."""
     from PIL import Image, features
 
     raw = source.read_bytes()
     image = Image.open(io.BytesIO(raw))
     rgba = decoded_rgba(raw)
     expected = rgba.tobytes()
-    recipe = image_recipe(lossy)
+    recipe = image_recipe(lossy, quality)
     recipe.update(policy=POLICY, zlib=features.version("zlib"))
     if sheet_candidate is not None:
-        recipe.update(sheet_candidate=sheet_candidate, lossy_quality=sheet_lossy_quality())
+        recipe.update(sheet_candidate=sheet_candidate, lossy_quality=group_lossy_quality(quality))
     high_depth = raw[24] > 8
     # PNG IHDR color type 6 is the supported renderer RGBA64 conversion.
     convert_depth = high_depth and raw[25] == 6
@@ -521,10 +537,9 @@ def encode_image(source, relative, cache, lossy, *, sheet_candidate=None):
     # Both encodings use the same renderer-visible reference, including RGBA64.
     profile = {k: image.info[k] for k in ("icc_profile", "exif") if k in image.info}
     candidates = []
-    if sheet_candidate != "q75":
+    if sheet_candidate != GROUP_LOSSY_MODE:
         stream = io.BytesIO()
-        rgba.save(stream, format="WEBP", lossless=True, quality=75, method=4,
-                  exact=True, **profile)
+        rgba.save(stream, format="WEBP", **lossless_webp(), **profile)
         candidates.append((stream.getvalue(), ".webp", False))
     if recipe["lossy"] and (not high_depth or convert_depth):
         profile = {k: image.info[k] for k in ("icc_profile", "exif") if k in image.info}
@@ -776,10 +791,10 @@ def terrain_runtime_fingerprints(compiler, sources, root, stage, sheets, packed_
     return fingerprints
 
 
-def compiled_terrain_pack(compiler, document, root, cache, source_hashes, fingerprints):
+def compiled_terrain_pack(compiler, document, root, cache, source_hashes, fingerprints, quality=None):
     """Cache the derived WebP pages so a warm release export performs no encodes."""
     key = hashlib.sha256(json.dumps([
-        POLICY, image_recipe(False), hashlib.sha256(Path(compiler.__file__).read_bytes()).hexdigest(),
+        POLICY, image_recipe(False, quality), hashlib.sha256(Path(compiler.__file__).read_bytes()).hexdigest(),
         document, source_hashes, fingerprints, compiler.material_provenance(document, root),
     ], sort_keys=True).encode()).hexdigest()
     entry = cache / ("compiled-terrain-" + key)
@@ -836,22 +851,24 @@ def encoding_executor(jobs):
                                initializer=jobserver.hold_for_process_lifetime)
 
 
-def encode_sheet(sheet, root, cache, lossy, relative):
+def encode_sheet(sheet, root, cache, lossy, relative, quality=None):
+    """A sprite sheet page, encoded like a standalone image (at `quality`)."""
     source = pack_sheet(sheet, root, cache)
-    blob, record = encode_image(source, relative.as_posix(), cache, lossy)
+    blob, record = encode_image(source, relative.as_posix(), cache, lossy, quality=quality)
     verify_sheet(sheet, blob, exact=not record["lossy"])
     return source, blob, record
 
 
-def encode_terrain_sheet_group(sheets, root, cache, lossy):
-    """Choose a single WebP mode for the whole material family."""
+def encode_terrain_sheet_group(sheets, root, cache, lossy, quality=None):
+    """Choose a single WebP mode for the whole material family: lossless, or lossy
+    at group_lossy_quality(quality)."""
     candidates = {}
     sources = [pack_sheet(sheet, root, cache) for sheet in sheets]
-    for mode in (("lossless", "q75") if lossy else ("lossless",)):
+    for mode in (("lossless", GROUP_LOSSY_MODE) if lossy else ("lossless",)):
         pages = []
         for sheet, source in zip(sheets, sources):
-            blob, record = encode_image(source, sheet["name"], cache, mode == "q75",
-                                        sheet_candidate=mode)
+            blob, record = encode_image(source, sheet["name"], cache, mode == GROUP_LOSSY_MODE,
+                                        quality=quality, sheet_candidate=mode)
             verify_sheet(sheet, blob, exact=not record["lossy"])
             pages.append((source, blob, record))
         candidates[mode] = pages
@@ -885,7 +902,7 @@ def _export_assets(
     fold_terrain=False,
     single_colour_decor=False,
 ):
-    set_lossy_quality(lossy_quality)
+    quality = lossy_quality  # the edition's; None: the standard one
     root, output = Path(root).resolve(), Path(output).resolve()
     content = root / CONTENT
     catalog = content / "data/terrain/tileset.json"
@@ -1043,12 +1060,13 @@ def _export_assets(
         # Submit independent work before consuming it in source order. Workers
         # never publish the export or mutate its ordered audit/destination set.
         hd_futures = {
-            name: encoders.submit(packed_sprite_assets.encode_group, name, group, cache, platform, encoder, lossy)
+            name: encoders.submit(packed_sprite_assets.encode_group, name, group, cache, platform, encoder, lossy,
+                                  quality)
             for name, group in hd_groups.items()
         }
         native_futures = {
             sprite: {name: encoders.submit(packed_sprite_assets.encode_group, name, group, cache, platform,
-                                          encoder if platform != "web" else None, lossy)
+                                          encoder if platform != "web" else None, lossy, quality)
                      for name, group in groups.items()}
             for sprite, groups in native_groups.items()
         }
@@ -1063,18 +1081,18 @@ def _export_assets(
                 if scaled is not None and relative.parent == Path("data/terrain/stones"):
                     image = downscale_stone_map(source, scaled / relative.name, stone_scale)
                 encoded[source] = encoders.submit(encode_image, image, relative.as_posix(), cache,
-                                                  lossy and not is_data_image(relative))
+                                                  lossy and not is_data_image(relative), quality=quality)
         encoded_sheets = {}
         encoded_terrain = {}
         for sprite, plan in sheets.items():
             if sprite in native_futures:
                 continue
             if sprite in terrain_sprites:
-                encoded_terrain[sprite] = encoders.submit(encode_terrain_sheet_group, plan, content, cache, lossy)
+                encoded_terrain[sprite] = encoders.submit(encode_terrain_sheet_group, plan, content, cache, lossy, quality)
                 continue
             for sheet in plan:
                 relative = Path(sprite).parent / sheet["name"]
-                encoded_sheets[relative] = encoders.submit(encode_sheet, sheet, content, cache, lossy, relative)
+                encoded_sheets[relative] = encoders.submit(encode_sheet, sheet, content, cache, lossy, relative, quality)
         for name, future in hd_futures.items():
             directory, result, cache_hit = future.result()
             hd_selections[name] = {key: value for key, value in result.items() if key not in ("refs", "hashes", "fingerprints")}
@@ -1106,7 +1124,8 @@ def _export_assets(
                                     recipe=packed_sprite_assets.PACK_RECIPE, sprite_group="hd/" + name))
         for source in hd_sources - packed:
             relative = source.relative_to(content)
-            encoded[source] = encoders.submit(encode_image, source, relative.as_posix(), cache, lossy)
+            encoded[source] = encoders.submit(encode_image, source, relative.as_posix(), cache, lossy,
+                                             quality=quality)
         for source in files:
             if source in packed:
                 continue
@@ -1282,7 +1301,8 @@ def _export_assets(
                 compiler, source_hashes, content, stage,
                 {name: plan for name, plan in sheets.items() if name not in native_groups}, packed_fingerprints
             )
-            pages = compiled_terrain_pack(compiler, terrain_document, root, cache, source_hashes, fingerprints)
+            pages = compiled_terrain_pack(compiler, terrain_document, root, cache, source_hashes, fingerprints,
+                                          quality)
             catalog_digest = catalog_sha256(compiler.terrain_catalog, content)
             for generated in pages:
                 destination = Path(compiled).parent / generated.name
@@ -1301,7 +1321,7 @@ def _export_assets(
             platform=platform,
             optimized=optimized,
             lossy_images=lossy,
-            image_recipe=image_recipe(lossy) if optimized else None,
+            image_recipe=image_recipe(lossy, quality) if optimized else None,
             files=records,
             terrain_sheet_selections=terrain_selections,
             hd_sprite_selections=hd_selections,

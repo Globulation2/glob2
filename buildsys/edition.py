@@ -15,6 +15,9 @@ them changes what the simulation computes; a build without an AI or generator
 simply cannot start or load a game that uses it.
 """
 
+import json
+from pathlib import Path
+
 # Every switch but hd_assets also removes code or interface; the browser-only
 # switches (WEB_FEATURES) stay on in native builds.
 COMPILE_FEATURES = (
@@ -47,14 +50,15 @@ ASSET_FEATURES = (
     'page_font',          # the launcher's own font (the page then uses the browser's)
 )
 FEATURES = COMPILE_FEATURES + ASSET_FEATURES
-DEFAULT_WEBP_QUALITY = 90
+# The standard edition's lossy WebP quality: the packager's own (tools/package_assets.py).
+DEFAULT_WEBP_QUALITY = json.loads((Path(__file__).resolve().parents[1] / 'tools/image_encoding.json').read_text())['quality']
 # Switches only the browser build has; native editions keep them standard.
 WEB_FEATURES = ('hd_assets', 'video_assets', 'renderer_gl', 'renderer_software', 'renderer_webgpu',
                 'harfbuzz', 'sdl_extras', 'premade_maps', 'unused_files', 'page_font')
 # Browser data and link settings: name -> (standard, lite, kind). Kinds: 'int' within
 # its range, 'bool', or a tuple of the allowed values.
 SETTINGS = {
-    'webp_quality': (DEFAULT_WEBP_QUALITY, 70, (1, 100)),   # lossy WebP quality
+    'webp_quality': (DEFAULT_WEBP_QUALITY, 70, (1, 100)),   # lossy WebP quality (docs/development/package-size.md)
     'web_opt': ('O3', 'O3', ('O3', 'Os', 'Oz')),            # compile and link optimization (lite keeps speed)
     'web_assertions': (True, False, 'bool'),                # Emscripten runtime assertions
     'web_closure': (False, False, 'bool'),                  # Closure-compile the JavaScript glue

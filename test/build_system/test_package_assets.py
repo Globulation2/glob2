@@ -427,6 +427,28 @@ class AssetExportTests(unittest.TestCase):
         for p, data in originals.items():
             self.assertEqual(p.read_bytes(), data)
 
+    def test_edition_quality_applies_to_its_own_export_only(self):
+        import random
+        Image.frombytes("RGB", (64, 64), random.Random(5).randbytes(64 * 64 * 3)).save(
+            self.image.parent / "menu-colony.png")
+        lite = self.export(lossy_quality=70)
+        self.assertEqual(lite["image_recipe"]["lossy_quality"], 70)
+        record = next(r for r in lite["files"] if r["source"] == "data/gfx/menu-colony.png")
+        self.assertTrue(record["lossy"])
+        self.assertEqual(record["recipe"]["lossy_quality"], 70)
+        # Nothing process-wide changes: browser copy provenance (platforms/web/
+        # derive_assets.py) and a later standard export still see the standard quality.
+        self.assertEqual(package_assets.image_recipe()["lossy_quality"], package_assets.DEFAULT_LOSSY_QUALITY)
+        self.assertNotIn("GLOB2_WEBP_LOSSY_QUALITY", os.environ)
+        standard = self.export()
+        record = next(r for r in standard["files"] if r["source"] == "data/gfx/menu-colony.png")
+        self.assertEqual(record["recipe"]["lossy_quality"], package_assets.DEFAULT_LOSSY_QUALITY)
+
+    def test_group_quality_never_exceeds_its_ceiling(self):
+        self.assertEqual(package_assets.group_lossy_quality(), 75)
+        self.assertEqual(package_assets.group_lossy_quality(70), 70)
+        self.assertEqual(package_assets.group_lossy_quality(90), 75)
+
     def test_terrain_stone_maps_stay_exact_under_lossy_policy(self):
         import random
         stones = self.root / "content/data/terrain/stones"
