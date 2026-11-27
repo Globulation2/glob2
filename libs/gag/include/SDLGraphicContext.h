@@ -1253,7 +1253,10 @@ namespace GAGCore
         }
         //! The HD shadow layer (4x the native one, from the HD index's
         //! `<frame>s` row), with CPU pixels. Null while it loads (the first ask
-        //! queues it), when the frame has none or HD artwork is off.
+        //! queues it), when the frame has none or HD artwork is off, and for a
+        //! layer not yet asked for while HD admission is held. Never block
+        //! compressed (BC3, BC7 or ASTC): the mask reads its alpha on the CPU,
+        //! so it stays the lossless RGBA it was packed as.
         DrawableSurface *highResolutionShadowFrame(unsigned index);
         //! Grows when an HD shadow layer becomes available: composed shadows
         //! that used a native layer instead recompose.

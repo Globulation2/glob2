@@ -31,6 +31,10 @@ struct PresentationFrame;
 //! Masks are composed at one pixel per map pixel while the HD sprite policy
 //! shows native artwork and two while it shows HD (the HD shadow layers are
 //! four, area-averaged down; shadows are soft, and two keeps a chunk at 1 MiB).
+//! Shadow layers and masks stay RGBA: the layers are read on the CPU and the
+//! masks change on the render thread, so neither is block compressed, and the
+//! coverage stays exact. Masks off screen are kept within the render budget's
+//! shadow limit (GAGCore::RenderBudget::Terrain::shadows).
 class ShadowMask
 {
 public:

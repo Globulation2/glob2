@@ -10,6 +10,8 @@
 #include "building/hud/BuildingPresentation.h"
 #include "scene/Scene.h"
 
+#include <RenderResources.h>
+
 #include <algorithm>
 #include <cmath>
 #include <cstring>
@@ -30,8 +32,10 @@ public:
 	}
 };
 
-// The masks of a view near the HD threshold, with room to pan.
-constexpr std::size_t ByteBudget = 64u * 1024u * 1024u;
+// The masks kept, those of the view and some room to pan: the render budget's
+// shadow limit (GAGCore::RenderBudget::Terrain::shadows: 64 MiB on desktop,
+// 16 MiB on phones and in the browser), so it scales with the device's budget.
+std::size_t byteBudget() { return GAGCore::platformRenderBudget().terrain.shadows; }
 // Far out, shadows are a few pixels: draw none rather than compose a map's worth.
 constexpr std::size_t MaximumVisibleChunks = 160;
 
@@ -288,5 +292,5 @@ void ShadowMask::draw(const PresentationFrame &scene, int left, int top, int rig
 			gfx->drawSurface(float(cell.screenX * 32), float(cell.screenY * 32), float(cell.width * 32),
 							 float(cell.height * 32), chunk.image.get(), Uint8(alpha));
 	}
-	evict(ByteBudget);
+	evict(byteBudget());
 }

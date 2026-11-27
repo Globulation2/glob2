@@ -326,6 +326,10 @@ namespace GAGCore
         auto &state = highResolutionShadowState[index];
         if (state == 2) return nullptr;
         const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
+        // While HD admission is held (holdHighResolutionAdmission), layers
+        // already loaded stay and no new one loads; it is asked again once
+        // the hold lifts, and the mask keeps the native layer meanwhile.
+        if (state == 0 && highResolutionAdmissionHeld) return nullptr;
         if (state == 0) {
             state = 2;
             const auto* packEntries = readPack(directory, fileName);

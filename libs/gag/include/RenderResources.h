@@ -79,13 +79,15 @@ struct RenderBudget
     std::size_t total = 0;                 // Textures, depth and transient device work together.
     std::array<std::size_t, 4> classes{};  // By TextureDescriptor::BudgetClass.
     std::size_t geometry = 0;              // Persistent device geometry.
-    // The composed terrain page cache (SoftwareTerrainCache) and the direct
-    // terrain pass's tables and art, which account their own storage.
+    // The composed terrain page cache (SoftwareTerrainCache), the direct
+    // terrain pass's tables and art, and the ground shadow masks, which
+    // account their own storage.
     struct Terrain
     {
         std::size_t resident = 0; // Resident page textures and GPU density selection.
         std::size_t cache = 0;    // GPU-mode pages in all: CPU pixels, bookkeeping and textures.
         std::size_t direct = 0;   // Direct terrain map tables, art atlas and coverage masks.
+        std::size_t shadows = 0;  // Composed ground shadow masks (ShadowMask): CPU pixels and General textures.
         bool operator==(const Terrain &) const = default;
     } terrain;
     std::size_t classLimit(TextureDescriptor::BudgetClass category) const

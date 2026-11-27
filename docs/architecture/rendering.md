@@ -1357,7 +1357,11 @@ format sample RGBA. Only asset workers encode blocks: a chain the draw must
 prepare itself (mutated content, or released pixels on a device without the
 blocks' format) gets RGBA levels and no blocks, so the render thread never runs
 an encoder and never waits for one; the HD loader keeps drawing the native
-frame until the worker's chain arrives. The startup log names the chosen format
+frame until the worker's chain arrives. Sprite shadow layers (`Sprite::shadowFrame`)
+and the ground shadow masks composed from them are never block compressed: the
+layers load without mips as CPU pixels, which `ShadowMask` reads, and the masks
+change on the render thread, so their coverage alpha stays exact. HD shadow layers
+not yet loaded also wait while HD admission is held. The startup log names the chosen format
 (`HD artwork blocks: bc7`). `GLOB2_TEXTURE_COMPRESSION=none|bc3|bc7|astc`
 restricts the formats SDL GPU and programmable GL report, for comparisons (`bc3` measures the
 BC3 path on a BC7 desktop; `astc` exercises the
@@ -1500,7 +1504,10 @@ TerrainMask 64 MiB and 96 MiB of geometry, room for a 2x (Retina) view zoomed ou
 over a large map. The browser never takes a large budget, since its Wasm heap has a
 fixed maximum, and a desktop VRAM probe that finishes later does not change it.
 Each budget also carries the terrain caches' limits (`RenderBudget::Terrain`), so
-they scale with it; see [software rendering](software-rendering.md).
+they scale with it; see [software rendering](software-rendering.md). Its `shadows`
+limit bounds the composed ground shadow masks (`ShadowMask`, 64 MiB on desktop,
+16 MiB on phones and in the browser, twice that in the large budgets), whose
+textures share the General class with HD frames.
 `GLOB2_RENDER_BUDGET=desktop|mobile|desktop-large|mobile-large`
 overrides the choice to measure one budget on another device, and
 `GLOB2_RENDER_BUDGET_TOTAL_MIB` replaces the total alone (the class limits stay),
