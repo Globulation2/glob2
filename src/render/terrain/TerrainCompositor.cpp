@@ -17,6 +17,7 @@
 #endif
 #include <set>
 #include <algorithm>
+#include <bit>
 #include <cmath>
 #include <cassert>
 #include <stdexcept>
@@ -1316,40 +1317,61 @@ std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLaye
 		return layers;
 	const unsigned colours = cornerColours(x, y, map.getMaskW(), map.getMaskH(), map.terrainSeed());
 	// Masses on open ground: each distinct one draws its own corners and stands
-	// back from every other connected corner. The mass with more north corners
-	// draws first (then the larger share, then the lower id), so the southern
-	// one's raised top and wall stand in front.
-	std::array<MaterialId, 4> masses{};
-	unsigned distinct = 0;
-	for (unsigned k = 0; k < 4; ++k)
-		if (kinds[k] == 0 && std::find(masses.begin(), masses.begin() + distinct, materials[k]) == masses.begin() + distinct)
-			masses[distinct++] = materials[k];
-	const auto rank = [&](MaterialId id) {
-		unsigned north = 0, all = 0;
-		for (unsigned k = 0; k < 4; ++k)
-			if (materials[k] == id)
-				north += k < 2, ++all;
-		return std::tuple(north, all);
-	};
-	std::sort(masses.begin(), masses.begin() + distinct, [&](MaterialId a, MaterialId b) {
-		const auto ra = rank(a), rb = rank(b);
-		return ra != rb ? ra > rb : a < b;
-	});
-	// Every mass draws, mass m in slot m, or its corner would be an empty notch
-	// cut square along the neighbouring cells, which draw it up to the shared
-	// edge. Three or four masses reach into the foliage and obstacle slots.
-	for (unsigned m = 0; m < distinct; ++m)
+	// back from every other connected corner. Both tops rise alike, so where
+	// two overlap the one whose footprint lies further south stands in front,
+	// and a cell's layers draw north to south: by the mean row of their own
+	// corners, then the lower id. That order depends only on each layer's own
+	// corners, so neighbouring cells agree along the seam; an order that
+	// differed between them would cut one mass's wall square at their shared
+	// edge. A mass on two diagonal corners beside another mass has one piece
+	// north of the other mass and one south of it, so it draws them as separate
+	// layers: each piece's edges match the whole frame's, since along a cell
+	// edge only that edge's two corners count.
+	struct Piece
 	{
-		const auto id = masses[m];
-		unsigned own = 0, foreign = 0, count = 0;
-		for (unsigned k = 0; k < 4; ++k)
-			if (materials[k] == id)
-				own |= 1u << k, ++count;
-			else if (kinds[k] < 2)
-				foreign |= 1u << k;
+		MaterialId id;
+		unsigned own, foreign;
+	};
+	std::array<Piece, 4> pieces{};
+	unsigned count = 0;
+	for (unsigned k = 0; k < 4; ++k)
+	{
+		if (kinds[k] != 0 || std::any_of(pieces.begin(), pieces.begin() + count,
+										 [&](const Piece &p) { return p.id == materials[k]; }))
+			continue;
+		const auto id = materials[k];
+		unsigned own = 0, foreign = 0;
+		for (unsigned c = 0; c < 4; ++c)
+			if (materials[c] == id)
+				own |= 1u << c;
+			else if (kinds[c] < 2)
+				foreign |= 1u << c;
+		if (foreign && (own == 0b1001 || own == 0b0110) &&
+			definitions.decorForeignFrame(id, own & 0b0011, foreign, colours) >= 0 &&
+			definitions.decorForeignFrame(id, own & 0b1100, foreign, colours) >= 0)
+		{
+			pieces[count++] = {id, own & 0b0011, foreign};
+			pieces[count++] = {id, own & 0b1100, foreign};
+		}
+		else
+			pieces[count++] = {id, own, foreign};
+	}
+	// Mean row of a piece's own corners, compared without division.
+	const auto south = [](unsigned own) { return unsigned(std::popcount(own >> 2)); };
+	std::sort(pieces.begin(), pieces.begin() + count, [&](const Piece &a, const Piece &b) {
+		const unsigned sa = south(a.own) * unsigned(std::popcount(b.own));
+		const unsigned sb = south(b.own) * unsigned(std::popcount(a.own));
+		return sa != sb ? sa < sb : a.id != b.id ? a.id < b.id : a.own < b.own;
+	});
+	// Every piece draws, piece m in slot m, or its corner would be an empty
+	// notch cut square along the neighbouring cells, which draw it up to the
+	// shared edge. Three or four pieces reach into the foliage and obstacle slots.
+	for (unsigned m = 0; m < count; ++m)
+	{
+		const auto &[id, own, foreign] = pieces[m];
 		int frame = foreign ? definitions.decorForeignFrame(id, own, foreign, colours) : -1;
 		if (frame < 0)
-			frame = definitions.decorFrame(id, x, y, count < 4, map.terrainSeed(), own, colours);
+			frame = definitions.decorFrame(id, x, y, own != 15, map.terrainSeed(), own, colours);
 		if (frame >= 0)
 			layers[m] = {decorSprites[id], frame};
 	}
@@ -1396,7 +1418,7 @@ std::array<Compositor::DecorLayer, Compositor::DecorSlots> Compositor::decorLaye
 			layers[slot] = {decorSprites[chosen], frame};
 	}
 	// Terraces: nested, so the first missing one ends the stack.
-	if (tiers && distinct)
+	if (tiers && count)
 		for (int tier = 1; tier <= MaxDecorTiers; ++tier)
 		{
 			const int frame = decorTierFrame(map, *tiers, x, y, tier);

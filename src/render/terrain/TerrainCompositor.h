@@ -242,8 +242,10 @@ class Compositor
 	// its own corners, so masses keep their walls against foliage and crags.
 	// Where an open-edged mass meets another connected material it stands back
 	// from it (connected_foreign), so the two show their own rims and walls
-	// across a valley half a cell wide; the mass with more north corners draws
-	// first. An undecorated corner suppresses the foliage and obstacle slots;
+	// across a valley half a cell wide. Both tops rise alike, so masses draw
+	// north to south (by the mean row of their own corners), the southern
+	// one's top in front of the other's wall, and a mass on two diagonal
+	// corners beside another mass draws each corner in its own slot. An undecorated corner suppresses the foliage and obstacle slots;
 	// within those, mixed materials choose one by presentation hashing,
 	// weighted by corner count. Terrace slot k draws decorSlotRise higher.
 	static constexpr unsigned TierSlot = 4;
