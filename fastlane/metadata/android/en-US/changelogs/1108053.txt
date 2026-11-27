@@ -1,0 +1,1 @@
+Hides units behind tall scenery in front of them, keeps walls on raised terrain edges, gives roomy devices more detail, and shows a lighter loading-screen logo.

@@ -1257,6 +1257,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.11.8.5" date="2026-11-27">
+      <description>
+        <p>Captures crashes on Windows, macOS, Linux and the browser so they can be reported; hides ground units behind tall decor in front of them; keeps walls on raised terrain seams; gives roomy devices larger render budgets and encodes HD artwork as BC7 on desktops with 8 or more threads; and shows a light wordmark on the loading screen.</p>
+      </description>
+    </release>
     <release version="0.11.8.4" date="2026-11-27">
       <description>
         <p>Adds Report a Problem to the main menu, and on Android and iOS keeps crash reports and asks before sending them; fixes the in-game menu, window fit and first-visit lesson in small browser frames, and stops asking mouse players which hand they use; keeps a resized desktop window filled with the portable renderer; calms shoreline water; and gives MCP agents economy alerts and more forgiving tool arguments.</p>
