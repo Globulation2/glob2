@@ -29,7 +29,7 @@ bool PackedSpriteFrame::parse(const std::string& token, PackedSpriteFrame& out) 
     if (!std::getline(input, item.file, ',')) return false;
     if (safeFile(item.file, ".h264")) {
         if (!std::getline(input, item.alpha, ',') ||
-            (item.alpha != "-" && !safeFile(item.alpha, ".z")) ||
+            (item.alpha != "-" && !safeFile(item.alpha, ".z") && !safeFile(item.alpha, ".za")) ||
             !readNumber(input, item.width) || !readNumber(input, item.height) ||
             !readNumber(input, item.count) || !readNumber(input, item.frame) ||
             !AssetVideoDecoder::validDimensions(item.width, item.height, item.count) ||
@@ -67,7 +67,10 @@ AssetLoader::Handle<AssetImage> PackedSpriteFrame::request(AssetLoader& loader,
         video = loader.requestVideoFrames(directory + file, width, height, count, priority);
         dependencies.push_back(video.dependency());
         if (alpha != "-") {
-            const auto rawSize = size_t(width) * height;
+            // A .z block is this frame's alpha plane; a .za block holds every
+            // frame of the chunk in order, shared by their requests.
+            const size_t planeSize = size_t(width) * height;
+            const auto rawSize = alpha.ends_with(".za") ? planeSize * count : planeSize;
             auto bytes = loader.requestBytesImpl(directory + alpha, priority, true, rawSize + 65536);
             opacity = loader.request<AssetLoader::Bytes>("packed-alpha:" + directory + alpha + ':' + std::to_string(rawSize),
                 {bytes.dependency()}, [bytes, rawSize] {
@@ -108,12 +111,13 @@ AssetLoader::Handle<AssetImage> PackedSpriteFrame::request(AssetLoader& loader,
                 surface->pitch, result->surface->format, result->surface->pixels, result->surface->pitch))
             throw std::runtime_error(SDL_GetError());
         if (const auto alpha = opacity.get()) {
+            const size_t plane = item.alpha.ends_with(".za") ? size_t(item.frame) * item.width * item.height : 0;
             for (unsigned row = 0; row < item.cropHeight; ++row) {
                 auto *pixels = reinterpret_cast<uint32_t*>(static_cast<uint8_t*>(result->surface->pixels) +
                     row * result->surface->pitch);
                 for (unsigned col = 0; col < item.cropWidth; ++col)
                     pixels[col] = (pixels[col] & 0x00ffffffu) |
-                        (uint32_t((*alpha)[(item.y + row) * item.width + item.x + col]) << 24);
+                        (uint32_t((*alpha)[plane + (item.y + row) * item.width + item.x + col]) << 24);
             }
         }
         result->prepareUpload(mipmaps);

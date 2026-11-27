@@ -46,7 +46,9 @@ def sprite_groups():
     terrain_sprites = {material["sprite"] for material in terrain_document["materials"]
                        if material["sprite"].startswith("data/gfx/terrain-")}
 
-    def native(platform, sheet_families=(), variant_blocks=0, fold=False, single_colour_decor=False):
+    materials = {material["sprite"] for material in terrain_document["materials"]}
+
+    def native(platform, variant_blocks=0, fold=False, single_colour_decor=False):
         files = list(images.source_files(ROOT, platform))
         renames = {}
         document = terrain_document
@@ -56,9 +58,9 @@ def sprite_groups():
             document = copy.deepcopy(terrain_document)
             _, dropped, renames = images.small_build_terrain(
                 document, content, fold=fold, single_colour_decor=single_colour_decor,
-                variant_blocks=variant_blocks, packed=set(sheet_families) | set(images.SPRITE_SHEETS))
+                variant_blocks=variant_blocks, packed=images.sprite_families(files, content))
             files = [f for f in files if f.relative_to(content).as_posix() not in dropped]
-        sheets = images.sheet_plan(files, content, terrain_sprites, sheet_families, renames)
+        sheets = images.sheet_plan(files, content, terrain_sprites, (), renames, materials)
         return {name: group for by_sprite in images.native_sprite_groups(sheets, terrain_sprites, document).values()
                 for name, group in by_sprite.items()}
 
@@ -72,8 +74,8 @@ def sprite_groups():
     for name, preset in edition.PRESETS.items():
         if name == "standard":
             continue
-        variant = native("web", web_assets.EDITION_SHEETS if preset["sheet_sprites"] else (),
-                         preset["variant_blocks"], preset["terrain_fallbacks"], preset["single_colour_decor"])
+        variant = native("web", preset["variant_blocks"], preset["terrain_fallbacks"],
+                         preset["single_colour_decor"])
         for group_name, group in variant.items():
             standard = groups.get("native/" + group_name)
             if standard is None or packed.group_identity(standard) != packed.group_identity(group):

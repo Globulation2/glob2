@@ -8,7 +8,8 @@
 #include <GUIStyle.h>
 #include <StringTable.h>
 #include <Toolkit.h>
-#include <AssetLoader.h>
+#include <FileManager.h>
+#include <Stream.h>
 #include <cstdio>
 #include <cstdlib>
 #include <array>
@@ -47,24 +48,29 @@ IconRef uiIcon(UIIcon icon)
 		return asset;
 	auto asset = std::make_shared<IconAsset>();
 	asset->name = name;
-	constexpr std::array rasterSizes{20, 24, 40, 48, 60, 72};
-	const auto rasterPath = [&](int pixels) {
-		return "data/gui/tabler-" + asset->name + "-" + std::to_string(pixels) + ".webp";
-	};
-	// Keep queued sources alive until all raster surfaces have adopted their pixels.
-	std::vector<GAGCore::AssetLoader::Handle<GAGCore::AssetImage>> pending;
-	for (int pixels : rasterSizes)
+	// Each raster size is one sprite, data/gui/tabler-<pixels>-, whose frames
+	// follow data/gui/tabler.txt (tools/icons/export_tabler.cjs); exports pack
+	// each into a sheet.
+	static const std::map<std::string, unsigned> frames = [] {
+		std::map<std::string, unsigned> result;
+		GAGCore::InputLineStream index(
+			GAGCore::Toolkit::getFileManager()->openInputStreamBackend("data/gui/tabler.txt"));
+		for (unsigned frame = 0; !index.isEndOfStream(); ++frame)
+			if (auto line = index.readLine(); !line.empty())
+				result.emplace(line, frame);
+		return result;
+	}();
+	const auto frame = frames.find(asset->name);
+	for (int pixels : {20, 24, 40, 48, 60, 72})
 	{
-		pending.push_back(GAGCore::Toolkit::assets().requestImage(rasterPath(pixels)));
-	}
-	for (int pixels : rasterSizes)
-	{
-		auto surface = std::make_shared<GAGCore::DrawableSurface>(1, 1);
-		const std::string path = rasterPath(pixels);
-		if (surface->loadImage(path))
-			asset->rasters.push_back({pixels, std::move(surface)});
+		const std::string sprite = "data/gui/tabler-" + std::to_string(pixels) + "-";
+		auto *raster = frame == frames.end() ? nullptr : GAGCore::Toolkit::getSprite(sprite);
+		auto *pixelsSurface = raster ? raster->nativeFrame(frame->second) : nullptr;
+		if (pixelsSurface && pixelsSurface->getSDLSurface())
+			asset->rasters.push_back(
+				{pixels, std::make_shared<GAGCore::DrawableSurface>(pixelsSurface->getSDLSurface())});
 		else
-			std::fprintf(stderr, "ui: missing icon raster %s\n", path.c_str());
+			std::fprintf(stderr, "ui: missing icon raster %s for %s\n", sprite.c_str(), name);
 	}
 	assets[name] = asset;
 	return asset;

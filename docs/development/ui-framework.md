@@ -1392,7 +1392,9 @@ numeric choices remain readable. The gameplay action strip retains its
 game-specific sprites and labels, which distinguish construction, flags and team tools.
 
 Original SVGs and a source manifest live in `content-src/icons/tabler/`, pinned to
-Tabler v3.48.0. Generated PNG sources live in `content/data/gui/`; the distributed MIT notice is
+Tabler v3.48.0. Generated PNG sources live in `content/data/gui/`, one sprite per raster
+size: `tabler-<pixels>-<i>.png` is manifest icon `i`, and `tabler.txt` lists the icon
+names in frame order for `uiIcon`. Exports pack each size into a sprite sheet. The distributed MIT notice is
 `content/data/tabler-icons-license.txt`. Ordinary builds convert the committed sources to
 WebP in the runtime tree and need no SVG renderer or network access. To regenerate with the pinned development tool:
 

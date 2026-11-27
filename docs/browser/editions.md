@@ -67,7 +67,6 @@ what the simulation computes.
 | `web_assertions` | 1 | 0 | Emscripten runtime assertions |
 | `web_closure` | 0 | 0 | Closure-compiled JavaScript glue |
 | `music_bitrate` | 0 | 24 | kbps of the music copies under `platforms/web/assets/music/<N>k/` (0: the originals) |
-| `sheet_sprites` | 0 | 1 | terrain decor and other many-frame families packed into sprite sheets |
 | `variant_blocks` | 0 | 1 | interchangeable terrain variant blocks kept per static material (0: all) |
 | `native_stones` | 0 | 1 | terrain stone maps at one texel per logical pixel instead of four |
 | `terrain_fallbacks` | 0 | 1 | each material with a `small_build_fallback` is drawn with that material instead |
@@ -115,8 +114,6 @@ player (one runtime, every package it can fetch). To change what it contains:
   remove the copies no edition uses.
 - **Fold a terrain material:** add `"small_build_fallback": "<key>"` to its
   `content/data/terrain/materials/<key>.json`; remove the field to ship it again.
-- **Pack another sprite family into sheets:** add it to `EDITION_SHEETS` in
-  `buildsys/web_assets.py` (`Sprite::load` reads any family's `.sheet`).
 
 ## Measuring
 

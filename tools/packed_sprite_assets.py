@@ -8,6 +8,7 @@ import math
 import os
 from pathlib import Path
 import re
+import struct
 import subprocess
 import tempfile
 import zlib
@@ -26,11 +27,17 @@ TERRAIN_CRF = {
     "terrain-molten_lava_pool": 29.5,
 }
 UNIT_CRF = (31, 31, 30.25, 31.25, 30, 29.5, 29.75)
-PACK_RECIPE = "packed-sprites-v9"
+PACK_RECIPE = "packed-sprites-v10"
 # Perceptual gate for video candidates: frames per side of each scored mosaic,
 # and the dark and light backgrounds that frames with partial alpha are scored over.
 QUALITY_CELLS = 16
 QUALITY_BACKGROUNDS = (0.1, 0.9)
+# Every other HD frame (terrain decor, buildings, resources, icons...) packs into
+# WebP-only groups of at most GROUP_PIXEL_BYTES of decoded RGBA, so one worker
+# holds one group at a time: decor by frame number, the rest ordered by size so
+# that equally sized frames share pages.
+DECOR = "terrain-decor"
+GROUP_PIXEL_BYTES = 64 << 20
 
 
 def encoder_identity(ffmpeg):
@@ -70,17 +77,44 @@ def plan(content, catalog):
     rows = [line.split() for line in lines if line.strip()]
     if any(len(row) != 6 for row in rows) or len({row[0] for row in rows}) != len(rows):
         raise ValueError("Invalid source HD sprite index")
+    # Exports leave out the legacy terrain frames nothing draws (package_assets).
+    rows = [row for row in rows if not images.legacy_terrain_unused(f"{HD.as_posix()}/{row[4]}")]
     owners = {}
     for row in rows:
         for path in row[4:]:
             owners[path] = owners.get(path, 0) + 1
     materials = {Path(m["sprite"]).name: m for m in (catalog or {}).get("materials", [])
                  if m["sprite"].startswith("data/gfx/terrain-")}
-    groups = {}
+    groups, pooled = {}, {}
     families = sorted(materials, key=lambda name: (-len(name), name))
+
+    def usable(path):
+        return path != "-" and owners[path] == 1 and Path(path).name == path and path.endswith(".png")
+
+    def pixel_size(row):
+        """The largest layer's PNG dimensions (IHDR), without decoding it."""
+        sizes = []
+        for path in row[4:]:
+            if usable(path):
+                with (content / HD / path).open("rb") as png:
+                    sizes.append(struct.unpack(">II", png.read(24)[16:24]))
+        return max(sizes, default=(0, 0))
+
+    def add(family, spec, crf, material, frame, row):
+        for layer in (4, 5):
+            path = row[layer]
+            if not usable(path):
+                continue
+            name = family + ("-base" if layer == 4 else "-team")
+            group = groups.setdefault(name, dict(material=spec, crf=crf if material or layer == 5 else None,
+                                                 frames=[], index_rows={}))
+            group["index_rows"][row[0]] = row[:4]
+            group["frames"].append((frame, row[0], layer, content / HD / path))
+
     for row in rows:
         match = re.fullmatch(r"(.+?)(\d+)", row[0])
         if not match:
+            pooled.setdefault("sprites", []).append((0, row))
             continue
         prefix, digits = match.groups()
         if family := terrain_family(row[0], families):
@@ -93,16 +127,23 @@ def plan(content, catalog):
             clip, crf = unit_clip(frame)
             family, spec = "unit-" + clip, None
         else:
+            pooled.setdefault(DECOR if prefix == DECOR else "sprites", []).append((frame, row))
             continue
-        for layer in (4, 5):
-            path = row[layer]
-            if path == "-" or owners[path] != 1 or Path(path).name != path or not path.endswith(".png"):
-                continue
-            name = family + ("-base" if layer == 4 else "-team")
-            group = groups.setdefault(name, dict(material=spec, crf=crf if material or layer == 5 else None,
-                                                 frames=[], index_rows={}))
-            group["index_rows"][row[0]] = row[:4]
-            group["frames"].append((frame, row[0], layer, content / HD / path))
+        add(family, spec, crf, material, frame, row)
+    for pool, entries in sorted(pooled.items()):
+        if pool == DECOR:
+            entries.sort(key=lambda entry: entry[0])
+        else:
+            entries.sort(key=lambda entry: (pixel_size(entry[1]), entry[1][0]))
+            entries = [(index, row) for index, (_, row) in enumerate(entries)]
+        chunk, used = 0, 0
+        for frame, row in entries:
+            width, height = pixel_size(row)
+            size = width * height * 4 * sum(1 for path in row[4:] if usable(path))
+            if used and used + size > GROUP_PIXEL_BYTES:
+                chunk, used = chunk + 1, 0
+            used += size
+            add(f"{pool}-{chunk}", None, None, None, frame, row)
     return rows, groups
 
 
@@ -345,15 +386,20 @@ def write_video(frames, size, name, group, ffmpeg, directory, fingerprint):
         rgb_bytes = canvas[0] * canvas[1] * 3
         if len(decoded) != count * rgb_bytes:
             return dict(rejected="video decoder did not produce every frame")
+        # One alpha block per chunk: every frame's plane in frame order, so a
+        # chunk's frames cost one file (PackedSpriteFrame slices it by frame).
+        alpha_file, planes = "-", None
+        if any(plane.getextrema() != (255, 255) for plane in alpha):
+            alpha_file = f"{Path(filename).stem}.za"
+            compressed = zlib.compress(b"".join(plane.tobytes() for plane in alpha), 9)
+            (directory / alpha_file).write_bytes(compressed)
+            files.append(alpha_file)
+            planes = zlib.decompress(compressed)
+        plane_bytes = canvas[0] * canvas[1]
         for frame, ids in enumerate(layout):
             image = Image.frombytes("RGB", canvas, decoded[frame * rgb_bytes:(frame + 1) * rgb_bytes]).convert("RGBA")
-            alpha_file = "-"
-            if alpha[frame].getextrema() != (255, 255):
-                alpha_file = f"{Path(filename).stem}-{frame}.z"
-                compressed = zlib.compress(alpha[frame].tobytes(), 9)
-                (directory / alpha_file).write_bytes(compressed)
-                files.append(alpha_file)
-                image.putalpha(Image.frombytes("L", canvas, zlib.decompress(compressed)))
+            if planes is not None:
+                image.putalpha(Image.frombytes("L", canvas, planes[frame * plane_bytes:(frame + 1) * plane_bytes]))
             for offset, index in enumerate(ids):
                 x, y = offset % columns * width, offset // columns * height
                 reference = lookup[index]

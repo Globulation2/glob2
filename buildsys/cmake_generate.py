@@ -592,7 +592,6 @@ def web_assets_export(args):
     quality = None if quality == edition.DEFAULT_WEBP_QUALITY else quality
     sprite_target = options['sprite_target']
     sprite_target = None if sprite_target == edition.DEFAULT_SPRITE_TARGET else sprite_target
-    sheet_families = web_assets.EDITION_SHEETS if options['sheet_sprites'] else ()
     stone_scale = 4 if options['native_stones'] else 1
     inputs = list(source_files(ROOT, 'web', exclude))
     tools = [ROOT / path for path in WEB_ASSET_TOOLS]
@@ -602,14 +601,14 @@ def web_assets_export(args):
                       terrain_sheets=packing != 'legacy',
                       packed_hd_sprites=packing != 'legacy' and edition.enabled(identity, 'hd_assets'),
                       video_sprites=packing == 'video', exclude=exclude, lossy_quality=quality,
-                      sheet_families=sheet_families, stone_scale=stone_scale,
+                      stone_scale=stone_scale,
                       variant_blocks=options['variant_blocks'], fold_terrain=options['terrain_fallbacks'],
                       single_colour_decor=options['single_colour_decor'], sprite_target=sprite_target)
     # The standard edition keeps its key, so its shared export is reused as before.
     terrain = {key: options[key] for key in ('variant_blocks', 'terrain_fallbacks', 'single_colour_decor')}
-    variant = [] if not exclude and quality is None and sprite_target is None and not sheet_families and \
+    variant = [] if not exclude and quality is None and sprite_target is None and \
         stone_scale == 1 and not any(terrain.values()) else [
-        {'exclude': list(exclude), 'webp_quality': quality, 'sheets': list(sheet_families), 'stones': stone_scale,
+        {'exclude': list(exclude), 'webp_quality': quality, 'stones': stone_scale,
          **terrain, **({'sprite_target': sprite_target} if sprite_target is not None else {})}]
     key = shared_assets.content_key(ROOT, inputs + tools, ['runtime-assets-v1', 'web', release, packing] + variant)
     shared_assets.export(ROOT, asset_root, key, produce)  # also writes runtime-assets.json

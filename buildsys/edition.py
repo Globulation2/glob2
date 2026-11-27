@@ -67,7 +67,6 @@ SETTINGS = {
     'web_assertions': (True, False, 'bool'),                # Emscripten runtime assertions
     'web_closure': (False, False, 'bool'),                  # Closure-compile the JavaScript glue
     'music_bitrate': (0, 24, (0, 48)),                      # kbps of the checked-in music copies; 0 the originals
-    'sheet_sprites': (False, True, 'bool'),                 # pack terrain decor and small families into sheets
     'variant_blocks': (0, 1, (0, 4)),                       # terrain variant blocks kept; 0 all
     'native_stones': (False, True, 'bool'),                 # stone maps at native resolution (no HD art)
     'terrain_fallbacks': (False, True, 'bool'),             # draw materials with their small_build_fallback
