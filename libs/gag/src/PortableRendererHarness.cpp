@@ -212,6 +212,53 @@ TEST_CASE("live scale retains portable viewport ownership [display]")
 	GraphicContext::setRequestedUiScale(0);
 }
 
+// A desktop portable window resized or maximized past its launch size fills
+// it on every screen: configureViewport sets each frame's viewport, and a
+// screen that is not responsive must not return it to the launch dimensions.
+TEST_CASE("a resized desktop portable window fills the window on every screen [display]")
+{
+	GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "desktop", 1);
+	GraphicContext::setRequestedUiScale(1);
+	struct Desktop : GraphicContext
+	{
+		Desktop() : GraphicContext(640, 480, PORTABLEGPU | RESIZABLE, "Glob2 resized portable window test") {}
+		SDL_Surface *capture() { return renderer->capture(); }
+		void resizeWindow(int width, int height)
+		{
+			SDL_SetWindowSize(window, width, height);
+			GLOB2_REQUIRE(SDL_SyncWindow(window), "Window resize must settle before layout assertions");
+		}
+	} context;
+	struct Plain : GAGGUI::Screen
+	{
+		void updateExecution(Uint32) override {}
+		void drawExecution() override {}
+	};
+	GAGGUI::ScreenStack stack(context);
+	stack.push(std::make_unique<Plain>());
+	stack.frame(0, {});
+	require(context.getW() == 640 && context.getH() == 480, "The window opens at its launch size");
+	context.resizeWindow(960, 480);
+	SDL_Event resize{};
+	resize.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+	stack.frame(40, {resize});
+	// Later frames, with no further resize, keep the window's shape.
+	stack.frame(80, {});
+	stack.frame(120, {});
+	CAPTURE(context.getW());
+	CAPTURE(context.getH());
+	require(context.getW() == 960 && context.getH() == 480, "A desktop screen must follow the resized window");
+	context.setClipRect();
+	context.drawFilledRect(0, 0, context.getW(), context.getH(), Color(90, 30, 150));
+	auto *pixels = context.capture();
+	expect(pixels, 2, pixels->h / 2, 90, 30, 150);
+	expect(pixels, pixels->w - 2, pixels->h / 2, 90, 30, 150);
+	SDL_DestroySurface(pixels);
+	context.nextFrame();
+	GraphicContext::setRequestedUiScale(0);
+	GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "", 1);
+}
+
 TEST_CASE("software targets resize and destroy safely during an active transform [display]")
 {
     for (int iteration = 0; iteration < 4; ++iteration)
@@ -404,7 +451,8 @@ TEST_CASE("zone boundaries; UI transforms and portable rendering paths [display]
 				context.drawFilledRect(0, 0, 320, 240, Color(0, 0, 0));
 				context.drawSurface(40, 40, 32, 32, &sprite);
 				auto *pixels = context.capture();
-				expect(pixels, 50 * pixels->w / 320, 50 * pixels->h / 240, red, green, 0);
+				// The window was resized: its logical size follows it.
+				expect(pixels, 50 * pixels->w / context.getW(), 50 * pixels->h / context.getH(), red, green, 0);
 				SDL_DestroySurface(pixels);
 				context.nextFrame();
 				++draws;

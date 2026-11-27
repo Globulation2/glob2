@@ -75,6 +75,16 @@ namespace GAGCore {
 #endif
 #ifndef __EMSCRIPTEN__
         if (!renderer && !enabled) { responsiveViewport=false; return false; }
+        // A desktop window the player resized, maximized or made fullscreen
+        // keeps its shape on every screen, as updateWindowSize gives it: the
+        // launch dimensions would letterbox it (configureViewport calls this
+        // every frame). A phone layout's legacy screens keep the launch
+        // dimensions they were designed for.
+        if (!enabled && !phonePresentationRequested() && (optionFlags & (RESIZABLE | FULLSCREEN)) &&
+            windowW > 0 && windowH > 0) {
+            width = std::max(1, static_cast<int>(windowW / uiScale + 0.5f));
+            height = std::max(1, static_cast<int>(windowH / uiScale + 0.5f));
+        }
 #endif
         if (enabled) {
             if (windowW<=0 || windowH<=0) return enabled;
