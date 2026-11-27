@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 glob2 contributors
 
+#include "CrashCapture.h"
 #include "OnlineMatch.h"
 #include "AgeGate.h"
 #include "mcp/Availability.h"
@@ -324,6 +325,8 @@ void OnlineMatch::fail(const std::string &why)
 	problem = why;
 	current = Step::Failed;
 	std::cerr << "Online match " << id << ": " << why << std::endl;
+	// The reason only: never the match ID or a player.
+	CrashCapture::reportError(CrashCapture::ErrorCategory::Network, why);
 }
 
 std::string OnlineMatch::loadStage() const

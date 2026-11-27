@@ -5,6 +5,7 @@
 #include "GlobalContainer.h"
 #include "PortalPolicy.h"
 #include "ProblemReport.h"
+#include "CrashCapture.h"
 #include "ui/ThemeCatalog.h"
 #include <algorithm>
 #include <cmath>
@@ -299,6 +300,7 @@ Element MainMenuScreen::build(const Presentation &p)
 void MainMenuScreen::onTimer(Uint32 tick)
 {
 	ProblemReport::pumpOutbox(tick);
+	CrashCapture::pumpSessions(tick);
 }
 
 void MainMenuScreen::showMore(bool value)

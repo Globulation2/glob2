@@ -92,6 +92,8 @@
     }
     const prefix = reason ? '' : 'threaded/';
     const runtime = module.glob2RuntimeFiles?.[module.executionMode] || prefix + 'index.js';
+    // Crash reports name the build by its .wasm file's SHA-256 (shell.html glob2CrashCapture).
+    module.glob2WasmFile = runtime.replace(/\.js$/, '.wasm');
     const preload = runtime.slice(runtime.lastIndexOf('/') + 1).replace(/\.js$/, '.data');
     // SDK shader preloads belong to their runtime; artwork packages stay shared.
     module.locateFile = name => name === preload ? prefix + name : name.endsWith('.data') ? name : prefix + name;

@@ -357,6 +357,22 @@ describe('crash reports', () => {
     expect(row.frames?.[0]).toMatchObject({ module: 'java', line: 41, inGame: true });
   });
 
+  it('groups non-fatal errors by category and message shape', async () => {
+    const send = (message: string) =>
+      report('error', [
+        ['error.json', JSON.stringify({ schema: 1, category: 'map-load', message })],
+        ['log.txt', 'Game initialization failed'],
+      ]);
+    const one = await send('unknown terrain type 41 at (12, 7)');
+    const two = await send('unknown terrain type 3 at (0, 1)');
+    expect([one.statusCode, two.statusCode]).toEqual([201, 201]);
+    const first = await processReport(one.json<{ id: string }>().id);
+    const second = await processReport(two.json<{ id: string }>().id);
+    expect(first.status).toBe('done');
+    expect(first.reason).toBe('map-load: unknown terrain type 41 at (12, 7)');
+    expect(first.group_id).toBe(second.group_id);
+  });
+
   it('marks a crash that cannot be read as failed instead of retrying', async () => {
     const sent = await report('web', [['web-error.json', '{"schema":1}']]);
     const row = await processReport(sent.json<{ id: string }>().id);

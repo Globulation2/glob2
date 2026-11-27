@@ -325,6 +325,52 @@ function chooseRenderer() {
     };
     return ['webgl2','gpu','legacy-gl','programmable-gl','portable-sdl','sdl','webgpu'].includes(requested) || (requested !== 'software' && accelerated());
  }
+// Crash capture (src/app/CrashCapture.h, docs/multiplayer/crash-reports.md): a
+// WebAssembly trap or an Emscripten abort ends the game. Its error is kept as
+// reports/crashes/<id>.web.json (protocol WebErrorReport) in the saved files,
+// and the next launch offers it as a crash report. Other page errors (extensions,
+// network) are not the game's and are ignored. Once per page.
+const glob2CrashCapture = (() => {
+  let captured = false;
+  const fatal = error => (typeof WebAssembly !== 'undefined' && error instanceof WebAssembly.RuntimeError) ||
+    /wasm-function\[\d+\]/.test(String(error?.stack || ''));
+  const report = (source, error, stack) => ({
+    schema: 1, source,
+    message: String(error?.message ?? error ?? '').slice(0, 1024),
+    stack: String(stack ?? error?.stack ?? '').slice(0, 32768),
+  });
+  // The first 32 hex digits of the SHA-256 of the .wasm that ran, as the
+  // release workflow names its symbol map (tools/symbols/upload_symbols.py).
+  async function buildId(url, fetcher = fetch, digest = bytes => crypto.subtle.digest('SHA-256', bytes)) {
+    const bytes = await (await fetcher(url, {cache: 'force-cache'})).arrayBuffer();
+    const hash = new Uint8Array(await digest(bytes));
+    return Array.from(hash.slice(0, 16), b => b.toString(16).padStart(2, '0')).join('');
+  }
+  async function capture(source, error, stack, host = globalThis) {
+    const module = host.Module, fs = host.FS;
+    if (captured || !module?.glob2ApplicationStarted || !module.glob2WasmFile || !fs) return false;
+    captured = true;
+    try {
+      const entry = report(source, error, stack);
+      entry.buildId = await buildId(module.glob2WasmFile, host.fetch ?? fetch);
+      const directory = '/home/web_user/.glob2/reports/crashes';
+      fs.mkdirTree(directory);
+      const name = Array.from(host.crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, '0')).join('');
+      fs.writeFile(directory + '/' + name + '.web.json', JSON.stringify(entry));
+      module.storage?.changed();
+      return true;
+    } catch (failure) {
+      module.printErr?.('Crash capture failed: ' + failure);
+      return false;
+    }
+  }
+  if (typeof addEventListener === 'function') {
+    addEventListener('error', event => { if (fatal(event.error)) capture('error', event.error); });
+    addEventListener('unhandledrejection', event => { if (fatal(event.reason)) capture('unhandledrejection', event.reason); });
+  }
+  return {fatal, report, buildId, capture, reset() { captured = false; }};
+})();
+// End crash capture.
 var Module = {
   noInitialRun: true,
   renderer: chooseRenderer() || (!glob2HasFeature('renderer_gl') && !glob2HasFeature('renderer_software'))
@@ -508,7 +554,7 @@ var Module = {
     }
     Module.print('Game exited with code ' + code + '. Reload the page to restart.');
   },
-  onAbort(reason) { globalThis.glob2SetPreview?.send('error',{text:String(reason).slice(0,2000)}); Module.printErr('Game stopped: ' + reason); globalThis.glob2Studio?.send('error', {text:String(reason).slice(0,2000)}); }
+  onAbort(reason) { glob2CrashCapture.capture('abort', reason, new Error(String(reason)).stack); globalThis.glob2SetPreview?.send('error',{text:String(reason).slice(0,2000)}); Module.printErr('Game stopped: ' + reason); globalThis.glob2Studio?.send('error', {text:String(reason).slice(0,2000)}); }
 };
 Module.glob2PresentationSurface = Glob2PresentationSurface.create(Module);
 Module.glob2PresentationSurface.bind(next => {

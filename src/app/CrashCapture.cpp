@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CrashCapture.h"
+#include "HttpFetch.h"
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <cstdlib>
 #include <cstring>
+#include <ctime>
 #include <fstream>
 #include <mutex>
 #include <random>
@@ -22,20 +24,13 @@
 
 namespace fs = std::filesystem;
 
-#if defined(__APPLE__)
-#include <TargetConditionals.h>
-#endif
-
-// The platform layers define these: platforms/mobile/android/CrashCapture.cpp
-// and platforms/mobile/ios/CrashCapture.mm. Other builds capture nothing yet.
-// (iOS links the game from a static archive, where a weak default here would
-// keep the MetricKit layer's object out of the app.)
+// Each build links exactly one platform layer that defines these:
+// platforms/mobile/android/CrashCapture.cpp, platforms/apple/CrashCapture.mm
+// (iOS and macOS) or src/app/CrashCapturePlatform.cpp (Windows, Linux, the
+// browser). No weak defaults: iOS links the game from a static archive, where a
+// default here would keep the MetricKit layer's object out of the app.
 extern "C" bool glob2_crash_capture_built(void);
 extern "C" void glob2_crash_capture_start(const char *userDir);
-#if !defined(__ANDROID__) && !(defined(__APPLE__) && TARGET_OS_IPHONE)
-extern "C" bool glob2_crash_capture_built(void) { return false; }
-extern "C" void glob2_crash_capture_start(const char *) {}
-#endif
 
 namespace CrashCapture
 {
@@ -268,6 +263,8 @@ const char *kindName(Kind kind)
 		return "metrickit";
 	case Kind::Java:
 		return "java";
+	case Kind::Web:
+		return "web";
 	}
 	return "crash";
 }
@@ -282,6 +279,8 @@ const char *entryName(Kind kind)
 		return "metrickit.json";
 	case Kind::Java:
 		return "java-exception.txt";
+	case Kind::Web:
+		return "web-error.json";
 	}
 	return "minidump.dmp";
 }
@@ -296,6 +295,8 @@ const char *fileSuffix(Kind kind)
 		return ".metrickit.json";
 	case Kind::Java:
 		return ".java.txt";
+	case Kind::Web:
+		return ".web.json";
 	}
 	return ".dmp";
 }
@@ -317,7 +318,7 @@ std::string randomName()
 std::optional<Kind> kindOf(const fs::path &file)
 {
 	const std::string name = ProblemReport::utf8(file.filename());
-	for (Kind kind : {Kind::MetricKit, Kind::Java, Kind::Minidump})
+	for (Kind kind : {Kind::MetricKit, Kind::Java, Kind::Web, Kind::Minidump})
 	{
 		const std::string suffix = fileSuffix(kind);
 		if (name.size() > suffix.size() && name.compare(name.size() - suffix.size(), suffix.size(), suffix) == 0)
@@ -541,6 +542,28 @@ Action decide(ProblemReport::SendPolicy policy, Consent consent)
 	return consent == Consent::Always ? Action::Send : Action::Ask;
 }
 
+namespace
+{
+std::mutex consentMutex;
+std::function<bool()> &alwaysSendSource()
+{
+	static std::function<bool()> source;
+	return source;
+}
+} // namespace
+
+void setAlwaysSendSource(std::function<bool()> source)
+{
+	std::lock_guard<std::mutex> lock(consentMutex);
+	alwaysSendSource() = std::move(source);
+}
+
+bool alwaysSends()
+{
+	std::lock_guard<std::mutex> lock(consentMutex);
+	return alwaysSendSource() && alwaysSendSource()();
+}
+
 std::size_t queueAll(const fs::path &userDir)
 {
 	ProblemReport::Outbox outbox(userDir);
@@ -573,6 +596,298 @@ bool takeArrival()
 	return arrived.exchange(false, std::memory_order_acq_rel);
 }
 
+// ---------------------------------------------------------------- non-fatal errors
+
+const char *categoryName(ErrorCategory category)
+{
+	switch (category)
+	{
+	case ErrorCategory::MapLoad:
+		return "map-load";
+	case ErrorCategory::Network:
+		return "network";
+	}
+	return "network";
+}
+
+std::string errorJson(ErrorCategory category, const std::string &message)
+{
+	const nlohmann::json json = {
+		{"schema", 1},
+		{"category", categoryName(category)},
+		{"message", ProblemReport::clampUtf8(message, ERROR_MESSAGE_BYTES)},
+	};
+	return json.dump(2, ' ', false, nlohmann::json::error_handler_t::replace) + "\n";
+}
+
+namespace
+{
+std::mutex errorMutex;
+std::vector<std::string> &reportedErrors()
+{
+	static std::vector<std::string> seen;
+	return seen;
+}
+} // namespace
+
+void resetErrorsForTests()
+{
+	std::lock_guard<std::mutex> lock(errorMutex);
+	reportedErrors().clear();
+}
+
+bool takeErrorSlot(const fs::path &userDir, const std::string &utcDay)
+{
+	// reports/errors-today: "<YYYY-MM-DD> <count>".
+	const fs::path file = userDir / "reports" / "errors-today";
+	int count = 0;
+	if (const auto stored = readAll(file, 64))
+	{
+		const auto space = stored->find(' ');
+		if (space != std::string::npos && stored->substr(0, space) == utcDay)
+			count = std::atoi(stored->c_str() + space + 1);
+	}
+	if (count >= ERRORS_PER_DAY)
+		return false;
+	std::error_code error;
+	fs::create_directories(file.parent_path(), error);
+	return writeAll(file, utcDay + " " + std::to_string(count + 1) + "\n");
+}
+
+bool reportError(ErrorCategory category, const std::string &message)
+{
+	if (!ProblemReport::sendingBuilt() || ProblemReport::currentSendPolicy() != ProblemReport::SendPolicy::Allowed ||
+		!alwaysSends())
+		return false;
+	const std::string key = std::string(categoryName(category)) + ":" + message;
+	{
+		std::lock_guard<std::mutex> lock(errorMutex);
+		auto &seen = reportedErrors();
+		if (std::find(seen.begin(), seen.end(), key) != seen.end())
+			return false;
+		seen.push_back(key);
+	}
+	const fs::path userDir = ProblemReport::userDirectory();
+	if (userDir.empty())
+		return false;
+	const auto context = ProblemReport::currentContext(userDir);
+	if (!takeErrorSlot(userDir, context.createdAt.substr(0, 10)))
+		return false;
+	auto json = nlohmann::json::parse(ProblemReport::contextJson(context, ""));
+	json["kind"] = "error";
+	const std::string bundle = ProblemReport::zip(
+		{{"context.json", json.dump(2, ' ', false, nlohmann::json::error_handler_t::replace) + "\n"},
+		 {"error.json", errorJson(category, message)},
+		 {"log.txt", ProblemReport::recentLog()}});
+	return ProblemReport::Outbox(userDir).add(bundle);
+}
+
+// ---------------------------------------------------------------- session counts
+
+namespace
+{
+fs::path sessionsFile(const fs::path &userDir)
+{
+	return userDir / "reports" / "sessions.json";
+}
+
+// The UTC day `days` before `day` (YYYY-MM-DD), by the civil calendar.
+std::string dayBefore(const std::string &day, int days)
+{
+	if (day.size() != 10)
+		return day;
+	std::tm date{};
+	date.tm_year = std::atoi(day.substr(0, 4).c_str()) - 1900;
+	date.tm_mon = std::atoi(day.substr(5, 2).c_str()) - 1;
+	date.tm_mday = std::atoi(day.substr(8, 2).c_str()) - days;
+	date.tm_hour = 12;
+	const std::time_t normalized = std::mktime(&date);
+	std::tm back{};
+#ifdef _WIN32
+	localtime_s(&back, &normalized);
+#else
+	localtime_r(&normalized, &back);
+#endif
+	char text[16];
+	std::strftime(text, sizeof text, "%Y-%m-%d", &back);
+	return text;
+}
+} // namespace
+
+SessionDays readSessions(const fs::path &userDir)
+{
+	SessionDays days;
+	const auto stored = readAll(sessionsFile(userDir), 64 * 1024);
+	if (!stored)
+		return days;
+	const auto json = nlohmann::json::parse(*stored, nullptr, false);
+	if (!json.is_object() || !json.contains("days") || !json["days"].is_object())
+		return days;
+	for (const auto &[day, value] : json["days"].items())
+		if (day.size() == 10 && value.is_object())
+			days[day] = {value.value("sessions", 0), value.value("sent", 0), value.value("sentAt", std::int64_t(0))};
+	return days;
+}
+
+void writeSessions(const fs::path &userDir, const SessionDays &days)
+{
+	std::error_code error;
+	if (days.empty())
+	{
+		fs::remove(sessionsFile(userDir), error);
+		return;
+	}
+	nlohmann::json json = {{"days", nlohmann::json::object()}};
+	for (const auto &[day, value] : days)
+		json["days"][day] = {{"sessions", value.sessions}, {"sent", value.sent}, {"sentAt", value.sentAt}};
+	fs::create_directories(sessionsFile(userDir).parent_path(), error);
+	writeAll(sessionsFile(userDir), json.dump());
+}
+
+void countSession(const fs::path &userDir, const std::string &today)
+{
+	if (!alwaysSends())
+	{
+		writeSessions(userDir, {});
+		return;
+	}
+	auto days = readSessions(userDir);
+	const std::string oldest = dayBefore(today, SESSION_DAYS_KEPT - 1);
+	for (auto it = days.begin(); it != days.end();)
+		it = it->first < oldest ? days.erase(it) : std::next(it);
+	auto &day = days[today];
+	day.sessions = std::min(day.sessions + 1, SESSIONS_PER_DAY_MAX);
+	writeSessions(userDir, days);
+}
+
+std::optional<std::string> nextSessionPing(const SessionDays &days, const std::string &today, std::int64_t now)
+{
+	for (const auto &[day, value] : days)
+		if (day < today && value.sessions > value.sent)
+			return day;
+	if (const auto it = days.find(today); it != days.end() && it->second.sessions > it->second.sent &&
+										   now - it->second.sentAt >= 3600)
+		return today;
+	return std::nullopt;
+}
+
+std::string sessionPingJson(const ProblemReport::Context &context, const std::string &day, int sessions)
+{
+	const nlohmann::json json = {
+		{"schema", 1},
+		{"installId", context.installId},
+		{"version", context.version},
+		{"versionMinor", context.versionMinor},
+		{"distribution", context.distribution},
+		{"platform", context.platform},
+		{"day", day},
+		{"sessions", sessions},
+	};
+	return json.dump();
+}
+
+void applySessionAnswer(SessionDays &days, const std::string &day, int sessions, int status,
+						const std::string &today, std::int64_t now)
+{
+	const auto it = days.find(day);
+	if (it == days.end())
+		return;
+	if (status >= 200 && status < 300)
+	{
+		it->second.sent = std::max(it->second.sent, sessions);
+		it->second.sentAt = now;
+		// A finished day accepted in full is done.
+		if (day < today && it->second.sent >= it->second.sessions)
+			days.erase(it);
+	}
+	else if (status >= 400 && status < 500 && status != 408 && status != 429)
+		days.erase(it); // refused (bad day, unreleased version): never resent
+	// No answer, 408, 429 and 5xx: kept for later.
+}
+
+namespace
+{
+struct SessionPump
+{
+	std::unique_ptr<HttpFetch::Fetch> fetch;
+	std::string day;
+	int sessions = 0;
+	std::uint32_t next = 0;
+	bool started = false;
+};
+SessionPump &sessionPump()
+{
+	static SessionPump pump;
+	return pump;
+}
+
+std::int64_t unixNow()
+{
+	return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch())
+		.count();
+}
+} // namespace
+
+void resetSessionPumpForTests()
+{
+	sessionPump() = {};
+}
+
+void pumpSessions(std::uint32_t tick)
+{
+	auto &pump = sessionPump();
+	if (!pump.started)
+	{
+		pump.started = true;
+		pump.next = tick + 15000; // after the menu settles, like the outbox
+	}
+	const fs::path userDir = ProblemReport::userDirectory();
+	if (userDir.empty() || !ProblemReport::sendingBuilt())
+		return;
+	if (!alwaysSends())
+	{
+		writeSessions(userDir, {});
+		return;
+	}
+	if (ProblemReport::currentSendPolicy() != ProblemReport::SendPolicy::Allowed)
+		return;
+	const auto context = ProblemReport::currentContext(userDir);
+	const std::string today = context.createdAt.substr(0, 10);
+	if (pump.fetch)
+	{
+		const auto state = pump.fetch->state();
+		if (state == HttpFetch::State::Pending)
+			return;
+		const int status = state == HttpFetch::State::Done ? pump.fetch->response().status : 0;
+		pump.fetch.reset();
+		auto days = readSessions(userDir);
+		applySessionAnswer(days, pump.day, pump.sessions, status, today, unixNow());
+		writeSessions(userDir, days);
+		const bool retry = status == 0 || status == 408 || status == 429 || status >= 500;
+		pump.next = tick + (retry ? 10 * 60 * 1000 : 1000);
+		return;
+	}
+	if (static_cast<std::int32_t>(tick - pump.next) < 0)
+		return;
+	const auto days = readSessions(userDir);
+	const auto day = nextSessionPing(days, today, unixNow());
+	if (!day)
+	{
+		pump.next = tick + 60 * 1000;
+		return;
+	}
+	HttpFetch::Request request;
+	request.method = HttpFetch::Method::Post;
+	std::string url = ProblemReport::endpoint();
+	url.replace(url.rfind("crash-reports"), std::strlen("crash-reports"), "crash-sessions");
+	request.url = url;
+	request.headers = {{"Content-Type", "application/json"}};
+	pump.day = *day;
+	pump.sessions = days.at(*day).sessions;
+	request.body = sessionPingJson(context, pump.day, pump.sessions);
+	pump.fetch = HttpFetch::start(std::move(request));
+}
+
 // ---------------------------------------------------------------- platform
 
 void startPlatform(const fs::path &userDir)
@@ -580,6 +895,7 @@ void startPlatform(const fs::path &userDir)
 	if (!built())
 		return;
 	startSession(userDir);
+	countSession(userDir, ProblemReport::currentContext(userDir).createdAt.substr(0, 10));
 	glob2_crash_capture_start(ProblemReport::utf8(userDir).c_str());
 }
 

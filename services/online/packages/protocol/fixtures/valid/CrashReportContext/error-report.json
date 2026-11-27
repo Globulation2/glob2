@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "kind": "error",
+  "installId": "3d2c1b0a-9f8e-4d7c-8b6a-5f4e3d2c1b0a",
+  "submissionId": "3d4e5f60-7182-493a-a4b5-c6d7e8f9a0b1",
+  "version": "0.11.8.4",
+  "versionMinor": 219,
+  "simRevision": 170,
+  "distribution": "steam",
+  "platform": "linux",
+  "os": "Linux",
+  "deviceClass": "desktop",
+  "deviceTier": "high",
+  "description": "",
+  "createdAt": "2026-10-01T12:00:00Z"
+}

@@ -18,6 +18,8 @@
 #include "ProblemReport.h"
 #include <cstdint>
 #include <filesystem>
+#include <functional>
+#include <map>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -25,7 +27,8 @@
 
 namespace CrashCapture
 {
-// Whether this build captures crashes: Crashpad on Android, MetricKit on iOS.
+// Whether this build captures crashes: Crashpad on Android and Linux, MetricKit
+// on iOS and macOS, dbghelp minidumps on Windows, error hooks in the browser.
 // Builds without reports (problem_reports=0) never capture.
 bool built();
 
@@ -67,9 +70,10 @@ std::optional<Session> readSession(const std::filesystem::path &file);
 
 enum class Kind
 {
-	Minidump,  // Crashpad: minidump.dmp
-	MetricKit, // iOS: metrickit.json
+	Minidump,  // Crashpad (Android, Linux) or dbghelp (Windows): minidump.dmp
+	MetricKit, // iOS and macOS: metrickit.json
 	Java,      // Android: java-exception.txt
+	Web,       // the browser: web-error.json
 };
 const char *kindName(Kind kind);        // the context's kind
 const char *entryName(Kind kind);       // the bundle entry holding the crash
@@ -122,6 +126,9 @@ enum class Action
 	KeepLocal, // may not send: keep them for Save to file
 };
 Action decide(ProblemReport::SendPolicy policy, Consent consent);
+// Where Always send is read (the game's settings); unset reads false.
+void setAlwaysSendSource(std::function<bool()> source);
+bool alwaysSends();
 
 // Queues every waiting crash for upload in the problem report outbox, then
 // removes it. Returns how many were queued.
@@ -133,6 +140,63 @@ void discardAll(const std::filesystem::path &userDir);
 // the main menu looks again; cleared by takeArrival().
 void noteArrival();
 bool takeArrival();
+
+// ---------------------------------------------------------------- non-fatal errors
+
+// Failures that do not crash the game: a map or saved game that fails to load
+// (GameLoadScreen), and an online match that fails (OnlineMatch::fail). They go
+// to glob2-online as kind "error" (error.json) only for players who chose Always
+// send, at most ERRORS_PER_DAY a day per install and once per category and
+// message per run.
+enum class ErrorCategory
+{
+	MapLoad,
+	Network,
+};
+const char *categoryName(ErrorCategory category);
+inline constexpr int ERRORS_PER_DAY = 5;
+inline constexpr std::size_t ERROR_MESSAGE_BYTES = 1024;
+// Queues a non-fatal error report when the player allows it; returns whether
+// one was queued.
+bool reportError(ErrorCategory category, const std::string &message);
+// The error.json entry (protocol ErrorReport) and its bundle; for tests.
+std::string errorJson(ErrorCategory category, const std::string &message);
+// Whether the daily cap in reports/errors-today allows another, counting it.
+bool takeErrorSlot(const std::filesystem::path &userDir, const std::string &utcDay);
+void resetErrorsForTests();
+
+// ---------------------------------------------------------------- session counts
+
+// Crash-free rates (docs/multiplayer/crash-reports.md#release-gates) count the
+// launches of installs that chose Always send, per UTC day, in
+// reports/sessions.json. POST /api/v1/crash-sessions takes a day's running
+// total, so a resend is harmless: today's at most hourly, a finished day's once.
+// Turning Always send off deletes the counts.
+struct SessionDay
+{
+	int sessions = 0; // launches counted that day
+	int sent = 0;     // the total the server last accepted
+	std::int64_t sentAt = 0;
+};
+using SessionDays = std::map<std::string, SessionDay>; // "YYYY-MM-DD"
+inline constexpr int SESSION_DAYS_KEPT = 7;
+inline constexpr int SESSIONS_PER_DAY_MAX = 500;
+// Counts this launch (and forgets days older than a week).
+void countSession(const std::filesystem::path &userDir, const std::string &today);
+SessionDays readSessions(const std::filesystem::path &userDir);
+void writeSessions(const std::filesystem::path &userDir, const SessionDays &days);
+// The day to send next, if any: a finished day not yet accepted in full, or
+// today once an hour after its last accepted total.
+std::optional<std::string> nextSessionPing(const SessionDays &days, const std::string &today, std::int64_t now);
+// The request body for a day (protocol CrashSessionPing).
+std::string sessionPingJson(const ProblemReport::Context &context, const std::string &day, int sessions);
+// Applies an answer: accepted, refused (drop the day) or retry later.
+void applySessionAnswer(SessionDays &days, const std::string &day, int sessions, int status,
+						const std::string &today, std::int64_t now);
+// Sends waiting counts from the main menu's timer; does nothing unless the
+// player may send and chose Always send.
+void pumpSessions(std::uint32_t tickMs);
+void resetSessionPumpForTests();
 
 // ---------------------------------------------------------------- platform
 

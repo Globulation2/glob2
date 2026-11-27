@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:ErrorReport",
+  "title": "ErrorReport",
+  "type": "object",
+  "required": [
+    "schema",
+    "category",
+    "message"
+  ],
+  "properties": {
+    "schema": {
+      "type": "number",
+      "const": 1
+    },
+    "category": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "map-load"
+        },
+        {
+          "type": "string",
+          "const": "network"
+        }
+      ]
+    },
+    "message": {
+      "type": "string",
+      "maxLength": 1024
+    }
+  },
+  "additionalProperties": false
+}

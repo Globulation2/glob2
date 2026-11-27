@@ -93,6 +93,10 @@ def content():
         *[_list('GLOB2_' + platform.upper() + '_TRUST_SOURCES', list(paths),
                 'sources.PLATFORM_TRUST_SOURCES: the ' + platform + ' certificate-trust sources.')
           for platform, paths in sources.PLATFORM_TRUST_SOURCES.items()],
+        *[_list('GLOB2_' + platform.upper() + '_CRASH_SOURCES', list(paths),
+                'sources.PLATFORM_CRASH_SOURCES: the ' + platform + ' crash-capture layer.')
+          for platform, paths in sources.PLATFORM_CRASH_SOURCES.items()],
+        'set(GLOB2_CRASHPAD_SOURCE ' + sources.CRASHPAD_SOURCE + ')\n',
         _list('GLOB2_RELAY_TEST_SOURCES', ['src/' + name for name in sources.RELAY_TEST_SOURCES],
               'buildsys/sources.py RELAY_TEST_SOURCES: glob2-relay-tests beside the relay objects.'),
         _list('GLOB2_MAP_SOURCES', ['src/' + name for name in sources.MAP_SOURCES],

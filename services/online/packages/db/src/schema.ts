@@ -173,7 +173,7 @@ export interface AdminAuditLogTable {
 export interface CrashReportsTable {
   id: string;
   submission_id: string;
-  kind: 'problem' | 'crash' | 'metrickit' | 'web' | 'java';
+  kind: 'problem' | 'crash' | 'metrickit' | 'web' | 'java' | 'error';
   install_id: string;
   version: string;
   version_minor: number;

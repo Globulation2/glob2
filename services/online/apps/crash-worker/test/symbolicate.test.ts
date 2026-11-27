@@ -10,6 +10,7 @@ import { compareVersions, inGame, normalizeFunction, signature } from '../src/si
 import { breakpadPath, safeModule, type SymbolCache } from '../src/symbols.ts';
 import { symbolicateWeb, wasmFrames } from '../src/web.ts';
 import { javaFrames, symbolicateJava } from '../src/java.ts';
+import { errorSignature, readErrorReport } from '../src/error.ts';
 import { UnreadableCrash } from '../src/minidump.ts';
 
 const work = mkdtempSync(join(tmpdir(), 'glob2-crash-test-'));
@@ -286,5 +287,26 @@ describe('Java exceptions', () => {
       'org.globulation2.glob2.Glob2Activity.setPreparingAssets',
     );
     expect(() => symbolicateJava('thread: main\nnothing here\n')).toThrow(UnreadableCrash);
+  });
+});
+
+describe('non-fatal errors', () => {
+  it('groups one failure across maps and matches', () => {
+    expect(errorSignature('map-load', 'unknown terrain type 41 at (12, 7) in "Islands"')).toBe(
+      errorSignature('map-load', "unknown terrain type 9 at (3, 0) in 'Lakes'"),
+    );
+    expect(errorSignature('network', 'relay closed 0x1f')).toBe('error network: relay closed #');
+  });
+
+  it('reads error.json and refuses anything else', () => {
+    const result = readErrorReport(
+      JSON.stringify({ schema: 1, category: 'map-load', message: 'unknown terrain type 41' }),
+    );
+    expect(result.frames).toEqual([]);
+    expect(result.reason).toBe('map-load: unknown terrain type 41');
+    expect(result.signature).toBe('error map-load: unknown terrain type #');
+    expect(() => readErrorReport('{"schema":1,"category":"assets","message":""}')).toThrow(
+      UnreadableCrash,
+    );
   });
 });

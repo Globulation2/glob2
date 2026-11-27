@@ -394,8 +394,7 @@ void Application::offerCrashReports()
 	const auto userDir = ProblemReport::userDirectory();
 	if (CrashCapture::pending(userDir).empty())
 		return;
-	const auto consent = globalContainer->settings.alwaysSendCrashReports ? CrashCapture::Consent::Always
-																		   : CrashCapture::Consent::Ask;
+	const auto consent = CrashCapture::alwaysSends() ? CrashCapture::Consent::Always : CrashCapture::Consent::Ask;
 	switch (CrashCapture::decide(ProblemReport::currentSendPolicy(), consent))
 	{
 	case CrashCapture::Action::KeepLocal:

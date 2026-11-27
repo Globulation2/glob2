@@ -750,6 +750,11 @@ def install(args):
                 _copy(path, libraries / path.name)
         for notice in sorted((sdl / 'share/licenses').glob('SDL3*/LICENSE.txt')):
             _copy(notice, staged(installdir / 'glob2/licenses' / notice.parent.name / notice.name))
+    if args.crashpad_prefix:
+        # Crash capture (src/app/CrashCapturePlatform.cpp) runs the handler from here.
+        crashpad = Path(args.crashpad_prefix).resolve()
+        _copy(crashpad / 'bin/crashpad_handler', libraries / 'crashpad_handler')
+        _copy(crashpad / 'LICENSE.crashpad', staged(installdir / 'glob2/licenses/crashpad/LICENSE'))
     if args.recording_prefix:
         for notice in sorted((Path(args.recording_prefix) / 'share/licenses/recording').glob('*')):
             _copy(notice, staged(installdir / 'glob2/licenses/recording' / notice.name))
@@ -955,6 +960,7 @@ def main(argv=None):
     sub.add_argument('--sdl-prefix', default='')
     sub.add_argument('--recording-prefix', default='')
     sub.add_argument('--lean-image-prefix', default='')
+    sub.add_argument('--crashpad-prefix', default='')
     command('ccache-directory', ccache_directory, builddir=False)
     sub = command('configure', configure)
     sub.add_argument('--arg', action='append', default=[])

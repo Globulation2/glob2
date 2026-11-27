@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "CrashCapture.h"
 #include "GameLoadScreen.h"
 #include "Engine.h"
 #include "Utilities.h"
@@ -59,7 +60,10 @@ void GameLoadScreen::onTimer(Uint32)
 		if (slice.advance(*task))
 		{
 			if (!task->result())
+			{
 				failureDiagnostic = engine->getInitializationDiagnostic();
+				CrashCapture::reportError(CrashCapture::ErrorCategory::MapLoad, failureDiagnostic);
+			}
 			endExecute(task->result() ? 1 : 2);
 			return;
 		}
@@ -74,6 +78,7 @@ void GameLoadScreen::onTimer(Uint32)
 	{
 		failureDiagnostic = error.what();
 		std::cerr << "Game initialization failed: " << error.what() << '\n';
+		CrashCapture::reportError(CrashCapture::ErrorCategory::MapLoad, failureDiagnostic);
 		endExecute(2);
 	}
 }

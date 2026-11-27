@@ -21,10 +21,11 @@ export const CrashReportKind = Type.Union(
     Type.Literal('metrickit'),
     Type.Literal('web'),
     Type.Literal('java'),
+    Type.Literal('error'),
   ],
   {
     description:
-      'What sent the report: Report a Problem, a Crashpad minidump, an iOS MetricKit crash diagnostic, a browser error, or an uncaught Java exception on Android.',
+      'What sent the report: Report a Problem, a Crashpad minidump, an iOS MetricKit crash diagnostic, a browser error, or an uncaught Java exception on Android, or a non-fatal error the game survived.',
   },
 );
 export type CrashReportKind = Static<typeof CrashReportKind>;
@@ -38,6 +39,7 @@ export const CRASH_PAYLOAD_ENTRIES = {
   metrickit: 'metrickit.json',
   web: 'web-error.json',
   java: 'java-exception.txt',
+  error: 'error.json',
 } as const satisfies Record<Exclude<CrashReportKind, 'problem'>, string>;
 
 /** Build distribution channels (buildsys/client_features.py DISTRIBUTIONS). */
@@ -121,6 +123,18 @@ export const WebErrorReport = Strict({
   buildId: WasmBuildId,
 });
 export type WebErrorReport = Static<typeof WebErrorReport>;
+
+/**
+ * The error.json entry of a non-fatal error report: a failure the game
+ * survived. Sent only by players who chose Always send (src/app/CrashCapture.h).
+ */
+export const ErrorReport = Strict({
+  schema: Type.Literal(1),
+  /** map-load: a map or saved game that failed to load; network: an online match that failed. */
+  category: Type.Union([Type.Literal('map-load'), Type.Literal('network')]),
+  message: Type.String({ maxLength: 1024 }),
+});
+export type ErrorReport = Static<typeof ErrorReport>;
 
 /** Answer to an accepted upload. */
 export const CrashReportReceipt = Strict({ id: CrashReportId });
@@ -378,6 +392,7 @@ export const crashReportSchemas = {
   CrashReportContext,
   CrashReportReceipt,
   WebErrorReport,
+  ErrorReport,
   AdminCrashReport,
   AdminCrashReportList,
   AdminCrashReportDetail,

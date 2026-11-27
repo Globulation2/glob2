@@ -1605,6 +1605,7 @@ describe('migrations', () => {
         '0062_crash_groups',
         '0063_java_crash_reports',
         '0064_crash_release_gates',
+        '0065_error_crash_reports',
       ]);
       expect(
         (
@@ -1674,7 +1675,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(43);
+      expect(upgraded).toHaveLength(44);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -1833,6 +1834,7 @@ describe('migrations', () => {
         ['0062_crash_groups', 'Success'],
         ['0063_java_crash_reports', 'Success'],
         ['0064_crash_release_gates', 'Success'],
+        ['0065_error_crash_reports', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -1988,6 +1990,7 @@ describe('migrations', () => {
         ['0062_crash_groups', 'Success'],
         ['0063_java_crash_reports', 'Success'],
         ['0064_crash_release_gates', 'Success'],
+        ['0065_error_crash_reports', 'Success'],
       ]);
       expect(
         await db
