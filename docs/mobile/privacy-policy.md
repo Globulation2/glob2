@@ -14,8 +14,8 @@ questions and requests, contact **bradley.allen.arsenault@gmail.com**
 or write to that address.
 
 Last updated: 27 November 2026. Players aged 13 or over can send us a problem
-report from the game's main menu, and on Android and iOS a crash report after
-the game closes unexpectedly; see [Problem reports](#problem-reports) and
+report from the game's main menu, and a crash report after the game closes
+unexpectedly; see [Problem reports](#problem-reports) and
 [Crash reports](#crash-reports).
 
 ## Public website browsing
@@ -414,8 +414,8 @@ deleted sooner, send us its ID.
 
 ### Crash reports
 
-On Android and iOS, if the game closes unexpectedly, the next time it starts it
-asks **Send a crash report?** Nothing is sent unless you press **Send** or
+If the game closes unexpectedly, the next time it starts (or, in a web browser,
+the next time you open it) it asks **Send a crash report?** Nothing is sent unless you press **Send** or
 **Always send**; **Don't send** deletes it. **Always send** sends later crash
 reports without asking, and **Settings > Privacy** turns that off again. Only
 players aged 13 or over are asked; for anyone else the crash stays on the device,
@@ -424,10 +424,12 @@ where **Report a problem > Save to file** can include it.
 A crash report holds the same "always" details as a problem report (version,
 platform, device kind, time and the random install ID) and:
 
-- the technical record of the crash: on Android a minidump (the state of the
-  game's threads and a small part of its memory when it crashed, which can by
-  chance hold text the game was showing) or the error of the app's Java code;
-  on iOS the crash diagnostic iOS itself prepares for the app (MetricKit);
+- the technical record of the crash: on Android, Windows and Linux a minidump
+  (the state of the game's threads and a small part of its memory when it
+  crashed, which can by chance hold text the game was showing), or on Android
+  the error of the app's Java code; on iOS and macOS the crash diagnostic the
+  system itself prepares for the app (MetricKit); in a web browser the error
+  message and the list of game functions that were running;
 - the game's recent log from the session that crashed, and, if a match was
   running, its map seed and how far it had played.
 
@@ -440,6 +442,11 @@ crashes. We delete the minidump or diagnostic and the log after 90 days, and the
 rest (the readable stack trace and the details above) after two years. The
 F-Droid, Linux distribution, China and Fire tablet editions do not capture
 crashes.
+
+If you chose **Always send**, the game also sends a short report when something
+fails without crashing: a map or saved game that does not load, or an online
+match that fails. It holds the same "always" details, what failed and its
+message, and the recent log; at most five a day, kept like crash reports.
 
 If you chose **Always send**, the game also sends, about once a day, how many
 times it was started that day, with its version, platform, edition and the

@@ -262,6 +262,9 @@ release. The game sends its count with `POST /api/v1/crash-sessions`:
   started that day, from 1 to 500. The server keeps the largest total it has
   seen for that install and day, so a resent or retried ping changes nothing and
   a lost answer is safe to retry.
+- **In the game** (`CrashCapture::countSession` at launch and
+  `CrashCapture::pumpSessions` from the main menu's timer, like the outbox),
+  the counts wait in `reports/sessions.json`.
 - **When.** Count only while `alwaysSendCrashReports` is on, and only in builds
   that send crash reports (not `problem_reports=0` builds). Send the current
   day's total at most once an hour (for example from the main menu, after a

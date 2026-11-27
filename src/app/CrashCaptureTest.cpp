@@ -352,6 +352,10 @@ TEST_SUITE("CrashCapture")
 		CHECK(body["sessions"] == 3);
 		CHECK(body["installId"] == sampleContext().installId);
 		CHECK(body.size() == 8);
+		std::ifstream pingFile(glob2test::sourceRoot() /
+							   "services/online/packages/protocol/fixtures/valid/CrashSessionPing/daily-sessions.json");
+		REQUIRE(pingFile);
+		sameShape(body, nlohmann::json::parse(pingFile));
 
 		setAlwaysSendSource([] { return false; });
 		countSession(dir.path, "2026-11-27");
