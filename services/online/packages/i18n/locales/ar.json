@@ -3213,5 +3213,11 @@
   "Download bundle": "تنزيل الحزمة",
   "No problem reports yet.": "لا توجد بلاغات مشكلات بعد.",
   "No description.": "لا يوجد وصف.",
-  "Bundle deleted after 90 days.": "حُذفت الحزمة بعد 90 يومًا."
+  "Bundle deleted after 90 days.": "حُذفت الحزمة بعد 90 يومًا.",
+  "Crashes": "الأعطال",
+  "No crashes yet.": "لا توجد أعطال بعد.",
+  "Installs": "التثبيتات",
+  "Stack": "مكدس الاستدعاءات",
+  "Channel": "القناة",
+  "Show reports": "عرض البلاغات"
 }

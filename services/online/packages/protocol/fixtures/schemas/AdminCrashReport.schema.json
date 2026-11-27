@@ -6,6 +6,7 @@
   "required": [
     "id",
     "kind",
+    "status",
     "receivedAt",
     "version",
     "versionMinor",
@@ -31,9 +32,49 @@
         {
           "type": "string",
           "const": "problem"
+        },
+        {
+          "type": "string",
+          "const": "crash"
+        },
+        {
+          "type": "string",
+          "const": "metrickit"
+        },
+        {
+          "type": "string",
+          "const": "web"
         }
       ],
-      "description": "What sent the report. Phase 1 knows only Report a Problem."
+      "description": "What sent the report: Report a Problem, a Crashpad minidump, an iOS MetricKit crash diagnostic, or a browser error."
+    },
+    "status": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "none"
+        },
+        {
+          "type": "string",
+          "const": "pending"
+        },
+        {
+          "type": "string",
+          "const": "done"
+        },
+        {
+          "type": "string",
+          "const": "failed"
+        }
+      ]
+    },
+    "groupId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "reason": {
+      "type": "string"
     },
     "receivedAt": {
       "type": "string",

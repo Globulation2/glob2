@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AdminCrashGroupList",
+  "title": "AdminCrashGroupList",
+  "type": "object",
+  "required": [
+    "items"
+  ],
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "signature",
+          "firstVersion",
+          "lastVersion",
+          "firstSeenAt",
+          "lastSeenAt",
+          "reports",
+          "installs",
+          "platforms",
+          "distributions"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "description": "Lowercase UUID."
+          },
+          "signature": {
+            "type": "string"
+          },
+          "firstVersion": {
+            "type": "string"
+          },
+          "lastVersion": {
+            "type": "string"
+          },
+          "firstSeenAt": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "description": "RFC 3339 date-time."
+          },
+          "lastSeenAt": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "description": "RFC 3339 date-time."
+          },
+          "reports": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "installs": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "platforms": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "distributions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "nextCursor": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    }
+  }
+}

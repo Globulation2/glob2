@@ -14,7 +14,10 @@
     "AdminBanRequest": "schemas/AdminBanRequest.schema.json",
     "AdminContent": "schemas/AdminContent.schema.json",
     "AdminContentList": "schemas/AdminContentList.schema.json",
+    "AdminCrashGroup": "schemas/AdminCrashGroup.schema.json",
+    "AdminCrashGroupList": "schemas/AdminCrashGroupList.schema.json",
     "AdminCrashReport": "schemas/AdminCrashReport.schema.json",
+    "AdminCrashReportDetail": "schemas/AdminCrashReportDetail.schema.json",
     "AdminCrashReportList": "schemas/AdminCrashReportList.schema.json",
     "AdminFinanceCash": "schemas/AdminFinanceCash.schema.json",
     "AdminFinanceCost": "schemas/AdminFinanceCost.schema.json",
@@ -59,6 +62,7 @@
     "ColonySkinVersion": "schemas/ColonySkinVersion.schema.json",
     "CrashReportContext": "schemas/CrashReportContext.schema.json",
     "CrashReportReceipt": "schemas/CrashReportReceipt.schema.json",
+    "CrashSymbolReceipt": "schemas/CrashSymbolReceipt.schema.json",
     "CreateMapRequest": "schemas/CreateMapRequest.schema.json",
     "EngineJob": "schemas/EngineJob.schema.json",
     "EngineJobResult": "schemas/EngineJobResult.schema.json",
@@ -272,7 +276,8 @@
     "ValidateSetPayload": "schemas/ValidateSetPayload.schema.json",
     "ValidateSetResult": "schemas/ValidateSetResult.schema.json",
     "VerifyMatchPayload": "schemas/VerifyMatchPayload.schema.json",
-    "VerifyVerdict": "schemas/VerifyVerdict.schema.json"
+    "VerifyVerdict": "schemas/VerifyVerdict.schema.json",
+    "WebErrorReport": "schemas/WebErrorReport.schema.json"
   },
   "fixtures": [
     {
@@ -1668,6 +1673,38 @@
       "schema": "CrashReportReceipt",
       "valid": true,
       "note": "The short ID shown to the player."
+    },
+    {
+      "file": "valid/CrashReportContext/crash-in-match.json",
+      "schema": "CrashReportContext",
+      "valid": true,
+      "note": "A Crashpad crash during a match: the bundle also holds minidump.dmp."
+    },
+    {
+      "file": "invalid/CrashReportContext/unknown-kind.json",
+      "schema": "CrashReportContext",
+      "valid": false,
+      "stage": "schema",
+      "note": "Only the four known senders may report."
+    },
+    {
+      "file": "valid/WebErrorReport/wasm-abort.json",
+      "schema": "WebErrorReport",
+      "valid": true,
+      "note": "Emscripten's abort hook in the browser build, with the wasm build ID the symbol map is stored under."
+    },
+    {
+      "file": "invalid/WebErrorReport/build-id-not-hex.json",
+      "schema": "WebErrorReport",
+      "valid": false,
+      "stage": "schema",
+      "note": "The build ID is 32 lowercase hex digits of the wasm SHA-256."
+    },
+    {
+      "file": "valid/CrashSymbolReceipt/breakpad-upload.json",
+      "schema": "CrashSymbolReceipt",
+      "valid": true,
+      "note": "Answer to a release workflow uploading the Linux binary symbols."
     }
   ],
   "tickets": {

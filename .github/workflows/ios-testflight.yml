@@ -226,6 +226,14 @@ jobs:
           python3 platforms/mobile/ios_privacy.py "$app"
           plutil -p "$ARCHIVE_PATH/Info.plist"
 
+      - name: Hand over crash symbols
+        if: ${{ inputs.upload && hashFiles('tools/symbols/dump_syms.json') != '' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: crash-symbols-ios
+          path: build/ios/device/arm64/15.0/client/release/xcode-project/build/Release-iphoneos/*.dSYM
+          if-no-files-found: error
+          retention-days: 7
       - name: Preserve archive permissions
         run: tar -C artifacts/ios-testflight -czf artifacts/ios-testflight/archive.tar.gz Glob2.xcarchive
       - name: Hand off verified unsigned archive
@@ -239,7 +247,7 @@ jobs:
 
   upload:
     if: ${{ inputs.upload }}
-    needs: build
+    needs: [build, crash-symbols]
     name: Sign and upload the exact tagged archive
     environment: ios-testflight
     runs-on: xcode-27
@@ -407,3 +415,13 @@ jobs:
       - name: Remove temporary authentication key and signed exports
         if: always()
         run: rm -rf "$RUNNER_TEMP/glob2-ios-auth.p8" "$RUNNER_TEMP/glob2-signed-export" "$RUNNER_TEMP/glob2-signed-inspect" "$RUNNER_TEMP/glob2-export"
+
+  # Uploads this release's crash symbols before anything is published
+  # (docs/multiplayer/crash-reports.md#symbols).
+  crash-symbols:
+    needs: build
+    if: ${{ inputs.upload }}
+    uses: ./.github/workflows/crash-symbols.yml
+    with:
+      version: ${{ inputs.tag }}
+      artifacts: crash-symbols-ios

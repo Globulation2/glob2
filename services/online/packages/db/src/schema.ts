@@ -173,7 +173,7 @@ export interface AdminAuditLogTable {
 export interface CrashReportsTable {
   id: string;
   submission_id: string;
-  kind: 'problem';
+  kind: 'problem' | 'crash' | 'metrickit' | 'web';
   install_id: string;
   version: string;
   version_minor: number;
@@ -188,6 +188,49 @@ export interface CrashReportsTable {
   attachments: DefaultedJson<{ name: string; size: number }[]>;
   bundle_key: Nullable<string>;
   received_at: Timestamp;
+  status: Defaulted<'none' | 'pending' | 'done' | 'failed'>;
+  group_id: Nullable<string>;
+  reason: Nullable<string>;
+  frames: NullableJson<CrashFrameRow[]>;
+  match_tick: Nullable<number>;
+  match_seed: Nullable<number>;
+  processed_at: NullableTimestamp;
+}
+
+/** A symbolicated frame (protocol CrashFrame). */
+export interface CrashFrameRow {
+  module: string;
+  offset: string;
+  function?: string;
+  file?: string;
+  line?: number;
+  inGame: boolean;
+}
+
+export interface CrashReleasesTable {
+  version: string;
+  first_upload_at: Timestamp;
+}
+
+export interface CrashSymbolsTable {
+  kind: 'breakpad' | 'wasm';
+  module: string;
+  debug_id: string;
+  version: string;
+  os: string;
+  arch: string;
+  size: number;
+  blob_key: string;
+  uploaded_at: Timestamp;
+}
+
+export interface CrashGroupsTable {
+  id: Generated<string>;
+  signature: string;
+  first_version: string;
+  last_version: string;
+  first_seen_at: Timestamp;
+  last_seen_at: Timestamp;
 }
 
 export interface BlobsTable {
@@ -1553,6 +1596,9 @@ export interface Database {
   entitlements: EntitlementsTable;
   admin_audit_log: AdminAuditLogTable;
   crash_reports: CrashReportsTable;
+  crash_releases: CrashReleasesTable;
+  crash_symbols: CrashSymbolsTable;
+  crash_groups: CrashGroupsTable;
   blobs: BlobsTable;
   image_webp_renditions: { source_sha256: string; webp_sha256: string };
   relays: RelaysTable;

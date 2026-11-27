@@ -3159,5 +3159,11 @@
   "Download bundle": "Prenesi paket",
   "No problem reports yet.": "Prijav težav še ni.",
   "No description.": "Ni opisa.",
-  "Bundle deleted after 90 days.": "Paket je bil po 90 dneh izbrisan."
+  "Bundle deleted after 90 days.": "Paket je bil po 90 dneh izbrisan.",
+  "Crashes": "Sesutja",
+  "No crashes yet.": "Sesutij še ni.",
+  "Installs": "Namestitve",
+  "Stack": "Sklad",
+  "Channel": "Kanal",
+  "Show reports": "Prikaži poročila"
 }

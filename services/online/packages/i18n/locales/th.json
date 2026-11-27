@@ -3078,5 +3078,11 @@
   "Download bundle": "ดาวน์โหลดชุดไฟล์",
   "No problem reports yet.": "ยังไม่มีรายงานปัญหา",
   "No description.": "ไม่มีคำอธิบาย",
-  "Bundle deleted after 90 days.": "ลบชุดไฟล์แล้วหลังจาก 90 วัน"
+  "Bundle deleted after 90 days.": "ลบชุดไฟล์แล้วหลังจาก 90 วัน",
+  "Crashes": "การแครช",
+  "No crashes yet.": "ยังไม่มีการแครช",
+  "Installs": "การติดตั้ง",
+  "Stack": "สแต็ก",
+  "Channel": "ช่องทาง",
+  "Show reports": "แสดงรายงาน"
 }

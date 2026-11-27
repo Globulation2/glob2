@@ -122,6 +122,14 @@ jobs:
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 tools/dev_build.py -j$(nproc) release=1 mingw=1 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
 
+      - name: Upload crash symbols
+        if: ${{ !inputs.payload_tag && inputs.upload && hashFiles('.github/actions/crash-symbols/action.yml') != '' }}
+        uses: ./.github/actions/crash-symbols
+        with:
+          token: ${{ secrets.CRASH_SYMBOL_UPLOAD_TOKEN }}
+          version: ''
+          files: build/mingw/client/release/lean-images/src/glob2.exe.debug
+
       - name: Stage game, DLLs, assets and Store identity
         if: ${{ !inputs.payload_tag }}
         shell: msys2 {0}

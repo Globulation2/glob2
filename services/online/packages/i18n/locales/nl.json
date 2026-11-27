@@ -3105,5 +3105,11 @@
   "Download bundle": "Pakket downloaden",
   "No problem reports yet.": "Nog geen probleemmeldingen.",
   "No description.": "Geen beschrijving.",
-  "Bundle deleted after 90 days.": "Pakket na 90 dagen verwijderd."
+  "Bundle deleted after 90 days.": "Pakket na 90 dagen verwijderd.",
+  "Crashes": "Crashes",
+  "No crashes yet.": "Nog geen crashes.",
+  "Installs": "Installaties",
+  "Stack": "Stack",
+  "Channel": "Kanaal",
+  "Show reports": "Meldingen tonen"
 }

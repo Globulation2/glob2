@@ -3105,5 +3105,11 @@
   "Download bundle": "Csomag letöltése",
   "No problem reports yet.": "Még nincsenek hibabejelentések.",
   "No description.": "Nincs leírás.",
-  "Bundle deleted after 90 days.": "A csomag 90 nap után törölve."
+  "Bundle deleted after 90 days.": "A csomag 90 nap után törölve.",
+  "Crashes": "Összeomlások",
+  "No crashes yet.": "Még nincs összeomlás.",
+  "Installs": "Telepítések",
+  "Stack": "Verem",
+  "Channel": "Csatorna",
+  "Show reports": "Jelentések megjelenítése"
 }

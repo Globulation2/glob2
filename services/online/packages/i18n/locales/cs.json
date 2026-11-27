@@ -3159,5 +3159,11 @@
   "Download bundle": "Stáhnout balíček",
   "No problem reports yet.": "Zatím žádná hlášení problémů.",
   "No description.": "Bez popisu.",
-  "Bundle deleted after 90 days.": "Balíček byl po 90 dnech smazán."
+  "Bundle deleted after 90 days.": "Balíček byl po 90 dnech smazán.",
+  "Crashes": "Pády",
+  "No crashes yet.": "Zatím žádné pády.",
+  "Installs": "Instalace",
+  "Stack": "Zásobník",
+  "Channel": "Kanál",
+  "Show reports": "Zobrazit hlášení"
 }

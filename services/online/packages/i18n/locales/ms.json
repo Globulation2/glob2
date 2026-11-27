@@ -3078,5 +3078,11 @@
   "Download bundle": "Muat turun berkas",
   "No problem reports yet.": "Belum ada laporan masalah.",
   "No description.": "Tiada keterangan.",
-  "Bundle deleted after 90 days.": "Berkas dipadam selepas 90 hari."
+  "Bundle deleted after 90 days.": "Berkas dipadam selepas 90 hari.",
+  "Crashes": "Ranap",
+  "No crashes yet.": "Belum ada ranap.",
+  "Installs": "Pemasangan",
+  "Stack": "Tindanan",
+  "Channel": "Saluran",
+  "Show reports": "Tunjukkan laporan"
 }

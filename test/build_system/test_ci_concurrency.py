@@ -27,7 +27,7 @@ RELEASE = {
     'flathub-update.yml', 'github-release.yml', 'itch-release.yml', 'macos-signing-retry.yml', 'macos-downloads-qualification.yml', 'ios-testflight.yml', 'ios-production.yml', 'mac-app-store-production.yml', 'publish-desktop.yml',
     'release.yml', 'publish-free-cohort.yml', 'promote-downloads.yml', 'server-image.yml', 'snap-release.yml', 'steam-windows-upload.yml',
     'windows-store-release.yml', 'windows-store-auth-check.yml', 'steam-windows-package.yml', 'mac-app-store.yml',
-    'deploy-online.yml', 'gog-staging.yml', 'fdroid-buildserver-trial.yml',
+    'deploy-online.yml', 'gog-staging.yml', 'fdroid-buildserver-trial.yml', 'crash-symbols.yml',
 }
 # Not superseded by newer runs, each with its own reason.
 EXEMPT = {

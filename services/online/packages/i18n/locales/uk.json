@@ -3159,5 +3159,11 @@
   "Download bundle": "Завантажити пакет",
   "No problem reports yet.": "Повідомлень про проблеми ще немає.",
   "No description.": "Без опису.",
-  "Bundle deleted after 90 days.": "Пакет видалено через 90 днів."
+  "Bundle deleted after 90 days.": "Пакет видалено через 90 днів.",
+  "Crashes": "Збої",
+  "No crashes yet.": "Збоїв поки немає.",
+  "Installs": "Встановлення",
+  "Stack": "Стек",
+  "Channel": "Канал",
+  "Show reports": "Показати звіти"
 }

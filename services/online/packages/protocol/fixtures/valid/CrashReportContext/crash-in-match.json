@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "kind": "crash",
+  "installId": "3d2c1b0a-9f8e-4d7c-8b6a-5f4e3d2c1b0a",
+  "submissionId": "1b2c3d4e-5f60-4718-8293-a4b5c6d7e8f9",
+  "version": "0.11.8.1",
+  "versionMinor": 219,
+  "simRevision": 170,
+  "distribution": "steam",
+  "platform": "windows",
+  "os": "Windows 11",
+  "deviceClass": "desktop",
+  "deviceTier": "high",
+  "description": "",
+  "match": {
+    "tick": 18250,
+    "seed": 4127
+  },
+  "createdAt": "2026-10-01T12:00:00Z"
+}

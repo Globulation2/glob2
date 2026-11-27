@@ -15,6 +15,7 @@ afterEach(() => {
 const report: AdminCrashReport = {
   id: 'K7M2QX9D',
   kind: 'problem',
+  status: 'none',
   receivedAt: '2026-11-26T12:00:00Z',
   version: '0.11.8.1',
   versionMinor: 219,

@@ -138,6 +138,14 @@ jobs:
                         "store_launchfix": bool(os.environ["SOURCE_REF"])}
           pathlib.Path("artifacts/epic/SOURCE.json").write_text(json.dumps(provenance, indent=2) + "\n")
           PY
+      - name: Hand over crash symbols
+        if: ${{ inputs.upload && hashFiles('tools/symbols/dump_syms.json') != '' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: crash-symbols-epic
+          path: build/mingw/client/release/lean-images/src/glob2.exe.debug
+          if-no-files-found: error
+          retention-days: 7
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: client-build-epic-windows
@@ -205,7 +213,7 @@ jobs:
 
   upload-dev:
     if: ${{ inputs.upload }}
-    needs: [preflight, smoke-test]
+    needs: [preflight, smoke-test, crash-symbols]
     timeout-minutes: 90
     runs-on: windows-2022
     environment: epic-dev
@@ -311,3 +319,13 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "BuildPatchTool failed: $LASTEXITCODE" }
           "Uploaded Epic Dev candidate $buildVersion from public commit $env:SOURCE_SHA. In the Epic Developer Portal, make the new binary active for Windows in Dev, install and test it through the launcher, then handle Stage, review, and Live promotion." |
             Out-File -Append $env:GITHUB_STEP_SUMMARY
+
+  # Uploads this release's crash symbols before anything is published
+  # (docs/multiplayer/crash-reports.md#symbols).
+  crash-symbols:
+    needs: package
+    if: ${{ inputs.upload }}
+    uses: ./.github/workflows/crash-symbols.yml
+    with:
+      version: ${{ inputs.tag }}
+      artifacts: crash-symbols-epic

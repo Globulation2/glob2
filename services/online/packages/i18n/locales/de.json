@@ -3105,5 +3105,11 @@
   "Download bundle": "Paket herunterladen",
   "No problem reports yet.": "Noch keine Problemberichte.",
   "No description.": "Keine Beschreibung.",
-  "Bundle deleted after 90 days.": "Paket nach 90 Tagen gelöscht."
+  "Bundle deleted after 90 days.": "Paket nach 90 Tagen gelöscht.",
+  "Crashes": "Abstürze",
+  "No crashes yet.": "Noch keine Abstürze.",
+  "Installs": "Installationen",
+  "Stack": "Stack",
+  "Channel": "Kanal",
+  "Show reports": "Berichte anzeigen"
 }

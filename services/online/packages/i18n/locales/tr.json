@@ -3105,5 +3105,11 @@
   "Download bundle": "Paketi indir",
   "No problem reports yet.": "Henüz sorun bildirimi yok.",
   "No description.": "Açıklama yok.",
-  "Bundle deleted after 90 days.": "Paket 90 gün sonra silindi."
+  "Bundle deleted after 90 days.": "Paket 90 gün sonra silindi.",
+  "Crashes": "Çökmeler",
+  "No crashes yet.": "Henüz çökme yok.",
+  "Installs": "Kurulumlar",
+  "Stack": "Yığın",
+  "Channel": "Kanal",
+  "Show reports": "Raporları göster"
 }

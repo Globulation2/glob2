@@ -3078,5 +3078,11 @@
   "Download bundle": "Tải xuống gói",
   "No problem reports yet.": "Chưa có báo cáo sự cố nào.",
   "No description.": "Không có mô tả.",
-  "Bundle deleted after 90 days.": "Gói đã bị xóa sau 90 ngày."
+  "Bundle deleted after 90 days.": "Gói đã bị xóa sau 90 ngày.",
+  "Crashes": "Sự cố treo",
+  "No crashes yet.": "Chưa có sự cố treo nào.",
+  "Installs": "Lượt cài đặt",
+  "Stack": "Ngăn xếp",
+  "Channel": "Kênh",
+  "Show reports": "Hiện báo cáo"
 }

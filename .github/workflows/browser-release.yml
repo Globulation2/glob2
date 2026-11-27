@@ -113,6 +113,18 @@ jobs:
           python3 tools/dev_build.py target=web release=1 client_profile=free $EDITION_ARGUMENTS -j$(nproc) web-package
           python3 platforms/web/package-static.py --source "$SOURCE" --output "$OUTPUT"
           python3 platforms/web/package-static.py --verify "$OUTPUT"
+      - name: Hand over crash symbols
+        if: ${{ (inputs.publish || inputs.gamejolt) && hashFiles('tools/symbols/dump_syms.json') != '' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: crash-symbols-browser${{ matrix.artifact }}
+          path: |
+            ${{ matrix.source }}/index.wasm
+            ${{ matrix.source }}/index.js.symbols
+            ${{ matrix.source }}/threaded/index.wasm
+            ${{ matrix.source }}/threaded/index.js.symbols
+          if-no-files-found: error
+          retention-days: 7
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: client-build-browser${{ matrix.artifact }}
@@ -125,7 +137,7 @@ jobs:
           if-no-files-found: error
 
   publish:
-    needs: build
+    needs: [build, crash-symbols]
     if: inputs.publish
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -288,7 +300,7 @@ jobs:
   # gamejolt-upload artifact as a browser build. The gamejolt-release environment
   # holds GJPUSH_TOKEN and needs the owner's approval (docs/releases/gamejolt.md).
   gamejolt:
-    needs: portals
+    needs: [portals, crash-symbols]
     if: inputs.gamejolt
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -342,3 +354,13 @@ jobs:
           gjpush --game "$GAMEJOLT_GAME_ID" --package "$GAMEJOLT_PACKAGE_ID" \
             --release "$version" --browser "upload/glob2-${TAG#v}-gamejolt.zip"
           echo "Pushed \`glob2-${TAG#v}-gamejolt.zip\` to Game Jolt as release $version." >> "$GITHUB_STEP_SUMMARY"
+
+  # Uploads this release's crash symbols before anything is published
+  # (docs/multiplayer/crash-reports.md#symbols).
+  crash-symbols:
+    needs: build
+    if: ${{ inputs.publish || inputs.gamejolt }}
+    uses: ./.github/workflows/crash-symbols.yml
+    with:
+      version: ${{ inputs.tag }}
+      artifacts: crash-symbols-browser*

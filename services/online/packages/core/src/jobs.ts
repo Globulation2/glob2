@@ -78,3 +78,9 @@ export async function startJobRunner(options: JobRunnerOptions): Promise<Runner>
     [],
   );
 }
+
+/**
+ * The task apps/crash-worker runs for each crash report (payload `{ id }`);
+ * the API queues it with the report's row (docs/multiplayer/crash-reports.md).
+ */
+export const CRASH_PROCESS_TASK = 'crash:process';

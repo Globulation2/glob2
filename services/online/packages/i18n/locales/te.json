@@ -3105,5 +3105,11 @@
   "Download bundle": "బండిల్‌ను డౌన్‌లోడ్ చేయండి",
   "No problem reports yet.": "ఇంకా సమస్య నివేదికలు లేవు.",
   "No description.": "వివరణ లేదు.",
-  "Bundle deleted after 90 days.": "90 రోజుల తర్వాత బండిల్ తొలగించబడింది."
+  "Bundle deleted after 90 days.": "90 రోజుల తర్వాత బండిల్ తొలగించబడింది.",
+  "Crashes": "క్రాష్‌లు",
+  "No crashes yet.": "ఇంకా క్రాష్‌లు లేవు.",
+  "Installs": "ఇన్‌స్టాల్‌లు",
+  "Stack": "స్టాక్",
+  "Channel": "ఛానెల్",
+  "Show reports": "నివేదికలను చూపించు"
 }

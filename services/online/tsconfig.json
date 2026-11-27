@@ -10,6 +10,7 @@
     "apps/ai-map-worker",
     "*.ts",
     "apps/music-worker",
+    "apps/crash-worker",
     "apps/skin-render-worker",
     "apps/ai-music-worker",
     "apps/ai-terrain-worker",
