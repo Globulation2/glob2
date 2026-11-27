@@ -27,7 +27,11 @@ TERRAIN_CRF = {
     "terrain-molten_lava_pool": 29.5,
 }
 UNIT_CRF = (31, 31, 30.25, 31.25, 30, 29.5, 29.75)
-PACK_RECIPE = "packed-sprites-v10"
+PACK_RECIPE = "packed-sprites-v9"
+# How video groups store alpha: one .za block per chunk. Part of the encode cache key
+# only, so cached groups re-encode without invalidating the curves (group_identity);
+# curves measured with per-frame .z blocks slightly overstate video sizes.
+ALPHA_LAYOUT = "chunk-za"
 # Perceptual gate for video candidates: frames per side of each scored mosaic,
 # and the dark and light backgrounds that frames with partial alpha are scored over.
 QUALITY_CELLS = 16
@@ -634,7 +638,7 @@ def encode_group(name, group, cache, platform, encoder, lossy, quality=None, cur
     curved = "codec" in selection
     # The gate's metric is part of the key: an SSIM selection is redone once SSIMULACRA2 is available.
     perceptual = None if curved else quality_metric() if video_eligible else None
-    key = hashlib.sha256(json.dumps([PACK_RECIPE, name, group["crf"], group["material"],
+    key = hashlib.sha256(json.dumps([PACK_RECIPE, ALPHA_LAYOUT, name, group["crf"], group["material"],
         platform, encoder, lossy, bool(fingerprint), images.image_recipe(quality=quality), zlib.ZLIB_RUNTIME_VERSION,
         perceptual, selection,
         size_policy, bool(group.get("native")), group.get("index_rows"),

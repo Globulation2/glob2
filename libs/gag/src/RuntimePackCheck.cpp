@@ -47,6 +47,9 @@ static void run(bool software,bool fallback,bool original)
         {
             auto split=id.find_last_not_of("0123456789")+1;auto prefix=id.substr(0,split);int index=std::stoi(id.substr(split));
             if(!sprites.count(prefix)){auto s=std::make_unique<Sprite>();REQUIRE(s->load("data/gfx/"+prefix));sprites[prefix]=std::move(s);}
+            // Exports ship only the legacy terrain frames the menus draw
+            // (tools/package_assets.py legacy_terrain_unused); its other source rows stay behind.
+            if(prefix=="terrain"&&index>=sprites[prefix]->getFrameCount())continue;
             frames.push_back({prefix,id,index,w,h});
         }
         // Terrain tiles have no HD layer and so never appear in frames.txt,
@@ -86,7 +89,7 @@ static void run(bool software,bool fallback,bool original)
                 {
                     gfx->beginMapTransform(zoom,0,0,0,0,1280,960);
                     for(int y=0;y<std::ceil(960/zoom);y+=32)for(int x=0;x<std::ceil(1280/zoom);x+=32)
-                        gfx->drawSprite(x,y,sprites["terrain"].get(),((x/32)+(y/32)*3)%272);
+                        gfx->drawSprite(x,y,sprites["terrain"].get(),((x/32)+(y/32)*3)%sprites["terrain"]->getFrameCount());
                     gfx->finishDrawingSprite(sprites["terrain"].get(),255);
                     for(int y=0;y<960/zoom;y+=64)for(int x=0;x<1280/zoom;x+=64)
                         gfx->drawSprite(x,y,sprites["ressource"].get(),((x/64)+(y/64)*3)%65);
