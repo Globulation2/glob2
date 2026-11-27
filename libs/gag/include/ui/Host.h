@@ -164,6 +164,9 @@ class Host
 	GAGCore::GestureScrollController scrollGestureMotion;
 	Uint64 wheelGestureSequence = 0;
 	bool wheelGestureClaimed = false, gestureScrolling = false;
+	// The part of a fractional wheel step not yet scrolled, and the region it is for.
+	float wheelResidual = 0;
+	std::string wheelKey;
 	// A touch that stopped coasting content is not also a tap.
 	bool swallowTap = false;
 	void writeScroll();

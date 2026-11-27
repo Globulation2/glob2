@@ -264,7 +264,9 @@ another type or a value that is not an object turns it off.
   ([ad breaks](../../docs/releases/web-portals.md#ad-breaks)).
 - In any portal, whatever it allows, the main menu offers no Quit, and Escape on
   its top level does nothing: the portal's page hosts the game, and quitting would
-  leave an empty frame.
+  leave an empty frame. The in-game menu drops AI telemetry, a developer's view
+  portal players do not need. Report a problem stays: it opens an in-game screen
+  whose Save to file is a download; with `onlineSignIn: false` it offers no Send.
 
 Desktop builds read the same JSON from the `GLOB2_PORTAL` environment variable, to
 try a portal's rules without packaging: `GLOB2_PORTAL='{"externalLinks":false,"onlineSignIn":false}' glob2`.

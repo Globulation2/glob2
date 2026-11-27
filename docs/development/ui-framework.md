@@ -1465,7 +1465,11 @@ Finger pans on `scroll`, `listView` and `textEditor` (the nodes whose
 Nodes keep an `int` offset that is always clamped, which is what
 `NodeState::scroll` persists, plus a transient `overscroll()` displacement that
 is painted and hit-tested but never saved; `scrollTo()` sets the clamped offset
-and `setOverscroll()` the stretch. Mouse drags and conventional wheel events never coast or stretch. `Host::animating()` reports a coast or bounce
+and `setOverscroll()` the stretch. Mouse drags and conventional wheel events never coast or stretch. A wheel
+event scrolls by its steps times the theme's control height; fractions of a step
+(browsers send 100 CSS pixels as one step, so touchpads deliver hundredths) carry
+over in the host until they make a whole pixel, while the region and direction
+stay the same. `Host::animating()` reports a coast or bounce
 in progress and `UIScreen::executionDelay` frames every 16 ms meanwhile.
 The three preference sliders under Settings › Controls (and the in-game
 Options dialog on touch) tune the feel through `GAGCore::scrollTuning()`; 0
