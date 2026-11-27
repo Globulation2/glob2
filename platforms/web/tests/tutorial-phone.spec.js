@@ -14,7 +14,8 @@ test('Tutorial opens the lesson catalog as the only tutorial menu on phones',asy
     else if(name.includes('IntroductionOfferScreen') && s.controls['intro/menu']?.enabled) await tapControl(page,'intro/menu');
     return name.includes('MainMenuScreen');
   },{timeout:180000}).toBe(true);
-  expect(await page.evaluate(()=>glob2Diagnostics.snapshot().controls['menu/10'])).toBeUndefined();
+  // menu/10 is Report a problem; nothing past it (the retired training campaign was one).
+  expect(await page.evaluate(()=>glob2Diagnostics.snapshot().controls['menu/11'])).toBeUndefined();
   await clickMainMenu(page,'tutorial');
   await expect.poll(()=>page.evaluate(()=>{const s=glob2Diagnostics.snapshot();return s.screen+' '+s.screenClass;})).toContain('LessonCatalogScreen');
   const out=path.resolve(__dirname,'../../../artifacts/training/retire-browser-ui');fs.mkdirSync(out,{recursive:true});

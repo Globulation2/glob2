@@ -291,7 +291,8 @@ TEST_CASE("first-run recommendation can be declined and stays dismissed [display
     CHECK(application.screens.top() != nullptr);
     auto *main=static_cast<MainMenuScreen*>(application.screens.top());
     CHECK(main->host().find("menu/1")!=nullptr);
-    CHECK(main->host().find("menu/10")==nullptr);
+    // No menu entry past the last code (the retired training campaign was one).
+    CHECK(main->host().find("menu/"+std::to_string(MainMenuScreen::REPORT_PROBLEM+1))==nullptr);
     CHECK(globals->settings.introductionOffered);
     Settings saved; saved.load(); CHECK(saved.introductionOffered);
     application.choose(MainMenuScreen::TUTORIAL);

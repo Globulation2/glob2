@@ -227,6 +227,9 @@ TEST_CASE("a resized desktop portable window fills the window on every screen [d
 		{
 			SDL_SetWindowSize(window, width, height);
 			GLOB2_REQUIRE(SDL_SyncWindow(window), "Window resize must settle before layout assertions");
+			// GL on X11 (Mesa) sizes its back buffer at a swap: present once so
+			// the drawable reaches the new size, as a running game's frames do.
+			SDL_RenderPresent(SDL_GetRenderer(window));
 		}
 	} context;
 	struct Plain : GAGGUI::Screen
