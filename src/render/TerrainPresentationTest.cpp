@@ -468,8 +468,21 @@ void layeredCache(bool gpu, bool hd = false)
 	compare();
 	compare();
 	// Content revisions invalidate prepared source pixels and composed pages.
-	auto *source = globals->terrain->nativeFrame(272);
-	source->drawFilledRect(0, 0, 32, 32, 201, 23, 189);
+	// Repaint the ice material's own frames, which its cells draw (exports
+	// leave the legacy tileset only the menu frames, and no material uses it).
+	// Ice is also the ground under trail stones, so cells whose corners are all
+	// trail must recompose too.
+	const auto &ice = compositor.catalog().materials[compositor.catalog().find("ice")];
+	auto *iceSprite = GAGCore::Toolkit::findSprite(ice.sprite);
+	REQUIRE(iceSprite);
+	int repainted = 0;
+	for (int frame = 0; frame < iceSprite->getFrameCount(); ++frame)
+		if (auto *source = iceSprite->nativeFrame(unsigned(frame)))
+		{
+			source->drawFilledRect(0, 0, 32, 32, 201, 23, 189);
+			++repainted;
+		}
+	REQUIRE(repainted > 0);
 	compare();
 	compare();
 	if (!gpu)

@@ -232,8 +232,9 @@ packed sprite groups. The legacy connected tileset (`data/gfx/terrain`) stays in
 `content/` as the source of the terrain artwork tools, but the game draws only the
 menu backdrop and loading screen from it (frames 0-15, 64-71 and 128-143), so
 exports keep frames 0-143, native and HD, and none of its HD atlas
-(`legacy_terrain_unused`); every renderer skips that atlas. Builds with packed
-sprite groups index the unit frames from
+(`legacy_terrain_unused`); every renderer skips that atlas. Display tests run on
+that export, so a test that borrows legacy tiles as writable fixture frames uses
+frames below 144. Builds with packed sprite groups index the unit frames from
 those groups instead (a version 2 `.sheet`). A sheet holds a run of up to 256
 consecutive frames of one layer and size, up to sixteen tiles to a row (fewer for
 a shorter run), each encoded like any other image. 16-bit RGBA frames round to

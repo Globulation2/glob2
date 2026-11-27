@@ -87,10 +87,12 @@ transparent holes. Views are destroyed before their backing page.
 Each page validates the canonical terrain neighborhood, discovery decisions and
 revisions of the materials its recipes use. Animation or source changes in unrelated
 materials do not invalidate it; a phase change of an animated material (water,
-deep water, lava, ember field) recomposes only the pages that use it. Within an
-unchanged mixed cell, an animation step recomposes only the samples its changed
-textures or advanced surf can reach (`Compositor::Refresh`); the page keeps that
-list beside the cell's coverage mask and every other sample's pixels. GPU pages
+deep water, lava, ember field) recomposes only the pages that use it. Within such
+a page, a cell recomposes when any material of its recipe's palette changed: its
+corners, each stone path's material and the ground its dropped stones reveal, and
+its halo. Within an unchanged mixed cell, an animation step recomposes only the
+samples its changed textures or advanced surf can reach (`Compositor::Refresh`);
+the page keeps that list beside the cell's coverage mask and every other sample's pixels. GPU pages
 then upload only their rewritten cells (`DrawableSurface::markPixelsChanged(dirty)`,
 `RenderBackend::prepareTextureRegions`). A region update keeps the sampling mode
 the page's last draw used, and a texture it cannot patch in place (a missed revision
