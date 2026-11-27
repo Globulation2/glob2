@@ -227,7 +227,9 @@ def main():
         validate_bundle(prefixes[args.arch], dependency_identities[args.arch], dependency_toolchains[args.arch])
         if not java.is_dir(): raise ValueError('Dependency bundle lacks pinned SDL Java sources; rebuild dependencies')
         shutil.copytree(java,generated/'java')
-        exported = export_packaged_assets(output, args.release, args.sprite_packing, args.jobs)
+        # The native build's directory differs from the project's when the build
+        # settings do (F-Droid's problem_reports=0), so take its outputs from there.
+        exported = export_packaged_assets(outputs[args.arch], args.release, args.sprite_packing, args.jobs)
         assets=generated/'assets/glob2-bundle'
         if assets.exists(): shutil.rmtree(assets)
         assets.parent.mkdir(parents=True, exist_ok=True)
@@ -257,7 +259,7 @@ def main():
             verify_apk_assets(bundle, 'base/assets/glob2-bundle/')
             print('Verified SDL GPU Vulkan shaders:',verify_apk_sdl_gpu(bundle, 'base/assets/glob2-bundle/'))
             member='base/lib/'+args.arch+'/libmain.so'
-            build_id=verify_android_archive_symbols(bundle,output/'lib/libmain.so',member,readelf)
+            build_id=verify_android_archive_symbols(bundle,outputs[args.arch]/'lib/libmain.so',member,readelf)
             bundle.with_suffix('.json').write_text(json.dumps({'sha256':hashlib.sha256(bundle.read_bytes()).hexdigest(),
                 'version_code':args.version_code,'build_id':build_id,'architecture':args.arch},indent=2)+'\n')
             print('Verified Android symbol build ID:',build_id)

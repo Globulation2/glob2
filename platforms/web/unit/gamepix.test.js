@@ -1,6 +1,7 @@
 const {test} = require('node:test');
 const assert = require('node:assert/strict');
-const {create} = require('../gamepix');
+const {create, attach} = require('../gamepix');
+const {adWindow, deferred, settle} = require('./portal-fixture');
 
 class FakeContext {
   constructor() { this.state = 'running'; this.listeners = []; }
@@ -56,15 +57,90 @@ test('closed contexts are forgotten', () => {
   assert.equal(adapter.contexts.size, 0);
 });
 
-test('loading reports increasing whole percentages, then loaded and gameStart once', () => {
+test('loading reports increasing whole percentages, then loaded once at the main menu', () => {
   const {calls, adapter} = fixture();
   adapter.progress('12.7'); adapter.progress(12); adapter.progress(5); adapter.progress(140);
   adapter.start(); adapter.start(); adapter.progress(50);
-  assert.deepEqual(calls, [['loading', 12], ['loading', 100], ['loaded'], ['gameStart']]);
+  assert.deepEqual(calls, [['loading', 12], ['loading', 100], ['loaded']]);
+  assert.equal(adapter.started, false);
+});
+
+test('gameStart fires once, when the first match is playing', () => {
+  const {calls, adapter} = fixture();
+  adapter.start();
+  adapter.session.match(true);
+  adapter.session.match(false);
+  adapter.session.match(true);
+  assert.deepEqual(calls, [['loading', 100], ['loaded'], ['gameStart']]);
+  assert.equal(adapter.started, true);
+});
+
+test('a GamePix pause holds the game as well as silencing it, idempotently', () => {
+  const {win, adapter} = fixture();
+  const context = new win.AudioContext();
+  adapter.start();
+  adapter.session.match(true);
+  adapter.pause(); adapter.pause();
+  assert.equal(adapter.session.held, true);
+  assert.equal(adapter.session.active, false);
+  assert.equal(context.state, 'suspended');
+  adapter.resume(); adapter.resume();
+  assert.equal(adapter.session.held, false);
+  assert.equal(adapter.session.active, true);
+  assert.equal(context.state, 'running');
+});
+
+test('a GamePix pause before the first match delays gameStart until play', () => {
+  const {calls, adapter} = fixture();
+  adapter.start();
+  adapter.pause();
+  adapter.session.match(true);
+  assert.deepEqual(calls.slice(-1), [['loaded']]);
+  adapter.resume();
+  assert.deepEqual(calls.slice(-1), [['gameStart']]);
 });
 
 test('the adapter works without the SDK', () => {
   const win = {document: {hidden: false}};
   const adapter = create(win);
   adapter.progress(10); adapter.start(); adapter.pause(); adapter.resume();
+});
+
+function adFixture(extra) {
+  const win = adWindow('gamepix', extra);
+  return {win, adapter: create(win)};
+}
+
+test('a finished match shows one interstitial, at most once every three minutes', async () => {
+  let ad = null;
+  const shown = [];
+  const handlers = {};
+  const {win, adapter} = adFixture({GamePix: {
+    lifecycle: {loading() {}, loaded() {}, gameStart() {}},
+    events: {on: (name, handler) => { handlers[name] = handler; }},
+    ads: {interstitial: () => { shown.push('interstitial'); handlers.pause(); ad = deferred(); return ad.promise; }},
+  }});
+  win.document.getElementById = () => null;
+  win.document.body = {classList: {contains: () => false}};
+  win.document.addEventListener = () => {};
+  win.MutationObserver = class { observe() {} };
+  attach(win, adapter);
+  const context = new win.AudioContext();
+  adapter.session.start();
+  assert.equal(win.glob2PortalHost.matchBreak('start'), false);
+  win.glob2PortalHost.matchBreak('end');
+  assert.equal(win.glob2PortalHost.matchBreak('leave'), true);
+  assert.equal(context.state, 'suspended');
+  handlers.resume();
+  ad.resolve({success: true}); await settle();
+  assert.equal(win.glob2PortalHost.held, false);
+  assert.equal(context.state, 'running');
+  assert.equal(win.glob2PortalHost.matchBreak('start'), false);
+  assert.deepEqual(shown, ['interstitial']);
+});
+
+test('without the GamePix SDK a break holds nothing', () => {
+  const {win} = adFixture();
+  win.glob2PortalHost.matchBreak('start');
+  assert.equal(win.glob2PortalHost.matchBreak('leave'), false);
 });

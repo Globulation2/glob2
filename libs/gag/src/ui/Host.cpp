@@ -681,7 +681,19 @@ bool Host::event(const SDL_Event &event)
 		cancelInput();
 		if (auto *node = scrollableAt(hover))
 		{
-			node->scrollBy(-lines * metricsValue.control, *this);
+			// Browsers and precise touchpads send fractions of a step (SDL's
+			// browser backend makes 100 CSS pixels one step, so a touchpad's
+			// 4-pixel event is 0.04). Whole pixels scroll now and the remainder
+			// carries to the next event on the same region in the same direction.
+			const float pixels = -lines * metricsValue.control;
+			if (node->key != wheelKey || (wheelResidual < 0) != (pixels < 0))
+				wheelResidual = 0;
+			wheelKey = node->key;
+			wheelResidual += pixels;
+			const int step = int(wheelResidual);
+			wheelResidual -= float(step);
+			if (step != 0)
+				node->scrollBy(step, *this);
 			return true;
 		}
 		return false;

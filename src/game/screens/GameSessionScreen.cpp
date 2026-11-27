@@ -15,6 +15,7 @@
 #include <ios>
 #include <stdexcept>
 #include <ApplicationHost.h>
+#include "PortalPolicy.h"
 
 namespace
 {
@@ -78,8 +79,47 @@ void GameSessionScreen::updateExecution(Uint32 tick)
 	}
 }
 
+bool GameSessionScreen::awaitMatchBreak()
+{
+	using GAGCore::ApplicationHost::MatchBreak;
+	if (!breakAsked)
+	{
+		breakAsked = true;
+		endReported = false;
+		inMatch = !engine->turnLockstep();
+		// Before a local match starts from the menu, a portal package with ads
+		// may run a break; the first tick waits until the host releases the game.
+		if (inMatch && GAGCore::ApplicationHost::matchBreak(MatchBreak::Starting) && PortalPolicy::ads())
+			return true;
+	}
+	return inMatch && GAGCore::ApplicationHost::hostHeld();
+}
+
+void GameSessionScreen::matchEnded()
+{
+	play.stopped();
+	if (!inMatch || endReported)
+		return;
+	endReported = true;
+	GAGCore::ApplicationHost::matchBreak(GAGCore::ApplicationHost::MatchBreak::Ended);
+}
+
+void GameSessionScreen::leaveMatch(int result)
+{
+	matchEnded();
+	if (inMatch)
+	{
+		inMatch = false;
+		// The player left a finished match: a natural break for a portal ad. The
+		// application holds its frames while the host runs one.
+		GAGCore::ApplicationHost::matchBreak(GAGCore::ApplicationHost::MatchBreak::Left);
+	}
+	endExecute(result);
+}
+
 void GameSessionScreen::stopSession(const std::string &message)
 {
+	matchEnded();
 	engine->abortSession();
 	engine->restoreCursor();
 	started = false;
@@ -89,7 +129,7 @@ void GameSessionScreen::stopSession(const std::string &message)
 		globalContainer->mix->setNextTrack(MusicTrack::Menu, true);
 	stack.push(std::make_unique<MessageScreen>(message,
 		std::vector<std::string>{Glob2UI::bulgarianErrorLocale() ? Glob2UI::nativeSurfaceText("[ok]", "Ok") : "OK"}),
-		[this](GAGGUI::Screen &, int) { endExecute(0); });
+		[this](GAGGUI::Screen &, int) { leaveMatch(0); });
 }
 
 bool GameSessionScreen::hasPendingExecutionInput() const
@@ -155,6 +195,8 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 #endif
 	if (!started)
 	{
+		if (awaitMatchBreak())
+			return;
 		clock = lastTick = tick;
 		engine->prepareRun();
 		engine->beginSession(clock);
@@ -165,6 +207,8 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 		// The simulation runs on its own thread where threads exist; otherwise
 		// (the browser build, thread creation failure) this host steps it serially.
 		engine->startSimulationThread(clock);
+		if (inMatch)
+			play.started();
 	}
 	else
 	{
@@ -232,7 +276,12 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 			nextTick = clock + engine->sessionDelay(clock);
         }
 	}
-	if (running && engine->takeSettingsRequest()) {
+	const bool settings = running && engine->takeSettingsRequest();
+	// The in-game menu (and what it opens), Settings over the match and pauses
+	// stop play for the host; it resumes on the first frame back in play.
+	if (running)
+		play.update(settings || engine->playStopped());
+	if (settings) {
         engine->suspendInput(); cancelScreenInputReceipt(); input.clear();
         stack.push(std::make_unique<SettingsScreen>(&stack));
         return;
@@ -248,6 +297,7 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 	{
 		if (auto request = engine->finishSessionForHost())
 		{
+			matchEnded();
 			engine->restoreCursor();
 			started = false;
 			finished = true;
@@ -265,6 +315,8 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 						   {
 							   engine = static_cast<GameLoadScreen &>(loading).takeEngine();
 							   finished = false;
+							   // The loaded game is a new match: its start is a break too.
+							   breakAsked = false;
 							   resetClock = false;
 							   cancelScreenInputReceipt(); input.clear();
 						   }
@@ -280,18 +332,19 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 										   static_cast<GameLoadScreen &>(loading).failureMessage(),
 										   std::vector<std::string>{strings.getString("[ok]")}),
 									   [this](GAGGUI::Screen &, int choice)
-									   { endExecute(choice); });
+									   { leaveMatch(choice); });
 							   }
 							   else
-								   endExecute(result);
+								   leaveMatch(result);
 						   }
 					   });
 			return;
 		}
 		finished = true;
+		matchEnded();
         if (engine->tutorialNavigation()) {
             if (globalContainer->mix) globalContainer->mix->setNextTrack(MusicTrack::Menu,true);
-            endExecute(engine->tutorialNavigation());
+            leaveMatch(engine->tutorialNavigation());
             return;
         }
 		auto endScreen = engine->endRunScreen();
@@ -299,7 +352,7 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 			endExecute(QUIT_APPLICATION);
 		else
 			stack.push(std::move(endScreen),
-					   [this](GAGGUI::Screen &, int result) { endExecute(result); });
+					   [this](GAGGUI::Screen &, int result) { leaveMatch(result); });
 	}
 }
 

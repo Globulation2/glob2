@@ -19,6 +19,7 @@ TEST_SUITE("PortalPolicy")
 		CHECK_FALSE(policy.portal);
 		CHECK(policy.externalLinks);
 		CHECK(policy.onlineSignIn);
+		CHECK_FALSE(policy.ads);
 		CHECK(policy.name.empty());
 	}
 
@@ -98,6 +99,26 @@ TEST_SUITE("PortalPolicy")
 			CHECK_FALSE(policy.externalLinks);
 			CHECK_FALSE(policy.onlineSignIn);
 		}
+	}
+
+	TEST_CASE("ads are on only where the description grants them")
+	{
+		// The packager writes ads:true for Poki, GameDistribution, Yandex Games,
+		// CrazyGames and GamePix only (platforms/web/package-portal.py).
+		CHECK(parse(R"({"name":"poki","externalLinks":false,"onlineSignIn":false,"ads":true})").ads);
+		CHECK_FALSE(parse(R"({"name":"newgrounds","externalLinks":true,"onlineSignIn":true,"ads":false})").ads);
+		CHECK_FALSE(parse(R"({"name":"p","externalLinks":true,"onlineSignIn":true})").ads);
+		CHECK_FALSE(parse(R"({"ads":"true"})").ads);
+		CHECK_FALSE(parse(R"({"ads":1})").ads);
+		CHECK_FALSE(parse("{not json").ads);
+	}
+
+	TEST_CASE("a native host runs no breaks and never holds the game")
+	{
+		using GAGCore::ApplicationHost::MatchBreak;
+		for (const auto point : {MatchBreak::Starting, MatchBreak::Ended, MatchBreak::Left, MatchBreak::Paused, MatchBreak::Resumed})
+			CHECK_FALSE(GAGCore::ApplicationHost::matchBreak(point));
+		CHECK_FALSE(GAGCore::ApplicationHost::hostHeld());
 	}
 
 	TEST_CASE("installing a policy switches ApplicationHost's external links")

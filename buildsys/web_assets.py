@@ -99,6 +99,9 @@ OPTIONAL = (
     ('music-sets', ('data/zik/',)),
     ('hd', ('data/highres/',)),
 )
+# A pack must not start like a gzip file (see the part loop in write_packages()).
+GZIP_MAGIC = b'\x1f\x8b'
+PART_HEADER = b'GLOB2_PACKAGE 1\n'
 PACKAGES = ('core', 'game') + tuple(name for name, _ in OPTIONAL)
 # Also in `game`: the game cursor's frames. The browser always shows the system
 # cursor (the page passes -C and the setting is hidden there), so nothing loads
@@ -487,7 +490,15 @@ def write_packages(root, output, source=None, drop=(), overrides=None):
         for index in range(part_count):
             if index < len(groups):
                 blob, files = bytearray(), []
-                for path in groups[index]:
+                # Portal uploaders (CrazyGames) sniff a file's first bytes and refuse
+                # a gzip-looking file as an archive. Packs concatenate files, so put
+                # gzip members (.map.gz, .game.gz) after the plain ones; a part made
+                # only of gzip members starts with a short text header instead.
+                ordered = sorted(groups[index], key=lambda path: data[path][:2] == GZIP_MAGIC)
+                if ordered and data[ordered[0]][:2] == GZIP_MAGIC:
+                    blob += PART_HEADER
+                    entry['size'] += len(PART_HEADER)
+                for path in ordered:
                     start = len(blob)
                     blob += data[path]
                     files.append(['/' + path, start, len(blob)])
@@ -523,10 +534,6 @@ ENGLISH_TEXTS = ('data/texts.keys.txt', 'data/texts.en.txt', 'data/texts.list.tx
 # draws the live menu colony rather than its still image (MenuColony.cpp).
 UNUSED_FILES = ('data/gfx/cursor/', 'data/completions/', 'data/gfx/menu-colony.png')
 MUSIC_COPIES = 'platforms/web/assets/music'
-# Sprite families of many small frames that sheet_sprites packs into sprite sheets
-# (tools/package_assets.py sheet_plan): Sprite::load reads any family's .sheet.
-EDITION_SHEETS = ('data/gfx/terrain-decor', 'data/gfx/terrain', 'data/gfx/ressource', 'data/gfx/mapicon',
-                  'data/gfx/statusicon', 'data/gfx/gamegui')
 
 
 def edition_export(root, identity):

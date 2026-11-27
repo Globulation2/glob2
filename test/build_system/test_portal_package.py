@@ -35,10 +35,12 @@ SHELL = """<!doctype html>
 </body></html>
 """
 
+# (externalLinks, onlineSignIn, ads). Ads only where the portal requires or
+# expects them (owner decision, 2026-11-26).
 POLICIES = {
-    "gamepix": (False, False), "crazygames": (False, False), "newgrounds": (True, True),
-    "gamejolt": (True, True), "gamedistribution": (False, False), "yandex": (False, False),
-    "poki": (False, False),
+    "gamepix": (False, False, True), "crazygames": (False, False, True), "newgrounds": (True, True, False),
+    "gamejolt": (True, True, False), "gamedistribution": (False, False, True), "yandex": (False, False, True),
+    "poki": (False, False, True),
 }
 
 
@@ -92,10 +94,21 @@ class PortalProfileTests(unittest.TestCase):
                 self.assertIn(profile.size_basis, ("zip", "unpacked"))
 
     def test_policies_follow_the_portal_rules(self):
-        for name, (links, sign_in) in POLICIES.items():
+        for name, (links, sign_in, ads) in POLICIES.items():
             with self.subTest(portal=name):
                 self.assertEqual(module.portal(name).policy,
-                                 {"name": name, "externalLinks": links, "onlineSignIn": sign_in})
+                                 {"name": name, "externalLinks": links, "onlineSignIn": sign_in, "ads": ads})
+
+    def test_ad_portals_load_an_sdk_and_an_adapter_with_ad_breaks(self):
+        for profile in module.PORTALS.values():
+            with self.subTest(portal=profile.name):
+                if not profile.ads:
+                    self.assertEqual(profile.adapters, (module.CORE,))
+                    continue
+                self.assertIsNotNone(profile.sdk_url)
+                adapter = (module.WEB / profile.adapters[-1]).read_text()
+                self.assertIn("createBreaks(", adapter)
+                self.assertIn("installHost(", adapter)
 
     def test_unknown_portal_fails(self):
         with self.assertRaisesRegex(ValueError, "Unknown portal"):
@@ -181,6 +194,50 @@ class PortalPackageTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "collides"):
                 module.collect(source, design, module.portal("newgrounds"))
 
+    def test_portal_pages_block_selection_callout_panning_and_zoom(self):
+        for profile in module.PORTALS.values():
+            with self.subTest(portal=profile.name):
+                html, _ = module.rewrite_index(SHELL, profile, module.game_id(profile))
+                style = html[html.index("<style>body{"):html.index("</style>")]
+                for rule in ("-webkit-user-select:none", "-moz-user-select:none", "-ms-user-select:none",
+                             ";user-select:none", "-webkit-touch-callout:none", ";touch-action:none"):
+                    self.assertIn(rule, style)
+                # The game's DOM text fields stay usable.
+                self.assertIn("input,textarea{", style)
+                self.assertIn("user-select:text", style)
+                self.assertLess(html.index("<style>body{"), html.index("<script>window.GLOB2_PORTAL="))
+                viewport = module.VIEWPORT.search(html).group(1)
+                self.assertIn("user-scalable=no", viewport)
+                self.assertIn("maximum-scale=1", viewport)
+                self.assertLess(html.index('name="viewport"'), html.index("<script"))
+
+    def test_existing_viewport_keeps_its_settings_and_gains_no_zoom(self):
+        shell = SHELL.replace("<head>", '<head>\n<meta name="viewport" content="width=device-width,'
+                                       'initial-scale=1,viewport-fit=cover,user-scalable=yes">')
+        html, _ = module.rewrite_index(shell, module.portal("gamepix"))
+        self.assertEqual(len(module.VIEWPORT.findall(html)), 1)
+        self.assertEqual(module.VIEWPORT.search(html).group(1),
+                         "width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no")
+
+    def test_verify_rejects_an_upload_without_the_page_style_or_no_zoom_viewport(self):
+        profile = module.portal("gamepix")
+        for broken in (lambda html: html.replace(module.PAGE_STYLE, ""),
+                       lambda html: html.replace(",user-scalable=no", "")):
+            with self.subTest(), tempfile.TemporaryDirectory() as directory:
+                source, design = fixture(directory)
+                files = module.collect(source, design, profile)
+                files["index.html"] = broken(files["index.html"].decode()).encode()
+                output = Path(directory) / "bad.zip"
+                module.write_zip(files, output)
+                with self.assertRaisesRegex(ValueError, "page style|user-scalable"):
+                    module.verify(output, profile)
+
+    def test_sources_avoid_retired_pages(self):
+        sources = {source for profile in module.PORTALS.values() for source in profile.sources}
+        self.assertNotIn("https://gamejolt.com/help/web-builds", sources)
+        self.assertNotIn("https://yandex.com/dev/games/doc/en/sdk/sdk-gameready", sources)
+        self.assertIn("https://yandex.com/dev/games/doc/en/sdk/sdk-game-events", module.portal("yandex").sources)
+
     def test_verify_rejects_a_reordered_upload(self):
         profile = module.portal("crazygames")
         with tempfile.TemporaryDirectory() as directory:
@@ -246,7 +303,39 @@ class ShellTests(unittest.TestCase):
                 self.assertIn("brand/glob-64.png", needed)
                 without_sdk = html.replace(f'src="{profile.sdk_url}"', "") if profile.sdk_url else html
                 self.assertNotRegex(without_sdk, module.ROOT_REFERENCE)
+                self.assertEqual(len(module.VIEWPORT.findall(html)), 1)
+                self.assertIn("user-scalable=no", module.VIEWPORT.search(html).group(1))
+                self.assertIn("interactive-widget=resizes-visual", module.VIEWPORT.search(html).group(1))
 
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PortalReleaseMatrixTests(unittest.TestCase):
+    """browser-release.yml packages each portal from the edition it needs."""
+
+    LITE = {"crazygames", "poki", "yandex"}
+
+    def matrix(self):
+        workflow = (ROOT / ".github/workflows/browser-release.yml").read_text()
+        job = workflow.split("\n  portals:\n", 1)[1].split("\n  # Game Jolt is the one portal", 1)[0]
+        return job, dict(re.findall(r"- \{portal: (\w+), edition: '?(-lite|)'?\}", job))
+
+    def test_every_portal_is_packaged_once_from_its_edition(self):
+        job, legs = self.matrix()
+        self.assertEqual(set(legs), set(module.PORTALS))
+        self.assertEqual(job.count("- {portal:"), len(module.PORTALS))
+        for portal, edition in legs.items():
+            with self.subTest(portal=portal):
+                self.assertEqual(edition, "-lite" if portal in self.LITE else "")
+
+    def test_lite_legs_read_the_lite_artifact_and_upload_distinct_names(self):
+        job, _ = self.matrix()
+        self.assertIn("name: browser-release${{ matrix.edition }}", job)
+        self.assertIn("name: ${{ matrix.portal }}${{ matrix.edition }}-upload", job)
+        self.assertIn('zip="upload/glob2-${TAG#v}-$PORTAL$EDITION.zip"', job)
+
+    def test_game_jolt_push_still_reads_the_standard_upload(self):
+        workflow = (ROOT / ".github/workflows/browser-release.yml").read_text()
+        self.assertIn("name: gamejolt-upload", workflow.split("\n  gamejolt:\n", 1)[1])

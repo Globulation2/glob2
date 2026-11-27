@@ -9,7 +9,10 @@ game runtime is byte-identical to the browser release. Only index.html changes:
 the website-root brand assets it shares with the online app are bundled under
 brand/, and the portal policy (window.GLOB2_PORTAL), any SDK configuration, the
 SDK, platforms/web/portal-core.js and the portal's adapter are injected before its
-first script. Gzip sidecars and checksums are dropped because portals serve the
+first script, after a style that keeps taps and long presses from selecting text
+or opening the magnifier and callout and stops the page itself from panning, and
+the viewport meta gains user-scalable=no (CrazyGames and GamePix rules). The policy's `ads` field marks the uploads whose adapter shows the
+portal's ads at natural breaks between matches. Gzip sidecars and checksums are dropped because portals serve the
 files themselves. Packaging fails when the upload exceeds the portal's documented
 size or file-count limit.
 """
@@ -41,6 +44,15 @@ BRAND_LICENSES = {
     "licenses/brand/LICENSE-glob2-design-system.txt": "LICENSE",
 }
 GAME_ID_PLACEHOLDER = "00000000000000000000000000000000"
+# Every portal page: no text selection, magnifier or callout on a long press
+# (CrazyGames technical requirements), no page panning or zoom by touch (GamePix
+# submission guidelines). The game's DOM text fields (shell.html) stay selectable.
+PAGE_STYLE = ("<style>body{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;"
+              "-webkit-touch-callout:none;-ms-touch-action:none;touch-action:none}"
+              "input,textarea{-webkit-user-select:text;-moz-user-select:text;-ms-user-select:text;"
+              "user-select:text;-webkit-touch-callout:default}</style>\n")
+VIEWPORT = re.compile(r"""<meta\s+name=["']viewport["']\s+content=["']([^"']*)["']\s*/?>""")
+NO_ZOOM = ("maximum-scale=1", "user-scalable=no")
 
 
 @dataclass(frozen=True)
@@ -72,6 +84,10 @@ class Portal:
     game_id_env: str = None
     # Pattern every file path in the upload must match, where the portal restricts it.
     file_name: str = None
+    # Whether the upload shows the portal's ads at natural breaks between matches
+    # (portal-core.js createBreaks). True only where the portal requires or expects
+    # ads; our own site, itch, the stores, Game Jolt and Newgrounds never carry them.
+    ads: bool = False
 
     @property
     def adapters(self):
@@ -79,7 +95,8 @@ class Portal:
 
     @property
     def policy(self):
-        return {"name": self.name, "externalLinks": self.external_links, "onlineSignIn": self.online_sign_in}
+        return {"name": self.name, "externalLinks": self.external_links, "onlineSignIn": self.online_sign_in,
+                "ads": self.ads}
 
 
 PORTALS = {portal.name: portal for portal in (
@@ -88,7 +105,7 @@ PORTALS = {portal.name: portal for portal in (
         sdk_url="https://integration.gamepix.com/sdk/v3/gamepix.sdk.js",
         configuration="window.GamePixConfig={lifecycle:'manual'};",
         scripts=("SDK", CORE, "gamepix.js"),
-        external_links=False, online_sign_in=False,
+        external_links=False, online_sign_in=False, ads=True,
         # Not in the published docs; the Testing Toolkit and dashboard reject
         # larger zips.
         max_bytes=200 * MB,
@@ -99,12 +116,14 @@ PORTALS = {portal.name: portal for portal in (
         "crazygames", "CrazyGames",
         sdk_url="https://sdk.crazygames.com/crazygames-sdk-v3.js",
         scripts=("SDK", CORE, "crazygames.js"),
-        external_links=False, online_sign_in=False,
+        external_links=False, online_sign_in=False, ads=True,
         max_bytes=250 * MB, max_files=1500, size_basis="unpacked",
         first_download_bytes=50 * MB,
         sources=("https://docs.crazygames.com/requirements/technical/",
                  "https://docs.crazygames.com/sdk/intro/",
-                 "https://docs.crazygames.com/sdk/game/"),
+                 "https://docs.crazygames.com/sdk/game/",
+                 "https://docs.crazygames.com/sdk/video-ads/",
+                 "https://docs.crazygames.com/requirements/ads/"),
     ),
     Portal(
         "newgrounds", "Newgrounds",
@@ -120,14 +139,16 @@ PORTALS = {portal.name: portal for portal in (
         scripts=(CORE,),
         external_links=True, online_sign_in=True,
         # Game Jolt documents no size or file-count limit for browser builds.
-        sources=("https://gamejolt.com/help/web-builds",),
+        # Game Jolt publishes no browser-build limits (its help docs have no
+        # article on them); a 132 MB, 494-file upload was accepted on 2026-11-26.
+        sources=("https://gamejolt.com/help-docs",),
     ),
     Portal(
         "gamedistribution", "GameDistribution",
         sdk_url="https://html5.api.gamedistribution.com/main.min.js",
         configuration="window.GD_OPTIONS={gameId:%(game_id)s};",
         scripts=(CORE, "gamedistribution.js", "SDK"),
-        external_links=False, online_sign_in=False,
+        external_links=False, online_sign_in=False, ads=True,
         game_id_env="GLOB2_GAMEDISTRIBUTION_GAME_ID",
         # GameDistribution documents no size or file-count limit.
         sources=("https://github.com/GameDistribution/GD-HTML5/wiki/SDK-Implementation",),
@@ -136,21 +157,22 @@ PORTALS = {portal.name: portal for portal in (
         "yandex", "Yandex Games",
         sdk_url="/sdk.js",
         scripts=("SDK", CORE, "yandex.js"),
-        external_links=False, online_sign_in=False,
+        external_links=False, online_sign_in=False, ads=True,
         # Requirement 1.21: at most 100 MB uncompressed; 1.22: one index.html at
         # the root and no spaces or Cyrillic in file names.
         max_bytes=100 * MB, size_basis="unpacked",
         file_name=r"[A-Za-z0-9._/-]+",
         sources=("https://yandex.com/dev/games/doc/en/concepts/requirements",
                  "https://yandex.com/dev/games/doc/en/sdk/sdk-about",
-                 "https://yandex.com/dev/games/doc/en/sdk/sdk-gameready",
-                 "https://yandex.com/dev/games/doc/en/sdk/sdk-environment"),
+                 "https://yandex.com/dev/games/doc/en/sdk/sdk-game-events",
+                 "https://yandex.com/dev/games/doc/en/sdk/sdk-environment",
+                 "https://yandex.com/dev/games/doc/en/sdk/sdk-adv"),
     ),
     Portal(
         "poki", "Poki",
         sdk_url="https://game-cdn.poki.com/scripts/v2/poki-sdk.js",
         scripts=("SDK", CORE, "poki.js"),
-        external_links=False, online_sign_in=False,
+        external_links=False, online_sign_in=False, ads=True,
         # Poki states no limit, only that players leave after ten seconds of
         # loading; the full package is too large, so Poki gets a small build.
         sources=("https://developers.poki.com/guide/sdk-html5",
@@ -201,6 +223,19 @@ def head_scripts(profile, identifier=None):
     return "".join(lines)
 
 
+def without_zoom(html):
+    """index.html with user-scalable=no in its viewport meta, adding one if it has none."""
+    match = VIEWPORT.search(html)
+    if not match:
+        content = ",".join(("width=device-width", "initial-scale=1") + NO_ZOOM)
+        head = html.find("<script")
+        return html[:head] + f'<meta name="viewport" content="{content}">\n' + html[head:]
+    keys = [part.strip() for part in match.group(1).split(",") if part.strip()]
+    keys = [key for key in keys if key.split("=", 1)[0].strip() not in ("maximum-scale", "user-scalable")]
+    content = ",".join(keys + list(NO_ZOOM))
+    return html[:match.start(1)] + content + html[match.end(1):]
+
+
 def rewrite_index(html, profile, identifier=None):
     """Return the portal entry page and the website-root assets it now bundles."""
     needed = {}
@@ -217,10 +252,11 @@ def rewrite_index(html, profile, identifier=None):
     external = EXTERNAL_REFERENCE.search(html)
     if external:
         raise ValueError("index.html loads an external resource: " + html[external.start():external.start() + 60])
-    first_script = html.find("<script")
-    if first_script < 0:
+    if html.find("<script") < 0:
         raise ValueError("index.html has no script to load the portal scripts before")
-    return html[:first_script] + head_scripts(profile, identifier) + html[first_script:], needed
+    html = without_zoom(html)
+    first_script = html.find("<script")
+    return html[:first_script] + PAGE_STYLE + head_scripts(profile, identifier) + html[first_script:], needed
 
 
 def collect(source, design_system, profile, identifier=None):
@@ -302,6 +338,11 @@ def verify(path, profile):
         raise ValueError(f"index.html must set the {profile.title} portal policy first")
     if profile.configuration and profile.configuration.split("%", 1)[0] not in blocks[0][1]:
         raise ValueError(f"The {profile.title} SDK configuration must run before the SDK loads")
+    if PAGE_STYLE not in html:
+        raise ValueError("index.html lacks the portal page style")
+    viewport = VIEWPORT.search(html)
+    if not viewport or not all(key in viewport.group(1).replace(" ", "") for key in NO_ZOOM):
+        raise ValueError("index.html must set user-scalable=no in its viewport meta")
     without_sdk = html.replace(f'src="{profile.sdk_url}"', "") if profile.sdk_url else html
     for pattern in (ROOT_REFERENCE, EXTERNAL_REFERENCE):
         match = pattern.search(without_sdk)

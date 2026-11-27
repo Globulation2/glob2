@@ -126,6 +126,23 @@ TEST_CASE("Packed sprite locations preserve crop pixels and exact video alpha") 
     write(temp.path / "broken.z", compressed.data(), capacity - 1);
     REQUIRE(PackedSpriteFrame::parse(wrongAlpha, location));
     CHECK_FALSE(loader.wait(location.request(loader, wrongAlpha, false)));
+    // A chunk's .za block holds all four frames' planes; frames read their own.
+    std::vector<unsigned char> planes(4 * 1024 * 1024, 255);
+    for (unsigned frame = 0; frame < 4; ++frame)
+        planes[frame * 1024 * 1024 + 900 * 1024 + 900] = Uint8(10 + 20 * frame);
+    capacity = compressBound(planes.size());
+    compressed.resize(capacity);
+    REQUIRE(compress(compressed.data(), &capacity, planes.data(), planes.size()) == Z_OK);
+    write(temp.path / "chunk.za", compressed.data(), capacity);
+    for (unsigned frame : {1u, 3u}) {
+        const std::string shared = "@group.h264,chunk.za,1024,1024,4," + std::to_string(frame) + ",900,900,1,1";
+        REQUIRE(PackedSpriteFrame::parse(shared, location));
+        image = loader.wait(location.request(loader, shared, false));
+        REQUIRE(image);
+        REQUIRE(SDL_ReadSurfacePixel(image->surface, 0, 0, &r, &g, &b, &a));
+        CHECK(a == 10 + 20 * frame);
+    }
+    CHECK_FALSE(PackedSpriteFrame::parse("@group.h264,chunk.zz,1024,1024,4,1", location));
 #endif
 }
 TEST_CASE("directory snapshots share sorted membership and refresh without changing root precedence") {

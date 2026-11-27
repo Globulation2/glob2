@@ -4,6 +4,11 @@
 // before every game script. Yandex requires the interface language to follow
 // environment.i18n.lang, LoadingAPI.ready() once the game is playable, and
 // GameplayAPI.start/stop around gameplay; game_api_pause/resume silence the game.
+// A window without focus counts as a hidden tab (requirements 1.3 and 1.19.3):
+// gameplay stops and audio is silenced until focus returns.
+// Ad breaks: adv.showFullscreenAdv at the logical pauses the game reports
+// (portal-core.js createBreaks, requirement 4.4), never before the first match;
+// Yandex controls the frequency and answers too-frequent calls with onClose(false).
 (() => {
   'use strict';
 
@@ -40,6 +45,20 @@
       },
     });
 
+    const breaks = core.createBreaks(win, {
+      session, audio,
+      show: ad => {
+        const show = sdk?.adv?.showFullscreenAdv;
+        if (typeof show !== 'function') return null;
+        return new Promise(resolve => show.call(sdk.adv, {callbacks: {
+          onOpen: () => ad.started(),
+          onClose: wasShown => resolve(Boolean(wasShown)),
+          onError: () => resolve(false),
+        }}));
+      },
+    });
+    core.installHost(win, breaks);
+
     function connect() {
       if (!win.YaGames?.init) return Promise.resolve(null);
       return Promise.resolve(win.YaGames.init()).then(ysdk => {
@@ -56,7 +75,7 @@
       });
     }
 
-    return { audio, session, connect, get sdk() { return sdk; } };
+    return { audio, session, breaks, connect, get sdk() { return sdk; } };
   }
 
   if (typeof module === 'object' && module.exports) module.exports = { create, applyLanguage };
@@ -64,6 +83,6 @@
     const adapter = create(window);
     window.glob2Yandex = adapter;
     adapter.connect();
-    window.glob2PortalCore.watchShell(window, adapter.session);
+    window.glob2PortalCore.watchShell(window, adapter.session, {focus: true, audio: adapter.audio});
   }
 })();

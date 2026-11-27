@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "MatchPlayReporter.h"
 #include <GUIBase.h>
 #include <EventQueue.h>
 #include <InterfacePresentation.h>
@@ -42,6 +43,12 @@ class GameSessionScreen : public GAGGUI::Screen
     void updateExecutionImpl(Uint32 tick);
     // Ends the session after a failure and shows message, then returns to the menu.
     void stopSession(const std::string &message);
+    // Natural breaks for web portal ads (ApplicationHost::matchBreak). Returns
+    // true while the match must wait for a break before it starts.
+    bool awaitMatchBreak();
+    void matchEnded();
+    // Leaves the session with result, reporting the break to the host first.
+    void leaveMatch(int result);
 	// The colony stays loaded through the match: the results screen paints it
 	// first, and reloading it there would hold back the results' first frame.
 	FrontendScope theme{false, FrontendScope::Colony::Keep};
@@ -57,6 +64,12 @@ class GameSessionScreen : public GAGGUI::Screen
     void cancelScreenInputReceipt();
     void transferInputReceipt();
 	bool started = false, finished = false, resetClock = false;
+	// The host was told this match is starting (and may have run an ad), it is in
+	// the match, and it was told the match ended. Relay matches report nothing:
+	// a break must never delay a lockstep game.
+	bool breakAsked = false, inMatch = false, endReported = false;
+	// Pause and resume of a local match's play for the host (portal gameplay events).
+	MatchPlayReporter play;
 	// Once simulation ends, keep the save dialog alive through durable persistence.
 	bool finishingSession = false;
 #ifdef __EMSCRIPTEN__

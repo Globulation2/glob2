@@ -1,6 +1,8 @@
 """Runtime export selection, identity, cleanup and source preservation."""
 
+import json
 import os
+import re
 from pathlib import Path
 import sys
 import tempfile
@@ -109,10 +111,14 @@ class TerrainEncoderHandoffTests(unittest.TestCase):
                         self.assertEqual(set(candidates), {"lossless", "q75"})
                         self.assertEqual(candidates[selection["winner"]]["stored_bytes"],
                                          min(c["stored_bytes"] for c in candidates.values()))
-                        self.assertEqual(candidates["lossless"]["visible_rgb_sse"], 0)
                         self.assertTrue((output / (family + ".sheet")).is_file())
                         self.assertFalse((output / (family + "0.webp")).exists())
-                        with Image.open(output / (family + "-sheet-0.webp")) as sheet:
+                        # Terrain families pack as sprite groups in every packed export.
+                        packs = sorted((output / "data/gfx").glob("pack-terrain-test-base-*.webp"))
+                        self.assertTrue(packs)
+                        self.assertEqual(audit["native_sprite_selections"]["terrain-test-base"]["curve"],
+                                         {"fallback": "no curve"})
+                        with Image.open(packs[0]) as sheet:
                             self.assertEqual(sheet.convert("RGBA").crop((0, 0, 32, 32))
                                              .getchannel("A").getextrema(), (255, 255))
                     else:
@@ -712,15 +718,204 @@ class SpriteSheetExportTests(unittest.TestCase):
         self.assertFalse((self.output / "data/gfx/unit.sheet").exists())
         self.assertEqual((self.output / "data/gfx/unit5r.png").read_bytes(), (self.gfx / "unit5r.png").read_bytes())
 
-    def test_frames_behind_a_gap_are_rejected(self):
+    def test_a_family_with_a_gap_stays_as_frames(self):
+        # Sprite::load stops at the gap; a sheet would make unit8r appear.
         Image.new("RGBA", (4, 4)).save(self.gfx / "unit8r.png")
+        self.export(lossy=False)
+        self.assertFalse((self.output / "data/gfx/unit.sheet").exists())
+        self.assertTrue((self.output / "data/gfx/unit8r.webp").exists())
         with self.assertRaises(ValueError):
-            self.export()
+            package_assets.sheet_plan(sorted(self.gfx.iterdir()), self.root / "content",
+                                      extra_families={"data/gfx/unit"})
+
+    def test_every_sprite_family_packs_and_short_runs_stay_narrow(self):
+        cursor = self.gfx / "cursor"
+        cursor.mkdir()
+        frames = {}
+        for index in range(3):
+            pixels = bytes((index * 41 + p) % 256 for p in range(5 * 6 * 4))
+            Image.frombytes("RGBA", (5, 6), pixels).save(cursor / f"click{index}r.png")
+            frames[index] = pixels
+        # Too few frame files for a sheet: a family of two, and one with a single frame.
+        Image.new("RGBA", (2, 2)).save(self.gfx / "cloud0.png")
+        Image.new("RGBA", (2, 2)).save(self.gfx / "pair0.png")
+        Image.new("RGBA", (2, 2)).save(self.gfx / "pair1.png")
+        self.export(lossy=False)
+        (line,) = [line.split() for line in (self.output / "data/gfx/cursor/click.sheet")
+                   .read_text().splitlines() if line and not line.startswith("#")]
+        self.assertEqual(line[1:], ["rotated", "0", "3", "5", "6"])
+        with Image.open(self.output / "data/gfx/cursor" / Path(line[0]).name) as image:
+            self.assertEqual(image.size, (15, 6))  # three columns, not SHEET_COLUMNS
+            image = image.convert("RGBA")
+            self.assertEqual({i: image.crop((5 * i, 0, 5 * i + 5, 6)).tobytes() for i in frames}, frames)
+        shipped = {p.name for p in (self.output / "data/gfx").iterdir()}
+        self.assertTrue({"cloud0.webp", "pair0.webp", "pair1.webp"} <= shipped)
+        self.assertFalse(any(name.startswith("click") for name in shipped))
+
+    def test_rgba64_frames_round_like_standalone_images(self):
+        import struct, zlib
+        def png(samples, width, height):
+            def chunk(tag, data):
+                return struct.pack(">I", len(data)) + tag + data + struct.pack(">I", zlib.crc32(tag + data))
+            rows = b"".join(b"\0" + struct.pack(">%dH" % (width * 4), *samples[y * width * 4:(y + 1) * width * 4])
+                            for y in range(height))
+            return (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 16, 6, 0, 0, 0))
+                    + chunk(b"IDAT", zlib.compress(rows)) + chunk(b"IEND", b""))
+        expected = {}
+        for index in range(3):
+            samples = [(index * 9001 + p * 257 + 128) % 65536 for p in range(2 * 2 * 4)]
+            (self.gfx / f"pool0b{index}.png").write_bytes(png(samples, 2, 2))
+            expected[index] = bytes((v + 128) // 257 for v in samples)
+        self.export(lossy=False)
+        (line,) = [line.split() for line in (self.output / "data/gfx/pool0b.sheet").read_text().splitlines()
+                   if line and not line.startswith("#")]
+        with Image.open(self.output / "data/gfx" / line[0]) as image:
+            image = image.convert("RGBA")
+            self.assertEqual({i: image.crop((2 * i, 0, 2 * i + 2, 2)).tobytes() for i in expected}, expected)
+
+    def test_every_optimized_export_packs_terrain_decor(self):
+        # Native and standard web exports pass no edition sheet families; decor still packs.
+        decor = {}
+        for index in range(5):
+            pixels = bytes((index * 53 + p) % 256 for p in range(2 * 2 * 4))
+            Image.frombytes("RGBA", (2, 2), pixels).save(self.gfx / f"terrain-decor{index}.png")
+            decor[index] = pixels
+        for options in (dict(lossy=False), dict(lossy=False, platform="macos", packed_hd_sprites=True)):
+            with self.subTest(**options):
+                audit = self.export(**options)
+                shipped = {p.name for p in (self.output / "data/gfx").iterdir()}
+                self.assertFalse(any(re.fullmatch(r"terrain-decor\d+\.\w+", name) for name in shipped))
+                lines = [line.split() for line in (self.output / "data/gfx/terrain-decor.sheet").read_text().splitlines()
+                         if line and not line.startswith("#")]
+                self.assertEqual([line[1:] for line in lines], [["image", "0", "5", "2", "2"]])
+                with Image.open(next((self.output / "data/gfx").glob(Path(lines[0][0]).stem + ".*"))) as image:
+                    image = image.convert("RGBA")
+                    self.assertEqual({i: image.crop((2 * i, 0, 2 * i + 2, 2)).tobytes() for i in decor}, decor)
+                packed = {f["source"] for item in audit["files"] for f in item.get("packed_from", ())}
+                self.assertTrue({f"data/gfx/terrain-decor{i}.png" for i in decor} <= packed)
+
+    def test_exports_keep_only_the_legacy_terrain_the_menus_draw(self):
+        hd = self.root / "content/data/highres/v1"
+        hd.mkdir(parents=True)
+        rows = ["GLOB2_HIGHRES 1"]
+        for index in (0, 143, 144, 300):
+            Image.new("RGBA", (2, 2), (index % 256, 1, 2, 255)).save(self.gfx / f"terrain{index}.png")
+            Image.new("RGBA", (8, 8), (index % 256, 1, 2, 255)).save(hd / f"terrain{index}.png")
+            rows.append(f"terrain{index} 2 2 4 terrain{index}.png -")
+        self.assertFalse(include_asset("data/highres/v1/terrain-atlas-mip0.png"))
+        self.assertTrue(include_asset("data/highres/v1/terrain-lava0.png"))
+        (hd / "frames.txt").write_text("\n".join(rows) + "\n")
+        for options in (dict(lossy=False), dict(lossy=False, platform="macos", packed_hd_sprites=True)):
+            with self.subTest(**options):
+                audit = self.export(**options)
+                sources = {item["source"] for item in audit["files"]} | {
+                    f["source"] for item in audit["files"] for f in item.get("packed_from", ())}
+                native = {s for s in sources if s.startswith("data/gfx/terrain")}
+                self.assertEqual(native, {"data/gfx/terrain0.png", "data/gfx/terrain143.png"})
+                if not options.get("packed_hd_sprites"):  # packed HD frames are recorded by group
+                    self.assertTrue({"data/highres/v1/terrain0.png", "data/highres/v1/terrain143.png"} <= sources)
+                self.assertFalse(any(re.search(r"terrain(144|300)\b", s) for s in sources))
+                self.assertFalse(any("terrain144" in p.name or "terrain300" in p.name
+                                     for p in self.output.rglob("*")))
+                index = (self.output / "data/highres/v1/frames.txt").read_text()
+                self.assertEqual([line.split()[0] for line in index.splitlines()[1:]], ["terrain0", "terrain143"])
+
+    def test_hd_terrain_decor_packs_into_webp_page_groups(self):
+        from tools import packed_sprite_assets
+        hd = self.root / "content/data/highres/v1"
+        hd.mkdir(parents=True)
+        decor, rows = {}, ["GLOB2_HIGHRES 1"]
+        for index in range(5):
+            size = 8 if index < 3 else 4  # a size change starts a new page run
+            pixels = bytes((index * 29 + p) % 256 for p in range(size * size * 4))
+            Image.frombytes("RGBA", (size, size), pixels).save(hd / f"terrain-decor{index}.png")
+            decor[f"terrain-decor{index}"] = pixels
+            rows.append(f"terrain-decor{index} {size // 4} {size // 4} 4 terrain-decor{index}.png -")
+        (hd / "frames.txt").write_text("\n".join(rows) + "\n")
+        # 8x8 frames are 256 decoded bytes: frames 0-1 fill the first group, 2-4 the second.
+        with patch.object(packed_sprite_assets, "GROUP_PIXEL_BYTES", 512):
+            audit = self.export(lossy=False, platform="macos", packed_hd_sprites=True)
+        self.assertEqual(set(audit["hd_sprite_selections"]), {"terrain-decor-0-base", "terrain-decor-1-base"})
+        shipped = {p.name for p in (self.output / "data/highres/v1").iterdir()}
+        self.assertFalse(any(re.fullmatch(r"terrain-decor\d+\.\w+", name) for name in shipped))
+        header, *lines = (self.output / "data/highres/v1/frames.txt").read_text().splitlines()
+        self.assertEqual(header, "GLOB2_HIGHRES 2")
+        unpacked = {}
+        for line in lines:
+            ident, width, height, scale, base, team = line.split()
+            self.assertEqual(team, "-")
+            page, *geometry = base[1:].split(",")
+            self.assertTrue(page.startswith("pack-terrain-decor-"))
+            x, y, w, h = map(int, geometry)
+            with Image.open(self.output / "data/highres/v1" / page) as image:
+                unpacked[ident] = image.convert("RGBA").crop((x, y, x + w, y + h)).tobytes()
+        self.assertEqual(unpacked, decor)
+
+    def test_other_hd_frames_pool_into_webp_page_groups_by_size(self):
+        hd = self.root / "content/data/highres/v1"
+        hd.mkdir(parents=True)
+        expected, rows = {}, ["GLOB2_HIGHRES 1"]
+        for ident, size, team in (("inn0b0", 8, True), ("mapicon0", 4, False), ("inn0b1", 8, False),
+                                  ("mapicon1", 4, False), ("cloud", 4, False)):
+            layers = []
+            for suffix in ("", "r") if team else ("",):
+                pixels = bytes((len(ident) * 31 + len(suffix) * 7 + p) % 256 for p in range(size * size * 4))
+                Image.frombytes("RGBA", (size, size), pixels).save(hd / f"{ident}{suffix}.png")
+                expected[ident, suffix] = pixels
+                layers.append(f"{ident}{suffix}.png")
+            rows.append(f"{ident} {size // 4} {size // 4} 4 {layers[0]} {layers[1] if team else '-'}")
+        (hd / "frames.txt").write_text("\n".join(rows) + "\n")
+        audit = self.export(lossy=False, platform="macos", packed_hd_sprites=True)
+        self.assertEqual(set(audit["hd_sprite_selections"]), {"sprites-0-base", "sprites-0-team"})
+        self.assertFalse(any(p.suffix == ".webp" and not p.name.startswith("pack-")
+                             for p in (self.output / "data/highres/v1").iterdir()))
+        unpacked = {}
+        for line in (self.output / "data/highres/v1/frames.txt").read_text().splitlines()[1:]:
+            ident, _, _, _, base, team = line.split()
+            for suffix, token in (("", base), ("r", team)):
+                if token == "-":
+                    continue
+                page, *geometry = token[1:].split(",")
+                x, y, w, h = map(int, geometry)
+                with Image.open(self.output / "data/highres/v1" / page) as image:
+                    unpacked[ident, suffix] = image.convert("RGBA").crop((x, y, x + w, y + h)).tobytes()
+        self.assertEqual(unpacked, expected)
 
 
+
+
+def _x264_ffmpeg():
+    import shutil, subprocess
+    ffmpeg = shutil.which("ffmpeg")
+    if not ffmpeg:
+        return None
+    encoders = subprocess.run([ffmpeg, "-hide_banner", "-encoders"], capture_output=True, text=True).stdout
+    return ffmpeg if "libx264rgb" in encoders else None
 
 
 class VerifiedSpritePackTests(unittest.TestCase):
+    @unittest.skipUnless(_x264_ffmpeg(), "needs ffmpeg with libx264rgb")
+    def test_video_alpha_is_one_block_per_chunk(self):
+        import zlib
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            frames = []
+            for index in range(8):  # one unit direction: a chunk of eight
+                image = Image.new("RGBA", (16, 16), (30 * index, 90, 200, 255))
+                image.putpixel((3, 4), (10, 20, 30, 50 + index))  # partial alpha in every frame
+                frames.append((index, image))
+            result = packed.write_video(frames, (16, 16), "clip", dict(material=None, crf=20),
+                                        _x264_ffmpeg(), Path(tmp), None)
+            self.assertNotIn("rejected", result)
+            alpha = [name for name in result["files"] if not name.endswith(".h264")]
+            self.assertEqual(alpha, ["pack-clip-0000.za"])
+            planes = zlib.decompress((Path(tmp) / alpha[0]).read_bytes())
+            self.assertEqual(len(planes), 8 * 16 * 16)
+            for index, image in frames:
+                self.assertEqual(planes[index * 256:(index + 1) * 256], image.getchannel("A").tobytes())
+                self.assertIn(",pack-clip-0000.za,16,16,8,", result["refs"][index])
+
     def test_video_group_exceeding_runtime_memory_is_rejected_before_encoding(self):
         from types import SimpleNamespace
         from tools import packed_sprite_assets as packed
@@ -732,26 +927,60 @@ class VerifiedSpritePackTests(unittest.TestCase):
                                         "oversized", group, "ffmpeg", None, None)
         self.assertEqual(result, {"rejected": "video group exceeds decoded size limit"})
 
-    def test_small_video_above_q75_ceiling_loses_and_warm_cache_never_encodes(self):
+    @staticmethod
+    def frame(colour=(43, 106, 215, 127), size=32):
+        """A frame with texture, so lossy WebP and a fake video have something to lose."""
+        image = Image.new("RGBA", (size, size), colour)
+        for x in range(0, size, 2):
+            for y in range(size):
+                image.putpixel((x, y), (colour[0] // 2, colour[1], 255 - colour[2], colour[3]))
+        return image
+
+    def fake_video(self, decoded):
+        def encode(frames, size, name, spec, ffmpeg, directory, fingerprint):
+            (directory / "tiny.h264").write_bytes(b"1")
+            return dict(files=["tiny.h264"], refs={0: "@tiny.h264,-,32,32,1,0,0,0,32,32"},
+                        decoded={0: decoded}, fingerprints={})
+        return encode
+
+    def test_identical_frames_score_perfectly_with_either_metric(self):
         from tools import packed_sprite_assets as packed
 
+        frames = {0: self.frame(), 1: self.frame((200, 30, 90, 255))}
+        metrics = [m for m in ("ssimulacra2", "ssim") if m == "ssim" or packed.quality_metric() == m]
+        try:
+            import numpy  # noqa: F401
+        except ImportError:
+            self.skipTest("perceptual metrics need numpy")
+        for metric in metrics:
+            with self.subTest(metric=metric):
+                self.assertEqual(packed.perceptual_score(frames, dict(frames), metric),
+                                 100.0 if metric == "ssimulacra2" else 1.0)
+
+    def test_video_that_looks_worse_than_q75_loses_and_warm_cache_never_encodes(self):
+        from tools import packed_sprite_assets as packed
+
+        metric = packed.quality_metric()
+        if metric is None:
+            self.skipTest("perceptual metrics need numpy")
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             source = root / "frame.png"
-            Image.new("RGBA", (8, 8), (43, 106, 215, 127)).save(source)
+            self.frame().save(source)
             group = dict(material=None, crf=26, frames=[(0, "unit0", 5, source)])
+            # Same alpha, texture smeared away: what the perceptual gate exists to catch.
+            smeared = Image.new("RGBA", (32, 32), (65, 106, 128, 127))
 
-            def over_budget(frames, size, name, spec, ffmpeg, directory, fingerprint):
-                (directory / "tiny.h264").write_bytes(b"1")
-                return dict(files=["tiny.h264"], refs={0: "@tiny.h264,-,8,8,1,0,0,0,8,8"},
-                            visible_rgb_sse=100_000_000, fingerprints={})
-
-            with patch.object(packed, "write_video", side_effect=over_budget):
+            with patch.object(packed, "write_video", side_effect=self.fake_video(smeared)):
                 directory, result, cache_hit = packed.encode_group(
                     "test", group, root / "cache", "generic", ("encoder", "hash"), True)
             self.assertFalse(cache_hit)
+            self.assertEqual(result["quality_metric"], metric)
             self.assertNotEqual(result["winner"], "video")
-            self.assertEqual(result["candidates"]["video"]["rejected"], "above Q75 squared RGB error ceiling")
+            video, webp = result["candidates"]["video"], result["candidates"]["q75"]
+            self.assertLess(video[metric], webp[metric])
+            self.assertEqual(video["rejected"], "below Q75 " + {"ssimulacra2": "SSIMULACRA2", "ssim": "SSIM"}[metric])
+            self.assertNotIn("decoded", video)
             self.assertFalse((directory / "tiny.h264").exists())
             with patch.object(packed, "write_webp", side_effect=AssertionError("warm encode")), \
                  patch.object(packed, "write_video", side_effect=AssertionError("warm encode")):
@@ -759,11 +988,222 @@ class VerifiedSpritePackTests(unittest.TestCase):
                     "test", group, root / "cache", "generic", ("encoder", "hash"), True)
             self.assertTrue(cache_hit)
             self.assertEqual(result["winner"], warm["winner"])
-            Image.new("RGBA", (8, 8), (44, 106, 215, 127)).save(source)
-            with patch.object(packed, "write_video", side_effect=over_budget):
+            self.frame((44, 106, 215, 127)).save(source)
+            with patch.object(packed, "write_video", side_effect=self.fake_video(smeared)):
                 _, _, cache_hit = packed.encode_group(
                     "test", group, root / "cache", "generic", ("encoder", "hash"), True)
             self.assertFalse(cache_hit)
+
+    def test_video_that_looks_as_good_as_q75_wins_when_smaller(self):
+        from tools import packed_sprite_assets as packed
+
+        if packed.quality_metric() is None:
+            self.skipTest("perceptual metrics need numpy")
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "frame.png"
+            self.frame().save(source)
+            group = dict(material=None, crf=26, frames=[(0, "unit0", 5, source)])
+            with patch.object(packed, "write_video", side_effect=self.fake_video(self.frame())):
+                _, result, _ = packed.encode_group(
+                    "test", group, root / "cache", "generic", ("encoder", "hash"), True)
+            self.assertEqual(result["winner"], "video")
+            self.assertNotIn("rejected", result["candidates"]["video"])
+
+    def test_video_without_any_perceptual_metric_is_rejected(self):
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "frame.png"
+            self.frame().save(source)
+            group = dict(material=None, crf=26, frames=[(0, "unit0", 5, source)])
+            with patch.object(packed, "quality_metric", return_value=None), \
+                 patch.object(packed, "write_video", side_effect=self.fake_video(self.frame())):
+                _, result, _ = packed.encode_group(
+                    "test", group, root / "cache", "generic", ("encoder", "hash"), True)
+            self.assertNotEqual(result["winner"], "video")
+            self.assertEqual(result["candidates"]["video"]["rejected"], "no perceptual quality metric available")
+            # A later encoder with a metric must not reuse the metric-less selection.
+            try:
+                import numpy  # noqa: F401
+            except ImportError:
+                return
+            with patch.object(packed, "quality_metric", return_value="ssim"), \
+                 patch.object(packed, "write_video", side_effect=self.fake_video(self.frame())):
+                _, _, cache_hit = packed.encode_group(
+                    "test", group, root / "cache", "generic", ("encoder", "hash"), True)
+            self.assertFalse(cache_hit)
+
+
+class SpriteQualityCurveTests(unittest.TestCase):
+    def group(self, root, video=True):
+        source = root / "frame.png"
+        if not source.exists():
+            VerifiedSpritePackTests.frame().save(source)
+        return dict(material=None, crf=26 if video else None, frames=[(0, "unit0", 5, source)])
+
+    def curve(self, group, **overrides):
+        from tools import packed_sprite_assets as packed
+
+        entry = dict(group=packed.group_identity(group), webp_encoder=packed.webp_identity(),
+                     metric=packed.metric_identity(),
+                     h264_encoder=packed.video_identity() if group["crf"] is not None else None,
+                     lossless=[9000, 8000],
+                     # [stored, transfer, score]: WebP is cheaper stored, video cheaper to download.
+                     webp={"60": [1000, 900, 55.0], "80": [1500, 1400, 72.0], "95": [3000, 2900, 90.0]},
+                     h264={"30": [800, 500, 50.0], "24": [1700, 1000, 74.0], "18": [2500, 1600, 85.0]})
+        entry.update(overrides)
+        return entry
+
+    def test_selection_takes_the_cheapest_point_meeting_the_target(self):
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            group = self.group(Path(tmp))
+            curve = self.curve(group)
+            pick = packed.select_point(curve, group, 70, True, True, "macos")
+            self.assertEqual((pick["codec"], pick["setting"], pick["predicted_bytes"]), ("webp", 80, 1500))
+            # Browsers count transfer bytes, where video is cheaper.
+            pick = packed.select_point(curve, group, 70, True, True, "web")
+            self.assertEqual((pick["codec"], pick["setting"]), ("h264", 24.0))
+            # A higher target moves up the curve; an unreachable one falls back to lossless.
+            self.assertEqual(packed.select_point(curve, group, 80, True, True, "macos")["setting"], 18.0)
+            self.assertEqual(packed.select_point(curve, group, 99, True, True, "macos")["codec"], "lossless")
+            # Lossless builds have only the lossless point.
+            self.assertEqual(packed.select_point(curve, group, 50, False, True, "macos")["codec"], "lossless")
+
+    def test_selection_uses_only_the_codecs_a_build_has(self):
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            group = self.group(Path(tmp))
+            curve = self.curve(group)
+            # No sprite encoder (or a CRF-less group): video points are never chosen.
+            pick = packed.select_point(curve, group, 70, True, False, "web")
+            self.assertEqual((pick["codec"], pick["setting"]), ("webp", 80))
+            # A video curve measured with another encoder keeps WebP usable.
+            pick = packed.select_point(self.curve(group, h264_encoder="other"), group, 70, True, True, "web")
+            self.assertEqual(pick["codec"], "webp")
+            self.assertIn("another encoder", pick["note"])
+
+    def test_stale_or_missing_curves_fall_back(self):
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            group = self.group(Path(tmp))
+            self.assertEqual(packed.select_point(None, group, 70, True, True, "macos"), {"fallback": "no curve"})
+            self.assertEqual(packed.select_point(self.curve(group, webp_encoder="old"), group, 70, True, True,
+                                                 "macos")["fallback"], "encoder or metric changed")
+            curve = self.curve(group)
+            VerifiedSpritePackTests.frame((44, 106, 215, 127)).save(group["frames"][0][3])
+            self.assertEqual(packed.select_point(curve, group, 70, True, True, "macos")["fallback"],
+                             "sources changed")
+
+    def test_ties_prefer_lossless_then_webp_then_video(self):
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            group = self.group(Path(tmp))
+            curve = self.curve(group, lossless=[1000, 1000], webp={"80": [1000, 1000, 80.0]},
+                               h264={"24": [1000, 1000, 80.0]})
+            self.assertEqual(packed.select_point(curve, group, 70, True, True, "macos")["codec"], "lossless")
+            curve["lossless"] = [2000, 2000]
+            self.assertEqual(packed.select_point(curve, group, 70, True, True, "macos")["codec"], "webp")
+
+    def test_curve_choice_encodes_only_the_chosen_point_at_its_setting(self):
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            group = self.group(root)
+            calls = []
+            real_webp = packed.write_webp
+
+            def webp(*args, **kwargs):
+                calls.append((args[2], kwargs.get("setting")))
+                return real_webp(*args, **kwargs)
+
+            with patch.object(packed, "write_webp", side_effect=webp), \
+                 patch.object(packed, "write_video", side_effect=AssertionError("video not chosen")):
+                _, result, cache_hit = packed.encode_group(
+                    "test", group, root / "cache", "macos", ("encoder", "hash"), True,
+                    curve=self.curve(group), target=70)
+            self.assertFalse(cache_hit)
+            self.assertEqual(calls, [(packed.images.GROUP_LOSSY_MODE, 80)])
+            self.assertEqual(result["winner"], packed.images.GROUP_LOSSY_MODE)
+            self.assertEqual((result["curve"]["codec"], result["curve"]["setting"], result["curve"]["target"]),
+                             ("webp", 80, 70))
+            self.assertIn("stored_bytes", result["candidates"][result["winner"]])
+            # A different target is a different pack; the same one is a warm cache hit.
+            with patch.object(packed, "write_webp", side_effect=AssertionError("warm encode")):
+                _, _, cache_hit = packed.encode_group(
+                    "test", group, root / "cache", "macos", ("encoder", "hash"), True,
+                    curve=self.curve(group), target=70)
+            self.assertTrue(cache_hit)
+            _, other, _ = packed.encode_group("test", group, root / "cache", "macos", ("encoder", "hash"), True,
+                                              curve=self.curve(group), target=50)
+            self.assertEqual(other["curve"]["setting"], 60)
+
+    def test_rejected_video_point_falls_back_to_the_best_point_without_video(self):
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            group = self.group(root)
+            with patch.object(packed, "write_video", return_value={"rejected": "video group exceeds decoded size limit"}):
+                _, result, _ = packed.encode_group("test", group, root / "cache", "web", ("encoder", "hash"), True,
+                                                   curve=self.curve(group), target=70)
+            self.assertEqual(result["winner"], packed.images.GROUP_LOSSY_MODE)
+            self.assertEqual((result["curve"]["codec"], result["curve"]["setting"]), ("webp", 80))
+            self.assertIn("video point rejected", result["curve"]["note"])
+
+    def test_missing_curve_keeps_the_fixed_candidates_and_says_so(self):
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            group = self.group(root, video=False)
+            _, result, _ = packed.encode_group("test", group, root / "cache", "macos", None, True, target=70)
+            self.assertEqual(result["curve"], {"fallback": "no curve"})
+            self.assertEqual(set(result["candidates"]), {"lossless", packed.images.GROUP_LOSSY_MODE})
+
+    def test_edition_groups_find_their_own_curve(self):
+        from tools import packed_sprite_assets as packed
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            standard = self.group(root)
+            trimmed_source = root / "trimmed.png"
+            VerifiedSpritePackTests.frame((10, 20, 30, 255)).save(trimmed_source)
+            trimmed = dict(standard, frames=[(0, "unit0", 5, trimmed_source)])
+            curves = {"native/test": self.curve(standard), "native/test@lite": self.curve(trimmed)}
+            self.assertIs(packed.find_curve(curves, "native", "test", standard), curves["native/test"])
+            self.assertIs(packed.find_curve(curves, "native", "test", trimmed), curves["native/test@lite"])
+            # A group no curve describes gets the standard one, which selection reports stale.
+            other = dict(standard, frames=[(0, "unit0", 4, trimmed_source)])
+            self.assertIs(packed.find_curve(curves, "native", "test", other), curves["native/test"])
+            self.assertEqual(packed.select_point(packed.find_curve(curves, "native", "test", other), other, 70,
+                                                 True, False, "web")["fallback"], "sources changed")
+
+    def test_platform_targets_default_and_override(self):
+        with patch.dict(package_assets.SPRITE_TARGETS, {"default": 70, "web": 62}, clear=True):
+            self.assertEqual(package_assets.sprite_target_for("macos"), 70)
+            self.assertEqual(package_assets.sprite_target_for("web"), 62)
+
+    def test_curve_file_is_current_for_its_recorded_groups(self):
+        """Committed curves must parse, use the current format and cover the grids."""
+        from tools import packed_sprite_assets as packed
+
+        document = json.loads(packed.CURVE_FILE.read_text())
+        self.assertEqual(document["version"], packed.CURVE_VERSION)
+        self.assertEqual(document["webp_grid"], list(packed.WEBP_GRID))
+        self.assertEqual(document["crf_grid"], [float(c) for c in packed.CRF_GRID])
+        for key, entry in document["groups"].items():
+            self.assertRegex(key, r"^(native|hd)/")
+            self.assertEqual(sorted(entry["webp"], key=int), [str(q) for q in packed.WEBP_GRID])
+            if entry["h264_encoder"]:
+                self.assertEqual(sorted(entry["h264"], key=float), [packed.crf_key(c) for c in packed.CRF_GRID])
 
 
 if __name__ == "__main__":

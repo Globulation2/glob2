@@ -558,6 +558,10 @@ public:
 	/// The pause (or resume) the player asked for; a pause they have none left of
 	/// is not sent, and says so.
 	void requestPause(bool pause);
+	// Whether play is stopped for the player: paused, or the in-game menu or a
+	// dialog opened from it (save, load, options, confirmations) is open. The
+	// side panels (alliances, objectives, statistics) and chat are part of play.
+	bool playStopped() const;
 	/// Whether the menus offer Pause to this player now.
 	bool pauseAvailable() const;
 private:
@@ -979,6 +983,10 @@ private:
 	} inGameMenu;
 	// The dialog receiving input, if any: the menu, the chat composer or the history.
 	Glob2UI::InGameDialog *activeDialog() const;
+	// A pause or unpause asked for by requestPause and not yet applied, and when
+	// (SDL ticks): playStopped follows the request until the order lands.
+	std::optional<bool> requestedPause;
+	Uint64 requestedPauseAt = 0;
 	// Show a dialog as the in-game menu of kind `menu`; it replaces any open one.
 	void openDialog(InGameMenu menu, std::unique_ptr<Glob2UI::InGameDialog> dialog);
 	void closeDialog();

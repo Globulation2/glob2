@@ -1392,7 +1392,9 @@ numeric choices remain readable. The gameplay action strip retains its
 game-specific sprites and labels, which distinguish construction, flags and team tools.
 
 Original SVGs and a source manifest live in `content-src/icons/tabler/`, pinned to
-Tabler v3.48.0. Generated PNG sources live in `content/data/gui/`; the distributed MIT notice is
+Tabler v3.48.0. Generated PNG sources live in `content/data/gui/`, one sprite per raster
+size: `tabler-<pixels>-<i>.png` is manifest icon `i`, and `tabler.txt` lists the icon
+names in frame order for `uiIcon`. Exports pack each size into a sprite sheet. The distributed MIT notice is
 `content/data/tabler-icons-license.txt`. Ordinary builds convert the committed sources to
 WebP in the runtime tree and need no SVG renderer or network access. To regenerate with the pinned development tool:
 
@@ -1465,7 +1467,11 @@ Finger pans on `scroll`, `listView` and `textEditor` (the nodes whose
 Nodes keep an `int` offset that is always clamped, which is what
 `NodeState::scroll` persists, plus a transient `overscroll()` displacement that
 is painted and hit-tested but never saved; `scrollTo()` sets the clamped offset
-and `setOverscroll()` the stretch. Mouse drags and conventional wheel events never coast or stretch. `Host::animating()` reports a coast or bounce
+and `setOverscroll()` the stretch. Mouse drags and conventional wheel events never coast or stretch. A wheel
+event scrolls by its steps times the theme's control height; fractions of a step
+(browsers send 100 CSS pixels as one step, so touchpads deliver hundredths) carry
+over in the host until they make a whole pixel, while the region and direction
+stay the same. `Host::animating()` reports a coast or bounce
 in progress and `UIScreen::executionDelay` frames every 16 ms meanwhile.
 The three preference sliders under Settings › Controls (and the in-game
 Options dialog on touch) tune the feel through `GAGCore::scrollTuning()`; 0

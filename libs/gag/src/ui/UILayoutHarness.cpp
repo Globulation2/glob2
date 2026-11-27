@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Layout-engine checks without fonts or a window: fixed-advance text, recording canvas.
 #include "Glob2Test.h"
+#include <cstdlib>
 #include <string>
 #include <stdexcept>
 #include <functional>
@@ -124,7 +125,7 @@ struct Fixture
 		}
 		finger(SDL_EVENT_FINGER_UP, {from.x, from.y - 80});
 	}
-	void wheel(int y, Point at)
+	void wheel(float y, Point at)
 	{
 		SDL_Event motion{};
 		motion.type = SDL_EVENT_MOUSE_MOTION;
@@ -502,6 +503,39 @@ void checkFooterFolds()
 	auto &flow = *fold->children[0];
 	require(flow.children[1]->bounds.y == flow.children[0]->bounds.bottom() + theme.gap,
 			"oversized actions fold into the flow below the body");
+}
+
+// Browser and touchpad wheels send fractions of a step (SDL's browser backend
+// makes 100 CSS pixels one step). Each fraction counts: the whole pixels scroll
+// at once and the rest carries over, until the direction or the region changes.
+void checkFractionalWheel()
+{
+	auto build = [](const Presentation &)
+	{
+		std::vector<Element> rows;
+		for (int i = 0; i < 20; ++i)
+			rows.push_back(height(30, label("row " + std::to_string(i))));
+		return scroll("list", column(rows, {0}));
+	};
+	Fixture f(build, 200, 100);
+	auto *sc = f.host.find("list");
+	const int control = f.host.metrics().control;
+	require(control > 0, "the theme has a control height");
+	// A 1-pixel touchpad event is a hundredth of a step: less than a pixel each.
+	const float tiny = -1.0f / float(control * 2);
+	f.wheel(tiny, {50, 50});
+	require(sc->scrollOffset() == 0, "half a pixel does not move yet");
+	f.wheel(tiny, {50, 50});
+	require(sc->scrollOffset() == 1, "two half pixels scroll one pixel");
+	for (int i = 0; i < 100; ++i)
+		f.wheel(-0.04f, {50, 50});
+	const int expected = 1 + int(100 * 0.04f * control + 0.001f);
+	require(std::abs(sc->scrollOffset() - expected) <= 1, "a hundred 4% steps scroll four control heights");
+	// Reversing drops the remainder of the other direction.
+	const int before = sc->scrollOffset();
+	f.wheel(0.5f, {50, 50});
+	require(sc->scrollOffset() == before - control / 2 || sc->scrollOffset() == before - (control + 1) / 2,
+			"a half step back scrolls half a control height back");
 }
 
 void checkScrollClampAndWheel()
@@ -1372,6 +1406,7 @@ TEST_SUITE("UILayout")
 	TEST_CASE("wrap columns") { checkWrapColumns(); }
 	TEST_CASE("footer folds") { checkFooterFolds(); }
 	TEST_CASE("scroll clamp and wheel") { checkScrollClampAndWheel(); }
+	TEST_CASE("fractional wheel steps accumulate") { checkFractionalWheel(); }
 	TEST_CASE("tap versus pan") { checkTapVersusPan(); }
 	TEST_CASE("native gestures retain fractions ownership and survive rebuilds")
 	{

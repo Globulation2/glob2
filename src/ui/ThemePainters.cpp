@@ -2,6 +2,7 @@
 #include "ui/ThemePainters.h"
 #include <ui/Canvas.h>
 #include <GraphicContext.h>
+#include <Toolkit.h>
 #include <array>
 #include <cmath>
 #include <memory>
@@ -28,12 +29,14 @@ decltype(Theme::buttonPainter) spriteButtonPainter(const std::string &sprite)
 		{
 			s.attempted = true;
 			s.ready = true;
+			// Read through the sprite: exports pack its frames into a sheet.
+			GAGCore::Sprite *frames = GAGCore::Toolkit::getSprite(sprite);
 			for (int i = 0; i < 6; ++i)
 			{
 				// Blended RGBA copies draw alike in the software and OpenGL renderers.
-				GAGCore::DrawableSurface source(1, 1);
-				SDL_Surface *pixels = source.loadImage(sprite + std::to_string(i) + ".webp")
-										  ? SDL_ConvertSurface(source.getSDLSurface(), SDL_PIXELFORMAT_RGBA32)
+				GAGCore::DrawableSurface *source = frames ? frames->nativeFrame(i) : nullptr;
+				SDL_Surface *pixels = source && source->getSDLSurface()
+										  ? SDL_ConvertSurface(source->getSDLSurface(), SDL_PIXELFORMAT_RGBA32)
 										  : nullptr;
 				s.ready = pixels && s.ready;
 				if (!pixels)

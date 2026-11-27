@@ -101,6 +101,8 @@ public:
     const std::string& getInitializationDiagnostic() const { return initializationDiagnostic; }
     int tutorialNavigation() const { return gui.tutorialDestination; }
     bool takeSettingsRequest() { return gui.takeSettingsRequest(); }
+    // Play stopped for the player: paused or in the in-game menu (GameGUI::playStopped).
+    bool playStopped() const { return gui.playStopped(); }
     void suspendInput() { cancelInputDispatches(); gui.suspendInput(); }
     void viewportResized(int oldWidth, int oldHeight, int width, int height) { gui.viewportResized(oldWidth, oldHeight, width, height); }
 

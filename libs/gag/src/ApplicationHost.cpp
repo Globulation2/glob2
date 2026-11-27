@@ -211,6 +211,9 @@ std::string portalDescription()
 	const char *value = SDL_getenv("GLOB2_PORTAL");
 	return value ? value : "";
 }
+// Only browser portal packages show ads.
+bool matchBreak(MatchBreak) { return false; }
+bool hostHeld() { return false; }
 bool openUrl(const std::string &url, UrlPurpose purpose)
 {
 	if (url.rfind("https://", 0) != 0 && url.rfind("http://", 0) != 0)

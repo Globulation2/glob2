@@ -47,6 +47,8 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 	}
     void setTutorial(bool value) { tutorial=value; }
 	void setHiveMind(bool value) { hiveMind = value; }
+	/// Whether the list goes in two columns: frames shorter than 640 points.
+	static bool compactLayout(const Glob2UI::Presentation &presentation);
 
   protected:
 	void onEscape() override { finish(RETURN_GAME); }
