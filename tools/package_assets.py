@@ -379,7 +379,7 @@ def encoder_python(require_brotli=False, require_quality=False):
             )
         probe = subprocess.run(probe_command, capture_output=True)
         if probe.returncode:
-            subprocess.run(
+            install = subprocess.run(
                 [
                     str(python),
                     "-m",
@@ -390,9 +390,17 @@ def encoder_python(require_brotli=False, require_quality=False):
                     str(ROOT / "tools/asset-requirements.txt"),
                 ]
                 + (["-r", str(ROOT / "tools/asset-quality-requirements.txt")] if require_quality else []),
-                check=True,
                 stdout=sys.stderr,
             )
+            if install.returncode and require_quality:
+                # The quality gate is optional: without it video falls back to SSIM or is
+                # rejected (packed_sprite_assets.quality_metric), never failing the export.
+                print("warning: could not install tools/asset-quality-requirements.txt for "
+                      f"Python {sys.version_info.major}.{sys.version_info.minor}; exporting "
+                      "without the SSIMULACRA2 sprite gate", file=sys.stderr)
+                return encoder_python(require_brotli)
+            if install.returncode:
+                raise subprocess.CalledProcessError(install.returncode, install.args)
         subprocess.run(probe_command, check=True)
     from dev_store import hold
 
