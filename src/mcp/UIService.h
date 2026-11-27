@@ -44,6 +44,11 @@ class UIService : public ExecutionContext
 	std::uint64_t nextCapture = 0;
 	bool coordinatesConverted = false;
 	Json inspection(const Json &arguments);
+	// What each control meant at the revisions inspections have seen (by surface and key):
+	// ui_act accepts a stale revision whose meaning (label, value, actions, options,
+	// enabled) is what the control means now, as when only its visibility flickered.
+	std::map<std::string, std::map<std::uint64_t, Json>> meanings;
+	void rememberMeanings(const Json &surface);
 	bool addInspection(Result &result, const Json &arguments = Json::object());
 	// What a consumed ui_act returns: the inspection, trimmed by result_subtree, or only
 	// the screen name with inspect=false.

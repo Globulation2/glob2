@@ -232,10 +232,18 @@ TEST_CASE("MCP/argument errors name the field and the broken rule")
 	CHECK(range.find("out of range") != std::string::npos);
 	CHECK(range.find(">= 0, got -1") != std::string::npos);
 	// Range errors state the range and the value sent.
-	const auto workers = message("game_building", {{"token", "t"}, {"id", 1}, {"generation", 1}, {"workers", 300}});
-	CHECK(workers.find("game_building.workers: out of range: 0..255, got 300") != std::string::npos);
+	const auto ratio = message("game_building", {{"token", "t"}, {"id", 1}, {"generation", 1},
+											   {"production", {{"workers", 17}}}});
+	CHECK(ratio.find("game_building.production.workers: out of range: 0..16, got 17") != std::string::npos);
 	const auto fraction = message("game_building", {{"token", "t"}, {"id", 1}, {"generation", 1}, {"workers", 2.5}});
-	CHECK(fraction.find("expected integer 0..255, got 2.5") != std::string::npos);
+	CHECK(fraction.find("expected integer >= 0, got 2.5") != std::string::npos);
+	// Counts above what the game takes are capped by the tool and reported, not refused here.
+	CHECK(message("game_building", {{"token", "t"}, {"id", 1}, {"generation", 1}, {"workers", 300}}) == "accepted");
+	CHECK(message("game_place", {{"token", "t"}, {"building", "warflag"}, {"x", 1}, {"y", 1}, {"workers", 60}}) ==
+		  "accepted");
+	CHECK(message("game_world", {{"resource_radius", 100}}) == "accepted");
+	CHECK(message("game_wait", {{"until", {"economy", "inn_low_food", "site_stalled"}}, {"compact", true}}) ==
+		  "accepted");
 	const auto priority = message("game_building", {{"token", "t"}, {"id", 1}, {"generation", 1}, {"priority", "urgent"}});
 	CHECK(priority.find("\"low\"") != std::string::npos);
 	CHECK(priority.find("got \"urgent\"") != std::string::npos);
@@ -2150,6 +2158,74 @@ TEST_CASE("MCP/semantic consumption independent waits and target revisions [netw
 	CHECK(granted.data["inspection_error"] == "Fixture inspection failed after consumption");
 	CHECK(granted.data.contains("token"));
 	CHECK(execute("ui_renew_control", {{"token", granted.data["token"]}}).error.empty());
+}
+TEST_CASE("MCP/a stale revision acts when the control means the same and names what changed otherwise [network]")
+{
+	glob2test::HeadlessGlobals globals(
+		{.display = true, .width = 640, .height = 480, .beforeLoad = [](GlobalContainer &g) {
+			 g.settings.rendererBackend = GAGCore::RendererBackend::Software;
+		 }});
+	GAGGUI::ui::Theme theme;
+	GAGGUI::ui::FixedTextMeasurer measurer(8, 16);
+	int count = 0;
+	bool enabled = true;
+	GAGGUI::ui::Host host(theme,
+						  [&](const auto &)
+						  {
+							  GAGGUI::ui::ButtonOptions options;
+							  options.enabled = enabled;
+							  return GAGGUI::ui::button("act", "Act " + std::to_string(count), [&] { ++count; host.invalidate(); }, options);
+						  });
+	host.setMeasurer(&measurer);
+	host.setPresentation(GAGGUI::ui::Presentation::forSurface(640, 480));
+	host.layoutIfNeeded();
+	UIService service(*globalContainer->gfx);
+	service.inspectionHosts = [&] { return std::vector<GAGGUI::ui::Host *>{&host}; };
+	service.inspectionScreen = [] { return std::string("fixture"); };
+	service.configure(true, unusedLoopbackPort());
+	waitForListener(service, ListenerState::Running);
+	auto execute = [&](const std::string &tool, Json args)
+	{
+		auto request = service.submit(tool, std::move(args), "test");
+		auto future = request->completion.get_future();
+		std::vector<SDL_Event> events;
+		service.pump(events, true);
+		for (const auto &event : events)
+			host.event(event);
+		service.afterDispatch();
+		return completed(future);
+	};
+	const auto token = execute("ui_acquire_control", {}).data.at("token");
+	const auto revisionNow = [&]
+	{ return execute("ui_inspect", {{"token", token}}).data["inspection"]["surfaces"][0]["controls"][0]; };
+	const auto first = revisionNow();
+	// The control flickers (disabled for a moment, as while a preview loads) and comes back
+	// as it was: its revision moved on, its meaning did not.
+	enabled = false;
+	host.invalidate();
+	revisionNow();
+	enabled = true;
+	host.invalidate();
+	const auto back = revisionNow();
+	REQUIRE(back["revision"] != first["revision"]);
+	auto action = Json{{"surface", execute("ui_inspect", {{"token", token}}).data["inspection"]["surfaces"][0]["instance"]},
+					   {"key", "act"},
+					   {"revision", first["revision"]},
+					   {"action", "activate"},
+					   {"token", token}};
+	const auto performed = execute("ui_act", action);
+	INFO(performed.error);
+	CHECK(performed.error.empty());
+	CHECK(count == 1);
+	REQUIRE(performed.data.contains("revision_refreshed"));
+	CHECK(performed.data.at("revision_refreshed").at("from") == first["revision"]);
+	CHECK(performed.data.at("revision_refreshed").at("to") == back["revision"]);
+	// A real change (the label now reads Act 1) is still refused, saying what changed.
+	action["revision"] = back["revision"];
+	const auto refused = execute("ui_act", action);
+	CHECK(refused.error.find("Stale control") == 0);
+	CHECK(refused.error.find("changed since: label \"Act 0\" -> \"Act 1\"") != std::string::npos);
+	CHECK(count == 1);
 }
 TEST_CASE("MCP/value controls list options, clicks name keys and acts wait for screens [network]")
 {

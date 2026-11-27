@@ -229,6 +229,8 @@ void registerUITools(ToolRegistry &registry)
 	const Json key = {{"type", "string"}, {"maxLength", 64}};
 	const Json button = enumeration({"left", "middle", "right"});
 	const Json action = enumeration({"press", "down", "up"});
+	static constexpr const char *CompactWorld =
+		"Leave out session, team, prestige, hud_sampled, unchanged loss counters (and a ticks wait's note)";
 	static constexpr const char *CompactDescription =
 		"Default true: skip layout containers and default fields; false for the full tree";
 	auto add = [&](const char *name, const char *description, Json properties, Json required,
@@ -525,9 +527,10 @@ void registerUITools(ToolRegistry &registry)
 									  "or with full"},
 					  {"items", enumeration({"status", "alerts", "losses", "units", "forces", "buildings", "placements", "colony", "others", "counts", "resources", "resources_scope", "resources_note", "placeable", "map", "view", "note"})}}},
 		 {"since_tick", {{"type", "integer"}, {"minimum", 0}}},
-		 {"limit", {{"type", "integer"}, {"minimum", 1}, {"maximum", 500}, {"default", 100}}},
-		 {"resource_radius", {{"type", "integer"}, {"minimum", 1}, {"maximum", 64}, {"default", 24}}},
-		 {"resource_fields", {{"type", "integer"}, {"minimum", 1}, {"maximum", 10}, {"default", 3}}},
+		 {"limit", {{"type", "integer"}, {"minimum", 1}, {"default", 100}, {"description", "At most 500 (capped)"}}},
+		 {"resource_radius", {{"type", "integer"}, {"minimum", 1}, {"default", 24}, {"description", "At most 64 (capped)"}}},
+		 {"resource_fields", {{"type", "integer"}, {"minimum", 1}, {"default", 3}, {"description", "At most 10 (capped)"}}},
+		 {"compact", {{"type", "boolean"}, {"default", false}, {"description", CompactWorld}}},
 		 {"area", object({{"x", {{"type", "integer"}, {"minimum", 0}}},
 						  {"y", {{"type", "integer"}, {"minimum", 0}}},
 						  {"width", {{"type", "integer"}, {"minimum", 1}}},
@@ -559,9 +562,9 @@ void registerUITools(ToolRegistry &registry)
 		 {"x", {{"type", "integer"}, {"minimum", 0}}},
 		 {"y", {{"type", "integer"}, {"minimum", 0}}},
 		 {"near", {{"type", "boolean"}, {"default", false}}},
-		 {"search_radius", {{"type", "integer"}, {"minimum", 1}, {"maximum", 32}, {"default", 12}}},
-		 {"workers", {{"type", "integer"}, {"minimum", 0}, {"maximum", 20}}},
-		 {"builders", {{"type", "integer"}, {"minimum", 0}, {"maximum", 20}}},
+		 {"search_radius", {{"type", "integer"}, {"minimum", 1}, {"default", 12}, {"description", "At most 32 (capped)"}}},
+		 {"workers", {{"type", "integer"}, {"minimum", 0}}},
+		 {"builders", {{"type", "integer"}, {"minimum", 0}}},
 		 {"range", {{"type", "integer"}, {"minimum", 0}, {"maximum", 32767}}},
 		 {"priority", enumeration({"low", "medium", "high"})},
 		 {"session", {{"type", "string"}, {"maxLength", 128}}}},
@@ -573,16 +576,16 @@ void registerUITools(ToolRegistry &registry)
 		{{"token", token},
 		 {"id", {{"type", "integer"}, {"minimum", 0}}},
 		 {"generation", {{"type", "integer"}, {"minimum", 0}}},
-		 {"workers", {{"type", "integer"}, {"minimum", 0}, {"maximum", 255}}},
+		 {"workers", {{"type", "integer"}, {"minimum", 0}}},
 		 {"priority", enumeration({"low", "medium", "high"})},
 		 {"production", object({{"workers", {{"type", "integer"}, {"minimum", 0}, {"maximum", 16}}},
 								{"explorers", {{"type", "integer"}, {"minimum", 0}, {"maximum", 16}}},
 								{"warriors", {{"type", "integer"}, {"minimum", 0}, {"maximum", 16}}}})},
-		 {"range", {{"type", "integer"}, {"minimum", 0}, {"maximum", 64}}},
+		 {"range", {{"type", "integer"}, {"minimum", 0}}},
 		 {"action", enumeration({"upgrade", "repair", "cancel_upgrade", "destroy", "cancel_destroy", "move"})},
 		 {"x", {{"type", "integer"}, {"minimum", 0}}},
 		 {"y", {{"type", "integer"}, {"minimum", 0}}},
-		 {"builders", {{"type", "integer"}, {"minimum", 0}, {"maximum", 255}}},
+		 {"builders", {{"type", "integer"}, {"minimum", 0}}},
 		 {"session", {{"type", "string"}, {"maxLength", 128}}}},
 		{"token", "id", "generation"}, false);
 	add("game_zone",
@@ -628,17 +631,20 @@ void registerUITools(ToolRegistry &registry)
 	add("game_wait",
 		"Let game time pass until ticks elapse (30/s), an until event hits your colony "
 		"(default: attack, building_lost, conversion_lost, enemy_sighted, enemy_building_gone, "
-		"hive_failure, hive_wake) or timeout_ms; returns why, plus game_world alerts since. "
-		"resume lets a paused match run. Use instead of polling. No token.",
+		"hive_failure, hive_wake; economy is opt-in) or timeout_ms; returns why, plus game_world "
+		"alerts since. resume lets a paused match run. Use instead of polling. No token.",
 		{{"ticks", {{"type", "integer"}, {"minimum", 1}, {"maximum", 9000}, {"default", 300}}},
 		 {"until", {{"type", "array"},
-					{"maxItems", 14},
+					{"maxItems", 20},
 					{"items", enumeration({"attack", "attack_buildings", "attack_warriors", "building_attacked",
 										   "unit_attacked", "building_completed", "building_lost", "conversion",
 										   "conversion_lost", "conversion_gained", "enemy_sighted",
-										   "enemy_building_gone", "hive_failure", "hive_wake"})}}},
+										   "enemy_building_gone", "hive_failure", "hive_wake", "economy",
+										   "inn_low_food", "resource_field_low", "site_stalled",
+										   "flag_unstaffed"})}}},
 		 {"timeout_ms", {{"type", "integer"}, {"minimum", 100}, {"maximum", 30000}}},
 		 {"resume", {{"type", "boolean"}, {"default", false}}},
+		 {"compact", {{"type", "boolean"}, {"default", false}, {"description", CompactWorld}}},
 		 {"include", {{"type", "array"},
 					  {"description", "Sections of the embedded game_world alerts reply to keep (as game_world include)"},
 					  {"items", enumeration({"status", "alerts", "losses", "units", "forces", "buildings", "placements", "colony", "others", "counts", "resources", "resources_scope", "resources_note", "placeable", "map", "view", "note"})}}}},

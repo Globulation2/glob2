@@ -6,6 +6,7 @@
 #include <deque>
 #include <map>
 #include <set>
+#include <tuple>
 #include <future>
 #include <functional>
 class GameGUI;
@@ -140,6 +141,8 @@ class LocalCommander : public CommanderView
 		bool paused = false;
 		int subject = -1;	// unit_attacked: the unit type attacked (0 worker, 1 explorer, 2 warrior)
 		std::string what; // building events: the building's family name
+		int building = -1; // economy alerts: the colony's own building (id and generation)
+		unsigned generation = 0;
 	};
 	std::deque<Logged> eventLog;
 	struct Annotation
@@ -155,6 +158,42 @@ class LocalCommander : public CommanderView
 	unsigned destroyedTotal = 0, demolishedTotal = 0;
 	void record(Logged entry);
 	void recordFeed();
+	// Own-colony economy alerts (inn_low_food, resource_field_low, site_stalled,
+	// flag_unstaffed): checked every few seconds once game_world memory runs, from the
+	// colony's own buildings and units and the resource tiles it has seen. Each is
+	// reported once per spell (per building, or per 16x16 block of a resource) and
+	// re-armed only once the condition has cleared.
+	struct InnWatch
+	{
+		unsigned generation = 0, lastAlert = 0;
+		bool armed = true;
+	};
+	struct SiteWatch
+	{
+		unsigned generation = 0, since = 0;
+		long long progress = -1;
+		bool alerted = false;
+	};
+	struct FlagWatch
+	{
+		unsigned generation = 0, since = 0;
+		bool unstaffed = false, alerted = false;
+	};
+	struct FieldWatch
+	{
+		int peak = 0, peakTiles = 0;
+		bool alerted = false;
+	};
+	std::map<int, InnWatch> innWatch;
+	std::map<int, SiteWatch> siteWatch;
+	std::map<int, FlagWatch> flagWatch;
+	std::map<std::tuple<int, int, int>, FieldWatch> fieldWatch; // resource, block x, block y
+	unsigned nextEconomyTick = 0;
+	void checkEconomy();
+	// compact game_wait / game_world replies: what rarely changes is left out, and loss
+	// counters only when they changed since the previous compact reply.
+	Json lastCompactLosses;
+	void compactReply(Json &reply);
 	// Alerts after a tick: grouped by kind, message and area, newest first.
 	Json groupedAlerts(unsigned since, unsigned now, std::size_t cap) const;
 	// Recent game_place requests, followed up in game_world until resolved.

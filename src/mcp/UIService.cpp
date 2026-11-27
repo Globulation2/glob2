@@ -64,7 +64,92 @@ SDL_Keymod modifier(SDL_Scancode s)
 		return SDL_KMOD_NONE;
 	}
 }
+// What acting on a control does, without geometry, visibility, focus or revision: two
+// revisions with the same meaning differ only in where the control was or whether it
+// was on screen, which the hidden and blocked checks judge on their own.
+Json controlMeaning(const Json &item)
+{
+	Json meaning = Json::object();
+	for (const char *field : {"role", "label", "value", "enabled", "selected", "actions", "options", "disabled_options",
+							  "value_label", "min", "max", "step"})
+		if (item.contains(field))
+			meaning[field] = item[field];
+	return meaning;
+}
+std::string meaningKey(const Json &surface, const std::string &key)
+{
+	return surface.dump() + "|" + key;
+}
+// The control with key on the surface with that instance, or null.
+const Json *controlOn(const Json &snapshot, const Json &instance, const std::string &key)
+{
+	const Json *found = nullptr;
+	auto search = [&](auto &&self, const Json &items) -> void
+	{
+		for (const auto &item : items)
+		{
+			if (found)
+				return;
+			if (item.value("key", "") == key)
+				found = &item;
+			else if (item.contains("children"))
+				self(self, item["children"]);
+		}
+	};
+	if (!snapshot.contains("surfaces"))
+		return nullptr;
+	for (const auto &surface : snapshot["surfaces"]) // a reference: found points into it
+		if (!found && surface.value("instance", Json()) == instance && surface.contains("controls"))
+			search(search, surface["controls"]);
+	return found;
+}
+// The fields whose values differ between two meanings, as "label \"A\" -> \"B\"".
+std::string meaningChanges(const Json &before, const Json &after)
+{
+	std::string text;
+	std::set<std::string> fields;
+	for (const auto &[field, value] : before.items())
+		fields.insert(field);
+	for (const auto &[field, value] : after.items())
+		fields.insert(field);
+	for (const auto &field : fields)
+	{
+		const Json was = before.value(field, Json()), now = after.value(field, Json());
+		if (was == now)
+			continue;
+		auto shown = [](const Json &v)
+		{
+			auto s = v.is_null() ? std::string("none") : v.dump();
+			return s.size() > 60 ? s.substr(0, 57) + "..." : s;
+		};
+		text += (text.empty() ? "" : ", ") + field + " " + shown(was) + " -> " + shown(now);
+	}
+	return text;
+}
 } // namespace
+void UIService::rememberMeanings(const Json &surface)
+{
+	if (meanings.size() > 4096)
+		meanings.clear();
+	auto walk = [&](auto &&self, const Json &items) -> void
+	{
+		for (const auto &item : items)
+		{
+			const auto key = item.value("key", std::string());
+			if (!key.empty() && item.contains("revision"))
+			{
+				auto &byRevision = meanings[meaningKey(surface["instance"], key)];
+				byRevision.try_emplace(item["revision"].get<std::uint64_t>(), controlMeaning(item));
+				while (byRevision.size() > 16)
+					byRevision.erase(byRevision.begin());
+			}
+			if (item.contains("children"))
+				self(self, item["children"]);
+		}
+	};
+	if (surface.contains("controls"))
+		walk(walk, surface["controls"]);
+}
 UIService *service()
 {
 	return current;
@@ -394,6 +479,8 @@ void UIService::addActResult(Result &result, const Json &arguments)
 	// A large screen such as the landscape picker is tens of kilobytes; these trim it.
 	if (arguments.contains("_point"))
 		result.data["point"] = arguments["_point"];
+	if (arguments.contains("_revision_refreshed"))
+		result.data["revision_refreshed"] = arguments["_revision_refreshed"];
 	if (arguments.value("inspect", true))
 	{
 		Json filter = {{"compact", arguments.value("compact", true)}};
@@ -661,6 +748,7 @@ Json UIService::inspection(const Json &arguments)
 				continue;
 			host->layoutIfNeeded();
 			auto surface = Json::parse(GAGGUI::ui::inspectionJSON(host->inspect()));
+			rememberMeanings(surface);
 			if (arguments.contains("surface") && surface["instance"] != arguments["surface"])
 				continue;
 			if (arguments.contains("subtree"))
@@ -1315,9 +1403,38 @@ void UIService::advanceRequest(std::vector<SDL_Event> &events, bool available)
 	if (tool == "ui_act")
 	{
 		Json resolved;
-		const auto problem = actionTargetProblem(inspection({{"compact", false}}), a, &resolved);
+		const auto snapshot = inspection({{"compact", false}});
+		// A stale revision whose meaning is the control's meaning now (only its geometry or
+		// visibility changed in between, as while previews load) acts on the current
+		// revision, and the reply says so; any other change is named in the refusal.
+		std::string changes;
+		if (a.contains("revision") && a.contains("key") && a["key"].is_string())
+			if (const auto *item = controlOn(snapshot, a["surface"], a["key"].get<std::string>());
+				item && item->contains("revision") && (*item)["revision"] != a["revision"] &&
+				a["revision"].is_number_integer() && a["revision"].get<std::int64_t>() >= 0)
+			{
+				const auto known = meanings.find(meaningKey(a["surface"], a["key"].get<std::string>()));
+				const Json *before = nullptr;
+				if (known != meanings.end())
+					if (const auto at = known->second.find(a["revision"].get<std::uint64_t>()); at != known->second.end())
+						before = &at->second;
+				if (before)
+				{
+					const auto now = controlMeaning(*item);
+					if (*before == now)
+					{
+						a["_revision_refreshed"] = {{"from", a["revision"]}, {"to", (*item)["revision"]}};
+						a["revision"] = (*item)["revision"];
+					}
+					else
+						changes = meaningChanges(*before, now);
+				}
+			}
+		auto problem = actionTargetProblem(snapshot, a, &resolved);
 		if (!problem.empty())
 		{
+			if (!changes.empty() && problem.rfind("Stale control", 0) == 0)
+				problem += " (changed since: " + changes + ")";
 			finish(problem);
 			return;
 		}

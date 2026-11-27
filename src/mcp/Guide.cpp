@@ -210,8 +210,16 @@ slow down for a fight, speed up while waiting. It works only in local matches wi
 network players.
 game_wait lets time pass instead of polling: up to ticks, or until something in until
 happens to your colony (attack, building_lost, conversion, enemy_sighted, hive_failure,
-building_completed), the result is announced, or timeout_ms. It answers why it stopped
-with game_world's detail alerts since it began.
+building_completed, or economy: inn_low_food, resource_field_low, site_stalled,
+flag_unstaffed), the result is announced, or timeout_ms. It answers why it stopped
+with game_world's detail alerts since it began; include adds sections (buildings,
+resources) and compact: true leaves out what rarely changes. Repeated attacks in one
+area are one skirmish: it wakes you once, again only after 20 s of quiet there.
+Economy alerts (also in game_world) come from your own colony only: an Inn nearly out
+of wheat with hungry units around it, a site with no progress for a minute, a flag
+nobody has taken for 30 s, a field you saw fall to a quarter of its size. Numbers above
+a tool's limit are capped and reported under settings, and building names may be
+written loosely ("exploration flag").
 game_alliance sets allied and shared map, food and market vision with one other team,
 as the Alliance dialog does. Shared food vision lets that team's hungry units see your
 Inns: they join you when your Inn offers more happiness than theirs. To concede, open
@@ -278,8 +286,10 @@ tools cover the common reads and orders without a script; use Hive for full reco
 	 R"(available=false: the window is minimized, hidden or showing an OS dialog; ask the
 person to restore it, then call ui_status again.
 "Another client controls the game": wait, or ask the person to press Revoke control.
-Stale control: the revision or surface changed; ui_inspect again and use the new
-values. "has no actions": a canvas (game/map, the minimap) or a label; use ui_click
+Stale control: the control's meaning changed (the error says what); ui_inspect
+again and use the new values. A revision that only moved while the control kept its
+meaning (a preview loading, a list scrolling) is accepted, and the reply's
+revision_refreshed says so. "has no actions": a canvas (game/map, the minimap) or a label; use ui_click
 with its key or coordinates instead of ui_act. Hidden control: scroll its container (ui_act scroll) first. Blocked control:
 a dialog or overlay covers it; close or answer the dialog. A map canvas reports
 blocked when any panel overlaps part of it; clicks on its uncovered part still work.
