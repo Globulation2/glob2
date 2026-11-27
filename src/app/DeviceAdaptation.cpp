@@ -112,10 +112,22 @@ Controller::Controller(Hooks h, bool levels, HitchWindow::Config config)
 {
 }
 
+void Controller::matchStarted(std::uint64_t nowNs)
+{
+	hitches.restart(nowNs);
+	if (std::exchange(held, false) && hooks.holdArtwork)
+		hooks.holdArtwork(false);
+	// Room refused during loading or the last match says nothing about this one.
+	if (hooks.artworkShortOfRoom)
+		hooks.artworkShortOfRoom();
+}
+
 bool Controller::stepDown(Event event)
 {
 	if (stepped || !hooks.artworkAutoOn || !hooks.artworkAutoOn())
 		return false;
+	if (std::exchange(held, false) && hooks.holdArtwork)
+		hooks.holdArtwork(false);
 	if (hooks.stepDownArtwork)
 		hooks.stepDownArtwork();
 	stepped = notice = true;
@@ -145,7 +157,15 @@ void Controller::presented(std::uint64_t nowNs)
 	if (stepped || !hitches.presented(nowNs))
 		return;
 	Event event{Cause::Hitches};
-	event.steppedDown = stepDown(event);
+	// Measured over the window that just filled (it restarts on a trigger).
+	const bool shortOfRoom = hooks.artworkShortOfRoom && hooks.artworkShortOfRoom();
+	if (!held && shortOfRoom && hooks.holdArtwork && hooks.artworkAutoOn && hooks.artworkAutoOn())
+	{
+		hooks.holdArtwork(true);
+		held = event.held = true;
+	}
+	else
+		event.steppedDown = stepDown(event);
 	if (hooks.record)
 		hooks.record(event);
 }

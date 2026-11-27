@@ -10,6 +10,7 @@
 #include <SDL3/SDL_log.h>
 #include <ApplicationHost.h>
 #include <iostream>
+#include <utility>
 
 namespace DeviceAdaptation
 {
@@ -46,13 +47,14 @@ void record(const Event &event)
 {
 	const char *cause = event.cause == Cause::Hitches ? "hitches" : signalName(event.signal);
 	if (event.steppedDown || event.cause == Cause::Hitches || event.trim != Trim::None)
-		SDL_Log("Device adaptation: cause=%s trim=%s stepped_down=%d", cause, trimName(event.trim),
-				int(event.steppedDown));
+		SDL_Log("Device adaptation: cause=%s trim=%s stepped_down=%d held=%d", cause, trimName(event.trim),
+				int(event.steppedDown), int(event.held));
 	auto &perf = PerformanceTelemetry::collector();
 	if (perf.output)
 		std::cout << "GLOB2_DEVICE_ADAPTATION session=" << perf.session
 				  << " elapsed_ns=" << (perf.started ? perf.clock() - perf.started : 0) << " cause=" << cause
 				  << " trim=" << trimName(event.trim) << " stepped_down=" << int(event.steppedDown)
+				  << " held=" << int(event.held)
 				  << " artwork=" << (globalContainer ? Settings::adaptiveChoiceName(
 														  globalContainer->settings.highResolutionArtworkChoice)
 													  : "auto")
@@ -77,6 +79,15 @@ Controller &session()
 					settings.resolveAdaptiveDefaults();
 					releaseHighResolutionIfRequested();
 				},
+			.artworkShortOfRoom =
+				[] {
+					// On-demand renderers only; legacy GL keeps whole sheets.
+					static std::size_t seen = 0;
+					const auto counts = GAGCore::Sprite::highResolutionDrawCounts();
+					const auto now = counts.room + counts.evicted;
+					return std::exchange(seen, now) != now;
+				},
+			.holdArtwork = [](bool held) { GAGCore::Sprite::holdHighResolutionAdmission(held); },
 			.trim = trimPresentationMemory,
 			.record = record,
 		},

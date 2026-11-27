@@ -1332,9 +1332,16 @@ namespace GAGCore
         //! drawn in HD, or native because the frame's block had not loaded, the
         //! frame's first draws this frame were spent, or the device had no room
         //! left for retained HD frames (GraphicContext::deviceHighResolutionRoom),
-        //! and the blocks evicted to make that room (evictIdleHighResolution).
-        struct HighResolutionDrawCounts { std::size_t drawn = 0, notLoaded = 0, firstDrawCap = 0, room = 0, evicted = 0; };
+        //! and the blocks evicted to make that room (evictIdleHighResolution);
+        //! `held` counts frames left native by holdHighResolutionAdmission.
+        struct HighResolutionDrawCounts { std::size_t drawn = 0, notLoaded = 0, firstDrawCap = 0, room = 0, evicted = 0, held = 0; };
         static HighResolutionDrawCounts highResolutionDrawCounts();
+        //! While held, on-demand renderers keep drawing the HD frames they
+        //! already uploaded and draw every other frame native: nothing more
+        //! loads, uploads or is evicted. The session's response to hitches
+        //! while HD frames were short of device room, before HD goes off.
+        static void holdHighResolutionAdmission(bool held);
+        static bool highResolutionAdmissionHolding();
         //! Levels the current band leaves out: 0 for full detail, up to 2.
         static unsigned highResolutionDetailSkip();
         //! How long the view must want less detail before the band drops (tests shorten it).

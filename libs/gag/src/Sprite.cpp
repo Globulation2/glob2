@@ -187,6 +187,9 @@ namespace GAGCore
     static bool highResolutionRoomShort = false;
     static constexpr std::uint64_t HighResolutionIdleFrames = 120;
     static constexpr unsigned HighResolutionEvictionsPerFrame = 16;
+    // holdHighResolutionAdmission: frames already uploaded keep drawing in HD,
+    // new ones stay native, and nothing more loads or is evicted.
+    static bool highResolutionAdmissionHeld = false;
     // On-demand backends sample only uncolored base layers (baseFrame), so
     // they neither decode nor retain team-colour layers, unless the portable
     // renderer draws that sprite's HD frames.
@@ -876,6 +879,13 @@ namespace GAGCore
         return _gc->rendererCapabilities().textureMipmaps || reducedHighResolutionWanted(name);
     }
     Sprite::HighResolutionDrawCounts Sprite::highResolutionDrawCounts() { return drawCounts; }
+    void Sprite::holdHighResolutionAdmission(bool held)
+    {
+        highResolutionAdmissionHeld = held;
+        // Blocks already queued would upload frames that cannot draw.
+        if (held) portableWaitingBlocks.clear();
+    }
+    bool Sprite::highResolutionAdmissionHolding() { return highResolutionAdmissionHeld; }
     void Sprite::evictIdleHighResolution()
     {
         if (!_gc || _gc->deviceHighResolutionRoom()) return;
@@ -1302,7 +1312,8 @@ namespace GAGCore
         const auto want = [&] {
             ++drawCounts.notLoaded;
             const unsigned block = index / HighResolutionBlock;
-            if (!deferred && !portableBlocks[this].contains(block)) portableWaitingBlocks[this].insert(block);
+            if (!deferred && !highResolutionAdmissionHeld && !portableBlocks[this].contains(block))
+                portableWaitingBlocks[this].insert(block);
             return false;
         };
         // Every layer the native frame has, in HD; a frame may be team layer only.
@@ -1321,6 +1332,7 @@ namespace GAGCore
             return true;
         };
         if (portableDrawnFrames.contains(key)) return noteDrawn();
+        if (highResolutionAdmissionHeld) { ++drawCounts.held; return false; }
         if (portableFirstDraws >= PortableFirstDrawsPerFrame) { ++drawCounts.firstDrawCap; return false; }
         // A device keeps an uploaded HD frame as the only copy of its pixels,
         // within 3/8 of its General budget; past that, new frames stay native

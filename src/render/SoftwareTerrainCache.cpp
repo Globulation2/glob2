@@ -348,7 +348,7 @@ SamplingPlan samplingPlan(const SceneMap &map, int left, int top, int right, int
 						  bool stableView = false)
 {
 	const bool gpu = globalContainer->gfx->rendererCapabilities().accelerated;
-	const auto budget = gpu ? SoftwareTerrainCache::GPUBudget : SoftwareTerrainCache::Budget;
+	const auto budget = gpu ? SoftwareTerrainCache::GPUBudget() : SoftwareTerrainCache::Budget;
 	// The view's pages at a composition scale, whose page size depends on it.
 	// A map smaller than one page repeats within that canonical page. All map
 	// dimensions are powers of two, so its period divides the page dimensions.
@@ -364,7 +364,7 @@ SamplingPlan samplingPlan(const SceneMap &map, int left, int top, int right, int
 		return std::uint64_t(std::min(columns, std::max(1, map.getW() / tiles))) *
 			std::min(rows, std::max(1, map.getH() / tiles));
 	};
-	const auto cacheBudget = gpu ? SoftwareTerrainCache::GPUCacheBudget : budget;
+	const auto cacheBudget = gpu ? SoftwareTerrainCache::GPUCacheBudget() : budget;
 	const int limit = globalContainer->gfx->maximumTextureSize();
 	const auto fitsDevice = [&](int resolution)
 	{ return limit <= 0 || SoftwareTerrainCache::pageTilesAt(resolution) * 32 * resolution <= limit; };
@@ -778,6 +778,13 @@ void SoftwareTerrainCache::cancelPending()
     dropKeyframes();
 }
 
+std::size_t SoftwareTerrainCache::GPUBudget() { return GAGCore::platformRenderBudget().terrain.resident; }
+std::size_t SoftwareTerrainCache::GPUCacheBudget()
+{
+	// The cache is at least the density allowance it selects pages by.
+	return std::max(GAGCore::platformRenderBudget().terrain.cache, GPUBudget());
+}
+
 int SoftwareTerrainCache::capturePixelsPerCell(int width, int height)
 {
 	const auto count =
@@ -786,7 +793,7 @@ int SoftwareTerrainCache::capturePixelsPerCell(int width, int height)
 	while (divisor < NativeTilePixels)
 	{
 		const auto cpu = pageStorage(1, false, divisor), total = pageStorage(1, true, divisor);
-		if (count * total <= GPUCacheBudget && count * (total - cpu) <= GPUBudget)
+		if (count * total <= GPUCacheBudget() && count * (total - cpu) <= GPUBudget())
 			break;
 		divisor *= 2;
 	}
@@ -2519,7 +2526,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 						 portableRenderer() ? "portable-sdl" : nextGPU ? "accelerated" : "software", wanted,
 						 plan.resolution, plan.downsample, pageTilesAt(plan.resolution),
 						 static_cast<unsigned long long>(plan.pages), pageStorage(plan.resolution, nextGPU, plan.downsample),
-						 std::size_t(nextGPU ? GPUBudget : Budget), *plan.coarser ? plan.coarser : "-");
+						 std::size_t(nextGPU ? GPUBudget() : Budget), *plan.coarser ? plan.coarser : "-");
 		}
 	}
 	pageTiles = pageTilesAt(nextResolution);
@@ -2566,7 +2573,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
     const auto resident = device ? device->telemetry().resourceBytes : 0;
     const auto compositionReserve = coverageReserve + colorReserve + uploadReserveBytes;
     const bool composeOnDevice = device && device->capabilities().terrainComposition &&
-        coverageReserve <= GPUMaskBudget && compositionReserve <= deviceBudget &&
+        coverageReserve <= GPUMaskBudget() && compositionReserve <= deviceBudget &&
         colorReserve <= platformBudget.classLimit(GAGCore::TextureDescriptor::BudgetClass::TerrainPage) &&
         resident <= deviceBudget-compositionReserve;
     const auto generation = gfx.getGLContextGeneration();
@@ -2612,7 +2619,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 		{
 			const std::uint64_t idle = before ? before : frame;
 			while (bytes() + needed > budget ||
-                (gpu && residentTextureBytes()+textureNeeded > GPUBudget))
+                (gpu && residentTextureBytes()+textureNeeded > GPUBudget()))
 			{
 				auto oldest = chunks.end();
 				// Retire idle renderer storage before discarding any composed pixels.
@@ -4137,7 +4144,7 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 				const auto needed = pageStorage(copy.chunk->scale, true, copy.chunk->downsample) -
 					pageStorage(copy.chunk->scale, false, copy.chunk->downsample);
 				bool room = true;
-				while (bytes() + needed > GPUCacheBudget || residentTextureBytes() + needed > GPUBudget)
+				while (bytes() + needed > GPUCacheBudget() || residentTextureBytes() + needed > GPUBudget())
 				{
 					Chunk *oldest = nullptr;
 					for (auto &chunk : chunks)
@@ -4154,7 +4161,7 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 					// Pages this frame does not draw that hold only pixels, such as
 					// HD pages parked before a zoom out, go before a drawn texture.
 					auto idle = chunks.end();
-					if (bytes() + needed > GPUCacheBudget)
+					if (bytes() + needed > GPUCacheBudget())
 						for (auto it = chunks.begin(); it != chunks.end(); ++it)
 							if ((*it)->used != frame && !(*it)->image &&
 								(idle == chunks.end() || (*it)->used < (*idle)->used))
@@ -4270,11 +4277,11 @@ void SoftwareTerrainCache::draw(GAGCore::GraphicContext &target)
 }
 bool SoftwareTerrainCache::releaseMasks(std::size_t needed)
 {
-	std::size_t budget = gpu ? GPUMaskBudget : MaskBudget;
+	std::size_t budget = gpu ? GPUMaskBudget() : MaskBudget;
 #if !defined(GLOB2_MOBILE) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
 	// Reduced desktop views cover many more mixed animated cells. Keep their
 	// native coverage too; otherwise every phase samples those contours again.
-	if (gpu && downsample > 1) budget = GPUBudget;
+	if (gpu && downsample > 1) budget = GPUBudget();
 #endif
 	if (needed > budget)
 		return false;

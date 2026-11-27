@@ -4,6 +4,7 @@
 #include "TerrainArtBorder.h"
 #include "render/scene/SceneMap.h"
 #include <PresentationWork.h>
+#include <RenderResources.h>
 #include <algorithm>
 #include <map>
 #include <stdexcept>
@@ -18,12 +19,10 @@ constexpr int TilePixels = DirectTerrainData::TilePixels;
 constexpr int MaskPixels = DirectTerrainData::MaskPixels;
 // Map tables, native art and a native coverage mask for every mixed cell. A
 // 512x512 map holds tens of thousands of mixed cells; desktop GPUs keep them
-// all resident, so large maps never fall back to the page compositor.
-#if defined(GLOB2_MOBILE) || defined(__ANDROID__) || defined(__EMSCRIPTEN__)
-constexpr std::size_t TextureBudget = 64u * 1024 * 1024;
-#else
-constexpr std::size_t TextureBudget = 256u * 1024 * 1024;
-#endif
+// all resident, so large maps never fall back to the page compositor
+// (GAGCore::RenderBudget::Terrain::direct: 256 MiB on desktop, 64 MiB on
+// phones and in the browser).
+std::size_t textureBudget() { return GAGCore::platformRenderBudget().terrain.direct; }
 
 template<class Texel, int Pixels = TilePixels>
 struct Atlas
@@ -182,7 +181,7 @@ DirectTerrainData::Build DirectTerrainData::begin(SceneMap map, std::shared_ptr<
         data.cells.resize(count);
         data.masks.resize(count);
         data.calm.resize(count);
-        if (count * (sizeof(Record) + sizeof(Uint16) + sizeof(Pixel) + sizeof(Uint8)) > TextureBudget)
+        if (count * (sizeof(Record) + sizeof(Uint16) + sizeof(Pixel) + sizeof(Uint8)) > textureBudget())
             throw std::runtime_error("Direct terrain map tables exceed the texture budget");
         for (int y = 0; y < height; ++y)
             for (int x = 0; x < width; ++x)
@@ -199,9 +198,9 @@ DirectTerrainData::Build DirectTerrainData::begin(SceneMap map, std::shared_ptr<
     const auto mapBytes = count * (sizeof(Record) + sizeof(Uint16) + sizeof(Pixel) + sizeof(Uint8));
     const auto initialAtlasBytes = (art.pixels.size() + coverage.pixels.size()) * sizeof(Pixel) +
         edges.pixels.size() * sizeof(Uint16);
-    if (mapBytes > TextureBudget - initialAtlasBytes)
+    if (mapBytes > textureBudget() - initialAtlasBytes)
         throw std::runtime_error("Direct terrain map tables exceed the texture budget");
-    auto remainingBytes = TextureBudget - initialAtlasBytes - mapBytes;
+    auto remainingBytes = textureBudget() - initialAtlasBytes - mapBytes;
     // Keep this stride in sync with variantRecord() in the shader.
     constexpr unsigned VariantRecords = DirectTerrainData::VariantRecords;
     std::vector<Record> variants(VariantRecords); // Slot zero represents an unused palette entry.

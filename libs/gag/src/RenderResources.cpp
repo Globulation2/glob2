@@ -7,6 +7,7 @@
 #include <array>
 #include <cmath>
 #include <cstring>
+#include <mutex>
 #include <atomic>
 #include <algorithm>
 #include <cstdlib>
@@ -22,23 +23,85 @@ constexpr std::size_t MiB = 1024 * 1024;
 // General keeps every HD unit animation resident: on-demand devices retain
 // uploaded HD frames within 3/8 of the class (deviceHighResolutionRoom), and
 // the 3,680 HD unit frames take about 77 MiB block-compressed with mips.
-RenderBudget RenderBudget::desktop() { return {512 * MiB, {256 * MiB, 64 * MiB, 128 * MiB, 32 * MiB}, 64 * MiB}; }
+// The browser keeps CPU copies in a Wasm heap of fixed maximum, so its
+// terrain caches stay at the phone sizes.
+RenderBudget RenderBudget::desktop()
+{
+#ifdef __EMSCRIPTEN__
+    constexpr Terrain terrain{128 * MiB, 128 * MiB, 64 * MiB};
+#else
+    constexpr Terrain terrain{128 * MiB, 256 * MiB, 256 * MiB};
+#endif
+    return {512 * MiB, {256 * MiB, 64 * MiB, 128 * MiB, 32 * MiB}, 64 * MiB, terrain};
+}
 // Phones share one memory pool between the CPU and GPU, and Android starts
 // killing a backgrounded game long before desktop limits. Each class keeps at
 // least twice its largest single texture: the 22.4 MiB authored HD terrain
 // block (General), two 16 MiB skin atlas pages, a 16-page window of 1024x1024
 // terrain pages (TerrainPage, pages draw downsampled there) and half the
 // desktop coverage masks. The total covers those classes plus transient work.
-RenderBudget RenderBudget::mobile() { return {160 * MiB, {48 * MiB, 32 * MiB, 64 * MiB, 16 * MiB}, 32 * MiB}; }
+RenderBudget RenderBudget::mobile()
+{
+    return {160 * MiB, {48 * MiB, 32 * MiB, 64 * MiB, 16 * MiB}, 32 * MiB, {128 * MiB, 128 * MiB, 64 * MiB}};
+}
+// A 16 GB desktop, or Apple silicon, whose GPU shares that memory: a 2x view
+// zoomed out over a large map wants more terrain pages and HD frames resident
+// than desktop() holds, and evicting them costs a recomposition or an upload
+// each time they return. Half the 512 MiB General class (192 MiB) is room for
+// every HD unit, building and decor frame at once.
+RenderBudget RenderBudget::desktopLarge()
+{
+    return {1024 * MiB, {512 * MiB, 64 * MiB, 256 * MiB, 64 * MiB}, 96 * MiB, {256 * MiB, 512 * MiB, 384 * MiB}};
+}
+// A phone with about 8 GB (the High tier). mobile()'s 48 MiB General class
+// leaves 18 MiB for HD frames, less than a busy view draws, so they evict and
+// upload again every few seconds. 128 MiB leaves 48 MiB; terrain pages and
+// direct terrain double. The total stays far below what Android lets a
+// foreground game on such a phone hold.
+RenderBudget RenderBudget::mobileLarge()
+{
+    return {320 * MiB, {128 * MiB, 32 * MiB, 96 * MiB, 32 * MiB}, 48 * MiB, {128 * MiB, 192 * MiB, 128 * MiB}};
+}
+std::optional<RenderBudget> RenderBudget::named(std::string_view name)
+{
+    if (name == "desktop") return desktop();
+    if (name == "mobile") return mobile();
+    if (name == "desktop-large") return desktopLarge();
+    if (name == "mobile-large") return mobileLarge();
+    return std::nullopt;
+}
+const char *RenderBudget::name(const RenderBudget &budget)
+{
+    for (const char *candidate : {"desktop", "mobile", "desktop-large", "mobile-large"})
+        if (named(candidate) == budget) return candidate;
+    return "custom";
+}
+namespace {
+struct PlatformBudgetChoice {
+    std::mutex mutex;
+    std::optional<RenderBudget> selected;
+    bool used = false;
+};
+PlatformBudgetChoice &platformBudgetChoice() { static PlatformBudgetChoice choice; return choice; }
+}
+bool selectPlatformRenderBudget(const RenderBudget &budget)
+{
+    auto &choice = platformBudgetChoice();
+    std::lock_guard lock(choice.mutex);
+    if (choice.used || choice.selected) return false;
+    choice.selected = budget;
+    return true;
+}
 const RenderBudget &platformRenderBudget()
 {
     static const RenderBudget chosen = [] {
-        RenderBudget budget = platformIsMobile() ? RenderBudget::mobile() : RenderBudget::desktop();
-        if (const char *value = std::getenv("GLOB2_RENDER_BUDGET")) {
-            const std::string_view name(value);
-            if (name == "mobile") budget = RenderBudget::mobile();
-            if (name == "desktop") budget = RenderBudget::desktop();
-        }
+        auto &choice = platformBudgetChoice();
+        std::lock_guard lock(choice.mutex);
+        choice.used = true;
+        RenderBudget budget = choice.selected ? *choice.selected
+            : platformIsMobile() ? RenderBudget::mobile() : RenderBudget::desktop();
+        if (const char *value = std::getenv("GLOB2_RENDER_BUDGET"))
+            if (const auto named = RenderBudget::named(value)) budget = *named;
         // GLOB2_RENDER_BUDGET_TOTAL_MIB replaces the total alone, for tests
         // and memory experiments that need the combined limit to bind.
         if (const char *total = std::getenv("GLOB2_RENDER_BUDGET_TOTAL_MIB"))
@@ -64,7 +127,7 @@ RenderResources::RenderResources(const RenderBudget &limits, std::size_t count)
         throw std::invalid_argument("Too many texture slots");
 }
 RenderResources::RenderResources(std::size_t bytes, std::size_t count)
-    : RenderResources(RenderBudget{bytes, platformRenderBudget().classes, platformRenderBudget().geometry}, count) {}
+    : RenderResources(RenderBudget{bytes, platformRenderBudget().classes, platformRenderBudget().geometry, platformRenderBudget().terrain}, count) {}
 TextureSnapshot RenderResources::copy(TextureHandle handle, SDL_Surface *source,
                                       std::uint64_t revision, TextureDescriptor descriptor, std::span<const RenderMipLevel> mipLevels)
 {

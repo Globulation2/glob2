@@ -6,6 +6,7 @@
 #include "DeviceProfile.h"
 
 #include <string>
+#include <utility>
 #include <vector>
 
 using namespace DeviceAdaptation;
@@ -25,12 +26,15 @@ struct Fake
 {
 	bool autoOn = true;
 	int stepDowns = 0;
+	bool shortOfRoom = false, held = false;
 	std::vector<Trim> trims;
 	std::vector<Event> events;
 	Controller controller(bool androidLevels, HitchWindow::Config config = HitchWindow::defaults())
 	{
 		return Controller({.artworkAutoOn = [this] { return autoOn; },
 						   .stepDownArtwork = [this] { ++stepDowns; autoOn = false; },
+						   .artworkShortOfRoom = [this] { return std::exchange(shortOfRoom, false); },
+						   .holdArtwork = [this](bool h) { held = h; },
 						   .trim = [this](Trim t) { trims.push_back(t); },
 						   .record = [this](const Event &e) { events.push_back(e); }},
 						  androidLevels, config);
@@ -153,6 +157,28 @@ TEST_SUITE("DeviceProfile")
 		auto integrated = inputs(16384);
 		integrated.vramSource = "integrated";
 		CHECK(DeviceProfile::classify(integrated).highResolutionArtwork().on);
+	}
+
+	TEST_CASE("the large render budget goes to High phones and 16 GB desktops, never a browser")
+	{
+		CHECK(DeviceProfile::classify(inputs(7680, 8, true)).largeRenderBudget().on); // an 8 GB phone
+		CHECK_FALSE(DeviceProfile::classify(inputs(5632, 8, true)).largeRenderBudget().on); // 6 GB: Mid
+		CHECK_FALSE(DeviceProfile::classify(inputs(2048, 8, true)).largeRenderBudget().on);
+		CHECK_FALSE(DeviceProfile::classify(inputs(0, 8, true)).largeRenderBudget().on); // unknown: Mid
+		CHECK(DeviceProfile::classify(inputs(15800)).largeRenderBudget().on); // a "16 GB" desktop
+		CHECK(DeviceProfile::classify(inputs(16384)).largeRenderBudget().value == 16384);
+		CHECK_FALSE(DeviceProfile::classify(inputs(8192)).largeRenderBudget().on); // High, but 8 GB
+		CHECK_FALSE(DeviceProfile::classify(inputs(0)).largeRenderBudget().on);
+		CHECK_FALSE(DeviceProfile::classify(inputs(32768, 2)).largeRenderBudget().on); // Low by cores
+		auto browser = inputs(16384);
+		browser.browser = true;
+		CHECK_FALSE(DeviceProfile::classify(browser).largeRenderBudget().on);
+		// An override decides: a small device can measure the large budget, and back.
+		CHECK(DeviceProfile::classify(inputs(2048, 8, true), DeviceTier::High).largeRenderBudget().on);
+		CHECK(DeviceProfile::classify(inputs(4096), DeviceTier::High).largeRenderBudget().on);
+		CHECK_FALSE(DeviceProfile::classify(inputs(32768), DeviceTier::Mid).largeRenderBudget().on);
+		CHECK(DeviceProfile::classify(inputs(7680, 8, true)).telemetryFields().find("render_budget=large") != std::string::npos);
+		CHECK(DeviceProfile::classify(inputs(2048, 8, true)).telemetryFields().find("render_budget=standard") != std::string::npos);
 	}
 
 	TEST_CASE("telemetry fields record the tier and every input")
@@ -278,6 +304,76 @@ TEST_SUITE("DeviceAdaptation")
 		REQUIRE(fake.events.size() == 1);
 		CHECK(fake.events[0].cause == Cause::Hitches);
 		CHECK(controller.stepDownEvent()->cause == Cause::Hitches);
+	}
+
+	TEST_CASE("hitches while HD frames are short of room hold HD admission, then step down")
+	{
+		const HitchWindow::Config config{50 * ms, 1000 * ms, 0, 1000 * ms, 3};
+		Fake fake;
+		auto controller = fake.controller(false, config);
+		std::uint64_t now = 1000 * ms;
+		controller.matchStarted(now);
+		controller.presented(now); // the first frame after a restart has no interval
+		const auto hitch = [&] {
+			for (int i = 0; i < 3; ++i)
+				controller.presented(now += 60 * ms);
+		};
+		fake.shortOfRoom = true;
+		hitch();
+		CHECK(fake.held);
+		CHECK(controller.holding());
+		CHECK(fake.stepDowns == 0);
+		CHECK_FALSE(controller.takeNotice()); // nothing for the player to hear about
+		REQUIRE(fake.events.size() == 1);
+		CHECK(fake.events[0].held);
+		CHECK_FALSE(fake.events[0].steppedDown);
+		// Hitches go on while held: the room was not the cause, so HD goes.
+		fake.shortOfRoom = true;
+		hitch();
+		CHECK(fake.stepDowns == 1);
+		CHECK_FALSE(fake.held); // resumed: the step-down releases every HD frame
+		REQUIRE(fake.events.size() == 2);
+		CHECK(fake.events[1].steppedDown);
+		CHECK_FALSE(fake.events[1].held);
+	}
+
+	TEST_CASE("a hold lasts the match; hitches with room to spare step down at once")
+	{
+		const HitchWindow::Config config{50 * ms, 1000 * ms, 0, 1000 * ms, 3};
+		Fake fake;
+		auto controller = fake.controller(false, config);
+		std::uint64_t now = 1000 * ms;
+		const auto hitch = [&] {
+			for (int i = 0; i < 3; ++i)
+				controller.presented(now += 60 * ms);
+		};
+		controller.matchStarted(now);
+		controller.presented(now); // the first frame after a restart has no interval
+		fake.shortOfRoom = true;
+		hitch();
+		REQUIRE(fake.held);
+		controller.matchStarted(now += 5000 * ms);
+		controller.presented(now);
+		CHECK_FALSE(fake.held);
+		CHECK_FALSE(controller.holding());
+		// Room refused before the match started (loading) does not count.
+		fake.shortOfRoom = true;
+		controller.matchStarted(now += 5000 * ms);
+		controller.presented(now);
+		hitch();
+		CHECK_FALSE(fake.held);
+		CHECK(fake.stepDowns == 1);
+		// An explicit artwork choice is never held either.
+		Fake chosen;
+		chosen.autoOn = false;
+		auto explicitChoice = chosen.controller(false, config);
+		explicitChoice.matchStarted(now);
+		explicitChoice.presented(now);
+		chosen.shortOfRoom = true;
+		for (int i = 0; i < 3; ++i)
+			explicitChoice.presented(now += 60 * ms);
+		CHECK_FALSE(chosen.held);
+		CHECK(chosen.stepDowns == 0);
 	}
 
 	TEST_CASE("slow frames spread wider than the window do not trigger")

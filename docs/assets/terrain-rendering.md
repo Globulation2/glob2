@@ -503,7 +503,12 @@ density, page size and the reason it is coarser than the compositor's
 On desktop, the total GPU-page cache has a 256 MiB ceiling including CPU pixels,
 bookkeeping and resident texture reservations. The additional 128 MiB lets
 inactive zoom densities retain their CPU pixels without sacrificing sampling
-quality. Android and browser builds retain the 128 MiB total ceiling.
+quality. Phones and the browser retain the 128 MiB total ceiling. These limits,
+and the direct terrain pass's (256 MiB on desktop, 64 MiB on phones and in the
+browser), come from the platform's `RenderBudget::Terrain`; the large budgets raise
+them to 128 MiB resident within 192 MiB and 128 MiB direct on a High phone, and
+256 MiB resident within 512 MiB and 384 MiB direct on a 16 GB desktop
+([render budgets](../architecture/rendering.md#runtime-backend-selection)).
 These are maximum memory allowances, not up-front allocations.
 
 Interactive views on accelerated page renderers without device composition (the
