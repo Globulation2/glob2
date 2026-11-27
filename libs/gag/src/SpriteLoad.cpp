@@ -16,6 +16,7 @@ namespace {
 struct Source {
     std::string path;
     bool rotated = false;
+    bool shadow = false; // the optional shadow layer (Sprite::shadowFrame)
     unsigned first = 0, count = 1;
     int width = 0, height = 0;
     bool packed = false;
@@ -58,14 +59,17 @@ std::shared_ptr<const Sources> discover(const AssetLoader::Directory& directory,
                         entry.path.ends_with(".webp") && entry.path.find_first_of("/\\:") == std::string::npos;
                 }
                 std::string extra;
-                if (!valid || (fields >> extra) || (layer != "image" && layer != "rotated") || !entry.count ||
+                if (!valid || (fields >> extra) || (layer != "image" && layer != "rotated" && layer != "shadow") || !entry.count ||
                     entry.first >= 65536 || entry.count > 65536 - entry.first ||
                     entry.width <= 0 || entry.height <= 0 || entry.width > 4096 || entry.height > 4096) {
                     result->entries.clear(); break;
                 }
                 entry.path = name.substr(0, name.rfind('/') + 1) + entry.path;
                 entry.rotated = layer == "rotated";
-                result->frames = std::max(result->frames, size_t(entry.first) + entry.count);
+                entry.shadow = layer == "shadow";
+                // A shadow layer never adds frames: it belongs to a frame the
+                // image or rotated layers have.
+                if (!entry.shadow) result->frames = std::max(result->frames, size_t(entry.first) + entry.count);
                 result->entries.push_back(std::move(entry));
             }
             if (!result->entries.empty() && manifestBytes <= 1024 * 1024) return result;
@@ -82,15 +86,18 @@ std::shared_ptr<const Sources> discover(const AssetLoader::Directory& directory,
             const auto file = prefix + std::to_string(frame) + (rotated ? "r.webp" : ".webp");
             if (!std::binary_search(directory.names.begin(), directory.names.end(), file)) continue;
             found = true;
-            result->entries.push_back({name + std::to_string(frame) + (rotated ? "r.webp" : ".webp"), rotated, frame});
+            result->entries.push_back({name + std::to_string(frame) + (rotated ? "r.webp" : ".webp"), rotated, false, frame});
         }
         if (!found) break;
+        const auto shadow = prefix + std::to_string(frame) + "s.webp";
+        if (std::binary_search(directory.names.begin(), directory.names.end(), shadow))
+            result->entries.push_back({name + std::to_string(frame) + "s.webp", false, true, frame});
         result->frames = frame + 1;
     }
     return result;
 }
 struct Prepared {
-    std::vector<std::shared_ptr<const AssetImage>> images, rotated;
+    std::vector<std::shared_ptr<const AssetImage>> images, rotated, shadows;
     std::shared_ptr<AssetImage> atlas;
     int cellWidth = 0, cellHeight = 0, columns = 0;
 };
@@ -120,6 +127,7 @@ PreparedLayout preparedLayout(const Sources& sources, const std::vector<AssetLoa
         const int height = sources.sheets ? entry.height : image->surface->h;
         if (sources.sheets && !entry.packed)
             layout.workingBytes += size_t(width) * height * entry.count * pixelBytes + entry.count * sizeof(AssetImage);
+        if (entry.shadow) continue; // CPU-only layer, never in the frame atlas
         if (entry.rotated) { eligible = false; continue; }
         imageFrames += entry.count;
         if (layout.width && !variableAtlas && (layout.width != width || layout.height != height)) eligible = false;
@@ -138,7 +146,7 @@ PreparedLayout preparedLayout(const Sources& sources, const std::vector<AssetLoa
 std::shared_ptr<const Prepared> cut(const Sources& sources, const std::vector<AssetLoader::Handle<AssetImage>>& handles, int maxTextureSize, bool variableAtlas) {
     const auto layout = preparedLayout(sources, handles, maxTextureSize, variableAtlas);
     auto result = std::make_shared<Prepared>();
-    result->images.resize(sources.frames); result->rotated.resize(sources.frames);
+    result->images.resize(sources.frames); result->rotated.resize(sources.frames); result->shadows.resize(sources.frames);
     for (size_t s = 0; s < sources.entries.size(); ++s) {
         const auto &entry = sources.entries[s];
         auto image = handles[s].get();
@@ -149,7 +157,9 @@ std::shared_ptr<const Prepared> cut(const Sources& sources, const std::vector<As
             std::uint64_t((entry.count + columns - 1) / columns) * entry.height > unsigned(sheet->h)))
             throw std::runtime_error("Invalid sprite sheet: " + entry.path);
         for (unsigned i = 0; i < entry.count; ++i) {
-            auto &target = entry.rotated ? result->rotated[entry.first + i] : result->images[entry.first + i];
+            if (entry.shadow && entry.first + i >= sources.frames) break; // a shadow of no frame
+            auto &target = entry.shadow ? result->shadows[entry.first + i] :
+                entry.rotated ? result->rotated[entry.first + i] : result->images[entry.first + i];
             if (target) throw std::runtime_error("Duplicate sprite frame: " + entry.path);
             if (!sources.sheets || entry.packed) { target = image; continue; }
             auto *tile = SDL_CreateSurface(entry.width, entry.height, SDL_PIXELFORMAT_ARGB8888);
@@ -311,6 +321,10 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
         impl->sprite->images.push_back(adopt(impl->pixels->images[frame]));
         auto *rotated = adopt(impl->pixels->rotated[frame]);
         impl->sprite->rotated.push_back(rotated ? new Sprite::RotatedImage(rotated) : nullptr);
+        // Shadow layers keep CPU pixels for the shadow mask and never upload.
+        if (const auto &shadow = impl->pixels->shadows[frame])
+            impl->sprite->shadowImages.push_back(DrawableSurface::fromAssetImage(*shadow, false, false));
+        else impl->sprite->shadowImages.emplace_back();
         if (impl->deferOptionalHD) {
             impl->sprite->experimentImages.push_back(nullptr);
             impl->sprite->experimentRotated.push_back(nullptr);

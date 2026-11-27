@@ -17,6 +17,7 @@
 #include "DatasetWriter.h"
 #include "Game.h"
 #include "MapDrawer.h"
+#include "ShadowMask.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Order.h"
@@ -450,6 +451,24 @@ void MapDrawer::drawSceneMapRegion(const PresentationFrame& scene, int sx, int s
 						frame.viewportX, frame.viewportY, frame.localTeam, frame.options, state...);
 	};
 
+	// Ground shadows lie on the terrain, under every resource, unit and
+	// building, and fade out with the detailed terrain (ShadowMask.h).
+	if (!overviewOnly && view.render.detail.terrainOverview < 1)
+	{
+		PERF_SCOPE_TIME(Resources);
+		try
+		{
+			if (!view.render.shadowMask)
+				view.render.shadowMask = std::make_unique<ShadowMask>();
+			view.render.shadowMask->draw(scene, frame.left, frame.top, frame.right, frame.bottom, frame.viewportX,
+				frame.viewportY, frame.localTeam, frame.options & Game::DRAW_WHOLE_MAP, buildingGuiState,
+				1.f - view.render.detail.terrainOverview);
+		}
+		catch (const std::bad_alloc &)
+		{
+			view.render.shadowMask.reset();
+		}
+	}
 	if (!overviewOnly)
 		tilePass(&MapDrawer::drawMapResources, scene.map, &view.render);
 	if (!terrainBackdrop || direct || cached)

@@ -83,8 +83,35 @@ def validate_frames(root, pack, manifest):
         require(row[1:] == [str(frame['width']), str(frame['height']), scale,
                             layers.get('base', '-'), layers.get('team', '-')],
                 f'Source index geometry/layers differ: {frame_id}')
-    print(f'PASS: {len(frames)} frames; world coverage, paired layers, logical dimensions, RGBA and hashes')
+    shadows = validate_shadows(root, pack, frames)
+    print(f'PASS: {len(frames)} frames ({shadows} shadow layers); world coverage, paired layers, '
+          'logical dimensions, RGBA and hashes')
     return frames
+
+
+SHADOW_FRAME = re.compile(r'(.+\d)s')
+
+
+def validate_shadows(root, pack, frames):
+    """A frame's shadow layer is its own frame, `<frame>s` (native `<frame>s.png`,
+    HD row and manifest entry with a base layer): black, sharing the frame's
+    top-left corner and at least its size (it reaches past it to the lower right)."""
+    gfx = root / 'content/data/gfx'
+    natives = {p.stem for p in gfx.glob('*.png') if SHADOW_FRAME.fullmatch(p.stem)
+               and ((gfx / (p.stem[:-1] + '.png')).exists() or (gfx / (p.stem[:-1] + 'r.png')).exists())}
+    require(natives <= frames.keys(), f'Shadow layers without HD frames: {sorted(natives - frames.keys())}')
+    for frame_id in natives:
+        frame = frames[frame_id]
+        base = gfx / (frame_id[:-1] + '.png')
+        if not base.exists():
+            base = gfx / (frame_id[:-1] + 'r.png')
+        width, height = rgba(base).size
+        require(frame['width'] >= width and frame['height'] >= height, f'Shadow smaller than its frame: {frame_id}')
+        require([layer['role'] for layer in frame['layers']] == ['base'], f'Shadow layer roles: {frame_id}')
+        for path in (gfx / (frame_id + '.png'), pack / frame['layers'][0]['file']):
+            pixels = np.asarray(rgba(path))
+            require(not pixels[..., :3][pixels[..., 3] > 0].any(), f'Shadow layer is not black: {path}')
+    return len(natives)
 
 
 def atlas_image(pack, record, expected):

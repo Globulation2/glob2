@@ -22,6 +22,13 @@ namespace Sunlight
 	inline constexpr float flightHeight = 52.f;
 	inline constexpr unsigned flightShadowAlpha = 64;
 
+	//! How dark the ground is where a building or resource shadows it.
+	//! Shadow layers hold coverage at full strength; overlapping shadows
+	//! merge (ShadowMask) and the whole mask is drawn once at this opacity:
+	//! lighter than the artists' old baked shadows (about 0.58), close to
+	//! the strength of the units' own shadows.
+	inline constexpr float groundShadowOpacity = 0.32f;
+
 	//! A low, glancing sun from the canonical direction, for specular
 	//! highlights that would wash out under the high diffuse sun.
 	inline constexpr float glancingX = -shadowX, glancingY = -shadowY, glancingZ = 0.15f;

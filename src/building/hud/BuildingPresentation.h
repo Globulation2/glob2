@@ -4,6 +4,7 @@
 #include "Material.h"
 #include "BuildingType.h"
 #include <Toolkit.h>
+#include <GraphicContext.h> // GAGCore::Sprite
 #include <StringTable.h>
 #include <cassert>
 
@@ -18,6 +19,15 @@ inline int buildingSpriteFrame(const BuildingType& type, int hp, int effectiveMa
         - (Sint64(hp) * type.gameSpriteCount) / (Sint64(effectiveMaxHp) + 1) - 1;
     assert(damage >= 0);
     return type.gameSpriteImage + damage;
+}
+
+// Where a building's game sprite frame is drawn, from the top-left corner of its
+// footprint: anchored at the footprint's bottom-right corner, so a frame taller
+// than the footprint rises above it. Its shadow layer shares the frame's corner.
+struct BuildingSpriteOffset { int dx, dy; };
+inline BuildingSpriteOffset buildingSpriteOffset(const BuildingType& type, GAGCore::Sprite& sprite, int frame)
+{
+    return {(type.width << 5) - sprite.getW(frame), (type.height << 5) - sprite.getH(frame)};
 }
 
 inline std::string buildingDisplayName(const BuildingType& type)

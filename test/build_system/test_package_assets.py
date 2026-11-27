@@ -592,6 +592,75 @@ class AssetExportTests(unittest.TestCase):
 
 
 
+class ShadowLayerSheetTests(unittest.TestCase):
+    """A frame's shadow layer (<frame>s.png) packs into its family's sheets as
+    `shadow` runs, with exact alpha, and never adds or fills frames."""
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name) / "source"
+        self.gfx = self.root / "content/data/gfx"
+        self.gfx.mkdir(parents=True)
+        self.output = Path(self.temp.name) / "output"
+        self.cache = Path(self.temp.name) / "cache"
+        self.frames = {}
+        # Three 3x3 frames; frames 0 and 1 cast 5x4 shadows, frame 2 none.
+        for index in range(3):
+            pixels = bytes((index * 29 + p) % 256 for p in range(3 * 3 * 4))
+            Image.frombytes("RGBA", (3, 3), pixels).save(self.gfx / f"tree{index}.png")
+            self.frames[f"tree{index}.png"] = pixels
+        for index in range(2):
+            pixels = b"".join(bytes((0, 0, 0, (index * 53 + p * 17) % 256)) for p in range(5 * 4))
+            Image.frombytes("RGBA", (5, 4), pixels).save(self.gfx / f"tree{index}s.png")
+            self.frames[f"tree{index}s.png"] = pixels
+
+    def unpack(self):
+        layers = {"image": "", "rotated": "r", "shadow": "s"}
+        frames, kinds = {}, []
+        for line in (self.output / "data/gfx/tree.sheet").read_text().splitlines():
+            if not line or line.startswith("#"):
+                continue
+            name, layer, first, count, width, height = line.split()
+            kinds.append(layer)
+            first, count, width, height = int(first), int(count), int(width), int(height)
+            with Image.open(next((self.output / "data/gfx").glob(Path(name).stem + ".*"))) as image:
+                image = image.convert("RGBA")
+                columns = image.width // width
+                for i in range(count):
+                    left, top = (i % columns) * width, (i // columns) * height
+                    frames[f"tree{first + i}{layers[layer]}.png"] = image.crop(
+                        (left, top, left + width, top + height)).tobytes()
+        return frames, kinds
+
+    def test_shadows_pack_as_shadow_runs_exactly(self):
+        export_assets(self.root, self.output, cache=self.cache, jobs=1, lossy=False)
+        frames, kinds = self.unpack()
+        self.assertEqual(frames, self.frames)
+        self.assertEqual(kinds, ["image", "shadow"])
+        self.assertFalse(any(p.name.startswith("tree") and p.suffix == ".webp" and "sheet" not in p.name
+                             for p in (self.output / "data/gfx").iterdir()))
+
+    def test_lossy_sheets_keep_shadow_alpha_exact(self):
+        export_assets(self.root, self.output, cache=self.cache, jobs=1, lossy=True)
+        frames, _ = self.unpack()
+        for name in ("tree0s.png", "tree1s.png"):
+            self.assertEqual(frames[name][3::4], self.frames[name][3::4])
+
+    def test_shadows_neither_make_nor_fill_a_family(self):
+        files = sorted(self.gfx.iterdir())
+        self.assertIn("data/gfx/tree", package_assets.sprite_families(files, self.root / "content"))
+        # A shadow of a frame the family does not have is an authoring error.
+        Image.new("RGBA", (2, 2)).save(self.gfx / "tree3s.png")
+        with self.assertRaises(ValueError):
+            package_assets.sheet_plan(sorted(self.gfx.iterdir()), self.root / "content")
+        (self.gfx / "tree3s.png").unlink()
+        # Two frames and their shadows are still too few files for a sheet.
+        (self.gfx / "tree2.png").unlink()
+        self.assertNotIn("data/gfx/tree", package_assets.sprite_families(sorted(self.gfx.iterdir()),
+                                                                          self.root / "content"))
+
+
 class SpriteSheetExportTests(unittest.TestCase):
     """Optimized exports pack data/gfx/unit's frames into sheets for Sprite::load."""
 

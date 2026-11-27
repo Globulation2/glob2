@@ -243,7 +243,7 @@ def game_sprites(root):
 
 
 def game_files(paths, sprites):
-    """Frames of these sprites: data/gfx/<name><index>[r].png (or .webp in the runtime
+    """Frames of these sprites: data/gfx/<name><index>[r|s].png (or .webp in the runtime
     export), as Sprite::load reads them, or the export's <name>.sheet index and the
     <name>-sheet-<n>.png sheets it names."""
     files = set()
@@ -254,7 +254,7 @@ def game_files(paths, sprites):
             continue
         # Names may end in digits themselves: inn0b's frames are inn0b0.png, inn0b1.png.
         if any(path.startswith(prefix) and
-               re.fullmatch(r'(?:\d+r?|-sheet-\d+)\.(?:png|webp)|\.sheet', path[len(prefix):])
+               re.fullmatch(r'(?:\d+[rs]?|-sheet-\d+)\.(?:png|webp)|\.sheet', path[len(prefix):])
                for prefix in prefixes):
             files.add(path)
     files.update(path for path in paths if re.fullmatch(

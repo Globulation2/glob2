@@ -8,6 +8,7 @@
 #include "terrain/DirectTerrain.h"
 #include "OverviewTerrainCache.h"
 #include "ResourceRowCache.h"
+#include "ShadowMask.h"
 #include "UnitEffectArt.h"
 
 MapRenderState::MapRenderState() = default;

@@ -91,12 +91,15 @@ def lossless_webp():
 # Terrain material families pack only as packed sprite groups (native_sprite_groups).
 SHEET_ROOTS = ("data/gfx/", "data/gui/")
 SHEET_MIN_FILES = 3
-FRAME_FILE = re.compile(r"(.+?)(\d+)(r?)\.png")
+# A frame's layers: <name><i>.png (image), r (rotated, the team colours) and s
+# (shadow, the ground shadow's coverage; Sprite::shadowFrame).
+FRAME_FILE = re.compile(r"(.+?)(\d+)([rs]?)\.png")
+SHEET_KINDS = {"": "image", "r": "rotated", "s": "shadow"}
 SHEET_COLUMNS = 16
 SHEET_FRAMES = 256
 SHEET_HEADER = """\
 # Sprite sheet index, written by tools/package_assets.py, read by GAGCore::Sprite::load.
-# One line per sheet: <file> <image|rotated> <first frame> <frames> <tile width> <tile height>
+# One line per sheet: <file> <image|rotated|shadow> <first frame> <frames> <tile width> <tile height>
 # Tiles are packed row-major; the column count follows from the sheet's width.
 """
 
@@ -148,7 +151,7 @@ def small_build_terrain(document, content, *, fold=False, single_colour_decor=Fa
         name = Path(sprite).name
         directory = content / Path(sprite).parent
         return [p.relative_to(content).as_posix() for p in directory.glob(name + "*.png")
-                if re.fullmatch(re.escape(name) + r"\d+r?\.png", p.name)]
+                if re.fullmatch(re.escape(name) + r"\d+[rs]?\.png", p.name)]
 
     if fold:
         folds = {m["key"]: m["small_build_fallback"] for m in document["materials"] if "small_build_fallback" in m}
@@ -206,7 +209,7 @@ def small_build_terrain(document, content, *, fold=False, single_colour_decor=Fa
                 target["variants"] = target["variants"][:cells]
                 target["variant_blocks"] = variant_blocks
             for frame in sorted(every - kept):
-                for layer in ("", "r"):
+                for layer in SHEET_KINDS:
                     dropped.add(f"{material['sprite']}{frame}{layer}.png".removeprefix("content/"))
             changed.add(material["key"])
 
@@ -227,8 +230,8 @@ def small_build_terrain(document, content, *, fold=False, single_colour_decor=Fa
                         raw[m["key"]]["decor"][key] = [number[frame] for frame in m["decor"][key]]
                 changed.add(m["key"])
         for path in frames_of(sprite):
-            frame = int(re.search(r"(\d+)r?\.png$", path).group(1))
-            layer = "r" if path.endswith("r.png") else ""
+            frame, layer = re.search(r"(\d+)([rs]?)\.png$", path).groups()
+            frame = int(frame)
             if frame in number:
                 renames[content / path] = f"{sprite}{number[frame]}{layer}.png".removeprefix("content/")
             else:
@@ -281,7 +284,7 @@ def is_baked_unit_clip(relative):
 # the frames up to the last of those (Sprite::load needs them contiguous) and none
 # of its HD atlas, which every renderer skips.
 LEGACY_TERRAIN_FRAMES = 144
-LEGACY_TERRAIN_FRAME = re.compile(r"data/(?:gfx|highres/v1)/terrain(\d+)r?\.png")
+LEGACY_TERRAIN_FRAME = re.compile(r"data/(?:gfx|highres/v1)/terrain(\d+)[rs]?\.png")
 
 
 def legacy_terrain_unused(relative):
@@ -636,7 +639,10 @@ def sprite_families(files, root, renames=None, excluded=()):
         match = FRAME_FILE.fullmatch(relative)
         if match and relative.startswith(SHEET_ROOTS):
             frames.setdefault(match[1], set()).add((int(match[2]), match[3]))
-    return {family for family, found in frames.items()
+    # Shadow layers ride along with their frames: they neither count towards a
+    # family nor fill a gap in it.
+    drawn = {family: {(index, layer) for index, layer in found if layer != "s"} for family, found in frames.items()}
+    return {family for family, found in drawn.items()
             if family not in excluded and len(found) >= SHEET_MIN_FILES
             and {index for index, _ in found} == set(range(1 + max(index for index, _ in found)))}
 
@@ -665,7 +671,7 @@ def sheet_plan(files, root, terrain_sprites=(), extra_families=(), renames=None,
             frames = families.get(prefix + digits[:split])
             if frames is None:
                 continue
-            key = int(digits[split:]), layer == "r"
+            key = int(digits[split:]), layer
             if key in frames:
                 raise ValueError("Duplicate sprite frame: " + relative)
             frames[key] = source
@@ -673,16 +679,18 @@ def sheet_plan(files, root, terrain_sprites=(), extra_families=(), renames=None,
     for sprite, frames in families.items():
         if not frames:
             continue
-        count = 1 + max(index for index, _ in frames)
+        count = 1 + max((index for index, layer in frames if layer != "s"), default=-1)
         # Sprite::load stops at the first frame with neither layer; a sheet
         # would make frames behind such a gap appear.
-        if any((i, False) not in frames and (i, True) not in frames for i in range(count)):
+        if any((i, "") not in frames and (i, "r") not in frames for i in range(count)):
             raise ValueError("Sprite frames are not consecutive: " + sprite)
+        if any(index >= count for index, layer in frames if layer == "s"):
+            raise ValueError("Shadow layer of no sprite frame: " + sprite)
         sheets = []
-        for rotated in (False, True):
+        for layer in SHEET_KINDS:
             run = None
             for index in range(count):
-                source = frames.get((index, rotated))
+                source = frames.get((index, layer))
                 if source is None:
                     run = None
                     continue
@@ -691,7 +699,7 @@ def sheet_plan(files, root, terrain_sprites=(), extra_families=(), renames=None,
                     raise ValueError("Sprite sheets are 8-bit or RGBA64: " + str(source))
                 size = Image.open(io.BytesIO(raw)).size
                 if run is None or run["size"] != size or len(run["frames"]) == SHEET_FRAMES:
-                    run = dict(rotated=rotated, first=index, size=size, frames=[])
+                    run = dict(layer=layer, rotated=layer == "r", first=index, size=size, frames=[])
                     sheets.append(run)
                 run["frames"].append(source)
         for number, sheet in enumerate(sheets):
@@ -770,7 +778,7 @@ def sheet_index(sheets):
         "%s %s %d %d %d %d"
         % (
             str(Path(sheet["name"]).with_suffix(".webp")),
-            "rotated" if sheet["rotated"] else "image",
+            SHEET_KINDS[sheet["layer"]],
             sheet["first"],
             len(sheet["frames"]),
             sheet["size"][0],
@@ -928,6 +936,8 @@ def native_sprite_groups(sheets, terrain_sprites, terrain_document):
         if sprite not in terrain_sprites and sprite != "data/gfx/unit":
             continue
         for page in pages:
+            if page["layer"] == "s":
+                raise ValueError("Packed native sprite groups have no shadow layer: " + sprite)
             layer = 5 if page["rotated"] else 4
             for offset, path in enumerate(page["frames"]):
                 index = page["first"] + offset

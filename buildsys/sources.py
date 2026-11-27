@@ -192,6 +192,7 @@ CLIENT_SOURCES = (
     'render/terrain/TerrainCompiledPack.cpp',
     'render/SoftwareTerrainCache.cpp',
     'render/OverviewTerrainCache.cpp',
+    'render/ShadowMask.cpp',
     'render/BackgroundWork.cpp',
     'render/MapOverlayQueue.cpp',
     'render/MapRenderState.cpp',
