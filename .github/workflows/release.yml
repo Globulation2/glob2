@@ -34,6 +34,12 @@ on:
         required: false
         default: true
         type: boolean
+      # github-release.yml calls this without secrets (packaging needs none) and
+      # uploads the symbols itself from a job that inherits them.
+      upload_crash_symbols:
+        required: false
+        default: true
+        type: boolean
 
 concurrency:
   group: release-${{ github.ref }}-${{ inputs.tag }}
@@ -811,7 +817,7 @@ jobs:
   # (docs/multiplayer/crash-reports.md#symbols).
   crash-symbols:
     needs: [linux-package, windows-package, macos-package]
-    if: ${{ inputs.tag != '' }}
+    if: ${{ inputs.tag != '' && inputs.upload_crash_symbols != false }}
     uses: ./.github/workflows/crash-symbols.yml
     secrets: inherit
     with:

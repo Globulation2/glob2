@@ -202,6 +202,20 @@ class ReleaseWorkflowTests(unittest.TestCase):
             block=re.split(r'\n  (?=\S)',text.split('  '+job+':\n',1)[1],maxsplit=1)[0]
             self.assertNotIn('secrets:',block)
 
+    def test_staging_uploads_desktop_symbols_outside_packages(self):
+        # packages runs without secrets, so its own crash-symbols job would see an
+        # empty token; staging turns it off and uploads from a job that inherits.
+        text=(ROOT/'.github/workflows/github-release.yml').read_text()
+        packages=re.split(r'\n  (?=\S)',text.split('  packages:\n',1)[1],maxsplit=1)[0]
+        self.assertIn('upload_crash_symbols: false',packages)
+        job=re.split(r'\n  (?=\S)',text.split('  packages-crash-symbols:\n',1)[1],maxsplit=1)[0]
+        self.assertIn('needs: [context, packages]',job)
+        self.assertIn('artifacts: crash-symbols-release-*',job)
+        draft=re.split(r'\n  (?=\S)',text.split('  draft:\n',1)[1],maxsplit=1)[0]
+        self.assertIn('packages-crash-symbols',draft)
+        release=(ROOT/'.github/workflows/release.yml').read_text()
+        self.assertIn("inputs.upload_crash_symbols != false",release)
+
     def test_downloaded_android_layout_checks_bytes_before_signing(self):
         import hashlib
         import subprocess

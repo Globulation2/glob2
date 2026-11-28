@@ -193,6 +193,18 @@ jobs:
       tag: ${{ inputs.tag }}
       source_commit: ${{ needs.context.outputs.revision }}
       build_flatpak: true
+      upload_crash_symbols: false
+
+  # The desktop packages' crash symbols. packages gets no secrets, and an
+  # environment secret reaches a called workflow only through secrets: inherit,
+  # so the upload runs here instead of inside release.yml.
+  packages-crash-symbols:
+    needs: [context, packages]
+    uses: ./.github/workflows/crash-symbols.yml
+    secrets: inherit
+    with:
+      version: ${{ inputs.tag }}
+      artifacts: crash-symbols-release-*
 
   android-packages:
     needs: [context, windows-preflight, macos-preflight, android-preflight, publication-preflight, play-preflight, ios-preflight]
@@ -478,7 +490,7 @@ jobs:
           if-no-files-found: error
 
   draft:
-    needs: [context, packages, windows-sign, macos-sign, android-sign, play-candidate, ios-candidate]
+    needs: [context, packages, packages-crash-symbols, windows-sign, macos-sign, android-sign, play-candidate, ios-candidate]
     timeout-minutes: 30
     runs-on: ubuntu-24.04
     environment: github-release
