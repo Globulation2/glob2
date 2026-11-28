@@ -56,6 +56,8 @@ class AptMirrorTest(unittest.TestCase):
             (apt / 'sources.list.d').mkdir()
             for path, value in self.entries().items():
                 (apt / path).write_text(value)
+            microsoft = apt / 'sources.list.d/microsoft-prod.list'
+            microsoft.write_text('deb https://packages.microsoft.com/ubuntu/24.04/prod noble main\n')
             subprocess.run(['bash', str(ROOT / '.github/scripts/ci_apt_network.sh')], check=True,
                            env={'APT_ROOT': str(apt), 'PATH': '/usr/bin:/bin'})
             for path, value in self.entries().items():
@@ -63,6 +65,7 @@ class AptMirrorTest(unittest.TestCase):
                                   'https://archive.ubuntu.com/ubuntu', value)
                 self.assertEqual((apt / path).read_text(), expected, path)
             self.assertIn('Acquire::http::Timeout "30";', (apt / 'apt.conf.d/80-ci-network').read_text())
+            self.assertFalse(microsoft.exists(), 'the unused Microsoft source stays enabled')
 
     def test_every_build_apt_update_is_guarded(self):
         # A runner's slow regional mirror stalled unguarded steps past their

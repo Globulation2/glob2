@@ -100,6 +100,7 @@ jobs:
               sudo sed -Ei 's#https?://(azure|[a-z0-9-]+\.ec2)\.archive\.ubuntu\.com/ubuntu#https://archive.ubuntu.com/ubuntu#g' "$source"
             fi
           done
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list /etc/apt/sources.list.d/microsoft-prod.sources
           sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'
           Acquire::By-Hash "force";
           Acquire::Retries "3";
@@ -307,6 +308,7 @@ jobs:
         run: |
           tar -xzf artifacts/ci-native/linux-test-programs.tar.gz
           echo "LD_LIBRARY_PATH=$PWD/build/sdl3-ci/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
+          bash "$GITHUB_WORKSPACE/.github/scripts/ci_apt_network.sh"
           sudo apt-get update -qq
           xargs sudo apt-get install -y --no-install-recommends < artifacts/ci-native/runtime-packages.txt
           sudo apt-get install -y --no-install-recommends python3
@@ -407,6 +409,7 @@ jobs:
               sudo sed -Ei 's#https?://(azure|[a-z0-9-]+\.ec2)\.archive\.ubuntu\.com/ubuntu#https://archive.ubuntu.com/ubuntu#g' "$source"
             fi
           done
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list /etc/apt/sources.list.d/microsoft-prod.sources
           sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'
           Acquire::By-Hash "force";
           Acquire::Retries "3";
@@ -567,6 +570,7 @@ jobs:
         id: test_tournament_protocol_ai_configuration_and_main_cli
         continue-on-error: true
         run: |
+          bash "$GITHUB_WORKSPACE/.github/scripts/ci_apt_network.sh"
           sudo apt-get update -qq
           # Ubuntu 22.04 needs LLVM's signed repository for the pinned major.
           . /etc/os-release
@@ -738,6 +742,7 @@ jobs:
 
       - name: Install executable runtime dependencies
         run: |
+          bash "$GITHUB_WORKSPACE/.github/scripts/ci_apt_network.sh"
           sudo apt-get update -qq
           xargs sudo apt-get install -y --no-install-recommends < artifacts/ci-native/runtime-packages.txt
           sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri mesa-vulkan-drivers xvfb xauth openbox x11-utils gdb
