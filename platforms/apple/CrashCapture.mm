@@ -8,6 +8,7 @@
 #include "CrashCapture.h"
 #import <Foundation/Foundation.h>
 #import <MetricKit/MetricKit.h>
+#include <TargetConditionals.h>
 #include <filesystem>
 #include <string>
 
@@ -43,10 +44,13 @@
 		CrashCapture::noteArrival();
 }
 
-// Metrics payloads are not used.
+#if !TARGET_OS_OSX
+// Metrics payloads are not used. MXMetricPayload is unavailable on macOS,
+// where this optional method must not be declared at all.
 - (void)didReceiveMetricPayloads:(NSArray<MXMetricPayload *> *)payloads
 {
 }
+#endif
 @end
 
 namespace
