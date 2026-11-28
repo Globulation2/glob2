@@ -931,21 +931,21 @@
         {
           "file": "hosp0b0s.png",
           "role": "base",
-          "sha256": "28001383500572cb9a88c9b67f1b650252b6f25c36990350a94459a740b9af6a",
-          "source_sha256": "28001383500572cb9a88c9b67f1b650252b6f25c36990350a94459a740b9af6a",
+          "sha256": "ce4183cf4e1425a528036ea01ff56baf9a1decb3d77886e6b40b6fc371df3432",
+          "source_sha256": "ce4183cf4e1425a528036ea01ff56baf9a1decb3d77886e6b40b6fc371df3432",
           "logical_width": 76,
           "logical_height": 80,
-          "original_sha256": "6a6e6e704d52d3065045112c6eaee833f5417f6863a3202d53cdc06293df8ff7"
+          "original_sha256": "5beac5522a79a445f3cc6c19275b4b589d00ae22d00576b6700e8e8dba89c7b6"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "eefc2c6c96bb68ac33d96ed9fd8f1ad4b644d3080269b0767cff0379facfd27e"
+          "sha256": "95a54a13911192c47fedf19f8e875316957b9824db09acc4ce4b1a749d372e2c"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "40e389124ec15d809fd307a4a697890993d9469ed571e30d4a6d61c77c4741d9"
+          "sha256": "7b4376ecaebdb32f5fc5a5da922fcd22909be63d14e7351f6d70ead49676c871"
         },
         {
           "path": "content/data/highres/v1/hosp0b0.png",
@@ -1027,21 +1027,21 @@
         {
           "file": "hosp0b1s.png",
           "role": "base",
-          "sha256": "ee6afd6f60d387c299c87a4a34c48b10c9936c00a09d4653a1f2b1a68a952f01",
-          "source_sha256": "ee6afd6f60d387c299c87a4a34c48b10c9936c00a09d4653a1f2b1a68a952f01",
+          "sha256": "a716d35e75ada304b27470b026e826af22ffa7d956afa8f6147f72e4f3f0577b",
+          "source_sha256": "a716d35e75ada304b27470b026e826af22ffa7d956afa8f6147f72e4f3f0577b",
           "logical_width": 76,
           "logical_height": 80,
-          "original_sha256": "51cbf4abedc6bfedf99370c5c5c104b966d41b1c1027de18aaea1b89b361843d"
+          "original_sha256": "e98cbc1b3e72f0e2baaa101a2794f653f9f53c8e5d50129ae6332c7a6c262ff0"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "eefc2c6c96bb68ac33d96ed9fd8f1ad4b644d3080269b0767cff0379facfd27e"
+          "sha256": "95a54a13911192c47fedf19f8e875316957b9824db09acc4ce4b1a749d372e2c"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "40e389124ec15d809fd307a4a697890993d9469ed571e30d4a6d61c77c4741d9"
+          "sha256": "7b4376ecaebdb32f5fc5a5da922fcd22909be63d14e7351f6d70ead49676c871"
         },
         {
           "path": "content/data/highres/v1/hosp0b1.png",

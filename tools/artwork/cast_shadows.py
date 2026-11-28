@@ -103,6 +103,7 @@ DEFAULTS = {
                            # level's); frames of other sizes align bottom-right, as buildings anchor
     "hollow": False,       # mesh: each height casts only its own throw, so high parts cast apart
     "mesh_scale": 1.0,     # mesh: the mask scaled about the building's base (a borrowed shape, resized)
+    "mesh_smooth": 0,      # mesh: radius (HD px) of an opening that removes thin parts poking out
     "cap": 180,            # longest throw, HD px: 45 native, under the 52 px flight height
     "blur": 2.0,           # softening of block shadows, HD px
     "body_alpha": 200,     # base pixels at least this opaque cast
@@ -403,6 +404,10 @@ def mesh_layer(spec, shape, root=ROOT, body=None):
         canvas[:body.shape[0], :body.shape[1]] = body
         reach = ndimage.binary_dilation(sweep(canvas, spec["cap"]), iterations=int(2 * spec["blur"]) + 1)
         out = np.where(reach, out, 0).astype(out.dtype)
+    if spec["mesh_smooth"]:
+        r = int(spec["mesh_smooth"])
+        yy, xx = np.mgrid[-r:r + 1, -r:r + 1]
+        out = ndimage.grey_opening(out, footprint=xx * xx + yy * yy <= r * r).astype(np.uint8)
     return out
 
 

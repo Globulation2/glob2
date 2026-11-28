@@ -2764,7 +2764,7 @@
     {
       "runtime": "manifest.json",
       "source": "pack-metadata/manifest.json",
-      "sha256": "0ee0cab898bc30ca21dfea2d8cc9a2f8ac71de12661d72d7ba0081e47149af1f"
+      "sha256": "c7a38cff86b93fe4f664e094823805838f8dc2bc9008110ac3ef8553533d2a34"
     },
     {
       "runtime": "frames.txt",
@@ -163879,12 +163879,12 @@
     {
       "runtime": "hosp0b0s.png",
       "source": "shadows/hosp0b0s.png",
-      "sha256": "28001383500572cb9a88c9b67f1b650252b6f25c36990350a94459a740b9af6a"
+      "sha256": "ce4183cf4e1425a528036ea01ff56baf9a1decb3d77886e6b40b6fc371df3432"
     },
     {
       "runtime": "hosp0b1s.png",
       "source": "shadows/hosp0b1s.png",
-      "sha256": "ee6afd6f60d387c299c87a4a34c48b10c9936c00a09d4653a1f2b1a68a952f01"
+      "sha256": "a716d35e75ada304b27470b026e826af22ffa7d956afa8f6147f72e4f3f0577b"
     },
     {
       "runtime": "hosp1b0s.png",

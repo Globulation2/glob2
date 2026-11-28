@@ -98,7 +98,9 @@ banners held up high cast apart from the base instead of standing on the
 ground; `mesh` names another frame whose mask this one borrows, aligned at the
 bottom-right corner as buildings are drawn and clipped to what this frame's
 silhouette can throw along the sun; `mesh_scale` scales the mask about the
-building's base (hospital level 1 borrows level 3's shape at 0.65). Buildings
+building's base, and `mesh_smooth` opens it with a disc of that radius to
+remove thin parts poking out (hospital level 1 borrows level 3's shape at
+0.65, smoothed by 14 HD px). Buildings
 whose meshes fail the gate keep a `block` spec at their reviewed length. barracks0b0's old shadow was painted
 opaque into its art; two masked FLUX.1 Fill [pro] passes (fal.ai) repainted it
 as sand before the mesh was made, recorded with their masks, prompts and hashes

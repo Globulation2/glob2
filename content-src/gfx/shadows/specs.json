@@ -3,8 +3,8 @@
   "about": "Ground shadow specs for tools/artwork/cast_shadows.py (see its docstring and docs/assets/lighting.md). Buildings: method mesh casts content-src/gfx/shadows/mesh/<frame>s.png (tools/artwork/mesh_shadows.py); length = screen px of throw per px of height, art direction per building (default 0.6). Each building keeps its block geometry as the fallback: boxes are HD pixels of the frame, blocks [x0, y0, x1, y1, height], spires [x0, y0, x1, y1, base_y, base_height]. Damaged variants share their building's spec.",
   "defaults": {"ratio": 1.1, "cap": 180, "blur": 2.0, "body_alpha": 200, "team_alpha": 20, "strip": true},
   "families": [
-    {"note": "approved: hospital level 1; borrows hospital level 3's shadow shape, aligned bottom-right and scaled to 0.65 (its own mesh cast a thin streak)", "frames": ["hosp0b0"], "method": "mesh", "length": 1.1, "mesh": "hosp2b0", "mesh_scale": 0.65, "height": 35},
-    {"note": "approved: hospital level 1; borrows hospital level 3's shadow shape, aligned bottom-right and scaled to 0.65 (its own mesh cast a thin streak)", "frames": ["hosp0b1"], "method": "mesh", "length": 1.1, "mesh": "hosp2b0", "mesh_scale": 0.65, "height": 35},
+    {"note": "approved: hospital level 1; borrows hospital level 3's shadow shape, aligned bottom-right and scaled to 0.65 and smoothed (its own mesh cast a thin streak)", "frames": ["hosp0b0"], "method": "mesh", "length": 1.1, "mesh": "hosp2b0", "mesh_scale": 0.65, "mesh_smooth": 14, "height": 35},
+    {"note": "approved: hospital level 1; borrows hospital level 3's shadow shape, aligned bottom-right and scaled to 0.65 and smoothed (its own mesh cast a thin streak)", "frames": ["hosp0b1"], "method": "mesh", "length": 1.1, "mesh": "hosp2b0", "mesh_scale": 0.65, "mesh_smooth": 14, "height": 35},
     {"note": "draft: hospital level 2, body with a bell tower", "frames": ["hosp1b0"], "method": "mesh", "length": 0.45, "height": 45,
      "spires": [[105, 0, 165, 95, 95, 40]]},
     {"note": "approved: hospital level 3", "frames": ["hosp2b0"], "method": "mesh", "length": 1.1, "height": 60},
