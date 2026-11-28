@@ -150,6 +150,7 @@ ENGINE_TESTS = [
     '#src/map/claims/ActiveClaimRoutesHarness.cpp',
     '#src/map/claims/ClaimInvalidationHarness.cpp',
     '#src/unit/MarketFetchHarness.cpp',
+    '#src/unit/GigReleaseHarness.cpp',
     ('#src/unit/MarketsV2Test.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/unit/FetchHiringScoreHarness.cpp',
     '#src/unit/LegacyRoundTripSaveTest.cpp',

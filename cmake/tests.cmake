@@ -76,6 +76,7 @@ set(GLOB2_ENGINE_TESTS_0_SOURCES
     src/map/claims/ActiveClaimRoutesHarness.cpp
     src/map/claims/ClaimInvalidationHarness.cpp
     src/unit/MarketFetchHarness.cpp
+    src/unit/GigReleaseHarness.cpp
     src/unit/FetchHiringScoreHarness.cpp
     src/unit/LegacyRoundTripSaveTest.cpp
     src/map/TerrainResourcesHarness.cpp
@@ -1370,6 +1371,7 @@ set(GLOB2_ANDROID_ENGINE_TESTS_0_SOURCES
     src/map/claims/ActiveClaimRoutesHarness.cpp
     src/map/claims/ClaimInvalidationHarness.cpp
     src/unit/MarketFetchHarness.cpp
+    src/unit/GigReleaseHarness.cpp
     src/unit/FetchHiringScoreHarness.cpp
     src/unit/LegacyRoundTripSaveTest.cpp
     src/map/TerrainResourcesHarness.cpp
