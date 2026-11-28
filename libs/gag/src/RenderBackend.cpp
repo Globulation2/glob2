@@ -138,6 +138,13 @@ class SDLRenderBackend final : public RenderBackend
 	// indices reproduce its per-call duplicate-vertex detection so a merged batch
 	// pairs exactly the triangles separate calls would have.
 	bool indexedBatches = false;
+	// SDL's software renderer RLE-encodes static textures on their first blit,
+	// and SDL 3.4's clipped scaled blit then loses an encoded texture's pixel
+	// pointer (it saves the null pointer of the encoded surface around a scale
+	// that decodes it). A later SDL_UpdateTexture writes through that null
+	// pointer. So on this renderer a texture is updated in place only when it
+	// is streaming, which SDL never encodes; see changeableTexture().
+	bool softwareRenderer = false;
 	std::optional<SDL_Rect> appliedClip;
 	bool clipKnown = false;
 	std::unordered_map<const void *, Texture> textures;
@@ -579,11 +586,22 @@ class SDLRenderBackend final : public RenderBackend
 		}
 	}
 
+	// Whether `texture` may be given new pixels in place (SDL_UpdateTexture):
+	// always, except a static texture of SDL's software renderer (see
+	// softwareRenderer), which is replaced by a streaming one instead.
+	bool changeableTexture(SDL_Texture *texture) const
+	{
+		return !softwareRenderer ||
+			   SDL_GetNumberProperty(SDL_GetTextureProperties(texture), SDL_PROP_TEXTURE_ACCESS_NUMBER,
+									 SDL_TEXTUREACCESS_STATIC) == SDL_TEXTUREACCESS_STREAMING;
+	}
+
   public:
 	explicit SDLRenderBackend(SDL_Renderer *renderer)
 		: renderer(renderer), gpuPreparation(gpuPreparationEnabled(renderer))
 	{
-		indexedBatches = std::strcmp(SDL_GetRendererName(renderer), "software") == 0;
+		softwareRenderer = std::strcmp(SDL_GetRendererName(renderer), "software") == 0;
+		indexedBatches = softwareRenderer;
         if (gpuPreparation) {
             gpuPreparation = exactPremultiplication();
             if (!gpuPreparation) releaseStaging();
@@ -704,8 +722,11 @@ class SDLRenderBackend final : public RenderBackend
 				counts.cpuPremultipliedBytes += std::uint64_t(converted->w) * converted->h * 4;
 			}
 			auto *source = linear ? converted.get() : pixels;
+			// A texture that already exists is being given new pixels: its
+			// surface changes, so on the software renderer it must be streaming.
+			const bool changing = texture != nullptr;
 			if (texture &&
-				(SDL_SurfaceHasColorKey(source) ||
+				(SDL_SurfaceHasColorKey(source) || !changeableTexture(texture) ||
 				 SDL_GetNumberProperty(SDL_GetTextureProperties(texture),
 									   SDL_PROP_TEXTURE_FORMAT_NUMBER, 0) != source->format))
 			{
@@ -716,7 +737,18 @@ class SDLRenderBackend final : public RenderBackend
 				check(update(texture, source));
 			else
 			{
-				texture = SDL_CreateTextureFromSurface(renderer, source);
+				if (changing && softwareRenderer && !SDL_SurfaceHasColorKey(source))
+				{
+					texture = SDL_CreateTexture(renderer, source->format, SDL_TEXTUREACCESS_STREAMING,
+												source->w, source->h);
+					if (texture && !update(texture, source))
+					{
+						SDL_DestroyTexture(texture);
+						texture = nullptr;
+					}
+				}
+				if (!texture)
+					texture = SDL_CreateTextureFromSurface(renderer, source);
 				++counts.textureCreates;
 			}
 			if (!texture)
@@ -785,6 +817,7 @@ class SDLRenderBackend final : public RenderBackend
 			found->second.width != pixels->w ||
 			found->second.height != pixels->h || found->second.format != pixels->format ||
 			pixels->format != SDL_PIXELFORMAT_ARGB8888 || SDL_SurfaceHasColorKey(pixels) ||
+			!changeableTexture(found->second.handle) ||
 			SDL_GetNumberProperty(SDL_GetTextureProperties(found->second.handle),
 								  SDL_PROP_TEXTURE_FORMAT_NUMBER, 0) != SDL_PIXELFORMAT_ARGB8888)
 			return;

@@ -219,6 +219,10 @@ TEST_SUITE("GpuTexturePreparation")
 						backend->blit(surface, surface, revision, false, src, dst, 255);
 					return Surface(backend->capture(), SDL_DestroySurface);
 				};
+				// Revision 0 creates the texture and revision 1 gives it new pixels:
+				// on SDL's software renderer that makes it a streaming texture, the
+				// only kind that renderer patches in place (see the next test).
+				backend->prepareTexture(edited.get(), edited.get(), 0, linear);
 				backend->prepareTexture(edited.get(), edited.get(), 1, linear);
 				const std::vector<SDL_Rect> dirty = {{0, 0, 32, 32}, {64, 96, 96, 32}, {224, 224, 32, 32}};
 				for (const auto &rect : dirty)
@@ -253,6 +257,66 @@ TEST_SUITE("GpuTexturePreparation")
 				draw(edited.get(), 5);
 				CHECK(backend->operations().textureUploadBytes - stale.textureUploadBytes == 256u * 256u * 4u);
 			}
+	}
+	TEST_CASE("SDL's software renderer never patches a static texture in place [display]")
+	{
+		// SDL's software renderer RLE-encodes a static texture on its first blit,
+		// and a later blit that is both scaled and clipped by the target loses the
+		// encoded texture's pixel pointer (SDL 3.4). Patching the texture after
+		// that wrote through a null pointer: the portable renderer's terrain
+		// keyframe atlas crashed loading a match at UI scale 1. The texture must
+		// instead be replaced on its next draw and patched in place after that.
+		glob2test::ScopedEnvironment driver("SDL_RENDER_DRIVER", "software");
+		TestWindow window(false);
+		auto backend = makeSDLRenderBackend(window.window, 256, 256);
+		REQUIRE(std::strcmp(SDL_GetRendererName(SDL_GetRenderer(window.window)), "software") == 0);
+		auto edited = pixels(256, 256, 2), reference = pixels(256, 256, 2);
+		const SDL_Rect cell{0, 0, 64, 64};
+		const auto draw = [&](SDL_Surface *surface, std::uint64_t revision)
+		{
+			backend->present();
+			backend->blit(surface, surface, revision, false, cell, SDL_FRect{0, 0, 64, 64}, 255);
+			// Scaled 1.5x inside the target and cut by a clip rectangle, as the
+			// map viewport clips terrain (a draw past the target's edge takes
+			// SDL's intermediate-surface path instead).
+			const SDL_Rect viewport{0, 0, 220, 220};
+			backend->clip(&viewport);
+			backend->blit(surface, surface, revision, false, cell, SDL_FRect{150, 150, 96, 96}, 255);
+			backend->clip(nullptr);
+			return Surface(backend->capture(), SDL_DestroySurface);
+		};
+		REQUIRE(draw(edited.get(), 1) != nullptr);
+		const std::vector<SDL_Rect> dirty = {{0, 0, 32, 32}, {16, 40, 40, 16}};
+		for (const auto &rect : dirty)
+		{
+			REQUIRE(SDL_FillSurfaceRect(edited.get(), &rect, 0x80406080u));
+			REQUIRE(SDL_FillSurfaceRect(reference.get(), &rect, 0x80406080u));
+		}
+		// The static texture is left for the next draw to replace whole...
+		const auto deferred = backend->operations();
+		backend->prepareTextureRegions(edited.get(), edited.get(), 2, 1, dirty, false);
+		CHECK(backend->operations().textureUploads == deferred.textureUploads);
+		REQUIRE(draw(edited.get(), 2) != nullptr);
+		CHECK(backend->operations().textureUploadBytes - deferred.textureUploadBytes == 256u * 256u * 4u);
+		// ...as a streaming texture, which later edits patch in place.
+		for (const auto &rect : dirty)
+		{
+			REQUIRE(SDL_FillSurfaceRect(edited.get(), &rect, 0x80804020u));
+			REQUIRE(SDL_FillSurfaceRect(reference.get(), &rect, 0x80804020u));
+		}
+		const auto patched = backend->operations();
+		backend->prepareTextureRegions(edited.get(), edited.get(), 3, 2, dirty, false);
+		CHECK(backend->operations().textureUploads - patched.textureUploads == dirty.size());
+		auto partial = draw(edited.get(), 3);
+		// The reference is a streaming texture too (created, then given new
+		// pixels): SDL blends RLE-encoded static textures with other rounding.
+		backend->prepareTexture(reference.get(), reference.get(), 0, false);
+		backend->prepareTexture(reference.get(), reference.get(), 1, false);
+		auto complete = draw(reference.get(), 1);
+		REQUIRE(partial != nullptr);
+		REQUIRE(complete != nullptr);
+		REQUIRE(partial->pitch == complete->pitch);
+		CHECK(std::memcmp(partial->pixels, complete->pixels, std::size_t(partial->pitch) * partial->h) == 0);
 	}
 	TEST_CASE("SDL linear upload timing [display][benchmark]")
 	{
