@@ -134,6 +134,7 @@ ENGINE_TESTS = [
     '#src/game/diagnostics/GameDiagnosticsTest.cpp',
     ('#src/team/stats/WinProbabilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/team/stats/MaterialLedgerTest.cpp',
+    '#src/team/SiteProgressHarness.cpp',
     ('#src/engine/sim/ClientChannelsTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/HiringBucketHarness.cpp',
     '#src/building/HiringPlannerTest.cpp',
