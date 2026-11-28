@@ -1,0 +1,1 @@
+Sharper, more detailed HD building art with consistent ground shadows for buildings and resources, plus portal and stability fixes.
