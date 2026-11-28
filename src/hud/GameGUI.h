@@ -303,6 +303,10 @@ public:
 	
 	KeyboardManager keyboardManager;
 public:
+	///Leaves the match as the in-game menu's confirmed Leave does.
+	void quitFromMenu();
+	///Whether the game ended on its own and showed its end-of-game dialog.
+	bool endOfGameShown() const { return hasEndOfGameDialogBeenShown; }
 	///Simulation → client notices and client → simulation requests. Declared
 	///before `game`, which keeps pointers to both (Game::clientEvents,
 	///Game::clientRequests), so they outlive it.

@@ -34,6 +34,7 @@
 #include "GameGUIKeyActions.h"
 #include "CreditScreen.h"
 #include "ProblemReportScreen.h"
+#include "ReleaseCheck.h"
 #include "CrashCapture.h"
 #include "CompileProfile.h"
 #include "DeviceAdaptationSession.h"
@@ -223,6 +224,8 @@ Application::Application()
 	// stays up meanwhile (about half a second), as the game's introduction does.
 	if (globalContainer->gfx && !globalContainer->runNoX)
 		globalContainer->gfx->holdPresentation(MenuSettleFrames);
+	if (auto steps = ReleaseCheck::requested())
+		releaseCheck = std::make_unique<ReleaseCheck::Runner>(screens, singlePlayer, *steps);
 	if (GAGCore::ApplicationHost::storageRestoreFailed())
 	{
 		auto &strings = *GAGCore::Toolkit::getStringTable();
@@ -687,6 +690,17 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 		crashesOffered = true;
 		offerCrashReports();
 	}
+	if (releaseCheck && !quitting)
+		if (const auto code = releaseCheck->frame(tick))
+		{
+			// Shut down as Quit does; main() returns the check's status.
+			ReleaseCheck::setResult(*code);
+			releaseCheck.reset();
+			GAGCore::Recording::recorder().stop();
+			quitting = true;
+			shutdownScreens.push(std::make_unique<ShutdownScreen>());
+			return true;
+		}
 	if (!screens.running())
 	{
 		if (screens.result() == GAGGUI::Screen::QUIT_APPLICATION)

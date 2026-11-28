@@ -89,6 +89,12 @@ bool GameGUI::playStopped() const
 	}
 }
 
+void GameGUI::quitFromMenu()
+{
+	enqueueOrder(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
+	flushOutgoingAndExit = true;
+}
+
 void GameGUI::openMainMenu()
 {
 	auto menu = std::make_unique<InGameMainScreen>(globalContainer->replaying, !globalContainer->isViewingGame(), gamePaused);
@@ -305,10 +311,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 		{
 			closeDialog();
 			if (result == InGameConfirmScreen::CONFIRM)
-			{
-				enqueueOrder(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
-				flushOutgoingAndExit = true;
-			}
+				quitFromMenu();
 			else
 				openMainMenu();
 			return true;

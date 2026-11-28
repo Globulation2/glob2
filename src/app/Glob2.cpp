@@ -48,6 +48,7 @@
 #include "CreditScreen.h"
 #include "ProblemReport.h"
 #include "CrashCapture.h"
+#include "ReleaseCheck.h"
 #include "Engine.h"
 #include "Headless.h"
 #include "scripting/javascript/ScriptCommand.h"
@@ -727,5 +728,9 @@ int main(int argc, char *argv[])
 	}
 	if (result != Glob2::HOSTED_RUN)
 		GAGCore::ApplicationHost::exited(result);
+	// A release check (src/app/ReleaseCheck.h) ends with its own status.
+	if (result == Glob2::HOSTED_RUN)
+		if (const auto status = ReleaseCheck::result())
+			return *status;
 	return result == Glob2::HOSTED_RUN ? 0 : result;
 }

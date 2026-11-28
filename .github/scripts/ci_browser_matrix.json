@@ -145,5 +145,10 @@
     "name": "chromium threaded renderer",
     "browsers": "chromium",
     "command": "xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='threaded:' --workers=1"
+  },
+  {
+    "name": "chromium release check",
+    "browsers": "chromium",
+    "command": "GLOB2_RELEASE_CHECK_SPEC=1 xvfb-run -a npx playwright test --project=chromium release-check.spec.js"
   }
 ]

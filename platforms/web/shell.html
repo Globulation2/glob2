@@ -424,6 +424,10 @@ var Module = {
     const graphicsQuery = new URLSearchParams(location.search);
     if (graphicsQuery.get('gl-errors') === '1')
       ENV.GLOB2_WEBGL_ERRORS = '1';
+    // The release check (src/app/ReleaseCheck.h): ?release-check=all or a step list.
+    const releaseCheck = graphicsQuery.get('release-check');
+    if (releaseCheck && /^[a-z0-9,]{1,64}$/.test(releaseCheck))
+      ENV.GLOB2_RELEASE_CHECK = releaseCheck;
     // Automated browsers skip the opening cloud cover: its first key press only
     // parts the clouds, so scripted gameplay input would be swallowed.
     if (navigator.webdriver || graphicsQuery.get('intro') === '0')

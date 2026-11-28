@@ -25,6 +25,13 @@ class SinglePlayerFlow
 	void studio();
 	void generatorStudio();
 	void replay(const std::string &filename);
+	// Plays a game from `initialize` with nothing beneath it; `finished` gets its
+	// navigation once the session (and its results) close. The release check
+	// (src/app/ReleaseCheck.h) uses it.
+	void play(GameLoadScreen::Initializer initialize, std::function<void(int navigation)> finished)
+	{
+		launch(std::move(initialize), ReturnTo::MainMenu, nullptr, std::move(finished));
+	}
 
   private:
 	GAGGUI::ScreenStack &screens;
