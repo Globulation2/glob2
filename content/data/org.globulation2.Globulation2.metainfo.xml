@@ -1257,7 +1257,7 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="0.11.9.1" date="2026-11-27">
+    <release version="0.11.9.2" date="2026-11-27">
       <description>
         <p>Upgrades the HD building artwork with sharper, more detailed upscaled art, and gives buildings and resources consistent ground shadows; reports a web portal's first match only after the player's first input; hides Play online in the Newgrounds and Game Jolt packages; and fixes the Windows build.</p>
       </description>
