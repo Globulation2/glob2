@@ -30,7 +30,7 @@
   "depth_ratio": 1.025,
   "max_height_unclamped_hd": 231.7,
   "max_height_hd": 231.7,
-  "p95_height_hd": 197.0,
+  "p95_height_hd": 223.7,
   "sprite_height_hd": 363
  },
  "gate": {
@@ -46,7 +46,7 @@
    0.8
   ]
  },
- "tool_sha256": "ef7085947059783d0a5b9eb561363b51d1ca253eb58d76750c9564a7d42242a0",
+ "tool_sha256": "57c023df2134eb873ccfd5dc7952308233aeecac97271941867559e5c836f08a",
  "packages": {
   "numpy": "2.5.5",
   "scipy": "1.18.1",

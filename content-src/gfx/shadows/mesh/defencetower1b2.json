@@ -29,8 +29,8 @@
   "silhouette_iou": 0.7847,
   "depth_ratio": 0.53,
   "max_height_unclamped_hd": 240.6,
-  "max_height_hd": 239.7,
-  "p95_height_hd": 189.0,
+  "max_height_hd": 240.6,
+  "p95_height_hd": 220.8,
   "sprite_height_hd": 326
  },
  "gate": {
@@ -46,7 +46,7 @@
    0.8
   ]
  },
- "tool_sha256": "ef7085947059783d0a5b9eb561363b51d1ca253eb58d76750c9564a7d42242a0",
+ "tool_sha256": "57c023df2134eb873ccfd5dc7952308233aeecac97271941867559e5c836f08a",
  "packages": {
   "numpy": "2.5.5",
   "scipy": "1.18.1",

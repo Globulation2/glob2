@@ -18,9 +18,9 @@ inn2b0s 100 108 4 inn2b0s.png -
 inn2c0 96 96 4 inn2c0.png -
 inn2c0s 96 100 4 inn2c0s.png -
 hosp0b0 64 64 4 hosp0b0.png hosp0b0r.png
-hosp0b0s 64 80 4 hosp0b0s.png -
+hosp0b0s 76 80 4 hosp0b0s.png -
 hosp0b1 64 64 4 hosp0b1.png -
-hosp0b1s 64 80 4 hosp0b1s.png -
+hosp0b1s 76 80 4 hosp0b1s.png -
 hosp0c0 64 64 4 hosp0c0.png -
 hosp0c0s 68 68 4 hosp0c0s.png -
 hosp1b0 64 76 4 hosp1b0.png hosp1b0r.png
@@ -80,11 +80,11 @@ school2b0s 68 68 4 school2b0s.png -
 defencetower0b0 68 59 4 defencetower0b0.png defencetower0b0r.png
 defencetower0b0s 68 63 4 defencetower0b0s.png -
 defencetower1b0 64 108 4 defencetower1b0.png defencetower1b0r.png
-defencetower1b0s 84 120 4 defencetower1b0s.png -
+defencetower1b0s 92 120 4 defencetower1b0s.png -
 defencetower1b1 64 108 4 defencetower1b1.png defencetower1b1r.png
-defencetower1b1s 84 120 4 defencetower1b1s.png -
+defencetower1b1s 92 120 4 defencetower1b1s.png -
 defencetower1b2 64 108 4 defencetower1b2.png defencetower1b2r.png
-defencetower1b2s 84 128 4 defencetower1b2s.png -
+defencetower1b2s 92 128 4 defencetower1b2s.png -
 defencetower2b0 64 64 4 defencetower2b0.png defencetower2b0r.png
 defencetower2b0s 72 88 4 defencetower2b0s.png -
 market0b0 96 115 4 market0b0.png market0b0r.png

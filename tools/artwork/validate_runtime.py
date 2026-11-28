@@ -124,8 +124,10 @@ def validate_shadows(root, pack, frames):
         for frame_id, spec in cast_shadows.load_specs(root).items():
             if spec['method'] == 'mesh' and frame_id + 's' in frames:
                 # The committed mesh mask, cast at the spec's length (mesh_record checks it), padded.
-                size = rgba(pack / (frame_id + '.png')).size
-                expected = cast_shadows.mesh_layer(spec, (size[1], size[0]), root)
+                hd = np.asarray(rgba(pack / (frame_id + '.png')))
+                team_path = pack / (frame_id + 'r.png')
+                team = np.asarray(rgba(team_path)) if team_path.exists() else None
+                expected = cast_shadows.mesh_layer(spec, hd.shape[:2], root, cast_shadows.mesh_body(hd, team, spec))
                 require(np.array_equal(np.asarray(rgba(pack / (frame_id + 's.png')))[..., 3], expected),
                         f'Shadow layer is not its mesh mask: {frame_id}')
             if spec['paint_out']:

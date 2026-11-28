@@ -99,7 +99,10 @@ MESH = Path("content-src/gfx/shadows/mesh")  # mesh_shadows.py masks and records
 DEFAULTS = {
     "ratio": 1.1,          # block and contact throw per unit of height (boulders in terrain_decor use 1.15)
     "length": SHADOW_LENGTH,  # mesh: throw per unit of height, cast by mesh_shadows.py
-    "mesh": None,          # mesh: the frame whose mask this one shares (damaged variants); default itself
+    "mesh": None,          # mesh: the frame whose mask this one shares (damaged variants, or another
+                           # level's); frames of other sizes align bottom-right, as buildings anchor
+    "hollow": False,       # mesh: each height casts only its own throw, so high parts cast apart
+    "mesh_scale": 1.0,     # mesh: the mask scaled about the building's base (a borrowed shape, resized)
     "cap": 180,            # longest throw, HD px: 45 native, under the 52 px flight height
     "blur": 2.0,           # softening of block shadows, HD px
     "body_alpha": 200,     # base pixels at least this opaque cast
@@ -358,11 +361,49 @@ def mesh_record(spec, root=ROOT):
     return record
 
 
-def mesh_layer(spec, shape, root=ROOT):
+def mesh_body(hd, team, spec):
+    """A frame's silhouette as a mesh spec reads it: opaque base or team pixels."""
+    body = hd[..., 3] >= spec["body_alpha"]
+    if team is not None:
+        body[:team.shape[0], :team.shape[1]] |= team[:body.shape[0], :body.shape[1], 3] >= spec["team_alpha"]
+    return body
+
+
+def mesh_layer(spec, shape, root=ROOT, body=None):
     """The HD shadow alpha of a mesh spec: its committed mask (the frame's top-left
     corner), on a canvas covering the frame, padded right and bottom to whole steps."""
     mesh_record(spec, root)
-    return mesh_pad(_open(root / MESH / f"{spec['mesh']}s.png")[..., 3], *shape)
+    mask = _open(root / MESH / f"{spec['mesh']}s.png")[..., 3]
+    with Image.open(root / PACK / f"{spec['mesh']}.png") as source:
+        sw, sh = source.size
+    # A building draws with its bottom-right corner on its footprint's, so another
+    # frame's mask moves by the difference in size (its top-left may fall outside).
+    dy, dx = shape[0] - sh, shape[1] - sw
+    if dy or dx:
+        moved = np.zeros((max(0, mask.shape[0] + dy), max(0, mask.shape[1] + dx)), mask.dtype)
+        src = mask[max(0, -dy):, max(0, -dx):]
+        moved[max(0, dy):max(0, dy) + src.shape[0], max(0, dx):max(0, dx) + src.shape[1]] = src
+        mask = moved
+    out = mesh_pad(mask, *shape)
+    if spec["mesh_scale"] != 1.0:
+        # Scaled about the base of the building (the mean of its lowest 15% of
+        # rows), where its shadow meets it, so it shrinks toward the building.
+        if body is None:
+            raise ValueError("a scaled mesh mask needs the frame's silhouette")
+        by, bx = np.nonzero(body)
+        low = by >= np.percentile(by, 85)
+        ay, ax, f = by[low].mean(), bx[low].mean(), spec["mesh_scale"]
+        out = np.rint(np.clip(ndimage.affine_transform(out.astype(float), [1 / f, 1 / f],
+                                                       offset=[ay - ay / f, ax - ax / f], order=1), 0, 255)
+                      ).astype(np.uint8)
+    if body is not None and (dy or dx or spec["mesh_scale"] != 1.0):
+        # Another frame's mask keeps only what this frame's own silhouette can
+        # throw along the sun: none of it shows beside the building up or left.
+        canvas = np.zeros(out.shape, bool)
+        canvas[:body.shape[0], :body.shape[1]] = body
+        reach = ndimage.binary_dilation(sweep(canvas, spec["cap"]), iterations=int(2 * spec["blur"]) + 1)
+        out = np.where(reach, out, 0).astype(out.dtype)
+    return out
 
 
 def mesh_pad(mask, h0, w0):
@@ -418,7 +459,7 @@ def compute(job):
     if hd.shape[:2] != (classic.shape[0] * SCALE, classic.shape[1] * SCALE):
         raise ValueError(f"{frame_id}: HD base is not {SCALE}x the classic frame")
     if spec["method"] == "mesh":
-        hd_shadow = mesh_layer(spec, hd.shape[:2], root)
+        hd_shadow = mesh_layer(spec, hd.shape[:2], root, mesh_body(hd, team, spec))
         classic_shadow = downscale(hd_shadow)
     else:
         hd_shadow, classic_shadow = cast(hd, team, spec)

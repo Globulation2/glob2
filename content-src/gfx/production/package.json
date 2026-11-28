@@ -2764,12 +2764,12 @@
     {
       "runtime": "manifest.json",
       "source": "pack-metadata/manifest.json",
-      "sha256": "a14726a9c6d215f5931292e6cfac1077272e8d88729dde71c712bb2c06027694"
+      "sha256": "0ee0cab898bc30ca21dfea2d8cc9a2f8ac71de12661d72d7ba0081e47149af1f"
     },
     {
       "runtime": "frames.txt",
       "source": "pack-metadata/frames.txt",
-      "sha256": "6473bd7ba2af3e9ece320a165ef06140e4bbd5fc2e61c17d2ff0aa0d2f8984b5"
+      "sha256": "2dab4dc9af479e3be492712b6d9202fb93078878d0ed8bf067bb6ef8f9c78b07"
     },
     {
       "runtime": "README.md",
@@ -163879,12 +163879,12 @@
     {
       "runtime": "hosp0b0s.png",
       "source": "shadows/hosp0b0s.png",
-      "sha256": "0b9e93fc9e2cb6c4816cf6617d28b6fb1c7dde240ec82b5717c2fba6da9c291f"
+      "sha256": "28001383500572cb9a88c9b67f1b650252b6f25c36990350a94459a740b9af6a"
     },
     {
       "runtime": "hosp0b1s.png",
       "source": "shadows/hosp0b1s.png",
-      "sha256": "0b9e93fc9e2cb6c4816cf6617d28b6fb1c7dde240ec82b5717c2fba6da9c291f"
+      "sha256": "ee6afd6f60d387c299c87a4a34c48b10c9936c00a09d4653a1f2b1a68a952f01"
     },
     {
       "runtime": "hosp1b0s.png",
@@ -163999,17 +163999,17 @@
     {
       "runtime": "defencetower1b0s.png",
       "source": "shadows/defencetower1b0s.png",
-      "sha256": "36dad6739e8c04d26b6fbbe43aeab48b6acf1ed1e855b54f95678e47e3e8de8e"
+      "sha256": "8ca51c9fdc8a8c22668a2f77021351985c5a3bd824194deae3946cc39c4c4e27"
     },
     {
       "runtime": "defencetower1b1s.png",
       "source": "shadows/defencetower1b1s.png",
-      "sha256": "36dad6739e8c04d26b6fbbe43aeab48b6acf1ed1e855b54f95678e47e3e8de8e"
+      "sha256": "8ca51c9fdc8a8c22668a2f77021351985c5a3bd824194deae3946cc39c4c4e27"
     },
     {
       "runtime": "defencetower1b2s.png",
       "source": "shadows/defencetower1b2s.png",
-      "sha256": "9ded2758b4eee3a2dc40102260bfe444a42174d6c05997bc727ca4ba4657223f"
+      "sha256": "3dc588f58bf4ae386a6dfdd8e686eea3f421e6f36a2bde4f4c1a127837d4043e"
     },
     {
       "runtime": "defencetower2b0s.png",

@@ -91,8 +91,15 @@ above the mesh's ground stands at (x, y + H) and throws `length` × H, at most
 h × cos 59.6° on screen. A point's ground stays on its own piece of the sprite,
 no lower than that piece's base in its column, so a mesh seated too low casts no
 slab below the building and separate pieces cast separately; shadow parts not
-touching the sprite are dropped. Buildings whose meshes fail the gate keep a
-`block` spec at their reviewed length. barracks0b0's old shadow was painted
+touching the sprite are dropped. A spec can override this per building:
+`hollow` (defence tower level 2) casts each height only over its own band of
+throw and keeps the mesh's own heights above the sprite's lowest pixel, so
+banners held up high cast apart from the base instead of standing on the
+ground; `mesh` names another frame whose mask this one borrows, aligned at the
+bottom-right corner as buildings are drawn and clipped to what this frame's
+silhouette can throw along the sun; `mesh_scale` scales the mask about the
+building's base (hospital level 1 borrows level 3's shape at 0.65). Buildings
+whose meshes fail the gate keep a `block` spec at their reviewed length. barracks0b0's old shadow was painted
 opaque into its art; two masked FLUX.1 Fill [pro] passes (fal.ai) repainted it
 as sand before the mesh was made, recorded with their masks, prompts and hashes
 in `content-src/gfx/shadows/inpaint/` (the classic base takes the HD result
