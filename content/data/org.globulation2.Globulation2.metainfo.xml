@@ -1257,6 +1257,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.11.9.0" date="2026-11-27">
+      <description>
+        <p>Upgrades the HD building artwork with sharper, more detailed upscaled art, and gives buildings and resources consistent ground shadows; reports a web portal's first match only after the player's first input; hides Play online in the Newgrounds and Game Jolt packages; and fixes the Windows build.</p>
+      </description>
+    </release>
     <release version="0.11.8.5" date="2026-11-27">
       <description>
         <p>Captures crashes on Windows, macOS, Linux and the browser so they can be reported; hides ground units behind tall decor in front of them; keeps walls on raised terrain seams; gives roomy devices larger render budgets and encodes HD artwork as BC7 on desktops with 8 or more threads; and shows a light wordmark on the loading screen.</p>
