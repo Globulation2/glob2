@@ -806,7 +806,8 @@ int main(int argc, char **argv)
 				MainMenuScreen::LOAD_GAME,        MainMenuScreen::TUTORIAL,
 				MainMenuScreen::PLAY_ONLINE, MainMenuScreen::MULTIPLAYERS_LAN,
 				MainMenuScreen::GAME_SETUP,       MainMenuScreen::EDITOR,
-				MainMenuScreen::CREDITS,          MainMenuScreen::QUIT};
+				MainMenuScreen::CREDITS,          MainMenuScreen::QUIT,
+				MainMenuScreen::REPORT_PROBLEM};
 			for (int action : actions)
 			{
 				Preview<MainMenuScreen> main;
