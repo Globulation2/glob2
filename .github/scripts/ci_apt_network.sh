@@ -12,6 +12,9 @@ for source in "$root"/sources.list "$root"/sources.list.d/*.list "$root"/sources
     $sudo_cmd sed -Ei 's#https?://(azure|[a-z0-9-]+\.ec2)\.archive\.ubuntu\.com/ubuntu#https://archive.ubuntu.com/ubuntu#g' "$source"
   fi
 done
+# No step installs from the runner image's Microsoft package source, and its
+# signature lapses (403, "no longer signed") fail every apt-get update.
+$sudo_cmd rm -f "$root"/sources.list.d/microsoft-prod.list "$root"/sources.list.d/microsoft-prod.sources
 mkdir -p "$root/apt.conf.d" 2>/dev/null || true
 $sudo_cmd tee "$root/apt.conf.d/80-ci-network" >/dev/null <<'CONF'
 Acquire::By-Hash "force";
