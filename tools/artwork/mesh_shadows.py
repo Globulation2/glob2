@@ -265,22 +265,18 @@ def visible_heights(xy, depth, values, body):
     return np.where(body, grid[tuple(nearest)], np.nan)
 
 
-def sweep(mask, vector, start=0.0):
-    """The mask dragged along the vector, from `start` (a fraction of it) to its end."""
-    steps = int(max(abs(vector[0]), abs(vector[1])) * (1 - start)) + 1
+def sweep(mask, vector):
+    steps = int(max(abs(vector[0]), abs(vector[1]))) + 1
     out = np.zeros_like(mask)
     h, w = mask.shape
-    for t in np.linspace(start, 1, steps + 1):
+    for t in np.linspace(0, 1, steps + 1):
         dx, dy = int(round(t * vector[0])), int(round(t * vector[1]))
         out[dy:, dx:] |= mask[:h - dy, :w - dx]
     return out
 
 
-def cast(xs, ys, hs, shape, length=SHADOW_LENGTH, cap=CAP, bin_width=3.0, hollow=False):
-    """Shadow of points (screen x, y, height H): from (x, y + H), min(length * H, cap) along the sun.
-    Solid (the default), each point casts a column down to the ground, as a wall
-    does. Hollow, each height band casts only its own band of throw, so a part
-    held up high (a banner on a tower) casts a shadow apart from the base."""
+def cast(xs, ys, hs, shape, length=SHADOW_LENGTH, cap=CAP, bin_width=3.0):
+    """Shadow of points (screen x, y, height H): from (x, y + H), min(length * H, cap) along the sun."""
     out = np.zeros(shape, bool)
     h, w = shape
     keep = hs > 0.5
@@ -293,13 +289,7 @@ def cast(xs, ys, hs, shape, length=SHADOW_LENGTH, cap=CAP, bin_width=3.0, hollow
         ok = (gx >= 0) & (gx < w) & (gy >= 0) & (gy < h)
         ground[gy[ok], gx[ok]] = True
         throw = min((b + 0.5) * bin_width * length, cap)
-        if hollow:
-            low = min(b * bin_width * length, cap)
-            out |= sweep(ground, np.array(cast_shadows.SHADOW) * throw, low / throw if throw else 0.0)
-        else:
-            out |= sweep(ground, np.array(cast_shadows.SHADOW) * throw)
-    if hollow:  # surface points leave gaps between bands: close and fill them
-        out = ndimage.binary_fill_holes(ndimage.binary_closing(out, iterations=3) | out)
+        out |= sweep(ground, np.array(cast_shadows.SHADOW) * throw)
     return ndimage.binary_closing(out) | out
 
 
@@ -387,13 +377,6 @@ def evaluate(job):
     cx, cy = np.concatenate([xy[inside, 0], bx]), np.concatenate([xy[inside, 1], by])
     raw = np.concatenate([hs[inside], grid[by, bx]])
     clamped, _ = ground_clamp(cx, cy, raw, body)
-    if spec.get("hollow"):
-        # A part held out over the ground (a banner on a tower) has its own
-        # bottom edge in its columns, so the per-piece clamp would seat it on
-        # the ground there. Hollow frames keep the mesh's heights, limited only
-        # by the sprite's lowest pixel, so it still cannot cast a slab below.
-        floor = np.nonzero(body.any(1))[0].max() if body.any() else 0
-        clamped = np.clip(np.minimum(raw, floor + GROUND_MARGIN - cy), 0, None)
     casters = (cx, cy, clamped)
     ys = np.nonzero(body.any(1))[0]
     sprite_height = int(ys.max() - ys.min() + 1) if len(ys) else 0
@@ -413,11 +396,7 @@ def evaluate(job):
     shape = (h0 + MARGIN, w0 + MARGIN)
     padded = np.zeros(shape, bool)
     padded[:h0, :w0] = body
-    hollow = bool(spec.get("hollow"))
-    # Hollow shadows of high parts lie apart from the sprite by design, so they
-    # are not limited to the parts touching it.
-    keep = (lambda shadow: shadow) if hollow else (lambda shadow: attached(shadow, padded))
-    masks = {value: mask_image(keep(cast(*casters, shape, value, hollow=hollow)), h0, w0)
+    masks = {value: mask_image(attached(cast(*casters, shape, value), padded), h0, w0)
              for value in set(review) | {length}}
     return {
         "frame": frame, "seed": seed, "mesh": str(mesh_path), "mirrored": bool(mirrored),

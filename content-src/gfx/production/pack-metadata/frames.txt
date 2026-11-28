@@ -80,9 +80,9 @@ school2b0s 68 68 4 school2b0s.png -
 defencetower0b0 68 59 4 defencetower0b0.png defencetower0b0r.png
 defencetower0b0s 68 63 4 defencetower0b0s.png -
 defencetower1b0 64 108 4 defencetower1b0.png defencetower1b0r.png
-defencetower1b0s 92 120 4 defencetower1b0s.png -
+defencetower1b0s 92 132 4 defencetower1b0s.png -
 defencetower1b1 64 108 4 defencetower1b1.png defencetower1b1r.png
-defencetower1b1s 92 120 4 defencetower1b1s.png -
+defencetower1b1s 92 132 4 defencetower1b1s.png -
 defencetower1b2 64 108 4 defencetower1b2.png defencetower1b2r.png
 defencetower1b2s 92 128 4 defencetower1b2s.png -
 defencetower2b0 64 64 4 defencetower2b0.png defencetower2b0r.png

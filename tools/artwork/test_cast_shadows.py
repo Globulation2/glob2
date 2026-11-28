@@ -245,5 +245,34 @@ class SpecTests(unittest.TestCase):
                     tool.load_specs(root)
 
 
+class ProxyTests(unittest.TestCase):
+    FRUSTUM = [100.0, 80.0, 60.0, 60.0 * 0.8625, 100.0, 170.0, 40.0, 40.0 * 0.8625]
+
+    def test_the_fit_recovers_a_round_frustum(self):
+        body = tool.frustum_mask(self.FRUSTUM, (260, 200))
+        start = [v + d for v, d in zip(self.FRUSTUM, (4, -6, 5, 0, -3, 5, -4, 0))]
+        fit, overlap = tool.fit_frustum(body, start)
+        self.assertGreater(overlap, 0.97)
+        for got, want in zip(fit, self.FRUSTUM):
+            self.assertAlmostEqual(got, want, delta=4)
+
+    def test_a_banner_held_up_casts_apart_from_the_base(self):
+        team = np.zeros((260, 200), bool)
+        team[10:40, 150:160] = True  # a banner well above the rim's right side
+        spec = dict(tool.DEFAULTS, method="proxy", length=0.8,
+                    proxy={"frustum": self.FRUSTUM, "banners": [[140, 0, 170, 45]]})
+        canvas = np.zeros((260 + tool.MARGIN, 200 + tool.MARGIN), bool)
+        canvas[:260, :200] = tool.frustum_mask(self.FRUSTUM, (260, 200))
+        banner = np.zeros(canvas.shape, bool)
+        banner[:260, :200] = team
+        with_banner = tool.proxy_shadow(canvas, banner, spec) > 0.5
+        without = tool.proxy_shadow(canvas, np.zeros_like(banner), spec) > 0.5
+        extra = with_banner & ~without
+        self.assertTrue(extra.any())
+        # Its shadow lands down-right of the banner's own ground point, not on a
+        # column running down from the banner to the ground.
+        self.assertFalse(extra[40:60, 150:160].any())
+
+
 if __name__ == "__main__":
     unittest.main()

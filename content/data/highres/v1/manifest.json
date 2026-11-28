@@ -4346,40 +4346,32 @@
     {
       "id": "defencetower1b0s",
       "width": 92,
-      "height": 120,
+      "height": 132,
       "scale": 4,
-      "recipe": "cast ground shadow v1: mesh",
+      "recipe": "cast ground shadow v1: proxy",
       "layers": [
         {
           "file": "defencetower1b0s.png",
           "role": "base",
-          "sha256": "8ca51c9fdc8a8c22668a2f77021351985c5a3bd824194deae3946cc39c4c4e27",
-          "source_sha256": "8ca51c9fdc8a8c22668a2f77021351985c5a3bd824194deae3946cc39c4c4e27",
+          "sha256": "f28e7a27a93b086d703b94dcbac6858994f3926c6f02a2e324d03f3606901133",
+          "source_sha256": "f28e7a27a93b086d703b94dcbac6858994f3926c6f02a2e324d03f3606901133",
           "logical_width": 92,
-          "logical_height": 120,
-          "original_sha256": "e9b8dae6d2a7db1c2e1acf198815a99bd1d5846ff406f5f92d75b632764d4e8a"
+          "logical_height": 132,
+          "original_sha256": "afe075467ccb17187f1ac62a198b5d10af7c8f30456d9299312c958c380ecedf"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "abc3795b2a3957870d87fd52323f3b8cb931037b57f9a2015d12e37bbb759c14"
+          "sha256": "5c7a7a3eedb9b0ab8482336a780ae3a16d3c903ca950c9512b3e35bb6fca5c5e"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "a938281d13118083d1f4cacedb335a13048a89128f7aad9fffe3ebca9db18227"
+          "sha256": "34bf3c1e2249d71bf1ffa2ded1db4a839c17ba17e13186a3fd39315fde60d89f"
         },
         {
           "path": "content/data/highres/v1/defencetower1b0.png",
           "sha256": "3c5c32d983c842609a91ae6c355b0e5a72aabd0733b5fd4e10b2431473ac03de"
-        },
-        {
-          "path": "content-src/gfx/shadows/mesh/defencetower1b0s.png",
-          "sha256": "6c80a4872bceccba022d6957fcb80250c18fa4783adf8bb6932cdb9697c97bba"
-        },
-        {
-          "path": "content-src/gfx/shadows/mesh/defencetower1b0.json",
-          "sha256": "d52b925464fed31ce893404bea6241a432f092d5096ac29c4dfce9ca2fef6d23"
         },
         {
           "path": "content/data/highres/v1/defencetower1b0r.png",
@@ -4451,40 +4443,32 @@
     {
       "id": "defencetower1b1s",
       "width": 92,
-      "height": 120,
+      "height": 132,
       "scale": 4,
-      "recipe": "cast ground shadow v1: mesh",
+      "recipe": "cast ground shadow v1: proxy",
       "layers": [
         {
           "file": "defencetower1b1s.png",
           "role": "base",
-          "sha256": "8ca51c9fdc8a8c22668a2f77021351985c5a3bd824194deae3946cc39c4c4e27",
-          "source_sha256": "8ca51c9fdc8a8c22668a2f77021351985c5a3bd824194deae3946cc39c4c4e27",
+          "sha256": "0599cb5b96fa794540c36cf1ae7fa9708ce365e3f5f7866b2fc1e7231e6647a9",
+          "source_sha256": "0599cb5b96fa794540c36cf1ae7fa9708ce365e3f5f7866b2fc1e7231e6647a9",
           "logical_width": 92,
-          "logical_height": 120,
-          "original_sha256": "e9b8dae6d2a7db1c2e1acf198815a99bd1d5846ff406f5f92d75b632764d4e8a"
+          "logical_height": 132,
+          "original_sha256": "72a14f9e873e011590d1f6a3b0fae0624f307f42be4c5e3ebe111b1ccd2d25f3"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "abc3795b2a3957870d87fd52323f3b8cb931037b57f9a2015d12e37bbb759c14"
+          "sha256": "5c7a7a3eedb9b0ab8482336a780ae3a16d3c903ca950c9512b3e35bb6fca5c5e"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "a938281d13118083d1f4cacedb335a13048a89128f7aad9fffe3ebca9db18227"
+          "sha256": "34bf3c1e2249d71bf1ffa2ded1db4a839c17ba17e13186a3fd39315fde60d89f"
         },
         {
           "path": "content/data/highres/v1/defencetower1b1.png",
           "sha256": "50e5c01a6462527542ec2cf9f6e49135593dcca49fa589d7411372e98868eefc"
-        },
-        {
-          "path": "content-src/gfx/shadows/mesh/defencetower1b0s.png",
-          "sha256": "6c80a4872bceccba022d6957fcb80250c18fa4783adf8bb6932cdb9697c97bba"
-        },
-        {
-          "path": "content-src/gfx/shadows/mesh/defencetower1b0.json",
-          "sha256": "d52b925464fed31ce893404bea6241a432f092d5096ac29c4dfce9ca2fef6d23"
         },
         {
           "path": "content/data/highres/v1/defencetower1b1r.png",
@@ -4558,38 +4542,30 @@
       "width": 92,
       "height": 128,
       "scale": 4,
-      "recipe": "cast ground shadow v1: mesh",
+      "recipe": "cast ground shadow v1: proxy",
       "layers": [
         {
           "file": "defencetower1b2s.png",
           "role": "base",
-          "sha256": "3dc588f58bf4ae386a6dfdd8e686eea3f421e6f36a2bde4f4c1a127837d4043e",
-          "source_sha256": "3dc588f58bf4ae386a6dfdd8e686eea3f421e6f36a2bde4f4c1a127837d4043e",
+          "sha256": "8188f3d87263fe91f9188341a3f7095a12721f654d70a1e40a78fa76042e4f11",
+          "source_sha256": "8188f3d87263fe91f9188341a3f7095a12721f654d70a1e40a78fa76042e4f11",
           "logical_width": 92,
           "logical_height": 128,
-          "original_sha256": "7c4f71f410476fb218fa8a40f6a378e18b7154ef08572e40d853983cfe2368e1"
+          "original_sha256": "14ead67f63905c798578c2fe3721ce0f38088ced1075b57eba5bb9effcafc70e"
         }
       ],
       "sources": [
         {
           "path": "tools/artwork/cast_shadows.py",
-          "sha256": "abc3795b2a3957870d87fd52323f3b8cb931037b57f9a2015d12e37bbb759c14"
+          "sha256": "5c7a7a3eedb9b0ab8482336a780ae3a16d3c903ca950c9512b3e35bb6fca5c5e"
         },
         {
           "path": "content-src/gfx/shadows/specs.json",
-          "sha256": "a938281d13118083d1f4cacedb335a13048a89128f7aad9fffe3ebca9db18227"
+          "sha256": "34bf3c1e2249d71bf1ffa2ded1db4a839c17ba17e13186a3fd39315fde60d89f"
         },
         {
           "path": "content/data/highres/v1/defencetower1b2.png",
           "sha256": "a1db00d91926454f85a185ef0530be9cf60bd2ec0290627d7f742ff032a7e7d6"
-        },
-        {
-          "path": "content-src/gfx/shadows/mesh/defencetower1b2s.png",
-          "sha256": "e61042871d8829d555b6677072e4046ef08d9dd84f5e4dae54418b7e7f2757c2"
-        },
-        {
-          "path": "content-src/gfx/shadows/mesh/defencetower1b2.json",
-          "sha256": "6c20dd03021b514f68f269b31800c3705b2631e9ef4177872cc9291d570ee66a"
         },
         {
           "path": "content/data/highres/v1/defencetower1b2r.png",

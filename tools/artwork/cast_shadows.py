@@ -101,9 +101,9 @@ DEFAULTS = {
     "length": SHADOW_LENGTH,  # mesh: throw per unit of height, cast by mesh_shadows.py
     "mesh": None,          # mesh: the frame whose mask this one shares (damaged variants, or another
                            # level's); frames of other sizes align bottom-right, as buildings anchor
-    "hollow": False,       # mesh: each height casts only its own throw, so high parts cast apart
     "mesh_scale": 1.0,     # mesh: the mask scaled about the building's base (a borrowed shape, resized)
     "mesh_smooth": 0,      # mesh: radius (HD px) of an opening that removes thin parts poking out
+    "proxy": None,         # proxy: a hand-built stand-in shape (see proxy_shadow), cast at `length`
     "cap": 180,            # longest throw, HD px: 45 native, under the 52 px flight height
     "blur": 2.0,           # softening of block shadows, HD px
     "body_alpha": 200,     # base pixels at least this opaque cast
@@ -139,7 +139,7 @@ def load_specs(root=ROOT, path=None):
             raise ValueError("Unknown paint-out method: " + str(family["paint_out"].get("method")))
         if unknown:
             raise ValueError(f"Unknown shadow spec fields: {sorted(unknown)}")
-        if family["method"] not in ("block", "canopy", "mesh"):
+        if family["method"] not in ("block", "canopy", "mesh", "proxy"):
             raise ValueError("Unknown shadow method: " + family["method"])
         for frame in family["frames"]:
             if frame in specs:
@@ -330,6 +330,114 @@ def canopy_shadow(body, spec):
     return np.maximum(soft, ndimage.gaussian_filter(contact.astype(float), 2.0))
 
 
+def frustum_mask(frustum, shape, steps=64):
+    """The screen silhouette of a tapered cylinder: its rim and ground ellipses
+    and every ellipse between them."""
+    tx, ty, trx, try_, bx, by, brx, bry = frustum
+    yy, xx = np.mgrid[0:shape[0], 0:shape[1]]
+    out = np.zeros(shape, bool)
+    for t in np.linspace(0, 1, steps):
+        cx, cy = bx + (tx - bx) * t, by + (ty - by) * t
+        rx, ry = max(brx + (trx - brx) * t, 1), max(bry + (try_ - bry) * t, 1)
+        out |= ((xx - cx) / rx) ** 2 + ((yy - cy) / ry) ** 2 <= 1
+    return out
+
+
+VIEW_ELEVATION_DEG = 59.6  # the sprites' shared 3/4 view (mesh_shadows.ELEVATION_DEG)
+
+
+def fit_frustum(body, start):
+    """The round tapered cylinder whose silhouette best overlaps the body
+    (intersection over union). Seen at the sprites' view, a circle shows as an
+    ellipse sin(elevation) as tall as it is wide, so each ellipse has only a
+    centre and a width; the best of a few starts round the guess is kept."""
+    from scipy import optimize
+    k = math.sin(math.radians(VIEW_ELEVATION_DEG))
+    small = body[::2, ::2]
+
+    def full(q):
+        tx, ty, trx, bx, by, brx = q
+        return [tx, ty, trx, trx * k, bx, by, brx, brx * k]
+
+    def loss(q):
+        m = frustum_mask(np.asarray(full(q)) / 2, small.shape, 32)
+        return -(m & small).sum() / max((m | small).sum(), 1)
+    tx, ty, trx, _, bx, by, brx, _ = start
+    best = None
+    for dy in (-12, 0, 12):
+        guess = np.array([tx, ty + dy, trx, bx, by - dy, brx], float)
+        result = optimize.minimize(loss, guess, method="Nelder-Mead",
+                                   options={"xatol": 0.5, "fatol": 1e-4, "maxiter": 4000})
+        if best is None or result.fun < best.fun:
+            best = result
+    return [round(float(v), 1) for v in full(best.x)], -best.fun
+
+
+def banner_ground(frustum, box, team_body):
+    """The ground row under a banner: where its lowest pixel meets the rim, at the
+    same angle round the ground ellipse."""
+    tx, ty, trx, try_, bx, by, brx, bry = frustum
+    x0, y0, x1, y1 = box
+    py, px = np.nonzero(team_body[y0:y1, x0:x1])
+    low = py.max()
+    lx = px[py >= low - 2].mean() + x0
+    theta = math.atan2((low + y0 - ty) / try_, (lx - tx) / trx)
+    return by + bry * math.sin(theta)
+
+
+def proxy_points(proxy, team_body):
+    """(x, y, H) screen points of a proxy shape, H screen px above the ground.
+
+    `frustum`: [top cx, cy, rx, ry, bottom cx, cy, rx, ry], the rim and ground
+    ellipses of a tapered cylinder as the sprite shows them (fit them with
+    --fit-proxy). `banners`: boxes [x0, y0, x1, y1] of team-layer pixels held up
+    on the rim; each stands on the ground ellipse below where its lowest pixel
+    meets the rim (banner_ground), so a pixel at row y is ground - y high."""
+    xs, ys, hs = [], [], []
+    frustum = proxy["frustum"]
+    tx, ty, trx, try_, bx, by, brx, bry = frustum
+    height = by - ty
+    for t in np.linspace(0, 1, max(2, int(height) + 1)):
+        cx, cy = bx + (tx - bx) * t, by + (ty - by) * t
+        rx, ry = brx + (trx - brx) * t, bry + (try_ - bry) * t
+        if t == 1:  # the rim's top face, filled
+            ex, ey = np.meshgrid(np.arange(-rx, rx + 1), np.arange(-ry, ry + 1))
+            inside = (ex / rx) ** 2 + (ey / ry) ** 2 <= 1
+            ex, ey = ex[inside], ey[inside]
+        else:
+            theta = np.linspace(0, 2 * np.pi, int(4 * max(rx, 1) * np.pi))
+            ex, ey = rx * np.cos(theta), ry * np.sin(theta)
+        xs.append(cx + ex); ys.append(cy + ey); hs.append(np.full(ex.shape, height * t))
+    for box in proxy.get("banners", []):
+        x0, y0, x1, y1 = box
+        py, px = np.nonzero(team_body[y0:y1, x0:x1])
+        if not len(py):  # a banner this frame has lost
+            continue
+        ground = banner_ground(frustum, box, team_body)
+        py, px = py + y0, px + x0
+        xs.append(px.astype(float)); ys.append(py.astype(float)); hs.append(np.maximum(0, ground - py).astype(float))
+    return np.concatenate(xs), np.concatenate(ys), np.concatenate(hs)
+
+
+def proxy_shadow(canvas, team_body, spec):
+    """The shadow of a proxy shape: every point thrown from its ground point
+    min(length * H, cap) along the sun (no columns: high parts cast apart),
+    filled, merged with the shape's ground footprint and softened."""
+    xs, ys, hs = proxy_points(spec["proxy"], team_body)
+    throw = np.minimum(hs * spec["length"], spec["cap"])
+    gx, gy = xs + throw * SHADOW[0], ys + hs + throw * SHADOW[1]
+    h, w = canvas.shape
+    out = np.zeros((h, w), bool)
+    ix, iy = np.rint(gx).astype(int), np.rint(gy).astype(int)
+    ok = (ix >= 0) & (ix < w) & (iy >= 0) & (iy < h)
+    out[iy[ok], ix[ok]] = True
+    _, _, _, _, bx, by, brx, bry = spec["proxy"]["frustum"]  # the footprint itself
+    yy, xx = np.mgrid[0:h, 0:w]
+    out |= ((xx - bx) / brx) ** 2 + ((yy - by) / bry) ** 2 <= 1
+    out = ndimage.binary_fill_holes(ndimage.binary_closing(out, iterations=4) | out)
+    return ndimage.gaussian_filter(out.astype(float), spec["blur"])
+
+
 def cast(base, team, spec):
     """(HD shadow alpha, classic shadow alpha) as uint8 arrays for a de-shadowed
     HD base (and optional team layer) at SCALE x the classic frame."""
@@ -341,7 +449,14 @@ def cast(base, team, spec):
     h0, w0 = body.shape
     canvas = np.zeros((h0 + MARGIN, w0 + MARGIN), bool)
     canvas[:h0, :w0] = body
-    mask = (canopy_shadow if spec["method"] == "canopy" else block_shadow)(canvas, spec)
+    if spec["method"] == "proxy":
+        team_body = np.zeros(canvas.shape, bool)
+        if team is not None:
+            th, tw = min(team.shape[0], h0), min(team.shape[1], w0)
+            team_body[:th, :tw] = team[:th, :tw, 3] >= spec["team_alpha"]
+        mask = proxy_shadow(canvas, team_body, spec)
+    else:
+        mask = (canopy_shadow if spec["method"] == "canopy" else block_shadow)(canvas, spec)
     ys, xs = np.nonzero(mask > 0.5 / 255)
     unit = STEP * SCALE
     right = -(-max(0, (xs.max() + 1 if len(xs) else 0) - w0) // unit) * unit
@@ -695,6 +810,8 @@ def main(argv=None):
     parser.add_argument("--frames", nargs="*", help="only these frames (default: every spec)")
     parser.add_argument("--review", type=Path, help="write review sheets here instead of the pack")
     parser.add_argument("--jobs", type=int, help="parallel frames (default: every CPU)")
+    parser.add_argument("--fit-proxy", action="store_true",
+                        help="refit each proxy spec's frustum to its frame's silhouette, print it and exit")
     args = parser.parse_args(argv)
     specs = load_specs()
     frame_ids = args.frames or list(specs)
@@ -704,6 +821,13 @@ def main(argv=None):
     for frame_id in frame_ids:
         if not (ROOT / GFX / f"{frame_id}.png").exists() or not (ROOT / PACK / f"{frame_id}.png").exists():
             parser.error(f"{frame_id}: no classic or HD base layer")
+    if args.fit_proxy:
+        for frame_id in frame_ids:
+            if specs[frame_id]["method"] == "proxy":
+                body = ndimage.binary_fill_holes(_open(ROOT / PACK / f"{frame_id}.png")[..., 3] >= specs[frame_id]["body_alpha"])
+                frustum, overlap = fit_frustum(body, specs[frame_id]["proxy"]["frustum"])
+                print(f"{frame_id}: frustum {frustum} (silhouette IoU {overlap:.3f})")
+        return
     results = run(frame_ids, specs, jobs=args.jobs)
     if args.review:
         names = review(results, specs, args.review)

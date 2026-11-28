@@ -2764,12 +2764,12 @@
     {
       "runtime": "manifest.json",
       "source": "pack-metadata/manifest.json",
-      "sha256": "c7a38cff86b93fe4f664e094823805838f8dc2bc9008110ac3ef8553533d2a34"
+      "sha256": "7e5bd69b32b1c401634f8e85030cc3aa0082c35740d561d3f46529b5209ca5b9"
     },
     {
       "runtime": "frames.txt",
       "source": "pack-metadata/frames.txt",
-      "sha256": "2dab4dc9af479e3be492712b6d9202fb93078878d0ed8bf067bb6ef8f9c78b07"
+      "sha256": "719c6bac889ab750c9d497fbfe1e9ebfee75722d5facdc34872367ccc922cb78"
     },
     {
       "runtime": "README.md",
@@ -163999,17 +163999,17 @@
     {
       "runtime": "defencetower1b0s.png",
       "source": "shadows/defencetower1b0s.png",
-      "sha256": "8ca51c9fdc8a8c22668a2f77021351985c5a3bd824194deae3946cc39c4c4e27"
+      "sha256": "f28e7a27a93b086d703b94dcbac6858994f3926c6f02a2e324d03f3606901133"
     },
     {
       "runtime": "defencetower1b1s.png",
       "source": "shadows/defencetower1b1s.png",
-      "sha256": "8ca51c9fdc8a8c22668a2f77021351985c5a3bd824194deae3946cc39c4c4e27"
+      "sha256": "0599cb5b96fa794540c36cf1ae7fa9708ce365e3f5f7866b2fc1e7231e6647a9"
     },
     {
       "runtime": "defencetower1b2s.png",
       "source": "shadows/defencetower1b2s.png",
-      "sha256": "3dc588f58bf4ae386a6dfdd8e686eea3f421e6f36a2bde4f4c1a127837d4043e"
+      "sha256": "8188f3d87263fe91f9188341a3f7095a12721f654d70a1e40a78fa76042e4f11"
     },
     {
       "runtime": "defencetower2b0s.png",

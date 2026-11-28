@@ -91,17 +91,19 @@ above the mesh's ground stands at (x, y + H) and throws `length` × H, at most
 h × cos 59.6° on screen. A point's ground stays on its own piece of the sprite,
 no lower than that piece's base in its column, so a mesh seated too low casts no
 slab below the building and separate pieces cast separately; shadow parts not
-touching the sprite are dropped. A spec can override this per building:
-`hollow` (defence tower level 2) casts each height only over its own band of
-throw and keeps the mesh's own heights above the sprite's lowest pixel, so
-banners held up high cast apart from the base instead of standing on the
-ground; `mesh` names another frame whose mask this one borrows, aligned at the
+touching the sprite are dropped. A spec can override this per building: `mesh` names another frame whose mask this one borrows, aligned at the
 bottom-right corner as buildings are drawn and clipped to what this frame's
 silhouette can throw along the sun; `mesh_scale` scales the mask about the
 building's base, and `mesh_smooth` opens it with a disc of that radius to
 remove thin parts poking out (hospital level 1 borrows level 3's shape at
 0.65, smoothed by 14 HD px). Buildings
-whose meshes fail the gate keep a `block` spec at their reviewed length. barracks0b0's old shadow was painted
+whose meshes fail the gate keep a `block` spec at their reviewed length. Where
+TRELLIS models a building badly, a `proxy` spec describes a stand-in by hand
+in the sprite's HD pixels (defence tower level 2: a tapered cylinder, `frustum`,
+from its rim and ground ellipses, and three `banners`, each a box of team-layer
+pixels with the ground row they stand on), and `cast_shadows.py` throws every
+point from its true height, so the banners held up on the rim cast apart from
+the base. barracks0b0's old shadow was painted
 opaque into its art; two masked FLUX.1 Fill [pro] passes (fal.ai) repainted it
 as sand before the mesh was made, recorded with their masks, prompts and hashes
 in `content-src/gfx/shadows/inpaint/` (the classic base takes the HD result
