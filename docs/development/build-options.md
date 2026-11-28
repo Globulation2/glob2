@@ -544,5 +544,19 @@ reject them before provisioning dependencies. Both use software encoding, so
 qualify gameplay frame times and dropped-frame counters on the target hardware;
 realtime settings alone do not establish realtime performance.
 
+Native Linux distribution packages can configure CMake with
+`-DGLOB2_SYSTEM_FFMPEG=ON` to link the system FFmpeg libraries discovered through
+`pkg-config`. Choose a recording profile whose encoders the distro ships. For
+example, `-DGLOB2_BUILD_ARGS="release=1 recording_codec=vp9"` requires
+`libvpx-vp9` and `libopus` in the system FFmpeg build. Run the
+`RecordingSession` suite with the target distro's libraries to verify the
+encoder configuration. For a build that uses system FFmpeg throughout,
+select `sprite_packing=webp` or `sprite_packing=legacy`. The video sprite
+profile has its own pinned H.264 encoder. Asset export still needs the
+pinned build-time Pillow and libwebp versions. Use
+`tools/build_asset_encoder.py` to build the encoder from source archives
+in an offline packaging environment. The default upstream recorder still
+uses the pinned FFmpeg recipe.
+
 See [gameplay recording](../features/gameplay-recording.md) for output paths,
 quality controls and recovery.

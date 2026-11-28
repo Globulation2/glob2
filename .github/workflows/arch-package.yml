@@ -1,0 +1,78 @@
+name: Arch package candidate
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/arch-package.yml
+      - platforms/linux/arch/**
+  workflow_dispatch:
+
+concurrency:
+  group: arch-package-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && github.ref != format('refs/heads/{0}', github.event.repository.default_branch)) }}
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Prepare Arch build and upgrade environments
+        run: |
+          set -eu
+          docker pull archlinux:base-devel
+          docker run --name arch-build-env archlinux:base-devel bash -ec '
+            # The container excludes manuals and its own pacman config.
+            # Keep both installed through the distribution upgrade.
+            sed -i "/^NoExtract.*usr\/share\/man\//d; /^NoExtract.*etc\/pacman\.conf/d" /etc/pacman.conf
+            pacman -Syu --noconfirm --needed git
+            useradd -m builder
+            printf "builder ALL=(root) NOPASSWD: /usr/bin/pacman\n" >/etc/sudoers.d/glob2-build
+          '
+          docker commit arch-build-env glob2-arch-build
+          docker run --name arch-sources -v "$PWD/platforms/linux/arch:/recipe:ro" glob2-arch-build bash -ec '
+            install -d -o builder -g builder /build
+            install -o builder -g builder /recipe/{PKGBUILD,system-ffmpeg.patch} /build/
+            cd /build
+            runuser -u builder -- makepkg --noconfirm --syncdeps --nobuild
+            pacman -S --noconfirm --needed glob2
+          '
+          docker commit arch-sources glob2-arch-sources
+      - name: Build package offline
+        run: |
+          set -eu
+          docker run --name arch-result --network none glob2-arch-sources bash -ec '
+            cd /build
+            runuser -u builder -- env CMAKE_BUILD_PARALLEL_LEVEL=4 makepkg --noextract --noconfirm
+          '
+          docker cp arch-result:/build/glob2-0.11.7.0-1-x86_64.pkg.tar.zst .
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: glob2-arch-x86_64-candidate
+          path: glob2-*.pkg.tar.zst
+          if-no-files-found: error
+          retention-days: 7
+      - name: Verify upgrade offline
+        run: |
+          set -eu
+          docker run --network none \
+            -v "$PWD/content/games/gd-small-2ai.game.gz:/fixture.game.gz:ro" \
+            -v "$PWD/glob2-0.11.7.0-1-x86_64.pkg.tar.zst:/glob2.pkg.tar.zst:ro" \
+            glob2-arch-sources bash -ec '
+              export GLOB2_USER_DATA_DIR=/tmp/glob2-profile
+              export SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy
+              install -d "$GLOB2_USER_DATA_DIR"
+              touch "$GLOB2_USER_DATA_DIR/sentinel"
+              pacman -Q glob2
+              pacman -U --noconfirm /glob2.pkg.tar.zst
+              pacman -Qkk glob2
+              glob2 info version --format json
+              set -o pipefail
+              glob2 game repeat /fixture.game.gz --ticks 128 --runs 1 | tee /tmp/match.log
+              grep -F "nox::gui.game.checkSum() = 1cea58cc" /tmp/match.log
+              pacman -R --noconfirm glob2
+              test -f "$GLOB2_USER_DATA_DIR/sentinel"
+            '

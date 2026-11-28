@@ -1,0 +1,109 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 3be068d7c2..2e981035e2 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -314,6 +314,10 @@ endmacro()
+ # The pinned h264 recording libraries: GLOB2_RECORDING_PREFIX, the prefix beside
+ # GLOB2_SDL3_PREFIX, or a shared-store build (built on first use).
+ # The relay links no media library and only needs SDL's headers for libgag's types.
++option(GLOB2_SYSTEM_FFMPEG "Use system FFmpeg for native Linux clients" OFF)
++if(GLOB2_SYSTEM_FFMPEG AND (NOT GLOB2_PLATFORM STREQUAL "linux" OR relay))
++  message(FATAL_ERROR "GLOB2_SYSTEM_FFMPEG requires a native Linux client")
++endif()
+ set(recording_includes)
+ set(recording_libraries)
+ set(build_config_options)
+@@ -322,26 +326,35 @@ set(fribidi_libraries)
+ if(relay)
+   glob2_pkg_config(sdl3 sdl3 --cflags)
+ else()
+-  if(windows)
+-    set(recording_target mingw32)
+-  elseif(darwin)
+-    set(recording_target darwin)
++  if(GLOB2_SYSTEM_FFMPEG)
++    find_package(PkgConfig REQUIRED)
++    pkg_check_modules(GLOB2_FFMPEG REQUIRED IMPORTED_TARGET
++      libavcodec libavformat libavutil libswresample libswscale)
++    set(recording_libraries PkgConfig::GLOB2_FFMPEG)
+   else()
+-    set(recording_target linux)
++    if(windows)
++      set(recording_target mingw32)
++    elseif(darwin)
++      set(recording_target darwin)
++    else()
++      set(recording_target linux)
++    endif()
++    glob2_bridge(recording_prefix recording-prefix --builddir "${GLOB2_OUT}" --target ${recording_target}
++                 --codec ${GLOB2_RECORDING_CODEC})
++    glob2_bridge(recording_libraries recording --prefix "${recording_prefix}" --target ${recording_target}
++                 --codec ${GLOB2_RECORDING_CODEC})
++    set(recording_includes "${recording_prefix}/include")
++    glob2_configure_depends(${recording_libraries})
+   endif()
+-  glob2_bridge(recording_prefix recording-prefix --builddir "${GLOB2_OUT}" --target ${recording_target}
+-               --codec ${GLOB2_RECORDING_CODEC})
+-  glob2_bridge(recording_libraries recording --prefix "${recording_prefix}" --target ${recording_target}
+-               --codec ${GLOB2_RECORDING_CODEC})
+   if(NOT GLOB2_RECORDING_CODEC STREQUAL "h264")
+     # FFmpeg's WebM encoders use the client's Opus, after the codec archives.
+-    glob2_pkg_config(recording_opus opus --cflags --libs)
+-    list(APPEND recording_libraries ${recording_opus_libraries})
++    if(NOT GLOB2_SYSTEM_FFMPEG)
++      glob2_pkg_config(recording_opus opus --cflags --libs)
++      list(APPEND recording_libraries ${recording_opus_libraries})
++    endif()
+     string(TOUPPER "GLOB2_RECORDING_${GLOB2_RECORDING_CODEC}" recording_define)
+     add_compile_definitions(${recording_define})
+   endif()
+-  set(recording_includes "${recording_prefix}/include")
+-  glob2_configure_depends(${recording_libraries})
+   glob2_pkg_config(opusfile opusfile --cflags)
+   glob2_pkg_config(sdl3 sdl3 --cflags --libs)
+   glob2_pkg_config(webp libwebp --cflags --libs --static)
+@@ -634,6 +647,9 @@ if(darwin)
+   list(APPEND GLOB2_GAG_SOURCES ${GLOB2_GAG_DARWIN_SOURCES})
+ endif()
+ add_library(gag STATIC ${GLOB2_GAG_SOURCES})
++if(GLOB2_SYSTEM_FFMPEG)
++  target_link_libraries(gag PRIVATE PkgConfig::GLOB2_FFMPEG)
++endif()
+ # A second build of etcpak's block encoders with SSE4.1, chosen at run time when
+ # the CPU has it; the portable build stays for older x86-64 processors.
+ if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(x86_64|AMD64|amd64|i[3-6]86|x86)$" AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+@@ -770,6 +786,10 @@ add_library(glob2_test_settings INTERFACE)
+ target_include_directories(glob2_test_settings INTERFACE "${GLOB2_ROOT}/test" "${GLOB2_ROOT}/test/support"
+                            "${GLOB2_ROOT}/libs/gag/src" "${GLOB2_ROOT}/third_party/quickjs-ng")
+ target_compile_definitions(glob2_test_settings INTERFACE SDL_MAIN_HANDLED)
++if(GLOB2_SYSTEM_FFMPEG)
++  target_link_libraries(glob2_test_settings INTERFACE PkgConfig::GLOB2_FFMPEG)
++  target_compile_definitions(glob2_test_settings INTERFACE GLOB2_SYSTEM_FFMPEG)
++endif()
+ 
+ # An entry's requirements: 'mac' needs macOS; native builds always have the WSS transport; an
+ # optional buildsys/sources.py group is present only in the full compile profile.
+diff --git a/libs/gag/src/RecordingSessionTest.cpp b/libs/gag/src/RecordingSessionTest.cpp
+index f2be9cbd39..5ad53b019b 100644
+--- a/libs/gag/src/RecordingSessionTest.cpp
++++ b/libs/gag/src/RecordingSessionTest.cpp
+@@ -84,16 +84,18 @@ class FailingHardware final : public VideoEncoder
+ }
+ TEST_SUITE("RecordingSession")
+ {
+-	TEST_CASE("selected profile includes only its recording encoders")
++	TEST_CASE("selected profile has its required recording encoders")
+ 	{
+ 		CHECK(avcodec_find_encoder_by_name(SoftwareEncoder) != nullptr);
+ 		CHECK(avcodec_find_encoder_by_name(WebM ? "libopus" : "aac") != nullptr);
++#ifndef GLOB2_SYSTEM_FFMPEG
+ 		if (WebM)
+ 		{
+ 			CHECK(avcodec_find_encoder(AV_CODEC_ID_H264) == nullptr);
+ 			CHECK(avcodec_find_encoder(AV_CODEC_ID_AAC) == nullptr);
+ 			CHECK(avcodec_find_encoder_by_name("libx264") == nullptr);
+ 		}
++#endif
+ 	}
+ 	TEST_CASE("AV1 writer rejects audio and finalization until its sequence header arrives")
+ 	{

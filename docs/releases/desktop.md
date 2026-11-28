@@ -146,3 +146,13 @@ as one `windows.tar.gz` file to avoid extracting tens of thousands of individual
 ZIP entries. Both smoke and upload jobs extract it and validate every manifest
 entry, accepting the standard sha256sum text and binary markers. The upload creates an
 unpublished build; it does not promote a live Steam branch.
+
+### Arch package candidate
+
+The [Arch candidate workflow](../../.github/workflows/arch-package.yml) builds
+the [PKGBUILD](../../platforms/linux/arch/PKGBUILD) on a native x86-64 runner.
+It verifies the pinned release inputs before building offline with Arch's
+system libraries, then tests an upgrade from the package in Extra and checks
+the match checksum and profile after removal. The workflow retains the test
+package as a CI artifact for seven days. When updating the target version,
+refresh the source hashes, downstream patch and expected checksum together.
