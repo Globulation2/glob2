@@ -46,6 +46,8 @@ offscreen video, and copies the game's output and any kept crash to `--output`
 - `release.yml` runs it on the Linux, Windows (the unpacked release zip) and
   macOS packages and in the Android emulator smoke; a failure uploads
   `release-check-<platform>`. Tags cut before the check existed skip it.
+  The Windows runner has no GPU and only OpenGL 1.1, so its check runs with
+  `GLOB2_RENDERER=software`.
 - The `linux-variants` job of `build.yml` runs it on a release build, with the
   save check below.
 - The browser matrix has a `chromium release check` entry.

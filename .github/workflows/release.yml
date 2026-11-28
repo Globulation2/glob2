@@ -518,6 +518,10 @@ jobs:
       - name: Run the release check
         # docs/releases/release-check.md, on the unpacked release zip; tags cut before it have no check.
         if: ${{ hashFiles('src/app/ReleaseCheck.h') != '' }}
+        # The hosted runner has no GPU and only Windows' OpenGL 1.1, so the GL
+        # renderers cannot start there; the software renderer needs none.
+        env:
+          GLOB2_RENDERER: software
         run: python3 tools/release/release_check.py artifacts/release-smoke/Globulation2/glob2.exe --output artifacts/release-check
       - name: Keep the release check's output
         if: ${{ failure() && hashFiles('src/app/ReleaseCheck.h') != '' }}
