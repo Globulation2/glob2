@@ -38,6 +38,25 @@ resource frames get a crisp outline and sharpened shading, while buildings, wall
 and effects get colour sharpening only, so soft shadows, smoke and glow survive.
 Team-colour layers stay unchanged. It reads its inputs from Git, so rerunning it
 reproduces the committed pixels, then rebuilds the resource atlas.
+Buildings, trees, fruit trees, wheat and rocks then get ground shadow layers
+(`<frame>s`, production folder `shadows/`) from `tools/artwork/cast_shadows.py`,
+which also removes the shadows the old art baked into those base layers
+([ground shadows](../lighting.md#ground-shadows)). Its specs are
+`content-src/gfx/shadows/specs.json`. It runs last, after anything that rewrites
+base layers, and reruns without changes:
+
+    python3 tools/artwork/sharpen_upscales.py   # only when rerun: rewrites sharpened bases
+    python3 tools/artwork/ripen_wheat.py        # only when rerun: rewrites the ripe wheat
+    python3 tools/artwork/cast_shadows.py       # de-shadow, cast, register, resource atlas
+    python3 tools/artwork/package_runtime.py --check
+    python3 tools/artwork/runtime_provenance.py
+    python3 tools/artwork/validate_runtime.py
+
+Promoting new base or team layers for a frame with a shadow spec (an AI
+upscale, say) must be followed by `cast_shadows.py`: its provenance records the
+base, team and classic hashes it cast from, and `validate_runtime.py` checks
+that de-shadowed bases keep no baked shadow and that the classic shadow is the
+HD one area-averaged.
 AI candidates are generated into fresh staging directories only; see the
 [candidate pipeline](../../../tools/artwork/ai/README.md). Production packaging
 reproduces the committed reviewed finals without model inference.

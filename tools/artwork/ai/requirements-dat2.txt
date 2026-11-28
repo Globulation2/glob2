@@ -1,0 +1,19 @@
+# Optional, isolated environment for tools/artwork/ai/dat2_upscale.py inference and
+# staging (PyTorch + spandrel, ~1 GB). Large, hardware-specific extra: deliberately NOT
+# included by requirements-dev.txt; packaging and --promote need none of it.
+#
+#   uv venv --python 3.13 .venv-dat2
+#   uv pip install --python .venv-dat2/bin/python -r tools/artwork/ai/requirements-dat2.txt
+#
+# These are the versions that reproduced the reviewed bench outputs bit-exactly on
+# Apple MPS. NumPy/SciPy/Pillow/OpenCV take part in the deterministic assembly, so a
+# different version can change pixels; record any change in the staging provenance.
+torch==2.15.0
+torchvision==0.29.2
+spandrel==0.4.2
+safetensors==0.8.0
+einops==0.8.2
+numpy==2.5.5
+scipy==1.18.1
+opencv-python-headless==5.1.0.95
+Pillow==13.0.0

@@ -1,0 +1,30 @@
+{
+ "frame": "barracks0b0",
+ "endpoint": "fal-ai/flux-pro/v1/fill",
+ "model": "FLUX.1 Fill [pro] via fal.ai (BFL API terms allow commercial use of outputs)",
+ "why": "the old shadow was painted opaque into the art (the crescent around the arena and the tower's streak); the ground shadow is now cast from the mesh",
+ "procedure": "each pass composites the HD sprite on grass (78, 124, 58), upscales image 2x Lanczos and mask 2x nearest, fills, resizes the fill back (Lanczos) and blends it in with the mask blurred 1.5 px; alpha unchanged by the passes",
+ "passes": [
+  {
+   "seed": 1,
+   "prompt": "hand-painted top-down strategy game sprite, sunlit pale sand arena floor with fine cracks and grooves, same painterly style and lighting as the rest of the image, plain bare sand only, no shadow, no dark areas, no plants, no objects",
+   "input": "the DAT2 HD base as staged by dat2_upscale.py, before cast_shadows.py's strip (bd54399f8d commits it after the strip)",
+   "input_sha256": "abdaafae9018a61c10fc3a99f214f409e24bcc1ea6d4d8cfb0d4acbe8694f847",
+   "mask": "alpha >= 220, max RGB < 75, chroma < 40, opened twice, regions > 1500 HD px, dilated 6, inside alpha > 0",
+   "output_sha256": "7286a5a50c7c8bc523319c0ce8fe743143af7986659530c263f7f3805e2ac36f"
+  },
+  {
+   "seed": 1,
+   "prompt": "hand-painted top-down strategy game sprite, sunlit pale sand arena floor with fine cracks and grooves, same painterly style and lighting as the rest of the image, plain bare sand only, no shadow, no dark areas, no plants, no objects",
+   "input": "pass 1's output",
+   "input_sha256": "7286a5a50c7c8bc523319c0ce8fe743143af7986659530c263f7f3805e2ac36f",
+   "mask": "alpha >= 220, max RGB < 115, chroma < 55, outside a tower guard (R - G > 32 and R > 90, closed 6, holes filled, dilated 3), opened twice, regions > 300 HD px, dilated 6",
+   "output_sha256": "730209470dbe05017a37c0c091ba9dcce70ec5abdc8706da17293261da18d231"
+  }
+ ],
+ "mask_file": "barracks0b0_mask.png: every HD pixel the two passes changed",
+ "mask_sha256": "c8a1d8f83b82f1b85fe820bfada710faa37d007e2261513ec82aa55fdfbb71e5",
+ "output_sha256": "730209470dbe05017a37c0c091ba9dcce70ec5abdc8706da17293261da18d231",
+ "classic": "the classic base takes the HD result area-averaged 4x, weighted by the changed pixels' coverage of each classic pixel",
+ "after": "cast_shadows.py's strip then clears 744 translucent near-black pixels (alpha < 220, every channel < 45) of the pass 2 output, as for every stripped frame; RGB and opaque alpha are pass 2's"
+}

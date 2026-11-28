@@ -144,6 +144,7 @@ class WebAssetPlanTests(unittest.TestCase):
                                                {'data/terrain/compiled/'}),
                          {'data/terrain/compiled/atlas.json', 'data/terrain/compiled/textures-0-mip0.webp'})
         self.assertTrue(web_assets.game_files(['data/gfx/inn0b12r.png'], {'inn0b'}))
+        self.assertTrue(web_assets.game_files(['data/gfx/inn0b12s.webp'], {'inn0b'}))  # shadow layer
         # The runtime export's sheets (tools/package_assets.py) replace a sprite's frames.
         self.assertEqual(web_assets.game_files(['data/gfx/unit.sheet', 'data/gfx/unit-sheet-3.webp',
                                                 'data/gfx/unitmini.sheet', 'data/gfx/unitmini-sheet-0.png'], {'unit'}),

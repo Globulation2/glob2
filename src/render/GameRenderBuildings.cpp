@@ -62,13 +62,9 @@ void MapDrawer::drawMapBuilding(int x, int y, int gid, int viewportX, int viewpo
 	const SceneTeam *team=&entities.owner(*building);
 
 	const int imgid = buildingSpriteFrame(*type, building->hp, building->maxHp, entities.connections(*building));
-	int dx, dy;
-
-
 	// select buildings and set the team colors
 	Sprite *buildingSprite = type->gameSpritePtr;
-	dx = (type->width<<5)-buildingSprite->getW(imgid);
-	dy = (type->height<<5)-buildingSprite->getH(imgid);
+	const auto [dx, dy] = buildingSpriteOffset(*type, *buildingSprite, imgid);
 	auto color=presentationColor(team->color);
     if(view)if(const auto chosen=view->render.skinPreview().buildingColor(team->number))
         color=GAGCore::Color((*chosen>>16)&255,(*chosen>>8)&255,*chosen&255);

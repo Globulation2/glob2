@@ -20,6 +20,7 @@ AI = {'current', 'outline_repair', 'painted_repair', 'crystal_repair',
 # tools/artwork/sharpen_upscales.py: crisp resource edges, colour sharpening elsewhere.
 AI |= {'resource constrained; crisp edges and sharpening v1'} | {
     recipe + '; colour sharpening v1' for recipe in AI - {'resource constrained'}}
+AI.add('dat2 weighted chain ensemble v1')  # tools/artwork/ai/dat2_upscale.py --weights (CC-BY-4.0 models)
 MATERIALS = {'shared-material rugged corner masks v5; quiet flat grass',
              'quiet ripples; periodic material v3'}
 ORIGINAL_MATERIALS = {'original-based grass and sand v1; retained rugged corner masks'}
@@ -53,6 +54,8 @@ def category(recipe):
         return 'ai-materials'
     if recipe == 'soft mask resampling':
         return 'resampled-masks'
+    if recipe.startswith('cast ground shadow'):  # tools/artwork/cast_shadows.py
+        return 'shadows'
     raise ValueError('Unclassified recipe: ' + recipe)
 
 

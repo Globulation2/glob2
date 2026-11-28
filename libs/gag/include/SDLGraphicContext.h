@@ -1241,6 +1241,33 @@ namespace GAGCore
             return index < images.size() && index < rotated.size() && !rotated[index] ? images[index] : nullptr;
         }
 
+        //! A frame's optional shadow layer (`<frame>s`, sheet layer `shadow`):
+        //! black, its alpha the ground shadow's coverage at full strength. Its
+        //! top-left corner is the frame's; it may be larger, to reach past the
+        //! frame to the lower right. It is never drawn on its own: the world
+        //! view composes every shadow into one mask (src/render/ShadowMask.h).
+        //! The native layer, with CPU pixels; null when the frame has none.
+        DrawableSurface *shadowFrame(unsigned index) const
+        {
+            return index < shadowImages.size() ? shadowImages[index].get() : nullptr;
+        }
+        //! The HD shadow layer (4x the native one, from the HD index's
+        //! `<frame>s` row), with CPU pixels. Null while it loads (the first ask
+        //! queues it), when the frame has none or HD artwork is off, and for a
+        //! layer not yet asked for while HD admission is held. Never block
+        //! compressed (BC3, BC7 or ASTC): the mask reads its alpha on the CPU,
+        //! so it stays the lossless RGBA it was packed as.
+        DrawableSurface *highResolutionShadowFrame(unsigned index);
+        //! Grows when an HD shadow layer becomes available: composed shadows
+        //! that used a native layer instead recompose.
+        static std::uint64_t shadowLayerRevision();
+        const std::string &getFileName() const { return fileName; }
+
+    protected:
+        std::vector<std::unique_ptr<DrawableSurface>> shadowImages;
+        std::vector<std::unique_ptr<DrawableSurface>> highResolutionShadows;
+        std::vector<std::uint8_t> highResolutionShadowState; // 0 unasked, 1 loading, 2 done
+
     protected:
 		virtual DrawableSurface *getRotatedSurface(int index);
 		//! One bit per 32-phase block, recomputed whenever the HD layer arrays

@@ -53,6 +53,7 @@ SKIP = {"ressource14", "ressource19"}  # ripe wheat: ripen_wheat.py
 RECIPE = "resource constrained; crisp edges and sharpening v1"
 COLOUR_SUFFIX = "; colour sharpening v1"
 RECIPES = {RECIPE} | {recipe + COLOUR_SUFFIX for recipe in SOURCE_RECIPES if recipe != "resource constrained"}
+DAT2_PREFIX = "dat2 "  # tools/artwork/ai/dat2_upscale.py VARIANTS recipe names
 ALPHA_RAMP = (0.3, 0.7)
 UNSHARP = ((4.0, 0.6), (1.0, 1.2))  # (gaussian sigma in HD px, amount), applied in order
 
@@ -110,6 +111,10 @@ def main(argv=None):
     results = []
     for frame_id, recipe, data in sources():
         current = registered(frame_id)
+        if current["recipe"].startswith(DAT2_PREFIX):
+            # Re-upscaled from the classic by tools/artwork/ai/dat2_upscale.py, which does its
+            # own sharpening; the SOURCE_REV finals no longer apply, so a rerun leaves it alone.
+            continue
         if current["recipe"] not in (recipe, target_recipe(recipe)):
             raise SystemExit(f"{frame_id}: recipe changed since {SOURCE_REV}: {current['recipe']}")
         before = Image.open(io.BytesIO(data)).convert("RGBA")

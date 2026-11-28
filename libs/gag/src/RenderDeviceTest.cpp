@@ -507,6 +507,7 @@ TEST_SUITE("RenderDevice")
             CHECK(large.terrain.resident >= standard.terrain.resident);
             CHECK(large.terrain.cache >= standard.terrain.cache);
             CHECK(large.terrain.direct >= standard.terrain.direct);
+            CHECK(large.terrain.shadows >= standard.terrain.shadows);
             CHECK(large.terrain.cache >= large.terrain.resident);
         }
         // A High phone's General class leaves HD frames (3/8 of it) more than

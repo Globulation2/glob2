@@ -86,6 +86,24 @@ TEST_CASE("source frames prepare in parallel without a graphic context") {
     CHECK(sprite->getW(0) == 2); CHECK(sprite->getH(1) == 2);
     CHECK(sprite->nativeFrame(0) != nullptr); CHECK(sprite->nativeFrame(1) == nullptr);
 }
+TEST_CASE("shadow layers load from loose frames and sheets without adding frames") {
+    glob2test::ToolkitScope toolkit;
+    glob2test::TempDir temp("shadow-load");
+    image(temp.path / "loose0.webp"); image(temp.path / "loose0s.webp"); image(temp.path / "loose1.webp");
+    image(temp.path / "loose5s.webp"); // a shadow of no frame
+    image(temp.path / "sheet.webp");
+    std::ofstream(temp.path / "packed.sheet") << "sheet.webp image 0 2 1 2\nsheet.webp shadow 1 1 2 2\nsheet.webp shadow 4 1 2 2\n";
+    GAGCore::Toolkit::getFileManager()->addDir(temp.path.string());
+    GAGCore::SpriteLoad loose("loose"), packed("packed");
+    auto first = finish(loose), second = finish(packed);
+    CHECK(first->getFrameCount() == 2);
+    REQUIRE(first->shadowFrame(0) != nullptr);
+    CHECK(first->shadowFrame(0)->getW() == 2); CHECK(first->shadowFrame(0)->getSDLSurface() != nullptr);
+    CHECK(first->shadowFrame(1) == nullptr); CHECK(first->shadowFrame(5) == nullptr);
+    CHECK(second->getFrameCount() == 2); CHECK(second->getW(1) == 1);
+    CHECK(second->shadowFrame(0) == nullptr);
+    REQUIRE(second->shadowFrame(1) != nullptr); CHECK(second->shadowFrame(1)->getW() == 2);
+}
 TEST_CASE("sheet tiles retain frame order and malformed sheets fall back to WebP frames") {
     glob2test::ToolkitScope toolkit;
     glob2test::TempDir temp("sheet-load");

@@ -308,6 +308,65 @@ namespace GAGCore
 		}
 	}
 	
+    // HD shadow layers load on first ask, one decode per frame, from the HD
+    // index's `<frame>s` row (a plain file or a packed frame token).
+    static std::map<std::pair<const Sprite*, unsigned>, AssetLoader::Handle<AssetImage>> pendingShadows;
+    static std::uint64_t shadowRevision = 1;
+    std::uint64_t Sprite::shadowLayerRevision() { return shadowRevision; }
+    DrawableSurface *Sprite::highResolutionShadowFrame(unsigned index)
+    {
+        const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+        if ((!highResolutionEnabled && !overrideDir) || !highResolutionFramesSupported() ||
+            !shadowFrame(index)) return nullptr;
+        if (highResolutionShadows.size() < shadowImages.size()) {
+            highResolutionShadows.resize(shadowImages.size());
+            highResolutionShadowState.resize(shadowImages.size(), 0);
+        }
+        if (highResolutionShadows[index]) return highResolutionShadows[index].get();
+        auto &state = highResolutionShadowState[index];
+        if (state == 2) return nullptr;
+        const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
+        // While HD admission is held (holdHighResolutionAdmission), layers
+        // already loaded stay and no new one loads; it is asked again once
+        // the hold lifts, and the mask keeps the native layer meanwhile.
+        if (state == 0 && highResolutionAdmissionHeld) return nullptr;
+        // The web HD package may still be downloading: ask again later
+        // rather than settling on the native layer for the session.
+        if (state == 0 && !highResolutionPackageReady(fileName, directory)) return nullptr;
+        if (state == 0) {
+            state = 2;
+            const auto* packEntries = readPack(directory, fileName);
+            if (!packEntries) return nullptr;
+            const auto found = packEntries->find(fileName.substr(fileName.find_last_of('/') + 1) +
+                std::to_string(index) + "s");
+            if (found == packEntries->end()) return nullptr;
+            const auto &entry = found->second;
+            auto *native = shadowFrame(index);
+            if (entry.base == "-" || entry.scale != 4 || entry.width != native->getW() || entry.height != native->getH() ||
+                !validHighResolutionFile(entry.base)) return nullptr;
+            const auto path = directory + '/' + entry.base;
+            AssetLoader::Handle<AssetImage> handle;
+            if (entry.base.starts_with('@')) {
+                PackedSpriteFrame location;
+                if (!PackedSpriteFrame::parse(entry.base, location)) return nullptr;
+                handle = location.request(Toolkit::assets(), path, false);
+            } else handle = Toolkit::assets().requestImage(path, AssetLoader::Priority::Required, false);
+            pendingShadows[{this, index}] = std::move(handle);
+            state = 1;
+        }
+        auto pending = pendingShadows.find({this, index});
+        if (pending == pendingShadows.end()) { state = 2; return nullptr; }
+        if (pending->second.pending()) return nullptr;
+        const auto image = pending->second.get();
+        pendingShadows.erase(pending);
+        state = 2;
+        auto *native = shadowFrame(index);
+        if (!image || image->surface->w != native->getW() * 4 || image->surface->h != native->getH() * 4) return nullptr;
+        highResolutionShadows[index] = DrawableSurface::fromAssetImage(*image, false, false);
+        ++shadowRevision;
+        return highResolutionShadows[index].get();
+    }
+
     void Sprite::registerLoaded() {
         loadedSprites.insert(this);
         if ((!highResolutionOnDemand() || demandedHighResolutionNames.contains(fileName)) &&
@@ -326,6 +385,7 @@ namespace GAGCore
         fileName = std::move(prepared.fileName);
         dynamicTeamColor = prepared.dynamicTeamColor;
         images.swap(prepared.images); rotated.swap(prepared.rotated);
+        shadowImages.swap(prepared.shadowImages);
         experimentImages.swap(prepared.experimentImages); experimentRotated.swap(prepared.experimentRotated);
         highResolutionAtlas = std::move(prepared.highResolutionAtlas);
         blockCompleteHD = std::move(prepared.blockCompleteHD);
@@ -1939,6 +1999,7 @@ namespace GAGCore
         std::erase_if(portableDrawnFrames, [this](const auto &key) { return key.first == this; });
         if (deferredHighResolutionCursor == this) deferredHighResolutionCursor = nullptr;
         if (loadedSprites.erase(this)) pendingHighResolution.erase(this);
+        std::erase_if(pendingShadows, [this](const auto &entry) { return entry.first.first == this; });
 #ifdef HAVE_OPENGL
         if (_gc && SDL_GL_GetCurrentContext() && bufferGeneration == _gc->getGLContextGeneration()) {
             if(vbo)glDeleteBuffers(1,&vbo);

@@ -99,3 +99,38 @@ class ExportValidationTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class ShadowLayerValidationTests(unittest.TestCase):
+    """A frame's shadow layer is its own `<frame>s` frame: black, at least the frame's size."""
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        self.gfx = self.root / 'content/data/gfx'
+        self.pack = self.root / 'content/data/highres/v1'
+        self.gfx.mkdir(parents=True)
+        self.pack.mkdir(parents=True)
+        Image.new('RGBA', (2, 2), (200, 10, 10, 255)).save(self.gfx / 'inn0b0.png')
+        self.shadow((3, 3), (0, 0, 0, 90))
+        self.frames = {'inn0b0': dict(width=2, height=2, layers=[dict(role='base', file='inn0b0.png')]),
+                       'inn0b0s': dict(width=3, height=3, recipe='cast ground shadow v1: block',
+                                       layers=[dict(role='base', file='inn0b0s.png')])}
+
+    def shadow(self, size, colour):
+        Image.new('RGBA', size, colour).save(self.gfx / 'inn0b0s.png')
+        Image.new('RGBA', (size[0] * 4, size[1] * 4), colour).save(self.pack / 'inn0b0s.png')
+
+    def test_black_shadow_reaching_past_its_frame_passes(self):
+        self.assertEqual(validator.validate_shadows(self.root, self.pack, self.frames), 1)
+
+    def test_unregistered_coloured_or_small_shadows_fail(self):
+        with self.assertRaisesRegex(ValueError, 'without HD frames'):
+            validator.validate_shadows(self.root, self.pack, {'inn0b0': self.frames['inn0b0']})
+        self.shadow((3, 3), (5, 0, 0, 90))
+        with self.assertRaisesRegex(ValueError, 'not black'):
+            validator.validate_shadows(self.root, self.pack, self.frames)
+        self.frames['inn0b0s'].update(width=1)
+        with self.assertRaisesRegex(ValueError, 'smaller'):
+            validator.validate_shadows(self.root, self.pack, self.frames)

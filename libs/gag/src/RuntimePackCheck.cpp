@@ -14,6 +14,7 @@
 #include <epoxy/gl.h>
 #endif
 #include <algorithm>
+#include <cctype>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -41,16 +42,19 @@ static void run(bool software,bool fallback,bool original)
     {
         std::ifstream input(glob2test::contentRoot()/"data/highres/v1/frames.txt");std::string magic,id,base,team;int version,w,h,scale;
         input>>magic>>version;REQUIRE(version==1);
-        std::vector<Frame> frames;
+        std::vector<Frame> frames,shadows;
         std::map<std::string,std::unique_ptr<Sprite>> sprites;
         while(input>>id>>w>>h>>scale>>base>>team)
         {
-            auto split=id.find_last_not_of("0123456789")+1;auto prefix=id.substr(0,split);int index=std::stoi(id.substr(split));
+            // `<frame>s` rows are a frame's shadow layer (Sprite::shadowFrame).
+            const bool shadow=id.size()>1&&id.back()=='s'&&std::isdigit(static_cast<unsigned char>(id[id.size()-2]));
+            const auto frameId=shadow?id.substr(0,id.size()-1):id;
+            auto split=frameId.find_last_not_of("0123456789")+1;auto prefix=frameId.substr(0,split);int index=std::stoi(frameId.substr(split));
             if(!sprites.count(prefix)){auto s=std::make_unique<Sprite>();REQUIRE(s->load("data/gfx/"+prefix));sprites[prefix]=std::move(s);}
             // Exports ship only the legacy terrain frames the menus draw
             // (tools/package_assets.py legacy_terrain_unused); its other source rows stay behind.
             if(prefix=="terrain"&&index>=sprites[prefix]->getFrameCount())continue;
-            frames.push_back({prefix,id,index,w,h});
+            (shadow?shadows:frames).push_back({prefix,id,index,w,h});
         }
         // Terrain tiles have no HD layer and so never appear in frames.txt,
         // but the dense-scene benchmark below draws them alongside frames
@@ -58,6 +62,7 @@ static void run(bool software,bool fallback,bool original)
         if(!sprites.count("terrain")){auto s=std::make_unique<Sprite>();REQUIRE(s->load("data/gfx/terrain"));sprites["terrain"]=std::move(s);}
         Sprite::setHighResolution(!original);
         for(auto f:frames){REQUIRE(sprites[f.prefix]->getW(f.index)==f.w);REQUIRE(sprites[f.prefix]->getH(f.index)==f.h);}
+        for(auto f:shadows){auto *layer=sprites[f.prefix]->shadowFrame(f.index);REQUIRE_MESSAGE(layer,f.id);REQUIRE(layer->getW()==f.w);REQUIRE(layer->getH()==f.h);}
         if(software||fallback){REQUIRE(Sprite::highResolutionStats().cpuBytes==0);std::cout<<"PASS software: original resources, all logical sizes\n";}
         else
         {

@@ -927,6 +927,36 @@ of `GraphicContext::drawSkinMesh`); pre-rendered skin sprites draw without it. D
 stars, glows and hearts are drawn procedurally by `UnitEffectArt`, one set per team hue, so the
 effects ship no new image assets.
 
+### Ground shadow pass
+
+Buildings and resources cast their ground shadows from a separate, optional
+**shadow layer** per sprite frame (`Sprite::shadowFrame`): black, alpha the
+coverage, sharing the frame's top-left corner and larger to the lower right.
+Natively it is the frame's `<frame>s.webp`, or a `shadow` run in the family's
+`.sheet` index (`<file> shadow <first> <count> <w> <h>`; packed `GLOB2_SPRITES 2`
+indices use the same word); it never adds frames and keeps its CPU pixels. The
+HD layer is the HD index row `<frame>s` (base column only), loaded on first use
+by `Sprite::highResolutionShadowFrame` from a plain file or a packed `@` token,
+and must be exactly 4× the native one.
+
+`ShadowMask` (`src/render/ShadowMask.h`) draws them in `drawSceneMap` after the
+terrain and before resources, units and buildings, so nothing standing in a
+shadow is darkened by it. Each 8×8-tile map chunk composes, on the CPU, the
+maximum coverage of every visible shadow reaching it (buildings anchored like
+`buildingSpriteOffset`, resources centred on their cell, with the same fog
+rules as their own draws), so shadows never stack; the visible chunk masks are
+drawn as textures at `Sunlight::groundShadowOpacity`, faded with the terrain
+overview. Every renderer, the software one included, draws the same masks. A
+chunk recomposes only when the shadows reaching it change (layer, frame,
+position or a newly loaded HD layer). Masks are one pixel per map pixel while
+the HD sprite policy shows native artwork and two while it shows HD (HD layers
+area-averaged by two), falling back to one pixel when the view's 2× masks would
+exceed the platform's `RenderBudget::Terrain::shadows` (64 MiB desktop, 16 MiB
+mobile and browser); off-screen masks are kept within that budget, and the pass
+is skipped beyond 160 visible chunks. An HD shadow layer is not settled as
+missing while the browser's HD package is still downloading. Shadows are cast by `tools/artwork/cast_shadows.py`; see
+[lighting](../assets/lighting.md#ground-shadows).
+
 ### Additive draws
 
 `GraphicContext::drawSurfaceAdditive` adds a surface's light (its colour times alpha) to
@@ -1330,7 +1360,11 @@ format sample RGBA. Only asset workers encode blocks: a chain the draw must
 prepare itself (mutated content, or released pixels on a device without the
 blocks' format) gets RGBA levels and no blocks, so the render thread never runs
 an encoder and never waits for one; the HD loader keeps drawing the native
-frame until the worker's chain arrives. The startup log names the chosen format
+frame until the worker's chain arrives. Sprite shadow layers (`Sprite::shadowFrame`)
+and the ground shadow masks composed from them are never block compressed: the
+layers load without mips as CPU pixels, which `ShadowMask` reads, and the masks
+change on the render thread, so their coverage alpha stays exact. HD shadow layers
+not yet loaded also wait while HD admission is held. The startup log names the chosen format
 (`HD artwork blocks: bc7`). `GLOB2_TEXTURE_COMPRESSION=none|bc3|bc7|astc`
 restricts the formats SDL GPU and programmable GL report, for comparisons (`bc3` measures the
 BC3 path on a BC7 desktop; `astc` exercises the
@@ -1473,7 +1507,10 @@ TerrainMask 64 MiB and 96 MiB of geometry, room for a 2x (Retina) view zoomed ou
 over a large map. The browser never takes a large budget, since its Wasm heap has a
 fixed maximum, and a desktop VRAM probe that finishes later does not change it.
 Each budget also carries the terrain caches' limits (`RenderBudget::Terrain`), so
-they scale with it; see [software rendering](software-rendering.md).
+they scale with it; see [software rendering](software-rendering.md). Its `shadows`
+limit bounds the composed ground shadow masks (`ShadowMask`, 64 MiB on desktop,
+16 MiB on phones and in the browser, twice that in the large budgets), whose
+textures share the General class with HD frames.
 `GLOB2_RENDER_BUDGET=desktop|mobile|desktop-large|mobile-large`
 overrides the choice to measure one budget on another device, and
 `GLOB2_RENDER_BUDGET_TOTAL_MIB` replaces the total alone (the class limits stay),

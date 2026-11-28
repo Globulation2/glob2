@@ -24,13 +24,16 @@ constexpr std::size_t MiB = 1024 * 1024;
 // uploaded HD frames within 3/8 of the class (deviceHighResolutionRoom), and
 // the 3,680 HD unit frames take about 77 MiB block-compressed with mips.
 // The browser keeps CPU copies in a Wasm heap of fixed maximum, so its
-// terrain caches stay at the phone sizes.
+// terrain caches stay at the phone sizes. Ground shadow masks (ShadowMask)
+// take 2 MiB a chunk in HD, half CPU pixels and half a General texture: 64 MiB
+// keeps a view near the HD threshold with room to pan; phones and the browser
+// keep a quarter of that, since the textures share General with HD frames.
 RenderBudget RenderBudget::desktop()
 {
 #ifdef __EMSCRIPTEN__
-    constexpr Terrain terrain{128 * MiB, 128 * MiB, 64 * MiB};
+    constexpr Terrain terrain{128 * MiB, 128 * MiB, 64 * MiB, 16 * MiB};
 #else
-    constexpr Terrain terrain{128 * MiB, 256 * MiB, 256 * MiB};
+    constexpr Terrain terrain{128 * MiB, 256 * MiB, 256 * MiB, 64 * MiB};
 #endif
     return {512 * MiB, {256 * MiB, 64 * MiB, 128 * MiB, 32 * MiB}, 64 * MiB, terrain};
 }
@@ -42,7 +45,7 @@ RenderBudget RenderBudget::desktop()
 // desktop coverage masks. The total covers those classes plus transient work.
 RenderBudget RenderBudget::mobile()
 {
-    return {160 * MiB, {48 * MiB, 32 * MiB, 64 * MiB, 16 * MiB}, 32 * MiB, {128 * MiB, 128 * MiB, 64 * MiB}};
+    return {160 * MiB, {48 * MiB, 32 * MiB, 64 * MiB, 16 * MiB}, 32 * MiB, {128 * MiB, 128 * MiB, 64 * MiB, 16 * MiB}};
 }
 // A 16 GB desktop, or Apple silicon, whose GPU shares that memory: a 2x view
 // zoomed out over a large map wants more terrain pages and HD frames resident
@@ -51,7 +54,7 @@ RenderBudget RenderBudget::mobile()
 // every HD unit, building and decor frame at once.
 RenderBudget RenderBudget::desktopLarge()
 {
-    return {1024 * MiB, {512 * MiB, 64 * MiB, 256 * MiB, 64 * MiB}, 96 * MiB, {256 * MiB, 512 * MiB, 384 * MiB}};
+    return {1024 * MiB, {512 * MiB, 64 * MiB, 256 * MiB, 64 * MiB}, 96 * MiB, {256 * MiB, 512 * MiB, 384 * MiB, 128 * MiB}};
 }
 // A phone with about 8 GB (the High tier). mobile()'s 48 MiB General class
 // leaves 18 MiB for HD frames, less than a busy view draws, so they evict and
@@ -60,7 +63,7 @@ RenderBudget RenderBudget::desktopLarge()
 // foreground game on such a phone hold.
 RenderBudget RenderBudget::mobileLarge()
 {
-    return {320 * MiB, {128 * MiB, 32 * MiB, 96 * MiB, 32 * MiB}, 48 * MiB, {128 * MiB, 192 * MiB, 128 * MiB}};
+    return {320 * MiB, {128 * MiB, 32 * MiB, 96 * MiB, 32 * MiB}, 48 * MiB, {128 * MiB, 192 * MiB, 128 * MiB, 32 * MiB}};
 }
 std::optional<RenderBudget> RenderBudget::named(std::string_view name)
 {

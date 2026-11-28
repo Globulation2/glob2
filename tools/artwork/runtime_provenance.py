@@ -18,6 +18,8 @@ CATEGORIES.update({recipe: 'Generated material with deterministic tiling' for re
 CATEGORIES.update({recipe: 'Original-based terrain with deterministic grain and tiling'
                    for recipe in ORIGINAL_MATERIALS})
 CATEGORIES['soft mask resampling'] = 'Non-AI mask resampling'
+CATEGORIES['dat2 weighted chain ensemble v1'] = ('AI upscale (weighted CC-BY-4.0 transformer models) '
+                                                  'with classic-constrained finishing')
 
 def render():
     manifest = json.loads((ROOT / 'content/data/highres/v1/manifest.json').read_text())
@@ -28,7 +30,9 @@ def render():
         authored = recipe.startswith('hand-authored SVG')
         procedural = recipe.startswith('procedural terrain')
         resource = recipe.startswith('procedural resource painter')
-        category = ('Recovered original' if original
+        shadow = recipe.startswith('cast ground shadow')  # tools/artwork/cast_shadows.py
+        category = ('Cast ground shadow (deterministic, no AI)' if shadow
+                    else 'Recovered original' if original
                     else 'Hand-authored vector' if authored
                     else 'Procedural terrain synthesis' if procedural
                     else 'Procedural resource painting' if resource else CATEGORIES[recipe])

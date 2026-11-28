@@ -24,6 +24,7 @@ class SoftwareTerrainCache;
 class DirectTerrain;
 class OverviewTerrainCache;
 class ResourceRowCache;
+class ShadowMask;
 namespace TerrainVisual { class Compositor; }
 
 //! Presentation state one map view keeps between frames: animation phases, the
@@ -123,6 +124,8 @@ struct MapRenderState
     //! The compositor the last drawn frame used, for the memory report.
     std::weak_ptr<TerrainVisual::Compositor> terrainCompositorDrawn;
     std::unique_ptr<ResourceRowCache> resourceRows;
+    //! Composed ground shadows of buildings and resources (ShadowMask.h).
+    std::unique_ptr<ShadowMask> shadowMask;
 	DirectTerrain &directTerrain();
 	const DirectTerrain *existingDirectTerrain() const { return directTerrain_.get(); }
 	//! The current terrain page cache, or null if none was created yet.
