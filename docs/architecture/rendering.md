@@ -950,8 +950,11 @@ overview. Every renderer, the software one included, draws the same masks. A
 chunk recomposes only when the shadows reaching it change (layer, frame,
 position or a newly loaded HD layer). Masks are one pixel per map pixel while
 the HD sprite policy shows native artwork and two while it shows HD (HD layers
-area-averaged by two); the cache keeps 64 MiB, and the pass is skipped beyond
-160 visible chunks. Shadows are cast by `tools/artwork/cast_shadows.py`; see
+area-averaged by two), falling back to one pixel when the view's 2× masks would
+exceed the platform's `RenderBudget::Terrain::shadows` (64 MiB desktop, 16 MiB
+mobile and browser); off-screen masks are kept within that budget, and the pass
+is skipped beyond 160 visible chunks. An HD shadow layer is not settled as
+missing while the browser's HD package is still downloading. Shadows are cast by `tools/artwork/cast_shadows.py`; see
 [lighting](../assets/lighting.md#ground-shadows).
 
 ### Additive draws

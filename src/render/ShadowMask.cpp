@@ -243,7 +243,6 @@ void ShadowMask::draw(const PresentationFrame &scene, int left, int top, int rig
 		chunkBytes = 0;
 		mapIdentity = map.identity();
 	}
-	const int scale = Sprite::highResolutionShown() ? 2 : 1;
 	struct Visible { int chunkX, chunkY, screenX, screenY, width, height; };
 	std::vector<Visible> visible;
 	for (int y = top; y <= bottom;)
@@ -263,6 +262,17 @@ void ShadowMask::draw(const PresentationFrame &scene, int left, int top, int rig
 	}
 	if (visible.size() > MaximumVisibleChunks)
 		return;
+	// The 2x mask only when the view's chunks fit the budget (a phone or
+	// HiDPI view may not); otherwise the native mask, a quarter the bytes.
+	int scale = Sprite::highResolutionShown() ? 2 : 1;
+	if (scale > 1)
+	{
+		std::size_t viewBytes = 0;
+		for (const auto &cell : visible)
+			viewBytes += std::size_t(cell.width * 32 * scale) * (cell.height * 32 * scale) * 4 * 2;
+		if (viewBytes > byteBudget())
+			scale = 1;
+	}
 	++use;
 	auto *gfx = globalContainer->gfx;
 	for (const auto &cell : visible)

@@ -330,6 +330,9 @@ namespace GAGCore
         // already loaded stay and no new one loads; it is asked again once
         // the hold lifts, and the mask keeps the native layer meanwhile.
         if (state == 0 && highResolutionAdmissionHeld) return nullptr;
+        // The web HD package may still be downloading: ask again later
+        // rather than settling on the native layer for the session.
+        if (state == 0 && !highResolutionPackageReady(fileName, directory)) return nullptr;
         if (state == 0) {
             state = 2;
             const auto* packEntries = readPack(directory, fileName);
