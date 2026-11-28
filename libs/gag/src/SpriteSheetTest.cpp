@@ -396,15 +396,15 @@ void checkIdleHighResolutionEviction(GAGCore::RendererBackend backend)
     const unsigned evictedFrame = *evicted;
     // Held, uploaded frames keep drawing HD while everything else stays
     // native: nothing reloads, wants room or is evicted. Unheld, the first
-    // frames would already want room for the evicted earlier blocks, so a few
-    // dozen suffice; each draws hundreds of HD frames, which software Vulkan
-    // (CI's lavapipe) draws slowly.
+    // frame would already want room, and an evicted block reloads within
+    // about seven frames, so ten rounds suffice; each frame draws hundreds of
+    // HD frames, which software Vulkan (CI's lavapipe) draws slowly.
     {
         struct Resume { ~Resume() { GAGCore::Sprite::holdHighResolutionAdmission(false); } } resume;
         GAGCore::Sprite::holdHighResolutionAdmission(true);
         CHECK(GAGCore::Sprite::highResolutionAdmissionHolding());
         const auto before = counts();
-        for (unsigned i = 0; i < 30; ++i) { frame(later); frame(earlier); }
+        for (unsigned i = 0; i < 10; ++i) { frame(later); frame(earlier); }
         CHECK(units.experimentImages[evictedFrame] == nullptr);
         CHECK(counts().evicted == before.evicted);
         CHECK(counts().room == before.room);
